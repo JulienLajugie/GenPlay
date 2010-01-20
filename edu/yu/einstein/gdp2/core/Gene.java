@@ -1,0 +1,246 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.core;
+
+import java.io.Serializable;
+
+/**
+ * The Gene class provides a representation of a gene.
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
+
+	private static final long serialVersionUID = -9086602517817950291L; // generated ID
+	private String 		name; 			// name of the gene
+	private Chromosome	chromo;			// chromosome
+	private Strand		strand;			// strand of the gene
+	private int 		txStart; 		// transcription start position
+	private int 		txStop; 		// transcription end position
+	private int[] 		exonStarts; 	// exon start positions
+	private int[] 		exonStops; 		// exon end positions
+	private double[]	exonScores;		// exon score
+
+
+	/**
+	 * Creates an instance of {@link Gene} having the exact same values as the {@link Gene} in parameter
+	 * @param gene a {@link Gene} 
+	 */
+	public Gene(Gene gene) {
+		this.name = gene.name;
+		this.chromo = gene.chromo;
+		this.strand = gene.strand;
+		this.txStart = gene.txStart;
+		this.txStop = gene.txStop;
+		this.exonStarts = null;
+		if (gene.exonStarts != null) {
+			this.exonStarts = gene.exonStarts.clone();
+		}
+		this.exonStops = null;
+		if (gene.exonStops != null) {
+			this.exonStops = gene.exonStops.clone();
+		}
+		this.exonScores = null;
+		if (gene.exonScores != null) {
+			this.exonScores = gene.exonScores.clone();
+		}
+	}
+
+
+	/**
+	 * Public constructor.
+	 * @param aName Name of gene.
+	 * @param aChromo chromosome
+	 * @param aStrand Strand of the gene.
+	 * @param aTxStart Transcription start position.
+	 * @param aTxStop Transcription end position.
+	 * @param arrayExonStarts Exon start positions.
+	 * @param arrayExonStops Exon end positions.
+	 * @param arrayExonScores Exon scores
+	 */
+	public Gene(String name, Chromosome chromo, Strand strand, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
+		this.name = name;
+		this.chromo = chromo;
+		this.strand = strand;
+		this.txStart = txStart;
+		this.txStop = txStop;
+		this.exonStarts = exonStarts;
+		this.exonStops = exonStops;
+		this.exonScores = exonScores;
+	}
+
+	/**
+	 * Creates an instance of {@link Gene}
+	 * @param aName name of the gene
+	 * @param aChromo chromosome
+	 * @param aStrand string representing the strand of a gene (ie "+" or "-") 
+	 * @param aTxStart transcription start position
+	 * @param aTxStop transcription end position
+	 * @param arrayExonStarts exon start positions
+	 * @param arrayExonStops exon end positions
+	 * @param arrayExonScores exon scores
+	 */
+	public Gene(String name, Chromosome chromo, String strandString, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
+		this.name = name;
+		this.chromo = chromo;
+		this.strand = Strand.getStrand(strandString);
+		this.txStart = txStart;
+		this.txStop = txStop;
+		this.exonStarts = exonStarts;
+		this.exonStops = exonStops;
+		this.exonScores = exonScores;
+	}
+
+	/**
+	 * A gene is superior to another one if its position start is greater 
+	 * or if its position start is equal but its position stop is greater. 
+	 */
+	@Override
+	public int compareTo(Gene otherGene) {
+		if (txStart > otherGene.getTxStart()) {
+			return 1;
+		} else if (txStart < otherGene.getTxStart()) {
+			return -1;
+		} else {
+			if (txStop > otherGene.getTxStop()) {
+				return 1;
+			} else if (txStop < otherGene.getTxStop()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}		
+	}
+
+	/**
+	 * @param aName Name of a chromosome
+	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
+	 */
+	public boolean equals(String aName) {
+		return name.equalsIgnoreCase(aName);
+	}
+
+	/**
+	 * @return The chromosome of the gene.
+	 */
+	public Chromosome getChromo() {
+		return chromo;
+	}
+
+	/**
+	 * @return the exonScores
+	 */
+	public double[] getExonScores() {
+		return exonScores;
+	}
+
+	/**
+	 * @return the exonStarts
+	 */
+	public int[] getExonStarts() {
+		return exonStarts;
+	}
+
+	/**
+	 * @return the exonStops
+	 */
+	public int[] getExonStops() {
+		return exonStops;
+	}
+
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	/**
+	 * @return the strand
+	 */
+	public Strand getStrand() {
+		return strand;
+	}
+
+	/**
+	 * @return the txStart
+	 */
+	public int getTxStart() {
+		return txStart;
+	}
+
+	/**
+	 * @return the txStop
+	 */
+	public int getTxStop() {
+		return txStop;
+	}
+
+
+	/**
+	 * @param chromo the chromo to set
+	 */
+	public void setChromo(Chromosome chromo) {
+		this.chromo = chromo;
+	}
+
+
+	/**
+	 * @param exonScores the exonScores to set
+	 */
+	public void setExonScores(double[] exonScores) {
+		this.exonScores = exonScores;
+	}
+
+
+	/**
+	 * @param exonStarts the exonStarts to set
+	 */
+	public void setExonStarts(int[] exonStarts) {
+		this.exonStarts = exonStarts;
+	}
+
+
+	/**
+	 * @param exonStops the exonStops to set
+	 */
+	public void setExonStops(int[] exonStops) {
+		this.exonStops = exonStops;
+	}
+
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	/**
+	 * @param strand the strand to set
+	 */
+	public void setStrand(Strand strand) {
+		this.strand = strand;
+	}
+
+
+	/**
+	 * @param txStart the txStart to set
+	 */
+	public void setTxStart(int txStart) {
+		this.txStart = txStart;
+	}
+
+
+	/**
+	 * @param txStop the txStop to set
+	 */
+	public void setTxStop(int txStop) {
+		this.txStop = txStop;
+	}
+}

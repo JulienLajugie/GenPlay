@@ -1,0 +1,39 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.core.list.binList;
+
+import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+
+
+/**
+ * The interface BinListGenerator could be implemented by the class able to create a {@link BinList}
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+public interface BinListGenerator {
+
+	/**
+	 * Creates and returns a {@link BinList}
+	 * @param binSize size of the {@link BinList}
+	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
+	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
+	 * @return a {@link BinList}
+	 * @throws IllegalArgumentException
+	 */
+	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException;
+	
+	
+	/**
+	 * @return true if the generator needs information regarding the {@link ScoreCalculation} criterion
+	 */
+	public boolean isCriterionNeeded();
+	
+	
+	/**
+	 * @return true if the generator needs information regarding the size of the bins
+	 */
+	public boolean isBinSizeNeeded();
+}

@@ -1,0 +1,794 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.core.list.binList;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
+import yu.einstein.gdp2.util.DoubleLists;
+
+
+/**
+ * This class contains various static methods for manipulating {@link BinList}
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+public class BinListOperations {
+
+	/**
+	 * filter that passes high values but cut low ones
+	 */
+	public static final int HIGH_PASS_FILTER = 0;
+
+
+	/**
+	 * filter that passes low values but cut high ones
+	 */
+	public static final int LOW_PASS_FILTER = 1;
+
+
+	/**
+	 * Adds a constant to every value of the specified {@link BinList}
+	 * @param binList 
+	 * @param constant value to add
+	 * @param precision precision of the data of the new {@link BinList} 
+	 * @return A new {@link BinList}
+	 */
+	public static BinList addConstant(BinList binList, double constant, DataPrecision precision) {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for (short i = 0; i < binList.size(); i++) {
+			if (binList.get(i) != null) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// We add a constant to each element
+				for (int j = 0; j < binList.size(i); j++) {
+					resultList.set(i, j, binList.get(i, j) + constant);
+				}
+			}
+		}
+		return resultList;		
+	}
+
+
+	/**
+	 * @param binList1
+	 * @param binList2
+	 * @param precision precision of the result {@link BinList} 
+	 * @return a new {@link BinList} resulting of the operation binList1 + binList2
+	 * @throws BinListDifferentWindowSizeException
+	 */
+	public static BinList addition(BinList binList1, BinList binList2, DataPrecision precision) throws BinListDifferentWindowSizeException{
+		if (binList1.getBinSize() != binList2.getBinSize()) {
+			throw new BinListDifferentWindowSizeException();
+		}
+		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
+		for(short i = 0; i < binList1.size(); i++)  {
+			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
+				resultList.add(listToAdd);
+				for(int j = 0; j < binList1.size(i); j++) {
+					if(j < binList2.size(i)) {
+						resultList.set(i, j, binList1.get(i, j) + binList2.get(i, j));
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * @param binList
+	 * @return the average value of the specified {@link BinList}
+	 */
+	public static double average(BinList binList) {
+		int n = 0;
+		double sum = 0;
+		for (int i = 0; i < binList.size(); i++) {
+			if (binList.get(i) != null) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if (binList.get(i, j) != 0) {
+						sum += binList.get(i, j);
+						n++;						
+					}
+				}
+			}
+		}
+		if (n == 0) {
+			return 0;
+		} else {
+			return sum / n;
+		}
+	}
+
+
+	/**
+	 * @param binList
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * @return the average value of the specified {@link BinList}
+	 */
+	public static double average(BinList binList, boolean[] chromoList) {
+		int n = 0;
+		double sum = 0;
+		for (int i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) != null) && (i < chromoList.length) && (chromoList[i])) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if (binList.get(i, j) != 0) {
+						sum += binList.get(i, j);
+						n++;						
+					}
+				}
+			}
+		}
+		if (n == 0) {
+			return 0;
+		} else {
+			return sum / n;
+		}
+	}
+
+
+	/**
+	 * Computes the average of the {@link BinList} on intervals defined by another BinList
+	 * @param intervalList BinList defining the intervals
+	 * @param valueList BinList defining the values for the average
+	 * @param percentageAcceptedValues the average is calculated only on the x% greatest values of each interval 
+	 * @param precision precision of the result BinList
+	 * @return a new BinList
+	 * @throws BinListDifferentWindowSizeException
+	 */
+	public static BinList averageOnProjection(BinList intervalList, BinList valueList, int percentageAcceptedValues, DataPrecision precision) throws BinListDifferentWindowSizeException{
+		if (intervalList.getBinSize() != valueList.getBinSize()) {
+			throw new BinListDifferentWindowSizeException();
+		}
+		BinList resultList = new BinList(valueList.getChromosomeManager(), valueList.getBinSize(), precision);
+		for(short i = 0; i < intervalList.size(); i++)  {
+			if((intervalList.get(i) != null) && (i < valueList.size()) && (valueList.get(i) != null)) {
+				List<Double> listToAdd = ListFactory.createList(precision, intervalList.size(i));
+				resultList.add(listToAdd);
+				int j = 0;
+				while ((j < intervalList.size(i)) && (j < valueList.size(i))) {
+					while ((j < intervalList.size(i)) && (j < valueList.size(i)) && (intervalList.get(i, j) == 0)) {
+						resultList.set(i, j, 0d);
+						j++;
+					}
+					int k = j;
+					List<Double> values = new ArrayList<Double>();
+					while ((j < intervalList.size(i)) && (j < valueList.size(i)) && (intervalList.get(i, j) != 0)) {
+						if (valueList.get(i, j) != 0) {
+							values.add(valueList.get(i, j));					
+						}
+						j++;
+					}
+					if (values.size() > 0) {
+						Collections.sort(values);
+						int indexStart = values.size() - (int)(values.size() * (double)percentageAcceptedValues / 100d) - 1;
+						double avg = DoubleLists.average(values, indexStart, values.size() - 1);
+						for (; k <= j; k++) {
+							resultList.set(i, k, avg);
+						}
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Computes the coefficient of correlation between two {@link BinList}.
+	 * Only the chromosomes set to <i>true</i> in chromoList will be used in the calculation. 
+	 * @param binList1
+	 * @param binList2
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * @return the coefficient of correlation between the two lists. 
+	 * @throws BinListDifferentWindowSizeException
+	 */
+	public static double correlation(BinList binList1, BinList binList2, boolean[] chromoList) throws BinListDifferentWindowSizeException {
+		if (binList1.getBinSize() != binList2.getBinSize()) {
+			throw new BinListDifferentWindowSizeException();
+		}
+
+		int j, n = 0;
+		double mean1 = average(binList1, chromoList);
+		double mean2 = average(binList2, chromoList);
+		double stdDev1 = 0;
+		double stdDev2 = 0;
+		double correlationCoef = 0;
+
+		// We compute standard deviations
+		for (short i = 0; i < binList1.size(); i++) {
+			// We want to compute the correlation only for the chromosomes where chromoList is set to true
+			if ((i < chromoList.length) && (chromoList[i]) && (binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+				j = 0;
+				while ((j < binList1.size(i)) && (j < binList2.size(i))) {
+					if ((binList1.get(i, j) != 0) && (binList2.get(i, j) != 0)) {
+						stdDev1 += Math.pow(binList1.get(i, j) - mean1, 2);
+						stdDev2 += Math.pow(binList2.get(i, j) - mean2, 2);
+						correlationCoef+=(binList1.get(i, j) * binList2.get(i,j));
+						n++;
+					}
+					j++;
+				}
+			}
+		}
+		if (n == 0) {
+			return 0;
+		} else {
+			stdDev1 = Math.sqrt(stdDev1 / n);
+			stdDev2 = Math.sqrt(stdDev2 / n);
+			// We compute the correlation 
+			correlationCoef = (correlationCoef - (n * mean1 * mean2)) / ((n - 1) * stdDev1 * stdDev2);
+			return correlationCoef;
+		}
+	}
+
+
+	/**
+	 * @param binList1
+	 * @param binList2
+	 * @param precision precision of the result {@link BinList} 
+	 * @return a new {@link BinList} resulting of the operation binList1 / binList2
+	 * @throws BinListDifferentWindowSizeException
+	 */
+	public static BinList division(BinList binList1, BinList binList2, DataPrecision precision) throws BinListDifferentWindowSizeException{
+		if (binList1.getBinSize() != binList2.getBinSize()) {
+			throw new BinListDifferentWindowSizeException();
+		}
+		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
+		for(short i = 0; i < binList1.size(); i++)  {
+			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
+				resultList.add(listToAdd);
+				for(int j = 0; j < binList1.size(i); j++) {
+					if ((j < binList2.size(i)) && (binList2.get(i, j) != 0)) {
+						resultList.set(i, j, binList1.get(i, j) / binList2.get(i, j));
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Applies a filter on a {@link BinList} selecting the windows above a specified threshold.
+	 * The result is returned in a new BinList.
+	 * @param binList
+	 * @param filterType type of filter. Can be pass the high values or the low values
+	 * @param threshold the selected windows must be above this value
+	 * @param nbConsecutiveValues select only if there is x consecutive windows above the threshold
+	 * @param precision precision of the result {@link BinList} 
+	 * @return a new {@link BinList} with only the selected windows
+	 * @throws IllegalArgumentException if the filter is not correct
+	 */
+	public static BinList thresholdFilter(BinList binList, int filterType, double threshold, int nbConsecutiveValues, DataPrecision precision) throws IllegalArgumentException {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++)  {
+			if((binList.get(i) != null) ) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				for (int j = 0; j < binList.size(i) - nbConsecutiveValues; j++) {
+					boolean selected = true;
+					int k = 0;
+					// we accept a window if there is nbConsecutiveValues above or under the filter
+					while ((selected) && (k < nbConsecutiveValues)) {
+						// depending on the filter type we accept values above or under the threshold
+						if (filterType == LOW_PASS_FILTER) {
+							selected = binList.get(i, j + k) <= threshold;
+						} else if (filterType == HIGH_PASS_FILTER) {
+							selected = binList.get(i, j + k) >= threshold;
+						} else {
+							throw new IllegalArgumentException("Invalid filter type");
+						}
+						k++;
+					}
+					if (selected) {
+						while ((j < binList.size(i)) && 
+								(((binList.get(i, j) >= threshold) && (filterType == HIGH_PASS_FILTER)) ||
+										(binList.get(i, j) <= threshold)	&& (filterType == LOW_PASS_FILTER))) {
+							resultList.set(i, j, binList.get(i, j));
+							j++;
+						}
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Applies a gaussian filter on the BinList and returns the result in a new BinList.
+	 * Sigma is used to configure the gaussian filter
+	 * @param binList {@link BinList} to gauss
+	 * @param sigma parameter of the gaussian filter
+	 * @param precision precision of the result {@link BinList}
+	 * @return a new {@link BinList}
+	 */
+	public static BinList gauss(BinList binList, int sigma, DataPrecision precision) {
+		int binSize =  binList.getBinSize();
+		int distance;
+		int halfWidth = 2 * sigma / binSize;
+		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient 
+		double[] coefTab = new double[halfWidth + 1];
+		for(int i = 0; i <= halfWidth; i++) {
+			coefTab[i] = Math.exp(-(Math.pow(((double) (i * binSize)), 2) / (2.0 * Math.pow((double) sigma, 2))));
+		}
+		// we gauss
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);	
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				for(int j = 0; j < binList.size(i); j++) {
+					if(binList.get(i, j) != 0)  {
+						// apply the array of coefficients centered on the current value to gauss
+						double SumCoef = 0;
+						double SumNormSignalCoef = 0;
+						for (int k = -halfWidth; k <= halfWidth; k++) {
+							if((j + k >= 0) && ((j + k) < binList.size(i)))  {
+								distance = Math.abs(k);
+								if(binList.get(i, j + k) != 0)  {
+									SumCoef += coefTab[distance];
+									SumNormSignalCoef += coefTab[distance] * binList.get(i, j + k);
+								}
+							}
+						}
+						if(SumCoef == 0) {
+							resultList.set(i, j, 0d);
+						} else {
+							resultList.set(i, j, SumNormSignalCoef / SumCoef);
+						}
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Indexes the scores between <i>indexDown</i> and <i>indexUp</i> 
+	 * based on the highest and the lowest value of the whole genome.
+	 * @param binList {@link BinList} to index
+	 * @param saturation percentage of the highest and lowest value saturated
+	 * @param indexDown Smallest value of the indexed data
+	 * @param indexUp Greatest value of the indexed data
+	 * @param precision precision of the data of the result {@link BinList}
+	 * @return new {@link BinList} resulting from the indexing
+	 */
+	public static BinList index(BinList binList, double saturation, double indexDown, double indexUp, DataPrecision precision) {
+		double percentUp = (100 - saturation) / 100;
+		double percentDown = saturation / 100;
+		double[] listTmp;
+		int k = 0, totalLength = 0;
+
+
+		// We create an array containing all the intensities of all chromosomes
+		for (short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				totalLength += binList.size(i);
+			}
+		}
+		listTmp = new double[totalLength];			
+		for (short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if(binList.get(i, j) != 0) {
+						listTmp[k] = binList.get(i, j);
+						k++;
+					}
+				}
+			}
+		}
+		if (k > 0) {
+			// We create a new array containing all the values different from 0 
+			double[] listTmpBis = new double[k];
+			for(int i = 0; i < listTmpBis.length; i++) {
+				listTmpBis[i] = listTmp[i];		
+			}
+			// We want to have the values of intensities sorted for the whole genome
+			Arrays.sort(listTmpBis);
+			// We research the highest and the lowest value 
+			int rankUp = (int)(percentUp * (listTmpBis.length - 1));
+			int rankDown = (int)(percentDown * (listTmpBis.length - 1));
+			double valueUp = listTmpBis[rankUp];
+			double valueDown = listTmpBis[rankDown];
+			// We calculate the difference between the highest and the lowest value
+			double distanceValueUpDown = valueUp - valueDown;
+			double distanceIndexUpDown = indexUp - indexDown;
+			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+			for (short i = 0; i < binList.size(); i++) {
+				if (binList.get(i) != null) {
+					// We index the intensities
+					List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+					resultList.add(listToAdd);
+					for (int j = 0; j < binList.size(i); j++) {
+						if (binList.get(i, j) == 0) {
+							resultList.set(i, j, 0d);
+						} else if(binList.get(i, j) < valueDown) {
+							resultList.set(i, j, indexDown);
+						} else if(binList.get(i, j) > valueUp) {
+							resultList.set(i, j, indexUp);
+						} else { 
+							resultList.set(i, j, distanceIndexUpDown * (binList.get(i, j) - valueDown) / distanceValueUpDown + indexDown);
+						}
+					}
+				}
+			}
+			return resultList;
+		} else {
+			return null;
+		}
+	}
+
+
+	/**
+	 * Indexes the scores between <i>indexDown</i> and <i>indexUp</i> based
+	 * on the highest and the lowest value of each chromosome
+	 * @param binList {@link BinList} to index
+	 * @param saturation percentage of the highest and lowest value saturated
+	 * @param indexDown smallest value of the indexed data
+	 * @param indexUp greatest value of the indexed data
+	 * @param precision precision of the indexed {@link BinList}
+	 * @return new {@link BinList} resulting from the indexing
+	 */
+	public static BinList indexByChromo(BinList binList, double saturation, double indexDown, double indexUp, DataPrecision precision) {
+		double percentUp = (100 - saturation) / 100;
+		double percentDown = saturation / 100;
+		double distanceIndexUpDown = indexUp - indexDown;
+
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				double[] listTmp = new double[binList.size(i)];
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				int k = 0;
+				for (int j = 0; j < binList.size(i); j++) {
+					if(binList.get(i, j) != 0) {
+						listTmp[k] = binList.get(i, j);
+						k++;
+					}
+				}
+				if(k > 0) {
+					// We create a new array containing all the values different from 0 
+					double[] listTmpBis = new double[k];
+					for(int j = 0; j < listTmpBis.length; j++) {
+						listTmpBis[j] = listTmp[j];
+					}
+					// We want to have the values of intensities sorted for each chromosome
+					Arrays.sort(listTmpBis);
+					// We research the highest and the lowest value 
+					int rankUp = (int)(percentUp * (listTmpBis.length - 1)); 
+					int rankDown = (int)(percentDown * (listTmpBis.length - 1));
+
+					double valueUp = listTmpBis[rankUp];
+					double valueDown = listTmpBis[rankDown];
+
+					// We calculate the difference between the highest and the lowest value
+					double distanceValueUpDown = valueUp - valueDown;
+					// We index the intensities 
+					for (int j = 0; j < binList.size(i); j++) {
+						if(binList.get(i, j) == 0) {
+							resultList.set(i, j, 0d);
+						} else if(binList.get(i, j) < valueDown) {
+							resultList.set(i, j, indexDown);
+						} else if(binList.get(i, j) > valueUp) {
+							resultList.set(i, j, indexUp);
+						} else { 
+							resultList.set(i, j, distanceIndexUpDown * (binList.get(i, j) - valueDown) / distanceValueUpDown + indexDown);
+						}
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Applies the function f(x) = log2(x + damper) - log2(average + damper) to each element x of the current BinList. 
+	 * Returns the result in a new BinList
+	 * @param binList
+	 * @param damper this parameter can be used to damp the signal
+	 * @param precision precision of the data of the result list
+	 * @return a new binList resulting of the calculation
+	 */
+	public static BinList log2(BinList binList, double damper, DataPrecision precision) {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		double mean = average(binList); 
+		double logMean = 0;
+		// log is defined on R+*
+		if (mean + damper > 0) {
+			// change of base: logb(x) = logk(x) / logk(b)
+			logMean = Math.log(mean + damper) / Math.log(2);
+		}
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// we want to calculate the log2 for each element
+				for (int j = 0; j < binList.size(i); j++) {
+					// log is defined on R+*
+					if (binList.get(i, j) + damper > 0) {
+						// change of base: logb(x) = logk(x) / logk(b)
+						resultList.set(i, j, Math.log(binList.get(i, j) + damper) / Math.log(2) - logMean);
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Applies the function f(x) = log2(x) to each element x of the specified BinList. 
+	 * Returns the result in a new BinList
+	 * @param binList
+	 * @param precision precision of the data of the result list
+	 * @return a new binList resulting of the calculation
+	 */
+	public static BinList log2(BinList binList, DataPrecision precision) {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// we want to calculate the log2 for each element
+				for (int j = 0; j < binList.size(i); j++) {
+					// log is defined on R+*
+					if(binList.get(i, j) > 0) {
+						// change of base: logb(x) = logk(x) / logk(b)
+						resultList.set(i, j, Math.log(binList.get(i, j)) / Math.log(2));
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * @param binList
+	 * @return the greatest score value of the specified {@link BinList}
+	 */
+	public static double max(BinList binList) {
+		double max = Double.NEGATIVE_INFINITY;
+		for (List<Double> currentList : binList) {
+			max = Math.max(max, Collections.max(currentList));
+		}
+		return max;
+	}
+
+
+	/**
+	 * @param binList
+	 * @return the smallest score value of the specified {@link BinList}
+	 */
+	public static double min(BinList binList) {
+		double min = Double.POSITIVE_INFINITY;
+		for (List<Double> currentList : binList) {
+			min = Math.min(min, Collections.min(currentList));
+		}
+		return min;
+	}
+
+
+	/**
+	 * @param binList1
+	 * @param binList2
+	 * @param precision precision of the result {@link BinList} 
+	 * @return a new {@link BinList} resulting of the operation binList1 * binList2
+	 * @throws BinListDifferentWindowSizeException
+	 */
+	public static BinList multiplication(BinList binList1, BinList binList2, DataPrecision precision) throws BinListDifferentWindowSizeException{
+		if (binList1.getBinSize() != binList2.getBinSize()) {
+			throw new BinListDifferentWindowSizeException();
+		}
+		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
+		for(short i = 0; i < binList1.size(); i++)  {
+			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
+				resultList.add(listToAdd);
+				for(int j = 0; j < binList1.size(i); j++) {
+					if(j < binList2.size(i)) {
+						resultList.set(i, j, binList1.get(i, j) * binList2.get(i, j));
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * @param binList {@link BinList} to normalize
+	 * @param factor multiply the result by this value
+	 * @param precision precision of the result BinList
+	 * @return a new {@link BinList} resulting of the normalization of the input BinList
+	 */
+	public static BinList normalize(BinList binList, int factor, DataPrecision precision)  {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);		
+		// We calculate the sum of the scores
+		double scoreCount = 0;
+		for (int i = 0; i < binList.size(); i++) {
+			if (binList.get(i) != null) {
+				for (int j = 0; j < binList.size(i); j++) {
+					scoreCount += binList.get(i, j);
+				}
+			}
+		}		
+		// We normalize
+		double normalizerFactor = (double)factor / scoreCount;
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				for (int j = 0; j < binList.size(i); j++) {
+					resultList.set(i, j, binList.get(i, j) * normalizerFactor);
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Prints the specified {@link BinList} on the standard output
+	 * @param binList
+	 */
+	public static void print(BinList binList) {
+		int binSize = binList.getBinSize();
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				for (int j = 0; j < binList.size(i); j++)
+					System.out.println(binList.getChromosomeManager().getChromosome(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + binList.get(i, j));
+			}
+		}
+	}
+
+
+	/**
+	 * Creates bins of score with a size of <i>scoreBinsSize</i>, 
+	 * and computes how many bins of the BinList there is in each bin of score.
+	 * Writes the result in a file. 
+	 * @param binList
+	 * @param scoreBinsSize Size of the bins of scores.
+	 * @param file Output file containing the result. 
+	 * @throws IllegalArgumentException
+	 * @throws IOException
+	 */
+	public static void repartition(BinList binList, double scoreBinsSize, File file) throws IllegalArgumentException, IOException {
+		if(scoreBinsSize <= 0) {
+			throw new IllegalArgumentException("the size of the score bins must be strictly positive");
+		}
+		// search the greatest and smallest score
+		double max = max(binList);
+		double min = min(binList);
+		double distanceMinMax = max - min;
+
+		int result[] = new int[(int)(distanceMinMax / scoreBinsSize) + 1];
+		for (short i = 0; i < binList.size(); i++) {
+			if (binList.get(i) != null) {
+				for(int j = 0; j < binList.size(i); j++) 
+					result[(int)((binList.get(i, j) - min) / scoreBinsSize)]++;
+			}
+		}	
+		BufferedWriter writer = null;
+		// try to create a output file
+		try {
+			writer = new BufferedWriter(new FileWriter(file));
+			for(int i = 0; i < result.length; i++) {
+				double position = i * scoreBinsSize + min; 
+				writer.write(Double.toString(position) + ", " + Double.toString(position + scoreBinsSize) + ", " + Integer.toString(result[i]));
+				writer.newLine();		
+			}
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+	}
+
+
+	/**
+	 * Searches the peaks of a specified {@link BinList}. We consider a point as a peak when the 
+	 * moving standard deviation = <i>nbSDAccepted</i> * global standard deviation.
+	 * @param binList
+	 * @param sizeMovingSD Width (in bp) of the moving standard deviation.
+	 * @param nbSDAccepted
+	 * @param precision precision of the result {@link BinList}  
+	 * @return a new {@link BinList} containing only the peaks of the input {@link BinList}
+	 */
+	public static BinList searchPeaks(BinList binList, int sizeMovingSD, double nbSDAccepted, DataPrecision precision) {
+		int binSize = binList.getBinSize();
+		int halfWidth = sizeMovingSD / binSize;
+		BinList resultList = new BinList(binList.getChromosomeManager(), binSize, precision);
+
+		for(short i = 0; i < binList.size(); i++) {
+			if(binList.get(i) != null) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+
+				double sd = DoubleLists.standardDeviation(binList.get(i), 0, binList.size(i) - 1);
+				if (sd != 0) {
+					double minAcceptedSD = nbSDAccepted * sd;
+					for (int j = 0; j < binList.size(i); j++) {
+						if (binList.get(i, j) != 0) {
+							int indexStart = j - halfWidth;
+							int indexStop = j + halfWidth;
+							if (indexStart < 0) {
+								indexStart = 0;
+							}
+							if (indexStop > binList.size(i) - 1) {
+								indexStop = binList.size(i) - 1;
+							}
+							double localSd = DoubleLists.standardDeviation(binList.get(i), indexStart, indexStop);
+							if ((localSd != 0) && (localSd > minAcceptedSD)) {
+								resultList.set(i, j, binList.get(i,j));
+							} else {
+								resultList.set(i, j, 0d);
+							}
+						}
+					}
+				}
+			}			
+		}
+		return resultList;		
+	}
+
+
+	/**
+	 * @param binList1
+	 * @param binList2
+	 * @param precision precision of the result {@link BinList} 
+	 * @return a new {@link BinList} resulting of the operation binList1 - binList2
+	 * @throws BinListDifferentWindowSizeException
+	 */
+	public static BinList subtraction(BinList binList1, BinList binList2, DataPrecision precision) throws BinListDifferentWindowSizeException{
+		if (binList1.getBinSize() != binList2.getBinSize()) {
+			throw new BinListDifferentWindowSizeException();
+		}
+		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
+		for(short i = 0; i < binList1.size(); i++)  {
+			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
+				resultList.add(listToAdd);
+				for(int j = 0; j < binList1.size(i); j++) {
+					if(j < binList2.size(i)) {
+						resultList.set(i, j, binList1.get(i, j) - binList2.get(i, j));
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+}

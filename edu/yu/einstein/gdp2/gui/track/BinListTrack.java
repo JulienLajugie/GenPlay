@@ -1,0 +1,127 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.gui.track;
+
+import yu.einstein.gdp2.core.GenomeWindow;
+import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.util.History;
+import yu.einstein.gdp2.util.ZoomManager;
+
+/**
+ * A track containing a {@link BinList}
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+public final class BinListTrack extends CurveTrack {
+
+	private static final long serialVersionUID = -395099043710070726L; // generated ID
+
+	private final ChromosomeManager chromosomeManager;	// ChromosomeManager
+	private final BinList 			binList;			// BinList used to create the track
+
+	
+	/**
+	 * Creates an instance of {@link BinListTrack}
+	 * @param zoomManager a {@link ZoomManager}
+	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
+	 * @param trackNumber the number of the track
+	 * @param chromosomeManager a {@link ChromosomeManager}
+	 * @param binList the {@link BinList} showed in the track
+	 */
+	public BinListTrack(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber,  ChromosomeManager chromosomeManager, BinList binList) {
+		this.chromosomeManager = chromosomeManager;
+		this.binList = binList;
+		initComponent(zoomManager, displayedGenomeWindow, trackNumber);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see yu.einstein.gdp2.gui.track.Track#copy()
+	 */
+	@Override
+	public Track copy() {
+		Track copiedTrack = new BinListTrack(trackGraphics.getZoomManager(), trackGraphics.genomeWindow, trackHandle.getTrackNumber(), chromosomeManager, binList);
+		trackGraphics.copyTo(copiedTrack.trackGraphics);
+		trackGraphics.repaint();
+		copiedTrack.setPreferredHeight(getPreferredSize().height);
+		return copiedTrack;		
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see yu.einstein.gdp2.gui.track.Track#createTrackGraphics(yu.einstein.gdp2.util.ZoomManager, yu.einstein.gdp2.core.GenomeWindow)
+	 */
+	@Override
+	protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
+		trackGraphics = new BinListTrackGraphics(zoomManager, displayedGenomeWindow, chromosomeManager, binList);
+	}
+	
+	
+	/**
+	 * Returns the BinList of the trackGraphics.
+	 * @return A binList.
+	 */
+	public BinList getBinList() {
+		return ((BinListTrackGraphics)trackGraphics).getBinList();
+	}
+
+
+	/**
+	 * Sets a BinList that will be used as input data for the track.   
+	 * @param binList a BinList
+	 * @param description description of binList
+	 */
+	public void setBinList(BinList binList, String description) {
+		((BinListTrackGraphics)trackGraphics).setBinList(binList, description);
+	}
+
+
+	/**
+	 * Resets the BinList. Copies the value of the original BinList into the current value. 
+	 */
+	public void resetBinList() {
+		((BinListTrackGraphics)trackGraphics).resetBinList();
+	}
+
+
+	/**
+	 * Undoes last action. 
+	 */
+	public void undo() {
+		((BinListTrackGraphics)trackGraphics).undo();
+	}
+
+
+	/**
+	 * Redoes last action.
+	 */
+	public void redo() {
+		((BinListTrackGraphics)trackGraphics).redo();
+	}
+
+
+	/**
+	 * @return True if the action undo is possible.
+	 */
+	public boolean isUndoable() {
+		return ((BinListTrackGraphics)trackGraphics).isUndoable();
+	}
+
+
+	/**
+	 * @return True if the action redo is possible.
+	 */
+	public boolean isRedoable() {
+		return ((BinListTrackGraphics)trackGraphics).isRedoable();
+	}
+
+	/**
+	 * @return the history of the current track.
+	 */
+	public History getHistory() {
+		return ((BinListTrackGraphics)trackGraphics).getHistory();
+	}
+}

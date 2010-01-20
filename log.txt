@@ -1,0 +1,3520 @@
+-------------------------------------------------------------------
+Extraction - 2009/11/17 16:25:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Mouse_AceView_07-2007.txt
+-------------------------------------------------------------------
+Extraction - 2009/11/17 16:26:14
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/18 12:26:11
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/11/18 12:26:19
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:27:12
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:44:58
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:47:34
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:57:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:57:47
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:59:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:59:35
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/11/20 12:59:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 23 seconds
+Number of lines extracted: 5016106
+-------------------------------------------------------------------
+Extraction - 2009/11/20 13:04:59
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/20 13:45:43
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/20 15:42:48
+File: C:\Documents and Settings\Administrator\My Documents\NimblegPairFiles\090602_Yf1Yf2_WGAChIPDNA_2.1_532.pair
+Extraction done. Time elapsed: 19 seconds
+Number of lines extracted: 2101986
+-------------------------------------------------------------------
+Extraction - 2009/11/20 15:44:25
+File: C:\Documents and Settings\Administrator\My Documents\NimblegPairFiles\090602_Yf1Yf2_WGAChIPDNA_2.1_635.pair
+Extraction done. Time elapsed: 19 seconds
+Number of lines extracted: 2101986
+-------------------------------------------------------------------
+Extraction - 2009/11/23 14:42:22
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/23 14:43:45
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/23 14:46:13
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/23 14:47:10
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/23 14:50:44
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/23 14:54:33
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/23 15:16:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\toto.bed
+Extraction done. Time elapsed: 18 seconds
+Number of lines extracted: 3079124
+-------------------------------------------------------------------
+Extraction - 2009/11/23 16:37:09
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/24 16:04:20
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/24 16:45:33
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/24 16:47:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+-------------------------------------------------------------------
+Extraction - 2009/11/24 16:49:30
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/24 16:49:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+-------------------------------------------------------------------
+Extraction - 2009/11/24 16:51:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+-------------------------------------------------------------------
+Extraction - 2009/11/24 17:01:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/24 17:01:57
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/24 17:17:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:37:29
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:40:37
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:40:44
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:40:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:43:22
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:43:32
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:43:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:43:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 24 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:46:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:48:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:49:31
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:49:46
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:50:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:50:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 22 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:51:11
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:51:24
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:51:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:53:53
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:54:35
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:55:46
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:55:54
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:59:00
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 12:59:20
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:00:07
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:03:03
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:15:02
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:15:12
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:15:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:17:43
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:18:22
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:19:36
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:19:50
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:21:13
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:55:55
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:58:55
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 13:59:51
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:00:55
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:01:07
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:01:30
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:07:24
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:07:40
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:08:46
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:09:54
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:11:28
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:12:23
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:12:55
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:16:31
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:18:47
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:19:20
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:21:06
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:21:14
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:21:23
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:23:08
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:23:43
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:24:09
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:24:53
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:25:14
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:25:49
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:26:40
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:27:03
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:27:25
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:28:21
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:28:32
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:30:07
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:30:21
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:31:12
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:31:18
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:31:27
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:32:43
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:33:06
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:33:24
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:34:08
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:34:48
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:42:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:42:38
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:44:00
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:44:36
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:44:59
+File: C:\Documents and Settings\Administrator\My Documents\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 212386
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:46:43
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:54:38
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:55:10
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:55:33
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:56:13
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:57:17
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 14:57:48
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 15:02:18
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 15:06:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 15:25:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 15:42:34
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/11/30 16:17:43
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 16:20:52
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 16:23:04
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 16:32:34
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/11/30 16:50:41
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/11/30 16:51:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 17:30:28
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307910
+-------------------------------------------------------------------
+Extraction - 2009/11/30 17:32:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/11/30 17:33:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 21 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/11/30 17:35:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/11/30 17:35:40
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/12/01 10:50:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 10:50:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 10:52:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/01 11:42:17
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/12/01 11:42:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 23 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:03:25
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:03:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:03:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:03:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:05:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:05:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:06:06
+File: C:\Documents and Settings\Administrator\My Documents\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:08:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:09:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:10:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:10:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:11:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:11:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:11:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/01 13:11:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/02 13:59:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/02 14:01:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/02 14:31:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/02 14:36:07
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/02 14:40:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/02 14:41:37
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 12:06:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 12:50:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/03 12:51:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 14:58:40
+File: C:\Documents and Settings\Administrator\workspace\misc\test.txt
+-------------------------------------------------------------------
+Extraction - 2009/12/03 14:59:29
+File: C:\Documents and Settings\Administrator\workspace\misc\test.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 37153
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:00:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:12:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:13:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:13:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Affy Nathalie\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 46175
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:14:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:14:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:14:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 21 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:16:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:17:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:20:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:20:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:20:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:21:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:21:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:21:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:21:34
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:22:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:22:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:22:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:23:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:23:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:23:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 22 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:24:53
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:27:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:28:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:28:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:29:07
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:29:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:30:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:30:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:31:11
+File: C:\Documents and Settings\Administrator\workspace\misc\gff_no_strands.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 37153
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:32:05
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_UCSC_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 65260
+-------------------------------------------------------------------
+Extraction - 2009/12/03 15:53:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/04 10:20:48
+File: C:\Documents and Settings\Administrator\workspace\misc\gff_no_strand_corrected.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 10:59:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+-------------------------------------------------------------------
+Extraction - 2009/12/04 11:16:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+-------------------------------------------------------------------
+Extraction - 2009/12/04 11:24:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 11:46:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 11:58:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_with_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:02:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_with_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:02:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:03:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_with_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:05:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_with_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:05:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:05:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:05:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/04 12:06:17
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_UCSC_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 65260
+-------------------------------------------------------------------
+Extraction - 2009/12/04 15:43:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/04 18:08:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/04 18:08:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 23 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:01:01
+File: C:\Documents and Settings\Julien\workspace\GenomicDataProcessor2-SVN\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:02:36
+File: C:\Documents and Settings\Julien\workspace\GenomicDataProcessor2-SVN\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:05:25
+File: C:\Documents and Settings\Julien\workspace\GenomicDataProcessor2-SVN\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:07:49
+File: C:\Documents and Settings\Julien\workspace\GenomicDataProcessor2-SVN\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:10:19
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:14:06
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:22:19
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 15:23:48
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 16:53:23
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 16:55:11
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 17:09:56
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 17:11:55
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/07 17:24:45
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:14:56
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:16:30
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:23:49
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:25:04
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:25:14
+File: C:\Documents and Settings\Julien\workspace\test.gdp
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:25:40
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:28:35
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 12:44:32
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 14:58:36
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:02:54
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:07:20
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:07:59
+File: C:\Documents and Settings\Julien\workspace\bodies.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 24258
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:08:21
+File: C:\Documents and Settings\Julien\workspace\stops.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23897
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:27:16
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:27:39
+File: C:\Documents and Settings\Julien\workspace\bodies.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 24258
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:31:29
+File: C:\Documents and Settings\Julien\workspace\bodies.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 24258
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:31:43
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:33:14
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:33:27
+File: C:\Documents and Settings\Julien\workspace\bodies.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 24258
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:51:43
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 15:51:53
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:00:04
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:00:10
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:07:37
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:07:58
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:12:15
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:12:22
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:14:14
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:14:27
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:15:39
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:15:45
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:17:14
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:17:22
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:18:04
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:28:26
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:28:35
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:28:43
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:32:55
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 16:33:20
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:04:17
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:04:25
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:08:34
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:08:49
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:09:00
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:15:10
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:15:19
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:27:44
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:27:52
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:27:59
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:44:57
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:45:30
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:45:42
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 17:45:51
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 18:03:10
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 18:04:26
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 18:04:38
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 18:13:33
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 18:17:42
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/08 18:17:49
+File: C:\Documents and Settings\Julien\workspace\test.bed
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 24311
+-------------------------------------------------------------------
+Extraction - 2009/12/09 11:39:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/09 11:43:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/09 11:55:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/09 11:56:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 11:56:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/09 11:56:55
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 307915
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:38:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:39:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:39:25
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:39:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:40:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:44:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:48:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:52:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:53:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:56:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:57:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:58:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 14:59:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 15:01:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 15:02:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 15:03:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 15:05:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/09 15:47:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histones-Timex-Expression\CD36-H2AZ.bgr
+Extraction done. Time elapsed: 50 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/09 15:50:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histones-Timex-Expression\CD36-H2AZ.bgr
+Extraction done. Time elapsed: 52 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/09 17:16:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_Gene_Ery_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28482
+-------------------------------------------------------------------
+Extraction - 2009/12/10 10:30:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/10 10:30:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes With Expression\Expression-ERY.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 19657
+-------------------------------------------------------------------
+Extraction - 2009/12/10 10:31:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/10 10:41:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\promoteur_RefSeq_Human.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2009/12/10 10:41:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:24:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\Solexa-ES-SG1-Gaussed-Sigma50kb-W5Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 615807
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:24:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\Solexa-ES-SG1-Gaussed-Sigma50kb-W5Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 615807
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:24:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\Solexa-ES-SG1-Gaussed-Sigma50kb-W5Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 615807
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:27:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\SOLiD-ERY-Gaussed-Sigma200K-W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:28:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\SOLiD-ERY-Gaussed-Sigma200K-W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:29:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\Solexa-ES-SG1-Gaussed-Sigma50kb-W5Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 615807
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:38:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ES-Solexa-Sigma200K-W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 615777
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:40:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 11:42:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:08:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:14:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:15:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:18:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:18:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:21:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:21:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:26:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:26:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 12:28:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 13:56:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 13:56:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 14:55:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 14:57:25
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 16:07:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 16:07:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 16:09:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ES_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 615777
+-------------------------------------------------------------------
+Extraction - 2009/12/10 16:10:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/10 16:10:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 510215
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:02:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K27me1.bgr
+Extraction done. Time elapsed: 70 seconds
+Number of lines extracted: 14376800
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:04:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K27me1.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:04:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:04:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:04:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\U133_Expression_ERY.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 19657
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:05:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 71 seconds
+Number of lines extracted: 14376800
+Extraction done. Time elapsed: 27 seconds
+Number of lines extracted: 5016106
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:18:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Mouse_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 26 seconds
+Number of lines extracted: 4881442
+-------------------------------------------------------------------
+Extraction - 2009/12/10 18:19:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Mouse_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 25 seconds
+Number of lines extracted: 4881442
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:09:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28482
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:09:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:11:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 54 seconds
+Number of lines extracted: 9937458
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:13:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 57 seconds
+Number of lines extracted: 9937458
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:16:34
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CD36-H3K9me3_bin500.wig
+Extraction done. Time elapsed: 20 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:21:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\promoter.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28264
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:26:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\bodies.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 20260
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:27:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\ends.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28262
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:36:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\promoter.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28264
+-------------------------------------------------------------------
+Extraction - 2009/12/11 11:54:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Promoter_Hu_Gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28264
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:05:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\bodytest
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 21453
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:10:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\testend.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28262
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:20:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28482
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:21:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\testend.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28262
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:25:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:27:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:30:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Sum_Promoter_Body_End_Hu_Gene.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:31:37
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Sum_Promoter_Body_End_Hu_Gene.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:45:34
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Sum_Promoter_Body_End_Hu_Gene.bgr
+Extraction done. Time elapsed: 400 seconds
+Number of lines extracted: 4943968
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:53:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 25411
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:53:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 25411
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:54:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 3152
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:55:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 2887
+-------------------------------------------------------------------
+Extraction - 2009/12/11 12:57:30
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_UCSC_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 6633
+-------------------------------------------------------------------
+Extraction - 2009/12/11 14:26:00
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\expression_no_bin.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/11 14:33:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Sum_Promoter_Body_End_Hu_Gene.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/11 14:40:17
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Sum_Promoter_Body_End_Hu_Gene.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/11 14:48:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Sum_Promoter_Body_End_Hu_Gene.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/11 15:13:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 47 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/11 15:27:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 43 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/11 15:37:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/11 15:38:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/11 15:41:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 09:54:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 50 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:13:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:13:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:17:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:24:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Purity.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:35:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\expression_50kb_average.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:38:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\expression_50kb_average.bgr
+Extraction done. Time elapsed: 189 seconds
+Number of lines extracted: 9698331
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:49:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Purity.bgr
+Extraction done. Time elapsed: 211 seconds
+Number of lines extracted: 23560723
+-------------------------------------------------------------------
+Extraction - 2009/12/14 10:55:34
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Promoter_Hu_Gene.bgr
+Extraction done. Time elapsed: 277 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2009/12/14 11:03:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Purity.bgr
+Extraction done. Time elapsed: 219 seconds
+Number of lines extracted: 23560723
+-------------------------------------------------------------------
+Extraction - 2009/12/14 11:09:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\Purity.bgr
+Extraction done. Time elapsed: 214 seconds
+Number of lines extracted: 23560723
+-------------------------------------------------------------------
+Extraction - 2009/12/14 11:28:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 47 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/14 11:35:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 44 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:23:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 43 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:33:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K27me3.bgr
+Extraction done. Time elapsed: 36 seconds
+Number of lines extracted: 6618409
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:37:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H2AZ.bgr
+Extraction done. Time elapsed: 51 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:38:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K27me1.bgr
+Extraction done. Time elapsed: 60 seconds
+Number of lines extracted: 14376800
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:41:17
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K36me3.bgr
+Extraction done. Time elapsed: 14 seconds
+Number of lines extracted: 4018932
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:46:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/14 12:48:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/14 13:08:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 42 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/14 13:55:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H2AZ.bgr
+Extraction done. Time elapsed: 51 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 13:57:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K27me1.bgr
+Extraction done. Time elapsed: 57 seconds
+Number of lines extracted: 14376800
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:02:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K27me3.bgr
+Extraction done. Time elapsed: 24 seconds
+Number of lines extracted: 6618409
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:06:30
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K36me3.bgr
+Extraction done. Time elapsed: 14 seconds
+Number of lines extracted: 4018932
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:14:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me1.bgr
+Extraction done. Time elapsed: 13 seconds
+Number of lines extracted: 3662278
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:19:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:21:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me1.bgr
+Extraction done. Time elapsed: 23 seconds
+Number of lines extracted: 6282186
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:25:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K9me3.bgr
+Extraction done. Time elapsed: 44 seconds
+Number of lines extracted: 9936374
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:31:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H4K20me1.bgr
+Extraction done. Time elapsed: 22 seconds
+Number of lines extracted: 5930739
+-------------------------------------------------------------------
+Extraction - 2009/12/14 14:34:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number of lines extracted: 2626272
+-------------------------------------------------------------------
+Extraction - 2009/12/14 15:34:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\new test\Expression_ERY_50b.bgr
+Extraction done. Time elapsed: 207 seconds
+Number of lines extracted: 9657018
+-------------------------------------------------------------------
+Extraction - 2009/12/14 15:43:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\new test\Timex_ERY_50b.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/14 15:46:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/14 16:55:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 27639
+-------------------------------------------------------------------
+Extraction - 2009/12/14 16:57:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 27639
+-------------------------------------------------------------------
+Extraction - 2009/12/14 17:16:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 60 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/16 13:57:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/16 13:59:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 0
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:02:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 510214
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:06:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 510214
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:06:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Av-ERY-expression-per-Affygene.bgr
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:11:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 510214
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:11:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Av-ERY-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28641
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:12:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\MouseCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 15991
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:12:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 27639
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:12:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Av-ERY-expression-per-RefSeqGene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 18837
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:12:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test\expression_no_bin.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:13:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 510214
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:15:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 510214
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:16:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ES_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 573401
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:16:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Av-ES-expression-per-Affygene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28641
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:17:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:18:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:20:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:23:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:24:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_UCSC_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 65260
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:30:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:33:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:34:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:34:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:35:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:36:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:36:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\U133_Expression_ERY.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 19657
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:41:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 23 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/16 14:47:17
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H2AZ.bgr
+Extraction done. Time elapsed: 30 seconds
+Number of lines extracted: 7693719
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:02:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:03:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 23 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:29:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:29:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\U133_Expression_ERY.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 19657
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:31:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:32:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:36:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:36:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:37:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 510214
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:42:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2009/12/16 16:42:30
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/08 10:10:45
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 10:18:14
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 10:20:08
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 10:30:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 10:31:36
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 10:32:27
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:30:01
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:32:10
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:34:17
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:36:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:38:18
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:44:08
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:50:40
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 11:51:22
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 13:49:13
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:10:56
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:17:09
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:22:10
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:29:21
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:31:02
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:31:48
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:35:45
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:36:30
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:37:26
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:38:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:44:09
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:44:30
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:44:56
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:45:26
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:57:07
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 14:59:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/08 15:05:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/08 15:06:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/08 15:11:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/08 15:13:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/08 15:18:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b.bgr
+Extraction done. Time elapsed: 174 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/08 15:43:06
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 16:14:52
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 16:23:38
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 16:24:40
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/08 16:31:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/08 16:31:20
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:21:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b.bgr
+Extraction done. Time elapsed: 175 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:28:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:29:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b.bgr
+Extraction done. Time elapsed: 176 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:34:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:35:34
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:36:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:42:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:44:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b_test.bgr
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 12:45:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b.bgr
+Extraction done. Time elapsed: 170 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 14:06:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/11 14:57:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/12 11:53:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/12 11:54:05
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.bgr
+Extraction done. Time elapsed: 182 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/12 12:27:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2010/01/12 12:42:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2010/01/12 12:46:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b_test.bgr
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/12 12:48:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Promoters_50b.bgr
+Extraction done. Time elapsed: 180 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/12 13:32:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\test
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2010/01/12 13:34:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/12 13:37:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/12 13:42:25
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/12 13:56:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Purity_50b.bgr
+-------------------------------------------------------------------
+Extraction - 2010/01/12 14:10:37
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/12 14:13:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\promoters_test.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 350205
+-------------------------------------------------------------------
+Extraction - 2010/01/12 14:21:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 14:24:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 14:32:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 16:40:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 16:41:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 16:43:17
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 16:59:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/12 17:00:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 10:41:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 10:45:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_bis.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 10:50:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_bis.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 10:51:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_bis.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 10:53:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 10:59:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 21443
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:00:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\end_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28233
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:01:05
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:07:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 21443
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:08:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\end_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28233
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:23:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\Hu_Gene1.0_probes.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:43:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 11:50:25
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\Expression_ERY_50b.bgr
+Extraction done. Time elapsed: 226 seconds
+Number of lines extracted: 9656995
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:05:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:08:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:23:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:24:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:27:00
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:31:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:35:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:42:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:52:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:56:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 12:56:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Copy of Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 14:00:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 14:03:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 14:03:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 15:41:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 15:50:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 15:52:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 15:56:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/13 16:06:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/13 16:11:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.bgr
+Extraction done. Time elapsed: 185 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/13 16:23:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.bgr
+Extraction done. Time elapsed: 182 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/13 16:35:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 11 seconds
+Number of lines extracted: 2626272
+-------------------------------------------------------------------
+Extraction - 2010/01/13 16:46:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.bgr
+Extraction done. Time elapsed: 180 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/13 16:54:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/13 17:05:07
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 5 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/13 17:05:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/13 17:29:07
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/13 17:29:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/13 17:37:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/13 17:37:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:20:43
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:21:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:25:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:25:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 6 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:33:03
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:33:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 5 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:36:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:37:33
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.wig
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:53:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 49 seconds
+Number of lines extracted: 22967476
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:55:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 10:56:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:18:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\purity_50b.wig
+Extraction done. Time elapsed: 51 seconds
+Number of lines extracted: 23602576
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:23:58
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:28:58
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:32:13
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:33:53
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:35:06
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:35:58
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:41:12
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:46:19
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:50:10
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 12:50:52
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 13:01:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 13:06:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 13:08:57
+File: C:\Documents and Settings\Administrator\My Documents\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 21801
+-------------------------------------------------------------------
+Extraction - 2010/01/14 13:09:11
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:11:37
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:16:38
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:17:46
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:18:32
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:25:45
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:26:22
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:42:09
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:43:39
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:46:42
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:50:31
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:53:44
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:56:12
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:57:34
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 14:59:35
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:00:27
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:01:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 48 seconds
+Number of lines extracted: 22967476
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:06:36
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:06:53
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:07:14
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:08:25
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:10:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:11:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\purity_50b.wig
+Extraction done. Time elapsed: 50 seconds
+Number of lines extracted: 23602576
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:15:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:18:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\end_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 410739
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:18:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 49 seconds
+Number of lines extracted: 22967476
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:23:17
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\end_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 410739
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:23:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 49 seconds
+Number of lines extracted: 22967476
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:41:32
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:44:02
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:47:20
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:50:24
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:52:04
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:54:20
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:55:32
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 15:58:49
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:29:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 50 seconds
+Number of lines extracted: 22967476
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:31:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:32:00
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31315
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:32:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31315
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:37:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31315
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:40:21
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:41:10
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:46:50
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:52:33
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:52:46
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:57:11
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:57:26
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:58:45
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/14 17:58:58
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 10:21:46
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 10:30:42
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/15 10:30:57
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 11:17:57
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 11:44:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Histone_Study\CD36-PolII-summary_indexed_50b.bgr
+Extraction done. Time elapsed: 180 seconds
+Number of lines extracted: 708133
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:07:03
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:12:38
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:16:13
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:24:46
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:50:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:52:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:54:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\purity_50b.wig
+Extraction done. Time elapsed: 52 seconds
+Number of lines extracted: 23602576
+-------------------------------------------------------------------
+Extraction - 2010/01/15 13:56:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene_50b.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 407496
+-------------------------------------------------------------------
+Extraction - 2010/01/15 14:10:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/15 14:22:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/15 14:23:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/15 14:47:32
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/15 14:48:19
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/15 15:40:26
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/15 15:42:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/15 15:44:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/15 15:53:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number of lines extracted: 2626272
+-------------------------------------------------------------------
+Extraction - 2010/01/15 15:59:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 10 seconds
+Number of lines extracted: 2626272
+-------------------------------------------------------------------
+Extraction - 2010/01/15 16:11:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2010/01/19 10:22:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/19 10:23:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\promoter_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28235
+-------------------------------------------------------------------
+Extraction - 2010/01/19 10:34:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\expression_Hu_gene_ERY_adult.bgr
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/19 10:56:58
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/19 11:04:30
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number of lines extracted: 258618
+-------------------------------------------------------------------
+Extraction - 2010/01/19 11:04:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2010/01/19 11:11:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 21 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:04:03
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:07:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:08:05
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:08:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 21 seconds
+Number of lines extracted: 5016102
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:12:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:28:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31451
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:30:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:32:25
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:34:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 668665
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:37:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\test.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 31131
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:38:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 28453
+-------------------------------------------------------------------
+Extraction - 2010/01/19 15:55:02
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/19 16:03:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 27639
+-------------------------------------------------------------------
+Extraction - 2010/01/19 16:05:18
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/19 16:05:38
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/20 11:38:22
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/20 11:42:27
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 11:52:45
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/20 12:05:10
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 12:25:45
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 12:30:03
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/20 12:31:20
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 13:17:31
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 13:18:18
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 14:22:39
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/20 15:36:02
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
