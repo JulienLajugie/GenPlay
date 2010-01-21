@@ -15,6 +15,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.core.GenomeWindow;
+import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.util.ZoomManager;
 
 /**
@@ -24,23 +25,11 @@ import yu.einstein.gdp2.util.ZoomManager;
  */
 public abstract class CurveTrackGraphics extends TrackGraphics implements MouseListener, MouseMotionListener, MouseWheelListener {
 
-	/**
-	 * Type of the graph
-	 * @author Julien Lajugie
-	 * @version 0.1
-	 */
-	public enum GraphicsType {
-		curve,
-		points,
-		bar,
-		dense;
-	};
-
 	private static final long serialVersionUID = -9200672145021160494L;				// generated ID
 	private static final boolean 		SHOW_HORIZONTAL_GRID = true;				// show the horizontal grid
 	private static final int			HORIZONTAL_LINES_COUNT = 10;				// number of Y lines displayed
 	private static final Color			TRACK_COLOR = Color.black;					// default color
-	private static final GraphicsType 	TYPE_OF_GRAPH = GraphicsType.bar;			// type of graph
+	private static final GraphicsType 	TYPE_OF_GRAPH = GraphicsType.BAR;			// type of graph
 	protected static final DecimalFormat SCORE_FORMAT = new DecimalFormat("#.##");	// decimal format for the score
 
 	private double				yFactor;						// factor between the displayed intensity range and the screen height
@@ -133,19 +122,19 @@ public abstract class CurveTrackGraphics extends TrackGraphics implements MouseL
 		// We check if the displayed data changed 
 		Graphics2D g2D = (Graphics2D)g;	
 		switch(typeOfGraph) {
-		case bar:
+		case BAR:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			drawBarGraphics(g);
 			break;
-		case curve:
+		case CURVE:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			drawCurveGraphics(g);
 			break;
-		case points:
+		case POINTS:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			drawPointGraphics(g);
 			break;
-		case dense:
+		case DENSE:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			drawDenseGraphics(g);
 			break;
@@ -173,7 +162,7 @@ public abstract class CurveTrackGraphics extends TrackGraphics implements MouseL
 	 * @param g {@link Graphics}
 	 */
 	private void drawHorizontalLines(Graphics g) {
-		if ((showHorizontalGrid) && (typeOfGraph != GraphicsType.dense)){
+		if ((showHorizontalGrid) && (typeOfGraph != GraphicsType.DENSE)){
 			g.setColor(Color.LIGHT_GRAY);
 			double scoreGapBetweenLineY = (yMax - yMin) / (double)horizontalLinesCount;
 			double intensityFirstLineY = yMin - (yMin % scoreGapBetweenLineY);

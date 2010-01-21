@@ -14,8 +14,8 @@ import java.util.Map;
  * The Strand class represents a strand.
  */
 public enum Strand {
-	five ("+"),
-	three ("-");
+	FIVE ("+"),
+	THREE ("-");
 	
 	
 	private final String 						symbol;		// symbol representing the strand

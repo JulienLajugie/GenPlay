@@ -108,7 +108,7 @@ public class GeneListTrackGraphics extends TrackGraphics {
 					// For each gene of the current line
 					for (Gene geneToPrint : genesToPrint.get(currentLine)) {
 						// Choose the color depending on the strand
-						if (geneToPrint.getStrand() == Strand.five) {
+						if (geneToPrint.getStrand() == Strand.FIVE) {
 							g.setColor(Color.RED);
 						} else {
 							g.setColor(Color.BLUE);

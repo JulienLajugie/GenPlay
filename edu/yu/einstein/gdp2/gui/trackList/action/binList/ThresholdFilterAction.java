@@ -9,9 +9,9 @@ import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListOperations;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
@@ -64,17 +64,7 @@ public final class ThresholdFilterAction extends TrackListAction {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
-			// we create the input dialog that retrieves the filter type
-			final String[] filterTypeOptions = {"High Pass Filter", "Low Pass Filter"};
-			final String filterTypeStr = (String)JOptionPane.showInputDialog(getRootPane(), "Choose a type of filter", "Filter Type", JOptionPane.QUESTION_MESSAGE, null, filterTypeOptions, filterTypeOptions[0]);
-			final int filterType;
-			if (filterTypeStr.equalsIgnoreCase("High Pass Filter")) {
-				filterType = BinListOperations.HIGH_PASS_FILTER;
-			} else if (filterTypeStr.equalsIgnoreCase("Low Pass Filter")) {
-				filterType = BinListOperations.LOW_PASS_FILTER;
-			} else {
-				filterType = -1;
-			}
+			final FilterType filterType = Utils.chooseFilterType(getRootPane());
 			final Number threshold = NumberOptionPane.getValue(getRootPane(), "Threshold", "Select a value for the threshold", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if(threshold != null) {
 				final Number successiveValues = NumberOptionPane.getValue(getRootPane(), "Threshold", "Select a minimum number of successive valid windows", new DecimalFormat("0"), 1, 1000, 1); 
@@ -93,9 +83,9 @@ public final class ThresholdFilterAction extends TrackListAction {
 								int index = resultTrack.getTrackNumber() - 1;
 								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
 								// add info to the history
-								newTrack.getHistory().add("Result of the filter applied on " + selectedTrack.getName() + ", Filter Type = " + filterTypeStr + ", Threshold = " + threshold + ", Successive Values = " + successiveValues);
+								newTrack.getHistory().add("Result of the filter applied on " + selectedTrack.getName() + ", Filter Type = " + filterType + ", Threshold = " + threshold + ", Successive Values = " + successiveValues);
 								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " filtered with a " + filterTypeStr, selectedTrack.getStripes());								
+								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " filtered with a " + filterType, selectedTrack.getStripes());								
 							}
 						}.execute();
 					}

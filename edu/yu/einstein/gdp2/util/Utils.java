@@ -11,6 +11,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.enums.FilterType;
+import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
 import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
@@ -111,5 +113,33 @@ public class Utils {
 				null,
 				DataPrecision.values(),
 				DataPrecision.PRECISION_32BIT);
+	}
+	
+	
+	/**
+	 * A dialog box used to choose a {@link ScoreCalculationMethod}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link ScoreCalculationMethod}
+	 */
+	public static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
+		return (ScoreCalculationMethod)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a method for the calculation of the score",
+				"Score Calculation",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				ScoreCalculationMethod.values(),
+				ScoreCalculationMethod.AVERAGE);
+	}
+	
+	public static FilterType chooseFilterType(Component parentComponent) {
+		return (FilterType)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a type of filter",
+				"Filter Type",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				FilterType.values(),
+				FilterType.HIGH_PASS_FILTER);
 	}
 }

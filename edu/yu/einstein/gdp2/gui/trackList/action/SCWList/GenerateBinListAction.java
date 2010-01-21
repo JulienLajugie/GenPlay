@@ -13,7 +13,6 @@ import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
-import yu.einstein.gdp2.gui.dialog.ScoreCalculationChooser;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
@@ -60,7 +59,7 @@ public final class GenerateBinListAction  extends TrackListAction {
 		if (selectedTrack != null) {
 			final Number binSize = NumberOptionPane.getValue(getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
-				final ScoreCalculationMethod scoreCalculation = ScoreCalculationChooser.getScoreCalculation(getRootPane());
+				final ScoreCalculationMethod scoreCalculation = Utils.chooseScoreCalculation(getRootPane());
 				if (scoreCalculation != null) {
 					final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
 					if (resultTrack != null) {

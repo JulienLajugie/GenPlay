@@ -7,7 +7,7 @@ package yu.einstein.gdp2.gui.track;
 import java.awt.Color;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.track.CurveTrackGraphics.GraphicsType;
+import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.util.ZoomManager;
 
 /**

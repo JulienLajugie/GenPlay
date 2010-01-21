@@ -51,28 +51,28 @@ public class GeneListOperations {
 						int newStart = 0;
 						switch (startFrom) {
 						case BEFORE_START:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStart = Math.max(0, currentGene.getTxStart() - startDistance);
 							} else {
 								newStart = Math.min(chromoLength, currentGene.getTxStop() + startDistance);
 							}
 							break;
 						case AFTER_START:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStart = Math.min(chromoLength, currentGene.getTxStart() + startDistance);
 							} else {
 								newStart = Math.max(0, currentGene.getTxStop() - startDistance);
 							}
 							break;
 						case BEFORE_STOP:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStart = Math.max(0, currentGene.getTxStop() - startDistance);
 							} else {
 								newStart = Math.min(chromoLength, currentGene.getTxStart() + startDistance);
 							}
 							break;
 						case AFTER_STOP:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStart = Math.min(chromoLength, currentGene.getTxStop() + startDistance);
 							} else {
 								newStart = Math.max(0, currentGene.getTxStart() - startDistance);
@@ -86,28 +86,28 @@ public class GeneListOperations {
 						int newStop = 0;
 						switch (stopFrom) {
 						case BEFORE_START:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStop = Math.max(0, currentGene.getTxStart() - stopDistance);
 							} else {
 								newStop =  Math.min(chromoLength, currentGene.getTxStop() + stopDistance);
 							}
 							break;
 						case AFTER_START:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStop = Math.min(chromoLength, currentGene.getTxStart() + stopDistance);
 							} else {
 								newStop = Math.max(0, currentGene.getTxStop() - stopDistance);
 							}
 							break;
 						case BEFORE_STOP:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStop = Math.max(0, currentGene.getTxStop() - stopDistance);
 							} else {
 								newStop =  Math.min(chromoLength, currentGene.getTxStart() + stopDistance);
 							}
 							break;
 						case AFTER_STOP:
-							if (currentGene.getStrand() == Strand.five) {
+							if (currentGene.getStrand() == Strand.FIVE) {
 								newStop = Math.min(chromoLength, currentGene.getTxStop() + stopDistance);
 							} else {
 								newStop = Math.max(0, currentGene.getTxStart() - stopDistance);
@@ -121,11 +121,11 @@ public class GeneListOperations {
 						geneToAdd.setExonStops(null);
 						geneToAdd.setExonScores(null);
 						// add the new gene
-						if ((newStart < newStop) && (currentGene.getStrand() == Strand.five)) {
+						if ((newStart < newStop) && (currentGene.getStrand() == Strand.FIVE)) {
 							geneToAdd.setTxStart(newStart);
 							geneToAdd.setTxStop(newStop);
 							resultList.get(i).add(geneToAdd);
-						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.three)) {
+						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
 							geneToAdd.setTxStart(newStop);
 							geneToAdd.setTxStop(newStart);
 							resultList.get(i).add(geneToAdd);	

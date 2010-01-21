@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.util.DoubleLists;
 
@@ -24,17 +25,6 @@ import yu.einstein.gdp2.util.DoubleLists;
  * @version 0.1
  */
 public class BinListOperations {
-
-	/**
-	 * filter that passes high values but cut low ones
-	 */
-	public static final int HIGH_PASS_FILTER = 0;
-
-
-	/**
-	 * filter that passes low values but cut high ones
-	 */
-	public static final int LOW_PASS_FILTER = 1;
 
 
 	/**
@@ -276,7 +266,7 @@ public class BinListOperations {
 	 * @return a new {@link BinList} with only the selected windows
 	 * @throws IllegalArgumentException if the filter is not correct
 	 */
-	public static BinList thresholdFilter(BinList binList, int filterType, double threshold, int nbConsecutiveValues, DataPrecision precision) throws IllegalArgumentException {
+	public static BinList thresholdFilter(BinList binList, FilterType filterType, double threshold, int nbConsecutiveValues, DataPrecision precision) throws IllegalArgumentException {
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++)  {
 			if((binList.get(i) != null) ) {
@@ -288,9 +278,9 @@ public class BinListOperations {
 					// we accept a window if there is nbConsecutiveValues above or under the filter
 					while ((selected) && (k < nbConsecutiveValues)) {
 						// depending on the filter type we accept values above or under the threshold
-						if (filterType == LOW_PASS_FILTER) {
+						if (filterType == FilterType.LOW_PASS_FILTER) {
 							selected = binList.get(i, j + k) <= threshold;
-						} else if (filterType == HIGH_PASS_FILTER) {
+						} else if (filterType == FilterType.HIGH_PASS_FILTER) {
 							selected = binList.get(i, j + k) >= threshold;
 						} else {
 							throw new IllegalArgumentException("Invalid filter type");
@@ -299,8 +289,8 @@ public class BinListOperations {
 					}
 					if (selected) {
 						while ((j < binList.size(i)) && 
-								(((binList.get(i, j) >= threshold) && (filterType == HIGH_PASS_FILTER)) ||
-										(binList.get(i, j) <= threshold)	&& (filterType == LOW_PASS_FILTER))) {
+								(((binList.get(i, j) >= threshold) && (filterType == FilterType.HIGH_PASS_FILTER)) ||
+										(binList.get(i, j) <= threshold) && (filterType == FilterType.LOW_PASS_FILTER))) {
 							resultList.set(i, j, binList.get(i, j));
 							j++;
 						}

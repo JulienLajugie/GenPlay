@@ -24,7 +24,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
-import yu.einstein.gdp2.gui.track.CurveTrackGraphics.GraphicsType;
+import yu.einstein.gdp2.core.enums.GraphicsType;
+
 
 
 /**

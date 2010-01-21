@@ -16,7 +16,6 @@ import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
-import yu.einstein.gdp2.gui.dialog.ScoreCalculationChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -80,7 +79,7 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 			}
 		}
 		if (((BinListGenerator)extractor).isCriterionNeeded()) {	
-			scoreCalculation = ScoreCalculationChooser.getScoreCalculation(trackList.getRootPane());
+			scoreCalculation = Utils.chooseScoreCalculation(trackList.getRootPane());
 			if (scoreCalculation == null) {
 				return null;
 			}						

@@ -9,9 +9,9 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ActionMap;
 
+import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.gui.dialog.TrackAppearanceOptionPane;
 import yu.einstein.gdp2.gui.track.CurveTrack;
-import yu.einstein.gdp2.gui.track.CurveTrackGraphics.GraphicsType;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.TrackListAction;
 
