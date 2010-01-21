@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.trackList.action.binList;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 
@@ -90,7 +91,10 @@ public final class ThresholdFilterAction extends TrackListAction {
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
 								int index = resultTrack.getTrackNumber() - 1;
-								Track newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								// add info to the history
+								newTrack.getHistory().add("Result of the filter applied on " + selectedTrack.getName() + ", Filter Type = " + filterTypeStr + ", Threshold = " + threshold + ", Successive Values = " + successiveValues);
+								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
 								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " filtered with a " + filterTypeStr, selectedTrack.getStripes());								
 							}
 						}.execute();

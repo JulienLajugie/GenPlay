@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.trackList.worker.extractorWorker;
 
+import java.awt.Color;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -54,11 +55,13 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 				final int selectedTrackIndex = trackList.getSelectedTrackIndex();
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 				BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, trackList.getChromosomeManager(), resultList);
+				// write in the history
 				String history = "Bin Size = " + resultList.getBinSize() + "bp, Precision = " + precision;
 				if (scoreCalculation != null) {
 					history += ", Method of Calculation = " + scoreCalculation;
 				}
-				newTrack.getHistory().add(history);
+				newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
+				newTrack.getHistory().add(history, Color.GRAY);
 				trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), name, stripes);
 			}
 		} catch (Exception e) {

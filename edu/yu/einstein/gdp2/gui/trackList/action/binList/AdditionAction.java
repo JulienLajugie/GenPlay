@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.trackList.action.binList;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 
 import javax.swing.ActionMap;
@@ -85,7 +86,10 @@ public final class AdditionAction extends TrackListAction {
 							protected void doAtTheEnd(BinList resultList) {
 								if (resultList != null) {
 									int index = resultTrack.getTrackNumber() - 1;
-									Track newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), resultList);
+									BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), resultList);
+									// add info to the history
+									newTrack.getHistory().add("Result of the addition of " + selectedTrack.getName() + " and " + otherTrack.getName(), Color.GRAY);
+									newTrack.getHistory().add("Window Size = " + resultList.getBinSize() + "bp, Precision = " + resultList.getPrecision(), Color.GRAY);
 									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " + " + otherTrack.getName(), null);
 								}
 

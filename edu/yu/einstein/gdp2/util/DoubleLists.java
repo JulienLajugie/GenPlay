@@ -102,6 +102,7 @@ public class DoubleLists {
 				sum += Math.pow(list.get(i) - mean, 2);
 				n++;
 			}
+			i++;
 		}		
 		if (n == 0) {
 			return 0;

@@ -51,7 +51,6 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 		this.initialBinList = binList;
 		this.binList = initialBinList;
 		this.history = new History();
-		this.history.add("Track loaded");
 	}
 
 

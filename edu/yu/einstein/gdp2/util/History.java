@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.util;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -64,7 +65,20 @@ public final class History {
 		history.add(s);
 		redo = null;	
 	}
-
+	
+	
+	/**
+	 * Adds an element to the history with the specified color
+	 * @param s string to add
+	 * @param color color of the text
+	 */
+	public void add(String s, Color color) {
+		String rgb = Integer.toHexString(color.getRGB());
+		rgb = rgb.substring(2, rgb.length());
+		s = "<html><p style=\"color:#" + rgb + "\">" + s + "</p></html>";
+		add(s);
+	}
+	
 
 	/**
 	 * Undoes the last entry in the history.
@@ -97,7 +111,7 @@ public final class History {
 		/*undo = (ArrayList<String>) history.clone();
 		history.clear();
 		redo = null;*/
-		history.add("<html><h1>*** RESET ***</h1></html>");
+		add("RESET", Color.red);
 	}
 
 

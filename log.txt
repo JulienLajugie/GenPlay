@@ -3518,3 +3518,103 @@ Extraction - 2010/01/20 15:36:02
 File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
 Extraction done. Time elapsed: 1 seconds
 Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 10:26:26
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 10:32:42
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 10:34:09
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 10:57:27
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/21 10:58:30
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:41:41
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:47:16
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:49:20
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:50:09
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:50:50
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:52:02
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 11:53:38
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 12:22:10
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/21 12:24:14
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 13:33:54
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 13:45:49
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 13:49:46
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/21 13:51:29
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/21 13:54:28
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/21 13:59:17
+File: C:\Documents and Settings\Administrator\My Documents\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 275287

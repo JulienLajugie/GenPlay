@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.gui.track;
 
+import java.awt.Color;
+
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -123,5 +125,16 @@ public final class BinListTrack extends CurveTrack {
 	 */
 	public History getHistory() {
 		return ((BinListTrackGraphics)trackGraphics).getHistory();
+	}
+	
+	/**
+	 * Renames the track
+	 * @param newName a new name for the track
+	 */
+	@Override
+	public void setName(String newName) {
+		// add the name of the track to the history
+		getHistory().add("Track Name: \"" + newName + "\"", new Color(0, 100, 0));
+		super.setName(newName);
 	}
 }

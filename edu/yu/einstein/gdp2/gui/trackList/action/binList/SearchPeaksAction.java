@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.trackList.action.binList;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 
@@ -79,7 +80,10 @@ public final class SearchPeaksAction extends TrackListAction {
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
 								int index = resultTrack.getTrackNumber() - 1;
-								Track newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								// add info to the history
+								newTrack.getHistory().add("Result of the peak search on " + selectedTrack.getName() + ", Moving StdDev Window = " + sizeMovingSD +"bp, Threshold = " + nbSDAccepted + "Genomewide StdDev");
+								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
 								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes());								
 							}
 						}.execute();

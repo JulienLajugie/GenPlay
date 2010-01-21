@@ -37,9 +37,9 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 	private final Class<EC>			extractorClass;		// desired class of extractor
 	private final ProgressBar		progressBar;		// a progress bar displayed during the loading
 	private final ChromosomeManager chromosomeManager;	// a ChromosomeManager
-	private final File				fileToExtract;  	// file to extract
-	private File	 				logFile;			// a file we extracts
-	protected  String				name;				// a name 
+	protected final File			fileToExtract;  	// file to extract
+	protected File	 				logFile;			// a file we extracts
+	protected String				name;				// a name 
 	protected Extractor				extractor;	
 
 
