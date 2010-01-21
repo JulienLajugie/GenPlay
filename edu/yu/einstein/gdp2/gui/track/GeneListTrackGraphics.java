@@ -13,7 +13,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.core.Strand;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
 import yu.einstein.gdp2.util.ZoomManager;

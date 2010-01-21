@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import yu.einstein.gdp2.core.Chromosome;
-import yu.einstein.gdp2.core.Strand;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
@@ -77,7 +77,7 @@ implements Serializable, GeneListGenerator {
 			Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[1]) ;
 			String name = splitedLine[0].trim();
 			nameList.add(chromosome, name);
-			Strand strand = Strand.getStrand(splitedLine[2].trim());
+			Strand strand = Strand.get(splitedLine[2].trim());
 			strandList.add(chromosome, strand);
 			int start = Integer.parseInt(splitedLine[3].trim());
 			startList.add(chromosome, start);

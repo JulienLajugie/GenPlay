@@ -12,12 +12,12 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListOperations;
-import yu.einstein.gdp2.gui.dialog.BinListPrecisionChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.TrackListAction;
 import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -62,7 +62,7 @@ public final class AddConstantAction extends TrackListAction {
 			if(constant != null) {
 				final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 				final String description = "add constant C = " + constant;
-				final DataPrecision precision = BinListPrecisionChooser.getPrecision(getRootPane());
+				final DataPrecision precision = Utils.choosePrecision(getRootPane());
 				if (precision != null) {
 					// thread for the action
 					new ActionWorker<BinList>(trackList) {

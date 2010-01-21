@@ -10,6 +10,7 @@ import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
 import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
@@ -24,8 +25,8 @@ import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
  * @version 0.1
  */
 public class Utils {
-	
-	
+
+
 	/**
 	 * @param file a {@link File}
 	 * @return the extension of the file. null if none
@@ -42,8 +43,8 @@ public class Utils {
 			return null;
 		}		
 	}
-	
-	
+
+
 	/**
 	 * Asks if the user wants to replace a file if this file already exists.
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -60,8 +61,8 @@ public class Utils {
 		f.delete();
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Opens a dialog box asking the user to choose a file to load
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -93,5 +94,22 @@ public class Utils {
 		} else {
 			return null;
 		}
+	}
+
+
+	/**
+	 * A dialog box used to choose a {@link DataPrecision}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link DataPrecision}
+	 */
+	public static DataPrecision choosePrecision(Component parentComponent) {
+		return (DataPrecision)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a precision for the data of the fixed window list",
+				"Select Data Precision",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				DataPrecision.values(),
+				DataPrecision.PRECISION_32BIT);
 	}
 }

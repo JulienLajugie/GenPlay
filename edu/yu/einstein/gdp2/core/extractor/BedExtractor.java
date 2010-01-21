@@ -9,9 +9,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import yu.einstein.gdp2.core.Chromosome;
-import yu.einstein.gdp2.core.Strand;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
@@ -111,7 +111,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 					double score = Double.parseDouble(splitedLine[4].trim());
 					scoreList.add(chromosome, score);
 					if (splitedLine.length > 5) {
-						Strand strand = Strand.getStrand(splitedLine[5].trim());
+						Strand strand = Strand.get(splitedLine[5].trim());
 						strandList.add(chromosome, strand);
 						if (splitedLine.length > 11) {
 							if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {

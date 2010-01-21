@@ -13,7 +13,6 @@ import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListOperations;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
-import yu.einstein.gdp2.gui.dialog.BinListPrecisionChooser;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
@@ -21,6 +20,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.TrackListAction;
 import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.ExceptionManager;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -65,7 +65,7 @@ public final class MultiplyByAction extends TrackListAction {
 			if(otherTrack != null) {
 				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
 				if (resultTrack != null) {
-					final DataPrecision precision = BinListPrecisionChooser.getPrecision(getRootPane());
+					final DataPrecision precision = Utils.choosePrecision(getRootPane());
 					if (precision != null) {
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();

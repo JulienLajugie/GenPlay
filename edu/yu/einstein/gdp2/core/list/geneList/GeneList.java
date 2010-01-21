@@ -13,7 +13,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.Gene;
-import yu.einstein.gdp2.core.Strand;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;

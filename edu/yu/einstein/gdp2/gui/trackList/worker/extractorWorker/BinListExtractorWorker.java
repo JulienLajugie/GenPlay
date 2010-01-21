@@ -15,13 +15,13 @@ import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.gui.dialog.BinListPrecisionChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.ScoreCalculationChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.ExceptionManager;
+import yu.einstein.gdp2.util.Utils;
 
 /**
  * A worker thread that loads a {@link BinList}
@@ -87,7 +87,7 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 		} else {
 			scoreCalculation = null;
 		}
-		precision = BinListPrecisionChooser.getPrecision(trackList.getRootPane());
+		precision = Utils.choosePrecision(trackList.getRootPane());
 		if (precision == null) {
 			return null;
 		}

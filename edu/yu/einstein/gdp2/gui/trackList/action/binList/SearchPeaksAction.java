@@ -13,7 +13,6 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListOperations;
-import yu.einstein.gdp2.gui.dialog.BinListPrecisionChooser;
 import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -22,6 +21,7 @@ import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.TrackListAction;
 import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -70,7 +70,7 @@ public final class SearchPeaksAction extends TrackListAction {
 				if(nbSDAccepted != null) {
 					final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
 					if (resultTrack != null) {
-						final DataPrecision precision = BinListPrecisionChooser.getPrecision(getRootPane());
+						final DataPrecision precision = Utils.choosePrecision(getRootPane());
 						// thread for the action
 						new ActionWorker<BinList>(trackList) {
 							@Override

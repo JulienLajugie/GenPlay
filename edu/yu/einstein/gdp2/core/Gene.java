@@ -6,6 +6,8 @@ package yu.einstein.gdp2.core;
 
 import java.io.Serializable;
 
+import yu.einstein.gdp2.core.enums.Strand;
+
 /**
  * The Gene class provides a representation of a gene.
  * @author Julien Lajugie
@@ -85,7 +87,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	public Gene(String name, Chromosome chromo, String strandString, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
 		this.name = name;
 		this.chromo = chromo;
-		this.strand = Strand.getStrand(strandString);
+		this.strand = Strand.get(strandString);
 		this.txStart = txStart;
 		this.txStop = txStop;
 		this.exonStarts = exonStarts;

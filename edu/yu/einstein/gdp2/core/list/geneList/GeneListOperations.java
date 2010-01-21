@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
-import yu.einstein.gdp2.core.Strand;
+import yu.einstein.gdp2.core.enums.Strand;
 
 public class GeneListOperations {
 
