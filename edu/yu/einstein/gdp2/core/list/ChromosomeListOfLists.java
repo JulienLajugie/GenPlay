@@ -18,7 +18,7 @@ import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
  */
 public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<List<T>> {
 
-
+//TODO Write a method to return the number of chromosomes in the list. 
 	
 	/**
 	 * Adds an element to the list of the specified chromosome
