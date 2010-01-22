@@ -64,14 +64,18 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		super(chromosomeManager);
 		this.binSize = binSize;
 		this.precision = precision;
-		for(Chromosome currentChromosome : chromosomeManager)  {
-			int currentSize = currentChromosome.getLength() / binSize + 1;
-			List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
-			this.add(listToAdd);
-			for (int i = 0; i < positions.size(currentChromosome); i++) {
-				if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
-					int currentWindow = positions.get(currentChromosome, i) / binSize;
-					this.set(currentChromosome, currentWindow, scores.get(currentChromosome, i));
+		for(Chromosome currentChromosome : chromosomeManager)  {			
+			if ((positions.get(currentChromosome) == null) || (positions.size(currentChromosome) == 0)) {
+				this.add(null);
+			} else {
+				int currentSize = currentChromosome.getLength() / binSize + 1;
+				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
+				this.add(listToAdd);
+				for (int i = 0; i < positions.size(currentChromosome); i++) {
+					if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
+						int currentWindow = positions.get(currentChromosome, i) / binSize;
+						this.set(currentChromosome, currentWindow, scores.get(currentChromosome, i));
+					}
 				}
 			}
 		}
@@ -94,7 +98,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		this.binSize = binSize;
 		this.precision = precision;
 		for(Chromosome currentChromosome : chromosomeManager)  {
-			if ((starts.get(currentChromosome) != null) && (starts.size(currentChromosome) > 0)) {
+			if ((starts.get(currentChromosome) == null) || (starts.size(currentChromosome) == 0)) {
+				this.add(null);
+			} else {
 				int currentSize = currentChromosome.getLength() / binSize + 1;
 				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
 				this.add(listToAdd);
@@ -177,7 +183,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		this.binSize = binSize;	
 		this.precision = precision;
 		for(Chromosome currentChromosome : chromosomeManager)  {
-			if ((list.get(currentChromosome) != null) && (list.size(currentChromosome) > 0)) {
+			if ((list.get(currentChromosome) == null) || (list.size(currentChromosome) == 0)) {
+				this.add(null);
+			} else {
 				int currentSize = currentChromosome.getLength() / binSize + 1;
 				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
 				this.add(listToAdd);
@@ -257,9 +265,13 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		this.binSize = binSize;
 		this.precision = precision;
 		for(Chromosome currentChromosome : chromosomeManager)  {
-			int currentSize = currentChromosome.getLength() / binSize + 1;
-			List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
-			this.add(listToAdd);
+			if ((positions.get(currentChromosome) == null) || (positions.size(currentChromosome) == 0)) {
+				this.add(null);
+			} else {
+				int currentSize = currentChromosome.getLength() / binSize + 1;
+				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
+				this.add(listToAdd);
+			}
 		}
 		switch (method) {
 		case AVERAGE:

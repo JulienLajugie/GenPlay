@@ -15,6 +15,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
+import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.util.DoubleLists;
 
@@ -37,7 +38,9 @@ public class BinListOperations {
 	public static BinList addConstant(BinList binList, double constant, DataPrecision precision) {
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for (short i = 0; i < binList.size(); i++) {
-			if (binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 				// We add a constant to each element
@@ -63,7 +66,9 @@ public class BinListOperations {
 		}
 		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
 		for(short i = 0; i < binList1.size(); i++)  {
-			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+			if((binList1.get(i) == null) || (i >= binList2.size()) || (binList2.get(i) == null)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
 				resultList.add(listToAdd);
 				for(int j = 0; j < binList1.size(i); j++) {
@@ -131,21 +136,24 @@ public class BinListOperations {
 
 
 	/**
-	 * Computes the average of the {@link BinList} on intervals defined by another BinList
+	 * Computes the average, the max or the sum of the {@link BinList} on intervals defined by another BinList
 	 * @param intervalList BinList defining the intervals
-	 * @param valueList BinList defining the values for the average
-	 * @param percentageAcceptedValues the average is calculated only on the x% greatest values of each interval 
+	 * @param valueList BinList defining the values for the calculation
+	 * @param percentageAcceptedValues the calculation is calculated only on the x% greatest values of each interval 
 	 * @param precision precision of the result BinList
 	 * @return a new BinList
 	 * @throws BinListDifferentWindowSizeException
+	 * @throws {@link IllegalArgumentException}
 	 */
-	public static BinList averageOnProjection(BinList intervalList, BinList valueList, int percentageAcceptedValues, DataPrecision precision) throws BinListDifferentWindowSizeException{
+	public static BinList calculationOnProjection(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreCalculationMethod method, DataPrecision precision) throws BinListDifferentWindowSizeException, IllegalArgumentException {
 		if (intervalList.getBinSize() != valueList.getBinSize()) {
 			throw new BinListDifferentWindowSizeException();
 		}
 		BinList resultList = new BinList(valueList.getChromosomeManager(), valueList.getBinSize(), precision);
 		for(short i = 0; i < intervalList.size(); i++)  {
-			if((intervalList.get(i) != null) && (i < valueList.size()) && (valueList.get(i) != null)) {
+			if((intervalList.get(i) == null) || (i >= valueList.size()) || (valueList.get(i) == null)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, intervalList.size(i));
 				resultList.add(listToAdd);
 				int j = 0;
@@ -165,9 +173,23 @@ public class BinListOperations {
 					if (values.size() > 0) {
 						Collections.sort(values);
 						int indexStart = values.size() - (int)(values.size() * (double)percentageAcceptedValues / 100d) - 1;
-						double avg = DoubleLists.average(values, indexStart, values.size() - 1);
+						double result = 0;
+						switch (method) {
+						case AVERAGE:
+							result = DoubleLists.average(values, indexStart, values.size() - 1);
+							break;
+						case MAXIMUM:
+							result = Collections.max(values.subList(indexStart, values.size() - 1));
+							break;							
+						case SUM:
+							result = DoubleLists.sum(values, indexStart, values.size() - 1);
+							break;
+						default:
+							throw new IllegalArgumentException("Invalid score calculation method");
+						}
+
 						for (; k <= j; k++) {
-							resultList.set(i, k, avg);
+							resultList.set(i, k, result);
 						}
 					}
 				}
@@ -239,7 +261,9 @@ public class BinListOperations {
 		}
 		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
 		for(short i = 0; i < binList1.size(); i++)  {
-			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+			if((binList1.get(i) == null) || (i >= binList2.size()) || (binList2.get(i) == null)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
 				resultList.add(listToAdd);
 				for(int j = 0; j < binList1.size(i); j++) {
@@ -269,7 +293,9 @@ public class BinListOperations {
 	public static BinList thresholdFilter(BinList binList, FilterType filterType, double threshold, int nbConsecutiveValues, DataPrecision precision) throws IllegalArgumentException {
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++)  {
-			if((binList.get(i) != null) ) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 				for (int j = 0; j < binList.size(i) - nbConsecutiveValues; j++) {
@@ -324,7 +350,9 @@ public class BinListOperations {
 		// we gauss
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);	
 		for(short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 				for(int j = 0; j < binList.size(i); j++) {
@@ -408,7 +436,9 @@ public class BinListOperations {
 			double distanceIndexUpDown = indexUp - indexDown;
 			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 			for (short i = 0; i < binList.size(); i++) {
-				if (binList.get(i) != null) {
+				if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+					resultList.add(null);
+				} else {
 					// We index the intensities
 					List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 					resultList.add(listToAdd);
@@ -449,7 +479,9 @@ public class BinListOperations {
 
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				double[] listTmp = new double[binList.size(i)];
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
@@ -514,7 +546,9 @@ public class BinListOperations {
 			logMean = Math.log(mean + damper) / Math.log(2);
 		}
 		for(short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 				// we want to calculate the log2 for each element
@@ -543,7 +577,9 @@ public class BinListOperations {
 	public static BinList log2(BinList binList, DataPrecision precision) {
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 				// we want to calculate the log2 for each element
@@ -569,7 +605,9 @@ public class BinListOperations {
 	public static double max(BinList binList) {
 		double max = Double.NEGATIVE_INFINITY;
 		for (List<Double> currentList : binList) {
-			max = Math.max(max, Collections.max(currentList));
+			if (currentList != null) {
+				max = Math.max(max, Collections.max(currentList));
+			}
 		}
 		return max;
 	}
@@ -582,7 +620,9 @@ public class BinListOperations {
 	public static double min(BinList binList) {
 		double min = Double.POSITIVE_INFINITY;
 		for (List<Double> currentList : binList) {
-			min = Math.min(min, Collections.min(currentList));
+			if (currentList != null) {
+				min = Math.min(min, Collections.min(currentList));
+			}
 		}
 		return min;
 	}
@@ -601,7 +641,9 @@ public class BinListOperations {
 		}
 		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
 		for(short i = 0; i < binList1.size(); i++)  {
-			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+			if((binList1.get(i) == null) || (i >= binList2.size()) || (binList2.get(i) == null)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
 				resultList.add(listToAdd);
 				for(int j = 0; j < binList1.size(i); j++) {
@@ -637,7 +679,9 @@ public class BinListOperations {
 		// We normalize
 		double normalizerFactor = (double)factor / scoreCount;
 		for(short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 				for (int j = 0; j < binList.size(i); j++) {
@@ -722,7 +766,9 @@ public class BinListOperations {
 		BinList resultList = new BinList(binList.getChromosomeManager(), binSize, precision);
 
 		for(short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
 
@@ -767,7 +813,9 @@ public class BinListOperations {
 		}
 		BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision);
 		for(short i = 0; i < binList1.size(); i++)  {
-			if((binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+			if((binList1.get(i) == null) || (i >= binList2.size()) || (binList2.get(i) == null)) {
+				resultList.add(null);
+			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, binList1.size(i));
 				resultList.add(listToAdd);
 				for(int j = 0; j < binList1.size(i); j++) {
