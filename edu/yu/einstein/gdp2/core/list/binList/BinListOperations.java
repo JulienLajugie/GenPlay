@@ -172,7 +172,7 @@ public class BinListOperations {
 					}
 					if (values.size() > 0) {
 						Collections.sort(values);
-						int indexStart = values.size() - (int)(values.size() * (double)percentageAcceptedValues / 100d) - 1;
+						int indexStart = values.size() - (int)(values.size() * (double)percentageAcceptedValues / 100d);
 						double result = 0;
 						switch (method) {
 						case AVERAGE:

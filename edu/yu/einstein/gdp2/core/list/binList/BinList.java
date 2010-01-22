@@ -365,38 +365,41 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	protected void fitToScreen() {
 		try {
 			List<Double> currentList = get(fittedChromosome);
-
-			// we calculate how many windows are printable depending on the screen resolution
-			fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
-			int binSizeRatio  = fittedBinSize / binSize;
-
-			// if the fitted bin size is smaller than the regular bin size we don't modify the data
-			if (fittedBinSize <= binSize) {
-				fittedBinSize = binSize;
-				fittedDataList = new double[currentList.size()];
-				for (int i = 0; i < currentList.size(); i++) {
-					fittedDataList[i] = currentList.get(i);
-				}
+			if (currentList == null) {
+				fittedDataList = null;
 			} else {
-				fittedDataList = new double[(int)(size(fittedChromosome) / binSizeRatio + 1)];
-				int newIndex = 0;
-				for(int i = 0; i < size(fittedChromosome); i += binSizeRatio) {
-					double sum = 0;
-					int n = 0;
-					for(int j = 0; j < binSizeRatio; j ++) {
-						if ((i + j < size(fittedChromosome)) && (get(fittedChromosome, i + j) != 0)){
-							sum += get(fittedChromosome, i + j);
-							n++;					
-						}				
+				// we calculate how many windows are printable depending on the screen resolution
+				fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
+				int binSizeRatio  = fittedBinSize / binSize;
+
+				// if the fitted bin size is smaller than the regular bin size we don't modify the data
+				if (fittedBinSize <= binSize) {
+					fittedBinSize = binSize;
+					fittedDataList = new double[currentList.size()];
+					for (int i = 0; i < currentList.size(); i++) {
+						fittedDataList[i] = currentList.get(i);
 					}
-					if (n > 0) {
-						fittedDataList[newIndex] = sum / n;
-					}
-					else {
-						fittedDataList[newIndex] = 0;
-					}
-					newIndex++;
-				}		
+				} else {
+					fittedDataList = new double[(int)(size(fittedChromosome) / binSizeRatio + 1)];
+					int newIndex = 0;
+					for(int i = 0; i < size(fittedChromosome); i += binSizeRatio) {
+						double sum = 0;
+						int n = 0;
+						for(int j = 0; j < binSizeRatio; j ++) {
+							if ((i + j < size(fittedChromosome)) && (get(fittedChromosome, i + j) != 0)){
+								sum += get(fittedChromosome, i + j);
+								n++;					
+							}				
+						}
+						if (n > 0) {
+							fittedDataList[newIndex] = sum / n;
+						}
+						else {
+							fittedDataList[newIndex] = 0;
+						}
+						newIndex++;
+					}		
+				}
 			}
 		} catch (Exception e) {
 			fittedDataList = null;

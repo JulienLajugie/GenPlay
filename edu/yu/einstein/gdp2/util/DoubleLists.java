@@ -17,19 +17,6 @@ public class DoubleLists {
 	
 	/**
 	 * @param list {@link List} of Double
-	 * @return the sum of the values of the list
-	 */
-	public static double sum(List<Double> list) {
-		double result = 0;
-		for (Double currentValue : list) {
-			result += currentValue;
-		}
-		return result;
-	}
-	
-	
-	/**
-	 * @param list {@link List} of Double
 	 * @return the average value of the list
 	 */
 	public static double average(List<Double> list) {
@@ -109,6 +96,43 @@ public class DoubleLists {
 		} else {
 			return sum / n;			
 		}
+	}
+	
+	
+	/**
+	 * @param list {@link List} of Double
+	 * @return the sum of the values of the list
+	 */
+	public static double sum(List<Double> list) {
+		double result = 0;
+		for (Double currentValue : list) {
+			result += currentValue;
+		}
+		return result;
+	}
+
+
+	/**
+	 * Sum all the value of the specified list between the start index and the stop index
+	 * @param list
+	 * @param indexStart start index
+	 * @param indexStop stop index
+	 * @return the sum of the values of the list between start index and stop index
+	 */
+	public static double sum(List<Double> list, int indexStart, int indexStop) {
+		if (indexStart > indexStop) {
+			return 0;
+		} else if (indexStart == indexStop) {
+			return list.get(indexStart);
+		}
+		
+		double sum = 0;	
+		int i = indexStart;		
+		while ((i <= indexStop) && (i < list.size())) {			
+			sum += list.get(i);
+			i++;
+		}		
+		return sum;			
 	}
 	
 }

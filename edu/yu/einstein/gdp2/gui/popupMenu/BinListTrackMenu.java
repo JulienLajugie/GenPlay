@@ -11,7 +11,7 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.binList.AddConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.AverageOnProjectionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivideAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.GaussAction;
@@ -71,7 +71,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiThresholdFilter;		// menu threshold filter
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
-	private final JMenuItem		jmiAverageOnProjection;	// menu average on intervals
+	private final JMenuItem		jmiCalculOnProjection;	// menu calculation on intervals
 	
 	
 	/**
@@ -106,7 +106,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiThresholdFilter = new JMenuItem(actionMap.get(ThresholdFilterAction.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
-		jmiAverageOnProjection = new JMenuItem(actionMap.get(AverageOnProjectionAction.ACTION_KEY));
+		jmiCalculOnProjection = new JMenuItem(actionMap.get(CalculationOnProjectionAction.ACTION_KEY));
 		
 		add(jmiUndo);
 		add(jmiRedo);
@@ -133,7 +133,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiThresholdFilter);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
-		jmOperation.add(jmiAverageOnProjection);
+		jmOperation.add(jmiCalculOnProjection);
 		
 		add(jmOperation, 0);
 		add(new Separator(), 1);

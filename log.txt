@@ -3643,3 +3643,98 @@ Extraction - 2010/01/21 17:10:25
 File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
 Extraction done. Time elapsed: 1 seconds
 Number of lines extracted: 276761
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:05:17
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:07:33
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:11:29
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:12:58
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:17:03
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:19:11
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 21801
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:44:05
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:45:44
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:46:23
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:53:27
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 23901
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:53:40
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:54:51
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 21801
+-------------------------------------------------------------------
+Extraction - 2010/01/22 12:55:04
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/22 13:02:50
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 21801
+-------------------------------------------------------------------
+Extraction - 2010/01/22 13:04:35
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 21801
+-------------------------------------------------------------------
+Extraction - 2010/01/22 13:04:46
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/22 13:08:14
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 21801
+-------------------------------------------------------------------
+Extraction - 2010/01/22 13:10:09
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 3 seconds
+Number of lines extracted: 275287
+-------------------------------------------------------------------
+Extraction - 2010/01/22 13:10:46
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 21801
