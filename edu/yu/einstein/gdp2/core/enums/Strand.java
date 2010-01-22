@@ -19,7 +19,7 @@ public enum Strand {
 	
 	
 	private final String 						symbol;		// symbol representing the strand
-	private static final Map<String, Strand> 	lookup = 
+	private static final Map<String, Strand> 	LOOKUP = 
 		new HashMap<String, Strand>();						// Map associating a Strand symbol to a Strand
 
 	
@@ -28,7 +28,7 @@ public enum Strand {
 	 */
 	static {
 		for(Strand s : EnumSet.allOf(Strand.class))
-			lookup.put(s.symbol, s);
+			LOOKUP.put(s.symbol, s);
 	}
 
 	
@@ -55,6 +55,6 @@ public enum Strand {
 	 * @return the {@link Strand} associated to the parameter. Null if none.
 	 */
 	public static Strand get(String strandString) {
-		return lookup.get(strandString);
+		return LOOKUP.get(strandString);
 	}
 }
