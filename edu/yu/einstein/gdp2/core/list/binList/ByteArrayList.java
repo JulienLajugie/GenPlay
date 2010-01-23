@@ -31,6 +31,9 @@ public final class ByteArrayList extends AbstractList<Double> implements Seriali
 	}
 	
 
+	/**
+	 * Sorts the list
+	 */
 	public void sort() {
 		Arrays.sort(data);
 	};
