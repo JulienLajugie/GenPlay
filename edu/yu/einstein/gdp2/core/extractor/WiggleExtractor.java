@@ -6,7 +6,6 @@ package yu.einstein.gdp2.core.extractor;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
@@ -15,6 +14,8 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowListGenerator;
+import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
@@ -30,7 +31,7 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class WiggleExtractor extends Extractor 
+public final class WiggleExtractor extends TextFileExtractor 
 implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowListGenerator, BinListGenerator{
 
 	private static final long serialVersionUID = 3397954112622122744L; // generated ID
@@ -61,9 +62,9 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		stopList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
 		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
 		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
-			startList.add(new ArrayList<Integer>());
-			stopList.add(new ArrayList<Integer>());
-			scoreList.add(new ArrayList<Double>());
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
+			scoreList.add(new DoubleArrayAsDoubleList());
 		}
 	}
 
@@ -203,6 +204,12 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			isStepUnique = checkIfStepIsUnique();
 		}
 		return !isStepUnique;
+	}
+	
+	
+	@Override
+	public boolean isPrecisionNeeded() {
+		return true;
 	}
 
 

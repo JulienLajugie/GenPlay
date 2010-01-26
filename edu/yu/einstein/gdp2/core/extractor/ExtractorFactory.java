@@ -77,14 +77,15 @@ public final class ExtractorFactory {
 			return new PairExtractor(fileToExtract, logFile, chromosomeManager);
 		} else if (fileExtension.equalsIgnoreCase("gdp")) {
 			return new GdpGeneExtractor(fileToExtract, logFile, chromosomeManager);
+		} else if (fileExtension.equalsIgnoreCase("bin")) {
+			return new SerializedBinListExtractor(fileToExtract, logFile, chromosomeManager);
 		} else {
 			return null;
 		}		
 	}
 
 
-	/**
-	 * 
+	/** 
 	 * @param fileToExtract
 	 * @param logFile
 	 * @param chromosomeManager

@@ -6,13 +6,14 @@ package yu.einstein.gdp2.core.extractor;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
+import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
@@ -26,7 +27,7 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PairExtractor extends Extractor
+public final class PairExtractor extends TextFileExtractor
 implements Serializable, BinListGenerator {
 
 
@@ -48,8 +49,8 @@ implements Serializable, BinListGenerator {
 		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
 		// initialize the sublists
 		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
-			positionList.add(new ArrayList<Integer>());
-			scoreList.add(new ArrayList<Double>());
+			positionList.add(new IntArrayAsIntegerList());
+			scoreList.add(new DoubleArrayAsDoubleList());
 		}
 	}
 
@@ -100,6 +101,12 @@ implements Serializable, BinListGenerator {
 
 	@Override
 	public boolean isCriterionNeeded() {
+		return true;
+	}
+	
+	
+	@Override
+	public boolean isPrecisionNeeded() {
 		return true;
 	}
 

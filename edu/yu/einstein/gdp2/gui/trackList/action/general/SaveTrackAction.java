@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
@@ -20,11 +21,6 @@ import yu.einstein.gdp2.core.writer.binListWriter.BinListWriterFactory;
 import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriter;
 import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriterFactory;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
-import yu.einstein.gdp2.gui.fileFilter.BedFilter;
-import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
-import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
-import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
-import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.Track;
@@ -97,10 +93,9 @@ public final class SaveTrackAction extends TrackListAction {
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Track");
-		jfc.addChoosableFileFilter(new BedFilter());
-		jfc.addChoosableFileFilter(new BedGraphFilter());
-		jfc.addChoosableFileFilter(new GFFFilter());
-		jfc.addChoosableFileFilter(new WiggleFilter());
+		for (FileFilter currentFilter: Utils.getBinListFileFilters()) {
+			jfc.addChoosableFileFilter(currentFilter);
+		}
 		jfc.setAcceptAllFileFilterUsed(false);
 		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
 		final int returnVal = jfc.showSaveDialog(getRootPane());
@@ -143,8 +138,9 @@ public final class SaveTrackAction extends TrackListAction {
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Track");
-		jfc.addChoosableFileFilter(new BedFilter());
-		jfc.addChoosableFileFilter(new GdpGeneFilter());
+		for (FileFilter currentFilter: Utils.getGeneFileFilters()) {
+			jfc.addChoosableFileFilter(currentFilter);
+		}
 		jfc.setAcceptAllFileFilterUsed(false);
 		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
 		final int returnVal = jfc.showSaveDialog(getRootPane());

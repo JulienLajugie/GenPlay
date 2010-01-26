@@ -9,15 +9,17 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
-import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
+import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.PairFilter;
+import yu.einstein.gdp2.gui.fileFilter.SerializedBinListFilter;
 import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
 
 
@@ -72,16 +74,13 @@ public class Utils {
 	 * @param defaultDirectory default directory
 	 * @return a file to load
 	 */
-	final public static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory) {
+	final public static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters) {
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle(title);
-		jfc.addChoosableFileFilter(new BedFilter());
-		jfc.addChoosableFileFilter(new BedGraphFilter());
-		jfc.addChoosableFileFilter(new GdpGeneFilter());
-		jfc.addChoosableFileFilter(new GFFFilter());
-		jfc.addChoosableFileFilter(new PairFilter());
-		jfc.addChoosableFileFilter(new WiggleFilter());
+		for (FileFilter currentFilter: choosableFileFilters) {
+			jfc.addChoosableFileFilter(currentFilter);
+		}
 		jfc.setFileFilter(jfc.getAcceptAllFileFilter());
 		int returnVal = jfc.showOpenDialog(parentComponent);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
@@ -98,6 +97,51 @@ public class Utils {
 		}
 	}
 
+	
+	/**
+	 * @return the {@link FileFilter} associated to the stripe files
+	 */
+	public static FileFilter[] getStripeFileFilters() {
+		FileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
+		return stripeFileFilters;
+	}
+	
+
+	/**
+	 * @return the {@link FileFilter} associated to the scored chromosome window files
+	 */
+	public static FileFilter[] getSCWFileFilters() {
+		FileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
+		return stripeFileFilters;
+	}	
+	
+	
+	/**
+	 * @return the {@link FileFilter} associated to the BinList files
+	 */
+	public static FileFilter[] getBinListFileFilters() {
+		FileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new SerializedBinListFilter()};
+		return stripeFileFilters;
+	}
+	
+	
+	/**
+	 * @return the {@link FileFilter} associated to the gene files
+	 */
+	public static FileFilter[] getGeneFileFilters() {
+		FileFilter[] stripeFileFilters = {new BedFilter(), new GdpGeneFilter() };
+		return stripeFileFilters;
+	}
+	
+	
+	/**
+	 * @return the {@link FileFilter} associated to the repeats files
+	 */
+	public static FileFilter[] getRepeatFileFilters() {
+		FileFilter[] stripeFileFilters = {new BedFilter(), new GFFFilter()};
+		return stripeFileFilters;
+	}
+	
 
 	/**
 	 * A dialog box used to choose a {@link DataPrecision}
@@ -132,6 +176,12 @@ public class Utils {
 				ScoreCalculationMethod.AVERAGE);
 	}
 	
+	
+	/**
+	 * A dialog box used to choose a {@link FilterType}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link FilterType} value
+	 */
 	public static FilterType chooseFilterType(Component parentComponent) {
 		return (FilterType)JOptionPane.showInputDialog(
 				parentComponent,

@@ -36,4 +36,10 @@ public interface BinListGenerator {
 	 * @return true if the generator needs information regarding the size of the bins
 	 */
 	public boolean isBinSizeNeeded();
+	
+	
+	/**
+	 * @return true if the generator needs information regarding the precision of the data
+	 */
+	public boolean isPrecisionNeeded();
 }

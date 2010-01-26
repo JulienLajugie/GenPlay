@@ -7,6 +7,11 @@ package yu.einstein.gdp2.core.list.binList;
 import java.util.List;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.list.arrayList.BooleanArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.ByteArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.FloatArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.ShortArrayAsDoubleList;
 
 /**
  * Factory creating a subtype of {@link List} of double
@@ -24,15 +29,15 @@ public class ListFactory {
 	public static List<Double> createList(DataPrecision precision, int size) throws IllegalArgumentException {
 		switch (precision) {
 		case PRECISION_1BIT:
-			return new BooleanArrayList(size);
+			return new BooleanArrayAsDoubleList(size);
 		case PRECISION_8BIT:
-			return new ByteArrayList(size);
+			return new ByteArrayAsDoubleList(size);
 		case PRECISION_16BIT:
-			return new ShortArrayList(size);
+			return new ShortArrayAsDoubleList(size);
 		case PRECISION_32BIT:
-			return new FloatArrayList(size);
+			return new FloatArrayAsDoubleList(size);
 		case PRECISION_64BIT:
-			return new DoubleArrayList(size);
+			return new DoubleArrayAsDoubleList(size);
 		default: 
 			throw new IllegalArgumentException("invalid precision");
 		}				

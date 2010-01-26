@@ -53,7 +53,7 @@ public final class LoadRepeatFamilyListTrackAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
 		String logFile = trackList.getConfigurationManager().getLogFile();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory);
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory, Utils.getRepeatFileFilters());
 		if (selectedFile != null) {
 			new RepeatFamilyListExtractorWorker(trackList, logFile, selectedFile, trackList.getChromosomeManager()).execute();
 		}

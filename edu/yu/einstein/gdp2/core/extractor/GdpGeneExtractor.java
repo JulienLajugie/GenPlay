@@ -8,6 +8,7 @@ import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
+import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.geneList.GeneListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
@@ -15,7 +16,7 @@ import yu.einstein.gdp2.exception.InvalidDataLineException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 import yu.einstein.gdp2.util.ChromosomeManager;
 
-public final class GdpGeneExtractor extends Extractor
+public final class GdpGeneExtractor extends TextFileExtractor
 implements Serializable, GeneListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
@@ -47,8 +48,8 @@ implements Serializable, GeneListGenerator {
 		exonScoresList = new ChromosomeArrayListOfLists<double[]>(chromosomeManager);
 		// initialize the sublists
 		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
-			startList.add(new ArrayList<Integer>());
-			stopList.add(new ArrayList<Integer>());
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
 			strandList.add(new ArrayList<Strand>());
 			exonStartsList.add(new ArrayList<int[]>());

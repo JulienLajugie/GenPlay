@@ -32,7 +32,9 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 	private Number 					binSize = 0;		// Size of the bins of the BinList
 	private ScoreCalculationMethod 	scoreCalculation = 
 		ScoreCalculationMethod.AVERAGE;					// Method of calculation of the score of the BinList
-	private DataPrecision 			precision = null;	// Precision of the Data
+	private DataPrecision 			precision = 
+		DataPrecision.PRECISION_32BIT;					// Precision of the Data
+	
 	
 	/**
 	 * Creates an instance of an {@link BinListExtractorWorker}
@@ -86,9 +88,11 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 		} else {
 			scoreCalculation = null;
 		}
-		precision = Utils.choosePrecision(trackList.getRootPane());
-		if (precision == null) {
-			return null;
+		if (((BinListGenerator)extractor).isPrecisionNeeded()) {	
+			precision = Utils.choosePrecision(trackList.getRootPane());
+			if (precision == null) {
+				return null;
+			}
 		}
 		trackList.getTopLevelAncestor().setEnabled(false);
 		return ((BinListGenerator)extractor).toBinList(binSize.intValue(), precision, scoreCalculation);

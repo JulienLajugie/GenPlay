@@ -16,6 +16,8 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowListGenerator;
+import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
+import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
@@ -33,7 +35,7 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GFFExtractor extends Extractor 
+public final class GFFExtractor extends TextFileExtractor 
 implements Serializable, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
 ScoredChromosomeWindowListGenerator, BinListGenerator {
 
@@ -62,10 +64,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 		strandList = new ChromosomeArrayListOfLists<Strand>(chromosomeManager);
 		// initialize the sublists
 		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
-			startList.add(new ArrayList<Integer>());
-			stopList.add(new ArrayList<Integer>());
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
-			scoreList.add(new ArrayList<Double>());
+			scoreList.add(new DoubleArrayAsDoubleList());
 			strandList.add(new ArrayList<Strand>());
 		}
 	}
@@ -127,6 +129,12 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	@Override
 	public boolean isCriterionNeeded() {
+		return true;
+	}
+	
+	
+	@Override
+	public boolean isPrecisionNeeded() {
 		return true;
 	}
 

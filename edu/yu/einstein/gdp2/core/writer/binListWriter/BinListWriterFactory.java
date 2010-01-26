@@ -13,6 +13,7 @@ import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
 import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
+import yu.einstein.gdp2.gui.fileFilter.SerializedBinListFilter;
 import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
 import yu.einstein.gdp2.util.ChromosomeManager;
 
@@ -68,6 +69,8 @@ public final class BinListWriterFactory {
 			return new BinListAsGFFWriter(chromosomeManager, outputFile, data, name);
 		} else if (ff instanceof WiggleFilter) {
 			return new BinListAsWiggleWriter(chromosomeManager, outputFile, data, name);
+		}else if (ff instanceof SerializedBinListFilter) {
+			return new SerializedBinListWriter(chromosomeManager, outputFile, data, name);
 		} else {
 			return null;
 		}
