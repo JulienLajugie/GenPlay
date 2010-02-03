@@ -16,7 +16,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BedFilter extends FileFilter {
+public final class BedFilter extends ExtendedFileFilter {
 
 	public static final String EXTENSION = "bed";
 	public static final String DESCRIPTION = "Bed Files (*.bed)";
@@ -38,5 +38,12 @@ public final class BedFilter extends FileFilter {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+
+	@Override
+	public String[] getExtensions() {
+		String[] extensions = {EXTENSION};
+		return extensions;
 	}
 }

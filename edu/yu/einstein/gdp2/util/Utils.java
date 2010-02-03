@@ -5,6 +5,8 @@
 package yu.einstein.gdp2.util;
 
 import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -16,6 +18,7 @@ import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
+import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
 import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.PairFilter;
@@ -49,6 +52,23 @@ public class Utils {
 	}
 
 
+	final public static String getFileNameWithoutExtension(File file) {
+		if (file == null) {
+			return null;
+		}
+		String fileName = file.getName();
+		if (fileName == null) {
+			return null;
+		}
+		int dotIndex =  fileName.lastIndexOf('.');
+		if ((dotIndex > 0) && (dotIndex < fileName.length() - 1)) {
+			return fileName.substring(0, dotIndex).toLowerCase().trim();
+		} else {
+			return null;
+		}	
+	}
+
+
 	/**
 	 * Asks if the user wants to replace a file if this file already exists.
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -67,6 +87,42 @@ public class Utils {
 	}
 
 
+	final public static File chooseFileToSave(Component parentComponent, String title, String defaultDirectory, String defaultFileName, ExtendedFileFilter[] choosableFileFilters, ExtendedFileFilter selectedFilter) {
+		final JFileChooser jfc = new JFileChooser(defaultDirectory);
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		jfc.setDialogTitle("Save Track");
+		for (FileFilter currentFilter: choosableFileFilters) {
+			jfc.addChoosableFileFilter(currentFilter);
+		}
+		jfc.setAcceptAllFileFilterUsed(false);
+		
+		selectedFilter = (ExtendedFileFilter)jfc.getChoosableFileFilters()[0];
+		File defaultFile = new File(defaultFileName + "." + selectedFilter.getExtensions()[0]);
+		jfc.setSelectedFile(defaultFile);
+		jfc.addPropertyChangeListener(JFileChooser.FILE_FILTER_CHANGED_PROPERTY, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+				String fileName = getFileNameWithoutExtension(jfc.getSelectedFile()) + "." + selectedFilter.getExtensions()[0];
+				jfc.setSelectedFile(new File(fileName));
+			}
+		});
+		int returnVal = jfc.showSaveDialog(parentComponent);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = jfc.getSelectedFile();
+			if (cancelBecauseFileExist(parentComponent, selectedFile)) {
+				return null;
+			} else {
+				selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+				return jfc.getSelectedFile();
+			}
+		} else {
+			return null;
+		}			
+	}
+
+
+
 	/**
 	 * Opens a dialog box asking the user to choose a file to load
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -83,13 +139,13 @@ public class Utils {
 		}
 		jfc.setFileFilter(jfc.getAcceptAllFileFilter());
 		int returnVal = jfc.showOpenDialog(parentComponent);
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = jfc.getSelectedFile();
 			if (!selectedFile.canRead()) {
 				JOptionPane.showMessageDialog(parentComponent, 
 						"You don't have the permission to read the selected file.", "File Incorrect", JOptionPane.ERROR_MESSAGE, null);
 				return null;
-			} else {
+			} else {				
 				return jfc.getSelectedFile();
 			}
 		} else {
@@ -97,51 +153,51 @@ public class Utils {
 		}
 	}
 
-	
-	/**
-	 * @return the {@link FileFilter} associated to the stripe files
-	 */
-	public static FileFilter[] getStripeFileFilters() {
-		FileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
-		return stripeFileFilters;
-	}
-	
 
 	/**
-	 * @return the {@link FileFilter} associated to the scored chromosome window files
+	 * @return the {@link ExtendedFileFilter} associated to the stripe files
 	 */
-	public static FileFilter[] getSCWFileFilters() {
-		FileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
+	public static ExtendedFileFilter[] getStripeFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
+		return stripeFileFilters;
+	}
+
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the scored chromosome window files
+	 */
+	public static ExtendedFileFilter[] getSCWFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
 		return stripeFileFilters;
 	}	
-	
-	
+
+
 	/**
-	 * @return the {@link FileFilter} associated to the BinList files
+	 * @return the {@link ExtendedFileFilter} associated to the BinList files
 	 */
-	public static FileFilter[] getBinListFileFilters() {
-		FileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new SerializedBinListFilter()};
+	public static ExtendedFileFilter[] getBinListFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new SerializedBinListFilter()};
 		return stripeFileFilters;
 	}
-	
-	
+
+
 	/**
-	 * @return the {@link FileFilter} associated to the gene files
+	 * @return the {@link ExtendedFileFilter} associated to the gene files
 	 */
-	public static FileFilter[] getGeneFileFilters() {
-		FileFilter[] stripeFileFilters = {new BedFilter(), new GdpGeneFilter() };
+	public static ExtendedFileFilter[] getGeneFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new GdpGeneFilter() };
 		return stripeFileFilters;
 	}
-	
-	
+
+
 	/**
-	 * @return the {@link FileFilter} associated to the repeats files
+	 * @return the {@link ExtendedFileFilter} associated to the repeats files
 	 */
-	public static FileFilter[] getRepeatFileFilters() {
-		FileFilter[] stripeFileFilters = {new BedFilter(), new GFFFilter()};
+	public static ExtendedFileFilter[] getRepeatFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new GFFFilter()};
 		return stripeFileFilters;
 	}
-	
+
 
 	/**
 	 * A dialog box used to choose a {@link DataPrecision}
@@ -158,8 +214,8 @@ public class Utils {
 				DataPrecision.values(),
 				DataPrecision.PRECISION_32BIT);
 	}
-	
-	
+
+
 	/**
 	 * A dialog box used to choose a {@link ScoreCalculationMethod}
 	 * @param parentComponent the parent Component for the dialog 
@@ -175,8 +231,8 @@ public class Utils {
 				ScoreCalculationMethod.values(),
 				ScoreCalculationMethod.AVERAGE);
 	}
-	
-	
+
+
 	/**
 	 * A dialog box used to choose a {@link FilterType}
 	 * @param parentComponent the parent Component for the dialog 

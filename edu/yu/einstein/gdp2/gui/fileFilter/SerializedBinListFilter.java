@@ -16,7 +16,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SerializedBinListFilter extends FileFilter {
+public class SerializedBinListFilter extends ExtendedFileFilter {
 
 
 	public static final String EXTENSION = "bin";
@@ -39,5 +39,12 @@ public class SerializedBinListFilter extends FileFilter {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+	
+	
+	@Override
+	public String[] getExtensions() {
+		String[] extensions = {EXTENSION};
+		return extensions;
 	}
 }

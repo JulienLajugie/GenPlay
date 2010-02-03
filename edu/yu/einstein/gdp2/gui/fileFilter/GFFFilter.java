@@ -16,7 +16,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GFFFilter extends FileFilter {
+public final class GFFFilter extends ExtendedFileFilter {
 
 	public static final String EXTENSION = "gff";
 	public static final String EXTENSION2 = "gtf";
@@ -42,5 +42,12 @@ public final class GFFFilter extends FileFilter {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+
+
+	@Override
+	public String[] getExtensions() {
+		String[] extensions = {EXTENSION, EXTENSION2, EXTENSION3};
+		return extensions;
 	}
 }

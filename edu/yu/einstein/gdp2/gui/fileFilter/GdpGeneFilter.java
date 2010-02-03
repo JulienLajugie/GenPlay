@@ -15,7 +15,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GdpGeneFilter extends FileFilter {
+public final class GdpGeneFilter extends ExtendedFileFilter {
 
 	public static final String EXTENSION = "gdp";
 	public static final String DESCRIPTION = "GenPlay Gene Files (*.gdp)";
@@ -37,5 +37,12 @@ public final class GdpGeneFilter extends FileFilter {
 	@Override
 	public String getDescription() {
 		return DESCRIPTION;
+	}
+	
+	
+	@Override
+	public String[] getExtensions() {
+		String[] extensions = {EXTENSION};
+		return extensions;
 	}
 }

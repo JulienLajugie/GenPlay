@@ -214,8 +214,30 @@ public class BinListOperations {
 		}
 
 		int j, n = 0;
-		double mean1 = average(binList1, chromoList);
-		double mean2 = average(binList2, chromoList);
+		double mean1 = 0;
+		double mean2 = 0;
+		// compute the mean
+		for (short i = 0; i < binList1.size(); i++) {
+			// We want to compute the correlation only for the chromosomes where chromoList is set to true
+			if ((i < chromoList.length) && (chromoList[i]) && (binList1.get(i) != null) && (i < binList2.size()) && (binList2.get(i) != null)) {
+				j = 0;
+				while ((j < binList1.size(i)) && (j < binList2.size(i))) {
+					if ((binList1.get(i, j) != 0) && (binList2.get(i, j) != 0)) {
+						mean1 += binList1.get(i, j);
+						mean2 += binList1.get(i, j);
+						n++;
+					}
+					j++;
+				}
+			}
+		}
+		if (n == 0) {
+			return 0d;
+		}
+		
+		mean1 /= n;
+		mean2 /= n;
+
 		double stdDev1 = 0;
 		double stdDev2 = 0;
 		double correlationCoef = 0;
@@ -229,22 +251,17 @@ public class BinListOperations {
 					if ((binList1.get(i, j) != 0) && (binList2.get(i, j) != 0)) {
 						stdDev1 += Math.pow(binList1.get(i, j) - mean1, 2);
 						stdDev2 += Math.pow(binList2.get(i, j) - mean2, 2);
-						correlationCoef+=(binList1.get(i, j) * binList2.get(i,j));
-						n++;
+						correlationCoef += (binList1.get(i, j) * binList2.get(i,j));
 					}
 					j++;
 				}
 			}
 		}
-		if (n == 0) {
-			return 0;
-		} else {
-			stdDev1 = Math.sqrt(stdDev1 / n);
-			stdDev2 = Math.sqrt(stdDev2 / n);
-			// We compute the correlation 
-			correlationCoef = (correlationCoef - (n * mean1 * mean2)) / ((n - 1) * stdDev1 * stdDev2);
-			return correlationCoef;
-		}
+		stdDev1 = Math.sqrt(stdDev1 / n);
+		stdDev2 = Math.sqrt(stdDev2 / n);
+		// We compute the correlation 
+		correlationCoef = (correlationCoef - (n * mean1 * mean2)) / ((n - 1) * stdDev1 * stdDev2);
+		return correlationCoef;
 	}
 
 
@@ -399,7 +416,6 @@ public class BinListOperations {
 		double percentDown = saturation / 100;
 		double[] listTmp;
 		int k = 0, totalLength = 0;
-
 
 		// We create an array containing all the intensities of all chromosomes
 		for (short i = 0; i < binList.size(); i++) {
@@ -677,7 +693,7 @@ public class BinListOperations {
 			}
 		}		
 		// We normalize
-		double normalizerFactor = (double)factor / scoreCount;
+		double normalizerFactor = (double)factor / (double)scoreCount;
 		for(short i = 0; i < binList.size(); i++) {
 			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
 				resultList.add(null);
