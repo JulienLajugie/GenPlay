@@ -133,6 +133,26 @@ public class BinListOperations {
 			return sum / n;
 		}
 	}
+	
+	
+	/**
+	 * @param binList a {@link BinList}
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * @return the number of non-null Bins on the selected chromosomes of the specified BinList 
+	 */
+	public static long binCount(BinList binList, boolean[] chromoList) {
+		long binCount = 0;
+		for (int i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) != null) && (i < chromoList.length) && (chromoList[i])) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if (binList.get(i, j) != 0) {
+						binCount++;
+					}
+				}
+			}
+		}
+		return binCount;
+	}
 
 
 	/**
@@ -765,6 +785,25 @@ public class BinListOperations {
 			}
 		}
 	}
+	
+	
+	/**
+	 * @param binList a {@link BinList}
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * @return the sum of the scores on the selected chromosomes of the specified BinList
+	 */
+	public static double scoreCount(BinList binList, boolean[] chromoList) {
+		int scoreCount = 0;
+		for (int i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) != null) && (i < chromoList.length) && (chromoList[i])) {
+				for (int j = 0; j < binList.size(i); j++) {
+					scoreCount += binList.get(i, j);
+				}
+			}
+		}
+		return scoreCount;
+	}
+	
 
 
 	/**
@@ -815,6 +854,36 @@ public class BinListOperations {
 		return resultList;		
 	}
 
+	
+	/**
+	 * @param binList a {@link BinList}
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * @return the standard deviation of the specified BinList on the selected chromosomes 
+	 */
+	public static Double standardDeviation(BinList binList, boolean[] chromoList) {
+		double stdDev = 0d;
+		int n = 0;
+		// we compute the mean
+		double mean = average(binList, chromoList);
+		// We compute standard deviations
+		for (short i = 0; i < binList.size(); i++) {
+			// We want to compute the correlation only for the chromosomes where chromoList is set to true
+			if ((i < chromoList.length) && (chromoList[i]) && (binList.get(i) != null)) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if ((binList.get(i, j) != 0)) {
+						stdDev += Math.pow(binList.get(i, j) - mean, 2);
+						n++;
+					}
+				}
+			}
+		}
+		if (n == 0) {
+			return 0d;
+		} else {
+			return (stdDev / (double)n);
+		}
+	}
+	
 
 	/**
 	 * @param binList1

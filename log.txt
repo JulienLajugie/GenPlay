@@ -4079,3 +4079,63 @@ Extraction - 2010/02/03 10:47:31
 File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1b_5kb.wig
 Extraction done. Time elapsed: 0 seconds
 Number of lines extracted: 530319
+-------------------------------------------------------------------
+Extraction - 2010/02/03 11:44:37
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 534195
+-------------------------------------------------------------------
+Extraction - 2010/02/03 12:43:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1a_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 530510
+-------------------------------------------------------------------
+Extraction - 2010/02/03 12:43:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1b_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 530319
+-------------------------------------------------------------------
+Extraction - 2010/02/03 12:45:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 534195
+-------------------------------------------------------------------
+Extraction - 2010/02/03 12:47:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1a_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 530510
+-------------------------------------------------------------------
+Extraction - 2010/02/03 12:50:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 534195
+-------------------------------------------------------------------
+Extraction - 2010/02/03 12:58:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number of lines extracted: 534195
+-------------------------------------------------------------------
+Extraction - 2010/02/03 13:00:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1a_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 530510
+-------------------------------------------------------------------
+Extraction - 2010/02/03 13:00:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1b_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 530319
+-------------------------------------------------------------------
+Extraction - 2010/02/03 13:01:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1a_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 530510
+-------------------------------------------------------------------
+Extraction - 2010/02/03 13:01:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 534195
+-------------------------------------------------------------------
+Extraction - 2010/02/03 15:18:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1a_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number of lines extracted: 530510

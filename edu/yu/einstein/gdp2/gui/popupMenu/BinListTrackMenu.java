@@ -11,6 +11,8 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.binList.AddConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.AverageAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivideAction;
@@ -26,9 +28,11 @@ import yu.einstein.gdp2.gui.trackList.action.binList.MultiplyByAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.ScoreCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SearchPeaksAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ShowHistoryAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ShowRepartitionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.StandardDeviationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SubtractAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ThresholdFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.UndoAction;
@@ -61,13 +65,19 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiLog2WithDamper;		// menu log2 BinListTrack with damper
 	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
 	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
+	
 	private final JMenuItem		jmiMinimum;				// menu minimum of the BinListTrack
 	private final JMenuItem		jmiMaximum;				// menu maximum of the BinListTrack
+	private final JMenuItem		jmiBinCount;			// menu bin count
+	private final JMenuItem		jmiScoreCount;			// menu score count
+	private final JMenuItem		jmiAverage;				// menu average
+	private final JMenuItem		jmiStdDev;				// menu standard deviation
+	private final JMenuItem		jmiCorrelation;			// menu correlation BinListTrack with another one
+	
 	private final JMenuItem		jmiAdd;					// menu add BinListTrack to another one
 	private final JMenuItem		jmiSubtract;			// menu subtract BinListTrack with another one
 	private final JMenuItem		jmiMultiply;			// menu multiply BinListTrack by another one
 	private final JMenuItem		jmiDivide;				// menu divide BinListTrack by another one
-	private final JMenuItem		jmiCorrelation;			// menu correlation BinListTrack with another one
 	private final JMenuItem		jmiThresholdFilter;		// menu threshold filter
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
@@ -98,11 +108,15 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiShowRepartition = new JMenuItem(actionMap.get(ShowRepartitionAction.ACTION_KEY));
 		jmiMinimum = new JMenuItem(actionMap.get(MinimumAction.ACTION_KEY));
 		jmiMaximum = new JMenuItem(actionMap.get(MaximumAction.ACTION_KEY));
+		jmiBinCount = new JMenuItem(actionMap.get(BinCountAction.ACTION_KEY));
+		jmiScoreCount = new JMenuItem(actionMap.get(ScoreCountAction.ACTION_KEY));
+		jmiAverage = new JMenuItem(actionMap.get(AverageAction.ACTION_KEY));
+		jmiStdDev = new JMenuItem(actionMap.get(StandardDeviationAction.ACTION_KEY));
+		jmiCorrelation = new JMenuItem(actionMap.get(CorrelationAction.ACTION_KEY));		
 		jmiAdd = new JMenuItem(actionMap.get(AdditionAction.ACTION_KEY));
 		jmiSubtract = new JMenuItem(actionMap.get(SubtractAction.ACTION_KEY));
 		jmiMultiply = new JMenuItem(actionMap.get(MultiplyByAction.ACTION_KEY));
 		jmiDivide = new JMenuItem(actionMap.get(DivideAction.ACTION_KEY));
-		jmiCorrelation = new JMenuItem(actionMap.get(CorrelationAction.ACTION_KEY));
 		jmiThresholdFilter = new JMenuItem(actionMap.get(ThresholdFilterAction.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
@@ -124,12 +138,16 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.addSeparator();
 		jmOperation.add(jmiMinimum);
 		jmOperation.add(jmiMaximum);
+		jmOperation.add(jmiBinCount);
+		jmOperation.add(jmiScoreCount);
+		jmOperation.add(jmiAverage);
+		jmOperation.add(jmiStdDev);
+		jmOperation.add(jmiCorrelation);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiAdd);
 		jmOperation.add(jmiSubtract);
 		jmOperation.add(jmiMultiply);
 		jmOperation.add(jmiDivide);
-		jmOperation.add(jmiCorrelation);
 		jmOperation.add(jmiThresholdFilter);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
