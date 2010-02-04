@@ -84,12 +84,6 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	}
 
 
-	/**
-	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param Extractedline line read from the data file  
-	 * @throws ManagerDataNotLoadedException 
-	 * @throws InvalidDataLineException 
-	 */
 	@Override
 	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
 		String[] splitedLine = extractedLine.split("\t");

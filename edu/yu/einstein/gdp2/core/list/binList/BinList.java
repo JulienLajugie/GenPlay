@@ -290,6 +290,37 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 
 	/**
+	 * Creates an instance of {@link BinList}
+	 * @param chromosomeManager {@link ChromosomeManager}
+	 * @param binSize size of the bins
+	 * @param precision precision of the data
+	 * @param positions list of positions
+	 * @throws IllegalArgumentException
+	 */
+	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ChromosomeListOfLists<Integer> positions) throws IllegalArgumentException {
+		super(chromosomeManager);
+		this.binSize = binSize;
+		this.precision = precision;
+
+		for(Chromosome currentChromosome : chromosomeManager)  {
+			if ((positions.get(currentChromosome) == null) || (positions.size(currentChromosome) == 0)) {
+				this.add(null);
+			} else {
+				int currentSize = currentChromosome.getLength() / binSize + 1;
+				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
+				this.add(listToAdd);			
+				for (int i = 0; i < positions.size(currentChromosome); i++) {
+					if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
+						int windowTmp = positions.get(currentChromosome, i) / binSize;
+						set(currentChromosome, windowTmp, get(currentChromosome, windowTmp) + 1);
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
 	 * Returns a list containing a value of intensity for each bin.
 	 * It goes through the list of positions and a list of intensities and load the BinList from this data. 
 	 * If more than one position is found for one bin, the intensity of the bin is the maximum of the intensities of the positions

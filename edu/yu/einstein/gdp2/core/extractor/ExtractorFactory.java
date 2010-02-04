@@ -79,6 +79,8 @@ public final class ExtractorFactory {
 			return new GdpGeneExtractor(fileToExtract, logFile, chromosomeManager);
 		} else if (fileExtension.equalsIgnoreCase("bin")) {
 			return new SerializedBinListExtractor(fileToExtract, logFile, chromosomeManager);
+		} else if (fileExtension.equalsIgnoreCase("elx")) {
+			return new ElandExtendedExtractor(fileToExtract, logFile, chromosomeManager);
 		} else {
 			return null;
 		}		
@@ -134,6 +136,8 @@ public final class ExtractorFactory {
 									return new GdpGeneExtractor(fileToExtract, logFile, chromosomeManager);
 								} else if (type.equalsIgnoreCase("wiggle")) {
 									return new WiggleExtractor(fileToExtract, logFile, chromosomeManager);
+								} else if (type.equalsIgnoreCase("eland_extended")) {	
+									return new ElandExtendedExtractor(fileToExtract, logFile, chromosomeManager);
 								} else {
 									return null;
 								}

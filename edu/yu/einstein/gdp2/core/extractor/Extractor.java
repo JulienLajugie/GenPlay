@@ -28,8 +28,7 @@ public abstract class Extractor {
 	protected long 						startTime = 0;		// time at the beginning of the extraction
 	protected String					name = null;		// name
 	protected final ChromosomeManager 	chromosomeManager;	// ChromosomeManager
-	protected int 						lineCount = 0;		// number of line extracted
-
+	
 
 	/**
 	 * Constructor
@@ -95,8 +94,6 @@ public abstract class Extractor {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
 				long timeEnd = (System.currentTimeMillis() - startTime) / 1000l;
 				writer.write("Extraction done. Time elapsed: " + timeEnd + " seconds");
-				writer.newLine();
-				writer.write("Number of lines extracted: " + lineCount);
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {

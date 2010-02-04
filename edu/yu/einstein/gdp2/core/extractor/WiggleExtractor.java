@@ -83,6 +83,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				} else {
 					isFixedStep = false;
 					currentSpan = 1;
+					totalCount--; // not a data line
 				}
 			} else if (currentField.equalsIgnoreCase("fixedStep")) {
 				// a fixedStep must at least contain 4 elements
@@ -91,6 +92,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				} else {
 					isFixedStep = true;
 					currentSpan = 1;
+					totalCount--; // not a data line
 				}
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("chrom="))) {
 				// retrieve chromosome
@@ -120,8 +122,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 							startList.add(currentChromo, currentPosition);
 							stopList.add(currentChromo, currentPosition + currentSpan);
 							scoreList.add(currentChromo, score);
-							lineCount++;
 						}
+						lineCount++;
 						currentPosition += currentStep;
 					} catch (Exception e) {
 						throw new InvalidDataLineException(line);
@@ -138,13 +140,13 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 								startList.add(currentChromo, currentPosition);
 								stopList.add(currentChromo, currentPosition + currentSpan);
 								scoreList.add(currentChromo, score);
-								lineCount++;
 							}
+							lineCount++;
 						} catch (Exception e) {
 							throw new InvalidDataLineException(line);
 						}		
 					}
-				}				
+				}			
 			}
 			i++;
 		}

@@ -5,10 +5,13 @@
 package yu.einstein.gdp2.core.extractor;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.exception.InvalidDataLineException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
@@ -21,7 +24,8 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @version 0.1
  */
 public abstract class TextFileExtractor extends Extractor {
-
+	protected int 						totalCount = 0;		// total number of line in the file minus the header
+	protected int 						lineCount = 0;		// number of line extracted
 
 	/**
 	 * Creates an instance of {@link TextFileExtractor}
@@ -36,8 +40,8 @@ public abstract class TextFileExtractor extends Extractor {
 
 	/**
 	 * Extracts the data from a line. 
-	 * @param line a data line of the data file.
-	 * A data line is a line that doesn't start with "#", "browser" or "track"
+	 * @param line a line from the data file that is not a header line. 
+	 * (ie: a line that doesn't start with "#", "browser" or "track")
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidDataLineException
 	 */
@@ -84,6 +88,7 @@ public abstract class TextFileExtractor extends Extractor {
 				// data line
 				if (isDataLine) {
 					try {
+						totalCount++;
 						extractLine(line);
 					} catch (InvalidDataLineException e) {
 						//logMessage("The following line can't be extracted: \"" + line + "\"");
@@ -96,6 +101,28 @@ public abstract class TextFileExtractor extends Extractor {
 		} finally {
 			if (reader != null) {
 				reader.close();
+			}
+		}
+	}
+	
+	
+	@Override
+	protected void logExecutionInfo() {
+		super.logExecutionInfo();
+		if(logFile != null) {
+			try {
+				DecimalFormat df = new DecimalFormat("##.#");
+				BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true));
+				writer.write("Number lines in the file: " + totalCount);
+				writer.newLine();
+				writer.write("Number of lines extracted: " + lineCount);
+				writer.newLine();
+				writer.write("Percentage of lines extracted: " + df.format((double)lineCount / totalCount * 100) + "%");
+				writer.newLine();
+				writer.newLine();
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
