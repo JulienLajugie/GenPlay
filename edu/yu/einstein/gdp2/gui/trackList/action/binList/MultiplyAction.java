@@ -28,7 +28,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class MultiplyByAction extends TrackListAction {
+public final class MultiplyAction extends TrackListAction {
 
 	private static final long serialVersionUID = -2313977686484948489L; 	// generated ID
 	private static final String 	ACTION_NAME = "Multiply By";			// action name
@@ -43,10 +43,10 @@ public final class MultiplyByAction extends TrackListAction {
 
 
 	/**
-	 * Creates an instance of {@link MultiplyByAction}
+	 * Creates an instance of {@link MultiplyAction}
 	 * @param trackList a {@link TrackList}
 	 */
-	public MultiplyByAction(TrackList trackList) {
+	public MultiplyAction(TrackList trackList) {
 		super(trackList);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);

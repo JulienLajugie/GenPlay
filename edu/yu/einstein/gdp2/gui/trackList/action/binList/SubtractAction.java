@@ -31,9 +31,9 @@ import yu.einstein.gdp2.util.Utils;
 public final class SubtractAction extends TrackListAction {
 
 	private static final long serialVersionUID = -2313977686484948489L; // generated ID
-	private static final String 	ACTION_NAME = "Subtract";			// action name
+	private static final String 	ACTION_NAME = "Subtract By";		// action name
 	private static final String 	DESCRIPTION = 
-		"Subtract the selected track with another one";					// tooltip
+		"Subtract the selected track by another one";					// tooltip
 
 
 	/**

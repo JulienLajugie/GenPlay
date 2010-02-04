@@ -6,9 +6,14 @@ package yu.einstein.gdp2.util;
 
 import java.awt.Color;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -17,10 +22,12 @@ import java.util.ArrayList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class History {
-	private ArrayList<String> history;
-	private ArrayList<String> undo;
-	private ArrayList<String> redo;
+public final class History implements Serializable {
+	
+	private static final long serialVersionUID = -1385318410072807666L;	// generated ID
+	private ArrayList<String> history;	// history
+	private ArrayList<String> undo;		// undo history
+	private ArrayList<String> redo;		// redo history
 
 
 	/**
@@ -55,12 +62,13 @@ public final class History {
 	 * Adds an element to the history.
 	 * @param s String describing the last action performed.
 	 */
+	@SuppressWarnings("unchecked")
 	public void add(String s) {
-		if (undo == null) {
+		/*if (undo == null) {
 			undo = new ArrayList<String>();
-		} 
+		} */
 		if (history.size() > 0) {
-			undo.add(history.get(history.size() - 1));
+			undo = (ArrayList<String>)history.clone();
 		}
 		history.add(s);
 		redo = null;	
@@ -151,5 +159,24 @@ public final class History {
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 		writer.write(this.toString());
 		writer.close();
+	}
+	
+	
+	/**
+	 * Performs a deep clone of the current {@link History}.
+	 * @return a new History
+	 */
+	public History deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ((History)ois.readObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

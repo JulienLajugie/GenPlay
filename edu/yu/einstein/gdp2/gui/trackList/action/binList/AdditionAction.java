@@ -31,7 +31,7 @@ import yu.einstein.gdp2.util.Utils;
 public final class AdditionAction extends TrackListAction {
 
 	private static final long serialVersionUID = -2313977686484948489L; // generated ID
-	private static final String 	ACTION_NAME = "Add";				// action name
+	private static final String 	ACTION_NAME = "Add To";				// action name
 	private static final String 	DESCRIPTION = 
 		"Add the selected track to another one";						// tooltip
 

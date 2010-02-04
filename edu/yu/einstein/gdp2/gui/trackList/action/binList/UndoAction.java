@@ -13,6 +13,7 @@ import javax.swing.KeyStroke;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.TrackListAction;
+import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
 
 
 /**
@@ -59,10 +60,18 @@ public final class UndoAction extends TrackListAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (trackList.getSelectedTrack() instanceof BinListTrack) {
-			BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+			final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 			if (selectedTrack != null) {
-				selectedTrack.undo();
-			}		
+				new ActionWorker<Void>(trackList) {
+					@Override
+					protected Void doAction() {
+						selectedTrack.undo();
+						return null;
+					}
+					@Override
+					protected void doAtTheEnd(Void actionResult) {};
+				}.execute();		
+			}
 		}
 	}
 }

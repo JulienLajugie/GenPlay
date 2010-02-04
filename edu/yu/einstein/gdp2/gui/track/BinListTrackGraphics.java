@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.io.ByteArrayOutputStream;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -28,11 +29,11 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	private static final long serialVersionUID = 1745399422702517182L;	// generated ID
 
 	private final ChromosomeManager chromosomeManager;	// ChromosomeManager
-	private BinList		initialBinList;					// Value of the BinList when the track is created
-	private BinList 	binList;						// Value of the displayed BinList
-	private BinList		undoBinList = null;				// BinList used to restore when undo
-	private BinList		redoBinList = null;				// BinList used to restore when redo
-	private History		history = null;					// History containing a description of the actions done
+	private BinList 				binList;			// Value of the displayed BinList
+	private ByteArrayOutputStream	initialBinList;		// Value of the BinList when the track is created (the BinList is serialized and zipped)
+	private ByteArrayOutputStream	undoBinList = null;	// BinList used to restore when undo (the BinList is serialized and zipped)
+	private ByteArrayOutputStream	redoBinList = null;	// BinList used to restore when redo (the BinList is serialized and zipped)
+	private History					history = null;		// History containing a description of the actions done
 
 
 	/**
@@ -48,8 +49,12 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	protected BinListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, ChromosomeManager chromosomeManager, BinList binList) {
 		super(zoomManager, displayedGenomeWindow, BinListOperations.min(binList), BinListOperations.max(binList));
 		this.chromosomeManager = chromosomeManager;
-		this.initialBinList = binList;
-		this.binList = initialBinList;
+		try {
+			this.initialBinList = BinListOperations.serializeAndZip(binList);
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while loading the track");
+		}
+		this.binList = binList;
 		this.history = new History();
 	}
 
@@ -57,19 +62,15 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	@Override
 	public void copyTo(TrackGraphics trackGraphics) {
 		super.copyTo(trackGraphics);
-		((BinListTrackGraphics)trackGraphics).initialBinList = this.initialBinList.deepClone();
+		((BinListTrackGraphics)trackGraphics).initialBinList = this.initialBinList;
 		((BinListTrackGraphics)trackGraphics).binList = this.binList.deepClone();
 		if (undoBinList != null) {
-			((BinListTrackGraphics)trackGraphics).undoBinList = this.undoBinList.deepClone();
+			((BinListTrackGraphics)trackGraphics).undoBinList = this.undoBinList;
 		}
 		if (redoBinList != null) {
-			((BinListTrackGraphics)trackGraphics).redoBinList = this.redoBinList.deepClone();
+			((BinListTrackGraphics)trackGraphics).redoBinList = this.redoBinList;
 		}
-		if (getName() != null) {
-			((BinListTrackGraphics)trackGraphics).history.add("Copy of track " + getName());
-		} else {
-			((BinListTrackGraphics)trackGraphics).history.add("Track created by copy");
-		}
+		((BinListTrackGraphics)trackGraphics).history = this.history.deepClone();
 	}
 
 
@@ -267,7 +268,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void setBinList(BinList binList, String description) {
 		try {
 			history.add(description);
-			undoBinList = this.binList;
+			undoBinList = BinListOperations.serializeAndZip(this.binList);
 			redoBinList = null;
 			this.binList = binList;
 			yMin = BinListOperations.min(binList);
@@ -285,9 +286,9 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	public void resetBinList() {
 		try {
-			undoBinList = binList;
+			undoBinList = BinListOperations.serializeAndZip(binList);
 			redoBinList = null;
-			binList = initialBinList.deepClone();
+			binList = BinListOperations.unzipAndUnserialize(initialBinList);
 			yMin = BinListOperations.min(binList);
 			yMax = BinListOperations.max(binList);
 			repaint();
@@ -306,8 +307,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void undo() {
 		try {
 			if (undoBinList != null) {
-				redoBinList = binList;
-				binList = undoBinList;
+				redoBinList = BinListOperations.serializeAndZip(binList);
+				binList = BinListOperations.unzipAndUnserialize(undoBinList);
 				undoBinList = null;
 				yMin = BinListOperations.min(binList);
 				yMax = BinListOperations.max(binList);
@@ -327,8 +328,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void redo() {
 		try {
 			if (redoBinList != null) {
-				undoBinList = binList;
-				binList = redoBinList;
+				undoBinList = BinListOperations.serializeAndZip(binList);
+				binList = BinListOperations.unzipAndUnserialize(redoBinList);
 				redoBinList = null;
 				yMin = BinListOperations.min(binList);
 				yMax = BinListOperations.max(binList);

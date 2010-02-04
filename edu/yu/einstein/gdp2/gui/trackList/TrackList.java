@@ -41,7 +41,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.Log2Action;
 import yu.einstein.gdp2.gui.trackList.action.binList.Log2WithDamperAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MaximumAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MinimumAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.MultiplyByAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.MultiplyAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
@@ -176,7 +176,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(Log2WithDamperAction.ACTION_KEY, new Log2WithDamperAction(this));
 		getActionMap().put(MaximumAction.ACTION_KEY, new MaximumAction(this));
 		getActionMap().put(MinimumAction.ACTION_KEY, new MinimumAction(this));
-		getActionMap().put(MultiplyByAction.ACTION_KEY, new MultiplyByAction(this));
+		getActionMap().put(MultiplyAction.ACTION_KEY, new MultiplyAction(this));
 		getActionMap().put(NormalizeAction.ACTION_KEY, new NormalizeAction(this));
 		getActionMap().put(RedoAction.ACTION_KEY, new RedoAction(this));
 		getActionMap().put(ResetAction.ACTION_KEY, new ResetAction(this));

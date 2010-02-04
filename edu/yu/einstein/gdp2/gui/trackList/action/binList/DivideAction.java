@@ -31,7 +31,7 @@ import yu.einstein.gdp2.util.Utils;
 public final class DivideAction extends TrackListAction {
 
 	private static final long serialVersionUID = -5871594574432175665L; // generated ID
-	private static final String 	ACTION_NAME = "Divide";				// action name
+	private static final String 	ACTION_NAME = "Divide By";			// action name
 	private static final String 	DESCRIPTION = 
 		"Divide the selected track by another one";						// tooltip
 

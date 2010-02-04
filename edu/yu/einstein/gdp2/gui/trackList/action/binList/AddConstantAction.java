@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.trackList.action.binList;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 
@@ -62,9 +61,14 @@ public final class AddConstantAction extends TrackListAction {
 			final Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to add: f(x)=x + C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
 				final BinList binList = ((BinListTrack)selectedTrack).getBinList();
-				final String description = "add constant C = " + constant;
 				final DataPrecision precision = Utils.choosePrecision(getRootPane());
 				if (precision != null) {
+					final String description;
+					if (precision != binList.getPrecision()) {
+						description = "add constant C = " + constant + ", precision changed: New Precision = " + precision;
+					} else {
+						description = "add constant C = " + constant;
+					}
 					// thread for the action
 					new ActionWorker<BinList>(trackList) {
 						@Override
@@ -74,13 +78,10 @@ public final class AddConstantAction extends TrackListAction {
 						@Override
 						protected void doAtTheEnd(BinList actionResult) {
 							selectedTrack.setBinList(actionResult, description);
-							if (precision != binList.getPrecision()) {
-								selectedTrack.getHistory().add("Precision Changed: Precision = " + precision, Color.gray);
-							}
 						}
-					}.execute();					
+					}.execute();
 				}
 			}
-		}		
+		}
 	}
 }

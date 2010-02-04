@@ -4597,3 +4597,35 @@ Number lines in the file: 539688
 Number of lines extracted: 539688
 Percentage of lines extracted: 100%
 
+-------------------------------------------------------------------
+Extraction - 2010/02/04 12:46:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1a_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 539688
+Number of lines extracted: 539688
+Percentage of lines extracted: 100%
+
+-------------------------------------------------------------------
+Extraction - 2010/02/04 12:46:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_G1b_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 539520
+Number of lines extracted: 539520
+Percentage of lines extracted: 100%
+
+-------------------------------------------------------------------
+Extraction - 2010/02/04 12:46:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\lympho_S_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 540076
+Number of lines extracted: 540076
+Percentage of lines extracted: 100%
+
+-------------------------------------------------------------------
+Extraction - 2010/02/04 14:20:30
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 83 seconds
+Number lines in the file: 22981001
+Number of lines extracted: 22981001
+Percentage of lines extracted: 100%
+

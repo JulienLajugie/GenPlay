@@ -24,7 +24,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.Log2Action;
 import yu.einstein.gdp2.gui.trackList.action.binList.Log2WithDamperAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MaximumAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MinimumAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.MultiplyByAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.MultiplyAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
@@ -115,7 +115,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiCorrelation = new JMenuItem(actionMap.get(CorrelationAction.ACTION_KEY));		
 		jmiAdd = new JMenuItem(actionMap.get(AdditionAction.ACTION_KEY));
 		jmiSubtract = new JMenuItem(actionMap.get(SubtractAction.ACTION_KEY));
-		jmiMultiply = new JMenuItem(actionMap.get(MultiplyByAction.ACTION_KEY));
+		jmiMultiply = new JMenuItem(actionMap.get(MultiplyAction.ACTION_KEY));
 		jmiDivide = new JMenuItem(actionMap.get(DivideAction.ACTION_KEY));
 		jmiThresholdFilter = new JMenuItem(actionMap.get(ThresholdFilterAction.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));

@@ -471,8 +471,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 
 	/**
-	 * Clones the current BinList.
-	 * @return A new BinList.
+	 * Performs a deep clone of the current BinList
+	 * @return a new BinList
 	 */
 	public BinList deepClone() {
 		try {

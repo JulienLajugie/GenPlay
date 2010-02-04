@@ -5,13 +5,19 @@
 package yu.einstein.gdp2.core.list.binList;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
@@ -914,4 +920,29 @@ public class BinListOperations {
 		}
 		return resultList;
 	}
+
+
+	public static BinList unzipAndUnserialize(ByteArrayOutputStream baos) throws IOException, ClassNotFoundException {
+		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		GZIPInputStream gz = new GZIPInputStream(bais);
+		ObjectInputStream ois = new ObjectInputStream(gz);
+		BinList binList = (BinList)ois.readObject();
+		ois.close();
+		gz.close();
+		return binList;
+	}
+	
+	public static ByteArrayOutputStream serializeAndZip(BinList binList) throws IOException, ClassNotFoundException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		GZIPOutputStream gz = new GZIPOutputStream(baos);
+		ObjectOutputStream oos = new ObjectOutputStream(gz);
+		oos.writeObject(binList);
+		oos.flush();
+		oos.close();
+		gz.flush();
+		gz.close();
+		return baos;
+	}
+
+
 }

@@ -13,6 +13,7 @@ import javax.swing.KeyStroke;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.trackList.action.TrackListAction;
+import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
 
 
 /**
@@ -61,7 +62,15 @@ public final class PasteAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track selectedTrack = trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			trackList.pasteCopiedTrack();
+			new ActionWorker<Void>(trackList) {
+				@Override
+				protected Void doAction() {
+					trackList.pasteCopiedTrack();
+					return null;
+				}
+				@Override
+				protected void doAtTheEnd(Void actionResult) {}
+			}.execute();
 		}
 	}
 }
