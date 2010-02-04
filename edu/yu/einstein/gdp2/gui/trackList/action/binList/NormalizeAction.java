@@ -57,7 +57,7 @@ public final class NormalizeAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {		
-			final Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("0"), 0, 1000000000, 1000000).intValue();
+			final Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("0"), 0, 1000000000, 1000000);
 			if(factor != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action

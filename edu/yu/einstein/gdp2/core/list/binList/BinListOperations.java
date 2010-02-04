@@ -250,7 +250,7 @@ public class BinListOperations {
 				while ((j < binList1.size(i)) && (j < binList2.size(i))) {
 					if ((binList1.get(i, j) != 0) && (binList2.get(i, j) != 0)) {
 						mean1 += binList1.get(i, j);
-						mean2 += binList1.get(i, j);
+						mean2 += binList2.get(i, j);
 						n++;
 					}
 					j++;
@@ -312,57 +312,6 @@ public class BinListOperations {
 				for(int j = 0; j < binList1.size(i); j++) {
 					if ((j < binList2.size(i)) && (binList2.get(i, j) != 0)) {
 						resultList.set(i, j, binList1.get(i, j) / binList2.get(i, j));
-					} else {
-						resultList.set(i, j, 0d);
-					}
-				}
-			}
-		}
-		return resultList;
-	}
-
-
-	/**
-	 * Applies a filter on a {@link BinList} selecting the windows above a specified threshold.
-	 * The result is returned in a new BinList.
-	 * @param binList
-	 * @param filterType type of filter. Can be pass the high values or the low values
-	 * @param threshold the selected windows must be above this value
-	 * @param nbConsecutiveValues select only if there is x consecutive windows above the threshold
-	 * @param precision precision of the result {@link BinList} 
-	 * @return a new {@link BinList} with only the selected windows
-	 * @throws IllegalArgumentException if the filter is not correct
-	 */
-	public static BinList thresholdFilter(BinList binList, FilterType filterType, double threshold, int nbConsecutiveValues, DataPrecision precision) throws IllegalArgumentException {
-		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
-		for(short i = 0; i < binList.size(); i++)  {
-			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
-				resultList.add(null);
-			} else {
-				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
-				resultList.add(listToAdd);
-				for (int j = 0; j < binList.size(i) - nbConsecutiveValues; j++) {
-					boolean selected = true;
-					int k = 0;
-					// we accept a window if there is nbConsecutiveValues above or under the filter
-					while ((selected) && (k < nbConsecutiveValues)) {
-						// depending on the filter type we accept values above or under the threshold
-						if (filterType == FilterType.LOW_PASS_FILTER) {
-							selected = binList.get(i, j + k) <= threshold;
-						} else if (filterType == FilterType.HIGH_PASS_FILTER) {
-							selected = binList.get(i, j + k) >= threshold;
-						} else {
-							throw new IllegalArgumentException("Invalid filter type");
-						}
-						k++;
-					}
-					if (selected) {
-						while ((j < binList.size(i)) && 
-								(((binList.get(i, j) >= threshold) && (filterType == FilterType.HIGH_PASS_FILTER)) ||
-										(binList.get(i, j) <= threshold) && (filterType == FilterType.LOW_PASS_FILTER))) {
-							resultList.set(i, j, binList.get(i, j));
-							j++;
-						}
 					} else {
 						resultList.set(i, j, 0d);
 					}
@@ -571,6 +520,37 @@ public class BinListOperations {
 
 
 	/**
+	 * Applies the function f(x) = log2(x) to each element x of the specified BinList. 
+	 * Returns the result in a new BinList
+	 * @param binList
+	 * @param precision precision of the data of the result list
+	 * @return a new binList resulting of the calculation
+	 */
+	public static BinList log2(BinList binList, DataPrecision precision) {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// we want to calculate the log2 for each element
+				for (int j = 0; j < binList.size(i); j++) {
+					// log is defined on R+*
+					if(binList.get(i, j) > 0) {
+						// change of base: logb(x) = logk(x) / logk(b)
+						resultList.set(i, j, Math.log(binList.get(i, j)) / Math.log(2));
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
 	 * Applies the function f(x) = log2(x + damper) - log2(average + damper) to each element x of the current BinList. 
 	 * Returns the result in a new BinList
 	 * @param binList
@@ -599,37 +579,6 @@ public class BinListOperations {
 					if (binList.get(i, j) + damper > 0) {
 						// change of base: logb(x) = logk(x) / logk(b)
 						resultList.set(i, j, Math.log(binList.get(i, j) + damper) / Math.log(2) - logMean);
-					} else {
-						resultList.set(i, j, 0d);
-					}
-				}
-			}
-		}
-		return resultList;
-	}
-
-
-	/**
-	 * Applies the function f(x) = log2(x) to each element x of the specified BinList. 
-	 * Returns the result in a new BinList
-	 * @param binList
-	 * @param precision precision of the data of the result list
-	 * @return a new binList resulting of the calculation
-	 */
-	public static BinList log2(BinList binList, DataPrecision precision) {
-		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
-		for(short i = 0; i < binList.size(); i++) {
-			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
-				resultList.add(null);
-			} else {
-				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
-				resultList.add(listToAdd);
-				// we want to calculate the log2 for each element
-				for (int j = 0; j < binList.size(i); j++) {
-					// log is defined on R+*
-					if(binList.get(i, j) > 0) {
-						// change of base: logb(x) = logk(x) / logk(b)
-						resultList.set(i, j, Math.log(binList.get(i, j)) / Math.log(2));
 					} else {
 						resultList.set(i, j, 0d);
 					}
@@ -791,8 +740,8 @@ public class BinListOperations {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param binList a {@link BinList}
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -810,8 +759,7 @@ public class BinListOperations {
 		return scoreCount;
 	}
 	
-
-
+	
 	/**
 	 * Searches the peaks of a specified {@link BinList}. We consider a point as a peak when the 
 	 * moving standard deviation = <i>nbSDAccepted</i> * global standard deviation.
@@ -858,6 +806,27 @@ public class BinListOperations {
 			}			
 		}
 		return resultList;		
+	}
+	
+
+
+	/**
+	 * Zips and serializes a BinList into a {@link ByteArrayOutputStream}
+	 * @param binList a {@link BinList}
+	 * @return a ByteArrayOutputStream
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public static ByteArrayOutputStream serializeAndZip(BinList binList) throws IOException, ClassNotFoundException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		GZIPOutputStream gz = new GZIPOutputStream(baos);
+		ObjectOutputStream oos = new ObjectOutputStream(gz);
+		oos.writeObject(binList);
+		oos.flush();
+		oos.close();
+		gz.flush();
+		gz.close();
+		return baos;
 	}
 
 	
@@ -922,6 +891,64 @@ public class BinListOperations {
 	}
 
 
+	/**
+	 * Applies a filter on a {@link BinList} selecting the windows above a specified threshold.
+	 * The result is returned in a new BinList.
+	 * @param binList
+	 * @param filterType type of filter. Can be pass the high values or the low values
+	 * @param threshold the selected windows must be above this value
+	 * @param nbConsecutiveValues select only if there is x consecutive windows above the threshold
+	 * @param precision precision of the result {@link BinList} 
+	 * @return a new {@link BinList} with only the selected windows
+	 * @throws IllegalArgumentException if the filter is not correct
+	 */
+	public static BinList thresholdFilter(BinList binList, FilterType filterType, double threshold, int nbConsecutiveValues, DataPrecision precision) throws IllegalArgumentException {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++)  {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				for (int j = 0; j < binList.size(i) - nbConsecutiveValues; j++) {
+					boolean selected = true;
+					int k = 0;
+					// we accept a window if there is nbConsecutiveValues above or under the filter
+					while ((selected) && (k < nbConsecutiveValues)) {
+						// depending on the filter type we accept values above or under the threshold
+						if (filterType == FilterType.LOW_PASS_FILTER) {
+							selected = binList.get(i, j + k) <= threshold;
+						} else if (filterType == FilterType.HIGH_PASS_FILTER) {
+							selected = binList.get(i, j + k) >= threshold;
+						} else {
+							throw new IllegalArgumentException("Invalid filter type");
+						}
+						k++;
+					}
+					if (selected) {
+						while ((j < binList.size(i)) && 
+								(((binList.get(i, j) >= threshold) && (filterType == FilterType.HIGH_PASS_FILTER)) ||
+										(binList.get(i, j) <= threshold) && (filterType == FilterType.LOW_PASS_FILTER))) {
+							resultList.set(i, j, binList.get(i, j));
+							j++;
+						}
+					} else {
+						resultList.set(i, j, 0d);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+	
+	
+	/**
+	 * Unzips and unserializes a {@link ByteArrayOutputStream} and returns a {@link BinList}
+	 * @param baos a {@link ByteArrayOutputStream}
+	 * @return a BinList 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	public static BinList unzipAndUnserialize(ByteArrayOutputStream baos) throws IOException, ClassNotFoundException {
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		GZIPInputStream gz = new GZIPInputStream(bais);
@@ -931,18 +958,4 @@ public class BinListOperations {
 		gz.close();
 		return binList;
 	}
-	
-	public static ByteArrayOutputStream serializeAndZip(BinList binList) throws IOException, ClassNotFoundException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		GZIPOutputStream gz = new GZIPOutputStream(baos);
-		ObjectOutputStream oos = new ObjectOutputStream(gz);
-		oos.writeObject(binList);
-		oos.flush();
-		oos.close();
-		gz.flush();
-		gz.close();
-		return baos;
-	}
-
-
 }
