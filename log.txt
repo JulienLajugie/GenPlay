@@ -4669,3 +4669,11 @@ Number lines in the file: 540076
 Number of lines extracted: 540076
 Percentage of lines extracted: 100%
 
+-------------------------------------------------------------------
+Extraction - 2010/02/05 10:04:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 28868
+Number of lines extracted: 28482
+Percentage of lines extracted: 98.7%
+
