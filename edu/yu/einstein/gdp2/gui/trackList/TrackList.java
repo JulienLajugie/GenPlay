@@ -54,8 +54,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.SubtractAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ThresholdFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.UndoAction;
 import yu.einstein.gdp2.gui.trackList.action.curve.AppearanceAction;
-import yu.einstein.gdp2.gui.trackList.action.curve.ScoreMaxAction;
-import yu.einstein.gdp2.gui.trackList.action.curve.ScoreMinAction;
+import yu.einstein.gdp2.gui.trackList.action.curve.SetYAxisAction;
 import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadBinListTrackAction;
 import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadGeneListTrackAction;
 import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadRepeatFamilyListTrackAction;
@@ -156,8 +155,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ExtractIntervalAction.ACTION_KEY, new ExtractIntervalAction(this));
 		// add curve track actions
 		getActionMap().put(AppearanceAction.ACTION_KEY, new AppearanceAction(this));
-		getActionMap().put(ScoreMaxAction.ACTION_KEY, new ScoreMaxAction(this));
-		getActionMap().put(ScoreMinAction.ACTION_KEY, new ScoreMinAction(this));
+		getActionMap().put(SetYAxisAction.ACTION_KEY, new SetYAxisAction(this));
 		// add SCWList actions
 		getActionMap().put(GenerateBinListAction.ACTION_KEY, new GenerateBinListAction(this));
 		// add binlist actions
