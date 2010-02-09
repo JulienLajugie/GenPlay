@@ -119,7 +119,6 @@ public abstract class TextFileExtractor extends Extractor {
 				writer.newLine();
 				writer.write("Percentage of lines extracted: " + df.format((double)lineCount / totalCount * 100) + "%");
 				writer.newLine();
-				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();

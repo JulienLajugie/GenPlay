@@ -4677,3 +4677,1847 @@ Number lines in the file: 28868
 Number of lines extracted: 28482
 Percentage of lines extracted: 98.7%
 
+-------------------------------------------------------------------
+Extraction - 2010/02/05 15:40:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_G1_1_eland_extended.elx
+-------------------------------------------------------------------
+Extraction - 2010/02/05 15:42:12
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_G1_1_eland_extended.elx
+-------------------------------------------------------------------
+Extraction - 2010/02/05 15:44:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_G1_1_eland_extended.elx
+-------------------------------------------------------------------
+Extraction - 2010/02/05 15:45:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_G1_1_eland_extended.elx
+Extraction done. Time elapsed: 113 seconds
+Number lines in the file: 16934995
+Number of lines extracted: 10885472
+Percentage of lines extracted: 64.3%
+
+NM: 642781
+Percentage of NM: 3.8%
+QC: 353040
+Percentage of QC: 2.1%
+Multi match: 5045232
+Percentage of multimatch: 29.8%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.2%	1%	0.2%	8.4%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.5%	1%	0.2%	8.7%
+chr3		6.1%	0.8%	0.2%	7%
+chr4		5.3%	0.7%	0.2%	6.2%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.4%	0.7%	0.1%	6.2%
+chr6		5%	0.7%	0.1%	5.8%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.5%	0.6%	0.1%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.5%	0.6%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.6%	0.5%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.2%	0.6%	0.2%	4.9%
+chr11		4.3%	0.6%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.1%	0.5%	0.1%	4.7%
+chr13		2.8%	0.4%	0.1%	3.3%
+chr14		2.8%	0.4%	0.1%	3.2%
+chr15		2.6%	0.3%	0.1%	3%
+chr16		2.6%	0.4%	0.1%	3.1%
+chr17		2.6%	0.4%	0.1%	3.1%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.3%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.8%	0.3%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.2%	0.3%	0.1%	2.5%
+chr21		1.1%	0.2%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.3%	0.2%	0%	1.5%
+chrX		2%	0.2%	0.1%	2.3%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	85.9%	11.5%	2.6%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/05 15:48:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_G1_1_eland_extended.elx
+Extraction done. Time elapsed: 113 seconds
+Number lines in the file: 16934995
+Number of lines extracted: 10885472
+Percentage of lines extracted: 64.3%
+
+NM: 642781
+Percentage of NM: 3.8%
+QC: 353040
+Percentage of QC: 2.1%
+Multi match: 5045232
+Percentage of multimatch: 29.8%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.2%	1%	0.2%	8.4%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.5%	1%	0.2%	8.7%
+chr3		6.1%	0.8%	0.2%	7%
+chr4		5.3%	0.7%	0.2%	6.2%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.4%	0.7%	0.1%	6.2%
+chr6		5%	0.7%	0.1%	5.8%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.5%	0.6%	0.1%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.5%	0.6%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.6%	0.5%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.2%	0.6%	0.2%	4.9%
+chr11		4.3%	0.6%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.1%	0.5%	0.1%	4.7%
+chr13		2.8%	0.4%	0.1%	3.3%
+chr14		2.8%	0.4%	0.1%	3.2%
+chr15		2.6%	0.3%	0.1%	3%
+chr16		2.6%	0.4%	0.1%	3.1%
+chr17		2.6%	0.4%	0.1%	3.1%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.3%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.8%	0.3%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.2%	0.3%	0.1%	2.5%
+chr21		1.1%	0.2%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.3%	0.2%	0%	1.5%
+chrX		2%	0.2%	0.1%	2.3%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	85.9%	11.5%	2.6%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/05 15:54:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_G1_2_eland_extended.elx
+Extraction done. Time elapsed: 183 seconds
+Number lines in the file: 16934995
+Number of lines extracted: 10757185
+Percentage of lines extracted: 63.5%
+
+NM: 602616
+Percentage of NM: 3.6%
+QC: 554483
+Percentage of QC: 3.3%
+Multi match: 5012668
+Percentage of multimatch: 29.6%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.6%	0.6%	0.2%	8.4%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.9%	0.6%	0.2%	8.7%
+chr3		6.4%	0.5%	0.1%	7%
+chr4		5.6%	0.4%	0.1%	6.2%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.7%	0.4%	0.1%	6.2%
+chr6		5.2%	0.4%	0.1%	5.8%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.8%	0.4%	0.1%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.7%	0.4%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.4%	0.4%	0.2%	4.9%
+chr11		4.5%	0.4%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.3%	0.1%	4.7%
+chr13		3%	0.2%	0.1%	3.3%
+chr14		2.9%	0.2%	0.1%	3.2%
+chr15		2.7%	0.2%	0.1%	3%
+chr16		2.7%	0.2%	0.1%	3.1%
+chr17		2.8%	0.2%	0.1%	3.1%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.9%	0.2%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.3%	0.2%	0.1%	2.5%
+chr21		1.1%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.3%	0.1%	0%	1.5%
+chrX		2.1%	0.1%	0%	2.3%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	90.5%	7.3%	2.2%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/05 16:00:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_S1_1_eland_extended.elx
+Extraction done. Time elapsed: 115 seconds
+Number lines in the file: 10659357
+Number of lines extracted: 7047284
+Percentage of lines extracted: 66.1%
+
+NM: 259875
+Percentage of NM: 2.4%
+QC: 251573
+Percentage of QC: 2.4%
+Multi match: 3096260
+Percentage of multimatch: 29%
+Chromosome	0MM	1MM	2MM	Total
+chr1		8.3%	0.6%	0.1%	9%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.7%	0.5%	0.1%	8.4%
+chr3		6.3%	0.4%	0.1%	6.8%
+chr4		5%	0.4%	0.1%	5.5%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.4%	0.4%	0.1%	5.9%
+chr6		5%	0.4%	0.1%	5.5%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.7%	0.3%	0.1%	5.1%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.5%	0.3%	0.1%	4.9%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.4%	0.3%	0.1%	4.8%
+chr11		4.8%	0.4%	0.1%	5.3%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.5%	0.3%	0.1%	4.9%
+chr13		2.6%	0.2%	0%	2.9%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.9%	0.2%	0%	3.1%
+chr16		3%	0.2%	0.1%	3.3%
+chr17		3.3%	0.2%	0.1%	3.5%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.2%	0%	2.6%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2.5%	0.2%	0%	2.7%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.5%	0.2%	0%	2.8%
+chr21		1.1%	0.1%	0%	1.2%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.6%	0.1%	0%	1.7%
+chrX		2.2%	0.1%	0%	2.4%
+chrY		0.1%	0%	0%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.2%
+Total:	91.9%	6.7%	1.4%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:04:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_S1_2_eland_extended.elx
+Extraction done. Time elapsed: 70 seconds
+Number lines in the file: 10659357
+Number of lines extracted: 6968325
+Percentage of lines extracted: 65.4%
+
+NM: 254113
+Percentage of NM: 2.4%
+QC: 381876
+Percentage of QC: 3.6%
+Multi match: 3050705
+Percentage of multimatch: 28.6%
+Chromosome	0MM	1MM	2MM	Total
+chr1		8.3%	0.6%	0.1%	9%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.7%	0.5%	0.1%	8.4%
+chr3		6.3%	0.4%	0.1%	6.8%
+chr4		5%	0.4%	0.1%	5.5%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.4%	0.4%	0.1%	5.9%
+chr6		5%	0.4%	0.1%	5.5%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.7%	0.3%	0.1%	5.1%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.6%	0.3%	0.1%	4.9%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.4%	0.3%	0.1%	4.8%
+chr11		4.8%	0.4%	0.1%	5.3%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.5%	0.3%	0.1%	4.9%
+chr13		2.7%	0.2%	0%	2.9%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.9%	0.2%	0%	3.1%
+chr16		3%	0.2%	0.1%	3.3%
+chr17		3.2%	0.2%	0.1%	3.5%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.2%	0%	2.6%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2.4%	0.2%	0.1%	2.7%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.5%	0.2%	0%	2.8%
+chr21		1.1%	0.1%	0%	1.2%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.6%	0.1%	0%	1.7%
+chrX		2.2%	0.1%	0%	2.4%
+chrY		0.1%	0%	0%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.2%
+Total:	92%	6.5%	1.5%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:07:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_S2_1_eland_extended.elx
+Extraction done. Time elapsed: 144 seconds
+Number lines in the file: 21360588
+Number of lines extracted: 13656431
+Percentage of lines extracted: 63.9%
+
+NM: 1024052
+Percentage of NM: 4.8%
+QC: 370448
+Percentage of QC: 1.7%
+Multi match: 6301020
+Percentage of multimatch: 29.5%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.5%	0.7%	0.2%	8.5%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.6%	0.7%	0.3%	8.6%
+chr3		6.3%	0.6%	0.2%	7%
+chr4		5.3%	0.5%	0.2%	6%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.5%	0.5%	0.2%	6.1%
+chr6		5.1%	0.5%	0.2%	5.7%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.7%	0.4%	0.2%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.5%	0.4%	0.1%	5.1%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.6%	0.3%	0.1%	4.1%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.2%	0.4%	0.2%	4.8%
+chr11		4.4%	0.4%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.4%	0.1%	4.8%
+chr13		2.8%	0.3%	0.1%	3.2%
+chr14		2.9%	0.3%	0.1%	3.2%
+chr15		2.7%	0.3%	0.1%	3%
+chr16		2.6%	0.3%	0.1%	3%
+chr17		2.6%	0.3%	0.1%	3%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.2%	0.1%	2.7%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.8%	0.2%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.2%	0.2%	0.1%	2.5%
+chr21		1%	0.1%	0%	1.2%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.2%	0.1%	0%	1.4%
+chrX		2.8%	0.2%	0.1%	3.1%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.2%	0.1%	0%	0.3%
+Total:	88.6%	8.4%	3%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:11:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_S2_2_eland_extended.elx
+Extraction done. Time elapsed: 147 seconds
+Number lines in the file: 21360588
+Number of lines extracted: 13440595
+Percentage of lines extracted: 62.9%
+
+NM: 1090684
+Percentage of NM: 5.1%
+QC: 656236
+Percentage of QC: 3.1%
+Multi match: 6164272
+Percentage of multimatch: 28.9%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.4%	0.8%	0.3%	8.5%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.5%	0.8%	0.3%	8.6%
+chr3		6.2%	0.6%	0.2%	7%
+chr4		5.3%	0.5%	0.2%	6%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.4%	0.5%	0.2%	6.1%
+chr6		5%	0.5%	0.2%	5.7%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.6%	0.5%	0.2%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.5%	0.5%	0.2%	5.1%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.6%	0.4%	0.1%	4.1%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.2%	0.5%	0.2%	4.8%
+chr11		4.3%	0.5%	0.2%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.2%	0.4%	0.2%	4.8%
+chr13		2.8%	0.3%	0.1%	3.2%
+chr14		2.8%	0.3%	0.1%	3.2%
+chr15		2.6%	0.3%	0.1%	3%
+chr16		2.6%	0.3%	0.1%	3%
+chr17		2.6%	0.3%	0.1%	3%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.2%	0.1%	2.7%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.7%	0.2%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.2%	0.2%	0.1%	2.5%
+chr21		1%	0.1%	0.1%	1.2%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.2%	0.1%	0.1%	1.4%
+chrX		2.8%	0.2%	0.1%	3.1%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.2%	0.1%	0%	0.3%
+Total:	87.2%	9.2%	3.5%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:14:57
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_S3_1_eland_extended.elx
+Extraction done. Time elapsed: 128 seconds
+Number lines in the file: 18227822
+Number of lines extracted: 12043121
+Percentage of lines extracted: 66.1%
+
+NM: 725587
+Percentage of NM: 4%
+QC: 386156
+Percentage of QC: 2.1%
+Multi match: 5065357
+Percentage of multimatch: 27.8%
+Chromosome	0MM	1MM	2MM	Total
+chr1		8.2%	0.7%	0.2%	9%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.4%	0.6%	0.2%	8.2%
+chr3		6.1%	0.5%	0.1%	6.7%
+chr4		4.7%	0.4%	0.1%	5.1%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.2%	0.4%	0.1%	5.7%
+chr6		4.8%	0.4%	0.1%	5.3%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.6%	0.4%	0.1%	5.1%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.4%	0.4%	0.1%	4.8%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.4%	0.4%	0.1%	4.9%
+chr11		4.8%	0.4%	0.1%	5.3%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.5%	0.4%	0.1%	5%
+chr13		2.5%	0.2%	0.1%	2.7%
+chr14		2.9%	0.2%	0.1%	3.2%
+chr15		2.8%	0.2%	0.1%	3.2%
+chr16		3.2%	0.3%	0.1%	3.6%
+chr17		3.4%	0.3%	0.1%	3.8%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.3%	0.2%	0.1%	2.5%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2.7%	0.3%	0.1%	3%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.6%	0.2%	0.1%	2.9%
+chr21		1%	0.1%	0%	1.2%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.7%	0.1%	0%	1.8%
+chrX		2.1%	0.1%	0.1%	2.3%
+chrY		0.1%	0%	0%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	90.3%	7.6%	2.2%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:18:04
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\hES_S3_2_eland_extended.elx
+Extraction done. Time elapsed: 133 seconds
+Number lines in the file: 18227822
+Number of lines extracted: 11957639
+Percentage of lines extracted: 65.6%
+
+NM: 698321
+Percentage of NM: 3.8%
+QC: 589347
+Percentage of QC: 3.2%
+Multi match: 4974997
+Percentage of multimatch: 27.3%
+Chromosome	0MM	1MM	2MM	Total
+chr1		8.1%	0.7%	0.2%	9%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.4%	0.7%	0.2%	8.2%
+chr3		6%	0.5%	0.1%	6.7%
+chr4		4.6%	0.4%	0.1%	5.2%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.2%	0.4%	0.1%	5.7%
+chr6		4.8%	0.4%	0.1%	5.3%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.6%	0.4%	0.1%	5.2%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.3%	0.4%	0.1%	4.8%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.7%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.4%	0.4%	0.1%	4.9%
+chr11		4.7%	0.4%	0.1%	5.3%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.4%	0.4%	0.1%	5%
+chr13		2.5%	0.2%	0.1%	2.7%
+chr14		2.9%	0.3%	0.1%	3.2%
+chr15		2.8%	0.3%	0.1%	3.1%
+chr16		3.1%	0.3%	0.1%	3.6%
+chr17		3.3%	0.3%	0.1%	3.8%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.3%	0.2%	0.1%	2.5%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2.6%	0.3%	0.1%	3%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.6%	0.2%	0.1%	2.9%
+chr21		1%	0.1%	0%	1.2%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.6%	0.2%	0%	1.8%
+chrX		2.1%	0.2%	0.1%	2.3%
+chrY		0.1%	0%	0%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	89.5%	8.1%	2.4%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:22:07
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_G1a_1_eland_extended.elx
+Extraction done. Time elapsed: 78 seconds
+Number lines in the file: 11586071
+Number of lines extracted: 7266011
+Percentage of lines extracted: 62.7%
+
+NM: 338580
+Percentage of NM: 2.9%
+QC: 265494
+Percentage of QC: 2.3%
+Multi match: 3709665
+Percentage of multimatch: 32%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.7%	0.5%	0.1%	8.4%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		8%	0.6%	0.2%	8.7%
+chr3		6.4%	0.4%	0.1%	7%
+chr4		5.6%	0.4%	0.1%	6.1%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.7%	0.4%	0.1%	6.2%
+chr6		5.3%	0.4%	0.1%	5.7%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.8%	0.3%	0.1%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.8%	0.3%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.5%	0.3%	0.1%	5%
+chr11		4.6%	0.3%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.4%	0.3%	0.1%	4.7%
+chr13		3%	0.2%	0%	3.3%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.8%	0.2%	0%	3%
+chr16		2.9%	0.2%	0.1%	3.1%
+chr17		2.8%	0.2%	0.1%	3.1%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.9%	0.1%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.4%	0.2%	0%	2.6%
+chr21		1.2%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.4%	0.1%	0%	1.5%
+chrX		2.1%	0.1%	0%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	91.7%	6.6%	1.8%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:24:23
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_G1a_2_eland_extended.elx
+Extraction done. Time elapsed: 77 seconds
+Number lines in the file: 11586071
+Number of lines extracted: 7184088
+Percentage of lines extracted: 62%
+
+NM: 331940
+Percentage of NM: 2.9%
+QC: 409037
+Percentage of QC: 3.5%
+Multi match: 3654751
+Percentage of multimatch: 31.5%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.7%	0.6%	0.1%	8.4%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		8%	0.6%	0.2%	8.7%
+chr3		6.4%	0.5%	0.1%	7%
+chr4		5.6%	0.4%	0.1%	6.1%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.7%	0.4%	0.1%	6.2%
+chr6		5.2%	0.4%	0.1%	5.7%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.8%	0.4%	0.1%	5.3%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.8%	0.3%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.5%	0.3%	0.1%	5%
+chr11		4.5%	0.3%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.3%	0.1%	4.7%
+chr13		3%	0.2%	0%	3.3%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.8%	0.2%	0%	3%
+chr16		2.8%	0.2%	0.1%	3.1%
+chr17		2.8%	0.2%	0.1%	3.1%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		1.9%	0.2%	0.1%	2.1%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.4%	0.2%	0%	2.6%
+chr21		1.2%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.4%	0.1%	0%	1.5%
+chrX		2.1%	0.1%	0%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	91.4%	6.8%	1.9%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:27:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_G1b_1_eland_extended.elx
+Extraction done. Time elapsed: 84 seconds
+Number lines in the file: 11859169
+Number of lines extracted: 7289951
+Percentage of lines extracted: 61.5%
+
+NM: 378762
+Percentage of NM: 3.2%
+QC: 256961
+Percentage of QC: 2.2%
+Multi match: 3926986
+Percentage of multimatch: 33.1%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.8%	0.5%	0.1%	8.5%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.9%	0.5%	0.2%	8.6%
+chr3		6.4%	0.4%	0.1%	6.9%
+chr4		5.4%	0.4%	0.1%	5.9%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.6%	0.4%	0.1%	6.1%
+chr6		5.2%	0.4%	0.1%	5.6%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.8%	0.3%	0.1%	5.2%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.8%	0.3%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.9%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.6%	0.3%	0.1%	5.1%
+chr11		4.6%	0.3%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.3%	0.1%	4.7%
+chr13		2.9%	0.2%	0%	3.2%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.8%	0.2%	0%	3.1%
+chr16		3%	0.2%	0.1%	3.2%
+chr17		2.9%	0.2%	0.1%	3.2%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2%	0.1%	0.1%	2.2%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.5%	0.2%	0%	2.7%
+chr21		1.2%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.5%	0.1%	0%	1.6%
+chrX		2.1%	0.1%	0%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	92%	6.3%	1.8%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 10:29:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_G1b_1_eland_extended.elx
+Extraction done. Time elapsed: 78 seconds
+Number lines in the file: 11859169
+Number of lines extracted: 7289951
+Percentage of lines extracted: 61.5%
+
+NM: 378762
+Percentage of NM: 3.2%
+QC: 256961
+Percentage of QC: 2.2%
+Multi match: 3926986
+Percentage of multimatch: 33.1%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.8%	0.5%	0.1%	8.5%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.9%	0.5%	0.2%	8.6%
+chr3		6.4%	0.4%	0.1%	6.9%
+chr4		5.4%	0.4%	0.1%	5.9%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.6%	0.4%	0.1%	6.1%
+chr6		5.2%	0.4%	0.1%	5.6%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.8%	0.3%	0.1%	5.2%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.8%	0.3%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.9%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.6%	0.3%	0.1%	5.1%
+chr11		4.6%	0.3%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.3%	0.1%	4.7%
+chr13		2.9%	0.2%	0%	3.2%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.8%	0.2%	0%	3.1%
+chr16		3%	0.2%	0.1%	3.2%
+chr17		2.9%	0.2%	0.1%	3.2%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2%	0.1%	0.1%	2.2%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.5%	0.2%	0%	2.7%
+chr21		1.2%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.5%	0.1%	0%	1.6%
+chrX		2.1%	0.1%	0%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	92%	6.3%	1.8%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 11:29:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_G1b_2_eland_extended.elx
+Extraction done. Time elapsed: 80 seconds
+Number lines in the file: 11859169
+Number of lines extracted: 7202792
+Percentage of lines extracted: 60.7%
+
+NM: 371426
+Percentage of NM: 3.1%
+QC: 403718
+Percentage of QC: 3.4%
+Multi match: 3874896
+Percentage of multimatch: 32.7%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.8%	0.5%	0.1%	8.5%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.9%	0.5%	0.2%	8.6%
+chr3		6.4%	0.4%	0.1%	6.9%
+chr4		5.4%	0.4%	0.1%	5.9%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.6%	0.4%	0.1%	6.1%
+chr6		5.2%	0.4%	0.1%	5.6%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.8%	0.3%	0.1%	5.2%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.8%	0.3%	0.1%	5.2%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.9%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.6%	0.3%	0.1%	5.1%
+chr11		4.6%	0.3%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.3%	0.1%	4.7%
+chr13		2.9%	0.2%	0%	3.2%
+chr14		3%	0.2%	0%	3.2%
+chr15		2.8%	0.2%	0%	3.1%
+chr16		2.9%	0.2%	0.1%	3.2%
+chr17		2.9%	0.2%	0.1%	3.2%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.8%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2%	0.2%	0.1%	2.2%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.5%	0.2%	0%	2.7%
+chr21		1.2%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.4%	0.1%	0%	1.6%
+chrX		2%	0.1%	0%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	91.9%	6.3%	1.8%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 11:33:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_S_1_eland_extended.elx
+Extraction done. Time elapsed: 121 seconds
+Number lines in the file: 17801777
+Number of lines extracted: 11029013
+Percentage of lines extracted: 62%
+
+NM: 801716
+Percentage of NM: 4.5%
+QC: 332777
+Percentage of QC: 1.9%
+Multi match: 5628880
+Percentage of multimatch: 31.6%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.8%	0.6%	0.2%	8.6%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.8%	0.6%	0.2%	8.6%
+chr3		6.3%	0.5%	0.1%	6.9%
+chr4		5.2%	0.4%	0.1%	5.8%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.5%	0.4%	0.1%	6.1%
+chr6		5.1%	0.4%	0.1%	5.7%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.7%	0.4%	0.1%	5.2%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.6%	0.4%	0.1%	5.1%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.5%	0.4%	0.2%	5%
+chr11		4.5%	0.4%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.3%	0.1%	4.8%
+chr13		2.8%	0.2%	0.1%	3.1%
+chr14		2.9%	0.2%	0.1%	3.2%
+chr15		2.8%	0.2%	0.1%	3.1%
+chr16		2.9%	0.3%	0.1%	3.3%
+chr17		2.9%	0.2%	0.1%	3.3%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.5%	0.2%	0.1%	2.7%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2%	0.2%	0.1%	2.2%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.5%	0.2%	0.1%	2.7%
+chr21		1.1%	0.1%	0%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.5%	0.1%	0%	1.6%
+chrX		2%	0.1%	0.1%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	90.4%	7.3%	2.3%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 11:48:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\New Aligment\Lympho_S_2_eland_extended.elx
+Extraction done. Time elapsed: 123 seconds
+Number lines in the file: 17801777
+Number of lines extracted: 10873870
+Percentage of lines extracted: 61.1%
+
+NM: 815715
+Percentage of NM: 4.6%
+QC: 560135
+Percentage of QC: 3.1%
+Multi match: 5542661
+Percentage of multimatch: 31.1%
+Chromosome	0MM	1MM	2MM	Total
+chr1		7.7%	0.6%	0.2%	8.6%
+chr1_gl000191_random		0%	0%	0%	0%
+chr1_gl000192_random		0%	0%	0%	0%
+chr2		7.8%	0.6%	0.2%	8.6%
+chr3		6.3%	0.5%	0.1%	6.9%
+chr4		5.2%	0.4%	0.1%	5.8%
+chr4_ctg9_hap1		0%	0%	0%	0%
+chr4_gl000193_random		0%	0%	0%	0%
+chr4_gl000194_random		0%	0%	0%	0%
+chr5		5.5%	0.4%	0.1%	6.1%
+chr6		5.1%	0.4%	0.1%	5.7%
+chr6_apd_hap1		0%	0%	0%	0%
+chr6_cox_hap2		0%	0%	0%	0%
+chr6_dbb_hap3		0%	0%	0%	0%
+chr6_mann_hap4		0%	0%	0%	0%
+chr6_mcf_hap5		0%	0%	0%	0%
+chr6_qbl_hap6		0%	0%	0%	0%
+chr6_ssto_hap7		0%	0%	0%	0%
+chr7		4.7%	0.4%	0.1%	5.2%
+chr7_gl000195_random		0%	0%	0%	0%
+chr8		4.6%	0.4%	0.1%	5.1%
+chr8_gl000196_random		0%	0%	0%	0%
+chr8_gl000197_random		0%	0%	0%	0%
+chr9		3.8%	0.3%	0.1%	4.2%
+chr9_gl000198_random		0%	0%	0%	0%
+chr9_gl000199_random		0%	0%	0%	0%
+chr9_gl000200_random		0%	0%	0%	0%
+chr9_gl000201_random		0%	0%	0%	0%
+chr10		4.5%	0.4%	0.2%	5%
+chr11		4.5%	0.4%	0.1%	5%
+chr11_gl000202_random		0%	0%	0%	0%
+chr12		4.3%	0.4%	0.1%	4.8%
+chr13		2.8%	0.2%	0.1%	3.1%
+chr14		2.9%	0.2%	0.1%	3.2%
+chr15		2.8%	0.2%	0.1%	3.1%
+chr16		2.9%	0.3%	0.1%	3.2%
+chr17		2.9%	0.3%	0.1%	3.3%
+chr17_ctg5_hap1		0%	0%	0%	0%
+chr17_gl000203_random		0%	0%	0%	0%
+chr17_gl000204_random		0%	0%	0%	0%
+chr17_gl000205_random		0%	0%	0%	0%
+chr17_gl000206_random		0%	0%	0%	0%
+chr18		2.4%	0.2%	0.1%	2.7%
+chr18_gl000207_random		0%	0%	0%	0%
+chr19		2%	0.2%	0.1%	2.2%
+chr19_gl000208_random		0%	0%	0%	0%
+chr19_gl000209_random		0%	0%	0%	0%
+chr20		2.4%	0.2%	0.1%	2.7%
+chr21		1.1%	0.1%	0.1%	1.3%
+chr21_gl000210_random		0%	0%	0%	0%
+chr22		1.4%	0.1%	0%	1.6%
+chrX		2%	0.1%	0.1%	2.2%
+chrY		0.1%	0%	0.1%	0.2%
+chrUn_gl000211		0%	0%	0%	0%
+chrUn_gl000212		0%	0%	0%	0%
+chrUn_gl000213		0%	0%	0%	0%
+chrUn_gl000214		0%	0%	0%	0%
+chrUn_gl000215		0%	0%	0%	0%
+chrUn_gl000216		0%	0%	0%	0%
+chrUn_gl000217		0%	0%	0%	0%
+chrUn_gl000218		0%	0%	0%	0%
+chrUn_gl000219		0%	0%	0%	0%
+chrUn_gl000220		0%	0%	0%	0%
+chrUn_gl000221		0%	0%	0%	0%
+chrUn_gl000222		0%	0%	0%	0%
+chrUn_gl000223		0%	0%	0%	0%
+chrUn_gl000224		0%	0%	0%	0%
+chrUn_gl000225		0%	0%	0%	0%
+chrUn_gl000226		0%	0%	0%	0%
+chrUn_gl000227		0%	0%	0%	0%
+chrUn_gl000228		0%	0%	0%	0%
+chrUn_gl000229		0%	0%	0%	0%
+chrUn_gl000230		0%	0%	0%	0%
+chrUn_gl000231		0%	0%	0%	0%
+chrUn_gl000232		0%	0%	0%	0%
+chrUn_gl000233		0%	0%	0%	0%
+chrUn_gl000234		0%	0%	0%	0%
+chrUn_gl000235		0%	0%	0%	0%
+chrUn_gl000236		0%	0%	0%	0%
+chrUn_gl000237		0%	0%	0%	0%
+chrUn_gl000238		0%	0%	0%	0%
+chrUn_gl000239		0%	0%	0%	0%
+chrUn_gl000240		0%	0%	0%	0%
+chrUn_gl000241		0%	0%	0%	0%
+chrUn_gl000242		0%	0%	0%	0%
+chrUn_gl000243		0%	0%	0%	0%
+chrUn_gl000244		0%	0%	0%	0%
+chrUn_gl000245		0%	0%	0%	0%
+chrUn_gl000246		0%	0%	0%	0%
+chrUn_gl000247		0%	0%	0%	0%
+chrUn_gl000248		0%	0%	0%	0%
+chrUn_gl000249		0%	0%	0%	0%
+chrM		0.1%	0%	0%	0.1%
+Total:	90.1%	7.5%	2.4%		100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 14:31:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ES_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 615801
+Number of lines extracted: 615801
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 14:43:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 14:43:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 14:44:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:04:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 28868
+Number of lines extracted: 28482
+Percentage of lines extracted: 98.7%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:05:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ES_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 615801
+Number of lines extracted: 615801
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:16:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:16:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:17:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:17:24
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:17:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number lines in the file: 258618
+Number of lines extracted: 258618
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 15:18:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31451
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/08 16:53:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ES_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 615801
+Number of lines extracted: 615801
+Percentage of lines extracted: 100%
