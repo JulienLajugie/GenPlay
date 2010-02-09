@@ -18,6 +18,7 @@ import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
+import yu.einstein.gdp2.gui.fileFilter.BedGraphWith0Filter;
 import yu.einstein.gdp2.gui.fileFilter.ElandExtendedFilter;
 import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
@@ -177,7 +178,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the BinList files
 	 */
 	public static ExtendedFileFilter[] getBinListFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new BedGraphWith0Filter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new SerializedBinListFilter()};
 		return stripeFileFilters;
 	}
 
