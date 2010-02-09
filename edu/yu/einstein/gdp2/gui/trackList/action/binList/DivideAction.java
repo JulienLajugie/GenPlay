@@ -54,7 +54,7 @@ public final class DivideAction extends TrackListAction {
 
 
 	/**
-	 *  Divides the selected {@link Track} by another one. Creates a new track from the result
+	 * Divides the selected {@link Track} by another one. Creates a new track from the result
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

@@ -14,6 +14,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AverageAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivideAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.GaussAction;
@@ -65,6 +66,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiLog2WithDamper;		// menu log2 BinListTrack with damper
 	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
 	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
+	private final JMenuItem		jmiConcatenate;			// menu concatenate
 	
 	private final JMenuItem		jmiMinimum;				// menu minimum of the BinListTrack
 	private final JMenuItem		jmiMaximum;				// menu maximum of the BinListTrack
@@ -106,6 +108,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiLog2WithDamper = new JMenuItem(actionMap.get(Log2WithDamperAction.ACTION_KEY));
 		jmiNormalize = new JMenuItem(actionMap.get(NormalizeAction.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(ShowRepartitionAction.ACTION_KEY));
+		jmiConcatenate = new JMenuItem(actionMap.get(ConcatenateAction.ACTION_KEY));
 		jmiMinimum = new JMenuItem(actionMap.get(MinimumAction.ACTION_KEY));
 		jmiMaximum = new JMenuItem(actionMap.get(MaximumAction.ACTION_KEY));
 		jmiBinCount = new JMenuItem(actionMap.get(BinCountAction.ACTION_KEY));
@@ -135,6 +138,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiLog2WithDamper);
 		jmOperation.add(jmiNormalize);
 		jmOperation.add(jmiShowRepartition);
+		jmOperation.add(jmiConcatenate);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiMinimum);
 		jmOperation.add(jmiMaximum);

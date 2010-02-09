@@ -6521,3 +6521,24 @@ Extraction done. Time elapsed: 1 seconds
 Number lines in the file: 615801
 Number of lines extracted: 615801
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/09 12:40:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_S_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 561857
+Number of lines extracted: 561857
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/09 12:41:21
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/09 12:55:43
+File: C:\Documents and Settings\Administrator\My Documents\Nimble-ES-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 105089
+Number of lines extracted: 5241
+Percentage of lines extracted: 5%
