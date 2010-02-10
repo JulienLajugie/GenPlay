@@ -47,7 +47,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 * @throws BinListNoDataException
 	 */
 	protected BinListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, ChromosomeManager chromosomeManager, BinList binList) {
-		super(zoomManager, displayedGenomeWindow, BinListOperations.min(binList), BinListOperations.max(binList));
+		super(zoomManager, displayedGenomeWindow, BinListOperations.minDisplayedScore(binList), BinListOperations.maxDisplayedScore(binList));
 		this.chromosomeManager = chromosomeManager;
 		try {
 			this.initialBinList = BinListOperations.serializeAndZip(binList);
@@ -271,8 +271,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 			undoBinList = BinListOperations.serializeAndZip(this.binList);
 			redoBinList = null;
 			this.binList = binList;
-			yMin = BinListOperations.min(binList);
-			yMax = BinListOperations.max(binList);
+			yMin = BinListOperations.minDisplayedScore(binList);
+			yMax = BinListOperations.maxDisplayedScore(binList);
 			repaint();
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while adding a damper");
@@ -289,8 +289,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 			undoBinList = BinListOperations.serializeAndZip(binList);
 			redoBinList = null;
 			binList = BinListOperations.unzipAndUnserialize(initialBinList);
-			yMin = BinListOperations.min(binList);
-			yMax = BinListOperations.max(binList);
+			yMin = BinListOperations.minDisplayedScore(binList);
+			yMax = BinListOperations.maxDisplayedScore(binList);
 			repaint();
 			history.reset();
 		}
@@ -310,8 +310,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 				redoBinList = BinListOperations.serializeAndZip(binList);
 				binList = BinListOperations.unzipAndUnserialize(undoBinList);
 				undoBinList = null;
-				yMin = BinListOperations.min(binList);
-				yMax = BinListOperations.max(binList);
+				yMin = BinListOperations.minDisplayedScore(binList);
+				yMax = BinListOperations.maxDisplayedScore(binList);
 				repaint();
 				history.undo();
 			} 
@@ -331,8 +331,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 				undoBinList = BinListOperations.serializeAndZip(binList);
 				binList = BinListOperations.unzipAndUnserialize(redoBinList);
 				redoBinList = null;
-				yMin = BinListOperations.min(binList);
-				yMax = BinListOperations.max(binList);
+				yMin = BinListOperations.minDisplayedScore(binList);
+				yMax = BinListOperations.maxDisplayedScore(binList);
 				repaint();
 				history.redo();
 			}

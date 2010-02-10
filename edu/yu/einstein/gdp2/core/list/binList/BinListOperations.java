@@ -603,6 +603,20 @@ public class BinListOperations {
 		return max;
 	}
 
+	
+	/**
+	 * @param binList a {@link BinList}
+	 * @return the maximum score to display on a BinList track
+	 */
+	public static double maxDisplayedScore(BinList binList) {
+		final double realMax = average(binList) * 2; 
+		int maxScoreDisplayed = 1;
+		while (realMax / maxScoreDisplayed > 1) {
+			maxScoreDisplayed *= 10;
+		}
+		return maxScoreDisplayed;
+	}
+	
 
 	/**
 	 * @param binList
@@ -617,7 +631,16 @@ public class BinListOperations {
 		}
 		return min;
 	}
-
+	
+	
+	/**
+	 * @param binList a {@link BinList}
+	 * @return the minimum score to display on a BinList track
+	 */
+	public static double minDisplayedScore(BinList binList) {
+		return Math.min(0, min(binList));
+	}
+	
 
 	/**
 	 * @param binList1
