@@ -6542,3 +6542,45 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 105089
 Number of lines extracted: 5241
 Percentage of lines extracted: 5%
+-------------------------------------------------------------------
+Extraction - 2010/02/11 15:46:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/11 15:53:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_S_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 561857
+Number of lines extracted: 561857
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/11 15:59:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/11 16:40:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 23 seconds
+Number lines in the file: 5057005
+Number of lines extracted: 5016106
+Percentage of lines extracted: 99.2%
+-------------------------------------------------------------------
+Extraction - 2010/02/11 16:54:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31451
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/11 16:55:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 28868
+Number of lines extracted: 28482
+Percentage of lines extracted: 98.7%

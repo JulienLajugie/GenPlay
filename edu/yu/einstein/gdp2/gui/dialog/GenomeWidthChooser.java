@@ -70,7 +70,7 @@ public final class GenomeWidthChooser extends JDialog {
 			}
 		});
 
-		jftfGenomeWidth = new JFormattedTextField(new DecimalFormat("0"));
+		jftfGenomeWidth = new JFormattedTextField(new DecimalFormat("###,###,###"));
 		jftfGenomeWidth.setValue(validGenomeWidth);
 		jftfGenomeWidth.setColumns(8);
 		jftfGenomeWidth.addPropertyChangeListener(new PropertyChangeListener() {				
