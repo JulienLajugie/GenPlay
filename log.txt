@@ -6619,3 +6619,24 @@ Extraction done. Time elapsed: 3 seconds
 Number lines in the file: 258618
 Number of lines extracted: 258618
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/12 15:19:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES-G1-extracted-sorted.bgr
+Extraction done. Time elapsed: 115 seconds
+Number lines in the file: 21274824
+Number of lines extracted: 21274799
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/12 15:53:33
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/12 15:54:09
+File: C:\Documents and Settings\Administrator\My Documents\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307915
+Number of lines extracted: 21793
+Percentage of lines extracted: 7.1%

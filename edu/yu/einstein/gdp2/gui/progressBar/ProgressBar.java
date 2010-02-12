@@ -26,7 +26,7 @@ public final class ProgressBar extends JInternalFrame {
 	 * @param container {@link Container} displaying the progressbar popup
 	 */
 	public ProgressBar(Container container) {
-		super("Loading in progress...", false, false, false, false);
+		super("Operation in progress...", false, false, false, false);
 		setResizable(false);
 		setFrameIcon(null);
 		// Create the progress bar
