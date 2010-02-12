@@ -82,14 +82,6 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 				} 
 			} 
 		}
-		if (arg0.getButton() == MouseEvent.BUTTON3) {
-			if (!selected) {
-				selected = true;
-				firePropertyChange("selected", false, true);
-			}
-			setBackground(ROLLOVER_COLOR);
-			firePropertyChange("trackRightClicked", false, true);
-		}
 	}
 
 
@@ -114,12 +106,20 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		if (isEnabled()) {
+		if ((isEnabled()) && (arg0.getButton() == MouseEvent.BUTTON1)) {
 			if (getHeight() - arg0.getY() <= MOVE_RESIZE_ZONE_HEIGHT) {
 				startDragY = arg0.getY();
 			} else {
 				trackDragged = true;
 			}			
+		}
+		if (arg0.getButton() == MouseEvent.BUTTON3) {
+			if (!selected) {
+				selected = true;
+				firePropertyChange("selected", false, true);
+			}
+			setBackground(ROLLOVER_COLOR);
+			firePropertyChange("trackRightClicked", false, true);
 		}
 	}
 
