@@ -76,9 +76,10 @@ public class ConcatenateAction extends TrackListAction {
 				final JFileChooser jfc = new JFileChooser(defaultDirectory);
 				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				jfc.setDialogTitle("Save As");
+				jfc.setSelectedFile(new File(".txt"));
 				final int returnVal = jfc.showSaveDialog(getRootPane());
 				if(returnVal == JFileChooser.APPROVE_OPTION) {	
-					final File selectedFile = jfc.getSelectedFile();
+					final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), "txt");
 					if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 						// create arrays with the selected BinLists and names
 						final BinList[] binListArray = new BinList[selectedTracks.size()];

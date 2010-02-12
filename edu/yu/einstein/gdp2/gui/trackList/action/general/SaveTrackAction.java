@@ -21,6 +21,7 @@ import yu.einstein.gdp2.core.writer.binListWriter.BinListWriterFactory;
 import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriter;
 import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriterFactory;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
+import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.Track;
@@ -100,12 +101,13 @@ public final class SaveTrackAction extends TrackListAction {
 		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
 		final int returnVal = jfc.showSaveDialog(getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			final File selectedFile = jfc.getSelectedFile();
+			final ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+			final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 				final BinList data = selectedTrack.getBinList();
 				final String name = selectedTrack.getName();
 				try {
-					final BinListWriter blw = BinListWriterFactory.getBinListWriter(trackList.getChromosomeManager(), selectedFile, data, name, jfc.getFileFilter());
+					final BinListWriter blw = BinListWriterFactory.getBinListWriter(trackList.getChromosomeManager(), selectedFile, data, name, selectedFilter);
 					// thread for the action
 					new ActionWorker<Void>(trackList) {
 						@Override
@@ -145,12 +147,13 @@ public final class SaveTrackAction extends TrackListAction {
 		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
 		final int returnVal = jfc.showSaveDialog(getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			final File selectedFile = jfc.getSelectedFile();
+			final ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+			final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 				final GeneList data = selectedTrack.getData();
 				final String name = selectedTrack.getName();
 				try {
-					final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(trackList.getChromosomeManager(), selectedFile, data, name, jfc.getFileFilter());
+					final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(trackList.getChromosomeManager(), selectedFile, data, name, selectedFilter);
 					// thread for the action
 					new ActionWorker<Void>(trackList) {
 						@Override

@@ -5,8 +5,6 @@
 package yu.einstein.gdp2.util;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -37,37 +35,20 @@ public class Utils {
 
 
 	/**
-	 * @param file a {@link File}
-	 * @return the extension of the file. null if none
+	 * Checks if the specified {@link File} name ends with the specified extension.
+	 * If not adds the extension to the file name. 
+	 * @param file a file 
+	 * @param extension a file extension
+	 * @return a File with the specified extension
 	 */
-	final public static String getExtension(File file) {
-		String fileName = file.getName();
-		if (fileName == null) {
-			return null;
-		}
-		int dotIndex =  fileName.lastIndexOf('.');
-		if ((dotIndex > 0) && (dotIndex < fileName.length() - 1)) {
-			return fileName.substring(dotIndex + 1).toLowerCase().trim();
+	public static File addExtension(File file, String extension) {
+		String currentExtension = getExtension(file);
+		if ((currentExtension == null) || (!currentExtension.equalsIgnoreCase(extension))) {
+			String newFile = file.getPath() + "." + extension;
+			return new File(newFile);
 		} else {
-			return null;
-		}		
-	}
-
-
-	final public static String getFileNameWithoutExtension(File file) {
-		if (file == null) {
-			return null;
+			return file;
 		}
-		String fileName = file.getName();
-		if (fileName == null) {
-			return null;
-		}
-		int dotIndex =  fileName.lastIndexOf('.');
-		if ((dotIndex > 0) && (dotIndex < fileName.length() - 1)) {
-			return fileName.substring(0, dotIndex).toLowerCase().trim();
-		} else {
-			return null;
-		}	
 	}
 
 
@@ -87,42 +68,6 @@ public class Utils {
 		f.delete();
 		return false;
 	}
-
-
-	final public static File chooseFileToSave(Component parentComponent, String title, String defaultDirectory, String defaultFileName, ExtendedFileFilter[] choosableFileFilters, ExtendedFileFilter selectedFilter) {
-		final JFileChooser jfc = new JFileChooser(defaultDirectory);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Track");
-		for (FileFilter currentFilter: choosableFileFilters) {
-			jfc.addChoosableFileFilter(currentFilter);
-		}
-		jfc.setAcceptAllFileFilterUsed(false);
-		
-		selectedFilter = (ExtendedFileFilter)jfc.getChoosableFileFilters()[0];
-		File defaultFile = new File(defaultFileName + "." + selectedFilter.getExtensions()[0]);
-		jfc.setSelectedFile(defaultFile);
-		jfc.addPropertyChangeListener(JFileChooser.FILE_FILTER_CHANGED_PROPERTY, new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-				String fileName = getFileNameWithoutExtension(jfc.getSelectedFile()) + "." + selectedFilter.getExtensions()[0];
-				jfc.setSelectedFile(new File(fileName));
-			}
-		});
-		int returnVal = jfc.showSaveDialog(parentComponent);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = jfc.getSelectedFile();
-			if (cancelBecauseFileExist(parentComponent, selectedFile)) {
-				return null;
-			} else {
-				selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-				return jfc.getSelectedFile();
-			}
-		} else {
-			return null;
-		}			
-	}
-
 
 
 	/**
@@ -157,21 +102,54 @@ public class Utils {
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the stripe files
+	 * A dialog box used to choose a {@link FilterType}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link FilterType} value
 	 */
-	public static ExtendedFileFilter[] getStripeFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
-		return stripeFileFilters;
+	public static FilterType chooseFilterType(Component parentComponent) {
+		return (FilterType)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a type of filter",
+				"Filter Type",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				FilterType.values(),
+				FilterType.HIGH_PASS_FILTER);
 	}
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the scored chromosome window files
+	 * A dialog box used to choose a {@link DataPrecision}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link DataPrecision}
 	 */
-	public static ExtendedFileFilter[] getSCWFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
-		return stripeFileFilters;
+	public static DataPrecision choosePrecision(Component parentComponent) {
+		return (DataPrecision)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a precision for the data of the fixed window list",
+				"Select Data Precision",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				DataPrecision.values(),
+				DataPrecision.PRECISION_32BIT);
 	}	
+
+
+	/**
+	 * A dialog box used to choose a {@link ScoreCalculationMethod}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link ScoreCalculationMethod}
+	 */
+	public static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
+		return (ScoreCalculationMethod)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a method for the calculation of the score",
+				"Score Calculation",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				ScoreCalculationMethod.values(),
+				ScoreCalculationMethod.AVERAGE);
+	}
 
 
 	/**
@@ -180,6 +158,24 @@ public class Utils {
 	public static ExtendedFileFilter[] getBinListFileFilters() {
 		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new BedGraphWith0Filter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new SerializedBinListFilter()};
 		return stripeFileFilters;
+	}
+
+
+	/**
+	 * @param file a {@link File}
+	 * @return the extension of the file. null if none
+	 */
+	final public static String getExtension(File file) {
+		String fileName = file.getName();
+		if (fileName == null) {
+			return null;
+		}
+		int dotIndex =  fileName.lastIndexOf('.');
+		if ((dotIndex > 0) && (dotIndex < fileName.length() - 1)) {
+			return fileName.substring(dotIndex + 1).toLowerCase().trim();
+		} else {
+			return null;
+		}		
 	}
 
 
@@ -202,52 +198,19 @@ public class Utils {
 
 
 	/**
-	 * A dialog box used to choose a {@link DataPrecision}
-	 * @param parentComponent the parent Component for the dialog 
-	 * @return a {@link DataPrecision}
+	 * @return the {@link ExtendedFileFilter} associated to the scored chromosome window files
 	 */
-	public static DataPrecision choosePrecision(Component parentComponent) {
-		return (DataPrecision)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a precision for the data of the fixed window list",
-				"Select Data Precision",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				DataPrecision.values(),
-				DataPrecision.PRECISION_32BIT);
+	public static ExtendedFileFilter[] getSCWFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
+		return stripeFileFilters;
 	}
-
-
+	
+	
 	/**
-	 * A dialog box used to choose a {@link ScoreCalculationMethod}
-	 * @param parentComponent the parent Component for the dialog 
-	 * @return a {@link ScoreCalculationMethod}
+	 * @return the {@link ExtendedFileFilter} associated to the stripe files
 	 */
-	public static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
-		return (ScoreCalculationMethod)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a method for the calculation of the score",
-				"Score Calculation",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				ScoreCalculationMethod.values(),
-				ScoreCalculationMethod.AVERAGE);
-	}
-
-
-	/**
-	 * A dialog box used to choose a {@link FilterType}
-	 * @param parentComponent the parent Component for the dialog 
-	 * @return a {@link FilterType} value
-	 */
-	public static FilterType chooseFilterType(Component parentComponent) {
-		return (FilterType)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a type of filter",
-				"Filter Type",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				FilterType.values(),
-				FilterType.HIGH_PASS_FILTER);
+	public static ExtendedFileFilter[] getStripeFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
+		return stripeFileFilters;
 	}
 }

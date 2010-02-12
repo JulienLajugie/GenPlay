@@ -68,7 +68,7 @@ public final class SaveAsImageAction extends TrackListAction {
 					new ActionWorker<Void>(trackList) {
 						@Override
 						protected Void doAction() {
-							selectedTrack.saveAsImage(saveFC.getSelectedFile());
+							selectedTrack.saveAsImage(Utils.addExtension(saveFC.getSelectedFile(), "jpg"));
 							return null;
 						}
 						@Override
