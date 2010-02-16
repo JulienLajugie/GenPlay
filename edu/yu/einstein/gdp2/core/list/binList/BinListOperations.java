@@ -35,31 +35,6 @@ public class BinListOperations {
 
 
 	/**
-	 * Adds a constant to every value of the specified {@link BinList}
-	 * @param binList 
-	 * @param constant value to add
-	 * @param precision precision of the data of the new {@link BinList} 
-	 * @return A new {@link BinList}
-	 */
-	public static BinList addConstant(BinList binList, double constant, DataPrecision precision) {
-		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
-		for (short i = 0; i < binList.size(); i++) {
-			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
-				resultList.add(null);
-			} else {
-				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
-				resultList.add(listToAdd);
-				// We add a constant to each element
-				for (int j = 0; j < binList.size(i); j++) {
-					resultList.set(i, j, binList.get(i, j) + constant);
-				}
-			}
-		}
-		return resultList;		
-	}
-
-
-	/**
 	 * @param binList1
 	 * @param binList2
 	 * @param precision precision of the result {@link BinList} 
@@ -87,6 +62,34 @@ public class BinListOperations {
 			}
 		}
 		return resultList;
+	}
+
+
+	/**
+	 * Adds a constant to every value of the specified {@link BinList}
+	 * @param binList 
+	 * @param constant value to add
+	 * @param precision precision of the data of the new {@link BinList} 
+	 * @return A new {@link BinList}
+	 */
+	public static BinList addition(BinList binList, double constant, DataPrecision precision) {
+		if (constant == 0) {
+			return binList.deepClone();
+		}
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for (short i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// We add a constant to each element
+				for (int j = 0; j < binList.size(i); j++) {
+					resultList.set(i, j, binList.get(i, j) + constant);
+				}
+			}
+		}
+		return resultList;		
 	}
 
 
@@ -381,6 +384,38 @@ public class BinListOperations {
 			}
 		}
 		return resultList;
+	}
+	
+	
+	/**
+	 * Divides every value of the specified {@link BinList} by a specified constant
+	 * @param binList 
+	 * @param constant 
+	 * @param precision precision of the data of the new {@link BinList} 
+	 * @return a new {@link BinList}
+	 * @throws ArithmeticException when the constant is zero
+	 */
+	public static BinList division(BinList binList, double constant, DataPrecision precision) throws ArithmeticException {
+		if (constant == 0) {
+			throw new ArithmeticException("Division by Zero");
+		}
+		if (constant == 1) {
+			return binList.deepClone();
+		}
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for (short i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// We add a constant to each element
+				for (int j = 0; j < binList.size(i); j++) {
+					resultList.set(i, j, binList.get(i, j) / constant);
+				}
+			}
+		}
+		return resultList;		
 	}
 
 
@@ -705,7 +740,7 @@ public class BinListOperations {
 		return Math.min(0, min(binList));
 	}
 	
-
+	
 	/**
 	 * @param binList1
 	 * @param binList2
@@ -734,6 +769,34 @@ public class BinListOperations {
 			}
 		}
 		return resultList;
+	}
+	
+
+	/**
+	 * Multiplies every value of the specified {@link BinList} by the specified constant
+	 * @param binList 
+	 * @param constant 
+	 * @param precision precision of the data of the new {@link BinList} 
+	 * @return a new {@link BinList}
+	 */
+	public static BinList multiplication(BinList binList, double constant, DataPrecision precision) {
+		if (constant == 1) {
+			return binList.deepClone();
+		}
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for (short i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// We add a constant to each element
+				for (int j = 0; j < binList.size(i); j++) {
+					resultList.set(i, j, binList.get(i, j) * constant);
+				}
+			}
+		}
+		return resultList;		
 	}
 
 
@@ -975,6 +1038,34 @@ public class BinListOperations {
 			}
 		}
 		return resultList;
+	}
+	
+
+	/**
+	 * Subtracts a constant from every value of the specified {@link BinList}
+	 * @param binList 
+	 * @param constant subtracts this value from the {@link BinList}
+	 * @param precision precision of the data of the new {@link BinList} 
+	 * @return A new {@link BinList}
+	 */
+	public static BinList subtraction(BinList binList, double constant, DataPrecision precision) {
+		if (constant == 0) {
+			return binList.deepClone();
+		}
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for (short i = 0; i < binList.size(); i++) {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				// We add a constant to each element
+				for (int j = 0; j < binList.size(i); j++) {
+					resultList.set(i, j, binList.get(i, j) - constant);
+				}
+			}
+		}
+		return resultList;		
 	}
 
 

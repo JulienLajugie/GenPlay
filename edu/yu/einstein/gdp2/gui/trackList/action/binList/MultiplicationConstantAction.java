@@ -21,29 +21,29 @@ import yu.einstein.gdp2.util.Utils;
 
 
 /**
- * Adds a constant to the scores of the selected {@link BinListTrack}
+ * Multiplies the scores of the selected {@link BinListTrack} by a constant
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class AddConstantAction extends TrackListAction {
+public class MultiplicationConstantAction extends TrackListAction {
 
-	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
-	private static final String 	ACTION_NAME = "Add Constant";		// action name
+	private static final long serialVersionUID = 8340235965333128192L;	// generated ID
+	private static final String 	ACTION_NAME = "Multiplication (Constant)";// action name
 	private static final String 	DESCRIPTION = 
-		"Add a constant to the scores of the selected track";			// tooltip
+		"Multiply the scores of the selected track by a constant";		// tooltip
 
 	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "addConstant";
+	public static final String ACTION_KEY = "MultiplicationConstantAction";
 
 
 	/**
-	 * Creates an instance of {@link AddConstantAction}
+	 * Creates an instance of {@link MultiplicationConstantAction}
 	 * @param trackList a {@link TrackList}
 	 */
-	public AddConstantAction(TrackList trackList) {
+	public MultiplicationConstantAction(TrackList trackList) {
 		super(trackList);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -52,28 +52,28 @@ public final class AddConstantAction extends TrackListAction {
 
 
 	/**
-	 * Adds a constant to the scores of the selected {@link BinListTrack}
+	 * Multiplies the scores of the selected {@link BinListTrack} by a constant
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			final Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to add: f(x)=x + C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-			if ((constant != null) && (constant.doubleValue() != 0)) {
+			final Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the score of the track by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			if ((constant != null) && (constant.doubleValue() != 0) && (constant.doubleValue() != 1)) {
 				final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 				final DataPrecision precision = Utils.choosePrecision(getRootPane());
 				if (precision != null) {
 					final String description;
 					if (precision != binList.getPrecision()) {
-						description = "add constant C = " + constant + ", precision changed: New Precision = " + precision;
+						description = "Multiply by constant C = " + constant + ", Precision changed: New Precision = " + precision;
 					} else {
-						description = "add constant C = " + constant;
+						description = "Multiply by constant C = " + constant;
 					}
 					// thread for the action
 					new ActionWorker<BinList>(trackList) {
 						@Override
 						protected BinList doAction() {
-							return BinListOperations.addConstant(binList, constant.doubleValue(), precision);
+							return BinListOperations.multiplication(binList, constant.doubleValue(), precision);
 						}
 						@Override
 						protected void doAtTheEnd(BinList actionResult) {

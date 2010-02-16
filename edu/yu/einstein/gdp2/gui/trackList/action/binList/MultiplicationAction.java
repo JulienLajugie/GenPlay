@@ -24,28 +24,29 @@ import yu.einstein.gdp2.util.Utils;
 
 
 /**
- * Divides the selected {@link Track} by another one. Creates a new track from the result
+ * Multiplies the selected {@link Track} to another one. Creates a new track from the result
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class DivideAction extends TrackListAction {
+public final class MultiplicationAction extends TrackListAction {
 
-	private static final long serialVersionUID = -5871594574432175665L; // generated ID
-	private static final String 	ACTION_NAME = "Divide By";			// action name
+	private static final long serialVersionUID = -2313977686484948489L; 	// generated ID
+	private static final String 	ACTION_NAME = "Multiplication";			// action name
 	private static final String 	DESCRIPTION = 
-		"Divide the selected track by another one";						// tooltip
+		"Multiply the selected track by another one";						// tooltip
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "divide";
+	public static final String ACTION_KEY = "MultiplicationAction";
 
 
 	/**
-	 * Creates an instance of {@link DivideAction}
+	 * Creates an instance of {@link MultiplicationAction}
 	 * @param trackList a {@link TrackList}
 	 */
-	public DivideAction(TrackList trackList) {
+	public MultiplicationAction(TrackList trackList) {
 		super(trackList);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -54,50 +55,46 @@ public final class DivideAction extends TrackListAction {
 
 
 	/**
-	 * Divides the selected {@link Track} by another one. Creates a new track from the result
+	 * Multiplies the selected {@link Track} to another one. Creates a new track from the result
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			final BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Divide the selected track by:", trackList.getBinListTracks());
+			final Track otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose a track to multiply with the selected track:", trackList.getBinListTracks());
 			if(otherTrack != null) {
 				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
 				if (resultTrack != null) {
-					final DataPrecision precision = Utils.choosePrecision(getRootPane());;
+					final DataPrecision precision = Utils.choosePrecision(getRootPane());
 					if (precision != null) {
-						final BinList binList1 = selectedTrack.getBinList();
-						final BinList binList2 = otherTrack.getBinList();
+						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
+						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();
 						// thread for the action
 						new ActionWorker<BinList>(trackList) {
 							@Override
 							protected BinList doAction() {
 								try {
-									return BinListOperations.division(binList1, binList2, precision);
+									return BinListOperations.multiplication(binList1, binList2, precision);
 								} catch (BinListDifferentWindowSizeException e) {
-									ExceptionManager.handleException(getRootPane(), e, "Dividing two tracks with different window sizes is not allowed");
-									return null;
-								} catch (Exception e) {
-									ExceptionManager.handleException(getRootPane(), e, "Error while dividing the tracks");
+									ExceptionManager.handleException(getRootPane(), e, "Multiplying two tracks with different window sizes is not allowed");
 									return null;
 								}
 							}
-
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
 								if (actionResult != null) {
 									int index = resultTrack.getTrackNumber() - 1;
 									BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
 									// add info to the history
-									newTrack.getHistory().add("Result of the division of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
+									newTrack.getHistory().add("Result of the multiplication of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
 									newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " / " + otherTrack.getName(), null);
-								}									
+									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " * " + otherTrack.getName(), null);
+								}								
 							}
 						}.execute();
 					}
 				}
 			}
-		}
-	}		
+		}		
+	}
 }

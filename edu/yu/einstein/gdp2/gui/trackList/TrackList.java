@@ -26,7 +26,7 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.action.SCWList.GenerateBinListAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.AddConstantAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.AdditionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AverageAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
@@ -34,7 +34,8 @@ import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionActi
 import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DensityFilterAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.DivideAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.DivisionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.DivisionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.GaussAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.IndexAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.IndexByChromosomeAction;
@@ -43,7 +44,8 @@ import yu.einstein.gdp2.gui.trackList.action.binList.Log2Action;
 import yu.einstein.gdp2.gui.trackList.action.binList.Log2WithDamperAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MaximumAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MinimumAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.MultiplyAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.MultiplicationAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.MultiplicationConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
@@ -52,7 +54,8 @@ import yu.einstein.gdp2.gui.trackList.action.binList.SearchPeaksAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ShowHistoryAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ShowRepartitionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.StandardDeviationAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.SubtractAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.SubtractionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.SubtractionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ThresholdFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.UndoAction;
 import yu.einstein.gdp2.gui.trackList.action.curve.AppearanceAction;
@@ -161,15 +164,17 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add SCWList actions
 		getActionMap().put(GenerateBinListAction.ACTION_KEY, new GenerateBinListAction(this));
 		// add binlist actions
-		getActionMap().put(AddConstantAction.ACTION_KEY, new AddConstantAction(this));
+		getActionMap().put(AdditionConstantAction.ACTION_KEY, new AdditionConstantAction(this));
 		getActionMap().put(AdditionAction.ACTION_KEY, new AdditionAction(this));
+		getActionMap().put(AdditionConstantAction.ACTION_KEY, new AdditionConstantAction(this));
 		getActionMap().put(AverageAction.ACTION_KEY, new AverageAction(this));
 		getActionMap().put(BinCountAction.ACTION_KEY, new BinCountAction(this));		
 		getActionMap().put(CalculationOnProjectionAction.ACTION_KEY, new CalculationOnProjectionAction(this));
 		getActionMap().put(ConcatenateAction.ACTION_KEY, new ConcatenateAction(this));
 		getActionMap().put(CorrelationAction.ACTION_KEY, new CorrelationAction(this));
 		getActionMap().put(DensityFilterAction.ACTION_KEY, new DensityFilterAction(this));
-		getActionMap().put(DivideAction.ACTION_KEY, new DivideAction(this));
+		getActionMap().put(DivisionAction.ACTION_KEY, new DivisionAction(this));
+		getActionMap().put(DivisionConstantAction.ACTION_KEY, new DivisionConstantAction(this));
 		getActionMap().put(GaussAction.ACTION_KEY, new GaussAction(this));
 		getActionMap().put(IndexAction.ACTION_KEY, new IndexAction(this));
 		getActionMap().put(IndexByChromosomeAction.ACTION_KEY, new IndexByChromosomeAction(this));
@@ -178,7 +183,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(Log2WithDamperAction.ACTION_KEY, new Log2WithDamperAction(this));
 		getActionMap().put(MaximumAction.ACTION_KEY, new MaximumAction(this));
 		getActionMap().put(MinimumAction.ACTION_KEY, new MinimumAction(this));
-		getActionMap().put(MultiplyAction.ACTION_KEY, new MultiplyAction(this));
+		getActionMap().put(MultiplicationAction.ACTION_KEY, new MultiplicationAction(this));
+		getActionMap().put(MultiplicationConstantAction.ACTION_KEY, new MultiplicationConstantAction(this));
 		getActionMap().put(NormalizeAction.ACTION_KEY, new NormalizeAction(this));
 		getActionMap().put(RedoAction.ACTION_KEY, new RedoAction(this));
 		getActionMap().put(ResetAction.ACTION_KEY, new ResetAction(this));
@@ -188,7 +194,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ShowHistoryAction.ACTION_KEY, new ShowHistoryAction(this));
 		getActionMap().put(ShowRepartitionAction.ACTION_KEY, new ShowRepartitionAction(this));
 		getActionMap().put(StandardDeviationAction.ACTION_KEY, new StandardDeviationAction(this));
-		getActionMap().put(SubtractAction.ACTION_KEY, new SubtractAction(this));
+		getActionMap().put(SubtractionAction.ACTION_KEY, new SubtractionAction(this));
+		getActionMap().put(SubtractionConstantAction.ACTION_KEY, new SubtractionConstantAction(this));
 		getActionMap().put(ThresholdFilterAction.ACTION_KEY, new ThresholdFilterAction(this));
 		getActionMap().put(UndoAction.ACTION_KEY, new UndoAction(this));
 	}
