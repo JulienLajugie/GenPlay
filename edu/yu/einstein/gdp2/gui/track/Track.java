@@ -37,8 +37,13 @@ public abstract class Track extends JPanel implements Serializable, PropertyChan
 	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 			// minimum height of a track
 	public static final Border 	REGULAR_BORDER =
 		BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black); 	// regular border of a track
-	public static final Border 	ALT_BORDER = 
-		BorderFactory.createLineBorder(Color.black, 2);				// alternative border of a track
+	public static final Border 	DRAG_START_BORDER = 
+		BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black);	// alternative border when a track is dragged
+	public static final Border 	DRAG_UP_BORDER = 
+		BorderFactory.createMatteBorder(2, 0, 1, 0, Color.black);	// alternative border when a track is dragged up
+	public static final Border 	DRAG_DOWN_BORDER = 
+		BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black);	// alternative border when a track is dragged down
+	
 	private final ArrayList<GenomeWindowListener> listenerList = 
 		new ArrayList<GenomeWindowListener>();						// list of GenomeWindowListener
 	protected TrackHandle 		trackHandle;						// handle of the track

@@ -297,7 +297,13 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 						trackList[draggedOverTrackIndex].setBorder(Track.REGULAR_BORDER);
 					}
 					draggedOverTrackIndex = i;
-					trackList[draggedOverTrackIndex].setBorder(Track.ALT_BORDER);
+					if (draggedOverTrackIndex == draggedTrackIndex) {
+						trackList[draggedOverTrackIndex].setBorder(Track.DRAG_START_BORDER);
+					} else if (draggedOverTrackIndex < draggedTrackIndex) {
+						trackList[draggedOverTrackIndex].setBorder(Track.DRAG_UP_BORDER);
+					} else {
+						trackList[draggedOverTrackIndex].setBorder(Track.DRAG_DOWN_BORDER);
+					}					
 				} 
 			}
 		}
