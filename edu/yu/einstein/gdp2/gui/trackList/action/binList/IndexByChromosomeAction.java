@@ -56,7 +56,7 @@ public final class IndexByChromosomeAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {			
-			final Number saturation = NumberOptionPane.getValue(getRootPane(), "Saturation:", "Enter a value for the saturation:", new DecimalFormat("0.0"), 0, 100, 1);
+			final Number saturation = NumberOptionPane.getValue(getRootPane(), "Saturation:", "Enter a value for the saturation:", new DecimalFormat("###.###%"), 0, 1, 0.01);
 			if(saturation != null) {
 				final Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "Enter minimum indexed value:", new DecimalFormat("0.0"), -1000000, 1000000, 0);
 				if (indexMin != null) {

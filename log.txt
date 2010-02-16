@@ -6640,3 +6640,87 @@ Extraction done. Time elapsed: 2 seconds
 Number lines in the file: 307915
 Number of lines extracted: 21793
 Percentage of lines extracted: 7.1%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 15:20:42
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 15:25:51
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 15:28:18
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 15:35:46
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 15:37:35
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:00:02
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:03:40
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:07:30
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:16:53
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:36:21
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:39:41
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/16 16:47:16
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%

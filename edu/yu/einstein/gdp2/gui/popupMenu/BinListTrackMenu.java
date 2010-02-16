@@ -16,6 +16,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.DensityFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivideAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.GaussAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.IndexAction;
@@ -81,6 +82,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiMultiply;			// menu multiply BinListTrack by another one
 	private final JMenuItem		jmiDivide;				// menu divide BinListTrack by another one
 	private final JMenuItem		jmiThresholdFilter;		// menu threshold filter
+	private final JMenuItem		jmiDensityFilter;		// menu density filter
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
 	private final JMenuItem		jmiCalculOnProjection;	// menu calculation on intervals
@@ -121,6 +123,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiMultiply = new JMenuItem(actionMap.get(MultiplyAction.ACTION_KEY));
 		jmiDivide = new JMenuItem(actionMap.get(DivideAction.ACTION_KEY));
 		jmiThresholdFilter = new JMenuItem(actionMap.get(ThresholdFilterAction.ACTION_KEY));
+		jmiDensityFilter = new JMenuItem(actionMap.get(DensityFilterAction.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
 		jmiCalculOnProjection = new JMenuItem(actionMap.get(CalculationOnProjectionAction.ACTION_KEY));
@@ -152,7 +155,9 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiSubtract);
 		jmOperation.add(jmiMultiply);
 		jmOperation.add(jmiDivide);
+		jmOperation.addSeparator();
 		jmOperation.add(jmiThresholdFilter);
+		jmOperation.add(jmiDensityFilter);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
 		jmOperation.add(jmiCalculOnProjection);

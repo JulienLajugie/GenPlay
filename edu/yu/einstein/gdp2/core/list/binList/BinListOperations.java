@@ -290,6 +290,68 @@ public class BinListOperations {
 		return correlationCoef;
 	}
 
+	
+	/**
+	 * Applies a filter on a {@link BinList} selecting region where there is at least the specified 
+	 * density of bins above (or under depending on the filter type) a specified threshold
+	 * The result is returned in a new BinList.
+	 * @param binList 
+	 * @param filterType type of filter. Can be pass the high values or the low values
+	 * @param threshold the selected windows must be above (or under) this value
+	 * @param density minimum density of windows above (or under) the threshold for a region to be selected (percentage btw 0 and 1)
+	 * @param regionSize size of the region (in number of bins) 
+	 * @param precision precision of the result BinList
+	 * @return a new {@link BinList} with only the selected windows
+	 * @throws IllegalArgumentException if the filter is not correct
+	 */
+	public static BinList densityFilter(BinList binList, FilterType filterType, double threshold, double density, int regionSize, DataPrecision precision) throws IllegalArgumentException {
+		// if percentage is zero, everything is selected
+		if (density == 0) {
+			return binList.deepClone();
+		}		
+		// we calculate the min number of bins above the threshold needed to select a region
+		int minBinCount = (int)Math.ceil(regionSize * density);
+		
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++)  {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				for (int j = 0; j < binList.size(i) - regionSize; j++) {
+					int binSelectedCount = 0;
+					int k = 0;
+					// we accept a window if there is nbConsecutiveValues above or under the filter
+					while ((binSelectedCount < minBinCount) && (k < regionSize) && (j + k < binList.size(i))) {
+						// depending on the filter type we accept values above or under the threshold
+						if (filterType == FilterType.LOW_PASS_FILTER) {
+							if (binList.get(i, j + k) <= threshold) {
+								binSelectedCount++;
+							}
+						} else if (filterType == FilterType.HIGH_PASS_FILTER) { 
+							if (binList.get(i, j + k) >= threshold) {
+								binSelectedCount++;
+							}
+						} else {
+							throw new IllegalArgumentException("Invalid filter type");
+						}
+						k++;
+					}
+					// we calculate where the current region ends
+					k = 0;
+					if (binSelectedCount >= minBinCount) {
+						while ((j + k < binList.size(i)) && (k < regionSize)) {
+							resultList.set(i, j + k, binList.get(i, j + k));
+							k++;
+						}
+					}
+				}
+			}
+		}
+		return resultList;		
+	}
+	
 
 	/**
 	 * @param binList1
@@ -380,15 +442,16 @@ public class BinListOperations {
 	 * Indexes the scores between <i>indexDown</i> and <i>indexUp</i> 
 	 * based on the highest and the lowest value of the whole genome.
 	 * @param binList {@link BinList} to index
-	 * @param saturation percentage of the highest and lowest value saturated
+	 * @param saturation percentage of the highest and lowest value saturated (btw 0 and 1)
 	 * @param indexDown Smallest value of the indexed data
 	 * @param indexUp Greatest value of the indexed data
 	 * @param precision precision of the data of the result {@link BinList}
 	 * @return new {@link BinList} resulting from the indexing
 	 */
 	public static BinList index(BinList binList, double saturation, double indexDown, double indexUp, DataPrecision precision) {
-		double percentUp = (100 - saturation) / 100;
-		double percentDown = saturation / 100;
+		double halfSaturation = saturation / 2;
+		double percentUp = (1 - halfSaturation);
+		double percentDown = halfSaturation;
 		double[] listTmp;
 		int k = 0, totalLength = 0;
 
@@ -457,15 +520,16 @@ public class BinListOperations {
 	 * Indexes the scores between <i>indexDown</i> and <i>indexUp</i> based
 	 * on the highest and the lowest value of each chromosome
 	 * @param binList {@link BinList} to index
-	 * @param saturation percentage of the highest and lowest value saturated
+	 * @param saturation percentage of the highest and lowest value saturated (btw 0 and 1) 
 	 * @param indexDown smallest value of the indexed data
 	 * @param indexUp greatest value of the indexed data
 	 * @param precision precision of the indexed {@link BinList}
 	 * @return new {@link BinList} resulting from the indexing
 	 */
 	public static BinList indexByChromo(BinList binList, double saturation, double indexDown, double indexUp, DataPrecision precision) {
-		double percentUp = (100 - saturation) / 100;
-		double percentDown = saturation / 100;
+		double halfSaturation = saturation / 2;
+		double percentUp = (1 - halfSaturation);
+		double percentDown = halfSaturation;
 		double distanceIndexUpDown = indexUp - indexDown;
 
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
@@ -609,7 +673,7 @@ public class BinListOperations {
 	 * @return the maximum score to display on a BinList track
 	 */
 	public static double maxDisplayedScore(BinList binList) {
-		final double realMax = average(binList) * 2; 
+		final double realMax = average(binList); 
 		int maxScoreDisplayed = 1;
 		while (realMax / maxScoreDisplayed > 1) {
 			maxScoreDisplayed *= 10;
@@ -915,12 +979,13 @@ public class BinListOperations {
 
 
 	/**
-	 * Applies a filter on a {@link BinList} selecting the windows above a specified threshold.
+	 * Applies a filter on a {@link BinList} selecting the windows above (or under depending on the filter type) 
+	 * a specified threshold.
 	 * The result is returned in a new BinList.
 	 * @param binList
 	 * @param filterType type of filter. Can be pass the high values or the low values
-	 * @param threshold the selected windows must be above this value
-	 * @param nbConsecutiveValues select only if there is x consecutive windows above the threshold
+	 * @param threshold the selected windows must be above (or under) this value
+	 * @param nbConsecutiveValues select only if there is x consecutive windows above (or under) the threshold
 	 * @param precision precision of the result {@link BinList} 
 	 * @return a new {@link BinList} with only the selected windows
 	 * @throws IllegalArgumentException if the filter is not correct
@@ -937,7 +1002,7 @@ public class BinListOperations {
 					boolean selected = true;
 					int k = 0;
 					// we accept a window if there is nbConsecutiveValues above or under the filter
-					while ((selected) && (k < nbConsecutiveValues)) {
+					while ((selected) && (k < nbConsecutiveValues) && (j + k < binList.size(i))) {
 						// depending on the filter type we accept values above or under the threshold
 						if (filterType == FilterType.LOW_PASS_FILTER) {
 							selected = binList.get(i, j + k) <= threshold;

@@ -33,6 +33,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.DensityFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivideAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.GaussAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.IndexAction;
@@ -167,6 +168,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(CalculationOnProjectionAction.ACTION_KEY, new CalculationOnProjectionAction(this));
 		getActionMap().put(ConcatenateAction.ACTION_KEY, new ConcatenateAction(this));
 		getActionMap().put(CorrelationAction.ACTION_KEY, new CorrelationAction(this));
+		getActionMap().put(DensityFilterAction.ACTION_KEY, new DensityFilterAction(this));
 		getActionMap().put(DivideAction.ACTION_KEY, new DivideAction(this));
 		getActionMap().put(GaussAction.ACTION_KEY, new GaussAction(this));
 		getActionMap().put(IndexAction.ACTION_KEY, new IndexAction(this));
