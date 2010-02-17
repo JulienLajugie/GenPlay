@@ -179,8 +179,8 @@ public class BinListOperations {
 			throw new BinListDifferentWindowSizeException();
 		}
 		BinList resultList = new BinList(valueList.getChromosomeManager(), valueList.getBinSize(), precision);
-		for(short i = 0; i < intervalList.size(); i++)  {
-			if((intervalList.get(i) == null) || (i >= valueList.size()) || (valueList.get(i) == null)) {
+		for (short i = 0; i < intervalList.size(); i++)  {
+			if ((intervalList.get(i) == null) || (i >= valueList.size()) || (valueList.get(i) == null)) {
 				resultList.add(null);
 			} else {
 				List<Double> listToAdd = ListFactory.createList(precision, intervalList.size(i));
@@ -227,7 +227,30 @@ public class BinListOperations {
 		return resultList;
 	}
 
+	
+	/**
+	 * Copies the values of the specified {@link BinList} into a new BinList with a specified {@link DataPrecision}
+	 * @param binList input BinList
+	 * @param precision precision of the data of the new BinList
+	 * @return a new BinList
+	 */
+	public static BinList changePrecision(BinList binList, DataPrecision precision) {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for (List<Double> currentList: binList) {
+			if (currentList == null) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, currentList.size());
+				for (int i = 0; i < currentList.size(); i++) {
+					listToAdd.set(i, currentList.get(i));
+				}
+				resultList.add(listToAdd);
+			}
+		}
+		return resultList;
+	}
 
+	
 	/**
 	 * Computes the coefficient of correlation between two {@link BinList}.
 	 * Only the chromosomes set to <i>true</i> in chromoList will be used in the calculation. 

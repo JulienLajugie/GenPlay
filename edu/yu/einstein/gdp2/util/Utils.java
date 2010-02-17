@@ -134,6 +134,24 @@ public class Utils {
 				DataPrecision.PRECISION_32BIT);
 	}	
 
+	
+	/**
+	 * A dialog box used to choose a {@link DataPrecision}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @param defaultValue default value in the input box
+	 * @return a {@link DataPrecision}
+	 */
+	public static DataPrecision choosePrecision(Component parentComponent, DataPrecision defaultValue) {
+		return (DataPrecision)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a precision for the data of the fixed window list",
+				"Select Data Precision",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				DataPrecision.values(),
+				defaultValue);
+	}
+	
 
 	/**
 	 * A dialog box used to choose a {@link ScoreCalculationMethod}

@@ -14,6 +14,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AverageAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.ChangePrecisionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DensityFilterAction;
@@ -92,6 +93,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
 	
+	private final JMenuItem		jmiChangePrecision;		// menu change data precision
+	
 	private final JMenuItem		jmiCalculOnProjection;	// menu calculation on intervals
 	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
 	private final JMenuItem		jmiConcatenate;			// menu concatenate
@@ -141,6 +144,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
 		
+		jmiChangePrecision = new JMenuItem(actionMap.get(ChangePrecisionAction.ACTION_KEY));
+		
 		jmiCalculOnProjection = new JMenuItem(actionMap.get(CalculationOnProjectionAction.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(ShowRepartitionAction.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(ConcatenateAction.ACTION_KEY));
@@ -179,6 +184,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiDensityFilter);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
+		jmOperation.addSeparator();
+		jmOperation.add(jmiChangePrecision);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.add(jmiConcatenate);
