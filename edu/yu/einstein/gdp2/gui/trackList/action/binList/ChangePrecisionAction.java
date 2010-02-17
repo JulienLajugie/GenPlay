@@ -28,7 +28,7 @@ public class ChangePrecisionAction extends TrackListAction {
 	private static final long serialVersionUID = 259517972989514480L;		// generated ID
 	private static final String 	ACTION_NAME = "Change Precision";		// action name
 	private static final String 	DESCRIPTION = 
-		"Change the precision of the data of the selected track ";			// tooltip
+		"Change the precision of the data of the selected track";			// tooltip
 
 	
 	/**
@@ -68,7 +68,7 @@ public class ChangePrecisionAction extends TrackListAction {
 					@Override
 					protected void doAtTheEnd(BinList resultList) {
 						if (resultList != null) {
-							selectedTrack.setBinList(resultList, "Precision Changed: " + precision);
+							selectedTrack.setBinList(resultList, "Precision Changed to " + precision);
 						}
 					}
 				}.execute();

@@ -167,6 +167,92 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			}
 		}
 	}
+	
+	
+	/**
+	 * Creates an instance of {@link BinList} from another BinList. The new BinList can have a different bin size.
+	 * @param chromosomeManager {@link ChromosomeManager}
+	 * @param binSize size of the bins
+	 * @param precision precision of the data
+	 * @param method method of the score calculation
+	 * @param binList input BinList
+	 * @throws IllegalArgumentException thrown if precision is not valid
+	 */
+	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ScoreCalculationMethod method, BinList binList) {
+		super(chromosomeManager);
+		this.binSize = binSize;
+		this.precision = precision;
+		for(Chromosome currentChromosome : chromosomeManager)  {
+			if ((binList.get(currentChromosome) == null) || (binList.size(currentChromosome) == 0)) {
+				this.add(null);
+			} else {
+				int currentSize = currentChromosome.getLength() / binSize + 1;
+				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
+				this.add(listToAdd);
+				int k = 0;
+				int previousStop = 0;
+				for (int j = 0; j < size(currentChromosome); j++) {
+					k = previousStop;
+					List<Double> currentBinIntensities = new ArrayList<Double>();
+					while ((k < binList.size(currentChromosome)) && (binList.getBinSize() * (k + 1) <= j * binSize)) {
+						k++;
+					}
+					previousStop = k;
+					while ((k < binList.size(currentChromosome)) && (binList.getBinSize() * k < j * binSize)) {
+						if ((binList.getBinSize() * (k + 1)) > (j * binSize)) {
+							if (method == ScoreCalculationMethod.SUM) {
+								int stop = Math.min((j + 1) * binSize, (k + 1) * binList.getBinSize());
+								double intensity = binList.get(currentChromosome, k) * (stop - (j * binSize)) / (binList.getBinSize());
+								currentBinIntensities.add(intensity);							
+							} else {
+								double intensity = binList.get(currentChromosome, k);
+								currentBinIntensities.add(intensity);
+							}
+						}
+						k++;
+					} 						
+					while ((k < binList.size(currentChromosome)) && (k * binList.getBinSize() < (j + 1) * binSize)) {
+						if ((k + 1) * binList.getBinSize() > (j + 1) * binSize) {
+							if (method == ScoreCalculationMethod.SUM) {
+								int start = Math.max(j * binSize, k * binList.getBinSize());
+								double intensity = binList.get(currentChromosome, k) * (((j + 1) * binSize) - start) / (binList.getBinSize());
+								currentBinIntensities.add(intensity);
+							} else {
+								double intensity = binList.get(currentChromosome, k);
+								currentBinIntensities.add(intensity);
+							}																
+						} else {
+							if ((k + 1) * binList.getBinSize() > (j * binSize)) {
+								double intensity = binList.get(currentChromosome, k);
+								currentBinIntensities.add(intensity);
+								previousStop = k;
+							}
+						}
+						k++;
+					}
+
+					if (currentBinIntensities.size() == 0) {
+						set(currentChromosome, j, 0d);
+					} else {
+						switch (method) {
+						case AVERAGE: 
+							set(currentChromosome, j, DoubleLists.average(currentBinIntensities));
+							break;
+						case MAXIMUM:
+							set(currentChromosome, j, Collections.max(currentBinIntensities));
+							break;
+						case SUM:
+							set(currentChromosome, j, DoubleLists.sum(currentBinIntensities));
+							break;
+						default:
+							throw new IllegalArgumentException("Invalid method");
+						}
+					}
+				}
+			}
+		}
+		
+	}
 
 
 	/**

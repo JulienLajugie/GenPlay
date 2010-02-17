@@ -6766,3 +6766,31 @@ Extraction done. Time elapsed: 2 seconds
 Number lines in the file: 307910
 Number of lines extracted: 275287
 Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 11:57:14
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 13:02:33
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 14:16:06
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 14:17:05
+File: C:\Documents and Settings\Julien\workspace\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 3 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89,9%

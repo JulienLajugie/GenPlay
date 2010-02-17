@@ -14,6 +14,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AverageAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.ChangeBinSizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ChangePrecisionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
@@ -93,6 +94,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
 	
+	private final JMenuItem		jmiChangeBinSize;		// menu change bin size
 	private final JMenuItem		jmiChangePrecision;		// menu change data precision
 	
 	private final JMenuItem		jmiCalculOnProjection;	// menu calculation on intervals
@@ -144,6 +146,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
 		
+		jmiChangeBinSize = new JMenuItem(actionMap.get(ChangeBinSizeAction.ACTION_KEY));
 		jmiChangePrecision = new JMenuItem(actionMap.get(ChangePrecisionAction.ACTION_KEY));
 		
 		jmiCalculOnProjection = new JMenuItem(actionMap.get(CalculationOnProjectionAction.ACTION_KEY));
@@ -185,6 +188,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
 		jmOperation.addSeparator();
+		jmOperation.add(jmiChangeBinSize);
 		jmOperation.add(jmiChangePrecision);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiShowRepartition);

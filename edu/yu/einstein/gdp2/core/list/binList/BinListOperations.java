@@ -229,6 +229,19 @@ public class BinListOperations {
 
 	
 	/**
+	 * Creates a new {@link BinList} that is the image of the specified BinList
+	 * with a new size of bins
+	 * @param binList input BinList
+	 * @param binSize new size for the bins
+	 * @param method new method of calculation
+	 * @return a new BinList
+	 */
+	public static BinList changeBinSize(BinList binList, int binSize, ScoreCalculationMethod method) {
+		return new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList);
+	}
+	
+	
+	/**
 	 * Copies the values of the specified {@link BinList} into a new BinList with a specified {@link DataPrecision}
 	 * @param binList input BinList
 	 * @param precision precision of the data of the new BinList
