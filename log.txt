@@ -6794,3 +6794,87 @@ Extraction done. Time elapsed: 3 seconds
 Number lines in the file: 307915
 Number of lines extracted: 276761
 Percentage of lines extracted: 89,9%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 15:10:45
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 15:53:59
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 15:56:51
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 16:01:15
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 16:10:11
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 16:19:20
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 16:20:08
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 16:44:58
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 16:52:41
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 17:06:10
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 17:07:17
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/17 17:07:44
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
