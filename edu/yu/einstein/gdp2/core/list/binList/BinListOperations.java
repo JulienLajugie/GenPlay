@@ -927,7 +927,85 @@ public class BinListOperations {
 		}
 	}
 
+	
+	public static BinList saturationCount(BinList binList, int lowValuesCount, int highValuesCount) throws IllegalArgumentException {
+		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
+			throw new IllegalArgumentException("The number of values to saturate must be positive");
+		}
+		
+		boolean[] selectedChromo = new boolean[binList.size()];
+		Arrays.fill(selectedChromo, true);
+		int totalLenght = (int)binCount(binList,selectedChromo);
+		double[] allScores = new double[totalLenght];
+		int i = 0;
+		for (List<Double> currentList: binList) {
+			if (currentList != null) {
+				for (Double currentScore: currentList) {
+					if (currentScore != 0) {
+						allScores[i] = currentScore;
+						i++;
+					}
+				}
+			}
+		}
+		Arrays.sort(allScores);
+		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
+		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
+		return saturationThreshold(binList, minValue, maxValue);
+	}
+	
+	
+	public static BinList saturationPercentage(BinList binList, double lowPercentage, double highPercentage) throws IllegalArgumentException {
+		if ((highPercentage < 0) || (highPercentage > 1) || (lowPercentage < 0) ||(lowPercentage > 1)) {
+			throw new IllegalArgumentException("The percentage value must be between 0 and 1");
+		}
+		if (lowPercentage + highPercentage > 1) {
+			throw new IllegalArgumentException("The sum of the low and high percentages value must be between 0 and 1");
+		}
+		
+		boolean[] selectedChromo = new boolean[binList.size()];
+		Arrays.fill(selectedChromo, true);
+		int totalLenght = (int)binCount(binList,selectedChromo);
+		double[] allScores = new double[totalLenght];
+		int i = 0;
+		for (List<Double> currentList: binList) {
+			if (currentList != null) {
+				for (Double currentScore: currentList) {
+					if (currentScore != 0) {
+						allScores[i] = currentScore;
+						i++;
+					}
+				}
+			}
+		}
+		int lowValuesCount = (int)(lowPercentage * allScores.length);
+		int highValuesCount = (int)(highPercentage * allScores.length);
+		Arrays.sort(allScores);
+		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
+		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
+		return saturationThreshold(binList, minValue, maxValue);
+	}
 
+	
+	public static BinList saturationThreshold(BinList binList, double minSaturated, double maxSaturated) throws IllegalArgumentException {
+		if (minSaturated >= maxSaturated) {
+			throw new IllegalArgumentException("The maximum must be greater than the minimum");
+		}
+		for (List<Double> currentList: binList) {
+			if (currentList != null) {
+				for (Double currentScore: currentList) {
+					if (currentScore > maxSaturated) {
+						currentScore = maxSaturated;
+					} else if (currentScore < minSaturated) {
+						currentScore = minSaturated;
+					}
+				}
+			}
+		}
+		return binList;
+	}
+	
+	
 	/**
 	 * @param binList a {@link BinList}
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation

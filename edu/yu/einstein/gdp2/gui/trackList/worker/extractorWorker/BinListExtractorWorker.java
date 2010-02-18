@@ -57,7 +57,7 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 				BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, trackList.getChromosomeManager(), resultList);
 				// write in the history
-				String history = "Bin Size = " + resultList.getBinSize() + "bp, Precision = " + precision;
+				String history = "Bin Size = " + resultList.getBinSize() + "bp, Precision = " + resultList.getPrecision();
 				if (scoreCalculation != null) {
 					history += ", Method of Calculation = " + scoreCalculation;
 				}
