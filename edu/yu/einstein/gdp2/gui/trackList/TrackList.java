@@ -51,6 +51,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.MultiplicationConstantActio
 import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.SaturationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ScoreCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SearchPeaksAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ShowHistoryAction;
@@ -193,6 +194,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(RedoAction.ACTION_KEY, new RedoAction(this));
 		getActionMap().put(ResetAction.ACTION_KEY, new ResetAction(this));
 		getActionMap().put(ScoreCountAction.ACTION_KEY, new ScoreCountAction(this));
+		getActionMap().put(SaturationAction.ACTION_KEY, new SaturationAction(this));
 		getActionMap().put(SaveTrackAction.ACTION_KEY, new SaveTrackAction(this));
 		getActionMap().put(SearchPeaksAction.ACTION_KEY, new SearchPeaksAction(this));
 		getActionMap().put(ShowHistoryAction.ACTION_KEY, new ShowHistoryAction(this));

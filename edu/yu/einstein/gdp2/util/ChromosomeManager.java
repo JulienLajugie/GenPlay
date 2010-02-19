@@ -28,7 +28,7 @@ import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 public final class ChromosomeManager implements Serializable, Iterable<Chromosome> {
 
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
-	private static ChromosomeManager cmInstance = null;		// instance of the singleton
+	private static ChromosomeManager cmInstance = null;		// unique instance of the singleton
 	private ArrayList<Chromosome> chromosomeArray = 
 		createDefaultChromosomeArray();						// List of chromosomes
 	private Hashtable<String, Integer> chromosomeHash;		// Hashtable indexed by chromosome name

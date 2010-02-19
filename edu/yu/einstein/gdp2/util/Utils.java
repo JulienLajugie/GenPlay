@@ -13,6 +13,7 @@ import javax.swing.filechooser.FileFilter;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
+import yu.einstein.gdp2.core.enums.SaturationType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
@@ -134,6 +135,23 @@ public class Utils {
 				DataPrecision.PRECISION_32BIT);
 	}	
 
+	
+	/**
+	 * A dialog box used to choose a {@link SaturationType}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link SaturationType}
+	 */
+	public static SaturationType chooseSaturationType(Component parentComponent) {
+		return (SaturationType)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a type of saturation",
+				"Saturation Type",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				SaturationType.values(),
+				SaturationType.PERCENTAGE);
+	}	
+	
 	
 	/**
 	 * A dialog box used to choose a {@link DataPrecision}

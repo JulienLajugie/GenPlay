@@ -142,8 +142,8 @@ public class BinListOperations {
 			return sum / n;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param binList a {@link BinList}
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -227,7 +227,7 @@ public class BinListOperations {
 		return resultList;
 	}
 
-	
+
 	/**
 	 * Creates a new {@link BinList} that is the image of the specified BinList
 	 * with a new size of bins
@@ -239,8 +239,8 @@ public class BinListOperations {
 	public static BinList changeBinSize(BinList binList, int binSize, ScoreCalculationMethod method) {
 		return new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList);
 	}
-	
-	
+
+
 	/**
 	 * Copies the values of the specified {@link BinList} into a new BinList with a specified {@link DataPrecision}
 	 * @param binList input BinList
@@ -263,7 +263,7 @@ public class BinListOperations {
 		return resultList;
 	}
 
-	
+
 	/**
 	 * Computes the coefficient of correlation between two {@link BinList}.
 	 * Only the chromosomes set to <i>true</i> in chromoList will be used in the calculation. 
@@ -299,7 +299,7 @@ public class BinListOperations {
 		if (n == 0) {
 			return 0d;
 		}
-		
+
 		mean1 /= n;
 		mean2 /= n;
 
@@ -329,7 +329,7 @@ public class BinListOperations {
 		return correlationCoef;
 	}
 
-	
+
 	/**
 	 * Applies a filter on a {@link BinList} selecting region where there is at least the specified 
 	 * density of bins above (or under depending on the filter type) a specified threshold
@@ -350,7 +350,7 @@ public class BinListOperations {
 		}		
 		// we calculate the min number of bins above the threshold needed to select a region
 		int minBinCount = (int)Math.ceil(regionSize * density);
-		
+
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++)  {
 			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
@@ -390,7 +390,7 @@ public class BinListOperations {
 		}
 		return resultList;		
 	}
-	
+
 
 	/**
 	 * @param binList1
@@ -421,8 +421,8 @@ public class BinListOperations {
 		}
 		return resultList;
 	}
-	
-	
+
+
 	/**
 	 * Divides every value of the specified {@link BinList} by a specified constant
 	 * @param binList 
@@ -738,7 +738,7 @@ public class BinListOperations {
 		return max;
 	}
 
-	
+
 	/**
 	 * @param binList a {@link BinList}
 	 * @return the maximum score to display on a BinList track
@@ -751,7 +751,7 @@ public class BinListOperations {
 		}
 		return maxScoreDisplayed;
 	}
-	
+
 
 	/**
 	 * @param binList
@@ -766,8 +766,8 @@ public class BinListOperations {
 		}
 		return min;
 	}
-	
-	
+
+
 	/**
 	 * @param binList a {@link BinList}
 	 * @return the minimum score to display on a BinList track
@@ -775,8 +775,8 @@ public class BinListOperations {
 	public static double minDisplayedScore(BinList binList) {
 		return Math.min(0, min(binList));
 	}
-	
-	
+
+
 	/**
 	 * @param binList1
 	 * @param binList2
@@ -806,7 +806,7 @@ public class BinListOperations {
 		}
 		return resultList;
 	}
-	
+
 
 	/**
 	 * Multiplies every value of the specified {@link BinList} by the specified constant
@@ -927,12 +927,20 @@ public class BinListOperations {
 		}
 	}
 
-	
+
+	/**
+	 * Saturates a specify number of low and high values
+	 * @param binList {@link BinList} to saturate
+	 * @param lowValuesCount number of low values to saturate
+	 * @param highValuesCount number of high values to saturate
+	 * @return a saturated {@link BinList}
+	 * @throws IllegalArgumentException
+	 */
 	public static BinList saturationCount(BinList binList, int lowValuesCount, int highValuesCount) throws IllegalArgumentException {
 		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
 			throw new IllegalArgumentException("The number of values to saturate must be positive");
 		}
-		
+
 		boolean[] selectedChromo = new boolean[binList.size()];
 		Arrays.fill(selectedChromo, true);
 		int totalLenght = (int)binCount(binList,selectedChromo);
@@ -953,8 +961,16 @@ public class BinListOperations {
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
 		return saturationThreshold(binList, minValue, maxValue);
 	}
-	
-	
+
+
+	/**
+	 * Saturates a percentage of the greatest and smallest values
+	 * @param binList {@link BinList} to saturate
+	 * @param lowPercentage percentage of low values to saturate
+	 * @param highPercentage percentage of high values to saturate
+	 * @return a saturated {@link BinList}
+	 * @throws IllegalArgumentException
+	 */
 	public static BinList saturationPercentage(BinList binList, double lowPercentage, double highPercentage) throws IllegalArgumentException {
 		if ((highPercentage < 0) || (highPercentage > 1) || (lowPercentage < 0) ||(lowPercentage > 1)) {
 			throw new IllegalArgumentException("The percentage value must be between 0 and 1");
@@ -962,7 +978,7 @@ public class BinListOperations {
 		if (lowPercentage + highPercentage > 1) {
 			throw new IllegalArgumentException("The sum of the low and high percentages value must be between 0 and 1");
 		}
-		
+
 		boolean[] selectedChromo = new boolean[binList.size()];
 		Arrays.fill(selectedChromo, true);
 		int totalLenght = (int)binCount(binList,selectedChromo);
@@ -986,26 +1002,44 @@ public class BinListOperations {
 		return saturationThreshold(binList, minValue, maxValue);
 	}
 
-	
+
+	/**
+	 * Saturates the values above and under specified thresholds
+	 * @param binList {@link BinList} to saturate
+	 * @param minSaturated saturates the values under this threshold
+	 * @param maxSaturated saturates the values above this threshold
+	 * @return a saturated {@link BinList}
+	 * @throws IllegalArgumentException
+	 */
 	public static BinList saturationThreshold(BinList binList, double minSaturated, double maxSaturated) throws IllegalArgumentException {
 		if (minSaturated >= maxSaturated) {
 			throw new IllegalArgumentException("The maximum must be greater than the minimum");
 		}
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), binList.getPrecision());
 		for (List<Double> currentList: binList) {
-			if (currentList != null) {
-				for (Double currentScore: currentList) {
-					if (currentScore > maxSaturated) {
-						currentScore = maxSaturated;
-					} else if (currentScore < minSaturated) {
-						currentScore = minSaturated;
+			if ((currentList == null) || (currentList.size() == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(binList.getPrecision(), currentList.size());
+				for (int i = 0; i < currentList.size(); i++) {
+					double currentScore = currentList.get(i);
+					if (currentScore != 0) {
+						if (currentScore > maxSaturated) {
+							listToAdd.set(i, maxSaturated);
+						} else if (currentScore < minSaturated) {
+							listToAdd.set(i, minSaturated);
+						} else {
+							listToAdd.set(i, currentScore);
+						}
 					}
 				}
+				resultList.add(listToAdd);
 			}
 		}
-		return binList;
+		return resultList;
 	}
-	
-	
+
+
 	/**
 	 * @param binList a {@link BinList}
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -1022,8 +1056,8 @@ public class BinListOperations {
 		}
 		return scoreCount;
 	}
-	
-	
+
+
 	/**
 	 * Searches the peaks of a specified {@link BinList}. We consider a point as a peak when the 
 	 * moving standard deviation = <i>nbSDAccepted</i> * global standard deviation.
@@ -1071,7 +1105,7 @@ public class BinListOperations {
 		}
 		return resultList;		
 	}
-	
+
 
 
 	/**
@@ -1093,7 +1127,7 @@ public class BinListOperations {
 		return baos;
 	}
 
-	
+
 	/**
 	 * @param binList a {@link BinList}
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -1122,7 +1156,7 @@ public class BinListOperations {
 			return (stdDev / (double)n);
 		}
 	}
-	
+
 
 	/**
 	 * @param binList1
@@ -1153,7 +1187,7 @@ public class BinListOperations {
 		}
 		return resultList;
 	}
-	
+
 
 	/**
 	 * Subtracts a constant from every value of the specified {@link BinList}
@@ -1233,8 +1267,8 @@ public class BinListOperations {
 		}
 		return resultList;
 	}
-	
-	
+
+
 	/**
 	 * Unzips and unserializes a {@link ByteArrayOutputStream} and returns a {@link BinList}
 	 * @param baos a {@link ByteArrayOutputStream}

@@ -34,6 +34,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.MultiplicationConstantActio
 import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.SaturationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ScoreCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SearchPeaksAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ShowHistoryAction;
@@ -80,6 +81,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiLog2;				// menu log2 BinListTrack
 	private final JMenuItem		jmiLog2WithDamper;		// menu log2 BinListTrack with damper
 	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
+	private final JMenuItem		jmiSaturation;			// menu saturate BinListTrack
 	
 	private final JMenuItem		jmiMinimum;				// menu minimum of the BinListTrack
 	private final JMenuItem		jmiMaximum;				// menu maximum of the BinListTrack
@@ -132,6 +134,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiLog2 = new JMenuItem(actionMap.get(Log2Action.ACTION_KEY));
 		jmiLog2WithDamper = new JMenuItem(actionMap.get(Log2WithDamperAction.ACTION_KEY));
 		jmiNormalize = new JMenuItem(actionMap.get(NormalizeAction.ACTION_KEY));
+		jmiSaturation = new JMenuItem(actionMap.get(SaturationAction.ACTION_KEY));
 		
 		jmiMinimum = new JMenuItem(actionMap.get(MinimumAction.ACTION_KEY));
 		jmiMaximum = new JMenuItem(actionMap.get(MaximumAction.ACTION_KEY));
@@ -174,6 +177,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiLog2);
 		jmOperation.add(jmiLog2WithDamper);
 		jmOperation.add(jmiNormalize);
+		jmOperation.add(jmiSaturation);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiMinimum);
 		jmOperation.add(jmiMaximum);
