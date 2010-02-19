@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -27,10 +28,10 @@ import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 public final class ChromosomeManager implements Serializable, Iterable<Chromosome> {
 
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
+	private static ChromosomeManager cmInstance = null;		// instance of the singleton
 	private ArrayList<Chromosome> chromosomeArray = 
 		createDefaultChromosomeArray();						// List of chromosomes
 	private Hashtable<String, Integer> chromosomeHash;		// Hashtable indexed by chromosome name
-	private static boolean instanceFlag = false;			// true if 1 instance
 
 
 	/**
@@ -40,7 +41,22 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 		super();
 	}
 
+	
+	/**
+	 * Methods used for the serialization of the singleton object.
+	 * The readResolve method is called when ObjectInputStream has 
+	 * read an object from the stream and is preparing to return it 
+	 * to the caller.
+	 * See javadocs for more information
+	 * @return the unique instance of the singleton
+	 * @throws ObjectStreamException
+	 */
+	private Object readResolve() throws ObjectStreamException {
+		return getInstance();
+	}
 
+	
+	
 	/**
 	 * Creates a default list of chromosomes
 	 * @return
@@ -76,15 +92,18 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 
 	
 	/**
-	 * @return an instance of a {@link ChromosomeManager} if there is no other instance. Null otherwise.
+	 * @return an instance of a {@link ChromosomeManager}. 
+	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
 	public static ChromosomeManager getInstance() {
-		if (!instanceFlag) {
-			instanceFlag = true;
-			return new ChromosomeManager();
-		} else {
-			return null;
+		if (cmInstance == null) {
+			synchronized(ChromosomeManager.class) {
+				if (cmInstance == null) {
+					cmInstance = new ChromosomeManager();
+				}
+			}
 		}
+		return cmInstance;
 	}
 
 
