@@ -81,8 +81,8 @@ public final class BooleanArrayAsDoubleList extends AbstractList<Double> impleme
 		int realIndex = index / 8;
 		// compute the position of the desired boolean inside the byte
 		int offset = index % 8;
-		boolean result = (data[realIndex] & (1 << offset)) != 0;
-		return (result == true) ? 1d : 0d;
+		int result = data[realIndex] & (1 << offset);
+		return result != 0 ? 1d : 0d;
 	}
 
 	

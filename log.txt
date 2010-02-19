@@ -6878,3 +6878,17 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 23901
 Number of lines extracted: 23901
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/19 11:11:15
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/19 11:14:37
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
