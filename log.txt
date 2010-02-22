@@ -7095,3 +7095,17 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 31451
 Number of lines extracted: 31451
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 16:18:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31451
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 16:20:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31451
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%

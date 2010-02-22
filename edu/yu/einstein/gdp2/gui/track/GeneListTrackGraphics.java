@@ -235,13 +235,13 @@ public class GeneListTrackGraphics extends TrackGraphics {
 		int i = 0;
 		while ((mouseLine == -1) &&  (i < displayedLineCount)) {
 			if (isGeneNamePrinted) {
-				if ((mousePosition.y > i * GENE_HEIGHT * 3 + GENE_HEIGHT) &&
-						(mousePosition.y < i * GENE_HEIGHT * 3 + 3 * GENE_HEIGHT)) {
+				if ((mousePosition.y >= i * GENE_HEIGHT * 3 + GENE_HEIGHT) &&
+						(mousePosition.y <= i * GENE_HEIGHT * 3 + 3 * GENE_HEIGHT)) {
 					mouseLine = i;
 				}
 			} else {
-				if ((mousePosition.y > i * GENE_HEIGHT * 2 + GENE_HEIGHT) &&
-						(mousePosition.y < i * GENE_HEIGHT * 2 + 2 * GENE_HEIGHT)) {
+				if ((mousePosition.y >= i * GENE_HEIGHT * 2 + GENE_HEIGHT) &&
+						(mousePosition.y <= i * GENE_HEIGHT * 2 + 2 * GENE_HEIGHT)) {
 					mouseLine = i;
 				}				
 			}
@@ -256,8 +256,8 @@ public class GeneListTrackGraphics extends TrackGraphics {
 				int j = 0;
 				while ((j < printedGenes.get(mouseLine).size()) && (geneUnderMouse == null)) {
 					Gene currentGene = printedGenes.get(mouseLine).get(j);
-					if (mousePosition.x > genomePosToScreenPos(currentGene.getTxStart()) &&
-							(mousePosition.x < genomePosToScreenPos(currentGene.getTxStop()))) {
+					if (mousePosition.x >= genomePosToScreenPos(currentGene.getTxStart()) &&
+							(mousePosition.x <= genomePosToScreenPos(currentGene.getTxStop()))) {
 						// we found a gene under the mouse
 						geneUnderMouse = currentGene;
 					}
@@ -265,11 +265,13 @@ public class GeneListTrackGraphics extends TrackGraphics {
 				}
 			}
 		}
-		// set the cursor if there is a gene under the mouse cursor
+		// set the cursor and the tooltip text if there is a gene under the mouse cursor
 		if (geneUnderMouse == null) {
 			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+			setToolTipText(null);
 		} else {
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
+			setToolTipText(geneUnderMouse.getName());
 		}
 	}
 	
