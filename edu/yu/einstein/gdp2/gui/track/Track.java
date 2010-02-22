@@ -33,8 +33,8 @@ import yu.einstein.gdp2.util.ZoomManager;
 public abstract class Track extends JPanel implements Serializable, PropertyChangeListener, GenomeWindowListener, GenomeWindowModifier {
 
 	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
-	private static final int 	TRACK_HEIGHT = 100;					// height of a track
 	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 			// minimum height of a track
+	private static final int 	TRACK_HEIGHT = 100; 				// height of a track
 	public static final Border 	REGULAR_BORDER =
 		BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black); 	// regular border of a track
 	public static final Border 	DRAG_START_BORDER = 
@@ -46,6 +46,7 @@ public abstract class Track extends JPanel implements Serializable, PropertyChan
 	
 	private final ArrayList<GenomeWindowListener> listenerList = 
 		new ArrayList<GenomeWindowListener>();						// list of GenomeWindowListener
+	private int 				defaultHeight = TRACK_HEIGHT;		// default height of a track
 	protected TrackHandle 		trackHandle;						// handle of the track
 	protected TrackGraphics 	trackGraphics;						// graphics part of the track
 	
@@ -100,7 +101,7 @@ public abstract class Track extends JPanel implements Serializable, PropertyChan
 		add(trackGraphics, gbc);
 
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
-		setPreferredHeight(TRACK_HEIGHT);
+		setPreferredHeight(defaultHeight);
 	}
 	
 	
@@ -167,6 +168,7 @@ public abstract class Track extends JPanel implements Serializable, PropertyChan
 	 */
 	public void setPreferredHeight(int newPreferredHeight) {
 		setPreferredSize(new Dimension(getPreferredSize().width, newPreferredHeight));
+		defaultHeight = newPreferredHeight;
 		revalidate();
 	}
 
@@ -257,7 +259,7 @@ public abstract class Track extends JPanel implements Serializable, PropertyChan
 			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
 			revalidate();
 		} else if (arg0.getPropertyName() == "defaultSize") {
-			setPreferredSize(new Dimension(getPreferredSize().width, TRACK_HEIGHT));
+			setPreferredSize(new Dimension(getPreferredSize().width, defaultHeight));
 			revalidate();
 		} else {
 			firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
