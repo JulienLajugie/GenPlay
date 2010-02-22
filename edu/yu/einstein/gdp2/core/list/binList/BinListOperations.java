@@ -328,6 +328,43 @@ public class BinListOperations {
 		correlationCoef = (correlationCoef - (n * mean1 * mean2)) / ((n - 1) * stdDev1 * stdDev2);
 		return correlationCoef;
 	}
+	
+	
+	/**
+	 * Computes the density of bin with values on a region of halfWidth * 2 + 1 bins
+	 * @param binList input {@link BinList}
+	 * @param halfWidth half size of the region (in number of bin)
+	 * @return a {@link BinList} showing the densities 
+	 */
+	public static BinList density(BinList binList, int halfWidth) {
+		// the result is returned in 32 bits because the result is btw 0 and 1
+		DataPrecision defaultPrecision = DataPrecision.PRECISION_32BIT;
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), defaultPrecision);
+		if (halfWidth < 1) {
+			return null;
+		}
+		int binCount = 2 * halfWidth + 1;
+		for(short i = 0; i < binList.size(); i++)  {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(defaultPrecision, binList.size(i));
+				resultList.add(listToAdd);
+				for (int j = 0; j < binList.size(i); j++) {
+					int noneZeroBinCount = 0;
+					for (int k = -halfWidth; k <= halfWidth; k++) {
+						if((j + k >= 0) && ((j + k) < binList.size(i)))  {
+							if (binList.get(i, j + k) != 0) {
+								noneZeroBinCount++;
+							}
+						}
+					}
+					resultList.set(i, j, noneZeroBinCount / (double)binCount);
+				}
+			}
+		}
+		return resultList;
+	}
 
 
 	/**

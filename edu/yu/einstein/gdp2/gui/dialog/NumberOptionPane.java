@@ -187,7 +187,7 @@ public final class NumberOptionPane extends JDialog {
 
 	
 	/**
-	 * Displays a GdpCurveChooser dialog, and returns a Number.
+	 * Displays a dialog, and returns a Number.
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
 	 * @param title Title of the dialog.
 	 * @param label Text of the inside label of the dialog.
@@ -208,7 +208,7 @@ public final class NumberOptionPane extends JDialog {
 
 	
 	/**
-	 * Displays a GdpCurveChooser dialog asking for a window size and returns a Number.
+	 * Displays a dialog asking for a window size and returns a Number.
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
 	 * @param defaultValue Default displayed value when the dialog is displayed. 
 	 * @return A number if OK has been pressed, otherwise null.

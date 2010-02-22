@@ -18,6 +18,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.ChangeBinSizeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ChangePrecisionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ConcatenateAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CorrelationAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.DensityAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DensityFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivisionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivisionConstantAction;
@@ -99,6 +100,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiChangeBinSize;		// menu change bin size
 	private final JMenuItem		jmiChangePrecision;		// menu change data precision
 	
+	private final JMenuItem		jmiDensity;				// menu density of none null windows
 	private final JMenuItem		jmiCalculOnProjection;	// menu calculation on intervals
 	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
 	private final JMenuItem		jmiConcatenate;			// menu concatenate
@@ -152,6 +154,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiChangeBinSize = new JMenuItem(actionMap.get(ChangeBinSizeAction.ACTION_KEY));
 		jmiChangePrecision = new JMenuItem(actionMap.get(ChangePrecisionAction.ACTION_KEY));
 		
+		jmiDensity = new JMenuItem(actionMap.get(DensityAction.ACTION_KEY));
 		jmiCalculOnProjection = new JMenuItem(actionMap.get(CalculationOnProjectionAction.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(ShowRepartitionAction.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(ConcatenateAction.ACTION_KEY));
@@ -195,6 +198,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiChangeBinSize);
 		jmOperation.add(jmiChangePrecision);
 		jmOperation.addSeparator();
+		jmOperation.add(jmiDensity);
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.add(jmiConcatenate);
 		jmOperation.add(jmiCalculOnProjection);

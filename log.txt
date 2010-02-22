@@ -6941,3 +6941,45 @@ Extraction done. Time elapsed: 2 seconds
 Number lines in the file: 307910
 Number of lines extracted: 275287
 Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 12:17:55
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 12:20:45
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 12:22:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 12:28:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 12:38:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 12:39:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 28868
+Number of lines extracted: 28453
+Percentage of lines extracted: 98.6%
