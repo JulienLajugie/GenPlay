@@ -5,10 +5,14 @@
 package yu.einstein.gdp2.gui.track;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.net.URI;
 import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
@@ -16,6 +20,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
+import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.ZoomManager;
 
 
@@ -27,13 +32,15 @@ import yu.einstein.gdp2.util.ZoomManager;
 public class GeneListTrackGraphics extends TrackGraphics {
 
 	private static final long serialVersionUID = 1372400925707415741L; // generated ID
+	private static final String GENE_DATABASE_WEBSITE = 
+		"www.genecards.org/cgi-bin/carddisp.pl?gene=";				// gene database website displayed when double click on a gene  
 	private static final double	MIN_X_RATIO_PRINT_NAME = GeneList.MIN_X_RATIO_PRINT_NAME;
 	private static final short	GENE_HEIGHT = 6;					// size of a gene in pixel
 	private final GeneList 		geneList;							// list of gene to print
 	private int 				firstLineToDisplay = 0;				// number of the first line to be displayed
 	private int 				geneLinesCount = 0;					// number of line of genes
 	private int 				mouseStartDragY = -1;				// position of the mouse when start dragging
-
+	private Gene 				geneUnderMouse = null;				// gene under the cursor of the mouse
 
 	/**
 	 * 
@@ -62,8 +69,8 @@ public class GeneListTrackGraphics extends TrackGraphics {
 		firstLineToDisplay = 0;
 		super.chromosomeChanged();
 	}
-	
-	
+
+
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawStripes(g);
@@ -202,5 +209,86 @@ public class GeneListTrackGraphics extends TrackGraphics {
 				}
 			}
 		}		
+	}
+
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		super.mouseMoved(e);
+		geneUnderMouse = null;
+		// retrieve the position of the mouse
+		Point mousePosition = e.getPoint();
+		// check if the name of genes is printed
+		boolean isGeneNamePrinted = xFactor > MIN_X_RATIO_PRINT_NAME;
+		// retrieve the list of the printed genes
+		List<List<Gene>> printedGenes = geneList.getFittedData(genomeWindow, xFactor);
+		// look for how many lines of genes are printed
+		int displayedLineCount = 0;
+		if (isGeneNamePrinted) {
+			displayedLineCount = (getHeight() - 2 * GENE_HEIGHT) / (GENE_HEIGHT * 3) + 1;
+		} else {				
+			displayedLineCount = (getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2) + 1;
+		}	
+		
+		// search if the mouse is on a line where there is genes printed on the track
+		int mouseLine = -1;
+		int i = 0;
+		while ((mouseLine == -1) &&  (i < displayedLineCount)) {
+			if (isGeneNamePrinted) {
+				if ((mousePosition.y > i * GENE_HEIGHT * 3 + GENE_HEIGHT) &&
+						(mousePosition.y < i * GENE_HEIGHT * 3 + 3 * GENE_HEIGHT)) {
+					mouseLine = i;
+				}
+			} else {
+				if ((mousePosition.y > i * GENE_HEIGHT * 2 + GENE_HEIGHT) &&
+						(mousePosition.y < i * GENE_HEIGHT * 2 + 2 * GENE_HEIGHT)) {
+					mouseLine = i;
+				}				
+			}
+			i++;
+		}
+		// if we found something
+		if (mouseLine != -1) {
+			// line of genes where the mouse is
+			mouseLine += firstLineToDisplay;
+			if (mouseLine < printedGenes.size()) {
+				// search if the x position of the mouse is on a gene too
+				int j = 0;
+				while ((j < printedGenes.get(mouseLine).size()) && (geneUnderMouse == null)) {
+					Gene currentGene = printedGenes.get(mouseLine).get(j);
+					if (mousePosition.x > genomePosToScreenPos(currentGene.getTxStart()) &&
+							(mousePosition.x < genomePosToScreenPos(currentGene.getTxStop()))) {
+						// we found a gene under the mouse
+						geneUnderMouse = currentGene;
+					}
+					j++;
+				}
+			}
+		}
+		// set the cursor if there is a gene under the mouse cursor
+		if (geneUnderMouse == null) {
+			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+		} else {
+			setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}
+	}
+	
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// if a gene is double clicked
+		if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
+			// if the desktop is supported
+			if (Desktop.isDesktopSupported()) {
+				try {
+					// we open a browser showing information on the gene
+					Desktop.getDesktop().browse(new URI(GENE_DATABASE_WEBSITE + geneUnderMouse.getName()));
+				} catch (Exception e1) {
+					ExceptionManager.handleException(getRootPane(), e1, "Error while opening the web browser");
+				}
+			}
+		} else { // else default action
+			super.mouseClicked(e);
+		}
 	}
 }
