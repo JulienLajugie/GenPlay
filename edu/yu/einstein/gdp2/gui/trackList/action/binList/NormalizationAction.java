@@ -23,11 +23,11 @@ import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class NormalizeAction extends TrackListAction {
+public final class NormalizationAction extends TrackListAction {
 
 
 	private static final long serialVersionUID = 1672001436769889976L;	// generated ID
-	private static final String 	ACTION_NAME = "Nomalize";			// action name
+	private static final String 	ACTION_NAME = "Nomalization";			// action name
 	private static final String 	DESCRIPTION = 
 		"Normalizes the scores of the selected track";					// tooltip
 
@@ -39,10 +39,10 @@ public final class NormalizeAction extends TrackListAction {
 
 
 	/**
-	 * Creates an instance of {@link NormalizeAction}
+	 * Creates an instance of {@link NormalizationAction}
 	 * @param trackList a {@link TrackList}
 	 */
-	public NormalizeAction(TrackList trackList) {
+	public NormalizationAction(TrackList trackList) {
 		super(trackList);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);

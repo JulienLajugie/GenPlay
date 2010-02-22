@@ -23,8 +23,8 @@ import yu.einstein.gdp2.gui.trackList.action.binList.DensityFilterAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivisionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.DivisionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.GaussAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.IndexAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.IndexByChromosomeAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.IndexationAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.IndexationByChromosomeAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.IslandFinderAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.Log2Action;
 import yu.einstein.gdp2.gui.trackList.action.binList.Log2WithDamperAction;
@@ -32,7 +32,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.MaximumAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MinimumAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MultiplicationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.MultiplicationConstantAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.NormalizeAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.NormalizationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.RedoAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ResetAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SaturationAction;
@@ -131,11 +131,11 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiDivision = new JMenuItem(actionMap.get(DivisionAction.ACTION_KEY));
 		
 		jmiGauss = new JMenuItem(actionMap.get(GaussAction.ACTION_KEY));
-		jmiIndex = new JMenuItem(actionMap.get(IndexAction.ACTION_KEY));
-		jmiIndexByChromosome = new JMenuItem(actionMap.get(IndexByChromosomeAction.ACTION_KEY));
+		jmiIndex = new JMenuItem(actionMap.get(IndexationAction.ACTION_KEY));
+		jmiIndexByChromosome = new JMenuItem(actionMap.get(IndexationByChromosomeAction.ACTION_KEY));
 		jmiLog2 = new JMenuItem(actionMap.get(Log2Action.ACTION_KEY));
 		jmiLog2WithDamper = new JMenuItem(actionMap.get(Log2WithDamperAction.ACTION_KEY));
-		jmiNormalize = new JMenuItem(actionMap.get(NormalizeAction.ACTION_KEY));
+		jmiNormalize = new JMenuItem(actionMap.get(NormalizationAction.ACTION_KEY));
 		jmiSaturation = new JMenuItem(actionMap.get(SaturationAction.ACTION_KEY));
 		
 		jmiMinimum = new JMenuItem(actionMap.get(MinimumAction.ACTION_KEY));

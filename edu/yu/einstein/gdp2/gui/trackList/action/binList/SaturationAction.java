@@ -10,6 +10,7 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
+import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.SaturationType;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListOperations;
@@ -59,6 +60,9 @@ public class SaturationAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
+			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
+				JOptionPane.showMessageDialog(getRootPane(), "Error, saturation is not available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
+			}
 			final SaturationType saturationType = Utils.chooseSaturationType(getRootPane());
 			switch (saturationType) {
 			case COUNT:

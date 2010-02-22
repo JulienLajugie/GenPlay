@@ -6997,3 +6997,10 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 31451
 Number of lines extracted: 31451
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 13:55:10
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 3 seconds
+Number lines in the file: 258618
+Number of lines extracted: 258618
+Percentage of lines extracted: 100%
