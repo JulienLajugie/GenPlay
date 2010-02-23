@@ -66,7 +66,7 @@ public class DensityFilterAction extends TrackListAction{
 				if(regionSize != null) {
 					final Number density = NumberOptionPane.getValue(getRootPane(), "Density", "Enter the percentage of value above the filter", new DecimalFormat("###.###%"), 0, 1, 1);
 					if (density != null) {
-						final String description = "Density " + filterType + ", Threshold = "  + threshold + ", Region Size = " + regionSize + ", Density = " + density;
+						final String description = "Density " + filterType + ", Threshold = "  + threshold + ", Region Size = " + regionSize.intValue() + ", Density = " + density;
 						// thread for the action
 						new ActionWorker<BinList>(trackList) {
 							@Override

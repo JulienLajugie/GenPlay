@@ -218,7 +218,9 @@ public class BinListOperations {
 						}
 
 						for (; k <= j; k++) {
-							resultList.set(i, k, result);
+							if (k < resultList.size(i)) {
+								resultList.set(i, k, result);
+							}
 						}
 					}
 				}
