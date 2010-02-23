@@ -28,6 +28,7 @@ implements Serializable, GeneListGenerator {
 	private ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
 	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
 	private ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
+	private String							searchURL;		// url of the gene database for the search
 
 
 	/**
@@ -67,50 +68,54 @@ implements Serializable, GeneListGenerator {
 	 */
 	@Override
 	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
-		String[] splitedLine = extractedLine.split("\t");
-		if (splitedLine.length == 1) {
-			splitedLine = extractedLine.split(" ");
-		}
-		if (splitedLine.length < 3) {
-			throw new InvalidDataLineException(extractedLine);
-		}
-		try {
-			Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[1]) ;
-			String name = splitedLine[0].trim();
-			nameList.add(chromosome, name);
-			Strand strand = Strand.get(splitedLine[2].trim());
-			strandList.add(chromosome, strand);
-			int start = Integer.parseInt(splitedLine[3].trim());
-			startList.add(chromosome, start);
-			int stop = Integer.parseInt(splitedLine[4].trim());
-			stopList.add(chromosome, stop);
-			String[] exonStartsStr = splitedLine[5].split(",");
-			String[] exonStopsStr = splitedLine[6].split(",");
-			int[] exonStarts = new int[exonStartsStr.length];
-			int[] exonStops = new int[exonStartsStr.length];
-			for (int i = 0; i < exonStartsStr.length; i++) {
-				exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
-				exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
+		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
+			searchURL = extractedLine.split("\"")[1].trim();
+		} else {
+			String[] splitedLine = extractedLine.split("\t");
+			if (splitedLine.length == 1) {
+				splitedLine = extractedLine.split(" ");
 			}
-			exonStartsList.add(chromosome, exonStarts);
-			exonStopsList.add(chromosome, exonStops);
-			if (splitedLine.length > 7) {
-				String[] exonScoresStr = splitedLine[7].split(",");
-				double[] exonScores = new double[exonScoresStr.length];
-				for (int i = 0; i < exonScoresStr.length; i++) {
-					exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+			if (splitedLine.length < 3) {
+				throw new InvalidDataLineException(extractedLine);
+			}
+			try {
+				Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[1]) ;
+				String name = splitedLine[0].trim();
+				nameList.add(chromosome, name);
+				Strand strand = Strand.get(splitedLine[2].trim());
+				strandList.add(chromosome, strand);
+				int start = Integer.parseInt(splitedLine[3].trim());
+				startList.add(chromosome, start);
+				int stop = Integer.parseInt(splitedLine[4].trim());
+				stopList.add(chromosome, stop);
+				String[] exonStartsStr = splitedLine[5].split(",");
+				String[] exonStopsStr = splitedLine[6].split(",");
+				int[] exonStarts = new int[exonStartsStr.length];
+				int[] exonStops = new int[exonStartsStr.length];
+				for (int i = 0; i < exonStartsStr.length; i++) {
+					exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
+					exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
 				}
-				exonScoresList.add(chromosome, exonScores);
+				exonStartsList.add(chromosome, exonStarts);
+				exonStopsList.add(chromosome, exonStops);
+				if (splitedLine.length > 7) {
+					String[] exonScoresStr = splitedLine[7].split(",");
+					double[] exonScores = new double[exonScoresStr.length];
+					for (int i = 0; i < exonScoresStr.length; i++) {
+						exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+					}
+					exonScoresList.add(chromosome, exonScores);
+				}
+				lineCount++;
+			} catch (InvalidChromosomeException e) {
+				throw new InvalidDataLineException(extractedLine);
 			}
-			lineCount++;
-		} catch (InvalidChromosomeException e) {
-			throw new InvalidDataLineException(extractedLine);
 		}
 	}
 
 
 	@Override
 	public GeneList toGeneList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new GeneList(chromosomeManager, nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList);
+		return new GeneList(chromosomeManager, nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
 }

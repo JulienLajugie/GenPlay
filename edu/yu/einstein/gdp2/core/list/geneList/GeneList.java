@@ -31,7 +31,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	private static final int 	MIN_DISTANCE_BETWEEN_2_GENES = 5;	// minimum distance in pixel between two genes 
 	private FontMetrics			fontMetrics = null;
 	private Gene				lastSearchedGene = null;			// last searched gene
-
+	private String				searchURL = null;					// URL of the gene database
 	
 	/**
 	 * The name of the genes are printed if the horizontal ratio is above this value
@@ -66,8 +66,12 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	public GeneList(ChromosomeManager chromosomeManager, ChromosomeListOfLists<String> nameList, ChromosomeListOfLists<Strand> strandList, 
 			ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<int[]> exonStartsList, 
-			ChromosomeListOfLists<int[]> exonStopsList, ChromosomeListOfLists<double[]> exonScoresList) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+			ChromosomeListOfLists<int[]> exonStopsList, ChromosomeListOfLists<double[]> exonScoresList, String searchURL) 
+	throws ManagerDataNotLoadedException, InvalidChromosomeException {
 		super(chromosomeManager);
+		if (searchURL != null) {
+			this.searchURL = searchURL;
+		}
 		for(short i = 0; i < nameList.size(); i++) {
 			add(new ArrayList<Gene>());
 			Chromosome chromo = chromosomeManager.getChromosome(i);
@@ -292,5 +296,13 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	public void setFontMetrics(FontMetrics fontMetrics) {
 		this.fontMetrics = fontMetrics;
+	}
+
+
+	/**
+	 * @return the URL of the gene database
+	 */
+	public String getSearchURL() {
+		return searchURL;
 	}
 }

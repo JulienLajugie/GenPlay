@@ -32,8 +32,6 @@ import yu.einstein.gdp2.util.ZoomManager;
 public class GeneListTrackGraphics extends TrackGraphics {
 
 	private static final long serialVersionUID = 1372400925707415741L; // generated ID
-	private static final String GENE_DATABASE_WEBSITE = 
-		"www.genecards.org/cgi-bin/carddisp.pl?gene=";				// gene database website displayed when double click on a gene  
 	private static final double	MIN_X_RATIO_PRINT_NAME = GeneList.MIN_X_RATIO_PRINT_NAME;
 	private static final short	GENE_HEIGHT = 6;					// size of a gene in pixel
 	private final GeneList 		geneList;							// list of gene to print
@@ -212,6 +210,9 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	}
 
 
+	/**
+	 * Retrieves the gene under the cursor of the mouse if there is one
+	 */
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		super.mouseMoved(e);
@@ -281,10 +282,10 @@ public class GeneListTrackGraphics extends TrackGraphics {
 		// if a gene is double clicked
 		if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
 			// if the desktop is supported
-			if (Desktop.isDesktopSupported()) {
+			if ((geneList.getSearchURL() != null) && (Desktop.isDesktopSupported())) {
 				try {
 					// we open a browser showing information on the gene
-					Desktop.getDesktop().browse(new URI(GENE_DATABASE_WEBSITE + geneUnderMouse.getName()));
+					Desktop.getDesktop().browse(new URI(geneList.getSearchURL() + geneUnderMouse.getName()));
 				} catch (Exception e1) {
 					ExceptionManager.handleException(getRootPane(), e1, "Error while opening the web browser");
 				}

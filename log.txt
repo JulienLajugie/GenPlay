@@ -7109,3 +7109,101 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 31451
 Number of lines extracted: 31451
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 16:29:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31451
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 16:50:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number lines in the file: 258618
+Number of lines extracted: 258618
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 16:51:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_S1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 540734
+Number of lines extracted: 540734
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/22 16:51:51
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31451
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 10:49:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 10:56:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 10:57:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 10:58:22
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 11:01:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number lines in the file: 258619
+Number of lines extracted: 258618
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 11:03:25
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_UCSC_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 65272
+Number of lines extracted: 65260
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 11:05:40
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Mouse_AceView_07-2007.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 173009
+Number of lines extracted: 173008
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 11:08:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 24313
+Number of lines extracted: 24311
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 11:09:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Mouse_UCSC_07-2007.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 49153
+Number of lines extracted: 49144
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/23 11:09:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0__Expression_ES.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 28868
+Number of lines extracted: 28453
+Percentage of lines extracted: 98.6%
