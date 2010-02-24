@@ -6,7 +6,15 @@ package yu.einstein.gdp2.gui.trackList;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
@@ -26,8 +34,8 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.action.SCWList.GenerateBinListAction;
-import yu.einstein.gdp2.gui.trackList.action.binList.AdditionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AdditionAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.AdditionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.AverageAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.BinCountAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.CalculationOnProjectionAction;
@@ -218,9 +226,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(PasteAction.ACCELERATOR, PasteAction.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(DeleteAction.ACCELERATOR, DeleteAction.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(RenameAction.ACCELERATOR, RenameAction.ACTION_KEY);
-		
+
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(SearchGeneAction.ACCELERATOR, SearchGeneAction.ACTION_KEY);
-		
+
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(UndoAction.ACCELERATOR, UndoAction.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(RedoAction.ACCELERATOR, RedoAction.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ResetAction.ACCELERATOR, ResetAction.ACTION_KEY);
@@ -228,7 +236,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(SaveTrackAction.ACCELERATOR, SaveTrackAction.ACTION_KEY);		
 	}
 
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
@@ -543,8 +551,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Cuts the selected track.
 	 */
@@ -569,8 +577,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public boolean isPasteEnable() {
 		return (copiedTrack != null);
 	}
-	
-	
+
+
 	/**
 	 * @return true if there is stripes to remove 
 	 */
@@ -634,16 +642,55 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			currentTrack.unlockHandle();
 		}
 	}
-		
-	
+
+
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.add(genomeWindowListener);		
 	}
-	
-	
+
+
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		setGenomeWindow(evt.getNewWindow());	
+	}
+
+
+	/**
+	 * Saves the current list of tracks into a file
+	 */
+	public void saveProject(File outputFile) {
+		synchronized(TrackList.class) {
+			try {
+				FileOutputStream fos = new FileOutputStream(outputFile);
+				GZIPOutputStream gz = new GZIPOutputStream(fos);
+				ObjectOutputStream oos = new ObjectOutputStream(gz);
+				oos.writeObject(trackList);
+				oos.flush();
+				oos.close();
+				gz.flush();
+				gz.close();
+			} catch (IOException e) {
+				ExceptionManager.handleException(getRootPane(), e, "An error occurred while saving the project"); 
+			}
+		}
+	}
+
+
+	/**
+	 * Loads a list of tracks from a file
+	 */
+	public void loadProject(File inputFile) {
+		synchronized(TrackList.class) {
+			try {
+				FileInputStream fis = new FileInputStream(inputFile);
+				GZIPInputStream gz = new GZIPInputStream(fis);
+				ObjectInputStream ois = new ObjectInputStream(gz);
+				trackList = (Track[])ois.readObject();
+				rebuildPanel();
+			} catch (Exception e) {
+				ExceptionManager.handleException(getRootPane(), e, "An error occurred while loading the project"); 
+			}
+		}
 	}
 }

@@ -58,7 +58,7 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 
 	/**
-	 * Checks after deserialization if the current chromosome manager is the same than
+	 * Checks after unserialization if the current chromosome manager is the same than
 	 * the one used when the object was serialized.
 	 * If not, retrieves only the corresponding chromosomes of the chromosome managers 
 	 * @param in {@link ObjectInputStream}

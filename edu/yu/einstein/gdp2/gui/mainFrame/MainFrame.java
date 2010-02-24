@@ -31,7 +31,9 @@ import yu.einstein.gdp2.gui.mainFrame.action.AboutAction;
 import yu.einstein.gdp2.gui.mainFrame.action.ExitAction;
 import yu.einstein.gdp2.gui.mainFrame.action.FullScreenAction;
 import yu.einstein.gdp2.gui.mainFrame.action.HelpAction;
+import yu.einstein.gdp2.gui.mainFrame.action.LoadProjectAction;
 import yu.einstein.gdp2.gui.mainFrame.action.OptionAction;
+import yu.einstein.gdp2.gui.mainFrame.action.SaveProjectAction;
 import yu.einstein.gdp2.gui.popupMenu.MainMenu;
 import yu.einstein.gdp2.gui.track.Ruler;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -135,16 +137,18 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		add(controlPanel, gbc);
 
 		// create actions
-		getRootPane().getActionMap().put(FullScreenAction.ACTION_KEY, new FullScreenAction(this));
-		getRootPane().getActionMap().put(OptionAction.ACTION_KEY, new OptionAction(this));
-		getRootPane().getActionMap().put(HelpAction.ACTION_KEY, new HelpAction(getRootPane()));
 		getRootPane().getActionMap().put(AboutAction.ACTION_KEY, new AboutAction(getRootPane()));
 		getRootPane().getActionMap().put(ExitAction.ACTION_KEY, new ExitAction(this));
+		getRootPane().getActionMap().put(FullScreenAction.ACTION_KEY, new FullScreenAction(this));
+		getRootPane().getActionMap().put(HelpAction.ACTION_KEY, new HelpAction(getRootPane()));
+		getRootPane().getActionMap().put(LoadProjectAction.ACTION_KEY, new LoadProjectAction(getRootPane(), trackList));
+		getRootPane().getActionMap().put(OptionAction.ACTION_KEY, new OptionAction(this));
+		getRootPane().getActionMap().put(SaveProjectAction.ACTION_KEY, new SaveProjectAction(getRootPane(), trackList));
 		
 		// add shortcuts
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(ExitAction.ACCELERATOR, ExitAction.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(FullScreenAction.ACCELERATOR, FullScreenAction.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(HelpAction.ACCELERATOR, HelpAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(ExitAction.ACCELERATOR, ExitAction.ACTION_KEY);
 
 		// change the colors for nimbus look and feel
 		UIManager.put("nimbusBase", new Color(41, 96, 150));

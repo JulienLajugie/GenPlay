@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
 
 /**
@@ -18,7 +20,11 @@ import java.io.IOException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ConfigurationManager {
+public final class ConfigurationManager implements Serializable {
+	
+	private static final long serialVersionUID = 5632320102259442205L;			// generated ID
+	private static ConfigurationManager cmInstance = null;						// unique instance of the singleton
+	
 	private static String CONFIG_FILE = "config.cfg";							// path of the config file
 
 	private static final String DEFAULT_ZOOM_FILE = "zoom.cfg";					// path of the default zoom config file
@@ -34,8 +40,6 @@ public final class ConfigurationManager {
 	private static final int MIN_TRACK_HEIGHT = 30;								// minimum height of the tracks 
 	private static final int MAX_TRACK_HEIGHT = 2000;								// maximum height of the tracks
 	
-	private static boolean instanceFlag = false;								// true if 1 instance
-
 	private String 	zoomFile = DEFAULT_ZOOM_FILE;								// zoom config file
 	private String 	chromosomeFile = DEFAULT_CHROMOSOME_FILE;					// chromosome config file
 	private String 	logFile = DEFAULT_LOG_FILE;									// log file
@@ -52,17 +56,34 @@ public final class ConfigurationManager {
 		super();
 	}
 
+	
+	/**
+	 * Methods used for the serialization of the singleton object.
+	 * The readResolve method is called when ObjectInputStream has 
+	 * read an object from the stream and is preparing to return it 
+	 * to the caller.
+	 * See javadocs for more information
+	 * @return the unique instance of the singleton
+	 * @throws ObjectStreamException
+	 */
+	private Object readResolve() throws ObjectStreamException {
+		return getInstance();
+	}
+	
 
 	/**
-	 * @return an instance of a {@link ConfigurationManager} if there is no other instance. Null otherwise.
+	 * @return an instance of a {@link ConfigurationManager}. 
+	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
 	public static ConfigurationManager getInstance() {
-		if (!instanceFlag) {
-			instanceFlag = true;
-			return new ConfigurationManager();
-		} else {
-			return null;
+		if (cmInstance == null) {
+			synchronized(ConfigurationManager.class) {
+				if (cmInstance == null) {
+					cmInstance = new ConfigurationManager();
+				}
+			}
 		}
+		return cmInstance;
 	}
 
 

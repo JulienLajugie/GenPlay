@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,8 +21,11 @@ import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ZoomManager {
+public final class ZoomManager implements Serializable {
 
+	private static final long serialVersionUID = -1885523812708037537L;	// generated ID
+	private static ZoomManager zmInstance = null;		// unique instance of the singleton
+	
 	private static final int[] DEFAULT_ZOOM = 
 	{10, 20, 50, 
 		100, 200, 500, 
@@ -31,7 +36,6 @@ public final class ZoomManager {
 		10000000, 20000000,	50000000, 
 		100000000, 200000000, 500000000 };				// default zooms
 	private int[] 			zoomSizes = DEFAULT_ZOOM;	// the different zoom sizes available
-	private static boolean 	instanceFlag = false;		// true if 1 instance
 
 
 	/**
@@ -41,18 +45,34 @@ public final class ZoomManager {
 		super();
 	}
 
+	
+	/**
+	 * Methods used for the serialization of the singleton object.
+	 * The readResolve method is called when ObjectInputStream has 
+	 * read an object from the stream and is preparing to return it 
+	 * to the caller.
+	 * See javadocs for more information
+	 * @return the unique instance of the singleton
+	 * @throws ObjectStreamException
+	 */
+	private Object readResolve() throws ObjectStreamException {
+		return getInstance();
+	}
+	
 
 	/**
-	 * @return an instance of a {@link ZoomManager} if there is no other instance. Null otherwise.
+	 * @return an instance of a {@link ZoomManager}. 
+	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
 	public static ZoomManager getInstance() {
-		if (!instanceFlag) {
-			instanceFlag = true;
-			return new ZoomManager();
-		} else {
-			return null;
+		if (zmInstance == null) {
+			synchronized(ZoomManager.class) {
+				if (zmInstance == null) {
+					zmInstance = new ZoomManager();
+				}
+			}
 		}
-
+		return zmInstance;
 	}
 
 

@@ -20,16 +20,16 @@ import yu.einstein.gdp2.gui.dialog.TextDialog;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class AboutAction  extends AbstractAction {
+public final class AboutAction extends AbstractAction {
 	
 	private static final long serialVersionUID = 2102571378866219218L; // generated ID
 
-	private static final String ABOUT_URL = "file:about.html";		// URL of the help file
-	private static final String ABOUT_DIALOG_TITLE = "About"; 		// title of the help JDialog
-//	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
-	private static final int 		MNEMONIC = KeyEvent.VK_A; 		// mnemonic key
-	private static final String 	ACTION_NAME = "About GenPlay";	// action name
-	private final 		Component 	parent;							// parent component
+	private static final String 	ABOUT_URL = "file:about.html";		// URL of the help file
+	private static final String 	ABOUT_DIALOG_TITLE = "About"; 		// title of the help JDialog
+	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key
+	private static final String 	ACTION_NAME = "About GenPlay";		// action name
+	private final 		Component 	parent;								// parent component
 	
 	
 	/**
@@ -47,7 +47,7 @@ public final class AboutAction  extends AbstractAction {
 		this.parent = parent;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-//		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
         putValue(MNEMONIC_KEY, MNEMONIC);
 	}
 	

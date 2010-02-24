@@ -7375,3 +7375,94 @@ Extraction done. Time elapsed: 1 seconds
 Number lines in the file: 563014
 Number of lines extracted: 563014
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:23:26
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:23:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:32:32
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:32:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:46:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:48:35
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:57:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:57:56
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_AceView_03-2006.txt
+Extraction done. Time elapsed: 4 seconds
+Number lines in the file: 258619
+Number of lines extracted: 258618
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:58:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 23 seconds
+Number lines in the file: 5057005
+Number of lines extracted: 5016106
+Percentage of lines extracted: 99.2%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:58:41
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:58:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 17:59:09
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Ancient-S-G1-toTestBrowser\old_G_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 563014
+Number of lines extracted: 563014
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/24 18:02:08
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
