@@ -10,6 +10,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -28,13 +31,16 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 	private static final long serialVersionUID = 1745399422702517182L;	// generated ID
 
-	private final ChromosomeManager chromosomeManager;	// ChromosomeManager
-	private BinList 				binList;			// Value of the displayed BinList
-	private ByteArrayOutputStream	initialBinList;		// Value of the BinList when the track is created (the BinList is serialized and zipped)
-	private ByteArrayOutputStream	undoBinList = null;	// BinList used to restore when undo (the BinList is serialized and zipped)
-	private ByteArrayOutputStream	redoBinList = null;	// BinList used to restore when redo (the BinList is serialized and zipped)
-	private History					history = null;		// History containing a description of the actions done
+	private final ChromosomeManager 		chromosomeManager;	// ChromosomeManager
+	private BinList 						binList;			// Value of the displayed BinList
+	transient private ByteArrayOutputStream	initialBinList;		// Value of the BinList when the track is created (the BinList is serialized and zipped)
+	transient private ByteArrayOutputStream	undoBinList = null;	// BinList used to restore when undo (the BinList is serialized and zipped)
+	transient private ByteArrayOutputStream	redoBinList = null;	// BinList used to restore when redo (the BinList is serialized and zipped)
+	private History							history = null;		// History containing a description of the actions done
 
+	private BinList initialSaver = null;
+	private BinList undoSaver = null;
+	private BinList redoSaver = null;
 
 	/**
 	 * Creates an instance of a {@link BinListTrackGraphics}
@@ -363,5 +369,57 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	public History getHistory() {
 		return history;
+	}
+
+
+	/**
+	 * Unserializes the initial, undo and redo BinList so they can 
+	 * be serialized with the rest of the current instance and saved.
+	 * This is because ByteArrayOutputStream can't be serialized
+	 * @param out {@link ObjectOutputStream}
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		try {
+			if (initialBinList != null) {
+				initialSaver = BinListOperations.unzipAndUnserialize(initialBinList);
+			}
+			if (undoBinList != null) {
+				undoSaver = BinListOperations.unzipAndUnserialize(undoBinList);
+			}
+			if (redoBinList != null) {
+				redoSaver = BinListOperations.unzipAndUnserialize(redoBinList);
+			}
+			out.defaultWriteObject();
+			initialSaver = null;
+			undoSaver = null;
+			redoSaver = null;
+		} catch (ClassNotFoundException e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while saving a BinListTrack");
+		}
+	}
+
+
+	/**
+	 * Serializes and zips the initial, undo and redo BinList 
+	 * after the unserialization of an instance.
+	 * @param in {@link ObjectInputStream}
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		if (initialSaver != null) {
+			initialBinList = BinListOperations.serializeAndZip(initialSaver);
+			initialSaver = null;
+		}
+		if (undoSaver != null) {
+			undoBinList = BinListOperations.serializeAndZip(undoSaver);
+			undoSaver = null;
+		}
+		if (redoSaver != null) {
+			redoBinList = BinListOperations.serializeAndZip(redoSaver);
+			redoSaver = null;
+		}
 	}
 }

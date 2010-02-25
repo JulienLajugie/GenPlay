@@ -11,7 +11,6 @@ import java.awt.GridBagLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -30,7 +29,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class Track extends JPanel implements Serializable, PropertyChangeListener, GenomeWindowListener, GenomeWindowModifier {
+public abstract class Track extends JPanel implements PropertyChangeListener, GenomeWindowListener, GenomeWindowModifier {
 
 	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
 	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 			// minimum height of a track
@@ -320,5 +319,18 @@ public abstract class Track extends JPanel implements Serializable, PropertyChan
 		for (GenomeWindowListener currentListener: listenerList) {
 			currentListener.genomeWindowChanged(evt);
 		}		
+	}
+	
+	
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
+		return listenerList.toArray(genomeWindowListeners);
+	}
+	
+	
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		listenerList.remove(genomeWindowListener);		
 	}
 }

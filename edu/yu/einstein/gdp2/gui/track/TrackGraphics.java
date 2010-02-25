@@ -41,23 +41,23 @@ import yu.einstein.gdp2.util.ZoomManager;
 public abstract class TrackGraphics extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowModifier {
 
 	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
-	private static final int	 	VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
-	private static final Color		LINE_COLOR = Color.lightGray;	// color of the lines
-	private static final Color		MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
-	protected static final String 	FONT_NAME = "ARIAL";			// name of the font
-	protected static final int 		FONT_SIZE = 10;					// size of the font
-	protected final FontMetrics 	fm = 
-		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); // FontMetrics to get the size of a string
-	private final ZoomManager 		zoomManager;					// zoom manager
-	private final ArrayList<GenomeWindowListener> listenerList;		// list of GenomeWindowListener
-	private int 					verticalLineCount;				// number of vertical lines to print
-	private int 					mouseStartDragX = -1;			// position of the mouse when start dragging
-	protected double				xFactor;						// factor between the genomic width and the screen width
-	protected GenomeWindow			genomeWindow;					// the genome window displayed by the track
-	private boolean 				isScrollMode;					// true if the scroll mode is on
-	private int 					scrollModeIntensity = 0;		// Intensity of the scroll.
-	private ScrollModeThread 		scrollModeThread; 				// Thread executed when the scroll mode is on
-	private ChromosomeWindowList	stripeList = null;				// stripes to display on the track
+	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
+	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
+	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
+	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
+	protected static final int 			FONT_SIZE = 10;					// size of the font
+	protected final FontMetrics 		fm = 
+		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
+	private final ZoomManager 			zoomManager;					// zoom manager
+	private final ArrayList<GenomeWindowListener> listenerList;			// list of GenomeWindowListener
+	private int 						verticalLineCount;				// number of vertical lines to print
+	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
+	protected double					xFactor;						// factor between the genomic width and the screen width
+	protected GenomeWindow				genomeWindow;					// the genome window displayed by the track
+	private boolean 					isScrollMode;					// true if the scroll mode is on
+	private int 						scrollModeIntensity = 0;		// Intensity of the scroll.
+	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
+	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 
 
 	/**
@@ -560,5 +560,18 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.add(genomeWindowListener);		
+	}
+	
+	
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
+		return listenerList.toArray(genomeWindowListeners);
+	}
+	
+	
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		listenerList.remove(genomeWindowListener);		
 	}
 }

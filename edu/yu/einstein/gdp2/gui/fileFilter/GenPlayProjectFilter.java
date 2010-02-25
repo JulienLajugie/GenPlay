@@ -5,7 +5,6 @@
 package yu.einstein.gdp2.gui.fileFilter;
 
 import java.io.File;
-import java.io.Serializable;
 
 import javax.swing.filechooser.FileFilter;
 
@@ -17,12 +16,8 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GenPlayProjectFilter extends ExtendedFileFilter implements Serializable {
+public class GenPlayProjectFilter extends ExtendedFileFilter {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3814310006356279828L;
 	public static final String EXTENSION = "gen";
 	public static final String DESCRIPTION = "GenPlay Project Files (*.gen)";
 

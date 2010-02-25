@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileFilter;
 
 import yu.einstein.gdp2.gui.fileFilter.GenPlayProjectFilter;
 import yu.einstein.gdp2.gui.trackList.TrackList;
+import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -60,11 +61,19 @@ public class LoadProjectAction extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
-		FileFilter[] fileFilters = {new GenPlayProjectFilter()};
-		File selectedFile = Utils.chooseFileToLoad(parent, "Load Project", defaultDirectory, fileFilters);
+		final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+		final FileFilter[] fileFilters = {new GenPlayProjectFilter()};
+		final File selectedFile = Utils.chooseFileToLoad(parent, "Load Project", defaultDirectory, fileFilters);
 		if (selectedFile != null) {
-			trackList.loadProject(selectedFile);
+			new ActionWorker<Void>(trackList) {
+				@Override
+				protected Void doAction() {
+					trackList.loadProject(selectedFile);
+					return null;
+				}
+				@Override
+				protected void doAtTheEnd(Void result) {}
+			}.execute();
 		}
 	}
 }

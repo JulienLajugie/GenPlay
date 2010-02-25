@@ -371,9 +371,11 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setTrackNumber(i + 1);
 			jpTrackList.add(trackList[i]);
-			if (trackList[i].getPropertyChangeListeners().length == 0) {
-				trackList[i].addGenomeWindowListener(this);
+			if (trackList[i].getPropertyChangeListeners().length == 0) {				
 				trackList[i].addPropertyChangeListener(this);
+			}
+			if (trackList[i].getGenomeWindowListeners().length == 0) {
+				trackList[i].addGenomeWindowListener(this);
 			}
 		}		
 		jpTrackList.revalidate();
@@ -654,25 +656,46 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		setGenomeWindow(evt.getNewWindow());	
 	}
-
+	
+	
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
+		return listenerList.toArray(genomeWindowListeners);
+	}
+	
+	
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		listenerList.remove(genomeWindowListener);		
+	}
+	
 
 	/**
 	 * Saves the current list of tracks into a file
 	 */
 	public void saveProject(File outputFile) {
-		synchronized(TrackList.class) {
-			try {
-				FileOutputStream fos = new FileOutputStream(outputFile);
-				GZIPOutputStream gz = new GZIPOutputStream(fos);
-				ObjectOutputStream oos = new ObjectOutputStream(gz);
-				oos.writeObject(trackList);
-				oos.flush();
-				oos.close();
-				gz.flush();
-				gz.close();
-			} catch (IOException e) {
-				ExceptionManager.handleException(getRootPane(), e, "An error occurred while saving the project"); 
+		try {
+			// remove all the references to the listener so we don't save them
+			for (Track currentTrack: trackList) {
+				currentTrack.removePropertyChangeListener(this);
+				currentTrack.removeGenomeWindowListener(this);
 			}
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			GZIPOutputStream gz = new GZIPOutputStream(fos);
+			ObjectOutputStream oos = new ObjectOutputStream(gz);
+			oos.writeObject(this.trackList);
+			oos.flush();
+			oos.close();
+			gz.flush();
+			gz.close();
+			// rebuild the references to the listener
+			for (Track currentTrack: trackList) {
+				currentTrack.addPropertyChangeListener(this);
+				currentTrack.addGenomeWindowListener(this);
+			}
+		} catch (IOException e) {
+			ExceptionManager.handleException(getRootPane(), e, "An error occurred while saving the project"); 
 		}
 	}
 
@@ -681,16 +704,14 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * Loads a list of tracks from a file
 	 */
 	public void loadProject(File inputFile) {
-		synchronized(TrackList.class) {
-			try {
-				FileInputStream fis = new FileInputStream(inputFile);
-				GZIPInputStream gz = new GZIPInputStream(fis);
-				ObjectInputStream ois = new ObjectInputStream(gz);
-				trackList = (Track[])ois.readObject();
-				rebuildPanel();
-			} catch (Exception e) {
-				ExceptionManager.handleException(getRootPane(), e, "An error occurred while loading the project"); 
-			}
+		try {
+			FileInputStream fis = new FileInputStream(inputFile);
+			GZIPInputStream gz = new GZIPInputStream(fis);
+			ObjectInputStream ois = new ObjectInputStream(gz);
+			trackList = (Track[])ois.readObject();
+			rebuildPanel();
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "An error occurred while loading the project"); 
 		}
 	}
 }

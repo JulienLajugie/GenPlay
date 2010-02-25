@@ -7466,3 +7466,178 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 28226
 Number of lines extracted: 27639
 Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 10:54:02
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:17:13
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:21:04
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 24312
+Number of lines extracted: 24312
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:21:15
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:33:21
+File: C:\Documents and Settings\Julien\workspace\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89,9%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:38:38
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:39:12
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 24312
+Number of lines extracted: 24312
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:39:29
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:39:38
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:42:26
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:42:53
+File: C:\Documents and Settings\Julien\workspace\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89,9%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:43:20
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 24312
+Number of lines extracted: 24312
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:43:37
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 12:43:42
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:19:17
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:44:18
+File: C:\Documents and Settings\Julien\workspace\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89,9%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:44:58
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:45:21
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:45:27
+File: C:\Documents and Settings\Julien\workspace\bodies.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 24258
+Number of lines extracted: 24258
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:54:12
+File: C:\Documents and Settings\Julien\workspace\Solexa-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307910
+Number of lines extracted: 275287
+Percentage of lines extracted: 89,4%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:54:45
+File: C:\Documents and Settings\Julien\workspace\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89,9%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 15:56:54
+File: C:\Documents and Settings\Julien\workspace\Solid-13M-W10Kb-S100Kb.txt
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 307915
+Number of lines extracted: 276761
+Percentage of lines extracted: 89,9%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 16:01:29
+File: C:\Documents and Settings\Julien\workspace\promoters.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 23901
+Number of lines extracted: 23901
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 16:01:42
+File: C:\Documents and Settings\Julien\workspace\Nimble-BM-W5Kb-S50Kb.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 212386
+Number of lines extracted: 21801
+Percentage of lines extracted: 10,3%
+-------------------------------------------------------------------
+Extraction - 2010/02/25 16:01:54
+File: C:\Documents and Settings\Julien\workspace\Genes_Mouse_RefSeq_07-2007.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 24312
+Number of lines extracted: 24312
+Percentage of lines extracted: 100%

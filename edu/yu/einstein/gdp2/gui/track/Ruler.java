@@ -136,5 +136,18 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		for (GenomeWindowListener currentListener: listenerList) {
 			currentListener.genomeWindowChanged(evt);
 		}		
+	}	
+	
+	
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
+		return listenerList.toArray(genomeWindowListeners);
+	}
+	
+	
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		listenerList.remove(genomeWindowListener);		
 	}
 }

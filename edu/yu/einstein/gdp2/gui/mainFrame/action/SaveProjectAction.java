@@ -13,8 +13,10 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
+import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.fileFilter.GenPlayProjectFilter;
 import yu.einstein.gdp2.gui.trackList.TrackList;
+import yu.einstein.gdp2.gui.trackList.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -66,9 +68,19 @@ public class SaveProjectAction extends AbstractAction {
 		jfc.setAcceptAllFileFilterUsed(false);
 		final int returnVal = jfc.showSaveDialog(parent);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			final File selectedFile = jfc.getSelectedFile();
+			final ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+			final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(parent, selectedFile)) {
-				trackList.saveProject(selectedFile);
+				new ActionWorker<Void>(trackList) {
+					@Override
+					protected Void doAction() {
+						trackList.saveProject(selectedFile);
+						return null;
+					}
+					@Override
+					protected void doAtTheEnd(Void result) {}
+				}.execute();
+				
 			}
 		}
 	}

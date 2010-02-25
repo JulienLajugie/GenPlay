@@ -133,4 +133,17 @@ public final class GenomeWindowPanel extends JPanel implements GenomeWindowModif
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.add(genomeWindowListener);		
 	}	
+	
+	
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
+		return listenerList.toArray(genomeWindowListeners);
+	}
+	
+	
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		listenerList.remove(genomeWindowListener);		
+	}
 }
