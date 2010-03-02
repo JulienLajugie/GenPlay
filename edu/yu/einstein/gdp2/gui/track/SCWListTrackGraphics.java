@@ -33,7 +33,7 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics {
 	 * @param data displayed {@link ScoredChromosomeWindowList} 
 	 */
 	protected SCWListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
-		super(zoomManager, displayedGenomeWindow, data.getMinScore(), data.getMaxScore());
+		super(zoomManager, displayedGenomeWindow, data.minScoreToDisplay(), data.maxScoreToDisplay());
 		this.data = data;
 		// we don't want the max equals to the min
 		if (yMin == yMax) {

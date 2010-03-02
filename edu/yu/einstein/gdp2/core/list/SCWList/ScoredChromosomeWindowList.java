@@ -15,6 +15,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.util.DoubleLists;
 
 public final class ScoredChromosomeWindowList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements Serializable {
 
@@ -52,27 +53,26 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 
 	/**
-	 * @param scoreList an {@link ArrayList} of Double
+	 * Returns the average of the list defined as: 
+	 * sum(score * length) / sum(length)
 	 * @return the average of the list
 	 */
-	private double average(ArrayList<Double> scoreList) {
-		double sum = 0;
-		int count = 0;
-
-		if(scoreList == null) {
-			return 0;
-		}
-
-		for (int i = 0; i < scoreList.size(); i++) {
-			if (scoreList.get(i) != 0) {
-				sum += scoreList.get(i);
-				count++;
+	public double average() {
+		double sumScoreByLength = 0;
+		int sumLength = 0;
+		for (List<ScoredChromosomeWindow> currentList : this) {
+			for(ScoredChromosomeWindow currentWindow : currentList) {	
+				if (currentWindow.getScore() != 0) {
+					int length = currentWindow.getStop() - currentWindow.getStart();
+					sumScoreByLength += currentWindow.getScore() * length;
+					sumLength += length;
+				}
 			}
 		}
-		if (count > 0) {
-			return sum / count;
+		if (sumLength == 0) {
+			return 0d;
 		} else {
-			return 0;
+			return (sumScoreByLength / (double)sumLength);
 		}
 	}
 
@@ -169,7 +169,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 						windowWidth = (currentChromosomeList.get(i).getStop() - fittedDataList.get(j).getStart()) * fittedXRatio;
 						nextScore = currentChromosomeList.get(i).getScore(); 
 					}
-					fittedDataList.get(j).setScore(average(scoreList));
+					fittedDataList.get(j).setScore(DoubleLists.average(scoreList));
 					fittedDataList.add(new ScoredChromosomeWindow(currentChromosomeList.get(i)));
 					scoreList = new ArrayList<Double>();
 					scoreList.add(currentChromosomeList.get(i).getScore());
@@ -229,33 +229,30 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		return resultList;
 	}
 
-
 	/**
-	 * @return the maximum score of the list
+	 * @return the maximum score to display in a track
 	 */
-	public double getMaxScore() {
-		double max = Double.NEGATIVE_INFINITY;
-		for(List<ScoredChromosomeWindow> currentList : this) {
-			for(ScoredChromosomeWindow currentWindow : currentList) {			
-				max = Math.max(max, currentWindow.getScore());
-			}
-		}			
-		return max;
+	public double maxScoreToDisplay() {
+		final double realMax = average() * 2; 
+		int maxScoreDisplayed = 1;
+		while (realMax / maxScoreDisplayed > 1) {
+			maxScoreDisplayed *= 10;
+		}
+		return maxScoreDisplayed;
 	}
 
 
 
 	/**
-	 * @return the minimum score of the list
+	 * @return the minimum score to display in a track
 	 */
-	public double getMinScore() {
+	public double minScoreToDisplay() {
 		double min = Double.POSITIVE_INFINITY;
 		for(List<ScoredChromosomeWindow> currentList : this) {
 			for(ScoredChromosomeWindow currentWindow : currentList) {
 				min = Math.min(min, currentWindow.getScore());
 			}			
 		}
-		return min;
+		return Math.min(0, min);
 	}
-
 }

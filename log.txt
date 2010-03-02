@@ -7676,3 +7676,17 @@ Extraction done. Time elapsed: 1 seconds
 Number lines in the file: 28868
 Number of lines extracted: 28482
 Percentage of lines extracted: 98.7%
+-------------------------------------------------------------------
+Extraction - 2010/03/02 14:18:05
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 10 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/02 14:19:07
+File: C:\Documents and Settings\Administrator\My Documents\test.bed
+Extraction done. Time elapsed: 7 seconds
+Number lines in the file: 1504727
+Number of lines extracted: 1504727
+Percentage of lines extracted: 100%

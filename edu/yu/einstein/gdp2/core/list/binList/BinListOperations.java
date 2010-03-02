@@ -785,8 +785,8 @@ public class BinListOperations {
 	 * @param binList a {@link BinList}
 	 * @return the maximum score to display on a BinList track
 	 */
-	public static double maxDisplayedScore(BinList binList) {
-		final double realMax = average(binList); 
+	public static double maxScoreToDisplay(BinList binList) {
+		final double realMax = average(binList) * 2; 
 		int maxScoreDisplayed = 1;
 		while (realMax / maxScoreDisplayed > 1) {
 			maxScoreDisplayed *= 10;
@@ -814,7 +814,7 @@ public class BinListOperations {
 	 * @param binList a {@link BinList}
 	 * @return the minimum score to display on a BinList track
 	 */
-	public static double minDisplayedScore(BinList binList) {
+	public static double minScoreToDisplay(BinList binList) {
 		return Math.min(0, min(binList));
 	}
 
