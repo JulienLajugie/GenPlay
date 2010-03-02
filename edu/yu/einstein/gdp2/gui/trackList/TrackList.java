@@ -69,6 +69,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.StandardDeviationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SubtractionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SubtractionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ThresholdFilterAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.TransfragAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.UndoAction;
 import yu.einstein.gdp2.gui.trackList.action.curve.AppearanceAction;
 import yu.einstein.gdp2.gui.trackList.action.curve.SetYAxisAction;
@@ -213,6 +214,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SubtractionAction.ACTION_KEY, new SubtractionAction(this));
 		getActionMap().put(SubtractionConstantAction.ACTION_KEY, new SubtractionConstantAction(this));
 		getActionMap().put(ThresholdFilterAction.ACTION_KEY, new ThresholdFilterAction(this));
+		getActionMap().put(TransfragAction.ACTION_KEY, new TransfragAction(this));
 		getActionMap().put(UndoAction.ACTION_KEY, new UndoAction(this));
 	}
 

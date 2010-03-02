@@ -44,6 +44,7 @@ import yu.einstein.gdp2.gui.trackList.action.binList.StandardDeviationAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SubtractionAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.SubtractionConstantAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.ThresholdFilterAction;
+import yu.einstein.gdp2.gui.trackList.action.binList.TransfragAction;
 import yu.einstein.gdp2.gui.trackList.action.binList.UndoAction;
 import yu.einstein.gdp2.gui.trackList.action.general.SaveTrackAction;
 
@@ -96,6 +97,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiDensityFilter;		// menu density filter
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
+	private final JMenuItem		jmiTransfrag;			// menu transfrag
 	
 	private final JMenuItem		jmiChangeBinSize;		// menu change bin size
 	private final JMenuItem		jmiChangePrecision;		// menu change data precision
@@ -150,6 +152,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiDensityFilter = new JMenuItem(actionMap.get(DensityFilterAction.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
+		jmiTransfrag =  new JMenuItem(actionMap.get(TransfragAction.ACTION_KEY));
 		
 		jmiChangeBinSize = new JMenuItem(actionMap.get(ChangeBinSizeAction.ACTION_KEY));
 		jmiChangePrecision = new JMenuItem(actionMap.get(ChangePrecisionAction.ACTION_KEY));
@@ -194,6 +197,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiDensityFilter);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
+		jmOperation.add(jmiTransfrag);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiChangeBinSize);
 		jmOperation.add(jmiChangePrecision);

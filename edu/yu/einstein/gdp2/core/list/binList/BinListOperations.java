@@ -330,8 +330,8 @@ public class BinListOperations {
 		correlationCoef = (correlationCoef - (n * mean1 * mean2)) / ((n - 1) * stdDev1 * stdDev2);
 		return correlationCoef;
 	}
-	
-	
+
+
 	/**
 	 * Computes the density of bin with values on a region of halfWidth * 2 + 1 bins
 	 * @param binList input {@link BinList}
@@ -1301,6 +1301,60 @@ public class BinListOperations {
 					} else {
 						resultList.set(i, j, 0d);
 					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+
+	/**
+	 * Defines regions as "islands" of non zero value bins 
+	 * separated by more than a specified number of zero value bins.
+	 * Computes the average on these regions.
+	 * Returns a new {@link BinList} with the defined regions having their average as a score
+	 * @param binList input BinList
+	 * @param zeroWindowGap number of zero value windows defining a gap between two islands
+	 * @return a new BinList
+	 */
+	public static BinList transfrag(BinList binList, int zeroWindowGap) {
+		DataPrecision precision = binList.getPrecision();
+		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		for(short i = 0; i < binList.size(); i++)  {
+			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
+				resultList.add(null);
+			} else {
+				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
+				resultList.add(listToAdd);
+				int j = 0;				
+				while (j < binList.size(i)) {
+					// skip zero values
+					while ((j < binList.size(i)) && (binList.get(i, j) == 0)) {
+						j++;
+					}
+					int regionStart = j;
+					int regionStop = regionStart;
+					int zeroWindowCount = 0;
+					// a region stops when there is maxZeroWindowGap consecutive zero windows
+					while ((j < binList.size(i)) && (zeroWindowCount < zeroWindowGap)) {
+						if (binList.get(i, j) == 0) {
+							zeroWindowCount++;
+						} else {
+							zeroWindowCount = 0;
+							regionStop = j;
+						}
+						j++;
+					}
+					if (regionStart != regionStop) { 
+						// all the windows of the region are set with the average value on the region
+						double regionScoreAvg = DoubleLists.average(binList.get(i), regionStart, regionStop);
+						for (j = regionStart; j <= regionStop; j++) {
+							if (j < resultList.size(i)) {
+								resultList.set(i, j, regionScoreAvg);
+							}
+						}
+					}
+					j++;
 				}
 			}
 		}

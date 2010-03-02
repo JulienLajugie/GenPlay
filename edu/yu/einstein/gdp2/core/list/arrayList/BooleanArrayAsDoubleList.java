@@ -10,8 +10,8 @@ import java.util.List;
 
 
 /**
- * An array of bytes encapsulated in order to implement the {@link List} interface with Double parameter
- * <br>Each bytes represent 8 booleans. 
+ * An array of 8 booleans packed to the byte encapsulated in order to implement the {@link List} interface with Double parameter
+ * <br>Each element of the internal array are bytes and represent 8 booleans. 
  * <br>This is an optimization in the memory usage since: 
  * <br>1 byte (representing 8 booleans) = 1 byte in memory
  * <br>better than 1 boolean = 1 byte in memory
