@@ -208,7 +208,10 @@ public class BinListOperations {
 							result = DoubleLists.average(values, indexStart, values.size() - 1);
 							break;
 						case MAXIMUM:
-							result = Collections.max(values.subList(indexStart, values.size() - 1));
+							List<Double> listTmp = values.subList(indexStart, values.size() - 1);
+							if ((listTmp != null) && (listTmp.size() > 0)) {
+								result = Collections.max(listTmp);
+							}
 							break;							
 						case SUM:
 							result = DoubleLists.sum(values, indexStart, values.size() - 1);
