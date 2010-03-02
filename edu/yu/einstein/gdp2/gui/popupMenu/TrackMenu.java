@@ -10,16 +10,16 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import yu.einstein.gdp2.gui.action.allTrack.CopyAction;
+import yu.einstein.gdp2.gui.action.allTrack.CutAction;
+import yu.einstein.gdp2.gui.action.allTrack.DeleteAction;
+import yu.einstein.gdp2.gui.action.allTrack.LoadStripesAction;
+import yu.einstein.gdp2.gui.action.allTrack.PasteAction;
+import yu.einstein.gdp2.gui.action.allTrack.RemoveStripesAction;
+import yu.einstein.gdp2.gui.action.allTrack.RenameAction;
+import yu.einstein.gdp2.gui.action.allTrack.SaveAsImageAction;
+import yu.einstein.gdp2.gui.action.allTrack.SetHeightAction;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.gui.trackList.action.general.CopyAction;
-import yu.einstein.gdp2.gui.trackList.action.general.CutAction;
-import yu.einstein.gdp2.gui.trackList.action.general.DeleteAction;
-import yu.einstein.gdp2.gui.trackList.action.general.LoadStripesAction;
-import yu.einstein.gdp2.gui.trackList.action.general.PasteAction;
-import yu.einstein.gdp2.gui.trackList.action.general.RemoveStripesAction;
-import yu.einstein.gdp2.gui.trackList.action.general.RenameAction;
-import yu.einstein.gdp2.gui.trackList.action.general.SaveAsImageAction;
-import yu.einstein.gdp2.gui.trackList.action.general.SetHeightAction;
 
 
 /**

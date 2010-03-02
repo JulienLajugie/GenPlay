@@ -6,10 +6,10 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
+import yu.einstein.gdp2.gui.action.allTrack.SaveTrackAction;
+import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
+import yu.einstein.gdp2.gui.action.geneListTrack.SearchGeneAction;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.gui.trackList.action.geneList.ExtractIntervalAction;
-import yu.einstein.gdp2.gui.trackList.action.geneList.SearchGeneAction;
-import yu.einstein.gdp2.gui.trackList.action.general.SaveTrackAction;
 
 
 /**

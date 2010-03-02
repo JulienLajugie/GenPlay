@@ -9,13 +9,13 @@ import javax.swing.ActionMap;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import yu.einstein.gdp2.gui.mainFrame.action.AboutAction;
-import yu.einstein.gdp2.gui.mainFrame.action.ExitAction;
-import yu.einstein.gdp2.gui.mainFrame.action.FullScreenAction;
-import yu.einstein.gdp2.gui.mainFrame.action.HelpAction;
-import yu.einstein.gdp2.gui.mainFrame.action.LoadProjectAction;
-import yu.einstein.gdp2.gui.mainFrame.action.OptionAction;
-import yu.einstein.gdp2.gui.mainFrame.action.SaveProjectAction;
+import yu.einstein.gdp2.gui.action.project.AboutAction;
+import yu.einstein.gdp2.gui.action.project.ExitAction;
+import yu.einstein.gdp2.gui.action.project.FullScreenAction;
+import yu.einstein.gdp2.gui.action.project.HelpAction;
+import yu.einstein.gdp2.gui.action.project.LoadProjectAction;
+import yu.einstein.gdp2.gui.action.project.OptionAction;
+import yu.einstein.gdp2.gui.action.project.SaveProjectAction;
 
 
 /**

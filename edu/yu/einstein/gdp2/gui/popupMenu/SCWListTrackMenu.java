@@ -6,9 +6,9 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
+import yu.einstein.gdp2.gui.action.SCWListTrack.GenerateBinListAction;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.gui.trackList.action.SCWList.GenerateBinListAction;
 
 
 /**

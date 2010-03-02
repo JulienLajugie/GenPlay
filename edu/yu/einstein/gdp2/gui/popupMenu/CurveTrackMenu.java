@@ -6,10 +6,10 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
+import yu.einstein.gdp2.gui.action.curveTrack.AppearanceAction;
+import yu.einstein.gdp2.gui.action.curveTrack.SetYAxisAction;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.gui.trackList.action.curve.AppearanceAction;
-import yu.einstein.gdp2.gui.trackList.action.curve.SetYAxisAction;
 
 /**
  * Abstract class of the popup menus for a {@link CurveTrack}

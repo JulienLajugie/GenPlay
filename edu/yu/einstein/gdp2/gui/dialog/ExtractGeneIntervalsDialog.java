@@ -20,7 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.text.NumberFormatter;
 
 import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
-import yu.einstein.gdp2.gui.trackList.action.geneList.ExtractIntervalAction;
+import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
 
 
 /**

@@ -6,11 +6,11 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadRepeatFamilyListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadSCWListTrackAction;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadBinListTrackAction;
-import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadGeneListTrackAction;
-import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadRepeatFamilyListTrackAction;
-import yu.einstein.gdp2.gui.trackList.action.emptyTrack.LoadSCWListTrackAction;
 
 
 /**
