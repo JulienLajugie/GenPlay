@@ -40,11 +40,12 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	private int 				mouseStartDragY = -1;				// position of the mouse when start dragging
 	private Gene 				geneUnderMouse = null;				// gene under the cursor of the mouse
 
+	
 	/**
-	 * 
-	 * @param zoomManager
-	 * @param displayedGenomeWindow
-	 * @param geneList
+	 * Creates an instance of {@link GeneListTrackGraphics}
+	 * @param zoomManager a {@link ZoomManager}
+	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
+	 * @param geneList a list of genes
 	 */
 	protected GeneListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, GeneList geneList) {
 		super(zoomManager, displayedGenomeWindow);

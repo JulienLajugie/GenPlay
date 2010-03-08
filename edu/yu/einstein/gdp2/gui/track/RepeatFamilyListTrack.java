@@ -16,9 +16,9 @@ import yu.einstein.gdp2.util.ZoomManager;
  */
 public final class RepeatFamilyListTrack extends Track {
 
-	private static final long serialVersionUID = 2723805094901070252L; // generated ID
-	
+	private static final long serialVersionUID = 2723805094901070252L; // generated ID	
 	private final RepeatFamilyList repeatList;	// repeatList used at the creation
+	
 	
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrack}

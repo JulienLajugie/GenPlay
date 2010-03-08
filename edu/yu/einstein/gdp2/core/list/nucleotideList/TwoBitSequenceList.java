@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.twoBitFormat;
+package yu.einstein.gdp2.core.list.nucleotideList;
 
 import java.io.File;
 import java.io.FileNotFoundException;

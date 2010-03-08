@@ -7690,3 +7690,17 @@ Extraction done. Time elapsed: 7 seconds
 Number lines in the file: 1504727
 Number of lines extracted: 1504727
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/08 14:06:01
+File: C:\Documents and Settings\Administrator\Desktop\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+Extraction done. Time elapsed: 592 seconds
+Number lines in the file: 17428087
+Number of lines extracted: 17428087
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/08 14:21:08
+File: C:\Documents and Settings\Administrator\Desktop\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+Extraction done. Time elapsed: 575 seconds
+Number lines in the file: 17428087
+Number of lines extracted: 17428087
+Percentage of lines extracted: 100%
