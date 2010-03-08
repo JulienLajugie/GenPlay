@@ -131,7 +131,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 
 	@Override
 	protected Nucleotide[] getFittedData(int start, int stop) {
-		Nucleotide[] result = new Nucleotide[stop - start];
+		Nucleotide[] result = new Nucleotide[stop - start + 1];
 		List<Nucleotide> currentList;
 		try {
 			currentList = get(fittedChromosome);
@@ -145,28 +145,11 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			return null;
 		}
 		
+		int j = 0;
 		for (int i = start; i <= stop; i++) {
-			result[i] = currentList.get(i);
+			result[j] = currentList.get(i);
+			j++;
 		}		
 		return result;
 	}
-
-
-
-	/*public static void main(String[] args) {
-		try {
-			TwoBitSequenceList tbsList = new TwoBitSequenceList(ChromosomeManager.getInstance(), new File("C:\\Documents and Settings\\Administrator\\My Documents\\Downloads\\hg18.2bit"));
-			for (int i = 49975; i < 50125; i++) {
-				if (i % 50 == 0) {
-					System.out.println();
-				}
-				System.out.print(tbsList.get(0).get(i));
-			}
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-	}*/
-	
 }

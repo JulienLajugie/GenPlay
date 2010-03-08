@@ -12,15 +12,16 @@ import yu.einstein.gdp2.util.Utils;
 
 
 /**
- * A {@link FileFilter} for the Serialized BinList files.
+ * A {@link FileFilter} for the 2bit files.
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SerializedBinListFilter extends ExtendedFileFilter {
+public class TwoBitFilter extends ExtendedFileFilter {
 
-	public static final String EXTENSION = "bin";
-	public static final String DESCRIPTION = "Serialized Fixed Window Files (*.bin)";
+	public static final String EXTENSION = "2bit";
+	public static final String DESCRIPTION = "DNA sequence 2bit files (*.2bit)";
 
+	
 	@Override
 	public boolean accept(File f) {
 		if (f.isDirectory()) {

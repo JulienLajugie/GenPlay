@@ -77,6 +77,7 @@ import yu.einstein.gdp2.gui.action.curveTrack.AppearanceAction;
 import yu.einstein.gdp2.gui.action.curveTrack.SetYAxisAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadNucleotideListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadRepeatFamilyListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadSCWListTrackAction;
 import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
@@ -166,6 +167,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add empty list actions
 		getActionMap().put(LoadBinListTrackAction.ACTION_KEY, new LoadBinListTrackAction(this));
 		getActionMap().put(LoadGeneListTrackAction.ACTION_KEY, new LoadGeneListTrackAction(this));
+		getActionMap().put(LoadNucleotideListTrackAction.ACTION_KEY, new LoadNucleotideListTrackAction(this));
 		getActionMap().put(LoadRepeatFamilyListTrackAction.ACTION_KEY, new LoadRepeatFamilyListTrackAction(this));
 		getActionMap().put(LoadSCWListTrackAction.ACTION_KEY, new LoadSCWListTrackAction(this));
 		// add gene list actions

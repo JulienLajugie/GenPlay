@@ -169,6 +169,9 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 */
 	@Override
 	public Nucleotide get(int position) {
+		if ((position < 0) || (position > dnaSize)) { 
+			return null;
+		}
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
 			if (position < nBlockStarts[i] + nBlockSizes[i]) {

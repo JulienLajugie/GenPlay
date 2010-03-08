@@ -8,6 +8,7 @@ import javax.swing.JMenuItem;
 
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadNucleotideListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadRepeatFamilyListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadSCWListTrackAction;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -24,6 +25,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 	private final JMenuItem jmiLoadSCWLtTrack;						// menu load ScoredChromosomeWindowList track
 	private final JMenuItem jmiLoadBinListTrack;					// menu load BinList track
 	private final JMenuItem	jmiLoadGeneListTrack;					// menu load GeneList track
+	private final JMenuItem jmiLoadNucleotideListTrack;				// menu load Sequence track track
 	private final JMenuItem jmiLoadRepeatFamilyListTrack;			// menu load RepeatFamilyList track
 	
 	
@@ -37,12 +39,14 @@ public final class EmptyTrackMenu extends TrackMenu {
 		jmiLoadSCWLtTrack = new JMenuItem(actionMap.get(LoadSCWListTrackAction.ACTION_KEY));
 		jmiLoadBinListTrack = new JMenuItem(actionMap.get(LoadBinListTrackAction.ACTION_KEY));
 		jmiLoadGeneListTrack = new JMenuItem(actionMap.get(LoadGeneListTrackAction.ACTION_KEY));
+		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(LoadNucleotideListTrackAction.ACTION_KEY));
 		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(LoadRepeatFamilyListTrackAction.ACTION_KEY));
 		
 		addSeparator();
 		add(jmiLoadSCWLtTrack);
 		add(jmiLoadBinListTrack);
 		add(jmiLoadGeneListTrack);
+		add(jmiLoadNucleotideListTrack);
 		add(jmiLoadRepeatFamilyListTrack);		
 	}
 }

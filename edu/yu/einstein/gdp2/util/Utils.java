@@ -24,6 +24,7 @@ import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
 import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.PairFilter;
 import yu.einstein.gdp2.gui.fileFilter.SerializedBinListFilter;
+import yu.einstein.gdp2.gui.fileFilter.TwoBitFilter;
 import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
 
 
@@ -248,5 +249,14 @@ public class Utils {
 	public static ExtendedFileFilter[] getStripeFileFilters() {
 		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter()};
 		return stripeFileFilters;
+	}
+
+	
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the sequence files (aka nucleotide list files)
+	 */
+	public static FileFilter[] getSequenceFileFilters() {
+		ExtendedFileFilter[] sequenceFileFilters = {new TwoBitFilter()};
+		return sequenceFileFilters;
 	}
 }
