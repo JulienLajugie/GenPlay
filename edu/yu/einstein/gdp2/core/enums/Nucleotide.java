@@ -16,11 +16,11 @@ import java.util.Map;
  */
 public enum Nucleotide {
 	
-	ADENINE 	((byte)0, 	'A', "Adenine", 			"A"),
-	GUANINE 	((byte)1, 	'G', "Guanine", 			"G"),
-	CYTOSINE 	((byte)2, 	'C', "Cytosine", 			"C"),
-	THYMINE 	((byte)3, 	'T', "Thymine", 			"T"),	
-	URACIL 		((byte)3, 	'U', "Uracil", 				"U"),
+	THYMINE 	((byte)0, 	'T', "Thymine", 			"T"),
+	URACIL 		((byte)0, 	'U', "Uracil", 				"U"),
+	CYTOSINE 	((byte)1, 	'C', "Cytosine", 			"C"),
+	ADENINE 	((byte)2, 	'A', "Adenine", 			"A"),
+	GUANINE 	((byte)3, 	'G', "Guanine", 			"G"),
 	ANY 		((byte)4, 	'N', "Any Nucleotide", 		"A or G or C or T"),
 	PURINE 		((byte)5, 	'R', "Purine", 				"A or G"),
 	PYRIMIDINE 	((byte)6, 	'Y', "Pyrimidine", 			"C or T"),
@@ -147,7 +147,7 @@ public enum Nucleotide {
 	 * @param value a byte value of a nucleotide
 	 * @return a {@link Nucleotide} associated to the specified value
 	 */
-	public Nucleotide get(byte value) {
+	public static Nucleotide get(byte value) {
 		return LOOKUP_VALUE.get(value);
 	}
 
@@ -156,7 +156,7 @@ public enum Nucleotide {
 	 * @param code a code of a {@link Nucleotide}
 	 * @return a {@link Nucleotide} associated to the specified code
 	 */
-	public Nucleotide get(char code) {
+	public static Nucleotide get(char code) {
 		return LOOKUP_CODE.get(code);
 	}
 }

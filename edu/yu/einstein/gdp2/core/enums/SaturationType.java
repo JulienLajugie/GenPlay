@@ -24,7 +24,7 @@ public enum SaturationType {
 	/**
 	 * saturation that saturates values above or under a specified threshold
 	 */
-	THRESHOLD ("Threashold");
+	THRESHOLD ("Threshold");
 
 
 	private final String name; // String representing the saturation 
