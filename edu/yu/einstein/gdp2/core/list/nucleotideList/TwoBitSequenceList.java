@@ -27,15 +27,15 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @version 0.1
  */
 public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucleotide[]> implements Serializable {
-	
+
 	private static final long serialVersionUID = -2253030492143151302L;	// generated ID
 	private final static String 		TWOBIT_SIGNATURE = "1A412743";	// signature of a 2bit file
 	private boolean 					reverseBytes = false;			// true if the bytes of a multi-byte entity need to be reversed when read
 	private final int 					version;						// version of the 2bit file
 	private final String				filePath;						// path of the 2bit file  (used for the serialization)
 	private transient RandomAccessFile	twoBitFile;						// 2bit file
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
 	 * @param chromosomeManager {@link ChromosomeManager}
@@ -80,34 +80,37 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		}
 		// skip 4 reserved bytes
 		twoBitFile.skipBytes(4);
+		String[] sequenceNames = new String[sequenceCount];
+		int[] offsets = new int[sequenceCount];
 		for (int i = 0; i < sequenceCount; i++) {
 			byte sequenceNameSize = twoBitFile.readByte();
 			byte[] sequenceNameBytes = new byte[sequenceNameSize];
 			twoBitFile.read(sequenceNameBytes);
-			String sequenceName = new String(sequenceNameBytes);
-			int offset = 0;
+			sequenceNames[i] = new String(sequenceNameBytes);
 			if (reverseBytes) {
-				offset = Integer.reverseBytes(twoBitFile.readInt());
+				offsets[i] = Integer.reverseBytes(twoBitFile.readInt());
 			} else {
-				offset = twoBitFile.readInt();
+				offsets[i] = twoBitFile.readInt();
 			}
-			// we add the sequence to the list if the chromosome is specified in the ChromosomeManager
+		}
+		// we add the sequence to the list if the chromosome is specified in the ChromosomeManager
+		for (int i = 0; i < sequenceCount; i++) {
 			short k = 0;
 			boolean found = false;
 			while ((k < chromosomeManager.chromosomeCount()) && (!found)) {
-				if (chromosomeManager.getChromosome(k).getName().equalsIgnoreCase(sequenceName)) {
+				if (chromosomeManager.getChromosome(k).getName().equalsIgnoreCase(sequenceNames[i])) {
 					long currentPosition = twoBitFile.getFilePointer();
-					TwoBitSequence sequence = new TwoBitSequence(filePath, twoBitFile, offset, sequenceName, reverseBytes);
+					TwoBitSequence sequence = new TwoBitSequence(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
 					set(k, sequence);
 					twoBitFile.seek(currentPosition);
 					found = true;
 				}
 				k++;
-			}			
+			}
 		}
 	}
 
-	
+
 	/**
 	 * @return the version
 	 */
@@ -147,7 +150,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			fittedDataList = null;
 			return null;
 		}
-		
+
 		int j = 0;
 		for (int i = start; i <= stop; i++) {
 			result[j] = currentList.get(i);
@@ -155,8 +158,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		}		
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Methods used for the unserialization of the object.
 	 * Since the random access file can't be serialized we try to recreate it if the file path is still the same

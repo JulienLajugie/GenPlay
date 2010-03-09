@@ -185,14 +185,14 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			i++;
 		}
 		// integer in the file containing the position we look for
-		int offsetPosition = (int)(position / 16) * 4;
+		int offsetPosition = (int)(position / 4);
 		// position of the nucleotide inside the integer
-		int offsetInInteger = 15 - (position % 16);
+		int offsetInsideByte = 3 - (position % 4);
 		try {
 			raf.seek(offsetPosition + offset + headerSize);
 			// rotate the result until the two bits we want are on the far right 
 			// and then apply a 0x0003 filter
-			int result2Bit= Integer.rotateRight(raf.readInt(), offsetInInteger * 2) & 0x3;
+			int result2Bit= Integer.rotateRight(raf.readByte(), offsetInsideByte * 2) & 0x3;
 			return Nucleotide.get((byte)result2Bit);
 		} catch (IOException e) {
 			return null;
