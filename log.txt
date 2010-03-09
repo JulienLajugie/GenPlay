@@ -7718,3 +7718,41 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 28226
 Number of lines extracted: 27639
 Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:26:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:29:00
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:30:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES-G1-extracted-sorted.bgr
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:31:18
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:33:46
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:35:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%

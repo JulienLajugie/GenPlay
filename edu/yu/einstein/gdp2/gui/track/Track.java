@@ -104,8 +104,13 @@ public abstract class Track extends JPanel implements PropertyChangeListener, Ge
 	}
 	
 	
+	@Override
 	public String toString() {
-		return getName();
+		if (trackGraphics.getName() != null) {
+			return getTrackNumber() + " - " + getName();
+		} else {
+			return new String("Track #" + trackHandle.getTrackNumber());
+		}
 	}
 	
 	
