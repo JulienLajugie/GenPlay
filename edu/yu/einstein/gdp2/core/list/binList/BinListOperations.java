@@ -555,51 +555,17 @@ public class BinListOperations {
 	 * Indexes the scores between <i>indexDown</i> and <i>indexUp</i> 
 	 * based on the highest and the lowest value of the whole genome.
 	 * @param binList {@link BinList} to index
-	 * @param saturation percentage of the highest and lowest value saturated (btw 0 and 1)
 	 * @param indexDown Smallest value of the indexed data
 	 * @param indexUp Greatest value of the indexed data
 	 * @param precision precision of the data of the result {@link BinList}
 	 * @return new {@link BinList} resulting from the indexing
 	 */
-	public static BinList index(BinList binList, double saturation, double indexDown, double indexUp, DataPrecision precision) {
-		double halfSaturation = saturation / 2;
-		double percentUp = (1 - halfSaturation);
-		double percentDown = halfSaturation;
-		double[] listTmp;
-		int k = 0, totalLength = 0;
-
-		// We create an array containing all the intensities of all chromosomes
-		for (short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
-				totalLength += binList.size(i);
-			}
-		}
-		listTmp = new double[totalLength];			
-		for (short i = 0; i < binList.size(); i++) {
-			if(binList.get(i) != null) {
-				for (int j = 0; j < binList.size(i); j++) {
-					if(binList.get(i, j) != 0) {
-						listTmp[k] = binList.get(i, j);
-						k++;
-					}
-				}
-			}
-		}
-		if (k > 0) {
-			// We create a new array containing all the values different from 0 
-			double[] listTmpBis = new double[k];
-			for(int i = 0; i < listTmpBis.length; i++) {
-				listTmpBis[i] = listTmp[i];		
-			}
-			// We want to have the values of intensities sorted for the whole genome
-			Arrays.sort(listTmpBis);
-			// We research the highest and the lowest value 
-			int rankUp = (int)(percentUp * (listTmpBis.length - 1));
-			int rankDown = (int)(percentDown * (listTmpBis.length - 1));
-			double valueUp = listTmpBis[rankUp];
-			double valueDown = listTmpBis[rankDown];
-			// We calculate the difference between the highest and the lowest value
-			double distanceValueUpDown = valueUp - valueDown;
+	public static BinList indexation(BinList binList, double indexDown, double indexUp, DataPrecision precision) {
+		double valueUp = max(binList);
+		double valueDown = min(binList);
+		// We calculate the difference between the highest and the lowest value
+		double distanceValueUpDown = valueUp - valueDown;
+		if (distanceValueUpDown != 0) {
 			double distanceIndexUpDown = indexUp - indexDown;
 			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 			for (short i = 0; i < binList.size(); i++) {
@@ -612,10 +578,6 @@ public class BinListOperations {
 					for (int j = 0; j < binList.size(i); j++) {
 						if (binList.get(i, j) == 0) {
 							resultList.set(i, j, 0d);
-						} else if(binList.get(i, j) < valueDown) {
-							resultList.set(i, j, indexDown);
-						} else if(binList.get(i, j) > valueUp) {
-							resultList.set(i, j, indexUp);
 						} else { 
 							resultList.set(i, j, distanceIndexUpDown * (binList.get(i, j) - valueDown) / distanceValueUpDown + indexDown);
 						}
@@ -633,58 +595,30 @@ public class BinListOperations {
 	 * Indexes the scores between <i>indexDown</i> and <i>indexUp</i> based
 	 * on the highest and the lowest value of each chromosome
 	 * @param binList {@link BinList} to index
-	 * @param saturation percentage of the highest and lowest value saturated (btw 0 and 1) 
 	 * @param indexDown smallest value of the indexed data
 	 * @param indexUp greatest value of the indexed data
 	 * @param precision precision of the indexed {@link BinList}
 	 * @return new {@link BinList} resulting from the indexing
 	 */
-	public static BinList indexByChromo(BinList binList, double saturation, double indexDown, double indexUp, DataPrecision precision) {
-		double halfSaturation = saturation / 2;
-		double percentUp = (1 - halfSaturation);
-		double percentDown = halfSaturation;
+	public static BinList indexationByChromo(BinList binList, double indexDown, double indexUp, DataPrecision precision) {
 		double distanceIndexUpDown = indexUp - indexDown;
-
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++) {
 			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
 				resultList.add(null);
 			} else {
-				double[] listTmp = new double[binList.size(i)];
+				// We index the intensities
 				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
 				resultList.add(listToAdd);
-				int k = 0;
-				for (int j = 0; j < binList.size(i); j++) {
-					if(binList.get(i, j) != 0) {
-						listTmp[k] = binList.get(i, j);
-						k++;
-					}
-				}
-				if(k > 0) {
-					// We create a new array containing all the values different from 0 
-					double[] listTmpBis = new double[k];
-					for(int j = 0; j < listTmpBis.length; j++) {
-						listTmpBis[j] = listTmp[j];
-					}
-					// We want to have the values of intensities sorted for each chromosome
-					Arrays.sort(listTmpBis);
-					// We research the highest and the lowest value 
-					int rankUp = (int)(percentUp * (listTmpBis.length - 1)); 
-					int rankDown = (int)(percentDown * (listTmpBis.length - 1));
-
-					double valueUp = listTmpBis[rankUp];
-					double valueDown = listTmpBis[rankDown];
-
-					// We calculate the difference between the highest and the lowest value
-					double distanceValueUpDown = valueUp - valueDown;
+				double valueUp = Collections.max(binList.get(i));
+				double valueDown = Collections.min(binList.get(i));
+				// We calculate the difference between the highest and the lowest value
+				double distanceValueUpDown = valueUp - valueDown;
+				if (distanceValueUpDown != 0) {
 					// We index the intensities 
 					for (int j = 0; j < binList.size(i); j++) {
 						if(binList.get(i, j) == 0) {
 							resultList.set(i, j, 0d);
-						} else if(binList.get(i, j) < valueDown) {
-							resultList.set(i, j, indexDown);
-						} else if(binList.get(i, j) > valueUp) {
-							resultList.set(i, j, indexUp);
 						} else { 
 							resultList.set(i, j, distanceIndexUpDown * (binList.get(i, j) - valueDown) / distanceValueUpDown + indexDown);
 						}

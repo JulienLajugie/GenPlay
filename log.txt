@@ -7756,3 +7756,45 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 542220
 Number of lines extracted: 542220
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:52:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:55:19
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 10:55:53
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 11:25:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 11:31:11
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Replication_Data\ERY_Gaussed_Sigma200K_W5kb.wig
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 615630
+Number of lines extracted: 615630
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 11:31:37
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
