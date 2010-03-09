@@ -7711,3 +7711,10 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 28226
 Number of lines extracted: 27639
 Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/03/08 17:50:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%

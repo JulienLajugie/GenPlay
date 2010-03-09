@@ -4,7 +4,10 @@
  */
 package yu.einstein.gdp2.core.list.nucleotideList;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.AbstractList;
@@ -22,7 +25,8 @@ import yu.einstein.gdp2.core.enums.Nucleotide;
 public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide> {
 
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
-	private final RandomAccessFile 	raf;	// 2bit random access file  
+	private transient RandomAccessFile 	raf;// 2bit random access file  
+	private final String	filePath;		// path of the 2bit file (used for the serialization)
 	private final int 		headerSize;		// the size in byte of the header of the sequence
 	private final String 	name;			// the sequence name  
 	private final int 		offset;			// the offset of the sequence data relative to the start of the file
@@ -41,7 +45,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 * @param reverseBytes true if the byte order in the input file need to be reversed
 	 * @throws IOException
 	 */
-	public TwoBitSequence(RandomAccessFile raf, int offset, String name, boolean reverseBytes) throws IOException {
+	public TwoBitSequence(String filePath, RandomAccessFile raf, int offset, String name, boolean reverseBytes) throws IOException {
+		this.filePath = filePath;
 		this.raf = raf;
 		this.name = name;
 		this.offset = offset;
@@ -201,5 +206,23 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	@Override
 	public int size() {
 		return dnaSize;
+	}
+	
+	
+	/**
+	 * Methods used for the unserialization of the object.
+	 * Since the random access file can't be serialized we try to recreate it if the file path is still the same
+	 * See javadocs for more information
+	 * @return the unserialized object
+	 * @throws ObjectStreamException
+	 */
+	private Object readResolve() throws ObjectStreamException {
+		try {
+			raf = new RandomAccessFile(new File(filePath), "r");
+			return this;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

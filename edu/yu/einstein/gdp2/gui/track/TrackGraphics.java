@@ -337,7 +337,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			int x = getWidth() - fm.stringWidth(getName()) - 4;
 			int textWidth = fm.stringWidth(getName()) + 4;
 			int textHeight = fm.getHeight();
-			g.setColor(Color.white);
+			g.setColor(getBackground());
 			g.fillRect(x, 1, textWidth, textHeight + 2);
 			g.setColor(Color.blue);
 			g.drawRect(x, 1, textWidth - 1, textHeight + 2);

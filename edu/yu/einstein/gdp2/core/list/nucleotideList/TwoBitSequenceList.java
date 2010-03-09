@@ -7,6 +7,7 @@ package yu.einstein.gdp2.core.list.nucleotideList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.List;
@@ -31,7 +32,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	private final static String 		TWOBIT_SIGNATURE = "1A412743";	// signature of a 2bit file
 	private boolean 					reverseBytes = false;			// true if the bytes of a multi-byte entity need to be reversed when read
 	private final int 					version;						// version of the 2bit file
-	private final RandomAccessFile 		twoBitFile;						// 2bit file
+	private final String				filePath;						// path of the 2bit file  (used for the serialization)
+	private transient RandomAccessFile	twoBitFile;						// 2bit file
 	
 	
 	/**
@@ -48,6 +50,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
 			add(null);
 		}
+		filePath = file.getAbsolutePath();
 		twoBitFile = new RandomAccessFile(file, "r");
 		twoBitFile.seek(0);
 		int signature = twoBitFile.readInt();
@@ -94,7 +97,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			while ((k < chromosomeManager.chromosomeCount()) && (!found)) {
 				if (chromosomeManager.getChromosome(k).getName().equalsIgnoreCase(sequenceName)) {
 					long currentPosition = twoBitFile.getFilePointer();
-					TwoBitSequence sequence = new TwoBitSequence(twoBitFile, offset, sequenceName, reverseBytes);
+					TwoBitSequence sequence = new TwoBitSequence(filePath, twoBitFile, offset, sequenceName, reverseBytes);
 					set(k, sequence);
 					twoBitFile.seek(currentPosition);
 					found = true;
@@ -151,5 +154,23 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			j++;
 		}		
 		return result;
+	}
+	
+	
+	/**
+	 * Methods used for the unserialization of the object.
+	 * Since the random access file can't be serialized we try to recreate it if the file path is still the same
+	 * See javadocs for more information
+	 * @return the unserialized object
+	 * @throws ObjectStreamException
+	 */
+	private Object readResolve() throws ObjectStreamException {
+		try {
+			twoBitFile = new RandomAccessFile(new File(filePath), "r");
+			return this;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
