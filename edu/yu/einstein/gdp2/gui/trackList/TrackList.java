@@ -51,7 +51,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.DivisionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DivisionConstantAction;
 import yu.einstein.gdp2.gui.action.binListTrack.GaussAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IndexationAction;
-import yu.einstein.gdp2.gui.action.binListTrack.IndexationByChromosomeAction;
+import yu.einstein.gdp2.gui.action.binListTrack.IndexationPerChromosomeAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IslandFinderAction;
 import yu.einstein.gdp2.gui.action.binListTrack.Log2Action;
 import yu.einstein.gdp2.gui.action.binListTrack.Log2WithDamperAction;
@@ -195,7 +195,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(DivisionConstantAction.ACTION_KEY, new DivisionConstantAction(this));
 		getActionMap().put(GaussAction.ACTION_KEY, new GaussAction(this));
 		getActionMap().put(IndexationAction.ACTION_KEY, new IndexationAction(this));
-		getActionMap().put(IndexationByChromosomeAction.ACTION_KEY, new IndexationByChromosomeAction(this));
+		getActionMap().put(IndexationPerChromosomeAction.ACTION_KEY, new IndexationPerChromosomeAction(this));
 		getActionMap().put(IslandFinderAction.ACTION_KEY, new IslandFinderAction(this));
 		getActionMap().put(Log2Action.ACTION_KEY, new Log2Action(this));
 		getActionMap().put(Log2WithDamperAction.ACTION_KEY, new Log2WithDamperAction(this));

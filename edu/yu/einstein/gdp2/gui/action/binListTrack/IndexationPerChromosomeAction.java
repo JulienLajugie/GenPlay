@@ -25,10 +25,10 @@ import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class IndexationByChromosomeAction extends TrackListAction {
+public final class IndexationPerChromosomeAction extends TrackListAction {
 
 	private static final long serialVersionUID = -2043891820249510406L; 		// generated ID
-	private static final String 	ACTION_NAME = "Indexation by Chromosome";	// action name
+	private static final String 	ACTION_NAME = "Indexation per Chromosome";	// action name
 	private static final String 	DESCRIPTION = 
 		"Index separately each chromosome of the selected track";				// tooltip
 
@@ -40,10 +40,10 @@ public final class IndexationByChromosomeAction extends TrackListAction {
 
 
 	/**
-	 * Creates an instance of {@link IndexationByChromosomeAction}
+	 * Creates an instance of {@link IndexationPerChromosomeAction}
 	 * @param trackList a {@link TrackList}
 	 */
-	public IndexationByChromosomeAction(TrackList trackList) {
+	public IndexationPerChromosomeAction(TrackList trackList) {
 		super(trackList);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -70,11 +70,11 @@ public final class IndexationByChromosomeAction extends TrackListAction {
 						new ActionWorker<BinList>(trackList) {
 							@Override
 							protected BinList doAction() {
-								return BinListOperations.indexationByChromo(binList, indexMin.doubleValue(), indexMax.doubleValue(), binList.getPrecision());
+								return BinListOperations.indexationPerChromo(binList, indexMin.doubleValue(), indexMax.doubleValue(), binList.getPrecision());
 							}
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
-								String description = "indexation by chromosome between " + indexMin + " and " + indexMax;
+								String description = "indexation per chromosome between " + indexMin + " and " + indexMax;
 								selectedTrack.setBinList(actionResult, description);								
 							}
 						}.execute();						

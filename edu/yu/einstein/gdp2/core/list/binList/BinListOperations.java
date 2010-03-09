@@ -600,7 +600,7 @@ public class BinListOperations {
 	 * @param precision precision of the indexed {@link BinList}
 	 * @return new {@link BinList} resulting from the indexing
 	 */
-	public static BinList indexationByChromo(BinList binList, double indexDown, double indexUp, DataPrecision precision) {
+	public static BinList indexationPerChromo(BinList binList, double indexDown, double indexUp, DataPrecision precision) {
 		double distanceIndexUpDown = indexUp - indexDown;
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++) {

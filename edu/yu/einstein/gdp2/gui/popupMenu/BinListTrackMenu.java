@@ -23,7 +23,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.DivisionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DivisionConstantAction;
 import yu.einstein.gdp2.gui.action.binListTrack.GaussAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IndexationAction;
-import yu.einstein.gdp2.gui.action.binListTrack.IndexationByChromosomeAction;
+import yu.einstein.gdp2.gui.action.binListTrack.IndexationPerChromosomeAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IslandFinderAction;
 import yu.einstein.gdp2.gui.action.binListTrack.Log2Action;
 import yu.einstein.gdp2.gui.action.binListTrack.Log2WithDamperAction;
@@ -79,7 +79,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	
 	private final JMenuItem		jmiGauss;				// menu gauss BinListTrack
 	private final JMenuItem		jmiIndex;				// menu index BinListTrack
-	private final JMenuItem		jmiIndexByChromosome;	// menu index BinListTrack by chromosome
+	private final JMenuItem		jmiIndexPerChromosome;	// menu index BinListTrack per chromosome
 	private final JMenuItem		jmiLog2;				// menu log2 BinListTrack
 	private final JMenuItem		jmiLog2WithDamper;		// menu log2 BinListTrack with damper
 	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
@@ -134,7 +134,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		
 		jmiGauss = new JMenuItem(actionMap.get(GaussAction.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(IndexationAction.ACTION_KEY));
-		jmiIndexByChromosome = new JMenuItem(actionMap.get(IndexationByChromosomeAction.ACTION_KEY));
+		jmiIndexPerChromosome = new JMenuItem(actionMap.get(IndexationPerChromosomeAction.ACTION_KEY));
 		jmiLog2 = new JMenuItem(actionMap.get(Log2Action.ACTION_KEY));
 		jmiLog2WithDamper = new JMenuItem(actionMap.get(Log2WithDamperAction.ACTION_KEY));
 		jmiNormalize = new JMenuItem(actionMap.get(NormalizationAction.ACTION_KEY));
@@ -179,7 +179,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGauss);
 		jmOperation.add(jmiIndex);
-		jmOperation.add(jmiIndexByChromosome);
+		jmOperation.add(jmiIndexPerChromosome);
 		jmOperation.add(jmiLog2);
 		jmOperation.add(jmiLog2WithDamper);
 		jmOperation.add(jmiNormalize);

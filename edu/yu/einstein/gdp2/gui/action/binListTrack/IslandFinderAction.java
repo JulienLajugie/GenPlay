@@ -37,7 +37,7 @@ public final class IslandFinderAction extends TrackListAction {
 
 
 	/**
-	 * Creates an instance of {@link IndexationByChromosomeAction}
+	 * Creates an instance of {@link IndexationPerChromosomeAction}
 	 * @param trackList a {@link TrackList}
 	 */
 	public IslandFinderAction(TrackList trackList) {

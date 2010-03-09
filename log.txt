@@ -7884,3 +7884,10 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 28233
 Number of lines extracted: 28233
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:41:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_S1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 540734
+Number of lines extracted: 540734
+Percentage of lines extracted: 100%
