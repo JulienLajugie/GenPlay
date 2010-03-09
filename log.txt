@@ -7798,3 +7798,89 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 542220
 Number of lines extracted: 542220
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:10:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:14:15
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:15:54
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:17:29
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+Extraction done. Time elapsed: 58 seconds
+Number lines in the file: 17428087
+Number of lines extracted: 17428087
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:23:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+Extraction done. Time elapsed: 60 seconds
+Number lines in the file: 17428087
+Number of lines extracted: 17428087
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:45:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+Extraction done. Time elapsed: 58 seconds
+Number lines in the file: 17428087
+Number of lines extracted: 17428087
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 15:47:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+Extraction done. Time elapsed: 57 seconds
+Number lines in the file: 17428087
+Number of lines extracted: 17428087
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:15:44
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\body_Hu_gene_50b.wig
+Extraction done. Time elapsed: 28 seconds
+Number lines in the file: 22981001
+Number of lines extracted: 22981001
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:16:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:17:47
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_S2_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542849
+Number of lines extracted: 542849
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:18:16
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_S3_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542130
+Number of lines extracted: 542130
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:19:01
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\New Replication Data\hES_G1_5kb.wig
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 542220
+Number of lines extracted: 542220
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:19:50
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Expression\Av-ERY-expression-per-RefSeqGene.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 24932
+Number of lines extracted: 18837
+Percentage of lines extracted: 75.6%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 16:20:31
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Hu_gene_definition\end_Hu_gene.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28233
+Number of lines extracted: 28233
+Percentage of lines extracted: 100%

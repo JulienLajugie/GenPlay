@@ -22,7 +22,9 @@ import java.util.List;
 public final class BooleanArrayAsDoubleList extends AbstractList<Double> implements Serializable, List<Double> {
 
 	private static final long serialVersionUID = -5280328695672981245L;	// generated ID
-	private static final int 	RESIZE_STEP = 10000;	// length added every time the array is resized
+	private static final int 	RESIZE_MIN = 1000;		// minimum length added every time the array is resized
+	private static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
+	private static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	private byte[] 				data;					// byte data array (8 booleans / byte)
 	private int 				size;					// size of the list
 	
@@ -61,8 +63,13 @@ public final class BooleanArrayAsDoubleList extends AbstractList<Double> impleme
 	public boolean add(Double e) {
 		// if the array is to small we resize it before adding the data
 		if (size >= data.length * 8) {
-			int realResizeStep = (int)Math.ceil(RESIZE_STEP / 8);
-			byte[] newData = new byte[data.length + realResizeStep];			
+			// we multiply the current size by the resize multiplication factor
+			int newLength = data.length * RESIZE_FACTOR;
+			// we make sure we don't add less than RESIZE_MIN elements
+			newLength = Math.max(newLength, data.length + RESIZE_MIN / 8);
+			// we make sure we don't add more than RESIZE_MAX elements
+			newLength = Math.min(newLength, data.length + RESIZE_MAX / 8);
+			byte[] newData = new byte[newLength];			
 			for (int i = 0; i < data.length; i++) {
 				newData[i] = data[i];
 			}
