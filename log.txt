@@ -7891,3 +7891,90 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 540734
 Number of lines extracted: 540734
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/09 18:06:39
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 13:37:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\shGenes-Intervals-numerical-values.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 22
+Number of lines extracted: 22
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 13:45:06
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\shGenes-Intervals-numerical-values.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 22
+Number of lines extracted: 22
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 13:45:20
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\shGenes-Intervals-numerical-values.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 22
+Number of lines extracted: 22
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 13:46:49
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\H1d_Input_Chr12_UnicMatch-Rev-Added150pb-GpBy-bedgraph.bgr
+-------------------------------------------------------------------
+Extraction - 2010/03/10 13:47:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\shGenes-Intervals-numerical-values.bgr
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 22
+Number of lines extracted: 22
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 14:19:58
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 15:08:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 15:15:42
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 15:26:27
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 15:27:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/10 15:34:52
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/11 10:36:38
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%

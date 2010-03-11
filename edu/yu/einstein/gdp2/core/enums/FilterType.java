@@ -13,15 +13,24 @@ import yu.einstein.gdp2.core.list.binList.BinListOperations;
  * @version 0.1
  */
 public enum FilterType {
-	/**
-	 * filter that passes high values but cut low ones
-	 */
-	HIGH_PASS_FILTER ("High Pass Filter"),
-	/**
-	 * filter that passes low values but cut high ones
-	 */
-	LOW_PASS_FILTER ("Low Pass Filter");
 	
+	/**
+	 * filter a fixed number of values
+	 */
+	COUNT ("Count"),
+	/**
+	 * 
+	 */	
+	DENSITY ("Density"),
+	/**
+	 * filter a percentage of extreme values
+	 */
+	PERCENTAGE ("Percentage"),
+	/**
+	 * filter values above or under a specified threshold
+	 */
+	THRESHOLD ("Threshold");
+
 	
 	private final String name; // String representing the filter 
 	

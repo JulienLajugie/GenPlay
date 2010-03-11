@@ -18,9 +18,9 @@ import yu.einstein.gdp2.gui.action.binListTrack.ChangePrecisionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ConcatenateAction;
 import yu.einstein.gdp2.gui.action.binListTrack.CorrelationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DensityAction;
-import yu.einstein.gdp2.gui.action.binListTrack.DensityFilterAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DivisionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DivisionConstantAction;
+import yu.einstein.gdp2.gui.action.binListTrack.FilterAction;
 import yu.einstein.gdp2.gui.action.binListTrack.GaussAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IndexationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IndexationPerChromosomeAction;
@@ -42,7 +42,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.ShowRepartitionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.StandardDeviationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.SubtractionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.SubtractionConstantAction;
-import yu.einstein.gdp2.gui.action.binListTrack.ThresholdFilterAction;
 import yu.einstein.gdp2.gui.action.binListTrack.TransfragAction;
 import yu.einstein.gdp2.gui.action.binListTrack.UndoAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -83,7 +82,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiLog2;				// menu log2 BinListTrack
 	private final JMenuItem		jmiLog2WithDamper;		// menu log2 BinListTrack with damper
 	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
-	private final JMenuItem		jmiSaturation;			// menu saturate BinListTrack
 	
 	private final JMenuItem		jmiMinimum;				// menu minimum of the BinListTrack
 	private final JMenuItem		jmiMaximum;				// menu maximum of the BinListTrack
@@ -93,8 +91,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiStdDev;				// menu standard deviation
 	private final JMenuItem		jmiCorrelation;			// menu correlation BinListTrack with another one
 	
-	private final JMenuItem		jmiThresholdFilter;		// menu threshold filter
-	private final JMenuItem		jmiDensityFilter;		// menu density filter
+	private final JMenuItem		jmiFilter;				// menu filter
+	private final JMenuItem		jmiSaturation;			// menu saturate BinListTrack
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
 	private final JMenuItem		jmiTransfrag;			// menu transfrag
@@ -138,7 +136,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiLog2 = new JMenuItem(actionMap.get(Log2Action.ACTION_KEY));
 		jmiLog2WithDamper = new JMenuItem(actionMap.get(Log2WithDamperAction.ACTION_KEY));
 		jmiNormalize = new JMenuItem(actionMap.get(NormalizationAction.ACTION_KEY));
-		jmiSaturation = new JMenuItem(actionMap.get(SaturationAction.ACTION_KEY));
 		
 		jmiMinimum = new JMenuItem(actionMap.get(MinimumAction.ACTION_KEY));
 		jmiMaximum = new JMenuItem(actionMap.get(MaximumAction.ACTION_KEY));
@@ -148,8 +145,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiStdDev = new JMenuItem(actionMap.get(StandardDeviationAction.ACTION_KEY));
 		jmiCorrelation = new JMenuItem(actionMap.get(CorrelationAction.ACTION_KEY));		
 		
-		jmiThresholdFilter = new JMenuItem(actionMap.get(ThresholdFilterAction.ACTION_KEY));
-		jmiDensityFilter = new JMenuItem(actionMap.get(DensityFilterAction.ACTION_KEY));
+		jmiFilter = new JMenuItem(actionMap.get(FilterAction.ACTION_KEY));
+		jmiSaturation = new JMenuItem(actionMap.get(SaturationAction.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(SearchPeaksAction.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(IslandFinderAction.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(TransfragAction.ACTION_KEY));
@@ -183,7 +180,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiLog2);
 		jmOperation.add(jmiLog2WithDamper);
 		jmOperation.add(jmiNormalize);
-		jmOperation.add(jmiSaturation);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiMinimum);
 		jmOperation.add(jmiMaximum);
@@ -193,8 +189,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiStdDev);
 		jmOperation.add(jmiCorrelation);
 		jmOperation.addSeparator();
-		jmOperation.add(jmiThresholdFilter);
-		jmOperation.add(jmiDensityFilter);
+		jmOperation.add(jmiFilter);
+		jmOperation.add(jmiSaturation);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
 		jmOperation.add(jmiTransfrag);

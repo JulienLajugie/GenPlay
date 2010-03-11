@@ -116,7 +116,7 @@ public class Utils {
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				FilterType.values(),
-				FilterType.HIGH_PASS_FILTER);
+				FilterType.PERCENTAGE);
 	}
 
 

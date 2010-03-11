@@ -46,9 +46,9 @@ import yu.einstein.gdp2.gui.action.binListTrack.ChangePrecisionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ConcatenateAction;
 import yu.einstein.gdp2.gui.action.binListTrack.CorrelationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DensityAction;
-import yu.einstein.gdp2.gui.action.binListTrack.DensityFilterAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DivisionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DivisionConstantAction;
+import yu.einstein.gdp2.gui.action.binListTrack.FilterAction;
 import yu.einstein.gdp2.gui.action.binListTrack.GaussAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IndexationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.IndexationPerChromosomeAction;
@@ -70,7 +70,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.ShowRepartitionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.StandardDeviationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.SubtractionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.SubtractionConstantAction;
-import yu.einstein.gdp2.gui.action.binListTrack.ThresholdFilterAction;
 import yu.einstein.gdp2.gui.action.binListTrack.TransfragAction;
 import yu.einstein.gdp2.gui.action.binListTrack.UndoAction;
 import yu.einstein.gdp2.gui.action.curveTrack.AppearanceAction;
@@ -190,9 +189,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ConcatenateAction.ACTION_KEY, new ConcatenateAction(this));
 		getActionMap().put(CorrelationAction.ACTION_KEY, new CorrelationAction(this));
 		getActionMap().put(DensityAction.ACTION_KEY, new DensityAction(this));
-		getActionMap().put(DensityFilterAction.ACTION_KEY, new DensityFilterAction(this));
 		getActionMap().put(DivisionAction.ACTION_KEY, new DivisionAction(this));
 		getActionMap().put(DivisionConstantAction.ACTION_KEY, new DivisionConstantAction(this));
+		getActionMap().put(FilterAction.ACTION_KEY, new FilterAction(this));
 		getActionMap().put(GaussAction.ACTION_KEY, new GaussAction(this));
 		getActionMap().put(IndexationAction.ACTION_KEY, new IndexationAction(this));
 		getActionMap().put(IndexationPerChromosomeAction.ACTION_KEY, new IndexationPerChromosomeAction(this));
@@ -215,7 +214,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(StandardDeviationAction.ACTION_KEY, new StandardDeviationAction(this));
 		getActionMap().put(SubtractionAction.ACTION_KEY, new SubtractionAction(this));
 		getActionMap().put(SubtractionConstantAction.ACTION_KEY, new SubtractionConstantAction(this));
-		getActionMap().put(ThresholdFilterAction.ACTION_KEY, new ThresholdFilterAction(this));
 		getActionMap().put(TransfragAction.ACTION_KEY, new TransfragAction(this));
 		getActionMap().put(UndoAction.ACTION_KEY, new UndoAction(this));
 	}

@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.SaturationType;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BinListSaturation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -61,7 +61,7 @@ public class SaturationAction extends TrackListAction {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
 			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
-				JOptionPane.showMessageDialog(getRootPane(), "Error, saturation is not available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(getRootPane(), "Error, no saturation available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			final SaturationType saturationType = Utils.chooseSaturationType(getRootPane());
 			switch (saturationType) {
@@ -78,7 +78,7 @@ public class SaturationAction extends TrackListAction {
 		}
 	}		
 
-	
+
 	/**
 	 * Saturates a fixed number of values
 	 * @param selectedTrack {@link BinListTrack} selected by the user
@@ -94,7 +94,7 @@ public class SaturationAction extends TrackListAction {
 				new ActionWorker<BinList>(trackList) {
 					@Override
 					protected BinList doAction() {
-						return BinListOperations.saturationCount(binList, countLow.intValue(), countHigh.intValue());
+						return BinListSaturation.saturationCount(binList, countLow.intValue(), countHigh.intValue());
 					}
 					@Override
 					protected void doAtTheEnd(BinList actionResult) {
@@ -104,8 +104,8 @@ public class SaturationAction extends TrackListAction {
 			}
 		}		
 	}
-	
-	
+
+
 	/**
 	 * Saturates a percentage of extreme values
 	 * @param selectedTrack {@link BinListTrack} selected by the user
@@ -117,48 +117,52 @@ public class SaturationAction extends TrackListAction {
 			final Number percentageHigh = NumberOptionPane.getValue(getRootPane(), "High Percentage", "Select the percentage of high values to saturate", new DecimalFormat("0%"), 0, 1, 0.01);
 			if(percentageHigh != null) {
 				if (percentageHigh.doubleValue() + percentageLow.doubleValue() > 1) {
-					JOptionPane.showMessageDialog(getRootPane(), "The sum of the two percentage must be smaller than 1", "Error", JOptionPane.ERROR_MESSAGE, null);
+					JOptionPane.showMessageDialog(getRootPane(), "The sum of the two percentages must be smaller than 1", "Error", JOptionPane.ERROR_MESSAGE, null);
+				} else {			
+					final String description = "Percentage Saturation, Low Percentage = "  + percentageLow.doubleValue()+ ", High Percentage = " + percentageHigh.doubleValue();
+					// thread for the action
+					new ActionWorker<BinList>(trackList) {
+						@Override
+						protected BinList doAction() {
+							return BinListSaturation.saturationPercentage(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
+						}
+						@Override
+						protected void doAtTheEnd(BinList actionResult) {
+							selectedTrack.setBinList(actionResult, description);
+						}
+					}.execute();
 				}
-				
-				final String description = "Percentage Saturation, Low Percentage = "  + percentageLow.doubleValue()+ ", High Percentage = " + percentageHigh.doubleValue();
-				// thread for the action
-				new ActionWorker<BinList>(trackList) {
-					@Override
-					protected BinList doAction() {
-						return BinListOperations.saturationPercentage(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
-					}
-					@Override
-					protected void doAtTheEnd(BinList actionResult) {
-						selectedTrack.setBinList(actionResult, description);
-					}
-				}.execute();
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Saturates values above or under a specified threshold
 	 * @param selectedTrack {@link BinListTrack} selected by the user
 	 */
 	private void thresholdSaturation(final BinListTrack selectedTrack) {
 		final BinList binList = selectedTrack.getBinList();
-		final Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Saturate values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+		final Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Saturate values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		if(thresholdLow != null) {
-			final Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Saturate values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, thresholdLow.doubleValue());
+			final Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Saturate values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
 			if(thresholdHigh != null) {
-				final String description = "Threshold Saturation, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh;
-				// thread for the action
-				new ActionWorker<BinList>(trackList) {
-					@Override
-					protected BinList doAction() {
-						return BinListOperations.saturationThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue());
-					}
-					@Override
-					protected void doAtTheEnd(BinList actionResult) {
-						selectedTrack.setBinList(actionResult, description);
-					}
-				}.execute();
+				if (thresholdHigh.doubleValue() <= thresholdLow.doubleValue()) {
+					JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
+				} else {
+					final String description = "Threshold Saturation, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh;
+					// thread for the action
+					new ActionWorker<BinList>(trackList) {
+						@Override
+						protected BinList doAction() {
+							return BinListSaturation.saturationThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue());
+						}
+						@Override
+						protected void doAtTheEnd(BinList actionResult) {
+							selectedTrack.setBinList(actionResult, description);
+						}
+					}.execute();
+				}
 			}
 		}
 	}
