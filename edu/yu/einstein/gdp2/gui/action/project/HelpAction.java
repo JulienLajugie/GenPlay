@@ -25,7 +25,8 @@ public final class HelpAction extends AbstractAction {
 
 	private static final long serialVersionUID = -8315224036423121225L; // generated ID
 
-	private static final String 	HELP_URL = "file:help.html";// URL of the help file
+	private static final String 	HELP_URL = 
+		"http://129.98.70.139/documents/help.html";				// URL of the help file
 	private static final String 	HELP_DIALOG_TITLE = "Help";	// title of the help JDialog
 //	private static final String 	DESCRIPTION = "Show Help";	// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_H; 	// mnemonic key

@@ -5,6 +5,7 @@
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -59,6 +60,11 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 		trackList.add(progressBar);	
 		if (logFile != null) {
 			this.logFile = new File(logFile);
+			try {
+				this.logFile.createNewFile();
+			} catch (IOException e) {
+				this.logFile = null;
+			}
 			// check if the user has the permission to write the log
 			if (!this.logFile.canWrite()) {
 				this.logFile = null;

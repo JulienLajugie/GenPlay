@@ -25,11 +25,13 @@ public final class ConfigurationManager implements Serializable {
 	private static final long serialVersionUID = 5632320102259442205L;			// generated ID
 	private static ConfigurationManager cmInstance = null;						// unique instance of the singleton
 	
+	private static String TEMP_DIR = System.getProperty("java.io.tmpdir");		// java directory for temporary files
 	private static String CONFIG_FILE = "config.cfg";							// path of the config file
 
-	private static final String DEFAULT_ZOOM_FILE = "zoom.cfg";					// path of the default zoom config file
-	private static final String DEFAULT_CHROMOSOME_FILE = "human_chromosomes.cfg";// path of the default chromosome config file
-	private static final String DEFAULT_LOG_FILE = "log.txt";					// path of the default log file
+	private static final String DEFAULT_ZOOM_FILE = null;						// path of the default zoom config file
+	private static final String DEFAULT_CHROMOSOME_FILE = null;					// path of the default chromosome config file
+	private static final String DEFAULT_LOG_FILE = 
+		new File(TEMP_DIR, "GenPlayLog.txt").getAbsolutePath();					// path of the default log file
 	private static final String DEFAULT_DEFAULT_DIRECTORY = null;				// default directory
 	private static final String DEFAULT_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";// default look and feel
 	private static final int DEFAULT_TRACK_COUNT = 50;							// default number of track
@@ -108,11 +110,15 @@ public final class ConfigurationManager implements Serializable {
 	public void writeConfigurationFile() throws IOException {
 		BufferedWriter writer = null;
 		try {
-			File configFile = new File(CONFIG_FILE);
+			File configFile = new File(TEMP_DIR, CONFIG_FILE);
 			writer = new BufferedWriter(new FileWriter(configFile));
-			writer.write("zoom file: " + zoomFile);
+			if ((zoomFile != null) && (zoomFile != "")) {
+				writer.write("zoom file: " + zoomFile);
+			}
 			writer.newLine();
-			writer.write("chromosome file: " + chromosomeFile);
+			if ((chromosomeFile != null) && (chromosomeFile != "")) {
+				writer.write("chromosome file: " + chromosomeFile);
+			}
 			writer.newLine();
 			writer.write("log file: " + logFile);
 			writer.newLine();
@@ -139,7 +145,7 @@ public final class ConfigurationManager implements Serializable {
 	public void loadConfigurationFile() throws IOException, FileNotFoundException {
 		BufferedReader reader = null;
 		try {
-			File configFile = new File(CONFIG_FILE);
+			File configFile = new File(TEMP_DIR, CONFIG_FILE);
 			reader = new BufferedReader(new FileReader(configFile));
 			// extract data
 			String line = null;

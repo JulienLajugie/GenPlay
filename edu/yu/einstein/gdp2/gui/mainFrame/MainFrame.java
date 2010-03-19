@@ -66,6 +66,8 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 
+	private final static String 		ICON_PATH = 
+		"yu/einstein/gdp2/resource/icon.png";					// path of the icon of the application
 	private final Ruler 				ruler;					// Ruler component
 	private final TrackList 			trackList;				// TrackList component
 	private final ControlPanel 			controlPanel;			// ControlPanel component
@@ -80,23 +82,27 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 	 */
 	public MainFrame() {
 		super("Einstein Browser - GenPlay -", GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
-		setIconImage(Toolkit.getDefaultToolkit().getImage("icon.png"));
-
+		ClassLoader cl = this.getClass().getClassLoader();
+		setIconImage(Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH)));
 		configurationManager = ConfigurationManager.getInstance();
 		chromosomeManager = ChromosomeManager.getInstance();
 		zoomManager = ZoomManager.getInstance();
 		try {
 			configurationManager.loadConfigurationFile();
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Configuration file not found.");
+			//ExceptionManager.handleException(getRootPane(), e, "Configuration file not found.");
 		} 
 		try {
-			chromosomeManager.loadConfigurationFile(new File(configurationManager.getChromosomeFile()));
+			if (configurationManager.getChromosomeFile() != null) {
+				chromosomeManager.loadConfigurationFile(new File(configurationManager.getChromosomeFile()));
+			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Chromosome file not found.");
 		}
 		try {
-			zoomManager.loadConfigurationFile(new File(configurationManager.getZoomFile()));
+			if (configurationManager.getZoomFile() != null) {
+				zoomManager.loadConfigurationFile(new File(configurationManager.getZoomFile()));
+			}
 		} catch (IOException e) {
 			ExceptionManager.handleException(getRootPane(), e, "Zoom file not found.");
 		}

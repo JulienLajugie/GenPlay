@@ -1,10 +1,10 @@
-///**
-// * @author Alexander Golec
-// * @version 0.1
-// */
-//
-//package yu.einstein.gdp2.core.filter;
-//
+/**
+ * @author Alexander Golec
+ * @version 0.1
+ */
+
+package yu.einstein.gdp2.core.filter;
+
 //import java.util.Enumeration;
 //import java.util.Iterator;
 //import java.util.List;
@@ -12,16 +12,18 @@
 //import yu.einstein.gdp2.core.list.binList.BinList;
 //import yu.einstein.gdp2.core.stat.Poisson;
 //import yu.einstein.gdp2.exception.PoissonInvalidParameterException;
-//
-///**
-// * @author Alexander Golec
-// * @version 0.1 An implementation of the method for finding islands of reads in
-// *          ChIP-Enriched domains as described in A clustering approach for
-// *          identification of enriched domains deom histone modification
-// *          ChIP-Seq data" by Zang, Schones, Zeng, Cui, Zhao, and Peng.
-// */
-//
-//public class IslandFinder {
+
+/**
+ * @author Alexander Golec
+ * @version 0.1 An implementation of the method for finding islands of reads in
+ *          ChIP-Enriched domains as described in A clustering approach for
+ *          identification of enriched domains deom histone modification
+ *          ChIP-Seq data" by Zang, Schones, Zeng, Cui, Zhao, and Peng.
+ */
+
+public class IslandFinder {
+	
+}
 //	// The l-value to use as a threshold probability when determining the minimal 
 //	// eligible score for an island. 
 //	static private final double lValueProbability = .05;

@@ -46,8 +46,11 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 		super("Configuration Files", configMmanager);
 		
 		jlZoomFile = new JLabel("Zoom configuration file: ");
-		
-		jtfZoomFile = new JTextField(new File(cm.getZoomFile()).getAbsolutePath());
+		if (cm.getZoomFile() == null) {
+			jtfZoomFile = new JTextField();
+		} else {
+			jtfZoomFile = new JTextField(new File(cm.getZoomFile()).getAbsolutePath());
+		}
 		jtfZoomFile.setColumns(30);
 		jtfZoomFile.setEditable(false);
 		jtfZoomFile.addPropertyChangeListener(new PropertyChangeListener() {
@@ -65,9 +68,12 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 			}
 		});
 		
-		jlChromoFile = new JLabel("Chromosome configuration file: ");
-		
-		jtfChromoFile = new JTextField(new File(cm.getChromosomeFile()).getAbsolutePath());
+		jlChromoFile = new JLabel("Chromosome configuration file: ");		
+		if (cm.getChromosomeFile() == null) {
+			jtfChromoFile = new JTextField();
+		} else {
+			jtfChromoFile = new JTextField(new File(cm.getChromosomeFile()).getAbsolutePath());
+		}
 		jtfChromoFile.setColumns(30);
 		jtfChromoFile.setEditable(false);
 		jtfChromoFile.addPropertyChangeListener(new PropertyChangeListener() {

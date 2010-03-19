@@ -37,7 +37,8 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 	private static final int 	HANDLE_WIDTH = 50;				// Width of the track handle
 	private static final int 	TRACKS_SCROLL_WIDTH = 17;		// Width of the scroll bar
 	private static final int 	RULER_HEIGHT = 20;				// Height of the ruler 
-	private static final String ICON_FILE_NAME = "tools.png"; 	// name of the menu icon 
+	private static final String ICON_PATH = 
+		"yu/einstein/gdp2/resource/tools.png"; 					// name of the menu icon 
 	private final RulerGraphics	rulerGraphics;					// Graphics part
 	private final JButton 		rulerButton;					// button of the ruler				 
 	private final ArrayList<GenomeWindowListener> listenerList;	// list of GenomeWindowListener
@@ -82,7 +83,8 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		rulerButton.setBackground(Color.white);
 		rulerButton.setMargin(new Insets(0, 0, 0, 0));
 		rulerButton.setFocusPainted(false);
-		rulerButton.setIcon(new ImageIcon(ICON_FILE_NAME));
+		ClassLoader cl = this.getClass().getClassLoader();
+		rulerButton.setIcon(new ImageIcon(cl.getResource(ICON_PATH)));
 		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.lightGray));	
 		rulerButton.setPreferredSize(new Dimension(HANDLE_WIDTH + 1, RULER_HEIGHT));
 		rulerButton.addActionListener(new ActionListener() {			

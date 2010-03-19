@@ -135,7 +135,6 @@ public class FilterAction extends TrackListAction {
 								@Override
 								protected void doAtTheEnd(BinList actionResult) {
 									selectedTrack.setBinList(actionResult, description);
-
 								}
 							}.execute();
 						}

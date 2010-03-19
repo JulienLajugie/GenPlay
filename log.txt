@@ -7978,3 +7978,59 @@ Extraction done. Time elapsed: 0 seconds
 Number lines in the file: 31452
 Number of lines extracted: 31451
 Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:19:02
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes\Genes_Human_RefSeq_03-2006.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 31452
+Number of lines extracted: 31451
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:19:13
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Genes_With_Expression\Hu_Gene1.0_Expression_ERY_adult.txt
+Extraction done. Time elapsed: 1 seconds
+Number lines in the file: 28868
+Number of lines extracted: 28453
+Percentage of lines extracted: 98.6%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:20:59
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\CPG_Islands\HumanCpGIslands.bed
+Extraction done. Time elapsed: 0 seconds
+Number lines in the file: 28226
+Number of lines extracted: 27639
+Percentage of lines extracted: 97.9%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:21:36
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Family.bed
+Extraction done. Time elapsed: 20 seconds
+Number lines in the file: 5057005
+Number of lines extracted: 5016102
+Percentage of lines extracted: 99.2%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:22:28
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Repeats\Human_Repeat_Masker_Class.bed
+Extraction done. Time elapsed: 19 seconds
+Number lines in the file: 5057005
+Number of lines extracted: 5016102
+Percentage of lines extracted: 99.2%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:23:48
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-H3K4me3.bgr
+Extraction done. Time elapsed: 2 seconds
+Number lines in the file: 668665
+Number of lines extracted: 668665
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/15 12:24:34
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 8 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%
+-------------------------------------------------------------------
+Extraction - 2010/03/18 17:32:14
+File: C:\Documents and Settings\Administrator\My Documents\Gdp Library\Zhao_ChipSeq_Data\CD36-PolII-summary.bgr
+Extraction done. Time elapsed: 9 seconds
+Number lines in the file: 2626272
+Number of lines extracted: 2626272
+Percentage of lines extracted: 100%

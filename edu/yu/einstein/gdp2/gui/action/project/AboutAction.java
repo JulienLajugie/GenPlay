@@ -24,7 +24,8 @@ public final class AboutAction extends AbstractAction {
 	
 	private static final long serialVersionUID = 2102571378866219218L; // generated ID
 
-	private static final String 	ABOUT_URL = "file:about.html";		// URL of the help file
+	private static final String 	ABOUT_URL = 
+		"http://129.98.70.139/documents/about.html";							// URL of the help file
 	private static final String 	ABOUT_DIALOG_TITLE = "About"; 		// title of the help JDialog
 	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key

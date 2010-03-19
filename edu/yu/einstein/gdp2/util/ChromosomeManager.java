@@ -39,6 +39,10 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 */
 	private ChromosomeManager() {
 		super();
+		chromosomeHash = new Hashtable<String, Integer>();
+		for (int i = 0; i < chromosomeArray.size(); i++) {
+			chromosomeHash.put(chromosomeArray.get(i).getName(), i);
+		}
 	}
 
 	
