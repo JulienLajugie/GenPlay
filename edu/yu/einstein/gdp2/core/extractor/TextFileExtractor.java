@@ -46,11 +46,11 @@ public abstract class TextFileExtractor extends Extractor {
 	 * @throws InvalidDataLineException
 	 */
 	abstract protected void extractLine(String line) throws ManagerDataNotLoadedException, InvalidDataLineException;
-	
-	
+
+
 	@Override
 	public void extract() throws FileNotFoundException, IOException,
-			ManagerDataNotLoadedException {
+	ManagerDataNotLoadedException {
 		BufferedReader reader = null;
 		try {
 			// try to open the input file
@@ -63,25 +63,26 @@ public abstract class TextFileExtractor extends Extractor {
 			String line = null;
 			while((line = reader.readLine()) != null) {
 				boolean isDataLine = true;
-				// case when the line is empty
-				if (line.length() == 0) {
-					isDataLine = false;
-				}
-				// comment line
-				if (line.charAt(0) == '#') {
-					isDataLine = false;
-				} 
-				// browser line
-				if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
-					isDataLine = false;
-				}
-				// track line
-				if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
-					isDataLine = false;
-					String[] splitedLine = line.split(" ");
-					for (String currentOption: splitedLine) {					
-						if ((currentOption.trim().length() > 4) && (currentOption.trim().substring(0, 4).equalsIgnoreCase("name"))) {
-							name = currentOption.substring(5).trim();
+				// the following line is an optimization:
+				// if the line starts with chr it's a data line so we skip the other tests
+				if ((line.length() <= 2) || (!line.substring(0, 3).equalsIgnoreCase("chr"))) {
+					// case when the line is empty
+					if (line.length() == 0) {
+						isDataLine = false;
+					} else if (line.charAt(0) == '#') {
+						// comment line
+						isDataLine = false;
+					} else if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
+						// browser line
+						isDataLine = false;
+					} else if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
+						// track line
+						isDataLine = false;
+						String[] splitedLine = line.split(" ");
+						for (String currentOption: splitedLine) {					
+							if ((currentOption.trim().length() > 4) && (currentOption.trim().substring(0, 4).equalsIgnoreCase("name"))) {
+								name = currentOption.substring(5).trim();
+							}
 						}
 					}
 				}
@@ -104,8 +105,8 @@ public abstract class TextFileExtractor extends Extractor {
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	protected void logExecutionInfo() {
 		super.logExecutionInfo();
