@@ -20,6 +20,12 @@ public class DataSource {
 	private String version;		// source version  
 	
 	
+	@Override
+	public String toString() {
+		return name;
+	}
+	
+	
 	/**
 	 * @return the description
 	 */

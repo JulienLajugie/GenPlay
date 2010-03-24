@@ -4,10 +4,9 @@
  */
 package yu.einstein.gdp2.core.DAS;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,20 +28,19 @@ public class DASServerList extends ArrayList<DASServer> {
 	
 	/**
 	 * Creates an instance of {@link DASServerList}
-	 * @param DASServerFile	XML file containing information about the DAS server available
+	 * @param DASServerFile	URL of the XML file containing information about the DAS servers available
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public DASServerList(File DASServerFile) throws ParserConfigurationException, SAXException, IOException {
+	public DASServerList(URL DASServerFile) throws ParserConfigurationException, SAXException, IOException {
 		super();
-		InputStream is = new FileInputStream(DASServerFile);
+		URLConnection connection = DASServerFile.openConnection();
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setValidating(true);
 		SAXParser parser = parserFactory.newSAXParser();
 		DASServerHandler dsh = new DASServerHandler();
-		parser.parse(is, dsh);
+		parser.parse(connection.getInputStream(), dsh);
 		addAll(dsh.getDasTypeList());
 	}
-
 }

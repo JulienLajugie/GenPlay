@@ -16,6 +16,12 @@ public class DASServer {
 	private String name;		// name of the server
 	
 	
+	@Override
+	public String toString() {
+		return name;
+	}
+	
+	
 	/**
 	 * Creates an instance of {@link DASServer}
 	 */

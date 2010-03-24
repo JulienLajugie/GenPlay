@@ -17,6 +17,12 @@ public class DASType {
 	private String method;		// indicates the method (subtype) for the feature type 
 	
 	
+	@Override
+	public String toString() {
+		return ID;
+	}
+	
+	
 	/**
 	 * @return the iD
 	 */
