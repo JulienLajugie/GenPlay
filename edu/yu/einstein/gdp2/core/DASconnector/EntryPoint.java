@@ -14,10 +14,10 @@ import yu.einstein.gdp2.core.enums.Strand;
  * @version 0.1
  */
 public class EntryPoint {
-	private String 	ID;		// ID of the entry point
-	private int 	start;	// start position of the entry point 
-	private int 	stop;	// stop position of the entry point
-	private Strand 	strand;	// orientation of the entry point
+	private String 	ID;			// ID of the entry point
+	private int 	start;		// start position of the entry point 
+	private int 	stop;		// stop position of the entry point
+	private Strand 	orientation;// orientation of the entry point
 	
 	
 	/**
@@ -69,17 +69,17 @@ public class EntryPoint {
 	
 	
 	/**
-	 * @return the strand
+	 * @return the orientation
 	 */
-	public final Strand getStrand() {
-		return strand;
+	public final Strand getOrientation() {
+		return orientation;
 	}
 	
 	
 	/**
-	 * @param strand the strand to set
+	 * @param strand the orientation to set
 	 */
-	public final void setStrand(Strand strand) {
-		this.strand = strand;
+	public final void setOrientation(Strand orientation) {
+		this.orientation = orientation;
 	}
 }

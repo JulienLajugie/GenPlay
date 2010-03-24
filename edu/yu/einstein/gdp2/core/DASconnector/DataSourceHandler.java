@@ -20,10 +20,10 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class DataSourceHandler extends DefaultHandler {
 
-	private final 	List<DataSource> 	dataSourceList;					// list of DataSource
-	private 		String 				currentElement = null;			// current XML markup
-	private 		DataSource 			currentDataSource = null;		// current data source
-	
+	private final List<DataSource> 	dataSourceList;					// list of DataSource
+	private String 					currentMarkup = null;			// current XML markup
+	private DataSource 				currentDataSource = null;		// current data source
+
 
 	/**
 	 * Creates an instance of {@link DataSourceHandler}
@@ -32,7 +32,7 @@ public class DataSourceHandler extends DefaultHandler {
 		super();
 		dataSourceList = new ArrayList<DataSource>();
 	}
-	
+
 
 	/**
 	 * @return the List of {@link DataSource}
@@ -40,55 +40,50 @@ public class DataSourceHandler extends DefaultHandler {
 	public final List<DataSource> getDataSourceList() {
 		return dataSourceList;
 	}
-	
-	
+
+
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equalsIgnoreCase("DSN")) {
 			currentDataSource = new DataSource();
 		} else if (qName.equalsIgnoreCase("SOURCE")) {
-			currentElement = "SOURCE";
+			currentMarkup = "SOURCE";
 			if(attributes.getLength() > 0) {
-				for(int i = 0 ; i < attributes.getLength() ; i++) {
-					if (attributes.getQName(i).equalsIgnoreCase("ID")) {
-						currentDataSource.setID(attributes.getValue(i));
-					} else if (attributes.getQName(i).equalsIgnoreCase("VERSION")) {
-						currentDataSource.setVersion(attributes.getValue(i));
-					}
-				}
+				currentDataSource.setID(attributes.getValue("id"));
+				currentDataSource.setVersion(attributes.getValue("version"));
 			}
 		} else if (qName.equalsIgnoreCase("MAPMASTER")) {
-			currentElement = "MAPMASTER";
+			currentMarkup = "MAPMASTER";
 		} else if (qName.equalsIgnoreCase("DESCRIPTION")) {
-			currentElement = "DESCRIPTION";
+			currentMarkup = "DESCRIPTION";
 			if(attributes.getLength() > 0) {
-				for(int i = 0 ; i < attributes.getLength() ; i++) {
-					if (attributes.getQName(i).equalsIgnoreCase("HREF")) {
-						currentDataSource.setHref(attributes.getValue(i));
-					}
-				}
+				currentDataSource.setHref(attributes.getValue("href"));
 			}
+		} else {
+			currentMarkup = null;
 		}
 	}
-	
-	
+
+
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equalsIgnoreCase("DSN")) {
 			dataSourceList.add(currentDataSource);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void characters(char[] ch, int start, int length) {
-		String elementValue = new String(ch, start, length);
-		if (currentElement.equals("SOURCE")) {
-			currentDataSource.setName(elementValue);
-		} else if (currentElement.equals("MAPMASTER")) {
-			currentDataSource.setMapMaster(elementValue);
-		} else if (currentElement.equals("DESCRIPTION")) {
-			currentDataSource.setDescription(elementValue);
+		if (currentMarkup != null) {
+			String elementValue = new String(ch, start, length);
+			if (currentMarkup.equals("SOURCE")) {
+				currentDataSource.setName(elementValue);
+			} else if (currentMarkup.equals("MAPMASTER")) {
+				currentDataSource.setMapMaster(elementValue);
+			} else if (currentMarkup.equals("DESCRIPTION")) {
+				currentDataSource.setDescription(elementValue);
+			}
 		}
 	}
 }

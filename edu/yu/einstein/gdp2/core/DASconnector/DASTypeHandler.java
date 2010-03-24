@@ -20,11 +20,11 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class DASTypeHandler extends DefaultHandler {
 
-	private final 	List<DASType> 	dasTypeList;			// list of DASType
+	private final List<DASType> 	dasTypeList;			// list of DASType
 
 
 	/**
-	 * Creates an instance of {@link DataSourceHandler}
+	 * Creates an instance of {@link DASTypeHandler}
 	 */
 	public DASTypeHandler() {
 		super();

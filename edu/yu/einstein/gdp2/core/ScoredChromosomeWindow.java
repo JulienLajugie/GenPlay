@@ -19,6 +19,14 @@ public final class ScoredChromosomeWindow extends ChromosomeWindow implements Se
 	
 	
 	/**
+	 * Default constructor. Creates an instance of {@link ScoredChromosomeWindow} 
+	 */
+	public ScoredChromosomeWindow() {
+		super();
+	}
+	
+	
+	/**
 	 * Creates an instance of a {@link ScoredChromosomeWindow}
 	 * @param start start position
 	 * @param stop stop position

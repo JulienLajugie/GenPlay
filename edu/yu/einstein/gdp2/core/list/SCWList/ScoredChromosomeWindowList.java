@@ -51,6 +51,15 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 	}
 
+	
+	/**
+	 * Creates an instance of {@link ScoredChromosomeWindow} 
+	 * @param cm a {@link ChromosomeManager}
+	 */
+	public ScoredChromosomeWindowList(ChromosomeManager cm) {
+		super(cm);
+	}
+
 
 	/**
 	 * Returns the average of the list defined as: 

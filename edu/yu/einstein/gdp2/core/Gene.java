@@ -95,6 +95,15 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.exonScores = exonScores;
 	}
 
+	
+	/**
+	 * Creates an instance of {@link Gene}
+	 */
+	public Gene() {
+		super();
+	}
+
+
 	/**
 	 * A gene is superior to another one if its position start is greater 
 	 * or if its position start is equal but its position stop is greater. 
@@ -116,6 +125,70 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		}		
 	}
 
+	
+	/**
+	 * Adds an exon to the Gene
+	 * @param exonStart start position of the exon
+	 * @param exonStop stop position of the exon
+	 * @param exonScore score of the exon
+	 */
+	public void addExon(int exonStart, int exonStop, double exonScore) {
+		// case where it's the first exon
+		if (exonStarts == null) {
+			exonStarts = new int[1];
+			exonStops = new int[1];
+			exonScores = new double[1];
+			exonStarts[0] = exonStart;
+			exonStops[0] = exonStop;
+			exonScores[0] = exonScore;			
+		} else {
+			int length = exonStarts.length;
+			int[] exonStartsTmp = new int[length + 1];
+			int[] exonStopsTmp = new int[length + 1];
+			double[] exonScoresTmp = new double[length + 1];
+			for (int i = 0; i < exonStarts.length; i++) {
+				exonStartsTmp[i] = exonStarts[i];
+				exonStopsTmp[i] = exonStops[i];
+				exonScoresTmp[i] = exonScores[i];
+			}
+			exonStartsTmp[length] = exonStart;
+			exonStopsTmp[length] = exonStop;
+			exonScoresTmp[length] = exonScore;
+			exonStarts = exonStartsTmp;
+			exonStops = exonStopsTmp;
+			exonScores = exonScoresTmp;
+		}
+	}
+	
+	
+	/**
+	 * Adds an exon to the Gene with no score
+	 * @param exonStart start position of the exon
+	 * @param exonStop stop position of the exon
+	 */
+	public void addExon(int exonStart, int exonStop) {
+		// case where it's the first exon
+		if (exonStarts == null) {
+			exonStarts = new int[1];
+			exonStops = new int[1];
+			exonStarts[0] = exonStart;
+			exonStops[0] = exonStop;
+		} else {
+			int length = exonStarts.length;
+			int[] exonStartsTmp = new int[length + 1];
+			int[] exonStopsTmp = new int[length + 1];
+			for (int i = 0; i < exonStarts.length; i++) {
+				exonStartsTmp[i] = exonStarts[i];
+				exonStopsTmp[i] = exonStops[i];
+			}
+			exonStartsTmp[length] = exonStart;
+			exonStopsTmp[length] = exonStop;
+			exonStarts = exonStartsTmp;
+			exonStops = exonStopsTmp;
+		}
+	}
+	
+	
 	/**
 	 * @param aName Name of a chromosome
 	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
@@ -124,6 +197,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return name.equalsIgnoreCase(aName);
 	}
 
+	
 	/**
 	 * @return The chromosome of the gene.
 	 */
@@ -131,6 +205,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return chromo;
 	}
 
+	
 	/**
 	 * @return the exonScores
 	 */
@@ -138,6 +213,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return exonScores;
 	}
 
+	
 	/**
 	 * @return the exonStarts
 	 */
@@ -145,6 +221,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return exonStarts;
 	}
 
+	
 	/**
 	 * @return the exonStops
 	 */
@@ -168,6 +245,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return strand;
 	}
 
+	
 	/**
 	 * @return the txStart
 	 */
@@ -175,6 +253,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return txStart;
 	}
 
+	
 	/**
 	 * @return the txStop
 	 */
