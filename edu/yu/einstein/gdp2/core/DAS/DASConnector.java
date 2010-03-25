@@ -35,7 +35,7 @@ public class DASConnector {
 
 	private final String serverAddress;	// address of a DAS Server
 
-	
+
 	/**
 	 * Creates an instance of {@link DASConnector} 
 	 * @param serverAddress address of a DAS server
@@ -59,7 +59,7 @@ public class DASConnector {
 	 * @throws SAXException
 	 */
 	public List<DataSource> getDataSourceList() throws IOException, ParserConfigurationException, SAXException {
-		URL dsnURL = new URL(serverAddress + "dsn/");
+		URL dsnURL = new URL(serverAddress + "dsn");
 		URLConnection connection = dsnURL.openConnection();
 		connection.setUseCaches(true);		
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -148,26 +148,30 @@ public class DASConnector {
 		}
 		boolean areExonsScored = false;
 		for (List<Gene> currentList: resultList) {
-			Collections.sort(currentList);
-			// check if the exons are scored
-			int i = 0;
-			while (!areExonsScored && (i < currentList.size())) {
-				int j = 0;
-				double[] exonScores = currentList.get(i).getExonScores(); 
-				while (!areExonsScored && (j < exonScores.length)) {
-					if (exonScores[j] != 0) {
-						areExonsScored = true;
+			if (currentList != null) { 
+				Collections.sort(currentList);
+				// check if the exons are scored
+				int i = 0;
+				while (!areExonsScored && (i < currentList.size())) {
+					int j = 0;
+					double[] exonScores = currentList.get(i).getExonScores(); 
+					while (!areExonsScored && (j < exonScores.length)) {
+						if (exonScores[j] != 0) {
+							areExonsScored = true;
+						}
+						j++;
 					}
-					j++;
+					i++;
 				}
-				i++;
 			}
 		}
 		// if the exons are not scored we set the exonScore field of every gene to null 
 		if (!areExonsScored) {
 			for (List<Gene> currentList: resultList) {
-				for (Gene currentGene: currentList) {
-					currentGene.setExonScores(null);
+				if (currentList != null) {
+					for (Gene currentGene: currentList) {
+						currentGene.setExonScores(null);
+					}
 				}
 			}
 		}
@@ -208,7 +212,9 @@ public class DASConnector {
 			}				
 		}
 		for (List<ScoredChromosomeWindow> currentList: resultList) {
-			Collections.sort(currentList);
+			if (currentList != null) { 
+				Collections.sort(currentList);
+			}
 		}
 		return resultList;
 	}
@@ -272,25 +278,25 @@ public class DASConnector {
 	}
 
 
-//	public static void main(String[] args) {
-//		try {
-//			long startTime = System.currentTimeMillis();
-//			DASConnector dasc = new DASConnector("http://genome.ucsc.edu/cgi-bin/das/");
-//			//DASConnector dasc = new DASConnector("http://www.ensembl.org/das/");
-//			List<DataSource> dsList = dasc.getDataSourceList();
-//			DataSource dataSource = dsList.get(0);
-//			System.out.println(dataSource.getID());
-//			List<DASType> dasTypeList = dasc.getDASTypeList(dataSource);
-//			DASType dasType = dasTypeList.get(39);
-//			System.out.println(dasType.getID());
-//			//ScoredChromosomeWindowList scwList = dasc.getSCWList(ChromosomeManager.getInstance(), dataSource, dasType);
-//			GeneList geneList = dasc.getGeneList(ChromosomeManager.getInstance(), dataSource, dasType);
-//			GeneListAsBedWriter glabw = new GeneListAsBedWriter(ChromosomeManager.getInstance(), new File("testDAS.bed"), geneList, "test");
-//			glabw.write();
-//			int length = (int)((System.currentTimeMillis() - startTime) / 1000l);
-//			System.out.println(length);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}	
+	//	public static void main(String[] args) {
+	//		try {
+	//			long startTime = System.currentTimeMillis();
+	//			DASConnector dasc = new DASConnector("http://genome.ucsc.edu/cgi-bin/das/");
+	//			//DASConnector dasc = new DASConnector("http://www.ensembl.org/das/");
+	//			List<DataSource> dsList = dasc.getDataSourceList();
+	//			DataSource dataSource = dsList.get(0);
+	//			System.out.println(dataSource.getID());
+	//			List<DASType> dasTypeList = dasc.getDASTypeList(dataSource);
+	//			DASType dasType = dasTypeList.get(39);
+	//			System.out.println(dasType.getID());
+	//			//ScoredChromosomeWindowList scwList = dasc.getSCWList(ChromosomeManager.getInstance(), dataSource, dasType);
+	//			GeneList geneList = dasc.getGeneList(ChromosomeManager.getInstance(), dataSource, dasType);
+	//			GeneListAsBedWriter glabw = new GeneListAsBedWriter(ChromosomeManager.getInstance(), new File("testDAS.bed"), geneList, "test");
+	//			glabw.write();
+	//			int length = (int)((System.currentTimeMillis() - startTime) / 1000l);
+	//			System.out.println(length);
+	//		} catch (Exception e) {
+	//			e.printStackTrace();
+	//		}
+	//	}	
 }
