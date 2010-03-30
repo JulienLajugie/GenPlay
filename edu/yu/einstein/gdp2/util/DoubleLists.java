@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- * Provides operation on {@link ArrayList} of Double
+ * Provides operation on {@link List} of Double
  * @author Julien Lajugie
  * @version 0.1
  */

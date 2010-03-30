@@ -258,11 +258,13 @@ public final class TwoNumbersOptionPane extends JDialog {
 	 * Displays a GdpCurveChooser dialog, and returns a Number.
 	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
 	 * @param title Title of the dialog.
-	 * @param label Text of the inside label of the dialog.
+	 * @param label1 Text of the first inside label of the dialog.
+	 * @param label2 Text of the second inside label of the dialog.
 	 * @param df DecimalFormat of the input value.
 	 * @param min Minimum allowed value for the input value. 
 	 * @param max Maximum allowed value for the input value.
-	 * @param defaultValue Default displayed value when the dialog is displayed. 
+	 * @param defaultValue1 first default displayed value when the dialog is displayed.
+	 * @param defaultValue2 second default displayed value when the dialog is displayed.
 	 * @return A number if OK has been pressed, otherwise null.
 	 */
 	public static Number[] getValue(Component parent, String title, String label1, String label2, DecimalFormat df, double min, double max, double defaultValue1, double defaultValue2) {

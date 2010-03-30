@@ -30,12 +30,12 @@ public class GeneListOperations {
 	
 	
 	/**
-	 * extract intervals relative to genes
+	 * Extracts intervals relative to genes
 	 * @param startDistance
 	 * @param startFrom can take the 4 different values 
 	 * @param stopDistance
 	 * @param stopFrom
-	 * @return
+	 * @return the intervals extracted 
 	 */
 	public static GeneList extractIntevals(GeneList geneList, int startDistance, int startFrom, int stopDistance, int stopFrom) {
 		GeneList resultList = new GeneList(geneList.getChromosomeManager());

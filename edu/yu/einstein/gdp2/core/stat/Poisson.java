@@ -47,7 +47,7 @@ public class Poisson {
 	}
 	
 	/**
-	 * Returns a {@link double} representing the value of the Poisson distribution for 
+	 * Returns a double representing the value of the Poisson distribution for 
 	 * the entered L value. 
 	 * @param lValue the lValue at which to calculate the Poisson. 
 	 */
@@ -73,7 +73,7 @@ public class Poisson {
 	}
 	
 	/**
-	 * Returns a {@link double} representing the value of the Poisson distribution for 
+	 * Returns a double representing the value of the Poisson distribution for 
 	 * the entered L value and the entered lambda value. 
 	 * @param lValue the lValue at which to calculate the Poisson. 
 	 * @param lambda the lambda value. 

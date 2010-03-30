@@ -92,4 +92,30 @@ public final class Chromosome implements Cloneable, Serializable {
 		}
 		return true;
 	}
+	
+	
+	/**
+	 * Returns true if the name of the current chromosome is equal to the specified string.
+	 * Removes "chr" and "chromosome" before comparing if the string in parameter or if the 
+	 * chromosome name start this way (ex: "chr1" becomes "1")
+	 * @param otherChromoName
+	 * @return true if equal, false otherwise
+	 */
+	public boolean hasSameNameAs(String otherChromoName) {
+		// we remove "chr" or "chromosome" if the name of the current chromosome starts this way
+		String chromoName = getName().trim();
+		if ((chromoName.length() >= 10) && (chromoName.substring(0, 10).equalsIgnoreCase("chromosome"))) {
+			chromoName = chromoName.substring(10);
+		} else if ((chromoName.length() >= 3) && (chromoName.substring(0, 3).equalsIgnoreCase("chr"))) {
+			chromoName = chromoName.substring(3);
+		}
+		// we remove "chr" or "chromosome" if the name of the other chromosome starts this way
+		otherChromoName = otherChromoName.trim();
+		if ((otherChromoName.length() >= 10) && (otherChromoName.substring(0, 10).equalsIgnoreCase("chromosome"))) {
+			otherChromoName = otherChromoName.substring(10);
+		} else if ((otherChromoName.length() >= 3) && (otherChromoName.substring(0, 3).equalsIgnoreCase("chr"))) {
+			otherChromoName = otherChromoName.substring(3);
+		}
+		return chromoName.equalsIgnoreCase(otherChromoName);
+	}
 }

@@ -27,7 +27,7 @@ public interface BinListGenerator {
 	
 	
 	/**
-	 * @return true if the generator needs information regarding the {@link ScoreCalculation} criterion
+	 * @return true if the generator needs information regarding the {@link ScoreCalculationMethod} criterion
 	 */
 	public boolean isCriterionNeeded();
 	

@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.zip.GZIPInputStream;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
@@ -23,8 +24,9 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SerializedBinListExtractor extends Extractor implements BinListGenerator {
+public class SerializedBinListExtractor extends Extractor implements BinListGenerator, Serializable {
 
+	private static final long serialVersionUID = 1920229861641233827L;	// generated ID
 	private BinList extractedBinList = null;	 // BinList extracted from the file
 	
 	

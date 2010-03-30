@@ -39,7 +39,7 @@ public class TransfragAction extends TrackListAction {
 
 
 	/**
-	 * Creates an instance of {@link ThresholdFilterAction}
+	 * Creates an instance of {@link TransfragAction}
 	 * @param trackList a {@link TrackList}
 	 */
 	public TransfragAction(TrackList trackList) {

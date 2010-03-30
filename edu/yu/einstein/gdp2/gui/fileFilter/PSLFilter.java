@@ -6,23 +6,22 @@ package yu.einstein.gdp2.gui.fileFilter;
 
 import javax.swing.filechooser.FileFilter;
 
-
 /**
- * A GFF {@link FileFilter}
+ * A PSL {@link FileFilter}
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GFFFilter extends ExtendedFileFilter {
-
+public class PSLFilter extends ExtendedFileFilter {
+	
 	private static final long serialVersionUID = 1615779972078858623L;	// generated ID
-	public static final String[] EXTENSIONS = {"gff", "gtf", "gff3"};
-	public static final String DESCRIPTION = "GFF Files (*.gff; *.gtf; *.gff3)";
+	public static final String[] EXTENSIONS = {"psl"};
+	public static final String DESCRIPTION = "PSL files (*.psl)";
 	
 	
 	/**
-	 * Creates an instance of {@link GFFFilter}
+	 * Creates an instance of {@link PSLFilter}
 	 */
-	public GFFFilter() {
+	public PSLFilter() {
 		super(EXTENSIONS, DESCRIPTION);
 	}	
 }

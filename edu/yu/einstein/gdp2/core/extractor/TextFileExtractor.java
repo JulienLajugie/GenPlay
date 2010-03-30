@@ -24,6 +24,8 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @version 0.1
  */
 public abstract class TextFileExtractor extends Extractor {
+
+	private static final long serialVersionUID = 1224425396819320502L;	//generated ID
 	protected int 						totalCount = 0;		// total number of line in the file minus the header
 	protected int 						lineCount = 0;		// number of line extracted
 

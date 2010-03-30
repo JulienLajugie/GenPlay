@@ -4,11 +4,7 @@
  */
 package yu.einstein.gdp2.gui.fileFilter;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
-
-import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -18,32 +14,15 @@ import yu.einstein.gdp2.util.Utils;
  */
 public final class BedGraphFilter extends ExtendedFileFilter {
 
-	public static final String EXTENSION = "bgr";
+	private static final long serialVersionUID = -1006499835810531469L; // generated ID
+	public static final String[] EXTENSIONS = {"bgr"};
 	public static final String DESCRIPTION = "BedGraph Files (*.bgr)";
 	
-	@Override
-	public boolean accept(File f) {
-		if (f.isDirectory()) {
-			return true;
-		}
-		String extension = Utils.getExtension(f);
-		if ((extension != null) && (extension.equalsIgnoreCase(EXTENSION))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	
-	@Override
-	public String getDescription() {
-		return DESCRIPTION;
-	}
-
-	
-	@Override
-	public String[] getExtensions() {
-		String[] extensions = {EXTENSION};
-		return extensions;
+	/**
+	 * Creates an instance of {@link BedGraphFilter}
+	 */
+	public BedGraphFilter() {
+		super(EXTENSIONS, DESCRIPTION);
 	}
 }

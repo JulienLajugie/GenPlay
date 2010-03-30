@@ -34,7 +34,6 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * Creates an instance of {@link RepeatFamilyList}
 	 * Generates an organize list of repeats from the data in parameter
 	 * @param chromosomeManager a {@link ChromosomeManager}
-	 * @param chromosomeList list of {@link Chromosome}
 	 * @param startList list of start position of the repeats organized by chromosome
 	 * @param stopList	list of stop position of the repeats organized by chromosome
 	 * @param familyNameList list of name of the repeats organized by chromosome

@@ -12,10 +12,10 @@ package yu.einstein.gdp2.core.DAS;
  * @version 0.1
  */
 public class DASType {
-	private String ID;			// unique id for the annotation type 
-	private String category;	// functional grouping to related types
-	private String method;		// indicates the method (subtype) for the feature type 
-	
+	private String ID;				// unique id for the annotation type 
+	private String category;		// functional grouping to related types
+	private String method;			// indicates the method (subtype) for the feature type 
+	private String preferredFormat; // preferred format
 	
 	@Override
 	public String toString() {
@@ -68,5 +68,21 @@ public class DASType {
 	 */
 	public final void setMethod(String method) {
 		this.method = method;
+	}
+
+
+	/**
+	 * @return the preferredFormat
+	 */
+	public String getPreferredFormat() {
+		return preferredFormat;
+	}
+	
+	
+	/**
+	 * @param preferredFormat the preferredFormat to set
+	 */
+	public void setPreferredFormat(String preferredFormat) {
+		this.preferredFormat = preferredFormat;
 	}
 }

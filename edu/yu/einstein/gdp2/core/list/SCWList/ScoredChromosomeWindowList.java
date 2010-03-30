@@ -58,6 +58,9 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	public ScoredChromosomeWindowList(ChromosomeManager cm) {
 		super(cm);
+		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+			add(new ArrayList<ScoredChromosomeWindow>());
+		}
 	}
 
 

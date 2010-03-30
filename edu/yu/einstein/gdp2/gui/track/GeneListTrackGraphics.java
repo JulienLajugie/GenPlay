@@ -94,19 +94,19 @@ public class GeneListTrackGraphics extends TrackGraphics {
 			int displayedLineCount = 0;
 			if (isGeneNamePrinted) {
 				displayedLineCount = (getHeight() - 2 * GENE_HEIGHT) / (GENE_HEIGHT * 3) + 1;
-			} else {				
+			} else {
 				displayedLineCount = (getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2) + 1;
-			}			
+			}
 			// calculate how many scroll on the Y axis are necessary to show all the genes
-			geneLinesCount = genesToPrint.size() - displayedLineCount + 2;			
+			geneLinesCount = genesToPrint.size() - displayedLineCount + 2;
 			// For each line of genes on the screen
 			for (int i = 0; i < displayedLineCount; i++) {
 				// Calculate the height of the gene
-				int currentHeight;				
+				int currentHeight;
 				if (isGeneNamePrinted) {
 					currentHeight = i * (GENE_HEIGHT * 3) + 2 * GENE_HEIGHT;
 				} else {
-					currentHeight = i * (GENE_HEIGHT * 2) + GENE_HEIGHT;					
+					currentHeight = i * (GENE_HEIGHT * 2) + GENE_HEIGHT;
 				}
 				// Calculate which line has to be printed depending on the position of the scroll bar
 				int currentLine = i + firstLineToDisplay;
@@ -133,7 +133,7 @@ public class GeneListTrackGraphics extends TrackGraphics {
 							for (int j = 0; j < geneToPrint.getExonStarts().length; j++) {
 								int exonX = genomePosToScreenPos(geneToPrint.getExonStarts()[j]);
 								int exonWidth = genomePosToScreenPos(geneToPrint.getExonStops()[j]) - exonX;
-								if (exonWidth < 1){
+								if (exonWidth < 1) {
 									exonWidth = 1;
 								}
 								// if we have some exon score values

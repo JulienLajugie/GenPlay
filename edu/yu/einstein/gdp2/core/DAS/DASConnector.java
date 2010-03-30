@@ -4,7 +4,14 @@
  */
 package yu.einstein.gdp2.core.DAS;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -20,6 +27,7 @@ import org.xml.sax.SAXException;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
+import yu.einstein.gdp2.core.extractor.PSLExtractor;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -125,6 +133,9 @@ public class DASConnector {
 	 * @throws SAXException
 	 */
 	public GeneList getGeneList(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+		if (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;")) {
+			return getGeneListFromPSL(cm, dataSource, dasType);
+		}
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		GeneList resultList = new GeneList(cm);
 		for (Chromosome currentChromo: cm) {
@@ -132,29 +143,27 @@ public class DASConnector {
 			// if we found a chromosome retrieve the data and 
 			// we create a genelist for this chromosome
 			if (currentEntryPoint != null) {
-				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);				
+				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
 				URLConnection connection = queryUrl.openConnection();
-				connection.setUseCaches(true);		
+				connection.setUseCaches(true);
 				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
-				GeneHandler gh = new GeneHandler(currentChromo);				
+				GeneHandler gh = new GeneHandler(currentChromo);
 				parser.parse(connection.getInputStream(), gh);
 				List<Gene> currentGeneList = gh.getGeneList();
-				resultList.add(currentGeneList);
-			} else {
-				resultList.add(null);
-			}				
+				resultList.set(currentChromo, currentGeneList);
+			}
 		}
 		boolean areExonsScored = false;
 		for (List<Gene> currentList: resultList) {
-			if (currentList != null) { 
+			if (currentList != null) {
 				Collections.sort(currentList);
 				// check if the exons are scored
 				int i = 0;
 				while (!areExonsScored && (i < currentList.size())) {
 					int j = 0;
-					double[] exonScores = currentList.get(i).getExonScores(); 
+					double[] exonScores = currentList.get(i).getExonScores();
 					while (!areExonsScored && (j < exonScores.length)) {
 						if (exonScores[j] != 0) {
 							areExonsScored = true;
@@ -176,6 +185,49 @@ public class DASConnector {
 			}
 		}
 		return resultList;
+	}
+
+
+	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
+		File tempFile = File.createTempFile("GenPlay", null);
+		FileWriter fw = new FileWriter(tempFile);
+		for (Chromosome currentChromo: cm) {
+			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
+			// if we found a chromosome retrieve the data and 
+			// we create a genelist for this chromosome
+			if (currentEntryPoint != null) {
+				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
+				URLConnection connection = queryUrl.openConnection();
+				connection.setUseCaches(true);
+				System.out.println(queryUrl.toString());
+				connection.connect();
+				for (List<String> currentList: connection.getHeaderFields().values()) {
+					for (String currString: currentList) {
+						System.out.println(currString);
+					}
+				}
+				System.out.println(connection.getHeaderFields().values());
+				//File f = new File(queryUrl.toString() + "/features");
+				//InputStream is = connection.getInputStream();
+				BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
+				//FileReader fr = new FileReader(f);
+				//InputStream is = new FileInputStream(f);
+				byte[] test = new byte[1];
+				int readInt = is.read(test);
+				System.out.println(readInt);
+				while (readInt != -1)	{
+					System.out.println((char)readInt);
+					//fw.write(test);
+					readInt = is.read(test);
+				}
+				is.close();
+			}
+		}		
+		fw.close();
+		System.out.println(tempFile.getAbsolutePath());
+		PSLExtractor pslExtractor = new PSLExtractor(tempFile, null, cm);
+		return pslExtractor.toGeneList();
 	}
 
 
@@ -206,14 +258,36 @@ public class DASConnector {
 				SCWHandler scwh = new SCWHandler();				
 				parser.parse(connection.getInputStream(), scwh);
 				List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
-				resultList.add(currentSCWList);
-			} else {
-				resultList.add(null);
-			}				
+				resultList.set(currentChromo, currentSCWList);
+			}
 		}
 		for (List<ScoredChromosomeWindow> currentList: resultList) {
 			if (currentList != null) { 
 				Collections.sort(currentList);
+			}
+		}
+		// Check if the list is scored
+		boolean isScored = false;
+		for (List<ScoredChromosomeWindow> currentList: resultList) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+				int i = 0;
+				while (!isScored && (i < currentList.size())) {
+					if (currentList.get(i).getScore() != 0) {
+						isScored = true;
+					}
+					i++;
+				}
+			}
+		}
+		// if the list is not scored we set all the scores to 1
+		if (!isScored) {
+			for (List<ScoredChromosomeWindow> currentList: resultList) {
+				if (currentList != null) {
+					for (ScoredChromosomeWindow currentWindow: currentList) {
+						currentWindow.setScore(1);
+					}
+				}
 			}
 		}
 		return resultList;
@@ -226,17 +300,11 @@ public class DASConnector {
 	 * @return the name of the entry. Null if none
 	 */
 	private EntryPoint findEntryPoint(List<EntryPoint> entryPointList, Chromosome chr) {
-		String currentName = chr.getName();
-		// we remove the "chr" if the name of the chromosome starts with that
-		// so "chr1" becomes "1"
-		if (currentName.trim().substring(0, 3).equals("chr")) {
-			currentName = currentName.trim().substring(3); 
-		}
 		boolean found = false;
 		int i = 0;
 		// we search for an entry point corresponding to the current chromosome
 		while ((i < entryPointList.size()) && (!found)) {
-			if (entryPointList.get(i).getID().equalsIgnoreCase(currentName)) {
+			if (chr.hasSameNameAs(entryPointList.get(i).getID())) {
 				found = true;
 			} else {
 				i++;

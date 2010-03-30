@@ -7,6 +7,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 import javax.swing.JMenuItem;
 
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.LoadFromDASAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadNucleotideListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadRepeatFamilyListTrackAction;
@@ -27,7 +28,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 	private final JMenuItem	jmiLoadGeneListTrack;					// menu load GeneList track
 	private final JMenuItem jmiLoadNucleotideListTrack;				// menu load Sequence track track
 	private final JMenuItem jmiLoadRepeatFamilyListTrack;			// menu load RepeatFamilyList track
-	
+	private final JMenuItem jmiLoadFromDAS;							// menu load from DAS server
 	
 	/**
 	 * Creates an instance of an {@link EmptyTrackMenu}
@@ -41,12 +42,14 @@ public final class EmptyTrackMenu extends TrackMenu {
 		jmiLoadGeneListTrack = new JMenuItem(actionMap.get(LoadGeneListTrackAction.ACTION_KEY));
 		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(LoadNucleotideListTrackAction.ACTION_KEY));
 		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(LoadRepeatFamilyListTrackAction.ACTION_KEY));
+		jmiLoadFromDAS = new JMenuItem(actionMap.get(LoadFromDASAction.ACTION_KEY));
 		
 		addSeparator();
 		add(jmiLoadSCWLtTrack);
 		add(jmiLoadBinListTrack);
 		add(jmiLoadGeneListTrack);
 		add(jmiLoadNucleotideListTrack);
-		add(jmiLoadRepeatFamilyListTrack);		
+		add(jmiLoadRepeatFamilyListTrack);
+		add(jmiLoadFromDAS);
 	}
 }

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,8 +22,9 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class Extractor {
+public abstract class Extractor implements Serializable {
 
+	private static final long serialVersionUID = 374481155831573347L;	// generated ID
 	protected File 						dataFile = null;	// file containing the data
 	protected File 						logFile = null;		// log file
 	protected long 						startTime = 0;		// time at the beginning of the extraction

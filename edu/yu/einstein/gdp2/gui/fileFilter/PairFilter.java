@@ -4,11 +4,7 @@
  */
 package yu.einstein.gdp2.gui.fileFilter;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
-
-import yu.einstein.gdp2.util.Utils;
 
 /**
  * A Pair {@link FileFilter}
@@ -17,32 +13,16 @@ import yu.einstein.gdp2.util.Utils;
  */
 public final class PairFilter extends ExtendedFileFilter {
 
-	public static final String EXTENSION = "pair";
+	private static final long serialVersionUID = -2669663045535948437L; // generated ID
+	public static final String[] EXTENSIONS = {"pair"};
 	public static final String DESCRIPTION = "Pair Files (*.pair)";
 	
-	@Override
-	public boolean accept(File f) {
-		if (f.isDirectory()) {
-			return true;
-		}
-		String extension = Utils.getExtension(f);
-		if ((extension != null) && (extension.equalsIgnoreCase(EXTENSION))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	
-	@Override
-	public String getDescription() {
-		return DESCRIPTION;
+	/**
+	 * Creates an instance of {@link PairFilter}
+	 */
+	public PairFilter() {
+		super(EXTENSIONS, DESCRIPTION);
 	}
 	
-	
-	@Override
-	public String[] getExtensions() {
-		String[] extensions = {EXTENSION};
-		return extensions;
-	}
 }

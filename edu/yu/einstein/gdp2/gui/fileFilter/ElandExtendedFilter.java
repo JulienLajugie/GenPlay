@@ -4,11 +4,7 @@
  */
 package yu.einstein.gdp2.gui.fileFilter;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
-
-import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -18,32 +14,15 @@ import yu.einstein.gdp2.util.Utils;
  */
 public final class ElandExtendedFilter extends ExtendedFileFilter {
 
-	public static final String EXTENSION = "elx";
+	private static final long serialVersionUID = -8024581610634301136L; // generated ID
+	public static final String[] EXTENSIONS = {"elx"};
 	public static final String DESCRIPTION = "Eland Extended Files (*.elx)";
 	
-	@Override
-	public boolean accept(File f) {
-		if (f.isDirectory()) {
-			return true;
-		}
-		String extension = Utils.getExtension(f);
-		if ((extension != null) && (extension.equalsIgnoreCase(EXTENSION))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	
-	@Override
-	public String getDescription() {
-		return DESCRIPTION;
-	}
-
-
-	@Override
-	public String[] getExtensions() {
-		String[] extensions = {EXTENSION};
-		return extensions;
+	/**
+	 * Creates an instance of {@link ElandExtendedFilter}
+	 */
+	public ElandExtendedFilter() {
+		super(EXTENSIONS, DESCRIPTION);
 	}
 }

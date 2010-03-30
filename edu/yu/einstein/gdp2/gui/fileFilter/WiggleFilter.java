@@ -4,11 +4,7 @@
  */
 package yu.einstein.gdp2.gui.fileFilter;
 
-import java.io.File;
-
 import javax.swing.filechooser.FileFilter;
-
-import yu.einstein.gdp2.util.Utils;
 
 /**
  * A Wiggle {@link FileFilter}
@@ -17,32 +13,15 @@ import yu.einstein.gdp2.util.Utils;
  */
 public final class WiggleFilter extends ExtendedFileFilter {
 
-	public static final String EXTENSION = "wig";
+	private static final long serialVersionUID = 6441730682478032544L; // generated ID
+	public static final String[] EXTENSIONS = {"wig"};
 	public static final String DESCRIPTION = "Wiggle Files (*.wig)";
 	
-	@Override
-	public boolean accept(File f) {
-		if (f.isDirectory()) {
-			return true;
-		}
-		String extension = Utils.getExtension(f);
-		if ((extension != null) && (extension.equalsIgnoreCase(EXTENSION))) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	
-	@Override
-	public String getDescription() {
-		return DESCRIPTION;
-	}
-	
-	
-	@Override
-	public String[] getExtensions() {
-		String[] extensions = {EXTENSION};
-		return extensions;
+	/**
+	 * Creates an instance of {@link WiggleFilter}
+	 */
+	public WiggleFilter() {
+		super(EXTENSIONS, DESCRIPTION);
 	}
 }

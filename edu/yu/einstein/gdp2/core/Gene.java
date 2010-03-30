@@ -53,14 +53,14 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 	/**
 	 * Public constructor.
-	 * @param aName Name of gene.
-	 * @param aChromo chromosome
-	 * @param aStrand Strand of the gene.
-	 * @param aTxStart Transcription start position.
-	 * @param aTxStop Transcription end position.
-	 * @param arrayExonStarts Exon start positions.
-	 * @param arrayExonStops Exon end positions.
-	 * @param arrayExonScores Exon scores
+	 * @param name Name of gene.
+	 * @param chromo chromosome
+	 * @param strand Strand of the gene.
+	 * @param txStart Transcription start position.
+	 * @param txStop Transcription end position.
+	 * @param exonStarts Exon start positions.
+	 * @param exonStops Exon end positions.
+	 * @param exonScores Exon scores
 	 */
 	public Gene(String name, Chromosome chromo, Strand strand, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
 		this.name = name;
@@ -75,14 +75,14 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 	/**
 	 * Creates an instance of {@link Gene}
-	 * @param aName name of the gene
-	 * @param aChromo chromosome
-	 * @param aStrand string representing the strand of a gene (ie "+" or "-") 
-	 * @param aTxStart transcription start position
-	 * @param aTxStop transcription end position
-	 * @param arrayExonStarts exon start positions
-	 * @param arrayExonStops exon end positions
-	 * @param arrayExonScores exon scores
+	 * @param name name of the gene
+	 * @param chromo chromosome
+	 * @param strandString string representing the strand of a gene (ie "+" or "-") 
+	 * @param txStart transcription start position
+	 * @param txStop transcription end position
+	 * @param exonStarts exon start positions
+	 * @param exonStops exon end positions
+	 * @param exonScores exon scores
 	 */
 	public Gene(String name, Chromosome chromo, String strandString, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
 		this.name = name;
@@ -105,8 +105,8 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 
 	/**
-	 * A gene is superior to another one if its position start is greater 
-	 * or if its position start is equal but its position stop is greater. 
+	 * A gene is superior to another one if its start position is greater 
+	 * or if its start position is equal but its stop position is greater. 
 	 */
 	@Override
 	public int compareTo(Gene otherGene) {

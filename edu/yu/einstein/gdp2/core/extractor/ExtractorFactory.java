@@ -81,6 +81,8 @@ public final class ExtractorFactory {
 			return new SerializedBinListExtractor(fileToExtract, logFile, chromosomeManager);
 		} else if (fileExtension.equalsIgnoreCase("elx")) {
 			return new ElandExtendedExtractor(fileToExtract, logFile, chromosomeManager);
+		} else if (fileExtension.equalsIgnoreCase("psl")) {
+			return new PSLExtractor(fileToExtract, logFile, chromosomeManager);
 		} else {
 			return null;
 		}		
@@ -138,6 +140,8 @@ public final class ExtractorFactory {
 									return new WiggleExtractor(fileToExtract, logFile, chromosomeManager);
 								} else if (type.equalsIgnoreCase("eland_extended")) {	
 									return new ElandExtendedExtractor(fileToExtract, logFile, chromosomeManager);
+								} else if (type.equalsIgnoreCase("psl")) {	
+									return new PSLExtractor(fileToExtract, logFile, chromosomeManager);
 								} else {
 									return null;
 								}

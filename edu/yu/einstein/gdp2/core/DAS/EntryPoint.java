@@ -77,7 +77,7 @@ public class EntryPoint {
 	
 	
 	/**
-	 * @param strand the orientation to set
+	 * @param orientation the orientation to set
 	 */
 	public final void setOrientation(Strand orientation) {
 		this.orientation = orientation;

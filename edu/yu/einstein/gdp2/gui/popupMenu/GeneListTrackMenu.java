@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 import yu.einstein.gdp2.gui.action.allTrack.SaveTrackAction;
 import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
 import yu.einstein.gdp2.gui.action.geneListTrack.SearchGeneAction;
+import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 

@@ -12,7 +12,7 @@ import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
- * A list of {@link Chromosome} with a {@link DataList} for each {@link Chromosome}. 
+ * A list of {@link Chromosome} with a list of data for each {@link Chromosome}. 
  * This abstract class is the template for the different kind of data that extends this class.
  * The methods to adapt the data to the screen resolution must be defined in the subclasses  
  * @author Julien Lajugie

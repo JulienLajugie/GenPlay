@@ -45,17 +45,12 @@ public class DASTypeHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("TYPE")) {
 			DASType currentDasType = new DASType();
 			if(attributes.getLength() > 0) {
-				for(int i = 0 ; i < attributes.getLength() ; i++) {
-					if (attributes.getQName(i).equalsIgnoreCase("ID")) {
-						currentDasType.setID(attributes.getValue(i));
-					} else if (attributes.getQName(i).equalsIgnoreCase("METHOD")) {
-						currentDasType.setMethod(attributes.getValue(i));
-					} else if (attributes.getQName(i).equalsIgnoreCase("CATEGORY")) {
-						currentDasType.setCategory(attributes.getValue(i));
-					}
-				}
+				currentDasType.setID(attributes.getValue("id"));
+				currentDasType.setMethod(attributes.getValue("method"));
+				currentDasType.setCategory(attributes.getValue("category"));
+				currentDasType.setPreferredFormat(attributes.getValue("preferred_format"));
 			}
 			dasTypeList.add(currentDasType);
-		} 
-	}	
+		}
+	}
 }

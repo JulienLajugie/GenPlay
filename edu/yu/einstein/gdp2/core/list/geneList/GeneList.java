@@ -89,7 +89,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 					exonStops = exonStopsList.get(i, j);
 				}
 				double[] exonScores = null;
-				if (exonScoresList.size(i) > 0) {
+				if ((exonScoresList != null) && (exonScoresList.size(i) > 0)) {
 					exonScores = exonScoresList.get(i, j);	
 				}			
 				add(chromo, new Gene(name, chromo, strand, txStart, txStop, exonStarts, exonStops, exonScores));
