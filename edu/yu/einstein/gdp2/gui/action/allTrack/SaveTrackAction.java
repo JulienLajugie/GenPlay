@@ -109,7 +109,7 @@ public final class SaveTrackAction extends TrackListAction {
 				try {
 					final BinListWriter blw = BinListWriterFactory.getBinListWriter(trackList.getChromosomeManager(), selectedFile, data, name, selectedFilter);
 					// thread for the action
-					new ActionWorker<Void>(trackList) {
+					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber()) {
 						@Override
 						protected Void doAction() {
 							try {
@@ -155,7 +155,7 @@ public final class SaveTrackAction extends TrackListAction {
 				try {
 					final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(trackList.getChromosomeManager(), selectedFile, data, name, selectedFilter);
 					// thread for the action
-					new ActionWorker<Void>(trackList) {
+					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber()) {
 						@Override
 						protected Void doAction() {
 							try {

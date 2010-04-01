@@ -57,7 +57,7 @@ public final class MaximumAction extends TrackListAction {
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
 			// thread for the action
-			new ActionWorker<Double>(trackList) {
+			new ActionWorker<Double>(trackList, "Searching Maximum") {
 				@Override
 				protected Double doAction() {
 					return BinListOperations.max(binList);

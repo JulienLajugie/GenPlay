@@ -91,7 +91,7 @@ public class SaturationAction extends TrackListAction {
 			if(countHigh != null) {
 				final String description = "Count Saturation, Low Count = "  + countLow.intValue()+ ", High Count = " + countHigh;
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Saturating") {
 					@Override
 					protected BinList doAction() {
 						return BinListSaturation.saturationCount(binList, countLow.intValue(), countHigh.intValue());
@@ -121,7 +121,7 @@ public class SaturationAction extends TrackListAction {
 				} else {			
 					final String description = "Percentage Saturation, Low Percentage = "  + percentageLow.doubleValue()+ ", High Percentage = " + percentageHigh.doubleValue();
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Saturating") {
 						@Override
 						protected BinList doAction() {
 							return BinListSaturation.saturationPercentage(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
@@ -152,7 +152,7 @@ public class SaturationAction extends TrackListAction {
 				} else {
 					final String description = "Threshold Saturation, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh;
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Saturating") {
 						@Override
 						protected BinList doAction() {
 							return BinListSaturation.saturationThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue());

@@ -70,7 +70,7 @@ public final class SubtractionAction extends TrackListAction {
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Subtracting") {
 							@Override
 							protected BinList doAction() {
 								try {

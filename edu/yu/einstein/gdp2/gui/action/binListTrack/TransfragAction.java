@@ -63,7 +63,7 @@ public class TransfragAction extends TrackListAction {
 			if(gap != null) {
 				final String description = "Transfrag, gap = "  + gap + " zero value successive window";
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Computing Transfrag") {
 					@Override
 					protected BinList doAction() {
 						return BinListOperations.transfrag(binList, gap.intValue());

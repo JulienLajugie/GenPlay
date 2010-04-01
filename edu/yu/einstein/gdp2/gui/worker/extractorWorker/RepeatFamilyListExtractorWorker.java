@@ -32,7 +32,7 @@ public final class RepeatFamilyListExtractorWorker extends ExtractorWorker<Repea
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
 	public RepeatFamilyListExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager) {
-		super(trackList, logFile, fileToExtract, chromosomeManager, RepeatFamilyListGenerator.class);
+		super(trackList, logFile, fileToExtract, chromosomeManager, RepeatFamilyListGenerator.class, "Loading Repeat Track");
 	}
 
 	

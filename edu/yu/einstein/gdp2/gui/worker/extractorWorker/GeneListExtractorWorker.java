@@ -32,7 +32,7 @@ public final class GeneListExtractorWorker extends ExtractorWorker<GeneListGener
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
 	public GeneListExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager) {
-		super(trackList, logFile, fileToExtract, chromosomeManager, GeneListGenerator.class);
+		super(trackList, logFile, fileToExtract, chromosomeManager, GeneListGenerator.class, "Loading Gene Track");
 	}
 
 	

@@ -70,7 +70,7 @@ public final class AdditionConstantAction extends TrackListAction {
 						description = "Add constant C = " + constant;
 					}
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Adding Constant") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.addition(binList, constant.doubleValue(), precision);

@@ -64,7 +64,7 @@ public final class RedoAction extends TrackListAction {
 		if (trackList.getSelectedTrack() instanceof BinListTrack) {
 			final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 			if (selectedTrack != null) {
-				new ActionWorker<Void>(trackList) {
+				new ActionWorker<Void>(trackList, "Redoing") {
 					@Override
 					protected Void doAction() {
 						selectedTrack.redo();

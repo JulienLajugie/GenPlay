@@ -133,7 +133,7 @@ public class DASDialog extends JDialog {
 				resultTypeChanged();				
 			}
 		});
-		jrbSCWListResult = new JRadioButton("Fixed Window List");
+		jrbSCWListResult = new JRadioButton("Variable Window List");
 		jrbSCWListResult.addChangeListener(new ChangeListener() {			
 			@Override
 			public void stateChanged(ChangeEvent e) {

@@ -62,7 +62,7 @@ public final class PasteAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track selectedTrack = trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			new ActionWorker<Void>(trackList) {
+			new ActionWorker<Void>(trackList, "Pasting Clipboard on Track #" + selectedTrack.getTrackNumber()) {
 				@Override
 				protected Void doAction() {
 					trackList.pasteCopiedTrack();

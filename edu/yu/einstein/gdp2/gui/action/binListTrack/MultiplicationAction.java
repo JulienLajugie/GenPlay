@@ -70,7 +70,7 @@ public final class MultiplicationAction extends TrackListAction {
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Multiplicating Tracks") {
 							@Override
 							protected BinList doAction() {
 								try {

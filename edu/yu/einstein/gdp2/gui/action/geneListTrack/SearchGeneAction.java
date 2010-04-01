@@ -69,7 +69,7 @@ public final class SearchGeneAction  extends TrackListAction {
 				final String geneName = (String) JOptionPane.showInputDialog(getRootPane(), "Enter the name of a gene", "Gene Search", JOptionPane.QUESTION_MESSAGE, null, null, lastSearchedName);
 				if (geneName != null) {
 					// thread for the action
-					new ActionWorker<Gene>(trackList) {
+					new ActionWorker<Gene>(trackList, "Searching Gene") {
 						@Override
 						protected Gene doAction() {
 							return selectedTrack.getData().search(geneName);

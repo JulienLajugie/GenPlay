@@ -61,7 +61,7 @@ public final class GaussAction extends TrackListAction {
 				final Integer sigma = GenomeWidthChooser.getSigma(getRootPane(), windowSize);
 				if(sigma != null) {
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Gaussing") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.gauss(binList, sigma, binList.getPrecision());

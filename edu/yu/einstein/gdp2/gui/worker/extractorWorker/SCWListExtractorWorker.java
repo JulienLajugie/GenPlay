@@ -32,7 +32,7 @@ public final class SCWListExtractorWorker extends ExtractorWorker<ScoredChromoso
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
 	public SCWListExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager) {
-		super(trackList, logFile, fileToExtract, chromosomeManager, ScoredChromosomeWindowListGenerator.class);
+		super(trackList, logFile, fileToExtract, chromosomeManager, ScoredChromosomeWindowListGenerator.class, "Loading Variable Chromosome Window Track");
 	}
 
 

@@ -89,7 +89,7 @@ public class ConcatenateAction extends TrackListAction {
 							nameArray[i] = selectedTracks.get(i).getName();
 						}
 						// thread for the action
-						new ActionWorker<Void>(trackList) {
+						new ActionWorker<Void>(trackList, "Concatenating Tracks") {
 							@Override
 							protected Void doAction() {
 								try {

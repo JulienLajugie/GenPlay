@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.beans.PropertyChangeEvent;
@@ -34,7 +35,10 @@ import yu.einstein.gdp2.gui.controlPanel.ControlPanel;
 import yu.einstein.gdp2.gui.dialog.optionDialog.OptionDialog;
 import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.GenomeWindowListener;
+import yu.einstein.gdp2.gui.event.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.TrackListActionListener;
 import yu.einstein.gdp2.gui.popupMenu.MainMenu;
+import yu.einstein.gdp2.gui.statusBar.StatusBar;
 import yu.einstein.gdp2.gui.track.Ruler;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -47,7 +51,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener {
+public class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, TrackListActionListener {
 
 
 	/**
@@ -71,6 +75,8 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 	private final Ruler 				ruler;					// Ruler component
 	private final TrackList 			trackList;				// TrackList component
 	private final ControlPanel 			controlPanel;			// ControlPanel component
+	private final StatusBar				statusBar;				// Statut bar component
+	
 	private final ConfigurationManager 	configurationManager;	// ConfigurationManager
 	private final ChromosomeManager 	chromosomeManager;		// ChromosomeManager
 	private final ZoomManager 			zoomManager;			// ZoomManager
@@ -116,10 +122,13 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		trackList = new TrackList(configurationManager, chromosomeManager, zoomManager, genomeWindow);
 		trackList.addPropertyChangeListener(this);
 		trackList.addGenomeWindowListener(this);
+		trackList.addTrackListActionListener(this);
 		
 		controlPanel = new ControlPanel(chromosomeManager, zoomManager, genomeWindow);
 		controlPanel.addGenomeWindowListener(this);
 
+		statusBar = new StatusBar();
+		
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
@@ -141,6 +150,14 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		add(controlPanel, gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		gbc.gridy = 3;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		add(statusBar, gbc);
 
 		// create actions
 		getRootPane().getActionMap().put(AboutAction.ACTION_KEY, new AboutAction(getRootPane()));
@@ -199,6 +216,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 			dispose();
 			setUndecorated(true);
 			controlPanel.setVisible(false);
+			statusBar.setVisible(false);
 			screenBounds = getBounds();
 			setExtendedState(JFrame.MAXIMIZED_BOTH);
 			setVisible(true);
@@ -207,6 +225,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 			dispose();
 			setUndecorated(false);
 			controlPanel.setVisible(true);
+			statusBar.setVisible(true);
 			setVisible(true);
 			setBounds(screenBounds);
 		}
@@ -264,5 +283,17 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		if (evt.getSource() != controlPanel) {
 			controlPanel.setGenomeWindow(evt.getNewWindow());
 		}
+	}
+
+
+	@Override
+	public void actionEnds(TrackListActionEvent evt) {
+		statusBar.actionEnds(evt);
+	}
+
+
+	@Override
+	public void actionStarts(TrackListActionEvent evt) {
+		statusBar.actionStarts(evt);
 	}
 }

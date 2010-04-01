@@ -56,7 +56,7 @@ public final class Log2Action extends TrackListAction {
 		if (selectedTrack != null) {
 			final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 			// thread for the action
-			new ActionWorker<BinList>(trackList) {
+			new ActionWorker<BinList>(trackList, "Logging") {
 				@Override
 				protected BinList doAction() {
 					return BinListOperations.log2(binList, binList.getPrecision());

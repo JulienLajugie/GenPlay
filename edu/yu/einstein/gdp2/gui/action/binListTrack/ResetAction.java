@@ -61,7 +61,7 @@ public final class ResetAction extends TrackListAction {
 		if (trackList.getSelectedTrack() instanceof BinListTrack) {
 			final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 			if (selectedTrack != null) {
-				new ActionWorker<Void>(trackList) {
+				new ActionWorker<Void>(trackList, "Reseting") {
 					@Override
 					protected Void doAction() {
 						selectedTrack.resetBinList();

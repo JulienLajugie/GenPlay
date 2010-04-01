@@ -60,7 +60,7 @@ public class ChangePrecisionAction extends TrackListAction {
 			final DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
 			if (precision != null) {				
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Changing Precision") {
 					@Override
 					protected BinList doAction() {
 						return BinListOperations.changePrecision(binList, precision);

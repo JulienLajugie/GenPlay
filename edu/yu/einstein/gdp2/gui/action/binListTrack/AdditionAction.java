@@ -69,7 +69,7 @@ public final class AdditionAction extends TrackListAction {
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();						
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Adding Tracks") {
 							@Override
 							protected BinList doAction() {
 								try {

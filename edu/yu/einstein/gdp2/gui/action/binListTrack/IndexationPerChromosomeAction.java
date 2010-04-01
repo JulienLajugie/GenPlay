@@ -67,7 +67,7 @@ public final class IndexationPerChromosomeAction extends TrackListAction {
 					if(indexMax != null) {
 						final BinList binList = selectedTrack.getBinList();
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Indexing") {
 							@Override
 							protected BinList doAction() {
 								return BinListOperations.indexationPerChromo(binList, indexMin.doubleValue(), indexMax.doubleValue(), binList.getPrecision());

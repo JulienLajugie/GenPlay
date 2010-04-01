@@ -64,7 +64,7 @@ public final class ScoreCountAction extends TrackListAction {
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action
-				new ActionWorker<Double>(trackList) {
+				new ActionWorker<Double>(trackList, "Calculating Score Count") {
 					@Override
 					protected Double doAction() {
 						return BinListOperations.scoreCount(binList, selectedChromo);

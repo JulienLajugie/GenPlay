@@ -77,7 +77,7 @@ public class CalculationOnProjectionAction extends TrackListAction {
 								final BinList valueBinList = ((BinListTrack)selectedTrack).getBinList();
 								final BinList intervalBinList = ((BinListTrack)intervalTrack).getBinList();
 								// thread for the action
-								new ActionWorker<BinList>(trackList) {
+								new ActionWorker<BinList>(trackList, "Calculating from Projection") {
 									@Override
 									protected BinList doAction() {
 										try {

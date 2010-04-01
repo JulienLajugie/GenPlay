@@ -72,7 +72,7 @@ public final class SearchPeaksAction extends TrackListAction {
 					if (resultTrack != null) {
 						final DataPrecision precision = Utils.choosePrecision(getRootPane());
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Searching Peaks") {
 							@Override
 							protected BinList doAction() {
 								return BinListOperations.searchPeaks(binList, sizeMovingSD.intValue(), nbSDAccepted.doubleValue(), precision);

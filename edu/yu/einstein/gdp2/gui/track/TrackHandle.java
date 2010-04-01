@@ -38,8 +38,8 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	private int 				startDragY = 0; 			// height of the mouse when start draggin
 	private boolean 			trackDragged = false;		// true if the user is dragging the track
 	private boolean				selected = false;			// true if the track is selected
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link TrackHandle}
 	 * @param number number of the track
@@ -61,7 +61,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 		add(jlNumber, gbc);
 	}
 
-	
+
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		if (isEnabled()) {
@@ -106,43 +106,45 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		if ((isEnabled()) && (arg0.getButton() == MouseEvent.BUTTON1)) {
-			if (getHeight() - arg0.getY() <= MOVE_RESIZE_ZONE_HEIGHT) {
-				startDragY = arg0.getY();
-			} else {
-				trackDragged = true;
-			}			
-		}
-		if (arg0.getButton() == MouseEvent.BUTTON3) {
-			if (!selected) {
-				selected = true;
-				firePropertyChange("selected", false, true);
+		if (isEnabled()) {
+			if (arg0.getButton() == MouseEvent.BUTTON1) {
+				if (getHeight() - arg0.getY() <= MOVE_RESIZE_ZONE_HEIGHT) {
+					startDragY = arg0.getY();
+				} else {
+					trackDragged = true;
+				}			
 			}
-			setBackground(ROLLOVER_COLOR);
-			firePropertyChange("trackRightClicked", false, true);
+			if (arg0.getButton() == MouseEvent.BUTTON3) {
+				if (!selected) {
+					selected = true;
+					firePropertyChange("selected", false, true);
+				}
+				setBackground(ROLLOVER_COLOR);
+				firePropertyChange("trackRightClicked", false, true);
+			}
 		}
 	}
 
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-			startDragY = 0;
-			if (trackDragged) {
-				trackDragged = false;
-				firePropertyChange("trackDraggedReleased", false, true);
-			}
+		startDragY = 0;
+		if (trackDragged) {
+			trackDragged = false;
+			firePropertyChange("trackDraggedReleased", false, true);
+		}
 	}
 
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-			if (startDragY != 0) {
-				firePropertyChange("resize", 0, arg0.getY() - startDragY);
-				startDragY = arg0.getY();
-			}
-			if (trackDragged) {
-				firePropertyChange("trackDragged", false, true);
-			}
+		if (startDragY != 0) {
+			firePropertyChange("resize", 0, arg0.getY() - startDragY);
+			startDragY = arg0.getY();
+		}
+		if (trackDragged) {
+			firePropertyChange("trackDragged", false, true);
+		}
 	}
 
 

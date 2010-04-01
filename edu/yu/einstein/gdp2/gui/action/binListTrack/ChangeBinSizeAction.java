@@ -64,7 +64,7 @@ public class ChangeBinSizeAction extends TrackListAction {
 				final ScoreCalculationMethod method = Utils.chooseScoreCalculation(trackList.getRootPane());
 				if (method != null) {
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Changing Window Size") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.changeBinSize(binList, binSize.intValue(), method);

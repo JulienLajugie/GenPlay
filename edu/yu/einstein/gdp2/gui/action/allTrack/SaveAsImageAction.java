@@ -65,7 +65,7 @@ public final class SaveAsImageAction extends TrackListAction {
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
 					// thread for the action
-					new ActionWorker<Void>(trackList) {
+					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber() + " As Image") {
 						@Override
 						protected Void doAction() {
 							selectedTrack.saveAsImage(Utils.addExtension(saveFC.getSelectedFile(), "jpg"));

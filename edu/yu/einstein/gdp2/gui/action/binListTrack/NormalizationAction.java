@@ -61,7 +61,7 @@ public final class NormalizationAction extends TrackListAction {
 			if(factor != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Normalizing") {
 					@Override
 					protected BinList doAction() {
 						return BinListOperations.normalize(binList, factor.intValue(), binList.getPrecision());

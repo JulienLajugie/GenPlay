@@ -18,7 +18,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public abstract class TrackListAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1383058897700926018L; // generated ID
-	protected final TrackList trackList; // TrackList
+	protected final TrackList trackList; // TrackList	
 
 	
 	/**
@@ -27,6 +27,8 @@ public abstract class TrackListAction extends AbstractAction {
 	 */
 	public TrackListAction(TrackList trackList) {
 		this.trackList = trackList; 
+
+
 	}
 	
 	
@@ -36,5 +38,4 @@ public abstract class TrackListAction extends AbstractAction {
 	protected JRootPane getRootPane() {
 		return trackList.getRootPane();
 	}
-
 }

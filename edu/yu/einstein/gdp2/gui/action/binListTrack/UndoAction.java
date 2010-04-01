@@ -62,7 +62,7 @@ public final class UndoAction extends TrackListAction {
 		if (trackList.getSelectedTrack() instanceof BinListTrack) {
 			final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 			if (selectedTrack != null) {
-				new ActionWorker<Void>(trackList) {
+				new ActionWorker<Void>(trackList, "Undoing") {
 					@Override
 					protected Void doAction() {
 						selectedTrack.undo();

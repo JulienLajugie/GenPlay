@@ -29,7 +29,7 @@ public class ChromosomeWindowListExtractorWorker extends ExtractorWorker<Chromos
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
 	public ChromosomeWindowListExtractorWorker(TrackList trackList,	String logFile, File fileToExtract,	ChromosomeManager chromosomeManager) {
-		super(trackList, logFile, fileToExtract, chromosomeManager,	ChromosomeWindowListGenerator.class);
+		super(trackList, logFile, fileToExtract, chromosomeManager,	ChromosomeWindowListGenerator.class, "Loading Chromosome Window Track");
 	}
 
 	

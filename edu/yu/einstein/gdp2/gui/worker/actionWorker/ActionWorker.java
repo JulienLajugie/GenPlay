@@ -4,11 +4,14 @@
  */
 package yu.einstein.gdp2.gui.worker.actionWorker;
 
-import java.awt.Container;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import yu.einstein.gdp2.gui.progressBar.ProgressBar;
+import yu.einstein.gdp2.gui.event.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.TrackListActionListener;
+import yu.einstein.gdp2.gui.event.TrackListActionModifier;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ExceptionManager;
 
@@ -21,27 +24,28 @@ import yu.einstein.gdp2.util.ExceptionManager;
  * @version 0.1
  * @param <T> type of the data returned by the action. Void if none
  */
-public abstract class ActionWorker<T> extends SwingWorker<T, Void> {
+public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements TrackListActionModifier {
 
-	private final ProgressBar		progressBar;		// a progress bar displayed during the loading
 	private final TrackList 		trackList;			// track list 
-	private final Container			topAncestor; 		// top container disabled during the operation
+	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener
+	private final String actionStartDescription;
 
+	
 	/**
 	 * Creates an instance of {@link ActionWorker}. Shows the progress bar
 	 * @param trackList
 	 */
-	public ActionWorker(TrackList trackList) {
+	public ActionWorker(TrackList trackList, String actionStartDescription) {
 		this.trackList = trackList;
-		this.progressBar = new ProgressBar(trackList);
-		trackList.add(progressBar);
-		topAncestor = this.trackList.getTopLevelAncestor();
-		topAncestor.setEnabled(false);
+		this.tlalListenerList = new ArrayList<TrackListActionListener>();
+		addTrackListActionListener(trackList);
+		this.actionStartDescription = actionStartDescription;
 	}
 
 
 	@Override
 	final protected T doInBackground() {
+		notifyActionStarted(actionStartDescription);
 		return doAction();		
 	};
 
@@ -50,14 +54,11 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> {
 	final protected void done() {
 		try {
 			this.get();
+			notifyActionEnded("Done");
 			doAtTheEnd(this.get());
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "An error occurred during the operation");
-		} finally {
-			//trackList.remove(progressBar);
-			progressBar.dispose();
-			topAncestor.setEnabled(true);
-			topAncestor.requestFocus();
+			notifyActionEnded("An error occurred during the operation");
 		}
 	}
 
@@ -74,4 +75,48 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> {
 	 * @param actionResult result returned by the action method
 	 */
 	protected abstract void doAtTheEnd(T actionResult);
+
+	
+	@Override
+	public void addTrackListActionListener(TrackListActionListener trackListActionListener) {
+		tlalListenerList.add(trackListActionListener);		
+	}
+
+
+	@Override
+	public TrackListActionListener[] getOperationOnTrackListener() {
+		TrackListActionListener[] operationOnTrackListeners = new TrackListActionListener[tlalListenerList.size()];
+		return tlalListenerList.toArray(operationOnTrackListeners);
+	}
+
+
+	@Override
+	public void removeTrackListActionListener(TrackListActionListener trackListActionListener) {
+		tlalListenerList.remove(trackListActionListener);		
+	}
+	
+	
+	/**
+	 * Notifies all the {@link TrackListActionListener} that an action started
+	 * @param actionDescription
+	 */
+	private void notifyActionStarted(String actionDescription) {
+		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
+		for (TrackListActionListener tal: tlalListenerList) {
+			tal.actionStarts(evt);
+		}
+	}
+	
+	
+	/**
+	 * Notifies all the {@link TrackListActionListener} that an action ended
+	 * @param actionDescription
+	 */
+	private void notifyActionEnded(String actionDescription) {
+		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
+		for (TrackListActionListener tal: tlalListenerList) {
+			tal.actionEnds(evt);
+		}
+	}
+
 }

@@ -61,7 +61,7 @@ public final class Log2WithDamperAction extends TrackListAction {
 			if(damper != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Logging Track") {
 					@Override
 					protected BinList doAction() {
 						return BinListOperations.log2(binList, damper.doubleValue(), binList.getPrecision());

@@ -70,7 +70,7 @@ public class DivisionConstantAction extends TrackListAction {
 						description = "Divides by constant C = " + constant;
 					}
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Dividing by Constant") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.division(binList, constant.doubleValue(), precision);

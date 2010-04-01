@@ -71,7 +71,7 @@ public final class ShowRepartitionAction extends TrackListAction {
 					if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
 						final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 						// thread for the action
-						new ActionWorker<Void>(trackList) {
+						new ActionWorker<Void>(trackList, "Calculating Repartition") {
 							@Override
 							protected Void doAction() {
 								try {

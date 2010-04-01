@@ -62,7 +62,7 @@ public final class CutAction extends TrackListAction {
 		Track selectedTrack = trackList.getSelectedTrack();
 		if (selectedTrack != null) {
 			// thread for the action
-			new ActionWorker<Void>(trackList) {
+			new ActionWorker<Void>(trackList, "Cutting Track #" + selectedTrack.getTrackNumber()) {
 				@Override
 				protected Void doAction() {
 					trackList.cutTrack();

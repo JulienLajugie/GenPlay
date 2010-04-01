@@ -69,7 +69,7 @@ public final class DivisionAction extends TrackListAction {
 						final BinList binList1 = selectedTrack.getBinList();
 						final BinList binList2 = otherTrack.getBinList();
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Dividing") {
 							@Override
 							protected BinList doAction() {
 								try {

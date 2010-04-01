@@ -64,7 +64,7 @@ public final class StandardDeviationAction extends TrackListAction {
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action
-				new ActionWorker<Double>(trackList) {
+				new ActionWorker<Double>(trackList, "Calculating Standard Deviation") {
 					@Override
 					protected Double doAction() {
 						return BinListOperations.standardDeviation(binList, selectedChromo);

@@ -93,7 +93,7 @@ public class FilterAction extends TrackListAction {
 			if(countHigh != null) {
 				final String description = "Count Filter, Low Count = "  + countLow.intValue()+ ", High Count = " + countHigh;
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Applying Filter") {
 					@Override
 					protected BinList doAction() {
 						return BinListFilter.countFilter(binList, countLow.intValue(), countHigh.intValue());
@@ -127,7 +127,7 @@ public class FilterAction extends TrackListAction {
 						if (density != null) {
 							final String description = "Density filter, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh + ", Region Size = " + regionSize.intValue() + ", Density = " + density;
 							// thread for the action
-							new ActionWorker<BinList>(trackList) {
+							new ActionWorker<BinList>(trackList, "Applying Filter") {
 								@Override
 								protected BinList doAction() {
 									return BinListFilter.densityFilter(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), density.doubleValue(), regionSize.intValue());
@@ -161,7 +161,7 @@ public class FilterAction extends TrackListAction {
 
 				final String description = "Percentage Filter, Low Percentage = "  + percentageLow.doubleValue()+ ", High Percentage = " + percentageHigh.doubleValue();
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Applying Filter") {
 					@Override
 					protected BinList doAction() {
 						return BinListFilter.percentageFilter(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
@@ -193,7 +193,7 @@ public class FilterAction extends TrackListAction {
 					if(successiveValues != null) {
 						final String description = "Threshold Filter, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh + ", Successive Values = " + successiveValues;
 						// thread for the action
-						new ActionWorker<BinList>(trackList) {
+						new ActionWorker<BinList>(trackList, "Applying Filter") {
 							@Override
 							protected BinList doAction() {
 								return BinListFilter.thresholdFilter(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), successiveValues.intValue());

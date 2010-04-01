@@ -6,6 +6,8 @@ package yu.einstein.gdp2.gui.worker.extractorWorker;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -15,7 +17,9 @@ import yu.einstein.gdp2.core.extractor.ExtractorFactory;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.gui.progressBar.ProgressBar;
+import yu.einstein.gdp2.gui.event.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.TrackListActionListener;
+import yu.einstein.gdp2.gui.event.TrackListActionModifier;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ChromosomeManager;
 
@@ -32,12 +36,13 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
+public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> implements TrackListActionModifier {
 
 	protected final TrackList 		trackList;			// TrackList 
 	private final Class<EC>			extractorClass;		// desired class of extractor
-	private final ProgressBar		progressBar;		// a progress bar displayed during the loading
 	private final ChromosomeManager chromosomeManager;	// a ChromosomeManager
+	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener
+	private final String actionStartDescription;
 	protected final File			fileToExtract;  	// file to extract
 	protected File	 				logFile;			// a file we extracts
 	protected String				name;				// a name 
@@ -52,12 +57,10 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param extractorClass desired class of extractor
 	 */
-	public ExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager, Class<EC> extractorClass) {
+	public ExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager, Class<EC> extractorClass, String actionStartDescription) {
 		this.chromosomeManager = chromosomeManager;
 		this.trackList = trackList;
 		this.extractorClass = extractorClass;
-		this.progressBar = new ProgressBar(trackList);
-		trackList.add(progressBar);	
 		if (logFile != null) {
 			this.logFile = new File(logFile);
 			try {
@@ -75,7 +78,9 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 			this.logFile = null;
 		}		
 		this.fileToExtract = fileToExtract;
-		trackList.getTopLevelAncestor().setEnabled(false);
+		this.tlalListenerList = new ArrayList<TrackListActionListener>();
+		addTrackListActionListener(trackList);
+		this.actionStartDescription = actionStartDescription;
 	}
 
 
@@ -87,6 +92,7 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 		if (fileToExtract != null) {
 			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile, chromosomeManager);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
+				notifyActionStarted(actionStartDescription);
 				extractor.extract();
 				if (extractor.getName() != null) {
 					name = extractor.getName();
@@ -109,9 +115,7 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 	 */
 	@Override
 	final protected void done() {
-		trackList.getTopLevelAncestor().setEnabled(true);
-		trackList.getTopLevelAncestor().requestFocus();
-		progressBar.dispose();
+		notifyActionEnded("Done");
 		doAtTheEnd();
 	}
 
@@ -131,4 +135,47 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> {
 	 * end of the loading.
 	 */
 	abstract public void doAtTheEnd();
+	
+	
+	@Override
+	public void addTrackListActionListener(TrackListActionListener trackListActionListener) {
+		tlalListenerList.add(trackListActionListener);		
+	}
+
+
+	@Override
+	public TrackListActionListener[] getOperationOnTrackListener() {
+		TrackListActionListener[] operationOnTrackListeners = new TrackListActionListener[tlalListenerList.size()];
+		return tlalListenerList.toArray(operationOnTrackListeners);
+	}
+
+
+	@Override
+	public void removeTrackListActionListener(TrackListActionListener trackListActionListener) {
+		tlalListenerList.remove(trackListActionListener);		
+	}
+	
+	
+	/**
+	 * Notifies all the {@link TrackListActionListener} that an action started
+	 * @param actionDescription
+	 */
+	protected void notifyActionStarted(String actionDescription) {
+		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
+		for (TrackListActionListener tal: tlalListenerList) {
+			tal.actionStarts(evt);
+		}
+	}
+	
+	
+	/**
+	 * Notifies all the {@link TrackListActionListener} that an action ended
+	 * @param actionDescription
+	 */
+	protected void notifyActionEnded(String actionDescription) {
+		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
+		for (TrackListActionListener tal: tlalListenerList) {
+			tal.actionEnds(evt);
+		}
+	}
 }

@@ -71,7 +71,7 @@ public class SubtractionConstantAction extends TrackListAction {
 						description = "Subtract constant C = " + constant;
 					}
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Subtracting") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.subtraction(binList, constant.doubleValue(), precision);

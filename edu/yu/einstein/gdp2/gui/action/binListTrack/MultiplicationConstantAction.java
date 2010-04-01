@@ -70,7 +70,7 @@ public class MultiplicationConstantAction extends TrackListAction {
 						description = "Multiply by constant C = " + constant;
 					}
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Multiplicating by Constant") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.multiplication(binList, constant.doubleValue(), precision);

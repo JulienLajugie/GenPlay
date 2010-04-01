@@ -70,7 +70,7 @@ public final class CorrelationAction extends TrackListAction {
 					final BinList binList1 = selectedTrack.getBinList();
 					final BinList binList2 = otherTrack.getBinList();
 					// thread for the action
-					new ActionWorker<Double>(trackList) {
+					new ActionWorker<Double>(trackList, "Computing Correlation") {
 						@Override
 						protected Double doAction() {
 							try {

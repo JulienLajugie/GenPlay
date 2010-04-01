@@ -60,7 +60,7 @@ public final class IslandFinderAction extends TrackListAction {
 			if (resultTrack != null) {
 				final int index = resultTrack.getTrackNumber() - 1;
 				// thread for the action
-				new ActionWorker<BinList>(trackList) {
+				new ActionWorker<BinList>(trackList, "Searching Islands") {
 					@Override
 					protected BinList doAction() {
 						// TODO

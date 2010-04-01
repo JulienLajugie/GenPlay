@@ -44,7 +44,7 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
 	public BinListExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager) {
-		super(trackList, logFile, fileToExtract, chromosomeManager, BinListGenerator.class);
+		super(trackList, logFile, fileToExtract, chromosomeManager, BinListGenerator.class, "Loading Fixed Window Track");
 	}
 
 
@@ -73,14 +73,15 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 
 	@Override
 	public BinList generateList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		trackList.getTopLevelAncestor().setEnabled(true);
 		if (((BinListGenerator)extractor).isBinSizeNeeded()) {
+			notifyActionEnded("");
 			binSize = NumberOptionPane.getValue(trackList.getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize == null) {
 				return null;
 			}
 		}
 		if (((BinListGenerator)extractor).isCriterionNeeded()) {	
+			notifyActionEnded("");
 			scoreCalculation = Utils.chooseScoreCalculation(trackList.getRootPane());
 			if (scoreCalculation == null) {
 				return null;
@@ -89,12 +90,13 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 			scoreCalculation = null;
 		}
 		if (((BinListGenerator)extractor).isPrecisionNeeded()) {	
+			notifyActionEnded("");
 			precision = Utils.choosePrecision(trackList.getRootPane());
 			if (precision == null) {
 				return null;
 			}
 		}
-		trackList.getTopLevelAncestor().setEnabled(false);
+		notifyActionStarted("Loading Fixed Window Track");
 		return ((BinListGenerator)extractor).toBinList(binSize.intValue(), precision, scoreCalculation);
 	}
 }

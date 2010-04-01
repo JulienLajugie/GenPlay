@@ -73,7 +73,7 @@ public class LoadFromDASAction extends TrackListAction {
 					final int resType = dasDialog.getGenerateType();
 					final ChromosomeManager cm = trackList.getChromosomeManager();
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
-						new ActionWorker<GeneList>(trackList) {
+						new ActionWorker<GeneList>(trackList, "Retrieving Data from DAS Server") {
 							@Override
 							protected GeneList doAction() {
 								try {
@@ -93,7 +93,7 @@ public class LoadFromDASAction extends TrackListAction {
 							}
 						}.execute();
 					} else if (resType == DASDialog.GENERATE_SCW_LIST) {
-						new ActionWorker<ScoredChromosomeWindowList>(trackList) {
+						new ActionWorker<ScoredChromosomeWindowList>(trackList, "Retrieving Data from DAS server") {
 							@Override
 							protected ScoredChromosomeWindowList doAction() {
 								try {

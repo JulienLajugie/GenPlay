@@ -71,7 +71,7 @@ public class SaveProjectAction extends AbstractAction {
 			final ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(parent, selectedFile)) {
-				new ActionWorker<Void>(trackList) {
+				new ActionWorker<Void>(trackList, "Saving Project") {
 					@Override
 					protected Void doAction() {
 						trackList.saveProject(selectedFile);

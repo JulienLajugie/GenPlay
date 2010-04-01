@@ -61,7 +61,7 @@ public final class AverageAction extends TrackListAction {
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action
-				new ActionWorker<Double>(trackList) {
+				new ActionWorker<Double>(trackList, "Computing Average") {
 					@Override
 					protected Double doAction() {
 						return BinListOperations.average(binList, selectedChromo);

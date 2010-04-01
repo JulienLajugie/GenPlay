@@ -65,7 +65,7 @@ public class LoadProjectAction extends AbstractAction {
 		final FileFilter[] fileFilters = {new GenPlayProjectFilter()};
 		final File selectedFile = Utils.chooseFileToLoad(parent, "Load Project", defaultDirectory, fileFilters);
 		if (selectedFile != null) {
-			new ActionWorker<Void>(trackList) {
+			new ActionWorker<Void>(trackList, "Loading Project") {
 				@Override
 				protected Void doAction() {
 					trackList.loadProject(selectedFile);

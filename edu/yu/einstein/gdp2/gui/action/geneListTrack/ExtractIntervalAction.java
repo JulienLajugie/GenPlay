@@ -60,7 +60,7 @@ public final class ExtractIntervalAction  extends TrackListAction {
 				if (resultTrack != null) {
 					final int index = resultTrack.getTrackNumber() - 1;
 					// thread for the action
-					new ActionWorker<GeneList>(trackList) {
+					new ActionWorker<GeneList>(trackList, "Extracting Intervals") {
 						@Override
 						protected GeneList doAction() {
 							return GeneListOperations.extractIntevals(geneList, dialog.getStartDistance(), dialog.getStartFrom(), dialog.getStopDistance(), dialog.getStopFrom());

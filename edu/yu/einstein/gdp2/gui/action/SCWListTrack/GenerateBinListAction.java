@@ -67,7 +67,7 @@ public final class GenerateBinListAction  extends TrackListAction {
 						if (precision != null) {
 							final int index = resultTrack.getTrackNumber() - 1;
 							// thread for the action
-							new ActionWorker<BinList>(trackList) {
+							new ActionWorker<BinList>(trackList, "Generating Fixed Window Track") {
 								@Override
 								protected BinList doAction() {
 									return selectedTrack.getData().generateBinList(trackList.getChromosomeManager(), binSize.intValue(), precision, scoreCalculation);

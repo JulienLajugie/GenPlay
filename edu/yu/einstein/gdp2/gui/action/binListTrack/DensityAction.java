@@ -65,7 +65,7 @@ public class DensityAction extends TrackListAction {
 				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
 				if (resultTrack != null) {
 					// thread for the action
-					new ActionWorker<BinList>(trackList) {
+					new ActionWorker<BinList>(trackList, "Computing Density") {
 						@Override
 						protected BinList doAction() {
 							return BinListOperations.density(binList, halfWidth.intValue());

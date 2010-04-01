@@ -62,7 +62,7 @@ public final class BinCountAction extends TrackListAction {
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				// thread for the action
-				new ActionWorker<Long>(trackList) {
+				new ActionWorker<Long>(trackList, "Counting Bins") {
 					@Override
 					protected Long doAction() {
 						return BinListOperations.binCount(binList, selectedChromo);

@@ -4,14 +4,7 @@
  */
 package yu.einstein.gdp2.core.DAS;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -27,7 +20,6 @@ import org.xml.sax.SAXException;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
-import yu.einstein.gdp2.core.extractor.PSLExtractor;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -133,9 +125,9 @@ public class DASConnector {
 	 * @throws SAXException
 	 */
 	public GeneList getGeneList(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
-		if (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;")) {
-			return getGeneListFromPSL(cm, dataSource, dasType);
-		}
+//		if ((dasType.getPreferredFormat() != null) && (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;"))) {
+//			return getGeneListFromPSL(cm, dataSource, dasType);
+//		}
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		GeneList resultList = new GeneList(cm);
 		for (Chromosome currentChromo: cm) {
@@ -188,47 +180,47 @@ public class DASConnector {
 	}
 
 
-	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
-		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-		File tempFile = File.createTempFile("GenPlay", null);
-		FileWriter fw = new FileWriter(tempFile);
-		for (Chromosome currentChromo: cm) {
-			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
-			// if we found a chromosome retrieve the data and 
-			// we create a genelist for this chromosome
-			if (currentEntryPoint != null) {
-				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
-				URLConnection connection = queryUrl.openConnection();
-				connection.setUseCaches(true);
-				System.out.println(queryUrl.toString());
-				connection.connect();
-				for (List<String> currentList: connection.getHeaderFields().values()) {
-					for (String currString: currentList) {
-						System.out.println(currString);
-					}
-				}
-				System.out.println(connection.getHeaderFields().values());
-				//File f = new File(queryUrl.toString() + "/features");
-				//InputStream is = connection.getInputStream();
-				BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
-				//FileReader fr = new FileReader(f);
-				//InputStream is = new FileInputStream(f);
-				byte[] test = new byte[1];
-				int readInt = is.read(test);
-				System.out.println(readInt);
-				while (readInt != -1)	{
-					System.out.println((char)readInt);
-					//fw.write(test);
-					readInt = is.read(test);
-				}
-				is.close();
-			}
-		}		
-		fw.close();
-		System.out.println(tempFile.getAbsolutePath());
-		PSLExtractor pslExtractor = new PSLExtractor(tempFile, null, cm);
-		return pslExtractor.toGeneList();
-	}
+//	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+//		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
+//		File tempFile = File.createTempFile("GenPlay", null);
+//		FileWriter fw = new FileWriter(tempFile);
+//		for (Chromosome currentChromo: cm) {
+//			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
+//			// if we found a chromosome retrieve the data and 
+//			// we create a genelist for this chromosome
+//			if (currentEntryPoint != null) {
+//				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
+//				URLConnection connection = queryUrl.openConnection();
+//				connection.setUseCaches(true);
+//				System.out.println(queryUrl.toString());
+//				connection.connect();
+//				for (List<String> currentList: connection.getHeaderFields().values()) {
+//					for (String currString: currentList) {
+//						System.out.println(currString);
+//					}
+//				}
+//				System.out.println(connection.getHeaderFields().values());
+//				//File f = new File(queryUrl.toString() + "/features");
+//				//InputStream is = connection.getInputStream();
+//				BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
+//				//FileReader fr = new FileReader(f);
+//				//InputStream is = new FileInputStream(f);
+//				byte[] test = new byte[1];
+//				int readInt = is.read(test);
+//				System.out.println(readInt);
+//				while (readInt != -1)	{
+//					System.out.println((char)readInt);
+//					//fw.write(test);
+//					readInt = is.read(test);
+//				}
+//				is.close();
+//			}
+//		}		
+//		fw.close();
+//		System.out.println(tempFile.getAbsolutePath());
+//		PSLExtractor pslExtractor = new PSLExtractor(tempFile, null, cm);
+//		return pslExtractor.toGeneList();
+//	}
 
 
 	/**
@@ -304,6 +296,7 @@ public class DASConnector {
 		int i = 0;
 		// we search for an entry point corresponding to the current chromosome
 		while ((i < entryPointList.size()) && (!found)) {
+			System.out.println(entryPointList.get(i).getID());
 			if (chr.hasSameNameAs(entryPointList.get(i).getID())) {
 				found = true;
 			} else {

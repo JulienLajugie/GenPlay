@@ -57,7 +57,7 @@ public final class MinimumAction extends TrackListAction {
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
 			// thread for the action
-			new ActionWorker<Double>(trackList) {
+			new ActionWorker<Double>(trackList, "Searching Minimum") {
 				@Override
 				protected Double doAction() {
 					return BinListOperations.min(binList);
