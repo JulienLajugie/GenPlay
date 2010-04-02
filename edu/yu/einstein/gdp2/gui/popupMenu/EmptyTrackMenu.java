@@ -5,7 +5,9 @@
 package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
+import javax.swing.event.PopupMenuEvent;
 
+import yu.einstein.gdp2.gui.action.emptyTrack.GenerateMultiCurvesTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadFromDASAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
@@ -29,6 +31,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 	private final JMenuItem jmiLoadNucleotideListTrack;				// menu load Sequence track track
 	private final JMenuItem jmiLoadRepeatFamilyListTrack;			// menu load RepeatFamilyList track
 	private final JMenuItem jmiLoadFromDAS;							// menu load from DAS server
+	private final JMenuItem jmiGenerateMultiTrack;					// menu generate multitrack
 	
 	/**
 	 * Creates an instance of an {@link EmptyTrackMenu}
@@ -43,6 +46,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(LoadNucleotideListTrackAction.ACTION_KEY));
 		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(LoadRepeatFamilyListTrackAction.ACTION_KEY));
 		jmiLoadFromDAS = new JMenuItem(actionMap.get(LoadFromDASAction.ACTION_KEY));
+		jmiGenerateMultiTrack = new JMenuItem(actionMap.get(GenerateMultiCurvesTrackAction.ACTION_KEY));
 		
 		addSeparator();
 		add(jmiLoadSCWLtTrack);
@@ -51,5 +55,15 @@ public final class EmptyTrackMenu extends TrackMenu {
 		add(jmiLoadNucleotideListTrack);
 		add(jmiLoadRepeatFamilyListTrack);
 		add(jmiLoadFromDAS);
+		add(jmiGenerateMultiTrack);
+	}
+	
+	
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
+		super.popupMenuWillBecomeVisible(arg0);
+		// the generate multicurves track is enable only if there is more than one curve track loaded
+		boolean moreThan1CurveTrackLoaded = (trackList.getCurveTracks() != null) && (trackList.getCurveTracks().length > 1);
+		jmiGenerateMultiTrack.setEnabled(moreThan1CurveTrackLoaded);
 	}
 }

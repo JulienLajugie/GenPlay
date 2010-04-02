@@ -26,9 +26,12 @@ import javax.swing.JPanel;
 import yu.einstein.gdp2.core.ChromosomeWindow;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
+import yu.einstein.gdp2.gui.event.repaintEvent.RepaintEvent;
+import yu.einstein.gdp2.gui.event.repaintEvent.RepaintEventsGenerator;
+import yu.einstein.gdp2.gui.event.repaintEvent.RepaintListener;
 import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.ZoomManager;
 
@@ -38,7 +41,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class TrackGraphics extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowModifier {
+public abstract class TrackGraphics extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator, RepaintEventsGenerator {
 
 	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
 	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
@@ -49,7 +52,8 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	protected final FontMetrics 		fm = 
 		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
 	private final ZoomManager 			zoomManager;					// zoom manager
-	private final ArrayList<GenomeWindowListener> listenerList;			// list of GenomeWindowListener
+	private final List<GenomeWindowListener> gwListenerList;			// list of GenomeWindowListener
+	private final List<RepaintListener> rListenerList;					// list of RepaintListener
 	private int 						verticalLineCount;				// number of vertical lines to print
 	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
 	protected double					xFactor;						// factor between the genomic width and the screen width
@@ -110,7 +114,8 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		this.zoomManager = zoomManager;
 		this.genomeWindow = displayedGenomeWindow;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
-		this.listenerList = new ArrayList<GenomeWindowListener>();
+		this.gwListenerList = new ArrayList<GenomeWindowListener>();
+		this.rListenerList = new ArrayList<RepaintListener>();
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
 		addMouseListener(this);		
@@ -148,9 +153,20 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			xFactorChanged();
 		}
 		drawTrack(g);
+		notifyRepaintListeners();
 	}
 
 	
+	/**
+	 * Notify the listeners that the {@link TrackGraphics} has been repainted
+	 */
+	private void notifyRepaintListeners() {
+		for (RepaintListener rl: rListenerList) {
+			rl.componentRepainted(new RepaintEvent());
+		}		
+	}
+
+
 	/**
 	 * Called by paintComponent. 
 	 * Draws the track
@@ -209,7 +225,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			genomeWindow = newGenomeWindow;
 			// we notify the listeners
 			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
-			for (GenomeWindowListener currentListener: listenerList) {
+			for (GenomeWindowListener currentListener: gwListenerList) {
 				currentListener.genomeWindowChanged(evt);
 			}
 			if (genomeWindow.getChromosome() != oldGenomeWindow.getChromosome()) {
@@ -559,19 +575,36 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);		
+		gwListenerList.add(genomeWindowListener);		
 	}
 	
 	
 	@Override
 	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
-		return listenerList.toArray(genomeWindowListeners);
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
+		return gwListenerList.toArray(genomeWindowListeners);
 	}
 	
 	
 	@Override
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.remove(genomeWindowListener);		
+		gwListenerList.remove(genomeWindowListener);		
+	}
+	
+	
+	@Override
+	public void addRepaintListener(RepaintListener repaintListener) {
+		rListenerList.add(repaintListener);		
+	}
+	
+	
+	@Override
+	public RepaintListener[] getRepaintListeners() {
+		RepaintListener[] repaintListeners = new RepaintListener[rListenerList.size()];
+		return rListenerList.toArray(repaintListeners);
+	}
+	@Override
+	public void removeRepaintListener(RepaintListener repaintListener) {
+		rListenerList.remove(repaintListener);
 	}
 }

@@ -19,9 +19,9 @@ import javax.swing.border.Border;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 import yu.einstein.gdp2.util.ZoomManager;
 
 /**
@@ -29,7 +29,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class Track extends JPanel implements PropertyChangeListener, GenomeWindowListener, GenomeWindowModifier {
+public abstract class Track extends JPanel implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
 	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 			// minimum height of a track

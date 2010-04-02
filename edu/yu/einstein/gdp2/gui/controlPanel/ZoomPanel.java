@@ -23,9 +23,9 @@ import javax.swing.event.ChangeListener;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 import yu.einstein.gdp2.util.ZoomManager;
 
 
@@ -34,7 +34,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowModifier {
+public final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -8481919273684304592L; // generated ID
 	private static final DecimalFormat SIZE_FORMAT = new DecimalFormat("###,###,###");	// Format of the zoom string

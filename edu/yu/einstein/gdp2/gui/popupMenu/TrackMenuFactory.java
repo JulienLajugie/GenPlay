@@ -7,6 +7,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
+import yu.einstein.gdp2.gui.track.MultiCurvesTrack;
 import yu.einstein.gdp2.gui.track.NucleotideListTrack;
 import yu.einstein.gdp2.gui.track.RepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
@@ -39,6 +40,8 @@ public final class TrackMenuFactory {
 			return new GeneListTrackMenu(tl);
 		} else if (tl.getSelectedTrack() instanceof NucleotideListTrack) {
 			return new NucleotideListTrackMenu(tl);
+		} else if (tl.getSelectedTrack() instanceof MultiCurvesTrack) {
+			return new MultiCurvesTrackMenu(tl);
 		} else {
 			return null;
 		}

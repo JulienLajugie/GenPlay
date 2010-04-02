@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.event;
+package yu.einstein.gdp2.gui.event.trackListActionEvent;
 
 
 /**
@@ -10,7 +10,7 @@ package yu.einstein.gdp2.gui.event;
  * @author Julien Lajugie
  * @version 0.1
  */
-public interface TrackListActionModifier {
+public interface TrackListActionEventsGenerator {
 
 	
 	/**

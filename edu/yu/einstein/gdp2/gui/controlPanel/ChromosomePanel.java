@@ -18,9 +18,9 @@ import javax.swing.JPanel;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 import yu.einstein.gdp2.util.ChromosomeManager;
 
 
@@ -29,7 +29,7 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemListener, GenomeWindowModifier {
+public final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -7749788921295566004L;	// generated ID
 	private final JLabel 							jlChromosome;		// label chromosome

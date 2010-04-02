@@ -75,6 +75,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.TransfragAction;
 import yu.einstein.gdp2.gui.action.binListTrack.UndoAction;
 import yu.einstein.gdp2.gui.action.curveTrack.AppearanceAction;
 import yu.einstein.gdp2.gui.action.curveTrack.SetYAxisAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.GenerateMultiCurvesTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadFromDASAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
@@ -83,15 +84,16 @@ import yu.einstein.gdp2.gui.action.emptyTrack.LoadRepeatFamilyListTrackAction;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadSCWListTrackAction;
 import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
 import yu.einstein.gdp2.gui.action.geneListTrack.SearchGeneAction;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
-import yu.einstein.gdp2.gui.event.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.TrackListActionListener;
-import yu.einstein.gdp2.gui.event.TrackListActionModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.popupMenu.TrackMenu;
 import yu.einstein.gdp2.gui.popupMenu.TrackMenuFactory;
 import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -105,7 +107,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, TrackListActionListener, GenomeWindowModifier, TrackListActionModifier {
+public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, TrackListActionListener, GenomeWindowEventsGenerator, TrackListActionEventsGenerator {
 
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
 	private final JPanel 		jpTrackList;					// panel with the tracks
@@ -177,6 +179,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(LoadRepeatFamilyListTrackAction.ACTION_KEY, new LoadRepeatFamilyListTrackAction(this));
 		getActionMap().put(LoadSCWListTrackAction.ACTION_KEY, new LoadSCWListTrackAction(this));
 		getActionMap().put(LoadFromDASAction.ACTION_KEY, new LoadFromDASAction(this));
+		getActionMap().put(GenerateMultiCurvesTrackAction.ACTION_KEY, new GenerateMultiCurvesTrackAction(this));
 		// add gene list actions
 		getActionMap().put(SearchGeneAction.ACTION_KEY, new SearchGeneAction(this));
 		getActionMap().put(ExtractIntervalAction.ACTION_KEY, new ExtractIntervalAction(this));
@@ -526,7 +529,32 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		return result;
 	}
 
-
+	
+	/**
+	 * @return an array containing all the {@link CurveTrack}
+	 */
+	public Track[] getCurveTracks() {
+		int count = 0;
+		for (Track currentTrack: trackList) {
+			if (currentTrack instanceof CurveTrack) {
+				count++;
+			}
+		}
+		if (count == 0) {
+			return null;
+		}
+		Track[] result = new Track[count];
+		int i = 0;
+		for (Track currentTrack: trackList) {
+			if (currentTrack instanceof CurveTrack) {
+				result[i] = currentTrack;
+				i++;
+			}
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * @return the {@link ChromosomeManager}
 	 */

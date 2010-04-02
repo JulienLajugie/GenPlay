@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.event;
+package yu.einstein.gdp2.gui.event.genomeWindowEvent;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 

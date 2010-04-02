@@ -109,17 +109,12 @@ public abstract class CurveTrackGraphics extends TrackGraphics implements MouseL
 		super.paintComponent(g);
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see yu.einstein.gdp2.gui.track.TrackGraphics#drawTrack(java.awt.Graphics)
+	/**
+	 * Draws the data {@link Graphics}
+	 * @param g
 	 */
-	@Override
-	protected void drawTrack(Graphics g) {
-		drawStripes(g);
-		drawHorizontalLines(g);
-		drawVerticalLines(g);
-		// We check if the displayed data changed 
+	protected void drawData(Graphics g) {
+		// We check if the displayed data changed
 		Graphics2D g2D = (Graphics2D)g;	
 		switch(typeOfGraph) {
 		case BAR:
@@ -139,6 +134,18 @@ public abstract class CurveTrackGraphics extends TrackGraphics implements MouseL
 			drawDenseGraphics(g);
 			break;
 		}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see yu.einstein.gdp2.gui.track.TrackGraphics#drawTrack(java.awt.Graphics)
+	 */
+	@Override
+	protected void drawTrack(Graphics g) {
+		drawStripes(g);
+		drawHorizontalLines(g);
+		drawVerticalLines(g);
+		drawData(g);
 		drawScore(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);

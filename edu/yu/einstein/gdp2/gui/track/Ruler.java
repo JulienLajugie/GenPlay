@@ -21,9 +21,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 import yu.einstein.gdp2.util.ZoomManager;
 
 /**
@@ -31,7 +31,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class Ruler extends JPanel implements GenomeWindowListener, GenomeWindowModifier {
+public final class Ruler extends JPanel implements GenomeWindowListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -5243446035761988387L; // Generated ID
 	private static final int 	HANDLE_WIDTH = 50;				// Width of the track handle

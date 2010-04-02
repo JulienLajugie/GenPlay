@@ -9,9 +9,9 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-import yu.einstein.gdp2.gui.event.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.TrackListActionListener;
-import yu.einstein.gdp2.gui.event.TrackListActionModifier;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ExceptionManager;
 
@@ -24,7 +24,7 @@ import yu.einstein.gdp2.util.ExceptionManager;
  * @version 0.1
  * @param <T> type of the data returned by the action. Void if none
  */
-public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements TrackListActionModifier {
+public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements TrackListActionEventsGenerator {
 
 	private final TrackList 		trackList;			// track list 
 	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener

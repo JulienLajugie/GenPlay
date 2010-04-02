@@ -18,16 +18,16 @@ import javax.swing.JScrollBar;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 /**
  * The PositionScrollPanel part of the {@link ControlPanel} 
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PositionScrollPanel extends JPanel implements AdjustmentListener, MouseWheelListener, GenomeWindowModifier {
+public final class PositionScrollPanel extends JPanel implements AdjustmentListener, MouseWheelListener, GenomeWindowEventsGenerator {
 
 
 	private static final long serialVersionUID = 2266293237606451568L; 	// Generated ID

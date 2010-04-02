@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.event;
+package yu.einstein.gdp2.gui.event.trackListActionEvent;
 
 import yu.einstein.gdp2.gui.trackList.TrackList;
 

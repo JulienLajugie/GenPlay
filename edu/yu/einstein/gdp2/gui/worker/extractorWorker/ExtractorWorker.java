@@ -17,9 +17,9 @@ import yu.einstein.gdp2.core.extractor.ExtractorFactory;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.gui.event.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.TrackListActionListener;
-import yu.einstein.gdp2.gui.event.TrackListActionModifier;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ChromosomeManager;
 
@@ -36,7 +36,7 @@ import yu.einstein.gdp2.util.ChromosomeManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> implements TrackListActionModifier {
+public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> implements TrackListActionEventsGenerator {
 
 	protected final TrackList 		trackList;			// TrackList 
 	private final Class<EC>			extractorClass;		// desired class of extractor

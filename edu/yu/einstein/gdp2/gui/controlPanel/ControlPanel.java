@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.event.GenomeWindowEvent;
-import yu.einstein.gdp2.gui.event.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.GenomeWindowModifier;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
+import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.ZoomManager;
 
@@ -24,7 +24,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ControlPanel extends JPanel implements GenomeWindowListener, GenomeWindowModifier {
+public final class ControlPanel extends JPanel implements GenomeWindowListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -8254420324898563978L; // generated ID
 	private final PositionScrollPanel 				positionScrollPanel;// PositionScrollPanel part

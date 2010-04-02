@@ -15,8 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import yu.einstein.gdp2.gui.event.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.TrackListActionListener;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
+import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 
 
 /**
