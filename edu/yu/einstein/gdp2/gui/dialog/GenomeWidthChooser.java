@@ -1,5 +1,4 @@
 /**
- * Contains the GUI files of the Genomic Data Processor.
  * @author Julien Lajugie
  * @version 0.1
  */

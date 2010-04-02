@@ -7,8 +7,6 @@ package yu.einstein.gdp2.gui.action.binListTrack;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
@@ -17,8 +15,9 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.writer.binListWriter.ConcatenateBinListWriter;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.gui.action.TrackListAction;
-import yu.einstein.gdp2.gui.dialog.TrackChooser;
+import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.ExceptionManager;
@@ -60,55 +59,47 @@ public class ConcatenateAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final List<BinListTrack> selectedTracks = new ArrayList<BinListTrack>();
-		selectedTracks.add((BinListTrack) trackList.getSelectedTrack());
-		if (selectedTracks.get(0) != null) {
-			// keep asking a track to concatenate until cancel is pressed
-			BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "<html>Concatenate with: <br>(Cancel to stop)</html>", trackList.getBinListTracks());
-			while (otherTrack != null) {
-				selectedTracks.add(otherTrack);
-				otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Concatenate with (Cancel to stop):", trackList.getBinListTracks());
-			}
-			// we want to have at least two tracks
-			if (selectedTracks.size() > 1) {
-				// save dialog
-				final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
-				final JFileChooser jfc = new JFileChooser(defaultDirectory);
-				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				jfc.setDialogTitle("Save As");
-				jfc.setSelectedFile(new File(".txt"));
-				final int returnVal = jfc.showSaveDialog(getRootPane());
-				if(returnVal == JFileChooser.APPROVE_OPTION) {	
-					final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), "txt");
-					if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-						// create arrays with the selected BinLists and names
-						final BinList[] binListArray = new BinList[selectedTracks.size()];
-						final String[] nameArray = new String[selectedTracks.size()];
-						for (int i = 0; i < selectedTracks.size(); i++) {
-							binListArray[i] = selectedTracks.get(i).getBinList();
-							nameArray[i] = selectedTracks.get(i).getName();
-						}
-						// thread for the action
-						new ActionWorker<Void>(trackList, "Concatenating Tracks") {
-							@Override
-							protected Void doAction() {
-								try {
-									new ConcatenateBinListWriter(trackList.getChromosomeManager(), binListArray, nameArray, selectedFile).write();
-									return null;
-								} catch (IOException e) {
-									ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks");
-									return null;
-								} catch (BinListDifferentWindowSizeException e) {
-									ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks: different bin sizes");
-									return null;
-								} 
-							}
-							@Override
-							protected void doAtTheEnd(Void actionResult) {}
-						}.execute();
+		final Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), trackList.getBinListTracks());
+		// we want to have at least two tracks
+		if (selectedTracks.length > 1) {
+			// save dialog
+			final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+			final JFileChooser jfc = new JFileChooser(defaultDirectory);
+			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			jfc.setDialogTitle("Save As");
+			jfc.setSelectedFile(new File(".txt"));
+			final int returnVal = jfc.showSaveDialog(getRootPane());
+			if(returnVal == JFileChooser.APPROVE_OPTION) {	
+				final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), "txt");
+				if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
+					// create arrays with the selected BinLists and names
+					final BinList[] binListArray = new BinList[selectedTracks.length];
+					final String[] nameArray = new String[selectedTracks.length];
+					for (int i = 0; i < selectedTracks.length; i++) {
+						binListArray[i] = ((BinListTrack)selectedTracks[i]).getBinList();
+						nameArray[i] = selectedTracks[i].getName();
 					}
+					// thread for the action
+					new ActionWorker<Void>(trackList, "Concatenating Tracks") {
+						@Override
+						protected Void doAction() {
+							try {
+								new ConcatenateBinListWriter(trackList.getChromosomeManager(), binListArray, nameArray, selectedFile).write();
+								return null;
+							} catch (IOException e) {
+								ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks");
+								return null;
+							} catch (BinListDifferentWindowSizeException e) {
+								ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks: different bin sizes");
+								return null;
+							} 
+						}
+						@Override
+						protected void doAtTheEnd(Void actionResult) {}
+					}.execute();
 				}
-			}		
-		}
+			}
+		}		
 	}
+
 }
