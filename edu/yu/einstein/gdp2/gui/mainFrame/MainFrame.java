@@ -67,7 +67,11 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		});
 	}
 
-
+	/**
+	 * Title of the application
+	 */
+	public static final String APPLICATION_TITLE = "Einstein Browser - GenPlay -";
+	
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 
 	private final static String 		ICON_PATH = 
@@ -87,7 +91,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 	 * Creates an instance of {@link MainFrame}
 	 */
 	public MainFrame() {
-		super("Einstein Browser - GenPlay -", GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+		super(APPLICATION_TITLE, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 		ClassLoader cl = this.getClass().getClassLoader();
 		setIconImage(Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH)));
 		configurationManager = ConfigurationManager.getInstance();
@@ -164,9 +168,9 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		getRootPane().getActionMap().put(ExitAction.ACTION_KEY, new ExitAction(this));
 		getRootPane().getActionMap().put(FullScreenAction.ACTION_KEY, new FullScreenAction(this));
 		getRootPane().getActionMap().put(HelpAction.ACTION_KEY, new HelpAction(getRootPane()));
-		getRootPane().getActionMap().put(LoadProjectAction.ACTION_KEY, new LoadProjectAction(getRootPane(), trackList));
+		getRootPane().getActionMap().put(LoadProjectAction.ACTION_KEY, new LoadProjectAction(trackList));
 		getRootPane().getActionMap().put(OptionAction.ACTION_KEY, new OptionAction(this));
-		getRootPane().getActionMap().put(SaveProjectAction.ACTION_KEY, new SaveProjectAction(getRootPane(), trackList));
+		getRootPane().getActionMap().put(SaveProjectAction.ACTION_KEY, new SaveProjectAction(trackList));
 		
 		// add shortcuts
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(ExitAction.ACCELERATOR, ExitAction.ACTION_KEY);

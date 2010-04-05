@@ -12,9 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -120,8 +122,15 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
         jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				// save the data when okay has been pressed
+				try {
+					cm.writeConfigurationFile();
+				} catch (IOException er) {
+					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
+					er.printStackTrace();
+				}	
 				approved = APPROVE_OPTION;
-				setVisible(false);				
+				setVisible(false);			
 			}
 		});
         jbCancel = new JButton("Cancel");
@@ -132,7 +141,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				cm.setChromosomeFile(chromosomeFile);
 				cm.setLogFile(logFile);
 				cm.setDefaultDirectory(defaultDirectory);
-				cm.setLogFile(lookAndFeel);
+				cm.setLookAndFeel(lookAndFeel);
 				cm.setTrackCount(trackCount);
 				cm.setTrackHeight(trackHeight);
 				setVisible(false);
@@ -192,7 +201,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		category = new DefaultMutableTreeNode(new TrackOptionPanel(cm));
 		top.add(category);
 		
-		category = new DefaultMutableTreeNode(new SaveRestoreOptionPanel(cm));
+		category = new DefaultMutableTreeNode(new RestoreOptionPanel(cm));
 		top.add(category);
 	}
 

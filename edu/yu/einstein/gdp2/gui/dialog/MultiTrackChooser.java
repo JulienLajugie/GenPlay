@@ -37,6 +37,7 @@ public class MultiTrackChooser extends JDialog {
 	private static final long serialVersionUID = -4678243279540123148L; // generated ID
 	
 	private static final Dimension WINDOW_SIZE = new Dimension(680, 400); // size of the dialog box
+	private static final int LIST_WIDTH = 200; // preferred width of the 2 JList
 	
 	private static JLabel 			jlaAvailableTracks;	// label for the list of available tracks
 	private static JLabel 			jlaSelectedTracks;	// label for the list of selected tracks
@@ -87,6 +88,7 @@ public class MultiTrackChooser extends JDialog {
 		jlaSelectedTracks = new JLabel("Selected Tracks");
 		
 		jliAvailableTracks = new JList(dlmAvailableTracks);
+		jliAvailableTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
 		jliAvailableTracks.addListSelectionListener(new ListSelectionListener() {			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -110,13 +112,14 @@ public class MultiTrackChooser extends JDialog {
 		jliAvailableTracks.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+				if (e.getClickCount() % 2 == 0) {
 					selectTracks();
 				}
 			}
 		});
 		
 		jliSelectedTracks = new JList(dlmSelectedTracks);
+		jliSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
 		jliSelectedTracks.addListSelectionListener(new ListSelectionListener() {			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -157,7 +160,7 @@ public class MultiTrackChooser extends JDialog {
 		jliSelectedTracks.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
+				if (e.getClickCount() % 2 == 0) {
 					unSelectTracks();
 				}
 			}

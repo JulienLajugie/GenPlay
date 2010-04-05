@@ -53,23 +53,25 @@ public class GenerateMultiCurvesTrackAction extends TrackListAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), trackList.getCurveTracks());
-		if (selectedTracks.length > 1) {
-			CurveTrack[] curveTracks = new CurveTrack[selectedTracks.length];
-			String trackName = "";
-			for (int i = 0; i < curveTracks.length; i++) {
-				curveTracks[i] = (CurveTrack) selectedTracks[i];
-				if (i != curveTracks.length - 1) {
-					trackName += selectedTracks[i].getName() + ", ";
-				} else {
-					trackName += selectedTracks[i].getName();
+		if (selectedTracks != null) {
+			if (selectedTracks.length > 1) {
+				CurveTrack[] curveTracks = new CurveTrack[selectedTracks.length];
+				String trackName = "";
+				for (int i = 0; i < curveTracks.length; i++) {
+					curveTracks[i] = (CurveTrack) selectedTracks[i];
+					if (i != curveTracks.length - 1) {
+						trackName += selectedTracks[i].getName() + ", ";
+					} else {
+						trackName += selectedTracks[i].getName();
+					}
 				}
+				final int selectedTrackIndex = trackList.getSelectedTrackIndex();
+				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
+				MultiCurvesTrack newTrack = new MultiCurvesTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
+				trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), trackName, stripes);	
+			} else {
+				JOptionPane.showMessageDialog(getRootPane(), "You must select at least two tracks", "Warning", JOptionPane.WARNING_MESSAGE);
 			}
-			final int selectedTrackIndex = trackList.getSelectedTrackIndex();
-			final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			MultiCurvesTrack newTrack = new MultiCurvesTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
-			trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), trackName, stripes);	
-		} else {
-			JOptionPane.showMessageDialog(getRootPane(), "You must select at least two tracks", "Warning", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 }

@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.dialog.DAS;
+package yu.einstein.gdp2.gui.dialog;
 
 
 import java.awt.Component;

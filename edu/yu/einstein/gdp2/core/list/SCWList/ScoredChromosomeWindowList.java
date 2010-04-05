@@ -71,7 +71,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	public double average() {
 		double sumScoreByLength = 0;
-		int sumLength = 0;
+		long sumLength = 0;
 		for (List<ScoredChromosomeWindow> currentList : this) {
 			for(ScoredChromosomeWindow currentWindow : currentList) {	
 				if (currentWindow.getScore() != 0) {

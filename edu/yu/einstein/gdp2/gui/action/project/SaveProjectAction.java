@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.action.project;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -12,9 +11,11 @@ import java.io.File;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 
 import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.fileFilter.GenPlayProjectFilter;
+import yu.einstein.gdp2.gui.mainFrame.MainFrame;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
@@ -32,7 +33,6 @@ public class SaveProjectAction extends AbstractAction {
 		"Save the project into a file"; 							// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_S; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Save Project";	// action name
-	private final 		Component 	parent;							// parent component
 	private final 		TrackList	trackList;						// track list containing the project to save
 
 	/**
@@ -45,9 +45,8 @@ public class SaveProjectAction extends AbstractAction {
 	 * Creates an instance of {@link SaveProjectAction}
 	 * @param parent parent component
 	 */
-	public SaveProjectAction(Component parent, TrackList trackList) {
+	public SaveProjectAction(TrackList trackList) {
 		super();
-		this.parent = parent;
 		this.trackList = trackList;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -66,11 +65,11 @@ public class SaveProjectAction extends AbstractAction {
 		jfc.setDialogTitle("Save Project");
 		jfc.addChoosableFileFilter(new GenPlayProjectFilter());
 		jfc.setAcceptAllFileFilterUsed(false);
-		final int returnVal = jfc.showSaveDialog(parent);
+		final int returnVal = jfc.showSaveDialog(trackList.getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			final ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			final File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (!Utils.cancelBecauseFileExist(parent, selectedFile)) {
+			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
 				new ActionWorker<Void>(trackList, "Saving Project") {
 					@Override
 					protected Void doAction() {
@@ -78,7 +77,10 @@ public class SaveProjectAction extends AbstractAction {
 						return null;
 					}
 					@Override
-					protected void doAtTheEnd(Void result) {}
+					protected void doAtTheEnd(Void result) {
+						JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+						mainFrame.setTitle(selectedFile.getName() + " - " + MainFrame.APPLICATION_TITLE);
+					}
 				}.execute();
 				
 			}

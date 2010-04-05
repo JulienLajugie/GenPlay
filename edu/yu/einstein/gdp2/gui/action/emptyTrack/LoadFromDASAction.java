@@ -15,7 +15,7 @@ import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.gui.action.TrackListAction;
-import yu.einstein.gdp2.gui.dialog.DAS.DASDialog;
+import yu.einstein.gdp2.gui.dialog.DASDialog;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
