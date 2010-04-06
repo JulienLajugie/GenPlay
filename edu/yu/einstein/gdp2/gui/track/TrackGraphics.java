@@ -29,9 +29,6 @@ import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.repaintEvent.RepaintEvent;
-import yu.einstein.gdp2.gui.event.repaintEvent.RepaintEventsGenerator;
-import yu.einstein.gdp2.gui.event.repaintEvent.RepaintListener;
 import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.ZoomManager;
 
@@ -41,7 +38,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class TrackGraphics extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator, RepaintEventsGenerator {
+public abstract class TrackGraphics extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
 	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
@@ -53,7 +50,6 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
 	private final ZoomManager 			zoomManager;					// zoom manager
 	private final List<GenomeWindowListener> gwListenerList;			// list of GenomeWindowListener
-	private final List<RepaintListener> rListenerList;					// list of RepaintListener
 	private int 						verticalLineCount;				// number of vertical lines to print
 	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
 	protected double					xFactor;						// factor between the genomic width and the screen width
@@ -115,7 +111,6 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		this.genomeWindow = displayedGenomeWindow;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
-		this.rListenerList = new ArrayList<RepaintListener>();
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
 		addMouseListener(this);		
@@ -153,20 +148,9 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			xFactorChanged();
 		}
 		drawTrack(g);
-		notifyRepaintListeners();
 	}
 
 	
-	/**
-	 * Notify the listeners that the {@link TrackGraphics} has been repainted
-	 */
-	private void notifyRepaintListeners() {
-		for (RepaintListener rl: rListenerList) {
-			rl.componentRepainted(new RepaintEvent());
-		}		
-	}
-
-
 	/**
 	 * Called by paintComponent. 
 	 * Draws the track
@@ -287,7 +271,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);
 	}
 
-
+	
 	/**
 	 * @param genomePositionStart start position on the genome
 	 * @param genomePositionStop stop position on the genome
@@ -534,44 +518,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		trackGraphics.stripeList = stripeList;
 		trackGraphics.setName(getName());
 	}
-	
-	
-	/**
-	 * Returns a color associated to a score. 
-	 * High intensities are red. Medium are green. Low are blue.
-	 * @param score A score indexed between min and max.
-	 * @param min minimum intensity value
-	 * @param max maximum intensity value
-	 * @return A color
-	 */
-	protected Color scoreToColor(double score, double min, double max) {
-		double distance = max - min;
-		double newScore = score - min;
-		double distanceQuarter = distance / 4;
-		int r = 0;
-		int v = 0;
-		int b = 0;
 
-		if ((newScore >= 0) && (newScore <= distanceQuarter)) {
-			r = 0;
-			v = (int)(newScore * 255 / distanceQuarter);
-			b = 255;			
-		} else if ((newScore > distanceQuarter) && (newScore <= 2 * distanceQuarter)) {
-			r = 0;
-			v = 255;
-			b = (int)(255 - (newScore - distanceQuarter) * 255 / distanceQuarter);			
-		} else if ((newScore > 2 * distanceQuarter) && (newScore <= 3 * distanceQuarter)) {
-			r = (int)((newScore - 2 * distanceQuarter) * 255 / distanceQuarter);
-			v = 255;
-			b = 0;			
-		} else if ((newScore > 3 * distanceQuarter) && (newScore <= distance)) {
-			r = 255;
-			v = (int)(255 - (newScore - 3 * distanceQuarter) * 255 / distanceQuarter);
-			b = 0;			
-		}		
-		return new Color(r, v, b);
-	}
-	
 	
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
@@ -589,22 +536,5 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	@Override
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		gwListenerList.remove(genomeWindowListener);		
-	}
-	
-	
-	@Override
-	public void addRepaintListener(RepaintListener repaintListener) {
-		rListenerList.add(repaintListener);		
-	}
-	
-	
-	@Override
-	public RepaintListener[] getRepaintListeners() {
-		RepaintListener[] repaintListeners = new RepaintListener[rListenerList.size()];
-		return rListenerList.toArray(repaintListeners);
-	}
-	@Override
-	public void removeRepaintListener(RepaintListener repaintListener) {
-		rListenerList.remove(repaintListener);
 	}
 }

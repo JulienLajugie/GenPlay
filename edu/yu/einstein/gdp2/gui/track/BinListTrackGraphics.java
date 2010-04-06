@@ -17,6 +17,8 @@ import java.io.ObjectOutputStream;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListOperations;
+import yu.einstein.gdp2.gui.track.drawer.BinListDrawer;
+import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.History;
@@ -38,9 +40,9 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	transient private ByteArrayOutputStream	redoBinList = null;	// BinList used to restore when redo (the BinList is serialized and zipped)
 	private History							history = null;		// History containing a description of the actions done
 
-	private BinList initialSaver = null;
-	private BinList undoSaver = null;
-	private BinList redoSaver = null;
+	private BinList initialSaver = null;	// used for the serialization of the initial BinList (since a ByteArrayOutputStream can't be serialized)
+	private BinList undoSaver = null;		// used for the serialization of the undo BinList (since a ByteArrayOutputStream can't be serialized)
+	private BinList redoSaver = null;		// used for the serialization of the redo BinList (since a ByteArrayOutputStream can't be serialized)
 
 	/**
 	 * Creates an instance of a {@link BinListTrackGraphics}
@@ -81,50 +83,6 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 
 	/* (non-Javadoc)
-	 * @see yu.einstein.gdp2.gui.track.CurveTrackGraphics#drawBarGraphics(java.awt.Graphics)
-	 */
-	@Override
-	protected void drawBarGraphics(Graphics g) {
-		double[] data = binList.getFittedData(genomeWindow, xFactor);
-		int windowData = binList.getFittedBinSize();
-		if (data != null) {
-			// Compute the reverse color
-			Color reverseCurveColor = Color.gray;
-			if (!trackColor.equals(Color.black)) {
-				reverseCurveColor = new Color(trackColor.getRGB() ^ 0xffffff);
-			}
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
-			// Compute the Y = 0 position 
-			int screenY0 = scoreToScreenPos(0);
-			// First position
-			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
-			int i = 0;
-			int screenWindowWidth = (int)Math.ceil(windowData * xFactor);
-			while (currentGenomePosition < currentMaxX) {
-				int currentIndex = currentGenomePosition / windowData;
-				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
-					double currentIntensity = data[currentIndex];
-					int screenXPosition = genomePosToScreenPos(currentGenomePosition);
-					int screenYPosition = scoreToScreenPos(currentIntensity);
-					int rectHeight = screenYPosition - screenY0;
-					if (currentIntensity > 0) {
-						g.setColor(trackColor);
-						g.fillRect(screenXPosition, screenYPosition, screenWindowWidth, -rectHeight);
-					} else {
-						g.setColor(reverseCurveColor);
-						g.fillRect(screenXPosition, screenY0, screenWindowWidth, rectHeight);
-					}
-				}
-				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;			
-			}
-		}
-	}
-
-
-	/* (non-Javadoc)
 	 * @see yu.einstein.gdp2.gui.track.CurveTrackGraphics#drawScore(java.awt.Graphics)
 	 */
 	@Override
@@ -140,110 +98,6 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 			g.drawString("y=" + SCORE_FORMAT.format(yMid), getWidth() / 2 + 3, getHeight() - 2);
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while drawing the coordinates");
-		}
-	}
-
-
-	/* (non-Javadoc)
-	 * @see yu.einstein.gdp2.gui.track.CurveTrackGraphics#drawCurveGraphics(java.awt.Graphics)
-	 */
-	@Override
-	protected void drawCurveGraphics(Graphics g) {
-		double[] data = binList.getFittedData(genomeWindow, xFactor);
-		int windowData = binList.getFittedBinSize();
-		if (data != null) {
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
-			g.setColor(trackColor);
-			// First position
-			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
-			int i = 0;
-			int screenWindowWidth = (int)Math.round(windowData * xFactor);
-			while (currentGenomePosition < currentMaxX) {
-				int currentIndex = currentGenomePosition / windowData;
-				int nextIndex = (currentGenomePosition + windowData) / windowData;
-				if ((currentGenomePosition >= 0) && (nextIndex < data.length)){
-					double currentIntensity = data[currentIndex];
-					double nextIntensity = data[nextIndex];
-					int screenX1Position = genomePosToScreenPos(currentGenomePosition);
-					int screenX2Position = screenX1Position + screenWindowWidth;
-					int screenY1Position = scoreToScreenPos(currentIntensity);
-					int screenY2Position = scoreToScreenPos(nextIntensity);
-					if ((currentIntensity == 0) && (nextIntensity != 0)) {
-						g.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);
-					} else if ((currentIntensity != 0) && (nextIntensity == 0)) {
-						g.drawLine(screenX1Position, screenY1Position, screenX2Position, screenY1Position);
-						g.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);					
-					} else if ((currentIntensity != 0) && (nextIntensity != 0)) {
-						g.drawLine(screenX1Position, screenY1Position, screenX2Position, screenY2Position);
-					}
-				}
-				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;	
-			}
-		}
-	}
-
-
-	/* (non-Javadoc)
-	 * @see yu.einstein.gdp2.gui.track.CurveTrackGraphics#drawDenseGraphics(java.awt.Graphics)
-	 */
-	@Override
-	protected void drawDenseGraphics(Graphics g) {
-		double[] data = binList.getFittedData(genomeWindow, xFactor);
-		int windowData = binList.getFittedBinSize();
-		if (data != null) {
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
-			// First position
-			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
-			int i = 0;
-			int screenWindowWidth = (int)Math.ceil(windowData * xFactor);
-			while (currentGenomePosition < currentMaxX) {
-				int currentIndex = currentGenomePosition / windowData;
-				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
-					double currentIntensity = data[currentIndex];
-					int screenXPosition = genomePosToScreenPos(currentGenomePosition);
-					g.setColor(scoreToColor(currentIntensity, yMin, yMax));
-					g.fillRect(screenXPosition, 0, screenWindowWidth, getHeight());
-				}
-				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;			
-			}
-		}
-	}
-
-
-	/* (non-Javadoc)
-	 * @see yu.einstein.gdp2.gui.track.CurveTrackGraphics#drawPointGraphics(java.awt.Graphics)
-	 */
-	@Override
-	protected void drawPointGraphics(Graphics g) {
-		double[] data = binList.getFittedData(genomeWindow, xFactor);
-		int windowData = binList.getFittedBinSize();
-		if (data != null) {
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
-			g.setColor(trackColor);
-			// First position
-			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
-			int i = 0;
-			int screenWindowWidth = (int)Math.round(windowData * xFactor);
-			while (currentGenomePosition < currentMaxX) {
-				int currentIndex = currentGenomePosition / windowData;
-				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
-					double currentIntensity = data[currentIndex];
-					int screenX1Position = genomePosToScreenPos(currentGenomePosition);
-					int screenX2Position = screenX1Position + screenWindowWidth;
-					int screenYPosition = scoreToScreenPos(currentIntensity);				
-					g.drawLine(screenX1Position, screenYPosition, screenX2Position, screenYPosition);
-				}
-				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;	
-			}	
 		}
 	}
 
@@ -276,6 +130,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 			history.add(description);
 			undoBinList = BinListOperations.serializeAndZip(this.binList);
 			redoBinList = null;
+			firePropertyChange("binList", this.binList, binList);
 			this.binList = binList;
 			yMin = BinListOperations.minScoreToDisplay(binList);
 			yMax = BinListOperations.maxScoreToDisplay(binList);
@@ -294,7 +149,9 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 		try {
 			undoBinList = BinListOperations.serializeAndZip(binList);
 			redoBinList = null;
-			binList = BinListOperations.unzipAndUnserialize(initialBinList);
+			BinList newBinList = BinListOperations.unzipAndUnserialize(initialBinList); 
+			firePropertyChange("binList", binList, newBinList);
+			binList = newBinList;
 			yMin = BinListOperations.minScoreToDisplay(binList);
 			yMax = BinListOperations.maxScoreToDisplay(binList);
 			repaint();
@@ -314,7 +171,9 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 		try {
 			if (undoBinList != null) {
 				redoBinList = BinListOperations.serializeAndZip(binList);
-				binList = BinListOperations.unzipAndUnserialize(undoBinList);
+				BinList newBinList = BinListOperations.unzipAndUnserialize(undoBinList); 
+				firePropertyChange("binList", binList, newBinList);
+				binList = newBinList;
 				undoBinList = null;
 				yMin = BinListOperations.minScoreToDisplay(binList);
 				yMax = BinListOperations.maxScoreToDisplay(binList);
@@ -334,8 +193,10 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void redo() {
 		try {
 			if (redoBinList != null) {
-				undoBinList = BinListOperations.serializeAndZip(binList);
-				binList = BinListOperations.unzipAndUnserialize(redoBinList);
+				undoBinList = BinListOperations.serializeAndZip(binList);				
+				BinList newBinList = BinListOperations.unzipAndUnserialize(redoBinList);
+				firePropertyChange("binList", binList, newBinList);
+				binList = newBinList;
 				redoBinList = null;
 				yMin = BinListOperations.minScoreToDisplay(binList);
 				yMax = BinListOperations.maxScoreToDisplay(binList);
@@ -421,5 +282,18 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 			redoBinList = BinListOperations.serializeAndZip(redoSaver);
 			redoSaver = null;
 		}
+	}
+
+
+	@Override
+	protected void drawData(Graphics g) {
+		CurveDrawer cd = new BinListDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax, trackColor, typeOfGraph, binList);
+		cd.draw();		
+	}
+
+
+	@Override
+	public CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax) {
+		return new BinListDrawer(g, trackWidth, trackHeight, genomeWindow, scoreMin, scoreMax, trackColor, typeOfGraph, binList);
 	}
 }

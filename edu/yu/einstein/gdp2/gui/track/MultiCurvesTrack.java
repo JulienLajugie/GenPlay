@@ -12,7 +12,7 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MultiCurvesTrack extends Track {
+public class MultiCurvesTrack extends ScoredTrack {
 
 	private static final long serialVersionUID = -8961218330334104474L; // generated ID
 	private final CurveTrack[] curveTracks; // array of curve tracks

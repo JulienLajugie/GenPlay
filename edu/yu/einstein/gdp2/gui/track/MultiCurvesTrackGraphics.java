@@ -5,10 +5,10 @@
 package yu.einstein.gdp2.gui.track;
 
 import java.awt.Graphics;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.event.repaintEvent.RepaintEvent;
-import yu.einstein.gdp2.gui.event.repaintEvent.RepaintListener;
 import yu.einstein.gdp2.util.ZoomManager;
 
 
@@ -17,12 +17,12 @@ import yu.einstein.gdp2.util.ZoomManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MultiCurvesTrackGraphics extends TrackGraphics implements RepaintListener {
+public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 6508763050002286457L; // generated ID
 	private final CurveTrack[] curveTracks; // array of curve tracks
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link MultiCurvesTrackGraphics}
 	 * @param zoomManager a {@link ZoomManager}
@@ -30,40 +30,65 @@ public class MultiCurvesTrackGraphics extends TrackGraphics implements RepaintLi
 	 * @param curveTracks array of {@link CurveTrack}
 	 */
 	public MultiCurvesTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, CurveTrack[] curveTracks) {
-		super(zoomManager, displayedGenomeWindow);
+		super(zoomManager, displayedGenomeWindow, 0, 1);
 		this.curveTracks = curveTracks;
 		// add repaint listeners so the multicurves track is repainted when on of the curves track is repainted
 		for (Track currentTrack: curveTracks) {
-			currentTrack.trackGraphics.addRepaintListener(this);
+			currentTrack.trackGraphics.addPropertyChangeListener(this);
 		}
-		setIgnoreRepaint(true);
+		setYMin(findYMin());
+		setYMax(findYMax());
 	}
 
-	
+
 	@Override
-	protected void drawTrack(Graphics g) {
-		drawStripes(g);
-		drawVerticalLines(g);
-		drawData(g);
-		drawName(g);
-		drawMiddleVerticalLine(g);
+	protected void drawData(Graphics g) {
+		for (int i = curveTracks.length; i > 0; i--) {
+			CurveTrackGraphics ctg = (CurveTrackGraphics) curveTracks[i - 1].trackGraphics;
+			ctg.getDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax).draw();
+		}
+	}
+
+
+	@Override
+	protected void drawScore(Graphics g) {}
+
+
+	@Override
+	protected void yFactorChanged() { 
+		repaint();
+	}
+
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		String propertyName = evt.getPropertyName();
+		if ((propertyName.equals("binList")) || (propertyName.equals("trackColor")) || (propertyName.equals("typeOfGraph"))) {
+			repaint();
+		}
+	}
+	
+	
+	/**
+	 * @return the smallest yMin value of the {@link CurveTrack} showed in this track 
+	 */
+	private double findYMin() {
+		double min = Double.POSITIVE_INFINITY;
+		for (CurveTrack currentCtg: curveTracks) {
+			min = Math.min(min, currentCtg.getYMin());
+		}
+		return min;
 	}
 
 	
 	/**
-	 * Draws the data of the {@link CurveTrack}
-	 * @param g
+	 * @return the greatest yMax value of the {@link CurveTrack} showed in this track
 	 */
-	private void drawData(Graphics g) {
-		for (int i = curveTracks.length; i > 0; i--) {
-			CurveTrackGraphics ctg = (CurveTrackGraphics) curveTracks[i - 1].trackGraphics;
-			ctg.drawData(g);
-		}		
-	}
-
-
-	@Override
-	public void componentRepainted(RepaintEvent evt) {
-		drawTrack(getGraphics());		
+	private double findYMax() {
+		double max = Double.NEGATIVE_INFINITY;
+		for (CurveTrack currentCtg: curveTracks) {
+			max = Math.max(max, currentCtg.getYMax());
+		}
+		return max;
 	}
 }

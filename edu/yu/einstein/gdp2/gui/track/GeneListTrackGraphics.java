@@ -21,6 +21,7 @@ import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
 import yu.einstein.gdp2.util.ExceptionManager;
+import yu.einstein.gdp2.util.Utils;
 import yu.einstein.gdp2.util.ZoomManager;
 
 
@@ -140,9 +141,9 @@ public class GeneListTrackGraphics extends TrackGraphics {
 								if (geneToPrint.getExonScores() != null) {
 									// if we have just one exon score
 									if (geneToPrint.getExonScores().length == 1) {
-										g.setColor(scoreToColor(geneToPrint.getExonScores()[0], 0, 1000));
+										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[0], 0, 1000));
 									} else { // if we have values for each exon
-										g.setColor(scoreToColor(geneToPrint.getExonScores()[j], 0, 1000));
+										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[j], 0, 1000));
 									}
 								}
 								g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);

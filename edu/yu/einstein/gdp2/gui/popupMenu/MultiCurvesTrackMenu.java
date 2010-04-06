@@ -13,7 +13,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MultiCurvesTrackMenu extends TrackMenu {
+public class MultiCurvesTrackMenu extends ScoredTrackMenu {
 
 	private static final long serialVersionUID = -1076083160387134431L;	// generated ID
 	

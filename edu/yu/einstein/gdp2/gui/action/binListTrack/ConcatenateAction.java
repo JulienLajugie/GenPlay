@@ -61,7 +61,7 @@ public class ConcatenateAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), trackList.getBinListTracks());
 		// we want to have at least two tracks
-		if (selectedTracks.length > 1) {
+		if ((selectedTracks != null) && (selectedTracks.length > 1)) {
 			// save dialog
 			final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
 			final JFileChooser jfc = new JFileChooser(defaultDirectory);

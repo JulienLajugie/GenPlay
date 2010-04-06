@@ -12,6 +12,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -19,6 +21,7 @@ import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -70,8 +73,9 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 	/**
 	 * Title of the application
 	 */
-	public static final String APPLICATION_TITLE = "Einstein Browser - GenPlay -";
+	public static final String APPLICATION_TITLE = " - Einstein Browser: GenPlay -";
 	
+	private static final String DEFAULT_PROJECT_NAME = "New Project";
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 
 	private final static String 		ICON_PATH = 
@@ -91,7 +95,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 	 * Creates an instance of {@link MainFrame}
 	 */
 	public MainFrame() {
-		super(APPLICATION_TITLE, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+		super(DEFAULT_PROJECT_NAME + APPLICATION_TITLE, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 		ClassLoader cl = this.getClass().getClassLoader();
 		setIconImage(Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH)));
 		configurationManager = ConfigurationManager.getInstance();
@@ -185,7 +189,23 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		// set the look and feel
 		setLookAndFeel();
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// ask if the user want to save the project before closing the application
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int res = JOptionPane.showConfirmDialog(getRootPane(), "Do you want to save the project before exiting?", APPLICATION_TITLE, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null);
+				if (res == JOptionPane.YES_OPTION) {
+					getRootPane().getActionMap().get(SaveProjectAction.ACTION_KEY).actionPerformed(null);
+					dispose();
+					System.exit(0);
+				} else if (res == JOptionPane.NO_OPTION) {
+					dispose();
+					System.exit(0);
+				}
+			}
+		});
+		
 		setMinimumSize(new Dimension(200, 150));
 		setPreferredSize(new Dimension(800, 600));
 		pack();

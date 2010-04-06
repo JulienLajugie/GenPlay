@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.action.curveTrack;
+package yu.einstein.gdp2.gui.action.scoredTrack;
 
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TwoNumbersOptionPane;
-import yu.einstein.gdp2.gui.track.CurveTrack;
+import yu.einstein.gdp2.gui.track.ScoredTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
@@ -51,7 +51,7 @@ public final class SetYAxisAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		CurveTrack selectedTrack = (CurveTrack) trackList.getSelectedTrack();
+		ScoredTrack selectedTrack = (ScoredTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
 			double currentMin = selectedTrack.getYMin();
 			double currentMax = selectedTrack.getYMax();

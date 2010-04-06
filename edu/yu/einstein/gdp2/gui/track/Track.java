@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -43,7 +44,7 @@ public abstract class Track extends JPanel implements PropertyChangeListener, Ge
 	public static final Border 	DRAG_DOWN_BORDER = 
 		BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black);	// alternative border when a track is dragged down
 	
-	private final ArrayList<GenomeWindowListener> listenerList = 
+	private final List<GenomeWindowListener> listenerList = 
 		new ArrayList<GenomeWindowListener>();						// list of GenomeWindowListener
 	private int 				defaultHeight = TRACK_HEIGHT;		// default height of a track
 	protected TrackHandle 		trackHandle;						// handle of the track

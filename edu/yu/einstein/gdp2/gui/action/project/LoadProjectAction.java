@@ -73,7 +73,7 @@ public class LoadProjectAction extends AbstractAction {
 				@Override
 				protected void doAtTheEnd(Void result) {
 					JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-					mainFrame.setTitle(selectedFile.getName() + " - " + MainFrame.APPLICATION_TITLE);
+					mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
 				}
 			}.execute();
 		}

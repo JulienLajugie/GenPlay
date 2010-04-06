@@ -61,6 +61,5 @@ public final class ExitAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		frame.dispose();
-
 	}
 }
