@@ -1,3 +1,7 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 package yu.einstein.gdp2.core.list.SCWList;
 
 import java.io.Serializable;
@@ -17,6 +21,12 @@ import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.DoubleLists;
 
+
+/**
+ * A list of {@link ScoredChromosomeWindow}
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 public final class ScoredChromosomeWindowList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements Serializable {
 
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
@@ -60,31 +70,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		super(cm);
 		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
 			add(new ArrayList<ScoredChromosomeWindow>());
-		}
-	}
-
-
-	/**
-	 * Returns the average of the list defined as: 
-	 * sum(score * length) / sum(length)
-	 * @return the average of the list
-	 */
-	public double average() {
-		double sumScoreByLength = 0;
-		long sumLength = 0;
-		for (List<ScoredChromosomeWindow> currentList : this) {
-			for(ScoredChromosomeWindow currentWindow : currentList) {	
-				if (currentWindow.getScore() != 0) {
-					int length = currentWindow.getStop() - currentWindow.getStart();
-					sumScoreByLength += currentWindow.getScore() * length;
-					sumLength += length;
-				}
-			}
-		}
-		if (sumLength == 0) {
-			return 0d;
-		} else {
-			return (sumScoreByLength / (double)sumLength);
 		}
 	}
 
@@ -239,32 +224,5 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			}
 		}
 		return resultList;
-	}
-
-	/**
-	 * @return the maximum score to display in a track
-	 */
-	public double maxScoreToDisplay() {
-		final double realMax = average() * 2; 
-		int maxScoreDisplayed = 1;
-		while (realMax / maxScoreDisplayed > 1) {
-			maxScoreDisplayed *= 10;
-		}
-		return maxScoreDisplayed;
-	}
-
-
-
-	/**
-	 * @return the minimum score to display in a track
-	 */
-	public double minScoreToDisplay() {
-		double min = Double.POSITIVE_INFINITY;
-		for(List<ScoredChromosomeWindow> currentList : this) {
-			for(ScoredChromosomeWindow currentWindow : currentList) {
-				min = Math.min(min, currentWindow.getScore());
-			}			
-		}
-		return Math.min(0, min);
 	}
 }
