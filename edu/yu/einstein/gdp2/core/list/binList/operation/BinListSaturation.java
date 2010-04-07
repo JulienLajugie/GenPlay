@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListOperations;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
 
 

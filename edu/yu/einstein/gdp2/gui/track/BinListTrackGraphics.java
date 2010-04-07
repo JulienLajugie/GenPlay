@@ -16,7 +16,7 @@ import java.io.ObjectOutputStream;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 import yu.einstein.gdp2.gui.track.drawer.BinListDrawer;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
 import yu.einstein.gdp2.util.ChromosomeManager;

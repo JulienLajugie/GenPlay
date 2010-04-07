@@ -4,7 +4,7 @@
  */
 package yu.einstein.gdp2.core.enums;
 
-import yu.einstein.gdp2.core.list.binList.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 
 
 /**

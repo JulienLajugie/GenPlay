@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.list.binList;
+package yu.einstein.gdp2.core.list.binList.operation;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -20,6 +20,8 @@ import java.util.zip.GZIPOutputStream;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.ListFactory;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.util.DoubleLists;
 
@@ -93,39 +95,15 @@ public class BinListOperations {
 
 	/**
 	 * @param binList
-	 * @return the average value of the specified {@link BinList}
-	 */
-	public static double average(BinList binList) {
-		int n = 0;
-		double sum = 0;
-		for (int i = 0; i < binList.size(); i++) {
-			if (binList.get(i) != null) {
-				for (int j = 0; j < binList.size(i); j++) {
-					if (binList.get(i, j) != 0) {
-						sum += binList.get(i, j);
-						n++;						
-					}
-				}
-			}
-		}
-		if (n == 0) {
-			return 0;
-		} else {
-			return sum / n;
-		}
-	}
-
-
-	/**
-	 * @param binList
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * Perform the operation on every chromosome if null
 	 * @return the average value of the specified {@link BinList}
 	 */
 	public static double average(BinList binList, boolean[] chromoList) {
 		int n = 0;
 		double sum = 0;
 		for (int i = 0; i < binList.size(); i++) {
-			if ((binList.get(i) != null) && (i < chromoList.length) && (chromoList[i])) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
 				for (int j = 0; j < binList.size(i); j++) {
 					if (binList.get(i, j) != 0) {
 						sum += binList.get(i, j);
@@ -607,7 +585,7 @@ public class BinListOperations {
 	 */
 	public static BinList log2(BinList binList, double damper, DataPrecision precision) {
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
-		double mean = average(binList); 
+		double mean = average(binList, null); 
 		double logMean = 0;
 		// log is defined on R+*
 		if (mean + damper > 0) {
@@ -638,13 +616,17 @@ public class BinListOperations {
 
 	/**
 	 * @param binList
-	 * @return the greatest score value of the specified {@link BinList}
+	 * @return the greatest score value of the specified {@link BinList}. Zero value bins are excluded
 	 */
 	public static double max(BinList binList) {
 		double max = Double.NEGATIVE_INFINITY;
 		for (List<Double> currentList : binList) {
 			if (currentList != null) {
-				max = Math.max(max, Collections.max(currentList));
+				for (Double currentScore: currentList) {
+					if (currentScore != 0d) {
+						max = Math.max(max, currentScore);
+					}
+				}
 			}
 		}
 		return max;
@@ -656,9 +638,26 @@ public class BinListOperations {
 	 * @return the maximum score to display on a BinList track
 	 */
 	public static double maxScoreToDisplay(BinList binList) {
-		final double realMax = average(binList) * 2; 
+		final double realMax = max(binList);
+		// if the max is negative we return 0
+		if (realMax <= 0) {
+			return 0;
+		}
+		// if the max of the BinList can be written as 10^x we return this value as a maximum
 		int maxScoreDisplayed = 1;
 		while (realMax / maxScoreDisplayed > 1) {
+			maxScoreDisplayed *= 10;
+		}
+		if (realMax / maxScoreDisplayed == 1) {
+			return realMax;
+		}
+		// otherwise we try to find the closest 10^x value above 2 * (average + stdev) 
+		final double proposedMax = (average(binList, null) + standardDeviation(binList, null)) * 2; 
+		if (proposedMax <= 0) {
+			return 0;
+		}
+		maxScoreDisplayed = 1;
+		while (proposedMax / maxScoreDisplayed > 1) {
 			maxScoreDisplayed *= 10;
 		}
 		return maxScoreDisplayed;
@@ -667,13 +666,17 @@ public class BinListOperations {
 
 	/**
 	 * @param binList
-	 * @return the smallest score value of the specified {@link BinList}
+	 * @return the smallest score value of the specified {@link BinList}. Zero value bins are excluded
 	 */
 	public static double min(BinList binList) {
 		double min = Double.POSITIVE_INFINITY;
 		for (List<Double> currentList : binList) {
 			if (currentList != null) {
-				min = Math.min(min, Collections.min(currentList));
+				for (Double currentScore: currentList) {
+					if (currentScore != 0d) {
+						min = Math.min(min, currentScore);
+					}
+				}
 			}
 		}
 		return min;
@@ -685,7 +688,29 @@ public class BinListOperations {
 	 * @return the minimum score to display on a BinList track
 	 */
 	public static double minScoreToDisplay(BinList binList) {
-		return Math.min(0, min(binList));
+		// if the min is positive we return 0
+		final double realMin = min(binList);
+		if (realMin >= 0) {
+			return 0;
+		}
+		// if the min of the BinList can be written as -10^x we return this value as a minimum
+		int minScoreDisplayed = -1;
+		while (realMin / minScoreDisplayed > 1) {
+			minScoreDisplayed *= 10;
+		}
+		if (realMin / minScoreDisplayed == 1) {
+			return realMin;
+		}
+		// otherwise we try to find the closest 10^x value under 2 * (average - stdev) 
+		final double proposedMin = (average(binList, null) - standardDeviation(binList, null)) * 2; 
+		if (proposedMin >= 0) {
+			return 0;
+		}
+		minScoreDisplayed = -1;
+		while (proposedMin / minScoreDisplayed > 1) {
+			minScoreDisplayed *= 10;
+		}
+		return minScoreDisplayed;
 	}
 
 
@@ -933,7 +958,8 @@ public class BinListOperations {
 
 	/**
 	 * @param binList a {@link BinList}
-	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation. 
+	 * Perform the operation on every chromosome if null
 	 * @return the standard deviation of the specified BinList on the selected chromosomes 
 	 */
 	public static Double standardDeviation(BinList binList, boolean[] chromoList) {
@@ -944,7 +970,7 @@ public class BinListOperations {
 		// We compute standard deviations
 		for (short i = 0; i < binList.size(); i++) {
 			// We want to compute the correlation only for the chromosomes where chromoList is set to true
-			if ((i < chromoList.length) && (chromoList[i]) && (binList.get(i) != null)) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
 				for (int j = 0; j < binList.size(i); j++) {
 					if ((binList.get(i, j) != 0)) {
 						stdDev += Math.pow(binList.get(i, j) - mean, 2);

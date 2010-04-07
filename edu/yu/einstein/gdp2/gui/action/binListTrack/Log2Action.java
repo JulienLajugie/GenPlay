@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;

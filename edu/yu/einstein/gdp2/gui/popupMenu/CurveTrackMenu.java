@@ -28,7 +28,7 @@ public abstract class CurveTrackMenu extends ScoredTrackMenu {
 	public CurveTrackMenu(TrackList tl) {
 		super(tl);		
 		jmiAppearance= new JMenuItem(actionMap.get(AppearanceAction.ACTION_KEY));
-		addSeparator();
 		add(jmiAppearance);
+		addSeparator();
 	}
 }
