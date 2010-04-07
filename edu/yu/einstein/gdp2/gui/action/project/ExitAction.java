@@ -6,6 +6,7 @@ package yu.einstein.gdp2.gui.action.project;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -60,6 +61,7 @@ public final class ExitAction extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		frame.dispose();
+		// generate a WindowEvent.WINDOW_CLOSING event
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 }
