@@ -9,6 +9,8 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.List;
 
+import yu.einstein.gdp2.exception.valueOutOfRangeException.Invalid8BitValue;
+
 
 /**
  * An array of bytes encapsulated in order to implement the {@link List} interface with Double parameter
@@ -24,6 +26,18 @@ public final class ByteArrayAsDoubleList extends AbstractList<Double> implements
 	private static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	private byte[] 				data;					// byte data array
 	private int 				size;					// size of the list
+	
+
+	/**
+	 * Maximum value on 8Bit 
+	 */
+	public static final int MAX_VALUE = Byte.MAX_VALUE + 128;
+	
+	
+	/**
+	 * Minimum value on 8Bit
+	 */
+	public static final int MIN_VALUE = Byte.MIN_VALUE + 128;
 	
 	
 	/**
@@ -55,8 +69,15 @@ public final class ByteArrayAsDoubleList extends AbstractList<Double> implements
 	
 	@Override
 	public boolean add(Double e) {
+		// check if the value is in the range
+		if ((e > MAX_VALUE) || (e < MIN_VALUE)) {
+			throw new Invalid8BitValue(e);
+		}
+		// we round the value
+		e =  Math.rint(e);
 		// we subtract 128 because bytes are btw -128 and 127 and we want values btw 0 and 255
 		e -= 128;
+		
 		// if the array is to small we resize it before adding the data
 		if (size >= data.length) {
 			// we multiply the current size by the resize multiplication factor
@@ -89,6 +110,12 @@ public final class ByteArrayAsDoubleList extends AbstractList<Double> implements
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// check if the value is in the range
+		if ((element> MAX_VALUE) || (element < MIN_VALUE)) {
+			throw new Invalid8BitValue(element);
+		}
+		// we round the value
+		element =  Math.rint(element);
 		// we subtract 128 because bytes are btw -128 and 127 and we want values btw 0 and 255
 		element -= 128;
 		data[index] = element.byteValue();

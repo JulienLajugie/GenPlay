@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import yu.einstein.gdp2.exception.valueOutOfRangeException.ValueOutOfRangeException;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
@@ -30,7 +31,7 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener
 	private final String actionStartDescription;
 
-	
+
 	/**
 	 * Creates an instance of {@link ActionWorker}. Shows the progress bar
 	 * @param trackList
@@ -57,26 +58,31 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 			notifyActionEnded("Done");
 			doAtTheEnd(this.get());
 		} catch (Exception e) {
-			ExceptionManager.handleException(trackList.getRootPane(), e, "An error occurred during the operation");
 			notifyActionEnded("An error occurred during the operation");
+			// if the cause of the error is an instance of  ValueOutOfRangeException we display the error message
+			if (e.getCause() instanceof  ValueOutOfRangeException) {
+				ExceptionManager.handleException(trackList.getRootPane(), e, "<html>An error occurred during the operation<br/>" + e.getCause().getMessage());	
+			} else { 
+				ExceptionManager.handleException(trackList.getRootPane(), e, "An error occurred during the operation");	
+			}						
 		}
 	}
 
-	
+
 	/**
 	 * Must be overloaded to specify the action to do
 	 * @return the result of the action
 	 */
 	protected abstract T doAction();
-	
-	
+
+
 	/**
 	 * Method done at the end of the action 
 	 * @param actionResult result returned by the action method
 	 */
 	protected abstract void doAtTheEnd(T actionResult);
 
-	
+
 	@Override
 	public void addTrackListActionListener(TrackListActionListener trackListActionListener) {
 		tlalListenerList.add(trackListActionListener);		
@@ -94,8 +100,8 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	public void removeTrackListActionListener(TrackListActionListener trackListActionListener) {
 		tlalListenerList.remove(trackListActionListener);		
 	}
-	
-	
+
+
 	/**
 	 * Notifies all the {@link TrackListActionListener} that an action started
 	 * @param actionDescription
@@ -106,8 +112,8 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 			tal.actionStarts(evt);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Notifies all the {@link TrackListActionListener} that an action ended
 	 * @param actionDescription

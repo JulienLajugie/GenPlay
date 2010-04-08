@@ -9,6 +9,8 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.List;
 
+import yu.einstein.gdp2.exception.valueOutOfRangeException.Invalid16BitValue;
+
 
 /**
  * An array of shorts encapsulated in order to implement the {@link List} interface with Double parameter
@@ -24,6 +26,18 @@ public final class ShortArrayAsDoubleList extends AbstractList<Double> implement
 	private static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	private short[] 			data;					// short data array
 	private int 				size;					// size of the list
+	
+	
+	/**
+	 * Maximum value on 16Bit 
+	 */
+	public static final int MAX_VALUE = Short.MAX_VALUE / 10;
+	
+	
+	/**
+	 * Minimum value on 16Bit
+	 */
+	public static final int MIN_VALUE = Short.MIN_VALUE / 10;
 	
 	
 	/**
@@ -55,6 +69,17 @@ public final class ShortArrayAsDoubleList extends AbstractList<Double> implement
 	
 	@Override
 	public boolean add(Double e) {
+		// check if the value is in the range
+		if ((e > MAX_VALUE) || (e < MIN_VALUE)) {
+			throw new Invalid16BitValue(e);
+		}
+		// we multiply the result by 10 so we have a value btw  
+		// Short.MIN_VALUE / 10 and Short.MAX_VALUE / 10 
+		// with 1 digit after the point
+		e *= 10;
+		// we round the value
+		e =  Math.rint(e);
+		
 		// if the array is to small we resize it before adding the data
 		if (size >= data.length) {
 			// we multiply the current size by the resize multiplication factor
@@ -77,7 +102,7 @@ public final class ShortArrayAsDoubleList extends AbstractList<Double> implement
 	
 	@Override
 	public Double get(int index) {
-		return (double)data[index];
+		return (double) (data[index] / 10);
 	}
 
 	
@@ -86,6 +111,17 @@ public final class ShortArrayAsDoubleList extends AbstractList<Double> implement
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// check if the value is in the range
+		if ((element> MAX_VALUE) || (element < MIN_VALUE)) {
+			throw new Invalid16BitValue(element);
+		}
+		// we multiply the result by 10 so we have a value btw  
+		// Short.MIN_VALUE / 10 and Short.MAX_VALUE / 10 
+		// with 1 digit after the point
+		element *= 10;
+		// we round the value
+		element =  Math.rint(element);
+		
 		data[index] = element.shortValue();
 		return null;
 	}
