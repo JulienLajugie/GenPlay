@@ -55,6 +55,8 @@ public final class ByteArrayAsDoubleList extends AbstractList<Double> implements
 	
 	@Override
 	public boolean add(Double e) {
+		// we subtract 128 because bytes are btw -128 and 127 and we want values btw 0 and 255
+		e -= 128;
 		// if the array is to small we resize it before adding the data
 		if (size >= data.length) {
 			// we multiply the current size by the resize multiplication factor
@@ -77,7 +79,8 @@ public final class ByteArrayAsDoubleList extends AbstractList<Double> implements
 	
 	@Override
 	public Double get(int index) {
-		return (double)data[index];
+		// we add 128 because bytes are btw -128 and 127 and we want values btw 0 and 255
+		return (double)(data[index] + 128);
 	}
 
 	
@@ -86,6 +89,8 @@ public final class ByteArrayAsDoubleList extends AbstractList<Double> implements
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// we subtract 128 because bytes are btw -128 and 127 and we want values btw 0 and 255
+		element -= 128;
 		data[index] = element.byteValue();
 		return null;
 	}

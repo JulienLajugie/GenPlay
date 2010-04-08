@@ -982,7 +982,7 @@ public class BinListOperations {
 		if (n == 0) {
 			return 0d;
 		} else {
-			return (stdDev / (double)n);
+			return (Math.sqrt(stdDev / (double)n));
 		}
 	}
 

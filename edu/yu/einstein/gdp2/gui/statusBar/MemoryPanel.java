@@ -59,7 +59,7 @@ public class MemoryPanel extends JPanel {
 		jlMemory = new JLabel();
 		jlMemory.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.black));
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
+		gbc.fill = GridBagConstraints.BOTH;		
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		add(jlMemory, gbc);
