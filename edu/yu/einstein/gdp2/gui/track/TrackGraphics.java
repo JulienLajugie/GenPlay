@@ -44,6 +44,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
 	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
 	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
+	private static final Color			STRIPES_COLOR = Color.orange;	// color of the stripes
 	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
 	protected static final int 			FONT_SIZE = 10;					// size of the font
 	protected final FontMetrics 		fm = 
@@ -353,7 +354,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	protected void drawStripes(Graphics g) {
 		if (stripeList != null) {
 			int height = getHeight();
-			g.setColor(Color.YELLOW);
+			g.setColor(STRIPES_COLOR);
 			List<ChromosomeWindow> chromoStripeList = stripeList.getFittedData(genomeWindow, xFactor);//(start, stop);
 			if (chromoStripeList != null) {
 				for (ChromosomeWindow currentStripe: chromoStripeList) {
@@ -464,7 +465,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 
 	@Override
 	public void mouseMoved(final MouseEvent e) {
-		if (isScrollMode) {
+		if ((isScrollMode) && (getMousePosition() != null)) {
 			scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
 		}
 	}

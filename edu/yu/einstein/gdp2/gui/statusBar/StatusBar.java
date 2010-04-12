@@ -10,6 +10,9 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -43,21 +46,24 @@ public class StatusBar extends JPanel implements TrackListActionListener{
 	private class TimeCounter extends Thread {
 		@Override
 		public void run() {
+			// set the date format
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+			// the correct elapsed time it has to be adjusted to UTC so that 
+			// it compensates for the timezone and daylight saving time differences
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			long startTime = System.currentTimeMillis();
-			jpbProgress.setStringPainted(true);
 			jpbProgress.setFont(new Font("ARIAL", Font.PLAIN, 9));
 			Thread thisThread = Thread.currentThread();
 			while (timeCounterThread == thisThread) {
 				try {
 					long currentTime = System.currentTimeMillis();
-					String timeString = new String(Long.toString((currentTime - startTime) / 1000) + "s");
+					String timeString = new String(sdf.format(new Date(currentTime - startTime)));
 					jpbProgress.setString(timeString);
 					sleep(1000);					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			jpbProgress.setStringPainted(false);
 		}
 	};
 	
@@ -100,9 +106,10 @@ public class StatusBar extends JPanel implements TrackListActionListener{
 
 	@Override
 	public void actionEnds(TrackListActionEvent evt) {
+		jpbProgress.setStringPainted(false);
+		timeCounterThread = null;
 		jpbProgress.setIndeterminate(false);
 		jlAction.setText(evt.getActionDescription());	
-		timeCounterThread = null;
 	}
 
 
@@ -110,6 +117,7 @@ public class StatusBar extends JPanel implements TrackListActionListener{
 	public void actionStarts(TrackListActionEvent evt) {
 		jpbProgress.setIndeterminate(true);
 		jlAction.setText(evt.getActionDescription());
+		jpbProgress.setStringPainted(true);
 		timeCounterThread = new TimeCounter();
 		timeCounterThread.start();
 	}

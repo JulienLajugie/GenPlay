@@ -33,14 +33,25 @@ import yu.einstein.gdp2.util.DoubleLists;
 public final class BinList extends DisplayableListOfLists<Double, double[]> implements Serializable {
 
 	private static final long serialVersionUID = -6114967730638134020L; // generated ID
-
+	
 	private final int 				binSize;		// size of the bins
 	private final DataPrecision 	precision;		// precision of the data
 	private int 					fittedBinSize;	// size of the bins of the fitted data
 
-	private BinList binList10 = null;
-	private BinList binList100 = null;
+	/*
+	 * The  following parameters are used for the display of the BinList.
+	 * A BinList contains another BinList with a bigger binSize. 
+	 * When the method that returns the data to be printed on the screen is called,
+	 * if the binSize of the current BinList is too small (ie if the screen resolution is 
+	 * not big enough to show all the bins) the equivalent method from the BinList
+	 * with bigger window will be called. 
+	 * This BinList can also have a BinList with a bigger binSize. 
+	 */
+	private final static int 	ACCELERATOR_FACTOR = 50;	// factor used for the acceleration. Indicates how much bigger is the binSize of the accelerator binlist
+	private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
+	private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome
 
+   
 
 	/**
 	 * Creates an instance of {@link BinList}
@@ -479,72 +490,22 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	}
 
 
-
-
-
 	@Override
 	protected void fitToScreen() {
 		try {
-			System.out.println(fittedXRatio * binSize);
-			if (fittedXRatio * binSize < 0.01) {
-				System.out.println("bin list 100");
-				if (binList100 == null) {
-					binList100 = BinListOperations.changeBinSize(this, binSize * 100, ScoreCalculationMethod.AVERAGE);
+			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
+				if (acceleratorBinList == null) {
+					acceleratorBinList = BinListOperations.changeBinSize(this, binSize * ACCELERATOR_FACTOR, ScoreCalculationMethod.AVERAGE);
+					acceleratorBinList.fittedChromosome = fittedChromosome;
+					acceleratorBinList.chromosomeChanged();
 				}
-				binList100.fittedChromosome = fittedChromosome;
-				binList100.fittedXRatio = fittedXRatio * 100;	
-				binList100.fitToScreen();
-				this.fittedDataList = binList100.fittedDataList; 
-				this.fittedBinSize = binList100.fittedBinSize;
-			} else if (fittedXRatio * binSize < 0.1) {
-				System.out.println("binlist 10");
-				if (binList10 == null) {
-					binList10 = BinListOperations.changeBinSize(this, binSize * 10, ScoreCalculationMethod.AVERAGE);
-				}
-				binList10.fittedChromosome = fittedChromosome;
-				binList10.fittedXRatio = fittedXRatio * 10;	
-				binList10.fitToScreen();
-				this.fittedDataList = binList10.fittedDataList;
-				this.fittedBinSize = binList10.fittedBinSize;
+				acceleratorBinList.fittedXRatio = fittedXRatio;				
+				acceleratorBinList.fitToScreen();
+				this.fittedDataList = acceleratorBinList.fittedDataList;
+				this.fittedBinSize = acceleratorBinList.fittedBinSize;
 			} else {
-				System.out.println("normal bin list");
-				List<Double> currentList = get(fittedChromosome);
-				if (currentList == null) {
-					fittedDataList = null;
-				} else {
-					// we calculate how many windows are printable depending on the screen resolution
-					fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
-					int binSizeRatio  = fittedBinSize / binSize;
-
-					// if the fitted bin size is smaller than the regular bin size we don't modify the data
-					if (fittedBinSize <= binSize) {
-						fittedBinSize = binSize;
-						fittedDataList = new double[currentList.size()];
-						for (int i = 0; i < currentList.size(); i++) {
-							fittedDataList[i] = currentList.get(i);
-						}
-					} else {
-						fittedDataList = new double[(int)(size(fittedChromosome) / binSizeRatio + 1)];
-						int newIndex = 0;
-						for(int i = 0; i < size(fittedChromosome); i += binSizeRatio) {
-							double sum = 0;
-							int n = 0;
-							for(int j = 0; j < binSizeRatio; j ++) {
-								if ((i + j < size(fittedChromosome)) && (get(fittedChromosome, i + j) != 0)){
-									sum += get(fittedChromosome, i + j);
-									n++;					
-								}				
-							}
-							if (n > 0) {
-								fittedDataList[newIndex] = sum / n;
-							}
-							else {
-								fittedDataList[newIndex] = 0;
-							}
-							newIndex++;
-						}		
-					}
-				}
+				this.fittedDataList = acceleratorCurrentChromo;
+				this.fittedBinSize = binSize;				
 			}
 		} catch (Exception e) {
 			fittedDataList = null;
@@ -552,6 +513,29 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 	}
 
+	
+	/**
+	 * Tells the accelerator BinList that the chromosome changed
+	 * And copies the values of the current chromosome in the accelerator array
+	 */
+	@Override
+	protected void chromosomeChanged() {
+		List<Double> currentList = get(fittedChromosome);
+		if (currentList == null) {
+			acceleratorCurrentChromo = null;
+		} else {
+			acceleratorCurrentChromo = new double[currentList.size()];
+			for (int i = 0; i < currentList.size(); i++) {
+				acceleratorCurrentChromo[i] = currentList.get(i);
+			}
+		}
+		if (acceleratorBinList != null) {
+			acceleratorBinList.fittedChromosome = fittedChromosome;
+			acceleratorBinList.chromosomeChanged();
+		}
+		super.chromosomeChanged();
+	}
+	
 
 	@Override
 	protected double[] getFittedData(int start, int stop) {
