@@ -6,6 +6,7 @@ package yu.einstein.gdp2.core.list.binList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -19,6 +20,7 @@ import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.arrayList.CompressibleList;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.DoubleLists;
@@ -33,10 +35,12 @@ import yu.einstein.gdp2.util.DoubleLists;
 public final class BinList extends DisplayableListOfLists<Double, double[]> implements Serializable {
 
 	private static final long serialVersionUID = -6114967730638134020L; // generated ID
-	
+
 	private final int 				binSize;		// size of the bins
 	private final DataPrecision 	precision;		// precision of the data
 	private int 					fittedBinSize;	// size of the bins of the fitted data
+
+	private Chromosome 				uncompressedChromosome = null;	// chromosome having a uncompressed list
 
 	/*
 	 * The  following parameters are used for the display of the BinList.
@@ -48,10 +52,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * This BinList can also have a BinList with a bigger binSize. 
 	 */
 	private final static int 	ACCELERATOR_FACTOR = 50;	// factor used for the acceleration. Indicates how much bigger is the binSize of the accelerator binlist
+	private final static int	ACCELERATOR_MAX_BINSIZE = 
+		500000000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that 
 	private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
 	private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome
 
-   
 
 	/**
 	 * Creates an instance of {@link BinList}
@@ -94,6 +99,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
+		createAcceleratorBinList();
+		compressAll();
 	}
 
 
@@ -181,6 +188,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
+		compressAll();
+		createAcceleratorBinList();
 	}
 
 
@@ -266,7 +275,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-
+		compressAll();
+		createAcceleratorBinList();
 	}
 
 
@@ -348,6 +358,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
+		compressAll();
+		createAcceleratorBinList();
 	}
 
 
@@ -387,6 +399,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		default:
 			throw new IllegalArgumentException("Invalid method");
 		}
+		compressAll();
+		createAcceleratorBinList();
 	}
 
 
@@ -418,6 +432,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
+		compressAll();
+		createAcceleratorBinList();
 	}
 
 
@@ -513,7 +529,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 	}
 
-	
+
 	/**
 	 * Tells the accelerator BinList that the chromosome changed
 	 * And copies the values of the current chromosome in the accelerator array
@@ -535,7 +551,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 		super.chromosomeChanged();
 	}
-	
+
 
 	@Override
 	protected double[] getFittedData(int start, int stop) {
@@ -583,6 +599,55 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+
+	private void createAcceleratorBinList() {
+		if (binSize < ACCELERATOR_MAX_BINSIZE) {
+			acceleratorBinList = BinListOperations.changeBinSize(this, binSize * ACCELERATOR_FACTOR, ScoreCalculationMethod.AVERAGE);
+		}
+	}
+
+
+	private void compressAll() {
+		for (List<Double> currentList: this) {
+			try {
+				((CompressibleList)currentList).compress();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	@Override
+	public List<Double> get(int index) {
+		Chromosome chromosome = chromosomeManager.getChromosome((short)index);
+		if ((uncompressedChromosome == null) || (!uncompressedChromosome.equals(chromosome))) {
+			try {
+				if (uncompressedChromosome != null) {
+					((CompressibleList)(super.get(chromosomeManager.getIndex(uncompressedChromosome)))).compress();
+				}
+				if (((CompressibleList)(super.get(index))).isCompressed()) {
+					((CompressibleList)(super.get(index))).uncompress();
+					uncompressedChromosome = chromosome;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return super.get(index);
+	}	
+	
+	
+	@Override
+	public void add(int index, List<Double> element) {
+		super.add(index, element);
+		try {
+			((CompressibleList) super.get(index)).compress();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

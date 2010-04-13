@@ -775,7 +775,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	@Override
 	public void actionEnds(TrackListActionEvent evt) {
+		// unlock the track handles
 		unlockTracksHandles();
+		// enable the action map
+		setEnabled(true);
 		for (TrackListActionListener ootListener: tlalListenerList) {
 			ootListener.actionEnds(evt);
 		}		
@@ -784,7 +787,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	@Override
 	public void actionStarts(TrackListActionEvent evt) {
+		// lock the track handles
 		lockTrackHandles();
+		// disable the action map
+		setEnabled(false);
 		for (TrackListActionListener ootListener: tlalListenerList) {
 			ootListener.actionStarts(evt);
 		}		
