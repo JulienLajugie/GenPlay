@@ -4,8 +4,9 @@
  */
 package yu.einstein.gdp2.core.list.arrayList;
 
-import java.io.IOException;
 import java.util.List;
+
+import yu.einstein.gdp2.exception.CompressionException;
 
 
 /**
@@ -18,17 +19,16 @@ public interface CompressibleList {
 	
 	/**
 	 * Compresses the data of the list
-	 * @throws IOException 
+	 * @throws CompressionException 
 	 */
-	public void compress() throws IOException;
+	public void compress() throws  CompressionException ;
 	
 	
 	/**
 	 * Uncompresses the data of the list
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws CompressionException 
 	 */
-	public void uncompress() throws IOException, ClassNotFoundException;
+	public void uncompress() throws  CompressionException;
 	
 	
 	/**

@@ -70,10 +70,14 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		});
 	}
 
+	private static final int VERSION_NUMBER = 82; // GenPlay version
+	
 	/**
 	 * Title of the application
 	 */
-	public static final String APPLICATION_TITLE = " - Einstein Browser: GenPlay -";
+	public static final String APPLICATION_TITLE = " - Einstein Browser: GenPlay (v"+ VERSION_NUMBER + ") -";
+	
+
 	
 	private static final String DEFAULT_PROJECT_NAME = "New Project";
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID

@@ -6,7 +6,6 @@ package yu.einstein.gdp2.core.list.binList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -22,6 +21,7 @@ import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.CompressibleList;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.exception.CompressionException;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.DoubleLists;
 
@@ -41,6 +41,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	private int 					fittedBinSize;	// size of the bins of the fitted data
 
 	private Chromosome 				uncompressedChromosome = null;	// chromosome having a uncompressed list
+	private boolean					isCompressed = false;			// true if the compressed mode is on
 
 	/*
 	 * The  following parameters are used for the display of the BinList.
@@ -100,7 +101,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			}
 		}
 		createAcceleratorBinList();
-		compressAll();
 	}
 
 
@@ -188,7 +188,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		compressAll();
 		createAcceleratorBinList();
 	}
 
@@ -275,7 +274,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		compressAll();
 		createAcceleratorBinList();
 	}
 
@@ -358,7 +356,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		compressAll();
 		createAcceleratorBinList();
 	}
 
@@ -399,7 +396,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		default:
 			throw new IllegalArgumentException("Invalid method");
 		}
-		compressAll();
 		createAcceleratorBinList();
 	}
 
@@ -432,7 +428,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		compressAll();
 		createAcceleratorBinList();
 	}
 
@@ -536,7 +531,24 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	@Override
 	protected void chromosomeChanged() {
-		List<Double> currentList = get(fittedChromosome);
+		List<Double> currentList = null;
+		boolean uncompressed = false;
+		if (isCompressed()) {
+			currentList = super.get(chromosomeManager.getIndex(fittedChromosome));
+			if (currentList instanceof CompressibleList) {
+				CompressibleList cl = (CompressibleList) currentList;
+				if (cl.isCompressed()) {
+					try {
+						cl.uncompress();
+						uncompressed = true;
+					} catch (CompressionException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} else {
+			currentList = get(fittedChromosome);
+		}
 		if (currentList == null) {
 			acceleratorCurrentChromo = null;
 		} else {
@@ -550,11 +562,26 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			acceleratorBinList.chromosomeChanged();
 		}
 		super.chromosomeChanged();
+		if (uncompressed) {
+			try {
+				((CompressibleList) currentList).compress();
+			} catch (CompressionException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 
 	@Override
 	protected double[] getFittedData(int start, int stop) {
+
+		for (int i = 0; i < size(); i++) {
+			CompressibleList cl = (CompressibleList) super.get(i);
+			System.out.println((i+1) + ": " + cl.isCompressed());
+		}
+
+
+
 		// for the binlist we return the entire fitted data for the current chromosome
 		return fittedDataList;
 	}
@@ -610,44 +637,60 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	}
 
 
-	private void compressAll() {
-		for (List<Double> currentList: this) {
-			try {
-				((CompressibleList)currentList).compress();
-			} catch (IOException e) {
-				e.printStackTrace();
+	@Override
+	public List<Double> get(int index) {
+		synchronized (this) {
+			Chromosome chromosome = chromosomeManager.getChromosome((short)index);
+			if ((uncompressedChromosome == null) || (!uncompressedChromosome.equals(chromosome))) {
+				try {
+					if (uncompressedChromosome != null) {
+						((CompressibleList)(super.get(chromosomeManager.getIndex(uncompressedChromosome)))).compress();
+					}
+					if (((CompressibleList)(super.get(index))).isCompressed()) {
+						((CompressibleList)(super.get(index))).uncompress();
+					}
+					uncompressedChromosome = chromosome;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+			return super.get(index);
 		}
 	}
 
 
-	@Override
-	public List<Double> get(int index) {
-		Chromosome chromosome = chromosomeManager.getChromosome((short)index);
-		if ((uncompressedChromosome == null) || (!uncompressedChromosome.equals(chromosome))) {
-			try {
-				if (uncompressedChromosome != null) {
-					((CompressibleList)(super.get(chromosomeManager.getIndex(uncompressedChromosome)))).compress();
-				}
-				if (((CompressibleList)(super.get(index))).isCompressed()) {
-					((CompressibleList)(super.get(index))).uncompress();
-					uncompressedChromosome = chromosome;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+	/**
+	 * @return the if the BinList is compressed
+	 */
+	public boolean isCompressed() {
+		return isCompressed;
+	}
+
+
+	/**
+	 * Compresses the BinList
+	 * @throws CompressionException
+	 */
+	public void compress() throws CompressionException {
+		for (List<Double> currentList: this) {
+			if (currentList instanceof CompressibleList) {
+				((CompressibleList)currentList).compress();
 			}
 		}
-		return super.get(index);
-	}	
-	
-	
-	@Override
-	public void add(int index, List<Double> element) {
-		super.add(index, element);
-		try {
-			((CompressibleList) super.get(index)).compress();
-		} catch (IOException e) {
-			e.printStackTrace();
+		isCompressed = true;
+	}
+
+
+	/**
+	 * Uncompresses the BinList
+	 * @throws CompressionException
+	 */
+	public void uncompress() throws CompressionException {
+		for (List<Double> currentList: this) {
+			if (currentList instanceof CompressibleList) {
+				((CompressibleList)currentList).uncompress();
+			}
 		}
+		isCompressed = false;
 	}
 }

@@ -838,7 +838,9 @@ public class BinListOperations {
 		}
 		// search the greatest and smallest score
 		double max = max(binList);
+		max = Math.max(max, 0);
 		double min = min(binList);
+		min = Math.min(min, 0);
 		double distanceMinMax = max - min;
 
 		int result[] = new int[(int)(distanceMinMax / scoreBinsSize) + 1];

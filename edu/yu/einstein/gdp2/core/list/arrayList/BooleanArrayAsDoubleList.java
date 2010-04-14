@@ -4,16 +4,8 @@
  */
 package yu.einstein.gdp2.core.list.arrayList;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.AbstractList;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 
 /**
@@ -26,24 +18,17 @@ import java.util.zip.GZIPOutputStream;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BooleanArrayAsDoubleList extends AbstractList<Double> implements Serializable, List<Double>, CompressibleList {
+public final class BooleanArrayAsDoubleList extends ArrayAsDoubleList<byte[]> implements Serializable, List<Double>, CompressibleList {
 
 	private static final long serialVersionUID = -5280328695672981245L;	// generated ID
-	private static final int 	RESIZE_MIN = 1000;		// minimum length added every time the array is resized
-	private static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
-	private static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
-	private byte[] 				data;					// byte data array (8 booleans / byte)
-	private int 				size;					// size of the list	
-	private boolean				isCompressed = false;	// true if the list is compressed
-	transient private ByteArrayOutputStream	compressedData = null; // list compressed as a ByteArrayOutputStream
 	
 	
 	/**
 	 * Creates an instance of {@link BooleanArrayAsDoubleList}
 	 */
 	public BooleanArrayAsDoubleList() {
+		super();
 		this.data = new byte[0];
-		this.size = 0;
 	}
 	
 	
@@ -52,16 +37,17 @@ public final class BooleanArrayAsDoubleList extends AbstractList<Double> impleme
 	 * @param size size of the array
 	 */
 	public BooleanArrayAsDoubleList(int size) {
+		super(size);
 		// 1 byte = 8 booleans so the size of the byte array is 8 times smaller
 		int realSize = (int)Math.ceil(size / 8) + 1;
 		this.data = new byte[realSize];
-		this.size = size;
 	}
 	
 
 	/**
 	 * Unsupported operation
 	 */
+	@Override
 	public void sort() {
 		// no sort with booleans
 		throw (new UnsupportedOperationException("Invalid operation, can't sort a boolean array"));
@@ -119,68 +105,5 @@ public final class BooleanArrayAsDoubleList extends AbstractList<Double> impleme
 			data[realIndex] = (byte)(data[realIndex] & (0xff ^ (1 << offset)));
 		}
 		return null;
-	}
-
-	
-	@Override
-	public int size() {
-		return size;
-	}
-
-
-	@Override
-	public void compress() throws IOException {
-		compressedData = new ByteArrayOutputStream();
-		GZIPOutputStream gz = new GZIPOutputStream(compressedData);
-		ObjectOutputStream oos = new ObjectOutputStream(gz);
-		oos.writeObject(data);
-		oos.flush();
-		oos.close();
-		gz.flush();
-		gz.close();
-		data = null;
-		isCompressed = true;
-		System.gc();
-	}
-
-
-	@Override
-	public void uncompress() throws IOException, ClassNotFoundException {
-		ByteArrayInputStream bais = new ByteArrayInputStream(compressedData.toByteArray());
-		GZIPInputStream gz = new GZIPInputStream(bais);
-		ObjectInputStream ois = new ObjectInputStream(gz);
-		data = (byte[])ois.readObject();
-		compressedData = null;
-		isCompressed = false;
-		System.gc();
-	}
-	
-	
-	@Override
-	public boolean isCompressed() {
-		return isCompressed;
-	}
-	
-	
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		if (isCompressed()) {
-			try {
-				uncompress();
-				out.defaultWriteObject();
-				compress();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		} else {
-			out.defaultWriteObject();
-		}
-	}
-
-
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
-		if (isCompressed) {
-			compress();
-		}
 	}
 }
