@@ -53,7 +53,6 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 		try {
 			BinList resultList = this.get(); 
 			if (resultList != null) {
-				resultList.compress();
 				final int selectedTrackIndex = trackList.getSelectedTrackIndex();
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 				BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, trackList.getChromosomeManager(), resultList);

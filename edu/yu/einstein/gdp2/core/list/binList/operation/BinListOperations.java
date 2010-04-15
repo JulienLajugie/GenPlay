@@ -61,6 +61,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -89,10 +90,28 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;		
 	}
 
-
+	
+	/**
+	 * @param chromoList array of boolean. 
+	 * @return true if all the booleans are set to true or if the array is null. False otherwise 
+	 */
+	private static boolean allChromosomeSelected(boolean[] chromoList) {
+		if (chromoList == null) {
+			return true;
+		} 
+		for (boolean isSelected: chromoList) {
+			if (!isSelected) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
 	/**
 	 * @param binList
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -100,6 +119,10 @@ public class BinListOperations {
 	 * @return the average value of the specified {@link BinList}
 	 */
 	public static double average(BinList binList, boolean[] chromoList) {
+		// if the result has already been calculated for the BinList we return it
+		if ((allChromosomeSelected(chromoList)) && (binList.getAverage() != null)) {
+			return binList.getAverage();
+		}
 		int n = 0;
 		double sum = 0;
 		for (int i = 0; i < binList.size(); i++) {
@@ -126,9 +149,13 @@ public class BinListOperations {
 	 * @return the number of non-null Bins on the selected chromosomes of the specified BinList 
 	 */
 	public static long binCount(BinList binList, boolean[] chromoList) {
+		// if the result has already been calculated for the BinList we return it
+		if ((allChromosomeSelected(chromoList)) && (binList.getBinCount() != null)) {
+			return binList.getBinCount();
+		}
 		long binCount = 0;
 		for (int i = 0; i < binList.size(); i++) {
-			if ((binList.get(i) != null) && (i < chromoList.length) && (chromoList[i])) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
 				for (int j = 0; j < binList.size(i); j++) {
 					if (binList.get(i, j) != 0) {
 						binCount++;
@@ -205,6 +232,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -218,7 +246,8 @@ public class BinListOperations {
 	 * @return a new BinList
 	 */
 	public static BinList changeBinSize(BinList binList, int binSize, ScoreCalculationMethod method) {
-		return new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList);
+		BinList resultList = new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList);
+		return resultList;
 	}
 
 
@@ -241,6 +270,7 @@ public class BinListOperations {
 				resultList.add(listToAdd);
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -344,6 +374,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -375,6 +406,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -407,6 +439,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;		
 	}
 
@@ -461,6 +494,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -475,8 +509,8 @@ public class BinListOperations {
 	 * @return new {@link BinList} resulting from the indexing
 	 */
 	public static BinList indexation(BinList binList, double indexDown, double indexUp, DataPrecision precision) {
-		double valueUp = max(binList);
-		double valueDown = min(binList);
+		double valueUp = max(binList, null);
+		double valueDown = min(binList, null);
 		// We calculate the difference between the highest and the lowest value
 		double distanceValueUpDown = valueUp - valueDown;
 		if (distanceValueUpDown != 0) {
@@ -498,6 +532,7 @@ public class BinListOperations {
 					}
 				}
 			}
+			resultList.finalizeConstruction();
 			return resultList;
 		} else {
 			return null;
@@ -540,6 +575,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -571,6 +607,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -610,21 +647,28 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
 
 	/**
 	 * @param binList
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * Perform the operation on every chromosome if null
 	 * @return the greatest score value of the specified {@link BinList}. Zero value bins are excluded
 	 */
-	public static double max(BinList binList) {
+	public static double max(BinList binList, boolean[] chromoList) {
+		// if the result has already been calculated for the BinList we return it
+		if ((allChromosomeSelected(chromoList)) && (binList.getMax() != null)) {
+			return binList.getMax();
+		}
 		double max = Double.NEGATIVE_INFINITY;
-		for (List<Double> currentList : binList) {
-			if (currentList != null) {
-				for (Double currentScore: currentList) {
-					if (currentScore != 0d) {
-						max = Math.max(max, currentScore);
+		for (int i = 0; i < binList.size(); i++) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if (binList.get(i, j) != 0) {
+						max = Math.max(max, binList.get(i, j));
 					}
 				}
 			}
@@ -638,7 +682,7 @@ public class BinListOperations {
 	 * @return the maximum score to display on a BinList track
 	 */
 	public static double maxScoreToDisplay(BinList binList) {
-		final double realMax = max(binList);
+		final double realMax = max(binList, null);
 		// if the max is negative we return 0
 		if (realMax <= 0) {
 			return 0;
@@ -666,15 +710,21 @@ public class BinListOperations {
 
 	/**
 	 * @param binList
+	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
+	 * Perform the operation on every chromosome if null
 	 * @return the smallest score value of the specified {@link BinList}. Zero value bins are excluded
 	 */
-	public static double min(BinList binList) {
+	public static double min(BinList binList, boolean[] chromoList) {
+		// if the result has already been calculated for the BinList we return it
+		if ((allChromosomeSelected(chromoList)) && (binList.getMin() != null)) {
+			return binList.getMin();
+		}
 		double min = Double.POSITIVE_INFINITY;
-		for (List<Double> currentList : binList) {
-			if (currentList != null) {
-				for (Double currentScore: currentList) {
-					if (currentScore != 0d) {
-						min = Math.min(min, currentScore);
+		for (int i = 0; i < binList.size(); i++) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
+				for (int j = 0; j < binList.size(i); j++) {
+					if (binList.get(i, j) != 0) {
+						min = Math.min(min, binList.get(i, j));
 					}
 				}
 			}
@@ -689,7 +739,7 @@ public class BinListOperations {
 	 */
 	public static double minScoreToDisplay(BinList binList) {
 		// if the min is positive we return 0
-		final double realMin = min(binList);
+		final double realMin = min(binList, null);
 		if (realMin >= 0) {
 			return 0;
 		}
@@ -741,6 +791,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -769,6 +820,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;		
 	}
 
@@ -803,6 +855,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -837,9 +890,9 @@ public class BinListOperations {
 			throw new IllegalArgumentException("the size of the score bins must be strictly positive");
 		}
 		// search the greatest and smallest score
-		double max = max(binList);
+		double max = max(binList, null);
 		max = Math.max(max, 0);
-		double min = min(binList);
+		double min = min(binList, null);
 		min = Math.min(min, 0);
 		double distanceMinMax = max - min;
 
@@ -876,9 +929,13 @@ public class BinListOperations {
 	 * @return the sum of the scores on the selected chromosomes of the specified BinList
 	 */
 	public static double scoreCount(BinList binList, boolean[] chromoList) {
+		// if the result has already been calculated for the BinList we return it
+		if ((allChromosomeSelected(chromoList)) && (binList.getScoreCount() != null)) {
+			return binList.getScoreCount();
+		}
 		int scoreCount = 0;
 		for (int i = 0; i < binList.size(); i++) {
-			if ((binList.get(i) != null) && (i < chromoList.length) && (chromoList[i])) {
+			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
 				for (int j = 0; j < binList.size(i); j++) {
 					scoreCount += binList.get(i, j);
 				}
@@ -933,6 +990,7 @@ public class BinListOperations {
 				}
 			}			
 		}
+		resultList.finalizeConstruction();
 		return resultList;		
 	}
 
@@ -965,6 +1023,10 @@ public class BinListOperations {
 	 * @return the standard deviation of the specified BinList on the selected chromosomes 
 	 */
 	public static Double standardDeviation(BinList binList, boolean[] chromoList) {
+		// if the result has already been calculated for the BinList we return it
+		if ((allChromosomeSelected(chromoList)) && (binList.getStDev() != null)) {
+			return binList.getStDev();
+		}
 		double stdDev = 0d;
 		int n = 0;
 		// we compute the mean
@@ -1016,6 +1078,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 
@@ -1044,6 +1107,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;		
 	}
 
@@ -1098,6 +1162,7 @@ public class BinListOperations {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 

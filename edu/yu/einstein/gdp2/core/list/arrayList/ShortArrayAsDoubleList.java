@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import yu.einstein.gdp2.exception.CompressionException;
 import yu.einstein.gdp2.exception.valueOutOfRangeException.Invalid16BitValue;
 
 
@@ -55,12 +56,20 @@ public final class ShortArrayAsDoubleList extends ArrayAsDoubleList<short[]> imp
 
 	@Override
 	public void sort() {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		Arrays.sort(data);
 	};
 
 	
 	@Override
 	public boolean add(Double e) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// check if the value is in the range
 		if ((e > MAX_VALUE) || (e < MIN_VALUE)) {
 			throw new Invalid16BitValue(e);
@@ -94,6 +103,10 @@ public final class ShortArrayAsDoubleList extends ArrayAsDoubleList<short[]> imp
 	
 	@Override
 	public Double get(int index) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		return (double) (data[index] / 10);
 	}
 
@@ -103,6 +116,10 @@ public final class ShortArrayAsDoubleList extends ArrayAsDoubleList<short[]> imp
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// check if the value is in the range
 		if ((element> MAX_VALUE) || (element < MIN_VALUE)) {
 			throw new Invalid16BitValue(element);

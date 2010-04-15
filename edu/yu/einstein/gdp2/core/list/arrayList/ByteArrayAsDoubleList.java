@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import yu.einstein.gdp2.exception.CompressionException;
 import yu.einstein.gdp2.exception.valueOutOfRangeException.Invalid8BitValue;
 
 
@@ -55,12 +56,20 @@ public final class ByteArrayAsDoubleList extends ArrayAsDoubleList<byte[]> imple
 
 	@Override
 	public void sort() {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		Arrays.sort(data);
 	};
 
 	
 	@Override
 	public boolean add(Double e) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// check if the value is in the range
 		if ((e > MAX_VALUE) || (e < MIN_VALUE)) {
 			throw new Invalid8BitValue(e);
@@ -92,6 +101,10 @@ public final class ByteArrayAsDoubleList extends ArrayAsDoubleList<byte[]> imple
 	
 	@Override
 	public Double get(int index) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// we add 128 because bytes are btw -128 and 127 and we want values btw 0 and 255
 		return (double)(data[index] + 128);
 	}
@@ -102,6 +115,10 @@ public final class ByteArrayAsDoubleList extends ArrayAsDoubleList<byte[]> imple
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// check if the value is in the range
 		if ((element> MAX_VALUE) || (element < MIN_VALUE)) {
 			throw new Invalid8BitValue(element);

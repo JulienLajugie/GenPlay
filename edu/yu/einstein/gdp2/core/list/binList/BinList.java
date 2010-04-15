@@ -6,6 +6,7 @@ package yu.einstein.gdp2.core.list.binList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -40,7 +41,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	private final DataPrecision 	precision;		// precision of the data
 	private int 					fittedBinSize;	// size of the bins of the fitted data
 
-	private Chromosome 				uncompressedChromosome = null;	// chromosome having a uncompressed list
 	private boolean					isCompressed = false;			// true if the compressed mode is on
 
 	/*
@@ -57,6 +57,18 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		500000000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that 
 	private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
 	private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome
+
+	/*
+	 * The following values are statistic values of the BinList
+	 * They are transient because they depend on the chromosome manager that is also transient
+	 * They are calculated at the creation of the BinList to avoid being recalculated
+	 */
+	transient private Double 	min = null;			// smallest value of the BinList
+	transient private Double 	max = null;			// greatest value of the BinList 
+	transient private Double 	average = null;		// average of the BinList
+	transient private Double 	stDev = null;		// standar deviation of the BinList
+	transient private Double 	scoreCount = null;	// sum of the scores of the BinList
+	transient private Long 		binCount = null;	// count of none-null bins in the BinList
 
 
 	/**
@@ -100,7 +112,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		createAcceleratorBinList();
+		finalizeConstruction();
 	}
 
 
@@ -188,7 +200,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		createAcceleratorBinList();
+		finalizeConstruction();
 	}
 
 
@@ -274,7 +286,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		createAcceleratorBinList();
+		finalizeConstruction();
 	}
 
 
@@ -356,7 +368,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		createAcceleratorBinList();
+		finalizeConstruction();
 	}
 
 
@@ -396,7 +408,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		default:
 			throw new IllegalArgumentException("Invalid method");
 		}
-		createAcceleratorBinList();
+		finalizeConstruction();
 	}
 
 
@@ -428,7 +440,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			}
 		}
-		createAcceleratorBinList();
+		finalizeConstruction();
 	}
 
 
@@ -531,23 +543,18 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	@Override
 	protected void chromosomeChanged() {
-		List<Double> currentList = null;
+		List<Double> currentList = get(fittedChromosome);;
 		boolean uncompressed = false;
+		// if the list is compressed we need to uncompress it first
 		if (isCompressed()) {
-			currentList = super.get(chromosomeManager.getIndex(fittedChromosome));
 			if (currentList instanceof CompressibleList) {
-				CompressibleList cl = (CompressibleList) currentList;
-				if (cl.isCompressed()) {
-					try {
-						cl.uncompress();
-						uncompressed = true;
-					} catch (CompressionException e) {
-						e.printStackTrace();
-					}
+				try {
+					((CompressibleList) currentList).uncompress();
+					uncompressed = true;
+				} catch (CompressionException e) {
+					e.printStackTrace();
 				}
 			}
-		} else {
-			currentList = get(fittedChromosome);
 		}
 		if (currentList == null) {
 			acceleratorCurrentChromo = null;
@@ -562,6 +569,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			acceleratorBinList.chromosomeChanged();
 		}
 		super.chromosomeChanged();
+		// if we uncompressed the list we need to recompress it
 		if (uncompressed) {
 			try {
 				((CompressibleList) currentList).compress();
@@ -574,14 +582,10 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	@Override
 	protected double[] getFittedData(int start, int stop) {
-
 		for (int i = 0; i < size(); i++) {
 			CompressibleList cl = (CompressibleList) super.get(i);
 			System.out.println((i+1) + ": " + cl.isCompressed());
 		}
-
-
-
 		// for the binlist we return the entire fitted data for the current chromosome
 		return fittedDataList;
 	}
@@ -628,34 +632,110 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			return null;
 		}
 	}
+	
+	
+	/**
+	 * Generates the BinList accelerator and the statistics.
+	 */
+	public void finalizeConstruction() {
+		generateAcceleratorBinList();
+		generateStatistics();	
+	}
 
 
-	private void createAcceleratorBinList() {
+	/**
+	 * Creates a BinList with a greater binSize in order to accelerate the display
+	 */
+	private void generateAcceleratorBinList() {
 		if (binSize < ACCELERATOR_MAX_BINSIZE) {
 			acceleratorBinList = BinListOperations.changeBinSize(this, binSize * ACCELERATOR_FACTOR, ScoreCalculationMethod.AVERAGE);
 		}
 	}
 
 
-	@Override
-	public List<Double> get(int index) {
-		synchronized (this) {
-			Chromosome chromosome = chromosomeManager.getChromosome((short)index);
-			if ((uncompressedChromosome == null) || (!uncompressedChromosome.equals(chromosome))) {
-				try {
-					if (uncompressedChromosome != null) {
-						((CompressibleList)(super.get(chromosomeManager.getIndex(uncompressedChromosome)))).compress();
+	/**
+	 * Computes some statistic values for this BinList
+	 */
+	private void generateStatistics() {
+		min = Double.POSITIVE_INFINITY;
+		max = Double.NEGATIVE_INFINITY;
+		average = 0d;
+		stDev = 0d;
+		scoreCount = 0d;
+		binCount = 0l;
+		for (List<Double> currentList: this) {
+			if (currentList != null) {				
+				for (Double currentValue: currentList) {
+					if (currentValue != 0) {
+						min = Math.min(min, currentValue);
+						max = Math.max(max, currentValue);
+						scoreCount += currentValue;
+						binCount++;
 					}
-					if (((CompressibleList)(super.get(index))).isCompressed()) {
-						((CompressibleList)(super.get(index))).uncompress();
-					}
-					uncompressedChromosome = chromosome;
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
-			return super.get(index);
 		}
+		if (binCount != 0) {
+			average = scoreCount / (double) binCount;
+			for (List<Double> currentList: this) {
+				if (currentList != null) {				
+					for (Double currentValue: currentList) {
+						if (currentValue != 0) {
+							stDev += Math.pow(currentValue - average, 2);
+						}
+					}
+				}
+			}
+			stDev = Math.sqrt(stDev / (double) binCount);
+		}
+	}
+
+
+	/**
+	 * @return the smallest value of the BinList
+	 */
+	public Double getMin() {
+		return min;
+	}
+
+
+	/**
+	 * @return the greatest value of the BinList
+	 */
+	public Double getMax() {
+		return max;
+	}
+
+
+	/**
+	 * @return the average of the BinList
+	 */
+	public Double getAverage() {
+		return average;
+	}
+
+
+	/**
+	 * @return the standard deviation of the BinList
+	 */
+	public Double getStDev() {
+		return stDev;
+	}
+
+
+	/**
+	 * @return the sum of the scores of the BinList
+	 */
+	public Double getScoreCount() {
+		return scoreCount;
+	}
+
+
+	/**
+	 * @return the count of none-null bins in the BinList
+	 */
+	public Long getBinCount() {
+		return binCount;
 	}
 
 
@@ -672,6 +752,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws CompressionException
 	 */
 	public void compress() throws CompressionException {
+		if (acceleratorBinList != null) {
+			acceleratorBinList.compress();
+		}
 		for (List<Double> currentList: this) {
 			if (currentList instanceof CompressibleList) {
 				((CompressibleList)currentList).compress();
@@ -686,11 +769,35 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws CompressionException
 	 */
 	public void uncompress() throws CompressionException {
+		if (acceleratorBinList != null) {
+			acceleratorBinList.uncompress();
+		}
 		for (List<Double> currentList: this) {
 			if (currentList instanceof CompressibleList) {
 				((CompressibleList)currentList).uncompress();
 			}
 		}
 		isCompressed = false;
+	}
+	
+	
+
+
+	/**
+	 * Recompresses the list if needed after unserialization
+	 * @param in {@link ObjectInputStream}
+	 * @throws IOExceptionm
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		generateStatistics();
+		if (isCompressed) {
+			try {
+				compress();
+			} catch (CompressionException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

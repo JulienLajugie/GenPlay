@@ -10,7 +10,7 @@ package yu.einstein.gdp2.exception;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class CompressionException extends Exception {
+public class CompressionException extends RuntimeException {
 
 	private static final long serialVersionUID = -7441678640263974386L; // generated ID
 

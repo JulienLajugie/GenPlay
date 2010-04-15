@@ -7,6 +7,8 @@ package yu.einstein.gdp2.core.list.arrayList;
 import java.io.Serializable;
 import java.util.List;
 
+import yu.einstein.gdp2.exception.CompressionException;
+
 
 /**
  * An array of 8 booleans packed to the byte encapsulated in order to implement the {@link List} interface with Double parameter
@@ -56,6 +58,10 @@ public final class BooleanArrayAsDoubleList extends ArrayAsDoubleList<byte[]> im
 	
 	@Override
 	public boolean add(Double e) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// if the array is to small we resize it before adding the data
 		if (size >= data.length * 8) {
 			// we multiply the current size by the resize multiplication factor
@@ -79,6 +85,10 @@ public final class BooleanArrayAsDoubleList extends ArrayAsDoubleList<byte[]> im
 	
 	@Override
 	public Double get(int index) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// real index is the index divided by 8
 		int realIndex = index / 8;
 		// compute the position of the desired boolean inside the byte
@@ -93,6 +103,10 @@ public final class BooleanArrayAsDoubleList extends ArrayAsDoubleList<byte[]> im
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// real index is the index divided by 8
 		int realIndex = index / 8;
 		// compute the position of the desired boolean inside the byte

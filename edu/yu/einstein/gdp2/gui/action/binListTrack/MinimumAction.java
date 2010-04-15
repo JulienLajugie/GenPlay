@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 import yu.einstein.gdp2.gui.action.TrackListAction;
+import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
@@ -55,18 +56,21 @@ public final class MinimumAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			final BinList binList = selectedTrack.getBinList();
-			// thread for the action
-			new ActionWorker<Double>(trackList, "Searching Minimum") {
-				@Override
-				protected Double doAction() {
-					return BinListOperations.min(binList);
-				}
-				@Override
-				protected void doAtTheEnd(Double actionResult) {
-					JOptionPane.showMessageDialog(getRootPane(), actionResult, "Minimum of \"" + selectedTrack.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
-				}
-			}.execute();
-		}		
+			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), trackList.getChromosomeManager());
+			if (selectedChromo != null) {
+				final BinList binList = selectedTrack.getBinList();
+				// thread for the action
+				new ActionWorker<Double>(trackList, "Searching Minimum") {
+					@Override
+					protected Double doAction() {
+						return BinListOperations.min(binList, selectedChromo);
+					}
+					@Override
+					protected void doAtTheEnd(Double actionResult) {
+						JOptionPane.showMessageDialog(getRootPane(), actionResult, "Minimum of \"" + selectedTrack.getName() +"\":", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}.execute();
+			}
+		}
 	}
 }

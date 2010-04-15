@@ -33,8 +33,8 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 	protected static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	protected T					data;					// byte data array (8 booleans / byte)
 	protected int 				size = 0;				// size of the list	
-	private boolean				isCompressed = false;	// true if the list is compressed
-	transient private ByteArrayOutputStream	compressedData = null; // list compressed as a ByteArrayOutputStream
+	transient private boolean				isCompressed = false;	// true if the list is compressed
+	transient private ByteArrayOutputStream	compressedData = null; 	// list compressed as a ByteArrayOutputStream
 
 
 	/**
@@ -71,7 +71,6 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 	public void compress() throws CompressionException {
 		try {
 			if ((!isCompressed) && (data != null)) {
-				System.out.println("compressing");
 				compressedData = new ByteArrayOutputStream();
 				GZIPOutputStream gz = new GZIPOutputStream(compressedData);
 				ObjectOutputStream oos = new ObjectOutputStream(gz);
@@ -134,24 +133,6 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 			}
 		} else {
 			out.defaultWriteObject();
-		}
-	}
-
-
-	/**
-	 * Recompresses the list if needed after unserialization
-	 * @param in {@link ObjectInputStream}
-	 * @throws IOExceptionm
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
-		if (isCompressed) {
-			try {
-				compress();
-			} catch (CompressionException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }

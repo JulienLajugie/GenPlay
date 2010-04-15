@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import yu.einstein.gdp2.exception.CompressionException;
+
 
 /**
  * An array of floats encapsulated in order to implement the {@link List} interface with Double parameter
@@ -41,12 +43,20 @@ public final class FloatArrayAsDoubleList extends ArrayAsDoubleList<float[]> imp
 
 	@Override
 	public void sort() {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		Arrays.sort(data);
 	};
 
 	
 	@Override
 	public boolean add(Double e) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		// if the array is to small we resize it before adding the data
 		if (size >= data.length) {
 			// we multiply the current size by the resize multiplication factor
@@ -69,6 +79,10 @@ public final class FloatArrayAsDoubleList extends ArrayAsDoubleList<float[]> imp
 	
 	@Override
 	public Double get(int index) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		return (double)data[index];
 	}
 
@@ -78,6 +92,10 @@ public final class FloatArrayAsDoubleList extends ArrayAsDoubleList<float[]> imp
 	 */
 	@Override
 	public Double set(int index, Double element) {
+		// throw an exception if the list is compressed
+		if (isCompressed()) {
+			throw new CompressionException("Compressed List: Invalid Operation");
+		}
 		data[index] = element.floatValue();
 		return null;
 	}

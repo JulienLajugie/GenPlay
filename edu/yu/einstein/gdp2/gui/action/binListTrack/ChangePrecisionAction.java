@@ -55,8 +55,8 @@ public class ChangePrecisionAction extends TrackListAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
-		final BinList binList = selectedTrack.getBinList();
 		if (selectedTrack != null) {
+			final BinList binList = selectedTrack.getBinList();
 			final DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
 			if (precision != null) {				
 				// thread for the action

@@ -4,8 +4,10 @@
  */
 package yu.einstein.gdp2.gui.popupMenu;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.event.PopupMenuEvent;
 
 import yu.einstein.gdp2.gui.action.allTrack.SaveTrackAction;
 import yu.einstein.gdp2.gui.action.binListTrack.AdditionAction;
@@ -15,6 +17,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BinCountAction;
 import yu.einstein.gdp2.gui.action.binListTrack.CalculationOnProjectionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ChangeBinSizeAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ChangePrecisionAction;
+import yu.einstein.gdp2.gui.action.binListTrack.CompressionAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ConcatenateAction;
 import yu.einstein.gdp2.gui.action.binListTrack.CorrelationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.DensityAction;
@@ -66,6 +69,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiReset;				// menu reset BinListTrack
 	private final JMenuItem		jmiShowHistory;			// menu show BinListTrack history
 
+	private final JCheckBoxMenuItem jcbmiCompression;	// check box menu compression
+	
 	private final JMenuItem		jmiAdditionConstant;	// menu add constant to BinListTrack
 	private final JMenuItem		jmiSubtractionConstant;	// menu subtract constant from BinListTrack
 	private final JMenuItem		jmiMultiplicationConstant;// menu multiply BinListTrack by constant
@@ -120,6 +125,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiReset = new JMenuItem(actionMap.get(ResetAction.ACTION_KEY));
 		jmiShowHistory = new JMenuItem(actionMap.get(ShowHistoryAction.ACTION_KEY));
 
+		jcbmiCompression = new JCheckBoxMenuItem(actionMap.get(CompressionAction.ACTION_KEY));
+		
 		jmiAdditionConstant = new JMenuItem(actionMap.get(AdditionConstantAction.ACTION_KEY));
 		jmiSubtractionConstant = new JMenuItem(actionMap.get(SubtractionConstantAction.ACTION_KEY));
 		jmiMultiplicationConstant = new JMenuItem(actionMap.get(MultiplicationConstantAction.ACTION_KEY));
@@ -163,6 +170,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		add(jmiRedo);
 		add(jmiReset);
 		add(jmiShowHistory);
+		addSeparator();
+		add(jcbmiCompression);
 		
 		jmOperation.add(jmiAdditionConstant);
 		jmOperation.add(jmiSubtractionConstant);
@@ -210,5 +219,17 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		
 		jmiUndo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isUndoable());
 		jmiRedo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isRedoable());
+	}
+	
+	
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
+		super.popupMenuWillBecomeVisible(arg0);
+		// check the compression checkbox if the selected list is checked
+		BinListTrack blt = (BinListTrack) trackList.getSelectedTrack();
+		if (blt != null) {
+			jcbmiCompression.setState(blt.getBinList().isCompressed());
+		}
+		jmOperation.setEnabled(!jcbmiCompression.getState());
 	}
 }
