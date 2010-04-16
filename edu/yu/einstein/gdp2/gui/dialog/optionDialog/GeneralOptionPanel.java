@@ -11,8 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -56,24 +54,19 @@ public final class GeneralOptionPanel extends OptionPanel {
 		
 		jlDefaultDir = new JLabel("Default directory: ");
 		if (cm.getDefaultDirectory() != null) {
-			jtfDefautlDir = new JTextField(new File(cm.getDefaultDirectory()).getAbsolutePath());
+			jtfDefautlDir = new JTextField(new File(cm.getDefaultDirectory()).getPath());
 		} else {
 			jtfDefautlDir = new JTextField();
 		}
 		jtfDefautlDir.setColumns(30);
 		jtfDefautlDir.setEditable(false);
-		jtfDefautlDir.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent arg0) {
-				cm.setDefaultDirectory(jtfDefautlDir.getText());
-			}
-		});
 		
 		jbDefaultDirBrowse = new JButton("Browse");
 		jbDefaultDirBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Default Directory:", new File(cm.getDefaultDirectory()), jtfDefautlDir, false);				
+				browse("Default Directory:", new File(cm.getDefaultDirectory()), jtfDefautlDir, false);
+				cm.setDefaultDirectory(jtfDefautlDir.getText());
 			}
 		});
 		
@@ -82,18 +75,13 @@ public final class GeneralOptionPanel extends OptionPanel {
 		jtfLogFile = new JTextField(new File(cm.getLogFile()).getAbsolutePath());
 		jtfLogFile.setColumns(30);
 		jtfLogFile.setEditable(false);
-		jtfLogFile.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent arg0) {
-				cm.setLogFile(jtfLogFile.getText());
-			}
-		});
 		
 		jbLogBrowse = new JButton("Browse");
 		jbLogBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Log File:", new File(cm.getLogFile()), jtfLogFile, true);				
+				browse("Log File:", new File(cm.getLogFile()), jtfLogFile, true);
+				cm.setLogFile(jtfLogFile.getText());
 			}
 		});
 

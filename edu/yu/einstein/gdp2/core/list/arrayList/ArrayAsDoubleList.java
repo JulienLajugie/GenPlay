@@ -81,7 +81,6 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 				gz.close();
 				data = null;
 				isCompressed = true;
-				System.gc();
 			}
 		} catch (IOException e) {
 			throw new CompressionException("An error occure during the data compression");
@@ -100,7 +99,6 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 				data = (T) ois.readObject();
 				compressedData = null;
 				isCompressed = false;
-				System.gc();
 			}
 		} catch (IOException e) {
 			throw new CompressionException("An error occure during the data uncompression");

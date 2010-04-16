@@ -77,12 +77,12 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	 */
 	public OptionDialog(ConfigurationManager configurationManager) {
 		super();
-		cm = configurationManager;		
+		cm = configurationManager;
 		zoomFile = cm.getZoomFile();
 		chromosomeFile = cm.getChromosomeFile();
 		logFile = cm.getLogFile();
 		defaultDirectory = cm.getDefaultDirectory();
-		lookAndFeel = cm.getLogFile();
+		lookAndFeel = cm.getLookAndFeel();
 		trackCount = cm.getTrackCount();
 		trackHeight = cm.getTrackHeight();
 		
@@ -123,20 +123,21 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// save the data when okay has been pressed
+				approved = APPROVE_OPTION;
+				setVisible(false);	
 				try {
 					cm.writeConfigurationFile();
 				} catch (IOException er) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
 					er.printStackTrace();
 				}	
-				approved = APPROVE_OPTION;
-				setVisible(false);			
 			}
 		});
         jbCancel = new JButton("Cancel");
         jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
 				cm.setZoomFile(zoomFile);
 				cm.setChromosomeFile(chromosomeFile);
 				cm.setLogFile(logFile);
@@ -144,7 +145,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				cm.setLookAndFeel(lookAndFeel);
 				cm.setTrackCount(trackCount);
 				cm.setTrackHeight(trackHeight);
-				setVisible(false);
 			}
 		});
         

@@ -70,7 +70,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		});
 	}
 
-	private static final int VERSION_NUMBER = 82; // GenPlay version
+	private static final int VERSION_NUMBER = 86; // GenPlay version
 	
 	/**
 	 * Title of the application
@@ -111,18 +111,22 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 			//ExceptionManager.handleException(getRootPane(), e, "Configuration file not found.");
 		} 
 		try {
-			if (configurationManager.getChromosomeFile() != null) {
+			if (configurationManager.getChromosomeFile() != "") {
 				chromosomeManager.loadConfigurationFile(new File(configurationManager.getChromosomeFile()));
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			ExceptionManager.handleException(getRootPane(), e, "Chromosome file not found.");
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Chromosome file corrupted");
 		}
 		try {
-			if (configurationManager.getZoomFile() != null) {
+			if (configurationManager.getZoomFile() != "") {
 				zoomManager.loadConfigurationFile(new File(configurationManager.getZoomFile()));
 			}
 		} catch (IOException e) {
 			ExceptionManager.handleException(getRootPane(), e, "Zoom file not found.");
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Zoom file corrupted");
 		}
 
 		Chromosome chromosome = chromosomeManager.getChromosome((short)0);
@@ -257,8 +261,6 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 			setVisible(true);
 			setBounds(screenBounds);
 		}
-
-
 	}
 
 

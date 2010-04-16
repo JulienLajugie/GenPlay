@@ -28,11 +28,11 @@ public final class ConfigurationManager implements Serializable {
 	private static String TEMP_DIR = System.getProperty("java.io.tmpdir");		// java directory for temporary files
 	private static String CONFIG_FILE = "config.cfg";							// path of the config file
 
-	private static final String DEFAULT_ZOOM_FILE = null;						// path of the default zoom config file
-	private static final String DEFAULT_CHROMOSOME_FILE = null;					// path of the default chromosome config file
+	private static final String DEFAULT_ZOOM_FILE = "";							// path of the default zoom config file
+	private static final String DEFAULT_CHROMOSOME_FILE = "";					// path of the default chromosome config file
 	private static final String DEFAULT_LOG_FILE = 
 		new File(TEMP_DIR, "GenPlayLog.txt").getAbsolutePath();					// path of the default log file
-	private static final String DEFAULT_DEFAULT_DIRECTORY = null;				// default directory
+	private static final String DEFAULT_DEFAULT_DIRECTORY = "";					// default directory
 	private static final String DEFAULT_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";// default look and feel
 	private static final int DEFAULT_TRACK_COUNT = 50;							// default number of track
 	private static final int DEFAULT_TRACK_HEIGHT = 100;						// default track height
@@ -112,13 +112,9 @@ public final class ConfigurationManager implements Serializable {
 		try {
 			File configFile = new File(TEMP_DIR, CONFIG_FILE);
 			writer = new BufferedWriter(new FileWriter(configFile));
-			if ((zoomFile != null) && (zoomFile != "")) {
-				writer.write("zoom file: " + zoomFile);
-			}
+			writer.write("zoom file: " + zoomFile);
 			writer.newLine();
-			if ((chromosomeFile != null) && (chromosomeFile != "")) {
-				writer.write("chromosome file: " + chromosomeFile);
-			}
+			writer.write("chromosome file: " + chromosomeFile);
 			writer.newLine();
 			writer.write("log file: " + logFile);
 			writer.newLine();

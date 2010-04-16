@@ -514,7 +514,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int count = 0;
 		for (Track currentTrack: trackList) {
 			if (currentTrack instanceof BinListTrack) {
-				count++;
+				if (!((BinListTrack) currentTrack).getBinList().isCompressed()) {
+					count++;
+				}
 			}
 		}
 		if (count == 0) {
@@ -524,8 +526,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int i = 0;
 		for (Track currentTrack: trackList) {
 			if (currentTrack instanceof BinListTrack) {
-				result[i] = currentTrack;
-				i++;
+				if (!((BinListTrack) currentTrack).getBinList().isCompressed()) {
+					result[i] = currentTrack;
+					i++;
+				}
 			}
 		}
 		return result;

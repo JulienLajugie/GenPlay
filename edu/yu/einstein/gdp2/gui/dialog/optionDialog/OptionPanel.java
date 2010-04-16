@@ -44,8 +44,8 @@ public abstract class OptionPanel extends JPanel {
 	public String toString() {
 		return getName();
 	}
-	
-	
+
+
 	/**
 	 * Open a file choose and set the text field with the chosen value
 	 * @param title	title of the open dialog
@@ -60,11 +60,19 @@ public abstract class OptionPanel extends JPanel {
 		} else {
 			jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		}
-		jfc.setSelectedFile(currentFile.getAbsoluteFile());
+		if ((currentFile != null) && (currentFile.getName() != null) && (!currentFile.getName().equals(""))) {
+			// if the current file exist we select this file
+			jfc.setSelectedFile(currentFile.getAbsoluteFile());
+		} else {
+			if ((cm.getDefaultDirectory() != null) && (!cm.getDefaultDirectory().equals(""))) {
+				// if the current file doesn't exist but if the default directory is set we select this directory
+				jfc.setCurrentDirectory(new File(cm.getDefaultDirectory()));
+			}
+		}
 		jfc.setDialogTitle(title);
-		int returnVal =jfc.showSaveDialog(getRootPane());
+		int returnVal = jfc.showSaveDialog(getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			textField.setText(jfc.getSelectedFile().toString());
-		}
+		}		
 	}
 }

@@ -582,10 +582,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	@Override
 	protected double[] getFittedData(int start, int stop) {
-		for (int i = 0; i < size(); i++) {
-			CompressibleList cl = (CompressibleList) super.get(i);
-			System.out.println((i+1) + ": " + cl.isCompressed());
-		}
 		// for the binlist we return the entire fitted data for the current chromosome
 		return fittedDataList;
 	}
@@ -632,8 +628,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Generates the BinList accelerator and the statistics.
 	 */
@@ -752,15 +748,19 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws CompressionException
 	 */
 	public void compress() throws CompressionException {
-		if (acceleratorBinList != null) {
-			acceleratorBinList.compress();
-		}
-		for (List<Double> currentList: this) {
+		for (int i = 0; i < size(); i++) {
+			final List<Double> currentList = get(i);
 			if (currentList instanceof CompressibleList) {
 				((CompressibleList)currentList).compress();
 			}
 		}
 		isCompressed = true;
+		if (acceleratorBinList != null) {
+			acceleratorBinList.compress();				
+		} else {
+			// if there is no more accelerator BinList we call the garbage collector
+			System.gc();
+		}
 	}
 
 
@@ -769,18 +769,21 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws CompressionException
 	 */
 	public void uncompress() throws CompressionException {
-		if (acceleratorBinList != null) {
-			acceleratorBinList.uncompress();
-		}
 		for (List<Double> currentList: this) {
 			if (currentList instanceof CompressibleList) {
 				((CompressibleList)currentList).uncompress();
 			}
 		}
 		isCompressed = false;
+		if (acceleratorBinList != null) {
+			acceleratorBinList.uncompress();
+		} else {
+			// if there is no more accelerator BinList we call the garbage collector
+			System.gc();
+		}
 	}
-	
-	
+
+
 
 
 	/**
