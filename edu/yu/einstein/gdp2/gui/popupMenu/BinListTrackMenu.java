@@ -231,5 +231,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 			jcbmiCompression.setState(blt.getBinList().isCompressed());
 		}
 		jmOperation.setEnabled(!jcbmiCompression.getState());
+		jmiSave.setEnabled(!jcbmiCompression.getState());
 	}
 }

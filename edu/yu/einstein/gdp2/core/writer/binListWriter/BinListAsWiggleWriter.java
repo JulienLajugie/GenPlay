@@ -43,7 +43,7 @@ public final class BinListAsWiggleWriter extends BinListWriter {
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
-			writer.write("#track type=wiggle name=" + name);
+			writer.write("track type=wiggle name=" + name);
 			writer.newLine();
 			int binSize = data.getBinSize();
 			// print the data

@@ -94,7 +94,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 			double yMid = 0;
 			if ((binList.get(currentChromosome) != null) && ((xMid / binList.getBinSize()) < binList.size(currentChromosome))) { 
 				//yMid = binList.get(currentChromosome, xMid / binList.getBinSize());
-				yMid = binList.getFittedData(genomeWindow, xFactor)[xMid / binList.getFittedBinSize()];
+				yMid = binList.getScore(xMid);
 			}
 			g.drawString("y=" + SCORE_FORMAT.format(yMid), getWidth() / 2 + 3, getHeight() - 2);
 		} catch (Exception e) {

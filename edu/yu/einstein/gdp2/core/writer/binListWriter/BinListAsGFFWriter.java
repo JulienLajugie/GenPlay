@@ -41,7 +41,7 @@ public final class BinListAsGFFWriter extends BinListWriter {
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
-			writer.write("#track type=GFF name=" + name);
+			writer.write("track type=GFF name=" + name);
 			writer.write("##GFF");
 			writer.newLine();
 			int binSize = data.getBinSize();

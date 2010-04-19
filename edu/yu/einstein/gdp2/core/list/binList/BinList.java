@@ -516,7 +516,10 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	@Override
 	protected void fitToScreen() {
 		try {
+			// if there is to many bins to print we print the bins of the accelerator BinList 
+			// (same list) with bigger binsize
 			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
+				// if the accelerator binlist doesn't exist we create it
 				if (acceleratorBinList == null) {
 					acceleratorBinList = BinListOperations.changeBinSize(this, binSize * ACCELERATOR_FACTOR, ScoreCalculationMethod.AVERAGE);
 					acceleratorBinList.fittedChromosome = fittedChromosome;
@@ -526,9 +529,40 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				acceleratorBinList.fitToScreen();
 				this.fittedDataList = acceleratorBinList.fittedDataList;
 				this.fittedBinSize = acceleratorBinList.fittedBinSize;
+			// else even if the binsize of the current binlist is adapted,
+			// we might still need to calculate the average if we have to print 
+			//more than one bin per pixel
 			} else {
-				this.fittedDataList = acceleratorCurrentChromo;
-				this.fittedBinSize = binSize;				
+				// we calculate how many windows are printable depending on the screen resolution
+				this.fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
+				int binSizeRatio  = fittedBinSize / binSize;
+				// if the fitted bin size is smaller than the regular bin size we don't modify the data
+				if (fittedBinSize <= binSize) {
+					this.fittedDataList = acceleratorCurrentChromo;
+					this.fittedBinSize = binSize;	
+				} else {
+					// otherwise we calculate the average because we have to print more than
+					// one bin per pixel
+					fittedDataList = new double[(int)(acceleratorCurrentChromo.length / binSizeRatio + 1)];
+					int newIndex = 0;
+					for(int i = 0; i < acceleratorCurrentChromo.length; i += binSizeRatio) {
+						double sum = 0;
+						int n = 0;
+						for(int j = 0; j < binSizeRatio; j ++) {
+							if ((i + j < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
+								sum += acceleratorCurrentChromo[i + j];
+								n++;					
+							}				
+						}
+						if (n > 0) {
+							fittedDataList[newIndex] = sum / n;
+						}
+						else {
+							fittedDataList[newIndex] = 0;
+						}
+						newIndex++;
+					}		
+				}
 			}
 		} catch (Exception e) {
 			fittedDataList = null;
@@ -586,6 +620,15 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		return fittedDataList;
 	}
 
+	
+	/**
+	 * @return the score of the specified position on the fitted chromosome
+	 */
+	public double getScore(int position) {
+		// for the binlist we return the entire data for the current chromosome
+		return acceleratorCurrentChromo[position / binSize];
+	}
+	
 
 	/**
 	 * @return the bin size of this {@link BinList}
