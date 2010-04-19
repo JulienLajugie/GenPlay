@@ -70,7 +70,7 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		});
 	}
 
-	private static final int VERSION_NUMBER = 87; // GenPlay version
+	private static final int VERSION_NUMBER = 88; // GenPlay version
 	
 	/**
 	 * Title of the application

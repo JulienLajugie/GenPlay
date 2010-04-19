@@ -41,7 +41,7 @@ public final class BinListAsGFFWriter extends BinListWriter {
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
-			writer.write("track type=GFF name=" + name);
+			writer.write("#track type=GFF name=" + name);
 			writer.write("##GFF");
 			writer.newLine();
 			int binSize = data.getBinSize();
@@ -52,7 +52,7 @@ public final class BinListAsGFFWriter extends BinListWriter {
 					for (int j = 0; j < currentList.size(); j++) {
 						// we don't print the line if the score is 0
 						if (currentList.get(j) != 0) {
-							writer.write(currentChromosome.getName() + "\t-\t-\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t-\t" + currentList.get(j) + "\t-\t-");
+							writer.write(currentChromosome.getName() + "\t-\t-\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j) + "\t+\t-\t-");
 							writer.newLine();
 						}
 					}
