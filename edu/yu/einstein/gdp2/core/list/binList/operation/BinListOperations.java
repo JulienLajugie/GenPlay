@@ -13,8 +13,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -94,7 +100,7 @@ public class BinListOperations {
 		return resultList;		
 	}
 
-	
+
 	/**
 	 * @param chromoList array of boolean. 
 	 * @return true if all the booleans are set to true or if the array is null. False otherwise 
@@ -110,8 +116,8 @@ public class BinListOperations {
 		}
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * @param binList
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -452,48 +458,79 @@ public class BinListOperations {
 	 * @param precision precision of the result {@link BinList}
 	 * @return a new {@link BinList}
 	 */
-	public static BinList gauss(BinList binList, int sigma, DataPrecision precision) {
-		int binSize =  binList.getBinSize();
-		int distance;
-		int halfWidth = 2 * sigma / binSize;
+	public static BinList gauss(final BinList binList, final int sigma, final DataPrecision precision) {
+
+		int nbProcessor = Runtime.getRuntime().availableProcessors();
+		long start = System.currentTimeMillis();
+		ExecutorService executor = Executors.newFixedThreadPool(nbProcessor);
+		Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+
+		final int binSize =  binList.getBinSize();
+		final int halfWidth = 2 * sigma / binSize;
 		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient 
-		double[] coefTab = new double[halfWidth + 1];
+		final double[] coefTab = new double[halfWidth + 1];
 		for(int i = 0; i <= halfWidth; i++) {
 			coefTab[i] = Math.exp(-(Math.pow(((double) (i * binSize)), 2) / (2.0 * Math.pow((double) sigma, 2))));
 		}
 		// we gauss
 		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);	
 		for(short i = 0; i < binList.size(); i++) {
-			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
-				resultList.add(null);
-			} else {
-				List<Double> listToAdd = ListFactory.createList(precision, binList.size(i));
-				resultList.add(listToAdd);
-				for(int j = 0; j < binList.size(i); j++) {
-					if(binList.get(i, j) != 0)  {
-						// apply the array of coefficients centered on the current value to gauss
-						double SumCoef = 0;
-						double SumNormSignalCoef = 0;
-						for (int k = -halfWidth; k <= halfWidth; k++) {
-							if((j + k >= 0) && ((j + k) < binList.size(i)))  {
-								distance = Math.abs(k);
-								if(binList.get(i, j + k) != 0)  {
-									SumCoef += coefTab[distance];
-									SumNormSignalCoef += coefTab[distance] * binList.get(i, j + k);
+			final List<Double> currentList = binList.get(i);
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {			 	
+				@Override
+				public List<Double> call() throws Exception {
+					if ((currentList == null) || (currentList.size() == 0)) {
+						return null;
+					} else {
+						List<Double> listToAdd = ListFactory.createList(precision, currentList.size());
+						for(int j = 0; j < currentList.size(); j++) {
+							if(currentList.get(j) != 0)  {
+								// apply the array of coefficients centered on the current value to gauss
+								double SumCoef = 0;
+								double SumNormSignalCoef = 0;
+								for (int k = -halfWidth; k <= halfWidth; k++) {
+									if((j + k >= 0) && ((j + k) < currentList.size()))  {
+										int distance = Math.abs(k);
+										if(currentList.get(j + k) != 0)  {
+											SumCoef += coefTab[distance];
+											SumNormSignalCoef += coefTab[distance] * currentList.get(j + k);
+										}
+									}
 								}
+								if(SumCoef == 0) {
+									listToAdd.set(j, 0d);
+								} else {
+									listToAdd.set(j, SumNormSignalCoef / SumCoef);
+								}
+							} else {
+								listToAdd.set(j, 0d);
 							}
 						}
-						if(SumCoef == 0) {
-							resultList.set(i, j, 0d);
-						} else {
-							resultList.set(i, j, SumNormSignalCoef / SumCoef);
-						}
-					} else {
-						resultList.set(i, j, 0d);
-					}
+						return listToAdd;
+					}					
 				}
-			}
+			};
+			threadList.add(currentThread);
 		}
+		
+		List<Future<List<Double>>> result = null;
+		try {
+			result = executor.invokeAll(threadList);
+			System.out.println(((System.currentTimeMillis() - start) / 1000));
+			//executor.awaitTermination(1, TimeUnit.DAYS);
+			for (int j = 0; j < result.size(); j++) {
+				resultList.add(result.get(j).get());
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+
 		resultList.finalizeConstruction();
 		return resultList;
 	}

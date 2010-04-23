@@ -22,6 +22,7 @@ import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGene
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -97,7 +98,7 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 				if (extractor.getName() != null) {
 					name = extractor.getName();
 				} else {
-					name = fileToExtract.getName();
+					name = Utils.getFileNameWithoutExtension(fileToExtract);
 				}
 				System.gc();
 				return generateList();

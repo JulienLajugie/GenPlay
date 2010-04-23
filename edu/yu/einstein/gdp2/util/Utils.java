@@ -138,7 +138,7 @@ public class Utils {
 				DataPrecision.PRECISION_32BIT);
 	}	
 
-	
+
 	/**
 	 * A dialog box used to choose a {@link SaturationType}
 	 * @param parentComponent the parent Component for the dialog 
@@ -154,8 +154,8 @@ public class Utils {
 				SaturationType.values(),
 				SaturationType.PERCENTAGE);
 	}	
-	
-	
+
+
 	/**
 	 * A dialog box used to choose a {@link DataPrecision}
 	 * @param parentComponent the parent Component for the dialog 
@@ -172,7 +172,7 @@ public class Utils {
 				DataPrecision.values(),
 				defaultValue);
 	}
-	
+
 
 	/**
 	 * A dialog box used to choose a {@link ScoreCalculationMethod}
@@ -219,6 +219,21 @@ public class Utils {
 
 
 	/**
+	 * @param file a {@link File}
+	 * @return the name of a file without its extension
+	 */
+	public static String getFileNameWithoutExtension(File file) {
+		String fileName = file.getName();
+		int index = fileName.lastIndexOf('.');		
+		if ((index > 0) && (index <= file.getName().length() - 2)) {
+			return fileName.substring(0, index);
+		} else {
+			return fileName;
+		}
+	}
+
+
+	/**
 	 * @return the {@link ExtendedFileFilter} associated to the gene files
 	 */
 	public static ExtendedFileFilter[] getGeneFileFilters() {
@@ -243,8 +258,8 @@ public class Utils {
 		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
 		return stripeFileFilters;
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the stripe files
 	 */
@@ -253,7 +268,7 @@ public class Utils {
 		return stripeFileFilters;
 	}
 
-	
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the sequence files (aka nucleotide list files)
 	 */
@@ -261,8 +276,8 @@ public class Utils {
 		ExtendedFileFilter[] sequenceFileFilters = {new TwoBitFilter()};
 		return sequenceFileFilters;
 	}
-	
-	
+
+
 	/**
 	 * Returns a color associated to a score. 
 	 * High intensities are red. Medium are green. Low are blue.

@@ -119,7 +119,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 									int[] exonStarts = new int[exonLengthsStr.length];
 									int[] exonStops = new int[exonLengthsStr.length];
 									for (int i = 0; i < exonLengthsStr.length; i++) {
-										exonStarts[i] = Integer.parseInt(exonStartsStr[i]);
+										exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
 										exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
 									}
 									exonStartsList.add(chromosome, exonStarts);
