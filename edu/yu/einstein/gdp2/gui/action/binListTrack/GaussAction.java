@@ -9,7 +9,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOGauss;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -60,16 +61,16 @@ public final class GaussAction extends TrackListAction {
 			if(windowSize > 0) {
 				final Integer sigma = GenomeWidthChooser.getSigma(getRootPane(), windowSize);
 				if(sigma != null) {
+					final BinListOperation<BinList> operation = new BLOGauss(binList, sigma);
 					// thread for the action
 					new ActionWorker<BinList>(trackList, "Gaussing") {
 						@Override
-						protected BinList doAction() {
-							return BinListOperations.gauss(binList, sigma, binList.getPrecision());
+						protected BinList doAction() throws Exception {
+							return operation.compute();
 						}
 						@Override
 						protected void doAtTheEnd(BinList actionResult) {
-							String description = "gauss track, sigma = " + sigma + "bp";
-							selectedTrack.setBinList(actionResult, description);							
+							selectedTrack.setBinList(actionResult, operation.getDescription());
 						}
 					}.execute();
 				}

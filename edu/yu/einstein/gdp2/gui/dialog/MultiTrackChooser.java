@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.dialog;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -16,6 +17,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -89,6 +91,8 @@ public class MultiTrackChooser extends JDialog {
 		
 		jliAvailableTracks = new JList(dlmAvailableTracks);
 		jliAvailableTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
+		jliAvailableTracks.setBorder(BorderFactory.createLineBorder(Color.black));
+		jliAvailableTracks.setBackground(Color.white);
 		jliAvailableTracks.addListSelectionListener(new ListSelectionListener() {			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {
@@ -120,6 +124,8 @@ public class MultiTrackChooser extends JDialog {
 		
 		jliSelectedTracks = new JList(dlmSelectedTracks);
 		jliSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
+		jliSelectedTracks.setBorder(BorderFactory.createLineBorder(Color.black));
+		jliSelectedTracks.setBackground(Color.white);
 		jliSelectedTracks.addListSelectionListener(new ListSelectionListener() {			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {

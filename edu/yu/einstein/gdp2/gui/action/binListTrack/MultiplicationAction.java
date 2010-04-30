@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOMultiply;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -69,12 +70,13 @@ public final class MultiplicationAction extends TrackListAction {
 					if (precision != null) {
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();
+						final BinListOperation<BinList> operation = new BLOMultiply(binList1, binList2, precision);
 						// thread for the action
-						new ActionWorker<BinList>(trackList, "Multiplicating Tracks") {
+						new ActionWorker<BinList>(trackList, "Multiplying Tracks") {
 							@Override
-							protected BinList doAction() {
+							protected BinList doAction() throws Exception {
 								try {
-									return BinListOperations.multiplication(binList1, binList2, precision);
+									return operation.compute(); // multiplicating
 								} catch (BinListDifferentWindowSizeException e) {
 									ExceptionManager.handleException(getRootPane(), e, "Multiplying two tracks with different window sizes is not allowed");
 									return null;
@@ -82,14 +84,13 @@ public final class MultiplicationAction extends TrackListAction {
 							}
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
-								if (actionResult != null) {
-									int index = resultTrack.getTrackNumber() - 1;
-									BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
-									// add info to the history
-									newTrack.getHistory().add("Result of the multiplication of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
-									newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " * " + otherTrack.getName(), null);
-								}								
+								int index = resultTrack.getTrackNumber() - 1;
+								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								// add info to the history
+								newTrack.getHistory().add("Result of the multiplication of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
+								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
+								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " * " + otherTrack.getName(), null);
+
 							}
 						}.execute();
 					}

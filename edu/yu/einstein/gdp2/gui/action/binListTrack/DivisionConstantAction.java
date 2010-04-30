@@ -9,15 +9,14 @@ import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 
-import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLODivideConstant;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -32,7 +31,7 @@ public class DivisionConstantAction extends TrackListAction {
 	private static final String 	DESCRIPTION = 
 		"Divide the scores of the selected track by a constant";		// tooltip
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -61,26 +60,18 @@ public class DivisionConstantAction extends TrackListAction {
 			final Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Divide the scores of the track by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0) && (constant.doubleValue() != 1)) {
 				final BinList binList = ((BinListTrack)selectedTrack).getBinList();
-				final DataPrecision precision = Utils.choosePrecision(getRootPane());
-				if (precision != null) {
-					final String description;
-					if (precision != binList.getPrecision()) {
-						description = "Divides by constant C = " + constant + ", Precision changed: New Precision = " + precision;
-					} else {
-						description = "Divides by constant C = " + constant;
+				final BinListOperation<BinList> operation = new BLODivideConstant(binList, constant.doubleValue());
+				// thread for the action
+				new ActionWorker<BinList>(trackList, "Dividing by Constant") {
+					@Override
+					protected BinList doAction() throws Exception {
+						return operation.compute();
 					}
-					// thread for the action
-					new ActionWorker<BinList>(trackList, "Dividing by Constant") {
-						@Override
-						protected BinList doAction() {
-							return BinListOperations.division(binList, constant.doubleValue(), precision);
-						}
-						@Override
-						protected void doAtTheEnd(BinList actionResult) {
-							selectedTrack.setBinList(actionResult, description);
-						}
-					}.execute();
-				}
+					@Override
+					protected void doAtTheEnd(BinList actionResult) {
+						selectedTrack.setBinList(actionResult, operation.getDescription());
+					}
+				}.execute();
 			}
 		}
 	}

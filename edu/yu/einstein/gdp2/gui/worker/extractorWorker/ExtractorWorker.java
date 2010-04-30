@@ -116,7 +116,6 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 	 */
 	@Override
 	final protected void done() {
-		notifyActionEnded("Done");
 		doAtTheEnd();
 	}
 

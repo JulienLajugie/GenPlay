@@ -127,19 +127,21 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 * @param description description of binList
 	 */
 	public void setBinList(BinList binList, String description) {
-		try {
-			history.add(description);
-			undoBinList = BinListOperations.serializeAndZip(this.binList);
-			redoBinList = null;
-			firePropertyChange("binList", this.binList, binList);
-			this.binList = binList;
-			yMin = BinListOperations.minScoreToDisplay(binList);
-			yMax = BinListOperations.maxScoreToDisplay(binList);
-			repaint();
-		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while adding a damper");
-			history.setLastAsError();
-		}	
+		if (binList != null) {
+			try {
+				history.add(description);
+				undoBinList = BinListOperations.serializeAndZip(this.binList);
+				redoBinList = null;
+				firePropertyChange("binList", this.binList, binList);
+				this.binList = binList;
+				yMin = BinListOperations.minScoreToDisplay(binList);
+				yMax = BinListOperations.maxScoreToDisplay(binList);
+				repaint();
+			} catch (Exception e) {
+				ExceptionManager.handleException(getRootPane(), e, "Error while updating the track");
+				history.setLastAsError();
+			}	
+		}
 	}
 
 

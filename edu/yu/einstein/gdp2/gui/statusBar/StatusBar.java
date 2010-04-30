@@ -4,21 +4,17 @@
  */
 package yu.einstein.gdp2.gui.statusBar;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 
+import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
+import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEvent;
+import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressListener;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 
@@ -28,97 +24,98 @@ import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class StatusBar extends JPanel implements TrackListActionListener{
+public class StatusBar extends JPanel implements TrackListActionListener, OperationProgressListener {
 
 	private static final long serialVersionUID = 6145997500187047785L; // generated ID
 	private static final int 	PANEL_HEIGHT = 10; 	// height of the status bar
 	private final MemoryPanel 	memoryPanel;		// panel showing the memory usage
-	private final JProgressBar 	jpbProgress;		// progress bar
-	private final JLabel 		jlAction;			// label in the middle of the bar
-	private TimeCounter 		timeCounterThread;	// thread showing the time elapsed in the progress bar
-	
-	
-	/**
-	 * Thread displaying the time elapsed in the progress bar
-	 * @author Julien Lajugie
-	 * @version 0.1
-	 */
-	private class TimeCounter extends Thread {
-		@Override
-		public void run() {
-			// set the date format
-			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-			// the correct elapsed time it has to be adjusted to UTC so that 
-			// it compensates for the timezone and daylight saving time differences
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			long startTime = System.currentTimeMillis();
-			jpbProgress.setFont(new Font("ARIAL", Font.PLAIN, 9));
-			Thread thisThread = Thread.currentThread();
-			while (timeCounterThread == thisThread) {
-				try {
-					long currentTime = System.currentTimeMillis();
-					String timeString = new String(sdf.format(new Date(currentTime - startTime)));
-					jpbProgress.setString(timeString);
-					sleep(1000);					
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	};
-	
-	
+	private final ProgressBar	progressBar;		// progress bar
+	private final StopButton	stopButton;			// stop button
+	private final StatusLabel 	statusLabel;		// label in the middle of the bar
+
+		
 	/**
 	 * Creates an instance of {@link StatusBar}
 	 */
-	public StatusBar() {		
-		jpbProgress = new JProgressBar();
-		jpbProgress.setBackground(Color.white);
-		jpbProgress.setMinimumSize(jpbProgress.getPreferredSize());
-		jpbProgress.setSize(jpbProgress.getPreferredSize());
-		jlAction = new JLabel();
-		
+	public StatusBar() {
+		// we create the subcomponents
+		progressBar = new ProgressBar();
+		stopButton = new StopButton();
+		statusLabel = new StatusLabel();		
 		memoryPanel = new MemoryPanel();
 		
+		// we add the subcomponents to the status bar
 		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
 		
+		GridBagConstraints gbc = new GridBagConstraints();		
 		gbc.fill = GridBagConstraints.VERTICAL;
-		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.insets = new Insets(5, 10, 5, 3);
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		add(progressBar, gbc);
+
+		gbc = new GridBagConstraints();
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		gbc.gridx = 1;
+		add(stopButton, gbc);		
+		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		gbc.insets = new Insets(5, 10, 5, 0);
-		add(jpbProgress, gbc);
+		gbc.gridx = 2;
+		add(statusLabel, gbc);
 
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.gridx = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		add(jlAction, gbc);
-
-		gbc.anchor = GridBagConstraints.LINE_END;
-		gbc.gridx = 2;		
+		gbc = new GridBagConstraints();
+		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.weightx = 0;
+		gbc.weighty = 1;
+		gbc.gridx = 3;		
 		add(memoryPanel, gbc);
 		
 		setPreferredSize(new Dimension(getPreferredSize().width, PANEL_HEIGHT));
 		setBorder(BorderFactory.createEtchedBorder());
+		// add itself as a listener of the OperationPool 
+		OperationPool.getInstance().addOperationProgressListener(this);
 	}
 	
 
 	@Override
 	public void actionEnds(TrackListActionEvent evt) {
-		jpbProgress.setStringPainted(false);
-		timeCounterThread = null;
-		jpbProgress.setIndeterminate(false);
-		jlAction.setText(evt.getActionDescription());	
+		statusLabel.actionEnds(evt);
+		progressBar.setProgress(100);
+		progressBar.setIndeterminate(false);
 	}
 
 
 	@Override
 	public void actionStarts(TrackListActionEvent evt) {
-		jpbProgress.setIndeterminate(true);
-		jlAction.setText(evt.getActionDescription());
-		jpbProgress.setStringPainted(true);
-		timeCounterThread = new TimeCounter();
-		timeCounterThread.start();
+		statusLabel.actionStarts(evt);
+		progressBar.setProgress(0);
+		progressBar.setIndeterminate(true);
+	}
+
+
+	@Override
+	public void operationProgressChanged(OperationProgressEvent evt) {
+		// we set the state of the progress bar anyway
+		progressBar.setProgress((int) evt.getCompletion());
+		if (evt.getState() == OperationProgressEvent.STARTING) {
+			// when the operation starts
+			stopButton.setEnabled(true);			
+		} else if (evt.getState() == OperationProgressEvent.COMPLETE) {
+			// when the operation is done but the action not necessary finished
+			stopButton.setEnabled(false);
+			statusLabel.setDescription("Updating Track");
+			// set the progress bar indeterminate so if there is something to finalize
+			// the progress bar is still busy
+			progressBar.setIndeterminate(true);
+		} else if (evt.getState() == OperationProgressEvent.ABORT) {
+			// when the operation is aborted
+			stopButton.setEnabled(false);
+			statusLabel.setDescription("Aborting Operation");
+		}
 	}
 }

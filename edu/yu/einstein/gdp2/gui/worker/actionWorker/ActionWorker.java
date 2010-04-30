@@ -6,7 +6,6 @@ package yu.einstein.gdp2.gui.worker.actionWorker;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.SwingWorker;
 
 import yu.einstein.gdp2.exception.valueOutOfRangeException.ValueOutOfRangeException;
@@ -47,16 +46,30 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	@Override
 	final protected T doInBackground() {
 		notifyActionStarted(actionStartDescription);
-		return doAction();		
+		try {
+			return doAction();
+		} catch (ValueOutOfRangeException e) {
+			// when a value is out of the current data precision
+			notifyActionEnded("Error");
+			ExceptionManager.handleException(trackList.getRootPane(), e, e.getMessage());
+			return null;
+		} catch (Exception e) {
+			notifyActionEnded("Error");
+			ExceptionManager.handleException(trackList.getRootPane(), e, "Operation Aborted: An Error Occured");
+			return null;
+		}
 	};
 
 
 	@Override
 	final protected void done() {
 		try {
-			this.get();
-			notifyActionEnded("Done");
-			doAtTheEnd(this.get());
+			if (this.get() == null) {
+				notifyActionEnded("Operation Aborted");
+			} else {
+				notifyActionEnded("Operation Done");
+				doAtTheEnd(this.get());
+			}
 		} catch (Exception e) {
 			notifyActionEnded("An error occurred during the operation");
 			// if the cause of the error is an instance of  ValueOutOfRangeException we display the error message
@@ -72,8 +85,9 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	/**
 	 * Must be overloaded to specify the action to do
 	 * @return the result of the action
+	 * @throws Exception
 	 */
-	protected abstract T doAction();
+	protected abstract T doAction() throws Exception;
 
 
 	/**

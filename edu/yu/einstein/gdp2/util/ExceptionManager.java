@@ -22,9 +22,9 @@ public final class ExceptionManager {
 	 * @param message error message to display.
 	 */
 	public static void handleException(JComponent jc, Exception e, String message) {
-		JOptionPane.showMessageDialog(jc.getRootPane(), message, "Error", JOptionPane.ERROR_MESSAGE);
-		showStack(jc, e);
 		e.printStackTrace();
+		JOptionPane.showMessageDialog(jc.getRootPane(), message, "Error", JOptionPane.ERROR_MESSAGE);
+		//showStack(jc, e);
 	}
 	
 	

@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOCountNonNullBins;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -61,17 +62,16 @@ public final class BinCountAction extends TrackListAction {
 			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), trackList.getChromosomeManager());
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
+				final BinListOperation<Long> operation = new BLOCountNonNullBins(binList, selectedChromo);
 				// thread for the action
 				new ActionWorker<Long>(trackList, "Counting Bins") {
 					@Override
-					protected Long doAction() {
-						return BinListOperations.binCount(binList, selectedChromo);
+					protected Long doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(Long actionResult) {
-						if (actionResult != null) {
-							JOptionPane.showMessageDialog(getRootPane(), "Number of non-null bins: \n" + new DecimalFormat("###,###,###,###").format(actionResult), "Number of Bins", JOptionPane.INFORMATION_MESSAGE);
-						}
+						JOptionPane.showMessageDialog(getRootPane(), "Number of non-null bins: \n" + new DecimalFormat("###,###,###,###").format(actionResult), "Number of Bins", JOptionPane.INFORMATION_MESSAGE);
 					}							
 				}.execute();
 			}

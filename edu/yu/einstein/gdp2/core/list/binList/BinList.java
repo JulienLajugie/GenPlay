@@ -445,6 +445,24 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 
 	/**
+	 * Creates an instance of {@link BinList}
+	 * @param chromosomeManager {@link ChromosomeManager}
+	 * @param binSize size of the bins
+	 * @param precision precision of the data
+	 * @param data data of the BinList
+	 */
+	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, List<List<Double>> data) {
+		super(chromosomeManager);
+		this.binSize = binSize;
+		this.precision = precision;
+		for (List<Double> currentList: data) {
+			add(currentList);
+		}
+		finalizeConstruction();
+	}
+
+
+	/**
 	 * Returns a list containing a value of intensity for each bin.
 	 * It goes through the list of positions and a list of intensities and load the BinList from this data. 
 	 * If more than one position is found for one bin, the intensity of the bin is the maximum of the intensities of the positions

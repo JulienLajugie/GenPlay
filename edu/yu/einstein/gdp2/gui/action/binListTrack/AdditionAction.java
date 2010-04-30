@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOAdd;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -68,30 +69,26 @@ public final class AdditionAction extends TrackListAction {
 					if (precision != null) {
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();						
+						final BinListOperation<BinList> operation = new BLOAdd(binList1, binList2, precision);
 						// thread for the action
 						new ActionWorker<BinList>(trackList, "Adding Tracks") {
 							@Override
-							protected BinList doAction() {
+							protected BinList doAction() throws Exception {
 								try {
-									return BinListOperations.addition(binList1, binList2, precision);
+									return operation.compute();
 								} catch (BinListDifferentWindowSizeException e) {
 									ExceptionManager.handleException(getRootPane(), e, "Adding two tracks with different window sizes is not allowed");
-									return null;
-								} catch (Exception e) {
-									ExceptionManager.handleException(getRootPane(), e, "Error while summing the tracks");
 									return null;
 								}
 							}
 							@Override
 							protected void doAtTheEnd(BinList resultList) {
-								if (resultList != null) {
-									int index = resultTrack.getTrackNumber() - 1;
-									BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), resultList);
-									// add info to the history
-									newTrack.getHistory().add("Result of the addition of " + selectedTrack.getName() + " and " + otherTrack.getName(), Color.GRAY);
-									newTrack.getHistory().add("Window Size = " + resultList.getBinSize() + "bp, Precision = " + resultList.getPrecision(), Color.GRAY);
-									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " + " + otherTrack.getName(), null);
-								}
+								int index = resultTrack.getTrackNumber() - 1;
+								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), resultList);
+								// add info to the history
+								newTrack.getHistory().add("Result of the addition of " + selectedTrack.getName() + " and " + otherTrack.getName(), Color.GRAY);
+								newTrack.getHistory().add("Window Size = " + resultList.getBinSize() + "bp, Precision = " + resultList.getPrecision(), Color.GRAY);
+								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " + " + otherTrack.getName(), null);
 
 							}
 						}.execute();

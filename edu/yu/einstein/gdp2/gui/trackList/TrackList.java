@@ -535,7 +535,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		return result;
 	}
 
-	
+
 	/**
 	 * @return an array containing all the {@link CurveTrack}
 	 */
@@ -559,8 +559,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link ChromosomeManager}
 	 */
@@ -700,20 +700,20 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		setGenomeWindow(evt.getNewWindow());	
 	}
-	
-	
+
+
 	@Override
 	public GenomeWindowListener[] getGenomeWindowListeners() {
 		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
 		return gwListenerList.toArray(genomeWindowListeners);
 	}
-	
-	
+
+
 	@Override
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		gwListenerList.remove(genomeWindowListener);		
 	}
-	
+
 
 	/**
 	 * Saves the current list of tracks into a file
@@ -746,17 +746,14 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	/**
 	 * Loads a list of tracks from a file
+	 * @throws Exception 
 	 */
-	public void loadProject(File inputFile) {
-		try {
-			FileInputStream fis = new FileInputStream(inputFile);
-			GZIPInputStream gz = new GZIPInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(gz);
-			trackList = (Track[])ois.readObject();
-			rebuildPanel();
-		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "An error occurred while loading the project"); 
-		}
+	public void loadProject(File inputFile) throws Exception {
+		FileInputStream fis = new FileInputStream(inputFile);
+		GZIPInputStream gz = new GZIPInputStream(fis);
+		ObjectInputStream ois = new ObjectInputStream(gz);
+		trackList = (Track[])ois.readObject();
+		rebuildPanel();
 	}
 
 

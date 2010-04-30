@@ -66,7 +66,7 @@ public class LoadProjectAction extends AbstractAction {
 		if (selectedFile != null) {
 			new ActionWorker<Void>(trackList, "Loading Project") {
 				@Override
-				protected Void doAction() {
+				protected Void doAction() throws Exception {
 					trackList.loadProject(selectedFile);
 					return null;
 				}

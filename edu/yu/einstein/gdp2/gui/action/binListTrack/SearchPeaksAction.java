@@ -4,28 +4,24 @@
  */
 package yu.einstein.gdp2.gui.action.binListTrack;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 
-import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOSearchPeaks;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
-import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.Utils;
 
 
 /**
- * Creates a new track containing only the peaks of the selected one.
+ * Searches the peaks of a track.
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -34,8 +30,7 @@ public final class SearchPeaksAction extends TrackListAction {
 	private static final long serialVersionUID = 1524662321569310278L;  // generated ID
 	private static final String 	ACTION_NAME = "Search Peaks";		// action name
 	private static final String 	DESCRIPTION = 
-		"Creates a new track containing only the " +
-		"peaks of the selected one";									// tooltip
+		"Search the peaks of the selected track";						// tooltip
 
 
 	/**
@@ -57,7 +52,7 @@ public final class SearchPeaksAction extends TrackListAction {
 
 
 	/**
-	 * Creates a new track containing only the peaks of the selected one.
+	 * Searches the peaks of a track
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -68,26 +63,18 @@ public final class SearchPeaksAction extends TrackListAction {
 			if(sizeMovingSD != null) {
 				final Number nbSDAccepted = NumberOptionPane.getValue(getRootPane(), "Threshold", "Select only peak with a local SD x time higher than the global one", new DecimalFormat("0.0"), 0, 1000, 1).intValue(); 
 				if(nbSDAccepted != null) {
-					final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
-					if (resultTrack != null) {
-						final DataPrecision precision = Utils.choosePrecision(getRootPane());
-						// thread for the action
-						new ActionWorker<BinList>(trackList, "Searching Peaks") {
-							@Override
-							protected BinList doAction() {
-								return BinListOperations.searchPeaks(binList, sizeMovingSD.intValue(), nbSDAccepted.doubleValue(), precision);
-							}
-							@Override
-							protected void doAtTheEnd(BinList actionResult) {
-								int index = resultTrack.getTrackNumber() - 1;
-								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
-								// add info to the history
-								newTrack.getHistory().add("Result of the peak search on " + selectedTrack.getName() + ", Moving StdDev Window = " + sizeMovingSD +"bp, Threshold = " + nbSDAccepted + "Genomewide StdDev");
-								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes());								
-							}
-						}.execute();
-					}
+					final BinListOperation<BinList> operation = new BLOSearchPeaks(binList, sizeMovingSD.intValue(), nbSDAccepted.intValue());
+					// thread for the action
+					new ActionWorker<BinList>(trackList, "Searching Peaks") {
+						@Override
+						protected BinList doAction() throws Exception {
+							return operation.compute();
+						}
+						@Override
+						protected void doAtTheEnd(BinList actionResult) {
+							selectedTrack.setBinList(actionResult, operation.getDescription());						
+						}
+					}.execute();
 				}
 			}
 		}		

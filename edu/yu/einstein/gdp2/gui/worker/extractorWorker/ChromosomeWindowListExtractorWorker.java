@@ -29,7 +29,7 @@ public class ChromosomeWindowListExtractorWorker extends ExtractorWorker<Chromos
 	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
 	public ChromosomeWindowListExtractorWorker(TrackList trackList,	String logFile, File fileToExtract,	ChromosomeManager chromosomeManager) {
-		super(trackList, logFile, fileToExtract, chromosomeManager,	ChromosomeWindowListGenerator.class, "Loading Chromosome Window Track");
+		super(trackList, logFile, fileToExtract, chromosomeManager,	ChromosomeWindowListGenerator.class, "Loading Stripes");
 	}
 
 	
@@ -38,6 +38,7 @@ public class ChromosomeWindowListExtractorWorker extends ExtractorWorker<Chromos
 		try {
 			if (this.get() != null) {
 				trackList.getSelectedTrack().setStripes(this.get());
+				notifyActionEnded("Stripes Loaded");
 			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the stripe");
@@ -49,5 +50,4 @@ public class ChromosomeWindowListExtractorWorker extends ExtractorWorker<Chromos
 	public ChromosomeWindowList generateList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
 		return ((ChromosomeWindowListGenerator)extractor).toChromosomeWindowList();
 	}
-
 }

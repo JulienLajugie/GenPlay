@@ -1,0 +1,34 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.core.list.binList.operation;
+
+import java.util.concurrent.ExecutionException;
+
+import yu.einstein.gdp2.core.list.binList.BinList;
+
+
+/**
+ * Operation on a {@link BinList}
+ * @author Julien Lajugie
+ * @version 0.1
+ * @param result type of the operation
+ */
+public interface BinListOperation<T> {
+	
+	
+	/**
+	 * @return a description of the operation
+	 */
+	public String getDescription();
+	
+	
+	/**
+	 * Processes the operation
+	 * @return the result of the operation
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	public T compute() throws Exception;
+}

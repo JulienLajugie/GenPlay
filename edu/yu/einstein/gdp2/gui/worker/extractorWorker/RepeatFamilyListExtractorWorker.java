@@ -44,6 +44,7 @@ public final class RepeatFamilyListExtractorWorker extends ExtractorWorker<Repea
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 				Track newTrack = new RepeatFamilyListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, this.get());
 				trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), name, stripes);
+				notifyActionEnded("Repeat Track Loaded");
 			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the repeat track");

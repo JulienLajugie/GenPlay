@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOSubtract;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -69,12 +70,13 @@ public final class SubtractionAction extends TrackListAction {
 					if (precision != null) {						
 						final BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();
+						final BinListOperation<BinList> operation = new BLOSubtract(binList1, binList2, precision);
 						// thread for the action
 						new ActionWorker<BinList>(trackList, "Subtracting") {
 							@Override
 							protected BinList doAction() {
 								try {
-									return BinListOperations.subtraction(binList1, binList2, precision);
+									return operation.compute();
 								} catch (BinListDifferentWindowSizeException e) {
 									ExceptionManager.handleException(getRootPane(), e, "Subtracting two tracks with different window sizes is not allowed");
 									return null;
@@ -85,15 +87,12 @@ public final class SubtractionAction extends TrackListAction {
 							}
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
-								if (actionResult != null) {
-									int index = resultTrack.getTrackNumber() - 1;
-									BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
-									// add info to the history
-									newTrack.getHistory().add("Result of the subtraction of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
-									newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " - " + otherTrack.getName(), null);
-								}
-
+								int index = resultTrack.getTrackNumber() - 1;
+								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								// add info to the history
+								newTrack.getHistory().add("Result of the subtraction of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
+								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
+								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " - " + otherTrack.getName(), null);
 							}
 						}.execute();
 					}

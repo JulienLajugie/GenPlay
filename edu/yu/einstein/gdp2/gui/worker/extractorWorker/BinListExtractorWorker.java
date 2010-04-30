@@ -64,24 +64,27 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 				newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 				newTrack.getHistory().add(history, Color.GRAY);
 				trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), name, stripes);
+				notifyActionEnded("Track Loaded");
+			} else {
+				notifyActionEnded("Operation Aborted");
 			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the fixed window track");
+			notifyActionEnded("Error While Loading");
 		}
 	}
 
 
 	@Override
 	public BinList generateList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
+		notifyActionEnded("File Loaded");
 		if (((BinListGenerator)extractor).isBinSizeNeeded()) {
-			notifyActionEnded("");
 			binSize = NumberOptionPane.getValue(trackList.getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize == null) {
 				return null;
 			}
 		}
 		if (((BinListGenerator)extractor).isCriterionNeeded()) {	
-			notifyActionEnded("");
 			scoreCalculation = Utils.chooseScoreCalculation(trackList.getRootPane());
 			if (scoreCalculation == null) {
 				return null;
@@ -90,13 +93,12 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 			scoreCalculation = null;
 		}
 		if (((BinListGenerator)extractor).isPrecisionNeeded()) {	
-			notifyActionEnded("");
 			precision = Utils.choosePrecision(trackList.getRootPane());
 			if (precision == null) {
 				return null;
 			}
 		}
-		notifyActionStarted("Loading Fixed Window Track");
+		notifyActionStarted("Generating Fixed Window Track");
 		return ((BinListGenerator)extractor).toBinList(binSize.intValue(), precision, scoreCalculation);
 	}
 }

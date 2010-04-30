@@ -57,6 +57,23 @@ public class Utils {
 
 
 	/**
+	 * @param chromoList array of boolean. 
+	 * @return true if all the booleans are set to true or if the array is null. False otherwise 
+	 */
+	public static boolean allChromosomeSelected(boolean[] chromoList) {
+		if (chromoList == null) {
+			return true;
+		} 
+		for (boolean isSelected: chromoList) {
+			if (!isSelected) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	/**
 	 * Asks if the user wants to replace a file if this file already exists.
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
 	 * @param f A file.
@@ -119,7 +136,7 @@ public class Utils {
 				null,
 				FilterType.values(),
 				FilterType.PERCENTAGE);
-	}
+	}	
 
 
 	/**
@@ -140,23 +157,6 @@ public class Utils {
 
 
 	/**
-	 * A dialog box used to choose a {@link SaturationType}
-	 * @param parentComponent the parent Component for the dialog 
-	 * @return a {@link SaturationType}
-	 */
-	public static SaturationType chooseSaturationType(Component parentComponent) {
-		return (SaturationType)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a type of saturation",
-				"Saturation Type",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				SaturationType.values(),
-				SaturationType.PERCENTAGE);
-	}	
-
-
-	/**
 	 * A dialog box used to choose a {@link DataPrecision}
 	 * @param parentComponent the parent Component for the dialog 
 	 * @param defaultValue default value in the input box
@@ -171,6 +171,23 @@ public class Utils {
 				null,
 				DataPrecision.values(),
 				defaultValue);
+	}
+
+
+	/**
+	 * A dialog box used to choose a {@link SaturationType}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link SaturationType}
+	 */
+	public static SaturationType chooseSaturationType(Component parentComponent) {
+		return (SaturationType)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a type of saturation",
+				"Saturation Type",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				SaturationType.values(),
+				SaturationType.PERCENTAGE);
 	}
 
 
@@ -261,15 +278,6 @@ public class Utils {
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the stripe files
-	 */
-	public static ExtendedFileFilter[] getStripeFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
-		return stripeFileFilters;
-	}
-
-
-	/**
 	 * @return the {@link ExtendedFileFilter} associated to the sequence files (aka nucleotide list files)
 	 */
 	public static FileFilter[] getSequenceFileFilters() {
@@ -278,6 +286,15 @@ public class Utils {
 	}
 
 
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the stripe files
+	 */
+	public static ExtendedFileFilter[] getStripeFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
+		return stripeFileFilters;
+	}
+	
+	
 	/**
 	 * Returns a color associated to a score. 
 	 * High intensities are red. Medium are green. Low are blue.

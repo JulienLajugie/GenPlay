@@ -81,8 +81,7 @@ public class SaveProjectAction extends AbstractAction {
 						JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
 						mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
 					}
-				}.execute();
-				
+				}.execute();				
 			}
 		}
 	}

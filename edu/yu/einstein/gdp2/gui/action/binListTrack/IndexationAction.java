@@ -12,7 +12,8 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOIndex;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -66,16 +67,16 @@ public final class IndexationAction extends TrackListAction {
 				final Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", new DecimalFormat("0.0"), -1000000, 1000000, 100);
 				if(indexMax != null) {
 					final BinList binList = selectedTrack.getBinList();
+					final BinListOperation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());
 					// thread for the action
 					new ActionWorker<BinList>(trackList, "Indexing") {
 						@Override
-						protected BinList doAction() {
-							return BinListOperations.indexation(binList, indexMin.doubleValue(), indexMax.doubleValue(), binList.getPrecision());
+						protected BinList doAction() throws Exception {
+							return operation.compute();
 						}
 						@Override
 						protected void doAtTheEnd(BinList actionResult) {
-							String description = "indexation between " +  indexMin + " and " + indexMax;
-							selectedTrack.setBinList(actionResult, description);								
+							selectedTrack.setBinList(actionResult, operation.getDescription());								
 						}
 					}.execute();
 				}

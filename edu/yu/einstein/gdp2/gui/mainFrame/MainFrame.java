@@ -197,18 +197,13 @@ public class MainFrame extends JFrame implements PropertyChangeListener, GenomeW
 		// set the look and feel
 		setLookAndFeel();
 		
-		// ask if the user want to save the project before closing the application
+		// ask to confirmation before exiting the application
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				int res = JOptionPane.showConfirmDialog(getRootPane(), "Do you want to save the project before exiting?", APPLICATION_TITLE, JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null);
-				if (res == JOptionPane.YES_OPTION) {
-					getRootPane().getActionMap().get(SaveProjectAction.ACTION_KEY).actionPerformed(null);
-					dispose();
-					System.exit(0);
-				} else if (res == JOptionPane.NO_OPTION) {
-					dispose();
+				int res = JOptionPane.showConfirmDialog(getRootPane(), "Exit GenPlay?", "Confirm Exit", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+				if (res == JOptionPane.OK_OPTION) {
 					System.exit(0);
 				}
 			}

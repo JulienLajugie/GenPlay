@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLODivide;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -68,31 +69,27 @@ public final class DivisionAction extends TrackListAction {
 					if (precision != null) {
 						final BinList binList1 = selectedTrack.getBinList();
 						final BinList binList2 = otherTrack.getBinList();
+						final BinListOperation<BinList> operation = new BLODivide(binList1, binList2, precision);
 						// thread for the action
 						new ActionWorker<BinList>(trackList, "Dividing") {
 							@Override
-							protected BinList doAction() {
+							protected BinList doAction() throws Exception {
 								try {
-									return BinListOperations.division(binList1, binList2, precision);
+									return operation.compute(); 
 								} catch (BinListDifferentWindowSizeException e) {
 									ExceptionManager.handleException(getRootPane(), e, "Dividing two tracks with different window sizes is not allowed");
-									return null;
-								} catch (Exception e) {
-									ExceptionManager.handleException(getRootPane(), e, "Error while dividing the tracks");
 									return null;
 								}
 							}
 
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
-								if (actionResult != null) {
-									int index = resultTrack.getTrackNumber() - 1;
-									BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
-									// add info to the history
-									newTrack.getHistory().add("Result of the division of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
-									newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " / " + otherTrack.getName(), null);
-								}									
+								int index = resultTrack.getTrackNumber() - 1;
+								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								// add info to the history
+								newTrack.getHistory().add("Result of the division of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
+								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
+								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName() + " / " + otherTrack.getName(), null);
 							}
 						}.execute();
 					}
