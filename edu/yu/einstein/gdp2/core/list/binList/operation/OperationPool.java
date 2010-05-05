@@ -71,7 +71,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		}
 		boolean stillAlive = true;
 		while (stillAlive) {
-			wait();
+			wait(1000);
 			// if the executor is terminated or shut down
 			if (executor.isTerminated() || executor.isShutdown()) {
 				// we cancel all the futures if there not done
@@ -88,7 +88,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			stillAlive = false;
 			// compute the completion and check if everything's done 
 			for (short i = 0; i < futures.size(); i++) {
-				if (futures.get(i).isDone()) {
+				if (futures.get(i).isDone() || futures.get(i).isCancelled()) {
 					done += cm.getChromosome(i).getLength();					
 				} else {
 					stillAlive = true;

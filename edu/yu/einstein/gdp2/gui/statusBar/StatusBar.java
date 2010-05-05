@@ -32,7 +32,8 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 	private final ProgressBar	progressBar;		// progress bar
 	private final StopButton	stopButton;			// stop button
 	private final StatusLabel 	statusLabel;		// label in the middle of the bar
-
+	private int 			step;
+	
 		
 	/**
 	 * Creates an instance of {@link StatusBar}
@@ -95,6 +96,7 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 		statusLabel.actionStarts(evt);
 		progressBar.setProgress(0);
 		progressBar.setIndeterminate(true);
+		step = 1;
 	}
 
 
@@ -108,7 +110,8 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 		} else if (evt.getState() == OperationProgressEvent.COMPLETE) {
 			// when the operation is done but the action not necessary finished
 			stopButton.setEnabled(false);
-			statusLabel.setDescription("Updating Track");
+			step++;
+			statusLabel.setDescription(statusLabel.getDescription() + "  -  Step " + step);
 			// set the progress bar indeterminate so if there is something to finalize
 			// the progress bar is still busy
 			progressBar.setIndeterminate(true);

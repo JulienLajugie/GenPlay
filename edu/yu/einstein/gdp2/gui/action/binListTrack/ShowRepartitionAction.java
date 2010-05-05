@@ -12,13 +12,13 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLORepartition;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -70,17 +70,12 @@ public final class ShowRepartitionAction extends TrackListAction {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
 						final BinList binList = ((BinListTrack)selectedTrack).getBinList();
+						final BinListOperation<Void> operation = new BLORepartition(binList, scoreBin.doubleValue(), saveFC.getSelectedFile());
 						// thread for the action
 						new ActionWorker<Void>(trackList, "Calculating Repartition") {
 							@Override
-							protected Void doAction() {
-								try {
-									BinListOperations.repartition(binList, scoreBin.doubleValue(), saveFC.getSelectedFile());
-									return null;
-								} catch (Exception e) {
-									ExceptionManager.handleException(getRootPane(), e, "Error while calculating the repartition");
-									return null;
-								}
+							protected Void doAction() throws Exception {
+								return operation.compute();
 							}
 							@Override
 							protected void doAtTheEnd(Void actionResult) {}							

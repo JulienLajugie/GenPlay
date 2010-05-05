@@ -38,7 +38,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.NormalizationAction;
 import yu.einstein.gdp2.gui.action.binListTrack.RedoAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ResetAction;
 import yu.einstein.gdp2.gui.action.binListTrack.SaturationAction;
-import yu.einstein.gdp2.gui.action.binListTrack.ScoreCountAction;
+import yu.einstein.gdp2.gui.action.binListTrack.SumScoreAction;
 import yu.einstein.gdp2.gui.action.binListTrack.SearchPeaksAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ShowHistoryAction;
 import yu.einstein.gdp2.gui.action.binListTrack.ShowRepartitionAction;
@@ -147,7 +147,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiMinimum = new JMenuItem(actionMap.get(MinimumAction.ACTION_KEY));
 		jmiMaximum = new JMenuItem(actionMap.get(MaximumAction.ACTION_KEY));
 		jmiBinCount = new JMenuItem(actionMap.get(BinCountAction.ACTION_KEY));
-		jmiScoreCount = new JMenuItem(actionMap.get(ScoreCountAction.ACTION_KEY));
+		jmiScoreCount = new JMenuItem(actionMap.get(SumScoreAction.ACTION_KEY));
 		jmiAverage = new JMenuItem(actionMap.get(AverageAction.ACTION_KEY));
 		jmiStdDev = new JMenuItem(actionMap.get(StandardDeviationAction.ACTION_KEY));
 		jmiCorrelation = new JMenuItem(actionMap.get(CorrelationAction.ACTION_KEY));		

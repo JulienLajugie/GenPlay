@@ -10,7 +10,8 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOMin;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -59,11 +60,12 @@ public final class MinimumAction extends TrackListAction {
 			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), trackList.getChromosomeManager());
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
+				final BinListOperation<Double> operation = new BLOMin(binList, selectedChromo);
 				// thread for the action
 				new ActionWorker<Double>(trackList, "Searching Minimum") {
 					@Override
-					protected Double doAction() {
-						return BinListOperations.min(binList, selectedChromo);
+					protected Double doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(Double actionResult) {

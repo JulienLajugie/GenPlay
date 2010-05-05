@@ -11,15 +11,14 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
-import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
+import yu.einstein.gdp2.core.list.binList.operation.BLOCorrelation;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ExceptionManager;
 
 
 /**
@@ -69,19 +68,12 @@ public final class CorrelationAction extends TrackListAction {
 				if (selectedChromo != null) {
 					final BinList binList1 = selectedTrack.getBinList();
 					final BinList binList2 = otherTrack.getBinList();
+					final BinListOperation<Double> operation = new BLOCorrelation(binList1, binList2, selectedChromo);
 					// thread for the action
 					new ActionWorker<Double>(trackList, "Computing Correlation") {
 						@Override
-						protected Double doAction() {
-							try {
-								return BinListOperations.correlation(binList1, binList2, selectedChromo);
-							} catch (BinListDifferentWindowSizeException e) {
-								ExceptionManager.handleException(getRootPane(), e, "Calculating the correlation between tracks with different window sizes is not allowed");
-								return null;
-							} catch (Exception e) {
-								ExceptionManager.handleException(getRootPane(), e, "Error while calculating the correlation");
-								return null;
-							}
+						protected Double doAction() throws Exception {
+							return operation.compute();
 						}
 						@Override
 						protected void doAtTheEnd(Double actionResult) {

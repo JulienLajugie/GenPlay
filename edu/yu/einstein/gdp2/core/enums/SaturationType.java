@@ -4,10 +4,9 @@
  */
 package yu.einstein.gdp2.core.enums;
 
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 
 /**
- * A type of saturation used in the class {@link BinListOperations}
+ * A type of saturation
  * @author Julien Lajugie
  * @version 0.1
  */

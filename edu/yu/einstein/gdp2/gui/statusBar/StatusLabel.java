@@ -84,6 +84,14 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	}
 	
 	
+	/**
+	 * @return the description printed on the label without the time
+	 */
+	public String getDescription() {
+		return description;
+	}
+	
+	
 	@Override
 	public void actionEnds(TrackListActionEvent evt) {
 		setDescription(evt.getActionDescription());

@@ -49,8 +49,8 @@ public class BLOIndex implements BinListOperation<BinList> {
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final DataPrecision precision = binList.getPrecision();
 		final int binSize = binList.getBinSize(); 
-		final double oldMin = BinListOperations.min(binList, null);
-		final double oldMax = BinListOperations.max(binList, null);
+		final double oldMin = binList.getMin();
+		final double oldMax = binList.getMax();
 		// We calculate the difference between the highest and the lowest value
 		final double oldDistance = oldMax - oldMin;
 		if (oldDistance != 0) {

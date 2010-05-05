@@ -93,7 +93,7 @@ public class SaturationAction extends TrackListAction {
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Saturating") {
 					@Override
-					protected BinList doAction() {
+					protected BinList doAction() throws Exception {
 						return BinListSaturation.saturationCount(binList, countLow.intValue(), countHigh.intValue());
 					}
 					@Override
@@ -123,7 +123,7 @@ public class SaturationAction extends TrackListAction {
 					// thread for the action
 					new ActionWorker<BinList>(trackList, "Saturating") {
 						@Override
-						protected BinList doAction() {
+						protected BinList doAction() throws Exception {
 							return BinListSaturation.saturationPercentage(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
 						}
 						@Override

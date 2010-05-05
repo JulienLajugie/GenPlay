@@ -10,7 +10,8 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLONormalize;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -60,16 +61,16 @@ public final class NormalizationAction extends TrackListAction {
 			final Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
 			if(factor != null) {
 				final BinList binList = selectedTrack.getBinList();
+				final BinListOperation<BinList> operation = new BLONormalize(binList, factor.doubleValue());
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Normalizing") {
 					@Override
-					protected BinList doAction() {
-						return BinListOperations.normalize(binList, factor.intValue(), binList.getPrecision());
+					protected BinList doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(BinList actionResult) {
-						String description = "normalize with a factor of " + factor;
-						selectedTrack.setBinList(actionResult, description);						
+						selectedTrack.setBinList(actionResult, operation.getDescription());						
 					}
 				}.execute();
 			}	

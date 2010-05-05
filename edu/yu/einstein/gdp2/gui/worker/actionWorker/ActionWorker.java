@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.SwingWorker;
 
+import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.exception.valueOutOfRangeException.ValueOutOfRangeException;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
@@ -52,6 +53,10 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 			// when a value is out of the current data precision
 			notifyActionEnded("Error");
 			ExceptionManager.handleException(trackList.getRootPane(), e, e.getMessage());
+			return null;
+		} catch (BinListDifferentWindowSizeException e) {
+			notifyActionEnded("Error");
+			ExceptionManager.handleException(trackList.getRootPane(), e, "Working on two tracks with different window sizes is not allowed");
 			return null;
 		} catch (Exception e) {
 			notifyActionEnded("Error");

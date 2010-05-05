@@ -10,7 +10,8 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOLog2OnAvgWithDamper;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -60,16 +61,16 @@ public final class Log2WithDamperAction extends TrackListAction {
 			final Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper to add: f(x)=x + damper", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if(damper != null) {
 				final BinList binList = selectedTrack.getBinList();
+				final BinListOperation<BinList> operation = new BLOLog2OnAvgWithDamper(binList, damper.doubleValue());
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Logging Track") {
 					@Override
-					protected BinList doAction() {
-						return BinListOperations.log2(binList, damper.doubleValue(), binList.getPrecision());
+					protected BinList doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(BinList actionResult) {
-						String description = "log with a damper of " + damper;
-						selectedTrack.setBinList(actionResult, description);
+						selectedTrack.setBinList(actionResult, operation.getDescription());
 					}
 				}.execute();
 			}

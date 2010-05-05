@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -35,8 +36,9 @@ public class BLOSubtractConstant implements BinListOperation<BinList> {
 		this.constant = constant;
 	}
 	
+	
 	@Override
-	public BinList compute() throws Exception {
+	public BinList compute() throws InterruptedException, ExecutionException {
 		if (constant == 0) {
 			return binList.deepClone();
 		}

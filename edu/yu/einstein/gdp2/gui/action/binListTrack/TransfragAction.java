@@ -10,7 +10,8 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOTransfrag;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -61,16 +62,16 @@ public class TransfragAction extends TrackListAction {
 			final BinList binList = selectedTrack.getBinList();
 			final Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
 			if(gap != null) {
-				final String description = "Transfrag, gap = "  + gap + " zero value successive window";
+				final BinListOperation<BinList> operation = new BLOTransfrag(binList, gap.intValue());
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Computing Transfrag") {
 					@Override
-					protected BinList doAction() {
-						return BinListOperations.transfrag(binList, gap.intValue());
+					protected BinList doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(BinList actionResult) {
-						selectedTrack.setBinList(actionResult, description);
+						selectedTrack.setBinList(actionResult, operation.getDescription());
 
 					}
 				}.execute();

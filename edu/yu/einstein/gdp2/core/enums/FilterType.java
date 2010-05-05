@@ -4,11 +4,9 @@
  */
 package yu.einstein.gdp2.core.enums;
 
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
-
 
 /**
- * A type of filter used in the class {@link BinListOperations}
+ * A type of filter
  * @author Julien Lajugie
  * @version 0.1
  */

@@ -21,7 +21,6 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.CompressibleList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
 import yu.einstein.gdp2.exception.CompressionException;
 import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.DoubleLists;
@@ -67,7 +66,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	transient private Double 	max = null;			// greatest value of the BinList 
 	transient private Double 	average = null;		// average of the BinList
 	transient private Double 	stDev = null;		// standar deviation of the BinList
-	transient private Double 	scoreCount = null;	// sum of the scores of the BinList
+	transient private Double 	sumScore = null;	// sum of the scores of the BinList
 	transient private Long 		binCount = null;	// count of none-null bins in the BinList
 
 
@@ -534,12 +533,17 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	@Override
 	protected void fitToScreen() {
 		try {
+			if (get(fittedChromosome) == null) {
+				fittedDataList = null;
+				return;
+			}
+			
 			// if there is to many bins to print we print the bins of the accelerator BinList 
 			// (same list) with bigger binsize
 			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
 				// if the accelerator binlist doesn't exist we create it
 				if (acceleratorBinList == null) {
-					acceleratorBinList = BinListOperations.changeBinSize(this, binSize * ACCELERATOR_FACTOR, ScoreCalculationMethod.AVERAGE);
+					acceleratorBinList = new BinList(getChromosomeManager(), binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this);
 					acceleratorBinList.fittedChromosome = fittedChromosome;
 					acceleratorBinList.chromosomeChanged();
 				}
@@ -547,9 +551,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				acceleratorBinList.fitToScreen();
 				this.fittedDataList = acceleratorBinList.fittedDataList;
 				this.fittedBinSize = acceleratorBinList.fittedBinSize;
-			// else even if the binsize of the current binlist is adapted,
-			// we might still need to calculate the average if we have to print 
-			//more than one bin per pixel
+				// else even if the binsize of the current binlist is adapted,
+				// we might still need to calculate the average if we have to print 
+				//more than one bin per pixel
 			} else {
 				// we calculate how many windows are printable depending on the screen resolution
 				this.fittedBinSize = binSize * (int)( 1 / (fittedXRatio * binSize));
@@ -638,7 +642,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		return fittedDataList;
 	}
 
-	
+
 	/**
 	 * @return the score of the specified position on the fitted chromosome
 	 */
@@ -646,7 +650,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		// for the binlist we return the entire data for the current chromosome
 		return acceleratorCurrentChromo[position / binSize];
 	}
-	
+
 
 	/**
 	 * @return the bin size of this {@link BinList}
@@ -673,6 +677,20 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 
 	/**
+	 * Prints the {@link BinList} on the standard output
+	 */
+	public void print() {
+		for(short i = 0; i < size(); i++) {
+			if(get(i) != null) {
+				for (int j = 0; j < size(i); j++) {
+					System.out.println(getChromosomeManager().getChromosome(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
+				}
+			}
+		}
+	}
+
+
+	/**
 	 * Performs a deep clone of the current BinList
 	 * @return a new BinList
 	 */
@@ -694,7 +712,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	/**
 	 * Generates the BinList accelerator and the statistics.
 	 */
-	public void finalizeConstruction() {
+	private void finalizeConstruction() {
 		generateAcceleratorBinList();
 		generateStatistics();	
 	}
@@ -704,8 +722,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Creates a BinList with a greater binSize in order to accelerate the display
 	 */
 	private void generateAcceleratorBinList() {
-		if (binSize < ACCELERATOR_MAX_BINSIZE) {
-			acceleratorBinList = BinListOperations.changeBinSize(this, binSize * ACCELERATOR_FACTOR, ScoreCalculationMethod.AVERAGE);
+		if (binSize < ACCELERATOR_MAX_BINSIZE) {			
+			acceleratorBinList = new BinList(getChromosomeManager(), binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this);
 		}
 	}
 
@@ -718,7 +736,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		max = Double.NEGATIVE_INFINITY;
 		average = 0d;
 		stDev = 0d;
-		scoreCount = 0d;
+		sumScore = 0d;
 		binCount = 0l;
 		for (List<Double> currentList: this) {
 			if (currentList != null) {				
@@ -726,14 +744,14 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					if (currentValue != 0) {
 						min = Math.min(min, currentValue);
 						max = Math.max(max, currentValue);
-						scoreCount += currentValue;
+						sumScore += currentValue;
 						binCount++;
 					}
 				}
 			}
 		}
 		if (binCount != 0) {
-			average = scoreCount / (double) binCount;
+			average = sumScore / (double) binCount;
 			for (List<Double> currentList: this) {
 				if (currentList != null) {				
 					for (Double currentValue: currentList) {
@@ -783,8 +801,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	/**
 	 * @return the sum of the scores of the BinList
 	 */
-	public Double getScoreCount() {
-		return scoreCount;
+	public Double getSumScore() {
+		return sumScore;
 	}
 
 

@@ -10,7 +10,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOChangeDataPrecision;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -58,17 +59,18 @@ public class ChangePrecisionAction extends TrackListAction {
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
 			final DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
-			if (precision != null) {				
+			if (precision != null) {	
+				final BinListOperation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Changing Precision") {
 					@Override
-					protected BinList doAction() {
-						return BinListOperations.changePrecision(binList, precision);
+					protected BinList doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(BinList resultList) {
 						if (resultList != null) {
-							selectedTrack.setBinList(resultList, "Precision Changed to " + precision);
+							selectedTrack.setBinList(resultList, operation.getDescription());
 						}
 					}
 				}.execute();

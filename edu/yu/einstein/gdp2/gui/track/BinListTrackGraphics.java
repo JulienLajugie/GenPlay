@@ -16,7 +16,10 @@ import java.io.ObjectOutputStream;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOMaxScoreToDisplay;
+import yu.einstein.gdp2.core.list.binList.operation.BLOMinScoreToDisplay;
+import yu.einstein.gdp2.core.list.binList.operation.BLOSerializeAndZip;
+import yu.einstein.gdp2.core.list.binList.operation.BLOUnzipAndUnserialize;
 import yu.einstein.gdp2.gui.track.drawer.BinListDrawer;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
 import yu.einstein.gdp2.util.ChromosomeManager;
@@ -55,10 +58,10 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 * @throws BinListNoDataException
 	 */
 	protected BinListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, ChromosomeManager chromosomeManager, BinList binList) {
-		super(zoomManager, displayedGenomeWindow, BinListOperations.minScoreToDisplay(binList), BinListOperations.maxScoreToDisplay(binList));
+		super(zoomManager, displayedGenomeWindow, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
 		this.chromosomeManager = chromosomeManager;
 		try {
-			this.initialBinList = BinListOperations.serializeAndZip(binList);
+			this.initialBinList = new BLOSerializeAndZip(binList).compute();
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while loading the track");
 		}
@@ -130,12 +133,12 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 		if (binList != null) {
 			try {
 				history.add(description);
-				undoBinList = BinListOperations.serializeAndZip(this.binList);
+				undoBinList = new BLOSerializeAndZip(this.binList).compute();
 				redoBinList = null;
 				firePropertyChange("binList", this.binList, binList);
 				this.binList = binList;
-				yMin = BinListOperations.minScoreToDisplay(binList);
-				yMax = BinListOperations.maxScoreToDisplay(binList);
+				yMin = new BLOMinScoreToDisplay(binList).compute();
+				yMax = new BLOMaxScoreToDisplay(binList).compute();
 				repaint();
 			} catch (Exception e) {
 				ExceptionManager.handleException(getRootPane(), e, "Error while updating the track");
@@ -150,13 +153,13 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	public void resetBinList() {
 		try {
-			undoBinList = BinListOperations.serializeAndZip(binList);
+			undoBinList = new BLOSerializeAndZip(this.binList).compute();
 			redoBinList = null;
-			BinList newBinList = BinListOperations.unzipAndUnserialize(initialBinList); 
+			BinList newBinList = new BLOUnzipAndUnserialize(initialBinList).compute();; 
 			firePropertyChange("binList", binList, newBinList);
 			binList = newBinList;
-			yMin = BinListOperations.minScoreToDisplay(binList);
-			yMax = BinListOperations.maxScoreToDisplay(binList);
+			yMin = new BLOMinScoreToDisplay(binList).compute();
+			yMax = new BLOMaxScoreToDisplay(binList).compute();
 			repaint();
 			history.reset();
 		}
@@ -173,13 +176,13 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void undo() {
 		try {
 			if (undoBinList != null) {
-				redoBinList = BinListOperations.serializeAndZip(binList);
-				BinList newBinList = BinListOperations.unzipAndUnserialize(undoBinList); 
+				redoBinList = new BLOSerializeAndZip(this.binList).compute();
+				BinList newBinList = new BLOUnzipAndUnserialize(undoBinList).compute();; 
 				firePropertyChange("binList", binList, newBinList);
 				binList = newBinList;
 				undoBinList = null;
-				yMin = BinListOperations.minScoreToDisplay(binList);
-				yMax = BinListOperations.maxScoreToDisplay(binList);
+				yMin = new BLOMinScoreToDisplay(binList).compute();
+				yMax = new BLOMaxScoreToDisplay(binList).compute();
 				repaint();
 				history.undo();
 			} 
@@ -196,13 +199,13 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void redo() {
 		try {
 			if (redoBinList != null) {
-				undoBinList = BinListOperations.serializeAndZip(binList);				
-				BinList newBinList = BinListOperations.unzipAndUnserialize(redoBinList);
+				undoBinList = new BLOSerializeAndZip(this.binList).compute();				
+				BinList newBinList = new BLOUnzipAndUnserialize(redoBinList).compute();;
 				firePropertyChange("binList", binList, newBinList);
 				binList = newBinList;
 				redoBinList = null;
-				yMin = BinListOperations.minScoreToDisplay(binList);
-				yMax = BinListOperations.maxScoreToDisplay(binList);
+				yMin = new BLOMinScoreToDisplay(binList).compute();
+				yMax = new BLOMaxScoreToDisplay(binList).compute();
 				repaint();
 				history.redo();
 			}
@@ -246,13 +249,13 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		try {
 			if (initialBinList != null) {
-				initialSaver = BinListOperations.unzipAndUnserialize(initialBinList);
+				initialSaver = new BLOUnzipAndUnserialize(initialBinList).compute();
 			}
 			if (undoBinList != null) {
-				undoSaver = BinListOperations.unzipAndUnserialize(undoBinList);
+				undoSaver = new BLOUnzipAndUnserialize(undoBinList).compute();
 			}
 			if (redoBinList != null) {
-				redoSaver = BinListOperations.unzipAndUnserialize(redoBinList);
+				redoSaver = new BLOUnzipAndUnserialize(redoBinList).compute();
 			}
 			out.defaultWriteObject();
 			initialSaver = null;
@@ -274,15 +277,15 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.defaultReadObject();
 		if (initialSaver != null) {
-			initialBinList = BinListOperations.serializeAndZip(initialSaver);
+			initialBinList = new BLOSerializeAndZip(initialSaver).compute();
 			initialSaver = null;
 		}
 		if (undoSaver != null) {
-			undoBinList = BinListOperations.serializeAndZip(undoSaver);
+			undoBinList = new BLOSerializeAndZip(undoSaver).compute();
 			undoSaver = null;
 		}
 		if (redoSaver != null) {
-			redoBinList = BinListOperations.serializeAndZip(redoSaver);
+			redoBinList = new BLOSerializeAndZip(redoSaver).compute();
 			redoSaver = null;
 		}
 	}

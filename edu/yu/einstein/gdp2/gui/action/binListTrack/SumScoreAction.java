@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOSumScore;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -25,7 +26,7 @@ import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ScoreCountAction extends TrackListAction {
+public final class SumScoreAction extends TrackListAction {
 
 	private static final long serialVersionUID = -7198642565173540167L;	// generated ID
 	private static final String 	ACTION_NAME = "Score Count";		// action name
@@ -41,10 +42,10 @@ public final class ScoreCountAction extends TrackListAction {
 
 
 	/**
-	 * Creates an instance of {@link ScoreCountAction}
+	 * Creates an instance of {@link SumScoreAction}
 	 * @param trackList a {@link TrackList}
 	 */
-	public ScoreCountAction(TrackList trackList) {
+	public SumScoreAction(TrackList trackList) {
 		super(trackList);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -63,11 +64,12 @@ public final class ScoreCountAction extends TrackListAction {
 			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), trackList.getChromosomeManager());
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
+				final BinListOperation<Double> operation = new BLOSumScore(binList, selectedChromo);
 				// thread for the action
 				new ActionWorker<Double>(trackList, "Calculating Score Count") {
 					@Override
-					protected Double doAction() {
-						return BinListOperations.scoreCount(binList, selectedChromo);
+					protected Double doAction() throws Exception {
+						return operation.compute();
 					}
 					@Override
 					protected void doAtTheEnd(Double actionResult) {

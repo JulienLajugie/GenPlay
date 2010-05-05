@@ -15,25 +15,26 @@ import yu.einstein.gdp2.util.Utils;
 
 
 /**
- * Computes the average value of the scores of the {@link BinList}
+ * Computes the standard deviation of the {@link BinList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOAverage implements BinListOperation<Double> {
+public class BLOStandardDeviation implements BinListOperation<Double> {
 
 	private final BinList 	binList;		// input BinList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
+	private Double 			average = null;	// average of the binList
 	private int 			counter = 0;	// counter for the none-null value 
 	
 	
 	/**
-	 * Computes the average value of the scores of the {@link BinList}
+	 * Computes the standard deviation of the {@link BinList}
 	 * @param binList input {@link BinList}
 	 * @param chromoList list of boolean. A boolean set to true means that the 
 	 * chromosome with the same index is going to be used for the calculation. 
 	 */
-	public BLOAverage(BinList binList, boolean[] chromoList) {
+	public BLOStandardDeviation(BinList binList, boolean[] chromoList) {
 		this.binList = binList;
 		this.chromoList = chromoList;
 	}
@@ -49,12 +50,14 @@ public class BLOAverage implements BinListOperation<Double> {
 	
 	@Override
 	public Double compute() throws InterruptedException, ExecutionException {
-		// if the average has to be calculated on all chromosome 
+		// if the standard deviation has to be calculated on all chromosome 
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (binList.getAverage() != null)) {
-			return binList.getAverage();
+		if ((Utils.allChromosomeSelected(chromoList)) && (binList.getStDev() != null)) {
+			return binList.getStDev();
 		}		
-
+		
+		// compute the average
+		average = new BLOAverage(binList, chromoList).compute();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < binList.size(); i++) {
@@ -67,7 +70,7 @@ public class BLOAverage implements BinListOperation<Double> {
 						double sum = 0;
 						for (int j = 0; j < currentList.size(); j++) {
 							if (currentList.get(j) != 0) {
-								sum += currentList.get(j);
+								sum += Math.pow(currentList.get(j) - average, 2);
 								incrementCounter();						
 							}
 						}
@@ -94,13 +97,13 @@ public class BLOAverage implements BinListOperation<Double> {
 			for (Double currentSum: result) {
 				total += currentSum;
 			}
-			return total / (double) counter;
+			return Math.sqrt(total / (double) counter);
 		}
 	}
 
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Average";
+		return "Operation: Standard Deviation";
 	}
 }

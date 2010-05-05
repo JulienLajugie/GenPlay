@@ -16,40 +16,35 @@ import yu.einstein.gdp2.core.list.binList.ListFactory;
 
 
 /**
- * Multiplies the scores of each bin of a {@link BinList} by a specified constant 
+ * Creates a new BinList with a new data precision
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOMultiplyConstant implements BinListOperation<BinList> {
+public class BLOChangeDataPrecision implements BinListOperation<BinList> {
 
-	private final BinList 	binList;	// input binlist
-	private final double 	constant;	// constant of the multiplication
-	
-	
+	private final BinList 		binList;	// input BinList
+	private final DataPrecision precision; 	// new data precision
+
+
 	/**
-	 * Multiplies the scores of each bin of a {@link BinList} by a specified constant
-	 * @param binList input {@link BinList}
-	 * @param constant constant of the multiplication
+	 * Creates a new BinList with a new data precision
+	 * @param binList input BinList
+	 * @param precision new precision
 	 */
-	public BLOMultiplyConstant(BinList binList, double constant) {
+	public BLOChangeDataPrecision(BinList binList, DataPrecision precision) {
 		this.binList = binList;
-		this.constant = constant;
+		this.precision = precision; 
 	}
-	
-	
+
+
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		if (constant == 0) {
-			return binList.deepClone();
-		}
-		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final DataPrecision precision = binList.getPrecision();
-
-		for (short i = 0; i < binList.size(); i++) {
+		for(short i = 0; i < binList.size(); i++)  {
 			final List<Double> currentList = binList.get(i);
-			
+
+
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
@@ -57,9 +52,8 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 						return null;
 					} else {
 						List<Double> resultList = ListFactory.createList(precision, currentList.size());
-						// We multiply each element by a constant
 						for (int j = 0; j < currentList.size(); j++) {
-							resultList.set(j, currentList.get(j) * constant);
+							resultList.set(j, currentList.get(j));
 						}
 						// tell the operation pool that a chromosome is done
 						op.notifyDone();
@@ -78,10 +72,10 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 			return null;
 		}
 	}
-
 	
+
 	@Override
 	public String getDescription() {
-		return "Operation: Multiply Constant, Constant = " + constant;
+		return "Precision Changes to " + precision;
 	}
 }

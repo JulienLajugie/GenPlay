@@ -121,6 +121,27 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 
 	/**
+	 * @param position a position on the fitted chromosome
+	 * @return the score of the window on the fitted chromosome containing the specified position
+	 */
+	public double getScore(int position) {
+		// if the fitted chromosome as no windows we return 0
+		if ((get(fittedChromosome) == null) || (get(fittedChromosome).size() == 0)) {
+			return 0;
+		}
+		// we search a window containing the position in parameter
+		int indexStart = findStop(get(fittedChromosome), position, 0, size(fittedChromosome) - 1);
+		if ((position >= get(fittedChromosome, indexStart).getStart()) && (position <= get(fittedChromosome, indexStart).getStop())) {
+			return get(fittedChromosome, indexStart).getScore();
+		} else {
+			// if no window containing the position in parameter has been found we return 0
+			return 0;
+		}
+		
+	}	
+	
+	
+	/**
 	 * Merges two windows together if the gap between this two windows is not visible 
 	 */
 	@Override

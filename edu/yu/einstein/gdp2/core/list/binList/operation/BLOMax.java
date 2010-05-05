@@ -15,44 +15,35 @@ import yu.einstein.gdp2.util.Utils;
 
 
 /**
- * Computes the average value of the scores of the {@link BinList}
+ * Searches the maximum value of the selected chromosomes of a specified {@link BinList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOAverage implements BinListOperation<Double> {
+public class BLOMax implements BinListOperation<Double> {
 
 	private final BinList 	binList;		// input BinList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
-	private int 			counter = 0;	// counter for the none-null value 
 	
 	
 	/**
-	 * Computes the average value of the scores of the {@link BinList}
+	 * Searches the maximum value of the selected chromosomes of a specified {@link BinList}
 	 * @param binList input {@link BinList}
 	 * @param chromoList list of boolean. A boolean set to true means that the 
 	 * chromosome with the same index is going to be used for the calculation. 
 	 */
-	public BLOAverage(BinList binList, boolean[] chromoList) {
+	public BLOMax(BinList binList, boolean[] chromoList) {
 		this.binList = binList;
 		this.chromoList = chromoList;
 	}
 	
 	
-	/**
-	 * Increments the counter of none-null value. Thread safe.
-	 */
-	private synchronized void incrementCounter() {
-		counter++;
-	}
-	
-	
 	@Override
 	public Double compute() throws InterruptedException, ExecutionException {
-		// if the average has to be calculated on all chromosome 
+		// if the maximum has to be calculated on all chromosome 
 		// and if it has already been calculated we don't do the calculation again
-		if ((Utils.allChromosomeSelected(chromoList)) && (binList.getAverage() != null)) {
-			return binList.getAverage();
+		if ((Utils.allChromosomeSelected(chromoList)) && (binList.getMax() != null)) {
+			return binList.getMax();
 		}		
 
 		final OperationPool op = OperationPool.getInstance();
@@ -64,16 +55,16 @@ public class BLOAverage implements BinListOperation<Double> {
 				Callable<Double> currentThread = new Callable<Double>() {	
 					@Override
 					public Double call() throws Exception {
-						double sum = 0;
+						// we set the max to the smallest double value
+						double max = Double.NEGATIVE_INFINITY;
 						for (int j = 0; j < currentList.size(); j++) {
 							if (currentList.get(j) != 0) {
-								sum += currentList.get(j);
-								incrementCounter();						
+								max = Math.max(max, currentList.get(j));					
 							}
 						}
 						// tell the operation pool that a chromosome is done
 						op.notifyDone();
-						return sum;
+						return max;
 					}
 				};
 			
@@ -85,22 +76,17 @@ public class BLOAverage implements BinListOperation<Double> {
 		if (result == null) {
 			return null;
 		}
-		// if there is no none-null value we return 0
-		if (counter == 0) {
-			return 0d;
-		} else {
-			// sum the result of each chromosome
-			double total = 0;
-			for (Double currentSum: result) {
-				total += currentSum;
-			}
-			return total / (double) counter;
+		// we search for the max of the chromosome maximums
+		double max = Double.NEGATIVE_INFINITY;
+		for (Double currentMax: result) {
+			max = Math.max(max, currentMax);
 		}
+		return max;
 	}
 
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Average";
+		return "Operation: Maximum";
 	}
 }

@@ -16,36 +16,34 @@ import yu.einstein.gdp2.core.list.binList.ListFactory;
 
 
 /**
- * Multiplies the scores of each bin of a {@link BinList} by a specified constant 
+ * Computes the density of bin with values on a region of halfWidth * 2 + 1 bins
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOMultiplyConstant implements BinListOperation<BinList> {
+public class BLODensity implements BinListOperation<BinList> {
 
-	private final BinList 	binList;	// input binlist
-	private final double 	constant;	// constant of the multiplication
-	
-	
+	private final BinList 	binList;	// input BinList
+	private final int		halfWidth; 	// half size of the region (in number of bin)
+
+
 	/**
-	 * Multiplies the scores of each bin of a {@link BinList} by a specified constant
+	 * Computes the density of bin with values on a region of halfWidth * 2 + 1 bins
 	 * @param binList input {@link BinList}
-	 * @param constant constant of the multiplication
+	 * @param halfWidth half size of the region (in number of bin)
 	 */
-	public BLOMultiplyConstant(BinList binList, double constant) {
+	public BLODensity(BinList binList, int halfWidth) {
 		this.binList = binList;
-		this.constant = constant;
+		this.halfWidth = halfWidth;
 	}
-	
-	
+
+
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		if (constant == 0) {
-			return binList.deepClone();
-		}
-		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		final DataPrecision precision = binList.getPrecision();
+		// the result is returned in 32 bits because the result is btw 0 and 1
+		final DataPrecision defaultPrecision = DataPrecision.PRECISION_32BIT;
+		final int binCount = 2 * halfWidth + 1;
 
 		for (short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);
@@ -56,10 +54,18 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 					if ((currentList == null) || (currentList.size() == 0)) {
 						return null;
 					} else {
-						List<Double> resultList = ListFactory.createList(precision, currentList.size());
-						// We multiply each element by a constant
+						List<Double> resultList = ListFactory.createList(defaultPrecision, currentList.size());
+						// We compute the density for each bin
 						for (int j = 0; j < currentList.size(); j++) {
-							resultList.set(j, currentList.get(j) * constant);
+							int noneZeroBinCount = 0;
+							for (int k = -halfWidth; k <= halfWidth; k++) {
+								if((j + k >= 0) && ((j + k) < currentList.size()))  {
+									if (currentList.get(j + k) != 0) {
+										noneZeroBinCount++;
+									}
+								}
+							}
+							resultList.set(j, noneZeroBinCount / (double)binCount);
 						}
 						// tell the operation pool that a chromosome is done
 						op.notifyDone();
@@ -72,16 +78,16 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision, result);
+			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), defaultPrecision, result);
 			return resultList;
 		} else {
 			return null;
 		}
 	}
-
 	
+
 	@Override
 	public String getDescription() {
-		return "Operation: Multiply Constant, Constant = " + constant;
+		return "Operation: Density, Region Size = " + (halfWidth * 2 + 1) + " Bins";
 	}
 }

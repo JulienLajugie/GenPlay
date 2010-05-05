@@ -11,7 +11,8 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLODensity;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -64,11 +65,12 @@ public class DensityAction extends TrackListAction {
 			if(halfWidth != null) {
 				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
 				if (resultTrack != null) {
+					final BinListOperation<BinList> operation = new BLODensity(binList, halfWidth.intValue());
 					// thread for the action
 					new ActionWorker<BinList>(trackList, "Computing Density") {
 						@Override
-						protected BinList doAction() {
-							return BinListOperations.density(binList, halfWidth.intValue());
+						protected BinList doAction() throws Exception {
+							return operation.compute();
 						}
 						@Override
 						protected void doAtTheEnd(BinList actionResult) {

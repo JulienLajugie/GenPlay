@@ -2,6 +2,7 @@ package yu.einstein.gdp2.core.list.binList.operation;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -17,14 +18,16 @@ public class BinListFilter {
 	 * @param highValuesCount number of high values to remove
 	 * @return a filtered {@link BinList}
 	 * @throws IllegalArgumentException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public static BinList countFilter(BinList binList, int lowValuesCount, int highValuesCount) throws IllegalArgumentException {
+	public static BinList countFilter(BinList binList, int lowValuesCount, int highValuesCount) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
 			throw new IllegalArgumentException("The number of values to filter must be positive");
 		}
 		boolean[] selectedChromo = new boolean[binList.size()];
 		Arrays.fill(selectedChromo, true);
-		int totalLenght = (int)BinListOperations.binCount(binList,selectedChromo);
+		int totalLenght = new BLOCountNonNullBins(binList,selectedChromo).compute().intValue();
 		double[] allScores = new double[totalLenght];
 		int i = 0;
 		for (List<Double> currentList: binList) {
@@ -51,8 +54,10 @@ public class BinListFilter {
 	 * @param highPercentage percentage of high values to filter
 	 * @return a filtered {@link BinList}
 	 * @throws IllegalArgumentException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public static BinList percentageFilter(BinList binList, double lowPercentage, double highPercentage) throws IllegalArgumentException {
+	public static BinList percentageFilter(BinList binList, double lowPercentage, double highPercentage) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		if ((highPercentage < 0) || (highPercentage > 1) || (lowPercentage < 0) ||(lowPercentage > 1)) {
 			throw new IllegalArgumentException("The percentage value must be between 0 and 1");
 		}
@@ -61,7 +66,7 @@ public class BinListFilter {
 		}
 		boolean[] selectedChromo = new boolean[binList.size()];
 		Arrays.fill(selectedChromo, true);
-		int totalLenght = (int)BinListOperations.binCount(binList,selectedChromo);
+		int totalLenght = new BLOCountNonNullBins(binList,selectedChromo).compute().intValue();
 		double[] allScores = new double[totalLenght];
 		int i = 0;
 		for (List<Double> currentList: binList) {

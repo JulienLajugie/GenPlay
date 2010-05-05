@@ -13,8 +13,8 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
-import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
+import yu.einstein.gdp2.core.list.binList.operation.BLOCalculationOnProjection;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -22,7 +22,6 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -76,19 +75,12 @@ public class CalculationOnProjectionAction extends TrackListAction {
 							if (precision != null) {
 								final BinList valueBinList = ((BinListTrack)selectedTrack).getBinList();
 								final BinList intervalBinList = ((BinListTrack)intervalTrack).getBinList();
+								final BinListOperation<BinList> operation = new BLOCalculationOnProjection(intervalBinList, valueBinList, percentage.intValue(), method, precision);
 								// thread for the action
 								new ActionWorker<BinList>(trackList, "Calculating from Projection") {
 									@Override
-									protected BinList doAction() {
-										try {
-											return BinListOperations.calculationOnProjection(intervalBinList, valueBinList, percentage.intValue(), method, precision);
-										} catch (BinListDifferentWindowSizeException e) {
-											ExceptionManager.handleException(getRootPane(), e, "Working on two tracks with different window sizes is not allowed");
-											return null;
-										} catch (Exception e) {
-											ExceptionManager.handleException(getRootPane(), e, "Error while performing the calculation on intervals");
-											return null;
-										}
+									protected BinList doAction() throws Exception {
+										return operation.compute();
 									}
 
 									@Override

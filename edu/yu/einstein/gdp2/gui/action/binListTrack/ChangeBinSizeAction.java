@@ -11,7 +11,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperations;
+import yu.einstein.gdp2.core.list.binList.operation.BLOChangeBinSize;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -62,17 +63,18 @@ public class ChangeBinSizeAction extends TrackListAction {
 			final Number binSize = NumberOptionPane.getValue(trackList.getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
 				final ScoreCalculationMethod method = Utils.chooseScoreCalculation(trackList.getRootPane());
+				final BinListOperation<BinList> operation = new BLOChangeBinSize(binList, binSize.intValue(), method);
 				if (method != null) {
 					// thread for the action
 					new ActionWorker<BinList>(trackList, "Changing Window Size") {
 						@Override
-						protected BinList doAction() {
-							return BinListOperations.changeBinSize(binList, binSize.intValue(), method);
+						protected BinList doAction() throws Exception {
+							return operation.compute();
 						}
 						@Override
 						protected void doAtTheEnd(BinList resultList) {
 							if (resultList != null) {
-								selectedTrack.setBinList(resultList, "Bin Size Changed to " + binSize.intValue() + "bp, Method of Calculation = " + method);
+								selectedTrack.setBinList(resultList, operation.getDescription());
 							}
 						}
 					}.execute();

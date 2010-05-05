@@ -6,7 +6,6 @@ package yu.einstein.gdp2.gui.action.binListTrack;
 
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -95,7 +94,7 @@ public class FilterAction extends TrackListAction {
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Applying Filter") {
 					@Override
-					protected BinList doAction() {
+					protected BinList doAction() throws Exception {
 						return BinListFilter.countFilter(binList, countLow.intValue(), countHigh.intValue());
 					}
 					@Override
@@ -163,7 +162,7 @@ public class FilterAction extends TrackListAction {
 				// thread for the action
 				new ActionWorker<BinList>(trackList, "Applying Filter") {
 					@Override
-					protected BinList doAction() {
+					protected BinList doAction() throws Exception {
 						return BinListFilter.percentageFilter(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
 					}
 					@Override

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.util.Utils;
@@ -39,7 +40,7 @@ public class BLOCountNonNullBins implements BinListOperation<Long> {
 	
 	
 	@Override
-	public Long compute() throws Exception {
+	public Long compute() throws InterruptedException, ExecutionException {
 		// if the count has to be calculated on all chromosome 
 		// and if it has already been calculated we don't do the calculation again
 		if ((Utils.allChromosomeSelected(chromoList)) && (binList.getBinCount() != null)) {
@@ -72,6 +73,9 @@ public class BLOCountNonNullBins implements BinListOperation<Long> {
 		}		
 		
 		List<Long> result = op.startPool(threadList);
+		if (result == null) {
+			return null;
+		}
 		// sum the result of each chromosome
 		long total = 0;
 		for (Long currentCounter: result) {

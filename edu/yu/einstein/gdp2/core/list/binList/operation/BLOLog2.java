@@ -16,33 +16,26 @@ import yu.einstein.gdp2.core.list.binList.ListFactory;
 
 
 /**
- * Multiplies the scores of each bin of a {@link BinList} by a specified constant 
+ * Applies the function f(x)=log(x) to each score x of the {@link BinList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOMultiplyConstant implements BinListOperation<BinList> {
+public class BLOLog2 implements BinListOperation<BinList> {
 
 	private final BinList 	binList;	// input binlist
-	private final double 	constant;	// constant of the multiplication
 	
 	
 	/**
-	 * Multiplies the scores of each bin of a {@link BinList} by a specified constant
+	 * Applies the function f(x)=log(x) to each score x of the {@link BinList}
 	 * @param binList input {@link BinList}
-	 * @param constant constant of the multiplication
 	 */
-	public BLOMultiplyConstant(BinList binList, double constant) {
+	public BLOLog2(BinList binList) {
 		this.binList = binList;
-		this.constant = constant;
 	}
 	
 	
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		if (constant == 0) {
-			return binList.deepClone();
-		}
-		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final DataPrecision precision = binList.getPrecision();
@@ -57,9 +50,16 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 						return null;
 					} else {
 						List<Double> resultList = ListFactory.createList(precision, currentList.size());
-						// We multiply each element by a constant
+						// We add a constant to each element
 						for (int j = 0; j < currentList.size(); j++) {
-							resultList.set(j, currentList.get(j) * constant);
+							// make sure that the list 
+							if (currentList.get(j) > 0) {
+							// change of base: logb(x) = logk(x) / logk(b)
+								resultList.set(j, Math.log(currentList.get(j)) / Math.log(2));
+							} else {
+								// can't apply a log function on a negative or null numbers
+								throw new ArithmeticException("Logarithm of a negative value not allowed");
+							}
 						}
 						// tell the operation pool that a chromosome is done
 						op.notifyDone();
@@ -82,6 +82,6 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Multiply Constant, Constant = " + constant;
+		return "Operation: Log2";
 	}
 }
