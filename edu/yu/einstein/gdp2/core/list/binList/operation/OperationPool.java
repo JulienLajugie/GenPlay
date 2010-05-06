@@ -82,7 +82,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 				}
 				// we notify the listeners
 				notifyProgressListeners(OperationProgressEvent.ABORT, 100d);				
-				return null;
+				throw new InterruptedException();
 			}
 			long done = 0;
 			stillAlive = false;

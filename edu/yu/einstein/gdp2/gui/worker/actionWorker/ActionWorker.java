@@ -6,6 +6,8 @@ package yu.einstein.gdp2.gui.worker.actionWorker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.SwingWorker;
 
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
@@ -45,10 +47,12 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 
 
 	@Override
-	final protected T doInBackground() {
+	final protected T doInBackground() throws ExecutionException {
 		notifyActionStarted(actionStartDescription);
 		try {
 			return doAction();
+		} catch (InterruptedException e) {
+			throw new ExecutionException(new InterruptedException());
 		} catch (ValueOutOfRangeException e) {
 			// when a value is out of the current data precision
 			notifyActionEnded("Error");
@@ -69,12 +73,10 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	@Override
 	final protected void done() {
 		try {
-			if (this.get() == null) {
-				notifyActionEnded("Operation Aborted");
-			} else {
-				notifyActionEnded("Operation Done");
-				doAtTheEnd(this.get());
-			}
+			notifyActionEnded("Operation Done");
+			doAtTheEnd(this.get());
+		} catch (ExecutionException e) {
+			notifyActionEnded("Operation Aborted");
 		} catch (Exception e) {
 			notifyActionEnded("An error occurred during the operation");
 			// if the cause of the error is an instance of  ValueOutOfRangeException we display the error message
