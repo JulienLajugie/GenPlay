@@ -59,10 +59,9 @@ public class BLOSearchPeaks implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList == null) || (currentList.size() == 0)) {
-						return null;
-					} else {
-						List<Double> resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
+					List<Double> resultList = null;
+					if ((currentList != null) && (currentList.size() != 0)) {
+						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
 						// compute the stdev for the chromosome
 						double sd = DoubleLists.standardDeviation(currentList, 0, currentList.size() - 1);
 						if (sd != 0) {
@@ -92,10 +91,10 @@ public class BLOSearchPeaks implements BinListOperation<BinList> {
 								}
 							}	
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
 			};
 

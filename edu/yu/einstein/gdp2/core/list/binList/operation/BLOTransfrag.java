@@ -58,10 +58,9 @@ public class BLOTransfrag implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList == null) || (currentList.size() == 0)) {
-						return null;
-					} else {
-						List<Double> resultList = ListFactory.createList(precision, currentList.size());
+					List<Double> resultList = null;
+					if ((currentList != null) && (currentList.size() != 0)) {
+						resultList = ListFactory.createList(precision, currentList.size());
 						int j = 0;				
 						while (j < currentList.size()) {
 							// skip zero values
@@ -92,10 +91,10 @@ public class BLOTransfrag implements BinListOperation<BinList> {
 							}
 							j++;
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
 			};
 

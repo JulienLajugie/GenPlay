@@ -57,10 +57,9 @@ public class BLOGauss implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {			 	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList == null) || (currentList.size() == 0)) {
-						return null;
-					} else {
-						List<Double> listToAdd = ListFactory.createList(precision, currentList.size());
+					List<Double> listToAdd = null;
+					if ((currentList != null) && (currentList.size() != 0)) {
+						listToAdd = ListFactory.createList(precision, currentList.size());
 						for(int j = 0; j < currentList.size(); j++) {
 							if(currentList.get(j) != 0)  {
 								// apply the array of coefficients centered on the current value to gauss
@@ -84,9 +83,9 @@ public class BLOGauss implements BinListOperation<BinList> {
 								listToAdd.set(j, 0d);
 							}
 						}
-						op.notifyDone();
-						return listToAdd;
-					}					
+					}
+					op.notifyDone();
+					return listToAdd;
 				}
 			};
 			threadList.add(currentThread);

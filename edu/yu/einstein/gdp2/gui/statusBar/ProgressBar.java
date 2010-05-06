@@ -5,6 +5,7 @@
 package yu.einstein.gdp2.gui.statusBar;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.JProgressBar;
 
@@ -16,7 +17,8 @@ import javax.swing.JProgressBar;
 public final class ProgressBar extends JProgressBar {
 
 	private static final long serialVersionUID = -3669001086333207235L; // generated ID
-	private static final Color BACKGROUND_COLOR = Color.white; // color of the background of the progressbar
+	private static final Color 	BACKGROUND_COLOR = Color.white; // color of the background of the progressbar
+	private static final int 	HEIGHT = 15; 					// height of the progress bar
 	
 	/**
 	 * Creates an instance of {@link ProgressBar}
@@ -26,8 +28,7 @@ public final class ProgressBar extends JProgressBar {
 		// the progression a percentage between 0 and 100
 		setMinimum(0);
 		setMaximum(100);
-		setMinimumSize(getPreferredSize());
-		setSize(getPreferredSize());
+		setMinimumSize(new Dimension(getPreferredSize().width, HEIGHT));
 		setBackground(BACKGROUND_COLOR);
 		setStringPainted(true);
 	}

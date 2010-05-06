@@ -51,10 +51,9 @@ public class BLODensity implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList == null) || (currentList.size() == 0)) {
-						return null;
-					} else {
-						List<Double> resultList = ListFactory.createList(defaultPrecision, currentList.size());
+					List<Double> resultList = null;
+					if ((currentList != null) && (currentList.size() != 0)) {
+						resultList = ListFactory.createList(defaultPrecision, currentList.size());
 						// We compute the density for each bin
 						for (int j = 0; j < currentList.size(); j++) {
 							int noneZeroBinCount = 0;
@@ -67,10 +66,10 @@ public class BLODensity implements BinListOperation<BinList> {
 							}
 							resultList.set(j, noneZeroBinCount / (double)binCount);
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
 			};
 

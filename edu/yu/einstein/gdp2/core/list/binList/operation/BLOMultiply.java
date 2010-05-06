@@ -57,10 +57,9 @@ public class BLOMultiply implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList1 == null) || (currentList1.size() == 0) || (currentList2 == null) || (currentList2.size() == 0)) {
-						return null;
-					} else {
-						List<Double> resultList = ListFactory.createList(precision, currentList1.size());
+					List<Double> resultList = null;
+					if ((currentList1 != null) && (currentList1.size() != 0) && (currentList2 != null) && (currentList2.size() != 0)) {
+						resultList = ListFactory.createList(precision, currentList1.size());
 						for (int j = 0; j < currentList1.size(); j++) {
 							if(j < currentList2.size()) {
 								// we multiply the bins of the two binlists
@@ -69,10 +68,10 @@ public class BLOMultiply implements BinListOperation<BinList> {
 								resultList.set(j, 0d);
 							}
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
 			};
 

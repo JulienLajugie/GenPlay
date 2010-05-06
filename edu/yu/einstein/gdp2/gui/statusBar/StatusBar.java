@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.statusBar;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -27,7 +26,6 @@ import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 public class StatusBar extends JPanel implements TrackListActionListener, OperationProgressListener {
 
 	private static final long serialVersionUID = 6145997500187047785L; // generated ID
-	private static final int 	PANEL_HEIGHT = 10; 	// height of the status bar
 	private final MemoryPanel 	memoryPanel;		// panel showing the memory usage
 	private final ProgressBar	progressBar;		// progress bar
 	private final StopButton	stopButton;			// stop button
@@ -76,7 +74,6 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 		gbc.gridx = 3;		
 		add(memoryPanel, gbc);
 		
-		setPreferredSize(new Dimension(getPreferredSize().width, PANEL_HEIGHT));
 		setBorder(BorderFactory.createEtchedBorder());
 		// add itself as a listener of the OperationPool 
 		OperationPool.getInstance().addOperationProgressListener(this);

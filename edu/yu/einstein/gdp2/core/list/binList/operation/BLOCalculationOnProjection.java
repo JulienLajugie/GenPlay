@@ -32,7 +32,7 @@ public class BLOCalculationOnProjection implements BinListOperation<BinList> {
 	private final ScoreCalculationMethod 	method;						// method of calculation
 	private final DataPrecision 			precision;					// precision of the result BinList
 
-	
+
 	/**
 	 * Computes the average, the max or the sum of the {@link BinList} on intervals defined by another BinList
 	 * @param intervalList BinList defining the intervals
@@ -62,14 +62,15 @@ public class BLOCalculationOnProjection implements BinListOperation<BinList> {
 
 
 		for (short i = 0; i < intervalList.size(); i++)  {
-			if ((intervalList.get(i) != null) && (i < valueList.size()) && (valueList.get(i) != null)) {
-				final List<Double> currentIntervals = intervalList.get(i);
-				final List<Double> currentValues = valueList.get(i);
+			final List<Double> currentIntervals = intervalList.get(i);
+			final List<Double> currentValues = valueList.get(i);
 
-				Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
-					@Override
-					public List<Double> call() throws Exception {
-						List<Double> resultList = ListFactory.createList(precision, currentIntervals.size());
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+				@Override
+				public List<Double> call() throws Exception {
+					List<Double> resultList = null;
+					if ((currentIntervals != null) && (currentValues != null)) {
+						resultList = ListFactory.createList(precision, currentIntervals.size());
 						int j = 0;
 						while ((j < currentIntervals.size()) && (j < currentValues.size())) {
 							while ((j < currentIntervals.size()) && (j < currentValues.size()) && (currentIntervals.get(j) == 0)) {
@@ -112,15 +113,15 @@ public class BLOCalculationOnProjection implements BinListOperation<BinList> {
 								}
 							}
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
 
-				};
+			};
 
-				threadList.add(currentThread);
-			}
+			threadList.add(currentThread);
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {

@@ -25,9 +25,8 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private Double 			average = null;	// average of the binList
-	private int 			counter = 0;	// counter for the none-null value 
-	
-	
+
+
 	/**
 	 * Computes the standard deviation of the {@link BinList}
 	 * @param binList input {@link BinList}
@@ -38,16 +37,9 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 		this.binList = binList;
 		this.chromoList = chromoList;
 	}
-	
-	
-	/**
-	 * Increments the counter of none-null value. Thread safe.
-	 */
-	private synchronized void incrementCounter() {
-		counter++;
-	}
-	
-	
+
+
+
 	@Override
 	public Double compute() throws InterruptedException, ExecutionException {
 		// if the standard deviation has to be calculated on all chromosome 
@@ -55,15 +47,20 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 		if ((Utils.allChromosomeSelected(chromoList)) && (binList.getStDev() != null)) {
 			return binList.getStDev();
 		}		
-		
+
+		// count the number of non null bins
+		long count = new BLOCountNonNullBins(binList, chromoList).compute();
+		if (count == 0) {
+			return 0d;
+		}
 		// compute the average
-		average = new BLOAverage(binList, chromoList).compute();
+		average = new BLOAverage(binList, chromoList, count).compute();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < binList.size(); i++) {
 			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (binList.get(i) != null)) {
 				final List<Double> currentList = binList.get(i);
-				
+
 				Callable<Double> currentThread = new Callable<Double>() {	
 					@Override
 					public Double call() throws Exception {
@@ -71,7 +68,6 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 						for (int j = 0; j < currentList.size(); j++) {
 							if (currentList.get(j) != 0) {
 								sum += Math.pow(currentList.get(j) - average, 2);
-								incrementCounter();						
 							}
 						}
 						// tell the operation pool that a chromosome is done
@@ -79,29 +75,24 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 						return sum;
 					}
 				};
-			
+
 				threadList.add(currentThread);
 			}			
 		}		
-		
+
 		List<Double> result = op.startPool(threadList);
 		if (result == null) {
 			return null;
 		}
-		// if there is no none-null value we return 0
-		if (counter == 0) {
-			return 0d;
-		} else {
-			// sum the result of each chromosome
-			double total = 0;
-			for (Double currentSum: result) {
-				total += currentSum;
-			}
-			return Math.sqrt(total / (double) counter);
+		// sum the result of each chromosome
+		double total = 0;
+		for (Double currentSum: result) {
+			total += currentSum;
 		}
+		return Math.sqrt(total / (double) count);
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Standard Deviation";

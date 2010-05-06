@@ -53,18 +53,17 @@ public class BLOAddConstant implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList == null) || (currentList.size() == 0)) {
-						return null;
-					} else {
-						List<Double> resultList = ListFactory.createList(precision, currentList.size());
+					List<Double> resultList = null;
+					if ((currentList != null) && (currentList.size() != 0)) {
+						resultList = ListFactory.createList(precision, currentList.size());
 						// We add a constant to each element
 						for (int j = 0; j < currentList.size(); j++) {
 							resultList.set(j, currentList.get(j) + constant);
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
 			};
 

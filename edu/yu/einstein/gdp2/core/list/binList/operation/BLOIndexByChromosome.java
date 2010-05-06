@@ -58,10 +58,9 @@ public class BLOIndexByChromosome implements BinListOperation<BinList> {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
-					if ((currentList == null) || (currentList.size() == 0)) {
-						return null;
-					} else {
-						List<Double> resultList = ListFactory.createList(precision, currentList.size());
+					List<Double> resultList = null;
+					if ((currentList != null) && (currentList.size() != 0)) {
+						resultList = ListFactory.createList(precision, currentList.size());
 						// search the min and max for the current chromosome before index 
 						double oldMin = Collections.min(resultList);
 						double oldMax = Collections.max(resultList);
@@ -77,10 +76,10 @@ public class BLOIndexByChromosome implements BinListOperation<BinList> {
 								}
 							}
 						}
-						// tell the operation pool that a chromosome is done
-						op.notifyDone();
-						return resultList;
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
 			};
 
