@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.list.binList;
 
+import java.util.concurrent.ExecutionException;
+
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 
@@ -22,8 +24,10 @@ public interface BinListGenerator {
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 * @return a {@link BinList}
 	 * @throws IllegalArgumentException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
-	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException;
+	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException;
 	
 	
 	/**

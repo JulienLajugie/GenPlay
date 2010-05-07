@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.list.binList.operation;
 
+import java.util.concurrent.ExecutionException;
+
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 
@@ -34,8 +36,8 @@ public class BLOChangeBinSize implements BinListOperation<BinList> {
 
 
 	@Override
-	public BinList compute() {
-		BinList resultList = new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList);
+	public BinList compute() throws InterruptedException, ExecutionException {
+		BinList resultList = new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList, true);
 		return resultList;
 	}
 	

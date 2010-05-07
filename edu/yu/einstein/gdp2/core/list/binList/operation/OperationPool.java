@@ -1,3 +1,7 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 package yu.einstein.gdp2.core.list.binList.operation;
 
 import java.util.ArrayList;
@@ -15,15 +19,26 @@ import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEvents
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressListener;
 import yu.einstein.gdp2.util.ChromosomeManager;
 
+
+/**
+ * Pool of threads with tools to start, interrupt and retrieve the result of the execution.
+ * Generate progress events and send this events to listeners.  
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 public final class OperationPool implements OperationProgressEventsGenerator {
 
-	private static OperationPool instance = null; 
-	private ExecutorService executor = null;	
-	private final ChromosomeManager cm;
-	private final long genomeLength;
-	private final List<OperationProgressListener> progressListeners;
+	private static OperationPool 	instance = null;	// unique instance of this singleton class
+	private ExecutorService 		executor = null;	// thread executor 
+	private final ChromosomeManager cm;					// chromosome manager
+	private final long 				genomeLength;		// total length of the genome in base pais
+	private final List<OperationProgressListener> progressListeners; // list of progress listeners
 	
 
+	/**
+	 * Private constructor of the singleton class {@link OperationPool}
+	 * @param chromosomeManager a {@link ChromosomeManager}
+	 */
 	private OperationPool(ChromosomeManager chromosomeManager) {
 		super();
 		cm = chromosomeManager;
@@ -36,6 +51,9 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	}
 
 	
+	/**
+	 * @return an instance of the singleton class {@link OperationPool}
+	 */
 	public static OperationPool getInstance() {
 		if (instance == null) {
 			instance = new OperationPool(ChromosomeManager.getInstance());
@@ -44,11 +62,17 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	}
 	
 	
+	/**
+	 * Notifies the executor that a thread is done
+	 */
 	public synchronized void notifyDone() {
 		notifyAll();
 	}
 	
 	
+	/**
+	 * Interrupts all the running thread and cancel the execution 
+	 */
 	public synchronized void stopPool() {
 		if ((executor != null) && (!executor.isShutdown()) && (!executor.isTerminated())) {   
 			executor.shutdownNow();
@@ -56,7 +80,16 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		}
 	}
 	
-
+	
+	/**
+	 * Starts the pool of thread. Waits until the end of the execution and returns the result in a list.
+	 * An InterruptedException is thrown if the execution is stopped before the end.
+	 * @param <T> type returned by the threads
+	 * @param threads a list of {@link Callable}
+	 * @return a list of the specified type
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public synchronized <T> List<T> startPool(Collection<? extends Callable<T>> threads) throws InterruptedException, ExecutionException {
 		int nbProcessor = Runtime.getRuntime().availableProcessors();
 		executor = Executors.newFixedThreadPool(nbProcessor);

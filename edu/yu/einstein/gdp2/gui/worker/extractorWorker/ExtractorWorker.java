@@ -124,10 +124,9 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 	 * This method has to be implemented to specify how to generate
 	 * the data list from the {@link Extractor}
 	 * @return a list from whose type depends on the generic parameter LC of this class
-	 * @throws ManagerDataNotLoadedException
-	 * @throws InvalidChromosomeException
+	 * @throws Exception
 	 */
-	abstract public LC generateList() throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	abstract public LC generateList() throws Exception;
 
 
 	/**

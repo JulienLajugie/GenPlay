@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
@@ -207,8 +208,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
 	 * @return a {@link BinList}
 	 * @throws IllegalArgumentException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public BinList generateBinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException {
+	public BinList generateBinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(chromosomeManager, binSize, precision, method, this);
 	}
 

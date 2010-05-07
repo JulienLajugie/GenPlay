@@ -6,6 +6,7 @@ package yu.einstein.gdp2.core.extractor;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
@@ -216,7 +217,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 
 	@Override
-	public BinList toBinList(int aBinSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException {
+	public BinList toBinList(int aBinSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		if (isStepUnique == null) {
 			isStepUnique = checkIfStepIsUnique();
 		}

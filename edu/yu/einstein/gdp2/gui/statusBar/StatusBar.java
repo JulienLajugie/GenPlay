@@ -108,7 +108,7 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 			// when the operation is done but the action not necessary finished
 			stopButton.setEnabled(false);
 			step++;
-			statusLabel.setDescription(statusLabel.getDescription() + "  -  Step " + step);
+			statusLabel.setStep(step);
 			// set the progress bar indeterminate so if there is something to finalize
 			// the progress bar is still busy
 			progressBar.setIndeterminate(true);

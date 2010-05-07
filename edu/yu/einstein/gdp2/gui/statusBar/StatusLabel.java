@@ -27,7 +27,7 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	private String 					description;		// description of the current operation
 	private long 					timeElapsed = 0;	// time elapsed since the beginning of the operation
 	private final SimpleDateFormat 	dateFormat;			// date format for the time elapsed
-
+	private int 					step = 0;			// step of the current operation
 	
 	/**
 	 * Thread displaying the time elapsed in the progress bar
@@ -70,7 +70,11 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	 */
 	private synchronized void updateText() {		
 		String timeString = new String(dateFormat.format(new Date(timeElapsed)));
-		setText(description + "  -  " + timeString);
+		if (step == 0) {
+			setText(description + "  -  " + timeString);
+		} else {
+			setText(description + "  -  Step " + step + "  -  " + timeString);
+		}
 	}
 	
 	
@@ -92,6 +96,23 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	}
 	
 	
+	/**
+	 * Sets the step
+	 * @param step
+	 */
+	public void setStep(int step) {
+		this.step = step;
+	}
+	
+	
+	/**
+	 * @return the step
+	 */
+	public int getStep() {
+		return step;
+	}
+	
+	
 	@Override
 	public void actionEnds(TrackListActionEvent evt) {
 		setDescription(evt.getActionDescription());
@@ -102,6 +123,7 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	
 	@Override
 	public void actionStarts(TrackListActionEvent evt) {
+		step = 0;
 		setDescription(evt.getActionDescription());
 		// start the thread updating the time elapsed
 		timeCounterThread = new TimeCounter();

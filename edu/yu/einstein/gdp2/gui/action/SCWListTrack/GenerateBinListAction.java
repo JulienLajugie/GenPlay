@@ -6,6 +6,7 @@ package yu.einstein.gdp2.gui.action.SCWListTrack;
 
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.ActionMap;
 
@@ -69,7 +70,7 @@ public final class GenerateBinListAction  extends TrackListAction {
 							// thread for the action
 							new ActionWorker<BinList>(trackList, "Generating Fixed Window Track") {
 								@Override
-								protected BinList doAction() {
+								protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 									return selectedTrack.getData().generateBinList(trackList.getChromosomeManager(), binSize.intValue(), precision, scoreCalculation);
 								}
 								@Override

@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
@@ -230,7 +231,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException {
+	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(chromosomeManager, binSize, precision, positionList);
 	}
 }
