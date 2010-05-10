@@ -103,18 +103,20 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 		progressBar.setProgress((int) evt.getCompletion());
 		if (evt.getState() == OperationProgressEvent.STARTING) {
 			// when the operation starts
-			stopButton.setEnabled(true);			
+			stopButton.setEnabled(true);	
+			statusLabel.setStep(step);
 		} else if (evt.getState() == OperationProgressEvent.COMPLETE) {
 			// when the operation is done but the action not necessary finished
 			stopButton.setEnabled(false);
 			step++;
-			statusLabel.setStep(step);
 			// set the progress bar indeterminate so if there is something to finalize
 			// the progress bar is still busy
 			progressBar.setIndeterminate(true);
 		} else if (evt.getState() == OperationProgressEvent.ABORT) {
 			// when the operation is aborted
 			stopButton.setEnabled(false);
+			step = 0;
+			statusLabel.setStep(step);
 			statusLabel.setDescription("Aborting Operation");
 		}
 	}

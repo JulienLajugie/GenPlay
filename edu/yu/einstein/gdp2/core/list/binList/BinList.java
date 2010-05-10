@@ -161,11 +161,10 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		super(chromosomeManager);		
 		this.binSize = binSize;
 		this.precision = precision;
-
+		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-
-
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
@@ -246,8 +245,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 
 		List<List<Double>> result = null;
+		// starts the pool
 		result = op.startPool(threadList);
-
+		// add the chromosome results
 		if (result != null) {
 			for (List<Double> currentList: result) {
 				add(currentList);
@@ -273,8 +273,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		super(chromosomeManager);
 		this.binSize = binSize;
 		this.precision = precision;
-
+		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final int oldBinSize = binList.getBinSize();
 
@@ -285,7 +286,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null; 
-
 					if ((currentList != null) && (currentList.size() != 0)) {
 						final int oldListSize = currentList.size();
 						int currentSize = currentChromosome.getLength() / getBinSize() + 1;
@@ -360,8 +360,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			threadList.add(currentThread);
 		}
 		List<List<Double>> result = null;
+		// starts the pool
 		result = op.startPool(threadList);
-
+		// add the chromosome results
 		if (result != null) {
 			for (List<Double> currentList: result) {
 				add(currentList);
@@ -387,73 +388,96 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ScoreCalculationMethod method, ChromosomeListOfLists<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super(chromosomeManager);
 		this.binSize = binSize;	
 		this.precision = precision;
-		for(Chromosome currentChromosome : chromosomeManager)  {
-			if ((list.get(currentChromosome) == null) || (list.size(currentChromosome) == 0)) {
-				this.add(null);
-			} else {
-				int currentSize = currentChromosome.getLength() / binSize + 1;
-				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
-				this.add(listToAdd);
-				int k = 0;
-				int previousStop = 0;
-				for (int j = 0; j < size(currentChromosome); j++) {
-					k = previousStop;
-					ArrayList<Double> currentBinIntensities = new ArrayList<Double>();
-					while ((k < list.size(currentChromosome)) && (list.get(currentChromosome, k).getStop() <= j * binSize)) {
-						k++;
-					}
-					previousStop = k;
-					while ((k < list.size(currentChromosome)) && (list.get(currentChromosome, k).getStart() < j * binSize)) {
-						if (method == ScoreCalculationMethod.SUM) {
-							int stop = Math.min((j + 1) * binSize, list.get(currentChromosome, k).getStop());
-							double intensity = list.get(currentChromosome, k).getScore() * (stop - (j * binSize)) / (list.get(currentChromosome, k).getStop() - list.get(currentChromosome, k).getStart());
-							currentBinIntensities.add(intensity);							
-						} else {
-							double intensity = list.get(currentChromosome, k).getScore();
-							currentBinIntensities.add(intensity);
-						}
-						k++;
-					} 						
-					while ((k < list.size(currentChromosome)) && (list.get(currentChromosome, k).getStart() < (j + 1) * binSize)) {
-						if ((list.get(currentChromosome, k).getStop() > (j + 1) * binSize)) {
-							if (method == ScoreCalculationMethod.SUM) {
-								int start = Math.max(j * binSize, list.get(currentChromosome, k).getStart());
-								double intensity = list.get(currentChromosome, k).getScore() * (((j + 1) * binSize) - start) / (list.get(currentChromosome, k).getStop() - list.get(currentChromosome, k).getStart());
-								currentBinIntensities.add(intensity);
-							} else {
-								double intensity = list.get(currentChromosome, k).getScore();
-								currentBinIntensities.add(intensity);
-							}																
-						} else {
-							double intensity = list.get(currentChromosome, k).getScore();
-							currentBinIntensities.add(intensity);
-							previousStop = k;
-						}
-						k++;
-					}
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		for(final Chromosome currentChromosome : chromosomeManager)  {
+			final List<ScoredChromosomeWindow> currentList = list.get(currentChromosome);
 
-					if (currentBinIntensities.size() == 0) {
-						set(currentChromosome, j, 0d);
-					} else {
-						switch (method) {
-						case AVERAGE: 
-							set(currentChromosome, j, DoubleLists.average(currentBinIntensities));
-							break;
-						case MAXIMUM:
-							set(currentChromosome, j, Collections.max(currentBinIntensities));
-							break;
-						case SUM:
-							set(currentChromosome, j, DoubleLists.sum(currentBinIntensities));
-							break;
-						default:
-							throw new IllegalArgumentException("Invalid method");
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+				@Override
+				public List<Double> call() throws Exception {
+					List<Double> resultList = null; 
+					if ((currentList != null) && (currentList.size() != 0)) {
+						int currentSize = currentChromosome.getLength() / getBinSize() + 1;
+						resultList = ListFactory.createList(getPrecision(), currentSize); 
+
+						int k = 0;
+						int previousStop = 0;
+						for (int j = 0; j < resultList.size(); j++) {
+							k = previousStop;
+							ArrayList<Double> currentBinIntensities = new ArrayList<Double>();
+							while ((k < currentList.size()) && (currentList.get(k).getStop() <= j * getBinSize())) {
+								k++;
+							}
+							previousStop = k;
+							while ((k < currentList.size()) && (currentList.get(k).getStart() < j * getBinSize())) {
+								if (method == ScoreCalculationMethod.SUM) {
+									int stop = Math.min((j + 1) * getBinSize(), currentList.get(k).getStop());
+									double intensity = currentList.get(k).getScore() * (stop - (j * getBinSize())) / (currentList.get(k).getStop() - currentList.get(k).getStart());
+									currentBinIntensities.add(intensity);							
+								} else {
+									double intensity = currentList.get(k).getScore();
+									currentBinIntensities.add(intensity);
+								}
+								k++;
+							} 						
+							while ((k < currentList.size()) && (currentList.get(k).getStart() < (j + 1) * getBinSize())) {
+								if ((currentList.get(k).getStop() > (j + 1) * getBinSize())) {
+									if (method == ScoreCalculationMethod.SUM) {
+										int start = Math.max(j * getBinSize(), currentList.get(k).getStart());
+										double intensity = currentList.get(k).getScore() * (((j + 1) * getBinSize()) - start) / (currentList.get(k).getStop() - currentList.get(k).getStart());
+										currentBinIntensities.add(intensity);
+									} else {
+										double intensity = currentList.get(k).getScore();
+										currentBinIntensities.add(intensity);
+									}																
+								} else {
+									double intensity = currentList.get(k).getScore();
+									currentBinIntensities.add(intensity);
+									previousStop = k;
+								}
+								k++;
+							}
+
+							if (currentBinIntensities.size() == 0) {
+								resultList.set(j, 0d);
+							} else {
+								switch (method) {
+								case AVERAGE: 
+									resultList.set(j, DoubleLists.average(currentBinIntensities));
+									break;
+								case MAXIMUM:
+									resultList.set(j, Collections.max(currentBinIntensities));
+									break;
+								case SUM:
+									resultList.set(j, DoubleLists.sum(currentBinIntensities));
+									break;
+								default:
+									throw new IllegalArgumentException("Invalid method");
+								}
+							}
 						}
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
+			};
+			threadList.add(currentThread);
+		}
+		List<List<Double>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<Double> currentList: result) {
+				add(currentList);
 			}
 		}
 		finalizeConstruction();
@@ -472,31 +496,84 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ScoreCalculationMethod method, ChromosomeListOfLists<Integer> positions, ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super(chromosomeManager);
 		this.binSize = binSize;
 		this.precision = precision;
-		for(Chromosome currentChromosome : chromosomeManager)  {
-			if ((positions.get(currentChromosome) == null) || (positions.size(currentChromosome) == 0)) {
-				this.add(null);
-			} else {
-				int currentSize = currentChromosome.getLength() / binSize + 1;
-				List<Double> listToAdd = ListFactory.createList(precision, currentSize); 
-				this.add(listToAdd);
-			}
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();		
+
+
+		for(final Chromosome currentChromosome : chromosomeManager)  {
+			final List<Double> currentScores = scores.get(currentChromosome);
+			final List<Integer> currentPositions = positions.get(currentChromosome);
+
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+				@Override
+				public List<Double> call() throws Exception {
+					List<Double> resultList = null;
+					if ((currentPositions != null) && (currentPositions.size() != 0)) {
+						int currentSize = currentChromosome.getLength() / getBinSize() + 1;
+						resultList = ListFactory.createList(getPrecision(), currentSize); 
+						// if the method is average we create an array to store the sum of the scores
+						// and a second one to store the number of scores added
+						int[] counts = null;
+						double[] sums = null;
+						if (method == ScoreCalculationMethod.AVERAGE) {
+							counts = new int[currentSize];
+							sums = new double[currentSize];
+						}
+
+						for (int i = 0; i < currentPositions.size(); i++) {
+							if ((currentPositions.get(i) <= currentChromosome.getLength()) && (currentScores.get(i) != 0)) {
+								int currentWindow = positions.get(currentChromosome, i) / binSize;
+								switch (method) {
+								case AVERAGE:
+									if (scores.get(currentChromosome, i) != 0) {
+										sums[currentWindow] += currentScores.get(i);
+										counts[currentWindow]++;
+									}						
+									break;
+								case MAXIMUM:
+									double valueToAdd = Math.max(resultList.get(currentWindow), currentScores.get(i));
+									resultList.set(currentWindow, valueToAdd);
+									break;
+								case SUM:
+									valueToAdd = resultList.get(currentWindow) + currentScores.get(i);
+									resultList.set(currentWindow, valueToAdd);
+									break;
+								default:
+									throw new IllegalArgumentException("Invalid method");
+								}
+							}
+						}
+						if (method == ScoreCalculationMethod.AVERAGE) {
+							for (int i = 0; i < currentSize; i++) {
+								if (counts[i] != 0) {
+									resultList.set(i, sums[i] / (double)counts[i]);
+								}
+							}
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
 		}
-		switch (method) {
-		case AVERAGE:
-			averageMethod(positions, scores);
-			break;
-		case MAXIMUM:
-			maximumMethod(positions, scores);
-			break;
-		case SUM:
-			sumMethod(positions, scores);
-			break;
-		default:
-			throw new IllegalArgumentException("Invalid method");
+
+		List<List<Double>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<Double> currentList: result) {
+				add(currentList);
+			}
 		}
 		finalizeConstruction();
 	}
@@ -575,75 +652,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			add(currentList);
 		}
 		finalizeConstruction();
-	}
-
-
-	/**
-	 * Returns a list containing a value of intensity for each bin.
-	 * It goes through the list of positions and a list of intensities and load the BinList from this data. 
-	 * If more than one position is found for one bin, the intensity of the bin is the maximum of the intensities of the positions
-	 * @param positions list of positions
-	 * @param scores list of scores
-	 */
-	private void maximumMethod(ChromosomeListOfLists<Integer> positions, ChromosomeListOfLists<Double> scores) {
-		for(Chromosome currentChromosome : chromosomeManager)  {
-			for (int i = 0; i < positions.size(currentChromosome); i++) {
-				if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
-					int currentWindow = positions.get(currentChromosome, i) / binSize;
-					double valueToAdd = Math.max(this.get(currentChromosome, currentWindow), scores.get(currentChromosome, i));
-					this.set(currentChromosome, currentWindow, valueToAdd);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Returns a list containing a value of intensity for each bin.
-	 * It goes through the list of positions and a list of intensities and load the BinList from this data.
-	 * If more than one position is found for one bin, the intensity of the bin is the sum of the intensities of the positions
-	 * @param positions list of positions
-	 * @param scores list of scores
-	 */
-	private void sumMethod(ChromosomeListOfLists<Integer> positions, ChromosomeListOfLists<Double> scores) {
-		for(Chromosome currentChromosome : chromosomeManager)  {
-			for (int i = 0; i < positions.size(currentChromosome); i++) {
-				if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
-					int currentWindow = positions.get(currentChromosome, i) / binSize;
-					double valueToAdd = this.get(currentChromosome, currentWindow) + scores.get(currentChromosome, i);
-					this.set(currentChromosome, currentWindow, valueToAdd);
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Returns a list containing a value of intensity for each bin.
-	 * It goes through the list of positions and a list of intensities and load the BinList from this data
-	 * @param positions list of positions
-	 * @param scores list of scores
-	 */
-	private void averageMethod(ChromosomeListOfLists<Integer> positions, ChromosomeListOfLists<Double> scores) {
-		for(Chromosome currentChromosome : chromosomeManager)  {
-			int currentSize = this.size(currentChromosome);
-			int[] counts = new int[currentSize];
-			double[] sums = new double[currentSize];
-			for(int i = 0; i < positions.size(currentChromosome); i++) {
-				if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
-					int currentWindow = positions.get(currentChromosome, i) / binSize;
-					if (scores.get(currentChromosome, i) != 0) {
-						sums[currentWindow] += scores.get(currentChromosome, i);
-						counts[currentWindow]++;
-					}
-				}
-			}
-			for (int i = 0; i < currentSize; i++) {
-				if (counts[i] != 0) {
-					this.set(currentChromosome, i, sums[i] / (double)counts[i]);
-				}
-			}
-		}
 	}
 
 
