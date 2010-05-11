@@ -7,15 +7,12 @@ package yu.einstein.gdp2.gui.worker.extractorWorker;
 import java.awt.Color;
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -69,17 +66,15 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinListGenerat
 			} else {
 				notifyActionEnded("Operation Aborted");
 			}
-		} catch (ExecutionException e) {
-			notifyActionEnded("Operation Aborted");
 		} catch (Exception e) {
-			notifyActionEnded("Error While Loading");
-			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the fixed window track");
+			notifyActionEnded("Operation Aborted");
+			ExceptionManager.handleException(trackList.getRootPane(), e, "An unexpected error occurred while loading the track");
 		}
 	}
 
 
 	@Override
-	public BinList generateList() throws ManagerDataNotLoadedException, InvalidChromosomeException, IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList generateList() throws Exception {
 		notifyActionEnded("File Loaded");
 		if (((BinListGenerator)extractor).isBinSizeNeeded()) {
 			binSize = NumberOptionPane.getValue(trackList.getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);

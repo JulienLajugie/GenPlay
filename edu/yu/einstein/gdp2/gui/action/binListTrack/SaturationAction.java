@@ -6,6 +6,7 @@ package yu.einstein.gdp2.gui.action.binListTrack;
 
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -154,7 +155,7 @@ public class SaturationAction extends TrackListAction {
 					// thread for the action
 					new ActionWorker<BinList>(trackList, "Saturating") {
 						@Override
-						protected BinList doAction() {
+						protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 							return BinListSaturation.saturationThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue());
 						}
 						@Override

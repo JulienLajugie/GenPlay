@@ -839,7 +839,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	private void finalizeConstruction() throws InterruptedException, ExecutionException {
+	public void finalizeConstruction() throws InterruptedException, ExecutionException {
 		generateAcceleratorBinList();
 		generateStatistics();	
 	}

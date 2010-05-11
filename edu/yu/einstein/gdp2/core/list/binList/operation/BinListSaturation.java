@@ -106,8 +106,10 @@ public class BinListSaturation {
 	 * @param maxSaturated saturates the values above this threshold
 	 * @return a saturated {@link BinList}
 	 * @throws IllegalArgumentException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public static BinList saturationThreshold(BinList binList, double minSaturated, double maxSaturated) throws IllegalArgumentException {
+	public static BinList saturationThreshold(BinList binList, double minSaturated, double maxSaturated) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		if (minSaturated >= maxSaturated) {
 			throw new IllegalArgumentException("The maximum must be greater than the minimum");
 		}
@@ -132,6 +134,7 @@ public class BinListSaturation {
 				resultList.add(listToAdd);
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 }

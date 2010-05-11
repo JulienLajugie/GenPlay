@@ -14,9 +14,7 @@ import javax.swing.SwingWorker;
 
 import yu.einstein.gdp2.core.extractor.Extractor;
 import yu.einstein.gdp2.core.extractor.ExtractorFactory;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
@@ -89,7 +87,7 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 	 * Extracts the data and return an {@link Extractor} containing the data
 	 */
 	@Override
-	final protected LC doInBackground() throws Exception, ManagerDataNotLoadedException, InvalidChromosomeException, InvalidFileTypeException {
+	final protected LC doInBackground() throws Exception {
 		if (fileToExtract != null) {
 			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile, chromosomeManager);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {

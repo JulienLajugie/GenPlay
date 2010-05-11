@@ -19,7 +19,7 @@ public final class ChromosomeWindowException extends Exception {
 	 * Creates an instance of {@link ChromosomeWindowException}.
 	 */
 	public ChromosomeWindowException() {
-		super("Invalid window.");
+		super("Invalid window");
 	}
 	
 	

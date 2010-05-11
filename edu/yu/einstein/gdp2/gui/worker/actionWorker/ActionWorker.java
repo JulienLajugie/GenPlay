@@ -6,12 +6,9 @@ package yu.einstein.gdp2.gui.worker.actionWorker;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
-import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
-import yu.einstein.gdp2.exception.valueOutOfRangeException.ValueOutOfRangeException;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
@@ -29,9 +26,9 @@ import yu.einstein.gdp2.util.ExceptionManager;
  */
 public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements TrackListActionEventsGenerator {
 
-	private final TrackList 		trackList;			// track list 
+	private final TrackList 					trackList;			// track list 
 	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener
-	private final String actionStartDescription;
+	private final String 						actionStartDescription; // description of the action
 
 
 	/**
@@ -47,26 +44,9 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 
 
 	@Override
-	final protected T doInBackground() throws ExecutionException {
+	final protected T doInBackground() throws Exception {
 		notifyActionStarted(actionStartDescription);
-		try {
-			return doAction();
-		} catch (InterruptedException e) {
-			throw new ExecutionException(new InterruptedException());
-		} catch (ValueOutOfRangeException e) {
-			// when a value is out of the current data precision
-			notifyActionEnded("Error");
-			ExceptionManager.handleException(trackList.getRootPane(), e, e.getMessage());
-			return null;
-		} catch (BinListDifferentWindowSizeException e) {
-			notifyActionEnded("Error");
-			ExceptionManager.handleException(trackList.getRootPane(), e, "Working on two tracks with different window sizes is not allowed");
-			return null;
-		} catch (Exception e) {
-			notifyActionEnded("Error");
-			ExceptionManager.handleException(trackList.getRootPane(), e, "Operation Aborted: An Error Occured");
-			return null;
-		}
+		return doAction();
 	};
 
 
@@ -75,16 +55,9 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 		try {
 			notifyActionEnded("Operation Done");
 			doAtTheEnd(this.get());
-		} catch (ExecutionException e) {
-			notifyActionEnded("Operation Aborted");
 		} catch (Exception e) {
-			notifyActionEnded("An error occurred during the operation");
-			// if the cause of the error is an instance of  ValueOutOfRangeException we display the error message
-			if (e.getCause() instanceof  ValueOutOfRangeException) {
-				ExceptionManager.handleException(trackList.getRootPane(), e, "<html>An error occurred during the operation<br/>" + e.getCause().getMessage());	
-			} else { 
-				ExceptionManager.handleException(trackList.getRootPane(), e, "An error occurred during the operation");	
-			}						
+			notifyActionEnded("Operation Aborted");
+			ExceptionManager.handleException(trackList.getRootPane(), e, "An unexpected error occurred during the operation");			
 		}
 	}
 

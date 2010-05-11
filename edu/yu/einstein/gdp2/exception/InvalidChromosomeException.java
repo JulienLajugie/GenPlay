@@ -15,6 +15,6 @@ public final class InvalidChromosomeException extends RuntimeException {
 	private static final long serialVersionUID = -2244843030262784715L;	// Generated ID
 	
 	public InvalidChromosomeException() {
-		super("Chromosome invalid.");
+		super("Invalid chromosome");
 	}
 }

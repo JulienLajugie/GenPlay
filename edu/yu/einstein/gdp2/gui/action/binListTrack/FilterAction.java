@@ -6,6 +6,8 @@ package yu.einstein.gdp2.gui.action.binListTrack;
 
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutionException;
+
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
@@ -128,7 +130,7 @@ public class FilterAction extends TrackListAction {
 							// thread for the action
 							new ActionWorker<BinList>(trackList, "Applying Filter") {
 								@Override
-								protected BinList doAction() {
+								protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 									return BinListFilter.densityFilter(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), density.doubleValue(), regionSize.intValue());
 								}
 								@Override
@@ -194,7 +196,7 @@ public class FilterAction extends TrackListAction {
 						// thread for the action
 						new ActionWorker<BinList>(trackList, "Applying Filter") {
 							@Override
-							protected BinList doAction() {
+							protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 								return BinListFilter.thresholdFilter(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), successiveValues.intValue());
 							}
 							@Override

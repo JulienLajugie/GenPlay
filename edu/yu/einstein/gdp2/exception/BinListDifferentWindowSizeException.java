@@ -18,6 +18,6 @@ public class BinListDifferentWindowSizeException extends BinListException {
 	 * Constructor.
 	 */
 	public BinListDifferentWindowSizeException() {
-		super(new String("The window size of the two lists are different."));
+		super(new String("The window size of the two lists are different"));
 	}
 }

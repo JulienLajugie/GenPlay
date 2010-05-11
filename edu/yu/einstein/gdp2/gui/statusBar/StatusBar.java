@@ -30,7 +30,7 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 	private final ProgressBar	progressBar;		// progress bar
 	private final StopButton	stopButton;			// stop button
 	private final StatusLabel 	statusLabel;		// label in the middle of the bar
-	private int 			step;
+	private int 				step;				// operation current step
 	
 		
 	/**

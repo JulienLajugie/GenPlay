@@ -95,8 +95,10 @@ public class BinListFilter {
 	 * @param highThreshold filters the values above this threshold
 	 * @return a filtered {@link BinList}
 	 * @throws IllegalArgumentException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public static BinList thresholdFilter(BinList binList, double lowThreshold, double highThreshold, int nbConsecutiveValues) throws IllegalArgumentException {
+	public static BinList thresholdFilter(BinList binList, double lowThreshold, double highThreshold, int nbConsecutiveValues) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}	
@@ -127,6 +129,7 @@ public class BinListFilter {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;
 	}
 	
@@ -142,8 +145,10 @@ public class BinListFilter {
 	 * @param regionSize size of the region (in number of bins) 
 	 * @return a new {@link BinList} with only the selected windows
 	 * @throws IllegalArgumentException if the low threshold is greater than the high 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public static BinList densityFilter(BinList binList, double lowThreshold, double highThreshold, double density, int regionSize) throws IllegalArgumentException {
+	public static BinList densityFilter(BinList binList, double lowThreshold, double highThreshold, double density, int regionSize) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}		
@@ -183,6 +188,7 @@ public class BinListFilter {
 				}
 			}
 		}
+		resultList.finalizeConstruction();
 		return resultList;		
 	}
 }
