@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import yu.einstein.gdp2.util.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 
 /**

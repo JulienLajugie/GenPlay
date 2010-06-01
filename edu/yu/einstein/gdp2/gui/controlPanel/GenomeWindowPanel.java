@@ -18,10 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import yu.einstein.gdp2.core.GenomeWindow;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 /**
  * The GenomeWindowPanel part of the {@link ControlPanel} 
@@ -33,19 +33,16 @@ public final class GenomeWindowPanel extends JPanel implements GenomeWindowEvent
 	private static final long serialVersionUID = 8279801687428218652L;  // generated ID
 	private final JTextField 						jftGenomeWindow;	// text field for the GenomeWindow
 	private final JButton 							jbJump;				// button jump to position
-	private final ChromosomeManager 				chrManager;			// ChromosomeManager
 	private final ArrayList<GenomeWindowListener> 	listenerList;		// list of GenomeWindowListener
 	private GenomeWindow 							currentGenomeWindow;// current GenomeWindow
 	
 
 	/**
 	 * Creates an instance of {@link GenomeWindowPanel}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public GenomeWindowPanel(ChromosomeManager chromosomeManager, GenomeWindow genomeWindow) {
+	public GenomeWindowPanel(GenomeWindow genomeWindow) {
 		this.currentGenomeWindow = genomeWindow;
-		this.chrManager = chromosomeManager;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
 		jftGenomeWindow = new JTextField(20);
 		jftGenomeWindow.setText(genomeWindow.toString());
@@ -112,7 +109,7 @@ public final class GenomeWindowPanel extends JPanel implements GenomeWindowEvent
 	 */
 	protected void genomeWindowChanged() {
 		try {
-			GenomeWindow newGenomeWindow = new GenomeWindow(jftGenomeWindow.getText(), chrManager);
+			GenomeWindow newGenomeWindow = new GenomeWindow(jftGenomeWindow.getText(), ChromosomeManager.getInstance());
 			if (!newGenomeWindow.equals(currentGenomeWindow)) {
 				int middlePosition = (int)newGenomeWindow.getMiddlePosition();
 				if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {

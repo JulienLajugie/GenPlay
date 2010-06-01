@@ -34,7 +34,7 @@ import yu.einstein.gdp2.core.DAS.DASServer;
 import yu.einstein.gdp2.core.DAS.DASServerList;
 import yu.einstein.gdp2.core.DAS.DASType;
 import yu.einstein.gdp2.core.DAS.DataSource;
-import yu.einstein.gdp2.util.ExceptionManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 
 
 /**

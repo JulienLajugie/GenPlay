@@ -4,6 +4,10 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+import generator.ChromosomeWindowListGenerator;
+import generator.ScoredChromosomeWindowListGenerator;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
@@ -14,18 +18,12 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
-import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
-
 
 /**
  * A Wiggle file extractor
@@ -55,14 +53,13 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	 * Creates an instance of {@link WiggleExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public WiggleExtractor(File dataFile, File logFile,	ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
-		startList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		stopList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+	public WiggleExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		scoreList = new ChromosomeArrayListOfLists<Double>();
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
@@ -71,7 +68,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 
 	@Override
-	protected void extractLine(String line) throws ManagerDataNotLoadedException, InvalidDataLineException {
+	protected void extractLine(String line) throws InvalidDataLineException {
 		String[] splittedLine = line.split(" ");
 
 		int i = 0;
@@ -99,7 +96,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				// retrieve chromosome
 				String chromStr = splittedLine[i].trim().substring(6);
 				try {
-					currentChromo = chromosomeManager.getChromosome(chromStr.trim());
+					currentChromo = chromosomeManager.get(chromStr.trim());
 				} catch (InvalidChromosomeException e) {
 					throw new InvalidDataLineException(line);
 				} 
@@ -181,14 +178,14 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	
 
 	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ChromosomeWindowList(chromosomeManager, startList, stopList);
+	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException {
+		return new ChromosomeWindowList(startList, stopList);
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ScoredChromosomeWindowList(chromosomeManager, startList, stopList, scoreList);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException {
+		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
 	}
 
 	
@@ -222,9 +219,9 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			isStepUnique = checkIfStepIsUnique();
 		}
 		if (isStepUnique) {
-			return new BinList(chromosomeManager, binSize, precision, startList, scoreList);
+			return new BinList(binSize, precision, startList, scoreList);
 		} else {
-			return new BinList(chromosomeManager, aBinSize, precision, method, startList, stopList, scoreList);
+			return new BinList(aBinSize, precision, method, startList, stopList, scoreList);
 		}
 	}
 }

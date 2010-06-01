@@ -12,7 +12,6 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -25,13 +24,12 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter {
 
 	/**
 	 * Creates an instance of {@link BinListAsBedGraphWith0Writer}.
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
 	 */
-	public BinListAsBedGraphWith0Writer(ChromosomeManager chromosomeManager,	File outputFile, BinList data, String name) {
-		super(chromosomeManager, outputFile, data, name);
+	public BinListAsBedGraphWith0Writer(File outputFile, BinList data, String name) {
+		super(outputFile, data, name);
 	}
 
 

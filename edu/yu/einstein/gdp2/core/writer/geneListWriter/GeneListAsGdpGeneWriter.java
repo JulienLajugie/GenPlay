@@ -12,7 +12,6 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -24,13 +23,12 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter {
 
 	/**
 	 * Creates an instance of {@link GeneListAsGdpGeneWriter}.
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link GeneList} to write
 	 * @param name a name for the {@link GeneList}
 	 */
-	public GeneListAsGdpGeneWriter(ChromosomeManager chromosomeManager,	File outputFile, GeneList data, String name) {
-		super(chromosomeManager, outputFile, data, name);
+	public GeneListAsGdpGeneWriter(File outputFile, GeneList data, String name) {
+		super(outputFile, data, name);
 	}
 
 

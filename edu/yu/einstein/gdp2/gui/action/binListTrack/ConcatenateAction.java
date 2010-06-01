@@ -12,6 +12,9 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.core.writer.binListWriter.ConcatenateBinListWriter;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.gui.action.TrackListAction;
@@ -20,7 +23,6 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -63,7 +65,7 @@ public class ConcatenateAction extends TrackListAction {
 		// we want to have at least two tracks
 		if ((selectedTracks != null) && (selectedTracks.length > 1)) {
 			// save dialog
-			final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+			final String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			final JFileChooser jfc = new JFileChooser(defaultDirectory);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			jfc.setDialogTitle("Save As");
@@ -84,7 +86,7 @@ public class ConcatenateAction extends TrackListAction {
 						@Override
 						protected Void doAction() {
 							try {
-								new ConcatenateBinListWriter(trackList.getChromosomeManager(), binListArray, nameArray, selectedFile).write();
+								new ConcatenateBinListWriter(ChromosomeManager.getInstance(), binListArray, nameArray, selectedFile).write();
 								return null;
 							} catch (IOException e) {
 								ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks");

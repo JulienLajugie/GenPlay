@@ -10,8 +10,6 @@ import java.awt.Graphics;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
-import yu.einstein.gdp2.util.ZoomManager;
-
 
 /**
  * A {@link TrackGraphics} part of a {@link NucleotideListTrack}
@@ -35,12 +33,11 @@ public class NucleotideListTrackGraphics extends TrackGraphics {
 
 	/**
 	 * Creates an instance of {@link NucleotideListTrackGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
 	 * @param nucleotideList a sequence of {@link Nucleotide} to display
 	 */
-	public NucleotideListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList) {
-		super(zoomManager, displayedGenomeWindow);
+	public NucleotideListTrackGraphics(GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList) {
+		super(displayedGenomeWindow);
 		this.nucleotideList = nucleotideList;
 		// compute the length in pixels of the widest base to display
 		String[] bases = {"N", "A", "C", "G", "T"};

@@ -2,12 +2,13 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.list.binList;
+package generator;
 
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.list.binList.BinList;
 
 
 /**
@@ -15,7 +16,7 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
  * @author Julien Lajugie
  * @version 0.1
  */
-public interface BinListGenerator {
+public interface BinListGenerator extends Generator {
 
 	/**
 	 * Creates and returns a {@link BinList}

@@ -18,8 +18,6 @@ import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.DoubleLists;
 
 
@@ -35,19 +33,17 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindowList}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param startList list of start positions
 	 * @param stopList list of stop position
 	 * @param scoreList list of score
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public ScoredChromosomeWindowList(ChromosomeManager chromosomeManager, ChromosomeListOfLists<Integer> startList, 
-			ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<Double> scoreList) throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		super(chromosomeManager);
+	public ScoredChromosomeWindowList(ChromosomeListOfLists<Integer> startList, 
+			ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<Double> scoreList) throws InvalidChromosomeException {
+		super();
 		for(short i = 0; i < startList.size(); i++) {
 			add(new ArrayList<ScoredChromosomeWindow>());
-			Chromosome chromo = chromosomeManager.getChromosome(i);
+			Chromosome chromo = chromosomeManager.get(i);
 			for(int j = 0; j < startList.size(i); j++) {
 				double score = scoreList.get(i, j);
 				if (score != 0) {
@@ -65,11 +61,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindow} 
-	 * @param cm a {@link ChromosomeManager}
 	 */
-	public ScoredChromosomeWindowList(ChromosomeManager cm) {
-		super(cm);
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+	public ScoredChromosomeWindowList() {
+		super();
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			add(new ArrayList<ScoredChromosomeWindow>());
 		}
 	}
@@ -150,10 +145,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		List<ScoredChromosomeWindow> currentChromosomeList;
 		try {
 			currentChromosomeList = get(fittedChromosome);
-		} catch (ManagerDataNotLoadedException e) {
-			e.printStackTrace();
-			fittedChromosome = null;
-			return;
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			fittedChromosome = null;
@@ -202,7 +193,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 	/**
 	 * Creates a BinList from the data of the current list
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
@@ -211,8 +201,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList generateBinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(chromosomeManager, binSize, precision, method, this);
+	public BinList generateBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
+		return new BinList(binSize, precision, method, this);
 	}
 
 

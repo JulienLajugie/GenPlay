@@ -8,9 +8,7 @@ import java.awt.Color;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.History;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * A track containing a {@link BinList}
@@ -20,23 +18,18 @@ import yu.einstein.gdp2.util.ZoomManager;
 public final class BinListTrack extends CurveTrack {
 
 	private static final long serialVersionUID = -395099043710070726L; // generated ID
-
-	private final ChromosomeManager chromosomeManager;	// ChromosomeManager
 	private final BinList 			binList;			// BinList used to create the track
 
 	
 	/**
 	 * Creates an instance of {@link BinListTrack}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param binList the {@link BinList} showed in the track
 	 */
-	public BinListTrack(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber,  ChromosomeManager chromosomeManager, BinList binList) {
-		this.chromosomeManager = chromosomeManager;
+	public BinListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, BinList binList) {
 		this.binList = binList;
-		initComponent(zoomManager, displayedGenomeWindow, trackNumber);
+		initComponent(displayedGenomeWindow, trackNumber);
 	}
 	
 	
@@ -45,7 +38,7 @@ public final class BinListTrack extends CurveTrack {
 	 */
 	@Override
 	public Track copy() {
-		Track copiedTrack = new BinListTrack(trackGraphics.getZoomManager(), trackGraphics.genomeWindow, trackHandle.getTrackNumber(), chromosomeManager, binList);
+		Track copiedTrack = new BinListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), binList);
 		trackGraphics.copyTo(copiedTrack.trackGraphics);
 		trackGraphics.repaint();
 		copiedTrack.setPreferredHeight(getPreferredSize().height);
@@ -57,8 +50,8 @@ public final class BinListTrack extends CurveTrack {
 	 * @see yu.einstein.gdp2.gui.track.Track#createTrackGraphics(yu.einstein.gdp2.util.ZoomManager, yu.einstein.gdp2.core.GenomeWindow)
 	 */
 	@Override
-	protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new BinListTrackGraphics(zoomManager, displayedGenomeWindow, chromosomeManager, binList);
+	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
+		trackGraphics = new BinListTrackGraphics(displayedGenomeWindow, binList);
 	}
 	
 	

@@ -212,7 +212,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the BinList files
 	 */
 	public static ExtendedFileFilter[] getBinListFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new BedGraphWith0Filter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SerializedBinListFilter()};
 		return stripeFileFilters;
 	}
 
@@ -272,7 +272,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the scored chromosome window files
 	 */
 	public static ExtendedFileFilter[] getSCWFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
+		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
 		return stripeFileFilters;
 	}
 
@@ -290,7 +290,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the stripe files
 	 */
 	public static ExtendedFileFilter[] getStripeFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new BedGraphFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
+		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
 		return stripeFileFilters;
 	}
 	

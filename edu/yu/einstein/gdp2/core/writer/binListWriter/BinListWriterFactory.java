@@ -16,7 +16,6 @@ import yu.einstein.gdp2.gui.fileFilter.BedGraphWith0Filter;
 import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
 import yu.einstein.gdp2.gui.fileFilter.SerializedBinListFilter;
 import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -29,7 +28,6 @@ public final class BinListWriterFactory {
 
 	/**
 	 * Tries to create and to return a subclass of {@link BinListWriter}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
@@ -37,11 +35,10 @@ public final class BinListWriterFactory {
 	 * @return a subclass of {@link BinListWriter} or null if the type can't be figured out
 	 * @throws InvalidFileTypeException
 	 */
-	public static BinListWriter getBinListWriter(ChromosomeManager chromosomeManager, File outputFile, 
-			BinList data, String name, FileFilter ff) throws InvalidFileTypeException {
+	public static BinListWriter getBinListWriter(File outputFile, BinList data, String name, FileFilter ff) throws InvalidFileTypeException {
 		BinListWriter writer = null;
 
-		writer = checkFileFilter(chromosomeManager, outputFile, data, name, ff);
+		writer = checkFileFilter(outputFile, data, name, ff);
 		if (writer != null) {
 			return writer;
 		}
@@ -52,28 +49,27 @@ public final class BinListWriterFactory {
 
 	/**
 	 * Tries to create and to return a subclass of {@link BinListWriter} depending on the file filter used to save
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
 	 * @param ff a subclass of {@link FileFilter}
 	 * @return a subclass of {@link BinListWriter} or null if the type can't be figured out
 	 */
-	public static BinListWriter checkFileFilter(ChromosomeManager chromosomeManager, File outputFile, BinList data, String name, FileFilter ff) {
+	public static BinListWriter checkFileFilter(File outputFile, BinList data, String name, FileFilter ff) {
 		if (ff == null) {
 			return null;
 		} else if (ff instanceof BedFilter) {
-			return new BinListAsBedWriter(chromosomeManager, outputFile, data, name);
+			return new BinListAsBedWriter(outputFile, data, name);
 		} else if (ff instanceof BedGraphFilter) {
-			return new BinListAsBedGraphWriter(chromosomeManager, outputFile, data, name);
+			return new BinListAsBedGraphWriter(outputFile, data, name);
 		} else if (ff instanceof BedGraphWith0Filter) {
-			return new BinListAsBedGraphWith0Writer(chromosomeManager, outputFile, data, name);
+			return new BinListAsBedGraphWith0Writer(outputFile, data, name);
 		} else if (ff instanceof GFFFilter) {
-			return new BinListAsGFFWriter(chromosomeManager, outputFile, data, name);
+			return new BinListAsGFFWriter(outputFile, data, name);
 		} else if (ff instanceof WiggleFilter) {
-			return new BinListAsWiggleWriter(chromosomeManager, outputFile, data, name);
+			return new BinListAsWiggleWriter(outputFile, data, name);
 		}else if (ff instanceof SerializedBinListFilter) {
-			return new SerializedBinListWriter(chromosomeManager, outputFile, data, name);
+			return new SerializedBinListWriter(outputFile, data, name);
 		} else {
 			return null;
 		}

@@ -16,6 +16,8 @@ import javax.swing.filechooser.FileFilter;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.core.writer.binListWriter.BinListWriter;
 import yu.einstein.gdp2.core.writer.binListWriter.BinListWriterFactory;
 import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriter;
@@ -28,7 +30,6 @@ import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
 /**
@@ -90,7 +91,7 @@ public final class SaveTrackAction extends TrackListAction {
 	 * @param selectedTrack selected {@link BinListTrack}
 	 */
 	private void saveBinList(BinListTrack selectedTrack) {
-		final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+		final String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Track");
@@ -107,7 +108,7 @@ public final class SaveTrackAction extends TrackListAction {
 				final BinList data = selectedTrack.getBinList();
 				final String name = selectedTrack.getName();
 				try {
-					final BinListWriter blw = BinListWriterFactory.getBinListWriter(trackList.getChromosomeManager(), selectedFile, data, name, selectedFilter);
+					final BinListWriter blw = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
 					// thread for the action
 					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber()) {
 						@Override
@@ -136,7 +137,7 @@ public final class SaveTrackAction extends TrackListAction {
 	 * @param selectedTrack selected {@link GeneListTrack}
 	 */
 	private void saveGeneList(GeneListTrack selectedTrack) {
-		final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+		final String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Track");
@@ -153,7 +154,7 @@ public final class SaveTrackAction extends TrackListAction {
 				final GeneList data = selectedTrack.getData();
 				final String name = selectedTrack.getName();
 				try {
-					final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(trackList.getChromosomeManager(), selectedFile, data, name, selectedFilter);
+					final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(selectedFile, data, name, selectedFilter);
 					// thread for the action
 					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber()) {
 						@Override

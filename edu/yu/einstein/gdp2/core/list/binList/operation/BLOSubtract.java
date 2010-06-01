@@ -79,7 +79,7 @@ public class BLOSubtract implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList1.getChromosomeManager(), binList1.getBinSize(), precision, result);
+			BinList resultList = new BinList(binList1.getBinSize(), precision, result);
 			return resultList;
 		} else {
 			return null;
@@ -90,5 +90,11 @@ public class BLOSubtract implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Subtract";
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList1.getBinSize()) + 1;
 	}
 }

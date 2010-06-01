@@ -15,7 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import yu.einstein.gdp2.util.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 
 /**

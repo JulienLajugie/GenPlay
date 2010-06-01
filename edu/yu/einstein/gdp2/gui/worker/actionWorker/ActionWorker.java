@@ -9,11 +9,11 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.util.ExceptionManager;
 
 
 /**

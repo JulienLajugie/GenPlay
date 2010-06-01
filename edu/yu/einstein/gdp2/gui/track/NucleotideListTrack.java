@@ -7,8 +7,6 @@ package yu.einstein.gdp2.gui.track;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
-import yu.einstein.gdp2.util.ZoomManager;
-
 
 /**
  * A track showing a sequence of {@link Nucleotide}
@@ -23,20 +21,19 @@ public class NucleotideListTrack extends Track {
 	
 	/**
 	 * Creates an instance of {@link NucleotideListTrack}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
 	 * @param nucleotideList list of {@link Nucleotide} to display in the track
 	 */
-	public NucleotideListTrack(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber, DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList) {
+	public NucleotideListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList) {
 		this.nucleotideList = nucleotideList;
-		initComponent(zoomManager, displayedGenomeWindow, trackNumber);
+		initComponent(displayedGenomeWindow, trackNumber);
 	}
 	
 	
 	@Override
 	public Track copy() {
-		Track copiedTrack = new NucleotideListTrack(trackGraphics.getZoomManager(), trackGraphics.genomeWindow, trackHandle.getTrackNumber(), nucleotideList);
+		Track copiedTrack = new NucleotideListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), nucleotideList);
 		trackGraphics.copyTo(copiedTrack.trackGraphics);
 		trackGraphics.repaint();
 		copiedTrack.setPreferredHeight(getPreferredSize().height);
@@ -45,7 +42,7 @@ public class NucleotideListTrack extends Track {
 
 	
 	@Override
-	protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new NucleotideListTrackGraphics(zoomManager, displayedGenomeWindow, nucleotideList);		
+	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
+		trackGraphics = new NucleotideListTrackGraphics(displayedGenomeWindow, nucleotideList);		
 	}
 }

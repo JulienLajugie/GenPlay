@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCorrelation;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -64,7 +65,7 @@ public final class CorrelationAction extends TrackListAction {
 		if (selectedTrack != null) {
 			final BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Calculate the correlation with:", trackList.getBinListTracks());
 			if (otherTrack != null) {
-				final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), trackList.getChromosomeManager());
+				final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 				if (selectedChromo != null) {
 					final BinList binList1 = selectedTrack.getBinList();
 					final BinList binList2 = otherTrack.getBinList();

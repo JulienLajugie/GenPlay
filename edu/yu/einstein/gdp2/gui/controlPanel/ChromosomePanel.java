@@ -18,10 +18,10 @@ import javax.swing.JPanel;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.GenomeWindow;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -40,15 +40,14 @@ public final class ChromosomePanel extends JPanel implements MouseWheelListener,
 	
 	/**
 	 * Creates an instance of {@link ChromosomePanel}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public ChromosomePanel(ChromosomeManager chromosomeManager, GenomeWindow genomeWindow) {
+	public ChromosomePanel(GenomeWindow genomeWindow) {
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
 		jlChromosome = new JLabel(" Chromosome ");
 		// Create ComboBox for the chromosome selection
-		jcbChromosome = new JComboBox(chromosomeManager.getAllChromosomes());
+		jcbChromosome = new JComboBox(ChromosomeManager.getInstance().toArray());
 		// select the first item case currentChromosome is not in the list
 		jcbChromosome.setSelectedIndex(0);
 		jcbChromosome.setSelectedItem(currentGenomeWindow.getChromosome());

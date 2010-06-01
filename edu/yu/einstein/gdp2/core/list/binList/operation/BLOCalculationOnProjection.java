@@ -125,7 +125,7 @@ public class BLOCalculationOnProjection implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(valueList.getChromosomeManager(), valueList.getBinSize(), precision, result);
+			BinList resultList = new BinList(valueList.getBinSize(), precision, result);
 			return resultList;
 		} else {
 			return null;
@@ -136,5 +136,11 @@ public class BLOCalculationOnProjection implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Calculation on Projection, Accepted Values = " + percentageAcceptedValues + "%, Method = " + method + ", precision = " + precision;
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(intervalList.getBinSize()) + 1;
 	}
 }

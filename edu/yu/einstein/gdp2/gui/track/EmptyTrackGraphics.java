@@ -7,7 +7,6 @@ package yu.einstein.gdp2.gui.track;
 import java.awt.Graphics;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.util.ZoomManager;
 
 
 /**
@@ -22,11 +21,10 @@ public final class EmptyTrackGraphics extends TrackGraphics {
 	
 	/**
 	 * Creates an instance of {@link EmptyTrackGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow {@link GenomeWindow} currently displayed
 	 */
-	protected EmptyTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
-		super(zoomManager, displayedGenomeWindow);
+	protected EmptyTrackGraphics(GenomeWindow displayedGenomeWindow) {
+		super(displayedGenomeWindow);
 	}
 
 

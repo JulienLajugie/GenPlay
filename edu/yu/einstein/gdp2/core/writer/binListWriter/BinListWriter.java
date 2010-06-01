@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 
 
 /**
@@ -26,13 +26,12 @@ public abstract class BinListWriter {
 	
 	/**
 	 * Creates an instance of {@link BinListWriter}.
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
 	 */
-	public BinListWriter(ChromosomeManager chromosomeManager, File outputFile, BinList data, String name) {
-		this.chromosomeManager = chromosomeManager;
+	public BinListWriter(File outputFile, BinList data, String name) {
+		this.chromosomeManager = ChromosomeManager.getInstance();
 		this.outputFile = outputFile;
 		this.data = data;
 		this.name = name;

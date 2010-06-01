@@ -20,9 +20,8 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
-import yu.einstein.gdp2.util.ExceptionManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
-import yu.einstein.gdp2.util.ZoomManager;
 
 
 /**
@@ -44,12 +43,11 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	
 	/**
 	 * Creates an instance of {@link GeneListTrackGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
 	 * @param geneList a list of genes
 	 */
-	protected GeneListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, GeneList geneList) {
-		super(zoomManager, displayedGenomeWindow);
+	protected GeneListTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList geneList) {
+		super(displayedGenomeWindow);
 		this.geneList = geneList;
 		firstLineToDisplay = 0;
 		geneList.setFontMetrics(fm);

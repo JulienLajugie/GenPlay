@@ -23,7 +23,6 @@ import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * A generic track
@@ -53,10 +52,9 @@ public abstract class Track extends JPanel implements PropertyChangeListener, Ge
 	
 	/**
 	 * initializes the {@link TrackGraphics}
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 */
-	abstract protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow);
+	abstract protected void initTrackGraphics(GenomeWindow displayedGenomeWindow);
 
 	
 	/**
@@ -68,17 +66,16 @@ public abstract class Track extends JPanel implements PropertyChangeListener, Ge
 
 	/**
 	 * Initializes the component and the subcomponents
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 */
-	protected final void initComponent(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber) {
+	protected final void initComponent(GenomeWindow displayedGenomeWindow, int trackNumber) {
 		// create handle
 		initTrackHandle(trackNumber);
 		trackHandle.addPropertyChangeListener(this);
 		
 		// create graphics
-		initTrackGraphics(zoomManager, displayedGenomeWindow);
+		initTrackGraphics(displayedGenomeWindow);
 		trackGraphics.addPropertyChangeListener(this);
 		trackGraphics.addGenomeWindowListener(this);
 		

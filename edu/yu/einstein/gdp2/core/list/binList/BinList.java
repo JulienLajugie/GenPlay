@@ -26,7 +26,6 @@ import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.CompressibleList;
 import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 import yu.einstein.gdp2.exception.CompressionException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.DoubleLists;
 
 
@@ -76,12 +75,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 */
-	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision) {
-		super(chromosomeManager);
+	public BinList(int binSize, DataPrecision precision) {
+		super();
 		this.binSize = binSize;
 		this.precision = precision;
 	}
@@ -89,7 +87,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param positions list of positions
@@ -98,8 +95,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		super(chromosomeManager);
+	public BinList(final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+		super();
 		this.binSize = binSize;
 		this.precision = precision;		
 		// retrieve the instance of the OperationPool
@@ -146,7 +143,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param method method of the score calculation
@@ -157,8 +153,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> starts, final ChromosomeListOfLists<Integer> stops, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		super(chromosomeManager);		
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> starts, final ChromosomeListOfLists<Integer> stops, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+		super();		
 		this.binSize = binSize;
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
@@ -259,7 +255,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList} from another BinList. The new BinList can have a different bin size.
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param method method of the score calculation
@@ -269,8 +264,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws InterruptedException 
 	 * @throws IllegalArgumentException thrown if precision is not valid
 	 */
-	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, final ScoreCalculationMethod method, final BinList binList, boolean generateStatistics) throws InterruptedException, ExecutionException {
-		super(chromosomeManager);
+	public BinList(int binSize, DataPrecision precision, final ScoreCalculationMethod method, final BinList binList, boolean generateStatistics) throws InterruptedException, ExecutionException {
+		super();
 		this.binSize = binSize;
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
@@ -379,7 +374,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param method method of the score calculation
@@ -388,8 +382,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
-		super(chromosomeManager);
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
+		super();
 		this.binSize = binSize;	
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
@@ -486,7 +480,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param method method of the score calculation
@@ -496,8 +489,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		super(chromosomeManager);
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
+		super();
 		this.binSize = binSize;
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
@@ -581,7 +574,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param positions list of positions
@@ -589,8 +581,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(final ChromosomeManager chromosomeManager, final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		super(chromosomeManager);
+	public BinList(final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions) throws IllegalArgumentException, InterruptedException, ExecutionException {
+		super();
 		this.binSize = binSize;
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
@@ -637,15 +629,14 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates an instance of {@link BinList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param data data of the BinList
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public BinList(ChromosomeManager chromosomeManager, int binSize, DataPrecision precision, List<List<Double>> data) throws InterruptedException, ExecutionException {
-		super(chromosomeManager);
+	public BinList(int binSize, DataPrecision precision, List<List<Double>> data) throws InterruptedException, ExecutionException {
+		super();
 		this.binSize = binSize;
 		this.precision = precision;
 		for (List<Double> currentList: data) {
@@ -668,7 +659,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
 				// if the accelerator binlist doesn't exist we create it
 				if (acceleratorBinList == null) {
-					acceleratorBinList = new BinList(getChromosomeManager(), binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
+					acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
 					acceleratorBinList.fittedChromosome = fittedChromosome;
 					acceleratorBinList.chromosomeChanged();
 				}
@@ -808,7 +799,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		for(short i = 0; i < size(); i++) {
 			if(get(i) != null) {
 				for (int j = 0; j < size(i); j++) {
-					System.out.println(getChromosomeManager().getChromosome(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
+					System.out.println(getChromosomeManager().get(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
 				}
 			}
 		}
@@ -852,8 +843,25 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	private void generateAcceleratorBinList() throws InterruptedException, ExecutionException {
 		if (binSize < ACCELERATOR_MAX_BINSIZE) {			
-			acceleratorBinList = new BinList(getChromosomeManager(), binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
+			acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
 		}
+	}
+	
+	
+	/**
+	 * @param binSize bin size of the BinList
+	 * @return the number of steps needed to create a BinList with the specified bin size
+	 */
+	public static int getCreationStepCount(int binSize) {
+		// 1 step for the creation original BinList
+		// + 2 steps for calculating the statistics
+		int count = 1 + 2;
+		// 1 step per accelerator BinList
+		while (binSize < ACCELERATOR_MAX_BINSIZE) {
+			binSize *= ACCELERATOR_FACTOR;
+			count++;
+		}
+		return count;
 	}
 
 
@@ -877,11 +885,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		binCount = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
-		final double[] mins = new double[chromosomeManager.chromosomeCount()];
-		final double[] maxs = new double[chromosomeManager.chromosomeCount()];
-		final double[] stDevs = new double[chromosomeManager.chromosomeCount()];
-		final double[] sumScores = new double[chromosomeManager.chromosomeCount()];
-		final int[] binCounts = new int[chromosomeManager.chromosomeCount()];
+		final double[] mins = new double[chromosomeManager.size()];
+		final double[] maxs = new double[chromosomeManager.size()];
+		final double[] stDevs = new double[chromosomeManager.size()];
+		final double[] sumScores = new double[chromosomeManager.size()];
+		final int[] binCounts = new int[chromosomeManager.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < size(); i++)  {
@@ -915,7 +923,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		op.startPool(threadList);
 
 		// compute the genome wide result from the chromosomes results
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			min = Math.min(min, mins[i]);
 			max = Math.max(max, maxs[i]);
 			sumScore += sumScores[i];
@@ -954,7 +962,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			op.startPool(threadList);
 
 			// compute the genome wide standard deviation
-			for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+			for (int i = 0; i < chromosomeManager.size(); i++) {
 				stDev += stDevs[i];
 			}
 			stDev = Math.sqrt(stDev / (double) binCount);

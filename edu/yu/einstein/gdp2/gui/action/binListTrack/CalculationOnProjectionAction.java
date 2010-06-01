@@ -15,6 +15,7 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCalculationOnProjection;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -23,7 +24,6 @@ import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
-
 
 /**
  * Computes the average, sum or max of the selected track on intervals defined by another track
@@ -87,11 +87,11 @@ public class CalculationOnProjectionAction extends TrackListAction {
 									protected void doAtTheEnd(BinList actionResult) {
 										if (actionResult != null) {
 											int index = resultTrack.getTrackNumber() - 1;
-											BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+											BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
 											// add info to the history
 											newTrack.getHistory().add("Result of the " + method + " of " + selectedTrack.getName() + " calculated on the intervals defined by " + intervalTrack.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
 											newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-											trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), "average of " + selectedTrack.getName() + " from intervals of  " + intervalTrack.getName(), null);
+											trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "average of " + selectedTrack.getName() + " from intervals of  " + intervalTrack.getName(), null);
 										}
 
 									}

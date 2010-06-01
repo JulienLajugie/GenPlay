@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,8 +17,6 @@ import java.util.zip.GZIPInputStream;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -34,10 +34,9 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 	 * Creates an instance of {@link SerializedBinListExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public SerializedBinListExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
+	public SerializedBinListExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
 	}
 
 	

@@ -38,10 +38,10 @@ public class GeneListOperations {
 	 * @return the intervals extracted 
 	 */
 	public static GeneList extractIntevals(GeneList geneList, int startDistance, int startFrom, int stopDistance, int stopFrom) {
-		GeneList resultList = new GeneList(geneList.getChromosomeManager());
+		GeneList resultList = new GeneList();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			int chromoLength = geneList.getChromosomeManager().getChromosome(i).getLength();
+			int chromoLength = geneList.getChromosomeManager().get(i).getLength();
 			if (geneList.get(i) != null) {
 				for(int j = 0; j < geneList.size(i); j++) {
 					if (geneList.get(i, j) != null) {

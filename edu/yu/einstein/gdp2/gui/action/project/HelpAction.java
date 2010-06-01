@@ -28,7 +28,6 @@ public final class HelpAction extends AbstractAction {
 	private static final String 	HELP_URL = 
 		"http://129.98.70.139/documents/help.html";				// URL of the help file
 	private static final String 	HELP_DIALOG_TITLE = "Help";	// title of the help JDialog
-//	private static final String 	DESCRIPTION = "Show Help";	// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_H; 	// mnemonic key
 	private static final String 	ACTION_NAME = "Help";		// action name
 	private final 		 Component 	parent;						// parent component

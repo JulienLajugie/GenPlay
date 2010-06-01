@@ -58,4 +58,10 @@ public class BLOMinScoreToDisplay implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Minimum Score to Display";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

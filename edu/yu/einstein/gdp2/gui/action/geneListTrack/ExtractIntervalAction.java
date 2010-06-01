@@ -10,6 +10,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ExtractGeneIntervalsDialog;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -67,8 +68,8 @@ public final class ExtractIntervalAction  extends TrackListAction {
 						}
 						@Override
 						protected void doAtTheEnd(GeneList actionResult) {
-							Track newTrack = new GeneListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, actionResult);
-							trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), "intervals extracted from " + selectedTrack.getName(), selectedTrack.getStripes());							
+							Track newTrack = new GeneListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+							trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "intervals extracted from " + selectedTrack.getName(), selectedTrack.getStripes());							
 						}
 					}.execute();
 				}

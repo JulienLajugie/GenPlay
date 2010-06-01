@@ -90,5 +90,9 @@ public class BLOCountNonNullBins implements BinListOperation<Long> {
 		return "Operation: Count Non-Null Bins";
 	}
 	
-
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

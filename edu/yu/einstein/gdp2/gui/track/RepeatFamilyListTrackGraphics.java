@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.ChromosomeWindow;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.RepeatFamily;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * A {@link TrackGraphics} part of a {@link RepeatFamilyListTrack}
@@ -37,12 +36,11 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrackGraphics}
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param repeatList list of repeats to display
 	 */
-	protected RepeatFamilyListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, RepeatFamilyList repeatList) {
-		super(zoomManager, displayedGenomeWindow);
+	protected RepeatFamilyListTrackGraphics(GenomeWindow displayedGenomeWindow, RepeatFamilyList repeatList) {
+		super(displayedGenomeWindow);
 		this.repeatList = repeatList;
 	}
 

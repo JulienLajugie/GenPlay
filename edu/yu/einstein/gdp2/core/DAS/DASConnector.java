@@ -22,7 +22,7 @@ import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 
 
 /**
@@ -116,7 +116,6 @@ public class DASConnector {
 
 	/**
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type 
-	 * @param cm a {@link ChromosomeManager}
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @return a {@link GeneList}
@@ -124,13 +123,13 @@ public class DASConnector {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public GeneList getGeneList(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
 //		if ((dasType.getPreferredFormat() != null) && (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;"))) {
 //			return getGeneListFromPSL(cm, dataSource, dasType);
 //		}
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-		GeneList resultList = new GeneList(cm);
-		for (Chromosome currentChromo: cm) {
+		GeneList resultList = new GeneList();
+		for (Chromosome currentChromo: ChromosomeManager.getInstance()) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
 			// we create a genelist for this chromosome
@@ -225,7 +224,6 @@ public class DASConnector {
 
 	/**
 	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type 
-	 * @param cm a {@link ChromosomeManager}
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @return a {@link ScoredChromosomeWindowList}
@@ -233,10 +231,10 @@ public class DASConnector {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public ScoredChromosomeWindowList getSCWList(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-		ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(cm);
-		for (Chromosome currentChromo: cm) {
+		ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList();
+		for (Chromosome currentChromo: ChromosomeManager.getInstance()) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
 			// we create a genelist for this chromosome

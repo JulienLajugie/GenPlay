@@ -87,4 +87,10 @@ public class BLOSumScore implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Sum Score";
 	}
+
+
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

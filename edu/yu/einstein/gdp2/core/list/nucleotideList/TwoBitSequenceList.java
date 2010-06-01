@@ -16,8 +16,6 @@ import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -38,16 +36,15 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param file 2Bit file
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws InvalidFileTypeException
 	 */
-	public TwoBitSequenceList(ChromosomeManager chromosomeManager, File file) throws FileNotFoundException, IOException, InvalidFileTypeException {
-		super(chromosomeManager);
+	public TwoBitSequenceList(File file) throws FileNotFoundException, IOException, InvalidFileTypeException {
+		super();
 		// initializes the lists
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			add(null);
 		}
 		filePath = file.getAbsolutePath();
@@ -97,8 +94,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		for (int i = 0; i < sequenceCount; i++) {
 			short k = 0;
 			boolean found = false;
-			while ((k < chromosomeManager.chromosomeCount()) && (!found)) {
-				if (chromosomeManager.getChromosome(k).getName().equalsIgnoreCase(sequenceNames[i])) {
+			while ((k < chromosomeManager.size()) && (!found)) {
+				if (chromosomeManager.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
 					long currentPosition = twoBitFile.getFilePointer();
 					TwoBitSequence sequence = new TwoBitSequence(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
 					set(k, sequence);
@@ -141,10 +138,6 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		List<Nucleotide> currentList;
 		try {
 			currentList = get(fittedChromosome);
-		} catch (ManagerDataNotLoadedException e) {
-			e.printStackTrace();
-			fittedDataList = null;
-			return null;
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			fittedDataList = null;

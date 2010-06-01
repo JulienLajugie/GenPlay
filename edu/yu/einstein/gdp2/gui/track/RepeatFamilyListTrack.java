@@ -6,8 +6,6 @@ package yu.einstein.gdp2.gui.track;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
-import yu.einstein.gdp2.util.ZoomManager;
-
 
 /**
  * A track containing a {@link RepeatFamilyList}
@@ -22,20 +20,19 @@ public final class RepeatFamilyListTrack extends Track {
 	
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrack}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
 	 * @param repeatList the {@link RepeatFamilyList} to display
 	 */
-	public RepeatFamilyListTrack(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber, RepeatFamilyList repeatList) {
+	public RepeatFamilyListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, RepeatFamilyList repeatList) {
 		this.repeatList = repeatList;
-		initComponent(zoomManager, displayedGenomeWindow, trackNumber);
+		initComponent(displayedGenomeWindow, trackNumber);
 	}
 	
 	
 	@Override
 	public Track copy() {
-		Track copiedTrack = new RepeatFamilyListTrack(trackGraphics.getZoomManager(), trackGraphics.genomeWindow, trackHandle.getTrackNumber(), repeatList);
+		Track copiedTrack = new RepeatFamilyListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), repeatList);
 		trackGraphics.copyTo(copiedTrack.trackGraphics);
 		trackGraphics.repaint();
 		copiedTrack.setPreferredHeight(getPreferredSize().height);
@@ -44,7 +41,7 @@ public final class RepeatFamilyListTrack extends Track {
 
 	
 	@Override
-	protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new RepeatFamilyListTrackGraphics(zoomManager, displayedGenomeWindow, repeatList);		
+	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
+		trackGraphics = new RepeatFamilyListTrackGraphics(displayedGenomeWindow, repeatList);		
 	}
 }

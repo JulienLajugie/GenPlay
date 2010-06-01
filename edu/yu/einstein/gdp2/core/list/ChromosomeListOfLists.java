@@ -9,7 +9,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
+
 
 /**
  * This class represents a generic list organized by chromosome.
@@ -18,7 +18,6 @@ import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
  */
 public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<List<T>> {
 
-//TODO Write a method to return the number of chromosomes in the list. 
 	
 	/**
 	 * Adds an element to the list of the specified chromosome
@@ -27,7 +26,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public void add(Chromosome chromosome, T element) throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException;
 	
 
 	/**
@@ -36,7 +35,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public List<T> get(Chromosome chromosome) throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException;
 
 	
 	/**
@@ -46,7 +45,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public T get(Chromosome chromosome, int index) throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException;
 	
 	
 	/**
@@ -63,7 +62,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @param index
 	 * @param element element to set
 	 */
-	public void set(Chromosome chromosome, int index, T element) throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException;
 	
 
 
@@ -72,7 +71,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @param chromosome a {@link Chromosome}
 	 * @param list list to set
 	 */
-	public void set(Chromosome chromosome, List<T> list) throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException;
 
 	
 	/**
@@ -97,5 +96,5 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public int size(Chromosome chromosome) throws ManagerDataNotLoadedException, InvalidChromosomeException;
+	public int size(Chromosome chromosome) throws InvalidChromosomeException;
 }

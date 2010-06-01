@@ -26,11 +26,11 @@ import javax.swing.JPanel;
 import yu.einstein.gdp2.core.ChromosomeWindow;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
+import yu.einstein.gdp2.core.manager.ZoomManager;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.util.ExceptionManager;
-import yu.einstein.gdp2.util.ZoomManager;
 
 
 /**
@@ -49,7 +49,6 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	protected static final int 			FONT_SIZE = 10;					// size of the font
 	protected final FontMetrics 		fm = 
 		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
-	private final ZoomManager 			zoomManager;					// zoom manager
 	private final List<GenomeWindowListener> gwListenerList;			// list of GenomeWindowListener
 	private int 						verticalLineCount;				// number of vertical lines to print
 	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
@@ -103,12 +102,10 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow {@link GenomeWindow} currently displayed
 	 */
-	protected TrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
+	protected TrackGraphics(GenomeWindow displayedGenomeWindow) {
 		super();
-		this.zoomManager = zoomManager;
 		this.genomeWindow = displayedGenomeWindow;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
@@ -218,14 +215,6 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			}
 			repaint();
 		}
-	}
-
-
-	/**
-	 * @return the {@link ZoomManager}
-	 */
-	public ZoomManager getZoomManager() {
-		return zoomManager;
 	}
 
 
@@ -480,6 +469,8 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		int weelRotation = Math.abs(e.getWheelRotation());
 		boolean isZoomIn = e.getWheelRotation() > 0;
 		for (int i = 0; i < weelRotation; i++) {
+			// retrieve the only instance of the singleton ZoomManager
+			ZoomManager zoomManager = ZoomManager.getInstance();
 			if (isZoomIn) {
 				newZoom = zoomManager.getZoomIn(genomeWindow.getSize());
 			} else {

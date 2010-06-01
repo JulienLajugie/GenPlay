@@ -13,6 +13,7 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -71,12 +72,12 @@ public final class GenerateBinListAction  extends TrackListAction {
 							new ActionWorker<BinList>(trackList, "Generating Fixed Window Track") {
 								@Override
 								protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
-									return selectedTrack.getData().generateBinList(trackList.getChromosomeManager(), binSize.intValue(), precision, scoreCalculation);
+									return selectedTrack.getData().generateBinList(binSize.intValue(), precision, scoreCalculation);
 								}
 								@Override
 								protected void doAtTheEnd(BinList actionResult) {
-									Track newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
-									trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes());
+									Track newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+									trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes());
 								}
 							}.execute();							
 						}

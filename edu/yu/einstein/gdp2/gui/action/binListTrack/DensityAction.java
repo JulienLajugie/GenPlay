@@ -13,6 +13,7 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLODensity;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -20,7 +21,6 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-
 
 /**
  * Computes the densities of none null bins of the selected {@link BinListTrack}
@@ -76,11 +76,11 @@ public class DensityAction extends TrackListAction {
 						protected void doAtTheEnd(BinList actionResult) {
 							if (actionResult != null) {
 								int index = resultTrack.getTrackNumber() - 1;
-								BinListTrack newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
+								BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
 								// add info to the history
 								newTrack.getHistory().add("Result of the density calculation of " + selectedTrack.getName() + ", Half Width = " + halfWidth);
 								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-								trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), "Density of " + selectedTrack.getName(), null);
+								trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "Density of " + selectedTrack.getName(), null);
 							}
 						}
 					}.execute();

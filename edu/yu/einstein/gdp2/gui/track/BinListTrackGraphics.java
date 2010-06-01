@@ -20,12 +20,11 @@ import yu.einstein.gdp2.core.list.binList.operation.BLOMaxScoreToDisplay;
 import yu.einstein.gdp2.core.list.binList.operation.BLOMinScoreToDisplay;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSerializeAndZip;
 import yu.einstein.gdp2.core.list.binList.operation.BLOUnzipAndUnserialize;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.track.drawer.BinListDrawer;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
-import yu.einstein.gdp2.util.ChromosomeManager;
-import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.History;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * A {@link TrackGraphics} part of a {@link BinListTrack}
@@ -36,7 +35,6 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 	private static final long serialVersionUID = 1745399422702517182L;	// generated ID
 
-	private final ChromosomeManager 		chromosomeManager;	// ChromosomeManager
 	private BinList 						binList;			// Value of the displayed BinList
 	transient private ByteArrayOutputStream	initialBinList;		// Value of the BinList when the track is created (the BinList is serialized and zipped)
 	transient private ByteArrayOutputStream	undoBinList = null;	// BinList used to restore when undo (the BinList is serialized and zipped)
@@ -49,17 +47,14 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 	/**
 	 * Creates an instance of a {@link BinListTrackGraphics}
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param yMin minimum score
 	 * @param yMax maximum score
-	 * @param chromosomeManager {@link ChromosomeManager}
 	 * @param binList {@link BinList}
 	 * @throws BinListNoDataException
 	 */
-	protected BinListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, ChromosomeManager chromosomeManager, BinList binList) {
-		super(zoomManager, displayedGenomeWindow, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
-		this.chromosomeManager = chromosomeManager;
+	protected BinListTrackGraphics(GenomeWindow displayedGenomeWindow, BinList binList) {
+		super(displayedGenomeWindow, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
 		try {
 			this.initialBinList = new BLOSerializeAndZip(binList).compute();
 		} catch (Exception e) {
@@ -91,7 +86,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	@Override
 	protected void drawScore(Graphics g) {
 		try {
-			short currentChromosome = chromosomeManager.getIndex(genomeWindow.getChromosome());
+			short currentChromosome = ChromosomeManager.getInstance().getIndex(genomeWindow.getChromosome());
 			g.setColor(Color.red);
 			int xMid = (int)genomeWindow.getMiddlePosition();
 			double yMid = 0;

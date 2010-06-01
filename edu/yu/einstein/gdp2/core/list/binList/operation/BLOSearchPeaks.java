@@ -102,7 +102,7 @@ public class BLOSearchPeaks implements BinListOperation<BinList> {
 		}		
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), result);
+			BinList resultList = new BinList(binSize, binList.getPrecision(), result);
 			return resultList;
 		} else {
 			return null;
@@ -113,5 +113,11 @@ public class BLOSearchPeaks implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Search Peaks, Local Stdev Width = " +  sizeMovingSD + " bp, Threshold = " + nbSDAccepted + " Stdev";
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
 }

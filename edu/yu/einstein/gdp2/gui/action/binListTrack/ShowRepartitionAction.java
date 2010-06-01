@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLORepartition;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -62,7 +63,7 @@ public final class ShowRepartitionAction extends TrackListAction {
 		if (selectedTrack != null) {
 			final Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
 			if (scoreBin != null) {
-				final JFileChooser saveFC = new JFileChooser(trackList.getConfigurationManager().getDefaultDirectory());
+				final JFileChooser saveFC = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 				saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				saveFC.setDialogTitle("Bin repartition " + selectedTrack.getName());
 				saveFC.setSelectedFile(new File(".csv"));

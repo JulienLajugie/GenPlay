@@ -14,6 +14,8 @@ import yu.einstein.gdp2.core.DAS.DataSource;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.DASDialog;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -22,8 +24,6 @@ import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ChromosomeManager;
-import yu.einstein.gdp2.util.ExceptionManager;
 
 
 /**
@@ -71,13 +71,12 @@ public class LoadFromDASAction extends TrackListAction {
 					final DASConnector dasConnector = dasDialog.getSelectedDasConnector();
 					final DASType dasType = dasDialog.getSelectedDasType();
 					final int resType = dasDialog.getGenerateType();
-					final ChromosomeManager cm = trackList.getChromosomeManager();
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						new ActionWorker<GeneList>(trackList, "Retrieving Data from DAS Server") {
 							@Override
 							protected GeneList doAction() {
 								try {
-									return dasConnector.getGeneList(cm, dataSource, dasType);
+									return dasConnector.getGeneList(dataSource, dasType);
 								} catch (Exception e) {
 									ExceptionManager.handleException(getRootPane(), e, "Error while retrieving the data from the DAS server");
 									return null;
@@ -87,8 +86,8 @@ public class LoadFromDASAction extends TrackListAction {
 							protected void doAtTheEnd(GeneList actionResult) {
 								if (actionResult != null) {
 									ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-									Track newTrack = new GeneListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-									trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), dasType.getID(), stripes);
+									Track newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+									trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
 								}								
 							}
 						}.execute();
@@ -97,7 +96,7 @@ public class LoadFromDASAction extends TrackListAction {
 							@Override
 							protected ScoredChromosomeWindowList doAction() {
 								try {
-									return dasConnector.getSCWList(cm, dataSource, dasType);
+									return dasConnector.getSCWList(dataSource, dasType);
 								} catch (Exception e) {
 									ExceptionManager.handleException(getRootPane(), e, "Error while retrieving the data from the DAS server");
 									return null;
@@ -107,8 +106,8 @@ public class LoadFromDASAction extends TrackListAction {
 							protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 								if (actionResult != null) {
 									ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-									Track newTrack = new SCWListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-									trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), dasType.getID(), stripes);
+									Track newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+									trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
 								}
 							}					
 						}.execute();

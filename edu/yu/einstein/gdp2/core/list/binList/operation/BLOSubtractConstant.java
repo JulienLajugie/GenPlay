@@ -70,7 +70,7 @@ public class BLOSubtractConstant implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision, result);
+			BinList resultList = new BinList(binList.getBinSize(), precision, result);
 			return resultList;
 		} else {
 			return null;
@@ -81,5 +81,11 @@ public class BLOSubtractConstant implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Subtract Constant, Constant = " + constant;
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
 }

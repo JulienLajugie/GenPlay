@@ -4,6 +4,10 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+import generator.ChromosomeWindowListGenerator;
+import generator.ScoredChromosomeWindowListGenerator;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
@@ -14,17 +18,12 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
-import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 /**
  * A bedGraph file extractor
@@ -44,16 +43,15 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	 * Creates an instance of a {@link BedGraphExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public BedGraphExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
+	public BedGraphExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		stopList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		scoreList = new ChromosomeArrayListOfLists<Double>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
@@ -69,13 +67,13 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
+	protected void extractLine(String extractedLine) throws InvalidDataLineException {
 		String[] splitedLine = extractedLine.split("\t");
 		if (splitedLine.length < 4) {
 			throw new InvalidDataLineException(extractedLine);
 		}
 		try {
-			Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[0]) ;
+			Chromosome chromosome = chromosomeManager.get(splitedLine[0]) ;
 			int start = Integer.parseInt(splitedLine[1].trim());
 			int stop = Integer.parseInt(splitedLine[2].trim());
 			double score = Double.parseDouble(splitedLine[3].trim());
@@ -93,19 +91,19 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(chromosomeManager, binSize, precision, method, startList, stopList, scoreList);
+		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ScoredChromosomeWindowList(chromosomeManager, startList, stopList, scoreList);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException {
+		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
 	}
 
 
 	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ChromosomeWindowList(chromosomeManager, startList, stopList);
+	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException {
+		return new ChromosomeWindowList(startList, stopList);
 	}
 
 

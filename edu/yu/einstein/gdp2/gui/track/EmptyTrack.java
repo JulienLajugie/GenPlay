@@ -5,7 +5,6 @@
 package yu.einstein.gdp2.gui.track;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * An empty track
@@ -19,18 +18,17 @@ public final class EmptyTrack extends Track {
 	
 	/**
 	 * Creates an instance of {@link EmptyTrack}
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 */
-	public EmptyTrack(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber) {
-		initComponent(zoomManager, displayedGenomeWindow, trackNumber);
+	public EmptyTrack(GenomeWindow displayedGenomeWindow, int trackNumber) {
+		initComponent(displayedGenomeWindow, trackNumber);
 	}
 
 
 	@Override
 	public Track copy() {
-		Track copiedTrack = new EmptyTrack(trackGraphics.getZoomManager(), trackGraphics.genomeWindow, trackHandle.getTrackNumber());
+		Track copiedTrack = new EmptyTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber());
 		trackGraphics.copyTo(copiedTrack.trackGraphics);
 		trackGraphics.repaint();
 		copiedTrack.setPreferredHeight(getPreferredSize().height);
@@ -39,7 +37,7 @@ public final class EmptyTrack extends Track {
 
 	
 	@Override
-	protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new EmptyTrackGraphics(zoomManager, displayedGenomeWindow);
+	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
+		trackGraphics = new EmptyTrackGraphics(displayedGenomeWindow);
 	}
 }

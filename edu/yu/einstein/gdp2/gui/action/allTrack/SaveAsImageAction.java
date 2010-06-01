@@ -11,6 +11,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -57,7 +58,7 @@ public final class SaveAsImageAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final Track selectedTrack = trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			final JFileChooser saveFC = new JFileChooser(trackList.getConfigurationManager().getDefaultDirectory());
+			final JFileChooser saveFC = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			saveFC.setDialogTitle("Save track " + selectedTrack.getName() + " as a JPG image");
 			saveFC.setSelectedFile(new File(".jpg"));

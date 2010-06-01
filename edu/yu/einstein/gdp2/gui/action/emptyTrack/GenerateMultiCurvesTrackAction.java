@@ -10,6 +10,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.track.CurveTrack;
@@ -67,8 +68,8 @@ public class GenerateMultiCurvesTrackAction extends TrackListAction {
 				}
 				final int selectedTrackIndex = trackList.getSelectedTrackIndex();
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-				MultiCurvesTrack newTrack = new MultiCurvesTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
-				trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), trackName, stripes);	
+				MultiCurvesTrack newTrack = new MultiCurvesTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
+				trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), trackName, stripes);	
 			} else {
 				JOptionPane.showMessageDialog(getRootPane(), "You must select at least two tracks", "Warning", JOptionPane.WARNING_MESSAGE);
 			}

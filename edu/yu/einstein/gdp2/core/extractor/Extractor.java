@@ -14,8 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 
 /**
  * This class must be extended by the file extractors
@@ -36,12 +35,11 @@ public abstract class Extractor implements Serializable {
 	 * Constructor
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public Extractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
+	public Extractor(File dataFile, File logFile) {
 		this.dataFile = dataFile;
 		this.logFile = logFile;
-		this.chromosomeManager = chromosomeManager;
+		this.chromosomeManager = ChromosomeManager.getInstance();
 	}
 
 

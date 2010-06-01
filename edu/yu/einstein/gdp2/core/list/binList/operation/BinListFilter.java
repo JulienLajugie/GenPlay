@@ -102,7 +102,7 @@ public class BinListFilter {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}	
-		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), binList.getPrecision());
+		BinList resultList = new BinList(binList.getBinSize(), binList.getPrecision());
 		for(short i = 0; i < binList.size(); i++)  {
 			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
 				resultList.add(null);
@@ -159,7 +159,7 @@ public class BinListFilter {
 		// we calculate the min number of bins above the threshold needed to select a region
 		int minBinCount = (int)Math.ceil(regionSize * density);
 		DataPrecision precision = binList.getPrecision();
-		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision);
+		BinList resultList = new BinList(binList.getBinSize(), precision);
 		for(short i = 0; i < binList.size(); i++)  {
 			if ((binList.get(i) == null) || (binList.size(i) == 0)) {
 				resultList.add(null);

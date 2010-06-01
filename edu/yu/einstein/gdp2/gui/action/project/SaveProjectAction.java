@@ -13,6 +13,7 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.fileFilter.GenPlayProjectFilter;
 import yu.einstein.gdp2.gui.mainFrame.MainFrame;
@@ -60,7 +61,7 @@ public class SaveProjectAction extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final JFileChooser jfc = new JFileChooser(trackList.getConfigurationManager().getDefaultDirectory());
+		final JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Project");
 		jfc.addChoosableFileFilter(new GenPlayProjectFilter());

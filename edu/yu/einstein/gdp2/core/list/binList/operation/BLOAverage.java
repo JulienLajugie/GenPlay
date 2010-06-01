@@ -113,4 +113,10 @@ public class BLOAverage implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Average";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

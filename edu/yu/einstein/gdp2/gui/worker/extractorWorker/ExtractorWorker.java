@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
+import generator.Generator;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +21,6 @@ import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
-import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -34,18 +35,18 @@ import yu.einstein.gdp2.util.Utils;
  * end of the loading.
  * @author Julien Lajugie
  * @version 0.1
+ * @param <T> type of data returned by the Extractor
  */
-public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> implements TrackListActionEventsGenerator {
+public abstract class ExtractorWorker<T> extends SwingWorker<T, Void> implements TrackListActionEventsGenerator {
 
-	protected final TrackList 		trackList;			// TrackList 
-	private final Class<EC>			extractorClass;		// desired class of extractor
-	private final ChromosomeManager chromosomeManager;	// a ChromosomeManager
-	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener
-	private final String actionStartDescription;
-	protected final File			fileToExtract;  	// file to extract
-	protected File	 				logFile;			// a file we extracts
-	protected String				name;				// a name 
-	protected Extractor				extractor;	
+	protected final TrackList 					trackList;				// TrackList 
+	private final Class<? extends Generator>	extractorClass;			// desired class of extractor
+	private final List<TrackListActionListener> tlalListenerList;		// list of GenomeWindowListener
+	private final String 						actionStartDescription; // description of the action
+	protected final File						fileToExtract;  		// file to extract
+	protected File	 							logFile;				// a file we extracts
+	protected String							name;					// a name 
+	protected Extractor							extractor;				// an extractor
 
 
 	/**
@@ -53,11 +54,10 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 	 * @param trackList a {@link TrackList}
 	 * @param logFile a {@link File} for the log of the extraction
 	 * @param fileToExtract file to extract
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param extractorClass desired class of extractor
+	 * @param actionStartDescription description of the action
 	 */
-	public ExtractorWorker(TrackList trackList, String logFile, File fileToExtract, ChromosomeManager chromosomeManager, Class<EC> extractorClass, String actionStartDescription) {
-		this.chromosomeManager = chromosomeManager;
+	public ExtractorWorker(TrackList trackList, String logFile, File fileToExtract, Class<? extends Generator> extractorClass, String actionStartDescription) {
 		this.trackList = trackList;
 		this.extractorClass = extractorClass;
 		if (logFile != null) {
@@ -87,9 +87,9 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 	 * Extracts the data and return an {@link Extractor} containing the data
 	 */
 	@Override
-	final protected LC doInBackground() throws Exception {
+	final protected T doInBackground() throws Exception {
 		if (fileToExtract != null) {
-			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile, chromosomeManager);
+			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
 				notifyActionStarted(actionStartDescription);
 				extractor.extract();
@@ -121,10 +121,10 @@ public abstract class ExtractorWorker<EC, LC> extends SwingWorker<LC, Void> impl
 	/**
 	 * This method has to be implemented to specify how to generate
 	 * the data list from the {@link Extractor}
-	 * @return a list from whose type depends on the generic parameter LC of this class
+	 * @return a list from whose type depends on the generic parameter T of this class
 	 * @throws Exception
 	 */
-	abstract public LC generateList() throws Exception;
+	abstract public T generateList() throws Exception;
 
 
 	/**

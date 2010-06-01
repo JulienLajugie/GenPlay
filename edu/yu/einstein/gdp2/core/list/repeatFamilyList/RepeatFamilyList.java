@@ -16,9 +16,6 @@ import yu.einstein.gdp2.core.RepeatFamily;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
-
 
 /**
  * An organized list of repeat families that provides tools to fit the list to the screen.
@@ -33,19 +30,17 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	/**
 	 * Creates an instance of {@link RepeatFamilyList}
 	 * Generates an organize list of repeats from the data in parameter
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param startList list of start position of the repeats organized by chromosome
 	 * @param stopList	list of stop position of the repeats organized by chromosome
 	 * @param familyNameList list of name of the repeats organized by chromosome
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public RepeatFamilyList(ChromosomeManager chromosomeManager, ChromosomeListOfLists<Integer> startList, 
-			ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<String> familyNameList) throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		super(chromosomeManager);
+	public RepeatFamilyList(ChromosomeListOfLists<Integer> startList, 
+			ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<String> familyNameList) throws InvalidChromosomeException {
+		super();
 		for(short i = 0; i < startList.size(); i++) {
 			add(new ArrayList<RepeatFamily>());
-			Chromosome currentChromosome = chromosomeManager.getChromosome(i);
+			Chromosome currentChromosome = chromosomeManager.get(i);
 			// Hashtable indexed by repeat family name
 			Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();;
 			for(int j = 0; j < startList.size(i); j++) {
@@ -88,10 +83,6 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		List<RepeatFamily> currentChromosomeList;
 		try {
 			currentChromosomeList = get(fittedChromosome);
-		} catch (ManagerDataNotLoadedException e) {
-			e.printStackTrace();
-			fittedDataList = null;
-			return;
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			fittedDataList = null;

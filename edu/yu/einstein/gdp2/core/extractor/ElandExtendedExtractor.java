@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,10 +20,8 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -44,16 +44,15 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	 * Creates an instance of {@link ElandExtendedExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public ElandExtendedExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
-		positionList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+	public ElandExtendedExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
+		positionList = new ChromosomeArrayListOfLists<Integer>();
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 		}
-		matchTypeCount = new int[chromosomeManager.chromosomeCount()][3];		
-		for(short i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		matchTypeCount = new int[chromosomeManager.size()][3];		
+		for(short i = 0; i < chromosomeManager.size(); i++) {
 			for(short j = 0; j < 3; j++)
 				matchTypeCount[i][j] = 0;
 		}
@@ -84,8 +83,8 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				writer.newLine();
 				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
 				writer.newLine();
-				for(short i = 0; i < chromosomeManager.chromosomeCount(); i++) {
-					writer.write(chromosomeManager.getChromosome(i) + 
+				for(short i = 0; i < chromosomeManager.size(); i++) {
+					writer.write(chromosomeManager.get(i) + 
 							"\t\t" + df.format((double)matchTypeCount[i][0] / lineCount*100) + 
 							"%\t" + df.format((double)matchTypeCount[i][1] / lineCount*100) + 
 							"%\t" + df.format((double)matchTypeCount[i][2] / lineCount*100) + 
@@ -232,6 +231,6 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(chromosomeManager, binSize, precision, positionList);
+		return new BinList(binSize, precision, positionList);
 	}
 }

@@ -12,7 +12,6 @@ import java.util.zip.GZIPOutputStream;
 
 
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -25,13 +24,12 @@ public class SerializedBinListWriter extends BinListWriter {
 	
 	/**
 	 * Creates an instance of {@link SerializedBinListWriter}.
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link BinList}
 	 */
-	public SerializedBinListWriter(ChromosomeManager chromosomeManager, File outputFile, BinList data, String name) {
-		super(chromosomeManager, outputFile, data, name);
+	public SerializedBinListWriter(File outputFile, BinList data, String name) {
+		super(outputFile, data, name);
 	}
 
 	@Override

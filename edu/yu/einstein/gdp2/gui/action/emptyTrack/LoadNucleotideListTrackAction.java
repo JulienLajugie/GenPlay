@@ -11,12 +11,13 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.list.nucleotideList.TwoBitSequenceList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.NucleotideListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
-import yu.einstein.gdp2.util.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -54,14 +55,14 @@ public class LoadNucleotideListTrackAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getSequenceFileFilters());
 		if (selectedFile != null) {
 			new ActionWorker<TwoBitSequenceList>(trackList, "Loading Sequence Track") {
 				@Override
 				protected TwoBitSequenceList doAction() {
 					try {
-						return new TwoBitSequenceList(trackList.getChromosomeManager(), selectedFile);
+						return new TwoBitSequenceList(selectedFile);
 					} catch (Exception e) {
 						ExceptionManager.handleException(getRootPane(), e, "Error while loading the sequence track");
 						return null;
@@ -72,8 +73,8 @@ public class LoadNucleotideListTrackAction extends TrackListAction {
 					if (actionResult != null) {
 						final int selectedTrackIndex = trackList.getSelectedTrackIndex();
 						final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-						Track newTrack = new NucleotideListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-						trackList.setTrack(selectedTrackIndex, newTrack, trackList.getConfigurationManager().getTrackHeight(), selectedFile.getName(), stripes);
+						Track newTrack = new NucleotideListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+						trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes);
 					}
 				}
 			}.execute();

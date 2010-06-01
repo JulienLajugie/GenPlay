@@ -10,7 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 import yu.einstein.gdp2.util.Utils;
 
 /**
@@ -24,19 +23,18 @@ public final class ExtractorFactory {
 	/**
 	 * @param fileToExtract file to extract
 	 * @param logFile file for the log of the extraction
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @return an instance of a subclass of {@link Extractor} if the type has been found.
 	 * Otherwise throw a {@link InvalidFileTypeException} 
 	 * @throws IOException 
 	 * @throws InvalidFileTypeException 
 	 */
-	public static Extractor getExtractor(File fileToExtract, File logFile, ChromosomeManager chromosomeManager) throws IOException, InvalidFileTypeException {
+	public static Extractor getExtractor(File fileToExtract, File logFile) throws IOException, InvalidFileTypeException {
 		Extractor extractor = null;
-		extractor = checkHeader(fileToExtract, logFile, chromosomeManager);
+		extractor = checkHeader(fileToExtract, logFile);
 		if (extractor != null) {
 			return extractor;
 		}
-		extractor = checkFileExtension(fileToExtract, logFile, chromosomeManager);
+		extractor = checkFileExtension(fileToExtract, logFile);
 		if (extractor != null) {
 			return extractor;
 		}
@@ -48,17 +46,16 @@ public final class ExtractorFactory {
 	/**
 	 * @param fileToExtract
 	 * @param logFile
-	 * @param chromosomeManager
 	 * @return an {@link Extractor} if the extension of the file is known. null otherwise
 	 * @throws IOException
 	 */
-	public static Extractor checkFileExtension(File fileToExtract, File logFile, ChromosomeManager chromosomeManager) {
+	public static Extractor checkFileExtension(File fileToExtract, File logFile) {
 		String fileExtension = Utils.getExtension(fileToExtract);
 		if (fileExtension == null) {
 			return null;
 		}
 		if (fileExtension.equalsIgnoreCase("gff")) {
-			return new GFFExtractor(fileToExtract, logFile, chromosomeManager);
+			return new GFFExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("gtf")) {
 			// TODO return gtf extractor
 			return null;
@@ -66,23 +63,23 @@ public final class ExtractorFactory {
 			// TODO return gff3 extractor
 			return null;
 		} else if (fileExtension.equalsIgnoreCase("gr")) {
-			return new BedGraphExtractor(fileToExtract, logFile, chromosomeManager);
+			return new BedGraphExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("bed")) {
-			return new BedExtractor(fileToExtract, logFile, chromosomeManager);
+			return new BedExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("wig")) {
-			return new WiggleExtractor(fileToExtract, logFile, chromosomeManager);
+			return new WiggleExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("bgr")) {
-			return new BedGraphExtractor(fileToExtract, logFile, chromosomeManager);
+			return new BedGraphExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("pair")) {
-			return new PairExtractor(fileToExtract, logFile, chromosomeManager);
+			return new PairExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("gdp")) {
-			return new GdpGeneExtractor(fileToExtract, logFile, chromosomeManager);
+			return new GdpGeneExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("bin")) {
-			return new SerializedBinListExtractor(fileToExtract, logFile, chromosomeManager);
+			return new SerializedBinListExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("elx")) {
-			return new ElandExtendedExtractor(fileToExtract, logFile, chromosomeManager);
+			return new ElandExtendedExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("psl")) {
-			return new PSLExtractor(fileToExtract, logFile, chromosomeManager);
+			return new PSLExtractor(fileToExtract, logFile);
 		} else {
 			return null;
 		}		
@@ -92,12 +89,11 @@ public final class ExtractorFactory {
 	/** 
 	 * @param fileToExtract
 	 * @param logFile
-	 * @param chromosomeManager
 	 * @return an {@link Extractor} if there is some information about 
 	 * the type of {@link Extractor} in the header. Null otherwise  
 	 * @throws IOException
 	 */
-	public static Extractor checkHeader(File fileToExtract, File logFile, ChromosomeManager chromosomeManager) throws IOException {
+	public static Extractor checkHeader(File fileToExtract, File logFile) throws IOException {
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(fileToExtract));
@@ -123,7 +119,7 @@ public final class ExtractorFactory {
 				}
 				if (isHeader) {
 					if (line.substring(0, 5).equalsIgnoreCase("##GFF")) {
-						return new GFFExtractor(fileToExtract, logFile, chromosomeManager);
+						return new GFFExtractor(fileToExtract, logFile);
 					} else if (line.substring(0, 5).equalsIgnoreCase("track")) {
 						String[] splitedLine = line.split(" ");
 						for (String currentOption: splitedLine) {
@@ -131,17 +127,17 @@ public final class ExtractorFactory {
 								String type = currentOption.substring(5).trim();
 								reader.close();
 								if (type.equalsIgnoreCase("bedgraph")) {
-									return new BedGraphExtractor(fileToExtract, logFile, chromosomeManager);
+									return new BedGraphExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("bed")) {
-									return new BedExtractor(fileToExtract, logFile, chromosomeManager);
+									return new BedExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("gdpGene")) {
-									return new GdpGeneExtractor(fileToExtract, logFile, chromosomeManager);
+									return new GdpGeneExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("wiggle")) {
-									return new WiggleExtractor(fileToExtract, logFile, chromosomeManager);
+									return new WiggleExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("eland_extended")) {	
-									return new ElandExtendedExtractor(fileToExtract, logFile, chromosomeManager);
+									return new ElandExtendedExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("psl")) {	
-									return new PSLExtractor(fileToExtract, logFile, chromosomeManager);
+									return new PSLExtractor(fileToExtract, logFile);
 								} else {
 									return null;
 								}

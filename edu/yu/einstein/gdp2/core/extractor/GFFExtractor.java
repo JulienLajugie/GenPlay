@@ -4,6 +4,11 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+import generator.ChromosomeWindowListGenerator;
+import generator.RepeatFamilyListGenerator;
+import generator.ScoredChromosomeWindowListGenerator;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,19 +21,13 @@ import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
-import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
-import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -53,18 +52,17 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	 * Creates an instance of {@link GFFExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public GFFExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
+	public GFFExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		stopList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		nameList = new ChromosomeArrayListOfLists<String>(chromosomeManager);
-		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
-		strandList = new ChromosomeArrayListOfLists<Strand>(chromosomeManager);
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		nameList = new ChromosomeArrayListOfLists<String>();
+		scoreList = new ChromosomeArrayListOfLists<Double>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -77,11 +75,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param extractedLine line read from the data file  
-	 * @throws ManagerDataNotLoadedException 
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
+	protected void extractLine(String extractedLine) throws InvalidDataLineException {
 		String[] splitedLine = extractedLine.split("\t");
 		if (splitedLine.length == 1) {
 			splitedLine = extractedLine.split(" ");
@@ -91,7 +88,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 		}
 
 		try {
-			Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[0]) ;
+			Chromosome chromosome = chromosomeManager.get(splitedLine[0]) ;
 			nameList.add(chromosome, splitedLine[2]);
 			startList.add(chromosome, Integer.parseInt(splitedLine[3]));
 			stopList.add(chromosome, Integer.parseInt(splitedLine[4]));
@@ -105,20 +102,20 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 
 	@Override
-	public RepeatFamilyList toRepeatFamilyList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new RepeatFamilyList(chromosomeManager, startList, stopList, nameList);
+	public RepeatFamilyList toRepeatFamilyList() throws InvalidChromosomeException {
+		return new RepeatFamilyList(startList, stopList, nameList);
 	}
 
 
 	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ChromosomeWindowList(chromosomeManager, startList, stopList);
+	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException {
+		return new ChromosomeWindowList(startList, stopList);
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ScoredChromosomeWindowList(chromosomeManager, startList, stopList, scoreList);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException {
+		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
 	}
 
 
@@ -142,6 +139,6 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(chromosomeManager, binSize, precision, method, startList, stopList, scoreList);
+		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 }

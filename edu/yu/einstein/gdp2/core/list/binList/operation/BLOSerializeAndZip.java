@@ -49,4 +49,10 @@ public class BLOSerializeAndZip implements BinListOperation<ByteArrayOutputStrea
 	public String getDescription() {
 		return "Operation: Serialize and Zip";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

@@ -18,7 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 
 
 /**
@@ -62,7 +62,7 @@ public final class ChromosomeChooser extends JDialog {
 	 */
 	private void initComponent() {
 		jlChoose = new JLabel("Choose the chromosomes you want to study:");
-		jcbChromos = new JCheckBox[chromosomeManager.chromosomeCount()];
+		jcbChromos = new JCheckBox[chromosomeManager.size()];
 
 		jcbSelectAll = new JCheckBox("Select All");
 		jcbSelectAll.addItemListener(new ItemListener() {
@@ -108,11 +108,11 @@ public final class ChromosomeChooser extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		int y = 1;
 		short k = 0;
-		while(k < chromosomeManager.chromosomeCount()) {
+		while(k < chromosomeManager.size()) {
 			int x = 0;
 			c.gridy = y;
-			while((k < chromosomeManager.chromosomeCount()) && (x < 4)) {
-				jcbChromos[k] = new JCheckBox(chromosomeManager.getChromosome(k).getName());
+			while((k < chromosomeManager.size()) && (x < 4)) {
+				jcbChromos[k] = new JCheckBox(chromosomeManager.get(k).getName());
 				c.gridx = x;
 				add(jcbChromos[k], c);				
 				x++;
@@ -141,7 +141,7 @@ public final class ChromosomeChooser extends JDialog {
 	 */
 	private void jcbSelectAllItemStateChanged() {
 		boolean selectAll = jcbSelectAll.isSelected();
-		for(int i = 0; i < chromosomeManager.chromosomeCount(); i++)
+		for(int i = 0; i < chromosomeManager.size(); i++)
 			jcbChromos[i].setSelected(selectAll); 
 	}
 
@@ -177,12 +177,12 @@ public final class ChromosomeChooser extends JDialog {
 		CCOP.setVisible(true);	
 		
 		if(validated) {
-			boolean[] returnArray = new boolean[chromosomeManager.chromosomeCount()];
-			for(int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+			boolean[] returnArray = new boolean[chromosomeManager.size()];
+			for(int i = 0; i < chromosomeManager.size(); i++) {
 				returnArray[i] = false;
 				
 			}
-			for(int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+			for(int i = 0; i < chromosomeManager.size(); i++) {
 				returnArray[i] = jcbChromos[i].isSelected();
 			}			
 			return returnArray;

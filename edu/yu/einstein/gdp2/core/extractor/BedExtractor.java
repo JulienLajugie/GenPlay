@@ -4,6 +4,12 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+import generator.ChromosomeWindowListGenerator;
+import generator.GeneListGenerator;
+import generator.RepeatFamilyListGenerator;
+import generator.ScoredChromosomeWindowListGenerator;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,22 +22,14 @@ import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
-import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
-import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.core.list.geneList.GeneListGenerator;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
-import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
-
 
 /**
  * A BED file extractor
@@ -59,21 +57,20 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	 * Creates an instance of {@link BedExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public BedExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
+	public BedExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		stopList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		nameList = new ChromosomeArrayListOfLists<String>(chromosomeManager);
-		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
-		strandList = new ChromosomeArrayListOfLists<Strand>(chromosomeManager);
-		exonStartsList = new ChromosomeArrayListOfLists<int[]>(chromosomeManager);
-		exonStopsList = new ChromosomeArrayListOfLists<int[]>(chromosomeManager);
-		exonScoresList = new ChromosomeArrayListOfLists<double[]>(chromosomeManager);
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		nameList = new ChromosomeArrayListOfLists<String>();
+		scoreList = new ChromosomeArrayListOfLists<Double>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
+		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
+		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
+		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -87,7 +84,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 
 	@Override
-	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
+	protected void extractLine(String extractedLine) throws InvalidDataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
 		} else {
@@ -99,7 +96,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 				throw new InvalidDataLineException(extractedLine);
 			}
 			try {
-				Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[0]) ;
+				Chromosome chromosome = chromosomeManager.get(splitedLine[0]) ;
 				int start = Integer.parseInt(splitedLine[1].trim());
 				startList.add(chromosome, start);
 				int stop = Integer.parseInt(splitedLine[2].trim());
@@ -148,31 +145,31 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(chromosomeManager, binSize, precision, method, startList, stopList, scoreList);
+		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ScoredChromosomeWindowList(chromosomeManager, startList, stopList, scoreList);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException {
+		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
 	}
 
 
 	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new ChromosomeWindowList(chromosomeManager, startList, stopList);
+	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException {
+		return new ChromosomeWindowList(startList, stopList);
 	}
 
 
 	@Override
-	public RepeatFamilyList toRepeatFamilyList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new RepeatFamilyList(chromosomeManager, startList, stopList, nameList);
+	public RepeatFamilyList toRepeatFamilyList() throws InvalidChromosomeException {
+		return new RepeatFamilyList(startList, stopList, nameList);
 	}
 
 
 	@Override
-	public GeneList toGeneList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new GeneList(chromosomeManager, nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+	public GeneList toGeneList() throws InvalidChromosomeException {
+		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
 
 

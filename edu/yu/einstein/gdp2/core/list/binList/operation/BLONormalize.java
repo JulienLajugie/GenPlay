@@ -72,7 +72,7 @@ public class BLONormalize implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), precision, result);
+			BinList resultList = new BinList(binList.getBinSize(), precision, result);
 			return resultList;
 		} else {
 			return null;
@@ -83,5 +83,11 @@ public class BLONormalize implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Normalize, Factor = " + factor;
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
 }

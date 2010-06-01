@@ -31,4 +31,10 @@ public interface BinListOperation<T> {
 	 * @throws ExecutionException
 	 */
 	public T compute() throws Exception;
+	
+	
+	/**
+	 * @return the number of steps needed to complete the operation 
+	 */
+	public int getStepCount();
 }

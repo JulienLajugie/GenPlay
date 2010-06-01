@@ -113,7 +113,7 @@ public class BinListSaturation {
 		if (minSaturated >= maxSaturated) {
 			throw new IllegalArgumentException("The maximum must be greater than the minimum");
 		}
-		BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), binList.getPrecision());
+		BinList resultList = new BinList(binList.getBinSize(), binList.getPrecision());
 		for (List<Double> currentList: binList) {
 			if ((currentList == null) || (currentList.size() == 0)) {
 				resultList.add(null);

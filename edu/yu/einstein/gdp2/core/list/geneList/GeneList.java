@@ -17,8 +17,6 @@ import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 /**
  * A list of {@link Gene} with tool to rescale it
@@ -41,11 +39,10 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 	/**
 	 * Creates an instance of {@link GeneList}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public GeneList(ChromosomeManager chromosomeManager) {
-		super(chromosomeManager);
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+	public GeneList() {
+		super();
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			add(new ArrayList<Gene>());
 		}
 	}
@@ -53,7 +50,6 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	
 	/**
 	 * Creates an instance of {@link GeneList}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param nameList a list of gene names
 	 * @param strandList a list of {@link Strand}
 	 * @param startList a list of start positions
@@ -61,20 +57,20 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 * @param exonStartsList a list of exon start arrays
 	 * @param exonStopsList a list of exon stop arrays
 	 * @param exonScoresList a list of exon score arrays
-	 * @throws ManagerDataNotLoadedException
+	 * @param searchURL url of the gene database
 	 * @throws InvalidChromosomeException
 	 */
-	public GeneList(ChromosomeManager chromosomeManager, ChromosomeListOfLists<String> nameList, ChromosomeListOfLists<Strand> strandList, 
+	public GeneList(ChromosomeListOfLists<String> nameList, ChromosomeListOfLists<Strand> strandList, 
 			ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<int[]> exonStartsList, 
 			ChromosomeListOfLists<int[]> exonStopsList, ChromosomeListOfLists<double[]> exonScoresList, String searchURL) 
-	throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		super(chromosomeManager);
+	throws InvalidChromosomeException {
+		super();
 		if (searchURL != null) {
 			this.searchURL = searchURL;
 		}
 		for(short i = 0; i < nameList.size(); i++) {
 			add(new ArrayList<Gene>());
-			Chromosome chromo = chromosomeManager.getChromosome(i);
+			Chromosome chromo = chromosomeManager.get(i);
 			for(int j = 0; j < nameList.size(i); j++) {
 				String name = nameList.get(i, j);
 				Strand strand = strandList.get(i, j);
@@ -154,10 +150,6 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		List<Gene> currentList;
 		try {
 			currentList = get(fittedChromosome);
-		} catch (ManagerDataNotLoadedException e) {
-			e.printStackTrace();
-			fittedDataList = null;
-			return;
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			fittedDataList = null;
@@ -271,7 +263,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 			boolean found = false;
 			Gene geneFound = null;
 			short i = 0;
-			while ((i < chromosomeManager.chromosomeCount()) && (!found)) {
+			while ((i < chromosomeManager.size()) && (!found)) {
 				if (get(i) != null) {
 					int j = 0;
 					while ((j < size(i)) && (!found)) {

@@ -89,4 +89,10 @@ public class BLOMax implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Maximum";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

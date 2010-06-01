@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import yu.einstein.gdp2.util.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 
 /**

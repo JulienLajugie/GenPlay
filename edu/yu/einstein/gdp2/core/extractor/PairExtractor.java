@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import generator.BinListGenerator;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
@@ -16,11 +18,8 @@ import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.BinListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -42,14 +41,13 @@ implements Serializable, BinListGenerator {
 	 * Creates an instance of {@link PairExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public PairExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
-		positionList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		scoreList = new ChromosomeArrayListOfLists<Double>(chromosomeManager);
+	public PairExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
+		positionList = new ChromosomeArrayListOfLists<Integer>();
+		scoreList = new ChromosomeArrayListOfLists<Double>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
 		}
@@ -59,11 +57,10 @@ implements Serializable, BinListGenerator {
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param extractedLine line read from the data file  
-	 * @throws ManagerDataNotLoadedException 
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
+	protected void extractLine(String extractedLine) throws InvalidDataLineException {
 		if (extractedLine.trim().length() == 0) {
 			return;
 		}
@@ -84,7 +81,7 @@ implements Serializable, BinListGenerator {
 			throw new InvalidDataLineException(extractedLine);
 		}
 		try {
-			Chromosome chromosome = chromosomeManager.getChromosome(chromosomeField[0]);
+			Chromosome chromosome = chromosomeManager.get(chromosomeField[0]);
 			positionList.add(chromosome, Integer.parseInt(splitedLine[4]));
 			scoreList.add(chromosome, Double.parseDouble(splitedLine[9]));
 			lineCount++;
@@ -114,6 +111,6 @@ implements Serializable, BinListGenerator {
 
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(chromosomeManager, binSize, precision, method, positionList, scoreList);
+		return new BinList(binSize, precision, method, positionList, scoreList);
 	}
 }

@@ -15,8 +15,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.text.NumberFormatter;
 
-import yu.einstein.gdp2.util.ChromosomeManager;
-import yu.einstein.gdp2.util.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 
 /**

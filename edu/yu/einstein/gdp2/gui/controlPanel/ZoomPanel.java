@@ -23,10 +23,10 @@ import javax.swing.event.ChangeListener;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.GenomeWindow;
+import yu.einstein.gdp2.core.manager.ZoomManager;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.util.ZoomManager;
 
 
 /**
@@ -52,8 +52,8 @@ public final class ZoomPanel extends JPanel implements MouseWheelListener, Genom
 	 * @param aZoomManager a {@link ZoomManager}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public ZoomPanel(ZoomManager aZoomManager, GenomeWindow genomeWindow) {
-		this.zoomManager = aZoomManager;
+	public ZoomPanel(GenomeWindow genomeWindow) {
+		this.zoomManager = ZoomManager.getInstance();
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
 		jlZoom = new JLabel("Size: " + SIZE_FORMAT.format(currentGenomeWindow.getSize()));

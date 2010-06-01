@@ -77,7 +77,7 @@ public class BLODensity implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getChromosomeManager(), binList.getBinSize(), defaultPrecision, result);
+			BinList resultList = new BinList(binList.getBinSize(), defaultPrecision, result);
 			return resultList;
 		} else {
 			return null;
@@ -88,5 +88,11 @@ public class BLODensity implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Density, Region Size = " + (halfWidth * 2 + 1) + " Bins";
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
 }

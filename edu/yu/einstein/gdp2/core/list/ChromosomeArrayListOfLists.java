@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import yu.einstein.gdp2.core.Chromosome;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
+
 
 /**
  * This class represents a generic list organized by chromosome.
@@ -29,12 +29,11 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 
 	/**
-	 * Creates an instance of {@link ChromosomeArrayListOfLists}
-	 * @param chromosomeManager a {@link ChromosomeManager}
+	 * Constructor
 	 */
-	public ChromosomeArrayListOfLists(ChromosomeManager chromosomeManager) {
+	public ChromosomeArrayListOfLists() {
 		super();
-		this.chromosomeManager = chromosomeManager;
+		chromosomeManager = ChromosomeManager.getInstance();
 	}
 
 
@@ -52,7 +51,7 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
-		savedChromosomes = chromosomeManager.getAllChromosomes();
+		savedChromosomes = (Chromosome[]) chromosomeManager.toArray();
 		out.defaultWriteObject();
 	}
 
@@ -69,8 +68,8 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 		in.defaultReadObject();
 		// check if the current chromosome manager and the one used when the object was serialized are similar 
 		boolean sameManager = true;
-		for (short i = 0; i < chromosomeManager.chromosomeCount(); i++) {
-			if ((savedChromosomes == null) || (i >= savedChromosomes.length) || (!savedChromosomes[i].equals(chromosomeManager.getChromosome(i)))) {
+		for (short i = 0; i < chromosomeManager.size(); i++) {
+			if ((savedChromosomes == null) || (i >= savedChromosomes.length) || (!savedChromosomes[i].equals(chromosomeManager.get(i)))) {
 				sameManager = false;
 			}
 		}
@@ -79,11 +78,11 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 			// copy the current list and copy it in a temporary list
 			ArrayList<List<T>> listTmp = new ArrayList<List<T>>(this);
 			this.clear();
-			for (short i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+			for (short i = 0; i < chromosomeManager.size(); i++) {
 				boolean chromosomeFound = false;
 				int j = 0;
 				while ((!chromosomeFound) && (j < savedChromosomes.length)) {
-					if (savedChromosomes[j].equals(chromosomeManager.getChromosome(i))) {
+					if (savedChromosomes[j].equals(chromosomeManager.get(i))) {
 						chromosomeFound = true;
 					} else {
 						j++;
@@ -100,13 +99,13 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 
 	@Override
-	public void add(Chromosome chromosome, T element) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException {
 		get(chromosomeManager.getIndex(chromosome)).add(element);
 	}
 
 
 	@Override
-	public List<T> get(Chromosome chromosome) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException {
 		return get(chromosomeManager.getIndex(chromosome));
 	}
 
@@ -118,19 +117,19 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 
 	@Override
-	public T get(Chromosome chromosome, int index) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException {
 		return get(chromosomeManager.getIndex(chromosome)).get(index);
 	}
 
 
 	@Override
-	public void set(Chromosome chromosome, int index, T element) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException {
 		get(chromosomeManager.getIndex(chromosome)).set(index, element);
 	}
 
 
 	@Override
-	public void set(Chromosome chromosome, List<T> list) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException {
 		set(chromosomeManager.getIndex(chromosome), list);
 	}
 
@@ -148,7 +147,7 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 
 	@Override
-	public int size(Chromosome chromosome) throws ManagerDataNotLoadedException, InvalidChromosomeException {
+	public int size(Chromosome chromosome) throws InvalidChromosomeException {
 		return get(chromosomeManager.getIndex(chromosome)).size();
 	}
 }

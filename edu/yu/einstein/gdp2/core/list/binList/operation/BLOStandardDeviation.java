@@ -97,4 +97,10 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Standard Deviation";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

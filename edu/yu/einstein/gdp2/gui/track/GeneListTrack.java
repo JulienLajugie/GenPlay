@@ -6,8 +6,6 @@ package yu.einstein.gdp2.gui.track;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.util.ZoomManager;
-
 
 /**
  * A track containing a {@link GeneList}
@@ -22,14 +20,13 @@ public class GeneListTrack extends Track {
 	
 	/**
 	 * Creates an instance of {@link GeneListTrack}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 * @param data {@link GeneList} showed in the track
 	 */
-	public GeneListTrack(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, int trackNumber,  GeneList data) {
+	public GeneListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,  GeneList data) {
 		this.data = data;
-		initComponent(zoomManager, displayedGenomeWindow, trackNumber);
+		initComponent(displayedGenomeWindow, trackNumber);
 	}
 	
 	
@@ -38,7 +35,7 @@ public class GeneListTrack extends Track {
 	 */
 	@Override
 	public Track copy() {
-		Track copiedTrack = new GeneListTrack(trackGraphics.getZoomManager(), trackGraphics.genomeWindow, trackHandle.getTrackNumber(), data);
+		Track copiedTrack = new GeneListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), data);
 		trackGraphics.copyTo(copiedTrack.trackGraphics);
 		trackGraphics.repaint();
 		copiedTrack.setPreferredHeight(getPreferredSize().height);
@@ -50,8 +47,8 @@ public class GeneListTrack extends Track {
 	 * @see yu.einstein.gdp2.gui.track.Track#createTrackGraphics(yu.einstein.gdp2.util.ZoomManager, yu.einstein.gdp2.core.GenomeWindow)
 	 */
 	@Override
-	protected void initTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new GeneListTrackGraphics(zoomManager, displayedGenomeWindow, data);
+	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
+		trackGraphics = new GeneListTrackGraphics(displayedGenomeWindow, data);
 	}
 	
 	

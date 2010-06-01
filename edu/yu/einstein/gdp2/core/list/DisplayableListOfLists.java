@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -44,11 +43,10 @@ public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOf
 	
 	
 	/**
-	 * 
-	 * @param chromosomeManager
+	 * Constructor
 	 */
-	public DisplayableListOfLists(ChromosomeManager chromosomeManager) {
-		super(chromosomeManager);
+	public DisplayableListOfLists() {
+		super();
 	}
 	
 	

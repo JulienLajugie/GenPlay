@@ -13,7 +13,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
  * @version 0.1
  */
 public class TrackListActionEvent {
-	private final TrackList trackList;	// track list
+	private final TrackList trackList;			// track list
 	private final String operationDescription;	// description of the operation
 	
 	

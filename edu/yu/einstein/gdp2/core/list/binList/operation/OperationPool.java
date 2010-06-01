@@ -14,10 +14,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import yu.einstein.gdp2.core.Chromosome;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEvent;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEventsGenerator;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressListener;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -122,7 +122,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			// compute the completion and check if everything's done 
 			for (short i = 0; i < futures.size(); i++) {
 				if (futures.get(i).isDone() || futures.get(i).isCancelled()) {
-					done += cm.getChromosome(i).getLength();					
+					done += cm.get(i).getLength();					
 				} else {
 					stillAlive = true;
 				}

@@ -87,7 +87,7 @@ public class BLOIndexByChromosome implements BinListOperation<BinList> {
 		}
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binList.getChromosomeManager(), binSize, precision, result);
+			BinList resultList = new BinList(binSize, precision, result);
 			return resultList;
 		} else {
 			return null;
@@ -99,5 +99,11 @@ public class BLOIndexByChromosome implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Operation: Index by Chromsome Between " +  newMin + " and " + newMax;
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
 }

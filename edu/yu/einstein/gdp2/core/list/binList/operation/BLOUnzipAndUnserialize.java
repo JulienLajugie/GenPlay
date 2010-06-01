@@ -48,4 +48,10 @@ public class BLOUnzipAndUnserialize implements BinListOperation<BinList> {
 	public String getDescription() {
 		return "Operation: Unzip and Unserialize";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

@@ -9,8 +9,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * A ruler
@@ -46,12 +43,11 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 
 	/**
 	 * Creates an instance of {@link Ruler}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param genomeWindow displayed {@link GenomeWindow}
 	 */
-	public Ruler(ZoomManager zoomManager, GenomeWindow genomeWindow) {
+	public Ruler(GenomeWindow genomeWindow) {
 		listenerList = new ArrayList<GenomeWindowListener>();
-		rulerGraphics = new RulerGraphics(zoomManager, genomeWindow);
+		rulerGraphics = new RulerGraphics(genomeWindow);
 		rulerGraphics.addGenomeWindowListener(this);
 		rulerButton = new JButton();
 		initButton();		
@@ -87,12 +83,6 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		rulerButton.setIcon(new ImageIcon(cl.getResource(ICON_PATH)));
 		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.lightGray));	
 		rulerButton.setPreferredSize(new Dimension(HANDLE_WIDTH + 1, RULER_HEIGHT));
-		rulerButton.addActionListener(new ActionListener() {			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				firePropertyChange("rulerButtonClicked", false, true);
-			}
-		});
 		rulerButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -125,6 +115,14 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		rulerGraphics.setScrollMode(scrollMode);
 	}
 
+	
+	/**
+	 * @return the main button of the application attached to the Ruler
+	 */
+	public JButton getOptionButton() {
+		return rulerButton;
+	}
+	
 
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {

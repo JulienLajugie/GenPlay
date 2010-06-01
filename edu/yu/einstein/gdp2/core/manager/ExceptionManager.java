@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.util;
+package yu.einstein.gdp2.core.manager;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -27,24 +27,6 @@ public final class ExceptionManager {
 	 */
 	public static void handleException(JComponent jc, Exception e, String message) {
 		showAppropriateMessage(jc, e, message);
-	}
-	
-	
-	/**
-	 * Shows the error stack track in a dialog box
-	 * @param jc a component
-	 * @param e an exception
-	 */
-	public static void showStack(JComponent jc, Exception e) {
-		String errorMessage = "<html><pre>";
-		if (e.getCause() != null) {
-			errorMessage += "Caused by: " + e.getCause().toString() + "<br/>";
-		}
-		for (StackTraceElement currentTrace : e.getStackTrace()) {
-			errorMessage += "\tat " + currentTrace.toString() + "<br/>";
-		}
-		errorMessage += "</pre></html>";
-		JOptionPane.showMessageDialog(jc.getRootPane(), errorMessage, "Error Info", JOptionPane.ERROR_MESSAGE);
 	}
 	
 	
@@ -74,5 +56,23 @@ public final class ExceptionManager {
 				JOptionPane.showMessageDialog(jc.getRootPane(), message, "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+	
+	
+	/**
+	 * Shows the error stack track in a dialog box
+	 * @param jc a component
+	 * @param e an exception
+	 */
+	public static void showStack(JComponent jc, Exception e) {
+		String errorMessage = "<html><pre>";
+		if (e.getCause() != null) {
+			errorMessage += "Caused by: " + e.getCause().toString() + "<br/>";
+		}
+		for (StackTraceElement currentTrace : e.getStackTrace()) {
+			errorMessage += "\tat " + currentTrace.toString() + "<br/>";
+		}
+		errorMessage += "</pre></html>";
+		JOptionPane.showMessageDialog(jc.getRootPane(), errorMessage, "Error Info", JOptionPane.ERROR_MESSAGE);
 	}
 }

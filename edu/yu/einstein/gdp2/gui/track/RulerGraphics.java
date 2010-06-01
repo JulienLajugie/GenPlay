@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * The graphics part of the ruler
@@ -30,11 +29,10 @@ public final class RulerGraphics extends TrackGraphics {
 
 	/**
 	 * Creates an instance of {@link RulerGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param genomeWindow displayed {@link GenomeWindow}
 	 */
-	public RulerGraphics(ZoomManager zoomManager, GenomeWindow genomeWindow) {
-		super(zoomManager, genomeWindow);
+	public RulerGraphics(GenomeWindow genomeWindow) {
+		super(genomeWindow);
 		setVisible(true);
 	}
 

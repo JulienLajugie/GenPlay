@@ -12,7 +12,6 @@ import yu.einstein.gdp2.core.list.SCWList.SCWListOperations;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
 import yu.einstein.gdp2.gui.track.drawer.SCWListDrawer;
-import yu.einstein.gdp2.util.ZoomManager;
 
 /**
  * A {@link TrackGraphics} part of a {@link SCWListTrack}
@@ -27,12 +26,11 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics {
 
 	/**
 	 * Creates an instance of a {@link SCWListTrackGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data displayed {@link ScoredChromosomeWindowList} 
 	 */
-	protected SCWListTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
-		super(zoomManager, displayedGenomeWindow, SCWListOperations.minScoreToDisplay(data), SCWListOperations.maxScoreToDisplay(data));
+	protected SCWListTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
+		super(displayedGenomeWindow, SCWListOperations.minScoreToDisplay(data), SCWListOperations.maxScoreToDisplay(data));
 		this.data = data;
 		// we don't want the max equals to the min
 		if (yMin == yMax) {

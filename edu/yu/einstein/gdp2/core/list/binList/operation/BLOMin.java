@@ -89,4 +89,10 @@ public class BLOMin implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Minimum";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

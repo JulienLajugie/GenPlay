@@ -11,8 +11,8 @@ import java.io.IOException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**

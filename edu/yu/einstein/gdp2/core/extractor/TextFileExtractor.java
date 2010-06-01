@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
-
 
 /**
  * This class must be extended by the {@link Extractor} for text files
@@ -33,10 +30,9 @@ public abstract class TextFileExtractor extends Extractor {
 	 * Creates an instance of {@link TextFileExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public TextFileExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
+	public TextFileExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
 	}
 
 
@@ -44,15 +40,13 @@ public abstract class TextFileExtractor extends Extractor {
 	 * Extracts the data from a line. 
 	 * @param line a line from the data file that is not a header line. 
 	 * (ie: a line that doesn't start with "#", "browser" or "track")
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidDataLineException
 	 */
-	abstract protected void extractLine(String line) throws ManagerDataNotLoadedException, InvalidDataLineException;
+	abstract protected void extractLine(String line) throws InvalidDataLineException;
 
 
 	@Override
-	public void extract() throws FileNotFoundException, IOException,
-	ManagerDataNotLoadedException {
+	public void extract() throws FileNotFoundException, IOException {
 		BufferedReader reader = null;
 		try {
 			// try to open the input file

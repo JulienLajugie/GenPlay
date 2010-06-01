@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -68,8 +69,8 @@ public final class IslandFinderAction extends TrackListAction {
 					}
 					@Override
 					protected void doAtTheEnd(BinList actionResult) {
-						Track newTrack = new BinListTrack(trackList.getZoomManager(), trackList.getGenomeWindow(), index + 1, trackList.getChromosomeManager(), actionResult);
-						trackList.setTrack(index, newTrack, trackList.getConfigurationManager().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes());						
+						Track newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+						trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes());						
 					}
 				}.execute();
 			}

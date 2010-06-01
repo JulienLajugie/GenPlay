@@ -26,6 +26,8 @@ import javax.swing.JScrollPane;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.action.SCWListTrack.GenerateBinListAction;
 import yu.einstein.gdp2.gui.action.allTrack.CopyAction;
 import yu.einstein.gdp2.gui.action.allTrack.CutAction;
@@ -97,10 +99,6 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.util.ChromosomeManager;
-import yu.einstein.gdp2.util.ConfigurationManager;
-import yu.einstein.gdp2.util.ExceptionManager;
-import yu.einstein.gdp2.util.ZoomManager;
 
 
 /**
@@ -113,8 +111,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
 	private final JPanel 		jpTrackList;					// panel with the tracks
 	private final ConfigurationManager configurationManager;	// ConfigurationManager
-	private final ZoomManager 	zoomManager;					// ZoomManager
-	private final ChromosomeManager chromosomeManager;			// ChromosomeManager
 	private final List<GenomeWindowListener> gwListenerList;	// list of GenomeWindowListener
 	private final List<TrackListActionListener> tlalListenerList;// list of GenomeWindowListener
 	private GenomeWindow 		displayedGenomeWindow;			// displayed GenomeWindow
@@ -127,15 +123,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	/**
 	 * Creates an instance of {@link TrackList}
-	 * @param configurationManager a {@link ConfigurationManager}
-	 * @param zoomManager a {@link ZoomManager}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 */
-	public TrackList(ConfigurationManager configurationManager, ChromosomeManager chromosomeManager, ZoomManager zoomManager, GenomeWindow displayedGenomeWindow) {
+	public TrackList(GenomeWindow displayedGenomeWindow) {
 		super();
-		this.configurationManager = configurationManager;
-		this.chromosomeManager = chromosomeManager;
-		this.zoomManager = zoomManager;
+		this.configurationManager = ConfigurationManager.getInstance();
 		this.displayedGenomeWindow = displayedGenomeWindow;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		this.tlalListenerList = new ArrayList<TrackListActionListener>();
@@ -147,7 +138,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int preferredHeight = configurationManager.getTrackHeight();
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
-			trackList[i] = new EmptyTrack(zoomManager, displayedGenomeWindow, i + 1);
+			trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
 			trackList[i].setPreferredHeight(preferredHeight);
 			trackList[i].addPropertyChangeListener(this);
 			trackList[i].addGenomeWindowListener(this);
@@ -424,7 +415,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			if (i < trackTmp.length) {
 				trackList[i] = trackTmp[i];
 			} else {
-				trackList[i] = new EmptyTrack(zoomManager, displayedGenomeWindow, i + 1);
+				trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
 				trackList[i].setPreferredHeight(preferredHeight);
 			}
 		}
@@ -562,30 +553,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * @return the {@link ChromosomeManager}
-	 */
-	public ChromosomeManager getChromosomeManager() {
-		return chromosomeManager;
-	}
-
-
-	/**
-	 * @return the {@link ConfigurationManager}
-	 */
-	public ConfigurationManager getConfigurationManager() {
-		return configurationManager;
-	}
-
-
-	/**
-	 * @return the {@link ZoomManager}
-	 */
-	public ZoomManager getZoomManager() {
-		return zoomManager;
-	}
-
-
-	/**
 	 * Copies the selected track.
 	 */
 	public void copyTrack() {
@@ -607,7 +574,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			try {
 				copiedTrack = selectedTrack;
 				int selectedTrackIndex = getSelectedTrackIndex();				
-				Track emptyTrack = new EmptyTrack(zoomManager, displayedGenomeWindow, trackList.length);
+				Track emptyTrack = new EmptyTrack(displayedGenomeWindow, trackList.length);
 				setTrack(selectedTrackIndex, emptyTrack, configurationManager.getTrackHeight(), null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
@@ -661,7 +628,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			for (int i = selectedTrackIndex + 1; i < trackList.length; i++) {
 				trackList[i - 1] = trackList[i];
 			}
-			trackList[trackList.length - 1] = new EmptyTrack(zoomManager, displayedGenomeWindow, trackList.length);
+			trackList[trackList.length - 1] = new EmptyTrack(displayedGenomeWindow, trackList.length);
 			trackList[trackList.length - 1].addPropertyChangeListener(this);
 			trackList[trackList.length - 1].addGenomeWindowListener(this);
 			selectedTrack = null;

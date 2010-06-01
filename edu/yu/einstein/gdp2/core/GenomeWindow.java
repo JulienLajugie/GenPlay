@@ -6,9 +6,9 @@ package yu.einstein.gdp2.core;
 
 import java.io.Serializable;
 
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.exception.ChromosomeWindowException;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
 
 /**
@@ -51,7 +51,7 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 	 */
 	public GenomeWindow(String genomeWindowStr, ChromosomeManager chromosomeManager) throws ChromosomeWindowException, InvalidChromosomeException {
 		super(genomeWindowStr.split(":")[1].trim());
-		chromosome = chromosomeManager.getChromosome(genomeWindowStr.split(":")[0].trim());
+		chromosome = chromosomeManager.get(genomeWindowStr.split(":")[0].trim());
 	}
 
 	

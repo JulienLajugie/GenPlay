@@ -14,7 +14,6 @@ import java.text.DecimalFormat;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
-import yu.einstein.gdp2.util.ZoomManager;
 
 
 /**
@@ -34,13 +33,12 @@ public abstract class CurveTrackGraphics extends ScoredTrackGraphics implements 
 
 	/**
 	 * Creates an instance of {@link CurveTrackGraphics}
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
-	protected CurveTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, double yMin, double yMax) {
-		super(zoomManager, displayedGenomeWindow, yMin, yMax);
+	protected CurveTrackGraphics(GenomeWindow displayedGenomeWindow, double yMin, double yMax) {
+		super(displayedGenomeWindow, yMin, yMax);
 		this.trackColor = TRACK_COLOR;
 		this.typeOfGraph = TYPE_OF_GRAPH;
 	}

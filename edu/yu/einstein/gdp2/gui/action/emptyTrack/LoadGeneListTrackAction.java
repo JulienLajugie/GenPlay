@@ -9,6 +9,7 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -51,11 +52,11 @@ public final class LoadGeneListTrackAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
-		String logFile = trackList.getConfigurationManager().getLogFile();
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		String logFile = ConfigurationManager.getInstance().getLogFile();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Track", defaultDirectory, Utils.getGeneFileFilters());
 		if (selectedFile != null) {
-			new GeneListExtractorWorker(trackList, logFile, selectedFile, trackList.getChromosomeManager()).execute();
+			new GeneListExtractorWorker(trackList, logFile, selectedFile).execute();
 		}
 	}
 }

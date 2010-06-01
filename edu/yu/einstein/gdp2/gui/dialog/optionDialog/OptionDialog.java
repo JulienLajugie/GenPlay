@@ -28,7 +28,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
-import yu.einstein.gdp2.util.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 
 /**

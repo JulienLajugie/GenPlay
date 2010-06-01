@@ -37,7 +37,7 @@ public class BLOChangeBinSize implements BinListOperation<BinList> {
 
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		BinList resultList = new BinList(binList.getChromosomeManager(), binSize, binList.getPrecision(), method, binList, true);
+		BinList resultList = new BinList(binSize, binList.getPrecision(), method, binList, true);
 		return resultList;
 	}
 	
@@ -45,5 +45,11 @@ public class BLOChangeBinSize implements BinListOperation<BinList> {
 	@Override
 	public String getDescription() {
 		return "Bin Size Changes to " + binSize + "bp, Method of Calculation = " + method;
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binSize);
 	}
 }

@@ -13,6 +13,7 @@ import javax.swing.ActionMap;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.fileFilter.GenPlayProjectFilter;
 import yu.einstein.gdp2.gui.mainFrame.MainFrame;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -60,7 +61,7 @@ public class LoadProjectAction extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+		final String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final FileFilter[] fileFilters = {new GenPlayProjectFilter()};
 		final File selectedFile = Utils.chooseFileToLoad(trackList.getRootPane(), "Load Project", defaultDirectory, fileFilters);
 		if (selectedFile != null) {

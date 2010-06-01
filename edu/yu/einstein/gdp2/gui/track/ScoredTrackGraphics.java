@@ -10,8 +10,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.util.ZoomManager;
-
 
 /**
  * An abstract class providing tools to draw a scored {@link TrackGraphics}
@@ -32,13 +30,12 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 
 	/**
 	 * Creates an instance of {@link ScoredTrackGraphics}
-	 * @param zoomManager {@link ZoomManager}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
-	protected ScoredTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, double yMin, double yMax) {
-		super(zoomManager, displayedGenomeWindow);
+	protected ScoredTrackGraphics(GenomeWindow displayedGenomeWindow, double yMin, double yMax) {
+		super(displayedGenomeWindow);
 		this.yMin = yMin;
 		this.yMax = yMax;
 		this.showHorizontalGrid = SHOW_HORIZONTAL_GRID;

@@ -9,8 +9,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.util.ZoomManager;
-
 
 /**
  * A {@link TrackGraphics} part of a {@link MultiCurvesTrack}
@@ -25,12 +23,11 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 
 	/**
 	 * Creates an instance of {@link MultiCurvesTrackGraphics}
-	 * @param zoomManager a {@link ZoomManager}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param curveTracks array of {@link CurveTrack}
 	 */
-	public MultiCurvesTrackGraphics(ZoomManager zoomManager, GenomeWindow displayedGenomeWindow, CurveTrack[] curveTracks) {
-		super(zoomManager, displayedGenomeWindow, 0, 1);
+	public MultiCurvesTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack[] curveTracks) {
+		super(displayedGenomeWindow, 0, 1);
 		this.curveTracks = curveTracks;
 		// add repaint listeners so the multicurves track is repainted when on of the curves track is repainted
 		for (Track currentTrack: curveTracks) {

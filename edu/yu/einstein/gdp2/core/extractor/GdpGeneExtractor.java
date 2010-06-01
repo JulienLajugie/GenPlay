@@ -1,5 +1,7 @@
 package yu.einstein.gdp2.core.extractor;
 
+import generator.GeneListGenerator;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,14 +12,10 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.core.list.geneList.GeneListGenerator;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
 
-public final class GdpGeneExtractor extends TextFileExtractor
-implements Serializable, GeneListGenerator {
+public final class GdpGeneExtractor extends TextFileExtractor implements Serializable, GeneListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
 
@@ -35,20 +33,19 @@ implements Serializable, GeneListGenerator {
 	 * Creates an instance of a {@link GdpGeneExtractor}
 	 * @param dataFile file containing the data
 	 * @param logFile file for the log (no log if null)
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 */
-	public GdpGeneExtractor(File dataFile, File logFile, ChromosomeManager chromosomeManager) {
-		super(dataFile, logFile, chromosomeManager);
+	public GdpGeneExtractor(File dataFile, File logFile) {
+		super(dataFile, logFile);
 		// initialize the lists
-		startList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		stopList = new ChromosomeArrayListOfLists<Integer>(chromosomeManager);
-		nameList = new ChromosomeArrayListOfLists<String>(chromosomeManager);
-		strandList = new ChromosomeArrayListOfLists<Strand>(chromosomeManager);
-		exonStartsList = new ChromosomeArrayListOfLists<int[]>(chromosomeManager);
-		exonStopsList = new ChromosomeArrayListOfLists<int[]>(chromosomeManager);
-		exonScoresList = new ChromosomeArrayListOfLists<double[]>(chromosomeManager);
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		nameList = new ChromosomeArrayListOfLists<String>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
+		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
+		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
+		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.chromosomeCount(); i++) {
+		for (int i = 0; i < chromosomeManager.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -63,11 +60,10 @@ implements Serializable, GeneListGenerator {
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param Extractedline line read from the data file  
-	 * @throws ManagerDataNotLoadedException 
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws ManagerDataNotLoadedException, InvalidDataLineException {
+	protected void extractLine(String extractedLine) throws InvalidDataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
 		} else {
@@ -79,7 +75,7 @@ implements Serializable, GeneListGenerator {
 				throw new InvalidDataLineException(extractedLine);
 			}
 			try {
-				Chromosome chromosome = chromosomeManager.getChromosome(splitedLine[1]) ;
+				Chromosome chromosome = chromosomeManager.get(splitedLine[1]) ;
 				String name = splitedLine[0].trim();
 				nameList.add(chromosome, name);
 				Strand strand = Strand.get(splitedLine[2].trim());
@@ -115,7 +111,7 @@ implements Serializable, GeneListGenerator {
 
 
 	@Override
-	public GeneList toGeneList() throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		return new GeneList(chromosomeManager, nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+	public GeneList toGeneList() throws InvalidChromosomeException {
+		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
 }

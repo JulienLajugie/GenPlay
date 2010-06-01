@@ -14,9 +14,6 @@ import yu.einstein.gdp2.core.ChromosomeWindow;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
-import yu.einstein.gdp2.exception.ManagerDataNotLoadedException;
-import yu.einstein.gdp2.util.ChromosomeManager;
-
 
 /**
  * A list of {@link ChromosomeWindow} with tool to rescale it
@@ -30,18 +27,17 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 	
 	/**
 	 * Creates an instance of {@link ChromosomeWindowList}
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param startList list of start positions
 	 * @param stopList list of stop positions
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
-	public ChromosomeWindowList(ChromosomeManager chromosomeManager, ChromosomeListOfLists<Integer> startList, 
-			ChromosomeListOfLists<Integer> stopList) throws ManagerDataNotLoadedException, InvalidChromosomeException {
-		super(chromosomeManager);
+	public ChromosomeWindowList(ChromosomeListOfLists<Integer> startList, 
+			ChromosomeListOfLists<Integer> stopList) throws InvalidChromosomeException {
+		super();
 		for(short i = 0; i < startList.size(); i++) {
 			add(new ArrayList<ChromosomeWindow>());
-			Chromosome chromo = chromosomeManager.getChromosome(i);
+			Chromosome chromo = chromosomeManager.get(i);
 			for(int j = 0; j < startList.size(i); j++) {
 				int start = startList.get(i).get(j);
 				int stop = stopList.get(i).get(j);
@@ -62,10 +58,6 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 		List<ChromosomeWindow> currentChromosomeList;
 		try {
 			currentChromosomeList = get(fittedChromosome);
-		} catch (ManagerDataNotLoadedException e) {
-			e.printStackTrace();
-			fittedDataList = null;
-			return;
 		} catch (InvalidChromosomeException e) {
 			e.printStackTrace();
 			fittedDataList = null;

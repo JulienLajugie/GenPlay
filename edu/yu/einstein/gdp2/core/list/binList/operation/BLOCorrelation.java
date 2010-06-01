@@ -145,7 +145,8 @@ public class BLOCorrelation implements BinListOperation<Double> {
 							if ((currentList1.get(j) != 0) && (currentList2.get(j) != 0)) {
 								means1[currentIndex] += currentList1.get(j);
 								means2[currentIndex] += currentList2.get(j);
-								counters[currentIndex]++;							}
+								counters[currentIndex]++;							
+							}							
 							j++;
 						}
 
@@ -180,5 +181,11 @@ public class BLOCorrelation implements BinListOperation<Double> {
 	@Override
 	public String getDescription() {
 		return "Operation: Correlation Coefficient";
+	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 2;
 	}
 }

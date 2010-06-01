@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.util.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 
 
 /**
@@ -27,13 +27,12 @@ public abstract class GeneListWriter {
 	
 	/**
 	 * Creates an instance of {@link GeneListWriter}.
-	 * @param chromosomeManager a {@link ChromosomeManager}
 	 * @param outputFile output {@link File}
 	 * @param data {@link BinList} to write
 	 * @param name a name for the {@link GeneList}
 	 */
-	public GeneListWriter(ChromosomeManager chromosomeManager, File outputFile, GeneList data, String name) {
-		this.chromosomeManager = chromosomeManager;
+	public GeneListWriter(File outputFile, GeneList data, String name) {
+		this.chromosomeManager = ChromosomeManager.getInstance();
 		this.outputFile = outputFile;
 		this.data = data;
 		this.name = name;

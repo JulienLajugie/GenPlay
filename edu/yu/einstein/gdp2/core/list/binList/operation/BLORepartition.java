@@ -82,4 +82,10 @@ public class BLORepartition implements BinListOperation<Void> {
 	public String getDescription() {
 		return "Operation: Show Repartition";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

@@ -9,6 +9,7 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -53,11 +54,11 @@ public final class LoadStripesAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track selectedTrack = trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			String logFile = trackList.getConfigurationManager().getLogFile();
-			String defaultDirectory = trackList.getConfigurationManager().getDefaultDirectory();
+			String logFile = ConfigurationManager.getInstance().getLogFile();
+			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getStripeFileFilters());
 			if (selectedFile != null) {
-				new ChromosomeWindowListExtractorWorker(trackList, logFile, selectedFile, trackList.getChromosomeManager()).execute();
+				new ChromosomeWindowListExtractorWorker(trackList, logFile, selectedFile).execute();
 			}
 		}
 	}

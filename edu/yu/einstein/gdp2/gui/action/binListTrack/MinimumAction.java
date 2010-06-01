@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOMin;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -57,7 +58,7 @@ public final class MinimumAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), trackList.getChromosomeManager());
+			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				final BinListOperation<Double> operation = new BLOMin(binList, selectedChromo);

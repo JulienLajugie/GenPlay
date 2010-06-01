@@ -58,4 +58,10 @@ public class BLOMaxScoreToDisplay implements BinListOperation<Double> {
 	public String getDescription() {
 		return "Operation: Maximum Score to Display";
 	}
+	
+	
+	@Override
+	public int getStepCount() {
+		return 1;
+	}
 }

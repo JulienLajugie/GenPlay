@@ -9,7 +9,7 @@ package yu.einstein.gdp2.exception;
  * @version 0.1
  * The DifferentWindowException is thrown when an operation is attempted on two BinList with different window sizes.
  */
-public class BinListDifferentWindowSizeException extends BinListException {
+public class BinListDifferentWindowSizeException extends Exception {
 	/**
 	 * Generated ID 
 	 */

@@ -59,7 +59,7 @@ public final class GenomeWidthChooser extends JDialog {
 	 * Creates the component and all the subcomponents.
 	 */
 	private void initComponent() {
-		jsbGenomeWidth = new JScrollBar(JScrollBar.HORIZONTAL, validGenomeWidth, 0, windowSize, windowSize * 100);
+		jsbGenomeWidth = new JScrollBar(JScrollBar.HORIZONTAL, validGenomeWidth, 0, windowSize, windowSize * 1000);
 		jsbGenomeWidth.setBlockIncrement(windowSize);
 		jsbGenomeWidth.setUnitIncrement(windowSize);
 		jsbGenomeWidth.addAdjustmentListener(new AdjustmentListener() {
