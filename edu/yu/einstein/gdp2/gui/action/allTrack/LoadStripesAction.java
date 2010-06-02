@@ -56,7 +56,7 @@ public final class LoadStripesAction extends TrackListAction {
 		if (selectedTrack != null) {
 			String logFile = ConfigurationManager.getInstance().getLogFile();
 			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getStripeFileFilters());
+			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getReadableStripeFileFilters());
 			if (selectedFile != null) {
 				new ChromosomeWindowListExtractorWorker(trackList, logFile, selectedFile).execute();
 			}

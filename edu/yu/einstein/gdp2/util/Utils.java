@@ -209,15 +209,6 @@ public class Utils {
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the BinList files
-	 */
-	public static ExtendedFileFilter[] getBinListFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SerializedBinListFilter()};
-		return stripeFileFilters;
-	}
-
-
-	/**
 	 * @param file a {@link File}
 	 * @return the extension of the file. null if none
 	 */
@@ -234,7 +225,7 @@ public class Utils {
 		}		
 	}
 
-
+	
 	/**
 	 * @param file a {@link File}
 	 * @return the name of a file without its extension
@@ -248,49 +239,76 @@ public class Utils {
 			return fileName;
 		}
 	}
+	
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
+	 */
+	public static ExtendedFileFilter[] getReadableBinListFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SerializedBinListFilter()};
+		return stripeFileFilters;
+	}
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the gene files
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
-	public static ExtendedFileFilter[] getGeneFileFilters() {
+	public static ExtendedFileFilter[] getReadableGeneFileFilters() {
 		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new GdpGeneFilter(), new PSLFilter()};
 		return stripeFileFilters;
 	}
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the repeats files
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as Repeats
 	 */
-	public static ExtendedFileFilter[] getRepeatFileFilters() {
+	public static ExtendedFileFilter[] getReadableRepeatFileFilters() {
 		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new GFFFilter(), new PSLFilter()};
 		return stripeFileFilters;
 	}
-
-
+	
+	
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the scored chromosome window files
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
-	public static ExtendedFileFilter[] getSCWFileFilters() {
+	public static ExtendedFileFilter[] getReadableSCWFileFilters() {
 		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
 		return stripeFileFilters;
 	}
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the sequence files (aka nucleotide list files)
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as sequence track (aka nucleotide list)
 	 */
-	public static FileFilter[] getSequenceFileFilters() {
+	public static FileFilter[] getReadableSequenceFileFilters() {
 		ExtendedFileFilter[] sequenceFileFilters = {new TwoBitFilter()};
 		return sequenceFileFilters;
 	}
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the stripe files
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
 	 */
-	public static ExtendedFileFilter[] getStripeFileFilters() {
+	public static ExtendedFileFilter[] getReadableStripeFileFilters() {
 		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
+		return stripeFileFilters;
+	}
+
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as BinList
+	 */
+	public static ExtendedFileFilter[] getWritableBinListFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedGraphWith0Filter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new SerializedBinListFilter()};
+		return stripeFileFilters;
+	}
+
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as GeneList
+	 */
+	public static ExtendedFileFilter[] getWritableGeneFileFilters() {
+		ExtendedFileFilter[] stripeFileFilters = {new BedFilter(), new GdpGeneFilter()};
 		return stripeFileFilters;
 	}
 	

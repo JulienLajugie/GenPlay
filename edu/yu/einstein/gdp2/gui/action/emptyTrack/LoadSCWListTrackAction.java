@@ -54,7 +54,7 @@ public final class LoadSCWListTrackAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		String logFile = ConfigurationManager.getInstance().getLogFile();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Track", defaultDirectory, Utils.getSCWFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Track", defaultDirectory, Utils.getReadableSCWFileFilters());
 		if (selectedFile != null) {
 			new SCWListExtractorWorker(trackList, logFile, selectedFile).execute();
 		}

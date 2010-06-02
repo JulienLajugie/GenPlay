@@ -54,7 +54,7 @@ public final class LoadGeneListTrackAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		String logFile = ConfigurationManager.getInstance().getLogFile();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Track", defaultDirectory, Utils.getGeneFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Track", defaultDirectory, Utils.getReadableGeneFileFilters());
 		if (selectedFile != null) {
 			new GeneListExtractorWorker(trackList, logFile, selectedFile).execute();
 		}

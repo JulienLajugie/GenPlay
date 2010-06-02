@@ -95,7 +95,7 @@ public final class SaveTrackAction extends TrackListAction {
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Track");
-		for (FileFilter currentFilter: Utils.getBinListFileFilters()) {
+		for (FileFilter currentFilter: Utils.getWritableBinListFileFilters()) {
 			jfc.addChoosableFileFilter(currentFilter);
 		}
 		jfc.setAcceptAllFileFilterUsed(false);
@@ -141,7 +141,7 @@ public final class SaveTrackAction extends TrackListAction {
 		final JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Track");
-		for (FileFilter currentFilter: Utils.getGeneFileFilters()) {
+		for (FileFilter currentFilter: Utils.getWritableGeneFileFilters()) {
 			jfc.addChoosableFileFilter(currentFilter);
 		}
 		jfc.setAcceptAllFileFilterUsed(false);

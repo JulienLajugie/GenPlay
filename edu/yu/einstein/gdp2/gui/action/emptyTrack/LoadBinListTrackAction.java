@@ -54,7 +54,7 @@ public final class LoadBinListTrackAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		String logFile = ConfigurationManager.getInstance().getLogFile();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getBinListFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters());
 		if (selectedFile != null) {
 			new BinListExtractorWorker(trackList, logFile, selectedFile).execute();
 		}

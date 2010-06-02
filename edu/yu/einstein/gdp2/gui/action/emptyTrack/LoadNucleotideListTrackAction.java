@@ -56,7 +56,7 @@ public class LoadNucleotideListTrackAction extends TrackListAction {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		final File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getSequenceFileFilters());
+		final File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 		if (selectedFile != null) {
 			new ActionWorker<TwoBitSequenceList>(trackList, "Loading Sequence Track") {
 				@Override

@@ -54,7 +54,7 @@ public final class LoadRepeatFamilyListTrackAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		String logFile = ConfigurationManager.getInstance().getLogFile();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory, Utils.getRepeatFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory, Utils.getReadableRepeatFileFilters());
 		if (selectedFile != null) {
 			new RepeatFamilyListExtractorWorker(trackList, logFile, selectedFile).execute();
 		}
