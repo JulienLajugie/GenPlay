@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package generator;
+package yu.einstein.gdp2.core.generator;
 
 
 /**

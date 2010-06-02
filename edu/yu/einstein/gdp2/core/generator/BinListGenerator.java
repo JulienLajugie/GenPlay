@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package generator;
+package yu.einstein.gdp2.core.generator;
 
 import java.util.concurrent.ExecutionException;
 
@@ -32,19 +32,19 @@ public interface BinListGenerator extends Generator {
 	
 	
 	/**
-	 * @return true if the generator needs information regarding the {@link ScoreCalculationMethod} criterion
+	 * @return true if the yu.einstein.gdp2.core.generator needs information regarding the {@link ScoreCalculationMethod} criterion
 	 */
 	public boolean isCriterionNeeded();
 	
 	
 	/**
-	 * @return true if the generator needs information regarding the size of the bins
+	 * @return true if the yu.einstein.gdp2.core.generator needs information regarding the size of the bins
 	 */
 	public boolean isBinSizeNeeded();
 	
 	
 	/**
-	 * @return true if the generator needs information regarding the precision of the data
+	 * @return true if the yu.einstein.gdp2.core.generator needs information regarding the precision of the data
 	 */
 	public boolean isPrecisionNeeded();
 }

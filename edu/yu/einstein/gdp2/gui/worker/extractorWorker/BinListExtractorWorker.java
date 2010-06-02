@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
-import generator.BinListGenerator;
 
 import java.awt.Color;
 import java.io.File;
@@ -12,6 +11,7 @@ import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.generator.BinListGenerator;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;

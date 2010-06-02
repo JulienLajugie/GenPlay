@@ -4,13 +4,13 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
-import generator.ChromosomeWindowListGenerator;
 
 import java.io.File;
 
+import yu.einstein.gdp2.core.generator.ChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
+
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 /**
@@ -45,7 +45,7 @@ public class ChromosomeWindowListExtractorWorker extends ExtractorWorker<Chromos
 	
 
 	@Override
-	public ChromosomeWindowList generateList() throws InvalidChromosomeException {
+	public ChromosomeWindowList generateList() throws Exception {
 		return ((ChromosomeWindowListGenerator)extractor).toChromosomeWindowList();
 	}
 }

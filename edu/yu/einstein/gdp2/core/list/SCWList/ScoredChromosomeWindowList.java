@@ -6,8 +6,10 @@ package yu.einstein.gdp2.core.list.SCWList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
@@ -17,6 +19,7 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.util.DoubleLists;
 
@@ -37,28 +40,57 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @param stopList list of stop position
 	 * @param scoreList list of score
 	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public ScoredChromosomeWindowList(ChromosomeListOfLists<Integer> startList, 
-			ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<Double> scoreList) throws InvalidChromosomeException {
+	public ScoredChromosomeWindowList(final ChromosomeListOfLists<Integer> startList, 
+			final ChromosomeListOfLists<Integer> stopList,
+			final ChromosomeListOfLists<Double> scoreList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
-		for(short i = 0; i < startList.size(); i++) {
-			add(new ArrayList<ScoredChromosomeWindow>());
-			Chromosome chromo = chromosomeManager.get(i);
-			for(int j = 0; j < startList.size(i); j++) {
-				double score = scoreList.get(i, j);
-				if (score != 0) {
-					int start = startList.get(i, j);
-					int stop = stopList.get(i, j);
-					add(chromo, new ScoredChromosomeWindow(start, stop, score));
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
+		for(final Chromosome currentChromosome : chromosomeManager) {			
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+				@Override
+				public List<ScoredChromosomeWindow> call() throws Exception {
+					if (startList.get(currentChromosome) == null) {
+						return null;
+					}
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();		
+					for(int j = 0; j < startList.size(currentChromosome); j++) {
+						double score = scoreList.get(currentChromosome, j);
+						if (score != 0) {
+							int start = startList.get(currentChromosome, j);
+							int stop = stopList.get(currentChromosome, j);
+							resultList.add(new ScoredChromosomeWindow(start, stop, score));
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
-			}
+			};
+
+			threadList.add(currentThread);
 		}
+		List<List<ScoredChromosomeWindow>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<ScoredChromosomeWindow> currentList: result) {
+				add(currentList);
+			}
+		}		
+		// sort the list
 		for (List<ScoredChromosomeWindow> currentChrWindowList : this) {
 			Collections.sort(currentChrWindowList);
 		}
 	}
 
-	
+
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindow} 
 	 */
@@ -133,10 +165,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			// if no window containing the position in parameter has been found we return 0
 			return 0;
 		}
-		
+
 	}	
-	
-	
+
+
 	/**
 	 * Merges two windows together if the gap between this two windows is not visible 
 	 */

@@ -2,7 +2,9 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package generator;
+package yu.einstein.gdp2.core.generator;
+
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
@@ -17,6 +19,8 @@ public interface ScoredChromosomeWindowListGenerator extends Generator {
 	/**
 	 * @return a new {@link ScoredChromosomeWindowList}
 	 * @throws InvalidChromosomeException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException;
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException;
 }

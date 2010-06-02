@@ -4,15 +4,14 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
-import generator.GeneListGenerator;
 
 import java.io.File;
 
+import yu.einstein.gdp2.core.generator.GeneListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -52,7 +51,7 @@ public final class GeneListExtractorWorker extends ExtractorWorker<GeneList> {
 	
 
 	@Override
-	public GeneList generateList() throws InvalidChromosomeException {
+	public GeneList generateList() throws Exception {
 		return ((GeneListGenerator)extractor).toGeneList();
 	}
 

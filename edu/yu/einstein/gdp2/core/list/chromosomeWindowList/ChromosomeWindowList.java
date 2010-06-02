@@ -6,13 +6,17 @@ package yu.einstein.gdp2.core.list.chromosomeWindowList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ChromosomeWindow;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 
 /**
@@ -31,19 +35,47 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 	 * @param stopList list of stop positions
 	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public ChromosomeWindowList(ChromosomeListOfLists<Integer> startList, 
-			ChromosomeListOfLists<Integer> stopList) throws InvalidChromosomeException {
+	public ChromosomeWindowList(final ChromosomeListOfLists<Integer> startList, 
+			final ChromosomeListOfLists<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
-		for(short i = 0; i < startList.size(); i++) {
-			add(new ArrayList<ChromosomeWindow>());
-			Chromosome chromo = chromosomeManager.get(i);
-			for(int j = 0; j < startList.size(i); j++) {
-				int start = startList.get(i).get(j);
-				int stop = stopList.get(i).get(j);
-				add(chromo, new ChromosomeWindow(start, stop));
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<ChromosomeWindow>>> threadList = new ArrayList<Callable<List<ChromosomeWindow>>>();		
+		for(final Chromosome currentChromosome : chromosomeManager) {			
+			Callable<List<ChromosomeWindow>> currentThread = new Callable<List<ChromosomeWindow>>() {	
+				@Override
+				public List<ChromosomeWindow> call() throws Exception {
+					if (startList.get(currentChromosome) == null) {
+						return null;
+					}
+					List<ChromosomeWindow> resultList = new ArrayList<ChromosomeWindow>();
+					for(int j = 0; j < startList.size(currentChromosome); j++) {
+						int start = startList.get(currentChromosome).get(j);
+						int stop = stopList.get(currentChromosome).get(j);
+						resultList.add(new ChromosomeWindow(start, stop));
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+			
+			threadList.add(currentThread);			
+		}
+		List<List<ChromosomeWindow>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<ChromosomeWindow> currentList: result) {
+				add(currentList);
 			}
 		}
+		// sort the list
 		for (List<ChromosomeWindow> currentChrWindowList : this) {
 			Collections.sort(currentChrWindowList);
 		}

@@ -4,15 +4,14 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
-import generator.RepeatFamilyListGenerator;
 
 import java.io.File;
 
+import yu.einstein.gdp2.core.generator.RepeatFamilyListGenerator;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.gui.track.RepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -52,7 +51,7 @@ public final class RepeatFamilyListExtractorWorker extends ExtractorWorker<Repea
 	
 	
 	@Override
-	public RepeatFamilyList generateList() throws InvalidChromosomeException {
+	public RepeatFamilyList generateList() throws Exception {
 		return ((RepeatFamilyListGenerator)extractor).toRepeatFamilyList();
 	}
 }

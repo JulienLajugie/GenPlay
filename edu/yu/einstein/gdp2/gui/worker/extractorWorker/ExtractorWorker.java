@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
-import generator.Generator;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import javax.swing.SwingWorker;
 
 import yu.einstein.gdp2.core.extractor.Extractor;
 import yu.einstein.gdp2.core.extractor.ExtractorFactory;
+import yu.einstein.gdp2.core.generator.Generator;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;

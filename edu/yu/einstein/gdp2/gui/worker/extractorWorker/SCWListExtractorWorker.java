@@ -4,15 +4,14 @@
  */
 package yu.einstein.gdp2.gui.worker.extractorWorker;
 
-import generator.ScoredChromosomeWindowListGenerator;
 
 import java.io.File;
 
+import yu.einstein.gdp2.core.generator.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -52,7 +51,7 @@ public final class SCWListExtractorWorker extends ExtractorWorker<ScoredChromoso
 	
 	
 	@Override
-	public ScoredChromosomeWindowList generateList() throws InvalidChromosomeException {
+	public ScoredChromosomeWindowList generateList() throws Exception {
 		return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList();
 	}
 }

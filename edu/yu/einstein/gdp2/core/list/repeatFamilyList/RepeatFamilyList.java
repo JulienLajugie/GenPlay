@@ -6,15 +6,19 @@ package yu.einstein.gdp2.core.list.repeatFamilyList;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ChromosomeWindow;
 import yu.einstein.gdp2.core.RepeatFamily;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 
 /**
@@ -34,39 +38,65 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @param stopList	list of stop position of the repeats organized by chromosome
 	 * @param familyNameList list of name of the repeats organized by chromosome
 	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public RepeatFamilyList(ChromosomeListOfLists<Integer> startList, 
-			ChromosomeListOfLists<Integer> stopList, ChromosomeListOfLists<String> familyNameList) throws InvalidChromosomeException {
+	public RepeatFamilyList(final ChromosomeListOfLists<Integer> startList, 
+			final ChromosomeListOfLists<Integer> stopList, 
+			final ChromosomeListOfLists<String> familyNameList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
-		for(short i = 0; i < startList.size(); i++) {
-			add(new ArrayList<RepeatFamily>());
-			Chromosome currentChromosome = chromosomeManager.get(i);
-			// Hashtable indexed by repeat family name
-			Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();;
-			for(int j = 0; j < startList.size(i); j++) {
-				ChromosomeWindow currentRepeat = new ChromosomeWindow(startList.get(i, j), stopList.get(i, j));
-				String familyName = familyNameList.get(i, j);
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<RepeatFamily>>> threadList = new ArrayList<Callable<List<RepeatFamily>>>();		
+		for(final Chromosome currentChromosome : chromosomeManager) {			
 
-				// case when a chromosome doesn't have any data yet
-				if (size(currentChromosome) == 0) {
-					add(currentChromosome, new RepeatFamily(familyName));
-					get(currentChromosome, 0).addRepeat(currentRepeat);
-					indexTable.put(familyName, 0);
-				} else {
-					// search if the family already exist on the current chromosome
-					Integer familyIndex = indexTable.get(familyName);
-					// case we found the family
-					if (familyIndex != null) {
-						get(currentChromosome, familyIndex).addRepeat(currentRepeat);
-					} else { // we didn't find the family
-						add(currentChromosome, new RepeatFamily(familyName));
-						int index = size(currentChromosome) - 1;
-						get(currentChromosome, index).addRepeat(currentRepeat);
-						indexTable.put(familyName, index);
+			Callable<List<RepeatFamily>> currentThread = new Callable<List<RepeatFamily>>() {	
+				@Override
+				public List<RepeatFamily> call() throws Exception {
+					List<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
+					// Hashtable indexed by repeat family name
+					Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();;
+					for(int j = 0; j < startList.size(currentChromosome); j++) {
+						ChromosomeWindow currentRepeat = new ChromosomeWindow(startList.get(currentChromosome, j), stopList.get(currentChromosome, j));
+						String familyName = familyNameList.get(currentChromosome, j);
+						// case when a chromosome doesn't have any data yet
+						if (resultList.size() == 0) {
+							resultList.add(new RepeatFamily(familyName));
+							resultList.get(0).addRepeat(currentRepeat);
+							indexTable.put(familyName, 0);
+						} else {
+							// search if the family already exist on the current chromosome
+							Integer familyIndex = indexTable.get(familyName);
+							// case we found the family
+							if (familyIndex != null) {
+								resultList.get(familyIndex).addRepeat(currentRepeat);
+							} else { // we didn't find the family
+								resultList.add(new RepeatFamily(familyName));
+								int index = resultList.size() - 1;
+								resultList.get(index).addRepeat(currentRepeat);
+								indexTable.put(familyName, index);
+							}
+						}
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
-			}			
+			};
+
+			threadList.add(currentThread);
 		}
+		List<List<RepeatFamily>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<RepeatFamily> currentList: result) {
+				add(currentList);
+			}
+		}
+		// sort the RepeatFamilyList
 		for (List<RepeatFamily> currentRepeatFamilyList : this) {
 			Collections.sort(currentRepeatFamilyList);
 			for (RepeatFamily currentRepeatFamily : currentRepeatFamilyList) {
@@ -88,7 +118,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 			fittedDataList = null;
 			return;
 		}
-		
+
 		if (fittedXRatio > 1) {
 			fittedDataList = currentChromosomeList;
 		} else {
@@ -169,7 +199,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
 		}
-		
+
 		ArrayList<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
 
 		for (RepeatFamily currentFamily : fittedDataList) {

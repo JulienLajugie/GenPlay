@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
-import generator.BinListGenerator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +15,7 @@ import java.util.zip.GZIPInputStream;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.generator.BinListGenerator;
 import yu.einstein.gdp2.core.list.binList.BinList;
 
 

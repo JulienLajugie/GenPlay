@@ -4,10 +4,6 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
-import generator.BinListGenerator;
-import generator.ChromosomeWindowListGenerator;
-import generator.RepeatFamilyListGenerator;
-import generator.ScoredChromosomeWindowListGenerator;
 
 import java.io.File;
 import java.io.Serializable;
@@ -18,6 +14,10 @@ import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.enums.Strand;
+import yu.einstein.gdp2.core.generator.BinListGenerator;
+import yu.einstein.gdp2.core.generator.ChromosomeWindowListGenerator;
+import yu.einstein.gdp2.core.generator.RepeatFamilyListGenerator;
+import yu.einstein.gdp2.core.generator.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
@@ -102,19 +102,19 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 
 	@Override
-	public RepeatFamilyList toRepeatFamilyList() throws InvalidChromosomeException {
+	public RepeatFamilyList toRepeatFamilyList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new RepeatFamilyList(startList, stopList, nameList);
 	}
 
 
 	@Override
-	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException {
+	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new ChromosomeWindowList(startList, stopList);
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException {
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
 	}
 
