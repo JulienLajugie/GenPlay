@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.core.DAS;
@@ -19,6 +20,7 @@ import org.xml.sax.SAXException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.Gene;
+import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
@@ -103,6 +105,7 @@ public class DASConnector {
 	 */
 	public List<EntryPoint> getEntryPointList(DataSource dataSource) throws IOException, ParserConfigurationException, SAXException {
 		URL entryPointURL = new URL(serverAddress + dataSource.getID() + "/entry_points");
+		//System.out.println("Entry Point URL: " + entryPointURL);
 		URLConnection connection = entryPointURL.openConnection();
 		connection.setUseCaches(true);		
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -178,6 +181,70 @@ public class DASConnector {
 		return resultList;
 	}
 
+	/**
+	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type and a specified Data Range
+	 * @param dataSource a {@link DataSource}
+	 * @param dasType a {@link DASType}
+	 * @param genomeWindow a {@link GenommeWindow}
+	 * @return a {@link GeneList}
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 */	
+	public GeneList getGeneList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException 
+	{
+		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
+		//System.out.println("1st Entry Point " + entryPointList.get(0));
+		GeneList resultList = new GeneList();
+		Chromosome currentChromo = genomeWindow.getChromosome();
+		//System.out.println("Chormozome = " + currentChromo.getName());
+		EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
+		if (currentEntryPoint != null)
+		{
+			URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType, genomeWindow);
+			//System.out.println("URL: " + queryUrl);
+			URLConnection connection = queryUrl.openConnection();
+			connection.setUseCaches(true);
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setValidating(true);
+			SAXParser parser = parserFactory.newSAXParser();
+			GeneHandler gh = new GeneHandler(currentChromo);
+			parser.parse(connection.getInputStream(), gh);
+			List<Gene> currentGeneList = gh.getGeneList();
+			resultList.set(currentChromo, currentGeneList);
+		}
+		boolean areExonsScored = false;
+		for (List<Gene> currentList: resultList) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+				// check if the exons are scored
+				int i = 0;
+				while (!areExonsScored && (i < currentList.size())) {
+					int j = 0;
+					double[] exonScores = currentList.get(i).getExonScores();
+					while (!areExonsScored && (j < exonScores.length)) {
+						if (exonScores[j] != 0) {
+							areExonsScored = true;
+						}
+						j++;
+					}
+					i++;
+				}
+			}
+		}
+		// if the exons are not scored we set the exonScore field of every gene to null 
+		if (!areExonsScored) {
+			for (List<Gene> currentList: resultList) {
+				if (currentList != null) {
+					for (Gene currentGene: currentList) {
+						currentGene.setExonScores(null);
+					}
+				}
+			}
+		}
+		return resultList;
+		
+	}
 
 //	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
 //		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
@@ -238,8 +305,10 @@ public class DASConnector {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
 			// we create a genelist for this chromosome
+			//System.out.println("Current Entry Point: " + currentEntryPoint.toString());
 			if (currentEntryPoint != null) {
-				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);				
+				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
+				//System.out.println("QueryURL: " + queryUrl);
 				URLConnection connection = queryUrl.openConnection();
 				connection.setUseCaches(true);		
 				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -250,6 +319,71 @@ public class DASConnector {
 				List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
 				resultList.set(currentChromo, currentSCWList);
 			}
+		}
+		for (List<ScoredChromosomeWindow> currentList: resultList) {
+			if (currentList != null) { 
+				Collections.sort(currentList);
+			}
+		}
+		// Check if the list is scored
+		boolean isScored = false;
+		for (List<ScoredChromosomeWindow> currentList: resultList) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+				int i = 0;
+				while (!isScored && (i < currentList.size())) {
+					if (currentList.get(i).getScore() != 0) {
+						isScored = true;
+					}
+					i++;
+				}
+			}
+		}
+		// if the list is not scored we set all the scores to 1
+		if (!isScored) {
+			for (List<ScoredChromosomeWindow> currentList: resultList) {
+				if (currentList != null) {
+					for (ScoredChromosomeWindow currentWindow: currentList) {
+						currentWindow.setScore(1);
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+
+	/**
+	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type and a specified Data Range 
+	 * @param dataSource a {@link DataSource}
+	 * @param dasType a {@link DASType}
+	 * @param genomeWindow a {@link GenomeWindow}
+	 * @return a {@link ScoredChromosomeWindowList}
+	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 */
+	
+	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException {
+		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
+		ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList();
+		Chromosome currentChromo = genomeWindow.getChromosome();
+		//System.out.println("Chormozome = " + currentChromo.getName());
+		EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
+		// if we found a chromosome retrieve the data and 
+		// we create a genelist for this chromosome
+		//System.out.println("Current Entry Point: " + currentEntryPoint.toString());
+		if (currentEntryPoint != null) {
+			URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType, genomeWindow);
+			//System.out.println("QueryURL: " + queryUrl);
+			URLConnection connection = queryUrl.openConnection();
+			connection.setUseCaches(true);		
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setValidating(true);
+			SAXParser parser = parserFactory.newSAXParser();
+			SCWHandler scwh = new SCWHandler();				
+			parser.parse(connection.getInputStream(), scwh);
+			List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
+			resultList.set(currentChromo, currentSCWList);
 		}
 		for (List<ScoredChromosomeWindow> currentList: resultList) {
 			if (currentList != null) { 
@@ -313,7 +447,6 @@ public class DASConnector {
 		}
 	}
 
-
 	/**
 	 * Generates a query for all the data for a specified data source, entry point and das type 
 	 * @param dataSource a {@link DataSource}
@@ -336,6 +469,34 @@ public class DASConnector {
 		return new URL(URLStr);
 	}
 
+	/**
+	 * Generates a query for all the data for a specified data source, entry point, das type and data range 
+	 * @param dataSource a {@link DataSource}
+	 * @param entryPoint an {@link EntryPoint}
+	 * @param dasType a {@link DASType}
+	 * @param genomeWindow a {@link GenomeWindow}
+	 * @return a {@link URL} containing the query
+	 * @throws MalformedURLException
+	 */
+	private URL generateQuery(DataSource dataSource, EntryPoint entryPoint, DASType dasType, GenomeWindow genomeWindow) throws MalformedURLException {
+		String URLStr = new String(serverAddress); 
+		URLStr += dataSource.getID();
+		URLStr += "/features?segment=";
+		URLStr += entryPoint.getID();
+		URLStr += ":";
+		if(genomeWindow.getStart() < entryPoint.getStart())
+			genomeWindow.setStart(entryPoint.getStart());
+		URLStr += genomeWindow.getStart();
+		URLStr += ",";
+		if(genomeWindow.getStop() > entryPoint.getStop())
+			genomeWindow.setStop(entryPoint.getStop());
+		URLStr += genomeWindow.getStop();
+		URLStr += ";type=";
+		URLStr += dasType.getID();
+//		System.out.println("New Start: " + genomeWindow.getStart());
+//		System.out.println("New Stop: " + genomeWindow.getStop());
+		return new URL(URLStr);
+	}
 
 	//	public static void main(String[] args) {
 	//		try {

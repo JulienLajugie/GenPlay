@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.action.emptyTrack;
@@ -8,6 +9,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ActionMap;
 
+import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.DAS.DASConnector;
 import yu.einstein.gdp2.core.DAS.DASType;
 import yu.einstein.gdp2.core.DAS.DataSource;
@@ -71,12 +73,31 @@ public class LoadFromDASAction extends TrackListAction {
 					final DASConnector dasConnector = dasDialog.getSelectedDasConnector();
 					final DASType dasType = dasDialog.getSelectedDasType();
 					final int resType = dasDialog.getGenerateType();
+					final int dataRange = dasDialog.getDataRange();
+					final GenomeWindow genomeWindow = new GenomeWindow();
+					final GenomeWindow currentWindow = trackList.getGenomeWindow();
+					genomeWindow.setChromosome(dasDialog.getSelectedChromosome());
+					genomeWindow.setStart((int)dasDialog.getUserSpecifiedStart());
+					genomeWindow.setStop((int)dasDialog.getUserSpecifiedStop());
+					//System.out.println("Chromosome: " + dasDialog.getSelectedChromosome() + "\nStart: " + dasDialog.getUserSpecifiedStart() + "\nStop: " + dasDialog.getUserSpecifiedStop());
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						new ActionWorker<GeneList>(trackList, "Retrieving Data from DAS Server") {
 							@Override
 							protected GeneList doAction() {
 								try {
-									return dasConnector.getGeneList(dataSource, dasType);
+									if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST)
+										return dasConnector.getGeneList(dataSource, dasType);
+									else if(dataRange == DASDialog.GENERATE_USER_SPECIFIED_LIST)
+									{
+										if(genomeWindow.getStop() < genomeWindow.getStart())
+											throw new Exception("Invalid Start Stop Range");
+										return dasConnector.getGeneList(dataSource, dasType, genomeWindow);
+									}
+									else if(dataRange == DASDialog.GENERATE_CURRENT_LIST)
+									{
+										return dasConnector.getGeneList(dataSource, dasType, currentWindow);
+									}
+									return null;
 								} catch (Exception e) {
 									ExceptionManager.handleException(getRootPane(), e, "Error while retrieving the data from the DAS server");
 									return null;
@@ -96,7 +117,19 @@ public class LoadFromDASAction extends TrackListAction {
 							@Override
 							protected ScoredChromosomeWindowList doAction() {
 								try {
-									return dasConnector.getSCWList(dataSource, dasType);
+									if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST)
+										return dasConnector.getSCWList(dataSource, dasType);
+									else if(dataRange == DASDialog.GENERATE_USER_SPECIFIED_LIST)
+									{
+										if(genomeWindow.getStop() < genomeWindow.getStart())
+											throw new Exception("Invalid Start Stop Range");
+										return dasConnector.getSCWList(dataSource, dasType, genomeWindow);
+									}
+									else if(dataRange == DASDialog.GENERATE_CURRENT_LIST)
+									{
+										return dasConnector.getSCWList(dataSource, dasType, currentWindow);
+									}
+									return null;									
 								} catch (Exception e) {
 									ExceptionManager.handleException(getRootPane(), e, "Error while retrieving the data from the DAS server");
 									return null;
