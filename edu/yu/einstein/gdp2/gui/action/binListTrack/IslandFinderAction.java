@@ -5,12 +5,16 @@
 package yu.einstein.gdp2.gui.action.binListTrack;
 
 import java.awt.event.ActionEvent;
+import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.operation.BLOIslandFinder;
+import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
+import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
@@ -34,7 +38,7 @@ public final class IslandFinderAction extends TrackListAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "findIsland";
+	public static final String ACTION_KEY = "IslandFinderAction";
 
 
 	/**
@@ -56,23 +60,29 @@ public final class IslandFinderAction extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
 		if (selectedTrack != null) {
-			//TODO BinList binList = selectedTrack.getBinList();
-			final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
-			if (resultTrack != null) {
-				final int index = resultTrack.getTrackNumber() - 1;
-				// thread for the action
-				new ActionWorker<BinList>(trackList, "Searching Islands") {
-					@Override
-					protected BinList doAction() {
-						// TODO
-						return null;
+			final Number read_count_limit = NumberOptionPane.getValue(getRootPane(), "Minimum read count limit", "Windows with read count below this value will be ignored.", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+			if (read_count_limit != null){
+				final Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "Minimum number of windows for separate two islands", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+				if (gap != null){
+					//TODO BinList binList = selectedTrack.getBinList();
+					final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
+					if (resultTrack != null) {
+						final int index = resultTrack.getTrackNumber() - 1;
+						final BinListOperation<BinList> operation = new BLOIslandFinder(selectedTrack.getBinList(), read_count_limit.doubleValue(), gap.intValue());
+						// thread for the action
+						new ActionWorker<BinList>(trackList, "Searching Islands") {
+							@Override
+							protected BinList doAction() throws Exception {
+								return operation.compute();
+							}
+							@Override
+							protected void doAtTheEnd(BinList actionResult) {
+								Track newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+								trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes());						
+							}
+						}.execute();
 					}
-					@Override
-					protected void doAtTheEnd(BinList actionResult) {
-						Track newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
-						trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes());						
-					}
-				}.execute();
+				}
 			}
 		}
 	}
