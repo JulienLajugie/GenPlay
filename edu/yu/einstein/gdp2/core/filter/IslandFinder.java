@@ -23,17 +23,32 @@ import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 public class IslandFinder {
 
 	private final BinList 	binList;	// input binlist
-	private final double 	read_count_limit;	// number limit of reads to get an eligible windows
-	private final int		gap;	//minimum number of windows needed to separate 2 islands
+	private final double 	readCountLimit;	// limit reads number to get an eligible windows
+	private final int		gap;	// minimum windows number needed to separate 2 islands
 	
-	
-	public IslandFinder(BinList binList, double read_count_limit, int gap) {
+	/**
+	 * IslandFinder constructor
+	 * 
+	 * @param binList			the related binList
+	 * @param readCountLimit	limit reads number to get an eligible windows
+	 * @param gap				minimum windows number needed to separate 2 islands
+	 */
+	public IslandFinder(BinList binList, double readCountLimit, int gap) {
 		this.binList = binList;
-		this.read_count_limit = read_count_limit;
+		this.readCountLimit = readCountLimit;
 		this.gap = gap;
 	}
 	
-	public BinList find() throws InterruptedException, ExecutionException{
+	/**
+	 * findIsland method
+	 * This method define island from data.
+	 * It uses a specific bin list, the read count threshold and the gap.
+	 * 
+	 * @return	a bin list with a specific value to show islands on a track
+	 * @throws 	InterruptedException
+	 * @throws 	ExecutionException
+	 */
+	public BinList findIsland() throws InterruptedException, ExecutionException{
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final DataPrecision precision = binList.getPrecision();
@@ -50,13 +65,13 @@ public class IslandFinder {
 						resultList = ListFactory.createList(precision, currentList.size());
 						int j = 0;
 						while (j < currentList.size()){
-							if (currentList.get(j) >= read_count_limit){
+							if (currentList.get(j) >= readCountLimit){
 								islands_start.add(j);
 								resultList.set(j, currentList.get(j));
 								int gap_found = 0;
 								int j_tmp = j + 1;
 								while ((gap_found <= gap) && (j_tmp < currentList.size())){
-									if (currentList.get(j_tmp) >= read_count_limit){
+									if (currentList.get(j_tmp) >= readCountLimit){
 										resultList.set(j_tmp, currentList.get(j_tmp));
 										gap_found = 0;
 									} else {
