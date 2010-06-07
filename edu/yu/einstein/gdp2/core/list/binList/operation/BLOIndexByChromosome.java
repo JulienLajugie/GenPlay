@@ -6,7 +6,6 @@ package yu.einstein.gdp2.core.list.binList.operation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -14,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
+import yu.einstein.gdp2.util.DoubleLists;
 
 
 /**
@@ -62,8 +62,8 @@ public class BLOIndexByChromosome implements BinListOperation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// search the min and max for the current chromosome before index 
-						double oldMin = Collections.min(resultList);
-						double oldMax = Collections.max(resultList);
+						double oldMin = DoubleLists.minNoZero(currentList);						
+						double oldMax = DoubleLists.maxNoZero(currentList);
 						// we calculate the difference between the highest and the lowest value
 						double oldDistance = oldMax - oldMin;
 						if (oldDistance != 0) {
@@ -98,7 +98,7 @@ public class BLOIndexByChromosome implements BinListOperation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Index by Chromsome Between " +  newMin + " and " + newMax;
+		return "Operation: Index per Chromsome Between " +  newMin + " and " + newMax;
 	}
 	
 	

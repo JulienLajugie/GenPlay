@@ -68,6 +68,38 @@ public class DoubleLists {
 	
 	
 	/**
+	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
+	 * @param list
+	 * @return the non-zero maximum of the specified list
+	 */
+	public static double maxNoZero(List<Double> list) {
+		double max = Double.NEGATIVE_INFINITY;
+		for (Double currentValue : list) {
+			if (currentValue != 0) {
+				max = Math.max(max, currentValue);
+			}
+		}
+		return max;
+	}
+	
+	
+	/**
+	 * Returns the minimum of the list in parameter. Doesn't take the 0 value elements into account.
+	 * @param list
+	 * @return the non-zero minimum of the specified list
+	 */
+	public static double minNoZero(List<Double> list) {
+		double min = Double.POSITIVE_INFINITY;
+		for (Double currentValue : list) {
+			if (currentValue != 0) {
+				min = Math.min(min, currentValue);
+			}
+		}
+		return min;
+	}
+	
+	
+	/**
 	 * @param list {@link List} of Double
 	 * @param indexStart index where to start in the list
 	 * @param indexStop index where to stop in the list
@@ -97,8 +129,8 @@ public class DoubleLists {
 			return sum / n;			
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param list {@link List} of Double
 	 * @return the sum of the values of the list
@@ -110,8 +142,8 @@ public class DoubleLists {
 		}
 		return result;
 	}
-
-
+	
+	
 	/**
 	 * Sum all the value of the specified list between the start index and the stop index
 	 * @param list
@@ -134,5 +166,4 @@ public class DoubleLists {
 		}		
 		return sum;			
 	}
-	
 }
