@@ -1,3 +1,7 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 package yu.einstein.gdp2.core.filter;
 
 import java.util.ArrayList;
@@ -5,12 +9,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
 import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 
+/**
+ * IslandFinder
+ * This class implements the island approach. 
+ * It contains algorithm to separate datas on island and some statistics methods corresponding.
+ * @author Nicolas Fourel 
+ */
 public class IslandFinder {
 
 	private final BinList 	binList;	// input binlist
