@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.dialog.optionDialog;
@@ -28,6 +29,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
+import yu.einstein.gdp2.core.DAS.DASServerListWriter;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 
@@ -54,6 +56,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final String 		logFile;			// log file
 	private final String 		defaultDirectory;	// default directory
 	private final String 		lookAndFeel;		// look and feel
+	private final String		dasServerListFile;	// DAS Server List File
 	private final int 			trackCount;			// track count
 	private final int 			trackHeight;		// track height
 	private int					approved = CANCEL_OPTION;	// Equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not	
@@ -81,6 +84,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		zoomFile = cm.getZoomFile();
 		chromosomeFile = cm.getChromosomeFile();
 		logFile = cm.getLogFile();
+		dasServerListFile = cm.getDASServerListFile();
 		defaultDirectory = cm.getDefaultDirectory();
 		lookAndFeel = cm.getLookAndFeel();
 		trackCount = cm.getTrackCount();
@@ -127,6 +131,10 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				setVisible(false);	
 				try {
 					cm.writeConfigurationFile();
+					if (DASOptionPanel.tableChangedFlag == true) {
+						DASServerListWriter dasServerListWriter = new DASServerListWriter();					
+						dasServerListWriter.write(DASOptionPanel.tableData, dasServerListFile);
+					}
 				} catch (IOException er) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
 					er.printStackTrace();
@@ -141,6 +149,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				cm.setZoomFile(zoomFile);
 				cm.setChromosomeFile(chromosomeFile);
 				cm.setLogFile(logFile);
+				cm.setDASServerListFile(dasServerListFile);
 				cm.setDefaultDirectory(defaultDirectory);
 				cm.setLookAndFeel(lookAndFeel);
 				cm.setTrackCount(trackCount);
@@ -201,8 +210,12 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		category = new DefaultMutableTreeNode(new TrackOptionPanel(cm));
 		top.add(category);
 		
-		category = new DefaultMutableTreeNode(new RestoreOptionPanel(cm));
+		category = new DefaultMutableTreeNode(new DASOptionPanel(cm));
 		top.add(category);
+		
+		category = new DefaultMutableTreeNode(new RestoreOptionPanel(cm));
+		top.add(category);		
+		
 	}
 
 
@@ -277,6 +290,12 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		return !logFile.equals(cm.getLogFile());
 	}
 	
+	/**
+	 * @return true if dasServerListFile changed
+	 */
+	public boolean dasServerListFileChanged() {
+		return !dasServerListFile.equals(cm.getDASServerListFile());
+	}
 	
 	/**
 	 * @return true if defaultDirectory changed

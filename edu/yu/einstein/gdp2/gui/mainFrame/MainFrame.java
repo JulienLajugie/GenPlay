@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.mainFrame;
@@ -83,6 +84,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private final ChromosomeManager 	chromosomeManager;		// ChromosomeManager
 	private final ZoomManager 			zoomManager;			// ZoomManager
 	private Rectangle 					screenBounds;			// position and dimension of this frame
+
 
 
 	/**
@@ -254,7 +256,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return iconImage;
 	}
 
-
+	
 	/**
 	 * @return the ruler
 	 */

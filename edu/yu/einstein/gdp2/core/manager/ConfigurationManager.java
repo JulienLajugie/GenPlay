@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.core.manager;
@@ -18,6 +19,7 @@ import java.io.Serializable;
 /**
  * Class containing the project 
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 public final class ConfigurationManager implements Serializable {
@@ -32,6 +34,9 @@ public final class ConfigurationManager implements Serializable {
 	private static final String DEFAULT_CHROMOSOME_FILE = "";					// path of the default chromosome config file
 	private static final String DEFAULT_LOG_FILE = 
 		new File(TEMP_DIR, "GenPlayLog.txt").getAbsolutePath();					// path of the default log file
+
+	private final static String	DEFAULT_DAS_SERVER_PATH = "yu/einstein/gdp2/resource/DASServerList.xml"; // DAS Server List file path
+		
 	private static final String DEFAULT_DEFAULT_DIRECTORY = "";					// default directory
 	private static final String DEFAULT_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";// default look and feel
 	private static final int DEFAULT_TRACK_COUNT = 50;							// default number of track
@@ -47,8 +52,10 @@ public final class ConfigurationManager implements Serializable {
 	private String 	logFile = DEFAULT_LOG_FILE;									// log file
 	private String 	defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;				// default directory
 	private String 	lookAndFeel = DEFAULT_LOOK_AND_FEEL;						// look and feel
+	private String 	dasServerListFile = 
+		this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString(); // DAS Server list
 	private int 	trackCount = DEFAULT_TRACK_COUNT;							// track count
-	private int 	trackHeight = DEFAULT_TRACK_HEIGHT;							// track height
+	private int 	trackHeight = DEFAULT_TRACK_HEIGHT;							// track height	
 
 
 	/**
@@ -92,6 +99,8 @@ public final class ConfigurationManager implements Serializable {
 					chromosomeFile = value;
 				} else if (key.equalsIgnoreCase("log file")){
 					logFile = value;
+				} else if (key.equalsIgnoreCase("DAS Server List file")) {
+					dasServerListFile = value;  
 				} else if (key.equalsIgnoreCase("default directory")){
 					defaultDirectory = value;
 				} else if (key.equalsIgnoreCase("look and feel")){
@@ -120,7 +129,28 @@ public final class ConfigurationManager implements Serializable {
 	public final String getDefaultDirectory() {
 		return defaultDirectory;
 	}
+	
+	/**
+	 * @return the tempDirectory
+	 */
+	public final String getTempDir() {
+		return TEMP_DIR;
+	}
+	
+	/**
+	 * @return the dasServerListFile
+	 */
+	public final String getDASServerListFile() {
+		return dasServerListFile;
+	}
 
+	
+	/**
+	 * @return the default das server file 
+	 */
+	public final String getDefaultDasServerListFile() {
+		return this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString();
+	}
 
 	/**
 	 * @return the logFile
@@ -160,7 +190,6 @@ public final class ConfigurationManager implements Serializable {
 	public final String getZoomFile() {
 		return zoomFile;
 	}
-
 
 	/**
 	 * Reads the configuration from a file.
@@ -213,9 +242,10 @@ public final class ConfigurationManager implements Serializable {
 		chromosomeFile = DEFAULT_CHROMOSOME_FILE;
 		logFile = DEFAULT_LOG_FILE;	
 		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
+		dasServerListFile = DEFAULT_DAS_SERVER_PATH;
 		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
 		trackCount = DEFAULT_TRACK_COUNT;	
-		trackHeight = DEFAULT_TRACK_HEIGHT;		
+		trackHeight = DEFAULT_TRACK_HEIGHT;	
 	}
 
 
@@ -226,7 +256,13 @@ public final class ConfigurationManager implements Serializable {
 		this.chromosomeFile = chromosomeFile;
 	}
 
-
+	/**
+	 * @param dasServerListFile the dasServerListFile to set
+	 */
+	public final void setDASServerListFile (String dasServerListFile) {
+		this.dasServerListFile = dasServerListFile;
+	}
+	
 	/**
 	 * @param defaultDirectory the defaultDirectory to set
 	 */
@@ -289,6 +325,8 @@ public final class ConfigurationManager implements Serializable {
 			writer.write("chromosome file: " + chromosomeFile);
 			writer.newLine();
 			writer.write("log file: " + logFile);
+			writer.newLine();
+			writer.write("DAS Server List file: " + dasServerListFile);
 			writer.newLine();
 			writer.write("default directory: " + defaultDirectory);
 			writer.newLine();
