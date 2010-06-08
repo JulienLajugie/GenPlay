@@ -19,7 +19,6 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public abstract class TrackListAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1383058897700926018L; 				// generated ID
-	private final TrackList trackList = MainFrame.getInstance().getTrackList(); 	// TrackList	
 
 	
 	/**
@@ -35,7 +34,7 @@ public abstract class TrackListAction extends AbstractAction {
 	 * @return the {@link JRootPane} of the {@link TrackList}
 	 */
 	protected JRootPane getRootPane() {
-		return trackList.getRootPane();
+		return MainFrame.getInstance().getTrackList().getRootPane();
 	}
 	
 	
@@ -44,6 +43,6 @@ public abstract class TrackListAction extends AbstractAction {
 	 * @return the track list of the project
 	 */
 	protected TrackList getTrackList() {
-		return trackList;
+		return MainFrame.getInstance().getTrackList();
 	}
 }

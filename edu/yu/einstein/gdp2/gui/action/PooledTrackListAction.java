@@ -13,7 +13,7 @@ import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 public abstract class PooledTrackListAction<T> extends TrackListAction implements OperationProgressListener {
 
 	private static final long serialVersionUID = 1383058897700926018L; // generated ID
-	private final StatusBar statusBar = MainFrame.getInstance().getStatusBar();
+	private final StatusBar statusBar;
 	private final int totalStepCount;
 	private final String description;
 	private ActionWorker<T> worker;	
@@ -23,6 +23,7 @@ public abstract class PooledTrackListAction<T> extends TrackListAction implement
 	public PooledTrackListAction(String description, int stepCount) {
 		super();
 		totalStepCount = stepCount;
+		statusBar = MainFrame.getInstance().getStatusBar();
 		this.description = description;
 	}
 
