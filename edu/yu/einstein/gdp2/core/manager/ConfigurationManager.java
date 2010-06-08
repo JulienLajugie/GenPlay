@@ -28,7 +28,7 @@ public final class ConfigurationManager implements Serializable {
 	private static ConfigurationManager instance = null;						// unique instance of the singleton
 	
 	private static String TEMP_DIR = System.getProperty("java.io.tmpdir");		// java directory for temporary files
-	private static String CONFIG_FILE = "config.cfg";							// path of the config file
+	private static String CONFIG_FILE = "GenPlay_config.cfg";					// path of the config file
 
 	private static final String DEFAULT_ZOOM_FILE = "";							// path of the default zoom config file
 	private static final String DEFAULT_CHROMOSOME_FILE = "";					// path of the default chromosome config file
