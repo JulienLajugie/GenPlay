@@ -12,7 +12,12 @@ import java.util.concurrent.ExecutionException;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
+import yu.einstein.gdp2.core.list.binList.operation.BLOCountNonNullBins;
+import yu.einstein.gdp2.core.list.binList.operation.BLOSumScore;
 import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
+import yu.einstein.gdp2.core.stat.Poisson;
+import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
+import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
 
 /**
  * IslandFinder
@@ -25,6 +30,7 @@ public class IslandFinder {
 	private final BinList 	binList;	// input binlist
 	private final double 	readCountLimit;	// limit reads number to get an eligible windows
 	private final int		gap;	// minimum windows number needed to separate 2 islands
+	private final double	lambda;	// average number of reads in a window
 	
 	/**
 	 * IslandFinder constructor
@@ -37,6 +43,35 @@ public class IslandFinder {
 		this.binList = binList;
 		this.readCountLimit = readCountLimit;
 		this.gap = gap;
+		this.lambda = lambdaCalcul();
+	}
+	
+	/**
+	 * lambdaCalcul method
+	 * This method calculate the lambda value.
+	 * Lambda value is:	w.(N/L)
+	 * with:	w: windows fixed size
+	 * 			N: total number of reads
+	 * 			L: genome length
+	 * The genome length can be calculate with:	w.C
+	 * with:	w: windows fixed size
+	 * 			C: count of non null bins
+	 * The relation can be write like this:	N/C
+	 * 
+	 * @return	value of lambda
+	 */
+	private double lambdaCalcul(){
+		double result = 0.1;
+		BLOSumScore totalScore = new BLOSumScore(this.binList, null);
+		BLOCountNonNullBins windowsNumber = new BLOCountNonNullBins(this.binList, null);
+		try {
+			result = totalScore.compute() / windowsNumber.compute();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 	/**
@@ -88,7 +123,9 @@ public class IslandFinder {
 							}
 						}
 					}
-					resultList = getListIslandWithConstantValue(precision, currentList.size(), islands_start, islands_stop);
+					//resultList = getListIslandWithConstantValue(precision, currentList, islands_start, islands_stop);
+					resultList = getListIslandWithScoreWindowValue(precision, currentList, islands_start, islands_stop);
+					//System.out.println("Factorial: " + MyMathClass.getFactorialStorage());
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -105,13 +142,22 @@ public class IslandFinder {
 		}
 	}
 	
-	private List<Double> getListIslandWithConstantValue(DataPrecision precision, int size, ArrayList<Integer> islands_start, ArrayList<Integer> islands_stop){
-		List<Double> resultList = ListFactory.createList(precision, size);
+	/**
+	 * getListIslandWithConstantValue method
+	 * This method makes a list of double to determine the value of each windows of the BinList.
+	 * This value is constant and is 10. All values out of islands are to 0.
+	 * 
+	 * @param precision			bits precision
+	 * @param currentList		current list of windows value (just the size is used here, i.e. the number of windows in the BinList)
+	 * @param islands_start		start positions of all islands
+	 * @param islands_stop		stop positions of all islands
+	 * @return					list of windows values
+	 */
+	private List<Double> getListIslandWithConstantValue(DataPrecision precision, List<Double> currentList, ArrayList<Integer> islands_start, ArrayList<Integer> islands_stop){
+		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int current_pos = 0;
 		double value = 0.0;
-		System.out.println("Start size: " + islands_start.size());
-		System.out.println("Stop size: " + islands_stop.size());
-		for (int i = 0; i < size; i++){
+		for (int i = 0; i < currentList.size(); i++){
 			if (current_pos < islands_start.size()){
 				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)){
 					value = 10.0;
@@ -129,6 +175,63 @@ public class IslandFinder {
 			resultList.set(i, value);
 		}
 		return resultList;
+	}
+	
+	/**
+	 * getListIslandWithScoreWindowValue method
+	 * This method makes a list of double to determine the value of each windows of the BinList.
+	 * This value is the window score. All values out of islands are to 0.
+	 * 
+	 * @param precision			bits precision
+	 * @param currentList		current list of windows value
+	 * @param islands_start		start positions of all islands
+	 * @param islands_stop		stop positions of all islands
+	 * @return					list of windows values
+	 */
+	private List<Double> getListIslandWithScoreWindowValue(DataPrecision precision, List<Double> currentList, ArrayList<Integer> islands_start, ArrayList<Integer> islands_stop){
+		List<Double> resultList = ListFactory.createList(precision, currentList.size());
+		int current_pos = 0;
+		double value = 0.0;
+		for (int i = 0; i < currentList.size(); i++){
+			if (current_pos < islands_start.size()){
+				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)){
+					value = scoreOfWindow(currentList.get(i));
+					System.out.println("Score: " + value);
+					System.out.println("____________________");
+					if (i == islands_stop.get(current_pos)){
+						current_pos++;
+					}
+				}
+				else{
+					value = 0.0;
+				}
+			}
+			else{
+				value = 0.0;
+			}
+			resultList.set(i, value);
+		}
+		return resultList;
+	}
+	
+	/**
+	 * scoreOfWindow method
+	 * This method calculate the window score with the number of reads of this window.
+	 * 
+	 * @param 	value	number of reads of the window
+	 * @return			the window score
+	 * @throws InvalidLambdaPoissonParameterException
+	 * @throws InvalidFactorialParameterException
+	 */
+	private double scoreOfWindow(double value) {
+		try {
+			return -1*Poisson.logPoisson(lambda, (int)value);
+		} catch (InvalidLambdaPoissonParameterException e) {
+			e.printStackTrace();
+		} catch (InvalidFactorialParameterException e) {
+			e.printStackTrace();
+		}
+		return -1.0;
 	}
 	
 }

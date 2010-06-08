@@ -36,7 +36,7 @@ public class Poisson_old {
 		this.values = new Vector<Double>();
 		
 		// lValue = 0
-		double current = Math.exp(-lambda);
+		double current = MathFunctions.exp(-lambda);
 		for (int lValue = 1; current > thresholdProb; lValue++) {
 			// If this loops continues, then add the current value. 
 			this.values.add(Double.valueOf(current));
@@ -80,7 +80,7 @@ public class Poisson_old {
 	 */
 	public static double evaulateQuickly(int lValue, double lambda) {
 		// At lValue == 0, the for loop gets skipped, and only this is returned. 
-		double current = Math.exp(-lambda);
+		double current = MathFunctions.exp(-lambda);
 		
 		for (int i = 1; i <= lValue; i++) {
 			current *= (lambda/i);

@@ -21,7 +21,7 @@ public final class InvalidFactorialParameterException extends Exception {
 	 * Creates an instance of {@link InvalidFactorialParameterException}
 	 */
 	public InvalidFactorialParameterException() {
-		super("Factorial parameter cannot be negative or equal to 0.");
+		super("Factorial parameter cannot be negative.");
 	}
 	
 	public InvalidFactorialParameterException(String message) {
