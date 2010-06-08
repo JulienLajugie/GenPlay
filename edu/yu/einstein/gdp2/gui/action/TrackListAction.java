@@ -23,7 +23,6 @@ public abstract class TrackListAction extends AbstractAction {
 	
 	/**
 	 * Constructor
-	 * @param trackList a {@link TrackList}
 	 */
 	public TrackListAction() {
 		super(); 

@@ -31,7 +31,6 @@ public class BLOGauss implements BinListOperation<BinList> {
 	 * Applies a gaussian filter on the BinList and returns the result in a new BinList.
 	 * @param binList {@link BinList} to gauss
 	 * @param sigma parameter of the gaussian filter
-	 * @return a new {@link BinList}
 	 */
 	public BLOGauss(BinList binList, int sigma) {
 		this.binList = binList;

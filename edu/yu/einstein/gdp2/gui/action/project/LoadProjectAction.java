@@ -44,7 +44,6 @@ public class LoadProjectAction extends AbstractAction {
 	
 	/**
 	 * Creates an instance of {@link LoadProjectAction}
-	 * @param parent parent component
 	 */
 	public LoadProjectAction(TrackList trackList) {
 		super();

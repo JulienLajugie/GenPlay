@@ -44,7 +44,6 @@ public class SaveProjectAction extends AbstractAction {
 
 	/**
 	 * Creates an instance of {@link SaveProjectAction}
-	 * @param parent parent component
 	 */
 	public SaveProjectAction(TrackList trackList) {
 		super();

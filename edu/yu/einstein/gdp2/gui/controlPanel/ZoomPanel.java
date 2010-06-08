@@ -49,7 +49,6 @@ public final class ZoomPanel extends JPanel implements MouseWheelListener, Genom
 	
 	/**
 	 * Creates an instance of {@link ZoomPanel}
-	 * @param aZoomManager a {@link ZoomManager}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
 	public ZoomPanel(GenomeWindow genomeWindow) {

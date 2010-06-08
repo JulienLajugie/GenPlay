@@ -42,7 +42,8 @@ public class BLOCorrelation implements BinListOperation<Double> {
 	/**
 	 * Computes the correlation coefficient between two {@link BinList}.
 	 * Only the chromosomes set to <i>true</i> in chromoList will be used in the calculation. 
-	 * @param binList input {@link BinList}
+	 * @param binList1 1st input {@link BinList}
+	 * @param binList2 2nd input {@link BinList}
 	 * @param chromoList list of boolean. A boolean set to true means that the 
 	 * chromosome with the same index is going to be used for the calculation. 
 	 */

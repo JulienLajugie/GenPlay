@@ -185,7 +185,7 @@ public class DASConnector {
 	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @param genomeWindow a {@link GenommeWindow}
+	 * @param genomeWindow a {@link GenomeWindow}
 	 * @return a {@link GeneList}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
