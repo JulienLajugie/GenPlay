@@ -52,8 +52,7 @@ public final class ConfigurationManager implements Serializable {
 	private String 	logFile = DEFAULT_LOG_FILE;									// log file
 	private String 	defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;				// default directory
 	private String 	lookAndFeel = DEFAULT_LOOK_AND_FEEL;						// look and feel
-	private String 	dasServerListFile = 
-		this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString(); // DAS Server list
+	private String 	dasServerListFile = getTempDir() + "DASServerList.xml";		// DAS Server list
 	private int 	trackCount = DEFAULT_TRACK_COUNT;							// track count
 	private int 	trackHeight = DEFAULT_TRACK_HEIGHT;							// track height	
 
@@ -242,7 +241,8 @@ public final class ConfigurationManager implements Serializable {
 		chromosomeFile = DEFAULT_CHROMOSOME_FILE;
 		logFile = DEFAULT_LOG_FILE;	
 		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
-		dasServerListFile = DEFAULT_DAS_SERVER_PATH;
+		new File(dasServerListFile).delete();
+		dasServerListFile = getTempDir() + "DASServerList.xml";
 		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
 		trackCount = DEFAULT_TRACK_COUNT;	
 		trackHeight = DEFAULT_TRACK_HEIGHT;	

@@ -132,8 +132,9 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				try {
 					cm.writeConfigurationFile();
 					if (DASOptionPanel.tableChangedFlag == true) {
+						cm.setDASServerListFile(cm.getDASServerListFile());
 						DASServerListWriter dasServerListWriter = new DASServerListWriter();					
-						dasServerListWriter.write(DASOptionPanel.tableData, dasServerListFile);
+						dasServerListWriter.write(DASOptionPanel.tableData, cm.getDASServerListFile());
 					}
 				} catch (IOException er) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
