@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -44,9 +43,11 @@ public final class SearchGeneAction  extends TrackListAction {
 	public static final String ACTION_KEY = "searchGene";
 
 
-
-	public SearchGeneAction(TrackList trackList) {
-		super(trackList);
+	/**
+	 * Creates an instance of {@link SearchGeneAction}
+	 */
+	public SearchGeneAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,8 +60,8 @@ public final class SearchGeneAction  extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if ((trackList.getSelectedTrack() != null) && (trackList.getSelectedTrack() instanceof GeneListTrack)) {
-			final GeneListTrack selectedTrack = (GeneListTrack) trackList.getSelectedTrack();
+		if ((getTrackList().getSelectedTrack() != null) && (getTrackList().getSelectedTrack() instanceof GeneListTrack)) {
+			final GeneListTrack selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
 				String lastSearchedName = null;
 				if (selectedTrack.getData().getLastSearchedGene() != null) {
@@ -69,7 +70,7 @@ public final class SearchGeneAction  extends TrackListAction {
 				final String geneName = (String) JOptionPane.showInputDialog(getRootPane(), "Enter the name of a gene", "Gene Search", JOptionPane.QUESTION_MESSAGE, null, null, lastSearchedName);
 				if (geneName != null) {
 					// thread for the action
-					new ActionWorker<Gene>(trackList, "Searching Gene") {
+					new ActionWorker<Gene>(getTrackList(), "Searching Gene") {
 						@Override
 						protected Gene doAction() {
 							return selectedTrack.getData().search(geneName);
@@ -78,7 +79,7 @@ public final class SearchGeneAction  extends TrackListAction {
 						protected void doAtTheEnd(Gene actionResult) {
 							if (actionResult != null) {
 								GenomeWindow newWindow = new GenomeWindow(actionResult.getChromo(), actionResult.getTxStart(), actionResult.getTxStop());
-								trackList.setGenomeWindow(newWindow);
+								getTrackList().setGenomeWindow(newWindow);
 							}
 
 						}

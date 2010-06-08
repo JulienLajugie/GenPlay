@@ -12,7 +12,6 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 /**
@@ -42,10 +41,9 @@ public final class ResetAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link ResetAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public ResetAction(TrackList trackList) {
-		super(trackList);
+	public ResetAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -58,10 +56,10 @@ public final class ResetAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (trackList.getSelectedTrack() instanceof BinListTrack) {
-			final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
+			final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				new ActionWorker<Void>(trackList, "Reseting") {
+				new ActionWorker<Void>(getTrackList(), "Reseting") {
 					@Override
 					protected Void doAction() {
 						selectedTrack.resetBinList();

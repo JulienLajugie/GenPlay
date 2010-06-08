@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -40,10 +39,9 @@ public class MultiplicationConstantAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link MultiplicationConstantAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public MultiplicationConstantAction(TrackList trackList) {
-		super(trackList);
+	public MultiplicationConstantAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -55,14 +53,14 @@ public class MultiplicationConstantAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Multiply the score of the track by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0) && (constant.doubleValue() != 1)) {
 				final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 				final BinListOperation<BinList> operation = new BLOMultiplyConstant(binList, constant.doubleValue());
 				// thread for the action
-				new ActionWorker<BinList>(trackList, "Multiplicating by Constant") {
+				new ActionWorker<BinList>(getTrackList(), "Multiplicating by Constant") {
 					@Override
 					protected BinList doAction() throws Exception {
 						return operation.compute();

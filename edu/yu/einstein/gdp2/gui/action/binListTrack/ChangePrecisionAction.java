@@ -14,7 +14,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BLOChangeDataPrecision;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -40,10 +39,9 @@ public class ChangePrecisionAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link ChangePrecisionAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public ChangePrecisionAction(TrackList trackList) {
-		super(trackList);
+	public ChangePrecisionAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -55,14 +53,14 @@ public class ChangePrecisionAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
 			final DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
 			if (precision != null) {	
 				final BinListOperation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
 				// thread for the action
-				new ActionWorker<BinList>(trackList, "Changing Precision") {
+				new ActionWorker<BinList>(getTrackList(), "Changing Precision") {
 					@Override
 					protected BinList doAction() throws Exception {
 						return operation.compute();

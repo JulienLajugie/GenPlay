@@ -13,7 +13,6 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
 /**
@@ -37,10 +36,9 @@ public final class SetHeightAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SetHeightAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SetHeightAction(TrackList trackList) {
-		super(trackList);
+	public SetHeightAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -53,7 +51,7 @@ public final class SetHeightAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			int minimumHeight = selectedTrack.getMinimumSize().height;
 			int currentHeight = selectedTrack.getSize().height;

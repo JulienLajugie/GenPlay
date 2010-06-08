@@ -13,7 +13,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BLOLog2;
 import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -38,10 +37,9 @@ public final class Log2Action extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link Log2Action}
-	 * @param trackList a {@link TrackList}
 	 */
-	public Log2Action(TrackList trackList) {
-		super(trackList);
+	public Log2Action() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -53,12 +51,12 @@ public final class Log2Action extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 			// thread for the action
 			final BinListOperation<BinList> operation = new BLOLog2(binList);
-			new ActionWorker<BinList>(trackList, "Logging") {
+			new ActionWorker<BinList>(getTrackList(), "Logging") {
 				@Override
 				protected BinList doAction() throws Exception {
 					return operation.compute();

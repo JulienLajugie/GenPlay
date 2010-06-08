@@ -28,7 +28,6 @@ import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -59,10 +58,9 @@ public final class SaveTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SaveTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SaveTrackAction(TrackList trackList) {
-		super(trackList);
+	public SaveTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -75,8 +73,8 @@ public final class SaveTrackAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (trackList.getSelectedTrack() != null) {
-			Track selectedTrack = trackList.getSelectedTrack(); 
+		if (getTrackList().getSelectedTrack() != null) {
+			Track selectedTrack = getTrackList().getSelectedTrack(); 
 			if (selectedTrack instanceof BinListTrack) {
 				saveBinList((BinListTrack)selectedTrack);
 			} else if (selectedTrack instanceof GeneListTrack) {
@@ -110,7 +108,7 @@ public final class SaveTrackAction extends TrackListAction {
 				try {
 					final BinListWriter blw = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
 					// thread for the action
-					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber()) {
+					new ActionWorker<Void>(getTrackList(), "Saving Track #" + selectedTrack.getTrackNumber()) {
 						@Override
 						protected Void doAction() {
 							try {
@@ -156,7 +154,7 @@ public final class SaveTrackAction extends TrackListAction {
 				try {
 					final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(selectedFile, data, name, selectedFilter);
 					// thread for the action
-					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber()) {
+					new ActionWorker<Void>(getTrackList(), "Saving Track #" + selectedTrack.getTrackNumber()) {
 						@Override
 						protected Void doAction() {
 							try {

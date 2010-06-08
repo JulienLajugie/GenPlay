@@ -18,7 +18,6 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -44,10 +43,9 @@ public final class ShowRepartitionAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link ShowRepartitionAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public ShowRepartitionAction(TrackList trackList) {
-		super(trackList);
+	public ShowRepartitionAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,7 +57,7 @@ public final class ShowRepartitionAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
 			if (scoreBin != null) {
@@ -73,7 +71,7 @@ public final class ShowRepartitionAction extends TrackListAction {
 						final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 						final BinListOperation<Void> operation = new BLORepartition(binList, scoreBin.doubleValue(), saveFC.getSelectedFile());
 						// thread for the action
-						new ActionWorker<Void>(trackList, "Calculating Repartition") {
+						new ActionWorker<Void>(getTrackList(), "Calculating Repartition") {
 							@Override
 							protected Void doAction() throws Exception {
 								return operation.compute();

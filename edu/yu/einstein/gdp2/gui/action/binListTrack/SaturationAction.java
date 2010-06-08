@@ -18,7 +18,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListSaturation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -44,10 +43,9 @@ public class SaturationAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SaturationAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SaturationAction(TrackList trackList) {
-		super(trackList);
+	public SaturationAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,7 +57,7 @@ public class SaturationAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, no saturation available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
@@ -92,7 +90,7 @@ public class SaturationAction extends TrackListAction {
 			if(countHigh != null) {
 				final String description = "Count Saturation, Low Count = "  + countLow.intValue()+ ", High Count = " + countHigh;
 				// thread for the action
-				new ActionWorker<BinList>(trackList, "Saturating") {
+				new ActionWorker<BinList>(getTrackList(), "Saturating") {
 					@Override
 					protected BinList doAction() throws Exception {
 						return BinListSaturation.saturationCount(binList, countLow.intValue(), countHigh.intValue());
@@ -122,7 +120,7 @@ public class SaturationAction extends TrackListAction {
 				} else {			
 					final String description = "Percentage Saturation, Low Percentage = "  + percentageLow.doubleValue()+ ", High Percentage = " + percentageHigh.doubleValue();
 					// thread for the action
-					new ActionWorker<BinList>(trackList, "Saturating") {
+					new ActionWorker<BinList>(getTrackList(), "Saturating") {
 						@Override
 						protected BinList doAction() throws Exception {
 							return BinListSaturation.saturationPercentage(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
@@ -153,7 +151,7 @@ public class SaturationAction extends TrackListAction {
 				} else {
 					final String description = "Threshold Saturation, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh;
 					// thread for the action
-					new ActionWorker<BinList>(trackList, "Saturating") {
+					new ActionWorker<BinList>(getTrackList(), "Saturating") {
 						@Override
 						protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 							return BinListSaturation.saturationThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue());

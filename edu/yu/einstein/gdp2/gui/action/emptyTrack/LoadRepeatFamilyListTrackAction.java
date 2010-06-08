@@ -37,10 +37,9 @@ public final class LoadRepeatFamilyListTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadRepeatFamilyListTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadRepeatFamilyListTrackAction(TrackList trackList) {
-		super(trackList);
+	public LoadRepeatFamilyListTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,7 +55,7 @@ public final class LoadRepeatFamilyListTrackAction extends TrackListAction {
 		String logFile = ConfigurationManager.getInstance().getLogFile();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory, Utils.getReadableRepeatFileFilters());
 		if (selectedFile != null) {
-			new RepeatFamilyListExtractorWorker(trackList, logFile, selectedFile).execute();
+			new RepeatFamilyListExtractorWorker(getTrackList(), logFile, selectedFile).execute();
 		}
 	}
 }

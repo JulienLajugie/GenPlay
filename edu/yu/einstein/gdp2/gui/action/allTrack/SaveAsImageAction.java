@@ -14,7 +14,6 @@ import javax.swing.JFileChooser;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -40,10 +39,9 @@ public final class SaveAsImageAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SaveAsImageAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SaveAsImageAction(TrackList trackList) {
-		super(trackList);
+	public SaveAsImageAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,7 +54,7 @@ public final class SaveAsImageAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final Track selectedTrack = trackList.getSelectedTrack();
+		final Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final JFileChooser saveFC = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -66,7 +64,7 @@ public final class SaveAsImageAction extends TrackListAction {
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
 					// thread for the action
-					new ActionWorker<Void>(trackList, "Saving Track #" + selectedTrack.getTrackNumber() + " As Image") {
+					new ActionWorker<Void>(getTrackList(), "Saving Track #" + selectedTrack.getTrackNumber() + " As Image") {
 						@Override
 						protected Void doAction() {
 							selectedTrack.saveAsImage(Utils.addExtension(saveFC.getSelectedFile(), "jpg"));

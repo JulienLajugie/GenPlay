@@ -18,7 +18,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListFilter;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -44,10 +43,9 @@ public class FilterAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link FilterAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public FilterAction(TrackList trackList) {
-		super(trackList);
+	public FilterAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,7 +57,7 @@ public class FilterAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, not filter available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
@@ -94,7 +92,7 @@ public class FilterAction extends TrackListAction {
 			if(countHigh != null) {
 				final String description = "Count Filter, Low Count = "  + countLow.intValue()+ ", High Count = " + countHigh;
 				// thread for the action
-				new ActionWorker<BinList>(trackList, "Applying Filter") {
+				new ActionWorker<BinList>(getTrackList(), "Applying Filter") {
 					@Override
 					protected BinList doAction() throws Exception {
 						return BinListFilter.countFilter(binList, countLow.intValue(), countHigh.intValue());
@@ -128,7 +126,7 @@ public class FilterAction extends TrackListAction {
 						if (density != null) {
 							final String description = "Density filter, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh + ", Region Size = " + regionSize.intValue() + ", Density = " + density;
 							// thread for the action
-							new ActionWorker<BinList>(trackList, "Applying Filter") {
+							new ActionWorker<BinList>(getTrackList(), "Applying Filter") {
 								@Override
 								protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 									return BinListFilter.densityFilter(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), density.doubleValue(), regionSize.intValue());
@@ -162,7 +160,7 @@ public class FilterAction extends TrackListAction {
 
 				final String description = "Percentage Filter, Low Percentage = "  + percentageLow.doubleValue()+ ", High Percentage = " + percentageHigh.doubleValue();
 				// thread for the action
-				new ActionWorker<BinList>(trackList, "Applying Filter") {
+				new ActionWorker<BinList>(getTrackList(), "Applying Filter") {
 					@Override
 					protected BinList doAction() throws Exception {
 						return BinListFilter.percentageFilter(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
@@ -194,7 +192,7 @@ public class FilterAction extends TrackListAction {
 					if(successiveValues != null) {
 						final String description = "Threshold Filter, Low Threshold = "  + thresholdLow.doubleValue()+ ", High Threshold = " + thresholdHigh + ", Successive Values = " + successiveValues;
 						// thread for the action
-						new ActionWorker<BinList>(trackList, "Applying Filter") {
+						new ActionWorker<BinList>(getTrackList(), "Applying Filter") {
 							@Override
 							protected BinList doAction() throws IllegalArgumentException, InterruptedException, ExecutionException {
 								return BinListFilter.thresholdFilter(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), successiveValues.intValue());

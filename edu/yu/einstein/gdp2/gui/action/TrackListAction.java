@@ -7,6 +7,7 @@ package yu.einstein.gdp2.gui.action;
 import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 
+import yu.einstein.gdp2.gui.mainFrame.MainFrame;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
@@ -17,18 +18,16 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
  */
 public abstract class TrackListAction extends AbstractAction {
 
-	private static final long serialVersionUID = 1383058897700926018L; // generated ID
-	protected final TrackList trackList; // TrackList	
+	private static final long serialVersionUID = 1383058897700926018L; 				// generated ID
+	private final TrackList trackList = MainFrame.getInstance().getTrackList(); 	// TrackList	
 
 	
 	/**
 	 * Constructor
 	 * @param trackList a {@link TrackList}
 	 */
-	public TrackListAction(TrackList trackList) {
-		this.trackList = trackList; 
-
-
+	public TrackListAction() {
+		super(); 
 	}
 	
 	
@@ -37,5 +36,14 @@ public abstract class TrackListAction extends AbstractAction {
 	 */
 	protected JRootPane getRootPane() {
 		return trackList.getRootPane();
+	}
+	
+	
+	/**
+	 * Shortcut for MainFrame.getInstance().getTrackList()
+	 * @return the track list of the project
+	 */
+	protected TrackList getTrackList() {
+		return trackList;
 	}
 }

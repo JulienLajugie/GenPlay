@@ -37,10 +37,9 @@ public final class LoadGeneListTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadGeneListTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadGeneListTrackAction(TrackList trackList) {
-		super(trackList);
+	public LoadGeneListTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,7 +55,7 @@ public final class LoadGeneListTrackAction extends TrackListAction {
 		String logFile = ConfigurationManager.getInstance().getLogFile();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Track", defaultDirectory, Utils.getReadableGeneFileFilters());
 		if (selectedFile != null) {
-			new GeneListExtractorWorker(trackList, logFile, selectedFile).execute();
+			new GeneListExtractorWorker(getTrackList(), logFile, selectedFile).execute();
 		}
 	}
 }

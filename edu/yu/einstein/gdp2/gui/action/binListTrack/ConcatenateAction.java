@@ -21,7 +21,6 @@ import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -46,10 +45,9 @@ public class ConcatenateAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link ConcatenateAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public ConcatenateAction(TrackList trackList) {
-		super(trackList);
+	public ConcatenateAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -61,7 +59,7 @@ public class ConcatenateAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), trackList.getBinListTracks());
+		final Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
 		// we want to have at least two tracks
 		if ((selectedTracks != null) && (selectedTracks.length > 1)) {
 			// save dialog
@@ -82,7 +80,7 @@ public class ConcatenateAction extends TrackListAction {
 						nameArray[i] = selectedTracks[i].getName();
 					}
 					// thread for the action
-					new ActionWorker<Void>(trackList, "Concatenating Tracks") {
+					new ActionWorker<Void>(getTrackList(), "Concatenating Tracks") {
 						@Override
 						protected Void doAction() {
 							try {

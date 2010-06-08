@@ -37,10 +37,9 @@ public final class LoadBinListTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadBinListTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadBinListTrackAction(TrackList trackList) {
-		super(trackList);
+	public LoadBinListTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,7 +55,7 @@ public final class LoadBinListTrackAction extends TrackListAction {
 		String logFile = ConfigurationManager.getInstance().getLogFile();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters());
 		if (selectedFile != null) {
-			new BinListExtractorWorker(trackList, logFile, selectedFile).execute();
+			new BinListExtractorWorker(getTrackList(), logFile, selectedFile).execute();
 		}
 	}
 }

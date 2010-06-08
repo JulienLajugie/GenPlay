@@ -40,10 +40,9 @@ public class LoadNucleotideListTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadNucleotideListTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadNucleotideListTrackAction(TrackList trackList) {
-		super(trackList);
+	public LoadNucleotideListTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -58,7 +57,7 @@ public class LoadNucleotideListTrackAction extends TrackListAction {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		final File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 		if (selectedFile != null) {
-			new ActionWorker<TwoBitSequenceList>(trackList, "Loading Sequence Track") {
+			new ActionWorker<TwoBitSequenceList>(getTrackList(), "Loading Sequence Track") {
 				@Override
 				protected TwoBitSequenceList doAction() {
 					try {
@@ -71,10 +70,10 @@ public class LoadNucleotideListTrackAction extends TrackListAction {
 				@Override
 				protected void doAtTheEnd(TwoBitSequenceList actionResult) {
 					if (actionResult != null) {
-						final int selectedTrackIndex = trackList.getSelectedTrackIndex();
-						final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-						Track newTrack = new NucleotideListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-						trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes);
+						final int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
+						final ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+						Track newTrack = new NucleotideListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+						getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes);
 					}
 				}
 			}.execute();

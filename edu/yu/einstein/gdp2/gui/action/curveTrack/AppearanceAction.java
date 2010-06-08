@@ -13,7 +13,6 @@ import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackAppearanceOptionPane;
 import yu.einstein.gdp2.gui.track.CurveTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
 /**
@@ -36,10 +35,9 @@ public final class AppearanceAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link AppearanceAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public AppearanceAction(TrackList trackList) {
-		super(trackList);
+	public AppearanceAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -51,7 +49,7 @@ public final class AppearanceAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		CurveTrack selectedTrack = (CurveTrack) trackList.getSelectedTrack();
+		CurveTrack selectedTrack = (CurveTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean showHorizontalLines = selectedTrack.isShowHorizontalGrid();
 			int xLineCount = selectedTrack.getVerticalLineCount();

@@ -10,7 +10,6 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
 /**
@@ -33,10 +32,9 @@ public final class RemoveStripesAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link RemoveStripesAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public RemoveStripesAction(TrackList trackList) {
-		super(trackList);
+	public RemoveStripesAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -48,7 +46,7 @@ public final class RemoveStripesAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			selectedTrack.setStripes(null);
 		}

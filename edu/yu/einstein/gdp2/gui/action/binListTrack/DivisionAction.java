@@ -20,7 +20,6 @@ import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -44,10 +43,9 @@ public final class DivisionAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link DivisionAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public DivisionAction(TrackList trackList) {
-		super(trackList);
+	public DivisionAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,11 +57,11 @@ public final class DivisionAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			final BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Divide the selected track by:", trackList.getBinListTracks());
+			final BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Divide the selected track by:", getTrackList().getBinListTracks());
 			if(otherTrack != null) {
-				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
+				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
 					final DataPrecision precision = Utils.choosePrecision(getRootPane());;
 					if (precision != null) {
@@ -71,7 +69,7 @@ public final class DivisionAction extends TrackListAction {
 						final BinList binList2 = otherTrack.getBinList();
 						final BinListOperation<BinList> operation = new BLODivide(binList1, binList2, precision);
 						// thread for the action
-						new ActionWorker<BinList>(trackList, "Dividing") {
+						new ActionWorker<BinList>(getTrackList(), "Dividing") {
 							@Override
 							protected BinList doAction() throws Exception {
 								try {
@@ -85,11 +83,11 @@ public final class DivisionAction extends TrackListAction {
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
 								int index = resultTrack.getTrackNumber() - 1;
-								BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+								BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 								// add info to the history
 								newTrack.getHistory().add("Result of the division of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
 								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-								trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " / " + otherTrack.getName(), null);
+								getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " / " + otherTrack.getName(), null);
 							}
 						}.execute();
 					}

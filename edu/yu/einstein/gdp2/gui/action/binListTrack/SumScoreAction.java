@@ -44,10 +44,9 @@ public final class SumScoreAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SumScoreAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SumScoreAction(TrackList trackList) {
-		super(trackList);
+	public SumScoreAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -60,14 +59,14 @@ public final class SumScoreAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				final BinListOperation<Double> operation = new BLOSumScore(binList, selectedChromo);
 				// thread for the action
-				new ActionWorker<Double>(trackList, "Calculating Score Count") {
+				new ActionWorker<Double>(getTrackList(), "Calculating Score Count") {
 					@Override
 					protected Double doAction() throws Exception {
 						return operation.compute();

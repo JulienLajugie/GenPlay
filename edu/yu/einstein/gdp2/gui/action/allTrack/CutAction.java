@@ -12,7 +12,6 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -42,10 +41,9 @@ public final class CutAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link CutAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public CutAction(TrackList trackList) {
-		super(trackList);
+	public CutAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,13 +57,13 @@ public final class CutAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			// thread for the action
-			new ActionWorker<Void>(trackList, "Cutting Track #" + selectedTrack.getTrackNumber()) {
+			new ActionWorker<Void>(getTrackList(), "Cutting Track #" + selectedTrack.getTrackNumber()) {
 				@Override
 				protected Void doAction() {
-					trackList.cutTrack();
+					getTrackList().cutTrack();
 					return null;
 				}
 				@Override

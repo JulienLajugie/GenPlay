@@ -17,7 +17,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -42,10 +41,9 @@ public final class IndexationAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link IndexationAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public IndexationAction(TrackList trackList) {
-		super(trackList);
+	public IndexationAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -57,7 +55,7 @@ public final class IndexationAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {			
 			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, indexation is not available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
@@ -69,7 +67,7 @@ public final class IndexationAction extends TrackListAction {
 					final BinList binList = selectedTrack.getBinList();
 					final BinListOperation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());
 					// thread for the action
-					new ActionWorker<BinList>(trackList, "Indexing") {
+					new ActionWorker<BinList>(getTrackList(), "Indexing") {
 						@Override
 						protected BinList doAction() throws Exception {
 							return operation.compute();

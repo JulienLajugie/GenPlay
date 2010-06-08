@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -41,10 +40,9 @@ public class SubtractionConstantAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SubtractionConstantAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SubtractionConstantAction(TrackList trackList) {
-		super(trackList);
+	public SubtractionConstantAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,14 +54,14 @@ public class SubtractionConstantAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
 				final BinList binList = ((BinListTrack)selectedTrack).getBinList();
 				final BinListOperation<BinList> operation = new BLOSubtractConstant(binList, constant.doubleValue());
 				// thread for the action
-				new ActionWorker<BinList>(trackList, "Subtracting") {
+				new ActionWorker<BinList>(getTrackList(), "Subtracting") {
 					@Override
 					protected BinList doAction() throws Exception {
 						return operation.compute();

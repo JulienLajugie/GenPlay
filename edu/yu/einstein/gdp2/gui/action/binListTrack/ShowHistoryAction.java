@@ -13,7 +13,6 @@ import javax.swing.KeyStroke;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.HistoryDialog;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.History;
 
 /**
@@ -43,10 +42,9 @@ public final class ShowHistoryAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link ShowHistoryAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public ShowHistoryAction(TrackList trackList) {
-		super(trackList);
+	public ShowHistoryAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,8 +57,8 @@ public final class ShowHistoryAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (trackList.getSelectedTrack() instanceof BinListTrack) {
-			BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
+			BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
 				String trackName = selectedTrack.getName();
 				History history = selectedTrack.getHistory();

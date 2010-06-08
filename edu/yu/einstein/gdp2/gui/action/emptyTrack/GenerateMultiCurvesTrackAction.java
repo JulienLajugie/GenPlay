@@ -16,7 +16,6 @@ import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.MultiCurvesTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 /**
  * Shows the content of multiple tracks in a new one
@@ -38,10 +37,9 @@ public class GenerateMultiCurvesTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link GenerateMultiCurvesTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public GenerateMultiCurvesTrackAction(TrackList trackList) {
-		super(trackList);
+	public GenerateMultiCurvesTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -53,7 +51,7 @@ public class GenerateMultiCurvesTrackAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), trackList.getCurveTracks());
+		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getCurveTracks());
 		if (selectedTracks != null) {
 			if (selectedTracks.length > 1) {
 				CurveTrack[] curveTracks = new CurveTrack[selectedTracks.length];
@@ -66,10 +64,10 @@ public class GenerateMultiCurvesTrackAction extends TrackListAction {
 						trackName += selectedTracks[i].getName();
 					}
 				}
-				final int selectedTrackIndex = trackList.getSelectedTrackIndex();
-				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-				MultiCurvesTrack newTrack = new MultiCurvesTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
-				trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), trackName, stripes);	
+				final int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
+				final ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+				MultiCurvesTrack newTrack = new MultiCurvesTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
+				getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), trackName, stripes);	
 			} else {
 				JOptionPane.showMessageDialog(getRootPane(), "You must select at least two tracks", "Warning", JOptionPane.WARNING_MESSAGE);
 			}

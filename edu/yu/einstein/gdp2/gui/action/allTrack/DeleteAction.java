@@ -12,7 +12,6 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
 /**
@@ -42,10 +41,9 @@ public final class DeleteAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link DeleteAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public DeleteAction(TrackList trackList) {
-		super(trackList);
+	public DeleteAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -59,9 +57,9 @@ public final class DeleteAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			trackList.deleteTrack();
+			getTrackList().deleteTrack();
 		}
 	}
 }

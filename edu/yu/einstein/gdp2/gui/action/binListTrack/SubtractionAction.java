@@ -20,7 +20,6 @@ import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -46,10 +45,9 @@ public final class SubtractionAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SubtractionAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SubtractionAction(TrackList trackList) {
-		super(trackList);
+	public SubtractionAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -61,11 +59,11 @@ public final class SubtractionAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			final Track otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose a track to subtract from the selected track:", trackList.getBinListTracks());
+			final Track otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose a track to subtract from the selected track:", getTrackList().getBinListTracks());
 			if(otherTrack != null) {
-				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
+				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
 					final DataPrecision precision = Utils.choosePrecision(getRootPane());
 					if (precision != null) {						
@@ -73,7 +71,7 @@ public final class SubtractionAction extends TrackListAction {
 						final BinList binList2 = ((BinListTrack)otherTrack).getBinList();
 						final BinListOperation<BinList> operation = new BLOSubtract(binList1, binList2, precision);
 						// thread for the action
-						new ActionWorker<BinList>(trackList, "Subtracting") {
+						new ActionWorker<BinList>(getTrackList(), "Subtracting") {
 							@Override
 							protected BinList doAction() {
 								try {
@@ -89,11 +87,11 @@ public final class SubtractionAction extends TrackListAction {
 							@Override
 							protected void doAtTheEnd(BinList actionResult) {
 								int index = resultTrack.getTrackNumber() - 1;
-								BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+								BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 								// add info to the history
 								newTrack.getHistory().add("Result of the subtraction of " + selectedTrack.getName() + " by " + otherTrack.getName(), Color.GRAY);
 								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-								trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " - " + otherTrack.getName(), null);
+								getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " - " + otherTrack.getName(), null);
 							}
 						}.execute();
 					}

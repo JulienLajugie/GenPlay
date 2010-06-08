@@ -16,7 +16,6 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -41,10 +40,9 @@ public final class MinimumAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link MinimumAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public MinimumAction(TrackList trackList) {
-		super(trackList);
+	public MinimumAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,14 +54,14 @@ public final class MinimumAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
 				final BinList binList = selectedTrack.getBinList();
 				final BinListOperation<Double> operation = new BLOMin(binList, selectedChromo);
 				// thread for the action
-				new ActionWorker<Double>(trackList, "Searching Minimum") {
+				new ActionWorker<Double>(getTrackList(), "Searching Minimum") {
 					@Override
 					protected Double doAction() throws Exception {
 						return operation.compute();

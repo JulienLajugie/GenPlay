@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.TwoNumbersOptionPane;
 import yu.einstein.gdp2.gui.track.ScoredTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
 /**
@@ -36,10 +35,9 @@ public final class SetYAxisAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link SetYAxisAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public SetYAxisAction(TrackList trackList) {
-		super(trackList);
+	public SetYAxisAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -51,7 +49,7 @@ public final class SetYAxisAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		ScoredTrack selectedTrack = (ScoredTrack) trackList.getSelectedTrack();
+		ScoredTrack selectedTrack = (ScoredTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			double currentMin = selectedTrack.getYMin();
 			double currentMax = selectedTrack.getYMax();

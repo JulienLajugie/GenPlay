@@ -48,10 +48,9 @@ public class LoadFromDASAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadFromDASAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadFromDASAction(TrackList trackList) {
-		super(trackList);
+	public LoadFromDASAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -63,7 +62,7 @@ public class LoadFromDASAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final int selectedTrackIndex = trackList.getSelectedTrackIndex();
+		final int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
 		if (selectedTrackIndex != -1) {
 			try {
 				DASDialog dasDialog = new DASDialog();
@@ -75,13 +74,13 @@ public class LoadFromDASAction extends TrackListAction {
 					final int resType = dasDialog.getGenerateType();
 					final int dataRange = dasDialog.getDataRange();
 					final GenomeWindow genomeWindow = new GenomeWindow();
-					final GenomeWindow currentWindow = trackList.getGenomeWindow();
+					final GenomeWindow currentWindow = getTrackList().getGenomeWindow();
 					genomeWindow.setChromosome(dasDialog.getSelectedChromosome());
 					genomeWindow.setStart((int)dasDialog.getUserSpecifiedStart());
 					genomeWindow.setStop((int)dasDialog.getUserSpecifiedStop());
 					//System.out.println("Chromosome: " + dasDialog.getSelectedChromosome() + "\nStart: " + dasDialog.getUserSpecifiedStart() + "\nStop: " + dasDialog.getUserSpecifiedStop());
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
-						new ActionWorker<GeneList>(trackList, "Retrieving Data from DAS Server") {
+						new ActionWorker<GeneList>(getTrackList(), "Retrieving Data from DAS Server") {
 							@Override
 							protected GeneList doAction() {
 								try {
@@ -106,14 +105,14 @@ public class LoadFromDASAction extends TrackListAction {
 							@Override
 							protected void doAtTheEnd(GeneList actionResult) {
 								if (actionResult != null) {
-									ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-									Track newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-									trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
+									ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+									Track newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+									getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
 								}								
 							}
 						}.execute();
 					} else if (resType == DASDialog.GENERATE_SCW_LIST) {
-						new ActionWorker<ScoredChromosomeWindowList>(trackList, "Retrieving Data from DAS server") {
+						new ActionWorker<ScoredChromosomeWindowList>(getTrackList(), "Retrieving Data from DAS server") {
 							@Override
 							protected ScoredChromosomeWindowList doAction() {
 								try {
@@ -138,9 +137,9 @@ public class LoadFromDASAction extends TrackListAction {
 							@Override
 							protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 								if (actionResult != null) {
-									ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-									Track newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-									trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
+									ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+									Track newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+									getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
 								}
 							}					
 						}.execute();

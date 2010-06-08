@@ -13,7 +13,6 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
 /**
@@ -43,10 +42,9 @@ public final class RenameAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link RenameAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public RenameAction(TrackList trackList) {
-		super(trackList);
+	public RenameAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -60,7 +58,7 @@ public final class RenameAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			String message = "Enter a name for the track #" + selectedTrack.getTrackNumber() + ":";
 			String currentName = selectedTrack.getName();

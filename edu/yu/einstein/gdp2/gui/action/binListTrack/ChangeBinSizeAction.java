@@ -16,7 +16,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -42,10 +41,9 @@ public class ChangeBinSizeAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link ChangeBinSizeAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public ChangeBinSizeAction(TrackList trackList) {
-		super(trackList);
+	public ChangeBinSizeAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -57,16 +55,16 @@ public class ChangeBinSizeAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		final BinList binList = selectedTrack.getBinList();
 		if (selectedTrack != null) {
-			final Number binSize = NumberOptionPane.getValue(trackList.getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
+			final Number binSize = NumberOptionPane.getValue(getTrackList().getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
-				final ScoreCalculationMethod method = Utils.chooseScoreCalculation(trackList.getRootPane());
+				final ScoreCalculationMethod method = Utils.chooseScoreCalculation(getTrackList().getRootPane());
 				final BinListOperation<BinList> operation = new BLOChangeBinSize(binList, binSize.intValue(), method);
 				if (method != null) {
 					// thread for the action
-					new ActionWorker<BinList>(trackList, "Changing Window Size") {
+					new ActionWorker<BinList>(getTrackList(), "Changing Window Size") {
 						@Override
 						protected BinList doAction() throws Exception {
 							return operation.compute();

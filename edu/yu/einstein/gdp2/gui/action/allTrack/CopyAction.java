@@ -12,7 +12,6 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -43,10 +42,9 @@ public final class CopyAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link CopyAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public CopyAction(TrackList trackList) {
-		super(trackList);
+	public CopyAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -60,13 +58,13 @@ public final class CopyAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			// thread for the action
-			new ActionWorker<Void>(trackList, "Copying Track #" + selectedTrack.getTrackNumber()) {
+			new ActionWorker<Void>(getTrackList(), "Copying Track #" + selectedTrack.getTrackNumber()) {
 				@Override
 				protected Void doAction() {
-					trackList.copyTrack();
+					getTrackList().copyTrack();
 					return null;
 				}
 				@Override

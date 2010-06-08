@@ -12,7 +12,6 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.extractorWorker.ChromosomeWindowListExtractorWorker;
 import yu.einstein.gdp2.util.Utils;
 
@@ -37,10 +36,9 @@ public final class LoadStripesAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadStripesAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadStripesAction(TrackList trackList) {
-		super(trackList);
+	public LoadStripesAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -52,13 +50,13 @@ public final class LoadStripesAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			String logFile = ConfigurationManager.getInstance().getLogFile();
 			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getReadableStripeFileFilters());
 			if (selectedFile != null) {
-				new ChromosomeWindowListExtractorWorker(trackList, logFile, selectedFile).execute();
+				new ChromosomeWindowListExtractorWorker(getTrackList(), logFile, selectedFile).execute();
 			}
 		}
 	}

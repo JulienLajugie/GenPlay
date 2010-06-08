@@ -14,7 +14,6 @@ import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -39,10 +38,9 @@ public final class GaussAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link GaussAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public GaussAction(TrackList trackList) {
-		super(trackList);
+	public GaussAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -54,7 +52,7 @@ public final class GaussAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
 			final int windowSize = binList.getBinSize();
@@ -63,7 +61,7 @@ public final class GaussAction extends TrackListAction {
 				if(sigma != null) {
 					final BinListOperation<BinList> operation = new BLOGauss(binList, sigma);
 					// thread for the action
-					new ActionWorker<BinList>(trackList, "Gaussing") {
+					new ActionWorker<BinList>(getTrackList(), "Gaussing") {
 						@Override
 						protected BinList doAction() throws Exception {
 							return operation.compute();

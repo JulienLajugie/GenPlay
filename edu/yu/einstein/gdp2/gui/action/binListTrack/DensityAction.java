@@ -19,8 +19,8 @@ import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
+
 
 /**
  * Computes the densities of none null bins of the selected {@link BinListTrack}
@@ -43,10 +43,9 @@ public class DensityAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link DensityAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public DensityAction(TrackList trackList) {
-		super(trackList);
+	public DensityAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -58,16 +57,16 @@ public class DensityAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getBinList();
 			final Number halfWidth = NumberOptionPane.getValue(getRootPane(), "Enter Value", "<html>Enter the half width<br><center>(in number of bins)</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 5);
 			if(halfWidth != null) {
-				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", trackList.getEmptyTracks());
+				final Track resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
 					final BinListOperation<BinList> operation = new BLODensity(binList, halfWidth.intValue());
 					// thread for the action
-					new ActionWorker<BinList>(trackList, "Computing Density") {
+					new ActionWorker<BinList>(getTrackList(), "Computing Density") {
 						@Override
 						protected BinList doAction() throws Exception {
 							return operation.compute();
@@ -76,11 +75,11 @@ public class DensityAction extends TrackListAction {
 						protected void doAtTheEnd(BinList actionResult) {
 							if (actionResult != null) {
 								int index = resultTrack.getTrackNumber() - 1;
-								BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), index + 1, actionResult);
+								BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 								// add info to the history
 								newTrack.getHistory().add("Result of the density calculation of " + selectedTrack.getName() + ", Half Width = " + halfWidth);
 								newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-								trackList.setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "Density of " + selectedTrack.getName(), null);
+								getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "Density of " + selectedTrack.getName(), null);
 							}
 						}
 					}.execute();

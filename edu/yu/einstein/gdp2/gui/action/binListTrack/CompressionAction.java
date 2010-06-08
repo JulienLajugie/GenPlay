@@ -11,7 +11,6 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 /**
@@ -35,10 +34,9 @@ public class CompressionAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link CompressionAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public CompressionAction(TrackList trackList) {
-		super(trackList);
+	public CompressionAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -50,7 +48,7 @@ public class CompressionAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			String actionDescription = new String();
 			if (selectedTrack.getBinList().isCompressed()) {
@@ -59,7 +57,7 @@ public class CompressionAction extends TrackListAction {
 				actionDescription = "Compressing Data";
 			}
 			// thread for the action
-			new ActionWorker<BinList>(trackList, actionDescription) {
+			new ActionWorker<BinList>(getTrackList(), actionDescription) {
 				@Override
 				protected BinList doAction() {
 					BinList binList = selectedTrack.getBinList();

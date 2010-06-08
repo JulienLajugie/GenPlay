@@ -18,7 +18,6 @@ import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -45,10 +44,9 @@ public final class CorrelationAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link CorrelationAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public CorrelationAction(TrackList trackList) {
-		super(trackList);
+	public CorrelationAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -61,9 +59,9 @@ public final class CorrelationAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		final BinListTrack selectedTrack = (BinListTrack) trackList.getSelectedTrack();
+		final BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			final BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Calculate the correlation with:", trackList.getBinListTracks());
+			final BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Calculate the correlation with:", getTrackList().getBinListTracks());
 			if (otherTrack != null) {
 				final boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 				if (selectedChromo != null) {
@@ -71,7 +69,7 @@ public final class CorrelationAction extends TrackListAction {
 					final BinList binList2 = otherTrack.getBinList();
 					final BinListOperation<Double> operation = new BLOCorrelation(binList1, binList2, selectedChromo);
 					// thread for the action
-					new ActionWorker<Double>(trackList, "Computing Correlation") {
+					new ActionWorker<Double>(getTrackList(), "Computing Correlation") {
 						@Override
 						protected Double doAction() throws Exception {
 							return operation.compute();

@@ -12,7 +12,6 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListAction;
 import yu.einstein.gdp2.gui.track.Track;
-import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
@@ -43,10 +42,9 @@ public final class PasteAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link PasteAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public PasteAction(TrackList trackList) {
-		super(trackList);
+	public PasteAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -60,12 +58,12 @@ public final class PasteAction extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = trackList.getSelectedTrack();
+		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			new ActionWorker<Void>(trackList, "Pasting Clipboard on Track #" + selectedTrack.getTrackNumber()) {
+			new ActionWorker<Void>(getTrackList(), "Pasting Clipboard on Track #" + selectedTrack.getTrackNumber()) {
 				@Override
 				protected Void doAction() {
-					trackList.pasteCopiedTrack();
+					getTrackList().pasteCopiedTrack();
 					return null;
 				}
 				@Override

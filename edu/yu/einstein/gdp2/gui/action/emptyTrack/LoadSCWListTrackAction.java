@@ -37,10 +37,9 @@ public final class LoadSCWListTrackAction extends TrackListAction {
 
 	/**
 	 * Creates an instance of {@link LoadSCWListTrackAction}
-	 * @param trackList a {@link TrackList}
 	 */
-	public LoadSCWListTrackAction(TrackList trackList) {
-		super(trackList);
+	public LoadSCWListTrackAction() {
+		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
@@ -56,7 +55,7 @@ public final class LoadSCWListTrackAction extends TrackListAction {
 		String logFile = ConfigurationManager.getInstance().getLogFile();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Track", defaultDirectory, Utils.getReadableSCWFileFilters());
 		if (selectedFile != null) {
-			new SCWListExtractorWorker(trackList, logFile, selectedFile).execute();
+			new SCWListExtractorWorker(getTrackList(), logFile, selectedFile).execute();
 		}
 	}
 }
