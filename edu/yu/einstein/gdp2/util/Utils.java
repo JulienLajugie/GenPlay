@@ -14,6 +14,7 @@ import javax.swing.filechooser.FileFilter;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
+import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.enums.SaturationType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
@@ -348,4 +349,20 @@ public class Utils {
 		}		
 		return new Color(r, v, b);
 	}
+	
+	/**
+	 * A dialog box used to choose a {@link IslandResultType}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link FilterType} value
+	 */
+	public static IslandResultType chooseIslandResultType(Component parentComponent) {
+		return (IslandResultType)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a type of result",
+				"Island result Type",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				IslandResultType.values(),
+				IslandResultType.CONSTANT);
+	}	
 }
