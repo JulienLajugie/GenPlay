@@ -39,7 +39,7 @@ public class IslandFinder {
 	 * @param readCountLimit	limit reads number to get an eligible windows
 	 * @param gap				minimum windows number needed to separate 2 islands
 	 */
-	public IslandFinder(BinList binList, double readCountLimit, int gap) {
+	public IslandFinder (BinList binList, double readCountLimit, int gap) {
 		this.binList = binList;
 		this.readCountLimit = readCountLimit;
 		this.gap = gap;
@@ -60,7 +60,7 @@ public class IslandFinder {
 	 * 
 	 * @return	value of lambda
 	 */
-	private double lambdaCalcul(){
+	private double lambdaCalcul () {
 		double result = 0.1;
 		BLOSumScore totalScore = new BLOSumScore(this.binList, null);
 		BLOCountNonNullBins windowsNumber = new BLOCountNonNullBins(this.binList, null);
@@ -83,7 +83,7 @@ public class IslandFinder {
 	 * @throws 	InterruptedException
 	 * @throws 	ExecutionException
 	 */
-	public BinList findIsland() throws InterruptedException, ExecutionException{
+	public BinList findIsland () throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final DataPrecision precision = binList.getPrecision();
@@ -99,14 +99,14 @@ public class IslandFinder {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						int j = 0;
-						while (j < currentList.size()){
-							if (currentList.get(j) >= readCountLimit){
+						while (j < currentList.size()) {
+							if (currentList.get(j) >= readCountLimit) {
 								islands_start.add(j);
 								resultList.set(j, currentList.get(j));
 								int gap_found = 0;
 								int j_tmp = j + 1;
-								while ((gap_found <= gap) && (j_tmp < currentList.size())){
-									if (currentList.get(j_tmp) >= readCountLimit){
+								while ((gap_found <= gap) && (j_tmp < currentList.size())) {
+									if (currentList.get(j_tmp) >= readCountLimit) {
 										resultList.set(j_tmp, currentList.get(j_tmp));
 										gap_found = 0;
 									} else {
@@ -153,23 +153,24 @@ public class IslandFinder {
 	 * @param islands_stop		stop positions of all islands
 	 * @return					list of windows values
 	 */
-	private List<Double> getListIslandWithConstantValue(DataPrecision precision, List<Double> currentList, ArrayList<Integer> islands_start, ArrayList<Integer> islands_stop){
+	private List<Double> getListIslandWithConstantValue (DataPrecision precision,
+														List<Double> currentList,
+														ArrayList<Integer> islands_start,
+														ArrayList<Integer> islands_stop) {
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int current_pos = 0;
 		double value = 0.0;
 		for (int i = 0; i < currentList.size(); i++){
-			if (current_pos < islands_start.size()){
-				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)){
+			if (current_pos < islands_start.size()) {
+				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)) {
 					value = 10.0;
-					if (i == islands_stop.get(current_pos)){
+					if (i == islands_stop.get(current_pos)) {
 						current_pos++;
 					}
-				}
-				else{
+				} else {
 					value = 0.0;
 				}
-			}
-			else{
+			} else {
 				value = 0.0;
 			}
 			resultList.set(i, value);
@@ -188,30 +189,88 @@ public class IslandFinder {
 	 * @param islands_stop		stop positions of all islands
 	 * @return					list of windows values
 	 */
-	private List<Double> getListIslandWithScoreWindowValue(DataPrecision precision, List<Double> currentList, ArrayList<Integer> islands_start, ArrayList<Integer> islands_stop){
+	private List<Double> getListIslandWithScoreWindowValue (DataPrecision precision,
+															List<Double> currentList,
+															ArrayList<Integer> islands_start,
+															ArrayList<Integer> islands_stop) {
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int current_pos = 0;
 		double value = 0.0;
-		for (int i = 0; i < currentList.size(); i++){
-			if (current_pos < islands_start.size()){
-				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)){
+		for (int i = 0; i < currentList.size(); i++) {
+			if (current_pos < islands_start.size()) {
+				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)) {
 					value = scoreOfWindow(currentList.get(i));
-					System.out.println("Score: " + value);
-					System.out.println("____________________");
-					if (i == islands_stop.get(current_pos)){
+					if (i == islands_stop.get(current_pos)) {
 						current_pos++;
 					}
-				}
-				else{
+				} else {
 					value = 0.0;
 				}
-			}
-			else{
+			} else {
 				value = 0.0;
 			}
 			resultList.set(i, value);
 		}
 		return resultList;
+	}
+	
+	/**
+	 * getListIslandWithScoreWindowValue method
+	 * This method makes a list of double to determine the value of each windows of the BinList.
+	 * This value is the window score. All values out of islands are to 0.
+	 * 
+	 * @param precision			bits precision
+	 * @param currentList		current list of windows value
+	 * @param islands_start		start positions of all islands
+	 * @param islands_stop		stop positions of all islands
+	 * @return					list of windows values
+	 */
+	private List<Double> getListIslandWithScoreIslandValue (DataPrecision precision,
+															List<Double> currentList,
+															ArrayList<Integer> islands_start,
+															ArrayList<Integer> islands_stop) {
+		List<Double> resultList = ListFactory.createList(precision, currentList.size());
+		int current_pos = 0;
+		double value = 0.0;
+		for (int i = 0; i < currentList.size(); i++) {
+			if (current_pos < islands_start.size()){
+				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)) {
+					value = scoreOfWindow(currentList.get(i));
+					if (i == islands_stop.get(current_pos)) {
+						current_pos++;
+					}
+				} else {
+					value = 0.0;
+				}
+			} else {
+				value = 0.0;
+			}
+			resultList.set(i, value);
+		}
+		return resultList;
+	}
+	
+	private ArrayList<Double> calculateScoreIsland (List<Double> currentList,
+													ArrayList<Integer> islands_start,
+													ArrayList<Integer> islands_stop) {
+		ArrayList<Double> scoreIsland = new ArrayList<Double> ();
+		int pos = 0;
+		int eligibleWindow;
+		double sumScore;
+		
+		
+		while (pos < islands_start.size()) {
+			sumScore = 0.0;
+			eligibleWindow = 0;
+			for (int i = islands_start.get(pos); i <= islands_stop.get(pos); i++) {
+				if (currentList.get(i) >= this.readCountLimit) {
+				sumScore += scoreOfWindow(currentList.get(i));
+				eligibleWindow++;
+				}
+			}
+			scoreIsland.add(sumScore / eligibleWindow);
+		}
+		return scoreIsland;
 	}
 	
 	/**
@@ -223,7 +282,7 @@ public class IslandFinder {
 	 * @throws InvalidLambdaPoissonParameterException
 	 * @throws InvalidFactorialParameterException
 	 */
-	private double scoreOfWindow(double value) {
+	private double scoreOfWindow (double value) {
 		try {
 			return -1*Poisson.logPoisson(lambda, (int)value);
 		} catch (InvalidLambdaPoissonParameterException e) {

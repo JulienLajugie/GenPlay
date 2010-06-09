@@ -23,7 +23,7 @@ public class BLOIslandFinder implements BinListOperation<BinList> {
 	
 	
 
-	public BLOIslandFinder(BinList binList, double read_count_limit, int gap) {
+	public BLOIslandFinder (BinList binList, double read_count_limit, int gap) {
 		this.binList = binList;
 		this.readCountLimit = read_count_limit;
 		this.gap = gap;
@@ -31,14 +31,14 @@ public class BLOIslandFinder implements BinListOperation<BinList> {
 	
 	
 	@Override
-	public BinList compute() throws InterruptedException, ExecutionException {
+	public BinList compute () throws InterruptedException, ExecutionException {
 		IslandFinder island = new IslandFinder(binList, readCountLimit, gap);
 		return island.findIsland();
 	}
 
 	
 	@Override
-	public String getDescription() {
+	public String getDescription () {
 		return "Operation: Island Finder, Read count limit = " + readCountLimit + ", Gap = " + gap;
 	}
 	
