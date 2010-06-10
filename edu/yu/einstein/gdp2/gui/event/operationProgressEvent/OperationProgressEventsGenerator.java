@@ -22,12 +22,12 @@ public interface OperationProgressEventsGenerator {
 	/**
 	 * @return an array containing all the {@link OperationProgressListener} of the current instance
 	 */
-	public OperationProgressListener[] getGenomeWindowListeners();
+	public OperationProgressListener[] getOperationProgressListeners();
 	
 	
 	/**
 	 * Removes a {@link OperationProgressListener} from the listener list
 	 * @param operationProgressListener {@link OperationProgressListener} to remove
 	 */
-	public void removeGenomeWindowListener(OperationProgressListener operationProgressListener);
+	public void removeOperationProgressListener(OperationProgressListener operationProgressListener);
 }

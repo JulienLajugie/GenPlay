@@ -161,14 +161,14 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 
 
 	@Override
-	public OperationProgressListener[] getGenomeWindowListeners() {
+	public OperationProgressListener[] getOperationProgressListeners() {
 		OperationProgressListener[] listeners = new OperationProgressListener[progressListeners.size()];
 		return progressListeners.toArray(listeners);
 	}
 
 
 	@Override
-	public void removeGenomeWindowListener(OperationProgressListener operationProgressListener) {
+	public void removeOperationProgressListener(OperationProgressListener operationProgressListener) {
 		progressListeners.remove(operationProgressListener);
 	}
 }
