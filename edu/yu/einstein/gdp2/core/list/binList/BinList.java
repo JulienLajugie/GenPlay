@@ -856,10 +856,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		// 1 step for the creation original BinList
 		// + 2 steps for calculating the statistics
 		int count = 1 + 2;
+		binSize *= ACCELERATOR_FACTOR;
 		// 1 step per accelerator BinList
 		while (binSize < ACCELERATOR_MAX_BINSIZE) {
-			binSize *= ACCELERATOR_FACTOR;
 			count++;
+			binSize *= ACCELERATOR_FACTOR;
 		}
 		return count;
 	}
