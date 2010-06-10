@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.manager;
 
+import java.util.concurrent.CancellationException;
+
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
@@ -36,8 +38,8 @@ public final class ExceptionManager {
 		Throwable exception = e;
 
 		while (!exceptionHandled && hasCause) {
-			// no message for the interrupted exception 
-			if (exception instanceof InterruptedException) {
+			// no message for the interrupted or cancel exceptions 
+			if ((exception instanceof InterruptedException) || (exception instanceof CancellationException)) { 
 				exceptionHandled = true;	
 			} else if (exception instanceof InvalidFileTypeException) {				
 				// case where the user tries to load an invalid file type
