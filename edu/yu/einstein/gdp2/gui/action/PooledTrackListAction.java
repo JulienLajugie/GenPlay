@@ -24,6 +24,7 @@ public abstract class PooledTrackListAction<T> extends TrackListAction implement
 		@Override
 		final protected T doInBackground() throws Exception {
 			OperationPool.getInstance().addOperationProgressListener(PooledTrackListAction.this);
+			getTrackList().actionStarts();
 			return processAction();
 		}
 		
@@ -38,6 +39,7 @@ public abstract class PooledTrackListAction<T> extends TrackListAction implement
 				ExceptionManager.handleException(getTrackList().getRootPane(), e, "An unexpected error occurred during the operation");
 			} finally {
 				OperationPool.getInstance().removeOperationProgressListener(PooledTrackListAction.this);
+				getTrackList().actionEnds();
 			}
 		}
 	}

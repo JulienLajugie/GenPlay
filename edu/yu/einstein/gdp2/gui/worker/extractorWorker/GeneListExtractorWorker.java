@@ -42,7 +42,7 @@ public final class GeneListExtractorWorker extends ExtractorWorker<GeneList> {
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 				Track newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, this.get());
 				trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
-				notifyActionEnded("Gene Track Loaded");
+				//notifyActionEnded("Gene Track Loaded");
 			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the gene track");

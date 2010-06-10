@@ -42,7 +42,7 @@ public final class SCWListExtractorWorker extends ExtractorWorker<ScoredChromoso
 				final ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 				Track newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, this.get());
 				trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
-				notifyActionEnded("Variable Window Track Loaded");
+				//notifyActionEnded("Variable Window Track Loaded");
 			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the variable window track");

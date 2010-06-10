@@ -90,9 +90,6 @@ import yu.einstein.gdp2.gui.action.scoredTrack.SetYAxisAction;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.popupMenu.TrackMenu;
 import yu.einstein.gdp2.gui.popupMenu.TrackMenuFactory;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -106,13 +103,12 @@ import yu.einstein.gdp2.gui.track.Track;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, TrackListActionListener, GenomeWindowEventsGenerator, TrackListActionEventsGenerator {
+public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
 	private final JPanel 		jpTrackList;					// panel with the tracks
 	private final ConfigurationManager configurationManager;	// ConfigurationManager
 	private final List<GenomeWindowListener> gwListenerList;	// list of GenomeWindowListener
-	private final List<TrackListActionListener> tlalListenerList;// list of GenomeWindowListener
 	private GenomeWindow 		displayedGenomeWindow;			// displayed GenomeWindow
 	private Track[] 			trackList;						// array of tracks
 	private Track				selectedTrack = null;			// track selected
@@ -129,7 +125,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		this.configurationManager = ConfigurationManager.getInstance();
 		this.displayedGenomeWindow = displayedGenomeWindow;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
-		this.tlalListenerList = new ArrayList<TrackListActionListener>();
 		getVerticalScrollBar().setUnitIncrement(15);
 		getVerticalScrollBar().setBlockIncrement(40);
 		jpTrackList = new JPanel();
@@ -724,45 +719,24 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	}
 
 
-	@Override
-	public void addTrackListActionListener(TrackListActionListener trackListActionListener) {
-		tlalListenerList.add(trackListActionListener);		
-	}
-
-
-	@Override
-	public TrackListActionListener[] getOperationOnTrackListener() {
-		TrackListActionListener[] operationOnTrackListeners = new TrackListActionListener[tlalListenerList.size()];
-		return tlalListenerList.toArray(operationOnTrackListeners);
-	}
-
-
-	@Override
-	public void removeTrackListActionListener(TrackListActionListener trackListActionListener) {
-		tlalListenerList.remove(trackListActionListener);		
-	}
-
-
-	@Override
-	public void actionEnds(TrackListActionEvent evt) {
+	/**
+	 * Unlocks the track handles when an action ends
+	 */
+	public void actionEnds() {
 		// unlock the track handles
 		unlockTracksHandles();
 		// enable the action map
 		setEnabled(true);
-		for (TrackListActionListener ootListener: tlalListenerList) {
-			ootListener.actionEnds(evt);
-		}		
 	}
 
 
-	@Override
-	public void actionStarts(TrackListActionEvent evt) {
+	/**
+	 * Locks the track handles when an action starts
+	 */
+	public void actionStarts() {
 		// lock the track handles
 		lockTrackHandles();
 		// disable the action map
 		setEnabled(false);
-		for (TrackListActionListener ootListener: tlalListenerList) {
-			ootListener.actionStarts(evt);
-		}		
 	}
 }

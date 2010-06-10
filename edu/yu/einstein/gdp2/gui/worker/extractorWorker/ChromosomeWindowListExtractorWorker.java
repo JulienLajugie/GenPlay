@@ -36,7 +36,7 @@ public class ChromosomeWindowListExtractorWorker extends ExtractorWorker<Chromos
 		try {
 			if (this.get() != null) {
 				trackList.getSelectedTrack().setStripes(this.get());
-				notifyActionEnded("Stripes Loaded");
+				//notifyActionEnded("Stripes Loaded");
 			}
 		} catch (Exception e) {
 			ExceptionManager.handleException(trackList.getRootPane(), e, "Error while loading the stripe");

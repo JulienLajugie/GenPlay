@@ -17,9 +17,6 @@ import yu.einstein.gdp2.core.extractor.Extractor;
 import yu.einstein.gdp2.core.extractor.ExtractorFactory;
 import yu.einstein.gdp2.core.generator.Generator;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.Utils;
 
@@ -37,11 +34,10 @@ import yu.einstein.gdp2.util.Utils;
  * @version 0.1
  * @param <T> type of data returned by the Extractor
  */
-public abstract class ExtractorWorker<T> extends SwingWorker<T, Void> implements TrackListActionEventsGenerator {
+public abstract class ExtractorWorker<T> extends SwingWorker<T, Void> {
 
 	protected final TrackList 					trackList;				// TrackList 
 	private final Class<? extends Generator>	extractorClass;			// desired class of extractor
-	private final List<TrackListActionListener> tlalListenerList;		// list of GenomeWindowListener
 	private final String 						actionStartDescription; // description of the action
 	protected final File						fileToExtract;  		// file to extract
 	protected File	 							logFile;				// a file we extracts
@@ -77,8 +73,6 @@ public abstract class ExtractorWorker<T> extends SwingWorker<T, Void> implements
 			this.logFile = null;
 		}		
 		this.fileToExtract = fileToExtract;
-		this.tlalListenerList = new ArrayList<TrackListActionListener>();
-		addTrackListActionListener(trackList);
 		this.actionStartDescription = actionStartDescription;
 	}
 
@@ -91,7 +85,6 @@ public abstract class ExtractorWorker<T> extends SwingWorker<T, Void> implements
 		if (fileToExtract != null) {
 			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
-				notifyActionStarted(actionStartDescription);
 				extractor.extract();
 				if (extractor.getName() != null) {
 					name = extractor.getName();
@@ -131,48 +124,5 @@ public abstract class ExtractorWorker<T> extends SwingWorker<T, Void> implements
 	 * This method has to be implemented to specify what to do at the
 	 * end of the loading.
 	 */
-	abstract public void doAtTheEnd();
-	
-	
-	@Override
-	public void addTrackListActionListener(TrackListActionListener trackListActionListener) {
-		tlalListenerList.add(trackListActionListener);		
-	}
-
-
-	@Override
-	public TrackListActionListener[] getOperationOnTrackListener() {
-		TrackListActionListener[] operationOnTrackListeners = new TrackListActionListener[tlalListenerList.size()];
-		return tlalListenerList.toArray(operationOnTrackListeners);
-	}
-
-
-	@Override
-	public void removeTrackListActionListener(TrackListActionListener trackListActionListener) {
-		tlalListenerList.remove(trackListActionListener);		
-	}
-	
-	
-	/**
-	 * Notifies all the {@link TrackListActionListener} that an action started
-	 * @param actionDescription
-	 */
-	protected void notifyActionStarted(String actionDescription) {
-		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
-		for (TrackListActionListener tal: tlalListenerList) {
-			tal.actionStarts(evt);
-		}
-	}
-	
-	
-	/**
-	 * Notifies all the {@link TrackListActionListener} that an action ended
-	 * @param actionDescription
-	 */
-	protected void notifyActionEnded(String actionDescription) {
-		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
-		for (TrackListActionListener tal: tlalListenerList) {
-			tal.actionEnds(evt);
-		}
-	}
+	abstract public void doAtTheEnd();	
 }

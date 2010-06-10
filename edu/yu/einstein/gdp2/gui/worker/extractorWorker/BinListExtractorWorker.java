@@ -62,12 +62,12 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinList> {
 				newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 				newTrack.getHistory().add(history, Color.GRAY);
 				trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
-				notifyActionEnded("Track Loaded");
+				//notifyActionEnded("Track Loaded");
 			} else {
-				notifyActionEnded("Operation Aborted");
+				//notifyActionEnded("Operation Aborted");
 			}
 		} catch (Exception e) {
-			notifyActionEnded("Operation Aborted");
+			//notifyActionEnded("Operation Aborted");
 			ExceptionManager.handleException(trackList.getRootPane(), e, "An unexpected error occurred while loading the track");
 		}
 	}
@@ -75,7 +75,7 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinList> {
 
 	@Override
 	public BinList generateList() throws Exception {
-		notifyActionEnded("File Loaded");
+		//notifyActionEnded("File Loaded");
 		if (((BinListGenerator)extractor).isBinSizeNeeded()) {
 			binSize = NumberOptionPane.getValue(trackList.getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize == null) {
@@ -96,7 +96,7 @@ public final class BinListExtractorWorker extends ExtractorWorker<BinList> {
 				return null;
 			}
 		}
-		notifyActionStarted("Generating Fixed Window Track");
+		//notifyActionStarted("Generating Fixed Window Track");
 		return ((BinListGenerator) extractor).toBinList(binSize.intValue(), precision, scoreCalculation);
 	}
 }
