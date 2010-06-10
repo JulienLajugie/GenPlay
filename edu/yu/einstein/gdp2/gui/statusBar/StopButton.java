@@ -11,8 +11,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
-
 
 /**
  * Stop button of the status bar. The button stops the current operation in the thread pool when clicked
@@ -24,6 +22,7 @@ public class StopButton extends JButton implements ActionListener {
 	private static final long serialVersionUID = 8260242568878040712L; 		// generated ID	
 	private static final Color ENABLED_COLOR = Color.red;					// color of the button when enabled
 	private static final Color DISABLED_COLOR = new Color(200, 175, 175);	// color of the button when disabled
+	private Stoppable stoppable = null;	// stoppable to stop when the button is clicked
 	
 	
 	/**
@@ -39,11 +38,13 @@ public class StopButton extends JButton implements ActionListener {
 
 	
 	/**
-	 * Stops the current operation when the button is pressed
+	 * Sets the stoppable to stop when the button is clicked.
+	 * Disables the button if the stoppable is null 
+	 * @param stoppable a {@link Stoppable}
 	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		OperationPool.getInstance().stopPool();		
+	public void setStoppable(Stoppable stoppable) {
+		this.stoppable = stoppable;
+		setEnabled(stoppable != null);		
 	}
 	
 	
@@ -58,5 +59,16 @@ public class StopButton extends JButton implements ActionListener {
 			setBackground(DISABLED_COLOR);
 		}
 		super.setEnabled(b);		
+	}
+
+
+	/**
+	 * Stops the stoppable when the button is clicked if the stoppable is not null.
+	 */
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (stoppable != null) {
+			stoppable.stop();
+		}
 	}
 }

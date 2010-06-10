@@ -10,9 +10,6 @@ import java.util.TimeZone;
 
 import javax.swing.JLabel;
 
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
-
 
 /**
  * Label on the status bar that shows a description of the current Operation 
@@ -20,7 +17,7 @@ import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class StatusLabel extends JLabel implements TrackListActionListener {
+public class StatusLabel extends JLabel {
 
 	private static final long serialVersionUID = 404304422248672368L; // generated ID
 	private TimeCounter 			timeCounterThread;	// thread showing the time elapsed in the progress bar
@@ -28,6 +25,8 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	private long 					timeElapsed = 0;	// time elapsed since the beginning of the operation
 	private final SimpleDateFormat 	dateFormat;			// date format for the time elapsed
 	private int 					step = 0;			// step of the current operation
+	private int						stepCount = 0;		// total number of steps for the operation
+	
 	
 	/**
 	 * Thread displaying the time elapsed in the progress bar
@@ -70,10 +69,11 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	 */
 	private synchronized void updateText() {		
 		String timeString = new String(dateFormat.format(new Date(timeElapsed)));
-		if (step == 0) {
+		if (stepCount == 1) {
+			// we don't show the step information if the operation is done in 1 step
 			setText(description + "  -  " + timeString);
 		} else {
-			setText(description + "  -  Step " + step + "  -  " + timeString);
+			setText(description + "  (" + step + " / " + stepCount + ")  -  " + timeString);
 		}
 	}
 	
@@ -82,7 +82,7 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	 * Sets the description 
 	 * @param description
 	 */
-	public synchronized void setDescription(String description) {
+	public void setDescription(String description) {
 		this.description = description;
 		updateText();
 	}
@@ -102,6 +102,7 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 	 */
 	public void setStep(int step) {
 		this.step = step;
+		updateText();
 	}
 	
 	
@@ -112,21 +113,39 @@ public class StatusLabel extends JLabel implements TrackListActionListener {
 		return step;
 	}
 	
-	
-	@Override
-	public void actionEnds(TrackListActionEvent evt) {
-		setDescription(evt.getActionDescription());
-		// stop the thread updating the time elapsed
-		timeCounterThread = null;
-	}
 
+	/**
+	 * Sets the step count
+	 * @param stepCount
+	 */
+	public void setStepCount(int stepCount) {
+		this.stepCount = stepCount;
+		updateText();
+	}
 	
-	@Override
-	public void actionStarts(TrackListActionEvent evt) {
-		step = 0;
-		setDescription(evt.getActionDescription());
-		// start the thread updating the time elapsed
+	
+	/**
+	 * @return the stepCount
+	 */
+	public int getStepCount() {
+		return stepCount;
+	}
+	
+	
+	/**
+	 * Starts the time counter
+	 */
+	public void startCounter() {
 		timeCounterThread = new TimeCounter();
 		timeCounterThread.start();
+	}
+	
+	
+	/**
+	 * Stops the time counter
+	 */
+	public void stopCounter() {
+		timeCounterThread = null;
+		updateText();
 	}
 }

@@ -11,26 +11,20 @@ import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
-import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEvent;
-import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressListener;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
-
 
 /**
  * Status bar of the software with a progress bar and a memory usage display
  * @author Julien Lajugie
  * @version 0.1
  */
-public class StatusBar extends JPanel implements TrackListActionListener, OperationProgressListener {
+public class StatusBar extends JPanel {
 
 	private static final long serialVersionUID = 6145997500187047785L; // generated ID
 	private final MemoryPanel 	memoryPanel;		// panel showing the memory usage
 	private final ProgressBar	progressBar;		// progress bar
 	private final StopButton	stopButton;			// stop button
 	private final StatusLabel 	statusLabel;		// label in the middle of the bar
-	private int 				step;				// operation current step
+	//private int 				step;				// operation current step
 	
 		
 	/**
@@ -75,49 +69,53 @@ public class StatusBar extends JPanel implements TrackListActionListener, Operat
 		add(memoryPanel, gbc);
 		
 		setBorder(BorderFactory.createEtchedBorder());
-		// add itself as a listener of the OperationPool 
-		OperationPool.getInstance().addOperationProgressListener(this);
 	}
 	
-
-	@Override
-	public void actionEnds(TrackListActionEvent evt) {
-		statusLabel.actionEnds(evt);
-		progressBar.setProgress(100);
-		progressBar.setIndeterminate(false);
-	}
-
-
-	@Override
-	public void actionStarts(TrackListActionEvent evt) {
-		statusLabel.actionStarts(evt);
+	
+	/**
+	 * Notifies the status bar the an action is starting.
+	 * @param actionDescription description of the action
+	 * @param stepCount number of steps needed to complete the action
+	 * @param stoppable action to stop when the button is clicked
+	 */
+	public void actionStart(String actionDescription, int stepCount, Stoppable stoppable) {
+		// initialize the progress bar
 		progressBar.setProgress(0);
 		progressBar.setIndeterminate(true);
-		step = 1;
+		// initialize the status label
+		statusLabel.setDescription(actionDescription);
+		statusLabel.setStep(1);
+		statusLabel.setStepCount(stepCount);
+		statusLabel.startCounter();		
+		// initialize the stop button
+		stopButton.setStoppable(stoppable);
 	}
-
-
-	@Override
-	public void operationProgressChanged(OperationProgressEvent evt) {
-		// we set the state of the progress bar anyway
-		progressBar.setProgress((int) evt.getCompletion());
-		if (evt.getState() == OperationProgressEvent.STARTING) {
-			// when the operation starts
-			stopButton.setEnabled(true);	
-			statusLabel.setStep(step);
-		} else if (evt.getState() == OperationProgressEvent.COMPLETE) {
-			// when the operation is done but the action not necessary finished
-			stopButton.setEnabled(false);
-			step++;
-			// set the progress bar indeterminate so if there is something to finalize
-			// the progress bar is still busy
-			progressBar.setIndeterminate(true);
-		} else if (evt.getState() == OperationProgressEvent.ABORT) {
-			// when the operation is aborted
-			stopButton.setEnabled(false);
-			step = 0;
-			statusLabel.setStep(step);
-			statusLabel.setDescription("Aborting Operation");
-		}
+	
+	
+	/**
+	 * Notifies the status bar that the action is done
+	 * @param resultStatus {@link String} describing the result of the action 
+	 */
+	public void actionStop(String resultStatus) {
+		// stop the progress bar
+		progressBar.setIndeterminate(false);
+		progressBar.setProgress(100);
+		// stop the status label
+		statusLabel.stopCounter();
+		statusLabel.setDescription(resultStatus);
+		statusLabel.setStepCount(1); // set the step count to 1 so the step is not displayed anymore
+		// disable the stop button
+		stopButton.setStoppable(null);
 	}
+	
+	
+	/**
+	 * Sets the progress of the action on the status bar
+	 * @param step current step of the action
+	 * @param progress progress of the action
+	 */
+	public void setProgress(int step, int progress) {
+		progressBar.setProgress(progress);
+		statusLabel.setStep(step);
+	}	
 }
