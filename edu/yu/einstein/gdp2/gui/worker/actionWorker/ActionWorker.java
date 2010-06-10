@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.SwingWorker;
 
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEventsGenerator;
 import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -28,7 +27,6 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 
 	private final TrackList 					trackList;			// track list 
 	private final List<TrackListActionListener> tlalListenerList;	// list of GenomeWindowListener
-	private final String 						actionStartDescription; // description of the action
 
 
 	/**
@@ -38,14 +36,13 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	public ActionWorker(TrackList trackList, String actionStartDescription) {
 		this.trackList = trackList;
 		this.tlalListenerList = new ArrayList<TrackListActionListener>();
-		addTrackListActionListener(trackList);
-		this.actionStartDescription = actionStartDescription;
+		//addTrackListActionListener(trackList);
 	}
 
 
 	@Override
 	final protected T doInBackground() throws Exception {
-		notifyActionStarted(actionStartDescription);
+		//notifyActionStarted(actionStartDescription);
 		return doAction();
 	};
 
@@ -53,10 +50,10 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	@Override
 	final protected void done() {
 		try {
-			notifyActionEnded("Operation Done");
+//			notifyActionEnded("Operation Done");
 			doAtTheEnd(this.get());
 		} catch (Exception e) {
-			notifyActionEnded("Operation Aborted");
+//			notifyActionEnded("Operation Aborted");
 			ExceptionManager.handleException(trackList.getRootPane(), e, "An unexpected error occurred during the operation");			
 		}
 	}
@@ -96,27 +93,27 @@ public abstract class ActionWorker<T> extends SwingWorker<T, Void> implements Tr
 	}
 
 
-	/**
-	 * Notifies all the {@link TrackListActionListener} that an action started
-	 * @param actionDescription
-	 */
-	private void notifyActionStarted(String actionDescription) {
-		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
-		for (TrackListActionListener tal: tlalListenerList) {
-			tal.actionStarts(evt);
-		}
-	}
+//	/**
+//	 * Notifies all the {@link TrackListActionListener} that an action started
+//	 * @param actionDescription
+//	 */
+//	private void notifyActionStarted(String actionDescription) {
+//		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
+//		for (TrackListActionListener tal: tlalListenerList) {
+//			tal.actionStarts(evt);
+//		}
+//	}
 
 
-	/**
-	 * Notifies all the {@link TrackListActionListener} that an action ended
-	 * @param actionDescription
-	 */
-	private void notifyActionEnded(String actionDescription) {
-		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
-		for (TrackListActionListener tal: tlalListenerList) {
-			tal.actionEnds(evt);
-		}
-	}
+//	/**
+//	 * Notifies all the {@link TrackListActionListener} that an action ended
+//	 * @param actionDescription
+//	 */
+//	private void notifyActionEnded(String actionDescription) {
+//		TrackListActionEvent evt = new TrackListActionEvent(trackList, actionDescription);
+//		for (TrackListActionListener tal: tlalListenerList) {
+//			tal.actionEnds(evt);
+//		}
+//	}
 
 }

@@ -50,8 +50,6 @@ import yu.einstein.gdp2.gui.controlPanel.ControlPanel;
 import yu.einstein.gdp2.gui.dialog.optionDialog.OptionDialog;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionEvent;
-import yu.einstein.gdp2.gui.event.trackListActionEvent.TrackListActionListener;
 import yu.einstein.gdp2.gui.popupMenu.MainMenu;
 import yu.einstein.gdp2.gui.statusBar.StatusBar;
 import yu.einstein.gdp2.gui.track.Ruler;
@@ -62,7 +60,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, TrackListActionListener, ActionListener {
+public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 
@@ -139,7 +137,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		trackList = new TrackList(genomeWindow);
 		trackList.addPropertyChangeListener(this);
 		trackList.addGenomeWindowListener(this);
-		trackList.addTrackListActionListener(this);
 
 		controlPanel = new ControlPanel(genomeWindow);
 		controlPanel.addGenomeWindowListener(this);
@@ -195,24 +192,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	}
 
 
-	@Override
-	public void actionEnds(TrackListActionEvent evt) {
-		statusBar.actionEnds(evt);
-	}
-
-
 	/**
 	 * Shows the main menu when the button in the ruler is clicked
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		new MainMenu(getRootPane().getActionMap()).show(this, getMousePosition().x, getMousePosition().y);		
-	}
-
-
-	@Override
-	public void actionStarts(TrackListActionEvent evt) {
-		statusBar.actionStarts(evt);
 	}
 
 
