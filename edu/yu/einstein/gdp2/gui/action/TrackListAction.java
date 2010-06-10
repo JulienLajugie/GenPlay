@@ -18,7 +18,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
  */
 public abstract class TrackListAction extends AbstractAction {
 
-	private static final long serialVersionUID = 1383058897700926018L; 				// generated ID
+	private static final long serialVersionUID = 1383058897700926018L; 		// generated ID
 
 	
 	/**
