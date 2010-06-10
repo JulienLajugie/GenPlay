@@ -90,4 +90,10 @@ public class BLOMultiplyConstant implements BinListOperation<BinList> {
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Multiplying by Constant";
+	}
 }

@@ -25,6 +25,12 @@ public interface BinListOperation<T> {
 	
 	
 	/**
+	 * @return a description of what is done during the process
+	 */
+	public String getProcessingDescription();
+	
+	
+	/**
 	 * Processes the operation
 	 * @return the result of the operation
 	 * @throws InterruptedException

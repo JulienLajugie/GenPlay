@@ -144,4 +144,10 @@ public class BLOCalculationOnProjection implements BinListOperation<BinList> {
 	public int getStepCount() {
 		return BinList.getCreationStepCount(intervalList.getBinSize()) + 1;
 	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Computing Calculation on Projection";
+	}
 }

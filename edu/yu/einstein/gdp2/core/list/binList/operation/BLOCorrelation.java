@@ -190,4 +190,10 @@ public class BLOCorrelation implements BinListOperation<Double> {
 	public int getStepCount() {
 		return 2;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Computing Correlation";
+	}
 }

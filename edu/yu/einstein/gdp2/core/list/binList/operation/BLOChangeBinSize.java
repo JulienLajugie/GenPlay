@@ -52,4 +52,10 @@ public class BLOChangeBinSize implements BinListOperation<BinList> {
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binSize);
 	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Changing Window Size";
+	}
 }

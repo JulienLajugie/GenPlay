@@ -98,4 +98,10 @@ public class BLODivide implements BinListOperation<BinList> {
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList1.getBinSize()) + 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Dividing";
+	}
 }

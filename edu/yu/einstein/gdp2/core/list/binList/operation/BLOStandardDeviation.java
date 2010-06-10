@@ -104,4 +104,10 @@ public class BLOStandardDeviation implements BinListOperation<Double> {
 	public int getStepCount() {
 		return 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Computing Standard Deviation";
+	}
 }

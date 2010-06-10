@@ -90,4 +90,10 @@ public class BLODivideConstant implements BinListOperation<BinList> {
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Dividing by Constant";
+	}
 }

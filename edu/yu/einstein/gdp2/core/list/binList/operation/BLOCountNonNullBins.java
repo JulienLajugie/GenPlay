@@ -96,4 +96,10 @@ public class BLOCountNonNullBins implements BinListOperation<Long> {
 	public int getStepCount() {
 		return 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Counting Non Null Windows";
+	}
 }

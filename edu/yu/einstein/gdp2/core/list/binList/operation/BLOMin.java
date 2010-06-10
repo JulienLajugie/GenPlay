@@ -96,4 +96,10 @@ public class BLOMin implements BinListOperation<Double> {
 	public int getStepCount() {
 		return 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Searching Minimum";
+	}
 }

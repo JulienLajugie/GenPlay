@@ -102,4 +102,10 @@ public class BLOLog2OnAvgWithDamper implements BinListOperation<BinList> {
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
+	
+	
+	@Override
+	public String getProcessingDescription() {
+		return "Logging";
+	}
 }
