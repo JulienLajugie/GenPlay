@@ -19,7 +19,7 @@ import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.util.DoubleLists;
 

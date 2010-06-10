@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 
 

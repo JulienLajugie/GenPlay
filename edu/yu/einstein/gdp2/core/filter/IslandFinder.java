@@ -15,7 +15,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCountNonNullBins;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSumScore;
-import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.core.stat.Poisson;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;

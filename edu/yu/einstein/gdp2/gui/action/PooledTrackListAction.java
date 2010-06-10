@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.SwingWorker;
 
-import yu.einstein.gdp2.core.list.binList.operation.OperationPool;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEvent;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressListener;
 import yu.einstein.gdp2.gui.mainFrame.MainFrame;
