@@ -7,13 +7,13 @@ package yu.einstein.gdp2.gui.popupMenu;
 import javax.swing.JMenuItem;
 import javax.swing.event.PopupMenuEvent;
 
-import yu.einstein.gdp2.gui.action.emptyTrack.GenerateMultiCurvesTrackAction;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadBinListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETAGenerateMultiCurvesTrack;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadBinListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.LoadFromDASAction;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadGeneListTrackAction;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadNucleotideListTrackAction;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadRepeatFamilyListTrackAction;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadSCWListTrackAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSCWListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
@@ -40,13 +40,13 @@ public final class EmptyTrackMenu extends TrackMenu {
 	public EmptyTrackMenu(TrackList tl) {
 		super(tl);
 	
-		jmiLoadSCWLtTrack = new JMenuItem(actionMap.get(LoadSCWListTrackAction.ACTION_KEY));
-		jmiLoadBinListTrack = new JMenuItem(actionMap.get(LoadBinListTrackAction.ACTION_KEY));
-		jmiLoadGeneListTrack = new JMenuItem(actionMap.get(LoadGeneListTrackAction.ACTION_KEY));
-		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(LoadNucleotideListTrackAction.ACTION_KEY));
-		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(LoadRepeatFamilyListTrackAction.ACTION_KEY));
+		jmiLoadSCWLtTrack = new JMenuItem(actionMap.get(ETALoadSCWListTrack.ACTION_KEY));
+		jmiLoadBinListTrack = new JMenuItem(actionMap.get(ETALoadBinListTrack.ACTION_KEY));
+		jmiLoadGeneListTrack = new JMenuItem(actionMap.get(ETALoadGeneListTrack.ACTION_KEY));
+		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(ETALoadNucleotideListTrack.ACTION_KEY));
+		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(ETALoadRepeatFamilyListTrack.ACTION_KEY));
 		jmiLoadFromDAS = new JMenuItem(actionMap.get(LoadFromDASAction.ACTION_KEY));
-		jmiGenerateMultiTrack = new JMenuItem(actionMap.get(GenerateMultiCurvesTrackAction.ACTION_KEY));
+		jmiGenerateMultiTrack = new JMenuItem(actionMap.get(ETAGenerateMultiCurvesTrack.ACTION_KEY));
 		
 		addSeparator();
 		add(jmiLoadSCWLtTrack);

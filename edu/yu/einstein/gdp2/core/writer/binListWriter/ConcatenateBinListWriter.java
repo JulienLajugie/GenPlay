@@ -22,7 +22,6 @@ import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
  */
 public class ConcatenateBinListWriter {
 
-	private final ChromosomeManager cm;				// ChromosomeManager
 	private final BinList[] 		binListArray;	// Array of the BinList to concatenate
 	private final String[] 			nameArray;		// Name of the BinLists
 	private final File				outputFile;		// File where to write the concatenation
@@ -30,13 +29,11 @@ public class ConcatenateBinListWriter {
 
 	/**
 	 * Creates an instance of {@link ConcatenateBinListWriter}
-	 * @param cm {@link ChromosomeManager}
 	 * @param binListArray an array of {@link BinList} to concatenate
 	 * @param nameArray an array containing the name of the BinList
 	 * @param outputFile {@link File} where to write the concatenation
 	 */
-	public ConcatenateBinListWriter(ChromosomeManager cm, BinList[] binListArray, String[] nameArray, File outputFile) {
-		this.cm = cm;
+	public ConcatenateBinListWriter(BinList[] binListArray, String[] nameArray, File outputFile) {
 		this.binListArray = binListArray;
 		this.nameArray = nameArray;
 		this.outputFile = outputFile;		
@@ -81,7 +78,7 @@ public class ConcatenateBinListWriter {
 				}
 				writer.newLine();
 				
-				for (Chromosome currentChromo: cm) {					
+				for (Chromosome currentChromo: ChromosomeManager.getInstance()) {					
 					int binCount = currentChromo.getLength() / binSize + 1; 
 					int j = 0;
 					while (j < binCount) {

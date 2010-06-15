@@ -6,7 +6,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
-import yu.einstein.gdp2.gui.action.scoredTrack.SetYAxisAction;
+import yu.einstein.gdp2.gui.action.scoredTrack.STASetYAxis;
 import yu.einstein.gdp2.gui.track.ScoredTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -27,7 +27,7 @@ public class ScoredTrackMenu extends TrackMenu {
 	 */
 	public ScoredTrackMenu(TrackList tl) {
 		super(tl);		
-		jmiSetYAxis= new JMenuItem(actionMap.get(SetYAxisAction.ACTION_KEY));		
+		jmiSetYAxis= new JMenuItem(actionMap.get(STASetYAxis.ACTION_KEY));		
 		addSeparator();	
 		add(jmiSetYAxis);
 	}

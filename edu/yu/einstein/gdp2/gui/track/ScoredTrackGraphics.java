@@ -44,7 +44,7 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 
 	
 	/**
-	 * Called when the ratio (height of the track / (yMax - y Min)) changes.
+	 * Called when the ratio (height of the track / (yMax - y BLAMin)) changes.
 	 */
 	abstract protected void yFactorChanged();
 

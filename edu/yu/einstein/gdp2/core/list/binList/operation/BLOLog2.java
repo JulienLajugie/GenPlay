@@ -52,11 +52,14 @@ public class BLOLog2 implements BinListOperation<BinList> {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// We add a constant to each element
 						for (int j = 0; j < currentList.size(); j++) {
-							// make sure that the list 
+							// log is define on R+*
 							if (currentList.get(j) > 0) {
 							// change of base: logb(x) = logk(x) / logk(b)
 								resultList.set(j, Math.log(currentList.get(j)) / Math.log(2));
+							} else if (currentList.get(j) == 0) {
+								resultList.set(j, 0d);
 							} else {
+								System.out.println(currentList.get(j));
 								// can't apply a log function on a negative or null numbers
 								throw new ArithmeticException("Logarithm of a negative value not allowed");
 							}

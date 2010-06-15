@@ -9,13 +9,13 @@ import javax.swing.ActionMap;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import yu.einstein.gdp2.gui.action.project.AboutAction;
-import yu.einstein.gdp2.gui.action.project.ExitAction;
-import yu.einstein.gdp2.gui.action.project.FullScreenAction;
-import yu.einstein.gdp2.gui.action.project.HelpAction;
-import yu.einstein.gdp2.gui.action.project.LoadProjectAction;
-import yu.einstein.gdp2.gui.action.project.OptionAction;
-import yu.einstein.gdp2.gui.action.project.SaveProjectAction;
+import yu.einstein.gdp2.gui.action.project.PAAbout;
+import yu.einstein.gdp2.gui.action.project.PAExit;
+import yu.einstein.gdp2.gui.action.project.PAFullScreen;
+import yu.einstein.gdp2.gui.action.project.PAHelp;
+import yu.einstein.gdp2.gui.action.project.PALoadProject;
+import yu.einstein.gdp2.gui.action.project.PAOption;
+import yu.einstein.gdp2.gui.action.project.PASaveProject;
 
 
 /**
@@ -43,13 +43,13 @@ public final class MainMenu extends JPopupMenu {
 	public MainMenu(ActionMap actionMap) {
 		super("Main Menu");		
 		
-		jmiLoadProject = new JMenuItem(actionMap.get(LoadProjectAction.ACTION_KEY));
-		jmiSaveProject = new JMenuItem(actionMap.get(SaveProjectAction.ACTION_KEY));
-		jmiFullScreen = new JMenuItem(actionMap.get(FullScreenAction.ACTION_KEY));
-		jmiOption = new JMenuItem(actionMap.get(OptionAction.ACTION_KEY));
-		jmiHelp = new JMenuItem(actionMap.get(HelpAction.ACTION_KEY));
-		jmiAbout = new JMenuItem(actionMap.get(AboutAction.ACTION_KEY));
-		jmiExit = new JMenuItem(actionMap.get(ExitAction.ACTION_KEY));
+		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
+		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
+		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
+		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
+		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
+		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
+		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
 		
 		add(jmiLoadProject);
 		add(jmiSaveProject);

@@ -35,17 +35,17 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.core.manager.ZoomManager;
-import yu.einstein.gdp2.gui.action.project.AboutAction;
-import yu.einstein.gdp2.gui.action.project.ExitAction;
-import yu.einstein.gdp2.gui.action.project.FullScreenAction;
-import yu.einstein.gdp2.gui.action.project.HelpAction;
-import yu.einstein.gdp2.gui.action.project.LoadProjectAction;
-import yu.einstein.gdp2.gui.action.project.MoveLeftAction;
-import yu.einstein.gdp2.gui.action.project.MoveRightAction;
-import yu.einstein.gdp2.gui.action.project.OptionAction;
-import yu.einstein.gdp2.gui.action.project.SaveProjectAction;
-import yu.einstein.gdp2.gui.action.project.ZoomInAction;
-import yu.einstein.gdp2.gui.action.project.ZoomOutAction;
+import yu.einstein.gdp2.gui.action.project.PAAbout;
+import yu.einstein.gdp2.gui.action.project.PAExit;
+import yu.einstein.gdp2.gui.action.project.PAFullScreen;
+import yu.einstein.gdp2.gui.action.project.PAHelp;
+import yu.einstein.gdp2.gui.action.project.PALoadProject;
+import yu.einstein.gdp2.gui.action.project.PAMoveLeft;
+import yu.einstein.gdp2.gui.action.project.PAMoveRight;
+import yu.einstein.gdp2.gui.action.project.PAOption;
+import yu.einstein.gdp2.gui.action.project.PASaveProject;
+import yu.einstein.gdp2.gui.action.project.PAZoomIn;
+import yu.einstein.gdp2.gui.action.project.PAZoomOut;
 import yu.einstein.gdp2.gui.controlPanel.ControlPanel;
 import yu.einstein.gdp2.gui.dialog.optionDialog.OptionDialog;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -317,17 +317,17 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 * Sets the action map of the main frame. This actions are associated with the main menu.
 	 */
 	private void setActionMap() {		
-		getRootPane().getActionMap().put(AboutAction.ACTION_KEY, new AboutAction(getRootPane()));
-		getRootPane().getActionMap().put(ExitAction.ACTION_KEY, new ExitAction(this));
-		getRootPane().getActionMap().put(FullScreenAction.ACTION_KEY, new FullScreenAction(this));
-		getRootPane().getActionMap().put(HelpAction.ACTION_KEY, new HelpAction(getRootPane()));
-		getRootPane().getActionMap().put(LoadProjectAction.ACTION_KEY, new LoadProjectAction(trackList));
-		getRootPane().getActionMap().put(OptionAction.ACTION_KEY, new OptionAction(this));
-		getRootPane().getActionMap().put(SaveProjectAction.ACTION_KEY, new SaveProjectAction(trackList));
-		getRootPane().getActionMap().put(MoveLeftAction.ACTION_KEY, new MoveLeftAction());
-		getRootPane().getActionMap().put(MoveRightAction.ACTION_KEY, new MoveRightAction());		
-		getRootPane().getActionMap().put(ZoomInAction.ACTION_KEY, new ZoomInAction());
-		getRootPane().getActionMap().put(ZoomOutAction.ACTION_KEY, new ZoomOutAction());
+		getRootPane().getActionMap().put(PAAbout.ACTION_KEY, new PAAbout(getRootPane()));
+		getRootPane().getActionMap().put(PAExit.ACTION_KEY, new PAExit(this));
+		getRootPane().getActionMap().put(PAFullScreen.ACTION_KEY, new PAFullScreen(this));
+		getRootPane().getActionMap().put(PAHelp.ACTION_KEY, new PAHelp(getRootPane()));
+		getRootPane().getActionMap().put(PALoadProject.ACTION_KEY, new PALoadProject(trackList));
+		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
+		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackList));
+		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
+		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());		
+		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
+		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 	}
 
 
@@ -352,14 +352,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 * Sets the input map. This map contain the short cuts of the applications.
 	 */
 	private void setInputMap() {
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(ExitAction.ACCELERATOR, ExitAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(FullScreenAction.ACCELERATOR, FullScreenAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(HelpAction.ACCELERATOR, HelpAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(HelpAction.ACCELERATOR, HelpAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(MoveLeftAction.ACCELERATOR, MoveLeftAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(MoveRightAction.ACCELERATOR, MoveRightAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(ZoomInAction.ACCELERATOR, ZoomInAction.ACTION_KEY);
-		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(ZoomOutAction.ACCELERATOR, ZoomOutAction.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAExit.ACCELERATOR, PAExit.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAFullScreen.ACCELERATOR, PAFullScreen.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAHelp.ACCELERATOR, PAHelp.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAHelp.ACCELERATOR, PAHelp.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveLeft.ACCELERATOR, PAMoveLeft.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveRight.ACCELERATOR, PAMoveRight.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, PAZoomIn.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
 	}
 
 

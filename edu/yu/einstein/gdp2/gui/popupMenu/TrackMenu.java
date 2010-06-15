@@ -10,15 +10,15 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import yu.einstein.gdp2.gui.action.allTrack.CopyAction;
-import yu.einstein.gdp2.gui.action.allTrack.CutAction;
-import yu.einstein.gdp2.gui.action.allTrack.DeleteAction;
-import yu.einstein.gdp2.gui.action.allTrack.LoadStripesAction;
-import yu.einstein.gdp2.gui.action.allTrack.PasteAction;
-import yu.einstein.gdp2.gui.action.allTrack.RemoveStripesAction;
-import yu.einstein.gdp2.gui.action.allTrack.RenameAction;
-import yu.einstein.gdp2.gui.action.allTrack.SaveAsImageAction;
-import yu.einstein.gdp2.gui.action.allTrack.SetHeightAction;
+import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
+import yu.einstein.gdp2.gui.action.allTrack.ATACut;
+import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
+import yu.einstein.gdp2.gui.action.allTrack.ATALoadStripes;
+import yu.einstein.gdp2.gui.action.allTrack.ATAPaste;
+import yu.einstein.gdp2.gui.action.allTrack.ATARemoveStripes;
+import yu.einstein.gdp2.gui.action.allTrack.ATARename;
+import yu.einstein.gdp2.gui.action.allTrack.ATASaveAsImage;
+import yu.einstein.gdp2.gui.action.allTrack.ATASetHeight;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
@@ -54,15 +54,15 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		this.trackList = tl;
 		this.actionMap = tl.getActionMap();
 		
-		jmiCopy = new JMenuItem(actionMap.get(CopyAction.ACTION_KEY));
-		jmiCut = new JMenuItem(actionMap.get(CutAction.ACTION_KEY));
-		jmiPaste = new JMenuItem(actionMap.get(PasteAction.ACTION_KEY));
-		jmiDelete = new JMenuItem(actionMap.get(DeleteAction.ACTION_KEY));
-		jmiRename = new JMenuItem(actionMap.get(RenameAction.ACTION_KEY));
-		jmiSetHeight = new JMenuItem(actionMap.get(SetHeightAction.ACTION_KEY));
-		jmiSaveAsImage = new JMenuItem(actionMap.get(SaveAsImageAction.ACTION_KEY));
-		jmiLoadStripes = new JMenuItem(actionMap.get(LoadStripesAction.ACTION_KEY));
-		jmiRemoveStripes = new JMenuItem(actionMap.get(RemoveStripesAction.ACTION_KEY));		
+		jmiCopy = new JMenuItem(actionMap.get(ATACopy.ACTION_KEY));
+		jmiCut = new JMenuItem(actionMap.get(ATACut.ACTION_KEY));
+		jmiPaste = new JMenuItem(actionMap.get(ATAPaste.ACTION_KEY));
+		jmiDelete = new JMenuItem(actionMap.get(ATADelete.ACTION_KEY));
+		jmiRename = new JMenuItem(actionMap.get(ATARename.ACTION_KEY));
+		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
+		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
+		jmiLoadStripes = new JMenuItem(actionMap.get(ATALoadStripes.ACTION_KEY));
+		jmiRemoveStripes = new JMenuItem(actionMap.get(ATARemoveStripes.ACTION_KEY));		
 		
 		add(jmiCopy);
 		add(jmiCut);

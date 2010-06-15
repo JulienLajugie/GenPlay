@@ -41,7 +41,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 	private static Number 				validValue1;								// first valid number to return
 	private static Number 				validValue2;								// second valid number to return
 	private static double 				minValidValue;								// Max value of the input
-	private static double 				maxValidValue;								// Min value of the input
+	private static double 				maxValidValue;								// BLAMin value of the input
 	private static DecimalFormat 		decimalFormat;								// Format of the input
 	private static String 				title;										// Title of the dialog
 	private static String 				label1;										// Text of the first JLabel

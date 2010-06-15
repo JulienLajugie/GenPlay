@@ -38,7 +38,7 @@ public final class NumberOptionPane extends JDialog {
 	private static JButton 				jbCancel;									// Button Cancel
 	private static Number 				validValue;									// Valid number to return
 	private static double 				minValidValue;								// Max value of the input
-	private static double 				maxValidValue;								// Min value of the input
+	private static double 				maxValidValue;								// BLAMin value of the input
 	private static DecimalFormat 		decimalFormat;								// Format of the input
 	private static String 				title;										// Title of the dialog
 	private static String 				label;										// Text of the JLabel jl

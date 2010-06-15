@@ -17,6 +17,6 @@ public final class InvalidFileTypeException extends Exception {
 	 * Creates an instance of {@link InvalidFileTypeException}
 	 */
 	public InvalidFileTypeException() {
-		super("Invalid file, the data can't be extracted");
+		super("Invalid file type, the data can't be extracted");
 	}
 }

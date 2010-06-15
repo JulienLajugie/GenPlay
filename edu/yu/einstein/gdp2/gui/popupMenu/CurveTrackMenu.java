@@ -6,7 +6,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
-import yu.einstein.gdp2.gui.action.curveTrack.AppearanceAction;
+import yu.einstein.gdp2.gui.action.curveTrack.CTAAppearance;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -27,7 +27,7 @@ public abstract class CurveTrackMenu extends ScoredTrackMenu {
 	 */
 	public CurveTrackMenu(TrackList tl) {
 		super(tl);		
-		jmiAppearance= new JMenuItem(actionMap.get(AppearanceAction.ACTION_KEY));
+		jmiAppearance= new JMenuItem(actionMap.get(CTAAppearance.ACTION_KEY));
 		add(jmiAppearance);
 		addSeparator();
 	}
