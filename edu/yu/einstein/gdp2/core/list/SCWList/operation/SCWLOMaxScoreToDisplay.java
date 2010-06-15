@@ -2,34 +2,36 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.list.binList.operation;
+package yu.einstein.gdp2.core.list.SCWList.operation;
 
+import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
- * Calculates the maximum score to display on a BinList track
+ * Calculates the maximum score to display on a ScoredChromosomeWindowList track
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOMaxScoreToDisplay implements Operation<Double> {
+public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 
-	private final BinList 	binList;		// input BinList
-	
-	
+
+	private final ScoredChromosomeWindowList scwList;	// input list
+
+
 	/**
-	 * Calculates the maximum score to display on a BinList track
+	 * Calculates the maximum score to display on a ScoredChromosomeWindowList track
 	 * @param binList input {@link BinList}
 	 */
-	public BLOMaxScoreToDisplay(BinList binList) {
-		this.binList = binList;
+	public SCWLOMaxScoreToDisplay(ScoredChromosomeWindowList scwList) {
+		this.scwList = scwList;
 	}
-	
-	
+
+
 	@Override
 	public Double compute() {
-		final double realMax = binList.getMax();
+		final double realMax = scwList.getMax();
 		// if the max is negative we return 0
 		if (realMax <= 0) {
 			return 0d;
@@ -43,7 +45,7 @@ public class BLOMaxScoreToDisplay implements Operation<Double> {
 			return realMax;
 		}
 		// otherwise we try to find the closest 10^x value above (average + stdev) 
-		double proposedMax = (binList.getAverage() + binList.getStDev()); 
+		double proposedMax = scwList.getAverage() + scwList.getStDev(); 
 		if (proposedMax <= 0) {
 			return 0d;
 		}
@@ -54,19 +56,19 @@ public class BLOMaxScoreToDisplay implements Operation<Double> {
 		return maxScoreDisplayed;
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Maximum Score to Display";
 	}
-	
-	
+
+
 	@Override
 	public int getStepCount() {
 		return 1;
 	}
-	
-	
+
+
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Maximum";

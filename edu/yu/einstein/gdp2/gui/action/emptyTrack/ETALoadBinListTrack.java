@@ -90,7 +90,6 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 				throw new InterruptedException();
 			}
 		}
-		System.out.println("test1");
 		// if the binSize is known we can find out how many steps will be used
 		if (binSize.intValue() != 0) {
 			notifyActionStart("Generating Track", 1 + BinList.getCreationStepCount(binSize.intValue()));

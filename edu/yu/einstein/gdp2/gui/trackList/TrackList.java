@@ -28,7 +28,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.gui.action.SCWListTrack.GenerateBinListAction;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAGenerateBinList;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
@@ -174,7 +174,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(STASetYAxis.ACTION_KEY, new STASetYAxis());
 		// add SCWList actions
-		getActionMap().put(GenerateBinListAction.ACTION_KEY, new GenerateBinListAction());
+		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAdd.ACTION_KEY, new BLAAdd());

@@ -6,7 +6,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 
 import javax.swing.JMenuItem;
 
-import yu.einstein.gdp2.gui.action.SCWListTrack.GenerateBinListAction;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAGenerateBinList;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -29,7 +29,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	 */
 	public SCWListTrackMenu(TrackList tl) {
 		super(tl);		
-		jmiGenerateBinList = new JMenuItem(actionMap.get(GenerateBinListAction.ACTION_KEY));		
+		jmiGenerateBinList = new JMenuItem(actionMap.get(SCWLAGenerateBinList.ACTION_KEY));		
 		add(jmiGenerateBinList);
 	}
 }

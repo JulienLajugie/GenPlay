@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.list.SCWList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,11 +16,8 @@ import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
-import yu.einstein.gdp2.core.enums.DataPrecision;
-import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
-import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.util.DoubleLists;
@@ -32,8 +31,18 @@ import yu.einstein.gdp2.util.DoubleLists;
 public final class ScoredChromosomeWindowList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements Serializable {
 
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
+	/*
+	 * The following values are statistic values of the list
+	 * They are transient because they depend on the chromosome manager that is also transient
+	 * They are calculated at the creation of the list to avoid being recalculated
+	 */
+	transient private Double 	min = null;			// smallest value of the BinList
+	transient private Double 	max = null;			// greatest value of the BinList 
+	transient private Double 	average = null;		// average of the BinList
+	transient private Double 	stDev = null;		// standar deviation of the BinList
+	transient private Long 		nonNullLength = null;// count of none-null bins in the BinList
 
-
+	
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindowList}
 	 * @param startList list of start positions
@@ -88,17 +97,31 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		for (List<ScoredChromosomeWindow> currentChrWindowList : this) {
 			Collections.sort(currentChrWindowList);
 		}
+		// generate the statistics
+		generateStatistics();
 	}
 
 
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindow} 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public ScoredChromosomeWindowList() {
+	public ScoredChromosomeWindowList(Collection<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
 		super();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
-			add(new ArrayList<ScoredChromosomeWindow>());
+		addAll(data);
+		if (size() < chromosomeManager.size()) {
+			for (int i = size(); i < chromosomeManager.size(); i++){
+				add(null);
+			}
 		}
+		// sort the list
+		for (List<ScoredChromosomeWindow> currentChrWindowList : this) {
+			if (currentChrWindowList != null) {
+				Collections.sort(currentChrWindowList);
+			}
+		}
+		generateStatistics();
 	}
 
 
@@ -223,21 +246,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	}
 
 
-	/**
-	 * Creates a BinList from the data of the current list
-	 * @param binSize size of the bins
-	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
-	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)
-	 * @return a {@link BinList}
-	 * @throws IllegalArgumentException
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
-	 */
-	public BinList generateBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(binSize, precision, method, this);
-	}
-
-
 	@Override
 	protected List<ScoredChromosomeWindow> getFittedData(int start, int stop) {
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
@@ -270,5 +278,166 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			}
 		}
 		return resultList;
+	}
+	
+	
+	/**
+	 * Computes some statistic values for this list
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	private void generateStatistics() throws InterruptedException, ExecutionException {
+		// retrieve the instance of the OperationPool singleton
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+
+		// set the default value
+		min = Double.POSITIVE_INFINITY;
+		max = Double.NEGATIVE_INFINITY;
+		average = 0d;
+		stDev = 0d;
+		nonNullLength = 0l;
+
+		// create arrays so each statics variable can be calculated for each chromosome
+		final double[] mins = new double[chromosomeManager.size()];
+		final double[] maxs = new double[chromosomeManager.size()];
+		final double[] stDevs = new double[chromosomeManager.size()];
+		final double[] sumScoreByLengths = new double[chromosomeManager.size()];
+		final long[] nonNullLengths = new long[chromosomeManager.size()];
+
+		// computes min / max / total score / non null bin count for each chromosome
+		for(short i = 0; i < size(); i++)  {
+			final List<ScoredChromosomeWindow> currentList = get(i);
+			final short currentIndex = i;
+
+			Callable<Void> currentThread = new Callable<Void>() {	
+				@Override
+				public Void call() throws Exception {
+					mins[currentIndex] = Double.POSITIVE_INFINITY;
+					maxs[currentIndex] = Double.NEGATIVE_INFINITY;
+					if (currentList != null) {				
+						for (ScoredChromosomeWindow currentWindow: currentList) {
+							if (currentWindow.getScore() != 0) {
+								mins[currentIndex] = Math.min(mins[currentIndex], currentWindow.getScore());
+								maxs[currentIndex] = Math.max(maxs[currentIndex], currentWindow.getScore());
+								sumScoreByLengths[currentIndex] += currentWindow.getScore() * currentWindow.getSize();
+								nonNullLengths[currentIndex] += currentWindow.getSize();
+							}
+						}
+					}
+					// notify that the current chromosome is done
+					op.notifyDone();
+					return null;
+				}
+			};
+
+			threadList.add(currentThread);			
+		}
+		// start the pool of thread 
+		op.startPool(threadList);
+
+		double sumScoreByLength = 0;
+		// compute the genome wide result from the chromosomes results
+		for (int i = 0; i < chromosomeManager.size(); i++) {
+			min = Math.min(min, mins[i]);
+			max = Math.max(max, maxs[i]);
+			sumScoreByLength += sumScoreByLengths[i];
+			nonNullLength += nonNullLengths[i];
+		}
+
+		if (nonNullLength != 0) {
+			// compute the average
+			average = sumScoreByLength / (double) nonNullLength;
+			threadList.clear();
+
+			// compute the standard deviation for each chromosome
+			for(short i = 0; i < size(); i++)  {
+				final List<ScoredChromosomeWindow> currentList = get(i);
+				final short currentIndex = i;
+
+				Callable<Void> currentThread = new Callable<Void>() {	
+					@Override
+					public Void call() throws Exception {
+						if (currentList != null) {				
+							for (ScoredChromosomeWindow currentWindow: currentList) {
+								if (currentWindow.getScore() != 0) {
+									stDevs[currentIndex] += Math.pow(currentWindow.getScore() - average, 2) * currentWindow.getSize();
+								}
+							}
+						}
+						// notify that the current chromosome is done
+						op.notifyDone();
+						return null;
+					}
+				};
+
+				threadList.add(currentThread);			
+			}
+			// start the pool of thread
+			op.startPool(threadList);
+
+			// compute the genome wide standard deviation
+			for (int i = 0; i < chromosomeManager.size(); i++) {
+				stDev += stDevs[i];
+			}
+			stDev = Math.sqrt(stDev / (double) nonNullLength);
+		}
+	}
+	
+		
+	/**
+	 * @return the smallest value of the BinList
+	 */
+	public Double getMin() {
+		return min;
+	}
+
+
+	/**
+	 * @return the greatest value of the BinList
+	 */
+	public Double getMax() {
+		return max;
+	}
+
+
+	/**
+	 * @return the average of the BinList
+	 */
+	public Double getAverage() {
+		return average;
+	}
+
+
+	/**
+	 * @return the standard deviation of the BinList
+	 */
+	public Double getStDev() {
+		return stDev;
+	}
+
+
+	/**
+	 * @return the count of none-null bins in the BinList
+	 */
+	public Long getNonNullLength() {
+		return nonNullLength;
+	}
+
+	
+	/**
+	 * Computes the statistics of the list after unserialization
+	 * @param in {@link ObjectInputStream}
+	 * @throws IOExceptionm
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.defaultReadObject();
+		try {
+			generateStatistics();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -8,8 +8,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.core.list.SCWList.SCWListOperations;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
+import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOMaxScoreToDisplay;
+import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOMinScoreToDisplay;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
 import yu.einstein.gdp2.gui.track.drawer.SCWListDrawer;
 
@@ -30,7 +31,7 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics {
 	 * @param data displayed {@link ScoredChromosomeWindowList} 
 	 */
 	protected SCWListTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
-		super(displayedGenomeWindow, SCWListOperations.minScoreToDisplay(data), SCWListOperations.maxScoreToDisplay(data));
+		super(displayedGenomeWindow, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
 		this.data = data;
 		// we don't want the max equals to the min
 		if (yMin == yMax) {

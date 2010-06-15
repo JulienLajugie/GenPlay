@@ -107,7 +107,6 @@ public class BLOAverage implements Operation<Double> {
 			total += currentSum;
 		}
 		return total / (double) count;
-
 	}
 
 

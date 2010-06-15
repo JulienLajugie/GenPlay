@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -297,10 +299,12 @@ public class DASConnector {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-		ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList();
+		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		for (Chromosome currentChromo: ChromosomeManager.getInstance()) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
@@ -317,13 +321,9 @@ public class DASConnector {
 				SCWHandler scwh = new SCWHandler();				
 				parser.parse(connection.getInputStream(), scwh);
 				List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
-				resultList.set(currentChromo, currentSCWList);
+				resultList.add(currentSCWList);
 			}
-		}
-		for (List<ScoredChromosomeWindow> currentList: resultList) {
-			if (currentList != null) { 
-				Collections.sort(currentList);
-			}
+			resultList.add(null);
 		}
 		// Check if the list is scored
 		boolean isScored = false;
@@ -349,7 +349,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return resultList;
+		return new ScoredChromosomeWindowList(resultList);
 	}
 
 	/**
@@ -361,11 +361,13 @@ public class DASConnector {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	
-	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException {
+	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-		ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList();
+		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();
 		//System.out.println("Chormozome = " + currentChromo.getName());
 		EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
@@ -383,13 +385,10 @@ public class DASConnector {
 			SCWHandler scwh = new SCWHandler();				
 			parser.parse(connection.getInputStream(), scwh);
 			List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
-			resultList.set(currentChromo, currentSCWList);
-		}
-		for (List<ScoredChromosomeWindow> currentList: resultList) {
-			if (currentList != null) { 
-				Collections.sort(currentList);
-			}
-		}
+			resultList.add(currentSCWList);
+		} else {
+			resultList.add(null);
+		}		
 		// Check if the list is scored
 		boolean isScored = false;
 		for (List<ScoredChromosomeWindow> currentList: resultList) {
@@ -414,7 +413,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return resultList;
+		return new ScoredChromosomeWindowList(resultList);
 	}
 
 
