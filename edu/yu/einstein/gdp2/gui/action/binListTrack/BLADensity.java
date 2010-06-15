@@ -11,8 +11,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLODensity;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -54,7 +54,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinList binList = selectedTrack.getBinList();
@@ -62,7 +62,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 			if(halfWidth != null) {
 				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
-					BinListOperation<BinList> operation = new BLODensity(binList, halfWidth.intValue());
+					Operation<BinList> operation = new BLODensity(binList, halfWidth.intValue());
 					return operation;
 				}
 			}

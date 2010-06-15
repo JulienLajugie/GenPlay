@@ -11,8 +11,8 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOAdd;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -34,7 +34,7 @@ public final class BLAAdd extends TrackListActionOperationWorker<BinList> {
 	private BinListTrack 				selectedTrack = null;	// selected track
 	private Track 						otherTrack = null;		// 2nd selected track
 	private Track 						resultTrack = null;		// result track
-	private BinListOperation<BinList> 	operation;				// operation
+	private Operation<BinList> 	operation;				// operation
 
 
 	/**
@@ -55,7 +55,7 @@ public final class BLAAdd extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose a track to add to the selected track:", getTrackList().getBinListTracks());

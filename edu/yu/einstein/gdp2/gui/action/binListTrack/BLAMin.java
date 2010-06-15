@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOMin;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -48,13 +48,13 @@ public final class BLAMin extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public BinListOperation<Double> initializeOperation() {
+	public Operation<Double> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
 				BinList binList = selectedTrack.getBinList();
-				BinListOperation<Double> operation = new BLOMin(binList, selectedChromo);
+				Operation<Double> operation = new BLOMin(binList, selectedChromo);
 				return operation;
 			}
 		}

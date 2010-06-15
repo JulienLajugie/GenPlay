@@ -11,8 +11,8 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOFindIslands;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -54,7 +54,7 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			Number read_count_limit = NumberOptionPane.getValue(getRootPane(), "Minimum read count limit", "Windows with read count below this value will be ignored.", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
@@ -65,7 +65,7 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 					if (resultIslandResultType != null) {
 						resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 						if (resultTrack != null) {
-							BinListOperation<BinList> operation = new BLOFindIslands(selectedTrack.getBinList(), read_count_limit.doubleValue(), gap.intValue(), resultIslandResultType);
+							Operation<BinList> operation = new BLOFindIslands(selectedTrack.getBinList(), read_count_limit.doubleValue(), gap.intValue(), resultIslandResultType);
 							return operation;
 						}
 					}

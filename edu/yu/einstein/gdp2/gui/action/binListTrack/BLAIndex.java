@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOIndex;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -49,7 +49,7 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {			
 			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
@@ -60,7 +60,7 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", new DecimalFormat("0.0"), -1000000, 1000000, 100);
 				if(indexMax != null) {
 					BinList binList = selectedTrack.getBinList();
-					BinListOperation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());
+					Operation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());
 					return operation;
 				}
 			}

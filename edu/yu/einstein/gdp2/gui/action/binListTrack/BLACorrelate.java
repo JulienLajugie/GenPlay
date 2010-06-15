@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCorrelate;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -52,7 +52,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public BinListOperation<Double> initializeOperation() {
+	public Operation<Double> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinListTrack otherTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Calculate the correlation with:", getTrackList().getBinListTracks());
@@ -61,7 +61,7 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double> {
 				if (selectedChromo != null) {
 					BinList binList1 = selectedTrack.getBinList();
 					BinList binList2 = otherTrack.getBinList();
-					BinListOperation<Double> operation = new BLOCorrelate(binList1, binList2, selectedChromo);
+					Operation<Double> operation = new BLOCorrelate(binList1, binList2, selectedChromo);
 					return operation;
 				}
 			}

@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.list.binList.operation;
+package yu.einstein.gdp2.core.operation;
 
 import java.util.concurrent.ExecutionException;
 
@@ -15,7 +15,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @version 0.1
  * @param result type of the operation
  */
-public interface BinListOperation<T> {
+public interface Operation<T> {
 	
 	
 	/**

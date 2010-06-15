@@ -12,8 +12,8 @@ import javax.swing.JFileChooser;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLORepartition;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -51,7 +51,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<Void> {
 
 
 	@Override
-	public BinListOperation<Void> initializeOperation() {
+	public Operation<Void> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
@@ -64,7 +64,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<Void> {
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
 						BinList binList = ((BinListTrack)selectedTrack).getBinList();
-						BinListOperation<Void> operation = new BLORepartition(binList, scoreBin.doubleValue(), saveFC.getSelectedFile());
+						Operation<Void> operation = new BLORepartition(binList, scoreBin.doubleValue(), saveFC.getSelectedFile());
 						return operation;
 					}
 				}

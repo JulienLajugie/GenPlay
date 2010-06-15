@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCountNonNullBins;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -50,13 +50,13 @@ public final class BLACountNonNullBins extends TrackListActionOperationWorker<Lo
 
 
 	@Override
-	public BinListOperation<Long> initializeOperation() {
+	public Operation<Long> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
 				BinList binList = selectedTrack.getBinList();
-				BinListOperation<Long> operation = new BLOCountNonNullBins(binList, selectedChromo);
+				Operation<Long> operation = new BLOCountNonNullBins(binList, selectedChromo);
 				return operation;
 			}
 		}

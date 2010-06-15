@@ -15,6 +15,7 @@ import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 import yu.einstein.gdp2.util.DoubleLists;
@@ -25,7 +26,7 @@ import yu.einstein.gdp2.util.DoubleLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOCalculationOnProjection implements BinListOperation<BinList> {
+public class BLOCalculationOnProjection implements Operation<BinList> {
 
 	private final BinList 					intervalList;				// BinList defining the intervals 
 	private final BinList 					valueList;					// BinList defining the values for the calculation

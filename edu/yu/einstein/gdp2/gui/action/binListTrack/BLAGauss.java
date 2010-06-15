@@ -8,7 +8,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOGauss;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -46,7 +46,7 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinList binList = selectedTrack.getBinList();
@@ -54,7 +54,7 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 			if(windowSize > 0) {
 				Integer sigma = GenomeWidthChooser.getSigma(getRootPane(), windowSize);
 				if(sigma != null) {
-					BinListOperation<BinList> operation = new BLOGauss(binList, sigma);
+					Operation<BinList> operation = new BLOGauss(binList, sigma);
 					return operation;
 				}
 			}

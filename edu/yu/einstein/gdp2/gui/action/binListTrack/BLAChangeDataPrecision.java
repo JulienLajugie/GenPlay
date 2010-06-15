@@ -9,7 +9,7 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOChangeDataPrecision;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.util.Utils;
@@ -46,13 +46,13 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinList binList = selectedTrack.getBinList();
 			DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
 			if (precision != null) {	
-				BinListOperation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
+				Operation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
 				return operation;
 			}
 		}

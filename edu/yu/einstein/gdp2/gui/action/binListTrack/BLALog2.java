@@ -8,7 +8,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOLog2;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 
@@ -45,11 +45,11 @@ public final class BLALog2 extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinList binList = selectedTrack.getBinList();
-			BinListOperation<BinList> operation = new BLOLog2(binList);
+			Operation<BinList> operation = new BLOLog2(binList);
 			return operation;
 		}
 		return null;

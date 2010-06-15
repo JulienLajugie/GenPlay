@@ -10,7 +10,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLONormalize;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -48,13 +48,13 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {		
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
 			if(factor != null) {
 				BinList binList = selectedTrack.getBinList();
-				BinListOperation<BinList> operation = new BLONormalize(binList, factor.doubleValue());
+				Operation<BinList> operation = new BLONormalize(binList, factor.doubleValue());
 				return operation;
 			}	
 		}	

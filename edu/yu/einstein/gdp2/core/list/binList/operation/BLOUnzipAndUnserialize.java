@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.util.zip.GZIPInputStream;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
@@ -18,7 +19,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOUnzipAndUnserialize implements BinListOperation<BinList> {
+public class BLOUnzipAndUnserialize implements Operation<BinList> {
 
 	private final ByteArrayOutputStream baos;	// input BinList
 

@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
@@ -19,7 +20,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLORepartition implements BinListOperation<Void> {
+public class BLORepartition implements Operation<Void> {
 
 	private final BinList 	binList;		// input binlist
 	private final double 	scoreBinSize;	// size of the bins of score

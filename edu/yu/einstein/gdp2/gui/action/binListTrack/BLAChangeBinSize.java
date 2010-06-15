@@ -11,7 +11,7 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOChangeBinSize;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -49,14 +49,14 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		BinList binList = selectedTrack.getBinList();
 		if (selectedTrack != null) {
 			Number binSize = NumberOptionPane.getValue(getTrackList().getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
 				ScoreCalculationMethod method = Utils.chooseScoreCalculation(getTrackList().getRootPane());
-				BinListOperation<BinList> operation = new BLOChangeBinSize(binList, binSize.intValue(), method);
+				Operation<BinList> operation = new BLOChangeBinSize(binList, binSize.intValue(), method);
 				if (method != null) {
 					return operation;
 				}

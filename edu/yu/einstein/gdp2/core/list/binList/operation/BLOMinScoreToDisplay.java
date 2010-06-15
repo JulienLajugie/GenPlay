@@ -5,6 +5,7 @@
 package yu.einstein.gdp2.core.list.binList.operation;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
@@ -12,7 +13,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOMinScoreToDisplay implements BinListOperation<Double> {
+public class BLOMinScoreToDisplay implements Operation<Double> {
 
 	private final BinList 	binList;		// input BinList
 	

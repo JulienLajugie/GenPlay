@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
 
@@ -20,7 +21,7 @@ import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOCorrelate implements BinListOperation<Double> {
+public class BLOCorrelate implements Operation<Double> {
 
 	private final BinList 	binList1;		// input BinList
 	private final BinList	binList2;		// input BinList

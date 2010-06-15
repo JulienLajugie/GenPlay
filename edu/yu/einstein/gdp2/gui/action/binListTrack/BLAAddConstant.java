@@ -10,7 +10,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOAddConstant;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -28,7 +28,7 @@ public final class BLAAddConstant extends TrackListActionOperationWorker<BinList
 	private static final String 	DESCRIPTION = 
 		"Add a constant to the scores of the selected track";			// tooltip
 	private BinListTrack selectedTrack;
-	private BinListOperation<BinList> operation;
+	private Operation<BinList> operation;
 
 	
 	/**
@@ -49,7 +49,7 @@ public final class BLAAddConstant extends TrackListActionOperationWorker<BinList
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to add: f(x)=x + C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);

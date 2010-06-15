@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.filter.IslandFinder;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
@@ -16,7 +17,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BLOFindIslands implements BinListOperation<BinList> {
+public class BLOFindIslands implements Operation<BinList> {
 
 	private final BinList 			binList;	// input binlist
 	private final double 			readCountLimit;	// limit reads number to get an eligible windows

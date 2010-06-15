@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutionException;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.ListFactory;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 
 
@@ -22,7 +23,7 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOIndex implements BinListOperation<BinList> {
+public class BLOIndex implements Operation<BinList> {
 
 	private final BinList 	binList;	// binlist to index
 	private final double 	newMin;		// new min after index

@@ -11,8 +11,8 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOMultiply;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -54,7 +54,7 @@ public final class BLAMultiply extends TrackListActionOperationWorker<BinList> {
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose a track to multiply with the selected track:", getTrackList().getBinListTracks());
@@ -65,7 +65,7 @@ public final class BLAMultiply extends TrackListActionOperationWorker<BinList> {
 					if (precision != null) {
 						BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
 						BinList binList2 = ((BinListTrack)otherTrack).getBinList();
-						BinListOperation<BinList> operation = new BLOMultiply(binList1, binList2, precision);
+						Operation<BinList> operation = new BLOMultiply(binList1, binList2, precision);
 						return operation;
 					}
 				}

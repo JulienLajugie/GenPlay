@@ -11,8 +11,8 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOAverage;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -29,7 +29,7 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 	private static final String 	ACTION_NAME = "Average";			// action name
 	private static final String 	DESCRIPTION = 
 		"Compute the average of the scores of the selected track";			// tooltip
-	private BinListOperation<Double> operation;
+	private Operation<Double> operation;
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -49,7 +49,7 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 
 
 	@Override
-	public BinListOperation<Double> initializeOperation() {
+	public Operation<Double> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());

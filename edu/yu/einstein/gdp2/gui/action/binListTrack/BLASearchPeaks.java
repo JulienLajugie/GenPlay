@@ -10,7 +10,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSearchPeaks;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
@@ -49,7 +49,7 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinList binList = selectedTrack.getBinList();
@@ -57,7 +57,7 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 			if(sizeMovingSD != null) {
 				Number nbSDAccepted = NumberOptionPane.getValue(getRootPane(), "Threshold", "Select only peak with a local SD x time higher than the global one", new DecimalFormat("0.0"), 0, 1000, 1).intValue(); 
 				if(nbSDAccepted != null) {
-					BinListOperation<BinList> operation = new BLOSearchPeaks(binList, sizeMovingSD.intValue(), nbSDAccepted.intValue());
+					Operation<BinList> operation = new BLOSearchPeaks(binList, sizeMovingSD.intValue(), nbSDAccepted.intValue());
 					return operation;
 				}
 			}

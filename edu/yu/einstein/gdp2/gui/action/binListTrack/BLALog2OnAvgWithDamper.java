@@ -10,7 +10,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOLog2OnAvgWithDamper;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
@@ -49,13 +49,13 @@ public final class BLALog2OnAvgWithDamper extends TrackListActionOperationWorker
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper to add: f(x)=x + damper", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if(damper != null) {
 				BinList binList = selectedTrack.getBinList();
-				BinListOperation<BinList> operation = new BLOLog2OnAvgWithDamper(binList, damper.doubleValue());
+				Operation<BinList> operation = new BLOLog2OnAvgWithDamper(binList, damper.doubleValue());
 				return operation;
 			}
 		}

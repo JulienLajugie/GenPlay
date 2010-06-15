@@ -13,8 +13,8 @@ import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCalculationOnProjection;
-import yu.einstein.gdp2.core.list.binList.operation.BinListOperation;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -60,7 +60,7 @@ public class BLACalculationOnProjection extends TrackListActionOperationWorker<B
 
 
 	@Override
-	public BinListOperation<BinList> initializeOperation() {
+	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			intervalTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose the track defining the intervals:", getTrackList().getBinListTracks());
@@ -75,7 +75,7 @@ public class BLACalculationOnProjection extends TrackListActionOperationWorker<B
 							if (precision != null) {
 								BinList valueBinList = ((BinListTrack)selectedTrack).getBinList();
 								BinList intervalBinList = ((BinListTrack)intervalTrack).getBinList();
-								BinListOperation<BinList> operation = new BLOCalculationOnProjection(intervalBinList, valueBinList, percentage.intValue(), method, precision);
+								Operation<BinList> operation = new BLOCalculationOnProjection(intervalBinList, valueBinList, percentage.intValue(), method, precision);
 								return operation;
 							}
 						}

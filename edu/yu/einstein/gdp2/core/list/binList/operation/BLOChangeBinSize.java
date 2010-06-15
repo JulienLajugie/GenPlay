@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
@@ -15,7 +16,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOChangeBinSize implements BinListOperation<BinList> {
+public class BLOChangeBinSize implements Operation<BinList> {
 
 	private final BinList 					binList;	// input BinList
 	private final int 						binSize;	// new bin size 
