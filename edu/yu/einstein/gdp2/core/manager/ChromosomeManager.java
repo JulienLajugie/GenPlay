@@ -32,7 +32,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	private static ChromosomeManager 			instance = null;		// unique instance of the singleton
 	private final List<Chromosome> 				chromsomeList;			// List of chromosome 
 	private final Hashtable<String, Integer> 	chromosomeHash;			// Hashtable indexed by chromosome name
-
+	private long genomomeLength = 0;
 	
 	/**
 	 * @return an instance of a {@link ChromosomeManager}. 
@@ -62,6 +62,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 		for (int i = 0; i < chromsomeList.size(); i++) {
 			chromosomeHash.put(chromsomeList.get(i).getName(), i);
 		}
+		computeGenomeSize();
 	}
 
 
@@ -98,6 +99,25 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	}
 
 
+	/**
+	 * Compute the size of the genome
+	 */
+	private synchronized void computeGenomeSize() {
+		genomomeLength = 0;
+		for (Chromosome currenChromosome: chromsomeList) {
+			genomomeLength += currenChromosome.getLength();
+		}
+	}
+	
+	
+	/**
+	 * @return the lenght of the genome in bp
+	 */
+	public long getGenomeLength() {
+		return genomomeLength;
+	}
+	
+	
 	/**
 	 * @param index index of a {@link Chromosome}
 	 * @return the first chromosome with the specified index
@@ -196,6 +216,8 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 			for (int i = 0; i < chromsomeList.size(); i++) {
 				chromosomeHash.put(chromsomeList.get(i).getName(), i);
 			}
+			// compute the size of the genome
+			computeGenomeSize();
 		}	
 	}
 
@@ -220,7 +242,6 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	public int size() {
 		return chromsomeList.size();
 	}
-
 
 
 	/**
