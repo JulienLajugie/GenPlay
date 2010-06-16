@@ -7,8 +7,8 @@ package yu.einstein.gdp2.gui.popupMenu;
 import javax.swing.JMenuItem;
 
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
-import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
-import yu.einstein.gdp2.gui.action.geneListTrack.SearchGeneAction;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLASearchGene;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -35,8 +35,8 @@ public final class GeneListTrackMenu extends TrackMenu {
 		super(tl);
 	
 		saveGeneTrack = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
-		searchGene = new JMenuItem(actionMap.get(SearchGeneAction.ACTION_KEY));
-		extractInterval = new JMenuItem(actionMap.get(ExtractIntervalAction.ACTION_KEY));
+		searchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
+		extractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
 			
 		add(saveGeneTrack, 7);
 		addSeparator();

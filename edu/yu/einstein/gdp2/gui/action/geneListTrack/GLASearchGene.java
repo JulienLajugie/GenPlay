@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.action.geneListTrack;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -13,9 +12,8 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.gui.action.TrackListAction;
+import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
-import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
 
 
 /**
@@ -23,7 +21,7 @@ import yu.einstein.gdp2.gui.worker.actionWorker.ActionWorker;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SearchGeneAction  extends TrackListAction {
+public final class GLASearchGene  extends TrackListActionWorker<Gene> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 	// generated ID
 	private static final String 	ACTION_NAME = "Seach Gene";			// action name
@@ -40,13 +38,13 @@ public final class SearchGeneAction  extends TrackListAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "searchGene";
+	public static final String ACTION_KEY = "GLASearchGene";
 
 
 	/**
-	 * Creates an instance of {@link SearchGeneAction}
+	 * Creates an instance of {@link GLASearchGene}
 	 */
-	public SearchGeneAction() {
+	public GLASearchGene() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -55,37 +53,31 @@ public final class SearchGeneAction  extends TrackListAction {
 	}
 
 
-	/**
-	 * Searches a gene on the selected track
-	 */
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	protected Gene processAction() throws Exception {
 		if ((getTrackList().getSelectedTrack() != null) && (getTrackList().getSelectedTrack() instanceof GeneListTrack)) {
-			final GeneListTrack selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
+			GeneListTrack selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
 				String lastSearchedName = null;
 				if (selectedTrack.getData().getLastSearchedGene() != null) {
 					lastSearchedName = selectedTrack.getData().getLastSearchedGene().getName(); 
 				}
-				final String geneName = (String) JOptionPane.showInputDialog(getRootPane(), "Enter the name of a gene", "Gene Search", JOptionPane.QUESTION_MESSAGE, null, null, lastSearchedName);
+				String geneName = (String) JOptionPane.showInputDialog(getRootPane(), "Enter the name of a gene", "Gene Search", JOptionPane.QUESTION_MESSAGE, null, null, lastSearchedName);
 				if (geneName != null) {
-					// thread for the action
-					new ActionWorker<Gene>(getTrackList(), "Searching Gene") {
-						@Override
-						protected Gene doAction() {
-							return selectedTrack.getData().search(geneName);
-						}
-						@Override
-						protected void doAtTheEnd(Gene actionResult) {
-							if (actionResult != null) {
-								GenomeWindow newWindow = new GenomeWindow(actionResult.getChromo(), actionResult.getTxStart(), actionResult.getTxStop());
-								getTrackList().setGenomeWindow(newWindow);
-							}
-
-						}
-					}.execute();
+					notifyActionStart("Searching Gene", 1);
+					return selectedTrack.getData().search(geneName);
 				}
 			}
+		}
+		return null;
+	}
+	
+	
+	@Override
+	protected void doAtTheEnd(Gene actionResult) {
+		if (actionResult != null) {
+			GenomeWindow newWindow = new GenomeWindow(actionResult.getChromo(), actionResult.getTxStart(), actionResult.getTxStop());
+			getTrackList().setGenomeWindow(newWindow);
 		}
 	}
 }

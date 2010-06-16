@@ -12,7 +12,7 @@ import yu.einstein.gdp2.core.operation.Operation;
 
 
 /**
- * 
+ * Creates a BinList from the data of the input {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
  * @version 0.1
  */

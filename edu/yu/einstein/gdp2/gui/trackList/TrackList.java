@@ -84,8 +84,8 @@ import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSCWListTrack;
-import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
-import yu.einstein.gdp2.gui.action.geneListTrack.SearchGeneAction;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLASearchGene;
 import yu.einstein.gdp2.gui.action.scoredTrack.STASetYAxis;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
@@ -168,8 +168,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(LoadFromDASAction.ACTION_KEY, new LoadFromDASAction());
 		getActionMap().put(ETAGenerateMultiCurvesTrack.ACTION_KEY, new ETAGenerateMultiCurvesTrack());
 		// add gene list actions
-		getActionMap().put(SearchGeneAction.ACTION_KEY, new SearchGeneAction());
-		getActionMap().put(ExtractIntervalAction.ACTION_KEY, new ExtractIntervalAction());
+		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
+		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(STASetYAxis.ACTION_KEY, new STASetYAxis());
@@ -228,7 +228,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATADelete.ACCELERATOR, ATADelete.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATARename.ACCELERATOR, ATARename.ACTION_KEY);
 
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(SearchGeneAction.ACCELERATOR, SearchGeneAction.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GLASearchGene.ACCELERATOR, GLASearchGene.ACTION_KEY);
 
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(BLAUndo.ACCELERATOR, BLAUndo.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(BLARedo.ACCELERATOR, BLARedo.ACTION_KEY);

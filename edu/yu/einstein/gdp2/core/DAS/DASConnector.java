@@ -133,7 +133,7 @@ public class DASConnector {
 //			return getGeneListFromPSL(cm, dataSource, dasType);
 //		}
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-		GeneList resultList = new GeneList();
+		List<List<Gene>> resultList = new ArrayList<List<Gene>>();
 		for (Chromosome currentChromo: ChromosomeManager.getInstance()) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
@@ -148,13 +148,14 @@ public class DASConnector {
 				GeneHandler gh = new GeneHandler(currentChromo);
 				parser.parse(connection.getInputStream(), gh);
 				List<Gene> currentGeneList = gh.getGeneList();
-				resultList.set(currentChromo, currentGeneList);
+				resultList.add(currentGeneList);
+			} else {
+				resultList.add(null);
 			}
 		}
 		boolean areExonsScored = false;
 		for (List<Gene> currentList: resultList) {
 			if (currentList != null) {
-				Collections.sort(currentList);
 				// check if the exons are scored
 				int i = 0;
 				while (!areExonsScored && (i < currentList.size())) {
@@ -180,7 +181,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return resultList;
+		return new GeneList(resultList);
 	}
 
 	/**
@@ -197,7 +198,7 @@ public class DASConnector {
 	{
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		//System.out.println("1st Entry Point " + entryPointList.get(0));
-		GeneList resultList = new GeneList();
+		List<List<Gene>> resultList = new ArrayList<List<Gene>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();
 		//System.out.println("Chormozome = " + currentChromo.getName());
 		EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
@@ -213,12 +214,13 @@ public class DASConnector {
 			GeneHandler gh = new GeneHandler(currentChromo);
 			parser.parse(connection.getInputStream(), gh);
 			List<Gene> currentGeneList = gh.getGeneList();
-			resultList.set(currentChromo, currentGeneList);
+			resultList.add(currentGeneList);
+		} else {
+			resultList.add(null);
 		}
 		boolean areExonsScored = false;
 		for (List<Gene> currentList: resultList) {
 			if (currentList != null) {
-				Collections.sort(currentList);
 				// check if the exons are scored
 				int i = 0;
 				while (!areExonsScored && (i < currentList.size())) {
@@ -244,9 +246,9 @@ public class DASConnector {
 				}
 			}
 		}
-		return resultList;
-		
+		return new GeneList(resultList);		
 	}
+	
 
 //	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
 //		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
@@ -427,7 +429,7 @@ public class DASConnector {
 		int i = 0;
 		// we search for an entry point corresponding to the current chromosome
 		while ((i < entryPointList.size()) && (!found)) {
-			System.out.println(entryPointList.get(i).getID());
+			//System.out.println(entryPointList.get(i).getID());
 			if (chr.hasSameNameAs(entryPointList.get(i).getID())) {
 				found = true;
 			} else {

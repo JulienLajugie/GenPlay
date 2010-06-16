@@ -19,7 +19,8 @@ import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
-import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
+
+import yu.einstein.gdp2.core.list.geneList.operation.GLOIndexScores;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
@@ -48,10 +49,14 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	 */
 	protected GeneListTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList geneList) {
 		super(displayedGenomeWindow);
+		try {
+			geneList = new GLOIndexScores(geneList, null).compute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		this.geneList = geneList;
 		firstLineToDisplay = 0;
 		geneList.setFontMetrics(fm);
-		GeneListOperations.indexScores(geneList);
 	}
 
 
@@ -223,6 +228,10 @@ public class GeneListTrackGraphics extends TrackGraphics {
 		boolean isGeneNamePrinted = xFactor > MIN_X_RATIO_PRINT_NAME;
 		// retrieve the list of the printed genes
 		List<List<Gene>> printedGenes = geneList.getFittedData(genomeWindow, xFactor);
+		// do nothing if there is no genes
+		if (printedGenes == null) {
+			return;
+		}
 		// look for how many lines of genes are printed
 		int displayedLineCount = 0;
 		if (isGeneNamePrinted) {

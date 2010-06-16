@@ -110,6 +110,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	public ScoredChromosomeWindowList(Collection<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
 		super();
 		addAll(data);
+		// add the eventual missing chromosomes
 		if (size() < chromosomeManager.size()) {
 			for (int i = size(); i < chromosomeManager.size(); i++){
 				add(null);

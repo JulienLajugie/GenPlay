@@ -1,52 +1,97 @@
-package yu.einstein.gdp2.core.list.geneList;
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.core.list.geneList.operation;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.enums.Strand;
+import yu.einstein.gdp2.core.list.geneList.GeneList;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.operation.Operation;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
 
-public class GeneListOperations {
+
+/**
+ * Extracts intervals relative to gene positions
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+public class GLOExtractIntervals implements Operation<GeneList> {
+
+	private final GeneList 	geneList;			// input list
+	private final int 		startDistance;		// distance from the start reference
+	private final int 		startFrom;			// start reference (see constants below)
+	private final int 		stopDistance;		// distant from the stop reference
+	private final int 		stopFrom;			// stop reference
+
 
 	/**
 	 * before the start position (used for interval extraction)
 	 */
 	public static final int BEFORE_START = 0;
 
+
 	/**
 	 * after the start position (used for interval extraction)
 	 */
 	public static final int AFTER_START = 1;
+
 
 	/**
 	 * before the stop position (used for interval extraction)
 	 */
 	public static final int BEFORE_STOP = 2;
 
+
 	/**
 	 * after the stop position (used for interval extraction)
 	 */
 	public static final int AFTER_STOP = 3;
-	
-	
+
+
 	/**
-	 * Extracts intervals relative to genes
-	 * @param startDistance
-	 * @param startFrom can take the 4 different values 
-	 * @param stopDistance
-	 * @param stopFrom
-	 * @return the intervals extracted 
+	 * Extracts intervals relative to gene positions
+	 * @param geneList input list
+	 * @param startDistance distance from the start reference
+	 * @param startFrom start reference (see constants below) 
+	 * @param stopDistance distant from the stop reference
+	 * @param stopFrom stop reference
 	 */
-	public static GeneList extractIntevals(GeneList geneList, int startDistance, int startFrom, int stopDistance, int stopFrom) {
-		GeneList resultList = new GeneList();
+	public GLOExtractIntervals(GeneList geneList, int startDistance, int startFrom, int stopDistance, int stopFrom) {
+		this.geneList = geneList;
+		this.startDistance = startDistance;
+		this.startFrom = startFrom;
+		this.stopDistance = stopDistance;
+		this.stopFrom = stopFrom;
+	}
+
+
+	@Override
+	public GeneList compute() throws Exception {
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
 
 		for(short i = 0; i < geneList.size(); i++) {
-			int chromoLength = geneList.getChromosomeManager().get(i).getLength();
-			if (geneList.get(i) != null) {
-				for(int j = 0; j < geneList.size(i); j++) {
-					if (geneList.get(i, j) != null) {
-						Gene currentGene = geneList.get(i, j); 
-						Gene geneToAdd = new Gene(geneList.get(i, j));
+			final List<Gene> currentList = geneList.get(i);
+			final int chromoLength = ChromosomeManager.getInstance().get(i).getLength();
+			
+			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
+				@Override
+				public List<Gene> call() throws Exception {					
+					if (currentList == null) {
+						return null;
+					}
+					
+					List<Gene> resultList = new ArrayList<Gene>();
+					for (int j = 0; j < currentList.size(); j++) {
+						Gene currentGene = currentList.get(j); 
+						Gene geneToAdd = new Gene(currentList.get(j));
 						// search the new start
 						int newStart = 0;
 						switch (startFrom) {
@@ -80,7 +125,7 @@ public class GeneListOperations {
 							break;
 						default:
 							// invalid argument
-							return null;
+							throw new IllegalArgumentException("Invalid Start Reference");
 						}
 						// search the new stop
 						int newStop = 0;
@@ -115,7 +160,7 @@ public class GeneListOperations {
 							break;
 						default:
 							// invalid argument
-							return null;
+							throw new IllegalArgumentException("Invalid Stop Reference");
 						}
 						geneToAdd.setExonStarts(null);
 						geneToAdd.setExonStops(null);
@@ -124,55 +169,44 @@ public class GeneListOperations {
 						if ((newStart < newStop) && (currentGene.getStrand() == Strand.FIVE)) {
 							geneToAdd.setTxStart(newStart);
 							geneToAdd.setTxStop(newStop);
-							resultList.get(i).add(geneToAdd);
+							resultList.add(geneToAdd);
 						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
 							geneToAdd.setTxStart(newStop);
 							geneToAdd.setTxStop(newStart);
-							resultList.get(i).add(geneToAdd);	
+							resultList.add(geneToAdd);	
 						}
 					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
 				}
-			}
+			};
+			
+			threadList.add(currentThread);
 		}
-		// we sort the result list
-		// the ordre might have changed because on the 3'strand
-		// the start of a gene is what was the end before 
-		for (List<Gene> chromosomeGeneList : resultList) {
-			Collections.sort(chromosomeGeneList);
+		List<List<Gene>> result = op.startPool(threadList);
+		if (result == null) {
+			return null;
+		} else {
+			return new GeneList(result, geneList.getSearchURL());
 		}
-		return resultList;
 	}
-	
-	
-	/**
-	 * Indexes the score values of a {@link GeneList}
-	 */
-	public static void indexScores(GeneList geneList) {
-		double min = Double.POSITIVE_INFINITY;
-		double max = Double.NEGATIVE_INFINITY;
-		for(List<Gene> currentList : geneList) {
-			if (currentList != null) {
-				for(Gene currentGene : currentList) {
-					if ((currentGene != null) && (currentGene.getExonScores() != null)){
-						for(double currentScore : currentGene.getExonScores()) {
-							min = Math.min(min, currentScore);
-							max = Math.max(max, currentScore);
-						}
-					}
-				}
-			}
-		}
-		double minMaxDist = max - min;
-		for(List<Gene> currentList : geneList) {
-			if (currentList != null) {
-				for(Gene currentGene : currentList) {
-					if ((currentGene != null) && (currentGene.getExonScores() != null)){
-						for(int i = 0; i < currentGene.getExonScores().length; i++) {
-							currentGene.getExonScores()[i] = 1000d * (currentGene.getExonScores()[i] - min) / minMaxDist;							
-						}
-					}
-				}
-			}
-		}		
+
+
+	@Override
+	public String getDescription() {
+		return "Operation: Extract Intervals";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Extracting Intervals";
+	}
+
+
+	@Override
+	public int getStepCount() {
+		return 1;
 	}
 }

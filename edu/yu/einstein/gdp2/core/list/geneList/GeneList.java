@@ -42,15 +42,48 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		
 
 	/**
-	 * Creates an instance of {@link GeneList}
+	 * Creates an instance of {@link GeneList} containing the specified data.
+	 * @param data 
 	 */
-	public GeneList() {
-		super();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
-			add(new ArrayList<Gene>());
+	public GeneList(Collection<? extends List<Gene>> data) {
+		addAll(data);
+		// add the eventual missing chromosomes
+		if (size() < chromosomeManager.size()) {
+			for (int i = size(); i < chromosomeManager.size(); i++){
+				add(null);
+			}
+		}
+		// sort the data
+		for (List<Gene> currentList: this) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+			}
 		}
 	}
 
+	
+	/**
+	 * Creates an instance of {@link GeneList} containing the specified data.
+	 * @param data data of the list 
+	 * @param searchURL URL of the gene data base
+	 */
+	public GeneList(Collection<? extends List<Gene>> data, String searchURL) {
+		addAll(data);
+		// add the eventual missing chromosomes
+		if (size() < chromosomeManager.size()) {
+			for (int i = size(); i < chromosomeManager.size(); i++){
+				add(null);
+			}
+		}
+		// sort the data
+		for (List<Gene> currentList: this) {
+			if (currentList != null) {
+				Collections.sort(currentList);
+			}
+		}
+		this.searchURL = searchURL;
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link GeneList}
@@ -185,6 +218,11 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 			return;
 		}
 		
+		if ((currentList == null) || (currentList.isEmpty())) {
+			fittedDataList = null;
+			return;
+		}
+		
 		fittedDataList = new ArrayList<List<Gene>>();
 		// how many genes have been organized
 		int organizedGeneCount = 0;
@@ -244,6 +282,9 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 	@Override
 	protected List<List<Gene>> getFittedData(int start, int stop) {
+		if (fittedDataList == null) {
+			return null;
+		}
 		List<List<Gene>> resultList = new ArrayList<List<Gene>>();
 		// search genes for each line
 		for (List<Gene> currentLine : fittedDataList) { 
@@ -325,5 +366,14 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	public String getSearchURL() {
 		return searchURL;
+	}
+	
+	
+	/**
+	 * Sets the URL of the gene database
+	 * @param searchURL
+	 */
+	public void setSearchURL(String searchURL) {
+		this.searchURL = searchURL;		
 	}
 }

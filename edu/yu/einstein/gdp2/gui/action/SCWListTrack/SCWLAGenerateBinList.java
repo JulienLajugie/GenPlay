@@ -42,7 +42,7 @@ public final class SCWLAGenerateBinList  extends TrackListActionOperationWorker<
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "generateBinList";
+	public static final String ACTION_KEY = "SCWLAGenerateBinList";
 
 
 	/**

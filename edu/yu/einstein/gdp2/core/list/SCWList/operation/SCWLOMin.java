@@ -77,8 +77,8 @@ public class SCWLOMin implements Operation<Double> {
 		}
 		// we search for the min of the chromosome minimums
 		double min = Double.POSITIVE_INFINITY;
-		for (Double currentMax: result) {
-			min = Math.min(min, currentMax);
+		for (Double currentMin: result) {
+			min = Math.min(min, currentMin);
 		}
 		return min;
 	}

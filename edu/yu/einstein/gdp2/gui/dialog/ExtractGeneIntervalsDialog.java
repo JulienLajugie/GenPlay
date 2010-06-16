@@ -19,12 +19,12 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.text.NumberFormatter;
 
-import yu.einstein.gdp2.core.list.geneList.GeneListOperations;
-import yu.einstein.gdp2.gui.action.geneListTrack.ExtractIntervalAction;
+import yu.einstein.gdp2.core.list.geneList.operation.GLOExtractIntervals;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
 
 
 /**
- * A frame to define the interval for the {@link ExtractIntervalAction}
+ * A frame to define the interval for the {@link GLAExtractInterval}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -44,10 +44,10 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 	{"before start position", "after start position", 
 		"before stop position", "after stop position"};		// available options in the comboBoxes
 	private final static int[] OPTION_VALUES = {
-		GeneListOperations.BEFORE_START, 
-		GeneListOperations.AFTER_START,
-		GeneListOperations.BEFORE_STOP, 
-		GeneListOperations.AFTER_STOP
+		GLOExtractIntervals.BEFORE_START, 
+		GLOExtractIntervals.AFTER_START,
+		GLOExtractIntervals.BEFORE_STOP, 
+		GLOExtractIntervals.AFTER_STOP
 	};														// value associated to this operations
 	private final JLabel 				jlStart1;			// first label start
 	private final JFormattedTextField 	jftfStartDistance;	// text field start distance
