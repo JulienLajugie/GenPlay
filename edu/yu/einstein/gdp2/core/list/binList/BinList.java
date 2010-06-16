@@ -78,18 +78,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Creates an instance of {@link BinList}
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
-	 */
-	public BinList(int binSize, DataPrecision precision) {
-		super();
-		this.binSize = binSize;
-		this.precision = precision;
-	}
-
-
-	/**
-	 * Creates an instance of {@link BinList}
-	 * @param binSize size of the bins
-	 * @param precision precision of the data
 	 * @param positions list of positions
 	 * @param scores list of score
 	 * @throws IllegalArgumentException thrown if precision is not valid

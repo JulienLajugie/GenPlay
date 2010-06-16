@@ -23,7 +23,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLACorrelate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADensity;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADivide;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADivideConstant;
-import yu.einstein.gdp2.gui.action.binListTrack.FilterAction;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
@@ -37,7 +37,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARedo;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAReset;
-import yu.einstein.gdp2.gui.action.binListTrack.SaturationAction;
+import yu.einstein.gdp2.gui.action.binListTrack.BLASaturate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASearchPeaks;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAHistory;
@@ -152,8 +152,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiStdDev = new JMenuItem(actionMap.get(BLAStandardDeviation.ACTION_KEY));
 		jmiCorrelation = new JMenuItem(actionMap.get(BLACorrelate.ACTION_KEY));		
 		
-		jmiFilter = new JMenuItem(actionMap.get(FilterAction.ACTION_KEY));
-		jmiSaturation = new JMenuItem(actionMap.get(SaturationAction.ACTION_KEY));
+		jmiFilter = new JMenuItem(actionMap.get(BLAFilter.ACTION_KEY));
+		jmiSaturation = new JMenuItem(actionMap.get(BLASaturate.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(BLASearchPeaks.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(BLAFindIslands.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(BLATransfrag.ACTION_KEY));

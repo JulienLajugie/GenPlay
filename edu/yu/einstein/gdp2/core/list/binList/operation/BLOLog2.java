@@ -60,7 +60,6 @@ public class BLOLog2 implements Operation<BinList> {
 							} else if (currentList.get(j) == 0) {
 								resultList.set(j, 0d);
 							} else {
-								System.out.println(currentList.get(j));
 								// can't apply a log function on a negative or null numbers
 								throw new ArithmeticException("Logarithm of a negative value not allowed");
 							}
