@@ -2,16 +2,11 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.list.binList;
+package yu.einstein.gdp2.core.list.arrayList;
 
 import java.util.List;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
-import yu.einstein.gdp2.core.list.arrayList.BooleanArrayAsDoubleList;
-import yu.einstein.gdp2.core.list.arrayList.ByteArrayAsDoubleList;
-import yu.einstein.gdp2.core.list.arrayList.DoubleArrayAsDoubleList;
-import yu.einstein.gdp2.core.list.arrayList.FloatArrayAsDoubleList;
-import yu.einstein.gdp2.core.list.arrayList.ShortArrayAsDoubleList;
 
 /**
  * Factory creating a subtype of {@link List} of double
