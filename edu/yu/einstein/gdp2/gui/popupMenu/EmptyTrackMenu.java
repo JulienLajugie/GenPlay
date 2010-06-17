@@ -9,7 +9,7 @@ import javax.swing.event.PopupMenuEvent;
 
 import yu.einstein.gdp2.gui.action.emptyTrack.ETAGenerateMultiCurvesTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadBinListTrack;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadFromDASAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadFromDAS;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
@@ -45,7 +45,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 		jmiLoadGeneListTrack = new JMenuItem(actionMap.get(ETALoadGeneListTrack.ACTION_KEY));
 		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(ETALoadNucleotideListTrack.ACTION_KEY));
 		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(ETALoadRepeatFamilyListTrack.ACTION_KEY));
-		jmiLoadFromDAS = new JMenuItem(actionMap.get(LoadFromDASAction.ACTION_KEY));
+		jmiLoadFromDAS = new JMenuItem(actionMap.get(ETALoadFromDAS.ACTION_KEY));
 		jmiGenerateMultiTrack = new JMenuItem(actionMap.get(ETAGenerateMultiCurvesTrack.ACTION_KEY));
 		
 		addSeparator();

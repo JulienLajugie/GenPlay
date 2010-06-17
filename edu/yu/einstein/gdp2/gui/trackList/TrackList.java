@@ -79,7 +79,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAUndo;
 import yu.einstein.gdp2.gui.action.curveTrack.CTAAppearance;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETAGenerateMultiCurvesTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadBinListTrack;
-import yu.einstein.gdp2.gui.action.emptyTrack.LoadFromDASAction;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadFromDAS;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
@@ -165,7 +165,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ETALoadNucleotideListTrack.ACTION_KEY, new ETALoadNucleotideListTrack());
 		getActionMap().put(ETALoadRepeatFamilyListTrack.ACTION_KEY, new ETALoadRepeatFamilyListTrack());
 		getActionMap().put(ETALoadSCWListTrack.ACTION_KEY, new ETALoadSCWListTrack());
-		getActionMap().put(LoadFromDASAction.ACTION_KEY, new LoadFromDASAction());
+		getActionMap().put(ETALoadFromDAS.ACTION_KEY, new ETALoadFromDAS());
 		getActionMap().put(ETAGenerateMultiCurvesTrack.ACTION_KEY, new ETAGenerateMultiCurvesTrack());
 		// add gene list actions
 		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
