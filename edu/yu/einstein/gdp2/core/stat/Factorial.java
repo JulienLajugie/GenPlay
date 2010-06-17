@@ -30,15 +30,15 @@ public class Factorial {
 	 */
 	public static double logFactorial (int n) throws InvalidFactorialParameterException {
 		double result = 0.0;
-		if (logFactorialStorage.containsKey(n)) {
-			result = logFactorialStorage.get(n);
+		if (n == 0) {
+			result = 1.0;
+		} else if (logFactorialStorage.containsKey(n)) {
+			result = logFactorialStorage.get(n);	
 		} else if (n > 0) {
 			for (int i=1; i<=n; i++) {
 				result += Math.log10(i);
 			}
 			logFactorialStorage.put(n, result);
-		} else if (n == 0) {
-			result = 1.0;
 		} else {
 			throw new InvalidFactorialParameterException();
 		}

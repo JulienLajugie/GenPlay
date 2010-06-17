@@ -76,7 +76,12 @@ public class Poisson {
 		double result = -1.0;
 		if (poissonStorage.containsKey(k)){
 			if (poissonStorage.get(k).containsKey(lambda)){
-				result = poissonStorage.get(k).get(lambda);
+				try {
+					result = poissonStorage.get(k).get(lambda);
+				} catch (Exception e) {
+					result = -1.0;
+					e.printStackTrace();
+				}
 			}
 		}
 		return result;
@@ -91,10 +96,14 @@ public class Poisson {
 	 * @param value		the Poisson value calculated with lambda and k values
 	 */
 	private static void setPoissonValue (double lambda, int k, double value) {
-		if (!poissonStorage.containsKey(k)){
+		if (!poissonStorage.containsKey(k) | poissonStorage.get(k)==null){
 			poissonStorage.put(k, new HashMap<Double, Double>());
 		}
-		poissonStorage.get(k).put(lambda , value);
+		try{
+			poissonStorage.get(k).put(lambda , value);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

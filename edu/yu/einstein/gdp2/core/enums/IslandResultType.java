@@ -27,7 +27,15 @@ public enum IslandResultType {
 	/**
 	 * Value will be the average of the island window score
 	 */
-	ISLANDSCOREAVERAGE ("Score Island Average");
+	ISLANDSCOREAVERAGE ("Score Island Average"),
+	/**
+	 * Value will be the probability of significant of a window
+	 */
+	WINDOWPROBABILITY ("Window Probability"),
+	/**
+	 * Value will be the island expectation to find one on the genome 
+	 */
+	ISLANDEXPECTATION ("Island Expectation");
 
 	
 	private final String name; // String representing the filter 
