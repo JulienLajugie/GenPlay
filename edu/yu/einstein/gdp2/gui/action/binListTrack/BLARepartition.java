@@ -4,20 +4,18 @@
  */
 package yu.einstein.gdp2.gui.action.binListTrack;
 
-import java.io.File;
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLORepartition;
-import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
+import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
-import yu.einstein.gdp2.util.Utils;
+import yu.einstein.gdp2.gui.track.Track;
 
 
 /**
@@ -25,14 +23,14 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLARepartition extends TrackListActionOperationWorker<Void> {
+public final class BLARepartition extends TrackListActionOperationWorker<int [][]> {
 
 	private static final long serialVersionUID = -7166030548181210580L; // generated ID
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
 	private static final String 	DESCRIPTION = 
 		"Generate a csv file showing the repartition of the scores of the selected track";	// tooltip
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -51,22 +49,19 @@ public final class BLARepartition extends TrackListActionOperationWorker<Void> {
 
 
 	@Override
-	public Operation<Void> initializeOperation() {
+	public Operation<int [][]> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
-			if (scoreBin != null) {
-				JFileChooser saveFC = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
-				saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				saveFC.setDialogTitle("Bin repartition " + selectedTrack.getName());
-				saveFC.setSelectedFile(new File(".csv"));
-				int returnVal = saveFC.showSaveDialog(getRootPane());
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
-						BinList binList = ((BinListTrack)selectedTrack).getBinList();
-						Operation<Void> operation = new BLORepartition(binList, scoreBin.doubleValue(), saveFC.getSelectedFile());
-						return operation;
-					}
+			if (scoreBin != null) {	
+				Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
+				if ((selectedTracks != null)) {
+					final BinList[] binListArray = new BinList[selectedTracks.length];
+					for (int i = 0; i < selectedTracks.length; i++) {
+						binListArray[i] = ((BinListTrack)selectedTracks[i]).getBinList();						
+					}					
+					Operation<int [][]> operation = new BLORepartition(binListArray, scoreBin.doubleValue());
+					return operation;
 				}
 			}
 		}
