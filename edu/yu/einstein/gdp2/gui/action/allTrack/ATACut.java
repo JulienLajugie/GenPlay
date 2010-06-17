@@ -55,7 +55,7 @@ public final class ATACut extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		Track selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			notifyActionStart("Cutting Track #" + selectedTrack.getTrackNumber(), 1);
+			notifyActionStart("Cutting Track #" + selectedTrack.getTrackNumber(), 1, false);
 			getTrackList().cutTrack();
 		}
 		return null;

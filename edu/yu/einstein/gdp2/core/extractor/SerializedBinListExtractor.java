@@ -49,7 +49,7 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 		extractedBinList = (BinList)ois.readObject();
 	}
 
-
+	
 	@Override
 	public boolean isBinSizeNeeded() {
 		return false;

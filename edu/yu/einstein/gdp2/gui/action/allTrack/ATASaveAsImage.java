@@ -58,7 +58,7 @@ public final class ATASaveAsImage extends TrackListActionWorker<Void> {
 			int returnVal = saveFC.showSaveDialog(getRootPane());
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 				if (!Utils.cancelBecauseFileExist(getRootPane(), saveFC.getSelectedFile())) {
-					notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber() + " As Image", 1);
+					notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber() + " As Image", 1, false);
 					selectedTrack.saveAsImage(Utils.addExtension(saveFC.getSelectedFile(), "jpg"));
 				}
 			}

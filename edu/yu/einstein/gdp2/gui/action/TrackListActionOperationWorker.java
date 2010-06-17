@@ -31,7 +31,7 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 	protected T processAction() throws Exception {
 		operation = initializeOperation();
 		if (operation != null) {
-			notifyActionStart(operation.getProcessingDescription(), operation.getStepCount());
+			notifyActionStart(operation.getProcessingDescription(), operation.getStepCount(), true);
 			return operation.compute();
 		} else {
 			return null;

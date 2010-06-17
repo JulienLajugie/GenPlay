@@ -14,7 +14,7 @@ import yu.einstein.gdp2.core.extractor.ExtractorFactory;
 import yu.einstein.gdp2.core.generator.Generator;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
-import yu.einstein.gdp2.gui.mainFrame.MainFrame;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -71,7 +71,11 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 		if (fileToExtract != null) {
 			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
-				notifyLoadingStart();
+				if (extractor instanceof Stoppable) {
+					notifyActionStart("Loading File", 1, true);
+				} else {
+					notifyActionStart("Loading File", 1, false);
+				}
 				extractor.extract();
 				notifyActionStop();
 				if (extractor.getName() != null) {
@@ -80,7 +84,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 					name = Utils.getFileNameWithoutExtension(fileToExtract);
 				}
 				System.gc();
-				notifyActionStart("Generating Track", 1);
+				notifyActionStart("Generating Track", 1, true);
 				return generateList();
 			} else {
 				throw new InvalidFileTypeException();
@@ -90,15 +94,18 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 		}
 	}
 
-	
+
 	/**
-	 * Notifies that the file loading starts.
-	 * This steps can't be stopped.
+	 * Override that stops the extractor
 	 */
-	private void notifyLoadingStart() {
-		MainFrame.getInstance().getStatusBar().actionStart("Loading File", 1, null);
+	@Override
+	public void stop() {
+		if (extractor instanceof Stoppable) {
+			((Stoppable) extractor).stop();
+		}
+		super.stop();
 	}
-	
+
 
 	/**
 	 * This method has to be implemented to specify how to generate

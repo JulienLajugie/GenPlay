@@ -55,7 +55,7 @@ public final class BLARedo extends TrackListActionWorker<Void> {
 		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
 			BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				notifyActionStart("Redoing", 1);
+				notifyActionStart("Redoing", 1, false);
 				selectedTrack.redo();
 			}	
 		}

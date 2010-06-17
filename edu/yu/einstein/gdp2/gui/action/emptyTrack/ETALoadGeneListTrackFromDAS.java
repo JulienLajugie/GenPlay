@@ -60,7 +60,7 @@ public class ETALoadGeneListTrackFromDAS extends TrackListActionWorker<GeneList>
 	
 	@Override
 	protected GeneList processAction() throws Exception {
-		notifyActionStart("Loading From DAS Server", 1);
+		notifyActionStart("Loading From DAS Server", 1, true);
 		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST)
 			return dasConnector.getGeneList(dataSource, dasType);
 		else if(dataRange == DASDialog.GENERATE_USER_SPECIFIED_LIST) {

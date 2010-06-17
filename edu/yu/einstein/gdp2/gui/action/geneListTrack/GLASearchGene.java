@@ -64,7 +64,7 @@ public final class GLASearchGene  extends TrackListActionWorker<Gene> {
 				}
 				String geneName = (String) JOptionPane.showInputDialog(getRootPane(), "Enter the name of a gene", "Gene Search", JOptionPane.QUESTION_MESSAGE, null, null, lastSearchedName);
 				if (geneName != null) {
-					notifyActionStart("Searching Gene", 1);
+					notifyActionStart("Searching Gene", 1, false);
 					return selectedTrack.getData().search(geneName);
 				}
 			}

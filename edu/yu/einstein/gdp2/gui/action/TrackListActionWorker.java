@@ -132,10 +132,15 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * Must be called right before the computation starts
 	 * @param description description of the action
 	 * @param stepCount number of steps needed to complete the action
+	 * @param stoppable must be set to true if the action can be stopped. False otherwise
 	 */
-	protected void notifyActionStart(String description, int stepCount) {
+	protected void notifyActionStart(String description, int stepCount, boolean stoppable) {
 		currentStep = 1;
-		getStatusBar().actionStart(description, stepCount, this);
+		if (stoppable) {
+			getStatusBar().actionStart(description, stepCount, this);
+		} else {
+			getStatusBar().actionStart(description, stepCount, null);
+		}
 	}
 	
 	

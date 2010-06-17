@@ -60,7 +60,7 @@ public class PALoadProject extends TrackListActionWorker<Void> {
 		FileFilter[] fileFilters = {new GenPlayProjectFilter()};
 		selectedFile = Utils.chooseFileToLoad(trackList.getRootPane(), "Load Project", defaultDirectory, fileFilters);
 		if (selectedFile != null) {
-			notifyActionStart("Loading Project", 1);
+			notifyActionStart("Loading Project", 1, false);
 			trackList.loadProject(selectedFile);
 		}
 		return null;

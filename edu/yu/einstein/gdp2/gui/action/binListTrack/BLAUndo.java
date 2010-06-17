@@ -54,7 +54,7 @@ public final class BLAUndo extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
 			BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-			notifyActionStart("Undoing", 1);		
+			notifyActionStart("Undoing", 1, false);		
 			selectedTrack.undo();
 		}
 		return null;

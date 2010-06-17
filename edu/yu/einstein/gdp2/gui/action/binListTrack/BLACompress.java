@@ -67,7 +67,7 @@ public class BLACompress extends TrackListActionWorker<BinList> {
 				actionDescription = "Compressing Data";
 			}
 			BinList binList = selectedTrack.getBinList();
-			notifyActionStart(actionDescription, 1);
+			notifyActionStart(actionDescription, 1, false);
 			if (binList.isCompressed()) {
 				binList.uncompress();
 			} else {

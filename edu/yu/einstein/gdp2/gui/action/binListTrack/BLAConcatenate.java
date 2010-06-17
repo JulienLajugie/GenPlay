@@ -74,7 +74,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 						binListArray[i] = ((BinListTrack)selectedTracks[i]).getBinList();
 						nameArray[i] = selectedTracks[i].getName();
 					}
-					notifyActionStart("Generating File", 1);
+					notifyActionStart("Generating File", 1, false);
 					new ConcatenateBinListWriter(binListArray, nameArray, selectedFile).write();
 				}
 			}

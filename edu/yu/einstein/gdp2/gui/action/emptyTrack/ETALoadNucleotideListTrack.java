@@ -53,7 +53,7 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 		if (selectedFile != null) {
-			notifyActionStart("Loading Sequence File", 1);
+			notifyActionStart("Loading Sequence File", 1, true);
 			return new TwoBitSequenceList(selectedFile);
 		}
 		return null;

@@ -60,7 +60,7 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 
 	@Override
 	protected ScoredChromosomeWindowList processAction() throws Exception {
-		notifyActionStart("Loading From DAS Server", 1);
+		notifyActionStart("Loading From DAS Server", 1, false);
 		if(dataRange == DASDialog.GENERATE_GENOMEWIDE_LIST) {
 			return dasConnector.getSCWList(dataSource, dasType);
 		}

@@ -14,17 +14,19 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 /**
  * This class must be extended by the {@link Extractor} for text files
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class TextFileExtractor extends Extractor {
+public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 	private static final long serialVersionUID = 1224425396819320502L;	//generated ID
-	protected int 						totalCount = 0;		// total number of line in the file minus the header
-	protected int 						lineCount = 0;		// number of line extracted
+	private boolean needToBeStopped = false;// set to true if the execution of the extractor needs to be stopped
+	protected int 	totalCount = 0;			// total number of line in the file minus the header
+	protected int 	lineCount = 0;			// number of line extracted
 
 	/**
 	 * Creates an instance of {@link TextFileExtractor}
@@ -46,7 +48,7 @@ public abstract class TextFileExtractor extends Extractor {
 
 
 	@Override
-	public void extract() throws FileNotFoundException, IOException {
+	public void extract() throws FileNotFoundException, IOException, InterruptedException {
 		BufferedReader reader = null;
 		try {
 			// try to open the input file
@@ -58,6 +60,11 @@ public abstract class TextFileExtractor extends Extractor {
 			// extract data
 			String line = null;
 			while((line = reader.readLine()) != null) {
+				// if the extractor needs to be stopped we throw an InterruptedException
+				// that stops the execution
+				if (needToBeStopped) {
+					throw new InterruptedException();
+				}
 				boolean isDataLine = true;
 				// the following line is an optimization:
 				// if the line starts with chr it's a data line so we skip the other tests
@@ -100,6 +107,15 @@ public abstract class TextFileExtractor extends Extractor {
 				reader.close();
 			}
 		}
+	}
+	
+	
+	/**
+	 * Stops the extraction
+	 */
+	@Override
+	public void stop() {
+		needToBeStopped = true;		
 	}
 
 

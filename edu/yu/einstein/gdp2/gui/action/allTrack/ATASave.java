@@ -100,7 +100,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 				BinList data = selectedTrack.getBinList();
 				String name = selectedTrack.getName();
 				BinListWriter blw = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
-				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1);
+				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, false);
 				blw.write();
 			}
 		}
@@ -130,7 +130,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 				GeneList data = selectedTrack.getData();
 				String name = selectedTrack.getName();
 				final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(selectedFile, data, name, selectedFilter);
-				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1);
+				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, false);
 				glw.write();
 			}
 		}

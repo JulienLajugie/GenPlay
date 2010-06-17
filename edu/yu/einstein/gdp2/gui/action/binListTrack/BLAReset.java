@@ -55,7 +55,7 @@ public final class BLAReset extends TrackListActionWorker<Void> {
 		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
 			BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				notifyActionStart("Reseting Track", 1);
+				notifyActionStart("Reseting Track", 1, false);
 				selectedTrack.resetBinList();				
 			}		
 		}
