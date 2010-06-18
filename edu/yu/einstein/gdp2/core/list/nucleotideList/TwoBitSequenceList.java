@@ -16,6 +16,7 @@ import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -24,29 +25,39 @@ import yu.einstein.gdp2.exception.InvalidFileTypeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucleotide[]> implements Serializable {
+public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucleotide[]> implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -2253030492143151302L;	// generated ID
 	private final static String 		TWOBIT_SIGNATURE = "1A412743";	// signature of a 2bit file
 	private boolean 					reverseBytes = false;			// true if the bytes of a multi-byte entity need to be reversed when read
-	private final int 					version;						// version of the 2bit file
-	private final String				filePath;						// path of the 2bit file  (used for the serialization)
+	private  int 						version;						// version of the 2bit file
+	private  String						filePath;						// path of the 2bit file  (used for the serialization)
 	private transient RandomAccessFile	twoBitFile;						// 2bit file
+	private TwoBitSequence 				sequence = null;				// sequence being extracted
+	private boolean						needToBeStopped = false;		// true if the execution need to be stopped
 
-
+	
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
-	 * @param file 2Bit file
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws InvalidFileTypeException
 	 */
-	public TwoBitSequenceList(File file) throws FileNotFoundException, IOException, InvalidFileTypeException {
+	public TwoBitSequenceList() {
 		super();
 		// initializes the lists
 		for (int i = 0; i < chromosomeManager.size(); i++) {
 			add(null);
 		}
+	}
+	
+	
+	/**
+	 * Extracts the sequence list from a 2bit file
+	 * @param file 2Bit file
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws InvalidFileTypeException
+	 * @throws InterruptedException 
+	 */
+	public void extract(File file) throws FileNotFoundException, IOException, InvalidFileTypeException, InterruptedException  {
 		filePath = file.getAbsolutePath();
 		twoBitFile = new RandomAccessFile(file, "r");
 		twoBitFile.seek(0);
@@ -80,6 +91,10 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		String[] sequenceNames = new String[sequenceCount];
 		int[] offsets = new int[sequenceCount];
 		for (int i = 0; i < sequenceCount; i++) {
+			// if the execution need to be stopped we generate an InterruptedException
+			if (needToBeStopped) {
+				throw new InterruptedException();
+			}
 			byte sequenceNameSize = twoBitFile.readByte();
 			byte[] sequenceNameBytes = new byte[sequenceNameSize];
 			twoBitFile.read(sequenceNameBytes);
@@ -96,8 +111,13 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			boolean found = false;
 			while ((k < chromosomeManager.size()) && (!found)) {
 				if (chromosomeManager.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
+					// if the execution need to be stopped we generate an InterruptedException
+					if (needToBeStopped) {
+						throw new InterruptedException();
+					}
 					long currentPosition = twoBitFile.getFilePointer();
-					TwoBitSequence sequence = new TwoBitSequence(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
+					sequence = new TwoBitSequence();
+					sequence.extract(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
 					set(k, sequence);
 					twoBitFile.seek(currentPosition);
 					found = true;
@@ -114,7 +134,6 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	public final int getVersion() {
 		return version;
 	}
-
 
 
 	/**
@@ -168,5 +187,17 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+
+	/**
+	 * Stops the extraction of the 2bit file 
+	 */
+	@Override
+	public void stop() {
+		if (sequence != null) {
+			sequence.stop();
+		}
+		needToBeStopped = true;
 	}
 }

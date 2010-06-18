@@ -26,10 +26,10 @@ import yu.einstein.gdp2.util.Utils;
 public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequenceList> {
 
 	private static final long serialVersionUID = 5998366494409991822L;	// generated ID
-	private static final String 	ACTION_NAME = "Load Sequence Track";	// action name
+	private static final String 	ACTION_NAME = "Load Sequence Track";// action name
 	private static final String 	DESCRIPTION = "Load a track showing DNA sequences";	// tooltip
-	private File 					selectedFile;										// selected file
-	
+	private File 					selectedFile;		// selected file
+	private TwoBitSequenceList 		tbsl = null;		// list of sequence
 	
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -54,7 +54,9 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 		if (selectedFile != null) {
 			notifyActionStart("Loading Sequence File", 1, true);
-			return new TwoBitSequenceList(selectedFile);
+			tbsl = new TwoBitSequenceList();
+			tbsl.extract(selectedFile);
+			return tbsl;
 		}
 		return null;
 	}
@@ -68,5 +70,17 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 			Track newTrack = new NucleotideListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes);
 		}
+	}
+	
+	
+	/**
+	 * Stops the extraction of the list of sequence
+	 */
+	@Override
+	public void stop() {
+		if (tbsl != null) {
+			tbsl.stop();
+		}
+		super.stop();
 	}
 }

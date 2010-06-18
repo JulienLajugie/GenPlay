@@ -14,6 +14,7 @@ import java.util.AbstractList;
 import java.util.List;
 
 import yu.einstein.gdp2.core.enums.Nucleotide;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -22,30 +23,40 @@ import yu.einstein.gdp2.core.enums.Nucleotide;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide> {
+public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide>, Stoppable {
 
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
-	private transient RandomAccessFile 	raf;// 2bit random access file  
-	private final String	filePath;		// path of the 2bit file (used for the serialization)
-	private final int 		headerSize;		// the size in byte of the header of the sequence
-	private final String 	name;			// the sequence name  
-	private final int 		offset;			// the offset of the sequence data relative to the start of the file
-	private final int 		dnaSize;		// number of bases of DNA in the sequence
-	private final int[] 	nBlockStarts;	// the starting position for each block of Ns
-	private final int[] 	nBlockSizes;	// the length of each block of Ns
-	private final int[] 	maskBlockStarts;// the starting position for each masked block
-	private final int[] 	maskBlockSizes;	// the length of each masked block
+	private transient RandomAccessFile 	raf;			// 2bit random access file  
+	private String	filePath;					// path of the 2bit file (used for the serialization)
+	private int 	headerSize;					// the size in byte of the header of the sequence
+	private String 	name;						// the sequence name  
+	private int 	offset;						// the offset of the sequence data relative to the start of the file
+	private int 	dnaSize;					// number of bases of DNA in the sequence
+	private int[] 	nBlockStarts;				// the starting position for each block of Ns
+	private int[] 	nBlockSizes;				// the length of each block of Ns
+	private int[] 	maskBlockStarts;			// the starting position for each masked block
+	private int[] 	maskBlockSizes;				// the length of each masked block
+	private boolean	needToBeStopped = false; 	// true if the execution need to be stopped
 	
 	
 	/**
-	 * Creates an instance of {@link TwoBitSequence}
+	 * Default constructor. Creates an instance of {@link TwoBitSequence}
+	 */
+	public TwoBitSequence() {
+		super();
+	}
+	
+	
+	/**
+	 * Extract the information about a sequence from a {@link TwoBitSequence}
 	 * @param raf {@link RandomAccessFile}
 	 * @param offset offset of the sequence in the file
 	 * @param name name of the sequence
 	 * @param reverseBytes true if the byte order in the input file need to be reversed
 	 * @throws IOException
+	 * @throws InterruptedException 
 	 */
-	public TwoBitSequence(String filePath, RandomAccessFile raf, int offset, String name, boolean reverseBytes) throws IOException {
+	public void extract(String filePath, RandomAccessFile raf, int offset, String name, boolean reverseBytes) throws IOException, InterruptedException {
 		this.filePath = filePath;
 		this.raf = raf;
 		this.name = name;
@@ -64,6 +75,10 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		}
 		nBlockStarts = new int[nBlockCount];
 		for (int i = 0; i < nBlockCount; i++) {
+			// if the execution need to be stopped we generate an InterruptedException
+			if (needToBeStopped) {
+				throw new InterruptedException();
+			}
 			if (reverseBytes) {
 				nBlockStarts[i] = Integer.reverseBytes(raf.readInt());
 			} else {
@@ -72,6 +87,10 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		}
 		nBlockSizes = new int[nBlockCount];
 		for (int i = 0; i < nBlockCount; i++) {
+			// if the execution need to be stopped we generate an InterruptedException
+			if (needToBeStopped) {
+				throw new InterruptedException();
+			}
 			if (reverseBytes) {
 				nBlockSizes[i] = Integer.reverseBytes(raf.readInt());
 			} else {
@@ -87,6 +106,10 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		}
 		maskBlockStarts = new int[maskBlockCount];
 		for (int i = 0; i < maskBlockCount; i++) {
+			// if the execution need to be stopped we generate an InterruptedException
+			if (needToBeStopped) {
+				throw new InterruptedException();
+			}
 			if (reverseBytes) {
 				maskBlockStarts[i] = Integer.reverseBytes(raf.readInt());
 			} else {
@@ -95,6 +118,10 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		}
 		maskBlockSizes = new int[maskBlockCount];
 		for (int i = 0; i < maskBlockCount; i++) {
+			// if the execution need to be stopped we generate an InterruptedException
+			if (needToBeStopped) {
+				throw new InterruptedException();
+			}
 			if (reverseBytes) {
 				maskBlockSizes[i] = Integer.reverseBytes(raf.readInt());
 			} else {
@@ -224,5 +251,11 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+
+	@Override
+	public void stop() {
+		needToBeStopped = true;
 	}
 }
