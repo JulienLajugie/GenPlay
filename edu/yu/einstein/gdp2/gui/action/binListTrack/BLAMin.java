@@ -37,7 +37,7 @@ public final class BLAMin extends TrackListActionOperationWorker<Double> {
 
 
 	/**
-	 * Creates an instance of {@link SCWLAMin}
+	 * Creates an instance of {@link BLAMin}
 	 */
 	public BLAMin() {
 		super();

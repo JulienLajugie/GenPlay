@@ -28,12 +28,16 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAddConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAverage;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLACountNonNullLength;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLADivideConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAGenerateBinList;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
@@ -179,12 +183,16 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(STASetYAxis.ACTION_KEY, new STASetYAxis());
 		// add SCWList actions
+		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
+		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
 		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		getActionMap().put(SCWLAMax.ACTION_KEY, new SCWLAMax());
 		getActionMap().put(SCWLAMin.ACTION_KEY, new SCWLAMin());
+		getActionMap().put(SCWLAMultiplyConstant.ACTION_KEY, new SCWLAMultiplyConstant());
 		getActionMap().put(SCWLAStandardDeviation.ACTION_KEY, new SCWLAStandardDeviation());
+		getActionMap().put(SCWLASubtractConstant.ACTION_KEY, new SCWLASubtractConstant());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAdd.ACTION_KEY, new BLAAdd());

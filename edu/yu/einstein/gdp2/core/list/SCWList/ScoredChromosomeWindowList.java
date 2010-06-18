@@ -4,8 +4,11 @@
  */
 package yu.einstein.gdp2.core.list.SCWList;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -425,7 +428,26 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	public Long getNonNullLength() {
 		return nonNullLength;
 	}
-
+	
+	
+	/**
+	 * Performs a deep clone of the current {@link ScoredChromosomeWindowList}
+	 * @return a new ScoredChromosomeWindowList
+	 */
+	public ScoredChromosomeWindowList deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ((ScoredChromosomeWindowList)ois.readObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	
 	/**
 	 * Computes the statistics of the list after unserialization

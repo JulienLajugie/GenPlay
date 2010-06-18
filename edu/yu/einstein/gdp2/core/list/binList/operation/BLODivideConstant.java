@@ -41,8 +41,10 @@ public class BLODivideConstant implements Operation<BinList> {
 	
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		if (constant == 0) {
+		if (constant == 1) {
 			return binList.deepClone();
+		} else if (constant == 0) {
+			throw new ArithmeticException("Division By Zero");
 		}
 		
 		final OperationPool op = OperationPool.getInstance();
@@ -83,7 +85,7 @@ public class BLODivideConstant implements Operation<BinList> {
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Divide Constant, Constant = " + constant;
+		return "Operation: Divide by Constant, Constant = " + constant;
 	}
 	
 	

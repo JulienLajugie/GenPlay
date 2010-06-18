@@ -40,7 +40,7 @@ public final class BLAStandardDeviation extends TrackListActionOperationWorker<D
 
 
 	/**
-	 * Creates an instance of {@link SCWLAStandardDeviation}
+	 * Creates an instance of {@link BLAStandardDeviation}
 	 */
 	public BLAStandardDeviation() {
 		super();

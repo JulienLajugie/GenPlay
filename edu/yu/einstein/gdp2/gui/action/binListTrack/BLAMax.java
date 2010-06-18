@@ -36,7 +36,7 @@ public final class BLAMax extends TrackListActionOperationWorker<Double> {
 
 
 	/**
-	 * Creates an instance of {@link SCWLAMax}
+	 * Creates an instance of {@link BLAMax}
 	 */
 	public BLAMax() {
 		super();

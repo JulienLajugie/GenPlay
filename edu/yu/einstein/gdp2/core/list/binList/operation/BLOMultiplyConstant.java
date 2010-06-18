@@ -41,7 +41,7 @@ public class BLOMultiplyConstant implements Operation<BinList> {
 	
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
-		if (constant == 0) {
+		if (constant == 1) {
 			return binList.deepClone();
 		}
 		
@@ -83,7 +83,7 @@ public class BLOMultiplyConstant implements Operation<BinList> {
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Multiply Constant, Constant = " + constant;
+		return "Operation: Multiply by Constant, Constant = " + constant;
 	}
 	
 	
