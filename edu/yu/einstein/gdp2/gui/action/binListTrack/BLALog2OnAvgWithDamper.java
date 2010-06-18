@@ -28,7 +28,7 @@ public final class BLALog2OnAvgWithDamper extends TrackListActionOperationWorker
 	private static final String 	DESCRIPTION = 
 		"Apply a log2 + dumper function to the scores of " +
 		"the selected track";											// tooltip
-	private BinListTrack selectedTrack;									// selected track
+	private BinListTrack 			selectedTrack;						// selected track
 
 	
 	/**

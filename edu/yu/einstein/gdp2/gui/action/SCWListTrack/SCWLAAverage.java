@@ -2,30 +2,30 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.action.binListTrack;
+package yu.einstein.gdp2.gui.action.SCWListTrack;
 
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BLOAverage;
+import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
+import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOAverage;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
-import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.SCWListTrack;
 
 
 /**
- * Computes the average of the scores of the selected {@link BinListTrack}.
+ * Computes the average of the scores of the selected {@link SCWListTrack}.
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLAAverage extends TrackListActionOperationWorker<Double> {
+public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 
-	private static final long serialVersionUID = 922723721396065388L;	// generated ID
+	private static final long serialVersionUID = 4662911501034876210L;
 	private static final String 	ACTION_NAME = "Average";			// action name
 	private static final String 	DESCRIPTION = 
 		"Compute the average of the scores of the selected track";		// tooltip
@@ -34,28 +34,28 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAAverage";
+	public static final String ACTION_KEY = "SCWLAAverage";
 
 
 	/**
-	 * Creates an instance of {@link BLAAverage}
+	 * Creates an instance of {@link SCWLAAverage}
 	 */
-	public BLAAverage() {
+	public SCWLAAverage() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
-
-
+	
+	
 	@Override
 	public Operation<Double> initializeOperation() {
-		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
-				operation = new BLOAverage(binList, selectedChromo);
+				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				operation = new SCWLOAverage(scwList, selectedChromo);
 				return operation;
 			}
 		}

@@ -166,6 +166,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiShowRepartition = new JMenuItem(actionMap.get(BLARepartition.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(BLAConcatenate.ACTION_KEY));
 		
+		addSeparator();
 		add(jmiUndo);
 		add(jmiRedo);
 		add(jmiReset);

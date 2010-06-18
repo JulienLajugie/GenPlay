@@ -31,6 +31,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 	private static final String 	DESCRIPTION = 
 		"Concatenate the selected track with other tracks in an output file";	// tooltip
 
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */

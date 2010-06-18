@@ -27,8 +27,7 @@ public final class BLAAddConstant extends TrackListActionOperationWorker<BinList
 	private static final String 	ACTION_NAME = "Addition (Constant)";// action name
 	private static final String 	DESCRIPTION = 
 		"Add a constant to the scores of the selected track";			// tooltip
-	private BinListTrack selectedTrack;
-	private Operation<BinList> operation;
+	private BinListTrack 			selectedTrack;						// selected track
 
 	
 	/**

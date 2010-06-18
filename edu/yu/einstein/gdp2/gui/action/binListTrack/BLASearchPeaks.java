@@ -28,7 +28,7 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 	private static final String 	ACTION_NAME = "Search Peaks";		// action name
 	private static final String 	DESCRIPTION = 
 		"Search the peaks of the selected track";						// tooltip
-	private BinListTrack selectedTrack;									// selected track
+	private BinListTrack 			selectedTrack;						// selected track
 
 	
 	/**

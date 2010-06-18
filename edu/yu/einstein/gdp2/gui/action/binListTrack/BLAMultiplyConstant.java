@@ -27,7 +27,7 @@ public class BLAMultiplyConstant extends TrackListActionOperationWorker<BinList>
 	private static final String 	ACTION_NAME = "Multiplication (Constant)";// action name
 	private static final String 	DESCRIPTION = 
 		"Multiply the scores of the selected track by a constant";		// tooltip
-	private BinListTrack selectedTrack;									// selected track
+	private BinListTrack 			selectedTrack;						// selected track
 
 	/**
 	 * key of the action in the {@link ActionMap}

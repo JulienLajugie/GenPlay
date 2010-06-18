@@ -24,7 +24,7 @@ public final class BLALog2 extends TrackListActionOperationWorker<BinList> {
 	private static final String 	ACTION_NAME = "Log2";				// action name
 	private static final String 	DESCRIPTION = 
 		"Apply a log2 function to the scores of the selected track";	// tooltip
-	private BinListTrack selectedTrack;									// selected track
+	private BinListTrack			selectedTrack;						// selected track
 
 	
 	/**

@@ -28,6 +28,7 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 		"Change the precision of the data of the selected track";			// tooltip
 	private BinListTrack 			selectedTrack;							// selected track
 	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */

@@ -2,44 +2,44 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.action.binListTrack;
+package yu.einstein.gdp2.gui.action.SCWListTrack;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BLOMin;
+import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
+import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOMin;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
-import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.SCWListTrack;
 
 
 /**
- * Shows the minimum score of the selected {@link BinListTrack}
+ * Shows the minimum score of the selected {@link SCWListTrack}
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLAMin extends TrackListActionOperationWorker<Double> {
+public final class SCWLAMin extends TrackListActionOperationWorker<Double> {
 
 	private static final long serialVersionUID = 3523404731226850786L;	// generated ID
 	private static final String 	ACTION_NAME = "Minimum";			// action name
 	private static final String 	DESCRIPTION = 
 		"Show the minimum score of the selected track";					// tooltip
-	private BinListTrack 			selectedTrack;						// selected track
+	private SCWListTrack 			selectedTrack;						// selected track
 	
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAMin";
+	public static final String ACTION_KEY = "SCWLAMin";
 
 
 	/**
 	 * Creates an instance of {@link SCWLAMin}
 	 */
-	public BLAMin() {
+	public SCWLAMin() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -49,12 +49,12 @@ public final class BLAMin extends TrackListActionOperationWorker<Double> {
 
 	@Override
 	public Operation<Double> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
-				Operation<Double> operation = new BLOMin(binList, selectedChromo);
+				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				Operation<Double> operation = new SCWLOMin(scwList, selectedChromo);
 				return operation;
 			}
 		}

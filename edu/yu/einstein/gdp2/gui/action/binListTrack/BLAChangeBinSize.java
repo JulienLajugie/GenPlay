@@ -29,7 +29,7 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 	private static final String 	ACTION_NAME = "Change Bin Size";		// action name
 	private static final String 	DESCRIPTION = 
 		"Change the size of the bins of the selected track ";				// tooltip
-	private BinListTrack selectedTrack;										// selected track
+	private BinListTrack 			selectedTrack;							// selected track
 
 	/**
 	 * key of the action in the {@link ActionMap}

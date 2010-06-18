@@ -27,7 +27,7 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 	private static final String 	ACTION_NAME = "Nomalization";			// action name
 	private static final String 	DESCRIPTION = 
 		"Normalizes the scores of the selected track";					// tooltip
-	private BinListTrack selectedTrack;									// selected track
+	private BinListTrack 			selectedTrack;						// selected track
 
 	
 	/**

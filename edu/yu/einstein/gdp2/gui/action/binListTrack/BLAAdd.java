@@ -31,10 +31,9 @@ public final class BLAAdd extends TrackListActionOperationWorker<BinList> {
 	private static final String 	ACTION_NAME = "Addition";	// action name
 	private static final String 	DESCRIPTION = 
 		"Add the selected track to another one";				// tooltip
-	private BinListTrack 				selectedTrack = null;	// selected track
-	private Track 						otherTrack = null;		// 2nd selected track
-	private Track 						resultTrack = null;		// result track
-	private Operation<BinList> 	operation;				// operation
+	private BinListTrack 			selectedTrack = null;		// selected track
+	private Track 					otherTrack = null;			// 2nd selected track
+	private Track 					resultTrack = null;			// result track
 
 
 	/**

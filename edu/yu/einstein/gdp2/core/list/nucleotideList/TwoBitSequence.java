@@ -254,6 +254,9 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	}
 
 
+	/**
+	 * Stops the extraction of the data
+	 */
 	@Override
 	public void stop() {
 		needToBeStopped = true;

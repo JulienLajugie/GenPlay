@@ -2,20 +2,20 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.action.binListTrack;
+package yu.einstein.gdp2.gui.action.SCWListTrack;
 
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BLOStandardDeviation;
+import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
+import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOStandardDeviation;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
-import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.SCWListTrack;
 
 
 /**
@@ -24,7 +24,7 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLAStandardDeviation extends TrackListActionOperationWorker<Double> {
+public final class SCWLAStandardDeviation extends TrackListActionOperationWorker<Double> {
 
 	private static final long serialVersionUID = -3906549904760962910L;	// generated ID
 	private static final String 	ACTION_NAME = "Standard Deviation";	// action name
@@ -36,13 +36,13 @@ public final class BLAStandardDeviation extends TrackListActionOperationWorker<D
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAStandardDeviation";
+	public static final String ACTION_KEY = "SCWLAStandardDeviation";
 
 
 	/**
 	 * Creates an instance of {@link SCWLAStandardDeviation}
 	 */
-	public BLAStandardDeviation() {
+	public SCWLAStandardDeviation() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -52,12 +52,12 @@ public final class BLAStandardDeviation extends TrackListActionOperationWorker<D
 
 	@Override
 	public Operation<Double> initializeOperation() {
-		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
-				Operation<Double> operation = new BLOStandardDeviation(binList, selectedChromo);
+				ScoredChromosomeWindowList scwList = selectedTrack.getData();
+				Operation<Double> operation = new SCWLOStandardDeviation(scwList, selectedChromo);
 				return operation;
 			}
 		}
