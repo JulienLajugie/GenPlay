@@ -30,7 +30,8 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 	private static final String 	ACTION_NAME = "Concatenate";				// action name
 	private static final String 	DESCRIPTION = 
 		"Concatenate the selected track with other tracks in an output file";	// tooltip
-
+	private ConcatenateBinListWriter writer;									// writer that generate the output
+	
 	
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -56,8 +57,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
-		// we want to have at least two tracks
-		if ((selectedTracks != null) && (selectedTracks.length > 1)) {
+		if (selectedTracks != null) {
 			// save dialog
 			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
@@ -75,11 +75,19 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 						binListArray[i] = ((BinListTrack)selectedTracks[i]).getBinList();
 						nameArray[i] = selectedTracks[i].getName();
 					}
-					notifyActionStart("Generating File", 1, false);
-					new ConcatenateBinListWriter(binListArray, nameArray, selectedFile).write();
+					notifyActionStart("Generating File", 1, true);
+					writer = new ConcatenateBinListWriter(binListArray, nameArray, selectedFile);
+					writer.write();
 				}
 			}
 		}	
 		return null;
+	}
+	
+	
+	@Override
+	public void stop() {
+		writer.stop();
+		super.stop();
 	}
 }

@@ -15,12 +15,12 @@ import javax.swing.filechooser.FileFilter;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
-import yu.einstein.gdp2.core.writer.binListWriter.BinListWriter;
+import yu.einstein.gdp2.core.writer.Writer;
 import yu.einstein.gdp2.core.writer.binListWriter.BinListWriterFactory;
-import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriter;
 import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriterFactory;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.Track;
@@ -37,7 +37,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 	private static final String 	ACTION_NAME = "Save As";			// action name
 	private static final String 	DESCRIPTION = 
 		"Save the selected track";								 		// tooltip
-
+	private Writer 					writer;								// object that writes the data
 
 	/**
 	 * action accelerator {@link KeyStroke}
@@ -99,9 +99,9 @@ public final class ATASave extends TrackListActionWorker<Void> {
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 				BinList data = selectedTrack.getBinList();
 				String name = selectedTrack.getName();
-				BinListWriter blw = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
-				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, false);
-				blw.write();
+				writer = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
+				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
+				writer.write();
 			}
 		}
 	}
@@ -129,10 +129,19 @@ public final class ATASave extends TrackListActionWorker<Void> {
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
 				GeneList data = selectedTrack.getData();
 				String name = selectedTrack.getName();
-				final GeneListWriter glw = GeneListWriterFactory.getGeneListWriter(selectedFile, data, name, selectedFilter);
-				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, false);
-				glw.write();
+				writer = GeneListWriterFactory.getGeneListWriter(selectedFile, data, name, selectedFilter);
+				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
+				writer.write();
 			}
 		}
+	}
+	
+	
+	@Override
+	public void stop() {
+		if ((writer != null) && (writer instanceof Stoppable)) {
+			((Stoppable)writer).stop();
+		}
+		super.stop();
 	}
 }

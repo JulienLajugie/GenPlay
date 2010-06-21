@@ -12,6 +12,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -19,8 +20,11 @@ import yu.einstein.gdp2.core.list.geneList.GeneList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GeneListAsBedWriter extends GeneListWriter {
+public final class GeneListAsBedWriter extends GeneListWriter implements Stoppable {
 
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
+
+	
 	/**
 	 * Creates an instance of {@link GeneListAsBedWriter}.
 	 * @param outputFile output {@link File}
@@ -33,7 +37,7 @@ public final class GeneListAsBedWriter extends GeneListWriter {
 
 
 	@Override
-	public void write() throws IOException {
+	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
 		try {
 			// try to create a output file
@@ -44,6 +48,12 @@ public final class GeneListAsBedWriter extends GeneListWriter {
 			// print the data
 			for (List<Gene> currentList : data) {
 				for (Gene currentGene : currentList) {
+					// if the operation need to be stopped we close the writer and delete the file 
+					if (needsToBeStopped) {
+						writer.close();
+						outputFile.delete();
+						throw new InterruptedException();
+					}
 					String lineToPrint = new String();
 					lineToPrint = currentGene.getChromo().toString();
 					lineToPrint += "\t";
@@ -101,5 +111,14 @@ public final class GeneListAsBedWriter extends GeneListWriter {
 				writer.close();
 			}
 		}
+	}	
+	
+	
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
 	}
 }

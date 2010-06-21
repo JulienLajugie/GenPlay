@@ -34,7 +34,7 @@ public class BLANormalizeStandardScore extends TrackListActionOperationWorker<Bi
 
 
 	/**
-	 * Creates an instance of {@link BLANormalize}
+	 * Creates an instance of {@link BLANormalizeStandardScore}
 	 */
 	public BLANormalizeStandardScore() {
 		super();

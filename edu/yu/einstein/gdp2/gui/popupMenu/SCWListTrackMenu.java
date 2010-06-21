@@ -12,6 +12,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAverage;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLADivideConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAGenerateBinList;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAInvertConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
@@ -37,6 +38,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem	jmiCountNonNullLength;	// menu count non null length
 	private final JMenuItem jmiDivideConstant;		// menu divide constant
 	private final JMenuItem jmiGenerateBinList;		// menu generate a BinList track
+	private final JMenuItem jmiInvertConstant;		// menu invert constant
 	private final JMenuItem	jmiMax;					// menu max
 	private final JMenuItem	jmiMin;					// menu min
 	private final JMenuItem jmiMultiplyConstant;	// menu multiply constant
@@ -57,6 +59,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(SCWLADivideConstant.ACTION_KEY));
 		jmiGenerateBinList = new JMenuItem(actionMap.get(SCWLAGenerateBinList.ACTION_KEY));		
+		jmiInvertConstant = new JMenuItem(actionMap.get(SCWLAInvertConstant.ACTION_KEY));
 		jmiMax = new JMenuItem(actionMap.get(SCWLAMax.ACTION_KEY));
 		jmiMin = new JMenuItem(actionMap.get(SCWLAMin.ACTION_KEY));
 		jmiMultiplyConstant = new JMenuItem(actionMap.get(SCWLAMultiplyConstant.ACTION_KEY));
@@ -69,6 +72,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiSubtractConstant);
 		jmOperation.add(jmiMultiplyConstant);
 		jmOperation.add(jmiDivideConstant);
+		jmOperation.add(jmiInvertConstant);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiMin);
 		jmOperation.add(jmiMax);

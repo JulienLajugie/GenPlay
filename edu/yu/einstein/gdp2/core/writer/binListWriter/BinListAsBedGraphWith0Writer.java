@@ -12,6 +12,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -19,8 +20,10 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BinListAsBedGraphWith0Writer extends BinListWriter {
+public final class BinListAsBedGraphWith0Writer extends BinListWriter implements Stoppable {
 
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
+	
 
 	/**
 	 * Creates an instance of {@link BinListAsBedGraphWith0Writer}.
@@ -34,7 +37,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter {
 
 
 	@Override
-	public void write() throws IOException {
+	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
 		try {
 			// try to create a output file
@@ -48,6 +51,12 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter {
 				if(data.get(currentChromosome) != null) {
 					List<Double> currentList = data.get(currentChromosome);
 					for (int j = 0; j < currentList.size(); j++) {
+						// if the operation need to be stopped we close the writer and delete the file 
+						if (needsToBeStopped) {
+							writer.close();
+							outputFile.delete();
+							throw new InterruptedException();
+						}
 						writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
 						writer.newLine();
 					}
@@ -58,5 +67,14 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter {
 				writer.close();
 			}
 		}
+	}
+	
+	
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
 	}
 }

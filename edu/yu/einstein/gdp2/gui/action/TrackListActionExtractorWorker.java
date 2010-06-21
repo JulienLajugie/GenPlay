@@ -71,11 +71,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 		if (fileToExtract != null) {
 			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
-				if (extractor instanceof Stoppable) {
-					notifyActionStart("Loading File", 1, true);
-				} else {
-					notifyActionStart("Loading File", 1, false);
-				}
+				notifyActionStart("Loading File", 1, extractor instanceof Stoppable);
 				extractor.extract();
 				notifyActionStop();
 				if (extractor.getName() != null) {

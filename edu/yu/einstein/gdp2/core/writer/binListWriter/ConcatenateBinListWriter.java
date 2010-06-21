@@ -12,7 +12,9 @@ import java.io.IOException;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.writer.Writer;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -20,12 +22,13 @@ import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class ConcatenateBinListWriter {
+public class ConcatenateBinListWriter implements Writer, Stoppable {
 
-	private final BinList[] 		binListArray;	// Array of the BinList to concatenate
-	private final String[] 			nameArray;		// Name of the BinLists
-	private final File				outputFile;		// File where to write the concatenation
-
+	private final BinList[] 		binListArray;			// array of the BinList to concatenate
+	private final String[] 			nameArray;				// name of the BinLists
+	private final File				outputFile;				// file where to write the concatenation
+	private boolean					needsToBeStopped = false;// true if the writing need to be stopped 
+	
 
 	/**
 	 * Creates an instance of {@link ConcatenateBinListWriter}
@@ -44,8 +47,9 @@ public class ConcatenateBinListWriter {
 	 * Concatenates and saves a list of {@link BinList} in a file
 	 * @throws IOException
 	 * @throws BinListDifferentWindowSizeException
+	 * @throws InterruptedException 
 	 */
-	public void write() throws IOException, BinListDifferentWindowSizeException {
+	public void write() throws IOException, BinListDifferentWindowSizeException, InterruptedException {
 		if (binListArray.length > 0) {
 			
 			// check if the BinList all have the same bin size 
@@ -84,6 +88,12 @@ public class ConcatenateBinListWriter {
 					while (j < binCount) {
 						writer.write(currentChromo + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize));
 						for (BinList currentBinList: binListArray) {
+							// if the operation need to be stopped we close the writer and delete the file 
+							if (needsToBeStopped) {
+								writer.close();
+								outputFile.delete();
+								throw new InterruptedException();
+							}							
 							if ((currentBinList.get(currentChromo) != null) && (j < currentBinList.size(currentChromo))) {
 								writer.write("\t" + currentBinList.get(currentChromo, j));
 							} else {
@@ -100,5 +110,14 @@ public class ConcatenateBinListWriter {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;		
 	}
 }

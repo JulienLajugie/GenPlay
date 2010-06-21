@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEvent;
 import yu.einstein.gdp2.gui.event.operationProgressEvent.OperationProgressEventsGenerator;
@@ -42,11 +41,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	private OperationPool(ChromosomeManager chromosomeManager) {
 		super();
 		cm = chromosomeManager;
-		long length = 0;
-		for (Chromosome currentChromo: chromosomeManager) {
-			length += currentChromo.getLength();
-		}
-		genomeLength = length;
+		genomeLength = chromosomeManager.getGenomeLength();
 		progressListeners = new ArrayList<OperationProgressListener>();
 	}
 

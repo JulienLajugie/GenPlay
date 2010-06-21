@@ -12,6 +12,7 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -19,9 +20,11 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BinListAsWiggleWriter extends BinListWriter {
+public final class BinListAsWiggleWriter extends BinListWriter implements Stoppable {
 
 	private static final int ZERO_COUNT = 15;	// how many successive 0 values are needed to print a new a header line
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
+	
 	
 	/**
 	 * Creates an instance of {@link BinListAsWiggleWriter}.
@@ -35,7 +38,7 @@ public final class BinListAsWiggleWriter extends BinListWriter {
 
 
 	@Override
-	public void write() throws IOException {
+	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
 		try {
 			// try to create a output file
@@ -60,6 +63,12 @@ public final class BinListAsWiggleWriter extends BinListWriter {
 						int cpt = 0;
 						// if there is more than ZERO_COUNT 0 values we print a new header
 						while ((j < currentList.size()) && ((cpt < ZERO_COUNT) || (currentList.get(j) == 0))) {
+							// if the operation need to be stopped we close the writer and delete the file 
+							if (needsToBeStopped) {
+								writer.close();
+								outputFile.delete();
+								throw new InterruptedException();
+							}
 							if (currentList.get(j) == 0) {
 								cpt++;
 							} else {
@@ -84,5 +93,14 @@ public final class BinListAsWiggleWriter extends BinListWriter {
 				writer.close();
 			}
 		}
+	}
+	
+	
+	/**
+	 * Stops the writer while it's writing a file
+	 */
+	@Override
+	public void stop() {
+		needsToBeStopped = true;
 	}
 }

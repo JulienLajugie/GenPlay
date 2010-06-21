@@ -28,6 +28,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFindIslands;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALog2;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALog2OnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMax;
@@ -72,15 +73,16 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 
 	private final JCheckBoxMenuItem jcbmiCompression;	// check box menu compression
 	
-	private final JMenuItem		jmiAdditionConstant;	// menu add constant to BinListTrack
-	private final JMenuItem		jmiSubtractionConstant;	// menu subtract constant from BinListTrack
-	private final JMenuItem		jmiMultiplicationConstant;// menu multiply BinListTrack by constant
-	private final JMenuItem		jmiDivisionConstant;	// menu divide BinListTrack by constant
+	private final JMenuItem		jmiAddConstant;			// menu add constant to BinListTrack
+	private final JMenuItem		jmiSubtractConstant;	// menu subtract constant from BinListTrack
+	private final JMenuItem		jmiMultiplyConstant;	// menu multiply BinListTrack by constant
+	private final JMenuItem		jmiDivideConstant;		// menu divide BinListTrack by constant
+	private final JMenuItem		jmiInvertConstant;		// menu invert BinListTrack
 	
-	private final JMenuItem		jmiAddition;			// menu add BinListTrack to another one
-	private final JMenuItem		jmiSubtraction;			// menu subtract another BinListTrack from selected one
-	private final JMenuItem		jmiMultiplication;		// menu multiply BinListTrack by another one
-	private final JMenuItem		jmiDivision;			// menu divide BinListTrack by another one
+	private final JMenuItem		jmiAdd;					// menu add BinListTrack to another one
+	private final JMenuItem		jmiSubtract;			// menu subtract another BinListTrack from selected one
+	private final JMenuItem		jmiMultiply;			// menu multiply BinListTrack by another one
+	private final JMenuItem		jmiDivide;				// menu divide BinListTrack by another one
 	
 	private final JMenuItem		jmiGauss;				// menu gauss BinListTrack
 	private final JMenuItem		jmiIndex;				// menu index BinListTrack
@@ -129,15 +131,16 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 
 		jcbmiCompression = new JCheckBoxMenuItem(actionMap.get(BLACompress.ACTION_KEY));
 		
-		jmiAdditionConstant = new JMenuItem(actionMap.get(BLAAddConstant.ACTION_KEY));
-		jmiSubtractionConstant = new JMenuItem(actionMap.get(BLASubtractConstant.ACTION_KEY));
-		jmiMultiplicationConstant = new JMenuItem(actionMap.get(BLAMultiplyConstant.ACTION_KEY));
-		jmiDivisionConstant = new JMenuItem(actionMap.get(BLADivideConstant.ACTION_KEY));
+		jmiAddConstant = new JMenuItem(actionMap.get(BLAAddConstant.ACTION_KEY));
+		jmiSubtractConstant = new JMenuItem(actionMap.get(BLASubtractConstant.ACTION_KEY));
+		jmiMultiplyConstant = new JMenuItem(actionMap.get(BLAMultiplyConstant.ACTION_KEY));
+		jmiDivideConstant = new JMenuItem(actionMap.get(BLADivideConstant.ACTION_KEY));
+		jmiInvertConstant = new JMenuItem(actionMap.get(BLAInvertConstant.ACTION_KEY));
 		
-		jmiAddition = new JMenuItem(actionMap.get(BLAAdd.ACTION_KEY));
-		jmiSubtraction = new JMenuItem(actionMap.get(BLASubtract.ACTION_KEY));
-		jmiMultiplication = new JMenuItem(actionMap.get(BLAMultiply.ACTION_KEY));
-		jmiDivision = new JMenuItem(actionMap.get(BLADivide.ACTION_KEY));
+		jmiAdd = new JMenuItem(actionMap.get(BLAAdd.ACTION_KEY));
+		jmiSubtract = new JMenuItem(actionMap.get(BLASubtract.ACTION_KEY));
+		jmiMultiply = new JMenuItem(actionMap.get(BLAMultiply.ACTION_KEY));
+		jmiDivide = new JMenuItem(actionMap.get(BLADivide.ACTION_KEY));
 		
 		jmiGauss = new JMenuItem(actionMap.get(BLAGauss.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(BLAIndex.ACTION_KEY));
@@ -177,15 +180,16 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		addSeparator();
 		add(jcbmiCompression);
 		
-		jmOperation.add(jmiAdditionConstant);
-		jmOperation.add(jmiSubtractionConstant);
-		jmOperation.add(jmiMultiplicationConstant);
-		jmOperation.add(jmiDivisionConstant);
+		jmOperation.add(jmiAddConstant);
+		jmOperation.add(jmiSubtractConstant);
+		jmOperation.add(jmiMultiplyConstant);
+		jmOperation.add(jmiDivideConstant);
+		jmOperation.add(jmiInvertConstant);
 		jmOperation.addSeparator();
-		jmOperation.add(jmiAddition);
-		jmOperation.add(jmiSubtraction);
-		jmOperation.add(jmiMultiplication);
-		jmOperation.add(jmiDivision);
+		jmOperation.add(jmiAdd);
+		jmOperation.add(jmiSubtract);
+		jmOperation.add(jmiMultiply);
+		jmOperation.add(jmiDivide);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGauss);
 		jmOperation.add(jmiIndex);
