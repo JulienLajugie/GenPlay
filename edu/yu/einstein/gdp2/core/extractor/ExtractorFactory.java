@@ -80,6 +80,8 @@ public final class ExtractorFactory {
 			return new ElandExtendedExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("psl")) {
 			return new PSLExtractor(fileToExtract, logFile);
+		} else if (fileExtension.equalsIgnoreCase("sam")) {
+			return new SAMExtractor(fileToExtract, logFile);			
 		} else {
 			return null;
 		}		
@@ -138,6 +140,8 @@ public final class ExtractorFactory {
 									return new ElandExtendedExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("psl")) {	
 									return new PSLExtractor(fileToExtract, logFile);
+								} else if (type.equalsIgnoreCase("sam")) {	
+									return new SAMExtractor(fileToExtract, logFile);
 								} else {
 									return null;
 								}

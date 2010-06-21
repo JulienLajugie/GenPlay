@@ -26,6 +26,7 @@ import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
 import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.PSLFilter;
 import yu.einstein.gdp2.gui.fileFilter.PairFilter;
+import yu.einstein.gdp2.gui.fileFilter.SAMFilter;
 import yu.einstein.gdp2.gui.fileFilter.SerializedBinListFilter;
 import yu.einstein.gdp2.gui.fileFilter.TwoBitFilter;
 import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
@@ -246,7 +247,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
 	public static ExtendedFileFilter[] getReadableBinListFileFilters() {
-		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] stripeFileFilters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter()};
 		return stripeFileFilters;
 	}
 

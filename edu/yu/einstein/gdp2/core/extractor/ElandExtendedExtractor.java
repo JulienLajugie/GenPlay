@@ -109,9 +109,6 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	@Override
 	protected void extractLine(String extractedLine) throws InvalidDataLineException {
-		
-		//System.out.println(extractedLine);
-		
 		byte[] line = extractedLine.getBytes();
 		byte[] matchChar = new byte[4]; 
 		byte[] chromoChar = new byte[64];
