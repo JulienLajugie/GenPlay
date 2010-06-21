@@ -73,6 +73,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMin;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
+import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARedo;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAReset;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASaturate;
@@ -220,6 +221,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAMultiply.ACTION_KEY, new BLAMultiply());
 		getActionMap().put(BLAMultiplyConstant.ACTION_KEY, new BLAMultiplyConstant());
 		getActionMap().put(BLANormalize.ACTION_KEY, new BLANormalize());
+		getActionMap().put(BLANormalizeStandardScore.ACTION_KEY, new BLANormalizeStandardScore());
 		getActionMap().put(BLARedo.ACTION_KEY, new BLARedo());
 		getActionMap().put(BLAReset.ACTION_KEY, new BLAReset());
 		getActionMap().put(BLASumScore.ACTION_KEY, new BLASumScore());
