@@ -69,7 +69,9 @@ public class PALoadProject extends TrackListActionWorker<Void> {
 	
 	@Override
 	protected void doAtTheEnd(Void actionResult) {
-		JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-		mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+		if (actionResult != null) {
+			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+			mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+		}
 	}
 }

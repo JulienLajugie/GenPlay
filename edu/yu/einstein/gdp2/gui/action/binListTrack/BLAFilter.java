@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFilterBandStop;
 import yu.einstein.gdp2.core.list.binList.operation.BLOFilterCount;
 import yu.einstein.gdp2.core.list.binList.operation.BLOFilterDensity;
 import yu.einstein.gdp2.core.list.binList.operation.BLOFilterPercentage;
@@ -19,6 +20,7 @@ import yu.einstein.gdp2.core.list.binList.operation.BLOFilterThreshold;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
+import yu.einstein.gdp2.gui.dialog.TwoNumbersOptionPane;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.util.Utils;
 
@@ -70,6 +72,8 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 				return filterThreshold();
 			case DENSITY:
 				return filterDensity();
+			case BANDSTOP:
+				return filterBandStop();
 			default:
 				throw new IllegalArgumentException("Invalid Saturation Type");
 			}
@@ -165,6 +169,25 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 						return new BLOFilterThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), successiveValues.intValue());
 					}
 				}
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Filters values between two specified thresholds
+	 */
+	private Operation<BinList> filterBandStop() {
+		BinList binList = selectedTrack.getBinList();		
+		Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Thresholds", "Remove Values Between", "And", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 100);
+		if(thresholds != null) {
+			double thresholdLow = thresholds[0].doubleValue();
+			double thresholdHigh = thresholds[1].doubleValue();
+			if (thresholdHigh <= thresholdLow) {
+				JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
+			} else {
+				return new BLOFilterBandStop(binList, thresholdLow, thresholdHigh);
 			}
 		}
 		return null;

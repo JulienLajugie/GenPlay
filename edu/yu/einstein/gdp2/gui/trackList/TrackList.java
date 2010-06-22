@@ -23,11 +23,13 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.UIManager;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
+import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAddConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAverage;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLACountNonNullLength;
@@ -714,7 +716,15 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			GZIPOutputStream gz = new GZIPOutputStream(fos);
 			ObjectOutputStream oos = new ObjectOutputStream(gz);
+			// there is bug during the serialization with the nimbus LAF if the track list is visible 
+			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
+				setViewportView(null);
+			}
 			oos.writeObject(this.trackList);
+			// there is bug during the serialization with the nimbus LAF if the track list is visible
+			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
+				setViewportView(jpTrackList);
+			}
 			oos.flush();
 			oos.close();
 			gz.flush();
@@ -735,11 +745,16 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @throws Exception 
 	 */
 	public void loadProject(File inputFile) throws Exception {
-		FileInputStream fis = new FileInputStream(inputFile);
-		GZIPInputStream gz = new GZIPInputStream(fis);
-		ObjectInputStream ois = new ObjectInputStream(gz);
-		trackList = (Track[])ois.readObject();
-		rebuildPanel();
+		try {
+			FileInputStream fis = new FileInputStream(inputFile);
+			GZIPInputStream gz = new GZIPInputStream(fis);
+			ObjectInputStream ois = new ObjectInputStream(gz);
+			trackList = (Track[])ois.readObject();
+			rebuildPanel();
+		} catch (IOException e) {
+			// a IOException is likely to be caused by a invalid file type 
+			throw new InvalidFileTypeException();
+		}
 	}
 
 

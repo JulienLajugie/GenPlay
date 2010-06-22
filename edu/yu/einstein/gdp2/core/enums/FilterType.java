@@ -27,7 +27,11 @@ public enum FilterType {
 	/**
 	 * filter values above or under a specified threshold
 	 */
-	THRESHOLD ("Threshold");
+	THRESHOLD ("Threshold"),
+	/**
+	 * filter values between two threshold
+	 */
+	BANDSTOP ("Band-Stop");
 
 	
 	private final String name; // String representing the filter 

@@ -67,6 +67,7 @@ public class PASaveProject extends TrackListActionWorker<Void> {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
+				notifyActionStart("Saving Project", 1, false);
 				trackList.saveProject(selectedFile);
 			}
 		}
@@ -76,7 +77,9 @@ public class PASaveProject extends TrackListActionWorker<Void> {
 
 	@Override
 	protected void doAtTheEnd(Void actionResult) {
-		JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-		mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+		if (actionResult != null) {
+			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+			mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+		}
 	}
 }

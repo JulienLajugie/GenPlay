@@ -265,7 +265,7 @@ public final class TwoNumbersOptionPane extends JDialog {
 	 * @param max Maximum allowed value for the input value.
 	 * @param defaultValue1 first default displayed value when the dialog is displayed.
 	 * @param defaultValue2 second default displayed value when the dialog is displayed.
-	 * @return A number if OK has been pressed, otherwise null.
+	 * @return an array containing 2 numbers if OK has been pressed, otherwise null.
 	 */
 	public static Number[] getValue(Component parent, String title, String label1, String label2, DecimalFormat df, double min, double max, double defaultValue1, double defaultValue2) {
 		TwoNumbersOptionPane NOP = new TwoNumbersOptionPane(parent, title, label1, label2, df, defaultValue1, defaultValue2, min, max);
