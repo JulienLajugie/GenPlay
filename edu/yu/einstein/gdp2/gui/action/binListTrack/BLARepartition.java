@@ -29,7 +29,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<int [][
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
 	private static final String 	DESCRIPTION = 
 		"Generate a csv file showing the repartition of the scores of the selected track";	// tooltip
-
+	private Track[] selectedTracks;
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -54,9 +54,9 @@ public final class BLARepartition extends TrackListActionOperationWorker<int [][
 		if (selectedTrack != null) {
 			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
 			if (scoreBin != null) {	
-				Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
+				selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
 				if ((selectedTracks != null)) {
-					final BinList[] binListArray = new BinList[selectedTracks.length];
+					BinList[] binListArray = new BinList[selectedTracks.length];
 					for (int i = 0; i < selectedTracks.length; i++) {
 						binListArray[i] = ((BinListTrack)selectedTracks[i]).getBinList();						
 					}					
@@ -66,5 +66,11 @@ public final class BLARepartition extends TrackListActionOperationWorker<int [][
 			}
 		}
 		return null;
+	}
+	
+	
+	@Override
+	protected void doAtTheEnd(int[][] actionResult) {
+
 	}
 }

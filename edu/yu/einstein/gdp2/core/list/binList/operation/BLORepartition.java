@@ -7,6 +7,7 @@ package yu.einstein.gdp2.core.list.binList.operation;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,21 +132,16 @@ public class BLORepartition extends JComponent implements Operation<int [][]> {
 		}
 		
 		scatPlotPanel = new ScatterPlotPanel(scatPlotData);
-		//scatPlotPanel.getScatterPlotPlanel().setPreferredSize(new Dimension(300,300));
-		//scatPlotPanel.getScatterPlotPlanel().repaint();
+		
 		JDialog jf = new JDialog();
+		jf.setTitle("Scatter Plot");
 		jf.setContentPane(scatPlotPanel);
-		//jf.setLayout(new GridBagLayout());
-		//GridBagConstraints gbc = new GridBagConstraints();
-		//gbc.fill = GridBagConstraints.BOTH;
-		//jf.add(scatPlotPanel.getScatterPlotPlanel(), gbc);
-		//scatPlotPanel.setVisible(true);
-		jf.setPreferredSize(new Dimension(800, 800));
+		jf.setPreferredSize(new Dimension(900, 700));
+		jf.setMinimumSize(new Dimension(500, 500));
+		jf.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jf.getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - jf.getHeight())/2);
 		jf.pack();
 		jf.setVisible(true);
-		//jf.validate();
-		//jf.repaint();
-		
+			
 		return null;
 	}
 
