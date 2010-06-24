@@ -6,36 +6,20 @@ package yu.einstein.gdp2.core.enums;
 
 
 /**
- * A type of filter
- * @author Julien Lajugie
+ * A type of island result
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public enum IslandResultType {
 	
 	/**
-	 * Value will be fixed
-	 */
-	CONSTANT ("Constant"),
-	/**
-	 * Value will be the score of a window
+	 * Value will be the original value of a window
 	 */	
-	WINDOWSCORE ("Window Score"),
+	FILTERED ("Filtered"),
 	/**
-	 * Value will be the score of a window
+	 * Value will be the score of an island
 	 */
-	ISLANDSCORE ("Island Score"),
-	/**
-	 * Value will be the average of the island window score
-	 */
-	ISLANDSCOREAVERAGE ("Score Island Average"),
-	/**
-	 * Value will be the probability of significant of a window
-	 */
-	WINDOWPROBABILITY ("Window Probability"),
-	/**
-	 * Value will be the island expectation to find one on the genome 
-	 */
-	ISLANDEXPECTATION ("Island Expectation");
+	IFSCORE ("Island Finder Score");
 
 	
 	private final String name; // String representing the filter 

@@ -17,39 +17,33 @@ import yu.einstein.gdp2.core.operation.Operation;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BLOFindIslands implements Operation<BinList> {
+public class BLOFindIslands implements Operation<BinList[]> {
 
-	private final BinList 			binList;	// input binlist
-	private final double 			readCountLimit;	// limit reads number to get an eligible windows
-	private final int				gap;	// minimum windows number needed to separate 2 islands
-	private final IslandResultType 	resultType;	// type of the result (constant, score, average)
-	
-	
+	private final BinList 		inputBinList;	// input binlist
+	private BinList[]			outputBinList;
+	private IslandFinder 		island;
 
-	public BLOFindIslands (BinList binList, double read_count_limit, int gap, IslandResultType resultType) {
-		this.binList = binList;
-		this.readCountLimit = read_count_limit;
-		this.gap = gap;
-		this.resultType = resultType;
+	public BLOFindIslands (BinList binList) {
+		this.inputBinList = binList;
+		this.island = new IslandFinder(binList);
 	}
 	
 	
 	@Override
-	public BinList compute () throws InterruptedException, ExecutionException {
-		IslandFinder island = new IslandFinder(binList, readCountLimit, gap, resultType);
-		return island.findIsland();
+	public BinList[] compute () throws InterruptedException, ExecutionException {
+		return outputBinList;
 	}
 
 	
 	@Override
 	public String getDescription () {
-		return "Operation: Island Finder, Read count limit = " + readCountLimit + ", Gap = " + gap;
+		return "Operation: Island Finder.";
 	}
 	
 	
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+		return BinList.getCreationStepCount(inputBinList.getBinSize()) + 1;
 	}
 	
 	
@@ -57,4 +51,19 @@ public class BLOFindIslands implements Operation<BinList> {
 	public String getProcessingDescription() {
 		return "Searching Islands";
 	}
+
+	
+	public IslandFinder getIsland() {
+		return island;
+	}
+
+	
+	public void setOutputBinList(BinList outputBinList, int index) {
+		this.outputBinList[index] = outputBinList;
+	}
+	
+	public void initOutputBinList(int size) {
+		this.outputBinList = new BinList[size];
+	}
+	
 }

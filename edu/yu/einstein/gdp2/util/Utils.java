@@ -364,6 +364,6 @@ public class Utils {
 				JOptionPane.QUESTION_MESSAGE,
 				null,
 				IslandResultType.values(),
-				IslandResultType.CONSTANT);
+				IslandResultType.FILTERED);
 	}	
 }
