@@ -6,7 +6,6 @@
 package yu.einstein.gdp2.gui.scatterPlot;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -21,31 +20,34 @@ import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 
+/**
+ * Class to draw a scatter plot of the given data
+ * @author Chirag
+ *
+ */
 
 public class ScatterPlotPanel extends JPanel implements MouseMotionListener, MouseListener {
 	
 	private static final long serialVersionUID = 2641451624657624826L;	// generated serial ID
 	
-	private static double xMin;
-	private static double yMin;
-	private static double xMax;
-	private static double yMax;
+	private static double xMin;							// x-axis min value
+	private static double yMin;							// y-axis min value
+	private static double xMax;							// x-axis max value	
+	private static double yMax;							// y-axis max value
 	
-	private static final int LEFT_PAD = 100;
-	private static final int RIGHT_PAD = 200;
-	private static final int RIGHT_PAD_LABELS = 100;
-	private static final int TOP_PAD = 200;
-	private static final int BOTTOM_PAD = 100;
-	private static final int TOP_PAD_LABELS = 100;
+	private static final int LEFT_PAD = 100;			// Left side margin
+	private static final int RIGHT_PAD = 200;			// Right side margin
+	private static final int RIGHT_PAD_LABELS = 100;	// Right Pad to accomodate x-axis labels
+	private static final int TOP_PAD = 200;				// Top margin
+	private static final int BOTTOM_PAD = 100;			// Bottom margin
+	private static final int TOP_PAD_LABELS = 100;		// Top Pad to accomodate y-axis labels
 	
-	private static double yAxisStepSize;
-	private static double xAxisStepSize;
+	private static double yAxisStepSize;				// y-axis tick size
+	private static double xAxisStepSize;				// x-axis tick size
 	
-	private final List<ScatterPlotData> listOfGraphs;
-	private Color[] graphColor;
+	private final List<ScatterPlotData> listOfGraphs;	// List of graphs to be plotted
+	private Color[] graphColor;							// Color of the graph
 	private Random randomGen;
 	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###");	// decimal format
 		
@@ -70,59 +72,99 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		addMouseListener(this);
 	}
 	
-	public static void setXAxis(double xMin, double xMax) {
+	/** 
+	 * Method to set the X-axis max and min value
+	 */
+	protected static void setXAxis(double xMin, double xMax) {
 		ScatterPlotPanel.xMin = xMin;
 		ScatterPlotPanel.xMax = xMax;
-	}
+	}	
 	
-	public static void setYAxis(double yMin, double yMax) {
+	/** 
+	 * Method to set the Y-axis max and min value
+	 */
+	protected static void setYAxis(double yMin, double yMax) {
 		ScatterPlotPanel.yMin = yMin;
 		ScatterPlotPanel.yMax = yMax;
 	}
 	
-	public static void setYAxisStepSize(double yAxisStepSize) {
+	/** 
+	 * Method to set the Y-axis tick size
+	 */
+	protected static void setYAxisStepSize(double yAxisStepSize) {
 		ScatterPlotPanel.yAxisStepSize = yAxisStepSize;
 	}
 	
+	/** 
+	 * Method that returns the Y-axis tick size
+	 */
 	protected static double getYAxisStepSize() {
 		return yAxisStepSize;
 	}
 	
-	public static void setXAxisStepSize(double xAxisStepSize) {
+	/** 
+	 * Method to set the X-axis tick size
+	 */
+	protected static void setXAxisStepSize(double xAxisStepSize) {
 		ScatterPlotPanel.xAxisStepSize = xAxisStepSize;
 	}
 	
+	/** 
+	 * Method that returns the X-axis tick size
+	 */
 	protected static double getXAxisStepSize() {
 		return xAxisStepSize;
 	}
 	
+	/** 
+	 * Method that returns the X-axis max value
+	 */
 	protected static double getXAxisEnd() {
 		return xMax;
 	}
 	
+	/** 
+	 * Method that returns the X-axis min value
+	 */
 	protected static double getXAxisStart() {
 		return xMin;
 	}
 	
+	/** 
+	 * Method that returns the Y-axis min value
+	 */
 	protected static double getYAxisStart() {
 		return yMin;
 	}
 	
+	/** 
+	 * Method that returns the Y-axis max value
+	 */
 	protected static double getYAxisEnd() {
 		return yMax;
 	}
 	
+	/**
+	 * Method to draw the Legend for the scatter plot
+	 * @param g (Graphics)
+	 */
 	protected void drawLegend(Graphics g) {
 		Point p = getTranslatedPoint(getXAxisEnd()-10, getYAxisEnd()-10);
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
 			g.drawString("     -------", p.x, p.y+i);
 			g.setColor(Color.black);
-			g.drawString("Graph " + Integer.parseInt(listOfGraphs.get(i).getGraphName())+1, p.x+50, p.y);
+			g.drawString(listOfGraphs.get(i).getGraphName(), p.x+50, p.y);
 		}
 	}
 	
-	public Point getTranslatedPoint(double x, double y) {
+	/**
+	 * Method to translate the co-ordinates of the data point to the point on screen
+	 * @param x (double)
+	 * @param y (double)
+	 * @return
+	 */
+	protected Point getTranslatedPoint(double x, double y) {
 		Point translatedPoint = new Point();
 		double realWidth = getWidth() - LEFT_PAD - RIGHT_PAD;
 		double realHeigth = getHeight() - TOP_PAD - BOTTOM_PAD;		
@@ -131,14 +173,23 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		return translatedPoint;
 	}
 	
-	public Point getOriginalPoint(Point p) {
+	/**
+	 * Method that returns the original data Point
+	 * @param p (Point)
+	 * @return Point
+	 */
+	protected Point getOriginalPoint(Point p) {
 		Point retPoint = new Point();
 		retPoint.x = (int) (((p.x - LEFT_PAD) * (getXAxisEnd() - getXAxisStart()) / (getWidth() - LEFT_PAD - RIGHT_PAD)) + getXAxisStart());
 		retPoint.y = (int) (-1 * ((p.y - getHeight() + TOP_PAD) * (getYAxisEnd() - getYAxisStart()) / (getHeight() - TOP_PAD - BOTTOM_PAD)) + getYAxisStart());
 		return retPoint;
 	}
 	
-	public void drawAxes(Graphics g) {
+	/**
+	 * Method to draw the x and y axes for the plot
+	 * @param g (Graphics)
+	 */
+	protected void drawAxes(Graphics g) {
 		g.drawRect(1, 1, getWidth()-3, getHeight()-3);
 		
 		Point yAxisStart = getTranslatedPoint(0d, yMin);
@@ -185,7 +236,11 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		}				
 	}
 	
-	public void plotPoints(Graphics g) {
+	/**
+	 * Method to plot the data points
+	 * @param g (Graphics)
+	 */
+	protected void plotPoints(Graphics g) {
 		Point p;
 		double barWidth = listOfGraphs.get(0).getDataPoints()[1][0] - listOfGraphs.get(0).getDataPoints()[0][0];
 		String pointLabel = "_";
@@ -214,6 +269,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		drawLegend(g);
 	}
 	
+	/**
+	 * Private method to find the default bounds for the axes for the initial plot
+	 */
 	private void findDefaultAxisBounds() {
 		double xmaxOfMax, ymaxOfMax;
 		double xminOfMin, yminOfMin;
@@ -255,6 +313,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		@SuppressWarnings("unused")
 		AxisOption axisOption = null;
 		Point p = getTranslatedPoint(xMin, 0d);
 		if (e.getX() <= 100 && e.getX() >= 50 && e.getY() >= TOP_PAD_LABELS && e.getY() <= getHeight() - TOP_PAD_LABELS - BOTTOM_PAD && (e.getClickCount() == 2)) {

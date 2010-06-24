@@ -17,25 +17,30 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 
+/**
+ * Class to provide options to modify the tick size and min-max values of the x-y axes
+ * @author Chirag Gorasia
+ *
+ */
 public class AxisOption {
 
-	private JLabel jlYAxisTickSize = null;
-	private JLabel jlYAxisMax = null;
-	private JFormattedTextField jftYAxisTickSize = null;
-	private JFormattedTextField jftYAxisMax = null;
-	private JButton jbYAxisOk = null;
-	private JButton jbYAxisClear = null;
-	private JButton jbYAxisCancel = null;
+	private JLabel jlYAxisTickSize = null;					// JLabel for Y-axis tick size
+	private JLabel jlYAxisMax = null;						// JLabel for Y-axis max value
+	private JFormattedTextField jftYAxisTickSize = null;	// JFormattedTextField to accept user input for y-axis tick size
+	private JFormattedTextField jftYAxisMax = null;			// JFormattedTextField to accept user input for y-axis max value
+	private JButton jbYAxisOk = null;						// JButton OK
+	private JButton jbYAxisClear = null;					// JButton Clear
+	private JButton jbYAxisCancel = null;					// JButton Cancel
 	
-	private JLabel jlXAxisTickSize = null;
-	private JLabel jlXAxisMax = null;
-	private JFormattedTextField jftXAxisTickSize = null;
-	private JFormattedTextField jftXAxisMax = null;
-	private JButton jbXAxisOk = null;
-	private JButton jbXAxisClear = null;
-	private JButton jbXAxisCancel = null;
+	private JLabel jlXAxisTickSize = null;					// JLabel for X-axis tick size
+	private JLabel jlXAxisMax = null;						// JLabel for X-axis max value
+	private JFormattedTextField jftXAxisTickSize = null;	// JFormattedTextField to accept user input for x-axis tick size
+	private JFormattedTextField jftXAxisMax = null;			// JFormattedTextField to accept user input for x-axis max value
+	private JButton jbXAxisOk = null;						// JButton OK
+	private JButton jbXAxisClear = null;					// JButton Clear
+	private JButton jbXAxisCancel = null;					// JButton Cancel
 	
-	private JDialog jd = null;
+	private JDialog jd = null;								// JDialog dialog box for x-y axes options
 
 	public AxisOption(String axisName) {
 		super();

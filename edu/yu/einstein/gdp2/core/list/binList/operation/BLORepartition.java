@@ -5,20 +5,12 @@
 package yu.einstein.gdp2.core.list.binList.operation;
 
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Toolkit;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
-import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotData;
-import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
 
 
 /**
@@ -28,18 +20,15 @@ import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLORepartition extends JComponent implements Operation<int [][]> {
+public class BLORepartition extends JComponent implements Operation<double [][][]> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//private final BinList 	binList;		// input binlist
 	private final BinList[] binListArray;	// input binListArray
 	private final double 	scoreBinSize;	// size of the bins of score
-	private ScatterPlotPanel scatPlotPanel;
-	//private final File		file;			// file where to write the result
-
+		
 
 //	/**
 //	 * Creates bins of score with a size of <i>scoreBinsSize</i>, 
@@ -70,13 +59,12 @@ public class BLORepartition extends JComponent implements Operation<int [][]> {
 //	}
 
 	public BLORepartition(BinList[] binListArray, double scoreBinSize) {
-		// TODO Auto-generated constructor stub
 		this.binListArray = binListArray;
 		this.scoreBinSize = scoreBinSize;
 	}
 
 	@Override
-	public int[][] compute() throws IllegalArgumentException, IOException {
+	public double[][][] compute() throws IllegalArgumentException, IOException {
 		if(scoreBinSize <= 0) {
 			throw new IllegalArgumentException("the size of the score bins must be strictly positive");
 		}
@@ -85,7 +73,7 @@ public class BLORepartition extends JComponent implements Operation<int [][]> {
 		double[] min = new double[binListArray.length];
 		double[] distanceMinMax = new double[binListArray.length];
 		double result[][][] = new double[binListArray.length][][];
-		List<ScatterPlotData> scatPlotData = new ArrayList<ScatterPlotData>();
+		
 	
 		for (int i = 0; i < binListArray.length; i++) {
 			max[i] = binListArray[i].getMax();
@@ -118,7 +106,7 @@ public class BLORepartition extends JComponent implements Operation<int [][]> {
 					break;
 			}
 			result[k][z++][0] = startPoint + z*scoreBinSize;			
-		}
+		}		
 		
 		for (k = 0; k < binListArray.length; k++) {
 			for (short i = 1; i < binListArray[k].size(); i++) {
@@ -127,31 +115,11 @@ public class BLORepartition extends JComponent implements Operation<int [][]> {
 						result[k][(int)((binListArray[k].get(i, j) - min[k]) / scoreBinSize)][1]++;
 					}
 				}
-			}
-			scatPlotData.add(new ScatterPlotData(result[k], Integer.toString((k))));
+			}			
 		}
-		
-		scatPlotPanel = new ScatterPlotPanel(scatPlotData);
-		
-		JDialog jf = new JDialog();
-		jf.setTitle("Scatter Plot");
-		jf.setContentPane(scatPlotPanel);
-		jf.setPreferredSize(new Dimension(900, 700));
-		jf.setMinimumSize(new Dimension(500, 500));
-		jf.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jf.getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - jf.getHeight())/2);
-		jf.pack();
-		jf.setVisible(true);
-			
-		return null;
+		return result;
 	}
 
-	@Override
-	public void paintComponent (Graphics g) {
-		super.paintComponent(g);
-		scatPlotPanel.drawAxes(g);
-		scatPlotPanel.plotPoints(g);
-	}
-	
 	@Override
 	public String getDescription() {
 		return "Operation: Show Repartition";
@@ -164,7 +132,6 @@ public class BLORepartition extends JComponent implements Operation<int [][]> {
 
 	@Override
 	public String getProcessingDescription() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
