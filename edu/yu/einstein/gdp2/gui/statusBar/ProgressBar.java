@@ -52,6 +52,7 @@ public final class ProgressBar extends JProgressBar {
 	 */
 	@Override
 	public void setIndeterminate(boolean b) {
+		firePropertyChange("indeterminate", isIndeterminate(), b);
 		super.setIndeterminate(b);
 		setStringPainted(!b);
 	}

@@ -97,6 +97,14 @@ public final class BinListTrack extends CurveTrack {
 		((BinListTrackGraphics)trackGraphics).redo();
 	}
 
+	
+	/**
+	 * @return true if the track can be reseted 
+	 */
+	public boolean isResetable() {
+		return ((BinListTrackGraphics)trackGraphics).isResetable();
+	}
+	
 
 	/**
 	 * @return True if the action undo is possible.
@@ -113,12 +121,14 @@ public final class BinListTrack extends CurveTrack {
 		return ((BinListTrackGraphics)trackGraphics).isRedoable();
 	}
 
+	
 	/**
 	 * @return the history of the current track.
 	 */
 	public History getHistory() {
 		return ((BinListTrackGraphics)trackGraphics).getHistory();
 	}
+	
 	
 	/**
 	 * Renames the track

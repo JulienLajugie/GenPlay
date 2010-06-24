@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -25,9 +26,9 @@ import java.util.ArrayList;
 public final class History implements Serializable {
 	
 	private static final long serialVersionUID = -1385318410072807666L;	// generated ID
-	private ArrayList<String> history;	// history
-	private ArrayList<String> undo;		// undo history
-	private ArrayList<String> redo;		// redo history
+	private List<String> history;	// history
+	//private List<String> undo;		// undo history
+	private List<String> redo;		// redo history
 
 
 	/**
@@ -36,8 +37,8 @@ public final class History implements Serializable {
 	public History() {
 		super();
 		history = new ArrayList<String>();
-		undo = null;
-		redo = null;
+		//undo = null;
+		redo = new ArrayList<String>();
 	}
 
 
@@ -62,16 +63,12 @@ public final class History implements Serializable {
 	 * Adds an element to the history.
 	 * @param s String describing the last action performed.
 	 */
-	@SuppressWarnings("unchecked")
 	public void add(String s) {
-		/*if (undo == null) {
-			undo = new ArrayList<String>();
-		} */
-		if (history.size() > 0) {
-			undo = (ArrayList<String>)history.clone();
-		}
+		/*if (history.size() > 0) {
+			Collections.copy(undo, history);
+		}*/
 		history.add(s);
-		redo = null;	
+		redo.clear();	
 	}
 	
 	
@@ -92,11 +89,15 @@ public final class History implements Serializable {
 	 * Undoes the last entry in the history.
 	 */
 	public void undo() {
-		if (undo != null) {
+		/*if (undo != null) {
 			redo = history;
 			history = undo;
 			undo = null;
-		}
+		}*/
+		int lastIndex = history.size() - 1;
+		String lastAction = history.get(lastIndex);
+		redo.add(lastAction);
+		history.remove(lastIndex);
 	}
 
 
@@ -104,10 +105,14 @@ public final class History implements Serializable {
 	 * Redoes the last undone action. 
 	 */
 	public void redo() {
-		if (redo != null) {
-			undo = history;
-			history = redo;
-			redo = null;
+		if ((redo != null) && (!redo.isEmpty())) {
+			//undo = history;
+			//history = redo;
+			//redo = null;
+			int lastRedoIndex = redo.size() - 1;
+			String lastRedoAction = redo.get(lastRedoIndex);
+			history.add(lastRedoAction);
+			redo.remove(lastRedoIndex);
 		}
 	}
 
@@ -116,9 +121,6 @@ public final class History implements Serializable {
 	 * Resets the history.
 	 */
 	public void reset() {
-		/*undo = (ArrayList<String>) history.clone();
-		history.clear();
-		redo = null;*/
 		add("RESET", Color.red);
 	}
 

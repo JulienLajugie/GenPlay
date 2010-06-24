@@ -13,6 +13,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -21,6 +24,7 @@ import yu.einstein.gdp2.core.list.binList.operation.BLOMinScoreToDisplay;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSerializeAndZip;
 import yu.einstein.gdp2.core.list.binList.operation.BLOUnzipAndUnserialize;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.track.drawer.BinListDrawer;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
@@ -35,16 +39,16 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 	private static final long serialVersionUID = 1745399422702517182L;	// generated ID
 
-	private BinList 						binList;			// Value of the displayed BinList
-	transient private ByteArrayOutputStream	initialBinList;		// Value of the BinList when the track is created (the BinList is serialized and zipped)
-	transient private ByteArrayOutputStream	undoBinList = null;	// BinList used to restore when undo (the BinList is serialized and zipped)
-	transient private ByteArrayOutputStream	redoBinList = null;	// BinList used to restore when redo (the BinList is serialized and zipped)
-	private History							history = null;		// History containing a description of the actions done
+	private BinList 								binList;			// Value of the displayed BinList
+	private History									history = null;		// History containing a description of the actions done
+	transient private ByteArrayOutputStream			initialBinList;		// Value of the BinList when the track is created (the BinList is serialized and zipped)
+	transient private List<ByteArrayOutputStream>	undoBinLists = null;	// BinList used to restore when undo (the BinList is serialized and zipped)
+	transient private List<ByteArrayOutputStream>	redoBinLists = null;	// BinList used to restore when redo (the BinList is serialized and zipped)
+	private BinList 								initialSaver = null;	// used for the serialization of the initial BinList (since a ByteArrayOutputStream can't be serialized)
+	private List<BinList> 							undoSaver = null;		// used for the serialization of the undo BinList (since a ByteArrayOutputStream can't be serialized)
+	private List<BinList> 							redoSaver = null;		// used for the serialization of the redo BinList (since a ByteArrayOutputStream can't be serialized)
 
-	private BinList initialSaver = null;	// used for the serialization of the initial BinList (since a ByteArrayOutputStream can't be serialized)
-	private BinList undoSaver = null;		// used for the serialization of the undo BinList (since a ByteArrayOutputStream can't be serialized)
-	private BinList redoSaver = null;		// used for the serialization of the redo BinList (since a ByteArrayOutputStream can't be serialized)
-
+	
 	/**
 	 * Creates an instance of a {@link BinListTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
@@ -55,28 +59,26 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	protected BinListTrackGraphics(GenomeWindow displayedGenomeWindow, BinList binList) {
 		super(displayedGenomeWindow, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
-		try {
-			this.initialBinList = new BLOSerializeAndZip(binList).compute();
-		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while loading the track");
-		}
 		this.binList = binList;
 		this.history = new History();
+		undoBinLists = new LinkedList<ByteArrayOutputStream>();
+		redoBinLists = new LinkedList<ByteArrayOutputStream>();
 	}
 
 
 	@Override
 	public void copyTo(TrackGraphics trackGraphics) {
 		super.copyTo(trackGraphics);
-		((BinListTrackGraphics)trackGraphics).initialBinList = this.initialBinList;
-		((BinListTrackGraphics)trackGraphics).binList = this.binList.deepClone();
-		if (undoBinList != null) {
-			((BinListTrackGraphics)trackGraphics).undoBinList = this.undoBinList;
+		BinListTrackGraphics bltg = ((BinListTrackGraphics)trackGraphics);
+		bltg.initialBinList = this.initialBinList;
+		bltg.binList = this.binList.deepClone();
+		if (undoBinLists != null) {
+			bltg.undoBinLists = new ArrayList<ByteArrayOutputStream>(this.undoBinLists);
 		}
-		if (redoBinList != null) {
-			((BinListTrackGraphics)trackGraphics).redoBinList = this.redoBinList;
+		if (redoBinLists != null) {
+			bltg.redoBinLists = new ArrayList<ByteArrayOutputStream>(this.redoBinLists);
 		}
-		((BinListTrackGraphics)trackGraphics).history = this.history.deepClone();
+		bltg.history = this.history.deepClone();
 	}
 
 
@@ -127,9 +129,23 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	public void setBinList(BinList binList, String description) {
 		if (binList != null) {
 			try {
+				int undoCount = ConfigurationManager.getInstance().getUndoCount();
 				history.add(description);
-				undoBinList = new BLOSerializeAndZip(this.binList).compute();
-				redoBinList = null;
+				// if it's the first operation
+				if (initialBinList == null) {
+					initialBinList = new BLOSerializeAndZip(this.binList).compute();
+					// the first element of the undo is the initial binlist
+					if (undoCount > 0) {
+						undoBinLists.add(initialBinList);
+					}
+				} else {
+					// if the undoBinLists is full (ie: more elements than undo count in the config manager)
+					if (undoBinLists.size() >= undoCount) {
+						undoBinLists.remove(0);
+					}
+					undoBinLists.add(new BLOSerializeAndZip(this.binList).compute());
+				}
+				redoBinLists.clear();
 				firePropertyChange("binList", this.binList, binList);
 				this.binList = binList;
 				yMin = new BLOMinScoreToDisplay(binList).compute();
@@ -148,9 +164,14 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	public void resetBinList() {
 		try {
-			undoBinList = new BLOSerializeAndZip(this.binList).compute();
-			redoBinList = null;
+			int undoCount = ConfigurationManager.getInstance().getUndoCount();
+			if (undoBinLists.size() >= undoCount) {
+				undoBinLists.remove(0);
+			}
+			undoBinLists.add(new BLOSerializeAndZip(this.binList).compute());
+			redoBinLists.clear();
 			BinList newBinList = new BLOUnzipAndUnserialize(initialBinList).compute();; 
+			initialBinList = null;
 			firePropertyChange("binList", binList, newBinList);
 			binList = newBinList;
 			yMin = new BLOMinScoreToDisplay(binList).compute();
@@ -170,19 +191,28 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	public void undo() {
 		try {
-			if (undoBinList != null) {
-				redoBinList = new BLOSerializeAndZip(this.binList).compute();
-				BinList newBinList = new BLOUnzipAndUnserialize(undoBinList).compute();; 
+			if ((undoBinLists != null) && (!undoBinLists.isEmpty())) {
+				redoBinLists.add(new BLOSerializeAndZip(this.binList).compute());
+				// we unserialize the last BinList in of the undo lists and we remove it from the undo list
+				int lastIndex = undoBinLists.size() - 1;
+				ByteArrayOutputStream baos = undoBinLists.get(lastIndex);
+				if (initialBinList == null) {
+					initialBinList = new BLOSerializeAndZip(this.binList).compute();
+				} 
+				if (initialBinList == baos) {
+					initialBinList = null;
+				}
+				BinList newBinList = new BLOUnzipAndUnserialize(baos).compute();
 				firePropertyChange("binList", binList, newBinList);
 				binList = newBinList;
-				undoBinList = null;
+				undoBinLists.remove(lastIndex);
 				yMin = new BLOMinScoreToDisplay(binList).compute();
 				yMax = new BLOMaxScoreToDisplay(binList).compute();
 				repaint();
 				history.undo();
 			} 
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while reseting");
+			ExceptionManager.handleException(getRootPane(), e, "Error while undoing");
 			history.setLastAsError();
 		}		
 	}
@@ -193,39 +223,55 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	public void redo() {
 		try {
-			if (redoBinList != null) {
-				undoBinList = new BLOSerializeAndZip(this.binList).compute();				
-				BinList newBinList = new BLOUnzipAndUnserialize(redoBinList).compute();;
+			if ((redoBinLists != null) && (!redoBinLists.isEmpty())) {
+				int lastIndex = redoBinLists.size() - 1;
+				ByteArrayOutputStream baos = redoBinLists.get(lastIndex);
+				if (initialBinList == null) {
+					initialBinList = new BLOSerializeAndZip(this.binList).compute();
+				} 
+				if (initialBinList == baos) {
+					initialBinList = null;
+				}
+				BinList newBinList = new BLOUnzipAndUnserialize(baos).compute();;
 				firePropertyChange("binList", binList, newBinList);
 				binList = newBinList;
-				redoBinList = null;
+				redoBinLists.remove(lastIndex);
 				yMin = new BLOMinScoreToDisplay(binList).compute();
 				yMax = new BLOMaxScoreToDisplay(binList).compute();
 				repaint();
 				history.redo();
 			}
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while reseting");
+			ExceptionManager.handleException(getRootPane(), e, "Error while redoing");
 			history.setLastAsError();
 		}	
 	}
 
 
 	/**
-	 * @return True if the action undo is possible.
+	 * @return true if the action undo is possible
 	 */
 	public boolean isUndoable() {
-		return (undoBinList != null);
+		return ((undoBinLists != null) && (!undoBinLists.isEmpty()));
 	}
 
 
 	/**
-	 * @return True if the action redo is possible.
+	 * @return true if the action redo is possible
 	 */
 	public boolean isRedoable() {
-		return (redoBinList != null);
+		return ((redoBinLists != null) && (!redoBinLists.isEmpty()));
 	}
 
+	
+	/**
+	 * @return true if the track can be reseted
+	 */
+	public boolean isResetable() {
+		return initialBinList != null;
+	}
+	
+	
 	/**
 	 * @return the history of the current track.
 	 */
@@ -235,7 +281,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 
 	/**
-	 * Unserializes the initial, undo and redo BinList so they can 
+	 * Unserializes the initial, undo and redo BinLists so they can 
 	 * be serialized with the rest of the current instance and saved.
 	 * This is because ByteArrayOutputStream can't be serialized
 	 * @param out {@link ObjectOutputStream}
@@ -243,14 +289,23 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		try {
+			// unserialize the initial BinList
 			if (initialBinList != null) {
 				initialSaver = new BLOUnzipAndUnserialize(initialBinList).compute();
 			}
-			if (undoBinList != null) {
-				undoSaver = new BLOUnzipAndUnserialize(undoBinList).compute();
+			// unserialize the undo BinLists
+			if (undoBinLists != null) {
+				undoSaver = new ArrayList<BinList>();
+				for (ByteArrayOutputStream currentList: undoBinLists) {
+					undoSaver.add(new BLOUnzipAndUnserialize(currentList).compute());
+				}
 			}
-			if (redoBinList != null) {
-				redoSaver = new BLOUnzipAndUnserialize(redoBinList).compute();
+			// unserialize the redo BinLists
+			if (redoBinLists != null) {
+				redoSaver = new ArrayList<BinList>();
+				for (ByteArrayOutputStream currentList: redoBinLists) {
+					redoSaver.add(new BLOUnzipAndUnserialize(currentList).compute());
+				}
 			}
 			out.defaultWriteObject();
 			initialSaver = null;
@@ -263,24 +318,39 @@ public final class BinListTrackGraphics extends CurveTrackGraphics implements Mo
 
 
 	/**
-	 * Serializes and zips the initial, undo and redo BinList 
+	 * Serializes and zips the initial, undo and redo BinLists 
 	 * after the unserialization of an instance.
 	 * @param in {@link ObjectInputStream}
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		int undoCount = ConfigurationManager.getInstance().getUndoCount();
 		in.defaultReadObject();
 		if (initialSaver != null) {
 			initialBinList = new BLOSerializeAndZip(initialSaver).compute();
 			initialSaver = null;
 		}
-		if (undoSaver != null) {
-			undoBinList = new BLOSerializeAndZip(undoSaver).compute();
+		if ((undoSaver != null) && (!undoSaver.isEmpty())) {
+			// if the undo saver list is longer than the authorized count of undo
+			// we remove the first elements of the undo saver
+			while (undoCount - undoSaver.size() < 0) {
+				undoSaver.remove(0);
+			}
+			for (BinList currentList: undoSaver) {
+				undoBinLists.add(new BLOSerializeAndZip(currentList).compute());
+			}
 			undoSaver = null;
 		}
 		if (redoSaver != null) {
-			redoBinList = new BLOSerializeAndZip(redoSaver).compute();
+			// if the redo saver list is longer than the authorized count of undo
+			// we remove the first elements of the redo saver
+			while (undoCount - redoSaver.size() < 0) {
+				redoSaver.remove(0);
+			}
+			for (BinList currentList: redoSaver) {
+				redoBinLists.add(new BLOSerializeAndZip(currentList).compute());
+			}
 			redoSaver = null;
 		}
 	}

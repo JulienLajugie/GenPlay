@@ -114,6 +114,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
 	private final JMenuItem		jmiConcatenate;			// menu concatenate
 	
+	
 	/**
 	 * Creates an instance of a {@link BinListTrackMenu}
 	 * @param tl {@link TrackList}
@@ -225,9 +226,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		add(new Separator(), 1);
 
 		add(jmiSave, 9);
-		
-		jmiUndo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isUndoable());
-		jmiRedo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isRedoable());
 	}
 	
 	
@@ -241,5 +239,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		}
 		jmOperation.setEnabled(!jcbmiCompression.getState());
 		jmiSave.setEnabled(!jcbmiCompression.getState());
+		jmiUndo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isUndoable());
+		jmiRedo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isRedoable());
+		jmiReset.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isResetable());
 	}
 }
