@@ -44,9 +44,10 @@ public final class IslandDialog extends JDialog {
 	public static final int 	CANCEL_OPTION = 1;
 
 	private static final Dimension			APPEARANCE_FRAME_DIMENSION = 
-											new Dimension(400, 350);		// Dimension of this frame
+											new Dimension(400, 370);		// Dimension of this frame
 	private final JButton 					jbOk;							// button OK
 	private final JButton 					jbCancel;						// button cancel
+	private final JLabel					jlAverage;						// label for average (lambda value)
 	private final JLabel					jlReadCountLimit;				// label for ReadCountLimit
 	private final JFormattedTextField		jftfReadCountLimit;				// text field for ReadCountLimit
 	private final JLabel					jlPValue;						// label for p-value
@@ -89,6 +90,8 @@ public final class IslandDialog extends JDialog {
 		//Initialization
 		jbOk = new JButton("OK");
 		jbCancel = new JButton("Cancel");
+		Long average = Math.round(this.island.getLambda()*100)/100;
+		jlAverage = new JLabel ("The average is: " + average.toString() + " reads by window");
 		jlReadCountLimit = new JLabel ("Read Count");
 		jftfReadCountLimit = new JFormattedTextField(floatFormat);
 		jftfReadCountLimit.setHorizontalAlignment(JFormattedTextField.RIGHT);
@@ -112,6 +115,7 @@ public final class IslandDialog extends JDialog {
 		
 		
 		//Tool Tip Text
+		String sAverage = "Mean of reads by window";
 		String sReadCount = "All values below the Read Count Limit well be ignored";
 		String sPValue = "Probability to get false results";
 		String sToReadCOunt = "Convert P-Value to Read Count";
@@ -121,6 +125,7 @@ public final class IslandDialog extends JDialog {
 		String sResultType = "Output result type";
 		String sFiltered = "Windows values will be the reads";
 		String sIFScore = "Windows values will be the island score";
+		jlAverage.setToolTipText(sAverage);
 		jlReadCountLimit.setToolTipText(sReadCount);
 		jftfReadCountLimit.setToolTipText(sReadCount);
 		jlPValue.setToolTipText(sPValue);
@@ -202,14 +207,24 @@ public final class IslandDialog extends JDialog {
 		GridBagConstraints c = new GridBagConstraints();
 		
 		
-		//Read Count Limit
+		//Average
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
-		c.insets = new Insets (7, 3, 2, 3);
+		c.insets = new Insets (10, 3, 10, 3);
+		c.gridwidth = 3;
+		add(jlAverage, c);
+		
+		
+		//Read Count Limit
+		c.gridx = 0;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets (10, 3, 10, 3);
+		c.gridwidth = 1;
 		add(jlReadCountLimit, c);
 
-		c.gridy = 1;
+		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets (2, 3, 10, 3);
@@ -230,14 +245,14 @@ public final class IslandDialog extends JDialog {
 		
 		//P-Value
 		c.gridx = 3;
-		c.gridy = 0;
+		c.gridy = 1;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.ipadx = 0;
-		c.insets = new Insets (7, 3, 2, 3);
+		c.insets = new Insets (10, 3, 10, 3);
 		add(jlPValue, c);
 		
 		c.gridx = 3;
-		c.gridy = 1;
+		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets (2, 3, 10, 3);
@@ -246,14 +261,14 @@ public final class IslandDialog extends JDialog {
 		
 		//Gap
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 3;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.NONE;
 		c.insets = new Insets (10, 3, 10, 3);
 		add(jlGap, c);
 		
 		c.gridx = 2;
-		c.gridy = 2;
+		c.gridy = 3;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 3;
 		add(jftfGap, c);	
@@ -261,32 +276,32 @@ public final class IslandDialog extends JDialog {
 		
 		//Island Score Cut-Off
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.NONE;
 		add(jlCutOff, c);
 		
 		c.gridx = 2;
-		c.gridy = 3;
+		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 3;
 		add(jftfCutOff, c);
 		
 		//Result Type
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 5;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 1;
 		add(jlResultType, c);
 		
 		c.gridx = 2;
-		c.gridy = 4;
+		c.gridy = 5;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 3;
 		add(jcbFiltered, c);
 		
 		c.gridx = 2;
-		c.gridy = 5;
+		c.gridy = 6;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 3;
 		c.insets = new Insets (2, 3, 10, 3);
@@ -295,7 +310,7 @@ public final class IslandDialog extends JDialog {
 		
 		// OK & Cancel
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 7;
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridwidth = 2;
 		c.ipadx = 5;

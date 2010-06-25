@@ -90,40 +90,15 @@ public class IslandFinder {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
-					List<Double> resultList;	// often commented because it's useless here but it's kept because it may be interesting
-					ArrayList<Integer> islands_start = new ArrayList<Integer>();	// stores all start islands position
-					ArrayList<Integer> islands_stop = new ArrayList<Integer>();		// stores all stop islands position
-					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = ListFactory.createList(precision, currentList.size());
-						int j = 0;
-						while (j < currentList.size()) {	// while we are below the current list size,
-							if (currentList.get(j) >= readCountLimit) {	// the current window score must be higher than readCountLimit
-								islands_start.add(j);	// it's the start of an island
-								//resultList.set(j, currentList.get(j));
-								int gap_found = 0;	// there are no gap found
-								int j_tmp = j + 1;	// we prepared the research on the next window
-								while ((gap_found <= gap) && (j_tmp < currentList.size())) {	// while we are below the gap number authorized and below the list size
-									if (currentList.get(j_tmp) >= readCountLimit) {	// if the next window score is higher than the readCountLimit
-										//resultList.set(j_tmp, currentList.get(j_tmp));
-										gap_found = 0;	// gap number found must be 0
-									} else {	// if the next window score is smaller than the readCountLimit
-										//resultList.set(j_tmp, 0.0);
-										gap_found++;	// one gap is found
-									}
-									j_tmp++;	// we search on the next window
-								}
-								// we are here only if the number gap found is higher than the number gap authorized or if it's the end list
-								// so, it's necessary the end of the island
-								islands_stop.add(j_tmp - gap_found - 1);
-								j = j_tmp;	// we can continue to search after this end island (not necessary if we are out of the list size)
-							} else {
-								//resultList.set(j, 0.0);
-								j++;
-							}
-						}
-					}
-					// the resultList is ready to be set
-					resultList = getListIsland(precision, currentList, islands_start, islands_stop);
+					List[] islandsPositions;
+					List<Double> scoreIsland;
+					List<Double> resultList;
+					// Search all islands position (0: start; 1: stop)
+					islandsPositions = searchIslandPosition(currentList);
+					// Calculate all islands score
+					scoreIsland = islandScore(currentList, islandsPositions[0], islandsPositions[1]);
+					// Create the result list
+					resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions[0], islandsPositions[1]);
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -140,8 +115,77 @@ public class IslandFinder {
 		}
 	}
 	
+	/////////////////////////////////////////////////////////	Main methods
 	
-	/////////////////////////////////////////////////////////	getList method
+	/**
+	 * searchIslandPosition method
+	 * This method determines the positions of all islands.
+	 * Two list are create, the first for the start position and the second for the stop position. 
+	 * 
+	 * @param currentList	current list of the bin list 
+	 * @return				array list with start position on index 0 and stop position on index 1
+	 */
+	private List[] searchIslandPosition (List<Double> currentList) {
+		List[] islandsPositions = new List[2];
+		List<Integer> islands_start = new ArrayList<Integer>();	// stores all start islands position
+		List<Integer> islands_stop = new ArrayList<Integer>();		// stores all stop islands position
+		if ((currentList != null) && (currentList.size() != 0)) {
+			int j = 0;
+			while (j < currentList.size()) {	// while we are below the current list size,
+				if (currentList.get(j) >= readCountLimit) {	// the current window score must be higher than readCountLimit
+					islands_start.add(j);	// it's the start of an island
+					int gap_found = 0;	// there are no gap found
+					int j_tmp = j + 1;	// we prepared the research on the next window
+					while ((gap_found <= gap) && (j_tmp < currentList.size())) {	// while we are below the gap number authorized and below the list size
+						if (currentList.get(j_tmp) >= readCountLimit) {	// if the next window score is higher than the readCountLimit
+							gap_found = 0;	// gap number found must be 0
+						} else {	// if the next window score is smaller than the readCountLimit
+							gap_found++;	// one gap is found
+						}
+						j_tmp++;	// we search on the next window
+					}
+					// we are here only if the number gap found is higher than the number gap authorized or if it's the end list
+					// so, it's necessary the end of the island
+					islands_stop.add(j_tmp - gap_found - 1);
+					j = j_tmp;	// we can continue to search after this end island (not necessary if we are out of the list size)
+				} else {
+					j++;
+				}
+			}
+		}
+		islandsPositions[0] = islands_start;
+		islandsPositions[1] = islands_stop;
+		return islandsPositions;
+	}
+	
+	/**
+	 * calculateScoreIsland method
+	 * This method calculate the score for all islands.
+	 * The score of an island is the sum of all eligible windows score contained in it.
+	 * 
+	 * @param currentList		current list of windows value
+	 * @param islands_start		start positions of all islands
+	 * @param islands_stop		stop positions of all islands
+	 * @return					list of score islands
+	 */
+	private List<Double> islandScore (List<Double> currentList,
+										List<Integer> islands_start,
+										List<Integer> islands_stop) {
+		List<Double> scoreIsland = new ArrayList<Double> ();
+		int current_pos = 0;
+		double sumScore;
+		while (current_pos < islands_start.size()) {
+			sumScore = 0.0;
+			for (int i = islands_start.get(current_pos); i <= islands_stop.get(current_pos); i++) {	// Loop for the sum
+				if (currentList.get(i) >= this.readCountLimit) {	// the window reads must be highter than the readCountLimit
+					sumScore += windowScore(currentList.get(i));
+				}
+			}
+			scoreIsland.add(sumScore);
+			current_pos++;
+		}
+		return scoreIsland;
+	}
 	
 	/**
 	 * getListIsland method
@@ -156,11 +200,11 @@ public class IslandFinder {
 	 * @return					list of windows values
 	 */
 	private List<Double> getListIsland (DataPrecision precision,
-															List<Double> currentList,
-															ArrayList<Integer> islands_start,
-															ArrayList<Integer> islands_stop) {
+											List<Double> currentList,
+											List<Double> scoreIsland,
+											List<Integer> islands_start,
+											List<Integer> islands_stop) {
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
-		ArrayList<Double> scoreIsland = islandScore(currentList, islands_start, islands_stop);
 		int current_pos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
 		for (int i = 0; i < currentList.size(); i++) {	// for all window positions
@@ -192,7 +236,7 @@ public class IslandFinder {
 	}
 	
 	
-	/////////////////////////////////////////////////////////	Score methods
+	/////////////////////////////////////////////////////////	statistics methods
 	
 	/**
 	 * scoreOfWindow method
@@ -224,38 +268,6 @@ public class IslandFinder {
 		}
 		return result;
 	}
-	
-	/**
-	 * calculateScoreIsland method
-	 * This method calculate the score for all islands.
-	 * The score of an island is the sum of all eligible windows score contained in it.
-	 * 
-	 * @param currentList		current list of windows value
-	 * @param islands_start		start positions of all islands
-	 * @param islands_stop		stop positions of all islands
-	 * @return					list of score islands
-	 */
-	private ArrayList<Double> islandScore (List<Double> currentList,
-													ArrayList<Integer> islands_start,
-													ArrayList<Integer> islands_stop) {
-		ArrayList<Double> scoreIsland = new ArrayList<Double> ();
-		int current_pos = 0;
-		double sumScore;
-		while (current_pos < islands_start.size()) {
-			sumScore = 0.0;
-			for (int i = islands_start.get(current_pos); i <= islands_stop.get(current_pos); i++) {	// Loop for the sum
-				if (currentList.get(i) >= this.readCountLimit) {	// the window reads must be highter than the readCountLimit
-					sumScore += windowScore(currentList.get(i));
-				}
-			}
-			scoreIsland.add(sumScore);
-			current_pos++;
-		}
-		return scoreIsland;
-	}
-	
-	
-	/////////////////////////////////////////////////////////	statistics methods
 	
 	/**
 	 * lambdaCalcul method
@@ -383,6 +395,10 @@ public class IslandFinder {
 
 	public double getCutOff() {
 		return cutOff;
+	}
+
+	public double getLambda() {
+		return lambda;
 	}
 
 }
