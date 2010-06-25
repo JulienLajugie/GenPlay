@@ -86,9 +86,11 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 			scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].getName()));
 		}
 		scatPlotPanel = new ScatterPlotPanel(scatPlotData);
+		//scatPlotMenu = new ScatterPlotRightClickedMenu();
 		JDialog jf = new JDialog();
 		jf.setTitle("Scatter Plot");
 		jf.setContentPane(scatPlotPanel);
+		//jf.add(scatPlotMenu);
 		jf.setPreferredSize(new Dimension(900, 700));
 		jf.setMinimumSize(new Dimension(500, 500));
 		jf.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jf.getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - jf.getHeight())/2);

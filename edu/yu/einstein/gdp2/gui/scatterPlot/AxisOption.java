@@ -11,11 +11,13 @@ import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.text.NumberFormatter;
 
 /**
  * Class to provide options to modify the tick size and min-max values of the x-y axes
@@ -54,9 +56,12 @@ public class AxisOption {
 	private void handleXAxisOption(String axisName) {
 		jlXAxisTickSize = new JLabel("Tick Size: ");
 		jlXAxisMax = new JLabel("Max Value: ");
-		jftXAxisTickSize = new JFormattedTextField();
+		NumberFormatter nF = new NumberFormatter(new DecimalFormat("###,###,###.##"));
+		nF.setAllowsInvalid(false);
+		//nF.setMinimum(0);
+		jftXAxisTickSize = new JFormattedTextField(nF);
 		jftXAxisTickSize.setText(Double.toString(ScatterPlotPanel.getXAxisStepSize()));
-		jftXAxisMax = new JFormattedTextField();
+		jftXAxisMax = new JFormattedTextField(nF);
 		jftXAxisMax.setText(Double.toString(ScatterPlotPanel.getXAxisEnd()));
 		jftXAxisTickSize.setMinimumSize(new Dimension(100, 20));
 		jftXAxisMax.setMinimumSize(new Dimension(100, 20));
@@ -67,11 +72,11 @@ public class AxisOption {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jd.setVisible(false);
-				if (jftXAxisTickSize.getText().length() != 0 && Double.parseDouble(jftXAxisTickSize.getText()) > 0) {
-					ScatterPlotPanel.setXAxisStepSize(Double.parseDouble(jftXAxisTickSize.getText()));					
+				if (jftXAxisTickSize.getText().length() != 0 && (Double.parseDouble(jftXAxisTickSize.getValue().toString())) > 0) {
+					ScatterPlotPanel.setXAxisStepSize(Double.parseDouble(jftXAxisTickSize.getValue().toString()));					
 				}
-				if (jftXAxisMax.getText().length() != 0 && Double.parseDouble(jftXAxisMax.getText()) > 0) {
-					ScatterPlotPanel.setXAxis(ScatterPlotPanel.getXAxisStart(),Double.parseDouble(jftXAxisMax.getText()));					
+				if (jftXAxisMax.getText().length() != 0 && (Double.parseDouble(jftXAxisMax.getValue().toString())) > 0) {
+					ScatterPlotPanel.setXAxis(ScatterPlotPanel.getXAxisStart(),(Double.parseDouble(jftXAxisMax.getValue().toString())));					
 				}
 			}
 		});
@@ -147,10 +152,13 @@ public class AxisOption {
 
 	public void handleYAxisOption(String axisName) {
 		jlYAxisTickSize = new JLabel("Tick Size: ");
-		jlYAxisMax = new JLabel("Max Value: ");
-		jftYAxisTickSize = new JFormattedTextField();
+		jlYAxisMax = new JLabel("Max Value: ");	
+		NumberFormatter nF = new NumberFormatter(new DecimalFormat("###,###,###.#"));
+		nF.setAllowsInvalid(false);
+		nF.setMinimum(0);
+		jftYAxisTickSize = new JFormattedTextField(nF);
 		jftYAxisTickSize.setText(Double.toString(ScatterPlotPanel.getYAxisStepSize()));
-		jftYAxisMax = new JFormattedTextField();
+		jftYAxisMax = new JFormattedTextField(nF);
 		jftYAxisMax.setText(Double.toString(ScatterPlotPanel.getYAxisEnd()));
 		jftYAxisTickSize.setMinimumSize(new Dimension(100, 20));
 		jftYAxisMax.setMinimumSize(new Dimension(100, 20));
@@ -161,11 +169,11 @@ public class AxisOption {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jd.setVisible(false);
-				if (jftYAxisTickSize.getText().length() != 0 && Double.parseDouble(jftYAxisTickSize.getText()) > 0) {
-					ScatterPlotPanel.setYAxisStepSize(Double.parseDouble(jftYAxisTickSize.getText()));					
+				if (jftYAxisTickSize.getText().length() != 0 && (Integer)(jftYAxisTickSize.getValue()) > 0) {
+					ScatterPlotPanel.setYAxisStepSize((Integer)(jftYAxisTickSize.getValue()));					
 				}
-				if (jftYAxisMax.getText().length() != 0 && Double.parseDouble(jftYAxisMax.getText()) > 0) {
-					ScatterPlotPanel.setYAxis(ScatterPlotPanel.getYAxisStart(),Double.parseDouble(jftYAxisMax.getText()));					
+				if (jftYAxisMax.getText().length() != 0 && (Integer)(jftYAxisMax.getValue()) > 0) {
+					ScatterPlotPanel.setYAxis(ScatterPlotPanel.getYAxisStart(),(Integer)(jftYAxisMax.getValue()));					
 				}
 			}
 		});

@@ -21,6 +21,8 @@ import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
+import yu.einstein.gdp2.gui.popupMenu.ScatterPlotRightClickedMenu;
+
 /**
  * Class to draw a scatter plot of the given data
  * @author Chirag
@@ -49,7 +51,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	private final List<ScatterPlotData> listOfGraphs;	// List of graphs to be plotted
 	private Color[] graphColor;							// Color of the graph
 	private Random randomGen;
-	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###");	// decimal format
+	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###.##");	// decimal format
 		
 			
 	public ScatterPlotPanel(List<ScatterPlotData> listOfGraphs) {
@@ -210,10 +212,11 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				// X-Axis Labels
 				if (incrementX <= getXAxisEnd()) {
 					p = new Point(getTranslatedPoint(incrementX, -10));
+					String stringToPrint = DF.format(incrementX);
 					if (p.x >= lastXTextStopPos) {
-						g.drawString(Integer.toString((int) incrementX), p.x, p.y + TOP_PAD_LABELS/5);
+						g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
 						g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
-						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(Integer.toString((int)listOfGraphs.get(i).getDataPoints()[j][0]))+5;
+						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+10;
 					}					
 					incrementX = incrementX + getXAxisStepSize();
 				}
@@ -312,18 +315,24 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		@SuppressWarnings("unused")
-		AxisOption axisOption = null;
-		Point p = getTranslatedPoint(xMin, 0d);
-		if (e.getX() <= 100 && e.getX() >= 50 && e.getY() >= TOP_PAD_LABELS && e.getY() <= getHeight() - TOP_PAD_LABELS - BOTTOM_PAD && (e.getClickCount() == 2)) {
-			axisOption = new AxisOption("Y-Axis");
-			repaint();
-		}		
-		if (e.getX() >= 100 && e.getX() <= getWidth() -  RIGHT_PAD && e.getY() >= p.y && e.getY() <= p.y + 50 && (e.getClickCount() == 2)) {
-			axisOption = new AxisOption("X-Axis");
-			repaint();
+	public void mouseClicked(MouseEvent e) {		
+		if (e.getButton() == 1) {
+			@SuppressWarnings("unused")
+			AxisOption axisOption = null;
+			Point p = getTranslatedPoint(xMin, 0d);
+			if (e.getX() <= 100 && e.getX() >= 50 && e.getY() >= TOP_PAD_LABELS && e.getY() <= getHeight() - TOP_PAD_LABELS - BOTTOM_PAD && (e.getClickCount() == 2)) {
+				axisOption = new AxisOption("Y-Axis");
+				repaint();
+			}		
+			if (e.getX() >= 100 && e.getX() <= getWidth() -  RIGHT_PAD && e.getY() >= p.y && e.getY() <= p.y + 50 && (e.getClickCount() == 2)) {
+				axisOption = new AxisOption("X-Axis");
+				repaint();
+			}
+		} else if (e.getButton() == 3){
+			ScatterPlotRightClickedMenu sprc = new ScatterPlotRightClickedMenu(this);
+			sprc.show(this, e.getX(), e.getY());
 		}
+			
 	}
 
 	@Override
