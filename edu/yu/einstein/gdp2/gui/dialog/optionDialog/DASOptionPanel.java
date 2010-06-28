@@ -31,62 +31,55 @@ import yu.einstein.gdp2.gui.mainFrame.MainFrame;
 
 /**
  * Panel of the {@link OptionDialog} that allows to choose the DAS server file
- * 
  * @author Chirag Gorasia
  * @version 0.1
  */
 
 public class DASOptionPanel extends OptionPanel {
 
-	private static final long serialVersionUID = -4695486600325761680L; // generated
-																		// ID
+	private static final long serialVersionUID = -4695486600325761680L; // generated ID
 	private static final int TABLE_WIDTH = 330;
 	private static final int TABLE_HEIGHT = 270;
-	/**
-	 */
 	private JTable jtserverurl;
-	/**
-	 */
 	private JButton jbadd;
-	/**
-	 */
 	private JButton jbremove;
 	protected static boolean tableChangedFlag = false;
-	/**
-	 */
 	private final String[] headerNames = { "Server Name", "URL" };
 	protected static Object[][] tableData;
-	/**
-	 */
 	private File file;
 
+	
 	/**
 	 * Inner class to do the JTable operations
 	 */
 	private class DASTableModel extends DefaultTableModel {
 
-		private static final long serialVersionUID = -8041866821280601850L; // generated
-																			// ID
+		private static final long serialVersionUID = -8041866821280601850L; // generated ID
 
+		
 		@Override
 		public String getColumnName(int col) {
 			return headerNames[col];
 		}
+		
 
 		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			return tableData[rowIndex][columnIndex];
 		}
+		
 
 		@Override
 		public int getRowCount() {
 			return tableData.length;
 		}
+		
 
 		@Override
 		public int getColumnCount() {
 			return 2;
 		}
+		
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -96,17 +89,20 @@ public class DASOptionPanel extends OptionPanel {
 				return true;
 			}
 		}
+		
 
 		@Override
 		public Class<?> getColumnClass(int c) {
 			return getValueAt(0, c).getClass();
 		}
+		
 
 		@Override
 		public void setValueAt(Object value, int row, int col) {
 			tableData[row][col] = value;
 			fireTableCellUpdated(row, col);
 		}
+		
 
 		@Override
 		public void addRow(Object[] row) {
@@ -127,6 +123,7 @@ public class DASOptionPanel extends OptionPanel {
 			fireTableRowsUpdated(tableData.length + 1, tableData.length + 1);
 			tableChangedFlag = true;
 		}
+		
 
 		@Override
 		public void removeRow(int row) {
@@ -149,6 +146,7 @@ public class DASOptionPanel extends OptionPanel {
 		}
 	};
 
+	
 	/**
 	 * Creates an instance of {@link DASOptionPanel}
 	 */
@@ -161,15 +159,11 @@ public class DASOptionPanel extends OptionPanel {
 				try {
 					dasServerList = new DASServerList(file.toURI().toURL());
 				} catch (SAXParseException e) {
-					ExceptionManager.handleException(MainFrame.getInstance()
-							.getRootPane(), e,
-							"DAS Server File Corrupted...loading default file");
-					dasServerList = new DASServerList(new URL(
-							configurationManager.getDefaultDasServerListFile()));
+					ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "DAS Server File Corrupted...loading default file");
+					dasServerList = new DASServerList(new URL(configurationManager.getDefaultDasServerListFile()));
 				}
 			} else {
-				dasServerList = new DASServerList(new URL(configurationManager
-						.getDefaultDasServerListFile()));
+				dasServerList = new DASServerList(new URL(configurationManager.getDefaultDasServerListFile()));
 			}
 			tableData = new Object[dasServerList.size()][2];
 			for (int i = 0; i < dasServerList.size(); i++) {
@@ -179,8 +173,7 @@ public class DASOptionPanel extends OptionPanel {
 
 			final DefaultTableModel model = new DASTableModel();
 			jtserverurl = new JTable(model);
-			jtserverurl.setPreferredScrollableViewportSize(new Dimension(
-					TABLE_WIDTH, TABLE_HEIGHT));
+			jtserverurl.setPreferredScrollableViewportSize(new Dimension(TABLE_WIDTH, TABLE_HEIGHT));
 			jtserverurl.setFillsViewportHeight(true);
 			TableColumn column = null;
 			column = jtserverurl.getColumnModel().getColumn(0);
@@ -194,15 +187,10 @@ public class DASOptionPanel extends OptionPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String dasServerName = "Enter DAS Server Name: ";
-					String newServerName = (String) JOptionPane
-							.showInputDialog(getRootPane(), dasServerName,
-									"Track Name", JOptionPane.QUESTION_MESSAGE,
-									null, null, null);
+					String newServerName = (String) JOptionPane.showInputDialog(getRootPane(), dasServerName, "Track Name", JOptionPane.QUESTION_MESSAGE, null, null, null);
 					if (newServerName != null) {
 						String dasURL = "Enter DAS Server URL: ";
-						String newURL = (String) JOptionPane.showInputDialog(
-								getRootPane(), dasURL, "Track Name",
-								JOptionPane.QUESTION_MESSAGE, null, null, null);
+						String newURL = (String) JOptionPane.showInputDialog(getRootPane(), dasURL, "Track Name", JOptionPane.QUESTION_MESSAGE, null, null, null);
 						if (newURL != null) {
 							Object[] newRow = { newServerName, newURL };
 							model.addRow(newRow);
@@ -210,7 +198,6 @@ public class DASOptionPanel extends OptionPanel {
 							jtserverurl.repaint();
 						}
 					}
-
 				}
 			});
 
@@ -245,8 +232,7 @@ public class DASOptionPanel extends OptionPanel {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e,
-					"Error loading DAS Server file");
+			ExceptionManager.handleException(getRootPane(), e, "Error loading DAS Server file");
 		}
 	}
 }

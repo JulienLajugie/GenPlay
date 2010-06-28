@@ -12,82 +12,62 @@ import yu.einstein.gdp2.util.History;
 
 /**
  * A track containing a {@link BinList}
- * 
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class BinListTrack extends CurveTrack {
 
-	private static final long serialVersionUID = -395099043710070726L; // generated
-																		// ID
-	/**
-	 */
+	private static final long serialVersionUID = -395099043710070726L; // generated ID
 	private final BinList binList; // BinList used to create the track
 
+	
 	/**
 	 * Creates an instance of {@link BinListTrack}
-	 * 
-	 * @param displayedGenomeWindow
-	 *            the displayed {@link GenomeWindow}
-	 * @param trackNumber
-	 *            the number of the track
-	 * @param binList
-	 *            the {@link BinList} showed in the track
+	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
+	 * @param trackNumber the number of the track
+	 * @param binList the {@link BinList} showed in the track
 	 */
-	public BinListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,
-			BinList binList) {
+	public BinListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, BinList binList) {
 		this.binList = binList;
 		initComponent(displayedGenomeWindow, trackNumber);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see yu.einstein.gdp2.gui.track.Track#copy()
-	 */
+
 	@Override
 	public Track copy() {
-		Track copiedTrack = new BinListTrack(trackGraphics.genomeWindow,
-				trackHandle.getTrackNumber(), binList);
+		Track copiedTrack = new BinListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), binList);
 		trackGraphics.copyTo(copiedTrack.trackGraphics);
 		trackGraphics.repaint();
 		copiedTrack.setPreferredHeight(getPreferredSize().height);
 		return copiedTrack;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * yu.einstein.gdp2.gui.track.Track#createTrackGraphics(yu.einstein.gdp2
-	 * .util.ZoomManager, yu.einstein.gdp2.core.GenomeWindow)
-	 */
+
 	@Override
 	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
 		trackGraphics = new BinListTrackGraphics(displayedGenomeWindow, binList);
 	}
 
+	
 	/**
 	 * Returns the BinList of the trackGraphics.
-	 * 
 	 * @return A binList.
 	 */
 	public BinList getBinList() {
 		return ((BinListTrackGraphics) trackGraphics).getBinList();
 	}
 
+	
 	/**
 	 * Sets a BinList that will be used as input data for the track.
-	 * 
-	 * @param binList
-	 *            a BinList
-	 * @param description
-	 *            description of binList
+	 * @param binList a BinList
+	 * @param description description of binList
 	 */
 	public void setBinList(BinList binList, String description) {
 		((BinListTrackGraphics) trackGraphics).setBinList(binList, description);
 	}
 
+	
 	/**
 	 * Resets the BinList. Copies the value of the original BinList into the
 	 * current value.
@@ -96,6 +76,7 @@ public final class BinListTrack extends CurveTrack {
 		((BinListTrackGraphics) trackGraphics).resetBinList();
 	}
 
+	
 	/**
 	 * Undoes last action.
 	 */
@@ -103,6 +84,7 @@ public final class BinListTrack extends CurveTrack {
 		((BinListTrackGraphics) trackGraphics).undo();
 	}
 
+	
 	/**
 	 * Redoes last action.
 	 */
@@ -110,6 +92,7 @@ public final class BinListTrack extends CurveTrack {
 		((BinListTrackGraphics) trackGraphics).redo();
 	}
 
+	
 	/**
 	 * @return true if the track can be reseted
 	 */
@@ -117,6 +100,7 @@ public final class BinListTrack extends CurveTrack {
 		return ((BinListTrackGraphics) trackGraphics).isResetable();
 	}
 
+	
 	/**
 	 * @return True if the action undo is possible.
 	 */
@@ -124,6 +108,7 @@ public final class BinListTrack extends CurveTrack {
 		return ((BinListTrackGraphics) trackGraphics).isUndoable();
 	}
 
+	
 	/**
 	 * @return True if the action redo is possible.
 	 */
@@ -131,6 +116,7 @@ public final class BinListTrack extends CurveTrack {
 		return ((BinListTrackGraphics) trackGraphics).isRedoable();
 	}
 
+	
 	/**
 	 * @return the history of the current track.
 	 */
@@ -138,17 +124,15 @@ public final class BinListTrack extends CurveTrack {
 		return ((BinListTrackGraphics) trackGraphics).getHistory();
 	}
 
+	
 	/**
 	 * Renames the track
-	 * 
-	 * @param newName
-	 *            a new name for the track
+	 * @param newName a new name for the track
 	 */
 	@Override
 	public void setName(String newName) {
 		// add the name of the track to the history
-		getHistory().add("Track Name: \"" + newName + "\"",
-				new Color(0, 100, 0));
+		getHistory().add("Track Name: \"" + newName + "\"",	new Color(0, 100, 0));
 		super.setName(newName);
 	}
 }

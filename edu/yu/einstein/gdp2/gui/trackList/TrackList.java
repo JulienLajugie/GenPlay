@@ -778,4 +778,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// disable the action map
 		setEnabled(false);
 	}
+
+
+	public void undoCountChanged() {
+		// TODO Auto-generated method stub
+		
+	}
 }

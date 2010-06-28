@@ -36,84 +36,44 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
 /**
  * Dialog allowing to change the configuration of the program.
- * 
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class OptionDialog extends JDialog implements
-		TreeSelectionListener, PropertyChangeListener {
+public final class OptionDialog extends JDialog implements TreeSelectionListener, PropertyChangeListener {
 
-	private static final long serialVersionUID = 4050757943368845382L; // Generated
-																		// serial
-																		// number
+	private static final long serialVersionUID = 4050757943368845382L; // Generated ID
+	private static final Dimension OPTION_DIALOG_DIMENSION = new Dimension(600, 400); // dimension of this window
+	private final ConfigurationManager 	cm; 				// A ConfigurationManager
+	private final JTree 				jt; 				// Tree
+	private final JScrollPane 			jspTreeView; 		// Scroll pane containing the tree
+	private final JPanel 				jpOption; 			// Panel containing the different panel of configuration
+	private final JButton 				jbOk; 				// Button OK
+	private final JButton 				jbCancel; 			// Button cancel
+	private final JSplitPane 			jspDivider; 		// Divider between the tree and the panel
+	private final String 				zoomFile; 			// zoom config file
+	private final String 				chromosomeFile; 	// chromosome config file
+	private final String 				logFile; 			// log file
+	private final String 				defaultDirectory; 	// default directory
+	private final String 				lookAndFeel; 		// look and feel
+	private final String 				dasServerListFile; 	// DAS Server List File
+	private final int 					trackCount; 		// track count
+	private final int 					trackHeight; 		// track height
+	private final int 					undoCount; 			// undo count
+	private int 			approved = CANCEL_OPTION; 		// Equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	private static final Dimension OPTION_DIALOG_DIMENSION = new Dimension(600,
-			400); // dimension of this window
-	/**
-	 */
-	private final ConfigurationManager cm; // A ConfigurationManager
-	/**
-	 */
-	private final JTree jt; // Tree
-	/**
-	 */
-	private final JScrollPane jspTreeView; // Scroll pane containing the tree
-	/**
-	 */
-	private final JPanel jpOption; // Panel containing the different panel of
-									// configuration
-	/**
-	 */
-	private final JButton jbOk; // Button OK
-	/**
-	 */
-	private final JButton jbCancel; // Button cancel
-	/**
-	 */
-	private final JSplitPane jspDivider; // Divider between the tree and the
-											// panel
-	/**
-	 */
-	private final String zoomFile; // zoom config file
-	/**
-	 */
-	private final String chromosomeFile; // chromosome config file
-	/**
-	 */
-	private final String logFile; // log file
-	/**
-	 */
-	private final String defaultDirectory; // default directory
-	/**
-	 */
-	private final String lookAndFeel; // look and feel
-	/**
-	 */
-	private final String dasServerListFile; // DAS Server List File
-	/**
-	 */
-	private final int trackCount; // track count
-	/**
-	 */
-	private final int trackHeight; // track height
-	/**
-	 */
-	private final int undoCount; // undo count
-	/**
-	 */
-	private int approved = CANCEL_OPTION; // Equals APPROVE_OPTION if user
-											// clicked OK, CANCEL_OPTION if not
-
+	
 	/**
 	 * Return value when OK has been clicked.
 	 */
 	public static final int APPROVE_OPTION = 0;
 
+	
 	/**
 	 * Return value when Cancel has been clicked.
 	 */
 	public static final int CANCEL_OPTION = 1;
 
+	
 	/**
 	 * Creates an instance of {@link OptionDialog}
 	 */
@@ -131,7 +91,6 @@ public final class OptionDialog extends JDialog implements
 		undoCount = cm.getUndoCount();
 
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Options");
-		;
 		createNodes(top);
 		jt = new JTree(top);
 		// hide the root node
@@ -144,10 +103,8 @@ public final class OptionDialog extends JDialog implements
 		renderer.setClosedIcon(null);
 		renderer.setOpenIcon(null);
 		jt.setCellRenderer(renderer);
-		jt.getSelectionModel().setSelectionMode(
-				TreeSelectionModel.SINGLE_TREE_SELECTION);
+		jt.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 		jt.addTreeSelectionListener(this);
-
 		jspTreeView = new JScrollPane(jt);
 		jpOption = new JPanel();
 
@@ -156,14 +113,10 @@ public final class OptionDialog extends JDialog implements
 		jspDivider.setLeftComponent(jspTreeView);
 		jspDivider.setBottomComponent(jpOption);
 		jspDivider.setContinuousLayout(true);
-
 		Dimension minimumSize = new Dimension(100, 1);
 		jspTreeView.setMinimumSize(minimumSize);
-
 		jpOption.setMinimumSize(minimumSize);
-
 		jspDivider.setDividerLocation(OPTION_DIALOG_DIMENSION.width / 3);
-
 		jbOk = new JButton("OK");
 		jbOk.addActionListener(new ActionListener() {
 			@Override
@@ -176,13 +129,10 @@ public final class OptionDialog extends JDialog implements
 					if (DASOptionPanel.tableChangedFlag == true) {
 						cm.setDASServerListFile(cm.getDASServerListFile());
 						DASServerListWriter dasServerListWriter = new DASServerListWriter();
-						dasServerListWriter.write(DASOptionPanel.tableData, cm
-								.getDASServerListFile());
+						dasServerListWriter.write(DASOptionPanel.tableData, cm.getDASServerListFile());
 					}
 				} catch (IOException er) {
-					JOptionPane.showMessageDialog(getRootPane(),
-							"Error while saving the configuration", "Error",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
 					er.printStackTrace();
 				}
 			}
@@ -248,11 +198,10 @@ public final class OptionDialog extends JDialog implements
 		getRootPane().setDefaultButton(jbOk);
 	}
 
+	
 	/**
 	 * Creates the data of the tree.
-	 * 
-	 * @param top
-	 *            Root DefaultMutableTreeNode of the tree.
+	 * @param top Root DefaultMutableTreeNode of the tree.
 	 */
 	private void createNodes(DefaultMutableTreeNode top) {
 		DefaultMutableTreeNode category = null;
@@ -274,13 +223,13 @@ public final class OptionDialog extends JDialog implements
 
 	}
 
+	
 	/**
 	 * Changes the panel displayed when the node of the tree changes.
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt
-				.getLastSelectedPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
 		jpOption.removeAll();
 		if ((node != null) && (node.isLeaf())) {
 			Object nodeInfo = node.getUserObject();
@@ -293,12 +242,10 @@ public final class OptionDialog extends JDialog implements
 		jpOption.repaint();
 	}
 
+	
 	/**
 	 * Shows the component.
-	 * 
-	 * @param parent
-	 *            the parent component of the dialog, can be null; see
-	 *            showDialog for details
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showConfigurationDialog(Component parent) {
@@ -307,6 +254,7 @@ public final class OptionDialog extends JDialog implements
 		return approved;
 	}
 
+	
 	/**
 	 * Restores the data and regenerate the tree when the option restore
 	 * configuration is clicked.
@@ -322,6 +270,7 @@ public final class OptionDialog extends JDialog implements
 		}
 	}
 
+	
 	/**
 	 * @return true if zoomFile changed
 	 */
@@ -329,6 +278,7 @@ public final class OptionDialog extends JDialog implements
 		return !zoomFile.equals(cm.getZoomFile());
 	}
 
+	
 	/**
 	 * @return true if chromosomeFile changed
 	 */
@@ -336,12 +286,14 @@ public final class OptionDialog extends JDialog implements
 		return !chromosomeFile.equals(cm.getChromosomeFile());
 	}
 
+	
 	/**
 	 * @return true if logFile changed
 	 */
 	public boolean logFileChanged() {
 		return !logFile.equals(cm.getLogFile());
 	}
+	
 
 	/**
 	 * @return true if dasServerListFile changed
@@ -349,6 +301,7 @@ public final class OptionDialog extends JDialog implements
 	public boolean dasServerListFileChanged() {
 		return !dasServerListFile.equals(cm.getDASServerListFile());
 	}
+	
 
 	/**
 	 * @return true if defaultDirectory changed
@@ -356,6 +309,7 @@ public final class OptionDialog extends JDialog implements
 	public boolean defaultDirectoryChanged() {
 		return !defaultDirectory.equals(cm.getDefaultDirectory());
 	}
+	
 
 	/**
 	 * @return true if lookAndFeel changed
@@ -363,6 +317,7 @@ public final class OptionDialog extends JDialog implements
 	public boolean lookAndFeelChanged() {
 		return !lookAndFeel.equals(cm.getLookAndFeel());
 	}
+	
 
 	/**
 	 * @return true if trackCount changed
@@ -370,6 +325,7 @@ public final class OptionDialog extends JDialog implements
 	public boolean trackCountChanged() {
 		return trackCount != cm.getTrackCount();
 	}
+	
 
 	/**
 	 * @return true if trackHeight changed
@@ -377,6 +333,7 @@ public final class OptionDialog extends JDialog implements
 	public boolean trackHeightChanged() {
 		return trackHeight != cm.getTrackHeight();
 	}
+	
 
 	/**
 	 * @return true if the undo count changed

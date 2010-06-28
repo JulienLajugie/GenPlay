@@ -16,42 +16,25 @@ import javax.swing.JLabel;
 import javax.swing.text.NumberFormatter;
 
 /**
- * Panel of the {@link OptionDialog} that allows to configure the tracks
- * 
+ * Panel of the {@link OptionDialog} that allows to configure the tracks * 
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class TrackOptionPanel extends OptionPanel {
 
-	private static final long serialVersionUID = 1941311091566384114L; // generated
-																		// ID
+	private static final long serialVersionUID = 1941311091566384114L; 	// generated ID
+	private static final int MIN_TRACK_COUNT = 1; 						// minimum number of tracks
+	private static final int MAX_TRACK_COUNT = 1024; 					// maximum number of tracks
+	private static final int MIN_TRACK_HEIGHT = 30; 					// minimum height of the tracks
+	private static final int MAX_TRACK_HEIGHT = 2000; 					// maximum height of the tracks
+	private final JLabel 				jlTrackCount; 		// label track count
+	private final JFormattedTextField 	jftfTrackCount; 	// text field track count
+	private final JLabel 				jlTrackHeight; 		// label track height
+	private final JFormattedTextField 	jftfTrackHeight;	// text field track count
+	private final JLabel 				jlUndoCount; 		// label undo count
+	private final JFormattedTextField 	jftfUndoCount; 		// label undo count
 
-	private static final int MIN_TRACK_COUNT = 1; // minimum number of tracks
-	private static final int MAX_TRACK_COUNT = 1024; // maximum number of tracks
-	private static final int MIN_TRACK_HEIGHT = 30; // minimum height of the
-													// tracks
-	private static final int MAX_TRACK_HEIGHT = 2000; // maximum height of the
-														// tracks
-
-	/**
-	 */
-	private final JLabel jlTrackCount; // label track count
-	/**
-	 */
-	private final JFormattedTextField jftfTrackCount; // text field track count
-	/**
-	 */
-	private final JLabel jlTrackHeight; // label track height
-	/**
-	 */
-	private final JFormattedTextField jftfTrackHeight;// text field track count
-	/**
-	 */
-	private final JLabel jlUndoCount; // label undo count
-	/**
-	 */
-	private final JFormattedTextField jftfUndoCount; // label undo count
-
+	
 	/**
 	 * Creates an instance of {@link TrackOptionPanel}
 	 */
@@ -61,27 +44,22 @@ public final class TrackOptionPanel extends OptionPanel {
 		jlTrackCount = new JLabel("Number of Tracks:");
 
 		jftfTrackCount = new JFormattedTextField(new DecimalFormat("#"));
-		((NumberFormatter) jftfTrackCount.getFormatter())
-				.setMinimum(MIN_TRACK_COUNT);
-		((NumberFormatter) jftfTrackCount.getFormatter())
-				.setMaximum(MAX_TRACK_COUNT);
+		((NumberFormatter) jftfTrackCount.getFormatter()).setMinimum(MIN_TRACK_COUNT);
+		((NumberFormatter) jftfTrackCount.getFormatter()).setMaximum(MAX_TRACK_COUNT);
 		jftfTrackCount.setColumns(5);
 		jftfTrackCount.setValue(configurationManager.getTrackCount());
 		jftfTrackCount.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				configurationManager.setTrackCount(((Number) jftfTrackCount
-						.getValue()).intValue());
+				configurationManager.setTrackCount(((Number) jftfTrackCount.getValue()).intValue());
 			}
 		});
 
 		jlTrackHeight = new JLabel("Default Track Height:");
 
 		jftfTrackHeight = new JFormattedTextField(new DecimalFormat("#"));
-		((NumberFormatter) jftfTrackHeight.getFormatter())
-				.setMinimum(MIN_TRACK_HEIGHT);
-		((NumberFormatter) jftfTrackHeight.getFormatter())
-				.setMaximum(MAX_TRACK_HEIGHT);
+		((NumberFormatter) jftfTrackHeight.getFormatter()).setMinimum(MIN_TRACK_HEIGHT);
+		((NumberFormatter) jftfTrackHeight.getFormatter()).setMaximum(MAX_TRACK_HEIGHT);
 		jftfTrackHeight.setColumns(5);
 		jftfTrackHeight.setValue(configurationManager.getTrackHeight());
 		jftfTrackHeight.addPropertyChangeListener(new PropertyChangeListener() {
@@ -95,15 +73,13 @@ public final class TrackOptionPanel extends OptionPanel {
 		jlUndoCount = new JLabel("Undo Count:");
 		jftfUndoCount = new JFormattedTextField(new DecimalFormat("#"));
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMinimum(0);
-		((NumberFormatter) jftfUndoCount.getFormatter())
-				.setMaximum(Integer.MAX_VALUE);
+		((NumberFormatter) jftfUndoCount.getFormatter()).setMaximum(Integer.MAX_VALUE);
 		jftfUndoCount.setColumns(5);
 		jftfUndoCount.setValue(configurationManager.getUndoCount());
 		jftfUndoCount.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				configurationManager.setUndoCount(((Number) jftfUndoCount
-						.getValue()).intValue());
+				configurationManager.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
 			}
 		});
 

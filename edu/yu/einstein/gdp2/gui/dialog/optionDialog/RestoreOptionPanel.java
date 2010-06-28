@@ -15,22 +15,16 @@ import javax.swing.JLabel;
 
 /**
  * Panel of the {@link OptionDialog} that allows to restore the config file
- * 
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class RestoreOptionPanel extends OptionPanel {
 
-	private static final long serialVersionUID = 32933937591821971L; // generated
-																		// ID
+	private static final long serialVersionUID = 32933937591821971L; // generated ID
+	private final JLabel jlRestore; 	// Label restore
+	private final JButton jbRestore; 	// Button restore
 
-	/**
-	 */
-	private final JLabel jlRestore; // Label restore
-	/**
-	 */
-	private final JButton jbRestore; // Button restore
-
+	
 	/**
 	 * Creates an instance of {@link RestoreOptionPanel}
 	 */

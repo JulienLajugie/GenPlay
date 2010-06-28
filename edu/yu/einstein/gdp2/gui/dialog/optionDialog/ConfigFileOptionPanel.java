@@ -15,52 +15,33 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+
 /**
- * 
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class ConfigFileOptionPanel extends OptionPanel {
 
-	private static final long serialVersionUID = 4936841930455874582L; // generated
-																		// ID
+	private static final long serialVersionUID = 4936841930455874582L; // generated ID
+	private final JLabel 		jlZoomFile; 	// Label zoom file
+	private final JTextField 	jtfZoomFile; 	// TextField zoom file
+	private final JButton 		jbZoomBrowse; 	// Button browse zoom file
+	private final JLabel 		jlChromoFile; 	// Label chromosome file
+	private final JTextField 	jtfChromoFile; 	// TextField chromosome file
+	private final JButton 		jbChromoBrowse; // Button browse chromosome file
+	private final JLabel 		jlRestart;		// label telling the user to restart the application
 
-	/**
-	 */
-	private final JLabel jlZoomFile; // Label zoom file
-	/**
-	 */
-	private final JTextField jtfZoomFile; // TextField zoom file
-	/**
-	 */
-	private final JButton jbZoomBrowse; // Button browse zoom file
-	/**
-	 */
-	private final JLabel jlChromoFile; // Label chromosome file
-	/**
-	 */
-	private final JTextField jtfChromoFile; // TextField chromosome file
-	/**
-	 */
-	private final JButton jbChromoBrowse; // Button browse chromosome file
-	/**
-	 */
-	private final JLabel jlRestart; // label telling the user to restart the
-									// application
-
+	
 	/**
 	 * Creates an instance of {@link ConfigFileOptionPanel}
 	 */
 	public ConfigFileOptionPanel() {
 		super("Configuration Files");
-
 		jlZoomFile = new JLabel("Zoom configuration file: ");
-		if ((configurationManager.getZoomFile() == null)
-				|| (configurationManager.getZoomFile().equals(""))) {
+		if ((configurationManager.getZoomFile() == null) || (configurationManager.getZoomFile().equals(""))) {
 			jtfZoomFile = new JTextField();
 		} else {
-			jtfZoomFile = new JTextField(new File(configurationManager
-					.getZoomFile()).getAbsolutePath());
+			jtfZoomFile = new JTextField(new File(configurationManager.getZoomFile()).getAbsolutePath());
 		}
 		jtfZoomFile.setColumns(30);
 		jtfZoomFile.setEditable(false);
@@ -69,19 +50,16 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 		jbZoomBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Zoom File:", new File(configurationManager
-						.getZoomFile()), jtfZoomFile, true);
+				browse("Zoom File:", new File(configurationManager.getZoomFile()), jtfZoomFile, true);
 				configurationManager.setZoomFile(jtfZoomFile.getText());
 			}
 		});
 
 		jlChromoFile = new JLabel("Chromosome configuration file: ");
-		if ((configurationManager.getChromosomeFile() == null)
-				|| (configurationManager.getChromosomeFile().equals(""))) {
+		if ((configurationManager.getChromosomeFile() == null) || (configurationManager.getChromosomeFile().equals(""))) {
 			jtfChromoFile = new JTextField();
 		} else {
-			jtfChromoFile = new JTextField(new File(configurationManager
-					.getChromosomeFile()).getAbsolutePath());
+			jtfChromoFile = new JTextField(new File(configurationManager.getChromosomeFile()).getAbsolutePath());
 		}
 		jtfChromoFile.setColumns(30);
 		jtfChromoFile.setEditable(false);
@@ -90,14 +68,12 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 		jbChromoBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Chromosome File:", new File(configurationManager
-						.getChromosomeFile()), jtfChromoFile, true);
+				browse("Chromosome File:", new File(configurationManager.getChromosomeFile()), jtfChromoFile, true);
 				configurationManager.setChromosomeFile(jtfChromoFile.getText());
 			}
 		});
 
-		jlRestart = new JLabel(
-				"Restart the application to take these modifications into account");
+		jlRestart = new JLabel("Restart the application to take these modifications into account");
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();

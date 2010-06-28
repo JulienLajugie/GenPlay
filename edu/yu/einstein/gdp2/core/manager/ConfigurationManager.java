@@ -17,97 +17,46 @@ import java.io.Serializable;
 
 /**
  * Class containing the project
- * 
  * @author Julien Lajugie
  * @author Chirag Gorasia
  * @version 0.1
  */
 public final class ConfigurationManager implements Serializable {
 
-	private static final long serialVersionUID = 5632320102259442205L; // generated
-																		// ID
-	private static ConfigurationManager instance = null; // unique instance of
-															// the singleton
+	private static final long serialVersionUID = 5632320102259442205L; 		// generated ID
+	private static ConfigurationManager instance = null; 					// unique instance of the singleton
+	private static String TEMP_DIR = System.getProperty("java.io.tmpdir"); 	// java directory for temporary files
+	private static String CONFIG_FILE = "GenPlay_config.cfg"; 				// path of the config file
+	private static final String DEFAULT_ZOOM_FILE = ""; 					// path of the default zoom config file
+	private static final String DEFAULT_CHROMOSOME_FILE = ""; 				// path of the default chromosome config file
+	private static final String DEFAULT_LOG_FILE = 
+		new File(TEMP_DIR, "GenPlayLog.txt").getAbsolutePath(); 			// path of the default log file
+	private final static String DEFAULT_DAS_SERVER_PATH = 
+		"yu/einstein/gdp2/resource/DASServerList.xml"; 						// DAS Server List file path
+	private static final String DEFAULT_DEFAULT_DIRECTORY = ""; 			// default directory
+	private static final String DEFAULT_LOOK_AND_FEEL = 
+		"javax.swing.plaf.metal.MetalLookAndFeel";							// default look and feel
+	private static final int DEFAULT_TRACK_COUNT = 50; 						// default number of track
+	private static final int DEFAULT_TRACK_HEIGHT = 100; 					// default track height
+	private static final int MIN_TRACK_COUNT = 1; 							// minimum number of tracks
+	private static final int MAX_TRACK_COUNT = 1024; 						// maximum number of tracks
+	private static final int MIN_TRACK_HEIGHT = 30; 						// minimum height of the tracks
+	private static final int MAX_TRACK_HEIGHT = 2000; 						// maximum height of the tracks
+	private static final int DEFAULT_UNDO_COUNT = 1; 						// default number of undo in memory
+	private String zoomFile = DEFAULT_ZOOM_FILE; 							// zoom config file
+	private String chromosomeFile = DEFAULT_CHROMOSOME_FILE; 				// chromosome config file
+	private String logFile = DEFAULT_LOG_FILE; 								// log file
+	private String defaultDirectory = DEFAULT_DEFAULT_DIRECTORY; 			// default directory
+	private String lookAndFeel = DEFAULT_LOOK_AND_FEEL; 					// look and feel
+	private String dasServerListFile = getTempDir() + "DASServerList.xml"; 	// DAS Server list
+	private int trackCount = DEFAULT_TRACK_COUNT; 							// track count
+	private int trackHeight = DEFAULT_TRACK_HEIGHT; 						// track height
+	private int undoCount = DEFAULT_UNDO_COUNT; 							// number of undo in memory
 
-	private static String TEMP_DIR = System.getProperty("java.io.tmpdir"); // java
-																			// directory
-																			// for
-																			// temporary
-																			// files
-	private static String CONFIG_FILE = "GenPlay_config.cfg"; // path of the
-																// config file
-
-	private static final String DEFAULT_ZOOM_FILE = ""; // path of the default
-														// zoom config file
-	private static final String DEFAULT_CHROMOSOME_FILE = ""; // path of the
-																// default
-																// chromosome
-																// config file
-	private static final String DEFAULT_LOG_FILE = new File(TEMP_DIR,
-			"GenPlayLog.txt").getAbsolutePath(); // path of the default log file
-
-	private final static String DEFAULT_DAS_SERVER_PATH = "yu/einstein/gdp2/resource/DASServerList.xml"; // DAS
-																											// Server
-																											// List
-																											// file
-																											// path
-
-	private static final String DEFAULT_DEFAULT_DIRECTORY = ""; // default
-																// directory
-	private static final String DEFAULT_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";// default
-																									// look
-																									// and
-																									// feel
-	private static final int DEFAULT_TRACK_COUNT = 50; // default number of
-														// track
-	private static final int DEFAULT_TRACK_HEIGHT = 100; // default track height
-
-	private static final int MIN_TRACK_COUNT = 1; // minimum number of tracks
-	private static final int MAX_TRACK_COUNT = 1024; // maximum number of tracks
-	private static final int MIN_TRACK_HEIGHT = 30; // minimum height of the
-													// tracks
-	private static final int MAX_TRACK_HEIGHT = 2000; // maximum height of the
-														// tracks
-
-	private static final int DEFAULT_UNDO_COUNT = 1; // default number of undo
-														// in memory
-
-	/**
-	 */
-	private String zoomFile = DEFAULT_ZOOM_FILE; // zoom config file
-	/**
-	 */
-	private String chromosomeFile = DEFAULT_CHROMOSOME_FILE; // chromosome
-																// config file
-	/**
-	 */
-	private String logFile = DEFAULT_LOG_FILE; // log file
-	/**
-	 */
-	private String defaultDirectory = DEFAULT_DEFAULT_DIRECTORY; // default
-																	// directory
-	/**
-	 */
-	private String lookAndFeel = DEFAULT_LOOK_AND_FEEL; // look and feel
-	/**
-	 */
-	private String dasServerListFile = getTempDir() + "DASServerList.xml"; // DAS
-																			// Server
-																			// list
-	/**
-	 */
-	private int trackCount = DEFAULT_TRACK_COUNT; // track count
-	/**
-	 */
-	private int trackHeight = DEFAULT_TRACK_HEIGHT; // track height
-	/**
-	 */
-	private int undoCount = DEFAULT_UNDO_COUNT; // number of undo in memory
-
+	
 	/**
 	 * @return an instance of a {@link ConfigurationManager}. Makes sure that
-	 *         there is only one unique instance as specified in the singleton
-	 *         pattern
+	 * there is only one unique instance as specified in the singleton pattern
 	 */
 	public static ConfigurationManager getInstance() {
 		if (instance == null) {
@@ -120,6 +69,7 @@ public final class ConfigurationManager implements Serializable {
 		return instance;
 	}
 
+	
 	/**
 	 * Private constructor of the singleton. Creates an instance of a
 	 * {@link ConfigurationManager}.
@@ -128,11 +78,10 @@ public final class ConfigurationManager implements Serializable {
 		super();
 	}
 
+	
 	/**
 	 * Reads a line from the configuration file and extracts the data
-	 * 
-	 * @param line
-	 *            a line from the configuration file
+	 * @param line a line from the configuration file
 	 */
 	private void extractLine(String line) {
 		int index = line.indexOf(':');
@@ -140,8 +89,7 @@ public final class ConfigurationManager implements Serializable {
 		if (index != -1) {
 			String key = line.substring(0, index).trim();
 			String value = line.substring(index + 1).trim();
-			if ((key != null) && (key.length() > 0) && (value != null)
-					&& (value.length() > 0)) {
+			if ((key != null) && (key.length() > 0) && (value != null) && (value.length() > 0)) {
 				if (key.equalsIgnoreCase("zoom file")) {
 					zoomFile = value;
 				} else if (key.equalsIgnoreCase("chromosome file")) {
@@ -165,6 +113,7 @@ public final class ConfigurationManager implements Serializable {
 		}
 	}
 
+	
 	/**
 	 * @return the chromosomeFile
 	 */
@@ -172,6 +121,7 @@ public final class ConfigurationManager implements Serializable {
 		return chromosomeFile;
 	}
 
+	
 	/**
 	 * @return the defaultDirectory
 	 */
@@ -179,6 +129,7 @@ public final class ConfigurationManager implements Serializable {
 		return defaultDirectory;
 	}
 
+	
 	/**
 	 * @return the tempDirectory
 	 */
@@ -186,6 +137,7 @@ public final class ConfigurationManager implements Serializable {
 		return TEMP_DIR;
 	}
 
+	
 	/**
 	 * @return the dasServerListFile
 	 */
@@ -193,14 +145,15 @@ public final class ConfigurationManager implements Serializable {
 		return dasServerListFile;
 	}
 
+	
 	/**
 	 * @return the default das server file
 	 */
 	public final String getDefaultDasServerListFile() {
-		return this.getClass().getClassLoader().getResource(
-				DEFAULT_DAS_SERVER_PATH).toString();
+		return this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString();
 	}
 
+	
 	/**
 	 * @return the logFile
 	 */
@@ -208,6 +161,7 @@ public final class ConfigurationManager implements Serializable {
 		return logFile;
 	}
 
+	
 	/**
 	 * @return the lookAndFeel
 	 */
@@ -215,6 +169,7 @@ public final class ConfigurationManager implements Serializable {
 		return lookAndFeel;
 	}
 
+	
 	/**
 	 * @return the trackCount
 	 */
@@ -222,6 +177,7 @@ public final class ConfigurationManager implements Serializable {
 		return trackCount;
 	}
 
+	
 	/**
 	 * @return the trackHeight
 	 */
@@ -229,12 +185,14 @@ public final class ConfigurationManager implements Serializable {
 		return trackHeight;
 	}
 
+	
 	/**
 	 * @return the undoCount
 	 */
 	public int getUndoCount() {
 		return undoCount;
 	}
+	
 
 	/**
 	 * @return the zoomFile
@@ -243,14 +201,13 @@ public final class ConfigurationManager implements Serializable {
 		return zoomFile;
 	}
 
+	
 	/**
 	 * Reads the configuration from a file.
-	 * 
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	public void loadConfigurationFile() throws IOException,
-			FileNotFoundException {
+	public void loadConfigurationFile() throws IOException, FileNotFoundException {
 		BufferedReader reader = null;
 		try {
 			File configFile = new File(TEMP_DIR, CONFIG_FILE);
@@ -264,12 +221,10 @@ public final class ConfigurationManager implements Serializable {
 			if (reader != null) {
 				reader.close();
 			}
-			if ((trackCount < MIN_TRACK_COUNT)
-					|| (trackCount > MAX_TRACK_COUNT)) {
+			if ((trackCount < MIN_TRACK_COUNT) || (trackCount > MAX_TRACK_COUNT)) {
 				trackCount = DEFAULT_TRACK_COUNT;
 			}
-			if ((trackHeight < MIN_TRACK_HEIGHT)
-					|| (trackHeight > MAX_TRACK_HEIGHT)) {
+			if ((trackHeight < MIN_TRACK_HEIGHT) || (trackHeight > MAX_TRACK_HEIGHT)) {
 				trackHeight = DEFAULT_TRACK_HEIGHT;
 			}
 			if (undoCount < 0) {
@@ -278,12 +233,12 @@ public final class ConfigurationManager implements Serializable {
 		}
 	}
 
+	
 	/**
 	 * Methods used for the serialization of the singleton object. The
 	 * readResolve method is called when ObjectInputStream has read an object
 	 * from the stream and is preparing to return it to the caller. See javadocs
 	 * for more information
-	 * 
 	 * @return the unique instance of the singleton
 	 * @throws ObjectStreamException
 	 */
@@ -291,6 +246,7 @@ public final class ConfigurationManager implements Serializable {
 		return getInstance();
 	}
 
+	
 	/**
 	 * Restores the default configuration
 	 */
@@ -307,81 +263,81 @@ public final class ConfigurationManager implements Serializable {
 		undoCount = DEFAULT_UNDO_COUNT;
 	}
 
+	
 	/**
-	 * @param chromosomeFile
-	 *            the chromosomeFile to set
+	 * @param chromosomeFile the chromosomeFile to set
 	 */
 	public final void setChromosomeFile(String chromosomeFile) {
 		this.chromosomeFile = chromosomeFile;
 	}
 
+	
 	/**
-	 * @param dasServerListFile
-	 *            the dasServerListFile to set
+	 * @param dasServerListFile the dasServerListFile to set
 	 */
 	public final void setDASServerListFile(String dasServerListFile) {
 		this.dasServerListFile = dasServerListFile;
 	}
 
+	
 	/**
-	 * @param defaultDirectory
-	 *            the defaultDirectory to set
+	 * @param defaultDirectory the defaultDirectory to set
 	 */
 	public final void setDefaultDirectory(String defaultDirectory) {
 		this.defaultDirectory = defaultDirectory;
 	}
+	
 
 	/**
-	 * @param logFile
-	 *            the logFile to set
+	 * @param logFile the logFile to set
 	 */
 	public final void setLogFile(String logFile) {
 		this.logFile = logFile;
 	}
 
+	
 	/**
-	 * @param lookAndFeel
-	 *            the lookAndFeel to set
+	 * @param lookAndFeel the lookAndFeel to set
 	 */
 	public final void setLookAndFeel(String lookAndFeel) {
 		this.lookAndFeel = lookAndFeel;
 	}
 
+	
 	/**
-	 * @param trackCount
-	 *            the trackCount to set
+	 * @param trackCount the trackCount to set
 	 */
 	public final void setTrackCount(int trackCount) {
 		this.trackCount = trackCount;
 	}
 
+	
 	/**
-	 * @param trackHeight
-	 *            the trackHeight to set
+	 * @param trackHeight the trackHeight to set
 	 */
 	public final void setTrackHeight(int trackHeight) {
 		this.trackHeight = trackHeight;
 	}
 
+	
 	/**
-	 * @param zoomFile
-	 *            the zoomFile to set
+	 * @param zoomFile the zoomFile to set
 	 */
 	public final void setZoomFile(String zoomFile) {
 		this.zoomFile = zoomFile;
 	}
 
+	
 	/**
-	 * @param undoCount
-	 *            the undoCount to set
+	 * @param undoCount the undoCount to set
 	 */
 	public void setUndoCount(int undoCount) {
 		this.undoCount = undoCount;
 	}
 
+	
 	/**
 	 * Writes the configuration in a file
-	 * 
 	 * @throws IOException
 	 */
 	public void writeConfigurationFile() throws IOException {
