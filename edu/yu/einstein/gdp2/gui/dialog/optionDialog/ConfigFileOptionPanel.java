@@ -15,9 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import yu.einstein.gdp2.core.manager.ConfigurationManager;
-
-
 /**
  * 
  * @author Julien Lajugie
@@ -25,29 +22,45 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
  */
 public final class ConfigFileOptionPanel extends OptionPanel {
 
-	private static final long serialVersionUID = 4936841930455874582L; // generated ID
+	private static final long serialVersionUID = 4936841930455874582L; // generated
+																		// ID
 
-	private final JLabel 		jlZoomFile;		// Label zoom file
-	private final JTextField 	jtfZoomFile;	// TextField zoom file 
-	private final JButton 		jbZoomBrowse;	// Button browse zoom file
-	private final JLabel 		jlChromoFile;	// Label chromosome file
-	private final JTextField 	jtfChromoFile;	// TextField chromosome file 
-	private final JButton 		jbChromoBrowse;	// Button browse chromosome file
-	private final JLabel		jlRestart;		// label telling the user to restart the application
-
+	/**
+	 */
+	private final JLabel jlZoomFile; // Label zoom file
+	/**
+	 */
+	private final JTextField jtfZoomFile; // TextField zoom file
+	/**
+	 */
+	private final JButton jbZoomBrowse; // Button browse zoom file
+	/**
+	 */
+	private final JLabel jlChromoFile; // Label chromosome file
+	/**
+	 */
+	private final JTextField jtfChromoFile; // TextField chromosome file
+	/**
+	 */
+	private final JButton jbChromoBrowse; // Button browse chromosome file
+	/**
+	 */
+	private final JLabel jlRestart; // label telling the user to restart the
+									// application
 
 	/**
 	 * Creates an instance of {@link ConfigFileOptionPanel}
-	 * @param configMmanager a {@link ConfigurationManager}
 	 */
-	public ConfigFileOptionPanel(ConfigurationManager configMmanager) {
-		super("Configuration Files", configMmanager);
+	public ConfigFileOptionPanel() {
+		super("Configuration Files");
 
 		jlZoomFile = new JLabel("Zoom configuration file: ");
-		if ((cm.getZoomFile() == null) || (cm.getZoomFile().equals(""))) {
+		if ((configurationManager.getZoomFile() == null)
+				|| (configurationManager.getZoomFile().equals(""))) {
 			jtfZoomFile = new JTextField();
 		} else {
-			jtfZoomFile = new JTextField(new File(cm.getZoomFile()).getAbsolutePath());
+			jtfZoomFile = new JTextField(new File(configurationManager
+					.getZoomFile()).getAbsolutePath());
 		}
 		jtfZoomFile.setColumns(30);
 		jtfZoomFile.setEditable(false);
@@ -56,16 +69,19 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 		jbZoomBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Zoom File:", new File(cm.getZoomFile()), jtfZoomFile, true);
-				cm.setZoomFile(jtfZoomFile.getText());
+				browse("Zoom File:", new File(configurationManager
+						.getZoomFile()), jtfZoomFile, true);
+				configurationManager.setZoomFile(jtfZoomFile.getText());
 			}
 		});
 
-		jlChromoFile = new JLabel("Chromosome configuration file: ");		
-		if ((cm.getChromosomeFile() == null) || (cm.getChromosomeFile().equals(""))) {
+		jlChromoFile = new JLabel("Chromosome configuration file: ");
+		if ((configurationManager.getChromosomeFile() == null)
+				|| (configurationManager.getChromosomeFile().equals(""))) {
 			jtfChromoFile = new JTextField();
 		} else {
-			jtfChromoFile = new JTextField(new File(cm.getChromosomeFile()).getAbsolutePath());
+			jtfChromoFile = new JTextField(new File(configurationManager
+					.getChromosomeFile()).getAbsolutePath());
 		}
 		jtfChromoFile.setColumns(30);
 		jtfChromoFile.setEditable(false);
@@ -74,12 +90,14 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 		jbChromoBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Chromosome File:", new File(cm.getChromosomeFile()), jtfChromoFile, true);
-				cm.setChromosomeFile(jtfChromoFile.getText());
+				browse("Chromosome File:", new File(configurationManager
+						.getChromosomeFile()), jtfChromoFile, true);
+				configurationManager.setChromosomeFile(jtfChromoFile.getText());
 			}
 		});
 
-		jlRestart = new JLabel("Restart the application to take these modifications into account");
+		jlRestart = new JLabel(
+				"Restart the application to take these modifications into account");
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -99,7 +117,7 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 
 		c.gridx = 1;
 		c.gridy = 2;
-		c.gridwidth = 1;		
+		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.FIRST_LINE_END;
 		add(jbZoomBrowse, c);
 
@@ -118,7 +136,7 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 
 		c.gridx = 1;
 		c.gridy = 5;
-		c.gridwidth = 1;		
+		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.FIRST_LINE_END;
 		add(jbChromoBrowse, c);
 
@@ -127,6 +145,6 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 		c.gridwidth = 2;
 		c.insets = new Insets(50, 0, 0, 0);
 		c.anchor = GridBagConstraints.CENTER;
-		add(jlRestart, c);		
+		add(jlRestart, c);
 	}
 }

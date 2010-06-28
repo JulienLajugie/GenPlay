@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -32,55 +34,92 @@ import javax.swing.tree.TreeSelectionModel;
 import yu.einstein.gdp2.core.DAS.DASServerListWriter;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 
-
 /**
  * Dialog allowing to change the configuration of the program.
+ * 
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class OptionDialog extends JDialog implements TreeSelectionListener, PropertyChangeListener {
+public final class OptionDialog extends JDialog implements
+		TreeSelectionListener, PropertyChangeListener {
 
-	private static final long 		serialVersionUID = 4050757943368845382L; // Generated serial number
+	private static final long serialVersionUID = 4050757943368845382L; // Generated
+																		// serial
+																		// number
 
-	private static final Dimension 	
-	OPTION_DIALOG_DIMENSION = new Dimension(600, 400); 	// dimension of this window
-	private final ConfigurationManager 	cm;				// A ConfigurationManager
-	private final JTree 		jt;					// Tree
-	private final JScrollPane	jspTreeView; 		// Scroll pane containing the tree
-	private final JPanel 		jpOption;			// Panel containing the different panel of configuration
-	private final JButton		jbOk;				// Button OK
-	private final JButton		jbCancel;			// Button cancel
-	private final JSplitPane	jspDivider;			// Divider between the tree and the panel
-	private final String 		zoomFile;			// zoom config file
-	private final String 		chromosomeFile;		// chromosome config file
-	private final String 		logFile;			// log file
-	private final String 		defaultDirectory;	// default directory
-	private final String 		lookAndFeel;		// look and feel
-	private final String		dasServerListFile;	// DAS Server List File
-	private final int 			trackCount;			// track count
-	private final int 			trackHeight;		// track height
-	private int					approved = CANCEL_OPTION;	// Equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not	
-	
-	
+	private static final Dimension OPTION_DIALOG_DIMENSION = new Dimension(600,
+			400); // dimension of this window
+	/**
+	 */
+	private final ConfigurationManager cm; // A ConfigurationManager
+	/**
+	 */
+	private final JTree jt; // Tree
+	/**
+	 */
+	private final JScrollPane jspTreeView; // Scroll pane containing the tree
+	/**
+	 */
+	private final JPanel jpOption; // Panel containing the different panel of
+									// configuration
+	/**
+	 */
+	private final JButton jbOk; // Button OK
+	/**
+	 */
+	private final JButton jbCancel; // Button cancel
+	/**
+	 */
+	private final JSplitPane jspDivider; // Divider between the tree and the
+											// panel
+	/**
+	 */
+	private final String zoomFile; // zoom config file
+	/**
+	 */
+	private final String chromosomeFile; // chromosome config file
+	/**
+	 */
+	private final String logFile; // log file
+	/**
+	 */
+	private final String defaultDirectory; // default directory
+	/**
+	 */
+	private final String lookAndFeel; // look and feel
+	/**
+	 */
+	private final String dasServerListFile; // DAS Server List File
+	/**
+	 */
+	private final int trackCount; // track count
+	/**
+	 */
+	private final int trackHeight; // track height
+	/**
+	 */
+	private final int undoCount; // undo count
+	/**
+	 */
+	private int approved = CANCEL_OPTION; // Equals APPROVE_OPTION if user
+											// clicked OK, CANCEL_OPTION if not
+
 	/**
 	 * Return value when OK has been clicked.
 	 */
-	public static final int 	APPROVE_OPTION = 0;
-	
-	
+	public static final int APPROVE_OPTION = 0;
+
 	/**
 	 * Return value when Cancel has been clicked.
 	 */
-	public static final int 	CANCEL_OPTION = 1;
-	
-	
+	public static final int CANCEL_OPTION = 1;
+
 	/**
 	 * Creates an instance of {@link OptionDialog}
-	 * @param configurationManager a {@link ConfigurationManager}
 	 */
-	public OptionDialog(ConfigurationManager configurationManager) {
+	public OptionDialog() {
 		super();
-		cm = configurationManager;
+		cm = ConfigurationManager.getInstance();
 		zoomFile = cm.getZoomFile();
 		chromosomeFile = cm.getChromosomeFile();
 		logFile = cm.getLogFile();
@@ -89,8 +128,10 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		lookAndFeel = cm.getLookAndFeel();
 		trackCount = cm.getTrackCount();
 		trackHeight = cm.getTrackHeight();
-		
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Options");;
+		undoCount = cm.getUndoCount();
+
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Options");
+		;
 		createNodes(top);
 		jt = new JTree(top);
 		// hide the root node
@@ -103,61 +144,57 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		renderer.setClosedIcon(null);
 		renderer.setOpenIcon(null);
 		jt.setCellRenderer(renderer);
-		jt.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+		jt.getSelectionModel().setSelectionMode(
+				TreeSelectionModel.SINGLE_TREE_SELECTION);
 		jt.addTreeSelectionListener(this);
-				
+
 		jspTreeView = new JScrollPane(jt);
 		jpOption = new JPanel();
-		
-		//Add the scroll panes to a split pane.
+
+		// Add the scroll panes to a split pane.
 		jspDivider = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		jspDivider.setLeftComponent(jspTreeView);
 		jspDivider.setBottomComponent(jpOption);
 		jspDivider.setContinuousLayout(true);
 
-        Dimension minimumSize = new Dimension(100, 1);
-        jspTreeView.setMinimumSize(minimumSize);
-        
-        jpOption.setMinimumSize(minimumSize);
-        
-        jspDivider.setDividerLocation(OPTION_DIALOG_DIMENSION.width / 3); 
+		Dimension minimumSize = new Dimension(100, 1);
+		jspTreeView.setMinimumSize(minimumSize);
 
-        jbOk = new JButton("OK");
-        jbOk.addActionListener(new ActionListener() {
+		jpOption.setMinimumSize(minimumSize);
+
+		jspDivider.setDividerLocation(OPTION_DIALOG_DIMENSION.width / 3);
+
+		jbOk = new JButton("OK");
+		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// save the data when okay has been pressed
 				approved = APPROVE_OPTION;
-				setVisible(false);	
+				setVisible(false);
 				try {
 					cm.writeConfigurationFile();
 					if (DASOptionPanel.tableChangedFlag == true) {
 						cm.setDASServerListFile(cm.getDASServerListFile());
-						DASServerListWriter dasServerListWriter = new DASServerListWriter();					
-						dasServerListWriter.write(DASOptionPanel.tableData, cm.getDASServerListFile());
+						DASServerListWriter dasServerListWriter = new DASServerListWriter();
+						dasServerListWriter.write(DASOptionPanel.tableData, cm
+								.getDASServerListFile());
 					}
 				} catch (IOException er) {
-					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the configuration", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(getRootPane(),
+							"Error while saving the configuration", "Error",
+							JOptionPane.ERROR_MESSAGE);
 					er.printStackTrace();
-				}	
+				}
 			}
 		});
-        jbCancel = new JButton("Cancel");
-        jbCancel.addActionListener(new ActionListener() {
+		jbCancel = new JButton("Cancel");
+		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				cm.setZoomFile(zoomFile);
-				cm.setChromosomeFile(chromosomeFile);
-				cm.setLogFile(logFile);
-				cm.setDASServerListFile(dasServerListFile);
-				cm.setDefaultDirectory(defaultDirectory);
-				cm.setLookAndFeel(lookAndFeel);
-				cm.setTrackCount(trackCount);
-				cm.setTrackHeight(trackHeight);
 			}
 		});
-        
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -177,13 +214,31 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.LINE_END;
 		add(jbOk, c);
-		
+
 		c.weightx = 0.01;
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.LINE_START;
-		add(jbCancel, c);	
-		
+		add(jbCancel, c);
+
 		jt.setSelectionRow(0);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// if the modification had been canceled we restore
+				// the cm the way it was when the window was opened
+				if (approved == CANCEL_OPTION) {
+					cm.setZoomFile(zoomFile);
+					cm.setChromosomeFile(chromosomeFile);
+					cm.setLogFile(logFile);
+					cm.setDASServerListFile(dasServerListFile);
+					cm.setDefaultDirectory(defaultDirectory);
+					cm.setLookAndFeel(lookAndFeel);
+					cm.setTrackCount(trackCount);
+					cm.setTrackHeight(trackHeight);
+					cm.setUndoCount(undoCount);
+				}
+			}
+		});
 		setTitle("Option");
 		setSize(OPTION_DIALOG_DIMENSION);
 		setResizable(false);
@@ -193,56 +248,57 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		getRootPane().setDefaultButton(jbOk);
 	}
 
-
-
 	/**
 	 * Creates the data of the tree.
-	 * @param top Root DefaultMutableTreeNode of the tree.
+	 * 
+	 * @param top
+	 *            Root DefaultMutableTreeNode of the tree.
 	 */
 	private void createNodes(DefaultMutableTreeNode top) {
 		DefaultMutableTreeNode category = null;
 
-		category = new DefaultMutableTreeNode(new GeneralOptionPanel(cm));
+		category = new DefaultMutableTreeNode(new GeneralOptionPanel());
 		top.add(category);
 
-		category = new DefaultMutableTreeNode(new ConfigFileOptionPanel(cm));
+		category = new DefaultMutableTreeNode(new ConfigFileOptionPanel());
 		top.add(category);
 
-		category = new DefaultMutableTreeNode(new TrackOptionPanel(cm));
+		category = new DefaultMutableTreeNode(new TrackOptionPanel());
 		top.add(category);
-		
-		category = new DefaultMutableTreeNode(new DASOptionPanel(cm));
+
+		category = new DefaultMutableTreeNode(new DASOptionPanel());
 		top.add(category);
-		
-		category = new DefaultMutableTreeNode(new RestoreOptionPanel(cm));
-		top.add(category);		
-		
+
+		category = new DefaultMutableTreeNode(new RestoreOptionPanel());
+		top.add(category);
+
 	}
-
 
 	/**
 	 * Changes the panel displayed when the node of the tree changes.
 	 */
 	@Override
 	public void valueChanged(TreeSelectionEvent arg0) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-		jt.getLastSelectedPathComponent();
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt
+				.getLastSelectedPathComponent();
 		jpOption.removeAll();
 		if ((node != null) && (node.isLeaf())) {
 			Object nodeInfo = node.getUserObject();
-			if (nodeInfo != null) {				
-				jpOption.add((JPanel)nodeInfo);
-				((JPanel)nodeInfo).addPropertyChangeListener(this);
+			if (nodeInfo != null) {
+				jpOption.add((JPanel) nodeInfo);
+				((JPanel) nodeInfo).addPropertyChangeListener(this);
 			}
 		}
 		jpOption.revalidate();
 		jpOption.repaint();
 	}
 
-
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details
+	 * 
+	 * @param parent
+	 *            the parent component of the dialog, can be null; see
+	 *            showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showConfigurationDialog(Component parent) {
@@ -250,11 +306,10 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		setVisible(true);
 		return approved;
 	}
-	
-	
+
 	/**
-	 * Restores the data and regenerate the tree when the option 
-	 * restore configuration is clicked.
+	 * Restores the data and regenerate the tree when the option restore
+	 * configuration is clicked.
 	 */
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -264,68 +319,69 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 			jt.setModel(new DefaultTreeModel(top));
 			jt.revalidate();
 			jt.setSelectionRow(0);
-		}		
+		}
 	}
-	
-	
+
 	/**
 	 * @return true if zoomFile changed
 	 */
 	public boolean zoomFileChanged() {
 		return !zoomFile.equals(cm.getZoomFile());
 	}
-	
-	
+
 	/**
 	 * @return true if chromosomeFile changed
 	 */
 	public boolean chromosomeFileChanged() {
 		return !chromosomeFile.equals(cm.getChromosomeFile());
 	}
-	
-	
+
 	/**
 	 * @return true if logFile changed
 	 */
 	public boolean logFileChanged() {
 		return !logFile.equals(cm.getLogFile());
 	}
-	
+
 	/**
 	 * @return true if dasServerListFile changed
 	 */
 	public boolean dasServerListFileChanged() {
 		return !dasServerListFile.equals(cm.getDASServerListFile());
 	}
-	
+
 	/**
 	 * @return true if defaultDirectory changed
 	 */
 	public boolean defaultDirectoryChanged() {
 		return !defaultDirectory.equals(cm.getDefaultDirectory());
 	}
-	
-	
+
 	/**
 	 * @return true if lookAndFeel changed
 	 */
 	public boolean lookAndFeelChanged() {
 		return !lookAndFeel.equals(cm.getLookAndFeel());
 	}
-	
-	
+
 	/**
 	 * @return true if trackCount changed
 	 */
 	public boolean trackCountChanged() {
 		return trackCount != cm.getTrackCount();
 	}
-	
-	
+
 	/**
 	 * @return true if trackHeight changed
 	 */
 	public boolean trackHeightChanged() {
 		return trackHeight != cm.getTrackHeight();
+	}
+
+	/**
+	 * @return true if the undo count changed
+	 */
+	public boolean undoCountChanged() {
+		return undoCount != cm.getUndoCount();
 	}
 }
