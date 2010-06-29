@@ -78,18 +78,18 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
-import yu.einstein.gdp2.gui.action.binListTrack.BLARedo;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAReset;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASaturate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASearchPeaks;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAHistory;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtractConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLATransfrag;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAUndo;
+import yu.einstein.gdp2.gui.action.curveTrack.CTAHistory;
+import yu.einstein.gdp2.gui.action.curveTrack.CTARedo;
+import yu.einstein.gdp2.gui.action.curveTrack.CTAReset;
+import yu.einstein.gdp2.gui.action.curveTrack.CTAUndo;
 import yu.einstein.gdp2.gui.action.curveTrack.CTAAppearance;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETAGenerateMultiCurvesTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadBinListTrack;
@@ -171,6 +171,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
 		getActionMap().put(ATARemoveStripes.ACTION_KEY, new ATARemoveStripes());
 		getActionMap().put(ATARename.ACTION_KEY, new ATARename());
+		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
 		getActionMap().put(ATASetHeight.ACTION_KEY, new ATASetHeight());
 		// add empty list actions
@@ -186,6 +187,11 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
+		getActionMap().put(CTAHistory.ACTION_KEY, new CTAHistory());
+		getActionMap().put(CTARedo.ACTION_KEY, new CTARedo());
+		getActionMap().put(CTAReset.ACTION_KEY, new CTAReset());
+		getActionMap().put(CTAUndo.ACTION_KEY, new CTAUndo());		
+		// add scored track actions
 		getActionMap().put(STASetYAxis.ACTION_KEY, new STASetYAxis());
 		// add SCWList actions
 		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
@@ -228,19 +234,14 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAMultiplyConstant.ACTION_KEY, new BLAMultiplyConstant());
 		getActionMap().put(BLANormalize.ACTION_KEY, new BLANormalize());
 		getActionMap().put(BLANormalizeStandardScore.ACTION_KEY, new BLANormalizeStandardScore());
-		getActionMap().put(BLARedo.ACTION_KEY, new BLARedo());
-		getActionMap().put(BLAReset.ACTION_KEY, new BLAReset());
 		getActionMap().put(BLASumScore.ACTION_KEY, new BLASumScore());
 		getActionMap().put(BLASaturate.ACTION_KEY, new BLASaturate());
-		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
 		getActionMap().put(BLASearchPeaks.ACTION_KEY, new BLASearchPeaks());
-		getActionMap().put(BLAHistory.ACTION_KEY, new BLAHistory());
 		getActionMap().put(BLARepartition.ACTION_KEY, new BLARepartition());
 		getActionMap().put(BLAStandardDeviation.ACTION_KEY, new BLAStandardDeviation());
 		getActionMap().put(BLASubtract.ACTION_KEY, new BLASubtract());
 		getActionMap().put(BLASubtractConstant.ACTION_KEY, new BLASubtractConstant());
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
-		getActionMap().put(BLAUndo.ACTION_KEY, new BLAUndo());
 	}
 
 
@@ -256,10 +257,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GLASearchGene.ACCELERATOR, GLASearchGene.ACTION_KEY);
 
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(BLAUndo.ACCELERATOR, BLAUndo.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(BLARedo.ACCELERATOR, BLARedo.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(BLAReset.ACCELERATOR, BLAReset.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(BLAHistory.ACCELERATOR, BLAHistory.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAUndo.ACCELERATOR, CTAUndo.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTARedo.ACCELERATOR, CTARedo.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAReset.ACCELERATOR, CTAReset.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAHistory.ACCELERATOR, CTAHistory.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATASave.ACCELERATOR, ATASave.ACTION_KEY);		
 	}
 

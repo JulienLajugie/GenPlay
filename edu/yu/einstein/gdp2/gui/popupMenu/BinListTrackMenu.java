@@ -37,18 +37,14 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
-import yu.einstein.gdp2.gui.action.binListTrack.BLARedo;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAReset;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASaturate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASearchPeaks;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAHistory;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtractConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLATransfrag;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAUndo;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -66,11 +62,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	
 	private final JMenuItem		jmiSave;				// menu save BinListTrack
 	
-	private final JMenuItem		jmiUndo;				// menu undo BinListTrack
-	private final JMenuItem		jmiRedo;				// menu redo BinListTrack
-	private final JMenuItem		jmiReset;				// menu reset BinListTrack
-	private final JMenuItem		jmiShowHistory;			// menu show BinListTrack history
-
 	private final JCheckBoxMenuItem jcbmiCompression;	// check box menu compression
 	
 	private final JMenuItem		jmiAddConstant;			// menu add constant to BinListTrack
@@ -125,10 +116,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation = new JMenu("Operation");
 		
 		jmiSave = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
-		jmiUndo = new JMenuItem(actionMap.get(BLAUndo.ACTION_KEY));
-		jmiRedo = new JMenuItem(actionMap.get(BLARedo.ACTION_KEY));
-		jmiReset = new JMenuItem(actionMap.get(BLAReset.ACTION_KEY));
-		jmiShowHistory = new JMenuItem(actionMap.get(BLAHistory.ACTION_KEY));
 
 		jcbmiCompression = new JCheckBoxMenuItem(actionMap.get(BLACompress.ACTION_KEY));
 		
@@ -173,11 +160,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiShowRepartition = new JMenuItem(actionMap.get(BLARepartition.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(BLAConcatenate.ACTION_KEY));
 		
-		addSeparator();
-		add(jmiUndo);
-		add(jmiRedo);
-		add(jmiReset);
-		add(jmiShowHistory);
 		addSeparator();
 		add(jcbmiCompression);
 		
@@ -239,8 +221,5 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		}
 		jmOperation.setEnabled(!jcbmiCompression.getState());
 		jmiSave.setEnabled(!jcbmiCompression.getState());
-		jmiUndo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isUndoable());
-		jmiRedo.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isRedoable());
-		jmiReset.setEnabled(((BinListTrack)trackList.getSelectedTrack()).isResetable());
 	}
 }

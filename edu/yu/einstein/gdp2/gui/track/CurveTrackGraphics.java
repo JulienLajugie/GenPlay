@@ -55,11 +55,15 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void copyTo(TrackGraphics trackGraphics) {
 		super.copyTo(trackGraphics);
-		((CurveTrackGraphics<?>)trackGraphics).trackColor = this.trackColor;
-		((CurveTrackGraphics<?>)trackGraphics).typeOfGraph = this.typeOfGraph;
+		CurveTrackGraphics<T> ctg = (CurveTrackGraphics<T>) trackGraphics;
+		ctg.urrManager = this.urrManager.deepClone();
+		ctg.history = this.history.deepClone();
+		ctg.trackColor = this.trackColor;
+		ctg.typeOfGraph = this.typeOfGraph;
 	}
 
 
@@ -260,5 +264,11 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 			ExceptionManager.handleException(getRootPane(), e, "Error while undoing");
 			history.setLastAsError();
 		}
+	}
+	
+	
+	@Override
+	protected void yFactorChanged() {
+		repaint();
 	}
 }

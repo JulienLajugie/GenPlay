@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.action.binListTrack;
+package yu.einstein.gdp2.gui.action.curveTrack;
 
 import java.awt.event.KeyEvent;
 
@@ -11,6 +11,7 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.CurveTrack;
 
 
 /**
@@ -18,7 +19,7 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLAReset extends TrackListActionWorker<Void> {
+public final class CTAReset extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 4801183816800208961L;	// generated ID
 	private static final String 	ACTION_NAME = "Reset";				// action name
@@ -39,9 +40,9 @@ public final class BLAReset extends TrackListActionWorker<Void> {
 
 
 	/**
-	 * Creates an instance of {@link BLAReset}
+	 * Creates an instance of {@link CTAReset}
 	 */
-	public BLAReset() {
+	public CTAReset() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -52,8 +53,8 @@ public final class BLAReset extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
-			BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+		if (getTrackList().getSelectedTrack() instanceof CurveTrack<?>) {
+			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
 				notifyActionStart("Reseting Track", 1, false);
 				selectedTrack.resetBinList();				

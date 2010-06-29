@@ -9,15 +9,12 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOInvertConstant;
-import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
-import yu.einstein.gdp2.gui.track.Track;
 
 
 /**
@@ -73,10 +70,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
-			int trackNumber = selectedTrack.getTrackNumber();
-			GenomeWindow displayedGenomeWindow = selectedTrack.getGenomeWindow();			
-			Track resultTrack = new SCWListTrack(displayedGenomeWindow, trackNumber, actionResult);
-			getTrackList().setTrack(trackNumber - 1, resultTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName(), null);
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}		
 	}
 }

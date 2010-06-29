@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.action.binListTrack;
+package yu.einstein.gdp2.gui.action.curveTrack;
 
 import java.awt.event.KeyEvent;
 
@@ -11,6 +11,7 @@ import javax.swing.KeyStroke;
 
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.CurveTrack;
 
 
 /**
@@ -18,7 +19,7 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLAUndo extends TrackListActionWorker<Void> {
+public final class CTAUndo extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 7486534068270241965L; 	// generated ID
 	private static final String 	ACTION_NAME = "Undo";				// action name
@@ -35,13 +36,13 @@ public final class BLAUndo extends TrackListActionWorker<Void> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAUndo";
+	public static final String ACTION_KEY = "CTAUndo";
 
 
 	/**
-	 * Creates an instance of {@link BLAUndo}
+	 * Creates an instance of {@link CTAUndo}
 	 */
-	public BLAUndo() {
+	public CTAUndo() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -52,8 +53,8 @@ public final class BLAUndo extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		if (getTrackList().getSelectedTrack() instanceof BinListTrack) {
-			BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+		if (getTrackList().getSelectedTrack() instanceof CurveTrack<?>) {
+			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
 			notifyActionStart("Undoing", 1, false);		
 			selectedTrack.undo();
 		}

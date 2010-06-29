@@ -83,7 +83,6 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack {
 	public void redo() {
 		((CurveTrackGraphics<?>) trackGraphics).redoData();
 	}
-
 	
 	/**
 	 * Resets the Data. Restore the original data
@@ -101,6 +100,18 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack {
 	@SuppressWarnings("unchecked")
 	public void setData(T data, String description) {
 		((CurveTrackGraphics<T>) trackGraphics).setData(data, description);
+	}
+
+	
+	/**
+	 * Renames the track
+	 * @param newName a new name for the track
+	 */
+	@Override
+	public void setName(String newName) {
+		// add the name of the track to the history
+		getHistory().add("Track Name: \"" + newName + "\"",	new Color(0, 100, 0));
+		super.setName(newName);
 	}
 
 	

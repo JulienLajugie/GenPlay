@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.action.emptyTrack;
 
+import java.awt.Color;
 import java.io.File;
 
 import javax.swing.ActionMap;
@@ -14,7 +15,6 @@ import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListActionExtractorWorker;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
-import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.Utils;
 
@@ -71,7 +71,8 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			Track newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			SCWListTrack newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

@@ -33,7 +33,15 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 		super(displayedGenomeWindow, data, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
 	}
 
-
+	
+	@Override
+	public void copyTo(TrackGraphics trackGraphics) {
+		super.copyTo(trackGraphics);
+		SCWListTrackGraphics scwltg = (SCWListTrackGraphics) trackGraphics;
+		scwltg.data = this.data.deepClone();
+	}
+	
+	
 	@Override
 	protected void drawData(Graphics g) {
 		CurveDrawer cd = new SCWListDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax, trackColor, typeOfGraph, data);
@@ -65,11 +73,5 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 	@Override
 	protected double getMinScoreToDisplay() {
 		return new SCWLOMinScoreToDisplay(data).compute();
-	}
-
-
-	@Override
-	protected void yFactorChanged() {
-		repaint();		
 	}
 }

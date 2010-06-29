@@ -30,9 +30,6 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	 * Creates an instance of a {@link BinListTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param binList {@link BinList}
-	 * @param yMin minimum score
-	 * @param yMax maximum score
-	 * @throws BinListNoDataException
 	 */
 	protected BinListTrackGraphics(GenomeWindow displayedGenomeWindow, BinList binList) {
 		super(displayedGenomeWindow, binList, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
@@ -42,10 +39,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	@Override
 	public void copyTo(TrackGraphics trackGraphics) {
 		super.copyTo(trackGraphics);
-		BinListTrackGraphics bltg = ((BinListTrackGraphics) trackGraphics);
+		BinListTrackGraphics bltg = (BinListTrackGraphics) trackGraphics;
 		bltg.data = this.data.deepClone();
-		bltg.urrManager = this.urrManager.deepClone();
-		bltg.history = this.history.deepClone();
 	}
 
 
@@ -88,11 +83,5 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	@Override
 	protected double getMinScoreToDisplay() {
 		return new BLOMinScoreToDisplay(data).compute();
-	}
-
-
-	@Override
-	protected void yFactorChanged() {
-		repaint();
 	}
 }
