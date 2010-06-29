@@ -54,10 +54,10 @@ public class ETAGenerateMultiCurvesTrack extends TrackListAction {
 		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getCurveTracks());
 		if (selectedTracks != null) {
 			if (selectedTracks.length > 1) {
-				CurveTrack[] curveTracks = new CurveTrack[selectedTracks.length];
+				CurveTrack<?>[] curveTracks = new CurveTrack[selectedTracks.length];
 				String trackName = "";
 				for (int i = 0; i < curveTracks.length; i++) {
-					curveTracks[i] = (CurveTrack) selectedTracks[i];
+					curveTracks[i] = (CurveTrack<?>) selectedTracks[i];
 					if (i != curveTracks.length - 1) {
 						trackName += selectedTracks[i].getName() + ", ";
 					} else {

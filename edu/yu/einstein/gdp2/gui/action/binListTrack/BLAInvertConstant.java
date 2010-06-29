@@ -58,7 +58,7 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 				if (constant.doubleValue() == 0) {
 					JOptionPane.showMessageDialog(getRootPane(), "The constant must be different from 0", "Invalid Parameter", JOptionPane.WARNING_MESSAGE);
 				} else {
-					BinList binList = ((BinListTrack)selectedTrack).getBinList();
+					BinList binList = ((BinListTrack)selectedTrack).getData();
 					operation = new BLOInvertConstant(binList, constant.doubleValue());
 					return operation;
 				}
@@ -71,7 +71,7 @@ public class BLAInvertConstant extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}		
 	}
 }

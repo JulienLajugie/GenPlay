@@ -56,7 +56,7 @@ public final class BLAStandardDeviation extends TrackListActionOperationWorker<D
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
+				BinList binList = selectedTrack.getData();
 				Operation<Double> operation = new BLOStandardDeviation(binList, selectedChromo);
 				return operation;
 			}

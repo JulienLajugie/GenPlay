@@ -48,7 +48,7 @@ public class BLANormalizeStandardScore extends TrackListActionOperationWorker<Bi
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {		
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			Operation<BinList> operation = new BLONormalizeStandardScore(binList);
 			return operation;
 		}	
@@ -59,7 +59,7 @@ public class BLANormalizeStandardScore extends TrackListActionOperationWorker<Bi
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

@@ -59,8 +59,8 @@ public final class BLACorrelate extends TrackListActionOperationWorker<Double> {
 			if (otherTrack != null) {
 				boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 				if (selectedChromo != null) {
-					BinList binList1 = selectedTrack.getBinList();
-					BinList binList2 = otherTrack.getBinList();
+					BinList binList1 = selectedTrack.getData();
+					BinList binList2 = otherTrack.getData();
 					Operation<Double> operation = new BLOCorrelate(binList1, binList2, selectedChromo);
 					return operation;
 				}

@@ -52,7 +52,7 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			Number sizeMovingSD = GenomeWidthChooser.getMovingStdDevWidth(getRootPane(), binList.getBinSize());
 			if(sizeMovingSD != null) {
 				Number nbSDAccepted = NumberOptionPane.getValue(getRootPane(), "Threshold", "Select only peak with a local SD x time higher than the global one", new DecimalFormat("0.0"), 0, 1000, 1).intValue(); 
@@ -69,7 +69,7 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

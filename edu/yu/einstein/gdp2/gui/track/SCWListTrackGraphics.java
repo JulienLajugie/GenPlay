@@ -19,10 +19,9 @@ import yu.einstein.gdp2.gui.track.drawer.SCWListDrawer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class SCWListTrackGraphics extends CurveTrackGraphics {
+public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = -996344743923414353L; // generated ID
-	private final ScoredChromosomeWindowList data; // data showed
 
 
 	/**
@@ -31,16 +30,14 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics {
 	 * @param data displayed {@link ScoredChromosomeWindowList} 
 	 */
 	protected SCWListTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
-		super(displayedGenomeWindow, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
-		this.data = data;
-		// we don't want the max equals to the min
-		if (yMin == yMax) {
-			if (yMin > 0) {
-				setYMin(0);
-			} else if (yMax < 0) {
-				setYMax(0);
-			}
-		}
+		super(displayedGenomeWindow, data, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
+	}
+
+
+	@Override
+	protected void drawData(Graphics g) {
+		CurveDrawer cd = new SCWListDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax, trackColor, typeOfGraph, data);
+		cd.draw();		
 	}
 
 
@@ -54,20 +51,25 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics {
 
 
 	@Override
-	protected void yFactorChanged() {
-		repaint();		
-	}
-
-
-	@Override
-	protected void drawData(Graphics g) {
-		CurveDrawer cd = new SCWListDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax, trackColor, typeOfGraph, data);
-		cd.draw();		
-	}
-
-
-	@Override
 	public CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax) {
 		return new SCWListDrawer(g, trackWidth, trackHeight, genomeWindow, scoreMin, scoreMax, trackColor, typeOfGraph, data);
+	}
+
+
+	@Override
+	protected double getMaxScoreToDisplay() {
+		return new SCWLOMaxScoreToDisplay(data).compute();
+	}
+
+
+	@Override
+	protected double getMinScoreToDisplay() {
+		return new SCWLOMinScoreToDisplay(data).compute();
+	}
+
+
+	@Override
+	protected void yFactorChanged() {
+		repaint();		
 	}
 }

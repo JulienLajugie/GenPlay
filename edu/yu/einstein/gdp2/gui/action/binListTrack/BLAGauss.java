@@ -49,7 +49,7 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			int windowSize = binList.getBinSize();
 			if(windowSize > 0) {
 				Integer sigma = GenomeWidthChooser.getSigma(getRootPane(), windowSize);
@@ -66,7 +66,7 @@ public final class BLAGauss extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}		
 	}
 }

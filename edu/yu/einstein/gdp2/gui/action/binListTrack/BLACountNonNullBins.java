@@ -55,7 +55,7 @@ public final class BLACountNonNullBins extends TrackListActionOperationWorker<Lo
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
+				BinList binList = selectedTrack.getData();
 				Operation<Long> operation = new BLOCountNonNullBins(binList, selectedChromo);
 				return operation;
 			}

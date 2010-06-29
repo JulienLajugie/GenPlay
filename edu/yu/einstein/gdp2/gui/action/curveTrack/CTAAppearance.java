@@ -49,7 +49,7 @@ public final class CTAAppearance extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		CurveTrack selectedTrack = (CurveTrack) getTrackList().getSelectedTrack();
+		CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			boolean showHorizontalLines = selectedTrack.isShowHorizontalGrid();
 			int xLineCount = selectedTrack.getVerticalLineCount();

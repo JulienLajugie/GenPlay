@@ -14,7 +14,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
 public class MultiCurvesTrack extends ScoredTrack {
 
 	private static final long serialVersionUID = -8961218330334104474L; // generated ID
-	private final CurveTrack[] curveTracks; // array of curve tracks
+	private final CurveTrack<?>[] curveTracks; // array of curve tracks
 	
 	/**
 	 * Creates an instance of {@link MultiCurvesTrack}
@@ -22,7 +22,7 @@ public class MultiCurvesTrack extends ScoredTrack {
 	 * @param trackNumber the number of the track
 	 * @param curveTracks array of {@link CurveTrack}
 	 */
-	public MultiCurvesTrack(GenomeWindow displayedGenomeWindow, int trackNumber, CurveTrack[] curveTracks) {
+	public MultiCurvesTrack(GenomeWindow displayedGenomeWindow, int trackNumber, CurveTrack<?>[] curveTracks) {
 		this.curveTracks = curveTracks;
 		initComponent(displayedGenomeWindow, trackNumber);
 	}

@@ -54,7 +54,7 @@ public final class BLALog2OnAvgWithDamper extends TrackListActionOperationWorker
 		if (selectedTrack != null) {
 			Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper to add: f(x)=x + damper", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if(damper != null) {
-				BinList binList = selectedTrack.getBinList();
+				BinList binList = selectedTrack.getData();
 				Operation<BinList> operation = new BLOLog2OnAvgWithDamper(binList, damper.doubleValue());
 				return operation;
 			}
@@ -66,7 +66,7 @@ public final class BLALog2OnAvgWithDamper extends TrackListActionOperationWorker
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}		
 	}
 }

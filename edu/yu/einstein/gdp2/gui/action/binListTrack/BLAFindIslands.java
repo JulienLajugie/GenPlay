@@ -55,7 +55,7 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 	public Operation<BinList[]> initializeOperation() throws Exception {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			bloIsland = new BLOFindIslands(selectedTrack.getBinList());
+			bloIsland = new BLOFindIslands(selectedTrack.getData());
 			IslandDialog dialog = new IslandDialog (bloIsland.getIsland(), this);
 			if (dialog.showTrackConfiguration(getRootPane()) == dialog.APPROVE_OPTION) {	// result type array is initialized on the showTrackConfiguration method
 				int sucess = 0;	//allow to count the number of tasks achieved

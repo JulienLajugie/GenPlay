@@ -69,7 +69,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 				if ((selectedTracks != null)) {
 					BinList[] binListArray = new BinList[selectedTracks.length];
 					for (int i = 0; i < selectedTracks.length; i++) {
-						binListArray[i] = ((BinListTrack)selectedTracks[i]).getBinList();						
+						binListArray[i] = ((BinListTrack)selectedTracks[i]).getData();						
 					}					
 					Operation<double[][][]> operation = new BLORepartition(binListArray, scoreBin.doubleValue());
 					return operation;

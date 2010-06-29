@@ -50,7 +50,7 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			DataPrecision precision = Utils.choosePrecision(getRootPane(), binList.getPrecision());
 			if (precision != null) {	
 				Operation<BinList> operation = new BLOChangeDataPrecision(binList, precision);
@@ -64,7 +64,7 @@ public class BLAChangeDataPrecision extends TrackListActionOperationWorker<BinLi
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

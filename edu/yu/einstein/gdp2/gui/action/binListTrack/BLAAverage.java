@@ -54,7 +54,7 @@ public final class BLAAverage extends TrackListActionOperationWorker<Double> {
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
+				BinList binList = selectedTrack.getData();
 				operation = new BLOAverage(binList, selectedChromo);
 				return operation;
 			}

@@ -97,7 +97,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				BinList data = selectedTrack.getBinList();
+				BinList data = selectedTrack.getData();
 				String name = selectedTrack.getName();
 				writer = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
 				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);

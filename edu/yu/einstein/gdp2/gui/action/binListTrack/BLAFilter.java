@@ -59,7 +59,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
+			if (selectedTrack.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, not filter available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			final FilterType filterType = Utils.chooseFilterType(getRootPane());
@@ -85,7 +85,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 
@@ -94,7 +94,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 * Filters a fixed number of values
 	 */
 	private Operation<BinList> filterCount() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number countLow = NumberOptionPane.getValue(getRootPane(), "Low Values", "Select the number of low values to filter", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
 		if(countLow != null) {
 			Number countHigh = NumberOptionPane.getValue(getRootPane(), "High Values", "Select the number of high values to filter", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
@@ -110,7 +110,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 * Filters values where the density of not null values on a region is too low
 	 */
 	private Operation<BinList> filterDensity() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Remove values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		if(thresholdLow != null) {
 			Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Remove values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -136,7 +136,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 * Filters a percentage of extreme values
 	 */
 	private Operation<BinList> filterPercentage() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number percentageLow = NumberOptionPane.getValue(getRootPane(), "Low Percentage", "Select the percentage of low values to filter", new DecimalFormat("0%"), 0, 1, 0.01);
 		if(percentageLow != null) {
 			Number percentageHigh = NumberOptionPane.getValue(getRootPane(), "High Percentage", "Select the percentage of high values to filter", new DecimalFormat("0%"), 0, 1, 0.01);
@@ -156,7 +156,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 * Filters values above or under a specified threshold
 	 */
 	private Operation<BinList> filterThreshold() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Remove values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		if(thresholdLow != null) {
 			Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Remove values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -179,7 +179,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 * Filters values between two specified thresholds
 	 */
 	private Operation<BinList> filterBandStop() {
-		BinList binList = selectedTrack.getBinList();		
+		BinList binList = selectedTrack.getData();		
 		Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Thresholds", "Remove Values Between", "And", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0, 100);
 		if(thresholds != null) {
 			double thresholdLow = thresholds[0].doubleValue();

@@ -526,7 +526,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int count = 0;
 		for (Track currentTrack: trackList) {
 			if (currentTrack instanceof BinListTrack) {
-				if (!((BinListTrack) currentTrack).getBinList().isCompressed()) {
+				if (!((BinListTrack) currentTrack).getData().isCompressed()) {
 					count++;
 				}
 			}
@@ -538,7 +538,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int i = 0;
 		for (Track currentTrack: trackList) {
 			if (currentTrack instanceof BinListTrack) {
-				if (!((BinListTrack) currentTrack).getBinList().isCompressed()) {
+				if (!((BinListTrack) currentTrack).getData().isCompressed()) {
 					result[i] = currentTrack;
 					i++;
 				}
@@ -554,7 +554,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public Track[] getCurveTracks() {
 		int count = 0;
 		for (Track currentTrack: trackList) {
-			if (currentTrack instanceof CurveTrack) {
+			if (currentTrack instanceof CurveTrack<?>) {
 				count++;
 			}
 		}
@@ -564,7 +564,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		Track[] result = new Track[count];
 		int i = 0;
 		for (Track currentTrack: trackList) {
-			if (currentTrack instanceof CurveTrack) {
+			if (currentTrack instanceof CurveTrack<?>) {
 				result[i] = currentTrack;
 				i++;
 			}
@@ -780,8 +780,13 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	}
 
 
+	/**
+	 * Changes the undo count of the undoable tracks
+	 */
 	public void undoCountChanged() {
-		// TODO Auto-generated method stub
-		
+		int undoCount = ConfigurationManager.getInstance().getUndoCount();
+		for (Track currentTrack: getBinListTracks()) {
+			((BinListTrack) currentTrack).setUndoCount(undoCount);
+		}		
 	}
 }

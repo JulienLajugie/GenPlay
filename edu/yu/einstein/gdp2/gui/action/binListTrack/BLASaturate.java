@@ -57,7 +57,7 @@ public class BLASaturate extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
+			if (selectedTrack.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, no saturation available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			SaturationType saturationType = Utils.chooseSaturationType(getRootPane());
@@ -79,7 +79,7 @@ public class BLASaturate extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 	
@@ -88,7 +88,7 @@ public class BLASaturate extends TrackListActionOperationWorker<BinList> {
 	 * Saturates a fixed number of values
 	 */
 	private Operation<BinList> SaturateCount() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number countLow = NumberOptionPane.getValue(getRootPane(), "Low Values", "Select the number of low values to saturate", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
 		if(countLow != null) {
 			Number countHigh = NumberOptionPane.getValue(getRootPane(), "High Values", "Select the number of high values to saturate", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
@@ -105,7 +105,7 @@ public class BLASaturate extends TrackListActionOperationWorker<BinList> {
 	 * Saturates a percentage of extreme values
 	 */
 	private Operation<BinList> saturatePercentage() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number percentageLow = NumberOptionPane.getValue(getRootPane(), "Low Percentage", "Select the percentage of low values to saturate", new DecimalFormat("0%"), 0, 1, 0.01);
 		if(percentageLow != null) {
 			Number percentageHigh = NumberOptionPane.getValue(getRootPane(), "High Percentage", "Select the percentage of high values to saturate", new DecimalFormat("0%"), 0, 1, 0.01);
@@ -126,7 +126,7 @@ public class BLASaturate extends TrackListActionOperationWorker<BinList> {
 	 * Saturates values above or under a specified threshold
 	 */
 	private Operation<BinList> saturateThreshold() {
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Saturate values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
 		if(thresholdLow != null) {
 			Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Saturate values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);

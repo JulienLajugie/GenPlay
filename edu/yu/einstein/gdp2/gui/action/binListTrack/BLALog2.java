@@ -48,7 +48,7 @@ public final class BLALog2 extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			Operation<BinList> operation = new BLOLog2(binList);
 			return operation;
 		}
@@ -59,7 +59,7 @@ public final class BLALog2 extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null)	{
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

@@ -18,7 +18,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
 public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 6508763050002286457L; // generated ID
-	private final CurveTrack[] curveTracks; // array of curve tracks
+	private final CurveTrack<?>[] curveTracks; // array of curve tracks
 
 
 	/**
@@ -26,7 +26,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param curveTracks array of {@link CurveTrack}
 	 */
-	public MultiCurvesTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack[] curveTracks) {
+	public MultiCurvesTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack<?>[] curveTracks) {
 		super(displayedGenomeWindow, 0, 1);
 		this.curveTracks = curveTracks;
 		// add repaint listeners so the multicurves track is repainted when on of the curves track is repainted
@@ -41,7 +41,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 	@Override
 	protected void drawData(Graphics g) {
 		for (int i = curveTracks.length; i > 0; i--) {
-			CurveTrackGraphics ctg = (CurveTrackGraphics) curveTracks[i - 1].trackGraphics;
+			CurveTrackGraphics<?> ctg = (CurveTrackGraphics<?>) curveTracks[i - 1].trackGraphics;
 			ctg.getDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax).draw();
 		}
 	}
@@ -71,7 +71,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 	 */
 	private double findYMin() {
 		double min = Double.POSITIVE_INFINITY;
-		for (CurveTrack currentCtg: curveTracks) {
+		for (CurveTrack<?> currentCtg: curveTracks) {
 			min = Math.min(min, currentCtg.getYMin());
 		}
 		return min;
@@ -83,7 +83,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 	 */
 	private double findYMax() {
 		double max = Double.NEGATIVE_INFINITY;
-		for (CurveTrack currentCtg: curveTracks) {
+		for (CurveTrack<?> currentCtg: curveTracks) {
 			max = Math.max(max, currentCtg.getYMax());
 		}
 		return max;

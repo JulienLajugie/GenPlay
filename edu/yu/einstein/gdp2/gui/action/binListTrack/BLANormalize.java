@@ -53,7 +53,7 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 		if (selectedTrack != null) {		
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
 			if(factor != null) {
-				BinList binList = selectedTrack.getBinList();
+				BinList binList = selectedTrack.getData();
 				Operation<BinList> operation = new BLONormalize(binList, factor.doubleValue());
 				return operation;
 			}	
@@ -65,7 +65,7 @@ public final class BLANormalize extends TrackListActionOperationWorker<BinList> 
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

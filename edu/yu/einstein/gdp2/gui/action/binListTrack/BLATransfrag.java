@@ -52,7 +52,7 @@ public class BLATransfrag extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
 			if(gap != null) {
 				Operation<BinList> operation = new BLOTransfrag(binList, gap.intValue());
@@ -66,7 +66,7 @@ public class BLATransfrag extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}		
 }

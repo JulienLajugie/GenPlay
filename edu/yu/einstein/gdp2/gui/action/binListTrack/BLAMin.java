@@ -53,7 +53,7 @@ public final class BLAMin extends TrackListActionOperationWorker<Double> {
 		if (selectedTrack != null) {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
 			if (selectedChromo != null) {
-				BinList binList = selectedTrack.getBinList();
+				BinList binList = selectedTrack.getData();
 				Operation<Double> operation = new BLOMin(binList, selectedChromo);
 				return operation;
 			}

@@ -51,7 +51,7 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 	@Override
 	public Operation<BinList> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		BinList binList = selectedTrack.getBinList();
+		BinList binList = selectedTrack.getData();
 		if (selectedTrack != null) {
 			Number binSize = NumberOptionPane.getValue(getTrackList().getRootPane(), "Fixed Window Size", "Enter window size", new DecimalFormat("#"), 0, Integer.MAX_VALUE, 1000);
 			if (binSize != null) {
@@ -69,7 +69,7 @@ public class BLAChangeBinSize extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

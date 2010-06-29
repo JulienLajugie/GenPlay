@@ -73,8 +73,8 @@ public class BLACalculationOnProjection extends TrackListActionOperationWorker<B
 						if (resultTrack != null) {
 							DataPrecision precision = Utils.choosePrecision(getRootPane());;
 							if (precision != null) {
-								BinList valueBinList = ((BinListTrack)selectedTrack).getBinList();
-								BinList intervalBinList = ((BinListTrack)intervalTrack).getBinList();
+								BinList valueBinList = ((BinListTrack)selectedTrack).getData();
+								BinList intervalBinList = ((BinListTrack)intervalTrack).getData();
 								Operation<BinList> operation = new BLOCalculationOnProjection(intervalBinList, valueBinList, percentage.intValue(), method, precision);
 								return operation;
 							}

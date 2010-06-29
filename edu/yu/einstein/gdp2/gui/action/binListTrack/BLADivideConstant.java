@@ -53,7 +53,7 @@ public class BLADivideConstant extends TrackListActionOperationWorker<BinList> {
 		if (selectedTrack != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Divide the scores of the track by", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0) && (constant.doubleValue() != 1)) {
-				BinList binList = ((BinListTrack)selectedTrack).getBinList();
+				BinList binList = ((BinListTrack)selectedTrack).getData();
 				Operation<BinList> operation = new BLODivideConstant(binList, constant.doubleValue());
 				return operation;
 			}
@@ -65,7 +65,7 @@ public class BLADivideConstant extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}	
 	}
 }

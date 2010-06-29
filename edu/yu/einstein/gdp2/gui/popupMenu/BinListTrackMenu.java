@@ -235,7 +235,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		// check the compression checkbox if the selected list is checked
 		BinListTrack blt = (BinListTrack) trackList.getSelectedTrack();
 		if (blt != null) {
-			jcbmiCompression.setState(blt.getBinList().isCompressed());
+			jcbmiCompression.setState(blt.getData().isCompressed());
 		}
 		jmOperation.setEnabled(!jcbmiCompression.getState());
 		jmiSave.setEnabled(!jcbmiCompression.getState());

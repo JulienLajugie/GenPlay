@@ -63,8 +63,8 @@ public final class BLASubtract extends TrackListActionOperationWorker<BinList> {
 				if (resultTrack != null) {
 					DataPrecision precision = Utils.choosePrecision(getRootPane());
 					if (precision != null) {						
-						BinList binList1 = ((BinListTrack)selectedTrack).getBinList();
-						BinList binList2 = ((BinListTrack)otherTrack).getBinList();
+						BinList binList1 = ((BinListTrack)selectedTrack).getData();
+						BinList binList2 = ((BinListTrack)otherTrack).getData();
 						Operation<BinList> operation = new BLOSubtract(binList1, binList2, precision);
 						return operation;
 					}

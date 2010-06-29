@@ -51,7 +51,7 @@ public class BLACompress extends TrackListActionWorker<BinList> {
 			} else {
 				description = "Compressed Mode Off";
 			}
-			selectedTrack.setBinList(actionResult,  description);
+			selectedTrack.setData(actionResult,  description);
 		}		
 	}
 
@@ -61,12 +61,12 @@ public class BLACompress extends TrackListActionWorker<BinList> {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			String actionDescription = new String();
-			if (selectedTrack.getBinList().isCompressed()) {
+			if (selectedTrack.getData().isCompressed()) {
 				actionDescription = "Uncompressing Data";
 			} else { 
 				actionDescription = "Compressing Data";
 			}
-			BinList binList = selectedTrack.getBinList();
+			BinList binList = selectedTrack.getData();
 			notifyActionStart(actionDescription, 1, false);
 			if (binList.isCompressed()) {
 				binList.uncompress();

@@ -52,14 +52,14 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 	public Operation<BinList> initializeOperation() {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {			
-			if (selectedTrack.getBinList().getPrecision() == DataPrecision.PRECISION_1BIT) {
+			if (selectedTrack.getData().getPrecision() == DataPrecision.PRECISION_1BIT) {
 				JOptionPane.showMessageDialog(getRootPane(), "Error, indexation is not available for 1-Bit tracks", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", new DecimalFormat("0.0"), -1000000, 1000000, 0);
 			if (indexMin != null) {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", new DecimalFormat("0.0"), -1000000, 1000000, 100);
 				if(indexMax != null) {
-					BinList binList = selectedTrack.getBinList();
+					BinList binList = selectedTrack.getData();
 					Operation<BinList> operation = new BLOIndex(binList, indexMin.doubleValue(), indexMax.doubleValue());
 					return operation;
 				}
@@ -72,7 +72,7 @@ public final class BLAIndex extends TrackListActionOperationWorker<BinList> {
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setBinList(actionResult, operation.getDescription());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}	
 	}
 }

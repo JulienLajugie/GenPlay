@@ -9,11 +9,16 @@ import java.awt.Graphics;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.GraphicsType;
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
+import yu.einstein.gdp2.core.manager.URRManager;
 import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
+import yu.einstein.gdp2.util.History;
 
 
 /**
@@ -21,7 +26,7 @@ import yu.einstein.gdp2.gui.track.drawer.CurveDrawer;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class CurveTrackGraphics extends ScoredTrackGraphics implements MouseListener, MouseMotionListener, MouseWheelListener {
+public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredTrackGraphics implements MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long 				serialVersionUID = -9200672145021160494L;	// generated ID
 	private static final Color				TRACK_COLOR = Color.black;					// default color
@@ -29,20 +34,53 @@ public abstract class CurveTrackGraphics extends ScoredTrackGraphics implements 
 	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.##");	// decimal format for the score
 	protected Color							trackColor;									// color of the graphics
 	protected GraphicsType 					typeOfGraph;								// type graphics
-
-
+	protected T 							data;										// data showed in the track
+	protected History 						history = null; 							// history containing a description of the
+	protected URRManager<T> 				urrManager; 								// manager that handles the undo / redo / reset of the track
+		
+	
 	/**
 	 * Creates an instance of {@link CurveTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
-	protected CurveTrackGraphics(GenomeWindow displayedGenomeWindow, double yMin, double yMax) {
+	protected CurveTrackGraphics(GenomeWindow displayedGenomeWindow, T data, double yMin, double yMax) {
 		super(displayedGenomeWindow, yMin, yMax);
 		this.trackColor = TRACK_COLOR;
 		this.typeOfGraph = TYPE_OF_GRAPH;
+		this.data = data;
+		this.history = new History();
+		urrManager = new URRManager<T>(ConfigurationManager.getInstance().getUndoCount(), data);
 	}
 	
+	
+	@Override
+	public void copyTo(TrackGraphics trackGraphics) {
+		super.copyTo(trackGraphics);
+		((CurveTrackGraphics<?>)trackGraphics).trackColor = this.trackColor;
+		((CurveTrackGraphics<?>)trackGraphics).typeOfGraph = this.typeOfGraph;
+	}
+
+
+	/**
+	 * Draws the horizontal lines if the curve is not a dense graphics
+	 */
+	@Override
+	protected void drawHorizontalLines(Graphics g) {
+		if (typeOfGraph != GraphicsType.DENSE) {
+			super.drawHorizontalLines(g);
+		}
+	}
+
+	
+	/**
+	 * @return the data showed in the track
+	 */
+	protected T getData() {
+		return data;
+	}
+
 	
 	/**
 	 * Returns the drawer used to print the data of this track and link it to the specified {@link Graphics}
@@ -57,58 +95,170 @@ public abstract class CurveTrackGraphics extends ScoredTrackGraphics implements 
 	public abstract CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax);
 
 
-	@Override
-	public void copyTo(TrackGraphics trackGraphics) {
-		super.copyTo(trackGraphics);
-		((CurveTrackGraphics)trackGraphics).trackColor = this.trackColor;
-		((CurveTrackGraphics)trackGraphics).typeOfGraph = this.typeOfGraph;
+	/**
+	 * @return the history of the current track.
+	 */
+	protected History getHistory() {
+		return history;
+	}
+
+
+	/**
+	 * @return the maximum value to display
+	 */
+	protected abstract double getMaxScoreToDisplay();
+
+
+	/**
+	 * @return the minmum value to display
+	 */
+	protected abstract double getMinScoreToDisplay();
+	
+	
+	/**
+	 * @return the color of the track
+	 */
+	protected final Color getTrackColor() {
+		return trackColor;
+	}
+	
+
+	/**
+	 * @return the type of the graph
+	 */
+	protected final GraphicsType getTypeOfGraph() {
+		return typeOfGraph;
+	}
+	
+	
+	/**
+	 * @return true if the action redo is possible
+	 */
+	protected boolean isRedoable() {
+		return urrManager.isRedoable();
+	}
+	
+
+	/**
+	 * @return true if the track can be reseted
+	 */
+	protected boolean isResetable() {
+		return urrManager.isResetable();
 	}
 
 	
 	/**
-	 * Draws the horizontal lines if the curve is not a dense graphics
+	 * @return true if the action undo is possible
 	 */
-	@Override
-	protected void drawHorizontalLines(Graphics g) {
-		if (typeOfGraph != GraphicsType.DENSE) {
-			super.drawHorizontalLines(g);
+	protected boolean isUndoable() {
+		return urrManager.isUndoable();
+	}
+
+	
+	/**
+	 * Redoes last action
+	 */
+	protected void redoData() {
+		try {
+			if (isRedoable()) {
+				data = urrManager.redo();
+				yMin = getMinScoreToDisplay();
+				yMax = getMaxScoreToDisplay();
+				repaint();
+				history.redo();
+			}
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while redoing");
+			history.setLastAsError();
 		}
 	}
 
 	
-
 	/**
-	 * @return the color of the track
+	 * Resets the data 
+	 * Copies the value of the original data into the current value
 	 */
-	public final Color getTrackColor() {
-		return trackColor;
+	protected void resetData() {
+		try {
+			if (isResetable()) {
+				data = urrManager.reset();
+				yMin = getMinScoreToDisplay();
+				yMax = getMaxScoreToDisplay();
+				repaint();
+				history.reset();
+			}
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while reseting");
+			history.setLastAsError();
+		}
 	}
 
+	
+	/**
+	 * Sets the data showed in the track
+	 * @param data the data showed in the track
+	 * @param description description of the data
+	 */
+	protected void setData(T data, String description) {
+		if (data != null) {
+			try {
+				history.add(description);
+				urrManager.set(data);
+				this.data = data;
+				yMin = getMinScoreToDisplay();
+				yMax = getMaxScoreToDisplay();
+				repaint();
+			} catch (Exception e) {
+				ExceptionManager.handleException(getRootPane(), e, "Error while updating the track");
+				history.setLastAsError();
+			}
+		}
+	}
+	
 
 	/**
 	 * @param trackColor the color of the track to set
 	 */
-	public final void setTrackColor(Color trackColor) {
+	protected final void setTrackColor(Color trackColor) {
 		firePropertyChange("trackColor", this.trackColor, trackColor);
 		this.trackColor = trackColor;
 		this.repaint();
 	}
 
-
-	/**
-	 * @return the type of the graph
-	 */
-	public final GraphicsType getTypeOfGraph() {
-		return typeOfGraph;
-	}
-
-
 	/**
 	 * @param typeOfGraph the type of the graph to set
 	 */
-	public final void setTypeOfGraph(GraphicsType typeOfGraph) {
+	protected final void setTypeOfGraph(GraphicsType typeOfGraph) {
 		firePropertyChange("typeOfGraph", this.typeOfGraph, typeOfGraph);
 		this.typeOfGraph = typeOfGraph;
 		this.repaint();
+	}
+
+	
+	/**
+	 * Changes the undo count of the track
+	 * @param undoCount
+	 */
+	protected void setUndoCount(int undoCount) {
+		urrManager.setLength(undoCount);		
+	}
+	
+	
+	/**
+	 * Undoes last action
+	 */
+	protected void undoData() {
+		try {
+			if (isUndoable()) {
+				data = urrManager.undo();
+				yMin = getMinScoreToDisplay();
+				yMax = getMaxScoreToDisplay();
+				repaint();
+				history.undo();
+			}
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while undoing");
+			history.setLastAsError();
+		}
 	}
 }

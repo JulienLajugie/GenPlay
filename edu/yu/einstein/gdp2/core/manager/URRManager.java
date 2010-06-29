@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -219,6 +220,27 @@ public class URRManager<T extends Serializable> implements Serializable {
 		}
 	}
 
+	
+	/**
+	 * Sets the number of undo saved
+	 * @param length number of undo saved
+	 */
+	public void setLength(int length) {
+		if (length < 0) {
+			throw new InvalidParameterException("The undo count must be positive");
+		}
+		this.length = length;
+		while (undoList.size() > length) {
+			undoList.remove(0);
+		}
+		if (undoList.size() == 0) {
+			while (redoList.size() > length) {
+				redoList.remove(0);
+			}
+		}
+		
+	}
+	
 	
 	 /**
 	 * Undone the last action

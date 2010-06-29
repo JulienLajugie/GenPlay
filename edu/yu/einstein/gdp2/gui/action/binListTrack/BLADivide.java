@@ -63,8 +63,8 @@ public final class BLADivide extends TrackListActionOperationWorker<BinList> {
 				if (resultTrack != null) {
 					DataPrecision precision = Utils.choosePrecision(getRootPane());;
 					if (precision != null) {
-						BinList binList1 = selectedTrack.getBinList();
-						BinList binList2 = otherTrack.getBinList();
+						BinList binList1 = selectedTrack.getData();
+						BinList binList2 = otherTrack.getData();
 						Operation<BinList> operation = new BLODivide(binList1, binList2, precision);
 						return operation; 
 					}
