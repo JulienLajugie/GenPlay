@@ -31,9 +31,9 @@ public class IslandFinder {
 
 	private final BinList 				binList;			// input binlist
 	private int							gap;				// minimum windows number needed to separate 2 islands
-	private double 						readCountLimit;		// limit reads number to get an eligible windows
+	private double 						windowLimitValue;	// limit window value to get an eligible windows
 	private double						lambda;				// average number of reads in a window
-	private double						cutOff;				// island score limit to select island
+	private double						islandLimitScore;	// island score limit to select island
 	private IslandResultType 			resultType;			// type of the result (constant, score, average)
 	private HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
 	
@@ -42,7 +42,7 @@ public class IslandFinder {
 	 * IslandFinder constructor
 	 * 
 	 * @param binList			the related binList
-	 * @param readCountLimit	limit reads number to get an eligible windows
+	 * @param windowLimitValue	limit reads number to get an eligible windows
 	 * @param gap				minimum windows number needed to separate 2 islands
 	 */
 	public IslandFinder (BinList binList) {
@@ -60,7 +60,7 @@ public class IslandFinder {
 	 */
 	public IslandFinder (BinList binList, double readCountLimit, int gap, IslandResultType resultType) {
 		this.binList = binList;
-		this.readCountLimit = readCountLimit;
+		this.windowLimitValue = readCountLimit;
 		this.gap = gap;
 		this.lambda = lambdaCalcul();
 		this.resultType = resultType;
@@ -90,15 +90,15 @@ public class IslandFinder {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
-					List[] islandsPositions;
+					List<List<Integer>> islandsPositions;
 					List<Double> scoreIsland;
 					List<Double> resultList;
 					// Search all islands position (0: start; 1: stop)
 					islandsPositions = searchIslandPosition(currentList);
 					// Calculate all islands score
-					scoreIsland = islandScore(currentList, islandsPositions[0], islandsPositions[1]);
+					scoreIsland = islandScore(currentList, islandsPositions.get(0), islandsPositions.get(1));
 					// Create the result list
-					resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions[0], islandsPositions[1]);
+					resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1));
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -125,36 +125,36 @@ public class IslandFinder {
 	 * @param currentList	current list of the bin list 
 	 * @return				array list with start position on index 0 and stop position on index 1
 	 */
-	private List[] searchIslandPosition (List<Double> currentList) {
-		List[] islandsPositions = new List[2];
-		List<Integer> islands_start = new ArrayList<Integer>();	// stores all start islands position
-		List<Integer> islands_stop = new ArrayList<Integer>();		// stores all stop islands position
+	private List<List<Integer>> searchIslandPosition (List<Double> currentList) {
+		List<List<Integer>> islandsPositions = new ArrayList<List<Integer>>();
+		List<Integer> islandsStart = new ArrayList<Integer>();	// stores all start islands position
+		List<Integer> islandsStop = new ArrayList<Integer>();		// stores all stop islands position
 		if ((currentList != null) && (currentList.size() != 0)) {
 			int j = 0;
 			while (j < currentList.size()) {	// while we are below the current list size,
-				if (currentList.get(j) >= readCountLimit) {	// the current window score must be higher than readCountLimit
-					islands_start.add(j);	// it's the start of an island
-					int gap_found = 0;	// there are no gap found
-					int j_tmp = j + 1;	// we prepared the research on the next window
-					while ((gap_found <= gap) && (j_tmp < currentList.size())) {	// while we are below the gap number authorized and below the list size
-						if (currentList.get(j_tmp) >= readCountLimit) {	// if the next window score is higher than the readCountLimit
-							gap_found = 0;	// gap number found must be 0
+				if (currentList.get(j) >= windowLimitValue) {	// the current window score must be higher than readCountLimit
+					islandsStart.add(j);	// it's the start of an island
+					int gapFound = 0;	// there are no gap found
+					int jTmp = j + 1;	// we prepared the research on the next window
+					while ((gapFound <= gap) && (jTmp < currentList.size())) {	// while we are below the gap number authorized and below the list size
+						if (currentList.get(jTmp) >= windowLimitValue) {	// if the next window score is higher than the readCountLimit
+							gapFound = 0;	// gap number found must be 0
 						} else {	// if the next window score is smaller than the readCountLimit
-							gap_found++;	// one gap is found
+							gapFound++;	// one gap is found
 						}
-						j_tmp++;	// we search on the next window
+						jTmp++;	// we search on the next window
 					}
 					// we are here only if the number gap found is higher than the number gap authorized or if it's the end list
 					// so, it's necessary the end of the island
-					islands_stop.add(j_tmp - gap_found - 1);
-					j = j_tmp;	// we can continue to search after this end island (not necessary if we are out of the list size)
+					islandsStop.add(jTmp - gapFound - 1);
+					j = jTmp;	// we can continue to search after this end island (not necessary if we are out of the list size)
 				} else {
 					j++;
 				}
 			}
 		}
-		islandsPositions[0] = islands_start;
-		islandsPositions[1] = islands_stop;
+		islandsPositions.add(islandsStart);
+		islandsPositions.add(islandsStop);
 		return islandsPositions;
 	}
 	
@@ -164,25 +164,25 @@ public class IslandFinder {
 	 * The score of an island is the sum of all eligible windows score contained in it.
 	 * 
 	 * @param currentList		current list of windows value
-	 * @param islands_start		start positions of all islands
-	 * @param islands_stop		stop positions of all islands
+	 * @param islandsStart		start positions of all islands
+	 * @param islandsStop		stop positions of all islands
 	 * @return					list of score islands
 	 */
 	private List<Double> islandScore (List<Double> currentList,
-										List<Integer> islands_start,
-										List<Integer> islands_stop) {
+										List<Integer> islandsStart,
+										List<Integer> islandsStop) {
 		List<Double> scoreIsland = new ArrayList<Double> ();
-		int current_pos = 0;
+		int currentPos = 0;
 		double sumScore;
-		while (current_pos < islands_start.size()) {
+		while (currentPos < islandsStart.size()) {
 			sumScore = 0.0;
-			for (int i = islands_start.get(current_pos); i <= islands_stop.get(current_pos); i++) {	// Loop for the sum
-				if (currentList.get(i) >= this.readCountLimit) {	// the window reads must be highter than the readCountLimit
+			for (int i = islandsStart.get(currentPos); i <= islandsStop.get(currentPos); i++) {	// Loop for the sum
+				if (currentList.get(i) >= this.windowLimitValue) {	// the window reads must be highter than the readCountLimit
 					sumScore += windowScore(currentList.get(i));
 				}
 			}
 			scoreIsland.add(sumScore);
-			current_pos++;
+			currentPos++;
 		}
 		return scoreIsland;
 	}
@@ -195,34 +195,34 @@ public class IslandFinder {
 	 * 
 	 * @param precision			bits precision
 	 * @param currentList		current list of windows value
-	 * @param islands_start		start positions of all islands
-	 * @param islands_stop		stop positions of all islands
+	 * @param islandsStart		start positions of all islands
+	 * @param islandsStop		stop positions of all islands
 	 * @return					list of windows values
 	 */
 	private List<Double> getListIsland (DataPrecision precision,
 											List<Double> currentList,
 											List<Double> scoreIsland,
-											List<Integer> islands_start,
-											List<Integer> islands_stop) {
+											List<Integer> islandsStart,
+											List<Integer> islandsStop) {
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
-		int current_pos = 0;	// position on the island start and stop arrays
+		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
 		for (int i = 0; i < currentList.size(); i++) {	// for all window positions
-			if (current_pos < islands_start.size()){	// we must be below the island array size (start and stop are the same size)
-				if (i >= islands_start.get(current_pos) && i <= islands_stop.get(current_pos)) {	// if the actual window is on an island
-					if (scoreIsland.get(current_pos) >= this.cutOff) {	// the island score must be higher than the cut-off
+			if (currentPos < islandsStart.size()){	// we must be below the island array size (start and stop are the same size)
+				if (i >= islandsStart.get(currentPos) && i <= islandsStop.get(currentPos)) {	// if the actual window is on an island
+					if (scoreIsland.get(currentPos) >= this.islandLimitScore) {	// the island score must be higher than the cut-off
 						switch (this.resultType) {	// if the result type is
 						case FILTERED:
 							value = currentList.get(i);	// we keep the original value
 							break;
 						case IFSCORE:
-							value = scoreIsland.get(current_pos);	// we keep the island score value
+							value = scoreIsland.get(currentPos);	// we keep the island score value
 						}
 					} else {
 						value = 0.0;
 					}
-					if (i == islands_stop.get(current_pos)) {	// when we are on the end of the island
-						current_pos++;	// position is increased
+					if (i == islandsStop.get(currentPos)) {	// when we are on the end of the island
+						currentPos++;	// position is increased
 					}
 				} else {
 					value = 0.0;
@@ -301,13 +301,13 @@ public class IslandFinder {
 	 * findReadCountLimit method
 	 * This method calculate the read count limit with a pvalue.
 	 * 
-	 * @param pvalue	probability that the result appear by chance
+	 * @param pValue	probability that the result appear by chance
 	 * @return			the read count limit
 	 */
-	public double findReadCountLimit (double pvalue) {
+	public double findReadCountLimit (double pValue) {
 		double value = 1.0;
 		int index = 0;
-		if (pvalue > 0.0 && pvalue < 1.0) {
+		if (pValue > 0.0 && pValue < 1.0) {
 			try {
 				value -= Poisson.poisson(this.lambda, index);
 			} catch (InvalidLambdaPoissonParameterException e) {
@@ -315,7 +315,7 @@ public class IslandFinder {
 			} catch (InvalidFactorialParameterException e) {
 				e.printStackTrace();
 			}
-			while (value > pvalue) {
+			while (value > pValue) {
 				index++;
 				try {
 					value -= Poisson.poisson(this.lambda, index);
@@ -326,7 +326,7 @@ public class IslandFinder {
 				}
 			}
 			return (index + 1.0);
-		} else if (pvalue == 1.0) {
+		} else if (pValue == 1.0) {
 			return 0.0;
 		} else {
 			return -1.0;
@@ -342,7 +342,7 @@ public class IslandFinder {
 	 */
 	public double findPValue (double read) {
 		double value = 0.0;
-		double pvalue;
+		double pValue;
 		if (read > 1.0) {
 			for (int i=0; i < (read-1.0); i++) {
 				try {
@@ -362,8 +362,8 @@ public class IslandFinder {
 				e.printStackTrace();
 			}
 		}
-		pvalue = Math.floor((1 - value) * Math.pow(10.0, 15)) / Math.pow(10.0, 15);
-		return pvalue;
+		pValue = Math.floor((1 - value) * Math.pow(10.0, 15)) / Math.pow(10.0, 15);
+		return pValue;
 	}
 	
 	
@@ -373,11 +373,11 @@ public class IslandFinder {
 	}
 
 	public void setReadCountLimit(double readCountLimit) {
-		this.readCountLimit = readCountLimit;
+		this.windowLimitValue = readCountLimit;
 	}
 
 	public void setCutOff(double cutOff) {
-		this.cutOff = cutOff;
+		this.islandLimitScore = cutOff;
 	}
 
 	public void setResultType(IslandResultType resultType) {
@@ -390,11 +390,11 @@ public class IslandFinder {
 	}
 
 	public double getReadCountLimit() {
-		return readCountLimit;
+		return windowLimitValue;
 	}
 
 	public double getCutOff() {
-		return cutOff;
+		return islandLimitScore;
 	}
 
 	public double getLambda() {

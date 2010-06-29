@@ -48,24 +48,22 @@ public final class IslandDialog extends JDialog {
 	private final JButton 					jbOk;							// button OK
 	private final JButton 					jbCancel;						// button cancel
 	private final JLabel					jlAverage;						// label for average (lambda value)
-	private final JLabel					jlReadCountLimit;				// label for ReadCountLimit
-	private final JFormattedTextField		jftfReadCountLimit;				// text field for ReadCountLimit
+	private final JLabel					jlWindowLimitValue;				// label for the window limit value
+	private final JFormattedTextField		jftfWindowLimitValue;			// text field for the window limit value
 	private final JLabel					jlPValue;						// label for p-value
 	private final JFormattedTextField		jftfPValue;						// text field for p-value
-	private final JButton					jbToReadCountLimit;				// button to convert p-value to ReadCountLimit
-	private final JButton					jbToPValue;						// button to convert ReadCountLimit to p-value
+	private final JButton					jbToWindowLimitValue;			// button to convert the p-value to the window limit value
+	private final JButton					jbToPValue;						// button to convert the window limit value to p-value
 	private final JLabel					jlGap;							// label for gap
 	private final JFormattedTextField		jftfGap;						// text field for gap
-	private final JLabel					jlCutOff;						// label for cut-off
-	private final JFormattedTextField		jftfCutOff;						// text field for cut-off
+	private final JLabel					jlIslandLimitScore;				// label for the island limit score
+	private final JFormattedTextField		jftfIslandLimitScore;			// text field for the island limit score
 	private final JLabel					jlResultType;					// label for result type 
 	private final JCheckBox					jcbIFScore;						// check box to choose Island Finder Score output value
 	private final JCheckBox					jcbFiltered;					// check box to choose original date filtered output value
 	private int								approved = CANCEL_OPTION;		// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 	private IslandFinder 					island;							// Island Finder object needs to set parameters (ReadCountLimit, p-value, gap, cut-off)
 	private BLAFindIslands 					blaIsland;						// BLAFindIslands object needs to set mutlitrack parameters
-	private double							pvalue;							// p-value storage to not recalculate the value if it has no changed
-	private int								read;							// read storage to not recalculate the value if it has no changed
 	private boolean 						pvalueChanged;					// necessary to know if value has changed
 	
 	/**
@@ -92,23 +90,23 @@ public final class IslandDialog extends JDialog {
 		jbCancel = new JButton("Cancel");
 		Long average = Math.round(this.island.getLambda()*100)/100;
 		jlAverage = new JLabel ("The average is: " + average.toString() + " reads by window");
-		jlReadCountLimit = new JLabel ("Read Count");
-		jftfReadCountLimit = new JFormattedTextField(floatFormat);
-		jftfReadCountLimit.setHorizontalAlignment(JFormattedTextField.RIGHT);
-		jftfReadCountLimit.setValue(new Float(0.0));
+		jlWindowLimitValue = new JLabel ("Window limit value");
+		jftfWindowLimitValue = new JFormattedTextField(floatFormat);
+		jftfWindowLimitValue.setHorizontalAlignment(JFormattedTextField.RIGHT);
+		jftfWindowLimitValue.setValue(new Float(0.0));
 		jlPValue = new JLabel ("P-Value");
 		jftfPValue = new JFormattedTextField(floatFormat);
 		jftfPValue.setHorizontalAlignment(JFormattedTextField.RIGHT);
-		jbToReadCountLimit = new JButton("<");
+		jbToWindowLimitValue = new JButton("<");
 		jbToPValue = new JButton(">");
 		jlGap = new JLabel("Gap");
 		jftfGap = new JFormattedTextField(intFormat);
 		jftfGap.setHorizontalAlignment(JFormattedTextField.RIGHT);
 		jftfGap.setValue(new Integer(0));
-		jlCutOff = new JLabel("Island Score cut-off");
-		jftfCutOff = new JFormattedTextField(floatFormat);
-		jftfCutOff.setHorizontalAlignment(JFormattedTextField.RIGHT);
-		jftfCutOff.setValue(new Float(0.0));
+		jlIslandLimitScore = new JLabel("Island limit score");
+		jftfIslandLimitScore = new JFormattedTextField(floatFormat);
+		jftfIslandLimitScore.setHorizontalAlignment(JFormattedTextField.RIGHT);
+		jftfIslandLimitScore.setValue(new Float(0.0));
 		jlResultType = new JLabel("Result Type");
 		jcbFiltered = new JCheckBox("Filtered");
 		jcbIFScore = new JCheckBox("IF Score");
@@ -116,26 +114,26 @@ public final class IslandDialog extends JDialog {
 		
 		//Tool Tip Text
 		String sAverage = "Mean of reads by window";
-		String sReadCount = "All values below the Read Count Limit well be ignored";
+		String sReadCount = "All values below the window limit value will be ignored";
 		String sPValue = "Probability to get false results";
-		String sToReadCOunt = "Convert P-Value to Read Count";
-		String sToPValue = "Convert Read Count to P-Value";
-		String sGap = "Number of window authorized below the Read Count Limit to select island";
-		String sCutOff = "All island score below the cut-off well be ignored";
+		String sToReadCOunt = "Convert p-value to window limit value";
+		String sToPValue = "Convert window limit value to p-value";
+		String sGap = "Number of window authorized below the window limit value to select island";
+		String sCutOff = "All island score below the island limit score will be ignored";
 		String sResultType = "Output result type";
-		String sFiltered = "Windows values will be the reads";
+		String sFiltered = "Windows values will be the windows value";
 		String sIFScore = "Windows values will be the island score";
 		jlAverage.setToolTipText(sAverage);
-		jlReadCountLimit.setToolTipText(sReadCount);
-		jftfReadCountLimit.setToolTipText(sReadCount);
+		jlWindowLimitValue.setToolTipText(sReadCount);
+		jftfWindowLimitValue.setToolTipText(sReadCount);
 		jlPValue.setToolTipText(sPValue);
 		jftfPValue.setToolTipText(sPValue);
-		jbToReadCountLimit.setToolTipText(sToReadCOunt);
+		jbToWindowLimitValue.setToolTipText(sToReadCOunt);
 		jbToPValue.setToolTipText(sToPValue);
 		jlGap.setToolTipText(sGap);
 		jftfGap.setToolTipText(sGap);
-		jlCutOff.setToolTipText(sCutOff);
-		jftfCutOff.setToolTipText(sCutOff);
+		jlIslandLimitScore.setToolTipText(sCutOff);
+		jftfIslandLimitScore.setToolTipText(sCutOff);
 		jlResultType.setToolTipText(sResultType);
 		jcbFiltered.setToolTipText(sFiltered);
 		jcbIFScore.setToolTipText(sIFScore);
@@ -144,15 +142,15 @@ public final class IslandDialog extends JDialog {
 		//Dimension
 		jbOk.setPreferredSize(new Dimension (90, 25));
 		jbCancel.setPreferredSize(new Dimension (90, 25));
-		jftfReadCountLimit.setPreferredSize(new Dimension (130, 25));
-		jftfReadCountLimit.setMinimumSize(new Dimension (130, 25));
+		jftfWindowLimitValue.setPreferredSize(new Dimension (130, 25));
+		jftfWindowLimitValue.setMinimumSize(new Dimension (130, 25));
 		jftfPValue.setPreferredSize(new Dimension (130, 25));
 		jftfPValue.setMinimumSize(new Dimension (130, 25));
 		jftfGap.setPreferredSize(new Dimension (130, 25));
 		jftfGap.setMinimumSize(new Dimension (130, 25));
-		jftfCutOff.setPreferredSize(new Dimension (130, 25));
-		jftfCutOff.setMinimumSize(new Dimension (130, 25));
-		jbToReadCountLimit.setPreferredSize(new Dimension (40, 25));
+		jftfIslandLimitScore.setPreferredSize(new Dimension (130, 25));
+		jftfIslandLimitScore.setMinimumSize(new Dimension (130, 25));
+		jbToWindowLimitValue.setPreferredSize(new Dimension (40, 25));
 		jbToPValue.setPreferredSize(new Dimension (40, 25));
 		
 		
@@ -164,7 +162,7 @@ public final class IslandDialog extends JDialog {
 			}
 		});
 		
-		jbToReadCountLimit.addActionListener(new ActionListener () {
+		jbToWindowLimitValue.addActionListener(new ActionListener () {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				toReadCountLimit();
@@ -222,13 +220,13 @@ public final class IslandDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets (10, 3, 10, 3);
 		c.gridwidth = 1;
-		add(jlReadCountLimit, c);
+		add(jlWindowLimitValue, c);
 
 		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = new Insets (2, 3, 10, 3);
-		add(jftfReadCountLimit, c);
+		add(jftfWindowLimitValue, c);
 		
 		
 		//To ...
@@ -236,7 +234,7 @@ public final class IslandDialog extends JDialog {
 		c.anchor = GridBagConstraints.CENTER;
 		c.fill = GridBagConstraints.NONE;
 		c.ipadx = 5;
-		add(jbToReadCountLimit, c);
+		add(jbToWindowLimitValue, c);
 		
 		c.gridx = 2;
 		c.anchor = GridBagConstraints.CENTER;
@@ -279,13 +277,13 @@ public final class IslandDialog extends JDialog {
 		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.NONE;
-		add(jlCutOff, c);
+		add(jlIslandLimitScore, c);
 		
 		c.gridx = 2;
 		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridwidth = 3;
-		add(jftfCutOff, c);
+		add(jftfIslandLimitScore, c);
 		
 		//Result Type
 		c.gridx = 0;
@@ -343,15 +341,15 @@ public final class IslandDialog extends JDialog {
 	 * Called when OK is pressed.
 	 */
 	private void jbOkActionPerformed() {
-		if (jftfReadCountLimit.getValue() != null &&
+		if (jftfWindowLimitValue.getValue() != null &&
 			jftfGap.getValue() != null &&
-			jftfCutOff != null && (
+			jftfIslandLimitScore != null && (
 			jcbFiltered.isSelected() |
 			jcbIFScore.isSelected())
 			) {	// requirements to approved
-			this.island.setReadCountLimit(Double.parseDouble(jftfReadCountLimit.getValue().toString()));
+			this.island.setReadCountLimit(Double.parseDouble(jftfWindowLimitValue.getValue().toString()));
 			this.island.setGap(Integer.parseInt(jftfGap.getValue().toString()));
-			this.island.setCutOff(Double.parseDouble(jftfCutOff.getValue().toString()));
+			this.island.setCutOff(Double.parseDouble(jftfIslandLimitScore.getValue().toString()));
 			IslandResultType[] list = new IslandResultType[2];
 			if (jcbFiltered.isSelected()) {
 				list[0] = IslandResultType.FILTERED;
@@ -385,16 +383,14 @@ public final class IslandDialog extends JDialog {
 	private void toPValue () {
 		int read;
 		Double pvalue;
-		if (jftfReadCountLimit.getValue() != null) {
+		if (jftfWindowLimitValue.getValue() != null) {
 			try {
-				jftfReadCountLimit.commitEdit();
+				jftfWindowLimitValue.commitEdit();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			read = Integer.parseInt(jftfReadCountLimit.getValue().toString());
+			read = Integer.parseInt(jftfWindowLimitValue.getValue().toString());
 			pvalue = island.findPValue(read);
-			this.pvalue = pvalue;
-			this.read = read;
 			jftfPValue.setValue(pvalue);
 		}
 	}
@@ -414,7 +410,7 @@ public final class IslandDialog extends JDialog {
 				}
 				pvalue = Double.valueOf((jftfPValue.getValue()).toString());
 				read = island.findReadCountLimit(pvalue);
-				jftfReadCountLimit.setValue(read);
+				jftfWindowLimitValue.setValue(read);
 				pvalueChanged = false;
 			}
 		}
