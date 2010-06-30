@@ -29,7 +29,7 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 	private static final String 	DESCRIPTION = 
 		"Remove all noisy data points";									// tooltip
 	private BinListTrack 			selectedTrack;						// selected track
-	private Track					resultTrack;						// result track
+	private Track<?>				resultTrack;						// result track
 	private IslandResultType[]		resultType;							// needs to know which kind of result must be realised
 	private BLOFindIslands			bloIsland;							// necessary to manage the result type array
 	
@@ -88,7 +88,7 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 							getTrackList().getEmptyTracks());	// purposes tracks
 					if (resultTrack != null) {
 						index = resultTrack.getTrackNumber() - 1;
-						Track newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult[i]);
+						Track<?> newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult[i]);
 						getTrackList().setTrack(index, 
 												newTrack, 
 												ConfigurationManager.getInstance().getTrackHeight(), 
