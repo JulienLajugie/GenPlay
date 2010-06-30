@@ -51,7 +51,7 @@ public class ETAGenerateMultiCurvesTrack extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getCurveTracks());
+		Track<?>[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getCurveTracks());
 		if (selectedTracks != null) {
 			if (selectedTracks.length > 1) {
 				CurveTrack<?>[] curveTracks = new CurveTrack[selectedTracks.length];

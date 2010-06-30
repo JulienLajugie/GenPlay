@@ -30,12 +30,11 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GeneListTrackGraphics extends TrackGraphics {
+public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 	private static final long serialVersionUID = 1372400925707415741L; // generated ID
 	private static final double	MIN_X_RATIO_PRINT_NAME = GeneList.MIN_X_RATIO_PRINT_NAME;
 	private static final short	GENE_HEIGHT = 6;					// size of a gene in pixel
-	private final GeneList 		geneList;							// list of gene to print
 	private int 				firstLineToDisplay = 0;				// number of the first line to be displayed
 	private int 				geneLinesCount = 0;					// number of line of genes
 	private int 				mouseStartDragY = -1;				// position of the mouse when start dragging
@@ -45,25 +44,17 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	/**
 	 * Creates an instance of {@link GeneListTrackGraphics}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
-	 * @param geneList a list of genes
+	 * @param data a list of genes
 	 */
-	protected GeneListTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList geneList) {
-		super(displayedGenomeWindow);
+	protected GeneListTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList data) {
+		super(displayedGenomeWindow, data);
 		try {
-			geneList = new GLOIndexScores(geneList, null).compute();
+			this.data = new GLOIndexScores(data, null).compute();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		this.geneList = geneList;
 		firstLineToDisplay = 0;
-		geneList.setFontMetrics(fm);
-	}
-
-
-	@Override
-	protected void xFactorChanged() {
-		firstLineToDisplay = 0;
-		super.xFactorChanged();
+		this.data.setFontMetrics(fm);
 	}
 
 
@@ -71,16 +62,6 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	protected void chromosomeChanged() {
 		firstLineToDisplay = 0;
 		super.chromosomeChanged();
-	}
-
-
-	@Override
-	protected void drawTrack(Graphics g) {
-		drawStripes(g);
-		drawVerticalLines(g);
-		drawGenes(g);
-		drawName(g);
-		drawMiddleVerticalLine(g);
 	}
 
 
@@ -92,7 +73,7 @@ public class GeneListTrackGraphics extends TrackGraphics {
 		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME 
 		boolean isGeneNamePrinted = xFactor > MIN_X_RATIO_PRINT_NAME;
 		// Retrieve the genes to print
-		List<List<Gene>> genesToPrint = geneList.getFittedData(genomeWindow, xFactor);
+		List<List<Gene>> genesToPrint = data.getFittedData(genomeWindow, xFactor);
 		if ((genesToPrint != null) && (genesToPrint.size() > 0)){
 			// Compute the maximum number of line displayable
 			int displayedLineCount = 0;
@@ -159,32 +140,32 @@ public class GeneListTrackGraphics extends TrackGraphics {
 	}
 
 
-	/**
-	 * Changes the scroll position of the panel when the wheel of the mouse is used with the right button
-	 */
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			if (((e.getWheelRotation() < 0) && (e.getWheelRotation() + firstLineToDisplay >= 0)) 
-					|| ((e.getWheelRotation() > 0) && (e.getWheelRotation() + firstLineToDisplay <= geneLinesCount))) {
-				firstLineToDisplay += e.getWheelRotation();
-				repaint();
-			}		
-		} else {
-			super.mouseWheelMoved(e);
-		}
+	protected void drawTrack(Graphics g) {
+		drawStripes(g);
+		drawVerticalLines(g);
+		drawGenes(g);
+		drawName(g);
+		drawMiddleVerticalLine(g);
 	}
 
 
-	/**
-	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
-	 */
 	@Override
-	public void mousePressed(MouseEvent e) {
-		super.mousePressed(e);
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
-			mouseStartDragY = e.getY();
-		}		
+	public void mouseClicked(MouseEvent e) {
+		// if a gene is double clicked
+		if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
+			// if the desktop is supported
+			if ((data.getSearchURL() != null) && (Desktop.isDesktopSupported())) {
+				try {
+					// we open a browser showing information on the gene
+					Desktop.getDesktop().browse(new URI(data.getSearchURL() + geneUnderMouse.getName()));
+				} catch (Exception e1) {
+					ExceptionManager.handleException(getRootPane(), e1, "Error while opening the web browser");
+				}
+			}
+		} else { // else default action
+			super.mouseClicked(e);
+		}
 	}
 
 
@@ -227,7 +208,7 @@ public class GeneListTrackGraphics extends TrackGraphics {
 		// check if the name of genes is printed
 		boolean isGeneNamePrinted = xFactor > MIN_X_RATIO_PRINT_NAME;
 		// retrieve the list of the printed genes
-		List<List<Gene>> printedGenes = geneList.getFittedData(genomeWindow, xFactor);
+		List<List<Gene>> printedGenes = data.getFittedData(genomeWindow, xFactor);
 		// do nothing if there is no genes
 		if (printedGenes == null) {
 			return;
@@ -284,23 +265,40 @@ public class GeneListTrackGraphics extends TrackGraphics {
 			setToolTipText(geneUnderMouse.getName());
 		}
 	}
+
+
+	/**
+	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
+			mouseStartDragY = e.getY();
+		}		
+	}
+
+
+	/**
+	 * Changes the scroll position of the panel when the wheel of the mouse is used with the right button
+	 */
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+			if (((e.getWheelRotation() < 0) && (e.getWheelRotation() + firstLineToDisplay >= 0)) 
+					|| ((e.getWheelRotation() > 0) && (e.getWheelRotation() + firstLineToDisplay <= geneLinesCount))) {
+				firstLineToDisplay += e.getWheelRotation();
+				repaint();
+			}		
+		} else {
+			super.mouseWheelMoved(e);
+		}
+	}
 	
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		// if a gene is double clicked
-		if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
-			// if the desktop is supported
-			if ((geneList.getSearchURL() != null) && (Desktop.isDesktopSupported())) {
-				try {
-					// we open a browser showing information on the gene
-					Desktop.getDesktop().browse(new URI(geneList.getSearchURL() + geneUnderMouse.getName()));
-				} catch (Exception e1) {
-					ExceptionManager.handleException(getRootPane(), e1, "Error while opening the web browser");
-				}
-			}
-		} else { // else default action
-			super.mouseClicked(e);
-		}
+	protected void xFactorChanged() {
+		firstLineToDisplay = 0;
+		super.xFactorChanged();
 	}
 }

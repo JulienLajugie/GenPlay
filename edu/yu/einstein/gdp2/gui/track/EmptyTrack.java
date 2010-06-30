@@ -11,7 +11,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class EmptyTrack extends Track {
+public final class EmptyTrack extends Track<Void> {
 
 	private static final long serialVersionUID = 3508936560321856203L;	// generated ID
 	
@@ -22,22 +22,12 @@ public final class EmptyTrack extends Track {
 	 * @param trackNumber number of the track
 	 */
 	public EmptyTrack(GenomeWindow displayedGenomeWindow, int trackNumber) {
-		initComponent(displayedGenomeWindow, trackNumber);
+		super(displayedGenomeWindow, trackNumber, null);
 	}
 
 
 	@Override
-	public Track copy() {
-		Track copiedTrack = new EmptyTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber());
-		trackGraphics.copyTo(copiedTrack.trackGraphics);
-		trackGraphics.repaint();
-		copiedTrack.setPreferredHeight(getPreferredSize().height);
-		return copiedTrack;		
-	}
-
-	
-	@Override
-	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new EmptyTrackGraphics(displayedGenomeWindow);
+	protected TrackGraphics<Void> createsTrackGraphics(GenomeWindow displayedGenomeWindow, Void data) {
+		return new EmptyTrackGraphics(displayedGenomeWindow);
 	}
 }

@@ -36,7 +36,7 @@ public final class SCWLAGenerateBinList  extends TrackListActionOperationWorker<
 	private static final String 	DESCRIPTION = "Generate a " +
 			"fixed window track from the selected track"; 			// tooltip
 	private SCWListTrack 			selectedTrack;					// selected track
-	private Track 					resultTrack;					// result track
+	private Track<?>				resultTrack;					// result track
 	
 	
 	/**
@@ -83,7 +83,7 @@ public final class SCWLAGenerateBinList  extends TrackListActionOperationWorker<
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			Track newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
+			BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes());
 		}
 	}	

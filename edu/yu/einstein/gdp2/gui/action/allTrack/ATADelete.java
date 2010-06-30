@@ -57,7 +57,7 @@ public final class ATADelete extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = getTrackList().getSelectedTrack();
+		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			getTrackList().deleteTrack();
 		}

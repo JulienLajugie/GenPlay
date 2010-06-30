@@ -49,7 +49,7 @@ public final class STASetYAxis extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		ScoredTrack selectedTrack = (ScoredTrack) getTrackList().getSelectedTrack();
+		ScoredTrack<?> selectedTrack = (ScoredTrack<?>) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			double currentMin = selectedTrack.getYMin();
 			double currentMax = selectedTrack.getYMax();

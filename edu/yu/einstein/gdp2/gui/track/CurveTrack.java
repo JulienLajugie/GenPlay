@@ -7,6 +7,7 @@ package yu.einstein.gdp2.gui.track;
 import java.awt.Color;
 import java.io.Serializable;
 
+import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.util.History;
 
@@ -15,19 +16,21 @@ import yu.einstein.gdp2.util.History;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class CurveTrack<T extends Serializable> extends ScoredTrack {
-
+public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> {
+	
 	private static final long serialVersionUID = 5068563286341191108L;	// generated ID
 
-
+	
 	/**
-	 * @return the data showed in the track
+	 * Constructor
+	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
+	 * @param trackNumber number of the track
+	 * @param data data displayed in the track
 	 */
-	@SuppressWarnings("unchecked")
-	public T getData() {
-		return ((CurveTrackGraphics<T>) trackGraphics).getData();
+	protected CurveTrack(GenomeWindow displayedGenomeWindow, int trackNumber, T data) {
+		super(displayedGenomeWindow, trackNumber, data);
 	}
-
+	
 
 	/**
 	 * @return the history of the current track.
@@ -97,7 +100,6 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack {
 	 * @param data
 	 * @param description description of the data
 	 */
-	@SuppressWarnings("unchecked")
 	public void setData(T data, String description) {
 		((CurveTrackGraphics<T>) trackGraphics).setData(data, description);
 	}

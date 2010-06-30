@@ -13,36 +13,25 @@ import yu.einstein.gdp2.core.list.DisplayableListOfLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class NucleotideListTrack extends Track {
+public class NucleotideListTrack extends Track<DisplayableListOfLists<Nucleotide, Nucleotide[]>> {
 
 	private static final long serialVersionUID = 8424429602220353656L; // generated ID
-	private final DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList;	// list of {@link Nucleotide} to display in the track
 	
 	
 	/**
 	 * Creates an instance of {@link NucleotideListTrack}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
-	 * @param nucleotideList list of {@link Nucleotide} to display in the track
+	 * @param data list of {@link Nucleotide} to display in the track
 	 */
-	public NucleotideListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList) {
-		this.nucleotideList = nucleotideList;
-		initComponent(displayedGenomeWindow, trackNumber);
-	}
-	
-	
-	@Override
-	public Track copy() {
-		Track copiedTrack = new NucleotideListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), nucleotideList);
-		trackGraphics.copyTo(copiedTrack.trackGraphics);
-		trackGraphics.repaint();
-		copiedTrack.setPreferredHeight(getPreferredSize().height);
-		return copiedTrack;	
+	public NucleotideListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
+		super(displayedGenomeWindow, trackNumber, data);
 	}
 
-	
+
 	@Override
-	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new NucleotideListTrackGraphics(displayedGenomeWindow, nucleotideList);		
+	protected TrackGraphics<DisplayableListOfLists<Nucleotide, Nucleotide[]>> 
+	createsTrackGraphics(GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
+		return new NucleotideListTrackGraphics(displayedGenomeWindow, data);
 	}
 }

@@ -49,7 +49,7 @@ public final class ATASaveAsImage extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		Track selectedTrack = getTrackList().getSelectedTrack();
+		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			JFileChooser saveFC = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);

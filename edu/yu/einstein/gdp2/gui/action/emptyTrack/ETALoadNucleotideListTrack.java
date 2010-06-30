@@ -13,7 +13,6 @@ import yu.einstein.gdp2.core.list.nucleotideList.TwoBitSequenceList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.track.NucleotideListTrack;
-import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.Utils;
 
@@ -67,7 +66,7 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		if (actionResult != null) {
 			int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-			Track newTrack = new NucleotideListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			NucleotideListTrack newTrack = new NucleotideListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes);
 		}
 	}

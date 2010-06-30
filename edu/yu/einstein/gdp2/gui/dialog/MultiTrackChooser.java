@@ -60,7 +60,7 @@ public class MultiTrackChooser extends JDialog {
 	 * @param parent The parent {@link Component} from which the dialog is displayed.
 	 * @param availableTracks array of {@link Track}
 	 */
-	private MultiTrackChooser(Component parent, Track[] availableTracks) {
+	private MultiTrackChooser(Component parent, Track<?>[] availableTracks) {
 		initComponents(availableTracks);
 		addComponents();
 		this.pack();
@@ -78,9 +78,9 @@ public class MultiTrackChooser extends JDialog {
 	 * Initializes the subcomponents of the dialog box
 	 * @param availableTracks array of {@link Track}
 	 */
-	private void initComponents(Track[] availableTracks) {
+	private void initComponents(Track<?>[] availableTracks) {
 		dlmAvailableTracks = new DefaultListModel();
-		for (Track currentTrack: availableTracks) {
+		for (Track<?> currentTrack: availableTracks) {
 			dlmAvailableTracks.addElement(currentTrack);
 		}
 		
@@ -355,11 +355,11 @@ public class MultiTrackChooser extends JDialog {
 	 */
 	protected void unSelectTracks() {
 		if (!jliSelectedTracks.isSelectionEmpty()) {
-			Track[] selectedTracks = new Track[jliSelectedTracks.getSelectedValues().length];
+			Track<?>[] selectedTracks = new Track[jliSelectedTracks.getSelectedValues().length];
 			for (int i = 0; i < selectedTracks.length; i++) {
-				selectedTracks[i] = (Track) jliSelectedTracks.getSelectedValues()[i];
+				selectedTracks[i] = (Track<?>) jliSelectedTracks.getSelectedValues()[i];
 			}			
-			for (Track currentTrack: selectedTracks) {
+			for (Track<?> currentTrack: selectedTracks) {
 				dlmAvailableTracks.addElement(currentTrack);
 				dlmSelectedTracks.removeElement(currentTrack);
 			}			
@@ -372,11 +372,11 @@ public class MultiTrackChooser extends JDialog {
 	 */
 	protected void selectTracks() {
 		if (!jliAvailableTracks.isSelectionEmpty()) {
-			Track[] selectedTracks = new Track[jliAvailableTracks.getSelectedValues().length];
+			Track<?>[] selectedTracks = new Track[jliAvailableTracks.getSelectedValues().length];
 			for (int i = 0; i < selectedTracks.length; i++) {
-				selectedTracks[i] = (Track) jliAvailableTracks.getSelectedValues()[i];
+				selectedTracks[i] = (Track<?>) jliAvailableTracks.getSelectedValues()[i];
 			}			
-			for (Track currentTrack: selectedTracks) {
+			for (Track<?> currentTrack: selectedTracks) {
 				dlmSelectedTracks.addElement(currentTrack);
 				dlmAvailableTracks.removeElement(currentTrack);
 			}			
@@ -408,13 +408,13 @@ public class MultiTrackChooser extends JDialog {
 	 * @param availableTracks array of {@link Track}
 	 * @return an array containing the track selected. Null if cancel was pressed
 	 */
-	public static Track[] getSelectedTracks(Component parent, Track[] availableTracks) {
+	public static Track<?>[] getSelectedTracks(Component parent, Track<?>[] availableTracks) {
 		MultiTrackChooser mtc = new MultiTrackChooser(parent, availableTracks);
 		mtc.setVisible(true);
 		if(validated) {
-			Track[] result = new Track[dlmSelectedTracks.getSize()];
+			Track<?>[] result = new Track[dlmSelectedTracks.getSize()];
 			for (int i = 0; i < dlmSelectedTracks.getSize(); i++) {
-				result[i] = (Track) dlmSelectedTracks.getElementAt(i);
+				result[i] = (Track<?>) dlmSelectedTracks.getElementAt(i);
 			}
 			return result;
 		} else {

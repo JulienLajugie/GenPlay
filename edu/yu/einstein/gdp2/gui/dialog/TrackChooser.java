@@ -31,7 +31,7 @@ public final class TrackChooser extends JDialog {
 	private static JComboBox 	jcbTrack;									// comboBox to choose the track
 	private static JButton 		jbOk;										// OK button
 	private static JButton 		jbCancel;									// cancel button
-	private static Track[]	 	options;									// list of available tracks 
+	private static Track<?>[] 	options;									// list of available tracks 
 	private static String		textLabel;									// text of the label
 	private static boolean 		validated;									// true if OK has been pressed
 	
@@ -43,7 +43,7 @@ public final class TrackChooser extends JDialog {
 	 * @param text Text of the dialog.
 	 * @param tracks List of {@link Track}.
 	 */
-	private TrackChooser(Component parent, String title, String text, Track[] tracks) {
+	private TrackChooser(Component parent, String title, String text, Track<?>[] tracks) {
 		super();
 		options = tracks;
 		validated = false;
@@ -137,11 +137,11 @@ public final class TrackChooser extends JDialog {
 	 * @param tracks List of {@link Track}.
 	 * @return The selected track
 	 */
-	public static Track getTracks(Component parent, String title, String text, Track[] tracks) {
+	public static Track<?> getTracks(Component parent, String title, String text, Track<?>[] tracks) {
 		TrackChooser tc = new TrackChooser(parent, title, text, tracks);
 		tc.setVisible(true);			
 		if(validated) {
-			return (Track)jcbTrack.getSelectedItem();
+			return (Track<?>)jcbTrack.getSelectedItem();
 		}
 		else
 			return null;

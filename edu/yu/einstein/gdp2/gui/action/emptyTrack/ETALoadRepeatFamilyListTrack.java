@@ -14,7 +14,6 @@ import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListActionExtractorWorker;
 import yu.einstein.gdp2.gui.track.RepeatFamilyListTrack;
-import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.Utils;
 
@@ -71,7 +70,7 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			Track newTrack = new RepeatFamilyListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			RepeatFamilyListTrack newTrack = new RepeatFamilyListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

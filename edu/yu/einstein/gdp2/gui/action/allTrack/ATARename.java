@@ -58,7 +58,7 @@ public final class ATARename extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = getTrackList().getSelectedTrack();
+		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			String message = "Enter a name for the track #" + selectedTrack.getTrackNumber() + ":";
 			String currentName = selectedTrack.getName();

@@ -14,7 +14,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class EmptyTrackGraphics extends TrackGraphics {
+public final class EmptyTrackGraphics extends TrackGraphics<Void> {
 
 	private static final long serialVersionUID = 3893723568903136335L; // generated ID
 
@@ -24,7 +24,7 @@ public final class EmptyTrackGraphics extends TrackGraphics {
 	 * @param displayedGenomeWindow {@link GenomeWindow} currently displayed
 	 */
 	protected EmptyTrackGraphics(GenomeWindow displayedGenomeWindow) {
-		super(displayedGenomeWindow);
+		super(displayedGenomeWindow, null);
 	}
 
 

@@ -37,9 +37,9 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
 	private static final String 	DESCRIPTION = 
 		"Generate a csv file showing the repartition of the scores of the selected track";	// tooltip
-	private Track[] selectedTracks;
-	private List<ScatterPlotData> scatPlotData;
-	private ScatterPlotPanel scatPlotPanel;
+	private Track<?>[] 				selectedTracks;
+	private List<ScatterPlotData> 	scatPlotData;
+	private ScatterPlotPanel 		scatPlotPanel;
 
 	/**
 	 * key of the action in the {@link ActionMap}

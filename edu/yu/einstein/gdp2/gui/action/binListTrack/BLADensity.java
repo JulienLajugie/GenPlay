@@ -32,7 +32,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 	private static final String 	DESCRIPTION = 
 		"Computes the densities of none null bins of the selected track";// tooltip
 	private BinListTrack 			selectedTrack;						// selected track
-	private Track 					resultTrack;						// result track
+	private Track<?> 				resultTrack;						// result track
 	private Number 					halfWidth;							// half width
 	
 	

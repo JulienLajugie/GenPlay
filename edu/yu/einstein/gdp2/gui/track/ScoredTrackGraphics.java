@@ -16,7 +16,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class ScoredTrackGraphics extends TrackGraphics {
+public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	private static final long serialVersionUID = 985376787707775754L;	// generated ID
 	private static final boolean 	SHOW_HORIZONTAL_GRID = true;		// show the horizontal grid
@@ -31,11 +31,12 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 	/**
 	 * Creates an instance of {@link ScoredTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
+	 * @param data data displayed in the track
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
-	protected ScoredTrackGraphics(GenomeWindow displayedGenomeWindow, double yMin, double yMax) {
-		super(displayedGenomeWindow);
+	protected ScoredTrackGraphics(GenomeWindow displayedGenomeWindow, T data, double yMin, double yMax) {
+		super(displayedGenomeWindow, data);
 		this.yMin = yMin;
 		this.yMax = yMax;
 		this.showHorizontalGrid = SHOW_HORIZONTAL_GRID;
@@ -44,58 +45,12 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 
 	
 	/**
-	 * Called when the ratio (height of the track / (yMax - y SCWLAMin)) changes.
-	 */
-	abstract protected void yFactorChanged();
-
-
-	/**
-	 * Draws the y value of the middle of the track
-	 * @param g
-	 */
-	abstract protected void drawScore(Graphics g);
-
-	
-	/**
 	 * Draws the data of the track
 	 * @param g {@link Graphics}
 	 */
 	protected abstract void drawData(Graphics g);
-	
-	
-	@Override
-	protected void paintComponent(Graphics g) {
-		double newYFactor = (double)getHeight() / (double)(yMax - yMin);
-		if (newYFactor != yFactor) {
-			yFactor = newYFactor;
-			yFactorChanged();
-		}
-		super.paintComponent(g);
-	}
-	
-	
-	@Override
-	public void copyTo(TrackGraphics trackGraphics) {
-		super.copyTo(trackGraphics);
-		((ScoredTrackGraphics)trackGraphics).showHorizontalGrid = this.showHorizontalGrid;
-		((ScoredTrackGraphics)trackGraphics).horizontalLinesCount = this.horizontalLinesCount;
-		((ScoredTrackGraphics)trackGraphics).yMin = this.yMin;
-		((ScoredTrackGraphics)trackGraphics).yMax = this.yMax;
-	}
-	
-	
-	@Override
-	protected void drawTrack(Graphics g) {
-		drawStripes(g);
-		drawHorizontalLines(g);
-		drawVerticalLines(g);
-		drawData(g);
-		drawScore(g);
-		drawName(g);
-		drawMiddleVerticalLine(g);
-	}
-	
-	
+
+
 	/**
 	 * Draws horizontal lines on the track
 	 * @param g {@link Graphics}
@@ -119,6 +74,68 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 		}
 	}
 
+	
+	/**
+	 * Draws the y value of the middle of the track
+	 * @param g
+	 */
+	abstract protected void drawScore(Graphics g);
+	
+	
+	@Override
+	protected void drawTrack(Graphics g) {
+		drawStripes(g);
+		drawHorizontalLines(g);
+		drawVerticalLines(g);
+		drawData(g);
+		drawScore(g);
+		drawName(g);
+		drawMiddleVerticalLine(g);
+	}
+	
+	
+	/**
+	 * @return the number of horizontal lines
+	 */
+	public final int getHorizontalLinesCount() {
+		return horizontalLinesCount;
+	}
+	
+	
+	/**
+	 * @return the yMax
+	 */
+	public final double getYMax() {
+		return yMax;
+	}
+
+
+	/**
+	 * @return the yMin
+	 */
+	public final double getYMin() {
+		return yMin;
+	}
+	
+
+	/**
+	 * @return true if the horizontal grid is visible
+	 */
+	public final boolean isShowHorizontalGrid() {
+		return showHorizontalGrid;
+	}
+
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		double newYFactor = (double)getHeight() / (double)(yMax - yMin);
+		if (newYFactor != yFactor) {
+			yFactor = newYFactor;
+			yFactorChanged();
+		}
+		super.paintComponent(g);
+	}
+
 
 	/**
 	 * @param score a double value
@@ -133,31 +150,6 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 			return (height - (int)Math.round((double)(score - yMin) * yFactor));
 		}
 	}
-	
-
-	/**
-	 * @return true if the horizontal grid is visible
-	 */
-	public final boolean isShowHorizontalGrid() {
-		return showHorizontalGrid;
-	}
-
-
-	/**
-	 * @param showHorizontalGrid set to true to show the horizontal grid
-	 */
-	public final void setShowHorizontalGrid(boolean showHorizontalGrid) {
-		this.showHorizontalGrid = showHorizontalGrid;
-		this.repaint();
-	}
-
-
-	/**
-	 * @return the number of horizontal lines
-	 */
-	public final int getHorizontalLinesCount() {
-		return horizontalLinesCount;
-	}
 
 
 	/**
@@ -170,10 +162,20 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 	
 	
 	/**
-	 * @return the yMin
+	 * @param showHorizontalGrid set to true to show the horizontal grid
 	 */
-	public final double getYMin() {
-		return yMin;
+	public final void setShowHorizontalGrid(boolean showHorizontalGrid) {
+		this.showHorizontalGrid = showHorizontalGrid;
+		this.repaint();
+	}
+
+
+	/**
+	 * @param yMax the yMax to set
+	 */
+	public final void setYMax(double yMax) {
+		this.yMax = yMax;
+		this.repaint();
 	}
 
 
@@ -187,18 +189,7 @@ public abstract class ScoredTrackGraphics extends TrackGraphics {
 
 
 	/**
-	 * @return the yMax
+	 * Called when the ratio (height of the track / (yMax - y SCWLAMin)) changes.
 	 */
-	public final double getYMax() {
-		return yMax;
-	}
-
-
-	/**
-	 * @param yMax the yMax to set
-	 */
-	public final void setYMax(double yMax) {
-		this.yMax = yMax;
-		this.repaint();
-	}
+	abstract protected void yFactorChanged();
 }

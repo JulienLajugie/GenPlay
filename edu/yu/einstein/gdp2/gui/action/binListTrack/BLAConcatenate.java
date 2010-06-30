@@ -56,7 +56,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		Track[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
+		Track<?>[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
 		if (selectedTracks != null) {
 			// save dialog
 			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();

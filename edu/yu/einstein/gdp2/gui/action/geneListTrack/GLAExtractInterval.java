@@ -29,7 +29,7 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 	private static final String 	DESCRIPTION = "Extract intervals " +
 			"defined relative to genes"; 								// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
-	private Track 					resultTrack;						// result track
+	private Track<?> 				resultTrack;						// result track
 	
 	
 	/**
@@ -71,7 +71,7 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			Track newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
+			Track<?> newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "intervals extracted from " + selectedTrack.getName(), selectedTrack.getStripes());
 		}
 	}

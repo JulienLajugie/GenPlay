@@ -26,7 +26,7 @@ import yu.einstein.gdp2.util.History;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredTrackGraphics implements MouseListener, MouseMotionListener, MouseWheelListener {
+public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredTrackGraphics<T> implements MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long 				serialVersionUID = -9200672145021160494L;	// generated ID
 	private static final Color				TRACK_COLOR = Color.black;					// default color
@@ -34,7 +34,6 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.##");	// decimal format for the score
 	protected Color							trackColor;									// color of the graphics
 	protected GraphicsType 					typeOfGraph;								// type graphics
-	protected T 							data;										// data showed in the track
 	protected History 						history = null; 							// history containing a description of the
 	protected URRManager<T> 				urrManager; 								// manager that handles the undo / redo / reset of the track
 		
@@ -42,28 +41,17 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	/**
 	 * Creates an instance of {@link CurveTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
+	 * @param data data displayed in the track
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
 	protected CurveTrackGraphics(GenomeWindow displayedGenomeWindow, T data, double yMin, double yMax) {
-		super(displayedGenomeWindow, yMin, yMax);
+		super(displayedGenomeWindow, data, yMin, yMax);
 		this.trackColor = TRACK_COLOR;
 		this.typeOfGraph = TYPE_OF_GRAPH;
 		this.data = data;
 		this.history = new History();
 		urrManager = new URRManager<T>(ConfigurationManager.getInstance().getUndoCount(), data);
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void copyTo(TrackGraphics trackGraphics) {
-		super.copyTo(trackGraphics);
-		CurveTrackGraphics<T> ctg = (CurveTrackGraphics<T>) trackGraphics;
-		ctg.urrManager = this.urrManager.deepClone();
-		ctg.history = this.history.deepClone();
-		ctg.trackColor = this.trackColor;
-		ctg.typeOfGraph = this.typeOfGraph;
 	}
 
 
@@ -75,14 +63,6 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		if (typeOfGraph != GraphicsType.DENSE) {
 			super.drawHorizontalLines(g);
 		}
-	}
-
-	
-	/**
-	 * @return the data showed in the track
-	 */
-	protected T getData() {
-		return data;
 	}
 
 	

@@ -51,7 +51,7 @@ public final class ATASetHeight extends TrackListAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		Track selectedTrack = getTrackList().getSelectedTrack();
+		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			int minimumHeight = selectedTrack.getMinimumSize().height;
 			int currentHeight = selectedTrack.getSize().height;

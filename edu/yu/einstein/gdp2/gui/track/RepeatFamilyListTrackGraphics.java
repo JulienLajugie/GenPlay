@@ -21,35 +21,23 @@ import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
+public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFamilyList> {
 
-	private static final long serialVersionUID = 477730131587880969L; // generated ID
-	private static final short 	REPEAT_HEIGHT = 6;					// height of a repeat in pixel
-	private static final short 	SPACE_HEIGHT = 3;					// height of the space between two families of repeats
-
-	private final RepeatFamilyList	repeatList;						// list of repeats
-	private int 					firstLineToDisplay = 0;			// number of the first line to be displayed
-	private int 					repeatLinesCount = 0;			// number of lines of repeats
-	private int 					mouseStartDragY = -1;			// position of the mouse when start dragging
-
+	private static final long 	serialVersionUID = 477730131587880969L; // generated ID
+	private static final short 	REPEAT_HEIGHT = 6;						// height of a repeat in pixel
+	private static final short 	SPACE_HEIGHT = 3;						// height of the space between two families of repeats
+	private int 				firstLineToDisplay = 0;					// number of the first line to be displayed
+	private int 				repeatLinesCount = 0;					// number of lines of repeats
+	private int 				mouseStartDragY = -1;					// position of the mouse when start dragging
 
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
-	 * @param repeatList list of repeats to display
+	 * @param data list of repeats to display
 	 */
-	protected RepeatFamilyListTrackGraphics(GenomeWindow displayedGenomeWindow, RepeatFamilyList repeatList) {
-		super(displayedGenomeWindow);
-		this.repeatList = repeatList;
-	}
-
-
-	@Override
-	protected void xFactorChanged() {
-		firstLineToDisplay = 0;
-		repaint();
-		super.xFactorChanged();
+	protected RepeatFamilyListTrackGraphics(GenomeWindow displayedGenomeWindow, RepeatFamilyList data) {
+		super(displayedGenomeWindow, data);
 	}
 
 
@@ -60,16 +48,6 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
 	}
 
 
-	@Override
-	protected void drawTrack(Graphics g) {
-		drawStripes(g);
-		drawVerticalLines(g);
-		drawRepeat(g);
-		drawName(g);
-		drawMiddleVerticalLine(g);
-	}
-
-
 	/**
 	 * Draws the repeats
 	 * @param g {@link Graphics}
@@ -77,7 +55,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
 	private void drawRepeat(Graphics g) {
 		int currentHeight = SPACE_HEIGHT;
 		int width = getWidth();
-		List<RepeatFamily> repeatFamilyList = repeatList.getFittedData(genomeWindow, xFactor);
+		List<RepeatFamily> repeatFamilyList = data.getFittedData(genomeWindow, xFactor);
 		if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
 			// calculate how many lines are displayable
 			int displayedLineCount = (getHeight() - SPACE_HEIGHT) / (REPEAT_HEIGHT + 2 * SPACE_HEIGHT) + 1;
@@ -126,7 +104,17 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
 				}
 			}	
 		}
-	}	
+	}
+
+
+	@Override
+	protected void drawTrack(Graphics g) {
+		drawStripes(g);
+		drawVerticalLines(g);
+		drawRepeat(g);
+		drawName(g);
+		drawMiddleVerticalLine(g);
+	}
 
 
 	/**
@@ -138,6 +126,38 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
 		Color[] colorArray = {Color.BLACK, Color.GREEN, Color.BLUE, Color.PINK, Color.RED, Color.CYAN, Color.MAGENTA, Color.ORANGE};
 		i = i % colorArray.length;
 		return colorArray[i];
+	}	
+
+
+	/**
+	 * Changes the scroll position of the panel when mouse dragged with the right button
+	 */
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		super.mouseDragged(e);
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
+			int distance = (mouseStartDragY - e.getY()) / (REPEAT_HEIGHT + 2 * SPACE_HEIGHT);
+			if (Math.abs(distance) > 0) {
+				if (((distance < 0) && (distance + firstLineToDisplay >= 0)) 
+						|| ((distance > 0) && (distance + firstLineToDisplay <= repeatLinesCount))) {
+					firstLineToDisplay += distance;
+					mouseStartDragY = e.getY();
+					repaint();
+				}
+			}
+		}		
+	}
+
+
+	/**
+	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+		super.mousePressed(e);
+		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
+			mouseStartDragY = e.getY();
+		}		
 	}
 
 
@@ -158,34 +178,10 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics {
 	}
 
 
-	/**
-	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
-	 */
 	@Override
-	public void mousePressed(MouseEvent e) {
-		super.mousePressed(e);
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
-			mouseStartDragY = e.getY();
-		}		
-	}
-
-
-	/**
-	 * Changes the scroll position of the panel when mouse dragged with the right button
-	 */
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		super.mouseDragged(e);
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
-			int distance = (mouseStartDragY - e.getY()) / (REPEAT_HEIGHT + 2 * SPACE_HEIGHT);
-			if (Math.abs(distance) > 0) {
-				if (((distance < 0) && (distance + firstLineToDisplay >= 0)) 
-						|| ((distance > 0) && (distance + firstLineToDisplay <= repeatLinesCount))) {
-					firstLineToDisplay += distance;
-					mouseStartDragY = e.getY();
-					repaint();
-				}
-			}
-		}		
+	protected void xFactorChanged() {
+		firstLineToDisplay = 0;
+		repaint();
+		super.xFactorChanged();
 	}
 }

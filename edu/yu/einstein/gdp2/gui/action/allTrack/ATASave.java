@@ -66,7 +66,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		if (getTrackList().getSelectedTrack() != null) {
-			Track selectedTrack = getTrackList().getSelectedTrack(); 
+			Track<?> selectedTrack = getTrackList().getSelectedTrack(); 
 			if (selectedTrack instanceof BinListTrack) {
 				saveBinList((BinListTrack)selectedTrack);
 			} else if (selectedTrack instanceof GeneListTrack) {

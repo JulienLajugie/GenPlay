@@ -124,9 +124,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	private final ConfigurationManager configurationManager;	// ConfigurationManager
 	private final List<GenomeWindowListener> gwListenerList;	// list of GenomeWindowListener
 	private GenomeWindow 		displayedGenomeWindow;			// displayed GenomeWindow
-	private Track[] 			trackList;						// array of tracks
-	private Track				selectedTrack = null;			// track selected
-	private Track				copiedTrack = null; 			// list of the tracks in the clipboard
+	private Track<?>[] 			trackList;						// array of tracks
+	private Track<?>				selectedTrack = null;			// track selected
+	private Track<?>				copiedTrack = null; 			// list of the tracks in the clipboard
 	private int 				draggedTrackIndex = -1;			// index of the dragged track, -1 if none
 	private int 				draggedOverTrackIndex = -1; 	// index of the track rolled over by the dragged track, -1 if none
 
@@ -270,12 +270,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
 		if (arg0.getPropertyName() == "trackRightClicked") {
 			setScrollMode(false);
-			selectedTrack = (Track)arg0.getSource();
+			selectedTrack = (Track<?>)arg0.getSource();
 			TrackMenu tm = TrackMenuFactory.getTrackMenu(this);
 			tm.show(this, getMousePosition().x, getMousePosition().y);
 		} else if (arg0.getPropertyName() == "trackDragged") {
 			if (draggedTrackIndex == -1) {
-				draggedTrackIndex = ((Track)arg0.getSource()).getTrackNumber() - 1;
+				draggedTrackIndex = ((Track<?>)arg0.getSource()).getTrackNumber() - 1;
 			}
 			dragTrack();
 		} else if (arg0.getPropertyName() == "trackDraggedReleased") {
@@ -284,12 +284,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			setScrollMode((Boolean)arg0.getNewValue());
 		} else if (arg0.getPropertyName() == "selected") {
 			if ((Boolean)arg0.getNewValue() == true) {
-				for (Track currentTrack : trackList) {
+				for (Track<?> currentTrack : trackList) {
 					if (currentTrack != arg0.getSource()) {
 						currentTrack.setSelected(false);
 					}
 				}
-				selectedTrack = (Track)arg0.getSource();
+				selectedTrack = (Track<?>)arg0.getSource();
 			} else {
 				selectedTrack = null;
 			}
@@ -305,7 +305,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param name name of the track (can be null)
 	 * @param stripes {@link ChromosomeWindowList} (can be null)
 	 */
-	public void setTrack(int index, Track track, int preferredHeight, String name, ChromosomeWindowList stripes) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);
@@ -329,7 +329,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param b
 	 */
 	public void setScrollMode(boolean b) {
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			currentTrack.setScrollMode(b);
 		}
 	}
@@ -370,7 +370,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if ((draggedTrackIndex != -1) && (draggedOverTrackIndex != -1)) {
 			trackList[draggedOverTrackIndex].setBorder(Track.REGULAR_BORDER);
 			if (getMousePosition() != null) { 
-				Track trackTmp = trackList[draggedTrackIndex];
+				Track<?> trackTmp = trackList[draggedTrackIndex];
 				if (draggedTrackIndex < draggedOverTrackIndex) {
 					for (int i = draggedTrackIndex; i < draggedOverTrackIndex; i++) {
 						trackList[i] = trackList[i + 1];
@@ -418,7 +418,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int preferredHeight = configurationManager.getTrackHeight();
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setPreferredHeight(preferredHeight);
-			((Track)jpTrackList.getComponent(i)).setPreferredHeight(preferredHeight);
+			((Track<?>)jpTrackList.getComponent(i)).setPreferredHeight(preferredHeight);
 		}
 		revalidate();
 	}
@@ -431,7 +431,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void trackCountChanged() {
 		int trackCount = configurationManager.getTrackCount();
 		int preferredHeight = configurationManager.getTrackHeight();
-		Track[] trackTmp = trackList;
+		Track<?>[] trackTmp = trackList;
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
 			if (i < trackTmp.length) {
@@ -453,7 +453,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (!newGenomeWindow.equals(displayedGenomeWindow)) {
 			GenomeWindow oldGenomeWindow = displayedGenomeWindow;
 			displayedGenomeWindow = newGenomeWindow;
-			for (Track track : trackList) {
+			for (Track<?> track : trackList) {
 				track.setGenomeWindow(displayedGenomeWindow);
 			}
 			// we notify the listeners
@@ -490,7 +490,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	/**
 	 * @return the selected track
 	 */
-	public Track getSelectedTrack() {
+	public Track<?> getSelectedTrack() {
 		return selectedTrack;
 	}
 
@@ -498,9 +498,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	/**
 	 * @return an array containing all the {@link EmptyTrack}
 	 */
-	public Track[] getEmptyTracks() {
+	public Track<?>[] getEmptyTracks() {
 		int count = 0;
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof EmptyTrack) {
 				count++;
 			}
@@ -508,9 +508,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (count == 0) {
 			return null;
 		}
-		Track[] result = new Track[count];
+		Track<?>[] result = new Track[count];
 		int i = 0;
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof EmptyTrack) {
 				result[i] = currentTrack;
 				i++;
@@ -523,9 +523,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	/**
 	 * @return an array containing all the {@link BinListTrack}
 	 */
-	public Track[] getBinListTracks() {
+	public Track<?>[] getBinListTracks() {
 		int count = 0;
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof BinListTrack) {
 				if (!((BinListTrack) currentTrack).getData().isCompressed()) {
 					count++;
@@ -535,9 +535,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (count == 0) {
 			return null;
 		}
-		Track[] result = new Track[count];
+		Track<?>[] result = new Track[count];
 		int i = 0;
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof BinListTrack) {
 				if (!((BinListTrack) currentTrack).getData().isCompressed()) {
 					result[i] = currentTrack;
@@ -552,9 +552,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	/**
 	 * @return an array containing all the {@link CurveTrack}
 	 */
-	public Track[] getCurveTracks() {
+	public Track<?>[] getCurveTracks() {
 		int count = 0;
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof CurveTrack<?>) {
 				count++;
 			}
@@ -562,9 +562,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (count == 0) {
 			return null;
 		}
-		Track[] result = new Track[count];
+		Track<?>[] result = new Track[count];
 		int i = 0;
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof CurveTrack<?>) {
 				result[i] = currentTrack;
 				i++;
@@ -580,7 +580,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void copyTrack() {
 		if (selectedTrack != null) {
 			try {
-				copiedTrack = selectedTrack.copy();
+				copiedTrack = selectedTrack.deepClone();
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while copying the track");
 			}
@@ -596,7 +596,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			try {
 				copiedTrack = selectedTrack;
 				int selectedTrackIndex = getSelectedTrackIndex();				
-				Track emptyTrack = new EmptyTrack(displayedGenomeWindow, trackList.length);
+				Track<?> emptyTrack = new EmptyTrack(displayedGenomeWindow, trackList.length);
 				setTrack(selectedTrackIndex, emptyTrack, configurationManager.getTrackHeight(), null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
@@ -630,7 +630,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			try {
 				int selectedTrackIndex = getSelectedTrackIndex();
 				GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
-				Track newTrack = copiedTrack.copy();
+				Track<?> newTrack = copiedTrack.deepClone();
 				newTrack.setGenomeWindow(currentGenomeWindow);
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null);
 				selectedTrack = null;
@@ -663,7 +663,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * Locks the handles of all the tracks 
 	 */
 	public void lockTrackHandles() {
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			currentTrack.lockHandle();
 		}
 	}
@@ -673,7 +673,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * Unlocks the handles of all the tracks
 	 */
 	public void unlockTracksHandles() {
-		for (Track currentTrack: trackList) {
+		for (Track<?> currentTrack: trackList) {
 			currentTrack.unlockHandle();
 		}
 	}
@@ -710,7 +710,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void saveProject(File outputFile) {
 		try {
 			// remove all the references to the listener so we don't save them
-			for (Track currentTrack: trackList) {
+			for (Track<?> currentTrack: trackList) {
 				currentTrack.removePropertyChangeListener(this);
 				currentTrack.removeGenomeWindowListener(this);
 			}
@@ -731,7 +731,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			gz.flush();
 			gz.close();
 			// rebuild the references to the listener
-			for (Track currentTrack: trackList) {
+			for (Track<?> currentTrack: trackList) {
 				currentTrack.addPropertyChangeListener(this);
 				currentTrack.addGenomeWindowListener(this);
 			}
@@ -786,7 +786,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void undoCountChanged() {
 		int undoCount = ConfigurationManager.getInstance().getUndoCount();
-		for (Track currentTrack: getBinListTracks()) {
+		for (Track<?> currentTrack: getBinListTracks()) {
 			((BinListTrack) currentTrack).setUndoCount(undoCount);
 		}		
 	}

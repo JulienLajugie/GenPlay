@@ -16,7 +16,7 @@ import yu.einstein.gdp2.core.list.DisplayableListOfLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class NucleotideListTrackGraphics extends TrackGraphics {
+public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOfLists<Nucleotide, Nucleotide[]>> {
 
 	private static final long serialVersionUID = -7170987212502378002L;				// generated ID
 	private static final int NUCLEOTIDE_HEIGHT = 10;								// y position of the nucleotides on the track
@@ -27,18 +27,16 @@ public class NucleotideListTrackGraphics extends TrackGraphics {
 	private static final Color CYTOSINE_COLOR = new Color(255, 80, 0);				// color for cytosine bases
 	private static final Color ADENINE_COLOR = Color.blue;							// color for adenine bases
 	private static final Color GUANINE_COLOR = new Color(80, 80, 0);				// color for guanine bases
-	private final DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList;	// list of nucleotides to 
 	private int maxBaseWidth = 0;													// size on the screen of the widest base to display (in pixels) 
 
 
 	/**
 	 * Creates an instance of {@link NucleotideListTrackGraphics}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
-	 * @param nucleotideList a sequence of {@link Nucleotide} to display
+	 * @param data a sequence of {@link Nucleotide} to display
 	 */
-	public NucleotideListTrackGraphics(GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> nucleotideList) {
-		super(displayedGenomeWindow);
-		this.nucleotideList = nucleotideList;
+	public NucleotideListTrackGraphics(GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
+		super(displayedGenomeWindow, data);
 		// compute the length in pixels of the widest base to display
 		String[] bases = {"N", "A", "C", "G", "T"};
 		for (String currBase: bases) {
@@ -63,12 +61,12 @@ public class NucleotideListTrackGraphics extends TrackGraphics {
 	 * @param g
 	 */
 	private void drawNucleotides(Graphics g) {
-		if (nucleotideList != null) {
+		if (data != null) {
 			long baseToPrintCount = genomeWindow.getSize();
 			g.setColor(Color.black);
 			// if there is enough room to print something
 			if (maxBaseWidth * baseToPrintCount <= getWidth()) {
-				Nucleotide[] nucleotides = nucleotideList.getFittedData(genomeWindow, xFactor);
+				Nucleotide[] nucleotides = data.getFittedData(genomeWindow, xFactor);
 				int j = 0;
 				for (int i = genomeWindow.getStart(); i <= genomeWindow.getStop(); i++) {
 					if (nucleotides[j] != null) {

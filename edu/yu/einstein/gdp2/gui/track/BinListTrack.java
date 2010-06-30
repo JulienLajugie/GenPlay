@@ -15,33 +15,21 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 public final class BinListTrack extends CurveTrack<BinList> {
 
 	private static final long serialVersionUID = -395099043710070726L; // generated ID
-	private final BinList binList; // BinList used to create the track
 
 	
 	/**
 	 * Creates an instance of {@link BinListTrack}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
-	 * @param binList the {@link BinList} showed in the track
+	 * @param data the {@link BinList} showed in the track
 	 */
-	public BinListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, BinList binList) {
-		this.binList = binList;
-		initComponent(displayedGenomeWindow, trackNumber);
+	public BinListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, BinList data) {
+		super(displayedGenomeWindow, trackNumber, data);
 	}
 
 
 	@Override
-	public Track copy() {
-		Track copiedTrack = new BinListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), binList);
-		trackGraphics.copyTo(copiedTrack.trackGraphics);
-		trackGraphics.repaint();
-		copiedTrack.setPreferredHeight(getPreferredSize().height);
-		return copiedTrack;
-	}
-
-
-	@Override
-	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new BinListTrackGraphics(displayedGenomeWindow, binList);
+	protected TrackGraphics<BinList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, BinList data) {
+		return new BinListTrackGraphics(displayedGenomeWindow, data);
 	}
 }

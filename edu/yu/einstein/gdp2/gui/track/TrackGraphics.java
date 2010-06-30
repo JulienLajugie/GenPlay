@@ -38,27 +38,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class TrackGraphics extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator {
-
-	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
-	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
-	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
-	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
-	private static final Color			STRIPES_COLOR = Color.orange;	// color of the stripes
-	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
-	protected static final int 			FONT_SIZE = 10;					// size of the font
-	protected final FontMetrics 		fm = 
-		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
-	private final List<GenomeWindowListener> gwListenerList;			// list of GenomeWindowListener
-	private int 						verticalLineCount;				// number of vertical lines to print
-	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
-	protected double					xFactor;						// factor between the genomic width and the screen width
-	protected GenomeWindow				genomeWindow;					// the genome window displayed by the track
-	private boolean 					isScrollMode;					// true if the scroll mode is on
-	private int 						scrollModeIntensity = 0;		// Intensity of the scroll.
-	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
-	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
-
+public abstract class TrackGraphics<T> extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator {
 
 	/**
 	 * The ScrollModeThread class is used to scroll the track horizontally 
@@ -98,15 +78,38 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			}
 		}
 	}
+	
+	
+	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
+	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
+	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
+	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
+	private static final Color			STRIPES_COLOR = Color.orange;	// color of the stripes
+	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
+	protected static final int 			FONT_SIZE = 10;					// size of the font
+	protected final FontMetrics 		fm = 
+		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
+	private final List<GenomeWindowListener> gwListenerList;			// list of GenomeWindowListener
+	private int 						verticalLineCount;				// number of vertical lines to print
+	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
+	protected double					xFactor;						// factor between the genomic width and the screen width
+	protected GenomeWindow				genomeWindow;					// the genome window displayed by the track
+	private boolean 					isScrollMode;					// true if the scroll mode is on
+	private int 						scrollModeIntensity = 0;		// Intensity of the scroll.
+	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
+	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
+	protected T 						data;							// data showed in the track
 
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
 	 * @param displayedGenomeWindow {@link GenomeWindow} currently displayed
+	 * @param data data showed in the track
 	 */
-	protected TrackGraphics(GenomeWindow displayedGenomeWindow) {
+	protected TrackGraphics(GenomeWindow displayedGenomeWindow, T data) {
 		super();
 		this.genomeWindow = displayedGenomeWindow;
+		this.data = data;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		setBackground(Color.white);
@@ -117,64 +120,18 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	}
 
 
-	/**
-	 * @param verticalLineCount the verticalLineCount to set
-	 */
-	public void setVerticalLineCount(int verticalLineCount) {
-		this.verticalLineCount = verticalLineCount;
-		repaint();
-	}
-
-
-	/**
-	 * @return the verticalLineCount
-	 */
-	public int getVerticalLineCount() {
-		return verticalLineCount;
-	}
-
-
-	/**
-	 * Sets the variable xFactor
-	 */
 	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		double newXFactor = (double)getWidth() / (double)(genomeWindow.getStop() - genomeWindow.getStart());
-		if (newXFactor != xFactor) {
-			xFactor = newXFactor;
-			xFactorChanged();
-		}
-		drawTrack(g);
+	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		gwListenerList.add(genomeWindowListener);		
 	}
 
-	
-	/**
-	 * Called by paintComponent. 
-	 * Draws the track
-	 * @param g {@link Graphics}
-	 */
-	abstract protected void drawTrack(Graphics g);
-	
 
-	/**
-	 * This method is executed when the xFactor changes 
-	 */
-	protected void xFactorChanged() {
-		if (isScrollMode) {
-			if (getMousePosition(true) != null) {
-				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
-			}
-		}
-	}
-
-	
 	/**
 	 * This method is executed when the chromosome changes 
 	 */
 	protected void chromosomeChanged() {}
-	
-	
+
+
 	/**
 	 * @param mouseXPosition X position of the mouse on the track
 	 * @return the scroll intensity
@@ -187,124 +144,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 			return twoScreenPosToGenomeWidth(mouseXPosition, getWidth() / 2) / 10 - 1;
 		}		
 	}
-	
 
-	/**
-	 * @return the displayed {@link GenomeWindow}
-	 */
-	public GenomeWindow getGenomeWindow() {
-		return genomeWindow;
-	}
-
-
-	/**
-	 * Sets the {@link GenomeWindow} displayed.
-	 * @param newGenomeWindow new displayed {@link GenomeWindow}
-	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		if (!newGenomeWindow.equals(genomeWindow)) {
-			GenomeWindow oldGenomeWindow = genomeWindow;
-			genomeWindow = newGenomeWindow;
-			// we notify the listeners
-			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
-			for (GenomeWindowListener currentListener: gwListenerList) {
-				currentListener.genomeWindowChanged(evt);
-			}
-			if (genomeWindow.getChromosome() != oldGenomeWindow.getChromosome()) {
-				chromosomeChanged();
-			}
-			repaint();
-		}
-	}
-
-
-	/**
-	 * shows stripes on the track
-	 * @param stripeList a {@link ChromosomeWindowList}
-	 */
-	public void setStripes(ChromosomeWindowList stripeList) {
-		this.stripeList = stripeList;
-		repaint();
-	}
-
-
-	/**
-	 * @return the stripe list of the track
-	 */
-	public ChromosomeWindowList getStripes() {
-		return stripeList;		
-	}
-
-
-	/**
-	 * @return true if the scroll mode is on
-	 */
-	public boolean getScrollMode() {
-		return isScrollMode;
-	}
-
-
-	/**
-	 * Sets the scroll mode
-	 * @param scrollMode
-	 */
-	public void setScrollMode(boolean scrollMode) {
-		isScrollMode = scrollMode;
-	}
-
-
-	/**
-	 * @param genomePosition a position on the genome
-	 * @return the absolute position on the screen (can be > than the screen width)
-	 */
-	protected int genomePosToScreenPos(int genomePosition) {
-		return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);
-	}
-
-	
-	/**
-	 * @param genomePositionStart start position on the genome
-	 * @param genomePositionStop stop position on the genome
-	 * @return the width on the screen between this tow positions
-	 */
-	protected int twoGenomePosToScreenWidth(int genomePositionStart, int genomePositionStop) {
-		double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
-		double x2 = ((double)(genomePositionStop - genomeWindow.getStart())) * xFactor;
-		double distance = Math.abs(x1 - x2);
-		return (int)Math.round(distance);
-	}
-
-
-	/**
-	 * @param x1 position 1 on the screen
-	 * @param x2 position 2 on the screen
-	 * @return the distance in base pair between the screen position x1 and x2 
-	 */
-	protected int twoScreenPosToGenomeWidth(int x1, int x2) {
-		double distance = ((double)(x2 - x1) / (double)getWidth() * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
-		if ((distance > 0) && (distance < 1)) {
-			distance = 1;
-		} else if ((distance < 0) && (distance > -1)) {
-			distance = -1;
-		}	
-		return (int)Math.round(distance);
-	}
-
-
-	/**
-	 * Draws the vertical lines
-	 * @param g2D Graphics2D
-	 */
-	protected void drawVerticalLines(Graphics g) {
-		g.setColor(LINE_COLOR);
-		double gap = getWidth() / (double)verticalLineCount;
-		int y1 = 0;
-		int y2 = getHeight();
-		for (int i = 0; i < verticalLineCount; i++) {
-			int x = (int)Math.round(i * gap);
-			g.drawLine(x, y1, x, y2);
-		}
-	}
 
 	/**
 	 * Draws the main line in the middle of the track
@@ -317,6 +157,7 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 		int x = (int)Math.round(getWidth() / (double)2);
 		g.drawLine(x, y1, x, y2);	
 	}
+
 
 	/**
 	 * Draws the name of the track
@@ -360,6 +201,86 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 
 
 	/**
+	 * Called by paintComponent. 
+	 * Draws the track
+	 * @param g {@link Graphics}
+	 */
+	abstract protected void drawTrack(Graphics g);
+
+
+	/**
+	 * Draws the vertical lines
+	 * @param g2D Graphics2D
+	 */
+	protected void drawVerticalLines(Graphics g) {
+		g.setColor(LINE_COLOR);
+		double gap = getWidth() / (double)verticalLineCount;
+		int y1 = 0;
+		int y2 = getHeight();
+		for (int i = 0; i < verticalLineCount; i++) {
+			int x = (int)Math.round(i * gap);
+			g.drawLine(x, y1, x, y2);
+		}
+	}
+
+
+	/**
+	 * @param genomePosition a position on the genome
+	 * @return the absolute position on the screen (can be > than the screen width)
+	 */
+	protected int genomePosToScreenPos(int genomePosition) {
+		return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);
+	}
+
+
+	/**
+	 * @return the data showed in the track
+	 */
+	public T getData() {
+		return data;
+	}
+
+
+	/**
+	 * @return the displayed {@link GenomeWindow}
+	 */
+	public GenomeWindow getGenomeWindow() {
+		return genomeWindow;
+	}
+
+
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
+		return gwListenerList.toArray(genomeWindowListeners);
+	}
+
+
+	/**
+	 * @return true if the scroll mode is on
+	 */
+	public boolean getScrollMode() {
+		return isScrollMode;
+	}
+
+
+	/**
+	 * @return the stripe list of the track
+	 */
+	public ChromosomeWindowList getStripes() {
+		return stripeList;		
+	}
+
+
+	/**
+	 * @return the verticalLineCount
+	 */
+	public int getVerticalLineCount() {
+		return verticalLineCount;
+	}
+
+
+	/**
 	 * Calls firePropertyChange with a new {@link GenomeWindow} center where the mouse double clicked.
 	 * Starts / stops the scroll mode when the middle button is clicked
 	 */
@@ -393,41 +314,6 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 	}
 
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		if (isScrollMode) {
-			setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
-			scrollModeThread = new ScrollModeThread();
-			scrollModeThread.start();
-		} else {
-			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-		}
-	}
-
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		if (isScrollMode) {
-			scrollModeThread = null;
-		}
-	}
-
-
-	/**
-	 * Sets the variable mouseStartDragX when the user press the button 1 of the mouse.
-	 */
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-			mouseStartDragX = e.getX();
-		}		
-	}
-
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-
-
 	/**
 	 * Update the {@link GenomeWindow} when the track is dragged horizontally.
 	 */
@@ -453,11 +339,44 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 
 
 	@Override
+	public void mouseEntered(MouseEvent e) {
+		if (isScrollMode) {
+			setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+			scrollModeThread = new ScrollModeThread();
+			scrollModeThread.start();
+		} else {
+			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		if (isScrollMode) {
+			scrollModeThread = null;
+		}
+	}
+
+	@Override
 	public void mouseMoved(final MouseEvent e) {
 		if ((isScrollMode) && (getMousePosition() != null)) {
 			scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
 		}
 	}
+
+
+	/**
+	 * Sets the variable mouseStartDragX when the user press the button 1 of the mouse.
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
+			mouseStartDragX = e.getX();
+		}		
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 
 
 	/**
@@ -487,6 +406,27 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 
 
 	/**
+	 * Sets the variable xFactor
+	 */
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		double newXFactor = (double)getWidth() / (double)(genomeWindow.getStop() - genomeWindow.getStart());
+		if (newXFactor != xFactor) {
+			xFactor = newXFactor;
+			xFactorChanged();
+		}
+		drawTrack(g);
+	}
+
+
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		gwListenerList.remove(genomeWindowListener);		
+	}
+
+
+	/**
 	 * Save the track as a JPG image.
 	 * @param file ouput file
 	 */
@@ -503,30 +443,91 @@ public abstract class TrackGraphics extends JPanel implements MouseListener, Mou
 
 
 	/**
-	 * Copy the current {@link TrackGraphics} to the specified {@link TrackGraphics}
-	 * @param trackGraphics specified {@link TrackGraphics}
+	 * Sets the {@link GenomeWindow} displayed.
+	 * @param newGenomeWindow new displayed {@link GenomeWindow}
 	 */
-	public void copyTo(TrackGraphics trackGraphics) {
-		trackGraphics.stripeList = stripeList;
-		trackGraphics.setName(getName());
+	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
+		if (!newGenomeWindow.equals(genomeWindow)) {
+			GenomeWindow oldGenomeWindow = genomeWindow;
+			genomeWindow = newGenomeWindow;
+			// we notify the listeners
+			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
+			for (GenomeWindowListener currentListener: gwListenerList) {
+				currentListener.genomeWindowChanged(evt);
+			}
+			if (genomeWindow.getChromosome() != oldGenomeWindow.getChromosome()) {
+				chromosomeChanged();
+			}
+			repaint();
+		}
 	}
 
-	
-	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		gwListenerList.add(genomeWindowListener);		
+
+	/**
+	 * Sets the scroll mode
+	 * @param scrollMode
+	 */
+	public void setScrollMode(boolean scrollMode) {
+		isScrollMode = scrollMode;
 	}
-	
-	
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
-		return gwListenerList.toArray(genomeWindowListeners);
+
+
+	/**
+	 * shows stripes on the track
+	 * @param stripeList a {@link ChromosomeWindowList}
+	 */
+	public void setStripes(ChromosomeWindowList stripeList) {
+		this.stripeList = stripeList;
+		repaint();
 	}
-	
-	
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		gwListenerList.remove(genomeWindowListener);		
+
+
+	/**
+	 * @param verticalLineCount the verticalLineCount to set
+	 */
+	public void setVerticalLineCount(int verticalLineCount) {
+		this.verticalLineCount = verticalLineCount;
+		repaint();
+	}
+
+
+	/**
+	 * @param genomePositionStart start position on the genome
+	 * @param genomePositionStop stop position on the genome
+	 * @return the width on the screen between this tow positions
+	 */
+	protected int twoGenomePosToScreenWidth(int genomePositionStart, int genomePositionStop) {
+		double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
+		double x2 = ((double)(genomePositionStop - genomeWindow.getStart())) * xFactor;
+		double distance = Math.abs(x1 - x2);
+		return (int)Math.round(distance);
+	}
+
+
+	/**
+	 * @param x1 position 1 on the screen
+	 * @param x2 position 2 on the screen
+	 * @return the distance in base pair between the screen position x1 and x2 
+	 */
+	protected int twoScreenPosToGenomeWidth(int x1, int x2) {
+		double distance = ((double)(x2 - x1) / (double)getWidth() * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
+		if ((distance > 0) && (distance < 1)) {
+			distance = 1;
+		} else if ((distance < 0) && (distance > -1)) {
+			distance = -1;
+		}	
+		return (int)Math.round(distance);
+	}
+
+
+	/**
+	 * This method is executed when the xFactor changes 
+	 */
+	protected void xFactorChanged() {
+		if (isScrollMode) {
+			if (getMousePosition(true) != null) {
+				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
+			}
+		}
 	}
 }

@@ -33,7 +33,7 @@ public final class BLADivide extends TrackListActionOperationWorker<BinList> {
 		"Divide the selected track by another one";						// tooltip
 	private BinListTrack 			selectedTrack;						// selected track
 	private BinListTrack 			otherTrack;							// other track
-	private Track 					resultTrack;						// result track
+	private Track<?>					resultTrack;						// result track
 
 
 	/**

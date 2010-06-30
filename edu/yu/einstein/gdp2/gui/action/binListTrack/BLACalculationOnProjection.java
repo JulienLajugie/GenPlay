@@ -36,10 +36,10 @@ public class BLACalculationOnProjection extends TrackListActionOperationWorker<B
 		"Compute the average, the sum or the max of the " +
 		"selected track on intervals defined by another track";					// tooltip
 	private BinListTrack 			selectedTrack;		// selected track
-	private Track 					intervalTrack;		// track defining the intervals
+	private Track<?> 				intervalTrack;		// track defining the intervals
 	private Number 					percentage;			// percentage of the greatest values
 	private ScoreCalculationMethod 	method;				// method of calculation
-	private Track 					resultTrack;		// result track
+	private Track<?> 				resultTrack;		// result track
 
 
 	/**

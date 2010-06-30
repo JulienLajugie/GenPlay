@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.dialog.DASDialog;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
-import yu.einstein.gdp2.gui.track.Track;
 
 
 /**
@@ -80,7 +79,7 @@ public class ETALoadGeneListTrackFromDAS extends TrackListActionWorker<GeneList>
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-			Track newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			GeneListTrack newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
 		}								
 	}

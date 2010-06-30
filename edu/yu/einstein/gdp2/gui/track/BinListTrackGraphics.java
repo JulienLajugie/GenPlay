@@ -35,14 +35,6 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 		super(displayedGenomeWindow, binList, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
 	}
 
-	
-	@Override
-	public void copyTo(TrackGraphics trackGraphics) {
-		super.copyTo(trackGraphics);
-		BinListTrackGraphics bltg = (BinListTrackGraphics) trackGraphics;
-		bltg.data = this.data.deepClone();
-	}
-
 
 	@Override
 	protected void drawData(Graphics g) {

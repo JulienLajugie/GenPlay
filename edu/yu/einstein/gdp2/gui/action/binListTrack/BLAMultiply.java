@@ -32,8 +32,8 @@ public final class BLAMultiply extends TrackListActionOperationWorker<BinList> {
 	private static final String 	DESCRIPTION = 
 		"Multiply the selected track by another one";						// tooltip
 	private BinListTrack 			selectedTrack;							// selected track 1
-	private Track 					otherTrack;								// selected track 2
-	private Track 					resultTrack;							// result track
+	private Track<?> 				otherTrack;								// selected track 2
+	private Track<?> 				resultTrack;							// result track
 	
 	
 	/**

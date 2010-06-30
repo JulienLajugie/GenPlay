@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 public final class SCWListTrack extends CurveTrack<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = -2203140318940911180L; // generated ID
-	private final ScoredChromosomeWindowList data;		// ScoredChromosomeWindowList used to create the track
 
 	
 	/**
@@ -25,23 +24,12 @@ public final class SCWListTrack extends CurveTrack<ScoredChromosomeWindowList> {
 	 * @param data {@link ScoredChromosomeWindowList} showed in the track
 	 */
 	public SCWListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,  ScoredChromosomeWindowList data) {
-		this.data = data;
-		initComponent(displayedGenomeWindow, trackNumber);
-	}
-	
-
-	@Override
-	public Track copy() {
-		Track copiedTrack = new SCWListTrack(trackGraphics.genomeWindow, trackHandle.getTrackNumber(), data);
-		trackGraphics.copyTo(copiedTrack.trackGraphics);
-		trackGraphics.repaint();
-		copiedTrack.setPreferredHeight(getPreferredSize().height);
-		return copiedTrack;		
+		super(displayedGenomeWindow, trackNumber, data);
 	}
 
-	
+
 	@Override
-	protected void initTrackGraphics(GenomeWindow displayedGenomeWindow) {
-		trackGraphics = new SCWListTrackGraphics(displayedGenomeWindow, data);
+	protected TrackGraphics<ScoredChromosomeWindowList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
+		return new SCWListTrackGraphics(displayedGenomeWindow, data);
 	}
 }

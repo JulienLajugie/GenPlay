@@ -15,7 +15,7 @@ import yu.einstein.gdp2.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class RulerGraphics extends TrackGraphics {
+public final class RulerGraphics extends TrackGraphics<Void> {
 
 	private static final long serialVersionUID = 1612257945809961448L; // Generated ID
 	private static final int 			LINE_COUNT = 10;						// Number of line to print (must be an even number)
@@ -32,7 +32,7 @@ public final class RulerGraphics extends TrackGraphics {
 	 * @param genomeWindow displayed {@link GenomeWindow}
 	 */
 	public RulerGraphics(GenomeWindow genomeWindow) {
-		super(genomeWindow);
+		super(genomeWindow, null);
 		setVisible(true);
 	}
 

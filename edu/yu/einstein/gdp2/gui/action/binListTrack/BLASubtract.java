@@ -32,8 +32,8 @@ public final class BLASubtract extends TrackListActionOperationWorker<BinList> {
 	private static final String 	DESCRIPTION = 
 		"Subtract another track from the selected one";					// tooltip
 	private BinListTrack 			selectedTrack;						// selected track 1
-	private Track 					otherTrack;							// selected track 2
-	private Track 					resultTrack;						// result track
+	private Track<?> 				otherTrack;							// selected track 2
+	private Track<?> 				resultTrack;						// result track
 	
 
 	/**

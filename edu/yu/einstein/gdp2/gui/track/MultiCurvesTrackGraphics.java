@@ -15,22 +15,20 @@ import yu.einstein.gdp2.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements PropertyChangeListener {
+public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[]> implements PropertyChangeListener {
 
 	private static final long serialVersionUID = 6508763050002286457L; // generated ID
-	private final CurveTrack<?>[] curveTracks; // array of curve tracks
 
 
 	/**
 	 * Creates an instance of {@link MultiCurvesTrackGraphics}
 	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
-	 * @param curveTracks array of {@link CurveTrack}
+	 * @param data array of {@link CurveTrack}
 	 */
-	public MultiCurvesTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack<?>[] curveTracks) {
-		super(displayedGenomeWindow, 0, 1);
-		this.curveTracks = curveTracks;
+	public MultiCurvesTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack<?>[] data) {
+		super(displayedGenomeWindow, data, 0, 1);
 		// add repaint listeners so the multicurves track is repainted when on of the curves track is repainted
-		for (Track currentTrack: curveTracks) {
+		for (Track<?> currentTrack: data) {
 			currentTrack.trackGraphics.addPropertyChangeListener(this);
 		}
 		setYMin(findYMin());
@@ -40,8 +38,8 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 
 	@Override
 	protected void drawData(Graphics g) {
-		for (int i = curveTracks.length; i > 0; i--) {
-			CurveTrackGraphics<?> ctg = (CurveTrackGraphics<?>) curveTracks[i - 1].trackGraphics;
+		for (int i = data.length; i > 0; i--) {
+			CurveTrackGraphics<?> ctg = (CurveTrackGraphics<?>) data[i - 1].trackGraphics;
 			ctg.getDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax).draw();
 		}
 	}
@@ -71,7 +69,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 	 */
 	private double findYMin() {
 		double min = Double.POSITIVE_INFINITY;
-		for (CurveTrack<?> currentCtg: curveTracks) {
+		for (CurveTrack<?> currentCtg: data) {
 			min = Math.min(min, currentCtg.getYMin());
 		}
 		return min;
@@ -83,7 +81,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics implements Pro
 	 */
 	private double findYMax() {
 		double max = Double.NEGATIVE_INFINITY;
-		for (CurveTrack<?> currentCtg: curveTracks) {
+		for (CurveTrack<?> currentCtg: data) {
 			max = Math.max(max, currentCtg.getYMax());
 		}
 		return max;

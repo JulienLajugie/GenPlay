@@ -32,14 +32,6 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 	protected SCWListTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
 		super(displayedGenomeWindow, data, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
 	}
-
-	
-	@Override
-	public void copyTo(TrackGraphics trackGraphics) {
-		super.copyTo(trackGraphics);
-		SCWListTrackGraphics scwltg = (SCWListTrackGraphics) trackGraphics;
-		scwltg.data = this.data.deepClone();
-	}
 	
 	
 	@Override
