@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.enums.LogBase;
 import yu.einstein.gdp2.core.list.arrayList.ListFactory;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
@@ -18,30 +19,51 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
 
 
 /**
- * Applies the function f(x)=log(x) to each score x of the {@link BinList}
+ * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link BinList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOLog2 implements Operation<BinList> {
+public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 
 	private final BinList 	binList;	// input binlist
-	
+	private final LogBase	logBase;	// base of the log
+	private final double	damper;		// damper
 	
 	/**
-	 * Applies the function f(x)=log(x) to each score x of the {@link BinList}
+	 * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link BinList}
 	 * @param binList input {@link BinList}
+	 * @param logBase base of the logarithm
+	 * @param damper a double value
 	 */
-	public BLOLog2(BinList binList) {
+	public BLOLogOnAvgWithDamper(BinList binList, LogBase logBase, double damper) {
 		this.binList = binList;
+		this.logBase = logBase;
+		this.damper = damper;
 	}
 	
 	
 	@Override
-	public BinList compute() throws InterruptedException, ExecutionException {
+	public BinList compute() throws InterruptedException, ExecutionException, ArithmeticException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final DataPrecision precision = binList.getPrecision();
 
+		// compute log(average)
+		final double mean = binList.getAverage();
+		final double logMean;
+		// log is defined on R+*
+		if (mean + damper > 0) {
+			if (logBase == LogBase.BASE_E) {
+				// the Math.log function return the natural log (no needs to change the base)
+				logMean = Math.log(mean + damper);
+			} else {
+				// change of base: logb(x) = logk(x) / logk(b)
+				logMean = Math.log(mean + damper) / Math.log(logBase.getValue());
+			}
+		} else {
+			throw new ArithmeticException("Logarithm of a negative value not allowed");
+		}		
+		
 		for (short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);
 			
@@ -53,10 +75,18 @@ public class BLOLog2 implements Operation<BinList> {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// We add a constant to each element
 						for (int j = 0; j < currentList.size(); j++) {
-							// log is define on R+*
+							// make sure that the list 
 							if (currentList.get(j) > 0) {
-							// change of base: logb(x) = logk(x) / logk(b)
-								resultList.set(j, Math.log(currentList.get(j)) / Math.log(2));
+								double resultValue;
+								if (logBase == LogBase.BASE_E) {
+									// the Math.log function return the natural log (no needs to change the base)
+									resultValue = Math.log(currentList.get(j) + damper) - logMean;	
+								} else {
+									// change of base: logb(x) = logk(x) / logk(b)
+									resultValue = Math.log(currentList.get(j) + damper) / Math.log(logBase.getValue()) - logMean;									
+								}
+								// change of base: logb(x) = logk(x) / logk(b)
+								resultList.set(j, resultValue);
 							} else if (currentList.get(j) == 0) {
 								resultList.set(j, 0d);
 							} else {
@@ -85,7 +115,7 @@ public class BLOLog2 implements Operation<BinList> {
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Log2";
+		return "Operation: " +  logBase + " on Average, with damper - f(x) = log((x + " + damper + ") / (average + " + damper + "))";
 	}
 	
 	

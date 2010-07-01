@@ -29,8 +29,8 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFindIslands;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
-import yu.einstein.gdp2.gui.action.binListTrack.BLALog2;
-import yu.einstein.gdp2.gui.action.binListTrack.BLALog2OnAvgWithDamper;
+import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
+import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMax;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMin;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
@@ -78,8 +78,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiGauss;				// menu gauss BinListTrack
 	private final JMenuItem		jmiIndex;				// menu index BinListTrack
 	private final JMenuItem		jmiIndexPerChromosome;	// menu index BinListTrack per chromosome
-	private final JMenuItem		jmiLog2;				// menu log2 BinListTrack
-	private final JMenuItem		jmiLog2WithDamper;		// menu log2 BinListTrack with damper
+	private final JMenuItem		jmiLog;					// menu log BinListTrack
+	private final JMenuItem		jmiLogWithDamper;		// menu log BinListTrack with damper
 	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
 	private final JMenuItem		jmiNormalizeStdScore;	// menu normalize standard score BinListTrack
 	
@@ -133,8 +133,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiGauss = new JMenuItem(actionMap.get(BLAGauss.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(BLAIndex.ACTION_KEY));
 		jmiIndexPerChromosome = new JMenuItem(actionMap.get(BLAIndexByChromosome.ACTION_KEY));
-		jmiLog2 = new JMenuItem(actionMap.get(BLALog2.ACTION_KEY));
-		jmiLog2WithDamper = new JMenuItem(actionMap.get(BLALog2OnAvgWithDamper.ACTION_KEY));
+		jmiLog = new JMenuItem(actionMap.get(BLALog.ACTION_KEY));
+		jmiLogWithDamper = new JMenuItem(actionMap.get(BLALogOnAvgWithDamper.ACTION_KEY));
 		jmiNormalize = new JMenuItem(actionMap.get(BLANormalize.ACTION_KEY));
 		jmiNormalizeStdScore = new JMenuItem(actionMap.get(BLANormalizeStandardScore.ACTION_KEY));
 		
@@ -177,8 +177,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiGauss);
 		jmOperation.add(jmiIndex);
 		jmOperation.add(jmiIndexPerChromosome);
-		jmOperation.add(jmiLog2);
-		jmOperation.add(jmiLog2WithDamper);
+		jmOperation.add(jmiLog);
+		jmOperation.add(jmiLogWithDamper);
 		jmOperation.add(jmiNormalize);
 		jmOperation.add(jmiNormalizeStdScore);
 		jmOperation.addSeparator();

@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileFilter;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.FilterType;
 import yu.einstein.gdp2.core.enums.IslandResultType;
+import yu.einstein.gdp2.core.enums.LogBase;
 import yu.einstein.gdp2.core.enums.SaturationType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
@@ -138,7 +139,24 @@ public class Utils {
 				null,
 				FilterType.values(),
 				FilterType.PERCENTAGE);
-	}	
+	}
+	
+	
+	/**
+	 * A dialog box used to choose a {@link LogBase}
+	 * @param parentComponent the parent Component for the dialog
+	 * @return a {@link LogBase} value
+	 */
+	public static LogBase chooseLogBase(Component parentComponent) {
+		return (LogBase) JOptionPane.showInputDialog(
+				parentComponent, 
+				"Choose a base for the logarithm", 
+				"Logarithm Base", 
+				JOptionPane.QUESTION_MESSAGE, 
+				null, 
+				LogBase.values(), 
+				LogBase.BASE_2);
+	}
 
 
 	/**
