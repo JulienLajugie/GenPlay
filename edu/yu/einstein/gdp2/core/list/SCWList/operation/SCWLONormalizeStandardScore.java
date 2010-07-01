@@ -16,50 +16,52 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
 
 
 /**
- * Inverses the specified {@link ScoredChromosomeWindowList}. Applies the function f(x) = a / x, where a is a specified double
+ * Computes a Standard Score normalization on a {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList> {
+public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWindowList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list
-	private final double 						constant;	// coefficient a in f(x) = a / x
-	
-	
+	private final ScoredChromosomeWindowList 	scwList;	// input list 
+	private final SCWLOAverage 					avgOp;		// average
+	private final SCWLOStandardDeviation 		stdevOp;	// standard deviation
+
+
 	/**
-	 * Creates an instance of {@link SCWLOInvertConstant}
-	 * @param binList input {@link ScoredChromosomeWindowList}
-	 * @param constant constant a in f(x) = a / x
+	 * Creates an instance of {@link SCWLONormalizeStandardScore}
+	 * @param scwList input list
 	 */
-	public SCWLOInvertConstant(ScoredChromosomeWindowList scwList, double constant) {
+	public SCWLONormalizeStandardScore(ScoredChromosomeWindowList scwList) {
 		this.scwList = scwList;
-		this.constant = constant;
+		avgOp = new SCWLOAverage(scwList, null);
+		stdevOp = new SCWLOStandardDeviation(scwList, null);
 	}
-	
-	
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		if (constant == 0) {
-			return null;
-		}
-		
+		// compute average
+		final double avg = avgOp.compute();
+		// compute standard deviation
+		final double stdev = stdevOp.compute();
+		// retrieve singleton operation pool
 		final OperationPool op = OperationPool.getInstance();
+		// creates collection of thread for the operation pool
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
-			
+
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
-						// we invert each element
 						for (ScoredChromosomeWindow currentWindow: currentList) {
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 							if (currentWindow.getScore() != 0) {
-								resultWindow.setScore(constant / currentWindow.getScore());
+								// apply the standard score formula: (x - avg) / stdev 
+								double resultScore = (currentWindow.getScore() - avg) / stdev; 
+								resultWindow.setScore(resultScore);
 							}
 							resultList.add(resultWindow);
 						}
@@ -81,21 +83,21 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
-		return "Operation: Invert, constant = " + constant;
+		return "Operation: Normalize, Standard Score";
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
-		return "Inverting";
+		return "Normalizing";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + avgOp.getStepCount() + stdevOp.getStepCount() + ScoredChromosomeWindowList.getCreationStepCount();
 	}
 }

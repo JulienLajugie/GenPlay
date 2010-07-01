@@ -85,7 +85,6 @@ public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 									// change of base: logb(x) = logk(x) / logk(b)
 									resultValue = Math.log(currentList.get(j) + damper) / Math.log(logBase.getValue()) - logMean;									
 								}
-								// change of base: logb(x) = logk(x) / logk(b)
 								resultList.set(j, resultValue);
 							} else if (currentList.get(j) == 0) {
 								resultList.set(j, 0d);

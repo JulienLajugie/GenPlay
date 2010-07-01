@@ -47,6 +47,14 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 	
 	/**
+	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
+	 */
+	public static int getCreationStepCount() {
+		return 2;
+	}
+
+
+	/**
 	 * Creates an instance of {@link ScoredChromosomeWindowList}
 	 * @param startList list of start positions
 	 * @param stopList list of stop position
@@ -130,6 +138,25 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 
 	/**
+	 * Performs a deep clone of the current {@link ScoredChromosomeWindowList}
+	 * @return a new ScoredChromosomeWindowList
+	 */
+	public ScoredChromosomeWindowList deepClone() {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(this);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ((ScoredChromosomeWindowList)ois.readObject());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+	/**
 	 * Recursive function. Returns the index where the start value of the window is found
 	 * or the index right after if the exact value is not find.
 	 * @param list
@@ -149,7 +176,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		} else {
 			return findStart(list, value, indexStart, indexStart + middle);
 		}
-	}
+	}	
 
 
 	/**
@@ -173,27 +200,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			return findStop(list, value, indexStart, indexStart + middle);
 		}
 	}
-
-
-	/**
-	 * @param position a position on the fitted chromosome
-	 * @return the score of the window on the fitted chromosome containing the specified position
-	 */
-	public double getScore(int position) {
-		// if the fitted chromosome as no windows we return 0
-		if ((get(fittedChromosome) == null) || (get(fittedChromosome).size() == 0)) {
-			return 0;
-		}
-		// we search a window containing the position in parameter
-		int indexStart = findStop(get(fittedChromosome), position, 0, size(fittedChromosome) - 1);
-		if ((position >= get(fittedChromosome, indexStart).getStart()) && (position <= get(fittedChromosome, indexStart).getStop())) {
-			return get(fittedChromosome, indexStart).getScore();
-		} else {
-			// if no window containing the position in parameter has been found we return 0
-			return 0;
-		}
-
-	}	
 
 
 	/**
@@ -247,41 +253,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 				}
 			}
 		}		
-	}
-
-
-	@Override
-	protected List<ScoredChromosomeWindow> getFittedData(int start, int stop) {
-		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
-			return null;
-		}
-
-		ArrayList<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-
-		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
-		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
-		if (indexStart > 0) {
-			// any window starting before the screen start position 
-			// and ending after this position need to be printed  
-			for (int i = 0; i < indexStart; i++) {
-				if (fittedDataList.get(i).getStop() >= start) {
-					ScoredChromosomeWindow currentWindow = fittedDataList.get(i); 
-					ScoredChromosomeWindow newLastWindow = new ScoredChromosomeWindow(start, currentWindow.getStop(), currentWindow.getScore());
-					resultList.add(newLastWindow);
-				}
-			}
-		}
-		for (int i = indexStart; i <= indexStop; i++) {
-			resultList.add(fittedDataList.get(i));
-		}
-		if (indexStop + 1 < fittedDataList.size()) {
-			if (fittedDataList.get(indexStop + 1).getStart() <= stop) {
-				ScoredChromosomeWindow currentWindow = fittedDataList.get(indexStop + 1); 
-				ScoredChromosomeWindow newLastWindow = new ScoredChromosomeWindow(currentWindow.getStart(), stop, currentWindow.getScore());
-				resultList.add(newLastWindow);
-			}
-		}
-		return resultList;
 	}
 	
 	
@@ -391,10 +362,45 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	
 		
 	/**
-	 * @return the smallest value of the BinList
+	 * @return the average of the BinList
 	 */
-	public Double getMin() {
-		return min;
+	public Double getAverage() {
+		return average;
+	}
+
+
+	@Override
+	protected List<ScoredChromosomeWindow> getFittedData(int start, int stop) {
+		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
+			return null;
+		}
+
+		ArrayList<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+
+		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
+		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
+		if (indexStart > 0) {
+			// any window starting before the screen start position 
+			// and ending after this position need to be printed  
+			for (int i = 0; i < indexStart; i++) {
+				if (fittedDataList.get(i).getStop() >= start) {
+					ScoredChromosomeWindow currentWindow = fittedDataList.get(i); 
+					ScoredChromosomeWindow newLastWindow = new ScoredChromosomeWindow(start, currentWindow.getStop(), currentWindow.getScore());
+					resultList.add(newLastWindow);
+				}
+			}
+		}
+		for (int i = indexStart; i <= indexStop; i++) {
+			resultList.add(fittedDataList.get(i));
+		}
+		if (indexStop + 1 < fittedDataList.size()) {
+			if (fittedDataList.get(indexStop + 1).getStart() <= stop) {
+				ScoredChromosomeWindow currentWindow = fittedDataList.get(indexStop + 1); 
+				ScoredChromosomeWindow newLastWindow = new ScoredChromosomeWindow(currentWindow.getStart(), stop, currentWindow.getScore());
+				resultList.add(newLastWindow);
+			}
+		}
+		return resultList;
 	}
 
 
@@ -407,18 +413,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 
 	/**
-	 * @return the average of the BinList
+	 * @return the smallest value of the BinList
 	 */
-	public Double getAverage() {
-		return average;
-	}
-
-
-	/**
-	 * @return the standard deviation of the BinList
-	 */
-	public Double getStDev() {
-		return stDev;
+	public Double getMin() {
+		return min;
 	}
 
 
@@ -431,21 +429,31 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	
 	
 	/**
-	 * Performs a deep clone of the current {@link ScoredChromosomeWindowList}
-	 * @return a new ScoredChromosomeWindowList
+	 * @param position a position on the fitted chromosome
+	 * @return the score of the window on the fitted chromosome containing the specified position
 	 */
-	public ScoredChromosomeWindowList deepClone() {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return ((ScoredChromosomeWindowList)ois.readObject());
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+	public double getScore(int position) {
+		// if the fitted chromosome as no windows we return 0
+		if ((get(fittedChromosome) == null) || (get(fittedChromosome).size() == 0)) {
+			return 0;
 		}
+		// we search a window containing the position in parameter
+		int indexStart = findStop(get(fittedChromosome), position, 0, size(fittedChromosome) - 1);
+		if ((position >= get(fittedChromosome, indexStart).getStart()) && (position <= get(fittedChromosome, indexStart).getStop())) {
+			return get(fittedChromosome, indexStart).getScore();
+		} else {
+			// if no window containing the position in parameter has been found we return 0
+			return 0;
+		}
+
+	}
+	
+	
+	/**
+	 * @return the standard deviation of the BinList
+	 */
+	public Double getStDev() {
+		return stDev;
 	}
 	
 	

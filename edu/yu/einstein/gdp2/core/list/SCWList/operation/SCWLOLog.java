@@ -10,42 +10,39 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
+import yu.einstein.gdp2.core.enums.LogBase;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 
 
 /**
- * Inverses the specified {@link ScoredChromosomeWindowList}. Applies the function f(x) = a / x, where a is a specified double
+ * Applies the function f(x)=log(x) to each score x of the {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList> {
+public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 
 	private final ScoredChromosomeWindowList 	scwList;	// input list
-	private final double 						constant;	// coefficient a in f(x) = a / x
+	private final LogBase						logBase;	// base of the log
 	
 	
 	/**
-	 * Creates an instance of {@link SCWLOInvertConstant}
-	 * @param binList input {@link ScoredChromosomeWindowList}
-	 * @param constant constant a in f(x) = a / x
+	 * Creates an instance of {@link SCWLOLog}
+	 * @param scwList input list
+	 * @param logBase base of the log
 	 */
-	public SCWLOInvertConstant(ScoredChromosomeWindowList scwList, double constant) {
+	public SCWLOLog(ScoredChromosomeWindowList scwList, LogBase logBase) {
 		this.scwList = scwList;
-		this.constant = constant;
+		this.logBase = logBase;
 	}
 	
 	
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		if (constant == 0) {
-			return null;
-		}
-		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-
+		
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
 			
@@ -55,11 +52,25 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 					List<ScoredChromosomeWindow> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
-						// we invert each element
+						// We log each element
 						for (ScoredChromosomeWindow currentWindow: currentList) {
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
-							if (currentWindow.getScore() != 0) {
-								resultWindow.setScore(constant / currentWindow.getScore());
+							// log is define on R+*
+							if (currentWindow.getScore() > 0) {
+								double resultValue;
+								if (logBase == LogBase.BASE_E) {
+									// the Math.log function return the natural log (no needs to change the base)
+									resultValue = Math.log(currentWindow.getScore());
+								} else {
+									// change of base: logb(x) = logk(x) / logk(b)
+									resultValue = Math.log(currentWindow.getScore()) / Math.log(logBase.getValue());									
+								}
+								resultWindow.setScore(resultValue);
+							} else if (currentWindow.getScore() == 0) {
+								resultWindow.setScore(0d);
+							} else {
+								// can't apply a log function on a negative or null numbers
+								throw new ArithmeticException("Logarithm of a negative value not allowed");
 							}
 							resultList.add(resultWindow);
 						}
@@ -84,13 +95,13 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Invert, constant = " + constant;
+		return "Operation: Log, Base = " + logBase;
 	}
 
 	
 	@Override
 	public String getProcessingDescription() {
-		return "Inverting";
+		return "Logging";
 	}
 
 	
