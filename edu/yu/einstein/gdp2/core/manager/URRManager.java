@@ -52,15 +52,14 @@ public class URRManager<T extends Serializable> implements Serializable {
 	/**
 	 * @return a deep clone of the current object 
 	 */
-	@SuppressWarnings("unchecked")
-	public URRManager<T> deepClone() {
+	public URRManager<?> deepClone() {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(this);
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (URRManager<T>) ois.readObject();
+			return (URRManager<?>) ois.readObject();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

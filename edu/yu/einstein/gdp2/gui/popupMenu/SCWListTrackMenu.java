@@ -18,6 +18,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
+import yu.einstein.gdp2.gui.action.allTrack.ATASave;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -33,6 +34,8 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 
 	private final JMenu		jmOperation;			// category operation
 
+	private final JMenuItem	jmiSave;				// menu save
+	
 	private final JMenuItem jmiAddConstant;			// menu add constant
 	private final JMenuItem jmiAverage;				// menu average
 	private final JMenuItem	jmiCountNonNullLength;	// menu count non null length
@@ -54,6 +57,8 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		super(tl);
 		jmOperation = new JMenu("Operation");
 
+		jmiSave = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
+		
 		jmiAddConstant = new JMenuItem(actionMap.get(SCWLAAddConstant.ACTION_KEY));
 		jmiAverage = new JMenuItem(actionMap.get(SCWLAAverage.ACTION_KEY));
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
@@ -81,5 +86,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiCountNonNullLength);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGenerateBinList);
+		
+		add(jmiSave, 9);
 	}
 }

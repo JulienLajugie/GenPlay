@@ -68,7 +68,10 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 					lineToPrint += "\t";
 					lineToPrint += currentGene.getStrand().toString();
 					// add "-" for thickStart, thickEnd, itemRgb, blockCount
-					lineToPrint += "\t-\t-\t-\t-\t";
+					lineToPrint += "\t-\t-\t-\t";
+					// exon count
+					lineToPrint += currentGene.getExonStarts().length;
+					lineToPrint += "\t";
 					// exon lengths
 					if ((currentGene.getExonStops() == null) || (currentGene.getExonStarts() == null)) {
 						lineToPrint += "-";
@@ -86,7 +89,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 						lineToPrint += "-";
 					} else {
 						for (int currentStart : currentGene.getExonStarts()) {
-							lineToPrint += currentStart;
+							lineToPrint += currentStart - currentGene.getTxStart();
 							lineToPrint += ",";
 						}
 						// remove last comma

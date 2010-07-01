@@ -12,17 +12,16 @@ import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
-import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.geneList.GeneList;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.writer.Writer;
-import yu.einstein.gdp2.core.writer.binListWriter.BinListWriterFactory;
-import yu.einstein.gdp2.core.writer.geneListWriter.GeneListWriterFactory;
+import yu.einstein.gdp2.core.writer.WriterFactory;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
+import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.util.Utils;
 
@@ -66,74 +65,40 @@ public final class ATASave extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		if (getTrackList().getSelectedTrack() != null) {
+			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			JFileChooser jfc = new JFileChooser(defaultDirectory);
+			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			jfc.setDialogTitle("Save Track");
 			Track<?> selectedTrack = getTrackList().getSelectedTrack(); 
+			FileFilter[] filters = null;
 			if (selectedTrack instanceof BinListTrack) {
-				saveBinList((BinListTrack)selectedTrack);
+				filters = Utils.getWritableBinListFileFilters();
 			} else if (selectedTrack instanceof GeneListTrack) {
-				saveGeneList((GeneListTrack)selectedTrack);
+				filters = Utils.getWritableGeneFileFilters();
+			} else if (selectedTrack instanceof SCWListTrack) {
+				filters = Utils.getWritableSCWFileFilter();
+			} else {
+				// case where we don't know how to save the type of the selected track
+				return null;
+			}		
+			for (FileFilter currentFilter: filters) {
+				jfc.addChoosableFileFilter(currentFilter);
 			}
-		}
+			jfc.setAcceptAllFileFilterUsed(false);
+			jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
+			int returnVal = jfc.showSaveDialog(getRootPane());
+			if(returnVal == JFileChooser.APPROVE_OPTION) {
+				ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+				File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
+				if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
+					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>) selectedTrack.getData();
+					String name = selectedTrack.getName();
+					writer = WriterFactory.getWriter(selectedFile, data, name, selectedFilter);
+					notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
+					writer.write();
+				}
+			}		}
 		return null;
-	}
-
-
-	/**
-	 * Saves a {@link BinListTrack}
-	 * @param selectedTrack selected {@link BinListTrack}
-	 * @throws Exception 
-	 */
-	private void saveBinList(BinListTrack selectedTrack) throws Exception {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		JFileChooser jfc = new JFileChooser(defaultDirectory);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Track");
-		for (FileFilter currentFilter: Utils.getWritableBinListFileFilters()) {
-			jfc.addChoosableFileFilter(currentFilter);
-		}
-		jfc.setAcceptAllFileFilterUsed(false);
-		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
-		int returnVal = jfc.showSaveDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				BinList data = selectedTrack.getData();
-				String name = selectedTrack.getName();
-				writer = BinListWriterFactory.getBinListWriter(selectedFile, data, name, selectedFilter);
-				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
-				writer.write();
-			}
-		}
-	}
-
-
-	/**
-	 * Saves a {@link GeneListTrack}
-	 * @param selectedTrack selected {@link GeneListTrack}
-	 * @throws Exception 
-	 */
-	private void saveGeneList(GeneListTrack selectedTrack) throws Exception {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		JFileChooser jfc = new JFileChooser(defaultDirectory);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Save Track");
-		for (FileFilter currentFilter: Utils.getWritableGeneFileFilters()) {
-			jfc.addChoosableFileFilter(currentFilter);
-		}
-		jfc.setAcceptAllFileFilterUsed(false);
-		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
-		int returnVal = jfc.showSaveDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				GeneList data = selectedTrack.getData();
-				String name = selectedTrack.getName();
-				writer = GeneListWriterFactory.getGeneListWriter(selectedFile, data, name, selectedFilter);
-				notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
-				writer.write();
-			}
-		}
 	}
 	
 	

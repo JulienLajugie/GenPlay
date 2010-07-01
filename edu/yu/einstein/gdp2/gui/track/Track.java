@@ -114,8 +114,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	@SuppressWarnings("unchecked")
-	public Track<T> deepClone() throws IOException, ClassNotFoundException {
+	public Track<?> deepClone() throws IOException, ClassNotFoundException {
 		// we save in a local variable and then remove the listeners 
 		// before cloning the track in order to avoid cloning the listeners
 		PropertyChangeListener[] pclSaver = getPropertyChangeListeners(); 
@@ -137,7 +136,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (GenomeWindowListener curList: gwlSaver) {
 			addGenomeWindowListener(curList);
 		}
-		return (Track<T>) ois.readObject();
+		return (Track<?>) ois.readObject();
 	}
 
 
