@@ -7,6 +7,8 @@ package yu.einstein.gdp2.gui.action.binListTrack;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,15 +88,39 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 			scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].getName()));
 		}
 		scatPlotPanel = new ScatterPlotPanel(scatPlotData);
-		//scatPlotMenu = new ScatterPlotRightClickedMenu();
-		JDialog jf = new JDialog();
+		final JDialog jf = new JDialog();
 		jf.setTitle("Scatter Plot");
 		jf.setContentPane(scatPlotPanel);
-		//jf.add(scatPlotMenu);
 		jf.setPreferredSize(new Dimension(900, 700));
 		jf.setMinimumSize(new Dimension(500, 500));
 		jf.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jf.getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - jf.getHeight())/2);
 		jf.pack();
 		jf.setVisible(true);
+		jf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		jf.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {}			
+
+			@Override
+			public void windowClosed(WindowEvent e) {}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				scatPlotData.clear();				
+			}			
+		});
 	}
 }
