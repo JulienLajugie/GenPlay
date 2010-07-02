@@ -29,7 +29,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 	private static final long serialVersionUID = 1L;
 	private final BinList[] binListArray;	// input binListArray
 	private final double 	scoreBinSize;	// size of the bins of score
-		
+
 
 	public BLORepartition(BinList[] binListArray, double scoreBinSize) {
 		this.binListArray = binListArray;
@@ -46,15 +46,15 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 		double[] min = new double[binListArray.length];
 		double[] distanceMinMax = new double[binListArray.length];
 		double result[][][] = new double[binListArray.length][][];
-		
-	
+
+
 		for (int i = 0; i < binListArray.length; i++) {
 			max[i] = binListArray[i].getMax();
 			min[i] = binListArray[i].getMin();
 			distanceMinMax[i] = max[i] - min[i];	
 			result[i] = new double[(int)(distanceMinMax[i] / scoreBinSize) + 2][2];	
 		}
-		
+
 		int z = 0;
 		int k = 0;
 		while (k < binListArray.length) {
@@ -80,13 +80,15 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			}
 			result[k][z++][0] = startPoint + z*scoreBinSize;			
 		}		
-		
+
 		for (k = 0; k < binListArray.length; k++) {
-			for (short i = 1; i < binListArray[k].size(); i++) {
-				for(int j = 0; j < binListArray[k].size(i); j++) {
-					if (binListArray[k].get(i,j) != 0) {
-						//System.out.println(binListArray[k].get(i,j) + "\t" + min[k]);
-						result[k][(int)((binListArray[k].get(i,j) - min[k]) / scoreBinSize)][1]++;
+			for (short i = 0; i < binListArray[k].size(); i++) {
+				if (binListArray[k].get(i) != null) {
+					for(int j = 0; j < binListArray[k].size(i); j++) {
+						if (binListArray[k].get(i,j) != 0) {
+							//System.out.println(binListArray[k].get(i,j) + "\t" + min[k]);
+							result[k][(int)((binListArray[k].get(i,j) - min[k]) / scoreBinSize)][1]++;
+						}
 					}
 				}
 			}			
@@ -98,7 +100,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 	public String getDescription() {
 		return "Operation: Show Repartition";
 	}	
-	
+
 	@Override
 	public int getStepCount() {
 		return 1;

@@ -19,7 +19,11 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
+import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import yu.einstein.gdp2.gui.popupMenu.ScatterPlotRightClickedMenu;
 
@@ -29,7 +33,7 @@ import yu.einstein.gdp2.gui.popupMenu.ScatterPlotRightClickedMenu;
  *
  */
 
-public class ScatterPlotPanel extends JPanel implements MouseMotionListener, MouseListener {
+public class ScatterPlotPanel extends JPanel implements MouseMotionListener, MouseListener, ChangeListener {
 	
 	private static final long serialVersionUID = 2641451624657624826L;	// generated serial ID
 	
@@ -48,11 +52,19 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	private static double yAxisStepSize;				// y-axis tick size
 	private static double xAxisStepSize;				// x-axis tick size
 	
+	private static boolean xAxisGridLines;				// x-axis grid lines flag
+	private static boolean yAxisGridLines;				// y-axis grid lines flag
+	
+	private static boolean barGraph;
+	private static boolean curve;	
+	private static boolean changeColors;
+	
 	private List<ScatterPlotData> listOfGraphs = null;	// List of graphs to be plotted
 	private Color[] graphColor;							// Color of the graph
 	private Random randomGen;
+	private JColorChooser jcc;
 	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###.##");	// decimal format
-		
+	
 			
 	public ScatterPlotPanel(List<ScatterPlotData> listOfGraphs) {
 		this.listOfGraphs = listOfGraphs;
@@ -71,7 +83,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		setVisible(true);
 		setBorder(BorderFactory.createEmptyBorder(TOP_PAD, RIGHT_PAD, TOP_PAD_LABELS, RIGHT_PAD_LABELS));
 		addMouseMotionListener(this);
-		addMouseListener(this);
+		addMouseListener(this);		
 	}
 	
 	/** 
@@ -150,11 +162,125 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	}
 	
 	/**
+	 * @param xAxisGridLines the xAxisGridLines to set
+	 */
+	public static void setxAxisGridLines(boolean xAxisGridLines) {
+		ScatterPlotPanel.xAxisGridLines = xAxisGridLines;
+	}
+
+	/**
+	 * @return the xAxisGridLines
+	 */
+	public static boolean isxAxisGridLines() {
+		return xAxisGridLines;
+	}	
+
+	/**
+	 * @param yAxisGridLines the yAxisGridLines to set
+	 */
+	public static void setyAxisGridLines(boolean yAxisGridLines) {
+		ScatterPlotPanel.yAxisGridLines = yAxisGridLines;		
+	}
+
+	/**
+	 * @return the yAxisGridLines
+	 */
+	public static boolean isyAxisGridLines() {
+		return yAxisGridLines;
+	}	
+
+	/**
+	 * @param barGraph the barGraph to set
+	 */
+	public static void setBarGraph(boolean barGraph) {
+		ScatterPlotPanel.barGraph = barGraph;
+	}
+
+	/**
+	 * @return the barGraph
+	 */
+	public static boolean isBarGraph() {
+		return barGraph;
+	}	
+
+	/**
+	 * @param curve the curve to set
+	 */
+	public static void setCurve(boolean curve) {
+		ScatterPlotPanel.curve = curve;
+	}
+
+	/**
+	 * @return the curve
+	 */
+	public static boolean isCurve() {
+		return curve;
+	}
+
+	/**
+	 * @param changeColors the changeColors to set
+	 */
+	public static void setChangeColors(boolean changeColors) {
+		ScatterPlotPanel.changeColors = changeColors;
+	}
+
+	/**
+	 * @return the changeColors
+	 */
+	public static boolean isChangeColors() {
+		return changeColors;
+	}	
+	
+	/**
+	 * Method to draw a curve for the data points
+	 * @param g (Graphics)
+	 */
+	protected void drawCurve(Graphics g) {
+		//System.out.println("In bar graph 1");
+		Point current, nexttonext;
+		for (int i = 0; i < listOfGraphs.size(); i++) {
+			g.setColor(graphColor[i]);
+			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
+				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
+				//next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
+				nexttonext = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j+1][1]));
+				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
+					//g.drawLine(current.x, current.y, next.x, next.y);
+					g.drawLine(current.x, current.y, nexttonext.x, nexttonext.y);
+					//g.drawLine(next.x, next.y, next.x, getTranslatedPoint(0,0).y);					
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Method to draw a bar graph for the data points
+	 * @param g (Graphics)
+	 */
+	protected void drawBarGraph(Graphics g) {
+		//System.out.println("In bar graph 1");
+		Point current, next;
+		for (int i = 0; i < listOfGraphs.size(); i++) {
+			g.setColor(graphColor[i]);
+			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
+				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
+				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
+				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
+					g.drawLine(current.x, current.y, next.x, next.y);
+					g.drawLine(current.x, current.y, current.x, getTranslatedPoint(0,0).y);
+					g.drawLine(next.x, next.y, next.x, getTranslatedPoint(0,0).y);					
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Method to draw the Legend for the scatter plot
 	 * @param g (Graphics)
 	 */
 	protected void drawLegend(Graphics g) {
-		Point p = getTranslatedPoint(getXAxisEnd()-10, getYAxisEnd()-10);
+		Point p = getTranslatedPoint(getXAxisEnd()-20, getYAxisEnd()-20);
+		//Point p = getTranslatedPoint(0d,-100d);
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
 			g.drawString("     -------", p.x, p.y+i*10);
@@ -164,14 +290,14 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	}
 	
 	/**
-	 * Method to translate the co-ordinates of the data point to the point on screen
+	 * Method to translate the coordinates of the data point to the point on screen
 	 * @param x (double)
 	 * @param y (double)
 	 * @return Point
 	 */
 	protected Point getTranslatedPoint(double x, double y) {
 		Point translatedPoint = new Point();
-		double realWidth = getWidth() - LEFT_PAD - RIGHT_PAD;
+		double realWidth = getWidth() - LEFT_PAD - RIGHT_PAD_LABELS;
 		double realHeigth = getHeight() - TOP_PAD - BOTTOM_PAD;		
 		translatedPoint.x = (int) ((realWidth * (x - getXAxisStart())) / (getXAxisEnd() - getXAxisStart())) + LEFT_PAD;
 		translatedPoint.y = getHeight() - (int) ((realHeigth * (y - getYAxisStart())) / (getYAxisEnd() - getYAxisStart())) - TOP_PAD;		
@@ -209,35 +335,56 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		int lastXTextStopPos = 0, lastYTextStopPos = Integer.MAX_VALUE;
 		double incrementY = getYAxisStart();
 		double incrementX = 0;
+		boolean axisFlag = true;
 		
-			// X-Axis Labels
+		// X-Axis Labels
 			if (getXAxisStart() < 0) {
 				lastXTextStopPos = Integer.MAX_VALUE;
 				while (incrementX >= getXAxisStart()) {
+					//g.setColor(Color.black);
 					p = new Point(getTranslatedPoint(incrementX, getYAxisStart() - 10));
 					String stringToPrint = DF.format(incrementX);
-					if (p.x <= lastXTextStopPos) {
+					if (p.x + g.getFontMetrics().stringWidth(stringToPrint)+20 < lastXTextStopPos) {
+						if (isxAxisGridLines() == true && axisFlag != true) {
+							//System.out.println("xAxisGridLines is set");
+							g.setColor(new Color (190,190,190));
+							g.drawLine(p.x, p.y, p.x, getTranslatedPoint(0,getYAxisEnd()).y);
+						}
+						g.setColor(Color.black);
 						g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
-						g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
-						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+10;
+						//g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
+						g.drawLine(p.x, p.y-4, p.x, p.y+4);
+						//System.out.println("isxAxisGridLines(): " + isxAxisGridLines());						
+						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+20;
 					}					
 					incrementX = incrementX - getXAxisStepSize();
+					axisFlag = false;
 				}
 			}
 			
+			axisFlag = true;
 			incrementX = 0;
 			lastXTextStopPos = 0;
 			while (incrementX <= getXAxisEnd()) {
 				p = new Point(getTranslatedPoint(incrementX, getYAxisStart() - 10));
 				String stringToPrint = DF.format(incrementX);
 				if (p.x >= lastXTextStopPos && incrementX >= getXAxisStart()) {
+					if (isxAxisGridLines() == true && axisFlag != true) {
+						//System.out.println("xAxisGridLines is set");
+						g.setColor(new Color (190,190,190));
+						g.drawLine(p.x, p.y, p.x, getTranslatedPoint(0,getYAxisEnd()).y);
+					}
+					g.setColor(Color.black);
 					g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
-					g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
-					lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+10;
+					//g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
+					g.drawLine(p.x, p.y-4, p.x, p.y+4);
+					lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+10;					
 				}					
 				incrementX = incrementX + getXAxisStepSize();
+				axisFlag = false;
 			}
 			// Y-Axis Labels
+			axisFlag = true;
 			if (incrementY > getYAxisEnd()) {
 				incrementY = getXAxisEnd()/2;
 			}
@@ -245,12 +392,19 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				p = new Point(getTranslatedPoint(minXPoint,incrementY));
 				String stringToPrint = DF.format(incrementY);
 				int stringWidth = g.getFontMetrics().stringWidth(stringToPrint);
-				if (p.y <= lastYTextStopPos) {
+				if (p.y <= lastYTextStopPos  && (!stringToPrint.equals("0"))) {
+					if (isyAxisGridLines() == true && axisFlag != true) {
+						//System.out.println("xAxisGridLines is set");
+						g.setColor(new Color (190,190,190));
+						g.drawLine(getTranslatedPoint(getXAxisStart(),0).x, p.y, getTranslatedPoint(getXAxisEnd(),0).x, p.y);
+					}
+					g.setColor(Color.black);
 					g.drawString(stringToPrint, p.x - stringWidth - 10, p.y);
 					g.drawLine(p.x-4, p.y, p.x+4, p.y);
-					lastYTextStopPos = p.y - g.getFontMetrics().getHeight();
+					lastYTextStopPos = p.y - g.getFontMetrics().getHeight();					
 				}					
-				incrementY = incrementY + getYAxisStepSize();					
+				incrementY = incrementY + getYAxisStepSize();	
+				axisFlag = false;
 			}			
 		}
 	
@@ -265,13 +419,29 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
-				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart()) {
-					//System.out.println("current.x: " + current.x + " current.y: " + current.y + " next.x: " + next.x + " next.y: " + next.y);
-					g.drawLine(current.x, current.y, next.x, next.y);
+				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
+					//System.out.println("current.x: " + listOfGraphs.get(i).getDataPoints()[j][0] + " current.y: " + listOfGraphs.get(i).getDataPoints()[j][1] + " next.x: " + listOfGraphs.get(i).getDataPoints()[j+1][0] + " next.y: " + listOfGraphs.get(i).getDataPoints()[j][1]);
+					g.drawLine(current.x, current.y, next.x, next.y);					
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Method to change the graph color
+	 * @param g (Graphics)
+	 */
+	protected void changeGraphColor(Graphics g) {
+		jcc = new JColorChooser();
+		jcc.setVisible(true);
+		JDialog jd = JColorChooser.createDialog(this, "Select Color", false, jcc, null, null);
+		jd.setVisible(true);
+		jcc.getSelectionModel().addChangeListener(this);
+		System.out.println("In Change Colors");
+		for (int i = 0; i < listOfGraphs.size(); i++) {
+			g.setColor(graphColor[i]);
+		}
+	}	
 	
 	@Override
 	public void paintComponent(Graphics g) {
@@ -279,7 +449,16 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		g.setColor(Color.BLACK);
         setBackground(Color.white);	
 		drawAxes(g);
-		plotPoints(g);
+		if (isChangeColors() == true) {
+			changeGraphColor(g);
+		}
+		if (isBarGraph() == true) {			
+			drawBarGraph(g);
+		} else if (isCurve() == true) {
+			drawCurve(g);
+		} else {
+			plotPoints(g);
+		}
 		drawLegend(g);
 	}
 	
@@ -321,7 +500,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	public void mouseMoved(MouseEvent e) {
 		Point p = new Point();
 		p = getOriginalPoint(e.getPoint());
-		this.setToolTipText("(" + p.x + "," + p.y + ")");
+		this.setToolTipText("(" + p.x + " : " + DF.format(p.y) + ")");
 		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 	}
 	
@@ -342,8 +521,12 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		} else if (e.getButton() == 3){
 			ScatterPlotRightClickedMenu sprc = new ScatterPlotRightClickedMenu(this);
 			sprc.show(this, e.getX(), e.getY());
-		}
-			
+		}			
+	}
+	
+	@Override
+	public void stateChanged(ChangeEvent ce) {
+		
 	}
 
 	@Override
