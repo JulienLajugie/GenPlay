@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -18,7 +19,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
-
 import yu.einstein.gdp2.core.filter.IslandFinder;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
@@ -40,9 +40,9 @@ public class IslandDialogInput extends IslandDialogFieldset{
 	private static final int INEQUALITY_WIDTH =  (int)Math.round(IslandDialogFieldset.FIELDSET_WIDTH * 0.05);
 	private static final int MIN_VALUE_WIDTH =  (int)Math.round(IslandDialogFieldset.FIELDSET_WIDTH * 0.2);
 	private static final int UNIT_WIDTH =  (int)Math.round(IslandDialogFieldset.FIELDSET_WIDTH * 0.3);
-	private static final String ICON_ACTUALIZE_PATH = "edu/yu/einstein/gdp2/resource/actualize15x15.png";
-	private static final String ICON_SUPERIOR_PATH = "edu/yu/einstein/gdp2/resource/superior8x6.png";
-	private static final String ICON_INFERIOR_PATH = "edu/yu/einstein/gdp2/resource/inferior8x6.png";
+	private static final String ICON_ACTUALIZE_PATH = "yu/einstein/gdp2/resource/actualize15x15.png";
+	private static final String ICON_SUPERIOR_PATH = "yu/einstein/gdp2/resource/superior8x6.png";
+	private static final String ICON_INFERIOR_PATH = "yu/einstein/gdp2/resource/inferior8x6.png";
 	
 	//Storage values
 	protected static Double 	windowMinValueStore;
@@ -100,13 +100,16 @@ public class IslandDialogInput extends IslandDialogFieldset{
 		NumberFormatter positiveFloatFormat = new NumberFormatter(floatFormat);
 		positiveFloatFormat.setMinimum(0.0);
 		
+		//Class loader
+		ClassLoader cl = this.getClass().getClassLoader();
+		
 		//Set "window limit value" information
 		this.jlWindowMinValueName = new JLabel("Window value");
 		this.jftfWindowMinValueValue = new JFormattedTextField(positiveFloatFormat);
 		this.jftfWindowMinValueValue.setHorizontalAlignment(JFormattedTextField.RIGHT);
 		this.jftfWindowMinValueValue.setValue(getDoubleStoredValue(windowMinValueStore, 0.0));
 		this.jlWindowMinValueUnit = new JLabel("window value");
-		this.iActualize = new ImageIcon(IslandDialogInput.ICON_ACTUALIZE_PATH);
+		this.iActualize = new ImageIcon(Toolkit.getDefaultToolkit().getImage(cl.getResource(IslandDialogInput.ICON_ACTUALIZE_PATH)));
 		this.jbConvertToPValue = new JButton(this.iActualize);
 		
 		//Set "gap" information
@@ -131,8 +134,8 @@ public class IslandDialogInput extends IslandDialogFieldset{
 		this.jlIslandMinLengthUnit = new JLabel("window(s)");
 		
 		//Set inequality label
-		ImageIcon superior = new ImageIcon(IslandDialogInput.ICON_SUPERIOR_PATH);
-		ImageIcon inferior = new ImageIcon(IslandDialogInput.ICON_INFERIOR_PATH);
+		ImageIcon superior = new ImageIcon(Toolkit.getDefaultToolkit().getImage(cl.getResource(IslandDialogInput.ICON_SUPERIOR_PATH)));
+		ImageIcon inferior = new ImageIcon(Toolkit.getDefaultToolkit().getImage(cl.getResource(IslandDialogInput.ICON_INFERIOR_PATH)));
 		this.jlSuperior01 = new JLabel(superior);
 		this.jlSuperior02 = new JLabel(superior);
 		this.jlSuperior03 = new JLabel(superior);
