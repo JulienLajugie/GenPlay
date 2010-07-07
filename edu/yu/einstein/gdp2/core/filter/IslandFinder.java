@@ -17,6 +17,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOCountNonNullBins;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSumScore;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
+import yu.einstein.gdp2.core.stat.MathFunctions;
 import yu.einstein.gdp2.core.stat.Poisson;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
@@ -31,21 +32,23 @@ public class IslandFinder {
 
 	private final BinList 				binList;			// input binlist
 	private int							gap;				// minimum windows number needed to separate 2 islands
-	private double 						windowLimitValue;	// limit window value to get an eligible windows
+	private int							islandMinLength;
+	private double 						windowMinValue;		// limit window value to get an eligible windows
+	private double						islandMinScore;		// island score limit to select island
 	private double						lambda;				// average number of reads in a window
-	private double						islandLimitScore;	// island score limit to select island
 	private IslandResultType 			resultType;			// type of the result (constant, score, average)
 	private HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
-	
 	
 	/**
 	 * IslandFinder constructor
 	 * 
 	 * @param binList			the related binList
-	 * @param windowLimitValue	limit reads number to get an eligible windows
+	 * @param windowMinValue	limit reads number to get an eligible windows
 	 * @param gap				minimum windows number needed to separate 2 islands
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public IslandFinder (BinList binList) {
+	public IslandFinder (BinList binList) throws InterruptedException, ExecutionException {
 		this.binList = binList;
 		this.lambda = lambdaCalcul();
 		this.readScoreStorage = new HashMap <Double, Double>();
@@ -57,11 +60,15 @@ public class IslandFinder {
 	 * @param binList			the related binList
 	 * @param readCountLimit	limit reads number to get an eligible windows
 	 * @param gap				minimum windows number needed to separate 2 islands
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	public IslandFinder (BinList binList, double readCountLimit, int gap, IslandResultType resultType) {
+	public IslandFinder (BinList binList, int gap, int minIslandLength, double windowLimitValue, double islandLimitScore, IslandResultType resultType) throws InterruptedException, ExecutionException {
 		this.binList = binList;
-		this.windowLimitValue = readCountLimit;
 		this.gap = gap;
+		this.islandMinLength = minIslandLength;
+		this.windowMinValue = windowLimitValue;
+		this.islandMinScore = islandLimitScore;
 		this.lambda = lambdaCalcul();
 		this.resultType = resultType;
 		this.readScoreStorage = new HashMap <Double, Double>();
@@ -131,13 +138,15 @@ public class IslandFinder {
 		List<Integer> islandsStop = new ArrayList<Integer>();		// stores all stop islands position
 		if ((currentList != null) && (currentList.size() != 0)) {
 			int j = 0;
+			int islandStartPos;
+			int islandStopPos;
 			while (j < currentList.size()) {	// while we are below the current list size,
-				if (currentList.get(j) >= windowLimitValue) {	// the current window score must be higher than readCountLimit
-					islandsStart.add(j);	// it's the start of an island
+				if (currentList.get(j) >= windowMinValue) {	// the current window score must be higher than readCountLimit
+					islandStartPos = j;
 					int gapFound = 0;	// there are no gap found
 					int jTmp = j + 1;	// we prepared the research on the next window
 					while ((gapFound <= gap) && (jTmp < currentList.size())) {	// while we are below the gap number authorized and below the list size
-						if (currentList.get(jTmp) >= windowLimitValue) {	// if the next window score is higher than the readCountLimit
+						if (currentList.get(jTmp) >= windowMinValue) {	// if the next window score is higher than the readCountLimit
 							gapFound = 0;	// gap number found must be 0
 						} else {	// if the next window score is smaller than the readCountLimit
 							gapFound++;	// one gap is found
@@ -146,7 +155,12 @@ public class IslandFinder {
 					}
 					// we are here only if the number gap found is higher than the number gap authorized or if it's the end list
 					// so, it's necessary the end of the island
-					islandsStop.add(jTmp - gapFound - 1);
+					islandStopPos = jTmp - gapFound - 1;
+					// the island must have a valid number of windows
+					if ((islandStopPos - islandStartPos) >= this.islandMinLength ) {
+						islandsStart.add(islandStartPos);
+						islandsStop.add(islandStopPos);
+					}
 					j = jTmp;	// we can continue to search after this end island (not necessary if we are out of the list size)
 				} else {
 					j++;
@@ -177,7 +191,7 @@ public class IslandFinder {
 		while (currentPos < islandsStart.size()) {
 			sumScore = 0.0;
 			for (int i = islandsStart.get(currentPos); i <= islandsStop.get(currentPos); i++) {	// Loop for the sum
-				if (currentList.get(i) >= this.windowLimitValue) {	// the window reads must be highter than the readCountLimit
+				if (currentList.get(i) >= this.windowMinValue) {	// the window reads must be highter than the readCountLimit
 					sumScore += windowScore(currentList.get(i));
 				}
 			}
@@ -210,7 +224,7 @@ public class IslandFinder {
 		for (int i = 0; i < currentList.size(); i++) {	// for all window positions
 			if (currentPos < islandsStart.size()){	// we must be below the island array size (start and stop are the same size)
 				if (i >= islandsStart.get(currentPos) && i <= islandsStop.get(currentPos)) {	// if the actual window is on an island
-					if (scoreIsland.get(currentPos) >= this.islandLimitScore) {	// the island score must be higher than the cut-off
+					if (scoreIsland.get(currentPos) >= this.islandMinScore) {	// the island score must be higher than the cut-off
 						switch (this.resultType) {	// if the result type is
 						case FILTERED:
 							value = currentList.get(i);	// we keep the original value
@@ -282,55 +296,15 @@ public class IslandFinder {
 	 * Then, the relation can be wrote like this:	N/C
 	 * 
 	 * @return	value of lambda
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
-	private double lambdaCalcul () {
+	private double lambdaCalcul () throws InterruptedException, ExecutionException {
 		double result = 0.1;
 		BLOSumScore totalScore = new BLOSumScore(this.binList, null);
 		BLOCountNonNullBins windowsNumber = new BLOCountNonNullBins(this.binList, null);
-		try {
-			result = totalScore.compute() / windowsNumber.compute();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
+		result = totalScore.compute() / windowsNumber.compute();
 		return result;
-	}
-	
-	/**
-	 * findReadCountLimit method
-	 * This method calculate the read count limit with a pvalue.
-	 * 
-	 * @param pValue	probability that the result appear by chance
-	 * @return			the read count limit
-	 */
-	public double findReadCountLimit (double pValue) {
-		double value = 1.0;
-		int index = 0;
-		if (pValue > 0.0 && pValue < 1.0) {
-			try {
-				value -= Poisson.poisson(this.lambda, index);
-			} catch (InvalidLambdaPoissonParameterException e) {
-				e.printStackTrace();
-			} catch (InvalidFactorialParameterException e) {
-				e.printStackTrace();
-			}
-			while (value > pValue) {
-				index++;
-				try {
-					value -= Poisson.poisson(this.lambda, index);
-				} catch (InvalidLambdaPoissonParameterException e) {
-					e.printStackTrace();
-				} catch (InvalidFactorialParameterException e) {
-					e.printStackTrace();
-				}
-			}
-			return (index + 1.0);
-		} else if (pValue == 1.0) {
-			return 0.0;
-		} else {
-			return -1.0;
-		}
 	}
 	
 	/**
@@ -339,31 +313,26 @@ public class IslandFinder {
 	 * 
 	 * @param read	read count limit
 	 * @return		the p-value
+	 * @throws InvalidFactorialParameterException 
+	 * @throws InvalidLambdaPoissonParameterException 
 	 */
-	public double findPValue (double read) {
+	public double findPValue (double read) throws InvalidLambdaPoissonParameterException, InvalidFactorialParameterException {
 		double value = 0.0;
-		double pValue;
 		if (read > 1.0) {
-			for (int i=0; i < (read-1.0); i++) {
-				try {
-					value += Poisson.poisson(this.lambda, i);
-				} catch (InvalidLambdaPoissonParameterException e) {
-					e.printStackTrace();
-				} catch (InvalidFactorialParameterException e) {
-					e.printStackTrace();
-				}
+			for (int i=0; i <= (int)Math.round(read - 0.5d); i++) {
+				value += Poisson.poisson(this.lambda, i);
+			}
+			if (!MathFunctions.isInteger(read)) {
+				value = MathFunctions.linearInterpolation(	(int)Math.round(read - 0.5d),
+															value,
+															(int)Math.round(read + 0.5d),
+															value + Poisson.poisson(this.lambda, (int)Math.round(read + 0.5d)),
+															read);
 			}
 		} else if (read == 1.0) {
-			try {
-				value = Poisson.poisson(this.lambda, 0);
-			} catch (InvalidLambdaPoissonParameterException e) {
-				e.printStackTrace();
-			} catch (InvalidFactorialParameterException e) {
-				e.printStackTrace();
-			}
+			value = Poisson.poisson(this.lambda, 0);
 		}
-		pValue = Math.floor((1 - value) * Math.pow(10.0, 15)) / Math.pow(10.0, 15);
-		return pValue;
+		return (1 - value);
 	}
 	
 	
@@ -371,13 +340,17 @@ public class IslandFinder {
 	public void setGap(int gap) {
 		this.gap = gap;
 	}
-
-	public void setReadCountLimit(double readCountLimit) {
-		this.windowLimitValue = readCountLimit;
+	
+	public void setIslandMinLength(int minIslandLength) {
+		this.islandMinLength = minIslandLength;
 	}
 
-	public void setCutOff(double cutOff) {
-		this.islandLimitScore = cutOff;
+	public void setWindowMinValue(double readCountLimit) {
+		this.windowMinValue = readCountLimit;
+	}
+
+	public void setIslandMinScore(double cutOff) {
+		this.islandMinScore = cutOff;
 	}
 
 	public void setResultType(IslandResultType resultType) {
@@ -385,20 +358,28 @@ public class IslandFinder {
 	}
 
 	// Getters
+	public BinList getBinList() {
+		return binList;
+	}
+	
 	public int getGap() {
 		return gap;
 	}
-
-	public double getReadCountLimit() {
-		return windowLimitValue;
+	
+	public int getMinIslandLength() {
+		return islandMinLength;
 	}
 
-	public double getCutOff() {
-		return islandLimitScore;
+	public double getWindowLimitValue() {
+		return windowMinValue;
+	}
+
+	public double getIslandLimitScore() {
+		return islandMinScore;
 	}
 
 	public double getLambda() {
 		return lambda;
 	}
-
+	
 }

@@ -95,9 +95,9 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 												"peaks of " +
 												selectedTrack.getName() + 
 												"(" + this.resultType[i] + 
-												"; L:" + bloIsland.getIsland().getReadCountLimit() +
+												"; L:" + bloIsland.getIsland().getWindowLimitValue() +
 												"; g:" + bloIsland.getIsland().getGap() +
-												"; cut-off:" + bloIsland.getIsland().getCutOff() +
+												"; cut-off:" + bloIsland.getIsland().getIslandLimitScore() +
 												")", 
 												selectedTrack.getStripes());
 					}

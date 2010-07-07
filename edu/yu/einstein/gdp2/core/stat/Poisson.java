@@ -33,7 +33,7 @@ public class Poisson {
 		double result;
 		if (lambda <= 0){
 			throw new InvalidLambdaPoissonParameterException();
-		} else { 
+		} else {
 			double exist = getPoissonValue(lambda, k);
 			if (exist != -1.0){
 				result = exist;

@@ -22,7 +22,7 @@ public class BLOFindIslands implements Operation<BinList[]> {
 	private BinList[]			outputBinList;
 	private IslandFinder 		island;
 
-	public BLOFindIslands (BinList binList) {
+	public BLOFindIslands (BinList binList) throws InterruptedException, ExecutionException {
 		this.inputBinList = binList;
 		this.island = new IslandFinder(binList);
 	}
