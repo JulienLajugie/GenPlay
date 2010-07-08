@@ -145,7 +145,7 @@ public final class IslandDialog extends JDialog {
 		setSize(dFrame);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-		setTitle("Island Finder Configuration");
+		setTitle("Island Finder Settings");
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);

@@ -381,5 +381,9 @@ public class IslandFinder {
 	public double getLambda() {
 		return lambda;
 	}
+
+	public IslandResultType getResultType() {
+		return resultType;
+	}
 	
 }

@@ -4,12 +4,16 @@
  */
 package yu.einstein.gdp2.gui.action.binListTrack;
 
+import java.awt.Color;
+
 import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOFindIslands;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
+import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
+import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.IslandDialog;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
@@ -58,18 +62,8 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 			bloIsland = new BLOFindIslands(selectedTrack.getData());
 			IslandDialog dialog = new IslandDialog (bloIsland.getIsland(), this);
 			if (dialog.showTrackConfiguration(getRootPane()) == IslandDialog.APPROVE_OPTION) {	// result type array is initialized on the showTrackConfiguration method
-				int sucess = 0;	//allow to count the number of tasks achieved
-				bloIsland.initOutputBinList(this.resultType.length);
-				for (int i=0; i < this.resultType.length; i++) {
-					if (this.resultType[i] != null) {
-						bloIsland.getIsland().setResultType(this.resultType[i]);	// at this point, the resultType setting is the last to set
-						bloIsland.setOutputBinList(bloIsland.getIsland().findIsland(), i);	// we store the calculated bin list on the output binlist array of bloIsland object
-						sucess++;
-					}
-				}
-				if (numResult() == sucess) {
-					return bloIsland;	// if all tasks were calculated, the bloIsland can be returned
-				}
+				bloIsland.setList(this.resultType);
+				return bloIsland;
 			}
 		}
 		return null;
@@ -88,17 +82,30 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 							getTrackList().getEmptyTracks());	// purposes tracks
 					if (resultTrack != null) {
 						index = resultTrack.getTrackNumber() - 1;
-						Track<?> newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult[i]);
+						BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult[i]);
+						newTrack.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Color.GRAY);
+						newTrack.getHistory().add("Island Finder - Information", Color.BLACK);
+						newTrack.getHistory().add("Average: " + bloIsland.getIsland().getLambda(), Color.GRAY);
+						try {
+							newTrack.getHistory().add("P-Value: " + bloIsland.getIsland().findPValue(bloIsland.getIsland().getWindowLimitValue()), Color.GRAY);
+						} catch (InvalidLambdaPoissonParameterException e) {
+							e.printStackTrace();
+						} catch (InvalidFactorialParameterException e) {
+							e.printStackTrace();
+						}
+						newTrack.getHistory().add("Island Finder - Input parameters", Color.BLACK);
+						newTrack.getHistory().add("Window value: " + bloIsland.getIsland().getWindowLimitValue(), Color.GRAY);
+						newTrack.getHistory().add("Gap: " + bloIsland.getIsland().getGap(), Color.GRAY);
+						newTrack.getHistory().add("Island score: " + bloIsland.getIsland().getIslandLimitScore(), Color.GRAY);
+						newTrack.getHistory().add("Island length: " + bloIsland.getIsland().getMinIslandLength(), Color.GRAY);
+						newTrack.getHistory().add("Island Finder - Output parameters", Color.BLACK);
+						newTrack.getHistory().add("Result type: " + bloIsland.getIsland().getResultType(), Color.GRAY);
 						getTrackList().setTrack(index, 
 												newTrack, 
 												ConfigurationManager.getInstance().getTrackHeight(), 
 												"peaks of " +
 												selectedTrack.getName() + 
-												"(" + this.resultType[i] + 
-												"; L:" + bloIsland.getIsland().getWindowLimitValue() +
-												"; g:" + bloIsland.getIsland().getGap() +
-												"; cut-off:" + bloIsland.getIsland().getIslandLimitScore() +
-												")", 
+												" (Island Finder process)", 
 												selectedTrack.getStripes());
 					}
 				}
@@ -113,21 +120,6 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 	 */
 	public void setResultType(IslandResultType[] resultType) {
 		this.resultType = resultType;
-	}
-	
-	/**
-	 * Count the number of valid result type.
-	 * The array size will be always 2 but some fields can be null and do not been counted.
-	 * @return	number of valid result type
-	 */
-	private int numResult() {
-		int cpt = 0;
-		for (int i=0; i < this.resultType.length; i++) {
-			if (this.resultType[i] != null) {
-				cpt++;
-			}
-		}
-		return cpt;
 	}
 	
 }
