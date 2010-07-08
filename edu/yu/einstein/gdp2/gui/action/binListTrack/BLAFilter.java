@@ -137,15 +137,14 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 */
 	private Operation<BinList> filterPercentage() {
 		BinList binList = selectedTrack.getData();
-		Number percentageLow = NumberOptionPane.getValue(getRootPane(), "Low Percentage", "Select the percentage of low values to filter", new DecimalFormat("0%"), 0, 1, 0.01);
-		if(percentageLow != null) {
-			Number percentageHigh = NumberOptionPane.getValue(getRootPane(), "High Percentage", "Select the percentage of high values to filter", new DecimalFormat("0%"), 0, 1, 0.01);
-			if(percentageHigh != null) {
-				if (percentageHigh.doubleValue() + percentageLow.doubleValue() > 1) {
-					JOptionPane.showMessageDialog(getRootPane(), "The sum of the two percentages must be smaller than 1", "Error", JOptionPane.ERROR_MESSAGE, null);
-				} else {
-					return new BLOFilterPercentage(binList, percentageLow.doubleValue(), percentageHigh.doubleValue());
-				}
+		Number[] percentages = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Thresholds", "Select the percentage of low values to filter:", "Select the percentage of high values to filter:", new DecimalFormat("0%"), 0, 1, 0.01, 0.01);
+		if(percentages != null) {
+			double percentageLow = percentages[0].doubleValue();
+			double percentageHigh = percentages[1].doubleValue();
+			if (percentageHigh + percentageLow > 1) {
+				JOptionPane.showMessageDialog(getRootPane(), "The sum of the two percentages must be smaller than 1", "Error", JOptionPane.ERROR_MESSAGE, null);
+			} else {
+				return new BLOFilterPercentage(binList, percentageLow, percentageHigh);
 			}
 		}
 		return null;
@@ -157,17 +156,16 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 */
 	private Operation<BinList> filterThreshold() {
 		BinList binList = selectedTrack.getData();
-		Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Remove values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		if(thresholdLow != null) {
-			Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Remove values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-			if(thresholdHigh != null) {
-				if (thresholdHigh.doubleValue() <= thresholdLow.doubleValue()) {
-					JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
-				} else {
-					Number successiveValues = NumberOptionPane.getValue(getRootPane(), "Bin Count", "Select a minimum number of successive valid bins", new DecimalFormat("0"), 1, 1000, 1);
-					if(successiveValues != null) {
-						return new BLOFilterThreshold(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), successiveValues.intValue());
-					}
+		Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Thresholds", "Remove values smaller than:", "Or greater than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
+		if(thresholds != null) {
+			double thresholdLow = thresholds[0].doubleValue();
+			double thresholdHigh = thresholds[1].doubleValue();
+			if (thresholdHigh <= thresholdLow) {
+				JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
+			} else {
+				Number successiveValues = NumberOptionPane.getValue(getRootPane(), "Bin Count", "Select a minimum number of successive valid bins", new DecimalFormat("0"), 1, 1000, 1);
+				if(successiveValues != null) {
+					return new BLOFilterThreshold(binList, thresholdLow, thresholdHigh, successiveValues.intValue());
 				}
 			}
 		}
