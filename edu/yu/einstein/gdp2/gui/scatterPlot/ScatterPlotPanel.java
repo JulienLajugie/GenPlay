@@ -601,7 +601,6 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		jf.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				System.out.println("In closing");
 				ScatterPlotPanel.listOfGraphs.clear();	
 				jf.dispose();
 			}			

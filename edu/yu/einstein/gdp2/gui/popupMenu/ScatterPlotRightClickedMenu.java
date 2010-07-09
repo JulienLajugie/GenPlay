@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JColorChooser;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -40,16 +39,15 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 	private static final long serialVersionUID = 5259896882194725264L;
 
 	private final JMenuItem	jmiSaveAs;							// menu save plot as image
-	private final JRadioButtonMenuItem	jmiBarGraph;						// draw bar graph
-	private final JRadioButtonMenuItem	jmiScatterPlot;						// draw scatter plot
-	private final JRadioButtonMenuItem jmiCurve;							// join points to form a curve
+	private final JRadioButtonMenuItem	jmiBarGraph;			// draw bar graph
+	private final JRadioButtonMenuItem	jmiScatterPlot;			// draw scatter plot
+	private final JRadioButtonMenuItem jmiCurve;				// join points to form a curve
 	private final JMenuItem jmiChangeColors;					// change graph colors
 	private final JCheckBoxMenuItem	jcbmiXAxisGrid;				// menu X-Axis grid checkbox
 	private final JCheckBoxMenuItem	jcbmiYAxisGrid;				// menu Y-Axis grid checkbox
 	private JFileChooser jfc;
-	private JDialog jd;
 	private ScatterPlotPanel scatterPlotPanel;
-	private ButtonGroup group;
+	private ButtonGroup group;									// radio button group for bar graph, scatter plot and curve
 	private int i = 0;
 
 	public ScatterPlotRightClickedMenu(final ScatterPlotPanel scatterPlotPanel) {
@@ -126,22 +124,18 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 				String[] graphNames = ScatterPlotPanel.getGraphNames();
 				String selectedValue = (String) JOptionPane.showInputDialog(null, "Select a graph", "Choose Color", JOptionPane.PLAIN_MESSAGE, null, graphNames, graphNames[0]);
 				
-			    if (selectedValue == null) {
-			    	selectedValue = graphNames[0];
-			    } else {
+			    if (selectedValue != null) {
 			    	for (i = 0; i < graphNames.length; i++) {
 			    		if (selectedValue.toString().equals(graphNames[i])) {
 			    			break; 
 			    		}
-			    	}
-			    }			    
-				Color chosenColor = JColorChooser.showDialog(null, "Select Color", Color.white);
-				if (chosenColor != null) {
-					ScatterPlotPanel.setGraphColors(chosenColor, i);
-					scatterPlotPanel.repaint();
-				}
-				jd.setVisible(true);
-				jd.setModal(true);		
+			    	}			    
+					Color chosenColor = JColorChooser.showDialog(null, "Select Color", Color.white);
+					if (chosenColor != null) {
+						ScatterPlotPanel.setGraphColors(chosenColor, i);
+						scatterPlotPanel.repaint();
+					}	
+			    }
 			}
 		});		
 
