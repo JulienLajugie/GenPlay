@@ -5,16 +5,11 @@
  */
 package yu.einstein.gdp2.gui.action.binListTrack;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ActionMap;
-import javax.swing.JDialog;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLORepartition;
@@ -41,8 +36,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		"Generate a csv file showing the repartition of the scores of the selected track";	// tooltip
 	private Track<?>[] 				selectedTracks;
 	private List<ScatterPlotData> 	scatPlotData;
-	private ScatterPlotPanel 		scatPlotPanel;
-
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -80,47 +74,17 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
-		for (int k = 0; k < actionResult.length; k++) {
-			scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].getName()));
+		if (actionResult != null && selectedTracks.length != 0) {
+			for (int k = 0; k < actionResult.length; k++) {
+				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].getName()));
+			}
+			ScatterPlotPanel.setxAxisName("Score");
+			ScatterPlotPanel.setyAxisName("Count");
+			ScatterPlotPanel.showDialog(getRootPane(), scatPlotData);
 		}
-		scatPlotPanel = new ScatterPlotPanel(scatPlotData);
-		final JDialog jf = new JDialog();
-		jf.setTitle("Scatter Plot");
-		jf.setContentPane(scatPlotPanel);
-		jf.setPreferredSize(new Dimension(900, 700));
-		jf.setMinimumSize(new Dimension(500, 500));
-		jf.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jf.getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - jf.getHeight())/2);
-		jf.pack();
-		jf.setVisible(true);
-		jf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		jf.addWindowListener(new WindowListener() {
-			
-			@Override
-			public void windowOpened(WindowEvent e) {}
-			
-			@Override
-			public void windowIconified(WindowEvent e) {}
-			
-			@Override
-			public void windowDeiconified(WindowEvent e) {}
-			
-			@Override
-			public void windowDeactivated(WindowEvent e) {}			
-
-			@Override
-			public void windowClosed(WindowEvent e) {}
-			
-			@Override
-			public void windowActivated(WindowEvent e) {}
-			
-			@Override
-			public void windowClosing(WindowEvent e) {
-				scatPlotData.clear();				
-			}			
-		});
 	}
 }

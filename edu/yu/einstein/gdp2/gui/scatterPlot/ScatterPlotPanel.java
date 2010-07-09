@@ -6,6 +6,7 @@
 package yu.einstein.gdp2.gui.scatterPlot;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -13,13 +14,13 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
-import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -41,6 +42,8 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	private static double yMin;							// y-axis min value
 	private static double xMax;							// x-axis max value	
 	private static double yMax;							// y-axis max value
+	private static String xAxisName;					// x-axis name
+	private static String yAxisName;					// y-axis name
 	
 	private static final int LEFT_PAD = 100;			// Left side margin
 	private static final int RIGHT_PAD = 200;			// Right side margin
@@ -59,15 +62,15 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	private static boolean curve;	
 	private static boolean changeColors;
 	
-	private List<ScatterPlotData> listOfGraphs = null;	// List of graphs to be plotted
-	private Color[] graphColor;							// Color of the graph
-	private Random randomGen;
-	private JColorChooser jcc;
+	private static List<ScatterPlotData> listOfGraphs = null;	// List of graphs to be plotted
+	private static Color[] graphColor;							// Color of the graph
+	private Random randomGen;		
 	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###.##");	// decimal format
-	
+	private static String[] graphNames;
+		
 			
-	public ScatterPlotPanel(List<ScatterPlotData> listOfGraphs) {
-		this.listOfGraphs = listOfGraphs;
+	private ScatterPlotPanel(List<ScatterPlotData> listOfGraphs) {
+		ScatterPlotPanel.listOfGraphs = listOfGraphs;
 		graphColor = new Color[listOfGraphs.size()];
 		randomGen = new Random();
 		for (int i = 0; i < graphColor.length; i++) {			
@@ -81,7 +84,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		setPreferredSize(new Dimension(500, 500));
 		setMinimumSize(new Dimension(500, 500));
 		setVisible(true);
-		setBorder(BorderFactory.createEmptyBorder(TOP_PAD, RIGHT_PAD, TOP_PAD_LABELS, RIGHT_PAD_LABELS));
+		setBorder(BorderFactory.createEmptyBorder(100, RIGHT_PAD, 200, RIGHT_PAD_LABELS));
 		addMouseMotionListener(this);
 		addMouseListener(this);		
 	}
@@ -216,6 +219,35 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	public static boolean isCurve() {
 		return curve;
 	}
+	
+
+	/**
+	 * @param xAxisName the xAxisName to set
+	 */
+	public static void setxAxisName(String xAxisName) {
+		ScatterPlotPanel.xAxisName = xAxisName;
+	}
+
+	/**
+	 * @return the xAxisName
+	 */
+	public static String getxAxisName() {
+		return xAxisName;
+	}
+
+	/**
+	 * @param yAxisName the yAxisName to set
+	 */
+	public static void setyAxisName(String yAxisName) {
+		ScatterPlotPanel.yAxisName = yAxisName;
+	}
+
+	/**
+	 * @return the yAxisName
+	 */
+	public static String getyAxisName() {
+		return yAxisName;
+	}
 
 	/**
 	 * @param changeColors the changeColors to set
@@ -230,6 +262,32 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	public static boolean isChangeColors() {
 		return changeColors;
 	}	
+	
+	/**
+	 * @return the graphNames
+	 */
+	public static String[] getGraphNames() {
+		graphNames = new String[listOfGraphs.size()];
+		for (int i = 0; i < listOfGraphs.size(); i++) {
+			graphNames[i] = listOfGraphs.get(i).getGraphName();
+		}
+		return graphNames;
+	}	
+	
+	/**
+	 * @return the graphColors
+	 */
+	public static Color[] getGraphColors() {
+		return graphColor;
+	}
+	
+	/**
+	 * @param color the color to set
+	 * @param index the index whose color is to be set
+	 */
+	public static void setGraphColors(Color color, int index) {
+		graphColor[index] = color;
+	}
 	
 	/**
 	 * Method to draw a curve for the data points
@@ -266,9 +324,10 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					g.drawLine(current.x, current.y, next.x, next.y);
-					g.drawLine(current.x, current.y, current.x, getTranslatedPoint(0,0).y);
-					g.drawLine(next.x, next.y, next.x, getTranslatedPoint(0,0).y);					
+					g.drawRect(current.x, current.y, next.x - current.x, getTranslatedPoint(0,0).y- current.y);
+					//g.drawLine(current.x, current.y, next.x, next.y);
+					//g.drawLine(current.x, current.y, current.x, getTranslatedPoint(0,0).y);
+					//g.drawLine(next.x, next.y, next.x, getTranslatedPoint(0,0).y);					
 				}
 			}
 		}
@@ -280,12 +339,15 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 */
 	protected void drawLegend(Graphics g) {
 		Point p = getTranslatedPoint(getXAxisEnd()-20, getYAxisEnd()-20);
+		g.setColor(Color.black);
+		g.drawString("X-Axis: " + getxAxisName(), p.x, p.y);
+		g.drawString("Y-Axis: " + getyAxisName(), p.x, p.y+15);
 		//Point p = getTranslatedPoint(0d,-100d);
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
-			g.drawString("     -------", p.x, p.y+i*10);
+			g.drawString("------- ", p.x, p.y+i*15+30);
 			g.setColor(Color.black);
-			g.drawString(listOfGraphs.get(i).getGraphName(), p.x+50, p.y+i*10);
+			g.drawString(listOfGraphs.get(i).getGraphName(), p.x+30, p.y+i*15+30);
 		}
 	}
 	
@@ -298,9 +360,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	protected Point getTranslatedPoint(double x, double y) {
 		Point translatedPoint = new Point();
 		double realWidth = getWidth() - LEFT_PAD - RIGHT_PAD_LABELS;
-		double realHeigth = getHeight() - TOP_PAD - BOTTOM_PAD;		
+		double realHeight = getHeight() - TOP_PAD - BOTTOM_PAD;		
 		translatedPoint.x = (int) ((realWidth * (x - getXAxisStart())) / (getXAxisEnd() - getXAxisStart())) + LEFT_PAD;
-		translatedPoint.y = getHeight() - (int) ((realHeigth * (y - getYAxisStart())) / (getYAxisEnd() - getYAxisStart())) - TOP_PAD;		
+		translatedPoint.y = getHeight() - (int) ((realHeight * (y - getYAxisStart())) / (getYAxisEnd() - getYAxisStart())) - TOP_PAD;		
 		return translatedPoint;
 	}
 	
@@ -311,7 +373,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 */
 	protected Point getOriginalPoint(Point p) {
 		Point retPoint = new Point();
-		retPoint.x = (int) (((p.x - LEFT_PAD) * (getXAxisEnd() - getXAxisStart()) / (getWidth() - LEFT_PAD - RIGHT_PAD)) + getXAxisStart());
+		retPoint.x = (int) (((p.x - LEFT_PAD) * (getXAxisEnd() - getXAxisStart()) / (getWidth() - LEFT_PAD - RIGHT_PAD_LABELS)) + getXAxisStart());
 		retPoint.y = (int) (-1 * ((p.y - getHeight() + TOP_PAD) * (getYAxisEnd() - getYAxisStart()) / (getHeight() - TOP_PAD - BOTTOM_PAD)) + getYAxisStart());
 		return retPoint;
 	}
@@ -420,37 +482,21 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					//System.out.println("current.x: " + listOfGraphs.get(i).getDataPoints()[j][0] + " current.y: " + listOfGraphs.get(i).getDataPoints()[j][1] + " next.x: " + listOfGraphs.get(i).getDataPoints()[j+1][0] + " next.y: " + listOfGraphs.get(i).getDataPoints()[j][1]);
 					g.drawLine(current.x, current.y, next.x, next.y);					
 				}
 			}
-		}
-	}
-	
-	/**
-	 * Method to change the graph color
-	 * @param g (Graphics)
-	 */
-	protected void changeGraphColor(Graphics g) {
-		jcc = new JColorChooser();
-		jcc.setVisible(true);
-		JDialog jd = JColorChooser.createDialog(this, "Select Color", false, jcc, null, null);
-		jd.setVisible(true);
-		jcc.getSelectionModel().addChangeListener(this);
-		System.out.println("In Change Colors");
-		for (int i = 0; i < listOfGraphs.size(); i++) {
-			g.setColor(graphColor[i]);
 		}
 	}	
 	
 	@Override
 	public void paintComponent(Graphics g) {
+		
 		super.paintComponent(g);
 		g.setColor(Color.BLACK);
-        setBackground(Color.white);	
-		drawAxes(g);
+        setBackground(Color.white);
+        drawAxes(g);
 		if (isChangeColors() == true) {
-			changeGraphColor(g);
+			setChangeColors(false);			
 		}
 		if (isBarGraph() == true) {			
 			drawBarGraph(g);
@@ -525,9 +571,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	}
 	
 	@Override
-	public void stateChanged(ChangeEvent ce) {
-		
-	}
+	public void stateChanged(ChangeEvent ce) {}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {}
@@ -543,4 +587,26 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 
 	@Override
 	public void mouseReleased(MouseEvent e) {}	
+	
+	public static void showDialog(Component parent, final List<ScatterPlotData> listOfGraphs) {
+		final JDialog jf = new JDialog();
+		jf.setModal(true);
+		jf.setTitle("Scatter Plot");		
+		ScatterPlotPanel scatPlotPanel = new ScatterPlotPanel(listOfGraphs);
+		jf.setContentPane(scatPlotPanel);
+		jf.setPreferredSize(new Dimension(900, 700));
+		jf.setMinimumSize(new Dimension(500, 500));
+		jf.pack();
+		jf.setLocationRelativeTo(parent);		
+		jf.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("In closing");
+				ScatterPlotPanel.listOfGraphs.clear();	
+				jf.dispose();
+			}			
+		});
+		jf.setVisible(true);
+	}
 }
+
