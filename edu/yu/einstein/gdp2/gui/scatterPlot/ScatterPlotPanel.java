@@ -320,7 +320,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					g.drawRect(current.x, current.y, next.x - current.x, getTranslatedPoint(0,0).y- current.y);										
+					g.drawLine(current.x, current.y, next.x, next.y);
+					g.drawLine(current.x, current.y, current.x, getTranslatedPoint(current.x, 0).y);
+					g.drawLine(next.x, next.y, next.x, getTranslatedPoint(current.x, 0).y);
 				}
 			}
 		}
@@ -462,13 +464,14 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 * @param g (Graphics)
 	 */
 	protected void plotPoints(Graphics g) {
-		Point current;
+		Point current, next;
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
 			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
+				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					g.drawString("x", current.x, current.y);
+					g.drawLine(current.x, current.y, next.x, next.y);
 				}
 			}
 		}
