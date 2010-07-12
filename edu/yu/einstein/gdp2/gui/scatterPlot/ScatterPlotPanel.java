@@ -294,18 +294,15 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 * @param g (Graphics)
 	 */
 	protected void drawCurve(Graphics g) {
-		//System.out.println("In bar graph 1");
 		Point current, nexttonext;
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
 			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
-				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
-				//next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
+				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));				
 				nexttonext = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j+1][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					//g.drawLine(current.x, current.y, next.x, next.y);
 					g.drawLine(current.x, current.y, nexttonext.x, nexttonext.y);
-					//g.drawLine(next.x, next.y, next.x, getTranslatedPoint(0,0).y);					
+					g.drawString(".", current.x, current.y);										
 				}
 			}
 		}
@@ -316,7 +313,6 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 * @param g (Graphics)
 	 */
 	protected void drawBarGraph(Graphics g) {
-		//System.out.println("In bar graph 1");
 		Point current, next;
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
@@ -324,10 +320,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					g.drawRect(current.x, current.y, next.x - current.x, getTranslatedPoint(0,0).y- current.y);
-					//g.drawLine(current.x, current.y, next.x, next.y);
-					//g.drawLine(current.x, current.y, current.x, getTranslatedPoint(0,0).y);
-					//g.drawLine(next.x, next.y, next.x, getTranslatedPoint(0,0).y);					
+					g.drawRect(current.x, current.y, next.x - current.x, getTranslatedPoint(0,0).y- current.y);										
 				}
 			}
 		}
@@ -403,7 +396,6 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 			if (getXAxisStart() < 0) {
 				lastXTextStopPos = Integer.MAX_VALUE;
 				while (incrementX >= getXAxisStart()) {
-					//g.setColor(Color.black);
 					p = new Point(getTranslatedPoint(incrementX, getYAxisStart() - 10));
 					String stringToPrint = DF.format(incrementX);
 					if (p.x + g.getFontMetrics().stringWidth(stringToPrint)+20 < lastXTextStopPos) {
@@ -414,9 +406,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 						}
 						g.setColor(Color.black);
 						g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
-						//g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
 						g.drawLine(p.x, p.y-4, p.x, p.y+4);
-						//System.out.println("isxAxisGridLines(): " + isxAxisGridLines());						
 						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+20;
 					}					
 					incrementX = incrementX - getXAxisStepSize();
@@ -432,13 +422,11 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				String stringToPrint = DF.format(incrementX);
 				if (p.x >= lastXTextStopPos && incrementX >= getXAxisStart()) {
 					if (isxAxisGridLines() == true && axisFlag != true) {
-						//System.out.println("xAxisGridLines is set");
 						g.setColor(new Color (190,190,190));
 						g.drawLine(p.x, p.y, p.x, getTranslatedPoint(0,getYAxisEnd()).y);
 					}
 					g.setColor(Color.black);
 					g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
-					//g.drawString("I", p.x, p.y + TOP_PAD_LABELS/20);
 					g.drawLine(p.x, p.y-4, p.x, p.y+4);
 					lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+10;					
 				}					
@@ -456,7 +444,6 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 				int stringWidth = g.getFontMetrics().stringWidth(stringToPrint);
 				if (p.y <= lastYTextStopPos  && (!stringToPrint.equals("0"))) {
 					if (isyAxisGridLines() == true && axisFlag != true) {
-						//System.out.println("xAxisGridLines is set");
 						g.setColor(new Color (190,190,190));
 						g.drawLine(getTranslatedPoint(getXAxisStart(),0).x, p.y, getTranslatedPoint(getXAxisEnd(),0).x, p.y);
 					}
@@ -475,14 +462,13 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 * @param g (Graphics)
 	 */
 	protected void plotPoints(Graphics g) {
-		Point current, next;
+		Point current;
 		for (int i = 0; i < listOfGraphs.size(); i++) {
 			g.setColor(graphColor[i]);
 			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));
-				next = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j][1]));
 				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
-					g.drawLine(current.x, current.y, next.x, next.y);					
+					g.drawString("x", current.x, current.y);
 				}
 			}
 		}
@@ -608,4 +594,3 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		jf.setVisible(true);
 	}
 }
-
