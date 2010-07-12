@@ -31,7 +31,7 @@ public final class BLAFindIslands extends TrackListActionOperationWorker<BinList
 	private static final long serialVersionUID = -3178294348003123920L;	// generated ID
 	private static final String 	ACTION_NAME = "Find Islands";		// action name
 	private static final String 	DESCRIPTION = 
-		"Remove all noisy data points";									// tooltip
+		"Find island on the track";									// tooltip
 	private BinListTrack 			selectedTrack;						// selected track
 	private Track<?>				resultTrack;						// result track
 	private IslandResultType[]		resultType;							// needs to know which kind of result must be realised

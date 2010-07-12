@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
+import yu.einstein.gdp2.exception.IFSettingsException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.exception.valueOutOfRangeException.ValueOutOfRangeException;
 
@@ -52,6 +53,10 @@ public final class ExceptionManager {
 			} else if (exception instanceof BinListDifferentWindowSizeException) {
 				// case when the user tries to do an operation on 2 binlists with different binsize
 				JOptionPane.showMessageDialog(jc.getRootPane(), exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				exceptionHandled = true;
+			} else if (exception instanceof IFSettingsException) {
+				// case when the user tries to run the island finder without choose a result type
+				JOptionPane.showMessageDialog(jc.getRootPane(), exception.getMessage(), "Information", JOptionPane.INFORMATION_MESSAGE);
 				exceptionHandled = true;
 			} 
 			if (exception.getCause() != null) {

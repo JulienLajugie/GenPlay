@@ -17,6 +17,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.filter.IslandFinder;
+import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.exception.IFSettingsException;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFindIslands;
 
@@ -83,7 +84,7 @@ public final class IslandDialog extends JDialog {
 				try {
 					jbOkActionPerformed();
 				} catch (IFSettingsException e1) {
-					e1.printStackTrace();
+					ExceptionManager.handleException(rootPane, e1, e1.getMessage());
 				}
 			}
 		});
@@ -192,7 +193,6 @@ public final class IslandDialog extends JDialog {
 			this.setVisible(false);
 		} else {
 			throw new IFSettingsException();
-			//JOptionPane.showMessageDialog(null, "Please select at least one result type", "Information", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
