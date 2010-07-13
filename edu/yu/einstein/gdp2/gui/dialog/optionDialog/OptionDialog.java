@@ -220,7 +220,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 
 		category = new DefaultMutableTreeNode(new RestoreOptionPanel());
 		top.add(category);
-
 	}
 
 	

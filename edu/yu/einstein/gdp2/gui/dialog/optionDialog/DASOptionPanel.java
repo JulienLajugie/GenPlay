@@ -35,7 +35,7 @@ import yu.einstein.gdp2.gui.mainFrame.MainFrame;
  * @version 0.1
  */
 
-public class DASOptionPanel extends OptionPanel {
+final class DASOptionPanel extends OptionPanel {
 
 	private static final long serialVersionUID = -4695486600325761680L; // generated ID
 	private static final int TABLE_WIDTH = 330;

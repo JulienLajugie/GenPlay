@@ -28,7 +28,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GeneralOptionPanel extends OptionPanel {
+final class GeneralOptionPanel extends OptionPanel {
 
 	private static final long serialVersionUID = 3540849857411182507L; // generated ID
 	private final JLabel 		jlDefaultDir; 		// label default directory
@@ -44,7 +44,7 @@ public final class GeneralOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link GeneralOptionPanel}
 	 */
-	public GeneralOptionPanel() {
+	protected GeneralOptionPanel() {
 		super("General");
 
 		jlDefaultDir = new JLabel("Default directory: ");

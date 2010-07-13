@@ -20,7 +20,7 @@ import javax.swing.JTextField;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ConfigFileOptionPanel extends OptionPanel {
+final class ConfigFileOptionPanel extends OptionPanel {
 
 	private static final long serialVersionUID = 4936841930455874582L; // generated ID
 	private final JLabel 		jlZoomFile; 	// Label zoom file
@@ -35,7 +35,7 @@ public final class ConfigFileOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link ConfigFileOptionPanel}
 	 */
-	public ConfigFileOptionPanel() {
+	protected ConfigFileOptionPanel() {
 		super("Configuration Files");
 		jlZoomFile = new JLabel("Zoom configuration file: ");
 		if ((configurationManager.getZoomFile() == null) || (configurationManager.getZoomFile().equals(""))) {

@@ -95,12 +95,11 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 */
 	private Operation<BinList> filterCount() {
 		BinList binList = selectedTrack.getData();
-		Number countLow = NumberOptionPane.getValue(getRootPane(), "Low Values", "Select the number of low values to filter", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-		if(countLow != null) {
-			Number countHigh = NumberOptionPane.getValue(getRootPane(), "High Values", "Select the number of high values to filter", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-			if(countHigh != null) {
-				return new BLOFilterCount(binList, countLow.intValue(), countHigh.intValue());
-			}
+		Number[] counts = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Counts", "Count of low values to remove:", "Count of high values to remove", new DecimalFormat("0"), Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 0);
+		if(counts != null) {
+			int countLow = counts[0].intValue();
+			int countHigh = counts[1].intValue();
+			return new BLOFilterCount(binList, countLow, countHigh);
 		}
 		return null;
 	}
@@ -111,19 +110,18 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 */
 	private Operation<BinList> filterDensity() {
 		BinList binList = selectedTrack.getData();
-		Number thresholdLow = NumberOptionPane.getValue(getRootPane(), "Low Threshold", "Remove values smaller than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY);
-		if(thresholdLow != null) {
-			Number thresholdHigh = NumberOptionPane.getValue(getRootPane(), "High Threshold", "Remove values greater than:", new DecimalFormat("0.0"), thresholdLow.doubleValue(), Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-			if(thresholdHigh != null) {
-				if (thresholdHigh.doubleValue() <= thresholdLow.doubleValue()) {
-					JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
-				} else {
-					Number regionSize = NumberOptionPane.getValue(getRootPane(), "Size", "<html>Select the size of the region filtered<br/><center>(in number of bins)</center></html>", new DecimalFormat("0"), 1, 1000, 1); 
-					if(regionSize != null) {
-						Number density = NumberOptionPane.getValue(getRootPane(), "Density", "Enter the percentage of value above the filter", new DecimalFormat("###.###%"), 0, 1, 1);
-						if (density != null) {
-							return new BLOFilterDensity(binList, thresholdLow.doubleValue(), thresholdHigh.doubleValue(), density.doubleValue(), regionSize.intValue());
-						}
+		Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Threshold", "Remove values smaller than:", "Remove values greater than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+		if(thresholds != null) {
+			double thresholdLow = thresholds[0].doubleValue();
+			double thresholdHigh = thresholds[1].doubleValue();			
+			if (thresholdHigh <= thresholdLow) {
+				JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
+			} else {
+				Number regionSize = NumberOptionPane.getValue(getRootPane(), "Size", "<html>Select the size of the region filtered<br/><center>(in number of bins)</center></html>", new DecimalFormat("0"), 1, 1000, 1); 
+				if(regionSize != null) {
+					Number density = NumberOptionPane.getValue(getRootPane(), "Density", "Enter the percentage of value above the filter", new DecimalFormat("###.###%"), 0, 1, 1);
+					if (density != null) {
+						return new BLOFilterDensity(binList, thresholdLow, thresholdHigh, density.doubleValue(), regionSize.intValue());
 					}
 				}
 			}
@@ -137,7 +135,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 	 */
 	private Operation<BinList> filterPercentage() {
 		BinList binList = selectedTrack.getData();
-		Number[] percentages = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Thresholds", "Select the percentage of low values to filter:", "Select the percentage of high values to filter:", new DecimalFormat("0%"), 0, 1, 0.01, 0.01);
+		Number[] percentages = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Percentages", "Select the percentage of low values to filter:", "Select the percentage of high values to filter:", new DecimalFormat("0%"), 0, 1, 0.01, 0.01);
 		if(percentages != null) {
 			double percentageLow = percentages[0].doubleValue();
 			double percentageHigh = percentages[1].doubleValue();

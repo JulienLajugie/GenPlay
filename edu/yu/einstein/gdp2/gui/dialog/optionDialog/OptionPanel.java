@@ -18,7 +18,7 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class OptionPanel extends JPanel {
+abstract class OptionPanel extends JPanel {
 
 	private static final long serialVersionUID = 4821469631755757767L; 	// Generated ID
 	protected final ConfigurationManager configurationManager; 			// ConfigurationManager

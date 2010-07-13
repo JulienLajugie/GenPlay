@@ -18,7 +18,7 @@ import javax.swing.JLabel;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class RestoreOptionPanel extends OptionPanel {
+final class RestoreOptionPanel extends OptionPanel {
 
 	private static final long serialVersionUID = 32933937591821971L; // generated ID
 	private final JLabel jlRestore; 	// Label restore
@@ -28,7 +28,7 @@ public final class RestoreOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link RestoreOptionPanel}
 	 */
-	public RestoreOptionPanel() {
+	protected RestoreOptionPanel() {
 		super("Restore Default");
 		jlRestore = new JLabel("Restore default configuration:");
 		jbRestore = new JButton("Restore");

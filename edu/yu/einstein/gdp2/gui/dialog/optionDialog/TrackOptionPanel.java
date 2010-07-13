@@ -20,7 +20,7 @@ import javax.swing.text.NumberFormatter;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackOptionPanel extends OptionPanel {
+final class TrackOptionPanel extends OptionPanel {
 
 	private static final long serialVersionUID = 1941311091566384114L; 	// generated ID
 	private static final int MIN_TRACK_COUNT = 1; 						// minimum number of tracks
