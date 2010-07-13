@@ -17,7 +17,7 @@ import javax.swing.JLabel;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class StatusLabel extends JLabel {
+final class StatusLabel extends JLabel {
 
 	private static final long serialVersionUID = 404304422248672368L; // generated ID
 	private TimeCounter 			timeCounterThread;	// thread showing the time elapsed in the progress bar
@@ -54,7 +54,7 @@ public class StatusLabel extends JLabel {
 	/**
 	 * Creates an instance of {@link StatusLabel}
 	 */
-	public StatusLabel() {
+	StatusLabel() {
 		super();
 		// set the date format
 		dateFormat = new SimpleDateFormat("mm:ss");
@@ -82,7 +82,7 @@ public class StatusLabel extends JLabel {
 	 * Sets the description 
 	 * @param description
 	 */
-	public void setDescription(String description) {
+	void setDescription(String description) {
 		this.description = description;
 		updateText();
 	}
@@ -91,7 +91,7 @@ public class StatusLabel extends JLabel {
 	/**
 	 * @return the description printed on the label without the time
 	 */
-	public String getDescription() {
+	String getDescription() {
 		return description;
 	}
 	
@@ -100,7 +100,7 @@ public class StatusLabel extends JLabel {
 	 * Sets the step
 	 * @param step
 	 */
-	public void setStep(int step) {
+	void setStep(int step) {
 		this.step = step;
 		updateText();
 	}
@@ -109,7 +109,7 @@ public class StatusLabel extends JLabel {
 	/**
 	 * @return the step
 	 */
-	public int getStep() {
+	int getStep() {
 		return step;
 	}
 	
@@ -118,7 +118,7 @@ public class StatusLabel extends JLabel {
 	 * Sets the step count
 	 * @param stepCount
 	 */
-	public void setStepCount(int stepCount) {
+	void setStepCount(int stepCount) {
 		this.stepCount = stepCount;
 		updateText();
 	}
@@ -127,7 +127,7 @@ public class StatusLabel extends JLabel {
 	/**
 	 * @return the stepCount
 	 */
-	public int getStepCount() {
+	int getStepCount() {
 		return stepCount;
 	}
 	
@@ -135,7 +135,7 @@ public class StatusLabel extends JLabel {
 	/**
 	 * Starts the time counter
 	 */
-	public void startCounter() {
+	void startCounter() {
 		timeCounterThread = new TimeCounter();
 		timeCounterThread.start();
 	}
@@ -144,7 +144,7 @@ public class StatusLabel extends JLabel {
 	/**
 	 * Stops the time counter
 	 */
-	public void stopCounter() {
+	void stopCounter() {
 		timeCounterThread = null;
 		updateText();
 	}

@@ -19,7 +19,7 @@ import javax.swing.JPanel;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MemoryPanel extends JPanel {
+final class MemoryPanel extends JPanel {
 
 	private static final long serialVersionUID = 5175483247820204875L; 	// generated ID
 	private static final Runtime RUN_TIME = Runtime.getRuntime();		// application runtime
@@ -54,7 +54,7 @@ public class MemoryPanel extends JPanel {
 	/**
 	 * Creates an instance of {@link MemoryPanel}
 	 */
-	public MemoryPanel() {
+	MemoryPanel() {
 		super();				
 		jlMemory = new JLabel();
 		jlMemory.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.black));

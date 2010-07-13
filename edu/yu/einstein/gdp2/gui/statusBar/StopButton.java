@@ -17,7 +17,7 @@ import javax.swing.JButton;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class StopButton extends JButton implements ActionListener {
+final class StopButton extends JButton implements ActionListener {
 	
 	private static final long serialVersionUID = 8260242568878040712L; 		// generated ID	
 	private static final Color ENABLED_COLOR = Color.red;					// color of the button when enabled
@@ -28,7 +28,7 @@ public class StopButton extends JButton implements ActionListener {
 	/**
 	 * Creates an instance of a {@link StopButton}
 	 */
-	public StopButton() {
+	StopButton() {
 		setBackground(Color.red);
 		setMargin(new Insets(4, 4, 4, 4));
 		setFocusPainted(false);
@@ -42,7 +42,7 @@ public class StopButton extends JButton implements ActionListener {
 	 * Disables the button if the stoppable is null 
 	 * @param stoppable a {@link Stoppable}
 	 */
-	public void setStoppable(Stoppable stoppable) {
+	void setStoppable(Stoppable stoppable) {
 		this.stoppable = stoppable;
 		setEnabled(stoppable != null);		
 	}

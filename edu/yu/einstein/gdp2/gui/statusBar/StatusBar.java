@@ -17,14 +17,13 @@ import javax.swing.JPanel;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class StatusBar extends JPanel {
+public final class StatusBar extends JPanel {
 
 	private static final long serialVersionUID = 6145997500187047785L; // generated ID
 	private final MemoryPanel 	memoryPanel;		// panel showing the memory usage
 	private final ProgressBar	progressBar;		// progress bar
 	private final StopButton	stopButton;			// stop button
 	private final StatusLabel 	statusLabel;		// label in the middle of the bar
-	//private int 				step;				// operation current step
 	
 		
 	/**

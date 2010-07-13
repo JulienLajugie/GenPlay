@@ -14,7 +14,7 @@ import javax.swing.JProgressBar;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ProgressBar extends JProgressBar {
+final class ProgressBar extends JProgressBar {
 
 	private static final long serialVersionUID = -3669001086333207235L; // generated ID
 	private static final Color 	BACKGROUND_COLOR = Color.white; // color of the background of the progressbar
@@ -23,7 +23,7 @@ public final class ProgressBar extends JProgressBar {
 	/**
 	 * Creates an instance of {@link ProgressBar}
 	 */
-	public ProgressBar() {
+	ProgressBar() {
 		super();
 		// the progression a percentage between 0 and 100
 		setMinimum(0);
@@ -38,7 +38,7 @@ public final class ProgressBar extends JProgressBar {
 	 * Sets the level of completion showed on the {@link ProgressBar}
 	 * @param progress
 	 */
-	public synchronized void setProgress(int progress) {
+	synchronized void setProgress(int progress) {
 		setIndeterminate(false);
 		// set the progression position
 		setValue(progress);
