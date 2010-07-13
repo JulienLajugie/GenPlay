@@ -218,8 +218,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 */
 	public static boolean isCurve() {
 		return curve;
-	}
-	
+	}	
 
 	/**
 	 * @param xAxisName the xAxisName to set
@@ -289,6 +288,14 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		graphColor[index] = color;
 	}
 	
+	/** 
+	 * Method that returns the graph data
+	 * @return the graph data to return
+	 */
+	public static List<ScatterPlotData> getGraphList() {
+		return listOfGraphs;
+	}
+	
 	/**
 	 * Method to draw a curve for the data points
 	 * @param g (Graphics)
@@ -300,7 +307,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 			for (int j = 0; j < listOfGraphs.get(i).getDataPoints().length-1; j++) {
 				current = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j][0], listOfGraphs.get(i).getDataPoints()[j][1]));				
 				nexttonext = new Point(getTranslatedPoint(listOfGraphs.get(i).getDataPoints()[j+1][0], listOfGraphs.get(i).getDataPoints()[j+1][1]));
-				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
+				if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] <= getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize() && listOfGraphs.get(i).getDataPoints()[j+1][1] <= getYAxisEnd()) {
 					g.drawLine(current.x, current.y, nexttonext.x, nexttonext.y);
 					g.drawString(".", current.x, current.y);										
 				}

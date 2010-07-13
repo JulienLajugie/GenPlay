@@ -126,19 +126,9 @@ public class AxisOption {
 		jftXAxisTickSize.setMinimumSize(new Dimension(100, 20));
 		jftXAxisTickSize.setPreferredSize(new Dimension(100, 20));
 		jd.add(jftXAxisTickSize,c);
-		
+
 		c.gridx = 0;
 		c.gridy = 1;		
-		jlXAxisMax.setVisible(true);
-		jd.add(jlXAxisMax, c);
-		
-		c.gridx = 1;
-		jftXAxisMax.setMinimumSize(new Dimension(100, 20));
-		jftXAxisMax.setPreferredSize(new Dimension(100, 20));
-		jd.add(jftXAxisMax,c);
-		
-		c.gridx = 0;
-		c.gridy = 2;		
 		jlXAxisMin.setVisible(true);
 		jd.add(jlXAxisMin, c);
 		
@@ -146,6 +136,16 @@ public class AxisOption {
 		jftXAxisMin.setMinimumSize(new Dimension(100, 20));
 		jftXAxisMin.setPreferredSize(new Dimension(100, 20));
 		jd.add(jftXAxisMin,c);
+		
+		c.gridx = 0;
+		c.gridy = 2;		
+		jlXAxisMax.setVisible(true);
+		jd.add(jlXAxisMax, c);
+		
+		c.gridx = 1;
+		jftXAxisMax.setMinimumSize(new Dimension(100, 20));
+		jftXAxisMax.setPreferredSize(new Dimension(100, 20));
+		jd.add(jftXAxisMax,c);		
 		
 		c.gridx = 0;
 		c.gridy = 3;
@@ -244,16 +244,6 @@ public class AxisOption {
 		
 		c.gridx = 0;
 		c.gridy = 1;		
-		jlYAxisMax.setVisible(true);
-		jd.add(jlYAxisMax, c);
-		
-		c.gridx = 1;
-		jftYAxisMax.setMinimumSize(new Dimension(100, 20));
-		jftYAxisMax.setPreferredSize(new Dimension(100, 20));
-		jd.add(jftYAxisMax,c);
-		
-		c.gridx = 0;
-		c.gridy = 2;		
 		jlYAxisMin.setVisible(true);
 		jd.add(jlYAxisMin, c);
 		
@@ -262,6 +252,16 @@ public class AxisOption {
 		jftYAxisMin.setPreferredSize(new Dimension(100, 20));
 		jd.add(jftYAxisMin,c);
 		
+		c.gridx = 0;
+		c.gridy = 2;		
+		jlYAxisMax.setVisible(true);
+		jd.add(jlYAxisMax, c);
+		
+		c.gridx = 1;
+		jftYAxisMax.setMinimumSize(new Dimension(100, 20));
+		jftYAxisMax.setPreferredSize(new Dimension(100, 20));
+		jd.add(jftYAxisMax,c);
+				
 		c.gridx = 0;
 		c.gridy = 3;
 		jd.add(jbYAxisOk,c);

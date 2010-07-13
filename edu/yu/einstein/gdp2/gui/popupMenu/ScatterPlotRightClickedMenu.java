@@ -11,7 +11,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -38,7 +41,8 @@ import yu.einstein.gdp2.util.Utils;
 public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionListener, PopupMenuListener {
 	private static final long serialVersionUID = 5259896882194725264L;
 
-	private final JMenuItem	jmiSaveAs;							// menu save plot as image
+	private final JMenuItem	jmiSaveImage;							// menu save plot as image
+	private final JMenuItem	jmiSaveData;							// menu save plot as image
 	private final JRadioButtonMenuItem	jmiBarGraph;			// draw bar graph
 	private final JRadioButtonMenuItem	jmiScatterPlot;			// draw scatter plot
 	private final JRadioButtonMenuItem jmiCurve;				// join points to form a curve
@@ -51,7 +55,8 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 	private int i = 0;
 
 	public ScatterPlotRightClickedMenu(final ScatterPlotPanel scatterPlotPanel) {
-		jmiSaveAs = new JMenuItem("Save As");
+		jmiSaveImage = new JMenuItem("Save Plot");
+		jmiSaveData = new JMenuItem("Save Data");
 		jmiBarGraph = new JRadioButtonMenuItem("Plot Bar Graph");
 		jmiScatterPlot = new JRadioButtonMenuItem("Plot Points");
 		jmiCurve = new JRadioButtonMenuItem("Plot Curve");
@@ -74,7 +79,8 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 		add(jmiScatterPlot);
 		add(jmiCurve);
 		addSeparator();
-		add(jmiSaveAs);
+		add(jmiSaveImage);
+		add(jmiSaveData);
 		addSeparator();
 		add(jmiChangeColors);
 		addSeparator();
@@ -172,15 +178,34 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 		});
 		
 		jfc = new JFileChooser();		
-		jmiSaveAs.setVisible(true);
-		jmiSaveAs.addActionListener(this);
+		jmiSaveImage.setVisible(true);
+		jmiSaveImage.addActionListener(this);
+		jmiSaveData.setVisible(true);
+		jmiSaveData.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				jmiSaveData.setVisible(false);
+				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file", "csv");
+				jfc.setFileFilter(filter);
+				int retValue = jfc.showSaveDialog(getRootPane());
+				if (retValue == JFileChooser.APPROVE_OPTION) {
+					File fileName = jfc.getSelectedFile();
+					if (!Utils.cancelBecauseFileExist(getRootPane(), fileName)) {
+						fileName = Utils.addExtension(fileName, "csv");
+						savePlotData(fileName);
+					}
+				}			
+			}
+		});
 		this.scatterPlotPanel = scatterPlotPanel;
 		this.addPopupMenuListener(this);
 	}		
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		jmiSaveAs.setVisible(false);
+		jmiSaveImage.setVisible(false);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
 		jfc.setFileFilter(filter);
@@ -188,6 +213,7 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 		if (retValue == JFileChooser.APPROVE_OPTION) {
 			File fileName = jfc.getSelectedFile();
 			if (!Utils.cancelBecauseFileExist(getRootPane(), fileName)) {
+				fileName = Utils.addExtension(fileName, "jpg");
 				saveAsImage(fileName);
 			}
 		}			
@@ -208,6 +234,46 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 		}		
 	}
 
+	/**
+	 * Save the scatter plot data as a CSV file.
+	 * @param file output file
+	 */
+	public void savePlotData(File file) {
+		try {
+			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(file));
+			bufWriter.write("Y-Axis " + ScatterPlotPanel.getyAxisName());
+			int maxLength = ScatterPlotPanel.getGraphList().get(0).getDataPoints().length;
+			int graphNumber = 0;
+			for (int i = 0; i < ScatterPlotPanel.getGraphNames().length; i++) {
+				bufWriter.write("," + ScatterPlotPanel.getGraphNames()[i]);
+				if (maxLength < ScatterPlotPanel.getGraphList().get(i).getDataPoints().length) {
+					maxLength = ScatterPlotPanel.getGraphList().get(i).getDataPoints().length;
+					graphNumber = i;
+				}
+			}	
+			bufWriter.newLine();
+			for (int i = 0; i < maxLength; i++){
+				if (ScatterPlotPanel.getGraphList().get(graphNumber).getDataPoints()[i][0] == 0 && i != 0) {
+					break;
+				}
+				bufWriter.write(Double.toString(ScatterPlotPanel.getGraphList().get(graphNumber).getDataPoints()[i][0]));
+				for (int j = 0; j < ScatterPlotPanel.getGraphList().size(); j++) {
+					bufWriter.write(",");
+					if (i < ScatterPlotPanel.getGraphList().get(j).getDataPoints().length) {
+						bufWriter.write(Integer.toString((int)ScatterPlotPanel.getGraphList().get(j).getDataPoints()[i][1]));
+
+					} else {
+						bufWriter.write(Integer.toString(0));						
+					}					
+				}
+				bufWriter.newLine();				
+			}			
+			bufWriter.close();
+		} catch (IOException e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");;
+		}
+	}
+	
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent arg0) {}
 

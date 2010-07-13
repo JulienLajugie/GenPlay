@@ -52,9 +52,9 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			max[i] = binListArray[i].getMax();
 			min[i] = binListArray[i].getMin();
 			distanceMinMax[i] = max[i] - min[i];	
-			result[i] = new double[(int)(distanceMinMax[i] / scoreBinSize) + 2][2];	
+			result[i] = new double[(int)(distanceMinMax[i] / scoreBinSize) + 1][2];	
 		}
-
+		System.out.println("distanceMinMax[i] / scoreBinSize: " + (int)(distanceMinMax[0] / scoreBinSize));
 		int z = 0;
 		int k = 0;
 		while (k < binListArray.length) {
@@ -64,7 +64,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 				minNegative = 1;
 			//min[k] = Math.abs(min[k]);
 			int i = 0;
-			while ((scoreBinSize*i) <= Math.abs(min[k])) {
+			while ((scoreBinSize*i) < Math.abs(min[k])) {
 				i++;
 			}
 			if (minNegative == 1) {
@@ -72,21 +72,22 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			}else {
 				startPoint = scoreBinSize*(i-1);
 			}
-			if (startPoint + z*scoreBinSize >= max[k]) {
+			if (Math.ceil(startPoint + z*scoreBinSize) >= max[k]) {
 				z = 0;
 				k++;
 				if (k == binListArray.length)
 					break;
 			}
-			result[k][z++][0] = startPoint + z*scoreBinSize;			
+			System.out.println("Z = " + z);
+			result[k][z][0] = (startPoint + z*scoreBinSize);
+			z++;
 		}		
 
-		for (k = 0; k < binListArray.length; k++) {
+ 		for (k = 0; k < binListArray.length; k++) {
 			for (short i = 0; i < binListArray[k].size(); i++) {
 				if (binListArray[k].get(i) != null) {
 					for(int j = 0; j < binListArray[k].size(i); j++) {
 						if (binListArray[k].get(i,j) != 0) {
-							//System.out.println(binListArray[k].get(i,j) + "\t" + min[k]);
 							result[k][(int)((binListArray[k].get(i,j) - min[k]) / scoreBinSize)][1]++;
 						}
 					}
