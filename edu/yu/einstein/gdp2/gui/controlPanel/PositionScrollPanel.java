@@ -27,7 +27,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PositionScrollPanel extends JPanel implements AdjustmentListener, MouseWheelListener, GenomeWindowEventsGenerator {
+final class PositionScrollPanel extends JPanel implements AdjustmentListener, MouseWheelListener, GenomeWindowEventsGenerator {
 
 
 	private static final long serialVersionUID = 2266293237606451568L; 	// Generated ID
@@ -42,7 +42,7 @@ public final class PositionScrollPanel extends JPanel implements AdjustmentListe
 	 * Creates an instance of {@link PositionScrollPanel}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public PositionScrollPanel(GenomeWindow genomeWindow) {
+	PositionScrollPanel(GenomeWindow genomeWindow) {
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
 		int currentPosition = (int)currentGenomeWindow.getMiddlePosition();
@@ -71,7 +71,7 @@ public final class PositionScrollPanel extends JPanel implements AdjustmentListe
 	 * Sets the current {@link GenomeWindow}
 	 * @param newGenomeWindow new {@link GenomeWindow}
 	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
+	void setGenomeWindow(GenomeWindow newGenomeWindow) {
 		if (!newGenomeWindow.equals(currentGenomeWindow)) {
 			GenomeWindow oldGenomeWindow = currentGenomeWindow;
 			currentGenomeWindow = newGenomeWindow;

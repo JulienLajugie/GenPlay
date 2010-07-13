@@ -34,7 +34,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowEventsGenerator {
+final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -8481919273684304592L; // generated ID
 	private static final DecimalFormat SIZE_FORMAT = new DecimalFormat("###,###,###");	// Format of the zoom string
@@ -51,7 +51,7 @@ public final class ZoomPanel extends JPanel implements MouseWheelListener, Genom
 	 * Creates an instance of {@link ZoomPanel}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public ZoomPanel(GenomeWindow genomeWindow) {
+	ZoomPanel(GenomeWindow genomeWindow) {
 		this.zoomManager = ZoomManager.getInstance();
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
@@ -132,7 +132,7 @@ public final class ZoomPanel extends JPanel implements MouseWheelListener, Genom
 	 * Sets the current {@link GenomeWindow}
 	 * @param newGenomeWindow new {@link GenomeWindow}
 	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
+	void setGenomeWindow(GenomeWindow newGenomeWindow) {
 		if (!newGenomeWindow.equals(currentGenomeWindow)) {
 			GenomeWindow oldGenomeWindow = currentGenomeWindow;
 			currentGenomeWindow = newGenomeWindow;
@@ -169,7 +169,7 @@ public final class ZoomPanel extends JPanel implements MouseWheelListener, Genom
 	 * Called when the zoom changes
 	 * @param newZoom new zoom value
 	 */
-	protected void zoomChanged(int newZoom) {
+	void zoomChanged(int newZoom) {
 		int currentZoom = currentGenomeWindow.getSize();
 		int	maximumZoom = currentGenomeWindow.getChromosome().getLength() * 2;
 		if (newZoom > maximumZoom) {

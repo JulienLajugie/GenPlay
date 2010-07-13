@@ -28,7 +28,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenerator {
+final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = 8279801687428218652L;  // generated ID
 	private final JTextField 						jftGenomeWindow;	// text field for the GenomeWindow
@@ -41,7 +41,7 @@ public final class GenomeWindowPanel extends JPanel implements GenomeWindowEvent
 	 * Creates an instance of {@link GenomeWindowPanel}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public GenomeWindowPanel(GenomeWindow genomeWindow) {
+	GenomeWindowPanel(GenomeWindow genomeWindow) {
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
 		jftGenomeWindow = new JTextField(20);
@@ -88,7 +88,7 @@ public final class GenomeWindowPanel extends JPanel implements GenomeWindowEvent
 	 * Sets the current {@link GenomeWindow}
 	 * @param newGenomeWindow new {@link GenomeWindow}
 	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
+	void setGenomeWindow(GenomeWindow newGenomeWindow) {
 		if (!newGenomeWindow.equals(currentGenomeWindow)) {
 			GenomeWindow oldGenomeWindow = currentGenomeWindow;
 			currentGenomeWindow = newGenomeWindow;
@@ -107,7 +107,7 @@ public final class GenomeWindowPanel extends JPanel implements GenomeWindowEvent
 	/**
 	 * Called when the current {@link GenomeWindow} changes
 	 */
-	protected void genomeWindowChanged() {
+	void genomeWindowChanged() {
 		try {
 			GenomeWindow newGenomeWindow = new GenomeWindow(jftGenomeWindow.getText(), ChromosomeManager.getInstance());
 			if (!newGenomeWindow.equals(currentGenomeWindow)) {

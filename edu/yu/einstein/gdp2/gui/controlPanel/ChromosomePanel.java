@@ -29,7 +29,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemListener, GenomeWindowEventsGenerator {
+final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -7749788921295566004L;	// generated ID
 	private final JLabel 							jlChromosome;		// label chromosome
@@ -42,7 +42,7 @@ public final class ChromosomePanel extends JPanel implements MouseWheelListener,
 	 * Creates an instance of {@link ChromosomePanel}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	public ChromosomePanel(GenomeWindow genomeWindow) {
+	ChromosomePanel(GenomeWindow genomeWindow) {
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
 		jlChromosome = new JLabel(" Chromosome ");
@@ -80,7 +80,7 @@ public final class ChromosomePanel extends JPanel implements MouseWheelListener,
 	 * Sets the current {@link GenomeWindow}
 	 * @param newGenomeWindow new {@link GenomeWindow}
 	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
+	void setGenomeWindow(GenomeWindow newGenomeWindow) {
 		if (!newGenomeWindow.equals(currentGenomeWindow)) {
 			GenomeWindow oldGenomeWindow = currentGenomeWindow;
 			currentGenomeWindow = newGenomeWindow;
