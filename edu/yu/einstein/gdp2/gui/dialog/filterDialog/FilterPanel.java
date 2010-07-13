@@ -46,7 +46,7 @@ abstract class FilterPanel extends JPanel {
 	 * @param defaultMin default min
 	 * @param defaultMax default max
 	 */
-	protected FilterPanel(String name, String filterDescription, String textMin, String textMax, DecimalFormat df, Number defaultMin, Number defaultMax, boolean defaultIsSaturation) {		
+	FilterPanel(String name, String filterDescription, String textMin, String textMax, DecimalFormat df, Number defaultMin, Number defaultMax, boolean defaultIsSaturation) {		
 		super();
 		// set the name of the filter panel
 		setName(name);

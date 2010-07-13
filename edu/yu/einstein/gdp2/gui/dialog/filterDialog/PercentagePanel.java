@@ -33,7 +33,7 @@ final class PercentagePanel extends FilterPanel {
 	/**
 	 * Creates an instance of {@link PercentagePanel}
 	 */
-	protected PercentagePanel() {
+	PercentagePanel() {
 		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, defaultIsSaturation);
 	}
 

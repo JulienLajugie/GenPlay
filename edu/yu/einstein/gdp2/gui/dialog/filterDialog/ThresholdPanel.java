@@ -33,7 +33,7 @@ final class ThresholdPanel extends FilterPanel {
 	/**
 	 * Creates an instance of {@link ThresholdPanel}
 	 */
-	protected ThresholdPanel() {
+	ThresholdPanel() {
 		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, defaultIsSaturation);
 	}
 

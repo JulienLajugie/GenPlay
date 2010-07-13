@@ -31,7 +31,7 @@ final class CountPanel extends FilterPanel {
 	/**
 	 * Creates an instance of {@link CountPanel}
 	 */
-	protected CountPanel() {
+	CountPanel() {
 		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, defaultIsSaturation);
 	}
 

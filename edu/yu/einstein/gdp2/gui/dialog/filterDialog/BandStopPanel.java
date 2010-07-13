@@ -33,7 +33,7 @@ final class BandStopPanel extends FilterPanel {
 	/**
 	 * Creates an instance of {@link BandStopPanel}
 	 */
-	protected BandStopPanel() {
+	BandStopPanel() {
 		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, defaultIsSaturation);
 	}
 	
