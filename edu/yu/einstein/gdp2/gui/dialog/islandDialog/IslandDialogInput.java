@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.dialog;
+package yu.einstein.gdp2.gui.dialog.islandDialog;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;

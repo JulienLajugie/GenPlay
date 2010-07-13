@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.dialog;
+package yu.einstein.gdp2.gui.dialog.islandDialog;
 
 import java.awt.Component;
 import java.awt.Dimension;
