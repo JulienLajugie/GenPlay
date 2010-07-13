@@ -15,8 +15,8 @@ import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
-import yu.einstein.gdp2.gui.dialog.IslandDialog;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
+import yu.einstein.gdp2.gui.dialog.islandDialog.IslandDialog;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 
