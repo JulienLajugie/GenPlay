@@ -43,9 +43,9 @@ final class DASOptionPanel extends OptionPanel {
 	private JTable jtserverurl;
 	private JButton jbadd;
 	private JButton jbremove;
-	protected static boolean tableChangedFlag = false;
+	static boolean tableChangedFlag = false;
 	private final String[] headerNames = { "Server Name", "URL" };
-	protected static Object[][] tableData;
+	static Object[][] tableData;
 	private File file;
 
 	
@@ -150,7 +150,7 @@ final class DASOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link DASOptionPanel}
 	 */
-	protected DASOptionPanel() {
+	DASOptionPanel() {
 		super("DAS Server");
 		file = new File(configurationManager.getDASServerListFile());
 		try {

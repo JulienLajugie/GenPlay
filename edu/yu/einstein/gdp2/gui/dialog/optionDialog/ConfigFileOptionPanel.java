@@ -35,7 +35,7 @@ final class ConfigFileOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link ConfigFileOptionPanel}
 	 */
-	protected ConfigFileOptionPanel() {
+	ConfigFileOptionPanel() {
 		super("Configuration Files");
 		jlZoomFile = new JLabel("Zoom configuration file: ");
 		if ((configurationManager.getZoomFile() == null) || (configurationManager.getZoomFile().equals(""))) {

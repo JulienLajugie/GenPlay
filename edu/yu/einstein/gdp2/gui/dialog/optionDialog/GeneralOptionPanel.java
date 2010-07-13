@@ -44,7 +44,7 @@ final class GeneralOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link GeneralOptionPanel}
 	 */
-	protected GeneralOptionPanel() {
+	GeneralOptionPanel() {
 		super("General");
 
 		jlDefaultDir = new JLabel("Default directory: ");

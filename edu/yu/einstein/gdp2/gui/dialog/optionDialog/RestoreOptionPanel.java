@@ -28,7 +28,7 @@ final class RestoreOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link RestoreOptionPanel}
 	 */
-	protected RestoreOptionPanel() {
+	RestoreOptionPanel() {
 		super("Restore Default");
 		jlRestore = new JLabel("Restore default configuration:");
 		jbRestore = new JButton("Restore");

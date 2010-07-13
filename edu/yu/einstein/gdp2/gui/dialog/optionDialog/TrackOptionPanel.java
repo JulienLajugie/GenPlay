@@ -38,7 +38,7 @@ final class TrackOptionPanel extends OptionPanel {
 	/**
 	 * Creates an instance of {@link TrackOptionPanel}
 	 */
-	public TrackOptionPanel() {
+	TrackOptionPanel() {
 		super("Track Option");
 
 		jlTrackCount = new JLabel("Number of Tracks:");

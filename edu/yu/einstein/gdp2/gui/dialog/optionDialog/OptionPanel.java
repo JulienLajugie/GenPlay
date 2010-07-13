@@ -21,14 +21,14 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 abstract class OptionPanel extends JPanel {
 
 	private static final long serialVersionUID = 4821469631755757767L; 	// Generated ID
-	protected final ConfigurationManager configurationManager; 			// ConfigurationManager
+	final ConfigurationManager configurationManager; 			// ConfigurationManager
 
 	
 	/**
 	 * Constructor. Creates an instance of {@link OptionPanel}
 	 * @param name name of the category of configuration
 	 */
-	protected OptionPanel(String name) {
+	OptionPanel(String name) {
 		super();
 		setName(name);
 		this.configurationManager = ConfigurationManager.getInstance();
