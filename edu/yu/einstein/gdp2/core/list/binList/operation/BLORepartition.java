@@ -17,15 +17,12 @@ import yu.einstein.gdp2.core.operation.Operation;
 /**
  * Creates bins of score with a size of <i>scoreBinsSize</i>, 
  * and computes how many bins of the BinList there is in each bin of score.
- * Writes the result in a file. 
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 public class BLORepartition extends JComponent implements Operation<double [][][]> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final BinList[] binListArray;	// input binListArray
 	private final double 	scoreBinSize;	// size of the bins of score
@@ -52,7 +49,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			max[i] = binListArray[i].getMax();
 			min[i] = binListArray[i].getMin();
 			distanceMinMax[i] = max[i] - min[i];	
-			result[i] = new double[(int)(distanceMinMax[i] / scoreBinSize) + 1][2];	
+			result[i] = new double[(int)(distanceMinMax[i] / scoreBinSize) + 2][2];	
 		}
 		System.out.println("distanceMinMax[i] / scoreBinSize: " + (int)(distanceMinMax[0] / scoreBinSize));
 		int z = 0;

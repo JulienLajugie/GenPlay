@@ -28,10 +28,8 @@ public class AxisOption {
 
 	private JLabel jlYAxisTickSize = null;					// JLabel for Y-axis tick size
 	private JLabel jlYAxisMax = null;						// JLabel for Y-axis max value
-	private JLabel jlYAxisMin = null;						// JLabel for Y-axis min value
 	private JFormattedTextField jftYAxisTickSize = null;	// JFormattedTextField to accept user input for y-axis tick size
 	private JFormattedTextField jftYAxisMax = null;			// JFormattedTextField to accept user input for y-axis max value
-	private JFormattedTextField jftYAxisMin = null;			// JFormattedTextField to accept user input for y-axis min value
 	private JButton jbYAxisOk = null;						// JButton OK
 	private JButton jbYAxisClear = null;					// JButton Clear
 	private JButton jbYAxisCancel = null;					// JButton Cancel
@@ -174,7 +172,6 @@ public class AxisOption {
 	public void handleYAxisOption(String axisName) {
 		jlYAxisTickSize = new JLabel("Tick Size: ");
 		jlYAxisMax = new JLabel("Max Value: ");	
-		jlYAxisMin = new JLabel("Min Value: ");	
 		NumberFormatter nF = new NumberFormatter(new DecimalFormat("###,###,###.#"));
 		nF.setAllowsInvalid(false);
 		nF.setMinimum(0);
@@ -182,12 +179,9 @@ public class AxisOption {
 		jftYAxisTickSize.setText(Double.toString(ScatterPlotPanel.getYAxisStepSize()));
 		jftYAxisMax = new JFormattedTextField(nF);
 		jftYAxisMax.setText(Double.toString(ScatterPlotPanel.getYAxisEnd()));
-		jftYAxisMin = new JFormattedTextField(nF);
-		jftYAxisMin.setText(Double.toString(ScatterPlotPanel.getYAxisStart()));
 		jftYAxisTickSize.setMinimumSize(new Dimension(100, 20));
 		jftYAxisMax.setMinimumSize(new Dimension(100, 20));
-		jftYAxisMin.setMinimumSize(new Dimension(100, 20));
-		
+				
 		jbYAxisOk = new JButton("OK");
 		jbYAxisOk.addActionListener(new ActionListener() {
 			
@@ -199,10 +193,7 @@ public class AxisOption {
 				}
 				if (jftYAxisMax.getText().length() != 0 && (Integer)(jftYAxisMax.getValue()) > 0) {
 					ScatterPlotPanel.setYAxis(ScatterPlotPanel.getYAxisStart(),(Integer)(jftYAxisMax.getValue()));					
-				}
-				if (jftYAxisMin.getText().length() != 0) {
-					ScatterPlotPanel.setYAxis((Integer)(jftYAxisMin.getValue()),ScatterPlotPanel.getYAxisEnd());					
-				}
+				}				
 			}
 		});
 		
@@ -213,7 +204,6 @@ public class AxisOption {
 			public void actionPerformed(ActionEvent e) {
 				jftYAxisTickSize.setText("");
 				jftYAxisMax.setText("");
-				jftYAxisMin.setText("");
 			}
 		});
 		
@@ -244,16 +234,6 @@ public class AxisOption {
 		
 		c.gridx = 0;
 		c.gridy = 1;		
-		jlYAxisMin.setVisible(true);
-		jd.add(jlYAxisMin, c);
-		
-		c.gridx = 1;
-		jftYAxisMin.setMinimumSize(new Dimension(100, 20));
-		jftYAxisMin.setPreferredSize(new Dimension(100, 20));
-		jd.add(jftYAxisMin,c);
-		
-		c.gridx = 0;
-		c.gridy = 2;		
 		jlYAxisMax.setVisible(true);
 		jd.add(jlYAxisMax, c);
 		
@@ -263,21 +243,21 @@ public class AxisOption {
 		jd.add(jftYAxisMax,c);
 				
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 2;
 		jd.add(jbYAxisOk,c);
 		
 		c.gridx = 1;
-		c.gridy = 3;
+		c.gridy = 2;
 		jd.add(jbYAxisClear,c);
 		
 		c.gridx = 2;
-		c.gridy = 3;
+		c.gridy = 2;
 		jd.add(jbYAxisCancel,c);
 		
 		jd.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		jd.getRootPane().setDefaultButton(jbYAxisOk);
-		jd.setPreferredSize(new Dimension (250, 125));
-		jd.setMinimumSize(new Dimension (250, 125));
+		jd.setPreferredSize(new Dimension (250, 100));
+		jd.setMinimumSize(new Dimension (250, 100));
 		jd.setResizable(false);
 		jd.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - jd.getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - jd.getHeight())/2);
 		jd.pack();

@@ -42,7 +42,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	transient private Double 	min = null;			// smallest value of the BinList
 	transient private Double 	max = null;			// greatest value of the BinList 
 	transient private Double 	average = null;		// average of the BinList
-	transient private Double 	stDev = null;		// standar deviation of the BinList
+	transient private Double 	stDev = null;		// standard deviation of the BinList
 	transient private Long 		nonNullLength = null;// count of none-null bins in the BinList
 
 	

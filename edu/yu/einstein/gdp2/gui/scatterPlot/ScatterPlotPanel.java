@@ -548,19 +548,20 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {		
-		if (e.getButton() == 1) {
-			@SuppressWarnings("unused")
-			AxisOption axisOption = null;
-			Point p = getTranslatedPoint(xMin, 0d);
-			if (e.getX() <= 100 && e.getX() >= 50 && e.getY() >= TOP_PAD_LABELS && e.getY() <= getHeight() - TOP_PAD_LABELS - BOTTOM_PAD && (e.getClickCount() == 2)) {
-				axisOption = new AxisOption("Y-Axis");
-				repaint();
-			}		
-			if (e.getX() >= 100 && e.getX() <= getWidth() -  RIGHT_PAD && e.getY() >= p.y && e.getY() <= p.y + 50 && (e.getClickCount() == 2)) {
-				axisOption = new AxisOption("X-Axis");
-				repaint();
-			}
-		} else if (e.getButton() == 3){
+//		if (e.getButton() == 1) {
+//			@SuppressWarnings("unused")
+//			AxisOption axisOption = null;
+//			Point p = getTranslatedPoint(xMin, 0d);
+//			if (e.getX() <= 100 && e.getX() >= 50 && e.getY() >= TOP_PAD_LABELS && e.getY() <= getHeight() - TOP_PAD_LABELS - BOTTOM_PAD && (e.getClickCount() == 2)) {
+//				axisOption = new AxisOption("Y-Axis");
+//				repaint();
+//			}		
+//			if (e.getX() >= 100 && e.getX() <= getWidth() -  RIGHT_PAD && e.getY() >= p.y && e.getY() <= p.y + 50 && (e.getClickCount() == 2)) {
+//				axisOption = new AxisOption("X-Axis");
+//				repaint();
+//			}
+//		}
+		if (e.getButton() == 3){
 			ScatterPlotRightClickedMenu sprc = new ScatterPlotRightClickedMenu(this);
 			sprc.show(this, e.getX(), e.getY());
 		}			

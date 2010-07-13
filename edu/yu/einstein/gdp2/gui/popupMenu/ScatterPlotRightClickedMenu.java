@@ -30,6 +30,7 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import yu.einstein.gdp2.core.manager.ExceptionManager;
+import yu.einstein.gdp2.gui.scatterPlot.AxisOption;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
 import yu.einstein.gdp2.util.Utils;
 
@@ -41,8 +42,10 @@ import yu.einstein.gdp2.util.Utils;
 public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionListener, PopupMenuListener {
 	private static final long serialVersionUID = 5259896882194725264L;
 
-	private final JMenuItem	jmiSaveImage;							// menu save plot as image
-	private final JMenuItem	jmiSaveData;							// menu save plot as image
+	private final JMenuItem	jmiSaveImage;						// menu save plot as image
+	private final JMenuItem	jmiSaveData;						// menu save plot as image
+	private final JMenuItem	jmiSetYAxis;						// menu for setting y axis params
+	private final JMenuItem	jmiSetXAxis;						// menu for setting x axis params
 	private final JRadioButtonMenuItem	jmiBarGraph;			// draw bar graph
 	private final JRadioButtonMenuItem	jmiScatterPlot;			// draw scatter plot
 	private final JRadioButtonMenuItem jmiCurve;				// join points to form a curve
@@ -57,6 +60,8 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 	public ScatterPlotRightClickedMenu(final ScatterPlotPanel scatterPlotPanel) {
 		jmiSaveImage = new JMenuItem("Save Plot");
 		jmiSaveData = new JMenuItem("Save Data");
+		jmiSetYAxis = new JMenuItem("Set Y Axis");
+		jmiSetXAxis = new JMenuItem("Set X Axis");
 		jmiBarGraph = new JRadioButtonMenuItem("Plot Bar Graph");
 		jmiScatterPlot = new JRadioButtonMenuItem("Plot Points");
 		jmiCurve = new JRadioButtonMenuItem("Plot Curve");
@@ -83,6 +88,9 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 		add(jmiSaveData);
 		addSeparator();
 		add(jmiChangeColors);
+		addSeparator();
+		add(jmiSetYAxis);
+		add(jmiSetXAxis);
 		addSeparator();
 		add(jcbmiXAxisGrid);
 		add(jcbmiYAxisGrid);	
@@ -144,6 +152,26 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 			    }
 			}
 		});		
+		
+		jmiSetYAxis.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unused")
+				AxisOption axisOption = new AxisOption("Y-Axis");
+				scatterPlotPanel.repaint();
+			}
+		});
+		
+		jmiSetXAxis.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unused")
+				AxisOption axisOption = new AxisOption("X-Axis");
+				scatterPlotPanel.repaint();
+			}
+		});
 
 		jcbmiXAxisGrid.setSelected(ScatterPlotPanel.isxAxisGridLines());
 		jcbmiXAxisGrid.addItemListener(new ItemListener() {
