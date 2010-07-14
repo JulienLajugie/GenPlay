@@ -4,16 +4,17 @@
  */
 package yu.einstein.gdp2.gui.action.binListTrack;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
+import yu.einstein.gdp2.core.enums.PeakFinderType;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFilterDensity;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSearchPeaks;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
-import yu.einstein.gdp2.gui.dialog.GenomeWidthChooser;
-import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
+import yu.einstein.gdp2.gui.dialog.peakFinderDialog.DensityFinderPanel;
+import yu.einstein.gdp2.gui.dialog.peakFinderDialog.PeakFinderDialog;
+import yu.einstein.gdp2.gui.dialog.peakFinderDialog.StDevFinderPanel;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 
 
@@ -53,13 +54,21 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			BinList binList = selectedTrack.getData();
-			Number sizeMovingSD = GenomeWidthChooser.getMovingStdDevWidth(getRootPane(), binList.getBinSize());
-			if(sizeMovingSD != null) {
-				Number nbSDAccepted = NumberOptionPane.getValue(getRootPane(), "Threshold", "Select only peak with a local SD x time higher than the global one", new DecimalFormat("0.0"), 0, 1000, 1).intValue(); 
-				if(nbSDAccepted != null) {
-					Operation<BinList> operation = new BLOSearchPeaks(binList, sizeMovingSD.intValue(), nbSDAccepted.intValue());
-					return operation;
-				}
+			PeakFinderDialog peakFinderDialog = new PeakFinderDialog();
+			if (peakFinderDialog.showFilterDialog(getRootPane()) == PeakFinderDialog.APPROVE_OPTION) {
+				if (peakFinderDialog.getPeakFinderType() == PeakFinderType.STDEV) {
+					StDevFinderPanel stDevPanel = (StDevFinderPanel) peakFinderDialog.getPeakFinderPanel();
+					int regionWidth = stDevPanel.getRegionWidth();
+					double threshold = stDevPanel.getThreshold();
+					return new BLOSearchPeaks(binList, regionWidth, threshold);
+				} else if (peakFinderDialog.getPeakFinderType() == PeakFinderType.DENSITY) {
+					DensityFinderPanel densityPanel = (DensityFinderPanel) peakFinderDialog.getPeakFinderPanel();
+					int regionWidth = densityPanel.getRegionWidth();
+					double lowThreshold = densityPanel.getLowThreshold();
+					double highThreshold = densityPanel.getHighThreshold();
+					double percentage = densityPanel.getPercentage();
+					return new BLOFilterDensity(binList, lowThreshold, highThreshold, percentage, regionWidth);
+				}				
 			}
 		}	
 		return null;

@@ -25,7 +25,7 @@ import yu.einstein.gdp2.util.DoubleLists;
 public class BLOSearchPeaks implements Operation<BinList> {
 
 	private final BinList 	binList;		// input BinList 
-	private final int 		sizeMovingSD;	// size of the moving stdev in bp
+	private final int 		halfWidth;		// half size of the moving stdev (in bins)
 	private final double 	nbSDAccepted;	/* 	threshold: we accept a bin if the local stdev centered 
 											 	on this point is at least this parameter time higher than 
 												the chromosome wide stdev 	*/
@@ -37,13 +37,13 @@ public class BLOSearchPeaks implements Operation<BinList> {
 	 * local stdev centered on this bin is higher than a certain threshold.
 	 * The threshold is specified in chromosome wide stdev folds.
 	 * @param binList input {@link BinList}
-	 * @param sizeMovingSD size of the moving stdev in bp
+	 * @param halfWidth half size of the moving stdev (in bins)
 	 * @param nbSDAccepted threshold: we accept a bin if the local stdev centered on this point is at 
 	 * least this parameter time higher than the chromosome wide stdev
 	 */
-	public BLOSearchPeaks(BinList binList, int sizeMovingSD, double nbSDAccepted) {
+	public BLOSearchPeaks(BinList binList, int halfWidth, double nbSDAccepted) {
 		this.binList = binList;
-		this.sizeMovingSD = sizeMovingSD;
+		this.halfWidth = halfWidth;
 		this.nbSDAccepted = nbSDAccepted;
 	}
 
@@ -53,7 +53,6 @@ public class BLOSearchPeaks implements Operation<BinList> {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final int binSize = binList.getBinSize();
-		final int halfWidth = sizeMovingSD / (binSize * 2);
 
 		for(short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);	
@@ -114,7 +113,7 @@ public class BLOSearchPeaks implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Search Peaks, Local Stdev Width = " +  sizeMovingSD + " bp, Threshold = " + nbSDAccepted + " Stdev";
+		return "Operation: Search Peaks, Local Stdev Width = " +  (halfWidth * 2 * binList.getBinSize()) + " bp, Threshold = " + nbSDAccepted + " Stdev";
 	}
 	
 	
