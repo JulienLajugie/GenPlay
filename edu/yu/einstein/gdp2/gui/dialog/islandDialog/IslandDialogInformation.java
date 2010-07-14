@@ -17,7 +17,7 @@ import yu.einstein.gdp2.core.filter.IslandFinder;
  * @author Nicolas
  * @version 0.1
  */
-public class IslandDialogInformation extends IslandDialogFieldset{
+final class IslandDialogInformation extends IslandDialogFieldset{
 	
 	private static final long serialVersionUID = -1616307602412859645L;
 	
@@ -43,7 +43,7 @@ public class IslandDialogInformation extends IslandDialogFieldset{
 	 * Constructor for IslandDialogInformation
 	 * @param title		fieldset title
 	 */
-	public IslandDialogInformation(String title, IslandFinder island) {
+	IslandDialogInformation(String title, IslandFinder island) {
 		super(title, island);
 		
 		//Set "window size" information
@@ -165,7 +165,7 @@ public class IslandDialogInformation extends IslandDialogFieldset{
 	}
 
 	//Getter
-	public JLabel getJlPValueValue() {
+	protected JLabel getJlPValueValue() {
 		return jlPValueValue;
 	}
 }

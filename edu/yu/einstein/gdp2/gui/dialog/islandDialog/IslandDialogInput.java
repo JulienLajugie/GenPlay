@@ -29,7 +29,7 @@ import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
  * @author Nicolas
  * @version 0.1
  */
-public class IslandDialogInput extends IslandDialogFieldset{
+final class IslandDialogInput extends IslandDialogFieldset{
 	
 	private static final long serialVersionUID = -1616307602412859645L;
 	
@@ -80,7 +80,7 @@ public class IslandDialogInput extends IslandDialogFieldset{
 	 * @param island	IslandFinder object to set some information
 	 * @param dialog	necessary to communicate with the p-value
 	 */
-	public IslandDialogInput(String title, IslandFinder island, IslandDialogInformation dialog) {
+	IslandDialogInput(String title, IslandFinder island, IslandDialogInformation dialog) {
 		super(title, island);
 		
 		this.dialogInformation = dialog;
@@ -415,19 +415,19 @@ public class IslandDialogInput extends IslandDialogFieldset{
 	}
 	
 	//Getters
-	public Double getWindowLimitValue () {
+	protected Double getWindowLimitValue () {
 		return Double.parseDouble(this.jftfWindowMinValueValue.getValue().toString());
 	}
 	
-	public int getGap () {
+	protected int getGap () {
 		return Integer.parseInt(this.jftfGapValue.getValue().toString());
 	}
 	
-	public Double getIslandLimitScore () {
+	protected Double getIslandLimitScore () {
 		return Double.parseDouble(this.jftfIslandMinScoreValue.getValue().toString());
 	}
 	
-	public int getMinIslandLength () {
+	protected int getMinIslandLength () {
 		return Integer.parseInt(this.jftfIslandMinLengthValue.getValue().toString());
 	}
 }

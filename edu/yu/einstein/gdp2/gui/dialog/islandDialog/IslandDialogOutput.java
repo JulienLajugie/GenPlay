@@ -19,7 +19,7 @@ import yu.einstein.gdp2.core.filter.IslandFinder;
  * @author Nicolas
  * @version 0.1
  */
-public class IslandDialogOutput extends IslandDialogFieldset{
+final class IslandDialogOutput extends IslandDialogFieldset{
 	
 	private static final long serialVersionUID = -1616307602412859645L;
 	
@@ -42,7 +42,7 @@ public class IslandDialogOutput extends IslandDialogFieldset{
 	 * @param title		fieldset title
 	 * @param island	IslandFinder object to set some information
 	 */
-	public IslandDialogOutput(String title, IslandFinder island) {
+	IslandDialogOutput(String title, IslandFinder island) {
 		super(title, island);
 		
 		//Set "window size" information
@@ -121,11 +121,11 @@ public class IslandDialogOutput extends IslandDialogFieldset{
 	}
 	
 	//Getters for selected checkboxes
-	public boolean filteredSelected () {
+	protected boolean filteredSelected () {
 		return this.jcbFiltered.isSelected();
 	}
 	
-	public boolean IFScoreSelected () {
+	protected boolean IFScoreSelected () {
 		return this.jcbIFScore.isSelected();
 	}
 }

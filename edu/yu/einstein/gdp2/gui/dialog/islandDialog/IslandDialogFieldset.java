@@ -17,7 +17,7 @@ import yu.einstein.gdp2.core.filter.IslandFinder;
  * @author Nicolas
  * @version 0.1
  */
-public abstract class IslandDialogFieldset extends JPanel {
+abstract class IslandDialogFieldset extends JPanel {
 	
 	private static final long serialVersionUID = 8769389246423162454L;
 	
@@ -34,7 +34,7 @@ public abstract class IslandDialogFieldset extends JPanel {
 	 * @param title		fieldset title
 	 * @param island	IslandFinder object to set some information
 	 */
-	public IslandDialogFieldset (String title, IslandFinder island) {
+	IslandDialogFieldset (String title, IslandFinder island) {
 		super();
 		this.island = island;
 		this.setBorder(BorderFactory.createTitledBorder(title));
@@ -45,7 +45,7 @@ public abstract class IslandDialogFieldset extends JPanel {
 	 * Panel size are set
 	 * @param rows	total number of row in the fieldset
 	 */
-	public void setRows(int rows) {
+	protected void setRows(int rows) {
 		this.fieldsetHeight = rows * (IslandDialogFieldset.LINE_HEIGHT + 
 										IslandDialogFieldset.LINE_TOP_INSET_HEIGHT +
 										IslandDialogFieldset.LINE_BOTTOM_INSET_HEIGHT);
@@ -57,15 +57,15 @@ public abstract class IslandDialogFieldset extends JPanel {
 	}
 	
 	//Getters
-	public int getFieldsetHeight() {
+	protected int getFieldsetHeight() {
 		return fieldsetHeight;
 	}
 	
-	public Dimension getFieldsetSize() {
+	protected Dimension getFieldsetSize() {
 		return this.getSize();
 	}
 	
-	public IslandFinder getIsland() {
+	protected IslandFinder getIsland() {
 		return island;
 	}
 }
