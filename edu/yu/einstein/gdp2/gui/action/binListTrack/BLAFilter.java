@@ -70,7 +70,7 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 				case THRESHOLD:
 					return new BLOFilterThreshold(binList, min.doubleValue(), max.doubleValue(), isSaturation);
 				case BANDSTOP:
-					return new BLOFilterBandStop(binList, min.doubleValue(), max.doubleValue(), isSaturation);
+					return new BLOFilterBandStop(binList, min.doubleValue(), max.doubleValue());
 				default:
 					throw new IllegalArgumentException("Invalid Saturation Type");
 				}
@@ -87,30 +87,4 @@ public class BLAFilter extends TrackListActionOperationWorker<BinList> {
 			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
-
-
-
-	/**
-	 * Filters values where the density of not null values on a region is too low
-	 */
-//	private Operation<BinList> filterDensity() {
-//		BinList binList = selectedTrack.getData();
-//		Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Enter Threshold", "Remove values smaller than:", "Remove values greater than:", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-//		if(thresholds != null) {
-//			double thresholdLow = thresholds[0].doubleValue();
-//			double thresholdHigh = thresholds[1].doubleValue();			
-//			if (thresholdHigh <= thresholdLow) {
-//				JOptionPane.showMessageDialog(getRootPane(), "The high threshold must be greater than the low one", "Error", JOptionPane.ERROR_MESSAGE, null);
-//			} else {
-//				Number regionSize = NumberOptionPane.getValue(getRootPane(), "Size", "<html>Select the size of the region filtered<br/><center>(in number of bins)</center></html>", new DecimalFormat("0"), 1, 1000, 1); 
-//				if(regionSize != null) {
-//					Number density = NumberOptionPane.getValue(getRootPane(), "Density", "Enter the percentage of value above the filter", new DecimalFormat("###.###%"), 0, 1, 1);
-//					if (density != null) {
-//						return new BLOFilterDensity(binList, thresholdLow, thresholdHigh, density.doubleValue(), regionSize.intValue());
-//					}
-//				}
-//			}
-//		}
-//		return null;
-//	}
 }

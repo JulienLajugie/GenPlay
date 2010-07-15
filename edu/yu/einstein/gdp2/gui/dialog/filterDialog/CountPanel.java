@@ -37,25 +37,31 @@ final class CountPanel extends FilterPanel {
 
 	
 	@Override
-	protected boolean isInputValid() {
+	boolean isInputValid() {
 		return true;
 	}
 
 
 	@Override
-	protected void saveIsSaturation() {
+	boolean isSaturable() {
+		return true;
+	}
+
+
+	@Override
+	void saveIsSaturation() {
 		defaultIsSaturation = isSaturation();
 	}
 
 
 	@Override
-	protected void saveMax() {
+	void saveMax() {
 		defaultMax = getMaxInput();		
 	}
 
 
 	@Override
-	protected void saveMin() {
+	void saveMin() {
 		defaultMin = getMinInput();		
 	}
 }

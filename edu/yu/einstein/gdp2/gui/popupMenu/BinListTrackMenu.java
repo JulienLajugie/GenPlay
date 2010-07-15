@@ -38,7 +38,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaksStDev;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaks;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
@@ -145,7 +145,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiCorrelation = new JMenuItem(actionMap.get(BLACorrelate.ACTION_KEY));		
 		
 		jmiFilter = new JMenuItem(actionMap.get(BLAFilter.ACTION_KEY));
-		jmiSearchPeaks = new JMenuItem(actionMap.get(BLAFindPeaksStDev.ACTION_KEY));
+		jmiSearchPeaks = new JMenuItem(actionMap.get(BLAFindPeaks.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(BLAFindIslands.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(BLATransfrag.ACTION_KEY));
 		

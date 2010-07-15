@@ -68,7 +68,13 @@ public class BLOFilterCount implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Filter, " + lowValuesCount + " smallest values, " + highValuesCount + " greatest values";
+		String optionStr;
+		if (isSaturation) {
+			optionStr = ", option = saturation";
+		} else {
+			optionStr = ", option = remove";
+		}
+		return "Operation: Filter, " + lowValuesCount + " smallest values, " + highValuesCount + " greatest values" + optionStr;
 	}
 
 

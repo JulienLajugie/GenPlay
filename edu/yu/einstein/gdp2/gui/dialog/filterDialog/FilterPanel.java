@@ -24,7 +24,7 @@ import javax.swing.JTextArea;
  * @version 0.1
  */
 abstract class FilterPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = -1162560421976891221L;	// generated ID
 	private final JTextArea 			jlDescription;	// text area showing a description of the filter
 	private final JLabel 				jlMin;			// label for the min input
@@ -34,7 +34,7 @@ abstract class FilterPanel extends JPanel {
 	private final JRadioButton 			jrbRemove;		// radio button remove
 	private final JRadioButton 			jrbSaturate;	// radio button saturate
 	private final JTextArea 			jtaRadioText;	// text area with explanation for the radio buttons 
-	
+
 
 	/**
 	 * Creates an instance of a {@link FilterPanel}
@@ -73,10 +73,10 @@ abstract class FilterPanel extends JPanel {
 		jrbSaturate.setSelected(defaultIsSaturation);
 		// create the text area with explanation for the ratio buttons
 		jtaRadioText = new JTextArea("Choose Remove to set the filtered values to zero\n" +
-				"Choose Saturate to set the filtered values to the boundary value");
+		"Choose Saturate to set the filtered values to the boundary value");
 		jtaRadioText.setEditable(false);
 		jtaRadioText.setBackground(getBackground());
-		
+
 		// add the components 
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -105,73 +105,87 @@ abstract class FilterPanel extends JPanel {
 		c.gridx = 1;
 		add(jftfMax, c);
 
-		c.gridx = 0;
-		c.gridy = 3;
-		c.insets = new Insets(30, 0, 0, 0);
-		add(jrbRemove, c);
-		
-		c.gridx = 1;
-		add(jrbSaturate, c);
-		
-		c.gridx = 0;
-		c.gridy = 4;
-		c.gridwidth = 2;
-		c.insets = new Insets(0, 0, 0, 0);
-		add(jtaRadioText, c);
+		// we don't add the saturation components if this option is not available
+		if (isSaturable()) {
+			c.gridx = 0;
+			c.gridy = 3;
+			c.insets = new Insets(30, 0, 0, 0);
+			add(jrbRemove, c);
+
+			c.gridx = 1;
+			add(jrbSaturate, c);
+
+			c.gridx = 0;
+			c.gridy = 4;
+			c.gridwidth = 2;
+			c.insets = new Insets(0, 0, 0, 0);
+			add(jtaRadioText, c);
+		}
 	}
-	
-	
+
+
 	/**
 	 * @return the input for the max value
 	 */
-	protected Number getMaxInput() {
+	Number getMaxInput() {
 		Number max = (Number) jftfMax.getValue();
 		return max;
 	}
-	
-	
+
+
 	/**
 	 * @return the input for the min value
 	 */
-	protected Number getMinInput() {
+	Number getMinInput() {
 		Number min = (Number) jftfMin.getValue();
 		return min;
 	}
-	
-	
+
+
 	/**
 	 * Verifies that the input are valid. Shows a warning message if not.
 	 * @return true if the input are valid. False otherwise
 	 */
-	protected abstract boolean isInputValid();
-	
-	
+	abstract boolean isInputValid();
+
+
+	/**
+	 * @return true if the saturation option is available for a filter
+	 */
+	abstract boolean isSaturable();
+
+
 	/**
 	 * @return true if the saturation option is selected. False if the remove option is selected
 	 */
-	protected boolean isSaturation() {
-		return jrbSaturate.isSelected();
+	boolean isSaturation() {
+		if (isSaturable()) {
+			return jrbSaturate.isSelected();	
+		} else {
+			// if the saturation option is not available we return false
+			return false;
+		}
 	}
 
 
 	/**
 	 * Saves the saturation option state
 	 */
-	protected abstract void saveIsSaturation();
-	
-	
+	abstract void saveIsSaturation();
+
+
 	/**
 	 * Saves the maximum input 
 	 */
-	protected abstract void saveMax();
-	
-	
+	abstract void saveMax();
+
+
 	/**
 	 * Saves the minimum input 
 	 */
-	protected abstract void saveMin();
-	
-	
+	abstract void saveMin();
+
+
 	@Override
 	public String toString() {
 		return getName();

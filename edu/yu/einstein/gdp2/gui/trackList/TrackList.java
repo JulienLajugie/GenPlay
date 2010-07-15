@@ -84,7 +84,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaksStDev;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaks;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
@@ -244,7 +244,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLANormalize.ACTION_KEY, new BLANormalize());
 		getActionMap().put(BLANormalizeStandardScore.ACTION_KEY, new BLANormalizeStandardScore());
 		getActionMap().put(BLASumScore.ACTION_KEY, new BLASumScore());
-		getActionMap().put(BLAFindPeaksStDev.ACTION_KEY, new BLAFindPeaksStDev());
+		getActionMap().put(BLAFindPeaks.ACTION_KEY, new BLAFindPeaks());
 		getActionMap().put(BLARepartition.ACTION_KEY, new BLARepartition());
 		getActionMap().put(BLAStandardDeviation.ACTION_KEY, new BLAStandardDeviation());
 		getActionMap().put(BLASubtract.ACTION_KEY, new BLASubtract());

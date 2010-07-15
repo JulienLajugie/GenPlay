@@ -22,7 +22,7 @@ import yu.einstein.gdp2.util.DoubleLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOSearchPeaks implements Operation<BinList> {
+public class BLOFindPeaksStDev implements Operation<BinList> {
 
 	private final BinList 	binList;		// input BinList 
 	private final int 		halfWidth;		// half size of the moving stdev (in bins)
@@ -32,7 +32,7 @@ public class BLOSearchPeaks implements Operation<BinList> {
 	
 	
 	/**
-	 * Creates an instance of BLOSearchPeaks
+	 * Creates an instance of {@link BLOFindPeaksStDev}
 	 * Searches the peaks of a specified {@link BinList}. A bin is considered as a peak when the 
 	 * local stdev centered on this bin is higher than a certain threshold.
 	 * The threshold is specified in chromosome wide stdev folds.
@@ -41,7 +41,7 @@ public class BLOSearchPeaks implements Operation<BinList> {
 	 * @param nbSDAccepted threshold: we accept a bin if the local stdev centered on this point is at 
 	 * least this parameter time higher than the chromosome wide stdev
 	 */
-	public BLOSearchPeaks(BinList binList, int halfWidth, double nbSDAccepted) {
+	public BLOFindPeaksStDev(BinList binList, int halfWidth, double nbSDAccepted) {
 		this.binList = binList;
 		this.halfWidth = halfWidth;
 		this.nbSDAccepted = nbSDAccepted;

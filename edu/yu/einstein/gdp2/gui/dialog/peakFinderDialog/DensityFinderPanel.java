@@ -26,9 +26,12 @@ import yu.einstein.gdp2.core.enums.PeakFinderType;
 public class DensityFinderPanel extends JPanel implements PeakFinderPanel {
 
 	private static final long serialVersionUID = 3770930911273486277L;	// generated ID
-	private static final String 		NAME = PeakFinderType.DENSITY.toString(); // name of the peak finder
-	private static double 				defaultLowThreshold = 0;		// default low threshold
-	private static double 				defaultHighThreshold = 100;		// default high threshold
+	private static final String 		NAME = 
+		PeakFinderType.DENSITY.toString(); 								// name of the peak finder
+	private static double 				defaultLowThreshold = 
+		Double.NEGATIVE_INFINITY;										// default low threshold
+	private static double 				defaultHighThreshold = 
+		Double.POSITIVE_INFINITY;										// default high threshold
 	private static int 					defaultRegionWidth = 10;		// default region width
 	private static double 				defaultPercentage = 1;			// default percentage
 	private final JTextArea 			jtaDescription;					// description of the peak finder 

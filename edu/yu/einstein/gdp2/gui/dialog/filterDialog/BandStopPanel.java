@@ -27,19 +27,18 @@ final class BandStopPanel extends FilterPanel {
 	private final static DecimalFormat DF = new DecimalFormat("0.0");	// decimal format for the input numbers
 	private static Number 	defaultMin = 0;								// default/last min value
 	private static Number 	defaultMax = 100;							// default/last max value
-	private static boolean 	defaultIsSaturation = false;				// default/last saturation state
 	
 	
 	/**
 	 * Creates an instance of {@link BandStopPanel}
 	 */
 	BandStopPanel() {
-		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, defaultIsSaturation);
+		super(NAME, FILTER_DESCRIPTION, TEXT_MIN, TEXT_MAX, DF, defaultMin, defaultMax, false);
 	}
 	
 	
 	@Override
-	protected boolean isInputValid() {
+	boolean isInputValid() {
 		double thresholdLow = getMinInput().doubleValue();
 		double thresholdHigh = getMaxInput().doubleValue();
 		if (thresholdHigh <= thresholdLow) {
@@ -52,19 +51,23 @@ final class BandStopPanel extends FilterPanel {
 
 
 	@Override
-	protected void saveIsSaturation() {
-		defaultIsSaturation = isSaturation();
+	boolean isSaturable() {
+		return false;
 	}
 
 
 	@Override
-	protected void saveMax() {
+	void saveIsSaturation() {}
+
+
+	@Override
+	void saveMax() {
 		defaultMax = getMaxInput();		
 	}
 
 
 	@Override
-	protected void saveMin() {
+	void saveMin() {
 		defaultMin = getMinInput();		
 	}
 }

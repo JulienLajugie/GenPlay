@@ -26,7 +26,6 @@ public class BLOFilterBandStop implements Operation<BinList> {
 	private final BinList 	binList;		// input BinList
 	private final double 	lowThreshold;	// low bound 
 	private final double 	highThreshold;	// high bound
-	private final boolean	isSaturation;	// true if we saturate, false if we remove the filtered values
 
 	/**
 	 * Creates an instance of {@link BLOFilterBandStop}
@@ -35,11 +34,10 @@ public class BLOFilterBandStop implements Operation<BinList> {
 	 * @param highThreshold high threshold
 	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public BLOFilterBandStop(BinList binList, double lowThreshold, double highThreshold, boolean isSaturation) {
+	public BLOFilterBandStop(BinList binList, double lowThreshold, double highThreshold) {
 		this.binList = binList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
-		this.isSaturation = isSaturation;
 	}
 
 
@@ -63,17 +61,7 @@ public class BLOFilterBandStop implements Operation<BinList> {
 						for (int j = 0; j < currentList.size(); j++) {
 							double currentValue = currentList.get(j); 
 							if ((currentValue >= lowThreshold) && (currentValue <= highThreshold)) {
-								if (isSaturation) {
-									double distToLow = Math.abs(currentValue - lowThreshold);
-									double distToHigh = Math.abs(currentValue - highThreshold);
-									if (distToLow <= distToHigh) {
-										resultList.set(j, lowThreshold);
-									} else {
-										resultList.set(j, highThreshold);
-									}
-								} else {
-									resultList.set(j, 0d);
-								}
+								resultList.set(j, 0d);
 							} else {
 								resultList.set(j, currentValue);
 							}					

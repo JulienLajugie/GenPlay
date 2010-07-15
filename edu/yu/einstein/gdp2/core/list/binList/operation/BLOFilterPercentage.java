@@ -73,7 +73,13 @@ public class BLOFilterPercentage implements Operation<BinList> {
 	
 	@Override
 	public String getDescription() {
-		return "Operation: Filter, " + (lowPercentage * 100) + "% smallest values, " + (highPercentage * 100) + "% greatest values";
+		String optionStr;
+		if (isSaturation) {
+			optionStr = ", option = saturation";
+		} else {
+			optionStr = ", option = remove";
+		}
+		return "Operation: Filter, " + (lowPercentage * 100) + "% smallest values, " + (highPercentage * 100) + "% greatest values" + optionStr;
 	}
 	
 

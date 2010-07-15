@@ -39,7 +39,7 @@ final class PercentagePanel extends FilterPanel {
 
 	
 	@Override
-	protected boolean isInputValid() {
+	boolean isInputValid() {
 		double percentageLow = getMinInput().doubleValue();
 		double percentageHigh = getMaxInput().doubleValue();
 		if (percentageHigh + percentageLow > 1) {
@@ -52,19 +52,25 @@ final class PercentagePanel extends FilterPanel {
 
 
 	@Override
-	protected void saveIsSaturation() {
+	boolean isSaturable() {
+		return true;
+	}
+
+
+	@Override
+	void saveIsSaturation() {
 		defaultIsSaturation = isSaturation();
 	}
 
 
 	@Override
-	protected void saveMax() {
+	void saveMax() {
 		defaultMax = getMaxInput();		
 	}
 
 
 	@Override
-	protected void saveMin() {
+	void saveMin() {
 		defaultMin = getMinInput();		
 	}
 }

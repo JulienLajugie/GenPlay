@@ -108,7 +108,13 @@ public class BLOFilterThreshold implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Threshold Filter, minimum = " + lowThreshold + ", maximum = " + highThreshold;
+		String optionStr;
+		if (isSaturation) {
+			optionStr = ", option = saturation";
+		} else {
+			optionStr = ", option = remove";
+		}
+		return "Operation: Threshold Filter, minimum = " + lowThreshold + ", maximum = " + highThreshold + optionStr;
 	}
 
 

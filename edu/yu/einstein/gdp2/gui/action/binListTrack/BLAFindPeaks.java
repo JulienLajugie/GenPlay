@@ -8,8 +8,8 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.PeakFinderType;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BLOFilterDensity;
-import yu.einstein.gdp2.core.list.binList.operation.BLOSearchPeaks;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFindPeaksDensity;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFindPeaksStDev;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.peakFinderDialog.DensityFinderPanel;
@@ -23,10 +23,10 @@ import yu.einstein.gdp2.gui.track.BinListTrack;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList> {
+public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 1524662321569310278L;  // generated ID
-	private static final String 	ACTION_NAME = "Search Peaks";		// action name
+	private static final String 	ACTION_NAME = "Find Peaks";			// action name
 	private static final String 	DESCRIPTION = 
 		"Search the peaks of the selected track";						// tooltip
 	private BinListTrack 			selectedTrack;						// selected track
@@ -35,13 +35,13 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLASearchPeaks";
+	public static final String ACTION_KEY = "BLAFindPeaks";
 
 
 	/**
-	 * Creates an instance of {@link BLASearchPeaks}
+	 * Creates an instance of {@link BLAFindPeaks}
 	 */
-	public BLASearchPeaks() {
+	public BLAFindPeaks() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -60,14 +60,14 @@ public final class BLASearchPeaks extends TrackListActionOperationWorker<BinList
 					StDevFinderPanel stDevPanel = (StDevFinderPanel) peakFinderDialog.getPeakFinderPanel();
 					int regionWidth = stDevPanel.getRegionWidth();
 					double threshold = stDevPanel.getThreshold();
-					return new BLOSearchPeaks(binList, regionWidth, threshold);
+					return new BLOFindPeaksStDev(binList, regionWidth, threshold);
 				} else if (peakFinderDialog.getPeakFinderType() == PeakFinderType.DENSITY) {
 					DensityFinderPanel densityPanel = (DensityFinderPanel) peakFinderDialog.getPeakFinderPanel();
 					int regionWidth = densityPanel.getRegionWidth();
 					double lowThreshold = densityPanel.getLowThreshold();
 					double highThreshold = densityPanel.getHighThreshold();
 					double percentage = densityPanel.getPercentage();
-					return new BLOFilterDensity(binList, lowThreshold, highThreshold, percentage, regionWidth);
+					return new BLOFindPeaksDensity(binList, lowThreshold, highThreshold, percentage, regionWidth);
 				}				
 			}
 		}	
