@@ -23,23 +23,23 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLOFilterThreshold implements Operation<BinList> {
 	private final BinList 	binList;				// input binlist to filter
-	private final double 	lowThreshold;			// saturates the values under this threshold
-	private final double 	highThreshold;			// saturates the values above this threshold
-	private final  int 		nbConsecutiveValues;	// windows are accepted only if there is this  
-													// number of successive windows above (or under) the threshold
+	private final double 	lowThreshold;			// filters the values under this threshold
+	private final double 	highThreshold;			// filters the values above this threshold
+	private final boolean	isSaturation;			// true if we saturate, false if we remove the filtered values 
 
+	
 	/**
 	 * Creates an instance of {@link BLOFilterThreshold}
 	 * @param binList {@link BinList} to filter
 	 * @param lowThreshold filters the values under this threshold
 	 * @param highThreshold filters the values above this threshold
-	 * @param nbConsecutiveValues windows are accepted only if there is this number of successive windows above (or under) the threshold
+	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public BLOFilterThreshold(BinList binList, double lowThreshold, double highThreshold, int nbConsecutiveValues) {
+	public BLOFilterThreshold(BinList binList, double lowThreshold, double highThreshold, boolean isSaturation) {
 		this.binList = binList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
-		this.nbConsecutiveValues = nbConsecutiveValues;
+		this.isSaturation = isSaturation;
 	}
 
 
@@ -60,23 +60,32 @@ public class BLOFilterThreshold implements Operation<BinList> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
-						for (int j = 0; j < currentList.size() - nbConsecutiveValues; j++) {
-							boolean selected = true;
-							int k = 0;
-							// we accept a window if there is nbConsecutiveValues above or under the filter
-							while ((selected) && (k < nbConsecutiveValues) && (j + k < currentList.size())) {
-								// depending on the filter type we accept values above or under the threshold
-								selected = (currentList.get(j + k) > lowThreshold) && (currentList.get(j + k) < highThreshold);						
-								k++;
-							}
-							if (selected) {
-								while ((j < currentList.size()) && (currentList.get(j) > lowThreshold) && (currentList.get(j) < highThreshold)) {
-									resultList.set(j, currentList.get(j));
-									j++;
+						for (int i = 0; i < currentList.size(); i++) {
+							double currentScore = currentList.get(i);
+							if (currentScore != 0) {
+								if (currentScore > highThreshold) {
+									// if the score is greater than the high threshold
+									if (isSaturation) {
+										// set the value to high threshold (saturation)
+										resultList.set(i, highThreshold);
+									} else {
+										// set the value to 0
+										resultList.set(i, 0d);
+									}
+								} else if (currentScore < lowThreshold) {
+									// if the score is smaller than the low threshold
+									if (isSaturation) {
+										// set the value to low threshold (saturation)
+										resultList.set(i, lowThreshold);
+									} else {
+										// set the value to 0
+										resultList.set(i, 0d);
+									}
+								} else {
+									// if the score is between the two threshold
+									resultList.set(i, currentScore);
 								}
-							} else {
-								resultList.set(j, 0d);
-							}					
+							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -99,7 +108,7 @@ public class BLOFilterThreshold implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Threshold Filter, minimum = " + lowThreshold + ", maximum = " + highThreshold + ", number of successive values = " + nbConsecutiveValues;
+		return "Operation: Threshold Filter, minimum = " + lowThreshold + ", maximum = " + highThreshold;
 	}
 
 

@@ -26,21 +26,23 @@ public class BLOFilterBandStop implements Operation<BinList> {
 	private final BinList 	binList;		// input BinList
 	private final double 	lowThreshold;	// low bound 
 	private final double 	highThreshold;	// high bound
+	private final boolean	isSaturation;	// true if we saturate, false if we remove the filtered values
 
-	
 	/**
 	 * Creates an instance of {@link BLOFilterBandStop}
 	 * @param binList input {@link BinList}
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
+	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public BLOFilterBandStop(BinList binList, double lowThreshold, double highThreshold) {
+	public BLOFilterBandStop(BinList binList, double lowThreshold, double highThreshold, boolean isSaturation) {
 		this.binList = binList;
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
+		this.isSaturation = isSaturation;
 	}
-	
-	
+
+
 	@Override
 	public BinList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
@@ -61,9 +63,19 @@ public class BLOFilterBandStop implements Operation<BinList> {
 						for (int j = 0; j < currentList.size(); j++) {
 							double currentValue = currentList.get(j); 
 							if ((currentValue >= lowThreshold) && (currentValue <= highThreshold)) {
-								resultList.set(j, 0d);
+								if (isSaturation) {
+									double distToLow = Math.abs(currentValue - lowThreshold);
+									double distToHigh = Math.abs(currentValue - highThreshold);
+									if (distToLow <= distToHigh) {
+										resultList.set(j, lowThreshold);
+									} else {
+										resultList.set(j, highThreshold);
+									}
+								} else {
+									resultList.set(j, 0d);
+								}
 							} else {
-								resultList.set(j, currentValue);								
+								resultList.set(j, currentValue);
 							}					
 						}
 					}
@@ -84,19 +96,19 @@ public class BLOFilterBandStop implements Operation<BinList> {
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Band-Stop Filter, Low Threshold = " + lowThreshold + ", High Threshold = " + highThreshold;
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Filtering";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());

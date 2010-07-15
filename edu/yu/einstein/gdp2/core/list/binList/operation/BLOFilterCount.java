@@ -21,6 +21,7 @@ public class BLOFilterCount implements Operation<BinList> {
 	private final BinList 	binList;		// {@link BinList} to filter
 	private final int 		lowValuesCount;	// number of low values to filter
 	private final int 		highValuesCount;// number of high values to filter
+	private final boolean	isSaturation;	// true if we saturate, false if we remove the filtered values 
 
 
 	/**
@@ -28,14 +29,16 @@ public class BLOFilterCount implements Operation<BinList> {
 	 * @param binList {@link BinList} to filter
 	 * @param lowValuesCount number of low values to filter
 	 * @param highValuesCount number of high values to filter
+	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public BLOFilterCount(BinList binList, int lowValuesCount, int highValuesCount) {
+	public BLOFilterCount(BinList binList, int lowValuesCount, int highValuesCount, boolean isSaturation) {
 		this.binList = binList;
 		this.lowValuesCount = lowValuesCount;
 		this.highValuesCount = highValuesCount;
+		this.isSaturation = isSaturation;
 	}
-	
-	
+
+
 	@Override
 	public BinList compute() throws Exception {
 		if ((lowValuesCount < 0) || (highValuesCount < 0)) {
@@ -59,22 +62,22 @@ public class BLOFilterCount implements Operation<BinList> {
 		Arrays.sort(allScores);
 		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
-		return new BLOFilterThreshold(binList, minValue, maxValue, 1).compute();
+		return new BLOFilterThreshold(binList, minValue, maxValue, isSaturation).compute();
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Filter, " + lowValuesCount + " smallest values, " + highValuesCount + " greatest values";
 	}
-	
+
 
 	@Override
 	public String getProcessingDescription() {
 		return "Filtering";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());

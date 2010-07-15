@@ -21,6 +21,7 @@ public class BLOFilterPercentage implements Operation<BinList> {
 	private final BinList 	binList;		// {@link BinList} to filter
 	private final double 	lowPercentage;	// percentage of low values to filter
 	private final double 	highPercentage;	// percentage of high values to filter
+	private final boolean	isSaturation;	// true if we saturate, false if we remove the filtered values 
 
 
 	/**
@@ -28,11 +29,13 @@ public class BLOFilterPercentage implements Operation<BinList> {
 	 * @param binList {@link BinList} to filter
 	 * @param lowPercentage percentage of low values to filter
 	 * @param highPercentage percentage of high values to filter
+	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public BLOFilterPercentage(BinList binList, double lowPercentage, double highPercentage) {
+	public BLOFilterPercentage(BinList binList, double lowPercentage, double highPercentage, boolean isSaturation) {
 		this.binList = binList;
 		this.lowPercentage = lowPercentage;
 		this.highPercentage = highPercentage;
+		this.isSaturation = isSaturation;
 	}
 	
 	
@@ -64,7 +67,7 @@ public class BLOFilterPercentage implements Operation<BinList> {
 		Arrays.sort(allScores);
 		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
-		return new BLOFilterThreshold(binList, minValue, maxValue, 1).compute();
+		return new BLOFilterThreshold(binList, minValue, maxValue, isSaturation).compute();
 	}
 
 	
