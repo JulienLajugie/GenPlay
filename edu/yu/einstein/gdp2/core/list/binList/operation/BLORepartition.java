@@ -51,7 +51,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			distanceMinMax[i] = max[i] - min[i];	
 			result[i] = new double[(int)(distanceMinMax[i] / scoreBinSize) + 2][2];	
 		}
-		System.out.println("distanceMinMax[i] / scoreBinSize: " + (int)(distanceMinMax[0] / scoreBinSize));
+		//System.out.println("distanceMinMax[i] / scoreBinSize: " + (int)(distanceMinMax[0] / scoreBinSize));
 		int z = 0;
 		int k = 0;
 		while (k < binListArray.length) {
@@ -75,7 +75,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 				if (k == binListArray.length)
 					break;
 			}
-			System.out.println("Z = " + z);
+			//System.out.println("Z = " + z);
 			result[k][z][0] = (startPoint + z*scoreBinSize);
 			z++;
 		}		

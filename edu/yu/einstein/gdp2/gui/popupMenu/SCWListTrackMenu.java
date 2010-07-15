@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.popupMenu;
@@ -21,6 +22,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
@@ -31,6 +33,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 /**
  * A popup menu for a {@link SCWListTrack}
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 public class SCWListTrackMenu extends CurveTrackMenu {
@@ -57,6 +60,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem	jmiNormalizeStdScore;	// menu normalize standard score
 	private final JMenuItem	jmiStandardDeviation;	// menu standard deviation
 	private final JMenuItem jmiSubtractConstant;	// menu subtract constant
+	private final JMenuItem	jmiShowRepartition;		// menu show repartition of the SCWListTrack
 	
 
 	/**
@@ -83,8 +87,9 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiMin = new JMenuItem(actionMap.get(SCWLAMin.ACTION_KEY));
 		jmiMultiplyConstant = new JMenuItem(actionMap.get(SCWLAMultiplyConstant.ACTION_KEY));
 		jmiNormalizeStdScore = new JMenuItem(actionMap.get(SCWLANormalizeStandardScore.ACTION_KEY));
+		jmiShowRepartition = new JMenuItem(actionMap.get(SCWLARepartition.ACTION_KEY));
 		jmiStandardDeviation = new JMenuItem(actionMap.get(SCWLAStandardDeviation.ACTION_KEY));
-		jmiSubtractConstant = new JMenuItem(actionMap.get(SCWLASubtractConstant.ACTION_KEY));
+		jmiSubtractConstant = new JMenuItem(actionMap.get(SCWLASubtractConstant.ACTION_KEY));		
 
 		add(jmOperation, 0);
 		add(new Separator(), 1);
@@ -107,7 +112,9 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiCountNonNullLength);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGenerateBinList);
-		
+		jmOperation.addSeparator();
+		jmOperation.add(jmiShowRepartition);
+				
 		add(jmiSave, 9);
 	}
 }

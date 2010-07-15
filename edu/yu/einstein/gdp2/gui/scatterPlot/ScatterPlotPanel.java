@@ -30,7 +30,7 @@ import yu.einstein.gdp2.gui.popupMenu.ScatterPlotRightClickedMenu;
 
 /**
  * Class to draw a scatter plot of the given data
- * @author Chirag
+ * @author Chirag Gorasia
  *
  */
 
@@ -84,7 +84,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		setPreferredSize(new Dimension(500, 500));
 		setMinimumSize(new Dimension(500, 500));
 		setVisible(true);
-		setBorder(BorderFactory.createEmptyBorder(100, RIGHT_PAD, 200, RIGHT_PAD_LABELS));
+		setBorder(BorderFactory.createEmptyBorder(0, RIGHT_PAD, 300, RIGHT_PAD_LABELS));
 		addMouseMotionListener(this);
 		addMouseListener(this);		
 	}
@@ -340,7 +340,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 * @param g (Graphics)
 	 */
 	protected void drawLegend(Graphics g) {
-		Point p = getTranslatedPoint(getXAxisEnd()-20, getYAxisEnd()-20);
+		Point p = getTranslatedPoint(getXAxisEnd()-1.5*getXAxisStepSize(), getYAxisEnd()-getXAxisStepSize());
 		g.setColor(Color.black);
 		g.drawString("X-Axis: " + getxAxisName(), p.x, p.y);
 		g.drawString("Y-Axis: " + getyAxisName(), p.x, p.y+15);
@@ -405,7 +405,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 			if (getXAxisStart() < 0) {
 				lastXTextStopPos = Integer.MAX_VALUE;
 				while (incrementX >= getXAxisStart()) {
-					p = new Point(getTranslatedPoint(incrementX, getYAxisStart() - 10));
+					p = new Point(getTranslatedPoint(incrementX, getYAxisStart()));
 					String stringToPrint = DF.format(incrementX);
 					if (p.x + g.getFontMetrics().stringWidth(stringToPrint)+20 < lastXTextStopPos) {
 						if (isxAxisGridLines() == true && axisFlag != true) {
@@ -427,7 +427,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 			incrementX = 0;
 			lastXTextStopPos = 0;
 			while (incrementX <= getXAxisEnd()) {
-				p = new Point(getTranslatedPoint(incrementX, getYAxisStart() - 10));
+				p = new Point(getTranslatedPoint(incrementX, getYAxisStart()));
 				String stringToPrint = DF.format(incrementX);
 				if (p.x >= lastXTextStopPos && incrementX >= getXAxisStart()) {
 					if (isxAxisGridLines() == true && axisFlag != true) {
@@ -548,19 +548,6 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {		
-//		if (e.getButton() == 1) {
-//			@SuppressWarnings("unused")
-//			AxisOption axisOption = null;
-//			Point p = getTranslatedPoint(xMin, 0d);
-//			if (e.getX() <= 100 && e.getX() >= 50 && e.getY() >= TOP_PAD_LABELS && e.getY() <= getHeight() - TOP_PAD_LABELS - BOTTOM_PAD && (e.getClickCount() == 2)) {
-//				axisOption = new AxisOption("Y-Axis");
-//				repaint();
-//			}		
-//			if (e.getX() >= 100 && e.getX() <= getWidth() -  RIGHT_PAD && e.getY() >= p.y && e.getY() <= p.y + 50 && (e.getClickCount() == 2)) {
-//				axisOption = new AxisOption("X-Axis");
-//				repaint();
-//			}
-//		}
 		if (e.getButton() == 3){
 			ScatterPlotRightClickedMenu sprc = new ScatterPlotRightClickedMenu(this);
 			sprc.show(this, e.getX(), e.getY());

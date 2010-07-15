@@ -77,7 +77,6 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		return null;
 	}
 
-
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
 		if (actionResult != null && selectedTracks.length != 0) {
