@@ -17,10 +17,6 @@ public enum FilterType {
 	 */
 	COUNT ("Count"),
 	/**
-	 * 
-	 */	
-	DENSITY ("Density"),
-	/**
 	 * filter a percentage of extreme values
 	 */
 	PERCENTAGE ("Percentage"),
