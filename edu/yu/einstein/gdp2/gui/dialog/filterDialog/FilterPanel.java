@@ -72,8 +72,8 @@ abstract class FilterPanel extends JPanel {
 		jrbRemove.setSelected(!defaultIsSaturation);
 		jrbSaturate.setSelected(defaultIsSaturation);
 		// create the text area with explanation for the ratio buttons
-		jtaRadioText = new JTextArea("Choose Remove to set the filtered values to zero.\n" +
-				"Choose Saturate to set the filtered values to the boundary value.");
+		jtaRadioText = new JTextArea("Choose Remove to set the filtered values to zero\n" +
+				"Choose Saturate to set the filtered values to the boundary value");
 		jtaRadioText.setEditable(false);
 		jtaRadioText.setBackground(getBackground());
 		

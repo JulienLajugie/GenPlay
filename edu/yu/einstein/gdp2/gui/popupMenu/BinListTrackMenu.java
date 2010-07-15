@@ -37,9 +37,8 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
-import yu.einstein.gdp2.gui.action.binListTrack.BLASaturate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
-import yu.einstein.gdp2.gui.action.binListTrack.BLASearchPeaks;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaksStDev;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
@@ -92,7 +91,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiCorrelation;			// menu correlation BinListTrack with another one
 	
 	private final JMenuItem		jmiFilter;				// menu filter
-	private final JMenuItem		jmiSaturation;			// menu saturate BinListTrack
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
 	private final JMenuItem		jmiIslandFinder;		// menu find islands
 	private final JMenuItem		jmiTransfrag;			// menu transfrag
@@ -147,8 +145,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiCorrelation = new JMenuItem(actionMap.get(BLACorrelate.ACTION_KEY));		
 		
 		jmiFilter = new JMenuItem(actionMap.get(BLAFilter.ACTION_KEY));
-		jmiSaturation = new JMenuItem(actionMap.get(BLASaturate.ACTION_KEY));
-		jmiSearchPeaks = new JMenuItem(actionMap.get(BLASearchPeaks.ACTION_KEY));
+		jmiSearchPeaks = new JMenuItem(actionMap.get(BLAFindPeaksStDev.ACTION_KEY));
 		jmiIslandFinder = new JMenuItem(actionMap.get(BLAFindIslands.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(BLATransfrag.ACTION_KEY));
 		
@@ -191,7 +188,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiCorrelation);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiFilter);
-		jmOperation.add(jmiSaturation);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiIslandFinder);
 		jmOperation.add(jmiTransfrag);
