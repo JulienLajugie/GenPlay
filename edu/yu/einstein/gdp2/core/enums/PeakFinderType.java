@@ -3,7 +3,7 @@ package yu.einstein.gdp2.core.enums;
 public enum PeakFinderType {
 
 	DENSITY ("Density Finder"),
-	STDEV ("Standard Deviation Finder"),
+	STDEV ("Stdev Finder"),
 	ISLAND ("Island Finder");
 	
 	private final String name; // name of the peak finder 

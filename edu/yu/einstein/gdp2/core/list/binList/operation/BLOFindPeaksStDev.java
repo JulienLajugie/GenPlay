@@ -18,38 +18,33 @@ import yu.einstein.gdp2.util.DoubleLists;
 
 
 /**
- * Searches the peaks of a {@link BinList}
+ * Searches the peaks of a specified {@link BinList}. A bin is considered as a peak when the 
+ * local stdev centered on this bin is higher than a certain threshold.
+ * The threshold is specified in chromosome wide stdev folds.
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOFindPeaksStDev implements Operation<BinList> {
+public class BLOFindPeaksStDev implements Operation<BinList[]> {
 
 	private final BinList 	binList;		// input BinList 
-	private final int 		halfWidth;		// half size of the moving stdev (in bins)
-	private final double 	nbSDAccepted;	/* 	threshold: we accept a bin if the local stdev centered 
+	private int 			halfWidth;		// half size of the moving stdev (in bins)
+	private double 			nbSDAccepted;	/* 	threshold: we accept a bin if the local stdev centered 
 											 	on this point is at least this parameter time higher than 
 												the chromosome wide stdev 	*/
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link BLOFindPeaksStDev}
-	 * Searches the peaks of a specified {@link BinList}. A bin is considered as a peak when the 
-	 * local stdev centered on this bin is higher than a certain threshold.
-	 * The threshold is specified in chromosome wide stdev folds.
 	 * @param binList input {@link BinList}
-	 * @param halfWidth half size of the moving stdev (in bins)
-	 * @param nbSDAccepted threshold: we accept a bin if the local stdev centered on this point is at 
-	 * least this parameter time higher than the chromosome wide stdev
+
 	 */
-	public BLOFindPeaksStDev(BinList binList, int halfWidth, double nbSDAccepted) {
-		this.binList = binList;
-		this.halfWidth = halfWidth;
-		this.nbSDAccepted = nbSDAccepted;
+	public BLOFindPeaksStDev(BinList binList) {
+		this.binList = binList;		
 	}
 
 
 	@Override
-	public BinList compute() throws InterruptedException, ExecutionException {
+	public BinList[] compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final int binSize = binList.getBinSize();
@@ -104,27 +99,47 @@ public class BLOFindPeaksStDev implements Operation<BinList> {
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
 			BinList resultList = new BinList(binSize, binList.getPrecision(), result);
-			return resultList;
+			BinList[] returnValue = {resultList};
+			return returnValue;
 		} else {
 			return null;
 		}
-	}	
+	}
 
 
 	@Override
 	public String getDescription() {
 		return "Operation: Search Peaks, Local Stdev Width = " +  (halfWidth * 2 * binList.getBinSize()) + " bp, Threshold = " + nbSDAccepted + " Stdev";
 	}
-	
-	
-	@Override
-	public int getStepCount() {
-		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
-	}
-	
+
 	
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Peaks";
+	}	
+
+
+	@Override
+	public int getStepCount() {
+		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+	}
+
+
+	/**
+	 * Sets the half width
+	 * @param halfWidth half size of the moving stdev (in bins)
+	 */
+	public void setHalfWidth(int halfWidth) {
+		this.halfWidth = halfWidth;
+	}
+
+
+	/**
+	 * Sets the thresholds
+	 * @param nbSDAccepted threshold: we accept a bin if the local stdev centered on this point is at 
+	 * least this parameter time higher than the chromosome wide stdev
+	 */
+	public void setThreshold(double nbSDAccepted) {
+		this.nbSDAccepted = nbSDAccepted;
 	}
 }

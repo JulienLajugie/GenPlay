@@ -21,8 +21,8 @@ final class BandStopPanel extends FilterPanel {
 	private static final long serialVersionUID = -8470118628769444167L;	// generated ID
 	private final static String NAME = FilterType.BANDSTOP.toString();	// name of the filter
 	private final static String FILTER_DESCRIPTION = 
-		"Filter values between two specified threshold values\n";		// description of the filter
-	private final static String TEXT_MIN = "Filter values between";		// text of the min label
+		"Remove values between two specified threshold values\n";		// description of the filter
+	private final static String TEXT_MIN = "Remove values between";		// text of the min label
 	private final static String TEXT_MAX = "And";						// text of the max label
 	private final static DecimalFormat DF = new DecimalFormat("0.0");	// decimal format for the input numbers
 	private static Number 	defaultMin = 0;								// default/last min value

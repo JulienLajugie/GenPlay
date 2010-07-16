@@ -44,7 +44,13 @@ public class BLOFindIslands implements Operation<BinList[]> {
 	
 	@Override
 	public String getDescription () {
-		return "Operation: Island Finder.";
+		String description = "Operation: Island Finder";
+		description += ", Window value: " + getIsland().getWindowLimitValue();
+		description += ", Gap: " + getIsland().getGap();
+		description += ", Island score: " + getIsland().getIslandLimitScore();
+		description += ", Island length: " + getIsland().getMinIslandLength();
+		//description += ", Result type: " + getIsland().getResultType();
+		return description;
 	}
 	
 	
@@ -75,13 +81,19 @@ public class BLOFindIslands implements Operation<BinList[]> {
 		return cpt;
 	}
 	
+	
 	//Getters & Setters
 	public IslandFinder getIsland() {
 		return island;
 	}
+
+	
+	public IslandResultType[] getResultTypes() {
+		return list;
+	}
+	
 	
 	public void setList(IslandResultType[] list) {
 		this.list = list;
 	}
-
 }

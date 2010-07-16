@@ -24,6 +24,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeSelectionModel;
 
 import yu.einstein.gdp2.core.enums.PeakFinderType;
+import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFindIslands;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFindPeaksDensity;
+import yu.einstein.gdp2.core.list.binList.operation.BLOFindPeaksStDev;
+import yu.einstein.gdp2.core.operation.Operation;
+import yu.einstein.gdp2.gui.dialog.peakFinderDialog.islandPanel.IslandFinderPanel;
 
 
 /**
@@ -34,7 +40,7 @@ import yu.einstein.gdp2.core.enums.PeakFinderType;
 public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 
 	private static final long serialVersionUID = 5563029408513103813L;
-	private static final Dimension 	PEAK_FINDER_DIALOG_DIMENSION = new Dimension(700, 400); // dimension of this window
+	private static final Dimension 	PEAK_FINDER_DIALOG_DIMENSION = new Dimension(550, 550); // dimension of this window
 	private final JTree 			jt; 						// Tree
 	private final JScrollPane 		jspTreeView; 				// Scroll pane containing the tree
 	private final JPanel			jpPeakFinder;				// right panel
@@ -43,6 +49,7 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 	private final JSplitPane 		jspDivider; 				// Divider between the tree and the panel
 	private int 					approved = CANCEL_OPTION;	// indicate if the user canceled or validated 
 	private static int 				selectionRow = 0;			// save the selected peak finder
+	private Operation<BinList[]>	setOperation = null;		// operation set in this dialog
 
 	
 	/**
@@ -56,33 +63,18 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 	 */
 	public static final int CANCEL_OPTION = 1;
 
-	
-	/**
-	 * Main method for the tests
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		PeakFinderDialog fd = new PeakFinderDialog();
-		if (fd.showFilterDialog(null) == PeakFinderDialog.APPROVE_OPTION) {
-			System.out.println("okay");
-		} else {
-			System.out.println("cancel");
-		}
-		fd.dispose();
-		PeakFinderDialog fd2 = new PeakFinderDialog();
-		fd2.showFilterDialog(null);
-		fd2.dispose();
-	}
-
 
 	/**
 	 * Creates an instance of {@link PeakFinderDialog}
+	 * @param bloDensity {@link BLOFindPeaksDensity} to set
+	 * @param bloStdev {@link BLOFindPeaksStDev} to set
+	 * @param bloFindIslands {@link BLOFindIslands} to set
 	 */
-	public PeakFinderDialog() {
+	public PeakFinderDialog(BLOFindPeaksDensity bloDensity, BLOFindPeaksStDev bloStdev, BLOFindIslands bloFindIslands) {
 		super();
 		// create the tree displayed in the JTree component
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("PeakFinder");
-		createNodes(top);
+		createNodes(top, bloDensity, bloStdev, bloFindIslands);
 		jt = new JTree(top);
 		// hide the root node
 		jt.setRootVisible(false);
@@ -117,9 +109,9 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
 				PeakFinderPanel peakFinderPanel = (PeakFinderPanel) node.getUserObject();
 				// check first if the input is valid
-				boolean isInputValid = peakFinderPanel.isInputValid();
+				setOperation = peakFinderPanel.validateInput();
 				// close the window if the input is valid
-				if (isInputValid) {
+				if (setOperation != null) {
 					// save the input so it becomes the default values next time the window is opened 
 					peakFinderPanel.saveInput();
 					// save the filter type selected
@@ -180,27 +172,25 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 	 * Creates the data of the tree.
 	 * @param top Root DefaultMutableTreeNode of the tree.
 	 */
-	private void createNodes(DefaultMutableTreeNode top) {
+	private void createNodes(DefaultMutableTreeNode top, BLOFindPeaksDensity bloDensity, BLOFindPeaksStDev bloStdev, BLOFindIslands bloFindIslands) {
 		DefaultMutableTreeNode category = null;
 
-		category = new DefaultMutableTreeNode(new StDevFinderPanel());
+		category = new DefaultMutableTreeNode(new StDevFinderPanel(bloStdev));
 		top.add(category);
 
-		category = new DefaultMutableTreeNode(new DensityFinderPanel());
+		category = new DefaultMutableTreeNode(new DensityFinderPanel(bloDensity));
 		top.add(category);
 
-//		category = new DefaultMutableTreeNode(new IslandFinderPanel());
-//		top.add(category);
+		category = new DefaultMutableTreeNode(new IslandFinderPanel(bloFindIslands));
+		top.add(category);
 	}
 
 
 	/**
-	 * @return the selected panel. This Object can be casted to retrieve the input
+	 * @return the {@link Operation} set by the user. Null canceled
 	 */
-	public JPanel getPeakFinderPanel() {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt.getLastSelectedPathComponent();
-		Object nodeInfo = node.getUserObject();
-		return (JPanel) nodeInfo;
+	public Operation<BinList[]> getOperation() {
+		return setOperation;
 	}
 
 
@@ -214,6 +204,8 @@ public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 			return PeakFinderType.DENSITY;
 		} else if (nodeInfo instanceof StDevFinderPanel) {
 			return PeakFinderType.STDEV;
+		} else if (nodeInfo instanceof IslandFinderPanel) {
+			return PeakFinderType.ISLAND;
 		} else {
 			return null;
 		}

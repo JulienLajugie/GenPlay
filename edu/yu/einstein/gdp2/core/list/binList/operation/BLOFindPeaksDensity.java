@@ -21,39 +21,33 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOFindPeaksDensity implements Operation<BinList> {
+public class BLOFindPeaksDensity implements Operation<BinList[]> {
 	private final BinList 	binList;				// input binlist to filter
-	private final double 	lowThreshold;			// saturates the values under this threshold
-	private final double 	highThreshold;			// saturates the values above this threshold
-	private final double 	density;				// minimum density of windows above and under the thresholds for a region to be selected (percentage btw 0 and 1)
-	private final int 		halfWidth;				// half size of the region (in number of bins) 
+	private double 			lowThreshold;			// saturates the values under this threshold
+	private double 			highThreshold;			// saturates the values above this threshold
+	private double 			density;				// minimum density of windows above and under the thresholds for a region to be selected (percentage btw 0 and 1)
+	private int 			halfWidth;				// half size of the region (in number of bins) 
 
 	
 	/**
 	 * Creates an instance of {@link BLOFindPeaksDensity}
 	 * @param binList {@link BinList} to filter
-	 * @param lowThreshold filters the values under this threshold
-	 * @param highThreshold filters the values above this threshold
-	 * @param density minimum density of windows above and under the thresholds for a region to be selected (percentage btw 0 and 1)
-	 * @param halfWidth half size of the region (in number of bins) 
 	 */
-	public BLOFindPeaksDensity(BinList binList, double lowThreshold, double highThreshold, double density, int regionSize) {
+	public BLOFindPeaksDensity(BinList binList) {
 		this.binList = binList;
-		this.lowThreshold = lowThreshold;
-		this.highThreshold = highThreshold;
-		this.density = density;
-		this.halfWidth = regionSize;
 	}
-
-
+	
+	
 	@Override
-	public BinList compute() throws Exception {
+	public BinList[] compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
 		}		
 		// if percentage is zero, everything is selected
-		if (density == 0) {
-			return binList.deepClone();
+		if (density == 0) {	
+			BinList resultList = binList.deepClone();
+			BinList[] returnValue = {resultList};		
+			return returnValue;
 		}
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
@@ -110,7 +104,8 @@ public class BLOFindPeaksDensity implements Operation<BinList> {
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
 			BinList resultList = new BinList(binList.getBinSize(), precision, result);
-			return resultList;
+			BinList[] returnValue = {resultList};
+			return returnValue;
 		} else {
 			return null;
 		}
@@ -133,5 +128,37 @@ public class BLOFindPeaksDensity implements Operation<BinList> {
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());
+	}
+
+
+	/**
+	 * @param density minimum density of windows above and under the thresholds for a region to be selected (percentage btw 0 and 1)
+	 */
+	public final void setDensity(double density) {
+		this.density = density;
+	}
+
+
+	/**
+	 * @param halfWidth half size of the region (in number of bins) 
+	 */
+	public final void setHalfWidth(int halfWidth) {
+		this.halfWidth = halfWidth;
+	}
+
+
+	/**
+	 * @param highThreshold filters the values above this threshold
+	 */
+	public final void setHighThreshold(double highThreshold) {
+		this.highThreshold = highThreshold;
+	}
+
+
+	/**
+	 * @param lowThreshold filters the values under this threshold
+	 */
+	public final void setLowThreshold(double lowThreshold) {
+		this.lowThreshold = lowThreshold;
 	}
 }
