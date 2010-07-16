@@ -1,5 +1,5 @@
 /**
- * @author Julien Lajugie
+ * @author Julien Lajugie 
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.trackList;
@@ -44,6 +44,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
@@ -113,6 +114,7 @@ import yu.einstein.gdp2.gui.popupMenu.TrackMenuFactory;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
+import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 
 
@@ -213,6 +215,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAMultiplyConstant.ACTION_KEY, new SCWLAMultiplyConstant());		
 		getActionMap().put(SCWLANormalizeStandardScore.ACTION_KEY, new SCWLANormalizeStandardScore());		
 		getActionMap().put(SCWLAStandardDeviation.ACTION_KEY, new SCWLAStandardDeviation());
+		getActionMap().put(SCWLARepartition.ACTION_KEY, new SCWLARepartition());
 		getActionMap().put(SCWLASubtractConstant.ACTION_KEY, new SCWLASubtractConstant());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
@@ -553,6 +556,31 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				}
 			}
 		}
+		return result;
+	}
+	
+	/**
+	 * @author Chirag Gorasia
+	 * @return an array containing all the {@link SCWListTrack}
+	 */
+	public Track<?>[] getSCWListTracks() {
+		int count = 0;
+		for (Track<?> currentTrack: trackList) {
+			if (currentTrack instanceof SCWListTrack) {
+				count++;				
+			}
+		}
+		if (count == 0) {
+			return null;
+		}
+		Track<?>[] result = new Track[count];
+		int i = 0;
+		for (Track<?> currentTrack: trackList) {
+			if (currentTrack instanceof SCWListTrack) {
+				result[i] = currentTrack;
+				i++;
+			}
+		}		
 		return result;
 	}
 

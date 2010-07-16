@@ -20,7 +20,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -46,9 +45,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	private static String yAxisName;					// y-axis name
 	
 	private static final int LEFT_PAD = 100;			// Left side margin
-	private static final int RIGHT_PAD = 200;			// Right side margin
+	//private static final int RIGHT_PAD = 200;			// Right side margin
 	private static final int RIGHT_PAD_LABELS = 100;	// Right Pad to accomodate x-axis labels
-	private static final int TOP_PAD = 200;				// Top margin
+	//private static final int TOP_PAD = 200;				// Top margin
 	private static final int BOTTOM_PAD = 100;			// Bottom margin
 	private static final int TOP_PAD_LABELS = 100;		// Top Pad to accomodate y-axis labels
 	
@@ -82,9 +81,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		findDefaultAxisBounds();
 		setBackground(Color.white);
 		setPreferredSize(new Dimension(500, 500));
-		setMinimumSize(new Dimension(500, 500));
+		setMinimumSize(new Dimension(400, 400));
 		setVisible(true);
-		setBorder(BorderFactory.createEmptyBorder(0, RIGHT_PAD, 300, RIGHT_PAD_LABELS));
+		//setBorder(BorderFactory.createEmptyBorder(TOP_PAD, RIGHT_PAD, BOTTOM_PAD, RIGHT_PAD_LABELS));
 		addMouseMotionListener(this);
 		addMouseListener(this);		
 	}
@@ -362,9 +361,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	protected Point getTranslatedPoint(double x, double y) {
 		Point translatedPoint = new Point();
 		double realWidth = getWidth() - LEFT_PAD - RIGHT_PAD_LABELS;
-		double realHeight = getHeight() - TOP_PAD - BOTTOM_PAD;		
+		double realHeight = getHeight() - TOP_PAD_LABELS - BOTTOM_PAD;		
 		translatedPoint.x = (int) ((realWidth * (x - getXAxisStart())) / (getXAxisEnd() - getXAxisStart())) + LEFT_PAD;
-		translatedPoint.y = getHeight() - (int) ((realHeight * (y - getYAxisStart())) / (getYAxisEnd() - getYAxisStart())) - TOP_PAD;		
+		translatedPoint.y = getHeight() - (int) ((realHeight * (y - getYAxisStart())) / (getYAxisEnd() - getYAxisStart())) - TOP_PAD_LABELS;		
 		return translatedPoint;
 	}
 	
@@ -376,7 +375,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	protected Point getOriginalPoint(Point p) {
 		Point retPoint = new Point();
 		retPoint.x = (int) (((p.x - LEFT_PAD) * (getXAxisEnd() - getXAxisStart()) / (getWidth() - LEFT_PAD - RIGHT_PAD_LABELS)) + getXAxisStart());
-		retPoint.y = (int) (-1 * ((p.y - getHeight() + TOP_PAD) * (getYAxisEnd() - getYAxisStart()) / (getHeight() - TOP_PAD - BOTTOM_PAD)) + getYAxisStart());
+		retPoint.y = (int) (-1 * ((p.y - getHeight() + TOP_PAD_LABELS) * (getYAxisEnd() - getYAxisStart()) / (getHeight() - TOP_PAD_LABELS - BOTTOM_PAD)) + getYAxisStart());
 		return retPoint;
 	}
 	
@@ -409,7 +408,6 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 					String stringToPrint = DF.format(incrementX);
 					if (p.x + g.getFontMetrics().stringWidth(stringToPrint)+20 < lastXTextStopPos) {
 						if (isxAxisGridLines() == true && axisFlag != true) {
-							//System.out.println("xAxisGridLines is set");
 							g.setColor(new Color (190,190,190));
 							g.drawLine(p.x, p.y, p.x, getTranslatedPoint(0,getYAxisEnd()).y);
 						}
