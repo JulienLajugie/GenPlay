@@ -1,5 +1,5 @@
 /**
- * @author Julien Lajugie 
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.trackList;
@@ -44,7 +44,6 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
-import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
@@ -74,7 +73,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAFindIslands;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
@@ -215,7 +213,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAMultiplyConstant.ACTION_KEY, new SCWLAMultiplyConstant());		
 		getActionMap().put(SCWLANormalizeStandardScore.ACTION_KEY, new SCWLANormalizeStandardScore());		
 		getActionMap().put(SCWLAStandardDeviation.ACTION_KEY, new SCWLAStandardDeviation());
-		getActionMap().put(SCWLARepartition.ACTION_KEY, new SCWLARepartition());
 		getActionMap().put(SCWLASubtractConstant.ACTION_KEY, new SCWLASubtractConstant());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
@@ -237,7 +234,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAIndex.ACTION_KEY, new BLAIndex());
 		getActionMap().put(BLAIndexByChromosome.ACTION_KEY, new BLAIndexByChromosome());
 		getActionMap().put(BLAInvertConstant.ACTION_KEY, new BLAInvertConstant());
-		getActionMap().put(BLAFindIslands.ACTION_KEY, new BLAFindIslands());
 		getActionMap().put(BLALog.ACTION_KEY, new BLALog());
 		getActionMap().put(BLALogOnAvgWithDamper.ACTION_KEY, new BLALogOnAvgWithDamper());
 		getActionMap().put(BLAMax.ACTION_KEY, new BLAMax());
@@ -558,6 +554,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		}
 		return result;
 	}
+	
 	
 	/**
 	 * @author Chirag Gorasia

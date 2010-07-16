@@ -27,7 +27,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAFindIslands;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
@@ -92,7 +91,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	
 	private final JMenuItem		jmiFilter;				// menu filter
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
-	private final JMenuItem		jmiIslandFinder;		// menu find islands
 	private final JMenuItem		jmiTransfrag;			// menu transfrag
 	
 	private final JMenuItem		jmiChangeBinSize;		// menu change bin size
@@ -146,7 +144,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		
 		jmiFilter = new JMenuItem(actionMap.get(BLAFilter.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(BLAFindPeaks.ACTION_KEY));
-		jmiIslandFinder = new JMenuItem(actionMap.get(BLAFindIslands.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(BLATransfrag.ACTION_KEY));
 		
 		jmiChangeBinSize = new JMenuItem(actionMap.get(BLAChangeBinSize.ACTION_KEY));
@@ -189,7 +186,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.addSeparator();
 		jmOperation.add(jmiFilter);
 		jmOperation.add(jmiSearchPeaks);
-		jmOperation.add(jmiIslandFinder);
 		jmOperation.add(jmiTransfrag);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiChangeBinSize);
