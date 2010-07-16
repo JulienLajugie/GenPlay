@@ -44,6 +44,11 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	private static String xAxisName;					// x-axis name
 	private static String yAxisName;					// y-axis name
 	
+	private static final int PREF_WIN_WIDTH = 1000;
+	private static final int PREF_WIN_HEIGHT = 700;
+	private static final int MIN_WIN_WIDTH = 700;
+	private static final int MIN_WIN_HEIGHT = 500;
+	
 	private static final int LEFT_PAD = 100;			// Left side margin
 	//private static final int RIGHT_PAD = 200;			// Right side margin
 	private static final int RIGHT_PAD_LABELS = 100;	// Right Pad to accomodate x-axis labels
@@ -339,7 +344,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 	 * @param g (Graphics)
 	 */
 	protected void drawLegend(Graphics g) {
-		Point p = getTranslatedPoint(getXAxisEnd()-1.5*getXAxisStepSize(), getYAxisEnd()-getXAxisStepSize());
+		//Point p = getTranslatedPoint(getXAxisEnd()-1.5*getXAxisStepSize(), getYAxisEnd()-getXAxisStepSize());
+		Point p = new Point(getWidth() - getWidth()/4, 100);
+		//Point q = getTranslatedPoint(100, 100);
 		g.setColor(Color.black);
 		g.drawString("X-Axis: " + getxAxisName(), p.x, p.y);
 		g.drawString("Y-Axis: " + getyAxisName(), p.x, p.y+15);
@@ -414,7 +421,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 						g.setColor(Color.black);
 						g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
 						g.drawLine(p.x, p.y-4, p.x, p.y+4);
-						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+20;
+						lastXTextStopPos = p.x + 10*g.getFontMetrics().stringWidth(stringToPrint);
 					}					
 					incrementX = incrementX - getXAxisStepSize();
 					axisFlag = false;
@@ -576,8 +583,8 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		jf.setTitle("Scatter Plot");		
 		ScatterPlotPanel scatPlotPanel = new ScatterPlotPanel(listOfGraphs);
 		jf.setContentPane(scatPlotPanel);
-		jf.setPreferredSize(new Dimension(900, 700));
-		jf.setMinimumSize(new Dimension(500, 500));
+		jf.setPreferredSize(new Dimension(PREF_WIN_WIDTH, PREF_WIN_HEIGHT));
+		jf.setMinimumSize(new Dimension(MIN_WIN_WIDTH, MIN_WIN_HEIGHT));
 		jf.pack();
 		jf.setLocationRelativeTo(parent);		
 		jf.addWindowListener(new WindowAdapter() {
