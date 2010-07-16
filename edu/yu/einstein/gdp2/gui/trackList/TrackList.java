@@ -44,6 +44,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
@@ -211,7 +212,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAMax.ACTION_KEY, new SCWLAMax());
 		getActionMap().put(SCWLAMin.ACTION_KEY, new SCWLAMin());
 		getActionMap().put(SCWLAMultiplyConstant.ACTION_KEY, new SCWLAMultiplyConstant());		
-		getActionMap().put(SCWLANormalizeStandardScore.ACTION_KEY, new SCWLANormalizeStandardScore());		
+		getActionMap().put(SCWLANormalizeStandardScore.ACTION_KEY, new SCWLANormalizeStandardScore());
+		getActionMap().put(SCWLARepartition.ACTION_KEY, new SCWLARepartition());
 		getActionMap().put(SCWLAStandardDeviation.ACTION_KEY, new SCWLAStandardDeviation());
 		getActionMap().put(SCWLASubtractConstant.ACTION_KEY, new SCWLASubtractConstant());
 		// add binlist actions
