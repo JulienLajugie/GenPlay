@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.gui.dialog.islandDialog;
+package yu.einstein.gdp2.gui.dialog.peakFinderDialog.islandPanel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
