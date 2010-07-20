@@ -32,15 +32,16 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	private static final long serialVersionUID = 1068181566225377150L; 	// generated ID
 	private static final int 	MIN_DISTANCE_BETWEEN_2_GENES = 5;		// minimum distance in pixel between two genes 
 	private FontMetrics			fontMetrics = null;						// dimension of the font used to print the name of the genes
-	private Gene				lastSearchedGene = null;				// last searched gene
 	private String				searchURL = null;						// URL of the gene database
+	private GeneSearcher		geneSearcher;							// object used to search genes
+	
 	
 	/**
 	 * The name of the genes are printed if the horizontal ratio is above this value
 	 */
 	public  static final double	MIN_X_RATIO_PRINT_NAME = 0.0005d;	
 		
-
+	
 	/**
 	 * Creates an instance of {@link GeneList} containing the specified data.
 	 * @param data 
@@ -309,50 +310,6 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 
 	/**
-	 * @return the last searched gene
-	 */
-	public Gene getLastSearchedGene() {
-		return lastSearchedGene;
-	}
-
-
-	/**
-	 * Returns the first gene of the gene list called <i>name</i>.
-	 * Returns null if there is no gene with this name.
-	 * @param name name of the gene
-	 * @return A gene called <i>name</i>. Return null if not found.
-	 */
-	public Gene search(String name) {
-		if (this.isEmpty()) {
-			return null;
-		} else {
-			// if the searched gene is the same as the previous searched one
-			if ((lastSearchedGene != null) && (lastSearchedGene.equals(name))) {
-				return lastSearchedGene;
-			}
-			boolean found = false;
-			Gene geneFound = null;
-			short i = 0;
-			while ((i < chromosomeManager.size()) && (!found)) {
-				if (get(i) != null) {
-					int j = 0;
-					while ((j < size(i)) && (!found)) {
-						if (get(i, j).equals(name)) {
-							geneFound = get(i, j);
-							found = true;
-						}
-						j++;
-					}					
-				}
-				i++;
-			}
-			lastSearchedGene = geneFound;
-			return geneFound;
-		}
-	}
-
-
-	/**
 	 * Sets the {@link FontMetrics}. Used for the generation of fitted data
 	 * @param fontMetrics
 	 */
@@ -375,5 +332,17 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	public void setSearchURL(String searchURL) {
 		this.searchURL = searchURL;		
+	}
+
+
+	/**
+	 * @return the geneSearcher
+	 */
+	public GeneSearcher getGeneSearcher() {
+		// create a gene searcher if it doesn't exist
+		if (geneSearcher == null) {
+			geneSearcher = new GeneSearcher(this);
+		}
+		return geneSearcher;
 	}
 }

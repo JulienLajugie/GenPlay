@@ -324,4 +324,10 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	public void setTxStop(int txStop) {
 		this.txStop = txStop;
 	}
+	
+	
+	@Override
+	public String toString() {
+		return chromo.toString() + "\t" + txStart + "\t" + txStop +"\t" + name + "\t" + strand;
+	}
 }
