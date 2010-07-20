@@ -103,6 +103,7 @@ import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSCWListTrack;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLAGeneRenamer;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLASearchGene;
 import yu.einstein.gdp2.gui.action.scoredTrack.STASetYAxis;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -190,6 +191,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add gene list actions
 		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
 		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
+		getActionMap().put(GLAGeneRenamer.ACTION_KEY, new GLAGeneRenamer());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(CTAHistory.ACTION_KEY, new CTAHistory());

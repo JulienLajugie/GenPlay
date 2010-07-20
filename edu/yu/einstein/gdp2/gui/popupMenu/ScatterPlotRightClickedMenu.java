@@ -29,6 +29,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.gui.scatterPlot.AxisOption;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
@@ -205,7 +206,8 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 			}
 		});
 		
-		jfc = new JFileChooser();		
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		jfc = new JFileChooser(defaultDirectory);		
 		jmiSaveImage.setVisible(true);
 		jmiSaveImage.addActionListener(this);
 		jmiSaveData.setVisible(true);
