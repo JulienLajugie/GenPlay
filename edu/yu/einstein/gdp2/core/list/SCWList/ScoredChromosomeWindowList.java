@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 package yu.einstein.gdp2.core.list.SCWList;
@@ -21,8 +22,7 @@ import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
-import yu.einstein.gdp2.core.list.SCWList.overLap.OverLapManagement;
-import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
+import yu.einstein.gdp2.core.list.SCWList.overLap.OverLappingManagement;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.util.DoubleLists;
@@ -32,17 +32,13 @@ import yu.einstein.gdp2.util.Utils;
 /**
  * A list of {@link ScoredChromosomeWindow}
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class ScoredChromosomeWindowList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements Serializable {
 
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
-	/**
-	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
-	 */
-	public static int getCreationStepCount() {
-		return 2;
-	}
+
 	/*
 	 * The following values are statistic values of the list
 	 * They are transient because they depend on the chromosome manager that is also transient
@@ -54,7 +50,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	transient private Double 	stDev = null;		// standard deviation of the BinList
 	transient private Long 		nonNullLength = null;// count of none-null bins in the BinList
 	
-	private OverLapManagement overLapManagement;
+	private OverLappingManagement overLapManagement;
 
 
 	/**
@@ -66,16 +62,16 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
-	public ScoredChromosomeWindowList(final ChromosomeListOfLists<Integer> startList, 
-			final ChromosomeListOfLists<Integer> stopList,
-			final ChromosomeListOfLists<Double> scoreList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public ScoredChromosomeWindowList(	final ChromosomeListOfLists<Integer> startList, 
+										final ChromosomeListOfLists<Integer> stopList,
+										final ChromosomeListOfLists<Double> scoreList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
 		
-		this.overLapManagement = new OverLapManagement(startList, stopList, scoreList);
+		this.overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
 		final boolean runOverLapEngine;
 		if (this.overLapManagement.overLappingExist()) {
 			runOverLapEngine = true;
@@ -93,27 +89,16 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();	
 					if (runOverLapEngine) {
 						overLapManagement.run(currentChromosome);
-						IntArrayAsIntegerList newStartList = overLapManagement.getNewStartList(currentChromosome);
-						IntArrayAsIntegerList newStopList = overLapManagement.getNewStopList(currentChromosome);
-						List<Double> newScoreList = overLapManagement.getNewScoreList(currentChromosome);
-						for(int j = 0; j < newStartList.size(); j++) {
-							double score = newScoreList.get(j);
-							if (score != 0) {
-								int start = newStartList.get(j);
-								int stop = newStopList.get(j);
-								resultList.add(new ScoredChromosomeWindow(start, stop, score));
-							}
-						}
-					} else {
-						for(int j = 0; j < startList.get(currentChromosome).size(); j++) {
-							double score = scoreList.get(currentChromosome, j);
-							if (score != 0) {
-								int start = startList.get(currentChromosome, j);
-								int stop = stopList.get(currentChromosome, j);
-								resultList.add(new ScoredChromosomeWindow(start, stop, score));
-							}
-						}
 					}
+					List<ScoredChromosomeWindow> list = overLapManagement.getList(currentChromosome);
+					for(int j = 0; j < list.size(); j++) {
+							double score = list.get(j).getScore();
+							if (score != 0) {
+								resultList.add(new ScoredChromosomeWindow(	list.get(j).getStart(), 
+																			list.get(j).getStop(), 
+																			score));
+							}
+						}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -130,10 +115,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			for (List<ScoredChromosomeWindow> currentList: result) {
 				add(currentList);
 			}
-		}		
-		// sort the list
-		for (List<ScoredChromosomeWindow> currentChrWindowList : this) {
-			Collections.sort(currentChrWindowList);
 		}
 		// generate the statistics
 		generateStatistics();
@@ -164,6 +145,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	}
 
 
+	
 	/**
 	 * Performs a deep clone of the current {@link ScoredChromosomeWindowList}
 	 * @return a new ScoredChromosomeWindowList
@@ -180,6 +162,14 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	
+	/**
+	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
+	 */
+	public static int getCreationStepCount() {
+		return 2;
 	}
 
 
