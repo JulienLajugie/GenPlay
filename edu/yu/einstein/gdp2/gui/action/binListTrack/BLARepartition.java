@@ -33,7 +33,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 	private static final long serialVersionUID = -7166030548181210580L; // generated ID
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
 	private static final String 	DESCRIPTION = 
-		"Generate a csv file showing the repartition of the scores of the selected track";	// tooltip
+		"Generate a plot showing the repartition of the scores of the selected track";	// tooltip
 	private Track<?>[] 				selectedTracks;
 	private List<ScatterPlotData> 	scatPlotData;
 	

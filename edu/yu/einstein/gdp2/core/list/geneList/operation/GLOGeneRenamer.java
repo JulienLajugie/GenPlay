@@ -39,8 +39,8 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 			for (int i = 0; i < renamedList.size(); i++) {
 				for (int j = 0; j < renamedList.size(i); j++) {
 					if (geneNames.length > 1) {
-						if (geneNames[1].trim().equalsIgnoreCase(renamedList.get(i,j).getName())) {
-							renamedList.get(i,j).setName(geneNames[0].trim());			
+						if (geneNames[0].trim().equalsIgnoreCase(renamedList.get(i,j).getName())) {
+							renamedList.get(i,j).setName(geneNames[1].trim());			
 						}
 					}
 				}

@@ -6,9 +6,16 @@
 package yu.einstein.gdp2.core.list.SCWList.operation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
+import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.operation.Operation;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
 
 /**
  * @author Chirag Gorasia
@@ -19,7 +26,14 @@ public class SCWLORepartition implements Operation<double [][][]>{
 	private final ScoredChromosomeWindowList[] scwListArray;
 	private final double scoreWindowSize;
 	private final int graphType;
+	private static final int COUNTGRAPH = 1; 
 
+	/**
+	 * Creates an instance of {@link SCWLORepartition}
+	 * @param scwListArray
+	 * @param scoreWindowSize
+	 * @param graphType
+	 */
 	public SCWLORepartition(ScoredChromosomeWindowList[] scwListArray, double scoreWindowSize, int graphType) {
 		this.scwListArray = scwListArray;
 		this.scoreWindowSize = scoreWindowSize;
@@ -27,65 +41,82 @@ public class SCWLORepartition implements Operation<double [][][]>{
 	}
 
 	@Override
-	public double[][][] compute() throws IllegalArgumentException, IOException {
+	public double[][][] compute() throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
 		if(scoreWindowSize <= 0) {
 			throw new IllegalArgumentException("the size of the score bins must be strictly positive");
 		}
-		// search the greatest and smallest score
-		double[] max = new double[scwListArray.length];
-		double[] min = new double[scwListArray.length];
-		double[] distanceMinMax = new double[scwListArray.length];
-		double result[][][] = new double[scwListArray.length][][];
-
-
+		double[][][] finalResult = new double[scwListArray.length][][];	
 		for (int i = 0; i < scwListArray.length; i++) {
-			max[i] = scwListArray[i].getMax();
-			min[i] = scwListArray[i].getMin();
-			distanceMinMax[i] = max[i] - min[i];	
-			result[i] = new double[(int)(distanceMinMax[i] / scoreWindowSize) + 2][2];	
+			finalResult[i] = singleSCWListResult(scwListArray[i]);
 		}
+		return finalResult;
+	}
+	
+	public double[][] singleSCWListResult (final ScoredChromosomeWindowList scwList) throws InterruptedException, ExecutionException {
+		// search the greatest and smallest score
+		double max = scwList.getMax();
+		final double min = scwList.getMin();
+		final double distanceMinMax = max - min;
+		final double startPoint;
+		int minNegative = 0;
+		if (min < 0) {
+			minNegative = 1;
+		}
+		int i = 0;
+		while ((scoreWindowSize*i) < Math.abs(min)) {
+			i++;
+		}
+		if (minNegative == 1) {
+			startPoint = scoreWindowSize*(i)*(-1);
+		}else {
+			startPoint = scoreWindowSize*(i-1);
+		}
+		double result[][] = new double[(int)(distanceMinMax / scoreWindowSize) + 2][2];
 		int z = 0;
-		int k = 0;
-		while (k < scwListArray.length) {
-			int minNegative = 0;
-			double startPoint;
-			if (min[k] < 0)
-				minNegative = 1;
-			int i = 0;
-			while ((scoreWindowSize*i) < Math.abs(min[k])) {
-				i++;
-			}
-			if (minNegative == 1) {
-				startPoint = scoreWindowSize*(i)*(-1);
-			}else {
-				startPoint = scoreWindowSize*(i-1);
-			}
-			if (Math.ceil(startPoint + z*scoreWindowSize) >= max[k]) {
-				z = 0;
-				k++;
-				if (k == scwListArray.length)
-					break;
-			}
-			result[k][z][0] = (startPoint + z*scoreWindowSize);
+		while (Math.ceil(startPoint + z*scoreWindowSize) <= max) {
+			result[z][0] = (startPoint + z*scoreWindowSize);
 			z++;
-		}		
+		}
 
- 		for (k = 0; k < scwListArray.length; k++) {
-			for (short i = 0; i < scwListArray[k].size(); i++) {
-				if (scwListArray[k].get(i) != null) {
-					for(int j = 0; j < scwListArray[k].size(i); j++) {
-						if (scwListArray[k].get(i,j) != null) {
-							if (graphType == 1) {
-								result[k][(int)((scwListArray[k].get(i,j).getScore() - min[k]) / scoreWindowSize)][1]++;
-							} else {
-								result[k][(int)((scwListArray[k].get(i,j).getScore() - min[k]) / scoreWindowSize)][1] += scwListArray[k].get(i,j).getStop() - scwListArray[k].get(i,j).getStart();
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
+
+		for (final List<ScoredChromosomeWindow> currentList: scwList) { 
+			Callable<double[]> currentThread = new Callable<double[]>() {	
+				@Override
+				public double[] call() throws Exception {				
+					double[] chromoResult = new double[(int)(distanceMinMax / scoreWindowSize) + 2];					                                
+					if (currentList == null) {
+						return null;
+					}
+
+					for(int j = 0; j < currentList.size(); j++) {
+						if (currentList.get(j).getScore() != 0) {
+							if (graphType == COUNTGRAPH) {
+								chromoResult[(int)((currentList.get(j).getScore() - min) / scoreWindowSize)]++;
+							} else {							
+								chromoResult[(int)((currentList.get(j).getScore() - min) / scoreWindowSize)] += currentList.get(j).getStop() - currentList.get(j).getStart();
 							}
 						}
 					}
+					op.notifyDone();
+					return chromoResult;
 				}
-			}			
+			};
+			threadList.add(currentThread);
 		}
-		return result;		
+
+		List<double[]> threadResult = op.startPool(threadList);
+		if (threadResult == null) {
+			return null;		
+		}
+
+		for (double [] currentResult: threadResult) {
+			for (i = 0; i < currentResult.length; i++) {
+				result[i][1] += currentResult[i];
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -95,11 +126,11 @@ public class SCWLORepartition implements Operation<double [][][]>{
 
 	@Override
 	public String getProcessingDescription() {
-		return null;
+		return "Plotting Repartition";
 	}
 
 	@Override
 	public int getStepCount() {
-		return 1;
+		return scwListArray.length;
 	}
 }
