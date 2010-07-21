@@ -87,7 +87,7 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 					setGraphIndicator(2);
 				}
 				
-				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
+				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0##"), 0, 1000, 1);
 				if (scoreBin != null) {	
 					selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getSCWListTracks());
 					if ((selectedTracks != null)) {

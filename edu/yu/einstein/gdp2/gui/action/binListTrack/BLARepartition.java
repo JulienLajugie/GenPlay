@@ -59,7 +59,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 	public Operation<double [][][]> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0"), 0, 1000, 1);
+			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0##"), 0, 1000, 1);
 			if (scoreBin != null) {	
 				selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
 				if ((selectedTracks != null)) {
