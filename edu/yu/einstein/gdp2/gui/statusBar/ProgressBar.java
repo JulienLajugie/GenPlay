@@ -20,6 +20,7 @@ final class ProgressBar extends JProgressBar {
 	private static final Color 	BACKGROUND_COLOR = Color.white; // color of the background of the progressbar
 	private static final int 	HEIGHT = 15; 					// height of the progress bar
 	
+	
 	/**
 	 * Creates an instance of {@link ProgressBar}
 	 */
@@ -46,6 +47,7 @@ final class ProgressBar extends JProgressBar {
 		setString(progress + "%");
 	}
 
+	
 	/**
 	 * Sets the progress bar indeterminate and don't print the string 
 	 * on the progress bar if the parameter is true

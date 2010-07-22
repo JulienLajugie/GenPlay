@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.statusBar;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -61,13 +62,13 @@ public final class StatusBar extends JPanel {
 		add(statusLabel, gbc);
 
 		gbc = new GridBagConstraints();
+		gbc.insets = new Insets(1, 3, 1, 1);
 		gbc.fill = GridBagConstraints.VERTICAL;
 		gbc.weightx = 0;
 		gbc.weighty = 1;
 		gbc.gridx = 3;		
 		add(memoryPanel, gbc);
-		
-		setBorder(BorderFactory.createEtchedBorder());
+		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
 	}
 	
 	

@@ -38,6 +38,9 @@ public class BLOChangeBinSize implements Operation<BinList> {
 
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
+		if (binSize == binList.getBinSize()) {
+			return binList.deepClone();
+		}
 		BinList resultList = new BinList(binSize, binList.getPrecision(), method, binList, true);
 		return resultList;
 	}
@@ -51,7 +54,7 @@ public class BLOChangeBinSize implements Operation<BinList> {
 	
 	@Override
 	public int getStepCount() {
-		return BinList.getCreationStepCount(binSize);
+		return BinList.getCreationStepCount(binSize) + 1;
 	}
 
 
