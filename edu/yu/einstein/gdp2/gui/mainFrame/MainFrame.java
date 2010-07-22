@@ -63,7 +63,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 211; 						// GenPlay version
+	private static final int VERSION_NUMBER = 215; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -102,11 +102,21 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 * Starts the application
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				MainFrame.getInstance().setVisible(true);
+				MainFrame mainFrame = MainFrame.getInstance();
+				mainFrame.setVisible(true);
+				if (args.length == 1) {
+					try {
+						mainFrame.getTrackList().loadProject(new File(args[0]));
+						// unlock the tracks
+						mainFrame.getTrackList().actionEnds();
+					} catch (Exception e) {
+						ExceptionManager.handleException(mainFrame.getRootPane(), e, "Error while loading the project.");
+					}
+				}
 			}
 		});
 	}

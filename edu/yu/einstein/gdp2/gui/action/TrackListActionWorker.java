@@ -68,6 +68,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		@Override
 		final protected void done() {
 			try {
+				garbageCollect();
 				getStatusBar().actionStop("Operation Done");
 				doAtTheEnd(this.get());
 			} catch (Exception e) {
@@ -82,6 +83,18 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 				getTrackList().actionEnds();
 			}
 		}
+	}
+	
+	
+	/**
+	 * Tries to force the garbage collector to run
+	 */
+	private void garbageCollect() {
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();
 	}
 	
 	
@@ -156,6 +169,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	public void stop() {
 		worker.cancel(true);
 		OperationPool.getInstance().stopPool();	
+		garbageCollect();
 		getStatusBar().actionStop("Operation Aborted");
 	}
 
