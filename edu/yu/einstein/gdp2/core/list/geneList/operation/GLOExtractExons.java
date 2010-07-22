@@ -55,6 +55,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 					List<Gene> resultExonList = new ArrayList<Gene>();
 					int[] exonStart;
 					int[] exonStop;
+					double[] exonScore;
 					List<Gene> smallerGenes = null;
 					for (int j = 0; j < currentList.size(); j++) {
 						Gene currentGene = currentList.get(j); 
@@ -119,6 +120,13 @@ public class GLOExtractExons implements Operation<GeneList> {
 									exonStart[0] = smallerGene.getExonStarts()[i];
 									exonStop = new int[1];
 									exonStop[0] = smallerGene.getExonStops()[i];
+									if (smallerGene.getExonScores().length == 1) {
+										exonScore = new double[1];
+										exonScore[0] = smallerGene.getExonScores()[0];
+									} else if (smallerGene.getExonScores().length > 1) {
+										exonScore = new double[1];
+										exonScore[0] = smallerGene.getExonScores()[i];
+									}
 									smallerGene.setExonStarts(exonStart);
 									smallerGene.setExonStops(exonStop);
 									smallerGene.setName(geneToAdd.getName() + "(" + Integer.toString(i+1) + ")");
@@ -134,6 +142,13 @@ public class GLOExtractExons implements Operation<GeneList> {
 									exonStart[0] = smallerGene.getExonStarts()[i];
 									exonStop = new int[1];
 									exonStop[0] = smallerGene.getExonStops()[i];
+									if (smallerGene.getExonScores().length == 1) {
+										exonScore = new double[1];
+										exonScore[0] = smallerGene.getExonScores()[0];
+									} else if (smallerGene.getExonScores().length > 1) {
+										exonScore = new double[1];
+										exonScore[0] = smallerGene.getExonScores()[i];
+									}
 									smallerGene.setExonStarts(exonStart);
 									smallerGene.setExonStops(exonStop);
 									smallerGene.setName(geneToAdd.getName() + "(" + Integer.toString(geneToAdd.getExonStarts().length-i) + ")");
