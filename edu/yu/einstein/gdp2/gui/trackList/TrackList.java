@@ -132,8 +132,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	private final List<GenomeWindowListener> gwListenerList;	// list of GenomeWindowListener
 	private GenomeWindow 		displayedGenomeWindow;			// displayed GenomeWindow
 	private Track<?>[] 			trackList;						// array of tracks
-	private Track<?>				selectedTrack = null;			// track selected
-	private Track<?>				copiedTrack = null; 			// list of the tracks in the clipboard
+	private Track<?>			selectedTrack = null;			// track selected
+	private Track<?>			copiedTrack = null; 			// list of the tracks in the clipboard
 	private int 				draggedTrackIndex = -1;			// index of the dragged track, -1 if none
 	private int 				draggedOverTrackIndex = -1; 	// index of the track rolled over by the dragged track, -1 if none
 
@@ -668,8 +668,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if ((selectedTrack != null) && (copiedTrack != null)) {
 			try {
 				int selectedTrackIndex = getSelectedTrackIndex();
-				GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
 				Track<?> newTrack = copiedTrack.deepClone();
+				GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
 				newTrack.setGenomeWindow(currentGenomeWindow);
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null);
 				selectedTrack = null;
