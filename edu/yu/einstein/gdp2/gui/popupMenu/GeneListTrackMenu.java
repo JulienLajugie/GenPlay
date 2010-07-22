@@ -8,6 +8,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 import javax.swing.JMenuItem;
 
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractExons;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAGeneRenamer;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLASearchGene;
@@ -29,7 +30,7 @@ public final class GeneListTrackMenu extends TrackMenu {
 	private final JMenuItem searchGene;		// search gene menu
 	private final JMenuItem extractInterval;// extract interval menu
 	private final JMenuItem renameGenes;	// rename genes menu
-	
+	private final JMenuItem extractExons;	// rename genes menu
 	
 	/**
 	 * Creates an instance of a {@link GeneListTrackMenu}
@@ -41,12 +42,14 @@ public final class GeneListTrackMenu extends TrackMenu {
 		saveGeneTrack = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
 		searchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
 		extractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
+		extractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
 		renameGenes = new JMenuItem(actionMap.get(GLAGeneRenamer.ACTION_KEY));
 			
 		add(saveGeneTrack, 7);
 		addSeparator();
 		add(searchGene);
 		add(extractInterval);
+		add(extractExons);
 		add(renameGenes);
 	}
 }

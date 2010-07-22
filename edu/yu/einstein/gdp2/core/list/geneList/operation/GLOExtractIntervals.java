@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.core.list.geneList.operation;
@@ -20,6 +21,7 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
 /**
  * Extracts intervals relative to gene positions
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 public class GLOExtractIntervals implements Operation<GeneList> {
@@ -41,18 +43,30 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	 * after the start position (used for interval extraction)
 	 */
 	public static final int AFTER_START = 1;
+	
+	
+	/**
+	 * before the middle position (used for interval extraction)
+	 */
+	public static final int BEFORE_MIDDLE = 2;
+
+
+	/**
+	 * after the middle position (used for interval extraction)
+	 */
+	public static final int AFTER_MIDDLE = 3;
 
 
 	/**
 	 * before the stop position (used for interval extraction)
 	 */
-	public static final int BEFORE_STOP = 2;
+	public static final int BEFORE_STOP = 4;
 
 
 	/**
 	 * after the stop position (used for interval extraction)
 	 */
-	public static final int AFTER_STOP = 3;
+	public static final int AFTER_STOP = 5;
 
 
 	/**
@@ -70,7 +84,6 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		this.stopDistance = stopDistance;
 		this.stopFrom = stopFrom;
 	}
-
 
 	@Override
 	public GeneList compute() throws Exception {
@@ -109,6 +122,20 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 								newStart = Math.max(0, currentGene.getTxStop() - startDistance);
 							}
 							break;
+						case BEFORE_MIDDLE:
+							if (currentGene.getStrand() == Strand.FIVE) {
+								newStart = Math.max(0, (currentGene.getTxStop() + currentGene.getTxStart())/2 - startDistance);
+							} else {
+								newStart = Math.min(chromoLength, (currentGene.getTxStart() + currentGene.getTxStop())/2 + startDistance);
+							}
+							break;
+						case AFTER_MIDDLE:
+							if (currentGene.getStrand() == Strand.FIVE) {
+								newStart = Math.min(chromoLength, (currentGene.getTxStop() + currentGene.getTxStart())/2 + startDistance);
+							} else {
+								newStart = Math.max(0, (currentGene.getTxStart() + currentGene.getTxStop())/2 - startDistance);
+							}
+							break;
 						case BEFORE_STOP:
 							if (currentGene.getStrand() == Strand.FIVE) {
 								newStart = Math.max(0, currentGene.getTxStop() - startDistance);
@@ -142,6 +169,20 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 								newStop = Math.min(chromoLength, currentGene.getTxStart() + stopDistance);
 							} else {
 								newStop = Math.max(0, currentGene.getTxStop() - stopDistance);
+							}
+							break;
+						case BEFORE_MIDDLE:
+							if (currentGene.getStrand() == Strand.FIVE) {
+								newStop = Math.max(0, (currentGene.getTxStop() + currentGene.getTxStart())/2 - stopDistance);
+							} else {
+								newStop =  Math.min(chromoLength, (currentGene.getTxStart() + currentGene.getTxStop())/2 + stopDistance);
+							}
+							break;
+						case AFTER_MIDDLE:
+							if (currentGene.getStrand() == Strand.FIVE) {
+								newStop = Math.min(chromoLength, (currentGene.getTxStop() + currentGene.getTxStart())/2 + stopDistance);
+							} else {
+								newStop = Math.max(0, (currentGene.getTxStart() + currentGene.getTxStop())/2 - stopDistance);
 							}
 							break;
 						case BEFORE_STOP:

@@ -1,5 +1,6 @@
 /**
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.dialog;
@@ -26,6 +27,7 @@ import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
 /**
  * A frame to define the interval for the {@link GLAExtractInterval}
  * @author Julien Lajugie
+ * @author Chirag Gorasia
  * @version 0.1
  */
 public final class ExtractGeneIntervalsDialog extends JDialog implements ActionListener {
@@ -41,11 +43,13 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 
 	private static final long serialVersionUID = 4391029438908582693L;	// generated ID
 	private final static String[] OPTIONS = 
-	{"before start position", "after start position", 
-		"before stop position", "after stop position"};		// available options in the comboBoxes
+	{"before start position", "after start position", "before middle position", 
+		"after middle position", "before stop position", "after stop position"};		// available options in the comboBoxes
 	private final static int[] OPTION_VALUES = {
 		GLOExtractIntervals.BEFORE_START, 
 		GLOExtractIntervals.AFTER_START,
+		GLOExtractIntervals.BEFORE_MIDDLE,
+		GLOExtractIntervals.AFTER_MIDDLE,
 		GLOExtractIntervals.BEFORE_STOP, 
 		GLOExtractIntervals.AFTER_STOP
 	};														// value associated to this operations
