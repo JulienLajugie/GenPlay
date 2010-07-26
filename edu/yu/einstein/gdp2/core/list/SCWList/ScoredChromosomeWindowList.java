@@ -23,6 +23,7 @@ import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.overLap.OverLappingManagement;
+import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.util.DoubleLists;
@@ -139,6 +140,51 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		for (List<ScoredChromosomeWindow> currentChrWindowList : this) {
 			if (currentChrWindowList != null) {
 				Collections.sort(currentChrWindowList);
+			}
+		}
+		generateStatistics();
+	}
+	
+	
+	/**
+	 * Creates an instance of {@link ScoredChromosomeWindow} 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	public ScoredChromosomeWindowList (final BinList binList) throws InterruptedException, ExecutionException {
+		super();
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
+		
+		for(final Chromosome currentChromosome : chromosomeManager) {
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+				@Override
+				public List<ScoredChromosomeWindow> call() throws Exception {
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();	
+					for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
+						if (binList.get(currentChromosome, i) != 0.0) {
+							resultList.add(new ScoredChromosomeWindow( 	(i * binList.getBinSize()),
+																		((i + 1) * binList.getBinSize()),
+																		binList.get(currentChromosome, i)));
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		List<List<ScoredChromosomeWindow>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<ScoredChromosomeWindow> currentList: result) {
+				add(currentList);
 			}
 		}
 		generateStatistics();
