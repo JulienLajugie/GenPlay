@@ -47,6 +47,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
@@ -72,6 +73,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLADivide;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADivideConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAGenerateSCWList;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
@@ -207,6 +209,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
+		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
 		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());
 		getActionMap().put(SCWLAIndexByChromosome.ACTION_KEY, new SCWLAIndexByChromosome());		
@@ -255,6 +258,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLASubtract.ACTION_KEY, new BLASubtract());
 		getActionMap().put(BLASubtractConstant.ACTION_KEY, new BLASubtractConstant());
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
+		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
 	}
 
 

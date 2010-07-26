@@ -25,6 +25,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
@@ -48,6 +49,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem jmiAverage;				// menu average
 	private final JMenuItem	jmiCountNonNullLength;	// menu count non null length
 	private final JMenuItem jmiDivideConstant;		// menu divide constant
+	private final JMenuItem jmiTwoTracks;			// menu two tracks operation
 	private final JMenuItem jmiGenerateBinList;		// menu generate a BinList track
 	private final JMenuItem	jmiIndex;				// menu index 
 	private final JMenuItem	jmiIndexPerChromosome;	// menu index per chromosome
@@ -77,6 +79,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiAverage = new JMenuItem(actionMap.get(SCWLAAverage.ACTION_KEY));
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(SCWLADivideConstant.ACTION_KEY));
+		jmiTwoTracks = new JMenuItem(actionMap.get(SCWLATwoTracks.ACTION_KEY));
 		jmiGenerateBinList = new JMenuItem(actionMap.get(SCWLAGenerateBinList.ACTION_KEY));		
 		jmiIndex = new JMenuItem(actionMap.get(SCWLAIndex.ACTION_KEY));
 		jmiIndexPerChromosome = new JMenuItem(actionMap.get(SCWLAIndexByChromosome.ACTION_KEY));
@@ -98,6 +101,8 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiMultiplyConstant);
 		jmOperation.add(jmiDivideConstant);
 		jmOperation.add(jmiInvertConstant);
+		jmOperation.addSeparator();
+		jmOperation.add(jmiTwoTracks);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiIndex);
 		jmOperation.add(jmiIndexPerChromosome);

@@ -25,6 +25,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLADivide;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADivideConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAGenerateSCWList;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
@@ -101,6 +102,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
 	private final JMenuItem		jmiConcatenate;			// menu concatenate
 	
+	private final JMenuItem		jmiGenerateSCWList;		// menu generate a SCWList
+	
 	
 	/**
 	 * Creates an instance of a {@link BinListTrackMenu}
@@ -154,6 +157,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiShowRepartition = new JMenuItem(actionMap.get(BLARepartition.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(BLAConcatenate.ACTION_KEY));
 		
+		jmiGenerateSCWList = new JMenuItem(actionMap.get(BLAGenerateSCWList.ACTION_KEY));
+		
 		addSeparator();
 		add(jcbmiCompression);
 		
@@ -195,6 +200,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.add(jmiConcatenate);
 		jmOperation.add(jmiCalculOnProjection);
+		jmOperation.addSeparator();
+		jmOperation.add(jmiGenerateSCWList);
 		
 		add(jmOperation, 0);
 		add(new Separator(), 1);
