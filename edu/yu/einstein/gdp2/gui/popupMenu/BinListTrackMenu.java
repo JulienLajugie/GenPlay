@@ -86,7 +86,8 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	
 	private final JMenuItem		jmiFilter;				// menu filter
 	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
-	private final JMenuItem		jmiTransfrag;			// menu transfrag
+	private final JMenuItem		jmiTransfrag;			// menu transfrag for BinLists
+	//private final JMenuItem		jmiTransfragGeneList;	// menu transfrag for GeneLists
 	
 	private final JMenuItem		jmiChangeBinSize;		// menu change bin size
 	private final JMenuItem		jmiChangePrecision;		// menu change data precision
@@ -139,6 +140,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiFilter = new JMenuItem(actionMap.get(BLAFilter.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(BLAFindPeaks.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(BLATransfrag.ACTION_KEY));
+		//jmiTransfragGeneList =  new JMenuItem(actionMap.get(BLATransfragGeneList.ACTION_KEY));
 		
 		jmiChangeBinSize = new JMenuItem(actionMap.get(BLAChangeBinSize.ACTION_KEY));
 		jmiChangePrecision = new JMenuItem(actionMap.get(BLAChangeDataPrecision.ACTION_KEY));
@@ -180,6 +182,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiFilter);
 		jmOperation.add(jmiSearchPeaks);
 		jmOperation.add(jmiTransfrag);
+		//jmOperation.add(jmiTransfragGeneList);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiChangeBinSize);
 		jmOperation.add(jmiChangePrecision);

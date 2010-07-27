@@ -251,6 +251,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAStandardDeviation.ACTION_KEY, new BLAStandardDeviation());
 		getActionMap().put(BLASubtractConstant.ACTION_KEY, new BLASubtractConstant());
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
+		//getActionMap().put(BLATransfragGeneList.ACTION_KEY, new BLATransfragGeneList());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
 	}
