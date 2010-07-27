@@ -114,11 +114,9 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Displayab
 	private boolean isSCWList () {
 		if (selectedTrack.getData() instanceof BinList & otherTrack.getData() instanceof BinList) {
 			if (((BinList)selectedTrack.getData()).getBinSize() == ((BinList)otherTrack.getData()).getBinSize()) {
-				System.out.println("is SCWList");
 				return false;
 			}
 		}
-		System.out.println("is not SCWList");
 		return true;
 	}
 }

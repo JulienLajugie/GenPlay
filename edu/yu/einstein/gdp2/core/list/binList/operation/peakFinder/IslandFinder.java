@@ -38,6 +38,8 @@ public class IslandFinder {
 	private double						lambda;				// average number of reads in a window
 	private IslandResultType 			resultType;			// type of the result (constant, score, average)
 	private HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
+	private String s = "";
+	
 	
 	/**
 	 * IslandFinder constructor
@@ -93,19 +95,23 @@ public class IslandFinder {
 		final DataPrecision precision = binList.getPrecision();
 		for (short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);
-			
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
-					List<List<Integer>> islandsPositions;
-					List<Double> scoreIsland;
 					List<Double> resultList;
-					// Search all islands position (0: start; 1: stop)
-					islandsPositions = searchIslandPosition(currentList);
-					// Calculate all islands score
-					scoreIsland = islandScore(currentList, islandsPositions.get(0), islandsPositions.get(1));
-					// Create the result list
-					resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1));
+					if (currentList != null) {
+						List<List<Integer>> islandsPositions;
+						List<Double> scoreIsland;
+						
+						// Search all islands position (0: start; 1: stop)
+						islandsPositions = searchIslandPosition(currentList);
+						// Calculate all islands score
+						scoreIsland = islandScore(currentList, islandsPositions.get(0), islandsPositions.get(1));
+						// Create the result list
+						resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1));
+					} else {
+						resultList = null;
+					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -213,11 +219,16 @@ public class IslandFinder {
 	 * @param islandsStop		stop positions of all islands
 	 * @return					list of windows values
 	 */
-	private List<Double> getListIsland (DataPrecision precision,
+	private List<Double> getListIsland (	DataPrecision precision,
 											List<Double> currentList,
 											List<Double> scoreIsland,
 											List<Integer> islandsStart,
 											List<Integer> islandsStop) {
+		if (currentList == null) {
+			s += "2 - currentList null\n";
+		} else {
+			s += "2 - currentList non null\n";
+		}
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
