@@ -2,7 +2,7 @@
  * @author Julien Lajugie
  * @version 0.1
  */
-package yu.einstein.gdp2.core.filter;
+package yu.einstein.gdp2.core.list.binList.operation.peakFinder;
 
 import java.util.ArrayList;
 import java.util.Collection;

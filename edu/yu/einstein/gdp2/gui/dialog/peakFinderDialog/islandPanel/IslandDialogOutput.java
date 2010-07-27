@@ -11,7 +11,8 @@ import java.awt.Insets;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
-import yu.einstein.gdp2.core.filter.IslandFinder;
+
+import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 
 /**
  * This panel shows output options for the island finder frame settings

@@ -10,7 +10,6 @@ import javax.swing.JMenuItem;
 import javax.swing.event.PopupMenuEvent;
 
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAAdd;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAddConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAverage;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACountNonNullBins;
@@ -21,7 +20,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLACompress;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAConcatenate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACorrelate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADensity;
-import yu.einstein.gdp2.gui.action.binListTrack.BLADivide;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADivideConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
@@ -33,7 +31,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMax;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMin;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
@@ -41,9 +38,9 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaks;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
-import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtractConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLATransfrag;
+import yu.einstein.gdp2.gui.action.binListTrack.BLATwoTracks;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -69,10 +66,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiDivideConstant;		// menu divide BinListTrack by constant
 	private final JMenuItem		jmiInvertConstant;		// menu invert BinListTrack
 	
-	private final JMenuItem		jmiAdd;					// menu add BinListTrack to another one
-	private final JMenuItem		jmiSubtract;			// menu subtract another BinListTrack from selected one
-	private final JMenuItem		jmiMultiply;			// menu multiply BinListTrack by another one
-	private final JMenuItem		jmiDivide;				// menu divide BinListTrack by another one
+	private final JMenuItem		jmiTwoTracks;			// menu operates BinListTrack by another one
 	
 	private final JMenuItem		jmiGauss;				// menu gauss BinListTrack
 	private final JMenuItem		jmiIndex;				// menu index BinListTrack
@@ -124,10 +118,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiDivideConstant = new JMenuItem(actionMap.get(BLADivideConstant.ACTION_KEY));
 		jmiInvertConstant = new JMenuItem(actionMap.get(BLAInvertConstant.ACTION_KEY));
 		
-		jmiAdd = new JMenuItem(actionMap.get(BLAAdd.ACTION_KEY));
-		jmiSubtract = new JMenuItem(actionMap.get(BLASubtract.ACTION_KEY));
-		jmiMultiply = new JMenuItem(actionMap.get(BLAMultiply.ACTION_KEY));
-		jmiDivide = new JMenuItem(actionMap.get(BLADivide.ACTION_KEY));
+		jmiTwoTracks = new JMenuItem(actionMap.get(BLATwoTracks.ACTION_KEY));
 		
 		jmiGauss = new JMenuItem(actionMap.get(BLAGauss.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(BLAIndex.ACTION_KEY));
@@ -168,10 +159,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiDivideConstant);
 		jmOperation.add(jmiInvertConstant);
 		jmOperation.addSeparator();
-		jmOperation.add(jmiAdd);
-		jmOperation.add(jmiSubtract);
-		jmOperation.add(jmiMultiply);
-		jmOperation.add(jmiDivide);
+		jmOperation.add(jmiTwoTracks);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGauss);
 		jmOperation.add(jmiIndex);

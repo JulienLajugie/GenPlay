@@ -58,7 +58,6 @@ import yu.einstein.gdp2.gui.action.allTrack.ATARename;
 import yu.einstein.gdp2.gui.action.allTrack.ATASaveAsImage;
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
 import yu.einstein.gdp2.gui.action.allTrack.ATASetHeight;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAAdd;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAddConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAverage;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACountNonNullBins;
@@ -69,7 +68,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLACompress;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAConcatenate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACorrelate;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADensity;
-import yu.einstein.gdp2.gui.action.binListTrack.BLADivide;
 import yu.einstein.gdp2.gui.action.binListTrack.BLADivideConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFilter;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAGauss;
@@ -81,7 +79,6 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMax;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMin;
-import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiply;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMultiplyConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLANormalizeStandardScore;
@@ -89,9 +86,9 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLASumScore;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAFindPeaks;
 import yu.einstein.gdp2.gui.action.binListTrack.BLARepartition;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAStandardDeviation;
-import yu.einstein.gdp2.gui.action.binListTrack.BLASubtract;
 import yu.einstein.gdp2.gui.action.binListTrack.BLASubtractConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLATransfrag;
+import yu.einstein.gdp2.gui.action.binListTrack.BLATwoTracks;
 import yu.einstein.gdp2.gui.action.curveTrack.CTAHistory;
 import yu.einstein.gdp2.gui.action.curveTrack.CTARedo;
 import yu.einstein.gdp2.gui.action.curveTrack.CTAReset;
@@ -209,7 +206,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
-		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
 		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());
 		getActionMap().put(SCWLAIndexByChromosome.ACTION_KEY, new SCWLAIndexByChromosome());		
@@ -223,9 +219,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLARepartition.ACTION_KEY, new SCWLARepartition());
 		getActionMap().put(SCWLAStandardDeviation.ACTION_KEY, new SCWLAStandardDeviation());
 		getActionMap().put(SCWLASubtractConstant.ACTION_KEY, new SCWLASubtractConstant());
+		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
-		getActionMap().put(BLAAdd.ACTION_KEY, new BLAAdd());
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
 		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());		
@@ -236,7 +232,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAConcatenate.ACTION_KEY, new BLAConcatenate());
 		getActionMap().put(BLACorrelate.ACTION_KEY, new BLACorrelate());
 		getActionMap().put(BLADensity.ACTION_KEY, new BLADensity());
-		getActionMap().put(BLADivide.ACTION_KEY, new BLADivide());
 		getActionMap().put(BLADivideConstant.ACTION_KEY, new BLADivideConstant());
 		getActionMap().put(BLAFilter.ACTION_KEY, new BLAFilter());
 		getActionMap().put(BLAGauss.ACTION_KEY, new BLAGauss());
@@ -247,7 +242,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLALogOnAvgWithDamper.ACTION_KEY, new BLALogOnAvgWithDamper());
 		getActionMap().put(BLAMax.ACTION_KEY, new BLAMax());
 		getActionMap().put(BLAMin.ACTION_KEY, new BLAMin());
-		getActionMap().put(BLAMultiply.ACTION_KEY, new BLAMultiply());
 		getActionMap().put(BLAMultiplyConstant.ACTION_KEY, new BLAMultiplyConstant());
 		getActionMap().put(BLANormalize.ACTION_KEY, new BLANormalize());
 		getActionMap().put(BLANormalizeStandardScore.ACTION_KEY, new BLANormalizeStandardScore());
@@ -255,9 +249,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAFindPeaks.ACTION_KEY, new BLAFindPeaks());
 		getActionMap().put(BLARepartition.ACTION_KEY, new BLARepartition());
 		getActionMap().put(BLAStandardDeviation.ACTION_KEY, new BLAStandardDeviation());
-		getActionMap().put(BLASubtract.ACTION_KEY, new BLASubtract());
 		getActionMap().put(BLASubtractConstant.ACTION_KEY, new BLASubtractConstant());
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
+		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
 	}
 

@@ -9,7 +9,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JLabel;
-import yu.einstein.gdp2.core.filter.IslandFinder;
+
+import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 
 /**
  * This panel shows additional information for the island finder frame settings

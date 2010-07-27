@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
-import yu.einstein.gdp2.core.filter.IslandFinder;
+import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 
 /**
  * This panel allow to define a fieldset with title and some common attributes.

@@ -7,8 +7,8 @@ package yu.einstein.gdp2.core.list.binList.operation;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.IslandResultType;
-import yu.einstein.gdp2.core.filter.IslandFinder;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 import yu.einstein.gdp2.core.operation.Operation;
 
 

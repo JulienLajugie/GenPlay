@@ -19,7 +19,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
-import yu.einstein.gdp2.core.filter.IslandFinder;
+
+import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
 

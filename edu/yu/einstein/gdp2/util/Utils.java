@@ -18,6 +18,7 @@ import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.enums.LogBase;
 import yu.einstein.gdp2.core.enums.SaturationType;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.ScoreCalculationTwoTrackMethod;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphWith0Filter;
@@ -227,6 +228,23 @@ public class Utils {
 				ScoreCalculationMethod.AVERAGE);
 	}
 
+	
+	/**
+	 * A dialog box used to choose a {@link ScoreCalculationMethod}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link ScoreCalculationMethod}
+	 */
+	public static ScoreCalculationTwoTrackMethod chooseScoreCalculationTwoTrackMethod(Component parentComponent) {
+		return (ScoreCalculationTwoTrackMethod)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a method for the calculation of the score",
+				"Score Calculation",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				ScoreCalculationTwoTrackMethod.values(),
+				ScoreCalculationTwoTrackMethod.ADDITION);
+	}
+	
 
 	/**
 	 * @param file a {@link File}

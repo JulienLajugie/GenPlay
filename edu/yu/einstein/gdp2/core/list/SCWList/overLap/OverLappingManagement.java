@@ -28,9 +28,9 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
  */
 public class OverLappingManagement {
 	
-	protected final ChromosomeManager 				chromosomeManager;		// ChromosomeManager
-	private 		SCWLOptions 						sortSCW;				//use the sort option for chromosome list
-	private 		List<OverLappingEngine> 			overLappingEngineList;	//overlapping engine for chromosome list
+	protected final ChromosomeManager 			chromosomeManager;		// ChromosomeManager
+	private 		SCWLOptions 				sortSCW;				//use the sort option for chromosome list
+	private 		List<OverLappingEngine> 	overLappingEngineList;	//overlapping engine for chromosome list
 	
 	/**
 	 * OverLapManagement constructor
