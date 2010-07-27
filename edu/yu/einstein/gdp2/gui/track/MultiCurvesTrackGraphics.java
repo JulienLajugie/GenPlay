@@ -44,7 +44,6 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 		}
 	}
 
-
 	@Override
 	protected void drawScore(Graphics g) {}
 
