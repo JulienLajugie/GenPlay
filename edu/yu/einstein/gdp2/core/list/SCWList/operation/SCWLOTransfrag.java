@@ -63,39 +63,33 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 							while ((j < currentList.size()) && (currentList.get(j) == null)) {
 								j++;
 							}
-							int regionStart = j;
-							int regionStop = regionStart;
-							int zeroWindowCount = 0;
+							int regionStartIndex = j;
+							int regionStopIndex = regionStartIndex;
+							//int zeroWindowCount = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j < currentList.size()) && (zeroWindowCount < zeroSCWGap)) {
-								if (currentList.get(j) == null) {
-									zeroWindowCount++;
-								} else {
-									zeroWindowCount = 0;
-									regionStop = j;
-								}
+							while ((j+1 < currentList.size()) && (currentList.get(j+1).getStart() - currentList.get(j).getStop() < zeroSCWGap)) {
+								regionStopIndex = j+1;
 								j++;
 							}
-							if (regionStop == currentList.size()) {
-								regionStop--;
+							if (regionStopIndex >= currentList.size()) {
+								regionStopIndex = currentList.size()-1;
 							}
-							if (regionStop >= regionStart) { 
+							if (regionStopIndex >= regionStartIndex) { 
 								double regionScore = 0;
 								if (operation == ScoreCalculationMethod.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									regionScore = SCWLists.average(currentList, regionStart, regionStop);
-								} else if (operation == ScoreCalculationMethod.SUM) {
+									//System.out.println("average");
+									regionScore = SCWLists.average(currentList, regionStartIndex, regionStopIndex);
+								} else if (operation == ScoreCalculationMethod.MAXIMUM) {
 									// all the windows of the region are set with the max value on the region
-									regionScore = SCWLists.maxNoZero(currentList);
+									//System.out.println("max");
+									regionScore = SCWLists.maxNoZero(currentList, regionStartIndex, regionStopIndex);
 								} else {
 									// all the windows of the region are set with the sum value on the region
-									regionScore = SCWLists.sum(currentList, regionStart, regionStop);
+									//System.out.println("sum");
+									regionScore = SCWLists.sum(currentList, regionStartIndex, regionStopIndex);
 								}
-								for (j = regionStart; j <= regionStop; j++) {
-									if (j < resultList.size()) {
-										resultList.set(j, new ScoredChromosomeWindow(regionStart, regionStop, regionScore));
-									}
-								}
+								resultList.add(new ScoredChromosomeWindow(currentList.get(regionStartIndex).getStart(), currentList.get(regionStopIndex).getStop(), regionScore));
 							}
 							j++;
 						}
@@ -128,6 +122,6 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public int getStepCount() {
-		return 2;
+		return 3;
 	}
 }

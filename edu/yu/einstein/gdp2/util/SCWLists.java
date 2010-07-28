@@ -43,7 +43,7 @@ public class SCWLists {
 	 * @return the average value of the list between indexStart and indexStop included
 	 */
 	public static double average(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
-		if (indexStart > indexStop) {
+		if (indexStart > indexStop || indexStop >= list.size()) {
 			return 0;
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart).getScore();
@@ -72,11 +72,11 @@ public class SCWLists {
 	 * @param list
 	 * @return the non-zero maximum of the specified list
 	 */
-	public static double maxNoZero(List<ScoredChromosomeWindow> list) {
+	public static double maxNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
 		double max = Double.NEGATIVE_INFINITY;
-		for (ScoredChromosomeWindow currentValue : list) {
-			if (currentValue != null) {
-				max = Math.max(max, currentValue.getScore());
+		for (int j = regionStart; j <= regionStop; j++) {
+			if (list.get(j) != null) {
+				max = Math.max(max, list.get(j).getScore());
 			}
 		}
 		return max;
@@ -88,11 +88,11 @@ public class SCWLists {
 	 * @param list
 	 * @return the non-zero minimum of the specified list
 	 */
-	public static double minNoZero(List<ScoredChromosomeWindow> list) {
+	public static double minNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
 		double min = Double.POSITIVE_INFINITY;
-		for (ScoredChromosomeWindow currentValue : list) {
-			if (currentValue != null) {
-				min = Math.min(min, currentValue.getScore());
+		for (int j = regionStart; j <= regionStop; j++) {
+			if (list.get(j) != null) {
+				min = Math.min(min, list.get(j).getScore());
 			}
 		}
 		return min;
