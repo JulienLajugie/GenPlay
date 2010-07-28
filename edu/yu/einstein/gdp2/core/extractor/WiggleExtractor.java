@@ -184,8 +184,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
 	
@@ -223,5 +223,11 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		} else {
 			return new BinList(aBinSize, precision, method, startList, stopList, scoreList);
 		}
+	}
+	
+	
+	@Override
+	public boolean overlapped() {
+		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 }

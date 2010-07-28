@@ -60,7 +60,7 @@ public class OverLappingManagement implements Serializable {
 	 * 
 	 * @return	true is an overlapping region is found
 	 */
-	public boolean overLappingExist () {
+	/*public boolean overLappingExist () {
 		int index = 0;
 		boolean isFound = false;
 		for(final Chromosome currentChromosome : chromosomeManager) {
@@ -74,7 +74,7 @@ public class OverLappingManagement implements Serializable {
 			}
 		}
 		return false;
-	}
+	}*/
 	
 	/**
 	 * searchOverLappingPositionsForIndex method
@@ -84,7 +84,7 @@ public class OverLappingManagement implements Serializable {
 	 * @param index				current index
 	 * @return					true if the current index is involved on an overlapping region
 	 */
-	private boolean searchOverLappingPositionsForIndex (Chromosome currentChromosome, int index) {
+	/*private boolean searchOverLappingPositionsForIndex (Chromosome currentChromosome, int index) {
 		int nextIndex = index + 1;
 		boolean valid = true;
 		if (nextIndex < getSize(currentChromosome)) {
@@ -100,7 +100,7 @@ public class OverLappingManagement implements Serializable {
 			}
 		}
 		return false;
-	}
+	}*/
 	
 	
 	////////////////////////////////////////////////	OverLapping running methods
@@ -122,7 +122,7 @@ public class OverLappingManagement implements Serializable {
 		return this.sortSCW.getList(chromosome);
 	}
 	
-	private int getStart (Chromosome chromosome, int index) {
+	/*private int getStart (Chromosome chromosome, int index) {
 		return this.sortSCW.getList().get(chromosome, index).getStart();
 	}
 	
@@ -132,7 +132,7 @@ public class OverLappingManagement implements Serializable {
 	
 	private int getSize (Chromosome chromosome) {
 		return this.sortSCW.getList().get(chromosome).size();
-	}
+	}*/
 	
 	private IntArrayAsIntegerList getNewStartList(Chromosome chromosome) {
 		return this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).getNewStartList();

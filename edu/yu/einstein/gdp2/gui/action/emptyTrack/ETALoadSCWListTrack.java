@@ -61,7 +61,10 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 
 	@Override
 	protected ScoredChromosomeWindowList generateList() throws Exception {
-		return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList();
+		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
+			return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(Utils.chooseScoreCalculation(getTrackList().getRootPane()));
+		}
+		return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
 	}
 
 

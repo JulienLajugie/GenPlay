@@ -20,14 +20,15 @@ import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
+import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.overLap.OverLappingManagement;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.util.DoubleLists;
-import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -65,21 +66,24 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	public ScoredChromosomeWindowList(	final ChromosomeListOfLists<Integer> startList, 
 										final ChromosomeListOfLists<Integer> stopList,
-										final ChromosomeListOfLists<Double> scoreList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+										final ChromosomeListOfLists<Double> scoreList,
+										final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
 		
-		this.overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
+		
 		final boolean runOverLapEngine;
-		if (this.overLapManagement.overLappingExist()) {
+		this.overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
+		if (scm != null) {
+			this.overLapManagement.setScoreCalculationMethod(scm);
 			runOverLapEngine = true;
-			this.overLapManagement.setScoreCalculationMethod(Utils.chooseScoreCalculation(null));
 		} else {
 			runOverLapEngine = false;
 		}
+		
 		for(final Chromosome currentChromosome : chromosomeManager) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
@@ -537,5 +541,64 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * overLappingExist method
+	 * Scan the original list to find overlapping region.
+	 * 
+	 * @param	startList	list of position start
+	 * @param	stopList	list of position stop
+	 * @return	true is an overlapping region is found
+	 */
+	public static boolean overLappingExist (ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList) {
+		ChromosomeManager chromosomeManagerTmp = ChromosomeManager.getInstance();
+		int index = 0;
+		boolean isFound = false;
+		for(final Chromosome currentChromosome : chromosomeManagerTmp) {
+			while (index < startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size()) {
+				isFound = searchOverLappingPositionsForIndex(chromosomeManagerTmp, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
+				if (isFound) {
+					return true;
+				} else {
+					index++;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * searchOverLappingPositionsForIndex method
+	 * This method search if the index is involved on an overlapping region
+	 * 
+	 * @param	ChromosomeManager	a static ChromosomeManager instance
+	 * @param	startList			list of position start
+	 * @param	stopList			list of position stop
+	 * @param 	currentChromosome	Chromosome
+	 * @param 	index				current index
+	 * @return						true if the current index is involved on an overlapping region
+	 */
+	private static boolean searchOverLappingPositionsForIndex (	ChromosomeManager chromosomeManagerTmp,
+																ChromosomeListOfLists<Integer> startList,
+																ChromosomeListOfLists<Integer> stopList,
+																Chromosome currentChromosome,
+																int index) {
+		int size = startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size();
+		int nextIndex = index + 1;
+		if (nextIndex < size) {
+			boolean valid = true;
+			while (valid & (stopList.get(currentChromosome, index) > startList.get(currentChromosome, nextIndex))) {
+				if (stopList.get(currentChromosome, index) > startList.get(currentChromosome, nextIndex)) {
+					return true;
+				}
+				if ((nextIndex + 1) < size) {
+					nextIndex++;
+				} else {
+					valid = false;
+				}
+			}
+		}
+		return false;
 	}
 }

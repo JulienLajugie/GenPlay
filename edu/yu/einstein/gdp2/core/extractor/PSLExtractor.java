@@ -131,8 +131,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
 
@@ -159,8 +159,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
+	
 	@Override
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, null, searchURL);
+	}
+	
+	
+	@Override
+	public boolean overlapped() {
+		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 }
