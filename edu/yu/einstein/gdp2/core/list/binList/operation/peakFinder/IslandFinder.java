@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.core.list.binList.operation.peakFinder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,8 +29,9 @@ import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
  * It contains algorithm to separate data on island and some statistics methods corresponding.
  * @author Nicolas Fourel 
  */
-public class IslandFinder {
-
+public class IslandFinder implements Serializable {
+	
+	private static final long serialVersionUID = -4661852717981921332L;
 	private final BinList 				binList;			// input binlist
 	private int							gap;				// minimum windows number needed to separate 2 islands
 	private int							islandMinLength;

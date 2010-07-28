@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.core.list.SCWList.overLap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +25,9 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
  * @author Nicolas
  * @version 0.1
  */
-public class SCWLTwoTracksManagement {
-
+public class SCWLTwoTracksManagement implements Serializable {
+	
+	private static final long serialVersionUID = -4066526880193456101L;
 	protected 	final 	ChromosomeManager 					chromosomeManager;	//ChromosomeManager
 	private 	final 	List<DisplayableListOfLists<?, ?>> 	scwList;			//list containing originals lists
 	private 			List<SCWLTwoTracksEngine>			twoTracksEngineList;

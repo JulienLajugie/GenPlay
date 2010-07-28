@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.core.list.SCWList.overLap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -26,8 +27,9 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class OverLappingManagement {
+public class OverLappingManagement implements Serializable {
 	
+	private static final long serialVersionUID = 419831643761204027L;
 	protected final ChromosomeManager 			chromosomeManager;		// ChromosomeManager
 	private 		SCWLOptions 				sortSCW;				//use the sort option for chromosome list
 	private 		List<OverLappingEngine> 	overLappingEngineList;	//overlapping engine for chromosome list

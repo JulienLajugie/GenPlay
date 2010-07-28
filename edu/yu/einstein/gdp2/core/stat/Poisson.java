@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.core.stat;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
@@ -14,10 +15,11 @@ import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
  * These methods are developed for IslandFinder class.
  * @author Nicolas Fourel 
  */
-public class Poisson {
+public class Poisson implements Serializable {
 	
+	private static final long serialVersionUID = 256395258875515443L;
 	//Attribute to store Poisson values with parameter k as index, lambda on first double array position and the value on the second position
-	private static HashMap<Integer, HashMap<Double, Double>> poissonStorage = new HashMap<Integer, HashMap<Double, Double>>();
+	private volatile static HashMap<Integer, HashMap<Double, Double>> poissonStorage = new HashMap<Integer, HashMap<Double, Double>>();
 	
 	/**
 	 * logPoisson method
@@ -80,6 +82,8 @@ public class Poisson {
 					result = poissonStorage.get(k).get(lambda);
 				} catch (Exception e) {
 					result = -1.0;
+					System.out.println("getPoissonValue error; lambda: " + lambda + "; k: " + k);
+					
 					e.printStackTrace();
 				}
 			}
@@ -100,6 +104,7 @@ public class Poisson {
 			poissonStorage.put(k, new HashMap<Double, Double>());
 		}
 		try{
+			poissonStorage.get(k);
 			poissonStorage.get(k).put(lambda , value);
 		} catch (Exception e) {
 			e.printStackTrace();

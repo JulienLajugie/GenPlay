@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.core.stat;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 
@@ -13,8 +14,9 @@ import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
  * 
  * @author Nicolas Fourel
  */
-public class Factorial {
-
+public class Factorial implements Serializable {
+	
+	private static final long serialVersionUID = -5327997963998890691L;
 	//Attribute to store factorial values with parameter k as index and the factorial value on the cell
 	private static HashMap<Integer, Double> logFactorialStorage = new HashMap<Integer, Double>();
 	

@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.core.list.SCWList.overLap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -26,13 +27,14 @@ import yu.einstein.gdp2.util.DoubleLists;
  * @author Nicolas Fourel
  * @version 0.1
  */
-final class OverLappingEngine {
+final class OverLappingEngine implements Serializable {
 	
+	private static final long serialVersionUID = 7462066006408418433L;
 	private List<ScoredChromosomeWindow> 	list;					//original list of value
 	private IntArrayAsIntegerList 			newStartList;			//new list of start positions
 	private IntArrayAsIntegerList 			newStopList;			//new list of stop positions
 	private List<Double> 					newScoresList;			//new list of scores
-	private List<OverLappingNode> 				currentListOfNode;		//current list of nodes
+	private List<OverLappingNode> 			currentListOfNode;		//current list of nodes
 	private List<Integer> 					currentListOfPosition;	//current list of positions
 	private List<Double> 					currentListOfScore;		//current list of scores
 	private ScoreCalculationMethod			scm;

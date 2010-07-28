@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.core.list.SCWList.overLap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +26,9 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Nicolas
  * @version 0.1
  */
-public class SCWLTwoTracksEngine {
-
+public class SCWLTwoTracksEngine implements Serializable {
 	
+	private static final long serialVersionUID = 2965349494486829320L;
 	private final 	List<DisplayableListOfLists<?, ?>> 	list;				//list containing originals lists
 	private 		List<ScoredChromosomeWindow> 		newScwList;			//new list
 	private final	ScoreCalculationTwoTrackMethod		scm;				//operation to apply

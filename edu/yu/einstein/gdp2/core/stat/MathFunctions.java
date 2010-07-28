@@ -4,14 +4,18 @@
  */
 package yu.einstein.gdp2.core.stat;
 
+import java.io.Serializable;
+
 /**
  * Poisson
  * This class gather some methods to calculate mathematical functions.
  * These methods are developed for IslandFinder class.
  * @author Nicolas Fourel
  */
-public class MathFunctions {
+public class MathFunctions implements Serializable {
 	
+	private static final long serialVersionUID = 8391340544698147680L;
+
 	/**
 	 * unlogValue method
 	 * This method return the decimal value from a logarithm value 

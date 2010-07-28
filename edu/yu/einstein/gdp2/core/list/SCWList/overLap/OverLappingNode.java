@@ -5,6 +5,8 @@
  */
 package yu.einstein.gdp2.core.list.SCWList.overLap;
 
+import java.io.Serializable;
+
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 
 /**
@@ -14,8 +16,9 @@ import yu.einstein.gdp2.core.ScoredChromosomeWindow;
  * @author Nicolas
  * @version 0.1
  */
-final class OverLappingNode implements Comparable<OverLappingNode> {
+final class OverLappingNode implements Comparable<OverLappingNode>, Serializable {
 	
+	private static final long serialVersionUID = 2744418236142472607L;
 	private boolean 				start;	//the node refer to a start position
 	private ScoredChromosomeWindow 	scw;	//scored chromosome window
 	

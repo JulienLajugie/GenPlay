@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.core.list.SCWList.overLap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,8 +27,9 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  * @author Nicolas
  * @version 0.1
  */
-final class SCWLOptions {
-
+final class SCWLOptions implements Serializable {
+	
+	private static final long serialVersionUID = -2601316105498708787L;
 	protected final ChromosomeManager 									chromosomeManager;	//ChromosomeManager
 	private 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
 	private 		ChromosomeListOfLists<Integer> 						startList;			//store the original start list position
