@@ -25,6 +25,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATransfrag;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
@@ -62,6 +63,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem	jmiNormalizeStdScore;	// menu normalize standard score
 	private final JMenuItem	jmiStandardDeviation;	// menu standard deviation
 	private final JMenuItem jmiSubtractConstant;	// menu subtract constant
+	private final JMenuItem	jmiTransfrag;			// menu transfrag of the SCWListTrack
 	private final JMenuItem	jmiShowRepartition;		// menu show repartition of the SCWListTrack
 	
 
@@ -92,7 +94,8 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiNormalizeStdScore = new JMenuItem(actionMap.get(SCWLANormalizeStandardScore.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(SCWLARepartition.ACTION_KEY));
 		jmiStandardDeviation = new JMenuItem(actionMap.get(SCWLAStandardDeviation.ACTION_KEY));
-		jmiSubtractConstant = new JMenuItem(actionMap.get(SCWLASubtractConstant.ACTION_KEY));		
+		jmiSubtractConstant = new JMenuItem(actionMap.get(SCWLASubtractConstant.ACTION_KEY));
+		jmiTransfrag = new JMenuItem(actionMap.get(SCWLATransfrag.ACTION_KEY));
 
 		add(jmOperation, 0);
 		add(new Separator(), 1);
@@ -118,6 +121,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGenerateBinList);
 		jmOperation.addSeparator();
+		jmOperation.add(jmiTransfrag);
 		jmOperation.add(jmiShowRepartition);
 				
 		add(jmiSave, 9);

@@ -9,14 +9,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import yu.einstein.gdp2.core.enums.DataPrecision;
+import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
-import yu.einstein.gdp2.core.list.arrayList.ListFactory;
-import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
-import yu.einstein.gdp2.util.DoubleLists;
+import yu.einstein.gdp2.util.SCWLists;
 
 /**
  * Defines regions as "islands" of non zero value ScoredChromosomeWindows 
@@ -46,34 +44,31 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		/*
+		
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
-		final int binSize = scwList.getBinSize();
-		final DataPrecision precision = binList.getPrecision();
+		for (short i = 0; i < scwList.size(); i++) {
+			final List<ScoredChromosomeWindow> currentList = scwList.get(i);	
 
-		for (short i = 0; i < binList.size(); i++) {
-			final List<Double> currentList = binList.get(i);	
-
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
-				public List<Double> call() throws Exception {
-					List<Double> resultList = null;
+				public List<ScoredChromosomeWindow> call() throws Exception {
+					List<ScoredChromosomeWindow> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = ListFactory.createList(precision, currentList.size());
+						resultList = new ArrayList<ScoredChromosomeWindow>();
 						int j = 0;				
 						while (j < currentList.size()) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == 0)) {
+							while ((j < currentList.size()) && (currentList.get(j) == null)) {
 								j++;
 							}
 							int regionStart = j;
 							int regionStop = regionStart;
 							int zeroWindowCount = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j < currentList.size()) && (zeroWindowCount < zeroBinGap)) {
-								if (currentList.get(j) == 0) {
+							while ((j < currentList.size()) && (zeroWindowCount < zeroSCWGap)) {
+								if (currentList.get(j) == null) {
 									zeroWindowCount++;
 								} else {
 									zeroWindowCount = 0;
@@ -88,17 +83,17 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 								double regionScore = 0;
 								if (operation == ScoreCalculationMethod.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									regionScore = DoubleLists.average(currentList, regionStart, regionStop);
+									regionScore = SCWLists.average(currentList, regionStart, regionStop);
 								} else if (operation == ScoreCalculationMethod.SUM) {
 									// all the windows of the region are set with the max value on the region
-									regionScore = DoubleLists.maxNoZero(currentList);
+									regionScore = SCWLists.maxNoZero(currentList);
 								} else {
 									// all the windows of the region are set with the sum value on the region
-									regionScore = DoubleLists.sum(currentList, regionStart, regionStop);
+									regionScore = SCWLists.sum(currentList, regionStart, regionStop);
 								}
 								for (j = regionStart; j <= regionStop; j++) {
 									if (j < resultList.size()) {
-										resultList.set(j, regionScore);
+										resultList.set(j, new ScoredChromosomeWindow(regionStart, regionStop, regionScore));
 									}
 								}
 							}
@@ -110,18 +105,15 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 					return resultList;
 				}
 			};
-
 			threadList.add(currentThread);
 		}
-		List<List<Double>> result = op.startPool(threadList);
+		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			BinList resultList = new BinList(binSize, precision, result);
+			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
-		}
-		*/
-		return null;
+		}		
 	}
 
 	@Override
@@ -136,6 +128,6 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public int getStepCount() {
-		return 0;
+		return 2;
 	}
 }
