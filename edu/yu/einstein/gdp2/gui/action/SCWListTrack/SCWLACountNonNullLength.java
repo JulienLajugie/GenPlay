@@ -7,7 +7,6 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOCountNonNullLength;
-import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
@@ -42,7 +41,7 @@ public class SCWLACountNonNullLength extends TrackListActionOperationWorker<Long
 	public Operation<Long> initializeOperation() {
 		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
+			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
 				ScoredChromosomeWindowList scwList = selectedTrack.getData();
 				Operation<Long> operation = new SCWLOCountNonNullLength(scwList, selectedChromo);

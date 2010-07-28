@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOMin;
-import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
@@ -51,7 +50,7 @@ public final class SCWLAMin extends TrackListActionOperationWorker<Double> {
 	public Operation<Double> initializeOperation() {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
+			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
 				ScoredChromosomeWindowList scwList = selectedTrack.getData();
 				Operation<Double> operation = new SCWLOMin(scwList, selectedChromo);

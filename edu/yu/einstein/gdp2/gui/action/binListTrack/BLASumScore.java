@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.BLOSumScore;
-import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.ChromosomeChooser;
@@ -54,7 +53,7 @@ public final class BLASumScore extends TrackListActionOperationWorker<Double> {
 	public Operation<Double> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), ChromosomeManager.getInstance());
+			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
 				BinList binList = selectedTrack.getData();
 				Operation<Double> operation = new BLOSumScore(binList, selectedChromo);

@@ -278,6 +278,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			fittedChromosome = null;
 			return;
 		}
+		if (currentChromosomeList == null) {
+			fittedDataList = null;
+			return;
+		}
 		if (fittedXRatio > 1) {
 			fittedDataList = currentChromosomeList;
 		} else {
