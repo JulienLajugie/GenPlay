@@ -219,7 +219,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
 	 */
 	public static int getCreationStepCount() {
-		return 2;
+		return 5;
 	}
 
 

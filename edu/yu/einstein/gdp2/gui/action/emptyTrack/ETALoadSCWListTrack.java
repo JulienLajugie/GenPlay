@@ -71,7 +71,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(nctd.getScoreCalculationMethod());
 			}
 		} else {
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, false, false, true, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, false, false, false, false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);

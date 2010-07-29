@@ -51,57 +51,6 @@ public class OverLappingManagement implements Serializable {
 		this.sortSCW.sortAll();
 	}
 	
-
-	////////////////////////////////////////////////	OverLapping existing methods
-	
-	/**
-	 * overLappingExist method
-	 * Scan the original list to find overlapping region.
-	 * 
-	 * @return	true is an overlapping region is found
-	 */
-	/*public boolean overLappingExist () {
-		int index = 0;
-		boolean isFound = false;
-		for(final Chromosome currentChromosome : chromosomeManager) {
-			while (index < getSize(currentChromosome)) {
-				isFound = searchOverLappingPositionsForIndex(currentChromosome, index);	//Search for overlapping position on the current index
-				if (isFound) {
-					return true;
-				} else {
-					index++;
-				}
-			}
-		}
-		return false;
-	}*/
-	
-	/**
-	 * searchOverLappingPositionsForIndex method
-	 * This method search if the index is involved on an overlapping region
-	 * 
-	 * @param currentChromosome	Chromosome
-	 * @param index				current index
-	 * @return					true if the current index is involved on an overlapping region
-	 */
-	/*private boolean searchOverLappingPositionsForIndex (Chromosome currentChromosome, int index) {
-		int nextIndex = index + 1;
-		boolean valid = true;
-		if (nextIndex < getSize(currentChromosome)) {
-			while (valid & (getStop(currentChromosome, index) > getStart(currentChromosome, nextIndex))) {
-				if (getStop(currentChromosome, index) > getStart(currentChromosome, nextIndex)) {
-					return true;
-				}
-				if ((nextIndex + 1) < getSize(currentChromosome)) {
-					nextIndex++;
-				} else {
-					valid = false;
-				}
-			}
-		}
-		return false;
-	}*/
-	
 	
 	////////////////////////////////////////////////	OverLapping running methods
 	
@@ -121,18 +70,6 @@ public class OverLappingManagement implements Serializable {
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
 		return this.sortSCW.getList(chromosome);
 	}
-	
-	/*private int getStart (Chromosome chromosome, int index) {
-		return this.sortSCW.getList().get(chromosome, index).getStart();
-	}
-	
-	private int getStop (Chromosome chromosome, int index) {
-		return this.sortSCW.getList().get(chromosome, index).getStop();
-	}
-	
-	private int getSize (Chromosome chromosome) {
-		return this.sortSCW.getList().get(chromosome).size();
-	}*/
 	
 	private IntArrayAsIntegerList getNewStartList(Chromosome chromosome) {
 		return this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).getNewStartList();
