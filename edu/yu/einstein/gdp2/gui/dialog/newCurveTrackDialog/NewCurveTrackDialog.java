@@ -29,6 +29,7 @@ public class NewCurveTrackDialog extends JDialog {
 	private static final long serialVersionUID = -4896476921693184496L; // generated ID
 	private static final int 			INSET = 7;					// inset between the components
 	private final TrackNamePanel 		trackNamePanel;				// panel for the track name
+	private final BinSizePanel			binSizePanel;				// panel for the binsize
 	private final ChromoSelectionPanel 	chromoSelectionPanel;		// panel for selecting chromosomes
 	private final CalculMethodPanel 	calculMethodPanel;			// panel for the method of score calculation 
 	private final DataPrecisionPanel 	dataPrecisionPanel;			// panel for the precision of the data
@@ -52,7 +53,7 @@ public class NewCurveTrackDialog extends JDialog {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", true, true, true);
+		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", true, true, true, true);
 		ctd.showDialog(null);
 		ctd.dispose();
 	}
@@ -61,14 +62,16 @@ public class NewCurveTrackDialog extends JDialog {
 	/**
 	 * Creates an instance of {@link NewCurveTrackDialog}
 	 * @param trackName the default name of the track
+	 * @param isBinSizeNeeded true if the binsize need to be asked
 	 * @param isPrecisionNeeded true if the precision need to be asked
 	 * @param isMethodNeeded true if the method of calculation need to be asked
 	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked 
 	 */
-	public NewCurveTrackDialog(String trackName, boolean isPrecisionNeeded, boolean isMethodNeeded, boolean isChromoSelectionNeeded) {
+	public NewCurveTrackDialog(String trackName, boolean isBinSizeNeeded, boolean isPrecisionNeeded, boolean isMethodNeeded, boolean isChromoSelectionNeeded) {
 		super();
 		// create panels
 		trackNamePanel = new TrackNamePanel(trackName);
+		binSizePanel = new BinSizePanel();
 		chromoSelectionPanel = new ChromoSelectionPanel();
 		calculMethodPanel = new CalculMethodPanel();
 		dataPrecisionPanel = new DataPrecisionPanel();
@@ -78,6 +81,7 @@ public class NewCurveTrackDialog extends JDialog {
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				binSizePanel.saveDefault();
 				calculMethodPanel.saveDefault();
 				dataPrecisionPanel.saveDefault();
 				chromoSelectionPanel.saveDefault();
@@ -116,7 +120,7 @@ public class NewCurveTrackDialog extends JDialog {
 		if (isChromoSelectionNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.BOTH;
-			c.gridheight = 3;
+			c.gridheight = 4;
 			c.gridx = 1;
 			c.gridy = 0;
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
@@ -125,12 +129,24 @@ public class NewCurveTrackDialog extends JDialog {
 			add(chromoSelectionPanel, c);
 		}
 
-		if (isMethodNeeded) {
+		if (isBinSizeNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
 			c.gridx = 0;
 			c.gridy = 1;
+			c.insets = new Insets(INSET, INSET, INSET, INSET);
+			c.weightx = 1;
+			c.weighty = 1;
+			add(binSizePanel, c);
+		}
+		
+		if (isMethodNeeded) {
+			c = new GridBagConstraints();
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridwidth = leftPanelsGridWidth;
+			c.gridx = 0;
+			c.gridy = 2;
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
 			c.weightx = 1;
 			c.weighty = 1;
@@ -142,7 +158,7 @@ public class NewCurveTrackDialog extends JDialog {
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
 			c.gridx = 0;
-			c.gridy = 2;
+			c.gridy = 3;
 			c.insets = new Insets(INSET, INSET, INSET, INSET);
 			c.weightx = 1;
 			c.weighty = 1;
@@ -153,7 +169,7 @@ public class NewCurveTrackDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy = 4;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -163,7 +179,7 @@ public class NewCurveTrackDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
-		c.gridy = 3;
+		c.gridy = 4;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -178,6 +194,14 @@ public class NewCurveTrackDialog extends JDialog {
 		getRootPane().setDefaultButton(jbOk);
 	}
 
+	
+	/**
+	 * @return the selected BinSize
+	 */
+	public int getBinSize() {
+		return binSizePanel.getBinSize();
+	}
+	
 
 	/**
 	 * @return the selected {@link DataPrecision}
