@@ -14,6 +14,7 @@ import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListActionExtractorWorker;
+import yu.einstein.gdp2.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 import yu.einstein.gdp2.util.Utils;
@@ -61,10 +62,23 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 
 	@Override
 	protected ScoredChromosomeWindowList generateList() throws Exception {
+		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(Utils.chooseScoreCalculation(getTrackList().getRootPane()));
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, false, false, true, false);
+			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+				name = nctd.getTrackName();
+				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);
+				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(nctd.getScoreCalculationMethod());
+			}
+		} else {
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, false, false, true, false);
+			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+				name = nctd.getTrackName();
+				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);
+				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
+			}
 		}
-		return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
+		return null;
 	}
 
 
@@ -80,3 +94,4 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 		}
 	}
 }
+
