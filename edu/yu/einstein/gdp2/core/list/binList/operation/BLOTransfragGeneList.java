@@ -29,8 +29,8 @@ import yu.einstein.gdp2.util.DoubleLists;
  */
 public class BLOTransfragGeneList implements Operation<GeneList> {
 
-	private final BinList 	binList;	// input binlist
-	private final int 		zeroBinGap; // number of zero value bins defining a gap between two islands
+	private final BinList 	binList;				// input binlist
+	private final int 		zeroBinGap; 			// number of zero value bins defining a gap between two islands
 	private final ScoreCalculationMethod operation;	//sum / average / max
 
 
