@@ -98,10 +98,14 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 										//System.out.println("sum");
 										regionScore = SCWLists.sum(currentList, regionStartIndex, regionStopIndex);
 									}
-									exonStart[0] = regionStartIndex;
-									exonStop[0] = regionStopIndex;
+									//regionStartIndex *= scwList.get(i).size();
+									//regionStopIndex *= scwList.get(i).size();
+									int regionStart = currentList.get(regionStartIndex).getStart();
+									int regionStop = currentList.get(regionStopIndex).getStop();
+									exonStart[0] = regionStart;
+									exonStop[0] = regionStop;
 									exonScore[0] = regionScore;
-									newGene = new Gene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), "+", regionStartIndex, regionStopIndex, exonStart, exonStop, exonScore);
+									newGene = new Gene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), "+", regionStart, regionStop, exonStart, exonStop, exonScore);
 									resultGeneList.add(newGene);
 								}
 								j++;
