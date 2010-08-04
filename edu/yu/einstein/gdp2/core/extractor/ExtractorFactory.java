@@ -12,6 +12,7 @@ import java.io.IOException;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.util.Utils;
 
+
 /**
  * Factory that tries to create and to return a subclass of {@link Extractor} depending on a file.
  * @author Julien Lajugie
@@ -104,6 +105,7 @@ public final class ExtractorFactory {
 
 			while (((line = reader.readLine()) != null) && isHeader) {
 				isHeader = false;
+				line = line.trim();
 				if (line.length() == 0) {
 					isHeader = true;
 				}
@@ -123,10 +125,24 @@ public final class ExtractorFactory {
 					if (line.substring(0, 5).equalsIgnoreCase("##GFF")) {
 						return new GFFExtractor(fileToExtract, logFile);
 					} else if (line.substring(0, 5).equalsIgnoreCase("track")) {
-						String[] splitedLine = line.split(" ");
-						for (String currentOption: splitedLine) {
-							if (currentOption.trim().substring(0, 4).equalsIgnoreCase("type")) {
-								String type = currentOption.substring(5).trim();
+						String lineTmp = line.toLowerCase();
+						if (lineTmp.contains("type")) {
+							String type = null;
+							int indexStart = lineTmp.indexOf("type") + 4;
+							line = line.substring(indexStart);
+							line = line.trim();
+							if (line.charAt(0) == '=') {
+								// remove the '=' from the line
+								line = line.substring(1);
+								line = line.trim();
+								if (line.charAt(0) == '\"') {
+									// remove the first "
+									line = line.substring(1);
+									type = line.split("\"")[0];
+								} else {
+									line = line.trim();
+									type = line.split(" ")[0].trim();
+								}
 								reader.close();
 								if (type.equalsIgnoreCase("bedgraph")) {
 									return new BedGraphExtractor(fileToExtract, logFile);

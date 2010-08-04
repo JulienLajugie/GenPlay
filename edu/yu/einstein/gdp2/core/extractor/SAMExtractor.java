@@ -44,14 +44,25 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Bin
 
 
 	@Override
-	protected void extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws InvalidDataLineException {
 		// if the line starts with @ it's header line so we skip it
 		if (line.trim().charAt(0) != '@') {
 			String[] splitedLine = line.split("\t");
 			Chromosome chromosome = chromosomeManager.get(splitedLine[2]) ;
-			int position = Integer.parseInt(splitedLine[3]);
-			positionList.get(chromosome).add(position);		
-			lineCount++;
+			// checks if we need to extract the data on the chromosome
+			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			if (chromosomeStatus == AFTER_LAST_SELECTED) {
+				return true;
+			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+				return false;
+			} else {
+				int position = Integer.parseInt(splitedLine[3]);
+				positionList.get(chromosome).add(position);		
+				lineCount++;
+				return false;
+			}
+		} else {
+			return false;
 		}
 	}
 

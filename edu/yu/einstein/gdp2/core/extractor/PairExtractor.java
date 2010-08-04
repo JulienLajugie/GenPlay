@@ -56,20 +56,21 @@ implements Serializable, BinListGenerator {
 
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param extractedLine line read from the data file  
+	 * @param extractedLine line read from the data file
+	 * @return true when the extraction is done
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		if (extractedLine.trim().length() == 0) {
-			return;
+			return false;
 		}
 		// We don't want to extract the header lines
 		// So we extract only if the line starts with a number
 		try {
 			Integer.parseInt(extractedLine.substring(0, 1));
 		} catch (Exception e){
-			return;
+			return false;
 		}
 
 		String[] splitedLine = extractedLine.split("\t");
@@ -82,9 +83,18 @@ implements Serializable, BinListGenerator {
 		}
 		try {
 			Chromosome chromosome = chromosomeManager.get(chromosomeField[0]);
-			positionList.add(chromosome, Integer.parseInt(splitedLine[4]));
-			scoreList.add(chromosome, Double.parseDouble(splitedLine[9]));
-			lineCount++;
+			// checks if we need to extract the data on the chromosome
+			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			if (chromosomeStatus == AFTER_LAST_SELECTED) {
+				return true;
+			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+				return false;
+			} else {
+				positionList.add(chromosome, Integer.parseInt(splitedLine[4]));
+				scoreList.add(chromosome, Double.parseDouble(splitedLine[9]));
+				lineCount++;
+				return false;
+			}
 		} catch (InvalidChromosomeException e) {
 			throw new InvalidDataLineException(extractedLine);
 		}
@@ -101,8 +111,8 @@ implements Serializable, BinListGenerator {
 	public boolean isCriterionNeeded() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean isPrecisionNeeded() {
 		return true;

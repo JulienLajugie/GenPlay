@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
@@ -24,6 +23,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+
 
 /**
  * A bedGraph file extractor
@@ -62,26 +62,35 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	/**
 	 * Receives one line from the input file and extracts and adds 
 	 * a chromosome, a position start, a position stop and a score to the lists.
-	 * @param Extractedline line read from the data file  
+	 * @param Extractedline line read from the data file 
+	 * @return true when the extraction is done
 	 * @throws ManagerDataNotLoadedException 
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		String[] splitedLine = extractedLine.split("\t");
 		if (splitedLine.length < 4) {
 			throw new InvalidDataLineException(extractedLine);
 		}
 		try {
 			Chromosome chromosome = chromosomeManager.get(splitedLine[0]) ;
-			int start = Integer.parseInt(splitedLine[1].trim());
-			int stop = Integer.parseInt(splitedLine[2].trim());
-			double score = Double.parseDouble(splitedLine[3].trim());
-			if (score != 0) {
-				startList.add(chromosome, start);
-				stopList.add(chromosome, stop);
-				scoreList.add(chromosome, score);
-				lineCount++;
+			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			if (chromosomeStatus == AFTER_LAST_SELECTED) {
+				return true;
+			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+				return false;
+			} else {
+				int start = Integer.parseInt(splitedLine[1].trim());
+				int stop = Integer.parseInt(splitedLine[2].trim());
+				double score = Double.parseDouble(splitedLine[3].trim());
+				if (score != 0) {
+					startList.add(chromosome, start);
+					stopList.add(chromosome, stop);
+					scoreList.add(chromosome, score);
+					lineCount++;
+				}
+				return false;
 			}
 		} catch (InvalidChromosomeException e) {
 			throw new InvalidDataLineException(extractedLine);
@@ -117,14 +126,14 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	public boolean isCriterionNeeded() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean isPrecisionNeeded() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);

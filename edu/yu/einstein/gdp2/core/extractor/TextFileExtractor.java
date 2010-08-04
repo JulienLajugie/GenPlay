@@ -24,10 +24,11 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
 public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 	private static final long serialVersionUID = 1224425396819320502L;	//generated ID
-	private boolean needToBeStopped = false;// set to true if the execution of the extractor needs to be stopped
-	protected int 	totalCount = 0;			// total number of line in the file minus the header
-	protected int 	lineCount = 0;			// number of line extracted
-
+	private boolean	needToBeStopped = false;	// set to true if the execution of the extractor needs to be stopped
+	protected int 	totalCount = 0;				// total number of line in the file minus the header
+	protected int 	lineCount = 0;				// number of line extracted
+	
+	
 	/**
 	 * Creates an instance of {@link TextFileExtractor}
 	 * @param dataFile file containing the data
@@ -35,6 +36,70 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	 */
 	public TextFileExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
+		String retrievedName = retrieveName();
+		if (retrievedName != null) {
+			name = retrievedName;
+		}
+	}
+	
+	
+	private String retrieveName() {
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(dataFile));
+			boolean isHeader = true;
+			boolean isTrackInfo = false;
+			String line = null;
+
+			while (((line = reader.readLine()) != null) && isHeader) {
+				isHeader = false;
+				if (line.length() == 0) {
+					isHeader = true;
+				}
+				// comment line
+				if (line.charAt(0) == '#') {
+					isHeader = true;
+				} 
+				// browser line
+				if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
+					isHeader = true;
+				}
+				// track line
+				if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
+					isHeader = true;
+					isTrackInfo = true;
+				}
+				if (isHeader && isTrackInfo) {
+					String lineTmp = line.toLowerCase();
+					if (lineTmp.contains("name")) {
+						int indexStart = lineTmp.indexOf("name") + 4;
+						line = line.substring(indexStart);
+						line = line.trim();
+						if (line.charAt(0) != '=') {
+							reader.close();
+							return null;
+						}
+						// remove the '=' from the line
+						line = line.substring(1);
+						line = line.trim();
+						if (line.charAt(0) == '\"') {
+							reader.close();
+							// remove the first "
+							line = line.substring(1);
+							return line.split("\"")[0];							
+						} else {
+							reader.close();
+							line = line.trim();
+							return line.split(" ")[0].trim();
+						}
+					}
+				}				
+			}
+			reader.close();
+		} catch (Exception e) {
+			return null;
+		}
+		return null;
 	}
 
 
@@ -42,9 +107,10 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	 * Extracts the data from a line. 
 	 * @param line a line from the data file that is not a header line. 
 	 * (ie: a line that doesn't start with "#", "browser" or "track")
+	 * @return true when the last selected chromosome has been totally extracted (ie returns true when the extraction is done)
 	 * @throws InvalidDataLineException
 	 */
-	abstract protected void extractLine(String line) throws InvalidDataLineException;
+	abstract protected boolean extractLine(String line) throws InvalidDataLineException;
 
 
 	@Override
@@ -59,7 +125,9 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			startTime = System.currentTimeMillis();
 			// extract data
 			String line = null;
-			while((line = reader.readLine()) != null) {
+			boolean isExtractionDone = false; // true when the last selected chromosome has been extracted
+			// we stop at the end of the file or when the last selected chromosome has been extracted
+			while(((line = reader.readLine()) != null) && (!isExtractionDone)){
 				// if the extractor needs to be stopped we throw an InterruptedException
 				// that stops the execution
 				if (needToBeStopped) {
@@ -93,7 +161,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				if (isDataLine) {
 					try {
 						totalCount++;
-						extractLine(line);
+						isExtractionDone = extractLine(line);
 					} catch (InvalidDataLineException e) {
 						//logMessage("The following line can't be extracted: \"" + line + "\"");
 						//e.printStackTrace();

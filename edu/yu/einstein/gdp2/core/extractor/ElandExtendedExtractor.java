@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutionException;
 
+import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.generator.BinListGenerator;
@@ -20,7 +21,6 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
 
 
@@ -32,7 +32,7 @@ import yu.einstein.gdp2.exception.InvalidDataLineException;
 public final class ElandExtendedExtractor extends TextFileExtractor implements Serializable, BinListGenerator {
 
 	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
-	
+
 	private ChromosomeListOfLists<Integer>	positionList;		// list of position
 	private int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
@@ -97,7 +97,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				writer.write("Total:\t" + df.format((double)total0M/lineCount*100) + 
 						"%\t" + df.format((double)total1M/lineCount*100) + 
 						"%\t" + df.format((double)total2M/lineCount*100) + 
-						"%\t\t100%");
+				"%\t\t100%");
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
@@ -108,12 +108,13 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	protected void extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		byte[] line = extractedLine.getBytes();
 		byte[] matchChar = new byte[4]; 
 		byte[] chromoChar = new byte[64];
 		byte[] positionChar = new byte[10];
 		short match0MNumber, match1MNumber, match2MNumber, chromoNumber;
+		Chromosome chromo;
 		int positionNumber;
 
 		if (line[0] == '\0') {
@@ -177,34 +178,41 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			i++;
 			j++;
 		}
-		
+
 		// if we reach the end of the line now there is no data to extract
 		if (i == line.length) {
 			throw new InvalidDataLineException(extractedLine);
 		}
-		
-		try {
-			chromoNumber = chromosomeManager.getIndex(new String(chromoChar, 0, j).trim());
-		} catch (InvalidChromosomeException e) { // Case of the chromosome is not accepted in the current configuration
-			throw new InvalidDataLineException(extractedLine);
-		}
 
-		// try to extract the position number
-		i+=4;  // we want to get rid of 'fa:'
-		j = 0;
-		while ((line[i] != 'F') && (line[i] != 'R')) {
-			positionChar[j] = line[i];
-			i++;
-			j++;
+		chromo = chromosomeManager.get(new String(chromoChar, 0, j).trim());
+		// checks if we need to extract the data on the chromosome
+		int chromosomeStatus = checkChromosomeStatus(chromo);
+		if (chromosomeStatus == AFTER_LAST_SELECTED) {
+			return true;
+		} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+			return false;
+		} else {
+			chromoNumber = chromosomeManager.getIndex(chromo);
+
+
+			// try to extract the position number
+			i+=4;  // we want to get rid of 'fa:'
+			j = 0;
+			while ((line[i] != 'F') && (line[i] != 'R')) {
+				positionChar[j] = line[i];
+				i++;
+				j++;
+			}
+			positionNumber = Integer.parseInt(new String(positionChar, 0, j));
+			// add data for the statistics
+			matchTypeCount[chromoNumber][0] += match0MNumber;
+			matchTypeCount[chromoNumber][1] += match1MNumber;
+			matchTypeCount[chromoNumber][2] += match2MNumber;
+			// add the data
+			positionList.add(chromo, positionNumber);
+			lineCount++;
+			return false;
 		}
-		positionNumber = Integer.parseInt(new String(positionChar, 0, j));
-		// add data for the statistics
-		matchTypeCount[chromoNumber][0] += match0MNumber;
-		matchTypeCount[chromoNumber][1] += match1MNumber;
-		matchTypeCount[chromoNumber][2] += match2MNumber;
-		// add the data
-		positionList.get(chromoNumber).add(positionNumber);
-		lineCount++;
 	}
 
 

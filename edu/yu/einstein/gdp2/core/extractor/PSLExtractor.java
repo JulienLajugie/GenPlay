@@ -41,7 +41,7 @@ public final class PSLExtractor extends TextFileExtractor implements Serializabl
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = -7099425835087057587L;	//generated ID
-	
+
 	private ChromosomeListOfLists<Integer>	startList;		// list of position start
 	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
 	private ChromosomeListOfLists<String> 	nameList;		// list of name
@@ -49,10 +49,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
 	private ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
 	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
-	
+
 	private String							searchURL;		// url of the gene database for the search
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link PSLExtractor}
 	 * @param dataFile file containing the data
@@ -80,8 +80,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		}
 	}
 
+	
 	@Override
-	protected void extractLine(String extractedLine)	throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine)	throws InvalidDataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
 		}
@@ -95,23 +96,32 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 		try {
 			Chromosome chromosome = chromosomeManager.get(splitedLine[13]) ;
-			nameList.add(chromosome, splitedLine[9]);
-			startList.add(chromosome, Integer.parseInt(splitedLine[15]));
-			stopList.add(chromosome, Integer.parseInt(splitedLine[16]));
-			scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
-			strandList.add(chromosome, Strand.get(splitedLine[8]));
-			// add exons
-			String[] exonStartsStr = splitedLine[20].split(",");
-			String[] exonLengthsStr = splitedLine[18].split(",");
-			int[] exonStarts = new int[exonStartsStr.length];
-			int[] exonStops = new int[exonStartsStr.length];
-			for (int i = 0; i < exonStartsStr.length; i++) {
-				exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
-				exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i].trim());
+			// checks if we need to extract the data on the chromosome
+			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			if (chromosomeStatus == AFTER_LAST_SELECTED) {
+				return true;
+			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+				return false;
+			} else {
+				nameList.add(chromosome, splitedLine[9]);
+				startList.add(chromosome, Integer.parseInt(splitedLine[15]));
+				stopList.add(chromosome, Integer.parseInt(splitedLine[16]));
+				scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
+				strandList.add(chromosome, Strand.get(splitedLine[8]));
+				// add exons
+				String[] exonStartsStr = splitedLine[20].split(",");
+				String[] exonLengthsStr = splitedLine[18].split(",");
+				int[] exonStarts = new int[exonStartsStr.length];
+				int[] exonStops = new int[exonStartsStr.length];
+				for (int i = 0; i < exonStartsStr.length; i++) {
+					exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
+					exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i].trim());
+				}
+				exonStartsList.add(chromosome, exonStarts);
+				exonStopsList.add(chromosome, exonStops);
+				lineCount++;
+				return false;
 			}
-			exonStartsList.add(chromosome, exonStarts);
-			exonStopsList.add(chromosome, exonStops);
-			lineCount++;
 		} catch (InvalidChromosomeException e) {
 			throw new InvalidDataLineException(extractedLine);
 		}
@@ -146,8 +156,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	public boolean isCriterionNeeded() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean isPrecisionNeeded() {
 		return true;
@@ -159,13 +169,13 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
-	
+
 	@Override
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, null, searchURL);
 	}
-	
-	
+
+
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);

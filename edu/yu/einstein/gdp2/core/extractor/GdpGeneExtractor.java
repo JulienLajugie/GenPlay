@@ -1,5 +1,8 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 package yu.einstein.gdp2.core.extractor;
-
 
 import java.io.File;
 import java.io.Serializable;
@@ -16,6 +19,12 @@ import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
 
+
+/**
+ * A GdpGene file extractor
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 public final class GdpGeneExtractor extends TextFileExtractor implements Serializable, GeneListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
@@ -61,12 +70,14 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param Extractedline line read from the data file  
+	 * @return true when the extraction is done
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
+			return false;
 		} else {
 			String[] splitedLine = extractedLine.split("\t");
 			if (splitedLine.length == 1) {
@@ -77,33 +88,42 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 			}
 			try {
 				Chromosome chromosome = chromosomeManager.get(splitedLine[1]) ;
-				String name = splitedLine[0].trim();
-				nameList.add(chromosome, name);
-				Strand strand = Strand.get(splitedLine[2].trim());
-				strandList.add(chromosome, strand);
-				int start = Integer.parseInt(splitedLine[3].trim());
-				startList.add(chromosome, start);
-				int stop = Integer.parseInt(splitedLine[4].trim());
-				stopList.add(chromosome, stop);
-				String[] exonStartsStr = splitedLine[5].split(",");
-				String[] exonStopsStr = splitedLine[6].split(",");
-				int[] exonStarts = new int[exonStartsStr.length];
-				int[] exonStops = new int[exonStartsStr.length];
-				for (int i = 0; i < exonStartsStr.length; i++) {
-					exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
-					exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
-				}
-				exonStartsList.add(chromosome, exonStarts);
-				exonStopsList.add(chromosome, exonStops);
-				if (splitedLine.length > 7) {
-					String[] exonScoresStr = splitedLine[7].split(",");
-					double[] exonScores = new double[exonScoresStr.length];
-					for (int i = 0; i < exonScoresStr.length; i++) {
-						exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+				// checks if we need to extract the data on the chromosome
+				int chromosomeStatus = checkChromosomeStatus(chromosome);
+				if (chromosomeStatus == AFTER_LAST_SELECTED) {
+					return true;
+				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+					return false;
+				} else {
+					String name = splitedLine[0].trim();
+					nameList.add(chromosome, name);
+					Strand strand = Strand.get(splitedLine[2].trim());
+					strandList.add(chromosome, strand);
+					int start = Integer.parseInt(splitedLine[3].trim());
+					startList.add(chromosome, start);
+					int stop = Integer.parseInt(splitedLine[4].trim());
+					stopList.add(chromosome, stop);
+					String[] exonStartsStr = splitedLine[5].split(",");
+					String[] exonStopsStr = splitedLine[6].split(",");
+					int[] exonStarts = new int[exonStartsStr.length];
+					int[] exonStops = new int[exonStartsStr.length];
+					for (int i = 0; i < exonStartsStr.length; i++) {
+						exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
+						exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
 					}
-					exonScoresList.add(chromosome, exonScores);
+					exonStartsList.add(chromosome, exonStarts);
+					exonStopsList.add(chromosome, exonStops);
+					if (splitedLine.length > 7) {
+						String[] exonScoresStr = splitedLine[7].split(",");
+						double[] exonScores = new double[exonScoresStr.length];
+						for (int i = 0; i < exonScoresStr.length; i++) {
+							exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+						}
+						exonScoresList.add(chromosome, exonScores);
+					}
+					lineCount++;
+					return false;
 				}
-				lineCount++;
 			} catch (InvalidChromosomeException e) {
 				throw new InvalidDataLineException(extractedLine);
 			}

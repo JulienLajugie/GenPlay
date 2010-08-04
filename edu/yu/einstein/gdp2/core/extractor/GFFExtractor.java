@@ -74,11 +74,12 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param extractedLine line read from the data file  
+	 * @param extractedLine line read from the data file
+	 * @return true when the extraction is done
 	 * @throws InvalidDataLineException 
 	 */
 	@Override
-	protected void extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		String[] splitedLine = extractedLine.split("\t");
 		if (splitedLine.length == 1) {
 			splitedLine = extractedLine.split(" ");
@@ -89,12 +90,20 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 		try {
 			Chromosome chromosome = chromosomeManager.get(splitedLine[0]) ;
-			nameList.add(chromosome, splitedLine[2]);
-			startList.add(chromosome, Integer.parseInt(splitedLine[3]));
-			stopList.add(chromosome, Integer.parseInt(splitedLine[4]));
-			scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
-			strandList.add(chromosome, Strand.get(splitedLine[6]));
-			lineCount++;
+			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			if (chromosomeStatus == AFTER_LAST_SELECTED) {
+				return true;
+			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+				return false;
+			} else {
+				nameList.add(chromosome, splitedLine[2]);
+				startList.add(chromosome, Integer.parseInt(splitedLine[3]));
+				stopList.add(chromosome, Integer.parseInt(splitedLine[4]));
+				scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
+				strandList.add(chromosome, Strand.get(splitedLine[6]));
+				lineCount++;
+				return false;
+			}
 		} catch (InvalidChromosomeException e) {
 			throw new InvalidDataLineException(extractedLine);
 		}
@@ -129,8 +138,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	public boolean isCriterionNeeded() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean isPrecisionNeeded() {
 		return true;
@@ -141,8 +150,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
-	
-	
+
+
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);

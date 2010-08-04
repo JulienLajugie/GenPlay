@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
-
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+
 
 /**
  * A BED file extractor
@@ -84,9 +84,10 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 
 	@Override
-	protected void extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
+			return false;
 		} else {
 			String[] splitedLine = extractedLine.split("\t");
 			if (splitedLine.length == 1) {
@@ -97,45 +98,53 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 			}
 			try {
 				Chromosome chromosome = chromosomeManager.get(splitedLine[0]) ;
-				int start = Integer.parseInt(splitedLine[1].trim());
-				startList.add(chromosome, start);
-				int stop = Integer.parseInt(splitedLine[2].trim());
-				stopList.add(chromosome, stop);
-				if (splitedLine.length > 3) {
-					String name = splitedLine[3].trim();
-					nameList.add(chromosome, name);
-					if (splitedLine.length > 4) {
-						double score = Double.parseDouble(splitedLine[4].trim());
-						scoreList.add(chromosome, score);
-						if (splitedLine.length > 5) {
-							Strand strand = Strand.get(splitedLine[5].trim());
-							strandList.add(chromosome, strand);
-							if (splitedLine.length > 11) {
-								if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
-									String[] exonStartsStr = splitedLine[11].split(",");
-									String[] exonLengthsStr = splitedLine[10].split(",");
-									int[] exonStarts = new int[exonLengthsStr.length];
-									int[] exonStops = new int[exonLengthsStr.length];
-									for (int i = 0; i < exonLengthsStr.length; i++) {
-										exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
-										exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
-									}
-									exonStartsList.add(chromosome, exonStarts);
-									exonStopsList.add(chromosome, exonStops);
-									if (splitedLine.length > 12) {
-										String[] exonScoresStr = splitedLine[12].split(",");
-										double[] exonScores = new double[exonScoresStr.length];
-										for (int i = 0; i < exonScoresStr.length; i++) {
-											exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+				int chromosomeStatus = checkChromosomeStatus(chromosome);
+				if (chromosomeStatus == AFTER_LAST_SELECTED) {
+					return true;
+				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+					return false;
+				} else {
+					int start = Integer.parseInt(splitedLine[1].trim());
+					startList.add(chromosome, start);
+					int stop = Integer.parseInt(splitedLine[2].trim());
+					stopList.add(chromosome, stop);
+					if (splitedLine.length > 3) {
+						String name = splitedLine[3].trim();
+						nameList.add(chromosome, name);
+						if (splitedLine.length > 4) {
+							double score = Double.parseDouble(splitedLine[4].trim());
+							scoreList.add(chromosome, score);
+							if (splitedLine.length > 5) {
+								Strand strand = Strand.get(splitedLine[5].trim());
+								strandList.add(chromosome, strand);
+								if (splitedLine.length > 11) {
+									if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
+										String[] exonStartsStr = splitedLine[11].split(",");
+										String[] exonLengthsStr = splitedLine[10].split(",");
+										int[] exonStarts = new int[exonLengthsStr.length];
+										int[] exonStops = new int[exonLengthsStr.length];
+										for (int i = 0; i < exonLengthsStr.length; i++) {
+											exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
+											exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
 										}
-										exonScoresList.add(chromosome, exonScores);
+										exonStartsList.add(chromosome, exonStarts);
+										exonStopsList.add(chromosome, exonStops);
+										if (splitedLine.length > 12) {
+											String[] exonScoresStr = splitedLine[12].split(",");
+											double[] exonScores = new double[exonScoresStr.length];
+											for (int i = 0; i < exonScoresStr.length; i++) {
+												exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+											}
+											exonScoresList.add(chromosome, exonScores);
+										}
 									}
 								}
 							}
 						}
 					}
+					lineCount++;
+					return false;
 				}
-				lineCount++;
 			} catch (InvalidChromosomeException e) {
 				throw new InvalidDataLineException(extractedLine);
 			}
@@ -189,8 +198,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	public boolean isPrecisionNeeded() {
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);

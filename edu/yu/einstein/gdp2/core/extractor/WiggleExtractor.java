@@ -68,7 +68,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 
 	@Override
-	protected void extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws InvalidDataLineException {
 		String[] splittedLine = line.split(" ");
 
 		int i = 0;
@@ -148,6 +148,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			}
 			i++;
 		}
+		// TODO solve chromosome selection pb
+		return false;
 	}
 
 	

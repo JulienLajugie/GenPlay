@@ -9,6 +9,7 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
+import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.generator.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
@@ -30,7 +31,8 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	private static final long serialVersionUID = -7836987725953057426L;	// generated ID
 	private static final String ACTION_NAME = "Load Variable Window Track";	// action name
 	private static final String DESCRIPTION = "Load a track with variable window sizes"; // tooltip
-
+	private ScoreCalculationMethod scoreCalculation = null;
+	
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -58,27 +60,39 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 		}
 		return null;
 	}
+	
+	
+	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, true);
+		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+			extractor.setSelectedChromosomes(nctd.getSelectedChromosomes());
+		} else {
+			throw new InterruptedException();
+		}
+	}
 
 
 	@Override
 	protected ScoredChromosomeWindowList generateList() throws Exception {
 		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, false, false, true, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
+				scoreCalculation = nctd.getScoreCalculationMethod();
 				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);
-				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(nctd.getScoreCalculationMethod());
+				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, false, false, false, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
 			}
 		}
-		return null;
+		throw new InterruptedException();
 	}
 
 
@@ -90,6 +104,9 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			SCWListTrack newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
+			if (scoreCalculation != null) {
+				newTrack.getHistory().add("Method of Calculation = " + scoreCalculation, Color.GRAY);
+			}			
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

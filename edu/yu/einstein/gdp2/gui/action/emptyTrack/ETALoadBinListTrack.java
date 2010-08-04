@@ -33,10 +33,10 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	private static final String 	ACTION_NAME = "Load Fixed Window Track"; 				// action name
 	private static final String 	DESCRIPTION = "Load a track with a fixed window size"; 	// tooltip
 	private int 					binSize = 0;											// Size of the bins of the BinList
-	private ScoreCalculationMethod 	scoreCalculation = ScoreCalculationMethod.AVERAGE;		// Method of calculation of the score of the BinList
+	private ScoreCalculationMethod 	scoreCalculation = null;								// Method of calculation of the score of the BinList
 	private DataPrecision 			precision = DataPrecision.PRECISION_32BIT;				// Precision of the Data
 	private BinListGenerator 		binListGenerator;										// BinList Generator
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -55,39 +55,6 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 
 
 	@Override
-	protected File retrieveFileToExtract() {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters());
-		if (selectedFile != null) {
-			return selectedFile;
-		}
-		return null;
-	}
-
-
-	@Override
-	protected BinList generateList() throws Exception {
-		notifyActionStop();		
-		binListGenerator = (BinListGenerator)extractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), true);
-		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-			name = nctd.getTrackName();
-			binSize = nctd.getBinSize();
-			scoreCalculation = nctd.getScoreCalculationMethod();
-			precision = nctd.getDataPrecision();		
-			// if the binSize is known we can find out how many steps will be used
-			if (binListGenerator.isBinSizeNeeded()) {
-				notifyActionStart("Generating Track", 1 + BinList.getCreationStepCount(binSize), true);
-			} else {
-				notifyActionStart("Generating Track", 1, true);
-			}
-			return ((BinListGenerator) extractor).toBinList(binSize, precision, scoreCalculation);
-		}
-		throw new InterruptedException();
-	}
-
-
-	@Override
 	public void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
 			TrackList trackList = getTrackList();
@@ -102,6 +69,50 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			newTrack.getHistory().add(history, Color.GRAY);
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
+		}
+	}
+
+
+	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		binListGenerator = (BinListGenerator)extractor;
+		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), true);
+		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
+			name = nctd.getTrackName();
+			binSize = nctd.getBinSize();
+			scoreCalculation = nctd.getScoreCalculationMethod();
+			precision = nctd.getDataPrecision();
+			selectedChromo = nctd.getSelectedChromosomes();
+			extractor.setSelectedChromosomes(selectedChromo);
+		} else {
+			throw new InterruptedException();
+		}
+	}
+
+
+	@Override
+	protected BinList generateList() throws Exception {
+		notifyActionStop();		
+		// if the binSize is known we can find out how many steps will be used
+		if (binListGenerator.isBinSizeNeeded()) {
+			notifyActionStart("Generating Track", 1 + BinList.getCreationStepCount(binSize), true);
+		} else {
+			notifyActionStart("Generating Track", 1, true);
+		}
+		return ((BinListGenerator) extractor).toBinList(binSize, precision, scoreCalculation);
+
+
+	}
+
+
+	@Override
+	protected File retrieveFileToExtract() {
+		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters());
+		if (selectedFile != null) {			
+			return selectedFile;
+		} else {
+			return null;
 		}
 	}
 }

@@ -15,7 +15,6 @@ import yu.einstein.gdp2.core.generator.Generator;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.exception.InvalidFileTypeException;
 import yu.einstein.gdp2.gui.statusBar.Stoppable;
-import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -32,7 +31,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	protected File								fileToExtract;  		// file to extract
 	protected String							name;					// a name 
 	protected Extractor							extractor;				// an extractor
-
+	protected boolean[]							selectedChromo = null;	// selected chromo
 
 	/**
 	 * Public constructor 
@@ -42,6 +41,51 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 		this.extractorClass = extractorClass;
 		retrieveLogFile();
 	}
+
+
+	/**
+	 * Can be overridden to define actions to do before the extraction
+	 */
+	protected void doBeforeExtraction() throws InterruptedException {}
+
+
+	/**
+	 * This method has to be implemented to specify how to generate
+	 * the data list from the {@link Extractor}
+	 * @return a list from whose type depends on the generic parameter T of this class
+	 * @throws Exception
+	 */
+	abstract protected T generateList() throws Exception;
+
+
+	@Override
+	protected final T processAction() throws Exception {
+		fileToExtract = retrieveFileToExtract();		
+		if (fileToExtract != null) {
+			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
+			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
+				name = extractor.getName();
+				doBeforeExtraction();
+				notifyActionStart("Loading File", 1, extractor instanceof Stoppable);
+				extractor.extract();
+				notifyActionStop();
+				System.gc();
+				notifyActionStart("Generating Track", 1, true);
+				return generateList();
+			} else {
+				throw new InvalidFileTypeException();
+			}
+		} else {
+			throw new InterruptedException();
+		}
+	}
+
+
+	/**
+	 * Asks the user a file to load
+	 * @return the file to load. Null if canceled
+	 */
+	abstract protected File retrieveFileToExtract();
 
 
 	/**
@@ -65,32 +109,6 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	}
 
 
-	@Override
-	protected final T processAction() throws Exception {
-		fileToExtract = retrieveFileToExtract();		
-		if (fileToExtract != null) {
-			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
-			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
-				notifyActionStart("Loading File", 1, extractor instanceof Stoppable);
-				extractor.extract();
-				notifyActionStop();
-				if (extractor.getName() != null) {
-					name = extractor.getName();
-				} else {
-					name = Utils.getFileNameWithoutExtension(fileToExtract);
-				}
-				System.gc();
-				notifyActionStart("Generating Track", 1, true);
-				return generateList();
-			} else {
-				throw new InvalidFileTypeException();
-			}
-		} else {
-			throw new InterruptedException();
-		}
-	}
-
-
 	/**
 	 * Override that stops the extractor
 	 */
@@ -101,20 +119,4 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 		}
 		super.stop();
 	}
-
-
-	/**
-	 * This method has to be implemented to specify how to generate
-	 * the data list from the {@link Extractor}
-	 * @return a list from whose type depends on the generic parameter T of this class
-	 * @throws Exception
-	 */
-	abstract protected T generateList() throws Exception;
-
-
-	/**
-	 * Asks the user a file to load
-	 * @return the file to load. Null if canceled
-	 */
-	abstract protected File retrieveFileToExtract();
 }
