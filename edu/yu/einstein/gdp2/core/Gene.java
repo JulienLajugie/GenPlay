@@ -6,6 +6,7 @@ package yu.einstein.gdp2.core;
 
 import java.io.Serializable;
 
+
 import yu.einstein.gdp2.core.enums.Strand;
 
 /**
@@ -21,6 +22,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	private Strand		strand;			// strand of the gene
 	private int 		txStart; 		// transcription start position
 	private int 		txStop; 		// transcription end position
+	private double			txMiddle;		// transcription middle position
 	private int[] 		exonStarts; 	// exon start positions
 	private int[] 		exonStops; 		// exon end positions
 	private double[]	exonScores;		// exon score
@@ -36,6 +38,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.strand = gene.strand;
 		this.txStart = gene.txStart;
 		this.txStop = gene.txStop;
+		this.setTxMiddle((this.txStart + this.txStop)/2);
 		this.exonStarts = null;
 		if (gene.exonStarts != null) {
 			this.exonStarts = gene.exonStarts.clone();
@@ -68,6 +71,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.strand = strand;
 		this.txStart = txStart;
 		this.txStop = txStop;
+		this.setTxMiddle((this.txStart + this.txStop)/2);
 		this.exonStarts = exonStarts;
 		this.exonStops = exonStops;
 		this.exonScores = exonScores;
@@ -90,6 +94,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.strand = Strand.get(strandString);
 		this.txStart = txStart;
 		this.txStop = txStop;
+		this.setTxMiddle((this.txStart + this.txStop)/2);
 		this.exonStarts = exonStarts;
 		this.exonStops = exonStops;
 		this.exonScores = exonScores;
@@ -188,7 +193,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		}
 	}
 	
-	
+		
 	/**
 	 * @param aName Name of a chromosome
 	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
@@ -251,6 +256,14 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	 */
 	public int getTxStart() {
 		return txStart;
+	}
+	
+	
+	/**
+	 * @return the txMiddle
+	 */
+	public double getTxMiddle() {
+		return txMiddle;
 	}
 
 	
@@ -316,6 +329,14 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	public void setTxStart(int txStart) {
 		this.txStart = txStart;
 	}
+	
+	
+	/**
+	 * @param txMiddle the txMiddle to set
+	 */
+	public void setTxMiddle(double txMiddle) {
+		this.txMiddle = txMiddle;
+	}
 
 
 	/**
@@ -329,5 +350,5 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	@Override
 	public String toString() {
 		return chromo.toString() + "\t" + txStart + "\t" + txStop +"\t" + name + "\t" + strand;
-	}
+	}	
 }
