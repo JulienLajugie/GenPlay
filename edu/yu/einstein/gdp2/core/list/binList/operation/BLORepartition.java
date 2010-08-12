@@ -114,8 +114,10 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 		}
 
 		for (double [] currentResult: threadResult) {
-			for (i = 0; i < currentResult.length; i++) {
-				result[i][1] += currentResult[i];
+			if (currentResult != null) {
+				for (i = 0; i < currentResult.length; i++) {
+					result[i][1] += currentResult[i];
+				}
 			}
 		}
 		return result;
