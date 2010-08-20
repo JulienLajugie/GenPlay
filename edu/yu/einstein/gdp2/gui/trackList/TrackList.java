@@ -102,6 +102,7 @@ import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSCWListTrack;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLADistanceCalculator;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractExons;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAGeneRenamer;
@@ -115,6 +116,7 @@ import yu.einstein.gdp2.gui.popupMenu.TrackMenuFactory;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.EmptyTrack;
+import yu.einstein.gdp2.gui.track.GeneListTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 
@@ -194,6 +196,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
 		getActionMap().put(GLAExtractExons.ACTION_KEY, new GLAExtractExons());
 		getActionMap().put(GLAGeneRenamer.ACTION_KEY, new GLAGeneRenamer());
+		getActionMap().put(GLADistanceCalculator.ACTION_KEY, new GLADistanceCalculator());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(CTAHistory.ACTION_KEY, new CTAHistory());
@@ -581,6 +584,32 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int i = 0;
 		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof SCWListTrack) {
+				result[i] = currentTrack;
+				i++;
+			}
+		}		
+		return result;
+	}
+	
+	
+	/**
+	 * @author Chirag Gorasia
+	 * @return an array containing all the {@link GeneListTrack}
+	 */
+	public Track<?>[] getGeneListTracks() {
+		int count = 0;
+		for (Track<?> currentTrack: trackList) {
+			if (currentTrack instanceof GeneListTrack) {
+				count++;				
+			}
+		}
+		if (count == 0) {
+			return null;
+		}
+		Track<?>[] result = new Track[count];
+		int i = 0;
+		for (Track<?> currentTrack: trackList) {
+			if (currentTrack instanceof GeneListTrack) {
 				result[i] = currentTrack;
 				i++;
 			}

@@ -1,4 +1,4 @@
-package yu.einstein.gdp2.core.list.binList.operation.distanceCalculator;
+package yu.einstein.gdp2.core.list.geneList.operation.distanceCalculator;
 
 import java.util.List;
 
@@ -17,6 +17,8 @@ public class DistanceCalculator {
 	
 	/**
 	 * Creates instance of {@link DistanceCalculator}
+	 * @param geneList
+	 * @param chromosomeindex
 	 * @param strandDirection
 	 * @param track1Position
 	 * @param track2Position
@@ -34,6 +36,8 @@ public class DistanceCalculator {
 	
 	/**
 	 * Creates instance of {@link DistanceCalculator}
+	 * @param geneList
+	 * @param chromosomeindex
 	 * @param strandDirection
 	 * @param relAbs
 	 * @param track1Position
@@ -50,9 +54,9 @@ public class DistanceCalculator {
 		this.refValue = refValue;
 	}
 	
-	public double getClosestDistance() {
+	public long getClosestDistance() {
 		List<Gene> listOfGenes = null;
-		double retValue = 0;
+		long retValue = 0;
 		switch(strandDirection) {
 		case 0: //positive
 				switch(track1Position) {
@@ -113,7 +117,8 @@ public class DistanceCalculator {
 						}
 						break;
 				}
-				
+				break;
+					
 		case 1: //negative
 				switch(track1Position) {
 				case 0: //start for track 1

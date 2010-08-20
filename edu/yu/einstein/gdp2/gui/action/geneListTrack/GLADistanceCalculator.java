@@ -10,7 +10,7 @@ import yu.einstein.gdp2.gui.dialog.DistanceCalculatorDialog;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.track.GeneListTrack;
 
-public class GLADistanceCalculator extends TrackListActionOperationWorker<Double[][]>{
+public class GLADistanceCalculator extends TrackListActionOperationWorker<long[][]>{
 
 	private static final long serialVersionUID = 1401297625985870348L;
 	private static final String 	ACTION_NAME = "Distance Calculation";		// action name
@@ -24,7 +24,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<Double
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLADistanceCalculator";
+	public static final String ACTION_KEY = "GLADistanceCalculator";
 
 
 	/**
@@ -38,19 +38,20 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<Double
 	}
 
 	@Override
-	public Operation<Double[][]> initializeOperation() throws Exception {
+	public Operation<long[][]> initializeOperation() throws Exception {
 		selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			otherTrack = (GeneListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Calculate the correlation with:", getTrackList().getBinListTracks());
+			otherTrack = (GeneListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Calculate the distance with:", getTrackList().getGeneListTracks());
 			if (otherTrack != null) {
-				GeneList geneList1 = selectedTrack.getData();
-				GeneList geneList2 = otherTrack.getData();
+				GeneList geneList1 = new GeneList(selectedTrack.getData());
+				GeneList geneList2 = new GeneList(otherTrack.getData());
 				dcd = new DistanceCalculatorDialog();
-				Operation<Double[][]> operation = new GLODistanceCalculator(geneList1, geneList2, dcd.getSelectionFlag());
-				return operation;
+				if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {
+					Operation<long[][]> operation = new GLODistanceCalculator(geneList1, geneList2, dcd.getSelectionFlag());
+					return operation;
+				}
 			}
 		}
 		return null;
 	}
-
 }

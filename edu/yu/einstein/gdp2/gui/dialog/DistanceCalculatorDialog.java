@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.gui.dialog;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -40,6 +41,16 @@ public class DistanceCalculatorDialog extends JDialog {
 	private final JRadioButton negativeStrand;
 	private final JRadioButton bothStrand;
 	
+	/**
+	 * Return value when OK has been clicked.
+	 */
+	public static final int 	APPROVE_OPTION = 1;
+	
+	/**
+	 * Return value when Cancel has been clicked.
+	 */
+	public static final int 	CANCEL_OPTION = 0;
+	
 	private static final int POSITIVE_STRAND = 1;
 	private static final int NEGATIVE_STRAND = 2;
 	private static final int BOTH_STRAND = 3;
@@ -75,13 +86,11 @@ public class DistanceCalculatorDialog extends JDialog {
 	private int t2pos;
 	
 	private int selectionFlag; 
+	private int approved = CANCEL_OPTION;
 	
 	public DistanceCalculatorDialog() {
-		this.setTitle("Distance Calculator Paramters");
-		this.setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - WINDOW_WIDTH/2, GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - WINDOW_HEIGHT/2);
-		this.setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
-		this.setResizable(false);
-		
+		super();
+						
 		jpstrandSelection = new JPanel();
 		jprelAbsSelection = new JPanel();
 		jptrack1Panel = new JPanel();
@@ -173,7 +182,8 @@ public class DistanceCalculatorDialog extends JDialog {
 						setSelectionFlag(20);
 					}
 				}
-				jbOKClicked();
+				approved = APPROVE_OPTION;
+				setVisible(false);
 			}			
 		});
 		
@@ -184,6 +194,7 @@ public class DistanceCalculatorDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setSelectionFlag(1);
+				setVisible(false);
 			}
 		});		
 		
@@ -408,8 +419,14 @@ public class DistanceCalculatorDialog extends JDialog {
 		
 		pack();
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-		getRootPane().setDefaultButton(jbOK);
 		setModal(true);
+		setTitle("Distance Calculator Paramters");
+		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - WINDOW_WIDTH/2, GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - WINDOW_HEIGHT/2);
+		setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+		setResizable(false);
+		setVisible(false);
+		jbOK.setDefaultCapable(true);
+		getRootPane().setDefaultButton(jbOK);
 	}
 	
 	/**
@@ -545,16 +562,22 @@ public class DistanceCalculatorDialog extends JDialog {
 		return selectionFlag;
 	}
 	
+		
 	/**
-	 * Method called when the button okay is clicked
+	 * Shows the component.
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @return APPROVE_OPTION if OK is clicked. CANCEL_OPTION otherwise.
 	 */
-	protected void jbOKClicked() {
-		setVisible(false);
+	public int showDialog(Component parent) {
+		setModal(true);
+		setLocationRelativeTo(parent);
+		setVisible(true);
+		return approved;
 	}
 	
-	public static void main(String args[]) {
-		DistanceCalculatorDialog dcd = new DistanceCalculatorDialog();
-		dcd.setVisible(true);		
-		dcd.repaint();
-	}
+//	public static void main(String args[]) {
+//		DistanceCalculatorDialog dcd = new DistanceCalculatorDialog();
+//		dcd.setVisible(true);		
+//		dcd.repaint();
+//	}
 }

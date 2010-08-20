@@ -8,6 +8,7 @@ package yu.einstein.gdp2.gui.popupMenu;
 import javax.swing.JMenuItem;
 
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLADistanceCalculator;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractExons;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAGeneRenamer;
@@ -26,11 +27,12 @@ public final class GeneListTrackMenu extends TrackMenu {
 
 	private static final long serialVersionUID = -7024046901324869134L; // generated ID
 
-	private final JMenuItem saveGeneTrack;	// save the gene track
-	private final JMenuItem searchGene;		// search gene menu
-	private final JMenuItem extractInterval;// extract interval menu
-	private final JMenuItem renameGenes;	// rename genes menu
-	private final JMenuItem extractExons;	// rename genes menu
+	private final JMenuItem saveGeneTrack;			// save the gene track
+	private final JMenuItem searchGene;				// search gene menu
+	private final JMenuItem extractInterval;		// extract interval menu
+	private final JMenuItem renameGenes;			// rename genes menu
+	private final JMenuItem extractExons;			// extract exons menu
+	private final JMenuItem	distanceCalculator;		// distance Calculator menu
 	
 	/**
 	 * Creates an instance of a {@link GeneListTrackMenu}
@@ -44,6 +46,7 @@ public final class GeneListTrackMenu extends TrackMenu {
 		extractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
 		extractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
 		renameGenes = new JMenuItem(actionMap.get(GLAGeneRenamer.ACTION_KEY));
+		distanceCalculator = new JMenuItem(actionMap.get(GLADistanceCalculator.ACTION_KEY));
 			
 		add(saveGeneTrack, 7);
 		addSeparator();
@@ -51,5 +54,6 @@ public final class GeneListTrackMenu extends TrackMenu {
 		add(extractInterval);
 		add(extractExons);
 		add(renameGenes);
+		add(distanceCalculator);
 	}
 }
