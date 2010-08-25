@@ -22,7 +22,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	private Strand		strand;			// strand of the gene
 	private int 		txStart; 		// transcription start position
 	private int 		txStop; 		// transcription end position
-	private double			txMiddle;		// transcription middle position
+	private double		txMiddle;		// transcription middle position
 	private int[] 		exonStarts; 	// exon start positions
 	private int[] 		exonStops; 		// exon end positions
 	private double[]	exonScores;		// exon score

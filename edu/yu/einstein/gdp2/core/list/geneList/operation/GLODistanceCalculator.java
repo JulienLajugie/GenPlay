@@ -47,8 +47,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 	public GLODistanceCalculator(GeneList geneList1, GeneList geneList2, int selectionCase) {
 		this.geneList1 = geneList1;
 		this.geneList2 = geneList2;
-		this.selectionCase = selectionCase;
-		System.out.println("selection case for GLODistanceCalculator = " + selectionCase);
+		this.selectionCase = selectionCase;		
 	}
 	
 	
@@ -92,8 +91,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 	 * @param secondList
 	 * @return a double 2-D array containing distances
 	 */
-	public long[] handleCases(List<Gene> firstList, GeneList secondList, int chrindex) {
+	private long[] handleCases(List<Gene> firstList, GeneList secondList, int chrindex) {
 		DistanceCalculator dc;
+		int k = 0;
 		long[] distanceByChromosomes = new long[firstList.size()];
 		long[] distanceArray = new long[firstList.size()];
 		switch(selectionCase) {
@@ -101,7 +101,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.size()];
 										for (int j = 0; j < firstList.size(); j++) {
 											dc = new DistanceCalculator(secondList, chrindex, 0, 0, 0, firstList.get(j).getTxStart());
-											distanceArray[j] = dc.getClosestDistance();
+											if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}
 											//System.out.println("distanceArray[j]" + distanceArray[j]);
 										}
 										distanceByChromosomes = distanceArray;
@@ -112,7 +114,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.size()];
 										for (int j = 0; j < firstList.size(); j++) {
 											dc = new DistanceCalculator(secondList, chrindex, 0, 0, 1, firstList.get(j).getTxStart());
-											distanceArray[j] = dc.getClosestDistance();											
+											if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}											
 										}
 										distanceByChromosomes = distanceArray;
 									//}
@@ -122,7 +126,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 											//long[] distanceArray = new long[firstList.get(i).size()];
 											for (int j = 0; j < firstList.size(); j++) {
 												dc = new DistanceCalculator(secondList, chrindex, 0, 0, 2, firstList.get(j).getTxStart());
-												distanceArray[j] = dc.getClosestDistance();											
+												if (dc.getClosestDistance() >= 0) {
+													distanceArray[k++] = dc.getClosestDistance();
+												}											
 											}
 											distanceByChromosomes = distanceArray;
 									//}
@@ -132,7 +138,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 											//long[] distanceArray = new long[firstList.get(i).size()];
 											for (int j = 0; j < firstList.size(); j++) {
 												dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getTxMiddle());
-												distanceArray[j] = dc.getClosestDistance();											
+												if (dc.getClosestDistance() >= 0) {
+													distanceArray[k++] = dc.getClosestDistance();
+												}											
 											}
 										distanceByChromosomes = distanceArray;
 									//}
@@ -142,7 +150,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 											//long[] distanceArray = new long[firstList.get(i).size()];
 											 for (int j = 0; j < firstList.size(); j++) {
 											 	 dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getTxMiddle());
-												 distanceArray[j] = dc.getClosestDistance();											
+											 	 if (dc.getClosestDistance() >= 0) {
+												     distanceArray[k++] = dc.getClosestDistance();
+												 }											
 											 }
 										 distanceByChromosomes = distanceArray;
 									 //}
@@ -152,7 +162,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 										 for (int j = 0; j < firstList.size(); j++) {
 										 	 dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getTxMiddle());
-											 distanceArray[j] = dc.getClosestDistance();											
+										 	 if (dc.getClosestDistance() >= 0) {
+												 distanceArray[k++] = dc.getClosestDistance();
+											 }											
 										 }
 										 distanceByChromosomes = distanceArray;
 									 //}
@@ -162,7 +174,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 										  for (int j = 0; j < firstList.size(); j++) {
 										  	  dc = new DistanceCalculator(secondList, chrindex, 0, 2, 0, firstList.get(j).getTxStop());
-											  distanceArray[j] = dc.getClosestDistance();											
+										  	  if (dc.getClosestDistance() >= 0) {
+												  distanceArray[k++] = dc.getClosestDistance();
+											  }											
 										  }
 									  distanceByChromosomes = distanceArray;
 								    //}
@@ -172,7 +186,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 									   for (int j = 0; j < firstList.size(); j++) {
 									   	   dc = new DistanceCalculator(secondList, chrindex, 0, 2, 1, firstList.get(j).getTxStop());
-										   distanceArray[j] = dc.getClosestDistance();											
+										   	if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}											
 									   }
 									distanceByChromosomes = distanceArray;
 							       //}
@@ -182,7 +198,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 									   for (int j = 0; j < firstList.size(); j++) {
 									   	   dc = new DistanceCalculator(secondList, chrindex, 0, 2, 2, firstList.get(j).getTxStop());
-										   distanceArray[j] = dc.getClosestDistance();											
+										   	if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}											
 									   }
 								   distanceByChromosomes = distanceArray;
 							     //}
@@ -192,7 +210,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 											//long[] distanceArray = new long[firstList.get(i).size()];
 										   for (int j = 0; j < firstList.size(); j++) {
 										   	   dc = new DistanceCalculator(secondList, chrindex, 1, 0, 0, firstList.get(j).getTxStart());
-											   distanceArray[j] = dc.getClosestDistance();											
+											   	if (dc.getClosestDistance() >= 0) {
+													distanceArray[k++] = dc.getClosestDistance();
+												}											
 										   }
 									   distanceByChromosomes = distanceArray;
 								   //}
@@ -202,7 +222,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 										    for (int j = 0; j < firstList.size(); j++) {
 										   	    dc = new DistanceCalculator(secondList, chrindex, 1, 0, 1, firstList.get(j).getTxStart());
-											    distanceArray[j] = dc.getClosestDistance();											
+											   	if (dc.getClosestDistance() >= 0) {
+													distanceArray[k++] = dc.getClosestDistance();
+												}											
 										    }
 									    distanceByChromosomes = distanceArray;
 							      	//}
@@ -212,7 +234,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 								  		for (int j = 0; j < firstList.size(); j++) {
 								      		dc = new DistanceCalculator(secondList, chrindex, 1, 0, 2, firstList.get(j).getTxStart());
-									  		distanceArray[j] = dc.getClosestDistance();											
+								      		if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}											
 								  		}
 								  	distanceByChromosomes = distanceArray;
 								  //} 
@@ -222,7 +246,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 										    for (int j = 0; j < firstList.size(); j++) {
 										        dc = new DistanceCalculator(secondList, chrindex, 1, 1, 0, firstList.get(j).getTxStart());
-											    distanceArray[j] = dc.getClosestDistance();											
+										        if (dc.getClosestDistance() >= 0) {
+													distanceArray[k++] = dc.getClosestDistance();
+												}											
 										    }
 										    distanceByChromosomes = distanceArray;
 								  	//} 
@@ -232,7 +258,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 									    for (int j = 0; j < firstList.size(); j++) {
 									        dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getTxMiddle());
-									        distanceArray[j] = dc.getClosestDistance();											
+									        if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}											
 									    }
 									    distanceByChromosomes = distanceArray;
 							  	   //} 
@@ -242,7 +270,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 									    for (int j = 0; j < firstList.size(); j++) {
 									        dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getTxMiddle());
-										    distanceArray[j] = dc.getClosestDistance();											
+									        if (dc.getClosestDistance() >= 0) {
+												distanceArray[k++] = dc.getClosestDistance();
+											}											
 									    }
 									    distanceByChromosomes = distanceArray;
 							  	   //} 
@@ -252,7 +282,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 								  		for (int j = 0; j < firstList.size(); j++) {
 								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 0, firstList.get(j).getTxStop());
-									  		distanceArray[j] = dc.getClosestDistance();											
+								      		if (dc.getClosestDistance() >= 0) {
+												distanceArray[j] = dc.getClosestDistance();
+											}											
 								  		}
 								  	distanceByChromosomes = distanceArray;
 								  //} 
@@ -262,7 +294,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 								  		for (int j = 0; j < firstList.size(); j++) {
 								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 1, firstList.get(j).getTxStop());
-									  		distanceArray[j] = dc.getClosestDistance();											
+								      		if (dc.getClosestDistance() >= 0) {
+												distanceArray[j] = dc.getClosestDistance();
+											}											
 								  		}
 								  	distanceByChromosomes = distanceArray;
 								  //} 
@@ -272,7 +306,9 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 										//long[] distanceArray = new long[firstList.get(i).size()];
 								  		for (int j = 0; j < firstList.size(); j++) {
 								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-									  		distanceArray[j] = dc.getClosestDistance();											
+								      		if (dc.getClosestDistance() >= 0) {
+												distanceArray[j] = dc.getClosestDistance();
+											}											
 								  		}
 								  	distanceByChromosomes = distanceArray;
 								  //} 

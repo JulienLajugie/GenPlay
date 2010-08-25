@@ -58,6 +58,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 				add(null);
 			}
 		}
+		
 		// sort the data
 		for (List<Gene> currentList: this) {
 			if (currentList != null) {

@@ -574,10 +574,4 @@ public class DistanceCalculatorDialog extends JDialog {
 		setVisible(true);
 		return approved;
 	}
-	
-//	public static void main(String args[]) {
-//		DistanceCalculatorDialog dcd = new DistanceCalculatorDialog();
-//		dcd.setVisible(true);		
-//		dcd.repaint();
-//	}
 }
