@@ -10,6 +10,7 @@ import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 import yu.einstein.gdp2.core.operation.Operation;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -17,7 +18,7 @@ import yu.einstein.gdp2.core.operation.Operation;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BLOFindIslands implements Operation<BinList[]> {
+public class BLOFindIslands implements Operation<BinList[]>, Stoppable {
 
 	private final BinList 		inputBinList;	// input binlist
 	private BinList[]			outputBinList;
@@ -95,5 +96,12 @@ public class BLOFindIslands implements Operation<BinList[]> {
 	
 	public void setList(IslandResultType[] list) {
 		this.list = list;
+	}
+
+	@Override
+	public void stop() {
+		if (this.island != null) {
+			this.island.stop();
+		}
 	}
 }

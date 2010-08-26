@@ -22,6 +22,7 @@ import yu.einstein.gdp2.core.stat.MathFunctions;
 import yu.einstein.gdp2.core.stat.Poisson;
 import yu.einstein.gdp2.exception.InvalidFactorialParameterException;
 import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 /**
  * IslandFinder
@@ -29,7 +30,7 @@ import yu.einstein.gdp2.exception.InvalidLambdaPoissonParameterException;
  * It contains algorithm to separate data on island and some statistics methods corresponding.
  * @author Nicolas Fourel 
  */
-public class IslandFinder implements Serializable {
+public class IslandFinder implements Serializable, Stoppable {
 	
 	private static final long serialVersionUID = -4661852717981921332L;
 	private final BinList 				binList;			// input binlist
@@ -40,7 +41,7 @@ public class IslandFinder implements Serializable {
 	private double						lambda;				// average number of reads in a window
 	private IslandResultType 			resultType;			// type of the result (constant, score, average)
 	private HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
-	private String s = "";
+	private boolean 					stopped = false;	// true when the action must be stopped
 	
 	
 	/**
@@ -148,12 +149,12 @@ public class IslandFinder implements Serializable {
 			int j = 0;
 			int islandStartPos;
 			int islandStopPos;
-			while (j < currentList.size()) {	// while we are below the current list size,
+			while (j < currentList.size() && !stopped) {	// while we are below the current list size,
 				if (currentList.get(j) >= windowMinValue) {	// the current window score must be higher than readCountLimit
 					islandStartPos = j;
 					int gapFound = 0;	// there are no gap found
 					int jTmp = j + 1;	// we prepared the research on the next window
-					while ((gapFound <= gap) && (jTmp < currentList.size())) {	// while we are below the gap number authorized and below the list size
+					while ((gapFound <= gap) && (jTmp < currentList.size()) && !stopped) {	// while we are below the gap number authorized and below the list size
 						if (currentList.get(jTmp) >= windowMinValue) {	// if the next window score is higher than the readCountLimit
 							gapFound = 0;	// gap number found must be 0
 						} else {	// if the next window score is smaller than the readCountLimit
@@ -196,12 +197,14 @@ public class IslandFinder implements Serializable {
 		List<Double> scoreIsland = new ArrayList<Double> ();
 		int currentPos = 0;
 		double sumScore;
-		while (currentPos < islandsStart.size()) {
+		while (currentPos < islandsStart.size() && !stopped) {
 			sumScore = 0.0;
-			for (int i = islandsStart.get(currentPos); i <= islandsStop.get(currentPos); i++) {	// Loop for the sum
+			int i = islandsStart.get(currentPos);
+			while (i <= islandsStop.get(currentPos) && !stopped) {	// Loop for the sum
 				if (currentList.get(i) >= this.windowMinValue) {	// the window reads must be highter than the readCountLimit
 					sumScore += windowScore(currentList.get(i));
 				}
+				i++;
 			}
 			scoreIsland.add(sumScore);
 			currentPos++;
@@ -226,15 +229,10 @@ public class IslandFinder implements Serializable {
 											List<Double> scoreIsland,
 											List<Integer> islandsStart,
 											List<Integer> islandsStop) {
-		if (currentList == null) {
-			s += "2 - currentList null\n";
-		} else {
-			s += "2 - currentList non null\n";
-		}
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
-		for (int i = 0; i < currentList.size(); i++) {	// for all window positions
+		for (int i = 0; i < currentList.size() && !stopped; i++) {	// for all window positions
 			if (currentPos < islandsStart.size()){	// we must be below the island array size (start and stop are the same size)
 				if (i >= islandsStart.get(currentPos) && i <= islandsStop.get(currentPos)) {	// if the actual window is on an island
 					if (scoreIsland.get(currentPos) >= this.islandMinScore) {	// the island score must be higher than the cut-off
@@ -276,6 +274,8 @@ public class IslandFinder implements Serializable {
 	 */
 	private double windowScore (double value) {
 		double result = -1.0;
+		synchronized (readScoreStorage) {
+
 		if (this.readScoreStorage.containsKey(value)){	// if the score is stored
 			try {
 				result = this.readScoreStorage.get(value);	// we get it
@@ -292,6 +292,7 @@ public class IslandFinder implements Serializable {
 			} catch (InvalidFactorialParameterException e) {
 				e.printStackTrace();
 			}
+		}
 		}
 		return result;
 	}
@@ -397,6 +398,11 @@ public class IslandFinder implements Serializable {
 
 	public IslandResultType getResultType() {
 		return resultType;
+	}
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 	
 }
