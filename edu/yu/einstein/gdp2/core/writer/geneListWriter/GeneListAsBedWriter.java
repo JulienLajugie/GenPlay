@@ -69,13 +69,13 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 					lineToPrint += currentGene.getStrand().toString();
 					// add "-" for thickStart, thickEnd, itemRgb, blockCount
 					lineToPrint += "\t-\t-\t-\t";
-					// exon count
-					lineToPrint += currentGene.getExonStarts().length;
-					lineToPrint += "\t";
-					// exon lengths
 					if ((currentGene.getExonStops() == null) || (currentGene.getExonStarts() == null)) {
-						lineToPrint += "-";
+						lineToPrint += "-\t-";
 					} else {
+						// exon count
+						lineToPrint += currentGene.getExonStarts().length;
+						lineToPrint += "\t";
+						// exon lengths
 						for (int i = 0; i < currentGene.getExonStops().length; i++) {
 							lineToPrint += currentGene.getExonStops()[i] - currentGene.getExonStarts()[i];
 							lineToPrint += ",";

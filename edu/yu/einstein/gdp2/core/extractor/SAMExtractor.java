@@ -16,6 +16,7 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
 
 /**
@@ -48,17 +49,21 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Bin
 		// if the line starts with @ it's header line so we skip it
 		if (line.trim().charAt(0) != '@') {
 			String[] splitedLine = line.split("\t");
-			Chromosome chromosome = chromosomeManager.get(splitedLine[2]) ;
-			// checks if we need to extract the data on the chromosome
-			int chromosomeStatus = checkChromosomeStatus(chromosome);
-			if (chromosomeStatus == AFTER_LAST_SELECTED) {
-				return true;
-			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-				return false;
-			} else {
-				int position = Integer.parseInt(splitedLine[3]);
-				positionList.get(chromosome).add(position);		
-				lineCount++;
+			try {
+				Chromosome chromosome = chromosomeManager.get(splitedLine[2]);
+				// checks if we need to extract the data on the chromosome
+				int chromosomeStatus = checkChromosomeStatus(chromosome);
+				if (chromosomeStatus == AFTER_LAST_SELECTED) {
+					return true;
+				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
+					return false;
+				} else {
+					int position = Integer.parseInt(splitedLine[3]);
+					positionList.get(chromosome).add(position);		
+					lineCount++;
+					return false;
+				}
+			} catch (InvalidChromosomeException e) {
 				return false;
 			}
 		} else {
