@@ -55,7 +55,7 @@ public class DistanceCalculator {
 	}
 	
 	public long getClosestDistance() {
-		List<Gene> listOfGenes = null;
+		List<Gene> listOfGenes = geneList.get(chromosomeindex);
 		long retValue = 0;
 		switch(strandDirection) {
 		case 0: //positive
@@ -63,17 +63,17 @@ public class DistanceCalculator {
 				case 0: //start for track 1
 						switch(track2Position) {
 						case 0: //start for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveStartStart(listOfGenes,0,listOfGenes.size()-1);									
 								break;
 								
 						case 1: //middle for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveStartMiddle(listOfGenes,0,listOfGenes.size()-1);									
 								break;								
 								
 						case 2: //stop for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveStartStop(listOfGenes,0,listOfGenes.size()-1);								
 								break;
 						}
@@ -82,17 +82,17 @@ public class DistanceCalculator {
 				case 1:	//middle for track 1
 						switch(track2Position) {
 						case 0: //start for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveMiddleStart(listOfGenes,0,listOfGenes.size()-1);									
 								break;
 								
 						case 1: //middle for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);									
 								break;
 								
 						case 2: //stop for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveMiddleStop(listOfGenes,0,listOfGenes.size()-1);									
 								break;
 						}
@@ -101,17 +101,17 @@ public class DistanceCalculator {
 				case 2:	//stop for track 1
 						switch(track2Position) {
 						case 0: //start for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveStopStart(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 1: //middle for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveStopMiddle(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 2: //stop for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistancePositiveStopStop(listOfGenes,0,listOfGenes.size()-1);
 								break;
 						}
@@ -124,17 +124,17 @@ public class DistanceCalculator {
 				case 0: //start for track 1
 						switch(track2Position) {
 						case 0: //start for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeStartStart(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 1: //middle for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeStartMiddle(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 2: //stop for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeStartStop(listOfGenes,0,listOfGenes.size()-1);
 								break;
 						}
@@ -143,17 +143,17 @@ public class DistanceCalculator {
 				case 1:	//middle for track 1
 						switch(track2Position) {
 						case 0: //start for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeMiddleStart(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 1: //middle for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 2: //stop for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeMiddleStop(listOfGenes,0,listOfGenes.size()-1);
 								break;
 						}
@@ -162,17 +162,17 @@ public class DistanceCalculator {
 				case 2:	//stop for track 1
 						switch(track2Position) {
 						case 0: //start for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeStopStart(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 1: //middle for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeStopMiddle(listOfGenes,0,listOfGenes.size()-1);
 								break;
 								
 						case 2: //stop for track 2
-								listOfGenes = geneList.get(chromosomeindex);
+								//listOfGenes = geneList.get(chromosomeindex);
 								retValue = getDistanceNegativeStopStop(listOfGenes,0,listOfGenes.size()-1);
 								break;	
 						}
@@ -186,15 +186,15 @@ public class DistanceCalculator {
 						case 0: //start for track 1
 								switch(track2Position) {
 								case 0: //start for track 2
-										getDistanceRelativeStartStart();
+										getDistanceRelativeStartStart(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 1: //middle for track 2
-										getDistanceRelativeStartMiddle();
+										getDistanceRelativeStartMiddle(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 2: //stop for track 2
-										getDistanceRelativeStartStop();
+										getDistanceRelativeStartStop(listOfGenes,0,listOfGenes.size()-1);
 										break;
 								}
 								break;
@@ -202,15 +202,15 @@ public class DistanceCalculator {
 						case 1:	//middle for track 1
 								switch(track2Position) {
 								case 0: //start for track 2
-										getDistanceRelativeMiddleStart();
+										getDistanceRelativeMiddleStart(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 1: //middle for track 2
-										getDistanceRelativeMiddleMiddle();
+										getDistanceRelativeMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 2: //stop for track 2
-										getDistanceRelativeMiddleStop();
+										getDistanceRelativeMiddleStop(listOfGenes,0,listOfGenes.size()-1);
 										break;
 								}
 								break;
@@ -218,15 +218,15 @@ public class DistanceCalculator {
 						case 2:	//stop for track 1
 								switch(track2Position) {
 								case 0: //start for track 2
-										getDistanceRelativeStopStart();
+										getDistanceRelativeStopStart(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 1: //middle for track 2
-										getDistanceRelativeStopMiddle();
+										getDistanceRelativeStopMiddle(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 2: //stop for track 2
-										getDistanceRelativeStopStop();
+										getDistanceRelativeStopStop(listOfGenes,0,listOfGenes.size()-1);
 										break;
 								}
 								break;
@@ -237,15 +237,15 @@ public class DistanceCalculator {
 						case 0: //start for track 1
 								switch(track2Position) {
 								case 0: //start for track 2
-										getDistanceAbsoluteStartStart();
+										getDistanceAbsoluteStartStart(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 1: //middle for track 2
-										getDistanceAbsoluteStartMiddle();
+										getDistanceAbsoluteStartMiddle(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 2: //stop for track 2
-										getDistanceAbsoluteStartStop();
+										getDistanceAbsoluteStartStop(listOfGenes,0,listOfGenes.size()-1);
 										break;
 								}
 								break;
@@ -253,15 +253,15 @@ public class DistanceCalculator {
 						case 1:	//middle for track 1
 								switch(track2Position) {
 								case 0: //start for track 2
-										getDistanceAbsoluteMiddleStart();
+										getDistanceAbsoluteMiddleStart(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 1: //middle for track 2
-										getDistanceAbsoluteMiddleMiddle();
+										getDistanceAbsoluteMiddleMiddle(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 2: //stop for track 2
-										getDistanceAbsoluteMiddleStop();
+										getDistanceAbsoluteMiddleStop(listOfGenes,0,listOfGenes.size()-1);
 										break;
 								}
 								break;
@@ -269,15 +269,15 @@ public class DistanceCalculator {
 						case 2:	//stop for track 1
 								switch(track2Position) {
 								case 0: //start for track 2
-										getDistanceAbsoluteStopStart();
+										getDistanceAbsoluteStopStart(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 1: //middle for track 2
-										getDistanceAbsoluteStopMiddle();
+										getDistanceAbsoluteStopMiddle(listOfGenes,0,listOfGenes.size()-1);
 										break;
 										
 								case 2: //stop for track 2
-										getDistanceAbsoluteStopStop();
+										getDistanceAbsoluteStopStop(listOfGenes,0,listOfGenes.size()-1);
 										break;
 								}
 								break;
@@ -290,93 +290,165 @@ public class DistanceCalculator {
 	}
 
 
-	private void getDistanceAbsoluteStopStop() {
-		
+	private int getDistanceAbsoluteStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteStopMiddle() {
-		
+	private int getDistanceAbsoluteStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteStopStart() {
-		
+	private int getDistanceAbsoluteStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteMiddleStop() {
-		
+	private int getDistanceAbsoluteMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteMiddleMiddle() {
-		
+	private int getDistanceAbsoluteMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteMiddleStart() {
-		
+	private int getDistanceAbsoluteMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteStartStop() {
-		
+	private int getDistanceAbsoluteStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteStartMiddle() {
-		
+	private int getDistanceAbsoluteStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceAbsoluteStartStart() {
-		
+	private int getDistanceAbsoluteStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return inferior;
 	}
 
 
-	private void getDistanceRelativeStopStop() {
-		
+	private int getDistanceRelativeStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeStopMiddle() {
-		
+	private int getDistanceRelativeStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeStopStart() {
-		
+	private int getDistanceRelativeStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStopStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStopStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeMiddleStop() {
-		
+	private int getDistanceRelativeMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeMiddleMiddle() {
-		
+	private int getDistanceRelativeMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeMiddleStart() {
-		
+	private int getDistanceRelativeMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveMiddleStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeMiddleStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeStartStop() {
-		
+	private int getDistanceRelativeStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStop(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStop(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeStartMiddle() {
-		
+	private int getDistanceRelativeStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartMiddle(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartMiddle(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 
-	private void getDistanceRelativeStartStart() {
-		
+	private int getDistanceRelativeStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
+		int superior = getDistancePositiveStartStart(listOfGenes, indexStart, indexStop);
+		int inferior = getDistanceNegativeStartStart(listOfGenes, indexStart, indexStop);
+		if (superior < inferior) {
+			return superior;
+		} return (-inferior);
 	}
 
 

@@ -516,7 +516,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		double xmaxOfMax, ymaxOfMax;
 		double xminOfMin, yminOfMin;
 		xminOfMin = listOfGraphs.get(0).getDataPoints()[0][0];
-		yminOfMin = listOfGraphs.get(0).getDataPoints()[0][1];
+		yminOfMin = 0;
 		xmaxOfMax = listOfGraphs.get(0).getDataPoints()[0][0];
 		ymaxOfMax = listOfGraphs.get(0).getDataPoints()[0][1];
 		for (int i = 0; i < listOfGraphs.size(); i++) {
