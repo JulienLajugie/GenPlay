@@ -79,7 +79,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 							double[] exonScore = new double[1];
 							
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j < currentList.size()) && (zeroWindowCount < zeroBinGap)) {
+							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap)) {
 								if (currentList.get(j) == 0) {
 									zeroWindowCount++;
 								} else {

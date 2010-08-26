@@ -78,7 +78,7 @@ public class BLOTransfrag implements Operation<BinList> {
 							int regionStop = regionStart;
 							int zeroWindowCount = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j < currentList.size()) && (zeroWindowCount < zeroBinGap)) {
+							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap)) {
 								if (currentList.get(j) == 0) {
 									zeroWindowCount++;
 								} else {

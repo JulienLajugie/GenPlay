@@ -76,7 +76,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 								double[] exonScore = new double[1];
 								//int zeroWindowCount = 0;
 								// a region stops when there is maxZeroWindowGap consecutive zero bins
-								while ((j+1 < currentList.size()) && (currentList.get(j+1).getStart() - currentList.get(j).getStop() < zeroSCWGap)) {
+								while ((j+1 < currentList.size()) && (currentList.get(j+1).getStart() - currentList.get(j).getStop() <= zeroSCWGap)) {
 									regionStopIndex = j+1;
 									j++;
 								}
