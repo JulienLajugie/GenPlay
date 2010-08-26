@@ -12,8 +12,9 @@ import java.util.List;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.enums.ScoreCalculationTwoTrackMethod;
-import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 /**
  * This class manages theses operations on two tracks:
@@ -25,11 +26,11 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
  * @author Nicolas
  * @version 0.1
  */
-public class SCWLTwoTracksManagement implements Serializable {
+public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	
 	private static final long serialVersionUID = -4066526880193456101L;
 	protected 	final 	ChromosomeManager 					chromosomeManager;	//ChromosomeManager
-	private 	final 	List<DisplayableListOfLists<?, ?>> 	scwList;			//list containing originals lists
+	private 	final 	List<ChromosomeListOfLists<?>> 		scwList;			//list containing originals lists
 	private 			List<SCWLTwoTracksEngine>			twoTracksEngineList;
 	
 	/**
@@ -39,11 +40,11 @@ public class SCWLTwoTracksManagement implements Serializable {
 	 * @param list2	second track
 	 * @param scm		operation
 	 */
-	public SCWLTwoTracksManagement (	DisplayableListOfLists<?, ?> list1,
-										DisplayableListOfLists<?, ?> list2,
+	public SCWLTwoTracksManagement (	ChromosomeListOfLists<?> list1,
+										ChromosomeListOfLists<?> list2,
 										ScoreCalculationTwoTrackMethod scm) {
 		this.chromosomeManager = ChromosomeManager.getInstance();
-		this.scwList = new ArrayList<DisplayableListOfLists<?, ?>>();
+		this.scwList = new ArrayList<ChromosomeListOfLists<?>>();
 		this.scwList.add(list1);
 		this.scwList.add(list2);
 		this.twoTracksEngineList = new ArrayList<SCWLTwoTracksEngine>();
@@ -59,9 +60,14 @@ public class SCWLTwoTracksManagement implements Serializable {
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
 		return this.twoTracksEngineList.get(chromosomeManager.getIndex(chromosome)).getList();
 	}
-	
-	/**/
-	
-	
+
+	@Override
+	public void stop() {
+		if (twoTracksEngineList != null) {
+			for (SCWLTwoTracksEngine currentEngine: twoTracksEngineList) {
+				currentEngine.stop();
+			}
+		}
+	}
 	
 }

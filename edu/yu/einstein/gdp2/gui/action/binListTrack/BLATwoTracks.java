@@ -11,7 +11,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationTwoTrackMethod;
-import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.operation.SCWLOTwoTracks;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -20,6 +20,7 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
@@ -32,7 +33,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BLATwoTracks extends TrackListActionOperationWorker<DisplayableListOfLists<?, ?>> {
+public final class BLATwoTracks extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
 
 	private static final long 				serialVersionUID = 4027173438789911860L; 				// generated ID
 	private static final String 			ACTION_NAME = "Two Tracks Operation";			// action name
@@ -61,18 +62,18 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Displayab
 
 
 	@Override
-	public Operation<DisplayableListOfLists<?, ?>> initializeOperation() {
+	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
 		selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Choose a track to add to the selected track:", getTrackList().getCurveTracks());
+			otherTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Select the second track of the operation:", getTrackList().getCurveTracks());
 			if (otherTrack != null) {
 				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 				if (resultTrack != null) {
 					this.scm = Utils.chooseScoreCalculationTwoTrackMethod(getRootPane());
 					if (scm != null) {
 						if (isSCWList()) {
-							operation = new SCWLOTwoTracks(	(DisplayableListOfLists<?, ?>)selectedTrack.getData(),
-															(DisplayableListOfLists<?, ?>)otherTrack.getData(),
+							operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
+															(ChromosomeListOfLists<?>)otherTrack.getData(),
 															this.scm);
 						} else {
 							DataPrecision precision = Utils.choosePrecision(getRootPane());
@@ -93,7 +94,7 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Displayab
 	
 	
 	@Override
-	protected void doAtTheEnd(DisplayableListOfLists<?, ?> actionResult) {
+	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			CurveTrack<?> newTrack;
@@ -118,5 +119,17 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Displayab
 			}
 		}
 		return true;
+	}	
+	
+	
+	/**
+	 * Override that stops the extractor
+	 */
+	@Override
+	public void stop() {
+		if ((operation != null) && (operation instanceof Stoppable)) {
+			((Stoppable) operation).stop();
+		}
+		super.stop();
 	}
 }

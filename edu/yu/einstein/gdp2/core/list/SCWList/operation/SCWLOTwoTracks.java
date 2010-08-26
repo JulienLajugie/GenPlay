@@ -12,12 +12,13 @@ import java.util.concurrent.Callable;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.enums.ScoreCalculationTwoTrackMethod;
-import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.SCWList.overLap.SCWLTwoTracksManagement;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -25,11 +26,10 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
+public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
 
-	private final DisplayableListOfLists<?, ?> 		list1;	// input list
-	private final DisplayableListOfLists<?, ?> 		list2;	// input list
 	private final ScoreCalculationTwoTrackMethod 	scm;
+	private final SCWLTwoTracksManagement 			twoTracks;			// manage the operation between two tracks	
 	
 	
 	/**
@@ -37,37 +37,28 @@ public class SCWLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
 	 * @param scwList input list
 	 * @param constant constant to add
 	 */
-	public SCWLOTwoTracks(	DisplayableListOfLists<?, ?> list1,
-							DisplayableListOfLists<?, ?> list2,
+	public SCWLOTwoTracks(	ChromosomeListOfLists<?> list1,
+							ChromosomeListOfLists<?> list2,
 							ScoreCalculationTwoTrackMethod scm) {
-		this.list1 = list1;
-		this.list2 = list2;
 		this.scm = scm;
+		twoTracks = new SCWLTwoTracksManagement(list1, list2, scm);
 	}
 	
 	
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		/*if (this.scwList1 == null & this.scwList2 != null) {
-			return this.scwList2;
-		} else if (this.scwList1 != null & this.scwList2 == null) {
-			return this.scwList1;
-		} else if (this.scwList1 == null & this.scwList2 == null) {
-			return null;
-		}*/
 		
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		
 		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		final SCWLTwoTracksManagement twoTracks = new SCWLTwoTracksManagement(list1, list2, scm);
+		
 		
 		for(final Chromosome currentChromosome : chromosomeManager) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					twoTracks.run(currentChromosome);
-					//System.out.println("Chromosome : " + currentChromosome.getName() + "\nList:\n" + twoTracks.showList());
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return twoTracks.getList(currentChromosome);
@@ -100,5 +91,11 @@ public class SCWLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
 	@Override
 	public int getStepCount() {
 		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+	}
+
+
+	@Override
+	public void stop() {
+		twoTracks.stop();
 	}
 }

@@ -12,12 +12,13 @@ import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationTwoTrackMethod;
-import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.ListFactory;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -25,13 +26,13 @@ import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
+public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
 
 	private final BinList 		binList1;	// first binlist to add 
 	private final BinList 		binList2; 	// second binlist to add
 	private final DataPrecision precision;	// precision of the result list
 	private ScoreCalculationTwoTrackMethod 	scm;
-
+	private boolean				stopped = false;	// true if the operation must be stopped
 
 	/**
 	 * Adds the scores of the bins of the two specified BinLists
@@ -56,7 +57,7 @@ public class BLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		for(short i = 0; i < binList1.size(); i++)  {
+		for(short i = 0; i < binList1.size() && !stopped; i++)  {
 			final List<Double> currentList1 = binList1.get(i);
 			final List<Double> currentList2 = binList2.get(i);
 
@@ -66,7 +67,7 @@ public class BLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
 					List<Double> resultList = null;
 					if ((currentList1 != null) && (currentList1.size() != 0) && (currentList2 != null) && (currentList2.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList1.size());
-						for (int j = 0; j < currentList1.size(); j++) {
+						for (int j = 0; j < currentList1.size() && !stopped; j++) {
 							if (j < currentList2.size()) {
 								// we add the bins of the two binlists
 								resultList.set(j, getScore(currentList1.get(j), currentList2.get(j)));
@@ -171,5 +172,11 @@ public class BLOTwoTracks implements Operation<DisplayableListOfLists<?, ?>> {
 	
 	private double minimum(double a, double b) {
 		return Math.min(a, b);
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

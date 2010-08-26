@@ -12,9 +12,10 @@ import java.util.List;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.enums.ScoreCalculationTwoTrackMethod;
-import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 /**
  * This class manages theses operations on two tracks:
@@ -26,10 +27,10 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @author Nicolas
  * @version 0.1
  */
-public class SCWLTwoTracksEngine implements Serializable {
+public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	
 	private static final long serialVersionUID = 2965349494486829320L;
-	private final 	List<DisplayableListOfLists<?, ?>> 	list;				//list containing originals lists
+	private final 	List<ChromosomeListOfLists<?>> 		list;				//list containing originals lists
 	private 		List<ScoredChromosomeWindow> 		newScwList;			//new list
 	private final	ScoreCalculationTwoTrackMethod		scm;				//operation to apply
 	private 		Chromosome 							chromosome;
@@ -39,7 +40,7 @@ public class SCWLTwoTracksEngine implements Serializable {
 	private			Double[]							currentScore;		//stores the current scores
 	private			Integer[]							currentPosition;	//stores the current positions
 	private			Integer[]							currentIndex;		//stores the current index
-	
+	private 		boolean								stopped = false;	// true if the operation must be stopped
 	
 	
 	/**
@@ -50,7 +51,7 @@ public class SCWLTwoTracksEngine implements Serializable {
 	 * @param scm		operation
 	 */
 	public SCWLTwoTracksEngine (ScoreCalculationTwoTrackMethod scm) {
-		this.list = new ArrayList<DisplayableListOfLists<?, ?>>();
+		this.list = new ArrayList<ChromosomeListOfLists<?>>();
 		this.newScwList = new ArrayList<ScoredChromosomeWindow>();
 		this.scm = scm;
 	}
@@ -62,7 +63,7 @@ public class SCWLTwoTracksEngine implements Serializable {
 	 * @param list1 
 	 * @param list2 
 	 */
-	public void init (DisplayableListOfLists<?, ?> list1, DisplayableListOfLists<?, ?> list2, Chromosome chromosome) {
+	public void init (ChromosomeListOfLists<?> list1, ChromosomeListOfLists<?> list2, Chromosome chromosome) {
 		//index 0 refers to the first track
 		//index 1 refers to the second track
 		this.list.add(list1);
@@ -112,7 +113,7 @@ public class SCWLTwoTracksEngine implements Serializable {
 	 */
 	private void run () {
 		int min;
-		while (isValid()) {
+		while (isValid() && !stopped) {
 			min = min ();	//get the relative position of the current position on the track 1 and the current position on the track 2
 			switch (min) {
 			case 0:		//current positions are at the same place
@@ -267,7 +268,7 @@ public class SCWLTwoTracksEngine implements Serializable {
 	private void nextPosition (int track) {
 		int index = currentIndex[track] + 1;
 		boolean valid = true;
-		while (valid) {
+		while (valid && !stopped) {
 			if (index >= getTrackSize(track)) {
 				valid = false;
 				this.validPosition[track] = false;
@@ -343,7 +344,7 @@ public class SCWLTwoTracksEngine implements Serializable {
 	 */
 	private void finishTrack (int track) {
 		if (validPosition[track]) {
-			for (int i = currentIndex[track]; i < getTrackSize(track); i++) {
+			for (int i = currentIndex[track]; i < getTrackSize(track) && !stopped; i++) {
 				newScwList.add(new ScoredChromosomeWindow(	getStart(track),
 															getStop(track),
 															getScore(track)));
@@ -441,5 +442,11 @@ public class SCWLTwoTracksEngine implements Serializable {
 			s += "[" + newScwList.get(i).getStart() + "; " + newScwList.get(i).getStop() + "; " + newScwList.get(i).getScore() + "]";
 		}
 		return s;
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }
