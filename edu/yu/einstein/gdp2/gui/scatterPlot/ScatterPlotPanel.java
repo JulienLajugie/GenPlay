@@ -334,6 +334,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 					g.drawLine(current.x, current.y, next.x, next.y);
 					g.drawLine(current.x, current.y, current.x, getTranslatedPoint(current.x, 0).y);
 					g.drawLine(next.x, next.y, next.x, getTranslatedPoint(current.x, 0).y);
+				} else if (listOfGraphs.get(i).getDataPoints()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] > getYAxisEnd() && listOfGraphs.get(i).getDataPoints()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getDataPoints()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getDataPoints()[j][0]-listOfGraphs.get(i).getDataPoints()[j+1][0]) <= getXAxisStepSize()) {
+					g.drawLine(current.x, getTranslatedPoint(current.x, getYAxisEnd()).y, current.x, getTranslatedPoint(current.x, 0).y);
+					g.drawLine(next.x, getTranslatedPoint(current.x, getYAxisEnd()).y, next.x, getTranslatedPoint(current.x, 0).y);
 				}
 			}
 		}
