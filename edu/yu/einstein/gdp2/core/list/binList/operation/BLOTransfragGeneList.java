@@ -29,8 +29,8 @@ import yu.einstein.gdp2.util.DoubleLists;
  */
 public class BLOTransfragGeneList implements Operation<GeneList> {
 
-	private final BinList 	binList;				// input binlist
-	private final int 		zeroBinGap; 			// number of zero value bins defining a gap between two islands
+	private final BinList 				binList;	// input binlist
+	private final int 					zeroBinGap; // number of zero value bins defining a gap between two islands
 	private final ScoreCalculationMethod operation;	//sum / average / max
 
 
@@ -41,6 +41,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 	 * Returns a new {@link GeneList} with the defined regions having their average/max/sum as a score
 	 * @param geneList input GeneList
 	 * @param zeroBinGap number of zero value windows defining a gap between two islands
+	 * @param operation operation to use to compute the score of the intervals
 	 */
 	public BLOTransfragGeneList(BinList binList, int zeroBinGap, ScoreCalculationMethod operation) {
 		this.binList = binList;
@@ -48,6 +49,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		this.operation = operation;
 	}
 
+	
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
@@ -97,11 +99,11 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 									// all the windows of the region are set with the average value on the region
 									regionScore = DoubleLists.average(currentList, regionStart, regionStop);
 								} else if (operation == ScoreCalculationMethod.SUM) {
-									// all the windows of the region are set with the max value on the region
-									regionScore = DoubleLists.maxNoZero(currentList);
-								} else {
 									// all the windows of the region are set with the sum value on the region
 									regionScore = DoubleLists.sum(currentList, regionStart, regionStop);
+								} else {
+									// all the windows of the region are set with the max value on the region
+									regionScore = DoubleLists.maxNoZero(currentList, regionStart, regionStop);
 								}
 								regionStart *= binList.getBinSize();
 								regionStop++;
@@ -130,16 +132,19 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		}
 	}
 
+	
 	@Override
 	public String getDescription() {
 		return "Operation: Transfrag, Gap Size = " + zeroBinGap + " Zero Value Successive Bins";
 	}
+	
 
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Transfrag";
 	}
 
+	
 	@Override
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;

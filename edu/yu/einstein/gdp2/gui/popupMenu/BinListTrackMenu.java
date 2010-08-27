@@ -13,7 +13,7 @@ import yu.einstein.gdp2.gui.action.allTrack.ATASave;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAddConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAverage;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACountNonNullBins;
-import yu.einstein.gdp2.gui.action.binListTrack.BLACalculationOnProjection;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAIntervalsSummarization;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAChangeBinSize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAChangeDataPrecision;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACompress;
@@ -54,50 +54,49 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 
 	private static final long serialVersionUID = -1453741322870299413L; // generated ID
 
-	private final JMenu			jmOperation;			// category operation
+	private final JMenu			jmOperation;					// category operation
 	
-	private final JMenuItem		jmiSave;				// menu save BinListTrack
+	private final JMenuItem		jmiSave;						// menu save BinListTrack
 	
-	private final JCheckBoxMenuItem jcbmiCompression;	// check box menu compression
+	private final JCheckBoxMenuItem jcbmiCompression;			// check box menu compression
 	
-	private final JMenuItem		jmiAddConstant;			// menu add constant to BinListTrack
-	private final JMenuItem		jmiSubtractConstant;	// menu subtract constant from BinListTrack
-	private final JMenuItem		jmiMultiplyConstant;	// menu multiply BinListTrack by constant
-	private final JMenuItem		jmiDivideConstant;		// menu divide BinListTrack by constant
-	private final JMenuItem		jmiInvertConstant;		// menu invert BinListTrack
+	private final JMenuItem		jmiAddConstant;					// menu add constant to BinListTrack
+	private final JMenuItem		jmiSubtractConstant;			// menu subtract constant from BinListTrack
+	private final JMenuItem		jmiMultiplyConstant;			// menu multiply BinListTrack by constant
+	private final JMenuItem		jmiDivideConstant;				// menu divide BinListTrack by constant
+	private final JMenuItem		jmiInvertConstant;				// menu invert BinListTrack
 	
-	private final JMenuItem		jmiTwoTracks;			// menu operates BinListTrack by another one
+	private final JMenuItem		jmiTwoTracks;					// menu operates BinListTrack by another one
 	
-	private final JMenuItem		jmiGauss;				// menu gauss BinListTrack
-	private final JMenuItem		jmiIndex;				// menu index BinListTrack
-	private final JMenuItem		jmiIndexPerChromosome;	// menu index BinListTrack per chromosome
-	private final JMenuItem		jmiLog;					// menu log BinListTrack
-	private final JMenuItem		jmiLogWithDamper;		// menu log BinListTrack with damper
-	private final JMenuItem		jmiNormalize;			// menu normalize BinListTrack
-	private final JMenuItem		jmiNormalizeStdScore;	// menu normalize standard score BinListTrack
+	private final JMenuItem		jmiGauss;						// menu gauss BinListTrack
+	private final JMenuItem		jmiIndex;						// menu index BinListTrack
+	private final JMenuItem		jmiIndexPerChromosome;			// menu index BinListTrack per chromosome
+	private final JMenuItem		jmiLog;							// menu log BinListTrack
+	private final JMenuItem		jmiLogWithDamper;				// menu log BinListTrack with damper
+	private final JMenuItem		jmiNormalize;					// menu normalize BinListTrack
+	private final JMenuItem		jmiNormalizeStdScore;			// menu normalize standard score BinListTrack
 	
-	private final JMenuItem		jmiMinimum;				// menu minimum of the BinListTrack
-	private final JMenuItem		jmiMaximum;				// menu maximum of the BinListTrack
-	private final JMenuItem		jmiBinCount;			// menu bin count
-	private final JMenuItem		jmiScoreCount;			// menu score count
-	private final JMenuItem		jmiAverage;				// menu average
-	private final JMenuItem		jmiStdDev;				// menu standard deviation
-	private final JMenuItem		jmiCorrelation;			// menu correlation BinListTrack with another one
+	private final JMenuItem		jmiMinimum;						// menu minimum of the BinListTrack
+	private final JMenuItem		jmiMaximum;						// menu maximum of the BinListTrack
+	private final JMenuItem		jmiBinCount;					// menu bin count
+	private final JMenuItem		jmiScoreCount;					// menu score count
+	private final JMenuItem		jmiAverage;						// menu average
+	private final JMenuItem		jmiStdDev;						// menu standard deviation
+	private final JMenuItem		jmiCorrelation;					// menu correlation BinListTrack with another one
 	
-	private final JMenuItem		jmiFilter;				// menu filter
-	private final JMenuItem		jmiSearchPeaks;			// menu search peaks 
-	private final JMenuItem		jmiTransfrag;			// menu transfrag for BinLists
-	//private final JMenuItem		jmiTransfragGeneList;	// menu transfrag for GeneLists
+	private final JMenuItem		jmiFilter;						// menu filter
+	private final JMenuItem		jmiSearchPeaks;					// menu search peaks 
+	private final JMenuItem		jmiTransfrag;					// menu transfrag for BinLists
 	
-	private final JMenuItem		jmiChangeBinSize;		// menu change bin size
-	private final JMenuItem		jmiChangePrecision;		// menu change data precision
+	private final JMenuItem		jmiChangeBinSize;				// menu change bin size
+	private final JMenuItem		jmiChangePrecision;				// menu change data precision
 	
-	private final JMenuItem		jmiDensity;				// menu density of none null windows
-	private final JMenuItem		jmiCalculOnProjection;	// menu calculation on intervals
-	private final JMenuItem		jmiShowRepartition;		// menu show repartition of the BinListTrack
-	private final JMenuItem		jmiConcatenate;			// menu concatenate
+	private final JMenuItem		jmiDensity;						// menu density of none null windows
+	private final JMenuItem		jmiIntervalsSummarization;		// menu Intervals Summarization
+	private final JMenuItem		jmiShowRepartition;				// menu show repartition of the BinListTrack
+	private final JMenuItem		jmiConcatenate;					// menu concatenate
 	
-	private final JMenuItem		jmiGenerateSCWList;		// menu generate a SCWList
+	private final JMenuItem		jmiGenerateSCWList;				// menu generate a SCWList
 	
 	
 	/**
@@ -140,13 +139,12 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiFilter = new JMenuItem(actionMap.get(BLAFilter.ACTION_KEY));
 		jmiSearchPeaks = new JMenuItem(actionMap.get(BLAFindPeaks.ACTION_KEY));
 		jmiTransfrag =  new JMenuItem(actionMap.get(BLATransfrag.ACTION_KEY));
-		//jmiTransfragGeneList =  new JMenuItem(actionMap.get(BLATransfragGeneList.ACTION_KEY));
 		
 		jmiChangeBinSize = new JMenuItem(actionMap.get(BLAChangeBinSize.ACTION_KEY));
 		jmiChangePrecision = new JMenuItem(actionMap.get(BLAChangeDataPrecision.ACTION_KEY));
 		
 		jmiDensity = new JMenuItem(actionMap.get(BLADensity.ACTION_KEY));
-		jmiCalculOnProjection = new JMenuItem(actionMap.get(BLACalculationOnProjection.ACTION_KEY));
+		jmiIntervalsSummarization = new JMenuItem(actionMap.get(BLAIntervalsSummarization.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(BLARepartition.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(BLAConcatenate.ACTION_KEY));
 		
@@ -190,7 +188,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiDensity);
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.add(jmiConcatenate);
-		jmOperation.add(jmiCalculOnProjection);
+		jmOperation.add(jmiIntervalsSummarization);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGenerateSCWList);
 		

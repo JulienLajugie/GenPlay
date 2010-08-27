@@ -62,7 +62,7 @@ import yu.einstein.gdp2.gui.action.allTrack.ATASetHeight;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAddConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAverage;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACountNonNullBins;
-import yu.einstein.gdp2.gui.action.binListTrack.BLACalculationOnProjection;
+import yu.einstein.gdp2.gui.action.binListTrack.BLAIntervalsSummarization;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAChangeBinSize;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAChangeDataPrecision;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACompress;
@@ -230,7 +230,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
 		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());		
-		getActionMap().put(BLACalculationOnProjection.ACTION_KEY, new BLACalculationOnProjection());
+		getActionMap().put(BLAIntervalsSummarization.ACTION_KEY, new BLAIntervalsSummarization());
 		getActionMap().put(BLAChangeBinSize.ACTION_KEY, new BLAChangeBinSize());
 		getActionMap().put(BLAChangeDataPrecision.ACTION_KEY, new BLAChangeDataPrecision());
 		getActionMap().put(BLACompress.ACTION_KEY, new BLACompress());

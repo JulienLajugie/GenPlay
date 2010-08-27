@@ -21,8 +21,7 @@ import javax.swing.text.NumberFormatter;
 public class TransfragDialog extends JDialog{
 
 	private static final long serialVersionUID = 4265594104159799587L;
-	private final static Dimension WINDOW_SIZE = 
-		new Dimension(400, 300);						// size of the window
+
 	/**
 	 * Return value when Cancel has been clicked.
 	 */
@@ -151,8 +150,6 @@ public class TransfragDialog extends JDialog{
 		pack();
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
-		setPreferredSize(WINDOW_SIZE);
-		setMinimumSize(WINDOW_SIZE);
 		setModal(true);
 		resultTypeChanged();
 	}

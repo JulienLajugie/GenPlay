@@ -84,6 +84,33 @@ public class DoubleLists {
 	
 	
 	/**
+	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
+	 * @param list
+	 * @param indexStart index where to start in the list
+	 * @param indexStop index where to stop in the list
+	 * @return the non-zero maximum of the specified list
+	 */
+	public static double maxNoZero(List<Double> list, int indexStart, int indexStop) {
+		if (indexStart > indexStop) {
+			return 0;
+		} else if (indexStart == indexStop) {
+			return list.get(indexStart);
+		}
+		
+		double max = Double.NEGATIVE_INFINITY;
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
+			double currentValue = list.get(i);
+			if (currentValue != 0) {
+				max = Math.max(max, currentValue);
+			}
+			i++;
+		}
+		return max;
+	}
+	
+	
+	/**
 	 * Returns the minimum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list
 	 * @return the non-zero minimum of the specified list

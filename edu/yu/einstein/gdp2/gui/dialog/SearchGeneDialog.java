@@ -162,7 +162,16 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 */
 	private void showGene(Gene geneFound) {
 		if (geneFound != null) {
-			GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromo(), geneFound.getTxStart(), geneFound.getTxStop());
+			// we want to see larger than the gene found
+			int windowStart = geneFound.getTxStart() - (geneFound.getTxStop() - geneFound.getTxStart()) * 3;
+			int minimumDisplayableStart = - geneFound.getChromo().getLength();
+			// we don't want the start to be smaller than the minimum displayable position
+			windowStart = Math.max(windowStart, minimumDisplayableStart);
+			int windowStop = geneFound.getTxStop() + (geneFound.getTxStop() - geneFound.getTxStart()) * 3;
+			int maximumDisplayableStop = geneFound.getChromo().getLength() * 2;
+			// we don't want the stop to be greater than the maximum displayable position
+			windowStop = Math.min(windowStop, maximumDisplayableStop);
+			GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromo(), windowStart, windowStop);
 			MainFrame.getInstance().getControlPanel().setGenomeWindow(genomeWindow);
 			setEditorColor(true);
 		} else {

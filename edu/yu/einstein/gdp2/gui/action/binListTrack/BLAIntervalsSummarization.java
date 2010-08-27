@@ -12,7 +12,7 @@ import javax.swing.ActionMap;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.core.list.binList.operation.BLOCalculationOnProjection;
+import yu.einstein.gdp2.core.list.binList.operation.BLOIntervalsSummarization;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
@@ -28,10 +28,10 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLACalculationOnProjection extends TrackListActionOperationWorker<BinList> {
+public class BLAIntervalsSummarization extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = -3736735803307616477L;			// generated ID
-	private static final String 	ACTION_NAME = "Calculation on Projection";	// action name
+	private static final String 	ACTION_NAME = "Intervals Summarization";	// action name
 	private static final String 	DESCRIPTION = 
 		"Compute the average, the sum or the max of the " +
 		"selected track on intervals defined by another track";					// tooltip
@@ -45,13 +45,13 @@ public class BLACalculationOnProjection extends TrackListActionOperationWorker<B
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLACalculationOnProjection";
+	public static final String ACTION_KEY = "BLAIntervalsSummarization";
 
 
 	/**
-	 * Creates an instance of {@link BLACalculationOnProjection}
+	 * Creates an instance of {@link BLAIntervalsSummarization}
 	 */
-	public BLACalculationOnProjection() {
+	public BLAIntervalsSummarization() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -75,7 +75,7 @@ public class BLACalculationOnProjection extends TrackListActionOperationWorker<B
 							if (precision != null) {
 								BinList valueBinList = ((BinListTrack)selectedTrack).getData();
 								BinList intervalBinList = ((BinListTrack)intervalTrack).getData();
-								Operation<BinList> operation = new BLOCalculationOnProjection(intervalBinList, valueBinList, percentage.intValue(), method, precision);
+								Operation<BinList> operation = new BLOIntervalsSummarization(intervalBinList, valueBinList, percentage.intValue(), method, precision);
 								return operation;
 							}
 						}

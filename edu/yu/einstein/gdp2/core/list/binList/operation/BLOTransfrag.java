@@ -31,8 +31,8 @@ import yu.einstein.gdp2.util.DoubleLists;
  */
 public class BLOTransfrag implements Operation<BinList> {
 
-	private final BinList 	binList;	// input binlist
-	private final int 		zeroBinGap; // number of zero value bins defining a gap between two islands
+	private final BinList 					binList;	// input binlist
+	private final int 						zeroBinGap; // number of zero value bins defining a gap between two islands
 	private final ScoreCalculationMethod	operation;	// max / sum / average 
 
 
@@ -43,6 +43,7 @@ public class BLOTransfrag implements Operation<BinList> {
 	 * Returns a new {@link BinList} with the defined regions having their average/max/sum as a score
 	 * @param binList input BinList
 	 * @param zeroBinGap number of zero value windows defining a gap between two islands
+	 * @param operation operation to use to compute the score of the intervals
 	 */
 	public BLOTransfrag(BinList binList, int zeroBinGap, ScoreCalculationMethod operation) {
 		this.binList = binList;
@@ -96,11 +97,11 @@ public class BLOTransfrag implements Operation<BinList> {
 									// all the windows of the region are set with the average value on the region
 									regionScore = DoubleLists.average(currentList, regionStart, regionStop);
 								} else if (operation == ScoreCalculationMethod.SUM) {
-									// all the windows of the region are set with the max value on the region
-									regionScore = DoubleLists.maxNoZero(currentList);
-								} else {
 									// all the windows of the region are set with the sum value on the region
 									regionScore = DoubleLists.sum(currentList, regionStart, regionStop);
+								} else {
+									// all the windows of the region are set with the max value on the region
+									regionScore = DoubleLists.maxNoZero(currentList, regionStart, regionStop);
 								}
 								for (j = regionStart; j <= regionStop; j++) {
 									if (j < resultList.size()) {

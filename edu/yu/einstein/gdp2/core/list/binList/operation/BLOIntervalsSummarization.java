@@ -26,7 +26,7 @@ import yu.einstein.gdp2.util.DoubleLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOCalculationOnProjection implements Operation<BinList> {
+public class BLOIntervalsSummarization implements Operation<BinList> {
 
 	private final BinList 					intervalList;				// BinList defining the intervals 
 	private final BinList 					valueList;					// BinList defining the values for the calculation
@@ -36,6 +36,7 @@ public class BLOCalculationOnProjection implements Operation<BinList> {
 
 
 	/**
+	 * Creates an instance of {@link BLOIntervalsSummarization}
 	 * Computes the average, the max or the sum of the {@link BinList} on intervals defined by another BinList
 	 * @param intervalList BinList defining the intervals
 	 * @param valueList BinList defining the values for the calculation
@@ -43,7 +44,7 @@ public class BLOCalculationOnProjection implements Operation<BinList> {
 	 * @param method method of calculation
 	 * @param precision precision of the result BinList
 	 */
-	public BLOCalculationOnProjection(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreCalculationMethod method, DataPrecision precision) {
+	public BLOIntervalsSummarization(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreCalculationMethod method, DataPrecision precision) {
 		this.intervalList = intervalList;
 		this.valueList = valueList;
 		this.percentageAcceptedValues = percentageAcceptedValues;

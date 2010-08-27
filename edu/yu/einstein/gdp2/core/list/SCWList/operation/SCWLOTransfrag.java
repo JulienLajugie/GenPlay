@@ -26,15 +26,16 @@ import yu.einstein.gdp2.util.SCWLists;
  */
 public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 
-	private ScoredChromosomeWindowList scwList;
-	private int zeroSCWGap;
-	private ScoreCalculationMethod operation;
+	private ScoredChromosomeWindowList 	scwList;	// input list
+	private int 						zeroSCWGap;	// minimum size of the gap separating two intervals
+	private ScoreCalculationMethod 		operation;	// operation to use to compute the score of the intervals
 
+	
 	/**
 	 * Creates an instance of {@link SCWLOTransfrag}
-	 * @param scwList
-	 * @param zeroBinGap
-	 * @param operation
+	 * @param scwList input list
+	 * @param zeroBinGap minimum size of the gap separating two intervals
+	 * @param operation operation to use to compute the score of the intervals
 	 */
 	public SCWLOTransfrag(ScoredChromosomeWindowList scwList, int zeroSCWGap, ScoreCalculationMethod operation) {
 		this.scwList = scwList;
@@ -42,6 +43,7 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 		this.operation = operation;
 	}
 
+	
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		
@@ -65,7 +67,6 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 							}
 							int regionStartIndex = j;
 							int regionStopIndex = regionStartIndex;
-							//int zeroWindowCount = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
 							while ((j+1 < currentList.size()) && (currentList.get(j + 1).getStart() - currentList.get(j).getStop() <= zeroSCWGap)) {
 								regionStopIndex = j+1;
@@ -78,15 +79,12 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 								double regionScore = 0;
 								if (operation == ScoreCalculationMethod.AVERAGE) {
 									// all the windows of the region are set with the average value on the region
-									//System.out.println("average");
 									regionScore = SCWLists.average(currentList, regionStartIndex, regionStopIndex);
 								} else if (operation == ScoreCalculationMethod.MAXIMUM) {
 									// all the windows of the region are set with the max value on the region
-									//System.out.println("max");
 									regionScore = SCWLists.maxNoZero(currentList, regionStartIndex, regionStopIndex);
 								} else {
 									// all the windows of the region are set with the sum value on the region
-									//System.out.println("sum");
 									regionScore = SCWLists.sum(currentList, regionStartIndex, regionStopIndex);
 								}
 								resultList.add(new ScoredChromosomeWindow(currentList.get(regionStartIndex).getStart(), currentList.get(regionStopIndex).getStop(), regionScore));
@@ -110,16 +108,19 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 		}		
 	}
 
+	
 	@Override
 	public String getDescription() {
 		return "Operation: Transfrag, Gap Size = " + zeroSCWGap + " Zero Value Successive ScoredChromosomeWindows";
 	}
 
+	
 	@Override
 	public String getProcessingDescription() {
 		return "Calculating Transfrag";
 	}
 
+	
 	@Override
 	public int getStepCount() {
 		return 3;
