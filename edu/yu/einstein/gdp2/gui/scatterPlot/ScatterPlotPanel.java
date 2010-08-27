@@ -404,16 +404,16 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		
 		int lastXTextStopPos = 0, lastYTextStopPos = Integer.MAX_VALUE;
 		double incrementY = getYAxisStart();
-		double incrementX = 0;
+		double incrementX = getXAxisStart();
 		boolean axisFlag = true;
 		
 		// X-Axis Labels
 			if (getXAxisStart() < 0) {
-				lastXTextStopPos = Integer.MAX_VALUE;
-				while (incrementX >= getXAxisStart()) {
+				lastXTextStopPos = Integer.MIN_VALUE;
+				while (incrementX >= getXAxisStart() && incrementX < 0) {
 					p = new Point(getTranslatedPoint(incrementX, getYAxisStart()));
 					String stringToPrint = DF.format(incrementX);
-					if (p.x + g.getFontMetrics().stringWidth(stringToPrint)+20 < lastXTextStopPos) {
+					if (p.x >= lastXTextStopPos && incrementX >= getXAxisStart()) {
 						if (isxAxisGridLines() == true && axisFlag != true) {
 							g.setColor(new Color (190,190,190));
 							g.drawLine(p.x, p.y, p.x, getTranslatedPoint(0,getYAxisEnd()).y);
@@ -421,9 +421,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 						g.setColor(Color.black);
 						g.drawString(stringToPrint, p.x, p.y + TOP_PAD_LABELS/5);
 						g.drawLine(p.x, p.y-4, p.x, p.y+4);
-						lastXTextStopPos = p.x + 10*g.getFontMetrics().stringWidth(stringToPrint);
+						lastXTextStopPos = p.x + g.getFontMetrics().stringWidth(stringToPrint)+10;
 					}					
-					incrementX = incrementX - getXAxisStepSize();
+					incrementX = incrementX + getXAxisStepSize();
 					axisFlag = false;
 				}
 			}
