@@ -410,7 +410,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 		// X-Axis Labels
 			if (getXAxisStart() < 0) {
 				lastXTextStopPos = Integer.MIN_VALUE;
-				while (incrementX >= getXAxisStart() && incrementX < 0) {
+				while (incrementX >= getXAxisStart() && incrementX < -10) {
 					p = new Point(getTranslatedPoint(incrementX, getYAxisStart()));
 					String stringToPrint = DF.format(incrementX);
 					if (p.x >= lastXTextStopPos && incrementX >= getXAxisStart()) {
