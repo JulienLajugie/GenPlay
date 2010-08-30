@@ -18,10 +18,10 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class BLOChangeBinSize implements Operation<BinList> {
 
-	private final BinList 					binList;	// input BinList
-	private final int 						binSize;	// new bin size 
-	private final ScoreCalculationMethod 	method;		// method for the calculation of the new binlist
-
+	private final BinList 					binList;		// input BinList
+	private final int 						binSize;		// new bin size 
+	private final ScoreCalculationMethod 	method;			// method for the calculation of the new binlist
+	
 
 	/**
 	 * Creates a new BinList with a new bin size
@@ -62,4 +62,11 @@ public class BLOChangeBinSize implements Operation<BinList> {
 	public String getProcessingDescription() {
 		return "Changing Window Size";
 	}
+
+	
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void stop() {}
 }

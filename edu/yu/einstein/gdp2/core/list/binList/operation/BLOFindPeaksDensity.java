@@ -27,7 +27,8 @@ public class BLOFindPeaksDensity implements Operation<BinList[]> {
 	private double 			highThreshold;			// saturates the values above this threshold
 	private double 			density;				// minimum density of windows above and under the thresholds for a region to be selected (percentage btw 0 and 1)
 	private int 			halfWidth;				// half size of the region (in number of bins) 
-
+	private boolean			stopped = false;		// true if the operation must be stopped
+	
 	
 	/**
 	 * Creates an instance of {@link BLOFindPeaksDensity}
@@ -62,7 +63,7 @@ public class BLOFindPeaksDensity implements Operation<BinList[]> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								int indexStart = j - halfWidth;
 								int indexStop = j + halfWidth;
@@ -77,7 +78,7 @@ public class BLOFindPeaksDensity implements Operation<BinList[]> {
 								// we accept a window if there is nbConsecutiveValues above or under the filter
 								int binSelectedCount = 0;
 								int k = indexStart;
-								while ((binSelectedCount < minBinCount) && (k <= indexStop)) {
+								while ((binSelectedCount < minBinCount) && (k <= indexStop) && !stopped) {
 									// depending on the filter type we accept values above or under the threshold
 									if ((currentList.get(k) > lowThreshold) && (currentList.get(k) < highThreshold)) {
 										binSelectedCount++;
@@ -160,5 +161,11 @@ public class BLOFindPeaksDensity implements Operation<BinList[]> {
 	 */
 	public final void setLowThreshold(double lowThreshold) {
 		this.lowThreshold = lowThreshold;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

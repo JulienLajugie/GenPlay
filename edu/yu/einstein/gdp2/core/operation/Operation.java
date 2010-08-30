@@ -7,6 +7,7 @@ package yu.einstein.gdp2.core.operation;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -15,7 +16,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
  * @version 0.1
  * @param result type of the operation
  */
-public interface Operation<T> {
+public interface Operation<T> extends Stoppable {
 	
 	
 	/**

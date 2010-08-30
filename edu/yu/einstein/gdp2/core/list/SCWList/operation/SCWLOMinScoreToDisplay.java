@@ -16,8 +16,8 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class SCWLOMinScoreToDisplay implements Operation<Double> {
 
-
-	private final ScoredChromosomeWindowList scwList;	// input list
+	private final ScoredChromosomeWindowList 	scwList;	// input list
+	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -38,7 +38,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 		}
 		// if the min of the list can be written as -10^x we return this value as a minimum
 		double minScoreDisplayed = -1;
-		while (realMin / minScoreDisplayed > 1) {
+		while (realMin / minScoreDisplayed > 1 && !stopped) {
 			minScoreDisplayed *= 10;
 		}
 		if (realMin / minScoreDisplayed == 1) {
@@ -50,7 +50,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 			return 0d;
 		}
 		minScoreDisplayed = -1;
-		while (proposedMin / minScoreDisplayed > 1) {
+		while (proposedMin / minScoreDisplayed > 1 && !stopped) {
 			minScoreDisplayed *= 10;
 		}
 		return minScoreDisplayed;
@@ -72,5 +72,11 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Minimum";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

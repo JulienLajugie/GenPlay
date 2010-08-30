@@ -26,7 +26,9 @@ public class BLOFilterBandStop implements Operation<BinList> {
 	private final BinList 	binList;		// input BinList
 	private final double 	lowThreshold;	// low bound 
 	private final double 	highThreshold;	// high bound
-
+	private boolean			stopped = false;// true if the operation must be stopped
+	
+	
 	/**
 	 * Creates an instance of {@link BLOFilterBandStop}
 	 * @param binList input {@link BinList}
@@ -58,7 +60,7 @@ public class BLOFilterBandStop implements Operation<BinList> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							double currentValue = currentList.get(j); 
 							if ((currentValue >= lowThreshold) && (currentValue <= highThreshold)) {
 								resultList.set(j, 0d);
@@ -100,5 +102,11 @@ public class BLOFilterBandStop implements Operation<BinList> {
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

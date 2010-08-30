@@ -10,7 +10,6 @@ import yu.einstein.gdp2.core.enums.IslandResultType;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.binList.operation.peakFinder.IslandFinder;
 import yu.einstein.gdp2.core.operation.Operation;
-import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -18,14 +17,14 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BLOFindIslands implements Operation<BinList[]>, Stoppable {
+public class BLOFindIslands implements Operation<BinList[]> {
 
 	private final BinList 		inputBinList;	// input binlist
 	private BinList[]			outputBinList;
 	private IslandResultType[] 	list;
 	private IslandFinder 		island;
-	private boolean				stopped = false;	// true if the operation must be stopped
 
+	
 	public BLOFindIslands (BinList binList) throws InterruptedException, ExecutionException {
 		this.inputBinList = binList;
 		this.island = new IslandFinder(binList);
@@ -34,7 +33,7 @@ public class BLOFindIslands implements Operation<BinList[]>, Stoppable {
 	@Override
 	public BinList[] compute () throws InterruptedException, ExecutionException {
 		this.outputBinList = new BinList[this.list.length];
-		for (int i=0; i < this.list.length && !stopped; i++) {
+		for (int i=0; i < this.list.length; i++) {
 			if (this.list[i] != null) {
 				this.island.setResultType(this.list[i]);	// at this point, the resultType setting is the last to set
 				this.outputBinList[i] = this.island.findIsland();	// we store the calculated bin list on the output binlist array of bloIsland object
@@ -101,7 +100,6 @@ public class BLOFindIslands implements Operation<BinList[]>, Stoppable {
 
 	@Override
 	public void stop() {
-		this.stopped = true;
 		if (this.island != null) {
 			this.island.stop();
 		}

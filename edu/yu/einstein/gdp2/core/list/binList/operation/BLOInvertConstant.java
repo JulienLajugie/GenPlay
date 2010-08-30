@@ -25,6 +25,7 @@ public class BLOInvertConstant implements Operation<BinList> {
 
 	private final BinList 	binList;		// input BinList 
 	private final double 	constant;		// coefficient a in f(x) = a / x
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -58,7 +59,7 @@ public class BLOInvertConstant implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// We add a constant to each element
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if(currentList.get(j) == 0) {
 								resultList.set(j, 0d);
 							} else {
@@ -99,5 +100,11 @@ public class BLOInvertConstant implements Operation<BinList> {
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

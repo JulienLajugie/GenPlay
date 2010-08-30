@@ -33,7 +33,8 @@ public class BLOIntervalsSummarization implements Operation<BinList> {
 	private final int 						percentageAcceptedValues;	// the calculation is calculated only on the x% greatest values of each interval 
 	private final ScoreCalculationMethod 	method;						// method of calculation
 	private final DataPrecision 			precision;					// precision of the result BinList
-
+	private boolean							stopped = false;			// true if the operation must be stopped
+	
 
 	/**
 	 * Creates an instance of {@link BLOIntervalsSummarization}
@@ -75,14 +76,14 @@ public class BLOIntervalsSummarization implements Operation<BinList> {
 					if ((currentIntervals != null) && (currentValues != null)) {
 						resultList = ListFactory.createList(precision, currentIntervals.size());
 						int j = 0;
-						while ((j < currentIntervals.size()) && (j < currentValues.size())) {
-							while ((j < currentIntervals.size()) && (j < currentValues.size()) && (currentIntervals.get(j) == 0)) {
+						while ((j < currentIntervals.size()) && (j < currentValues.size()) && !stopped) {
+							while ((j < currentIntervals.size()) && (j < currentValues.size()) && (currentIntervals.get(j) == 0) && !stopped) {
 								resultList.set(j, 0d);
 								j++;
 							}
 							int k = j;
 							List<Double> values = new ArrayList<Double>();
-							while ((j < currentIntervals.size()) && (j < currentValues.size()) && (currentIntervals.get(j) != 0)) {
+							while ((j < currentIntervals.size()) && (j < currentValues.size()) && (currentIntervals.get(j) != 0) && !stopped) {
 								if (currentValues.get(j) != 0) {
 									values.add(currentValues.get(j));					
 								}
@@ -151,5 +152,11 @@ public class BLOIntervalsSummarization implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Calculation on Projection";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

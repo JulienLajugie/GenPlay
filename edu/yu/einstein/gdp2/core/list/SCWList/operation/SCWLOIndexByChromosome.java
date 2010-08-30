@@ -27,6 +27,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 	private final ScoredChromosomeWindowList	scwList;	// list to index
 	private final double 						newMin;		// new min after index
 	private final double 						newMax;		// new max after index
+	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -67,7 +68,8 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 						double oldDistance = oldMax - oldMin;
 						if (oldDistance != 0) {
 							// We index the intensities 
-							for (ScoredChromosomeWindow currentWindow: currentList) {
+							for (int j = 0; j < currentList.size() && !stopped; j++) {
+								ScoredChromosomeWindow currentWindow = currentList.get(j);
 								ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 								if (currentWindow.getScore() != 0) {
 									resultWindow.setScore(newDistance * (currentWindow.getScore() - oldMin) / oldDistance + newMin);
@@ -141,5 +143,11 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 			}
 		}
 		return min;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

@@ -32,17 +32,20 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 	private static final long serialVersionUID = 1L;
 	private final BinList[] binListArray;	// input binListArray
 	private final double 	scoreBinSize;	// size of the bins of score
+	private boolean			stopped = false;// true if the operation must be stopped
 
-/**
- * Creates an instance of {@link BLORepartition}
- * @param binListArray
- * @param scoreBinSize
- */
+
+	/**
+	 * Creates an instance of {@link BLORepartition}
+	 * @param binListArray
+	 * @param scoreBinSize
+	 */
 	public BLORepartition(BinList[] binListArray, double scoreBinSize) {
 		this.binListArray = binListArray;
 		this.scoreBinSize = scoreBinSize;
 	}
 
+	
 	@Override
 	public double[][][] compute() throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
 		if(scoreBinSize <= 0) {
@@ -55,7 +58,14 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 		return finalResult;
 	}
 
-
+	
+	/**
+	 * Compute the result for one binList 
+	 * @param binList input BinList
+	 * @return the repartition of the input BinList
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public double[][] singleBinListResult (final BinList binList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
 		double max = binList.getMax();
@@ -67,19 +77,19 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			minNegative = 1;
 		}
 		int i = 0;
-		while ((scoreBinSize*i) < Math.abs(min)) {
+		while ((scoreBinSize * i) < Math.abs(min) && !stopped) {
 			i++;
 		}
 		if (minNegative == 1) {
-			startPoint = scoreBinSize*(i)*(-1);
+			startPoint = scoreBinSize * i * (-1);
 		}else {
-			startPoint = scoreBinSize*(i-1);
+			startPoint = scoreBinSize * (i - 1);
 		}
 		double result[][] = new double[(int)(distanceMinMax / scoreBinSize) + 2][2];
 		int z = 0;
-		while (Math.ceil(startPoint + z*scoreBinSize) <= max) {
+		while (Math.ceil(startPoint + z * scoreBinSize) <= max && !stopped) {
 			//System.out.println("Z = " + z);
-			result[z][0] = (startPoint + z*scoreBinSize);
+			result[z][0] = (startPoint + z * scoreBinSize);
 			z++;
 		}
 
@@ -95,8 +105,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 						return null;
 					}
 
-
-					for(int j = 0; j < currentList.size(); j++) {
+					for(int j = 0; j < currentList.size() && !stopped; j++) {
 						if (currentList.get(j) != 0) {
 							chromoResult[(int)((currentList.get(j) - min) / scoreBinSize)]++;
 						}
@@ -123,18 +132,27 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 		return result;
 	}
 
+	
 	@Override
 	public String getDescription() {
 		return "Operation: Show Repartition";
 	}	
 
+	
 	@Override
 	public int getStepCount() {
 		return binListArray.length;
 	}
 
+	
 	@Override
 	public String getProcessingDescription() {
 		return "Plotting Repartition";
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

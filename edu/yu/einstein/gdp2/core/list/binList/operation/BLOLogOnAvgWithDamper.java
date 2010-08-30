@@ -25,9 +25,11 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 
-	private final BinList 	binList;	// input binlist
-	private final LogBase	logBase;	// base of the log
-	private final double	damper;		// damper
+	private final BinList 	binList;		// input binlist
+	private final LogBase	logBase;		// base of the log
+	private final double	damper;			// damper
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 	
 	/**
 	 * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link BinList}
@@ -74,7 +76,7 @@ public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// We add a constant to each element
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							// make sure that the list 
 							if (currentList.get(j) > 0) {
 								double resultValue;
@@ -127,5 +129,11 @@ public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Logging";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

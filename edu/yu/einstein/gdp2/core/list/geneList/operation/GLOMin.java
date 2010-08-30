@@ -26,7 +26,8 @@ public class GLOMin implements Operation<Double> {
 	private final GeneList 	geneList;		// input GeneList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
-
+	private boolean				stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Searches the minimum value of the selected chromosomes of a specified {@link GeneList}
@@ -53,7 +54,8 @@ public class GLOMin implements Operation<Double> {
 					public Double call() throws Exception {
 						// we set the min to the greatest double value
 						double min = Double.POSITIVE_INFINITY;
-						for (Gene currentGene: currentList) {
+						for (int i = 0; i < currentList.size() && !stopped; i++) {
+							Gene currentGene = currentList.get(i); 
 							if ((currentGene != null) && (currentGene.getExonScores() != null)) {
 								for (Double currentScore: currentGene.getExonScores()) {
 									if (currentScore != 0) {
@@ -100,5 +102,11 @@ public class GLOMin implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Minimum";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

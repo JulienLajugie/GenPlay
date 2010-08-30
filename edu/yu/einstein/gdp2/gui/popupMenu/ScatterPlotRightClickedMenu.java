@@ -41,8 +41,8 @@ import yu.einstein.gdp2.util.Utils;
  *
  */
 public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionListener, PopupMenuListener {
-	private static final long serialVersionUID = 5259896882194725264L;
 
+	private static final long serialVersionUID = 5259896882194725264L; // generated ID
 	private final JMenuItem	jmiSaveImage;						// menu save plot as image
 	private final JMenuItem	jmiSaveData;						// menu save plot as image
 	private final JMenuItem	jmiSetYAxis;						// menu for setting y axis params

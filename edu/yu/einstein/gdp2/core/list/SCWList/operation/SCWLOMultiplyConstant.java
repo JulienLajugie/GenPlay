@@ -24,6 +24,7 @@ public class SCWLOMultiplyConstant implements Operation<ScoredChromosomeWindowLi
 
 	private final ScoredChromosomeWindowList 	scwList;	// input list
 	private final double 						constant;	// constant of the multiplication
+	private boolean				stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -56,7 +57,8 @@ public class SCWLOMultiplyConstant implements Operation<ScoredChromosomeWindowLi
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
 						// We multiply each element by a constant
-						for (ScoredChromosomeWindow currentWindow: currentList) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 							resultWindow.setScore(currentWindow.getScore() * constant);
 							resultList.add(resultWindow);
@@ -95,5 +97,11 @@ public class SCWLOMultiplyConstant implements Operation<ScoredChromosomeWindowLi
 	@Override
 	public int getStepCount() {
 		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

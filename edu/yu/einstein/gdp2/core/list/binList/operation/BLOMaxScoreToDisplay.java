@@ -16,6 +16,7 @@ import yu.einstein.gdp2.core.operation.Operation;
 public class BLOMaxScoreToDisplay implements Operation<Double> {
 
 	private final BinList 	binList;		// input BinList
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -36,7 +37,7 @@ public class BLOMaxScoreToDisplay implements Operation<Double> {
 		}
 		// if the max of the BinList can be written as 10^x we return this value as a maximum
 		double maxScoreDisplayed = 1;
-		while (realMax / maxScoreDisplayed > 1) {
+		while (realMax / maxScoreDisplayed > 1 && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
 		if (realMax / maxScoreDisplayed == 1) {
@@ -48,7 +49,7 @@ public class BLOMaxScoreToDisplay implements Operation<Double> {
 			return 0d;
 		}
 		maxScoreDisplayed = 1;
-		while (proposedMax / maxScoreDisplayed > 1) {
+		while (proposedMax / maxScoreDisplayed > 1 && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
 		return maxScoreDisplayed;
@@ -70,5 +71,11 @@ public class BLOMaxScoreToDisplay implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Maximum";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

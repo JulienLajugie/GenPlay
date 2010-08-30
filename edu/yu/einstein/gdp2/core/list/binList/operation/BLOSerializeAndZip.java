@@ -20,8 +20,8 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class BLOSerializeAndZip implements Operation<ByteArrayOutputStream> {
 
-	private final BinList binList;	// input BinList
-
+	private final BinList 	binList;		// input BinList
+	
 
 	/**
 	 * Serializes and zips a BinList into a {@link ByteArrayOutputStream}
@@ -62,4 +62,11 @@ public class BLOSerializeAndZip implements Operation<ByteArrayOutputStream> {
 	public String getProcessingDescription() {
 		return "Serializing";
 	}
+
+	
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void stop() {}
 }

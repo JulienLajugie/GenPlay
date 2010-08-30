@@ -5,6 +5,7 @@
 package yu.einstein.gdp2.gui.action;
 
 import yu.einstein.gdp2.core.operation.Operation;
+import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -27,6 +28,13 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 	}
 
 	
+	/**
+	 * Initializes the Operation
+	 * @return an initialized Operation or null if the user canceled
+	 */
+	public abstract Operation<T> initializeOperation() throws Exception;
+
+	
 	@Override
 	protected T processAction() throws Exception {
 		operation = initializeOperation();
@@ -37,11 +45,16 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 			return null;
 		}
 	}
-
+	
 	
 	/**
-	 * Initializes the Operation
-	 * @return an initialized Operation or null if the user canceled
+	 * Override that stops the extractor
 	 */
-	public abstract Operation<T> initializeOperation() throws Exception;
+	@Override
+	public void stop() {
+		if ((operation != null) && (operation instanceof Stoppable)) {
+			((Stoppable) operation).stop();
+		}
+		super.stop();
+	}
 }

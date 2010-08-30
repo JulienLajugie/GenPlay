@@ -22,7 +22,7 @@ import yu.einstein.gdp2.core.operation.Operation;
 public class BLOUnzipAndUnserialize implements Operation<BinList> {
 
 	private final ByteArrayOutputStream baos;	// input BinList
-
+	
 
 	/**
 	 * Unzips and unserializes a {@link ByteArrayOutputStream} and returns a {@link BinList}
@@ -61,4 +61,11 @@ public class BLOUnzipAndUnserialize implements Operation<BinList> {
 	public String getProcessingDescription() {
 		return "Unserializing";
 	}
+	
+	
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void stop() {}
 }

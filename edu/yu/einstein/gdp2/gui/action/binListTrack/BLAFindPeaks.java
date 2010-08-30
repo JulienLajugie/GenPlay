@@ -18,7 +18,6 @@ import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
 import yu.einstein.gdp2.gui.dialog.peakFinderDialog.PeakFinderDialog;
-import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 
@@ -120,17 +119,5 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
 			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "peaks of " + selectedTrack.getName(),	selectedTrack.getStripes());
 		}
-	}
-	
-	
-	/**
-	 * Override that stops the extractor
-	 */
-	@Override
-	public void stop() {
-		if ((operation != null) && (operation instanceof Stoppable)) {
-			((Stoppable) operation).stop();
-		}
-		super.stop();
 	}
 }

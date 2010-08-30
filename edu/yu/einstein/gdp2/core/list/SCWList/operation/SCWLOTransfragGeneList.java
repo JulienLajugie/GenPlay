@@ -30,9 +30,10 @@ import yu.einstein.gdp2.util.SCWLists;
  */
 public class SCWLOTransfragGeneList implements Operation<GeneList> {
 
-	private ScoredChromosomeWindowList 	scwList;	// input list
-	private int 						zeroSCWGap;	// minimum size of the gap separating two intervals
-	private ScoreCalculationMethod 		operation;	// operation to use to compute the score of the intervals
+	private ScoredChromosomeWindowList 	scwList;		// input list
+	private int 						zeroSCWGap;		// minimum size of the gap separating two intervals
+	private ScoreCalculationMethod 		operation;		// operation to use to compute the score of the intervals
+	private boolean						stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -66,9 +67,9 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						int geneCounter = 1;
 						int j = 0;				
-						while (j < currentList.size()) {
+						while (j < currentList.size() && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == null)) {
+							while ((j < currentList.size()) && (currentList.get(j) == null) &&!stopped) {
 								j++;
 							}
 							int regionStartIndex = j;
@@ -77,7 +78,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 							int[] exonStop = new int[1];
 							double[] exonScore = new double[1];
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j+1 < currentList.size()) && (currentList.get(j+1).getStart() - currentList.get(j).getStop() <= zeroSCWGap)) {
+							while ((j + 1 < currentList.size()) && (currentList.get(j + 1).getStart() - currentList.get(j).getStop() <= zeroSCWGap) && !stopped) {
 								regionStopIndex = j+1;
 								j++;
 							}
@@ -139,5 +140,11 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 	@Override
 	public int getStepCount() {
 		return ScoredChromosomeWindowList.getCreationStepCount() + 1;
-	}		
+	}	
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
+	}	
 }

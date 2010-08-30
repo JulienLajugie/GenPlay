@@ -31,7 +31,8 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 	private double 			nbSDAccepted;	/* 	threshold: we accept a bin if the local stdev centered 
 											 	on this point is at least this parameter time higher than 
 												the chromosome wide stdev 	*/
-
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Creates an instance of {@link BLOFindPeaksStDev}
@@ -63,7 +64,7 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 						if (sd != 0) {
 							// compute the value the local standard deviation must be for a bin to be accepted
 							double minAcceptedSD = nbSDAccepted * sd;
-							for (int j = 0; j < currentList.size(); j++) {
+							for (int j = 0; j < currentList.size() && !stopped; j++) {
 								if (currentList.get(j) != 0) {
 									int indexStart = j - halfWidth;
 									int indexStop = j + halfWidth;
@@ -141,5 +142,11 @@ public class BLOFindPeaksStDev implements Operation<BinList[]> {
 	 */
 	public void setThreshold(double nbSDAccepted) {
 		this.nbSDAccepted = nbSDAccepted;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

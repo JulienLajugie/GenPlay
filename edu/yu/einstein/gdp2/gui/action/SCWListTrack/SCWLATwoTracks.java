@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.action.SCWListTrack;
 
-
 import java.awt.Color;
 
 import javax.swing.ActionMap;
@@ -17,7 +16,6 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
-import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.util.Utils;
@@ -38,7 +36,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 	private Track<?>						resultTrack = null;								// result track
 	private ScoreCalculationTwoTrackMethod 	scm;
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -67,8 +65,8 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 					this.scm = Utils.chooseScoreCalculationTwoTrackMethod(getRootPane());
 					if (scm != null) {
 						operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
-														(ChromosomeListOfLists<?>)otherTrack.getData(),
-														this.scm);
+								(ChromosomeListOfLists<?>)otherTrack.getData(),
+								this.scm);
 						return operation;
 					}
 				}
@@ -76,8 +74,8 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
@@ -90,17 +88,5 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Color.GRAY);
 			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null);
 		}
-	}
-	
-	
-	/**
-	 * Override that stops the extractor
-	 */
-	@Override
-	public void stop() {
-		if ((operation != null) && (operation instanceof Stoppable)) {
-			((Stoppable) operation).stop();
-		}
-		super.stop();
 	}
 }

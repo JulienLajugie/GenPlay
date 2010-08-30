@@ -1,3 +1,7 @@
+/**
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 package yu.einstein.gdp2.core.list.geneList.operation;
 
 import java.util.ArrayList;
@@ -11,67 +15,83 @@ import yu.einstein.gdp2.core.list.geneList.operation.distanceCalculator.Distance
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 
+
+/**
+ * Compute the distance between closest genes from two {@link GeneList}
+ * The position to be used as a reference (ie: start / middle / stop of a gene)
+ * must be specified by the user.
+ * @author Chirag Gorasia
+ * @version 0.1
+ */
 public class GLODistanceCalculator implements Operation<long[][]>{
-	
-	private final GeneList 	geneList1;		// input GeneList
-	private final GeneList	geneList2;		// input GeneList
-	private final int selectionCase;
-	
+
+	private final GeneList 	geneList1;			// input GeneList
+	private final GeneList	geneList2;			// input GeneList
+	private final int 		selectionCase;		// selection type
+	private boolean			stopped = false;	// true if the operation must be stopped
+
 	private static final int POSITIVE_START_START = 1;
 	private static final int POSITIVE_START_MIDDLE = 2;
 	private static final int POSITIVE_START_STOP = 3;
-	
+
 	private static final int POSITIVE_MIDDLE_START = 4;
 	private static final int POSITIVE_MIDDLE_MIDDLE = 5;
 	private static final int POSITIVE_MIDDLE_STOP = 6;
-	
+
 	private static final int POSITIVE_STOP_START = 7;
 	private static final int POSITIVE_STOP_MIDDLE = 8;
 	private static final int POSITIVE_STOP_STOP = 9;
-	
+
 	private static final int NEGATIVE_START_START = 10;
 	private static final int NEGATIVE_START_MIDDLE = 11;
 	private static final int NEGATIVE_START_STOP = 12;
-	
+
 	private static final int NEGATIVE_MIDDLE_START = 13;
 	private static final int NEGATIVE_MIDDLE_MIDDLE = 14;
 	private static final int NEGATIVE_MIDDLE_STOP = 15;
-	
+
 	private static final int NEGATIVE_STOP_START = 16;
 	private static final int NEGATIVE_STOP_MIDDLE = 17;
 	private static final int NEGATIVE_STOP_STOP = 18;
-	
+
 	private static final int BOTH_RELATIVE_START_START = 19;
 	private static final int BOTH_RELATIVE_START_MIDDLE = 20;
 	private static final int BOTH_RELATIVE_START_STOP = 21;
-	
+
 	private static final int BOTH_RELATIVE_MIDDLE_START = 22;
 	private static final int BOTH_RELATIVE_MIDDLE_MIDDLE = 23;
 	private static final int BOTH_RELATIVE_MIDDLE_STOP = 24;
-	
+
 	private static final int BOTH_RELATIVE_STOP_START = 25;
 	private static final int BOTH_RELATIVE_STOP_MIDDLE = 26;
 	private static final int BOTH_RELATIVE_STOP_STOP = 27;
-	
+
 	private static final int BOTH_ABSOLUTE_START_START = 28;
 	private static final int BOTH_ABSOLUTE_START_MIDDLE = 29;
 	private static final int BOTH_ABSOLUTE_START_STOP = 30;
-	
+
 	private static final int BOTH_ABSOLUTE_MIDDLE_START = 31;
 	private static final int BOTH_ABSOLUTE_MIDDLE_MIDDLE = 32;
 	private static final int BOTH_ABSOLUTE_MIDDLE_STOP = 33;
-	
+
 	private static final int BOTH_ABSOLUTE_STOP_START = 34;
 	private static final int BOTH_ABSOLUTE_STOP_MIDDLE = 35;
 	private static final int BOTH_ABSOLUTE_STOP_STOP = 36;
-	
+
+
+	/**
+	 * Creates an instance of {@link GLODistanceCalculator}
+	 * @param geneList1 a {@link GeneList}
+	 * @param geneList2 a second {@link GeneList}
+	 * @param selectionCase selection type
+	 */
 	public GLODistanceCalculator(GeneList geneList1, GeneList geneList2, int selectionCase) {
 		this.geneList1 = geneList1;
 		this.geneList2 = geneList2;
 		this.selectionCase = selectionCase;		
 	}
-	
-	
+
+
 	@Override
 	public long[][] compute() throws Exception {
 		long[][] result = new long[geneList1.size()][];
@@ -96,7 +116,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 		if (op.startPool(threadList) == null) {
 			return null;
 		}
-		
+
 		int i = 0;
 		for (long[] currentResult: op.startPool(threadList)) {
 			if (currentResult != null) {
@@ -105,7 +125,8 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 		}
 		return result;
 	}
-	
+
+
 	/**
 	 * Method to handle all of the 20 cases to compute the distance
 	 * @param firstList
@@ -118,366 +139,356 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 		long[] distanceByChromosomes = new long[firstList.size()];
 		long[] distanceArray = new long[firstList.size()];
 		switch(selectionCase) {
-		case POSITIVE_START_START:	//for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.size()];
-										for (int j = 0; j < firstList.size(); j++) {
-											dc = new DistanceCalculator(secondList, chrindex, 0, 0, 0, firstList.get(j).getTxStart());
-											if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}
-											//System.out.println("distanceArray[j]" + distanceArray[j]);
-										}
-										distanceByChromosomes = distanceArray;
-									//}
-									break;
-									
-		case POSITIVE_START_MIDDLE:	//for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.size()];
-										for (int j = 0; j < firstList.size(); j++) {
-											dc = new DistanceCalculator(secondList, chrindex, 0, 0, 1, firstList.get(j).getTxStart());
-											if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-										}
-										distanceByChromosomes = distanceArray;
-									//}
-									break;
-								
-		case POSITIVE_START_STOP:	//for (int i = 0; i < firstList.size(); i++) {
-											//long[] distanceArray = new long[firstList.get(i).size()];
-											for (int j = 0; j < firstList.size(); j++) {
-												dc = new DistanceCalculator(secondList, chrindex, 0, 0, 2, firstList.get(j).getTxStart());
-												if (dc.getClosestDistance() >= 0) {
-													distanceArray[k++] = dc.getClosestDistance();
-												}											
-											}
-											distanceByChromosomes = distanceArray;
-									//}
-									break;
-								
-		case POSITIVE_MIDDLE_START:	//for (int i = 0; i < firstList.size(); i++) {
-											//long[] distanceArray = new long[firstList.get(i).size()];
-											for (int j = 0; j < firstList.size(); j++) {
-												dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getTxMiddle());
-												if (dc.getClosestDistance() >= 0) {
-													distanceArray[k++] = dc.getClosestDistance();
-												}											
-											}
-										distanceByChromosomes = distanceArray;
-									//}
-									break;
-								
-		case POSITIVE_MIDDLE_MIDDLE: //for (int i = 0; i < firstList.size(); i++) {
-											//long[] distanceArray = new long[firstList.get(i).size()];
-											 for (int j = 0; j < firstList.size(); j++) {
-											 	 dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getTxMiddle());
-											 	 if (dc.getClosestDistance() >= 0) {
-												     distanceArray[k++] = dc.getClosestDistance();
-												 }											
-											 }
-										 distanceByChromosomes = distanceArray;
-									 //}
-									 break;
-								 
-		case POSITIVE_MIDDLE_STOP: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-										 for (int j = 0; j < firstList.size(); j++) {
-										 	 dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getTxMiddle());
-										 	 if (dc.getClosestDistance() >= 0) {
-												 distanceArray[k++] = dc.getClosestDistance();
-											 }											
-										 }
-										 distanceByChromosomes = distanceArray;
-									 //}
-									 break;
-								 
-		case POSITIVE_STOP_START: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-										  for (int j = 0; j < firstList.size(); j++) {
-										  	  dc = new DistanceCalculator(secondList, chrindex, 0, 2, 0, firstList.get(j).getTxStop());
-										  	  if (dc.getClosestDistance() >= 0) {
-												  distanceArray[k++] = dc.getClosestDistance();
-											  }											
-										  }
-									  distanceByChromosomes = distanceArray;
-								    //}
-								    break;
-							    
-		case POSITIVE_STOP_MIDDLE: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-									   for (int j = 0; j < firstList.size(); j++) {
-									   	   dc = new DistanceCalculator(secondList, chrindex, 0, 2, 1, firstList.get(j).getTxStop());
-										   	if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-									   }
-									distanceByChromosomes = distanceArray;
-							       //}
-							       break;
-							     
-		case POSITIVE_STOP_STOP: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-									   for (int j = 0; j < firstList.size(); j++) {
-									   	   dc = new DistanceCalculator(secondList, chrindex, 0, 2, 2, firstList.get(j).getTxStop());
-										   	if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-									   }
-								   distanceByChromosomes = distanceArray;
-							     //}
-							     break;
-							     
-		case NEGATIVE_START_START: //for (int i = 0; i < firstList.size(); i++) {
-											//long[] distanceArray = new long[firstList.get(i).size()];
-										   for (int j = 0; j < firstList.size(); j++) {
-										   	   dc = new DistanceCalculator(secondList, chrindex, 1, 0, 0, firstList.get(j).getTxStart());
-											   	if (dc.getClosestDistance() >= 0) {
-													distanceArray[k++] = dc.getClosestDistance();
-												}											
-										   }
-									   distanceByChromosomes = distanceArray;
-								   //}
-							       break;
-							     
-		case NEGATIVE_START_MIDDLE: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-										    for (int j = 0; j < firstList.size(); j++) {
-										   	    dc = new DistanceCalculator(secondList, chrindex, 1, 0, 1, firstList.get(j).getTxStart());
-											   	if (dc.getClosestDistance() >= 0) {
-													distanceArray[k++] = dc.getClosestDistance();
-												}											
-										    }
-									    distanceByChromosomes = distanceArray;
-							      	//}
-							      	break;
-							      
-		case NEGATIVE_START_STOP: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-								  		for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 0, 2, firstList.get(j).getTxStart());
-								      		if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-								  		}
-								  	distanceByChromosomes = distanceArray;
-								  //} 
-							      break;
-							    
-		case NEGATIVE_MIDDLE_START: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-										    for (int j = 0; j < firstList.size(); j++) {
-										        dc = new DistanceCalculator(secondList, chrindex, 1, 1, 0, firstList.get(j).getTxStart());
-										        if (dc.getClosestDistance() >= 0) {
-													distanceArray[k++] = dc.getClosestDistance();
-												}											
-										    }
-										    distanceByChromosomes = distanceArray;
-								  	//} 
-							        break;
-							        
-		case NEGATIVE_MIDDLE_MIDDLE: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-									    for (int j = 0; j < firstList.size(); j++) {
-									        dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getTxMiddle());
-									        if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-									    }
-									    distanceByChromosomes = distanceArray;
-							  	   //} 
-								   break;
-								  
-		case NEGATIVE_MIDDLE_STOP: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-									    for (int j = 0; j < firstList.size(); j++) {
-									        dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getTxMiddle());
-									        if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-									    }
-									    distanceByChromosomes = distanceArray;
-							  	   //} 
-								   break;
-								   
-		case NEGATIVE_STOP_START: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-								  		for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 0, firstList.get(j).getTxStop());
-								      		if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-								  		}
-								  	distanceByChromosomes = distanceArray;
-								  //} 
-							      break;
-							      
-		case NEGATIVE_STOP_MIDDLE: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-								  		for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 1, firstList.get(j).getTxStop());
-								      		if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-								  		}
-								  	distanceByChromosomes = distanceArray;
-								  //} 
-							      break;
-							      
-		case NEGATIVE_STOP_STOP: //for (int i = 0; i < firstList.size(); i++) {
-										//long[] distanceArray = new long[firstList.get(i).size()];
-								  		for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		if (dc.getClosestDistance() >= 0) {
-												distanceArray[k++] = dc.getClosestDistance();
-											}											
-								  		}
-								  	distanceByChromosomes = distanceArray;
-								  //} 
-							      break;
-							      
-		case BOTH_RELATIVE_START_START: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();																						
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-										
-		case BOTH_RELATIVE_START_MIDDLE: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		if (dc.getClosestDistance() >= 0) {
-												distanceArray[j] = dc.getClosestDistance();
-											}											
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-										
-		case BOTH_RELATIVE_START_STOP: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();																					
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_RELATIVE_MIDDLE_START: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();																						
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_RELATIVE_MIDDLE_MIDDLE: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_RELATIVE_MIDDLE_STOP: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_RELATIVE_STOP_START: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_RELATIVE_STOP_MIDDLE: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_RELATIVE_STOP_STOP: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_START_START: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_START_MIDDLE: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_START_STOP: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_MIDDLE_START: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_MIDDLE_MIDDLE: for (int j = 0; j < firstList.size(); j++) {
-									      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-									      		distanceArray[j] = dc.getClosestDistance();
-									  		}
-											distanceByChromosomes = distanceArray;
-											break;
-		
-		case BOTH_ABSOLUTE_MIDDLE_STOP: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_STOP_START: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_STOP_MIDDLE: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
-		
-		case BOTH_ABSOLUTE_STOP_STOP: for (int j = 0; j < firstList.size(); j++) {
-								      		dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
-								      		distanceArray[j] = dc.getClosestDistance();
-								  		}
-										distanceByChromosomes = distanceArray;
-										break;
+		case POSITIVE_START_START:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 0, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_START_MIDDLE:	
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 1, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_START_STOP:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 2, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_MIDDLE_START:	
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getTxMiddle());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_MIDDLE_MIDDLE:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getTxMiddle());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_MIDDLE_STOP:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getTxMiddle());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_STOP_START:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 0, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_STOP_MIDDLE:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 1, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case POSITIVE_STOP_STOP:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 2, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_START_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 0, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_START_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 1, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_START_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 2, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_MIDDLE_START:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 0, firstList.get(j).getTxStart());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_MIDDLE_MIDDLE:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getTxMiddle());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_MIDDLE_STOP:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getTxMiddle());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_STOP_START:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 0, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_STOP_MIDDLE:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 1, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case NEGATIVE_STOP_STOP:
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[k++] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_START_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();																						
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_START_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				if (dc.getClosestDistance() >= 0) {
+					distanceArray[j] = dc.getClosestDistance();
+				}											
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_START_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();																					
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_MIDDLE_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();																						
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_MIDDLE_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_MIDDLE_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_STOP_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_STOP_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_RELATIVE_STOP_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_START_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_START_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_START_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_MIDDLE_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_MIDDLE_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_MIDDLE_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_STOP_START: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_STOP_MIDDLE: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
+
+		case BOTH_ABSOLUTE_STOP_STOP: 
+			for (int j = 0; j < firstList.size() && !stopped; j++) {
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				distanceArray[j] = dc.getClosestDistance();
+			}
+			distanceByChromosomes = distanceArray;
+			break;
 		}	
 		return distanceByChromosomes;
-}
+	}
+
 
 	@Override
 	public String getDescription() {
 		return "Operation: Distance Calculation";
 	}
 
+
 	@Override
 	public String getProcessingDescription() {
 		return "Calculating Distance";
 	}
 
+
 	@Override
 	public int getStepCount() {
 		return 1;
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

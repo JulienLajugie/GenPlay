@@ -31,6 +31,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	private final int 		startFrom;			// start reference (see constants below)
 	private final int 		stopDistance;		// distant from the stop reference
 	private final int 		stopFrom;			// stop reference
+	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -43,8 +44,8 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	 * after the start position (used for interval extraction)
 	 */
 	public static final int AFTER_START = 1;
-	
-	
+
+
 	/**
 	 * before the middle position (used for interval extraction)
 	 */
@@ -93,16 +94,16 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		for(short i = 0; i < geneList.size(); i++) {
 			final List<Gene> currentList = geneList.get(i);
 			final int chromoLength = ChromosomeManager.getInstance().get(i).getLength();
-			
+
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {					
 					if (currentList == null) {
 						return null;
 					}
-					
+
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; j < currentList.size(); j++) {
+					for (int j = 0; j < currentList.size() && !stopped; j++) {
 						Gene currentGene = currentList.get(j); 
 						Gene geneToAdd = new Gene(currentList.get(j));
 						// search the new start
@@ -222,7 +223,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 					return resultList;
 				}
 			};
-			
+
 			threadList.add(currentThread);
 		}
 		List<List<Gene>> result = op.startPool(threadList);
@@ -249,5 +250,11 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	@Override
 	public int getStepCount() {
 		return 1;
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

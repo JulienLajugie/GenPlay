@@ -26,11 +26,12 @@ import yu.einstein.gdp2.util.SCWLists;
  */
 public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 
-	private ScoredChromosomeWindowList 	scwList;	// input list
-	private int 						zeroSCWGap;	// minimum size of the gap separating two intervals
-	private ScoreCalculationMethod 		operation;	// operation to use to compute the score of the intervals
+	private ScoredChromosomeWindowList 	scwList;		// input list
+	private int 						zeroSCWGap;		// minimum size of the gap separating two intervals
+	private ScoreCalculationMethod 		operation;		// operation to use to compute the score of the intervals
+	private boolean						stopped = false;// true if the operation must be stopped
 
-	
+
 	/**
 	 * Creates an instance of {@link SCWLOTransfrag}
 	 * @param scwList input list
@@ -43,10 +44,10 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 		this.operation = operation;
 	}
 
-	
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
@@ -60,15 +61,15 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
 						int j = 0;				
-						while (j < currentList.size()) {
+						while (j < currentList.size() && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == null)) {
+							while ((j < currentList.size()) && (currentList.get(j) == null) && !stopped) {
 								j++;
 							}
 							int regionStartIndex = j;
 							int regionStopIndex = regionStartIndex;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j+1 < currentList.size()) && (currentList.get(j + 1).getStart() - currentList.get(j).getStop() <= zeroSCWGap)) {
+							while ((j + 1 < currentList.size()) && (currentList.get(j + 1).getStart() - currentList.get(j).getStop() <= zeroSCWGap) && !stopped) {
 								regionStopIndex = j+1;
 								j++;
 							}
@@ -108,21 +109,27 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 		}		
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Transfrag, Gap Size = " + zeroSCWGap + " Zero Value Successive ScoredChromosomeWindows";
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Calculating Transfrag";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return 3;
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

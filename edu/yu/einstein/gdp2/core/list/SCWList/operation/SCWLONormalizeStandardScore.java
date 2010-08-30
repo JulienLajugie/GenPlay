@@ -22,9 +22,10 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWindowList> {
 
-	private final ScoredChromosomeWindowList 	scwList;	// input list 
-	private final SCWLOAverage 					avgOp;		// average
-	private final SCWLOStandardDeviation 		stdevOp;	// standard deviation
+	private final ScoredChromosomeWindowList 	scwList;		// input list 
+	private final SCWLOAverage 					avgOp;			// average
+	private final SCWLOStandardDeviation 		stdevOp;		// standard deviation
+	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -56,7 +57,8 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 					List<ScoredChromosomeWindow> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
-						for (ScoredChromosomeWindow currentWindow: currentList) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 							if (currentWindow.getScore() != 0) {
 								// apply the standard score formula: (x - avg) / stdev 
@@ -99,5 +101,11 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 	@Override
 	public int getStepCount() {
 		return 1 + avgOp.getStepCount() + stdevOp.getStepCount() + ScoredChromosomeWindowList.getCreationStepCount();
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

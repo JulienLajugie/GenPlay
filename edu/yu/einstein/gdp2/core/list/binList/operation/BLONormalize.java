@@ -27,8 +27,8 @@ public class BLONormalize implements Operation<BinList> {
 	private final BinList 	binList;		// input BinList
 	private final double	factor;			// the result of the normalization is multiplied by this factor
 	private Double 			scoreSum;		// sum of the scores
-	 
-	
+	private boolean			stopped = false;// true if the operation must be stopped
+		
 	
 	/**
 	 * Normalizes a {@link BinList} and multiplies the result by a specified factor
@@ -59,7 +59,7 @@ public class BLONormalize implements Operation<BinList> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							// we multiply each bin by the coefficient previously computed
 							resultList.set(j, currentList.get(j) * coef);
 						}
@@ -97,5 +97,11 @@ public class BLONormalize implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Normalizing";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

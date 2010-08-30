@@ -24,6 +24,7 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
 public class GLOIndexScores implements Operation<GeneList> {
 
 	private final GeneList 	geneList;		// input GeneList
+	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -55,7 +56,8 @@ public class GLOIndexScores implements Operation<GeneList> {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (Gene currentGene: currentList) {
+					for (int i = 0; i < currentList.size() && !stopped; i++) {
+						Gene currentGene = currentList.get(i); 
 						if (currentGene != null) {
 							Gene copyCurrentGene = new Gene(currentGene);
 							if (copyCurrentGene.getExonScores() != null){
@@ -99,5 +101,11 @@ public class GLOIndexScores implements Operation<GeneList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Indexing Scores";
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

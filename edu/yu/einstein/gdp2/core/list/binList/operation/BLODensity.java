@@ -24,9 +24,10 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLODensity implements Operation<BinList> {
 
-	private final BinList 	binList;	// input BinList
-	private final int		halfWidth; 	// half size of the region (in number of bin)
-
+	private final BinList 	binList;		// input BinList
+	private final int		halfWidth; 		// half size of the region (in number of bin)
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Computes the density of bin with values on a region of halfWidth * 2 + 1 bins
@@ -57,9 +58,9 @@ public class BLODensity implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(defaultPrecision, currentList.size());
 						// We compute the density for each bin
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							int noneZeroBinCount = 0;
-							for (int k = -halfWidth; k <= halfWidth; k++) {
+							for (int k = -halfWidth; k <= halfWidth && !stopped; k++) {
 								if((j + k >= 0) && ((j + k) < currentList.size()))  {
 									if (currentList.get(j + k) != 0) {
 										noneZeroBinCount++;
@@ -102,5 +103,11 @@ public class BLODensity implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Density";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

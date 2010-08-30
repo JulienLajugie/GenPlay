@@ -82,9 +82,9 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 			if (selectedValue != null) {
 				if (selectedValue.toString().equals(graphTypes[0])) {
 					// graph of score vs window count
-					setGraphIndicator(1);
+					setGraphIndicator(SCWLORepartition.WINDOW_COUNT_GRAPH);
 				} else {
-					setGraphIndicator(2);
+					setGraphIndicator(SCWLORepartition.BASE_COUNT_GRAPH);
 				}
 				
 				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0##"), 0, 1000, 1);

@@ -27,7 +27,9 @@ public class BLOAverage implements Operation<Double> {
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private Long 			count = null;	// count of non null bins
-
+	private boolean			stopped = false;// true if the operation must be stopped
+	
+	
 	/**
 	 * Computes the average value of the scores of the {@link BinList}
 	 * @param binList input {@link BinList}
@@ -81,7 +83,7 @@ public class BLOAverage implements Operation<Double> {
 				public Double call() throws Exception {
 					double sum = 0;
 					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (binList.get(currentIndex) != null)) {
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								sum += currentList.get(j);
 							}
@@ -125,5 +127,11 @@ public class BLOAverage implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Average";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

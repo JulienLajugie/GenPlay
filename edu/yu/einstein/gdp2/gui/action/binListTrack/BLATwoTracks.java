@@ -20,7 +20,6 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.TrackChooser;
-import yu.einstein.gdp2.gui.statusBar.Stoppable;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
@@ -35,7 +34,7 @@ import yu.einstein.gdp2.util.Utils;
  */
 public final class BLATwoTracks extends TrackListActionOperationWorker<ChromosomeListOfLists<?>> {
 
-	private static final long 				serialVersionUID = 4027173438789911860L; 				// generated ID
+	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
 	private static final String 			ACTION_NAME = "Two Tracks Operation";			// action name
 	private static final String 			DESCRIPTION = "Run operation on two trakcs";	// tooltip
 	private Track<?> 						selectedTrack;									// selected track
@@ -120,16 +119,4 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 		}
 		return true;
 	}	
-	
-	
-	/**
-	 * Override that stops the extractor
-	 */
-	@Override
-	public void stop() {
-		if ((operation != null) && (operation instanceof Stoppable)) {
-			((Stoppable) operation).stop();
-		}
-		super.stop();
-	}
 }

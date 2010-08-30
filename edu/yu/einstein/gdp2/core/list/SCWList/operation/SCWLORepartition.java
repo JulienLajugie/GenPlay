@@ -23,11 +23,22 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class SCWLORepartition implements Operation<double [][][]>{
 
-	private final ScoredChromosomeWindowList[] scwListArray;
-	private final double scoreWindowSize;
-	private final int graphType;
-	private static final int COUNTGRAPH = 1; 
+	private final ScoredChromosomeWindowList[] 	scwListArray;	// 
+	private final double 						scoreWindowSize;// 
+	private final int 							graphType;		// 
+	private boolean								stopped = false;// true if the operation must be stopped
 
+	/**
+	 * Window count plot
+	 */
+	public static final int WINDOW_COUNT_GRAPH = 1; 
+
+	/**
+	 * Base count plot
+	 */
+	public static final int BASE_COUNT_GRAPH = 2;	
+	
+	
 	/**
 	 * Creates an instance of {@link SCWLORepartition}
 	 * @param scwListArray
@@ -39,6 +50,7 @@ public class SCWLORepartition implements Operation<double [][][]>{
 		this.scoreWindowSize = scoreWindowSize;
 		this.graphType = graphType;
 	}
+	
 
 	@Override
 	public double[][][] compute() throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
@@ -51,30 +63,35 @@ public class SCWLORepartition implements Operation<double [][][]>{
 		}
 		return finalResult;
 	}
+
 	
+	/**
+	 * Generates the scatter plot data for the specified list 
+	 * @param scwList {@link ScoredChromosomeWindowList}
+	 * @return the scater plot data for the specified list
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public double[][] singleSCWListResult (final ScoredChromosomeWindowList scwList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
 		double max = scwList.getMax();
 		final double min = scwList.getMin();
 		final double distanceMinMax = max - min;
 		final double startPoint;
-		int minNegative = 0;
-		if (min < 0) {
-			minNegative = 1;
-		}
+		boolean minNegative = (min < 0); // true if the minimum is a negative value 
 		int i = 0;
-		while ((scoreWindowSize*i) < Math.abs(min)) {
+		while ((scoreWindowSize * i) < Math.abs(min)) {
 			i++;
 		}
-		if (minNegative == 1) {
-			startPoint = scoreWindowSize*(i)*(-1);
-		}else {
-			startPoint = scoreWindowSize*(i-1);
+		if (minNegative) {
+			startPoint = -scoreWindowSize * i;
+		} else {
+			startPoint = scoreWindowSize * (i - 1);
 		}
 		double result[][] = new double[(int)(distanceMinMax / scoreWindowSize) + 2][2];
 		int z = 0;
-		while (Math.ceil(startPoint + z*scoreWindowSize) <= max) {
-			result[z][0] = (startPoint + z*scoreWindowSize);
+		while (Math.ceil(startPoint + z * scoreWindowSize) <= max) {
+			result[z][0] = (startPoint + z * scoreWindowSize);
 			z++;
 		}
 
@@ -90,12 +107,14 @@ public class SCWLORepartition implements Operation<double [][][]>{
 						return null;
 					}
 
-					for(int j = 0; j < currentList.size(); j++) {
+					for(int j = 0; j < currentList.size() && !stopped; j++) {
 						if (currentList.get(j).getScore() != 0) {
-							if (graphType == COUNTGRAPH) {
+							if (graphType == WINDOW_COUNT_GRAPH) {
 								chromoResult[(int)((currentList.get(j).getScore() - min) / scoreWindowSize)]++;
-							} else {							
+							} else if (graphType == BASE_COUNT_GRAPH) {							
 								chromoResult[(int)((currentList.get(j).getScore() - min) / scoreWindowSize)] += currentList.get(j).getStop() - currentList.get(j).getStart();
+							} else {
+								throw new IllegalArgumentException("Invalid Plot Type");
 							}
 						}
 					}
@@ -119,18 +138,27 @@ public class SCWLORepartition implements Operation<double [][][]>{
 		return result;
 	}
 
+	
 	@Override
 	public String getDescription() {
 		return "Operation: Show Repartition";
 	}
 
+	
 	@Override
 	public String getProcessingDescription() {
 		return "Plotting Repartition";
 	}
 
+	
 	@Override
 	public int getStepCount() {
 		return scwListArray.length;
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

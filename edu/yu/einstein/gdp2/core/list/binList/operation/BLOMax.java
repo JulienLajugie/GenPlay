@@ -26,6 +26,7 @@ public class BLOMax implements Operation<Double> {
 	private final BinList 	binList;		// input BinList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -59,7 +60,7 @@ public class BLOMax implements Operation<Double> {
 					public Double call() throws Exception {
 						// we set the max to the smallest double value
 						double max = Double.NEGATIVE_INFINITY;
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								max = Math.max(max, currentList.get(j));					
 							}
@@ -102,5 +103,11 @@ public class BLOMax implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Maximum";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

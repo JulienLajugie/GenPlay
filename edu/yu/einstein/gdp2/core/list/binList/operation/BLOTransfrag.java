@@ -34,7 +34,8 @@ public class BLOTransfrag implements Operation<BinList> {
 	private final BinList 					binList;	// input binlist
 	private final int 						zeroBinGap; // number of zero value bins defining a gap between two islands
 	private final ScoreCalculationMethod	operation;	// max / sum / average 
-
+	private boolean							stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Defines regions as "islands" of non zero value bins 
@@ -70,16 +71,16 @@ public class BLOTransfrag implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						int j = 0;				
-						while (j < currentList.size()) {
+						while (j < currentList.size() && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == 0)) {
+							while ((j < currentList.size()) && (currentList.get(j) == 0) && !stopped) {
 								j++;
 							}
 							int regionStart = j;
 							int regionStop = regionStart;
 							int zeroWindowCount = 0;
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap)) {
+							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap) && !stopped) {
 								if (currentList.get(j) == 0) {
 									zeroWindowCount++;
 								} else {
@@ -145,5 +146,11 @@ public class BLOTransfrag implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Transfrag";
+	}
+	
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

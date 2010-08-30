@@ -24,7 +24,8 @@ public class SCWLOAddConstant implements Operation<ScoredChromosomeWindowList> {
 
 	private final ScoredChromosomeWindowList 	scwList;	// input list
 	private final double 						constant;	// constant to add
-	
+	private boolean				stopped = false;// true if the operation must be stopped
+
 	
 	/**
 	 * Adds a specified constant to the scores of each window of a {@link ScoredChromosomeWindow}
@@ -56,7 +57,8 @@ public class SCWLOAddConstant implements Operation<ScoredChromosomeWindowList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
 						// We add a constant to each element
-						for (ScoredChromosomeWindow currentWindow: currentList) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 							resultWindow.setScore(currentWindow.getScore() + constant);
 							resultList.add(resultWindow);
@@ -95,5 +97,11 @@ public class SCWLOAddConstant implements Operation<ScoredChromosomeWindowList> {
 	@Override
 	public int getStepCount() {
 		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

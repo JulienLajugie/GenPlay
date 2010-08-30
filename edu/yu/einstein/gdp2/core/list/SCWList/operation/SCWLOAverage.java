@@ -27,6 +27,7 @@ public class SCWLOAverage implements Operation<Double> {
 	private final boolean[] chromoList; // list of the selected chromosomes
 	private final ScoredChromosomeWindowList scwList; // input list
 	private Long length = null; // sum of the lengths of non null windows
+	private boolean				stopped = false;// true if the operation must be stopped
 
 	/**
 	 * Computes the average of the list defined as: 
@@ -85,7 +86,8 @@ public class SCWLOAverage implements Operation<Double> {
 				public Double call() throws Exception {
 					double sumScoreByLength = 0;
 					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
-						for(ScoredChromosomeWindow currentWindow : currentList) {	
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {
 								sumScoreByLength += currentWindow.getScore() * currentWindow.getSize();
 							}
@@ -129,5 +131,11 @@ public class SCWLOAverage implements Operation<Double> {
 	@Override
 	public int getStepCount() {
 		return 1;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

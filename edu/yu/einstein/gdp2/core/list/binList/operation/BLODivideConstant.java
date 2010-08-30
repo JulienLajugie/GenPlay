@@ -24,8 +24,9 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLODivideConstant implements Operation<BinList> {
 
-	private final BinList 	binList;	// input binlist
-	private final double 	constant;	// constant of the division
+	private final BinList 	binList;		// input binlist
+	private final double 	constant;		// constant of the division
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -61,7 +62,7 @@ public class BLODivideConstant implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// we divide each element by a constant
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							resultList.set(j, currentList.get(j) / constant);
 						}
 					}
@@ -98,5 +99,11 @@ public class BLODivideConstant implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Dividing by Constant";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

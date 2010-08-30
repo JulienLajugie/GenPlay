@@ -27,6 +27,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 	private final ScoredChromosomeWindowList 	scwList;	// input binlist
 	private final LogBase						logBase;	// base of the log
 	private final double						damper;		// damper
+	private boolean				stopped = false;// true if the operation must be stopped
 
 	
 	/**
@@ -73,7 +74,8 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = new ArrayList<ScoredChromosomeWindow>();
 						// We log each element
-						for (ScoredChromosomeWindow currentWindow: currentList) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 							// log is define on R+*
 							if (currentWindow.getScore() > 0) {
@@ -128,5 +130,11 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 	@Override
 	public String getProcessingDescription() {
 		return "Logging";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

@@ -18,7 +18,6 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
 import yu.einstein.gdp2.exception.BinListDifferentWindowSizeException;
-import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 
 /**
@@ -26,14 +25,15 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
+public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 
-	private final BinList 		binList1;	// first binlist to add 
-	private final BinList 		binList2; 	// second binlist to add
-	private final DataPrecision precision;	// precision of the result list
-	private ScoreCalculationTwoTrackMethod 	scm;
-	private boolean				stopped = false;	// true if the operation must be stopped
+	private final BinList 					binList1;		// first binlist to add 
+	private final BinList 					binList2; 		// second binlist to add
+	private final DataPrecision 			precision;		// precision of the result list
+	private ScoreCalculationTwoTrackMethod 	scm;			// method of calculation for the score 
+	private boolean							stopped = false;// true if the operation must be stopped
 
+	
 	/**
 	 * Adds the scores of the bins of the two specified BinLists
 	 * @param binList1
@@ -57,7 +57,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppa
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		for(short i = 0; i < binList1.size() && !stopped; i++)  {
+		for(short i = 0; i < binList1.size(); i++)  {
 			final List<Double> currentList1 = binList1.get(i);
 			final List<Double> currentList2 = binList2.get(i);
 
@@ -146,13 +146,16 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppa
 		return (a + b);
 	}
 	
+	
 	private double subtraction(double a, double b) {
 		return (a - b);
 	}
 	
+	
 	private double multiplication(double a, double b) {
 		return (a * b);
 	}
+	
 	
 	private double division(double a, double b) {
 		if (a != 0.0 && b != 0.0) {
@@ -162,13 +165,16 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppa
 		}
 	}
 	
+	
 	private double average(double a, double b) {
 		return sum(a, b) / 2;
 	}
 	
+	
 	private double maximum(double a, double b) {
 		return Math.max(a, b);
 	}
+	
 	
 	private double minimum(double a, double b) {
 		return Math.min(a, b);

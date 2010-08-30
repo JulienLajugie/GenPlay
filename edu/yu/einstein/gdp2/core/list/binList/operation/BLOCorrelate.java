@@ -39,7 +39,8 @@ public class BLOCorrelate implements Operation<Double[]> {
 	private double[]		stddevtotals2;	// chromosome standard deviations of binList2 based on the total average
 	private double[]		correlations;	// chromosome correlation coefficients
 	private double 			correlation = 0;// correlation coefficient
-
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Computes the correlation coefficients between two {@link BinList} for every chromosome as well as genome wide
@@ -157,7 +158,7 @@ public class BLOCorrelate implements Operation<Double[]> {
 					if ((currentList1 != null) && (currentList2 != null)) {
 						int j = 0;
 						// compute the average only when the two scores are not null
-						while ((j < currentList1.size()) && (j < currentList2.size())) {
+						while ((j < currentList1.size()) && (j < currentList2.size()) && !stopped) {
 							if ((currentList1.get(j) != 0) && (currentList2.get(j) != 0)) {
 								means1[currentIndex] += currentList1.get(j);
 								means2[currentIndex] += currentList2.get(j);
@@ -180,7 +181,7 @@ public class BLOCorrelate implements Operation<Double[]> {
 			throw new InterruptedException();
 		}
 		// we sum the chromosome results to have a genome wide result
-		for (int i = 0; i < counters.length; i++) {
+		for (int i = 0; i < counters.length && !stopped; i++) {
 			counter += counters[i];
 			mean1 += means1[i];
 			mean2 += means2[i];
@@ -212,5 +213,11 @@ public class BLOCorrelate implements Operation<Double[]> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Correlation";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

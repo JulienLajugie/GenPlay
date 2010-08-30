@@ -26,7 +26,8 @@ public class BLOSumScore implements Operation<Double> {
 	private final BinList 	binList;		// input BinList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
-
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Computes the sum of the scores of a {@link BinList}
@@ -58,7 +59,7 @@ public class BLOSumScore implements Operation<Double> {
 					@Override
 					public Double call() throws Exception {
 						double sum = 0;
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								sum += currentList.get(j);					
 							}
@@ -100,5 +101,11 @@ public class BLOSumScore implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Score Count";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

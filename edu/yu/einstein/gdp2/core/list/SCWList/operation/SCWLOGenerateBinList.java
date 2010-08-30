@@ -18,11 +18,11 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class SCWLOGenerateBinList implements Operation<BinList> {
 
-	private final ScoredChromosomeWindowList scwList; // input list
-	private final int binSize;
-	private final DataPrecision precision;
-	private final ScoreCalculationMethod method; 
-	
+	private final ScoredChromosomeWindowList 	scwList; 	// input list
+	private final int 							binSize;	// size of the bin of the result binlist
+	private final DataPrecision 				precision;	// precision of the result binlist
+	private final ScoreCalculationMethod 		method; 	// method for the calculation of the scores of the result binlist
+
 	
 	/**
 	 * Creates a BinList from the data of the input {@link ScoredChromosomeWindowList}
@@ -60,4 +60,11 @@ public class SCWLOGenerateBinList implements Operation<BinList> {
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binSize);
 	}
+
+	
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void stop() {}
 }

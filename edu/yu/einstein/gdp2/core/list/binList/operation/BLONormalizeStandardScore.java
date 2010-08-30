@@ -26,7 +26,8 @@ public class BLONormalizeStandardScore implements Operation<BinList> {
 	private final BinList 				binList;	// input list 
 	private final BLOAverage 			avgOp;		// average
 	private final BLOStandardDeviation 	stdevOp;	// standard deviation
-
+	private boolean						stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Creates an instance of {@link BLONormalizeStandardScore}
@@ -59,7 +60,7 @@ public class BLONormalizeStandardScore implements Operation<BinList> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								// apply the standard score formula: (x - avg) / stdev 
 								double resultScore = (currentList.get(j) - avg) / stdev; 
@@ -101,5 +102,11 @@ public class BLONormalizeStandardScore implements Operation<BinList> {
 	public int getStepCount() {
 		// 1 for this operation, 1 f
 		return 1 + avgOp.getStepCount() + stdevOp.getStepCount() + BinList.getCreationStepCount(binList.getBinSize());
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

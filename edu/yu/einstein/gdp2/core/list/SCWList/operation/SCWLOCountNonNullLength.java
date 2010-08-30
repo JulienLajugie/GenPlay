@@ -26,7 +26,8 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 	private final ScoredChromosomeWindowList scwList;	// input list
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
-	
+	private boolean				stopped = false;// true if the operation must be stopped
+
 	
 	/**
 	 * Computes the sum of the lengths (in bp) of the non-null (different from 0) windows
@@ -58,7 +59,8 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 					@Override
 					public Long call() throws Exception {
 						long length = 0;
-						for (ScoredChromosomeWindow currentWindow: currentList) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {
 								length += currentWindow.getSize();
 							}
@@ -100,5 +102,11 @@ public class SCWLOCountNonNullLength implements Operation<Long>{
 	@Override
 	public int getStepCount() {
 		return 1;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

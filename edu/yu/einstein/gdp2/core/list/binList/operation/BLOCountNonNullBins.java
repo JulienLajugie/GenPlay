@@ -26,6 +26,7 @@ public class BLOCountNonNullBins implements Operation<Long> {
 	private final BinList 	binList;		// input BinList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -59,7 +60,7 @@ public class BLOCountNonNullBins implements Operation<Long> {
 					@Override
 					public Long call() throws Exception {
 						long count = 0;
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								count++;
 							}
@@ -102,5 +103,11 @@ public class BLOCountNonNullBins implements Operation<Long> {
 	@Override
 	public String getProcessingDescription() {
 		return "Counting Non Null Windows";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

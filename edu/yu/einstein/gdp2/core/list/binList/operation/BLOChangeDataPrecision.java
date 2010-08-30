@@ -24,9 +24,10 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLOChangeDataPrecision implements Operation<BinList> {
 
-	private final BinList 		binList;	// input BinList
-	private final DataPrecision precision; 	// new data precision
-
+	private final BinList 		binList;		// input BinList
+	private final DataPrecision precision; 		// new data precision
+	private boolean				stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Creates a new BinList with a new data precision
@@ -53,7 +54,7 @@ public class BLOChangeDataPrecision implements Operation<BinList> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							resultList.set(j, currentList.get(j));
 						}
 					}
@@ -90,5 +91,11 @@ public class BLOChangeDataPrecision implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Changing Data Precision";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

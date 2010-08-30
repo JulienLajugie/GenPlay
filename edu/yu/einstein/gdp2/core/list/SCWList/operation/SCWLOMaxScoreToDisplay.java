@@ -16,8 +16,8 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 
-
-	private final ScoredChromosomeWindowList scwList;	// input list
+	private final ScoredChromosomeWindowList 	scwList;		// input list
+	private boolean								stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -38,7 +38,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 		}
 		// if the max of the BinList can be written as 10^x we return this value as a maximum
 		double maxScoreDisplayed = 1;
-		while (realMax / maxScoreDisplayed > 1) {
+		while (realMax / maxScoreDisplayed > 1 && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
 		if (realMax / maxScoreDisplayed == 1) {
@@ -50,7 +50,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 			return 0d;
 		}
 		maxScoreDisplayed = 1;
-		while (proposedMax / maxScoreDisplayed > 1) {
+		while (proposedMax / maxScoreDisplayed > 1 && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
 		return maxScoreDisplayed;
@@ -72,5 +72,11 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Maximum";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

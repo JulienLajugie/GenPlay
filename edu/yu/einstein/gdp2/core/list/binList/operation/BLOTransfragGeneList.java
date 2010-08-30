@@ -29,10 +29,11 @@ import yu.einstein.gdp2.util.DoubleLists;
  */
 public class BLOTransfragGeneList implements Operation<GeneList> {
 
-	private final BinList 				binList;	// input binlist
-	private final int 					zeroBinGap; // number of zero value bins defining a gap between two islands
-	private final ScoreCalculationMethod operation;	//sum / average / max
-
+	private final BinList 					binList;		// input binlist
+	private final int 						zeroBinGap; 	// number of zero value bins defining a gap between two islands
+	private final ScoreCalculationMethod 	operation;		//sum / average / max
+	private boolean							stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Defines regions as "islands" of non zero value bins 
@@ -68,9 +69,9 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						int j = 0;	
 						int geneCounter = 1;
-						while (j < currentList.size()) {
+						while (j < currentList.size() && !stopped) {
 							// skip zero values
-							while ((j < currentList.size()) && (currentList.get(j) == 0)) {
+							while ((j < currentList.size()) && (currentList.get(j) == 0) && !stopped) {
 								j++;
 							}
 							int regionStart = j;
@@ -81,7 +82,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 							double[] exonScore = new double[1];
 							
 							// a region stops when there is maxZeroWindowGap consecutive zero bins
-							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap)) {
+							while ((j < currentList.size()) && (zeroWindowCount <= zeroBinGap) && !stopped) {
 								if (currentList.get(j) == 0) {
 									zeroWindowCount++;
 								} else {
@@ -148,5 +149,11 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 	@Override
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
+	}
+	
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

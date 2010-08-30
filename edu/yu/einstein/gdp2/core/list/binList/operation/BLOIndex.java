@@ -25,10 +25,11 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLOIndex implements Operation<BinList> {
 
-	private final BinList 	binList;	// binlist to index
-	private final double 	newMin;		// new min after index
-	private final double 	newMax;		// new max after index
-
+	private final BinList 	binList;		// binlist to index
+	private final double 	newMin;			// new min after index
+	private final double 	newMax;			// new max after index
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Creates an instance of {@link BLOIndex}
@@ -67,7 +68,7 @@ public class BLOIndex implements Operation<BinList> {
 						if ((currentList != null) && (currentList.size() != 0)) {
 							resultList = ListFactory.createList(precision, currentList.size());
 							// We index the intensities
-							for (int j = 0; j < currentList.size(); j++) {
+							for (int j = 0; j < currentList.size() && !stopped; j++) {
 								if (currentList.get(j) == 0) {
 									resultList.set(j, 0d);
 								} else { 
@@ -111,5 +112,11 @@ public class BLOIndex implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Indexing";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

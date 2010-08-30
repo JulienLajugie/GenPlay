@@ -22,8 +22,10 @@ import yu.einstein.gdp2.util.Utils;
  * @version 0.1
  */
 public class SCWLOMax implements Operation<Double> {
+
 	private final boolean[] chromoList;	// list of the selected chromosomes
 	private final ScoredChromosomeWindowList scwList; // input list
+	private boolean				stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -57,7 +59,7 @@ public class SCWLOMax implements Operation<Double> {
 					public Double call() throws Exception {
 						// we set the max to the smallest double value
 						double max = Double.NEGATIVE_INFINITY;
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j).getScore() != 0) {
 								max = Math.max(max, currentList.get(j).getScore());					
 							}
@@ -99,5 +101,11 @@ public class SCWLOMax implements Operation<Double> {
 	@Override
 	public int getStepCount() {
 		return 1;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

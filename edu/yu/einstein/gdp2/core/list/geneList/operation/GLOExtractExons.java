@@ -1,5 +1,5 @@
 /**
- * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.core.list.geneList.operation;
@@ -22,13 +22,15 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class GLOExtractExons implements Operation<GeneList> {
 
-	private final GeneList geneList;			// input list
-	private final int exonOption;				// exon option: first, last or all
-	
+	private final GeneList 	geneList;			// input list
+	private final int 		exonOption;			// exon option: first, last or all
+	private boolean			stopped = false;	// true if the operation must be stopped
+
 	public static final int FIRST_EXON = 0;
 	public static final int LAST_EXON = 1;
 	public static final int ALL_EXONS = 2;
-	
+
+
 	/**
 	 * Creates an instance of {@link GLOExtractExons}
 	 * @param geneList
@@ -37,15 +39,15 @@ public class GLOExtractExons implements Operation<GeneList> {
 		this.geneList = geneList;		
 		this.exonOption = exonOption;
 	}
-	
+
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
-		
+
 		for(short i = 0; i < geneList.size(); i++) {
 			final List<Gene> currentList = geneList.get(i);
-						
+
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
 				public List<Gene> call() throws Exception {					
@@ -57,10 +59,10 @@ public class GLOExtractExons implements Operation<GeneList> {
 					int[] exonStop;
 					double[] exonScore;
 					List<Gene> smallerGenes = null;
-					for (int j = 0; j < currentList.size(); j++) {
+					for (int j = 0; j < currentList.size() && !stopped; j++) {
 						Gene currentGene = currentList.get(j); 
 						Gene geneToAdd = new Gene(currentList.get(j));
-						
+
 						switch (exonOption) {
 						case FIRST_EXON:
 							if (currentGene.getStrand() == Strand.FIVE) {
@@ -84,7 +86,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 								geneToAdd.setExonStops(exonStop);
 								geneToAdd.setName(geneToAdd.getName() + "(F)");
 							} break;
-							
+
 						case LAST_EXON:
 							if (currentGene.getStrand() == Strand.FIVE) {
 								geneToAdd.setTxStart(geneToAdd.getExonStarts()[geneToAdd.getExonStarts().length - 1]);
@@ -107,7 +109,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 								geneToAdd.setExonStops(exonStop);
 								geneToAdd.setName(geneToAdd.getName() + "(L)");
 							} break;
-							
+
 						case ALL_EXONS:
 							Gene smallerGene;
 							smallerGenes = new ArrayList<Gene>();
@@ -130,7 +132,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 									smallerGene.setExonStarts(exonStart);
 									smallerGene.setExonStops(exonStop);
 									smallerGene.setName(geneToAdd.getName() + "(" + Integer.toString(i+1) + ")");
-									
+
 									smallerGenes.add(smallerGene);
 								}
 							} else {
@@ -163,7 +165,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 						if (exonOption == ALL_EXONS) {
 							resultExonList.addAll(smallerGenes);
 						} else {
-						resultExonList.add(geneToAdd);
+							resultExonList.add(geneToAdd);
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -181,18 +183,27 @@ public class GLOExtractExons implements Operation<GeneList> {
 		}
 	}
 
+
 	@Override
 	public String getDescription() {
 		return "Operation: Extract Exons";
 	}
+
 
 	@Override
 	public String getProcessingDescription() {
 		return "Extracting Exons";
 	}
 
+
 	@Override
 	public int getStepCount() {
 		return 0;
+	}
+
+
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}	
 }

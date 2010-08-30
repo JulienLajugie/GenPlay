@@ -27,7 +27,8 @@ public class BLOStandardDeviation implements Operation<Double> {
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private Double 			average = null;	// average of the binList
-
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 
 	/**
 	 * Computes the standard deviation of the {@link BinList}
@@ -67,7 +68,7 @@ public class BLOStandardDeviation implements Operation<Double> {
 					@Override
 					public Double call() throws Exception {
 						double sum = 0;
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							if (currentList.get(j) != 0) {
 								sum += Math.pow(currentList.get(j) - average, 2);
 							}
@@ -110,5 +111,11 @@ public class BLOStandardDeviation implements Operation<Double> {
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Standard Deviation";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

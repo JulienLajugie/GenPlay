@@ -24,8 +24,9 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLOSubtractConstant implements Operation<BinList> {
 
-	private final BinList 	binList;	// input binlist
-	private final double 	constant;	// constant
+	private final BinList 	binList;		// input binlist
+	private final double 	constant;		// constant
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -59,7 +60,7 @@ public class BLOSubtractConstant implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// We subtract a constant from each element
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							resultList.set(j, currentList.get(j) - constant);
 						}
 					}
@@ -95,5 +96,11 @@ public class BLOSubtractConstant implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Subtracting with Constant";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

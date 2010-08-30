@@ -27,6 +27,7 @@ public class SCWLOIndex implements Operation<ScoredChromosomeWindowList> {
 	private final ScoredChromosomeWindowList 	scwList;	// list to index
 	private final double 						newMin;		// new min after index
 	private final double 						newMax;		// new max after index
+	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -65,7 +66,8 @@ public class SCWLOIndex implements Operation<ScoredChromosomeWindowList> {
 						if ((currentList != null) && (currentList.size() != 0)) {
 							resultList = new ArrayList<ScoredChromosomeWindow>();
 							// We index the intensities
-							for (ScoredChromosomeWindow currentWindow: currentList) {
+							for (int j = 0; j < currentList.size() && !stopped; j++) {
+								ScoredChromosomeWindow currentWindow = currentList.get(j);
 								ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
 								if (currentWindow.getScore() != 0) {
 									resultWindow.setScore(newDistance * (currentWindow.getScore() - oldMin) / oldDistance + newMin);
@@ -106,5 +108,11 @@ public class SCWLOIndex implements Operation<ScoredChromosomeWindowList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Indexing";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

@@ -26,6 +26,7 @@ public class BLOMultiplyConstant implements Operation<BinList> {
 
 	private final BinList 	binList;	// input binlist
 	private final double 	constant;	// constant of the multiplication
+	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
 	/**
@@ -59,7 +60,7 @@ public class BLOMultiplyConstant implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(precision, currentList.size());
 						// We multiply each element by a constant
-						for (int j = 0; j < currentList.size(); j++) {
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							resultList.set(j, currentList.get(j) * constant);
 						}
 					}
@@ -96,5 +97,11 @@ public class BLOMultiplyConstant implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Multiplying by Constant";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

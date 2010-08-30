@@ -26,7 +26,8 @@ public class BLOFilterThreshold implements Operation<BinList> {
 	private final double 	lowThreshold;			// filters the values under this threshold
 	private final double 	highThreshold;			// filters the values above this threshold
 	private final boolean	isSaturation;			// true if we saturate, false if we remove the filtered values 
-
+	private boolean			stopped = false;		// true if the operation must be stopped
+	
 	
 	/**
 	 * Creates an instance of {@link BLOFilterThreshold}
@@ -60,7 +61,7 @@ public class BLOFilterThreshold implements Operation<BinList> {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						resultList = ListFactory.createList(binList.getPrecision(), currentList.size());
-						for (int i = 0; i < currentList.size(); i++) {
+						for (int i = 0; i < currentList.size() && !stopped; i++) {
 							double currentScore = currentList.get(i);
 							if (currentScore != 0) {
 								if (currentScore > highThreshold) {
@@ -127,5 +128,11 @@ public class BLOFilterThreshold implements Operation<BinList> {
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

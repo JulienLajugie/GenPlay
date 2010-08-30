@@ -18,11 +18,13 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class BLOFilterPercentage implements Operation<BinList> {
 
-	private final BinList 	binList;		// {@link BinList} to filter
-	private final double 	lowPercentage;	// percentage of low values to filter
-	private final double 	highPercentage;	// percentage of high values to filter
-	private final boolean	isSaturation;	// true if we saturate, false if we remove the filtered values 
-
+	private final BinList 		binList;			// {@link BinList} to filter
+	private final double 		lowPercentage;		// percentage of low values to filter
+	private final double 		highPercentage;		// percentage of high values to filter
+	private final boolean		isSaturation;		// true if we saturate, false if we remove the filtered values 
+	private boolean				stopped = false;	// true if the operation must be stopped
+	private Operation<BinList> 	bloFilterThreshold;	// threshold filter that does the real fitering operation
+	
 
 	/**
 	 * Creates an instance of {@link BLOFilterPercentage}
@@ -54,7 +56,8 @@ public class BLOFilterPercentage implements Operation<BinList> {
 		int i = 0;
 		for (List<Double> currentList: binList) {
 			if (currentList != null) {
-				for (Double currentScore: currentList) {
+				for (int j = 0; j < currentList.size() && !stopped; j++) {
+					Double currentScore = currentList.get(j);
 					if (currentScore != 0) {
 						allScores[i] = currentScore;
 						i++;
@@ -65,9 +68,11 @@ public class BLOFilterPercentage implements Operation<BinList> {
 		int lowValuesCount = (int)(lowPercentage * allScores.length);
 		int highValuesCount = (int)(highPercentage * allScores.length);
 		Arrays.sort(allScores);
+
 		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
-		return new BLOFilterThreshold(binList, minValue, maxValue, isSaturation).compute();
+		bloFilterThreshold = new BLOFilterThreshold(binList, minValue, maxValue, isSaturation); 
+		return bloFilterThreshold.compute();
 	}
 
 	
@@ -92,5 +97,14 @@ public class BLOFilterPercentage implements Operation<BinList> {
 	@Override
 	public int getStepCount() {
 		return 1 + BinList.getCreationStepCount(binList.getBinSize());
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
+		if (bloFilterThreshold != null) {
+			bloFilterThreshold.stop();
+		}
 	}
 }

@@ -17,7 +17,7 @@ import yu.einstein.gdp2.core.operation.Operation;
  */
 public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList> {
 
-	private final BinList binList; // input list
+	private final BinList 	binList; 		// input list
 	
 	
 	/**
@@ -51,4 +51,11 @@ public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList>
 	public int getStepCount() {
 		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
 	}
+
+	
+	/**
+	 * Does nothing
+	 */
+	@Override
+	public void stop() {}
 }

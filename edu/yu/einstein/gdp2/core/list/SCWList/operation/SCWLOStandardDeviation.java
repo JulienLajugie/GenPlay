@@ -25,6 +25,7 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 
 	private final boolean[] chromoList; // list of the selected chromosomes
 	private final ScoredChromosomeWindowList scwList; // input list
+	private boolean				stopped = false;// true if the operation must be stopped
 
 
 	/**
@@ -67,7 +68,8 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 				public Double call() throws Exception {
 					double stDev = 0;
 					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
-						for(ScoredChromosomeWindow currentWindow : currentList) {	
+						for (int j = 0; j < currentList.size() && !stopped; j++) {
+							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {
 								stDev += Math.pow(currentWindow.getScore() - mean, 2) * currentWindow.getSize();
 							}
@@ -111,5 +113,11 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 	public int getStepCount() {
 		// 1 for the stardard deviation and 1 for the average
 		return 1 + 1;
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }

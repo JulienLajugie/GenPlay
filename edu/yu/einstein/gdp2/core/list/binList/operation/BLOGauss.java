@@ -24,9 +24,10 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLOGauss implements Operation<BinList> {
 
-	private final BinList binList;
-	private final int sigma;
-
+	private final BinList 	binList;		// input list
+	private final int 		sigma;			// sigma parameter of the gaussian
+	private boolean			stopped = false;// true if the operation must be stopped
+	
 	
 	/**
 	 * Creates an instance of {@link BLOGauss}
@@ -61,12 +62,12 @@ public class BLOGauss implements Operation<BinList> {
 					List<Double> listToAdd = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						listToAdd = ListFactory.createList(precision, currentList.size());
-						for(int j = 0; j < currentList.size(); j++) {
+						for(int j = 0; j < currentList.size() && !stopped; j++) {
 							if(currentList.get(j) != 0)  {
 								// apply the array of coefficients centered on the current value to gauss
 								double SumCoef = 0;
 								double SumNormSignalCoef = 0;
-								for (int k = -halfWidth; k <= halfWidth; k++) {
+								for (int k = -halfWidth; k <= halfWidth && !stopped; k++) {
 									if((j + k >= 0) && ((j + k) < currentList.size()))  {
 										int distance = Math.abs(k);
 										if(currentList.get(j + k) != 0)  {
@@ -116,5 +117,11 @@ public class BLOGauss implements Operation<BinList> {
 	@Override
 	public String getProcessingDescription() {
 		return "Gaussing";
+	}
+
+	
+	@Override
+	public void stop() {
+		this.stopped = true;
 	}
 }
