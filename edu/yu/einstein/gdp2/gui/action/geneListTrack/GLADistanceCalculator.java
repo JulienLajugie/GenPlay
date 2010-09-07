@@ -34,6 +34,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 	private GeneListTrack 			otherTrack;							// 2nd selected track
 	private DistanceCalculatorDialog dcd;	
 	private List<ScatterPlotData> 	scatPlotData;
+	private String					graphName;
 	
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -60,6 +61,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			if (otherTrack != null) {
 				GeneList geneList1 = new GeneList(selectedTrack.getData());
 				GeneList geneList2 = new GeneList(otherTrack.getData());
+				graphName = "distance between " + selectedTrack.getName().substring(0, 10) + " and " + otherTrack.getName().substring(0, 10);
 				dcd = new DistanceCalculatorDialog();
 				if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {
 					if (dcd.getSelectionFlag() == 3 || dcd.getSelectionFlag() == 6 || dcd.getSelectionFlag() == 9 || dcd.getSelectionFlag() == 12 || dcd.getSelectionFlag() == 15 || dcd.getSelectionFlag() == 18) {
@@ -110,7 +112,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 				plotData[i][1] = sortedCounter.get(key);
 				i++;
 			}
-			scatPlotData.add(new ScatterPlotData(plotData, "Test"));
+			scatPlotData.add(new ScatterPlotData(plotData, graphName));
 			ScatterPlotPanel.setxAxisName("Distance");
 			ScatterPlotPanel.setyAxisName("Count");
 			ScatterPlotPanel.showDialog(getRootPane(), scatPlotData);

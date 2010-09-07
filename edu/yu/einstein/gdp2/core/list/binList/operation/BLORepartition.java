@@ -44,7 +44,6 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 		this.binListArray = binListArray;
 		this.scoreBinSize = scoreBinSize;
 	}
-
 	
 	@Override
 	public double[][][] compute() throws IllegalArgumentException, IOException, InterruptedException, ExecutionException {
