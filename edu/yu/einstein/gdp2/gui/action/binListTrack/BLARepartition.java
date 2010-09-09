@@ -18,6 +18,7 @@ import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotData;
+import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPane;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.track.Track;
@@ -85,6 +86,7 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 			}
 			ScatterPlotPanel.setxAxisName("Score");
 			ScatterPlotPanel.setyAxisName("Count");
+			ScatterPlotPane.showDialog(getRootPane(), "Score", "Bin Count", scatPlotData);
 			ScatterPlotPanel.showDialog(getRootPane(), scatPlotData);
 		}
 	}

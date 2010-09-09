@@ -63,11 +63,11 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 251; 						// GenPlay version
+	private static final int VERSION_NUMBER = 253; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
-	public static final String APPLICATION_TITLE = " - GenPlay, Einstein Genome Analyser (v" + VERSION_NUMBER + ") -";
+	public static final String APPLICATION_TITLE = " - GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") -";
 	private static final String DEFAULT_PROJECT_NAME = "New Project";
 	private final static String ICON_PATH = "yu/einstein/gdp2/resource/icon.png"; // path of the icon of the application
 	

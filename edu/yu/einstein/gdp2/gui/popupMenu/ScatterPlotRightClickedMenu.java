@@ -272,25 +272,25 @@ public class ScatterPlotRightClickedMenu extends JPopupMenu implements ActionLis
 		try {
 			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(file));
 			bufWriter.write("Y-Axis " + ScatterPlotPanel.getyAxisName());
-			int maxLength = ScatterPlotPanel.getGraphList().get(0).getDataPoints().length;
+			int maxLength = ScatterPlotPanel.getGraphList().get(0).getData().length;
 			int graphNumber = 0;
 			for (int i = 0; i < ScatterPlotPanel.getGraphNames().length; i++) {
 				bufWriter.write("," + ScatterPlotPanel.getGraphNames()[i]);
-				if (maxLength < ScatterPlotPanel.getGraphList().get(i).getDataPoints().length) {
-					maxLength = ScatterPlotPanel.getGraphList().get(i).getDataPoints().length;
+				if (maxLength < ScatterPlotPanel.getGraphList().get(i).getData().length) {
+					maxLength = ScatterPlotPanel.getGraphList().get(i).getData().length;
 					graphNumber = i;
 				}
 			}	
 			bufWriter.newLine();
 			for (int i = 0; i < maxLength; i++){
-				if (ScatterPlotPanel.getGraphList().get(graphNumber).getDataPoints()[i][0] == 0 && i != 0) {
+				if (ScatterPlotPanel.getGraphList().get(graphNumber).getData()[i][0] == 0 && i != 0) {
 					break;
 				}
-				bufWriter.write(Double.toString(ScatterPlotPanel.getGraphList().get(graphNumber).getDataPoints()[i][0]));
+				bufWriter.write(Double.toString(ScatterPlotPanel.getGraphList().get(graphNumber).getData()[i][0]));
 				for (int j = 0; j < ScatterPlotPanel.getGraphList().size(); j++) {
 					bufWriter.write(",");
-					if (i < ScatterPlotPanel.getGraphList().get(j).getDataPoints().length) {
-						bufWriter.write(Integer.toString((int)ScatterPlotPanel.getGraphList().get(j).getDataPoints()[i][1]));
+					if (i < ScatterPlotPanel.getGraphList().get(j).getData().length) {
+						bufWriter.write(Integer.toString((int)ScatterPlotPanel.getGraphList().get(j).getData()[i][1]));
 
 					} else {
 						bufWriter.write(Integer.toString(0));						

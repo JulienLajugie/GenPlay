@@ -21,6 +21,7 @@ import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
+import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
 
 
@@ -183,8 +184,11 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		if (i == line.length) {
 			throw new InvalidDataLineException(extractedLine);
 		}
-
-		chromo = chromosomeManager.get(new String(chromoChar, 0, j).trim());
+		try {
+			chromo = chromosomeManager.get(new String(chromoChar, 0, j).trim());
+		} catch (InvalidChromosomeException e) {
+			return false;
+		}
 		// checks if we need to extract the data on the chromosome
 		int chromosomeStatus = checkChromosomeStatus(chromo);
 		if (chromosomeStatus == AFTER_LAST_SELECTED) {

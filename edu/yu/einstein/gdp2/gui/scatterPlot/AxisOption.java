@@ -22,7 +22,6 @@ import javax.swing.text.NumberFormatter;
 /**
  * Class to provide options to modify the tick size and min-max values of the x-y axes
  * @author Chirag Gorasia
- *
  */
 public class AxisOption {
 

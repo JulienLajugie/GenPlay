@@ -90,11 +90,11 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * Tries to force the garbage collector to run
 	 */
 	private void garbageCollect() {
+		System.gc();/*System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();*/
 	}
 	
 	

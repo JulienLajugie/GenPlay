@@ -162,6 +162,8 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 */
 	private void showGene(Gene geneFound) {
 		if (geneFound != null) {
+			jbNext.setEnabled(true);
+			jbPrevious.setEnabled(true);
 			// we want to see larger than the gene found
 			int windowStart = geneFound.getTxStart() - (geneFound.getTxStop() - geneFound.getTxStart()) * 3;
 			int minimumDisplayableStart = - geneFound.getChromo().getLength();
@@ -176,6 +178,8 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			setEditorColor(true);
 		} else {
 			setEditorColor(false);
+			jbNext.setEnabled(false);
+			jbPrevious.setEnabled(false);
 		}
 	}
 

@@ -4,6 +4,8 @@
  */
 package yu.einstein.gdp2.core.list.geneList;
 
+import java.io.Serializable;
+
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 
@@ -13,9 +15,9 @@ import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GeneSearcher {
+public final class GeneSearcher implements Serializable {
 
-	private static final long serialVersionUID = 8541040819397656052L;			// generated ID
+	private static final long serialVersionUID = 2905806587397044885L;			// generated ID
 	private final ChromosomeListOfLists<Gene> 	geneList;						// GeneList where to search the genes
 	private String 								lastSearchedGeneName = null;	// name of the last searched gene
 	private Gene 								lastGeneFound = null;			// last found gene

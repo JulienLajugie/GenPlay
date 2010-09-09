@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.core.manager;
 
+import java.awt.Component;
 import java.util.concurrent.CancellationException;
 
 import javax.swing.JComponent;
@@ -23,16 +24,22 @@ public final class ExceptionManager {
 
 	/**
 	 * Handles the exception
-	 * @param jc a component
+	 * @param component a component
 	 * @param e an exception
 	 * @param message error message to display.
 	 */
-	public static void handleException(JComponent jc, Exception e, String message) {
-		showAppropriateMessage(jc, e, message);
+	public static void handleException(Component component, Exception e, String message) {
+		showAppropriateMessage(component, e, message);
 	}
 
 
-	private static void showAppropriateMessage(JComponent jc, Exception e, String message) {
+	/**
+	 * Shows a message associated to the specified exception
+	 * @param component a component
+	 * @param e exception
+	 * @param message default message to print 
+	 */
+	private static void showAppropriateMessage(Component component, Exception e, String message) {
 		boolean exceptionHandled = false;
 		boolean hasCause = true;
 		Throwable exception = e;
@@ -43,15 +50,15 @@ public final class ExceptionManager {
 				exceptionHandled = true;	
 			} else if (exception instanceof InvalidFileTypeException) {				
 				// case where the user tries to load an invalid file type
-				JOptionPane.showMessageDialog(jc.getRootPane(), exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				exceptionHandled = true;
 			} else if (exception instanceof ValueOutOfRangeException) {
 				// case where the value of a binlist is out of the range of the data precision
-				JOptionPane.showMessageDialog(jc.getRootPane(), exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				exceptionHandled = true;
 			} else if (exception instanceof BinListDifferentWindowSizeException) {
 				// case when the user tries to do an operation on 2 binlists with different binsize
-				JOptionPane.showMessageDialog(jc.getRootPane(), exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(component, exception.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				exceptionHandled = true;
 			}
 			if (exception.getCause() != null) {
@@ -62,7 +69,7 @@ public final class ExceptionManager {
 		}
 		if (!exceptionHandled) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(jc.getRootPane(), message, "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(component, message, "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
