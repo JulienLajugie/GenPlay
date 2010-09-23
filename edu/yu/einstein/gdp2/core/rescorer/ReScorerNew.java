@@ -38,7 +38,7 @@ public class ReScorerNew {
 		}
 
 		lineRead = buf.readLine();
-
+        int annotationlines = 0;
 		while (lineRead != null) {
 			strtok = new StringTokenizer(lineRead, "\t\n");
 			while (strtok.hasMoreTokens()) {
@@ -48,6 +48,7 @@ public class ReScorerNew {
 					tempList.add(Double.parseDouble(strtok.nextToken()));
 					tempList.add(Double.parseDouble(strtok.nextToken()));
 				} else {
+					annotationlines = 1;
 					startStopScore.put(prevGene, tempList);
 					tempList = new ArrayList<Double>();
 					tempList.add(Double.parseDouble(strtok.nextToken()));
@@ -57,6 +58,9 @@ public class ReScorerNew {
 				}
 			}
 			lineRead = buf.readLine();
+		}
+		if (annotationlines == 0) { // there is just one line
+			startStopScore.put(prevGene, tempList);
 		}
 		//		System.out.println("Printing Map");
 		//		Iterator<String> iter = startStopScore.keySet().iterator();
@@ -146,6 +150,14 @@ public class ReScorerNew {
 						j++;
 					}
 					
+					List<Integer> onlyStarts = new ArrayList<Integer>();
+					onlyStarts.add(startstopscore.get(0).intValue());
+					for (i = 0; i < basePairLengths.size(); i++) {
+						int pos = basePairLengths.get(i);
+						onlyStarts.add(pos);
+						onlyStarts.add(pos+1);
+					}
+					
 					List<Integer> mergedList = new ArrayList<Integer>();
 					i = 0;
 					j = 0;
@@ -202,6 +214,45 @@ public class ReScorerNew {
 						j++;
 					}
 					
+					double[][] arrayofstartstopscore = new double[3][finalStartStop.size()/2];
+					int stopstartdiffval = 0;
+					int k = 0;
+					for (i = 0, j = 0; i < finalStartStop.size() - 1; i+=2, j++) {
+						// check these conditions...edited on sept 20 around 4.55 pm...before this I dint have any ifs
+//						if (k < startStopPos.size() && startStopPos.size() != 1) {							
+//							if (basePairLengths.contains(finalStartStop.get(i+1)) != false || (!((finalStartStop.get(i) > startStopPos.get(2*k+1)) && finalStartStop.get(i+1) < startStopPos.get(2*k+2)))) {
+								arrayofstartstopscore[0][j] = finalStartStop.get(i);
+								arrayofstartstopscore[1][j] = finalStartStop.get(i+1);
+								if (j < finalScores.size()) {
+									arrayofstartstopscore[2][j] = finalScores.get(j).intValue();
+								} else {
+									arrayofstartstopscore[2][j] = 0;
+								}
+//							}
+//						}
+					}
+					
+					
+					List<Double> weightedScores = new ArrayList<Double>();
+					j = 0;
+					for (i = 0; i < basePairLengths.size(); i++) {
+						int stopval = basePairLengths.get(i);
+						double newScore = 0;
+						k = j;
+						while (j < arrayofstartstopscore[1].length && arrayofstartstopscore[1][j] <= stopval) {
+							j++;
+						}
+						int startval = (int)arrayofstartstopscore[0][k];
+						while (k < j) {
+							newScore += arrayofstartstopscore[2][k] * (arrayofstartstopscore[1][k] - arrayofstartstopscore[0][k]);
+							k++;
+						}	
+						if (k != 0) {
+							newScore /= (arrayofstartstopscore[1][k-1] - startval);
+						}
+						weightedScores.add(newScore);
+					}
+					
 					List<Integer> prunedStartStops = new ArrayList<Integer>();
 					List<Double> prunedScores = new ArrayList<Double>();
 					j = 0;
@@ -215,45 +266,13 @@ public class ReScorerNew {
 					}
 					System.out.println("done");
 					String chromosomename = chrmomosome;
-					for (i = 0, j = 0; i < prunedStartStops.size(); i+=2, j++) {
-						bufWriter.write(chromosomename + "\t" + prunedStartStops.get(i) + "\t" + prunedStartStops.get(i+1) + "\t" + prunedScores.get(j) + "\n");
-					}
-					
-//					int newstart = chrStart;
-//					int newstop = 0;
-//					double newscore = score;
-//					int bp = 0;
-//					i = 0;	
-//					int elseflag = 0;
-//					while (i < basePairs.size() && geneFromFile2.compareTo(key) == 0) {
-//						if (bp + basePairs.get(i) <= stop) {
-//							if (elseflag == 0) {
-//								newstart = chrStart + exonStarts.get(i);
-//								newstop = newstart + basePairs.get(i);
-//								newscore = score * (newstop - newstart) / basePairs.get(i);
-//							} else {
-//								newstart = newstop;
-//								newstop = newstart + bp;
-//								newscore = score * (newstop - newstart) / ((double) basePairs.get(i));
-//							}
-//							bufWriter.write(chromosomename + "\t" + newstart + "\t" + newstop + "\t" + newscore + "\n");
-//							chromosomename = chrmomosome;
-//							bp += basePairs.get(i);
-//							i++;								
-//						} else {
-//							elseflag = 1;
-//							index++;
-//							if (index < startStopScore.get(key).size()/3) {
-//								start = startStopScore.get(key).get(index*3).intValue();
-//								stop = startStopScore.get(key).get(index*3+1).intValue();
-//								score = startStopScore.get(key).get(index*3+2);
-//								bp = (start - bp) < (stop - start) ? (start - bp) : (stop - start);
-//							} else {
-//								break;
-//							}
-//						}							
-//					}
-//					break;
+					for (i = 0; i < arrayofstartstopscore[0].length; i++) {
+						double scoretobewritten = 0;
+						if (i < weightedScores.size()) {
+							scoretobewritten = weightedScores.get(i);
+						}
+						bufWriter.write(chromosomename + "\t" + geneFromFile2 + "\t" + ((int)arrayofstartstopscore[0][i]+chrStart) + "\t" + ((int)arrayofstartstopscore[1][i]+chrStart) + "\t" + scoretobewritten + "\n");						
+					}					
 				}
 			}
 			lineReadFromFile2 = newbuf.readLine();
