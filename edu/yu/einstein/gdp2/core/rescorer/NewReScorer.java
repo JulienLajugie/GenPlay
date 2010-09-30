@@ -166,18 +166,12 @@ public class NewReScorer {
 							double currStop = covStartStopScoreList.get(j+1);
 							if ((int)currStart + exonStart >= exonStart
 									&& (int)currStop + exonStart - distanceBetweenTwoExons <= exonStop) {
-//								if (elseflag) {
-//									elseflag = false;
-//									finalfilearray[k][0] = currStart + exonStart - leftoverval - distanceBetweenTwoExons;
-//									finalfilearray[k][1] = currStop + exonStart - leftoverval - distanceBetweenTwoExons;
-//									finalfilearray[k][2] = leftoverscore;
-//									k++;
-//								} else {
+								if (k < finalfilearray.length) {
 									finalfilearray[k][0] = currStart + exonStart - distanceBetweenTwoExons;
 									finalfilearray[k][1] = currStop + exonStart - distanceBetweenTwoExons;
 									finalfilearray[k][2] = covStartStopScoreList.get(j+2);
 									k++;
-//								}
+								}
 							} else if ((int)currStop + exonStart - distanceBetweenTwoExons > exonStop) {
 								elseflag = true;
 								int counter = 1;
@@ -187,27 +181,44 @@ public class NewReScorer {
 									counter++;
 								}
 								partScore = covStartStopScoreList.get(j+2) * counter / (currStop - currStart);
-								finalfilearray[k][0] = currStart + exonStart - distanceBetweenTwoExons;
-								finalfilearray[k][1] = currStart + counter + exonStart - distanceBetweenTwoExons;
-								finalfilearray[k][2] = partScore;
-								k++;
+								if (k < finalfilearray.length) {
+									finalfilearray[k][0] = currStart + exonStart - distanceBetweenTwoExons;
+									finalfilearray[k][1] = currStart + counter + exonStart - distanceBetweenTwoExons;
+									finalfilearray[k][2] = partScore;
+									k++;
+								}
 								leftoverval = (int)currStop + exonStart - exonStop;
 								leftoverscore = covStartStopScoreList.get(j+2) - partScore;
-								
+								double adjustpartsofscores = 0;
 								// adjust the remaining part of the score in the other exon
-								if (i < annotationExonStartStops.size() - 2) {
+								if (i < annotationExonStartStops.size() - 3 && annotationExonStartStops.get(i+3) - annotationExonStartStops.get(i+2) < (int)currStop - ((int)currStart+counter)) {
+									while (i < annotationExonStartStops.size() - 3 && annotationExonStartStops.get(i+3) - annotationExonStartStops.get(i+2) < (int)currStop - ((int)currStart+counter) && k < finalfilearray.length) {
+										finalfilearray[k][0] = annotationExonStartStops.get(i+2);
+										finalfilearray[k][1] = annotationExonStartStops.get(i+3);
+										adjustpartsofscores = covStartStopScoreList.get(j+2) * (annotationExonStartStops.get(i+3)-annotationExonStartStops.get(i+2)) / (currStop - currStart);
+										finalfilearray[k][2] = adjustpartsofscores;
+										k++;
+										leftoverscore -= adjustpartsofscores;
+										counter += annotationExonStartStops.get(i+3)-annotationExonStartStops.get(i+2);
+										i+=2;
+									}
+									
+								} 
+								// this will adjust the last chunk of the score
+								if (k < finalfilearray.length && i < annotationExonStartStops.size() - 2) {
 									distanceBetweenTwoExons = (int)currStart + counter;
 									finalfilearray[k][0] = annotationExonStartStops.get(i+2);
 									finalfilearray[k][1] = annotationExonStartStops.get(i+2) + currStop - distanceBetweenTwoExons;
 									finalfilearray[k][2] = leftoverscore;
 									k++;
 								}
+								
 								lastIndex = j;
 								break;
 							}
 						}
 					}					
-					System.out.println("1 NM done");
+//					System.out.println("1 NM done");
 					for (i = 0; i < finalfilearray.length; i++) {
 						if (finalfilearray[i][2] > 0.0)
 							bufWriter.write(chrmomosome + "\t" + geneFromFile2 + "\t" + ((int)finalfilearray[i][0]) + "\t" + ((int)finalfilearray[i][1]) + "\t" + finalfilearray[i][2] + "\n");
