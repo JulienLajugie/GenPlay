@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.gui.action.binListTrack;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,8 @@ import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotData;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPane;
-import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
 import yu.einstein.gdp2.gui.track.BinListTrack;
+import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.Track;
 
 
@@ -52,7 +53,6 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		scatPlotData = new ArrayList<ScatterPlotData>();
 	}
 
 
@@ -60,9 +60,14 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 	public Operation<double [][][]> initializeOperation() {
 		BinListTrack selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0##"), 0, 1000, 1);
+			Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
 			if (scoreBin != null) {	
-				selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
+				// we ask the user to choose the tracks for the repartition only if there is more than one track
+				if (getTrackList().getBinListTracks().length > 1) {
+					selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
+				} else {
+					selectedTracks = getTrackList().getBinListTracks();
+				}
 				if ((selectedTracks != null)) {
 					BinList[] binListArray = new BinList[selectedTracks.length];
 					for (int i = 0; i < selectedTracks.length; i++) {
@@ -78,16 +83,16 @@ public final class BLARepartition extends TrackListActionOperationWorker<double 
 		return null;
 	}
 
+	
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
 		if (actionResult != null && selectedTracks.length != 0) {
+			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
-				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].getName()));
+				Color trackColor = ((CurveTrack<?>) selectedTracks[k]).getTrackColor(); // retrieve the color of the track
+				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].toString(), trackColor));
 			}
-			ScatterPlotPanel.setxAxisName("Score");
-			ScatterPlotPanel.setyAxisName("Count");
 			ScatterPlotPane.showDialog(getRootPane(), "Score", "Bin Count", scatPlotData);
-			ScatterPlotPanel.showDialog(getRootPane(), scatPlotData);
 		}
 	}
 }

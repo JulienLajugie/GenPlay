@@ -26,7 +26,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 public final class ControlPanel extends JPanel implements GenomeWindowListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -8254420324898563978L; // generated ID
-	private static final int INCREMENT_FACTOR = 100; 					// the length of a left or right move is the length of the   
+	private static final int INCREMENT_FACTOR = 10; 					// the length of a left or right move is the length of the   
 																		// displayed chromosome window divided by this constant 
 	private final PositionScrollPanel 				positionScrollPanel;// PositionScrollPanel part
 	private final ZoomPanel 						zoomPanel;			// ZoomPanel part

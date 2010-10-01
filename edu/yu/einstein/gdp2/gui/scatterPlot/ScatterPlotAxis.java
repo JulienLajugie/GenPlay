@@ -1,5 +1,5 @@
 /**
- * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.scatterPlot;
@@ -8,6 +8,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.Serializable;
+import java.text.DecimalFormat;
+
+import yu.einstein.gdp2.core.enums.LogBase;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -16,18 +20,23 @@ import java.io.Serializable;
  * @version 0.1
  */
 public class ScatterPlotAxis implements Serializable {
-	
+
 	private static final long serialVersionUID = 487345102079879893L;	// generated ID
 	private static final int 	HALF_MAJOR_TICK_SIZE = 4;	// half size of the major ticks
 	private static final int 	HALF_MINOR_TICK_SIZE = 2;	// half size of the minor ticks
+	private static final DecimalFormat 	DF = 
+		new DecimalFormat("###,###,###.##");				// decimal format
+	private final boolean 		orientation;				// orientation of the axis
 	private double 				min;						// minimum of the axis 
 	private double 				max;						// maximum of the axis
 	private double 				majorUnit;					// major unit of the ticks
 	private double 				minorUnit;					// minor unit of the ticks
-	private boolean				showGrid = false;			// set to true to show the grid associated with this axis
+	private boolean				showGrid = true;			// set to true to show the grid associated with this axis
 	private boolean 			isLogScale = false;			// true if the axis is on a log scale
-	private final boolean 		direction;					// direction of the axis
+	private LogBase				logBase = LogBase.BASE_10;	// the base of the log scale
 	private String 				name;						// name of the axis
+	private int 				position;					// position of the axis (y position for an horizontal axis and x position for a vertical one)
+
 	/**
 	 * Horizontal axis
 	 */
@@ -36,24 +45,24 @@ public class ScatterPlotAxis implements Serializable {
 	 * Vertical axis
 	 */
 	public static final boolean VERTICAL = false;
-	
-	
+
+
 	/**
 	 * Creates an instance of a {@link ScatterPlotAxis}
 	 * @param min minimum of the axis
 	 * @param max maximum of the axis
-	 * @param direction direction of the axis
+	 * @param orientation orientation of the axis
 	 * @param name name of the axis
 	 */
-	public ScatterPlotAxis(double dataMin, double dataMax, boolean direction, String name) {
-		this.direction = direction;
+	public ScatterPlotAxis(double dataMin, double dataMax, boolean orientation, String name) {
+		this.orientation = orientation;
 		this.name = name;
 		findDefaultMin(dataMin);
 		findDefaultMax(dataMax);
 		findDefaultUnits();
 	}
-	
-	
+
+
 	/**
 	 * Translates a  data value to its position on the screen 
 	 * @param dataValue a value
@@ -61,73 +70,137 @@ public class ScatterPlotAxis implements Serializable {
 	 * @return the position on the screen on the axis
 	 */
 	protected int dataValueToScreenPosition(double dataValue, Rectangle clip) {
+		double max = this.max;
+		if (isLogScale) {
+			if (this.max > 0) {
+				max = Utils.log(logBase, this.max);
+			}
+			if (dataValue <= 0) {
+				dataValue = 0;
+			} else {
+				dataValue = Utils.log(logBase, dataValue);
+			}
+		}
+				
 		double position = 0;
-		if (direction == HORIZONTAL) {
-			int width = clip.width;
+		if (orientation == HORIZONTAL) {
 			int padX = clip.x;
-			position = (dataValue - min) * width / (max - min) + padX;
+			int width = clip.width;
+			if (min == max) {
+				position = padX;
+			} else {				
+				position = (dataValue - min) * width / (max - min) + padX;
+			}
 		} else {
 			int height = clip.height;
 			int padY = clip.y;
-			position = height - ((dataValue - min) * height / (max - min)) + padY;
+			if (min == max) {
+				position = padY;
+			} else {
+				position = height - ((dataValue - min) * height / (max - min)) + padY;
+			}
 		}
 		return (int) position;
 	}
-	
-	
-	public void drawAxis(Graphics g, Rectangle clip) {
-		if (direction == HORIZONTAL) {
-			drawHorizontalAxis(g, clip);
+
+
+	/**
+	 * Draws the axis
+	 * @param g {@link Graphics}
+	 * @param clip rectangle where the chart is printed
+	 */
+	protected void drawAxis(Graphics g, Rectangle clip) {
+		// the axis are black
+		g.setColor(Color.BLACK);
+		// draw the axis line
+		if (orientation == HORIZONTAL) {
+			g.drawLine(clip.x, position, clip.width + clip.x, position);
 		} else {
-			drawVerticalAxis(g, clip);
+			g.drawLine(position, clip.y, position, clip.y + clip.height);
 		}
 	}
 
 	
 	/**
-	 * Draws the horizontal axis 
-	 * @param g {@link Graphics} to draw the axis
-	 * @param clip part of the {@link Graphics} where to draw the axis
+	 * Draws the grid if the showGrid option is set to true
+	 * @param g {@link Graphics}
+	 * @param clip rectangle where the chart is printed
 	 */
-	private void drawHorizontalAxis(Graphics g, Rectangle clip) {
-		// the axis are black
+	protected void drawGrid(Graphics g, Rectangle clip) {
+		if (showGrid) {
+			g.setColor(Color.LIGHT_GRAY);
+			double firstLine = ((int) (min / majorUnit)) * majorUnit;
+			for (double i = firstLine; i <= max; i += majorUnit) {
+				int pos = dataValueToScreenPosition(i, clip);
+				if (orientation == HORIZONTAL) {				
+					g.drawLine(pos, clip.y, pos, clip.y + clip.height);
+				} else {
+					g.drawLine(clip.x, pos, clip.width + clip.x, pos);
+				}
+			}
+		}
+	}
+
+	
+	/**
+	 * Draws the major ticks with the numbers
+	 * @param g {@link Graphics}
+	 * @param clip rectangle where the chart is printed
+	 */
+	protected void drawMajorUnit(Graphics g, Rectangle clip) {
 		g.setColor(Color.BLACK);
-		// compute the y0 position on the screen
-		int y0Pos = clip.y + clip.height;
-		// draw the axis line
-		g.drawLine(clip.x, y0Pos, clip.width + clip.x, y0Pos);
-//		// search the data value of the first tick
-//		double firstTick = ((int) (min / minorUnit)) * minorUnit;
-//		int lastTickScreenPos = dataValueToScreenPosition(firstTick, clip);
-//		boolean isMajorTick = firstTick % majorUnit == 0;
-//		g.drawLine(lastTickScreenPos, y0Pos - , lastTickScreenPos, y2);
-//		for (double tick = firstTick; tick < max; tick += minorUnit) {
-//			if (tick != firstTick) {
-//				if () {
-//					
-//				}
-//			} else {
-//				
-//			}
-//		}
+		double firstTick = ((int) (min / majorUnit)) * majorUnit;
+		Integer lastLabelPosition = null;
+		// height of the font
+		int labelHeight = g.getFontMetrics().getHeight();
+		for (double i = firstTick; i <= max; i += majorUnit) {
+			int pos = dataValueToScreenPosition(i, clip);
+			String label = DF.format(i);
+			int labelWidth = g.getFontMetrics().stringWidth(label);			
+			if (orientation == HORIZONTAL) {				
+				g.drawLine(pos, position - HALF_MAJOR_TICK_SIZE, pos, position + HALF_MAJOR_TICK_SIZE);
+				// compute the positions of the label
+				int labelXPosition = pos;
+				int labelYPosition = clip.y + clip.height + HALF_MAJOR_TICK_SIZE + labelHeight;
+				// draw the label only if there is enough room 
+				if ((lastLabelPosition == null) || (lastLabelPosition + labelWidth < labelXPosition)) {
+					g.drawString(label, labelXPosition, labelYPosition);
+					lastLabelPosition = labelXPosition;
+				}
+			} else {				
+				g.drawLine(position - HALF_MAJOR_TICK_SIZE, pos, position + HALF_MAJOR_TICK_SIZE, pos);				
+				// compute the positions of the label
+				int labelXPosition = clip.x - HALF_MAJOR_TICK_SIZE - labelWidth;
+				int labelYPosition = (int) (pos + (labelHeight / (double) 4));
+				// draw the label only if there is enough room 
+				if ((lastLabelPosition == null) || (lastLabelPosition - labelHeight > labelYPosition)) {
+					g.drawString(label, labelXPosition, labelYPosition);
+					lastLabelPosition = labelYPosition;
+				}
+			}		
+		}
 	}
 	
 	
 	/**
-	 * Draws the vertical axis 
-	 * @param g {@link Graphics} to draw the axis
-	 * @param clip part of the {@link Graphics} where to draw the axis
+	 * Draws the minor ticks
+	 * @param g {@link Graphics}
+	 * @param clip rectangle where the chart is printed
 	 */
-	private void drawVerticalAxis(Graphics g, Rectangle clip) {
-		// the axis are black
-		g.setColor(Color.BLACK);
-		// compute the x0 position on the screen
-		int x0Pos = clip.x;
-		// draw the axis line
-		g.drawLine(x0Pos, clip.y, x0Pos, clip.y + clip.height);		
+	protected void drawMinorUnit(Graphics g, Rectangle clip) {
+		g.setColor(Color.DARK_GRAY);
+		double firstTick = ((int) (min / minorUnit)) * minorUnit;
+		for (double i = firstTick; i <= max; i += minorUnit) {
+			int pos = dataValueToScreenPosition(i, clip);
+			if (orientation == HORIZONTAL) {				
+				g.drawLine(pos, position - HALF_MINOR_TICK_SIZE, pos, position + HALF_MINOR_TICK_SIZE);
+			} else {
+				g.drawLine(position - HALF_MINOR_TICK_SIZE, pos, position + HALF_MINOR_TICK_SIZE, pos);
+			}		
+		}
 	}
-	
-	
+
+
 	/**
 	 * Finds and sets the default maximum of the axis considering the maximum value of the data
 	 * @param dataMax maximum value of the data
@@ -143,7 +216,7 @@ public class ScatterPlotAxis implements Serializable {
 			}
 			max = maxTmp;
 			while (max < dataMax) {
-				max += dataMax;
+				max += maxTmp;
 			}
 		}
 	}
@@ -169,7 +242,7 @@ public class ScatterPlotAxis implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Finds and sets the default major and minor units
 	 */
@@ -179,18 +252,18 @@ public class ScatterPlotAxis implements Serializable {
 		while (range / majorUnit >= 100) {
 			majorUnit *= 10;
 		}
-		minorUnit = majorUnit / 10;
+		minorUnit = majorUnit / 2;
 	}
 
-	
+
 	/**
-	 * @return the direction of the axis
+	 * @return the logBase
 	 */
-	public final boolean getDirection() {
-		return direction;
+	public final LogBase getLogBase() {
+		return logBase;
 	}
 
-	
+
 	/**
 	 * @return the majorUnit of the ticks
 	 */
@@ -198,7 +271,7 @@ public class ScatterPlotAxis implements Serializable {
 		return majorUnit;
 	}
 
-	
+
 	/**
 	 * @return the maximum of the axis
 	 */
@@ -206,7 +279,7 @@ public class ScatterPlotAxis implements Serializable {
 		return max;
 	}
 
-	
+
 	/**
 	 * @return the minimum of the axis
 	 */
@@ -214,7 +287,7 @@ public class ScatterPlotAxis implements Serializable {
 		return min;
 	}
 
-	
+
 	/**
 	 * @return the minorUnit of the ticks
 	 */
@@ -222,7 +295,7 @@ public class ScatterPlotAxis implements Serializable {
 		return minorUnit;
 	}
 
-	
+
 	/**
 	 * @return the name of the axis
 	 */
@@ -230,7 +303,23 @@ public class ScatterPlotAxis implements Serializable {
 		return name;
 	}
 
-	
+
+	/**
+	 * @return the orientation of the axis
+	 */
+	public final boolean getOrientation() {
+		return orientation;
+	}
+
+
+	/**
+	 * @return the position of the axis (y position for an horizontal axis and x position for a vertical one)
+	 */
+	public final int getPosition() {
+		return position;
+	}
+
+
 	/**
 	 * @return the true if the axis is in a log scale
 	 */
@@ -238,7 +327,7 @@ public class ScatterPlotAxis implements Serializable {
 		return isLogScale;
 	}
 
-	
+
 	/**
 	 * @return the true if the grid needs to be shown
 	 */
@@ -246,7 +335,15 @@ public class ScatterPlotAxis implements Serializable {
 		return showGrid;
 	}
 
-	
+
+	/**
+	 * @param logBase the logBase to set
+	 */
+	public final void setLogBase(LogBase logBase) {
+		this.logBase = logBase;
+	}
+
+
 	/**
 	 * @param isLogScale the isLogScale to set
 	 */
@@ -254,7 +351,7 @@ public class ScatterPlotAxis implements Serializable {
 		this.isLogScale = isLogScale;
 	}
 
-	
+
 	/**
 	 * @param majorUnit the majorUnit of the ticks
 	 */
@@ -262,7 +359,7 @@ public class ScatterPlotAxis implements Serializable {
 		this.majorUnit = majorUnit;
 	}
 
-	
+
 	/**
 	 * @param max the maximum of the axis
 	 */
@@ -270,7 +367,7 @@ public class ScatterPlotAxis implements Serializable {
 		this.max = max;
 	}
 
-	
+
 	/**
 	 * @param min the minimum of the axis
 	 */
@@ -278,7 +375,7 @@ public class ScatterPlotAxis implements Serializable {
 		this.min = min;
 	}
 
-	
+
 	/**
 	 * @param minorUnit the minorUnit of the ticks
 	 */
@@ -286,7 +383,7 @@ public class ScatterPlotAxis implements Serializable {
 		this.minorUnit = minorUnit;
 	}
 
-	
+
 	/**
 	 * @param name the name of the axis
 	 */
@@ -295,6 +392,14 @@ public class ScatterPlotAxis implements Serializable {
 	}
 	
 	
+	/**
+	 * @param position the position of the axis to set (y position for an horizontal axis and x position for a vertical one)
+	 */
+	public final void setPosition(int position) {
+		this.position = position;
+	}
+
+
 	/**
 	 * @param showGrid show the grid if the parameter's value is true
 	 */

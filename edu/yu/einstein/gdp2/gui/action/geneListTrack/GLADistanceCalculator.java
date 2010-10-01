@@ -112,7 +112,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 				plotData[i][1] = sortedCounter.get(key);
 				i++;
 			}
-			scatPlotData.add(new ScatterPlotData(plotData, graphName));
+			scatPlotData.add(new ScatterPlotData(plotData, graphName, ScatterPlotData.generateRandomColor()));
 			ScatterPlotPanel.setxAxisName("Distance");
 			ScatterPlotPanel.setyAxisName("Count");
 			ScatterPlotPanel.showDialog(getRootPane(), scatPlotData);

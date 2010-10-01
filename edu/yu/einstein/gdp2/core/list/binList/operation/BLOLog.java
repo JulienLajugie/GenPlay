@@ -16,6 +16,7 @@ import yu.einstein.gdp2.core.list.arrayList.ListFactory;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -60,14 +61,7 @@ public class BLOLog implements Operation<BinList> {
 						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							// log is define on R+*
 							if (currentList.get(j) > 0) {
-								double resultValue;
-								if (logBase == LogBase.BASE_E) {
-									// the Math.log function return the natural log (no needs to change the base)
-									resultValue = Math.log(currentList.get(j));
-								} else {
-									// change of base: logb(x) = logk(x) / logk(b)
-									resultValue = Math.log(currentList.get(j)) / Math.log(logBase.getValue());									
-								}
+								double resultValue = Utils.log(logBase, currentList.get(j));
 								resultList.set(j, resultValue);
 							} else if (currentList.get(j) == 0) {
 								resultList.set(j, 0d);

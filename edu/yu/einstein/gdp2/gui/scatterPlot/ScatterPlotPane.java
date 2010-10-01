@@ -1,5 +1,5 @@
 /**
- * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.scatterPlot;
@@ -15,6 +15,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -26,7 +27,6 @@ import yu.einstein.gdp2.core.enums.GraphicsType;
 
 /**
  * Dialog window showing a scatter plot chart.
- * @author Chirag Gorasia
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -42,17 +42,17 @@ public class ScatterPlotPane extends JPanel {
 	private static final int	LEGEND_INSET = 10;			// inset between the legend rectangle and the legend text
 	private static final Color 	LEGEND_BACKGROUND = 
 		new Color(228, 236, 247);							// background color
-	private static final String X_AXIS_PREFIX = "X-Axis";	// prefix name of the x axis
-	private static final String Y_AXIS_PREFIX = "Y-Axis";	// prefix name of the y axis
+	private static final String X_AXIS_PREFIX = "X-Axis: ";	// prefix name of the x axis
+	private static final String Y_AXIS_PREFIX = "Y-Axis: ";	// prefix name of the y axis
 	private static final DecimalFormat 	DF = 
-		new DecimalFormat("###,###,###.##");				// decimal format	
+		new DecimalFormat("###,###,###.###");				// decimal format	
 	private final ScatterPlotAxis 			xAxis;			// x axis
 	private final ScatterPlotAxis 			yAxis;			// y axis
 	private final List<ScatterPlotData> 	data;			// data to plot
 	private GraphicsType 					chartType;		// type of chart
 	private final int 						legendWidth;	// with of the legend
 
-	
+
 	/**
 	 * Shows a {@link ScatterPlotPane}.
 	 * @param parent parent component. Can be null
@@ -69,7 +69,6 @@ public class ScatterPlotPane extends JPanel {
 		scatterPlotDialog.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		scatterPlotDialog.setMinimumSize(new Dimension(MINIMUM_WIDTH, MINIMUM_HEIGHT));
 		scatterPlotDialog.pack();
-		scatterPlotDialog.setResizable(false);
 		scatterPlotDialog.setLocationRelativeTo(parent);
 		scatterPlotDialog.setVisible(true);
 		scatterPlotDialog.dispose();
@@ -104,15 +103,20 @@ public class ScatterPlotPane extends JPanel {
 		addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				Point p = getOriginalPoint(e.getPoint());
-				setToolTipText("(" + p.x + " : " + DF.format(p.y) + ")");
+				Rectangle clip = new Rectangle(PAD, PAD, getWidth() - (2 * PAD), getHeight() - (2 * PAD));
+				// we print the tooltip text only if the cursor is inside the chart area
+				if (clip.contains(e.getPoint())) {
+					Point2D p = getDataPoint(e.getPoint());
+					setToolTipText("(" + DF.format(p.getX()) + " : " + DF.format(p.getY()) + ")");
+				} else {
+					setToolTipText(null);
+				}
 			}
 		});
 		setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-		setBackground(Color.WHITE);
 	}
-	
-	
+
+
 	/**
 	 * @return the width of the legend text in pixels
 	 */
@@ -139,9 +143,8 @@ public class ScatterPlotPane extends JPanel {
 			for (int j = 0; j < currentScatterPlot.getData().length - 1; j++) {
 				Point current = null;
 				Point next = null;
-				if (((currentScatterPlot.getData()[j][0] >= xAxis.getMin())
-						&& (currentScatterPlot.getData()[j][0] <= xAxis.getMax())
-				/*&& (Math.abs(currentScatterPlot.getData()[j][0] - currentScatterPlot.getData()[j + 1][0]) <= getXAxisStepSize())*/)) {
+				if ((currentScatterPlot.getData()[j][0] >= xAxis.getMin())
+						&& (currentScatterPlot.getData()[j][0] <= xAxis.getMax())) {
 					if (currentScatterPlot.getData()[j][1] > yAxis.getMax()) {
 						current = new Point(getTranslatedPoint(currentScatterPlot.getData()[j][0], yAxis.getMax()));
 						next = new Point(getTranslatedPoint(currentScatterPlot.getData()[j + 1][0], yAxis.getMax()));
@@ -151,8 +154,8 @@ public class ScatterPlotPane extends JPanel {
 					} else {
 						current = new Point(getTranslatedPoint(currentScatterPlot.getData()[j][0], currentScatterPlot.getData()[j][1]));
 						next = new Point(getTranslatedPoint(currentScatterPlot.getData()[j + 1][0], currentScatterPlot.getData()[j][1]));
+						g.drawLine(current.x, current.y, next.x, next.y);
 					}
-					g.drawLine(current.x, current.y, next.x, next.y);
 					g.drawLine(current.x, current.y, current.x, getTranslatedPoint(current.x, 0).y);
 					g.drawLine(next.x, next.y, next.x, getTranslatedPoint(current.x, 0).y);
 				}
@@ -171,17 +174,30 @@ public class ScatterPlotPane extends JPanel {
 			for (int j = 0; j < currentScatterPlot.getData().length - 1; j++) {
 				Point current = new Point(getTranslatedPoint(currentScatterPlot.getData()[j][0], currentScatterPlot.getData()[j][1]));				
 				Point nexttonext = new Point(getTranslatedPoint(currentScatterPlot.getData()[j + 1][0], currentScatterPlot.getData()[j + 1][1]));
-				if ((currentScatterPlot.getData()[j][0] >= xAxis.getMin()) 
-						&& (currentScatterPlot.getData()[j][0] <= xAxis.getMax())
-						&& (currentScatterPlot.getData()[j][1] >= yAxis.getMin()) 
-						&& (currentScatterPlot.getData()[j][1] <= yAxis.getMax()) 
-						//&& (Math.abs(currentScatterPlot.getData()[j][0] - currentScatterPlot.getData()[j + 1][0]) <= getXAxisStepSize()) 
-						&& (currentScatterPlot.getData()[j + 1][1] <= yAxis.getMax())) {
-					g.drawLine(current.x, current.y, nexttonext.x, nexttonext.y);
-					g.drawString(".", current.x, current.y);										
+				g.drawLine(current.x, current.y, nexttonext.x, nexttonext.y);
+				if ((currentScatterPlot.getData()[j][0] < xAxis.getMin()) 
+						|| (currentScatterPlot.getData()[j][0] > xAxis.getMax()) 
+						|| (currentScatterPlot.getData()[j + 1][1] <= yAxis.getMax())) {
+					// we erase the part of the line that is not in the chart area
+					// this means that the curve needs to be drawn before the axis and ticks and legend
+					g.setColor(getBackground());
+					g.fillRect(0, 0, getWidth(), PAD);
+					g.fillRect(0, getHeight() - PAD, getWidth(), PAD);
+					g.setColor(currentScatterPlot.getColor());
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Draws the background of the chart
+	 * @param g {@link Graphics}
+	 * @param clip rectangle where to draw the chart
+	 */
+	private void drawChartBackground(Graphics g, Rectangle clip) {
+		g.setColor(Color.WHITE);
+		g.fillRect(clip.x, clip.y, clip.width, clip.height);			
 	}
 
 
@@ -217,10 +233,11 @@ public class ScatterPlotPane extends JPanel {
 		int lineHeight = g.getFontMetrics().getHeight() + 2; // height of a legend line
 		// draw the legend rectangle
 		g.fillRect(getWidth() - legendWidth - LENGEND_PAD - (LEGEND_INSET * 2), LENGEND_PAD, legendWidth + (LEGEND_INSET * 2), ((data.size() + 2 ) * lineHeight) + (LEGEND_INSET * 2));
+		g.setColor(Color.BLACK);
+		g.drawRect(getWidth() - legendWidth - LENGEND_PAD - (LEGEND_INSET * 2), LENGEND_PAD, legendWidth + (LEGEND_INSET * 2), ((data.size() + 2 ) * lineHeight) + (LEGEND_INSET * 2));
 		// search the position where to start the text of the legend
 		Point p = new Point(getWidth() - legendWidth - LENGEND_PAD - LEGEND_INSET, LENGEND_PAD + LEGEND_INSET + g.getFontMetrics().getHeight());
 		// draw the axis names
-		g.setColor(Color.BLACK);
 		g.drawString(X_AXIS_PREFIX + xAxis.getName(), p.x, p.y); // draw X-Axis legend
 		g.drawString(Y_AXIS_PREFIX + yAxis.getName(), p.x, p.y + lineHeight); // draw Y-Axis legend
 		// draw graph name legend
@@ -249,13 +266,12 @@ public class ScatterPlotPane extends JPanel {
 				if ((currentScatterPlot.getData()[j][0] >= xAxis.getMin())
 						&& (currentScatterPlot.getData()[j][0] <= xAxis.getMax())
 						&& (currentScatterPlot.getData()[j][1] >= yAxis.getMin())
-						&& (currentScatterPlot.getData()[j][1] <= yAxis.getMax())
-				/*&& (Math.abs(currentScatterPlot.getData()[j][0] - currentScatterPlot.getData()[j + 1][0]) <= getXAxisStepSize()*/) {
+						&& (currentScatterPlot.getData()[j][1] <= yAxis.getMax())) {
 					g.drawLine(current.x, current.y, next.x, next.y);
 				}
 			}
 		}
-	}
+	}	
 
 
 	/**
@@ -279,7 +295,7 @@ public class ScatterPlotPane extends JPanel {
 			}
 		}
 		return bounds;
-	}	
+	}
 
 
 	/**
@@ -299,6 +315,18 @@ public class ScatterPlotPane extends JPanel {
 
 
 	/**
+	 * @param p {@link Point} of a screen position
+	 * @return original data Point corresponding to the specified screen position
+	 */
+	private Point2D getDataPoint(Point screenPoint) {
+		Point2D.Double retPoint = new Point2D.Double();
+		retPoint.x = ((screenPoint.x - PAD) * (xAxis.getMax() - xAxis.getMin()) / (getWidth() - 2 * PAD)) + xAxis.getMin();
+		retPoint.y = -1 * ((screenPoint.y - getHeight() + PAD) * (yAxis.getMax() - yAxis.getMin()) / (getHeight() - 2 * PAD)) + yAxis.getMin();
+		return retPoint;
+	}
+
+
+	/**
 	 * @return an array of String containing the name of the {@link ScatterPlotData} 
 	 */
 	public String[] getGraphNames() {
@@ -307,18 +335,6 @@ public class ScatterPlotPane extends JPanel {
 			names[i] = data.get(i).getName();			
 		}
 		return names;
-	}
-
-
-	/**
-	 * @param p {@link Point} of a screen position
-	 * @return original data Point corresponding to the specified screen position
-	 */
-	private Point getOriginalPoint(Point p) {
-		Point retPoint = new Point();
-		retPoint.x = (int) (((p.x - PAD) * (xAxis.getMax() - xAxis.getMin()) / (getWidth() - 2 * PAD)) + xAxis.getMin());
-		retPoint.y = (int) (-1 * ((p.y - getHeight() + PAD) * (yAxis.getMax() - yAxis.getMin()) / (getHeight() - 2 * PAD)) + yAxis.getMin());
-		return retPoint;
 	}
 
 
@@ -358,14 +374,40 @@ public class ScatterPlotPane extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		Rectangle clip = new Rectangle(PAD, PAD, getWidth() - (2 * PAD), getHeight()- (2 * PAD));
+		// set where inside the dialog, the chart needs to be drawn
+		Rectangle clip = new Rectangle(PAD, PAD, getWidth() - (2 * PAD), getHeight() - (2 * PAD));
+		// draw the background of the chart
+		drawChartBackground(g, clip);	
+		// set the position of the axis in case they moved
+		if (yAxis.isLogScale()) {
+			xAxis.setPosition(yAxis.dataValueToScreenPosition(1, clip));
+		} else {
+			xAxis.setPosition(yAxis.dataValueToScreenPosition(0, clip));
+		}
+		if (xAxis.isLogScale()) {
+			yAxis.setPosition(xAxis.dataValueToScreenPosition(1, clip));
+		} else {
+			yAxis.setPosition(xAxis.dataValueToScreenPosition(0, clip));
+		}
+		// draw the grid
+		xAxis.drawGrid(g, clip);
+		yAxis.drawGrid(g, clip);
+		// draw the curve
+		drawGraphics(g, clip, chartType);
+		// draw the axis
 		xAxis.drawAxis(g, clip);
 		yAxis.drawAxis(g, clip);
-		drawGraphics(g, clip, chartType);
+		// draw minor units
+		xAxis.drawMinorUnit(g, clip);
+		yAxis.drawMinorUnit(g, clip);
+		// draw major units
+		xAxis.drawMajorUnit(g, clip);
+		yAxis.drawMajorUnit(g, clip);
+		// draw the chart legend
 		drawLegend(g);
 	}
-	
-	
+
+
 	/**
 	 * @param chartType the chart type to set
 	 */

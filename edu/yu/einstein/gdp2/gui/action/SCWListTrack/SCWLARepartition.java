@@ -5,6 +5,7 @@
 
 package yu.einstein.gdp2.gui.action.SCWListTrack;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,8 @@ import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
 import yu.einstein.gdp2.gui.dialog.MultiTrackChooser;
 import yu.einstein.gdp2.gui.dialog.NumberOptionPane;
 import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotData;
-import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPanel;
+import yu.einstein.gdp2.gui.scatterPlot.ScatterPlotPane;
+import yu.einstein.gdp2.gui.track.CurveTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 
@@ -49,11 +51,9 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 	 */
 	public SCWLARepartition() {
 		super();
-		//System.out.println("In SCWLARepartition Constructor");
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		scatPlotData = new ArrayList<ScatterPlotData>();
 	}
 
 
@@ -85,11 +85,15 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 					setGraphIndicator(SCWLORepartition.WINDOW_COUNT_GRAPH);
 				} else {
 					setGraphIndicator(SCWLORepartition.BASE_COUNT_GRAPH);
-				}
-				
-				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0##"), 0, 1000, 1);
+				}				
+				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
 				if (scoreBin != null) {	
-					selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getSCWListTracks());
+					// we ask the user to choose the tracks for the repartition only if there is more than one track
+					if (getTrackList().getSCWListTracks().length > 1) {
+						selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getSCWListTracks());
+					} else {
+						selectedTracks = getTrackList().getSCWListTracks();
+					}					
 					if ((selectedTracks != null)) {
 						ScoredChromosomeWindowList[] scwListArray = new ScoredChromosomeWindowList[selectedTracks.length];
 						for (int i = 0; i < selectedTracks.length; i++) {
@@ -106,15 +110,20 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 		return null;
 	}
 
+	
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
 		if (actionResult != null && selectedTracks.length != 0) {
+			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
-				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].getName()));
+				Color trackColor = ((CurveTrack<?>) selectedTracks[k]).getTrackColor(); // retrieve the color of the track
+				scatPlotData.add(new ScatterPlotData(actionResult[k], selectedTracks[k].toString(), trackColor));
 			}
-			ScatterPlotPanel.setxAxisName("Score");
-			ScatterPlotPanel.setyAxisName("Count");
-			ScatterPlotPanel.showDialog(getRootPane(), scatPlotData);
+			if (getGraphIndicator() == SCWLORepartition.WINDOW_COUNT_GRAPH) {
+				ScatterPlotPane.showDialog(getRootPane(), "Score", "Window Count", scatPlotData);
+			} else {
+				ScatterPlotPane.showDialog(getRootPane(), "Score", "bp Count", scatPlotData);
+			}
 		}
 	}
 }

@@ -16,6 +16,7 @@ import yu.einstein.gdp2.core.list.arrayList.ListFactory;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.core.operationPool.OperationPool;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -55,13 +56,7 @@ public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 		final double logMean;
 		// log is defined on R+*
 		if (mean + damper > 0) {
-			if (logBase == LogBase.BASE_E) {
-				// the Math.log function return the natural log (no needs to change the base)
-				logMean = Math.log(mean + damper);
-			} else {
-				// change of base: logb(x) = logk(x) / logk(b)
-				logMean = Math.log(mean + damper) / Math.log(logBase.getValue());
-			}
+			logMean = Utils.log(logBase, mean + damper);
 		} else {
 			throw new ArithmeticException("Logarithm of a negative value not allowed");
 		}		
@@ -79,14 +74,7 @@ public class BLOLogOnAvgWithDamper implements Operation<BinList> {
 						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							// make sure that the list 
 							if (currentList.get(j) > 0) {
-								double resultValue;
-								if (logBase == LogBase.BASE_E) {
-									// the Math.log function return the natural log (no needs to change the base)
-									resultValue = Math.log(currentList.get(j) + damper) - logMean;	
-								} else {
-									// change of base: logb(x) = logk(x) / logk(b)
-									resultValue = Math.log(currentList.get(j) + damper) / Math.log(logBase.getValue()) - logMean;									
-								}
+								double resultValue = Utils.log(logBase, currentList.get(j)) - logMean;
 								resultList.set(j, resultValue);
 							} else if (currentList.get(j) == 0) {
 								resultList.set(j, 0d);

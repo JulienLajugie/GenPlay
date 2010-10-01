@@ -1,5 +1,5 @@
 /**
- * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.scatterPlot.action;
@@ -7,6 +7,7 @@ package yu.einstein.gdp2.gui.scatterPlot.action;
 import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -97,8 +98,10 @@ public class SPASaveData extends ScatterPlotAction {
 				writer.newLine();
 			}			
 			writer.close();
+		} catch (FileNotFoundException e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
 		} catch (IOException e) {
-			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");;
+			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
 		}
 	}
 }

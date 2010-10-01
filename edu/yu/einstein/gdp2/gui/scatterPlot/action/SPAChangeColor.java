@@ -1,5 +1,5 @@
 /**
- * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.scatterPlot.action;

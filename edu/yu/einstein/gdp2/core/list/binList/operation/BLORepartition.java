@@ -29,7 +29,7 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  */
 public class BLORepartition extends JComponent implements Operation<double [][][]> {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 7957598559746052918L;	// generated ID
 	private final BinList[] binListArray;	// input binListArray
 	private final double 	scoreBinSize;	// size of the bins of score
 	private boolean			stopped = false;// true if the operation must be stopped
@@ -37,8 +37,8 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 
 	/**
 	 * Creates an instance of {@link BLORepartition}
-	 * @param binListArray
-	 * @param scoreBinSize
+	 * @param binListArray input BinLists
+	 * @param scoreBinSize size of the bins of score
 	 */
 	public BLORepartition(BinList[] binListArray, double scoreBinSize) {
 		this.binListArray = binListArray;
@@ -67,29 +67,22 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 	 */
 	public double[][] singleBinListResult (final BinList binList) throws InterruptedException, ExecutionException {
 		// search the greatest and smallest score
-		double max = binList.getMax();
-		final double min = binList.getMin();
-		final double distanceMinMax = max - min;
-		final double startPoint;
-		int minNegative = 0;
-		if (min < 0) {
-			minNegative = 1;
-		}
-		int i = 0;
-		while ((scoreBinSize * i) < Math.abs(min) && !stopped) {
-			i++;
-		}
-		if (minNegative == 1) {
-			startPoint = scoreBinSize * i * (-1);
-		}else {
-			startPoint = scoreBinSize * (i - 1);
-		}
+		double max = Math.max(0, binList.getMax());
+		double min = Math.min(0, binList.getMin());
+		// search the score of the first bin
+		final double startPoint = Math.floor(min / scoreBinSize) * scoreBinSize;
+		// distance from the max to the first score
+		final double distanceMinMax = max - startPoint;
+		// the +2 is because of the rounding (+1) and also because we want one more value
+		// because the data are arrange this way:
+		// count(res[i][1] to res[i+1][1]) = res[i][1]
+		// meaning that we need to have the value for i + 1
 		double result[][] = new double[(int)(distanceMinMax / scoreBinSize) + 2][2];
-		int z = 0;
-		while (Math.ceil(startPoint + z * scoreBinSize) <= max && !stopped) {
-			//System.out.println("Z = " + z);
-			result[z][0] = (startPoint + z * scoreBinSize);
-			z++;
+		int i = 0;
+		// we add max + scoreBinSize to have a value for i + 1 (cf previous comment) 
+		while ((startPoint + i * scoreBinSize) <= (max + scoreBinSize) && !stopped) {
+			result[i][0] = startPoint + i * scoreBinSize;
+			i++;
 		}
 
 		final OperationPool op = OperationPool.getInstance();
@@ -99,15 +92,14 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 			Callable<double[]> currentThread = new Callable<double[]>() {	
 				@Override
 				public double[] call() throws Exception {				
-					double[] chromoResult = new double[(int)(distanceMinMax / scoreBinSize) + 2];					                                
-					if (currentList == null) {
+ 					if (currentList == null) {
 						return null;
 					}
-
+ 					// create an array for the counts
+ 					double[] chromoResult = new double[(int)(distanceMinMax / scoreBinSize) + 2];
+					// count the bins
 					for(int j = 0; j < currentList.size() && !stopped; j++) {
-						if (currentList.get(j) != 0) {
-							chromoResult[(int)((currentList.get(j) - min) / scoreBinSize)]++;
-						}
+						chromoResult[(int)((currentList.get(j) - startPoint) / scoreBinSize)]++;
 					}
 					op.notifyDone();
 					return chromoResult;
@@ -128,6 +120,7 @@ public class BLORepartition extends JComponent implements Operation<double [][][
 				}
 			}
 		}
+		
 		return result;
 	}
 

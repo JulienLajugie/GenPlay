@@ -1,5 +1,5 @@
 /**
- * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 package yu.einstein.gdp2.gui.scatterPlot;
@@ -11,6 +11,7 @@ import java.util.Random;
 /**
  * Data of a scatter plot
  * @author Chirag Gorasia
+ * @author Julien Lajugie
  * @version 0.1
  */
 public class ScatterPlotData {
@@ -24,23 +25,29 @@ public class ScatterPlotData {
 	 * Creates an instance of {@link ScatterPlotData}
 	 * @param data data of the scatter plot
 	 * @param name name of the scatter plot
+	 * @param color color of the plot
 	 */
-	public ScatterPlotData(double[][] data, String name) {
+	public ScatterPlotData(double[][] data, String name, Color color) {
 		this.data = data;
 		this.name = name;
-		this.color = generateRandomColor();
+		this.color = color;
 	}
 
 
 	/**
 	 * @return a color randomly generated
 	 */
-	private Color generateRandomColor() {
+	public static Color generateRandomColor() {
 		Random randomGen = new Random();
 		int red = randomGen.nextInt(255);
 		int green = randomGen.nextInt(255);
 		int blue = randomGen.nextInt(255);
-		return new Color(red, green, blue);
+		if (red + green + blue > 510) {
+			// we want dark colors
+			return generateRandomColor();
+		} else {
+			return new Color(red, green, blue);
+		}
 	}
 
 

@@ -427,7 +427,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * Save the track as a JPG image.
+	 * Save the track as a PNG image.
 	 * @param file ouput file
 	 */
 	public void saveAsImage(File file) {
@@ -435,7 +435,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		Graphics2D g = image.createGraphics();
 		paint(g);
 		try {         
-			ImageIO.write(image, "JPEG", file);
+			ImageIO.write(image, "PNG", file);
 		}catch(Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks as an image");
 		}		

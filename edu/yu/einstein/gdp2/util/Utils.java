@@ -59,7 +59,7 @@ public class Utils {
 		}
 	}
 
-
+	
 	/**
 	 * @param chromoList array of boolean. 
 	 * @return true if all the booleans are set to true or if the array is null. False otherwise 
@@ -76,7 +76,7 @@ public class Utils {
 		return true;
 	}
 
-
+	
 	/**
 	 * Asks if the user wants to replace a file if this file already exists.
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -141,8 +141,25 @@ public class Utils {
 				FilterType.values(),
 				FilterType.PERCENTAGE);
 	}
-	
-	
+
+
+	/**
+	 * A dialog box used to choose a {@link IslandResultType}
+	 * @param parentComponent the parent Component for the dialog 
+	 * @return a {@link FilterType} value
+	 */
+	public static IslandResultType chooseIslandResultType(Component parentComponent) {
+		return (IslandResultType)JOptionPane.showInputDialog(
+				parentComponent,
+				"Choose a type of result",
+				"Island result Type",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				IslandResultType.values(),
+				IslandResultType.FILTERED);
+	}
+
+
 	/**
 	 * A dialog box used to choose a {@link LogBase}
 	 * @param parentComponent the parent Component for the dialog
@@ -228,7 +245,7 @@ public class Utils {
 				ScoreCalculationMethod.AVERAGE);
 	}
 
-	
+
 	/**
 	 * A dialog box used to choose a {@link ScoreCalculationMethod}
 	 * @param parentComponent the parent Component for the dialog 
@@ -244,7 +261,7 @@ public class Utils {
 				ScoreCalculationTwoTrackMethod.values(),
 				ScoreCalculationTwoTrackMethod.ADDITION);
 	}
-	
+
 
 	/**
 	 * @param file a {@link File}
@@ -263,7 +280,7 @@ public class Utils {
 		}		
 	}
 
-	
+
 	/**
 	 * @param file a {@link File}
 	 * @return the name of a file without its extension
@@ -277,7 +294,7 @@ public class Utils {
 			return fileName;
 		}
 	}
-	
+
 
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
@@ -304,8 +321,8 @@ public class Utils {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new PSLFilter()};
 		return filters;
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
@@ -349,8 +366,8 @@ public class Utils {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter()};
 		return filters;
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as SCWList
 	 */
@@ -358,8 +375,24 @@ public class Utils {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter()};
 		return filters;
 	}
-	
-	
+
+
+	/**
+	 * Returns the logarithm of a double value. The logarithm is computed in the specified base 
+	 * @param logBase
+	 * @param value value to l
+	 * @return a logarithm value
+	 */
+	public static double log(LogBase logBase, double value) {
+		if (logBase == LogBase.BASE_E) {
+			// the Math.log function return the natural log (no needs to change the base)
+			return Math.log(value);
+		} else {
+			// change of base: logb(x) = logk(x) / logk(b)
+			return Math.log(value) / Math.log(logBase.getValue());									
+		}
+	}
+
 	/**
 	 * Returns a color associated to a score. 
 	 * High intensities are red. Medium are green. Low are blue.
@@ -394,21 +427,5 @@ public class Utils {
 			b = 0;			
 		}		
 		return new Color(r, v, b);
-	}
-	
-	/**
-	 * A dialog box used to choose a {@link IslandResultType}
-	 * @param parentComponent the parent Component for the dialog 
-	 * @return a {@link FilterType} value
-	 */
-	public static IslandResultType chooseIslandResultType(Component parentComponent) {
-		return (IslandResultType)JOptionPane.showInputDialog(
-				parentComponent,
-				"Choose a type of result",
-				"Island result Type",
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				IslandResultType.values(),
-				IslandResultType.FILTERED);
 	}	
 }

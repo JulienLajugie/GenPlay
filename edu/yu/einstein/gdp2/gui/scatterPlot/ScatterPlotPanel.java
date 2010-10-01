@@ -413,6 +413,9 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 					g.drawLine(current.x, current.y, next.x, next.y);
 					g.drawLine(current.x, current.y, current.x, getTranslatedPoint(current.x, 0).y);
 					g.drawLine(next.x, next.y, next.x, getTranslatedPoint(current.x, 0).y);
+					if (j == 0){
+						System.out.println("ofg" + listOfGraphs.get(i).getData()[j][0]);
+					}
 				} else if (listOfGraphs.get(i).getData()[j][0] <= getXAxisEnd() && listOfGraphs.get(i).getData()[j][1] > getYAxisEnd() && listOfGraphs.get(i).getData()[j][1] >= getYAxisStart() && listOfGraphs.get(i).getData()[j][0] >= getXAxisStart() && Math.abs(listOfGraphs.get(i).getData()[j][0]-listOfGraphs.get(i).getData()[j+1][0]) <= getXAxisStepSize()) {
 					g.drawLine(current.x, getTranslatedPoint(current.x, getYAxisEnd()).y, current.x, getTranslatedPoint(current.x, 0).y);
 					g.drawLine(next.x, getTranslatedPoint(current.x, getYAxisEnd()).y, next.x, getTranslatedPoint(current.x, 0).y);
@@ -459,25 +462,25 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 			g.drawString(graphName, p.x + 30, yLine);
 		}
 	}
-//	/**
-//	 * Method to draw the Legend for the scatter plot
-//	 * @param g (Graphics)
-//	 */
-//	protected void drawLegend(Graphics g) {
-//		//Point p = getTranslatedPoint(getXAxisEnd()-1.5*getXAxisStepSize(), getYAxisEnd()-getXAxisStepSize());
-//		Point p = new Point(getWidth() - getWidth()/4, 100);
-//		//Point q = getTranslatedPoint(100, 100);
-//		g.setColor(Color.black);
-//		g.drawString("X-Axis: " + getxAxisName(), p.x, p.y);
-//		g.drawString("Y-Axis: " + getyAxisName(), p.x, p.y+15);
-//		//Point p = getTranslatedPoint(0d,-100d);
-//		for (int i = 0; i < listOfGraphs.size(); i++) {
-//			g.setColor(graphColor[i]);
-//			g.drawString("------- ", p.x, p.y+i*15+30);
-//			g.setColor(Color.black);
-//			g.drawString(listOfGraphs.get(i).getGraphName(), p.x+30, p.y+i*15+30);
-//		}
-//	}
+	//	/**
+	//	 * Method to draw the Legend for the scatter plot
+	//	 * @param g (Graphics)
+	//	 */
+	//	protected void drawLegend(Graphics g) {
+	//		//Point p = getTranslatedPoint(getXAxisEnd()-1.5*getXAxisStepSize(), getYAxisEnd()-getXAxisStepSize());
+	//		Point p = new Point(getWidth() - getWidth()/4, 100);
+	//		//Point q = getTranslatedPoint(100, 100);
+	//		g.setColor(Color.black);
+	//		g.drawString("X-Axis: " + getxAxisName(), p.x, p.y);
+	//		g.drawString("Y-Axis: " + getyAxisName(), p.x, p.y+15);
+	//		//Point p = getTranslatedPoint(0d,-100d);
+	//		for (int i = 0; i < listOfGraphs.size(); i++) {
+	//			g.setColor(graphColor[i]);
+	//			g.drawString("------- ", p.x, p.y+i*15+30);
+	//			g.setColor(Color.black);
+	//			g.drawString(listOfGraphs.get(i).getGraphName(), p.x+30, p.y+i*15+30);
+	//		}
+	//	}
 
 	/**
 	 * Private method to find the default bounds for the axes for the initial plot
@@ -577,7 +580,7 @@ public class ScatterPlotPanel extends JPanel implements MouseMotionListener, Mou
 
 	@Override
 	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
+		super.paintComponent(g); 
 		g.setColor(Color.BLACK);
 		setBackground(Color.white);
 		drawAxes(g);
