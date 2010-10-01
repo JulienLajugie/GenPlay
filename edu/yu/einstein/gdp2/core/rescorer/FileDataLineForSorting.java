@@ -13,7 +13,7 @@ import java.util.Map;
  * @author Chirag Gorasia
  * @version 0.1
  */
-public class FileSorter implements Comparable<FileSorter>{
+public class FileDataLineForSorting implements Comparable<FileDataLineForSorting>{
 
 	private String chromosomeName;
 	private int start;
@@ -119,13 +119,25 @@ public class FileSorter implements Comparable<FileSorter>{
 		
 	}
 	
-	public FileSorter(String chromosomeName, int start, int stop, double score) {
+	
+	/**
+	 * Creates an instance of {@link FileDataLineForSorting}
+	 * @param chromosomeName
+	 * @param start
+	 * @param stop
+	 * @param score
+	 */
+	public FileDataLineForSorting(String chromosomeName, int start, int stop, double score) {
 		this.chromosomeName = chromosomeName;
 		this.start = start;
 		this.stop = stop;
 		this.score = score;		
 	}
 	
+	/**
+	 * Returns the chromosomeNumber 
+	 * @return chromosomeNumber
+	 */
 	public int getChromosomeNumber() {
 		if (!chromoValue.containsKey(getChromosomeName())) {
 			return 0;
@@ -133,24 +145,40 @@ public class FileSorter implements Comparable<FileSorter>{
 		return chromoValue.get(getChromosomeName());
 	}
 	
+	/**
+	 * 
+	 * @return chromosomeName
+	 */
 	public String getChromosomeName() {
 		return chromosomeName;
 	}
 	
+	/**
+	 * 
+	 * @return start
+	 */
 	public int getStart() {
 		return start;
 	}
 	
+	/**
+	 * 
+	 * @return stop
+	 */
 	public int getStop() {
 		return stop;
 	}
 	
+	/**
+	 * 
+	 * @return score
+	 */
 	public double getScore() {
 		return score;
 	}
 	
 	@Override
-	public int compareTo(FileSorter o) {
+	public int compareTo(FileDataLineForSorting o) {
 		if (this.getChromosomeNumber() > o.getChromosomeNumber()) {
 			return 1;
 		} else if (this.getChromosomeNumber() < o.getChromosomeNumber()) {
