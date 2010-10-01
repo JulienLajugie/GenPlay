@@ -1,3 +1,8 @@
+/**
+ * @author Chirag Gorasia
+ * @version 0.1
+ */
+
 package yu.einstein.gdp2.core.rescorer;
 
 import java.io.BufferedReader;
@@ -6,16 +11,24 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+/**
+ * A Class to Reposition and Rescore the exons
+ * @author Chirag Gorasia
+ * @version 0.1
+ */
+
 public class Repositioner {
 
 	public static void main (String args[]) {
 		try {
+			System.out.println("Running Repositioner");
 			double startTime = System.currentTimeMillis()/1000;
 			Map<String, List<Double>> startStopScore = new HashMap<String, List<Double>>();
 			
@@ -47,14 +60,14 @@ public class Repositioner {
 				tempList = new ArrayList<Double>();
 			}
 		
-			int linecounter = 0;
+//			int linecounter = 0;
 			int index = 0;
 			BufferedReader newbuf = new BufferedReader(new FileReader(args[1]));
 			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(args[2]));
 			String lineReadFromFile2 = newbuf.readLine();
 			StringTokenizer newstrtok = new StringTokenizer(lineReadFromFile2,"\t\n");
 			while (lineReadFromFile2 != null) {			
-				System.out.println(++linecounter);
+//				System.out.println(++linecounter);
 				String chrmomosome = newstrtok.nextToken();
 				int chrStart = Integer.parseInt(newstrtok.nextToken());
 				int chrStop = Integer.parseInt(newstrtok.nextToken());
@@ -230,8 +243,8 @@ public class Repositioner {
 							int finalstop = finalStartStopScore.get(i+1).intValue();
 							double finalscore = finalStartStopScore.get(i+2);
 							if (finalscore > 0.0) {
-								//bufWriter.write(chrmomosome + "\t" + finalstart + "\t" + finalstop + "\t" + finalscore + "\n");
-								bufWriter.write(chrmomosome + "\t" + geneFromFile2 + "\t" + finalstart + "\t" + finalstop + "\t" + finalscore + "\n");
+								bufWriter.write(chrmomosome + "\t" + finalstart + "\t" + finalstop + "\t" + finalscore + "\n");
+								//bufWriter.write(chrmomosome + "\t" + geneFromFile2 + "\t" + finalstart + "\t" + finalstop + "\t" + finalscore + "\n");
 							}
 						}
 						// System.out.println("done");
@@ -244,7 +257,39 @@ public class Repositioner {
 			}
 			bufWriter.close();
 			double endTime = System.currentTimeMillis()/1000;
-			System.out.println("Program Runtime: " + (endTime - startTime)/60 + " minutes");
+			System.out.println("Repositioner Runtime: " + (endTime - startTime)/60 + " minutes");
+			
+			
+			System.out.println("Running File Sorter");
+			startTime = System.currentTimeMillis()/1000;
+			buf = new BufferedReader(new FileReader(args[2]));
+			List<FileSorter> file = new ArrayList<FileSorter>();
+			lineRead = buf.readLine();
+			strtok = new StringTokenizer(lineRead,"\t\n");
+			while (lineRead != null) {
+				String chrName = strtok.nextToken();
+				int start = Integer.parseInt(strtok.nextToken());
+				int stop = Integer.parseInt(strtok.nextToken());
+				double score = Double.parseDouble(strtok.nextToken());
+				FileSorter fileSorter = new FileSorter(chrName, start, stop, score);
+				file.add(fileSorter);
+				lineRead = buf.readLine();
+				if (lineRead != null) {
+					strtok = new StringTokenizer(lineRead,"\t\n");
+				}
+			}			
+			
+			Collections.sort(file);
+			// write the sorted data to the file
+			bufWriter = new BufferedWriter(new FileWriter(args[2]));
+			Iterator<FileSorter> iter = file.iterator();
+			while (iter.hasNext()) {
+				FileSorter fs = iter.next();
+				bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t" + fs.getScore() + "\n");
+			}
+			bufWriter.close();
+			endTime = System.currentTimeMillis()/1000;
+			System.out.println("Sorter Runtime: " + (endTime - startTime)/60 + " minutes");
 
 		}catch (IOException e) {
 			e.printStackTrace();
