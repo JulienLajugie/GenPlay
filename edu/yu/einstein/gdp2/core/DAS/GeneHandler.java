@@ -115,7 +115,7 @@ public class GeneHandler extends DefaultHandler {
 			} else if (currentMarkup.equals("END")) {
 				end = Integer.parseInt(elementValue);
 			} else if (currentMarkup.equals("ORIENTATION")) {
-				orientation = Strand.get(elementValue);				
+				orientation = Strand.get(elementValue.charAt(0));				
 			} else if (currentMarkup.equals("SCORE")) {
 				// if the score is not specified we set a 0 score value
 				if (elementValue.trim().equals("-")) {

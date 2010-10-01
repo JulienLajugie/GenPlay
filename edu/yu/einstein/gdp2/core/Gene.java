@@ -81,17 +81,17 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	 * Creates an instance of {@link Gene}
 	 * @param name name of the gene
 	 * @param chromo chromosome
-	 * @param strandString string representing the strand of a gene (ie "+" or "-") 
+	 * @param strandSymbol char representing the strand of a gene (ie '+' or '-') 
 	 * @param txStart transcription start position
 	 * @param txStop transcription end position
 	 * @param exonStarts exon start positions
 	 * @param exonStops exon end positions
 	 * @param exonScores exon scores
 	 */
-	public Gene(String name, Chromosome chromo, String strandString, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
+	public Gene(String name, Chromosome chromo, char strandSymbol, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
 		this.name = name;
 		this.chromo = chromo;
-		this.strand = Strand.get(strandString);
+		this.strand = Strand.get(strandSymbol);
 		this.txStart = txStart;
 		this.txStop = txStop;
 		this.setTxMiddle((this.txStart + this.txStop)/2);

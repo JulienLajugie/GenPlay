@@ -36,16 +36,16 @@ import yu.einstein.gdp2.exception.InvalidDataLineException;
  * @version 0.1
  */
 public final class GFFExtractor extends TextFileExtractor 
-implements Serializable, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
+implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
 ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = -2798372250708609794L; // generated ID
-
 	private ChromosomeListOfLists<Integer>	startList;		// list of position start
 	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
 	private ChromosomeListOfLists<String> 	nameList;		// list of name
 	private ChromosomeListOfLists<Double>	scoreList;		// list of scores
 	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
+	private Strand 							selectedStrand;	// strand to extract, null for both
 
 
 	/**
@@ -96,12 +96,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				nameList.add(chromosome, splitedLine[2]);
-				startList.add(chromosome, Integer.parseInt(splitedLine[3]));
-				stopList.add(chromosome, Integer.parseInt(splitedLine[4]));
-				scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
-				strandList.add(chromosome, Strand.get(splitedLine[6]));
-				lineCount++;
+				Strand strand = Strand.get(splitedLine[6].charAt(0));
+				if (isStrandSelected(strand)) {
+					nameList.add(chromosome, splitedLine[2]);
+					startList.add(chromosome, Integer.parseInt(splitedLine[3]));
+					stopList.add(chromosome, Integer.parseInt(splitedLine[4]));
+					scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
+					strandList.add(chromosome, strand);
+					lineCount++;
+				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
@@ -155,5 +158,20 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+	}
+
+	@Override
+	public boolean isStrandSelected(Strand aStrand) {
+		if (selectedStrand == null) {
+			return true;
+		} else {
+			return selectedStrand.equals(aStrand);
+		}
+	}
+
+
+	@Override
+	public void selectStrand(Strand strandToSelect) {
+		selectedStrand = strandToSelect;		
 	}
 }

@@ -30,9 +30,7 @@ import yu.einstein.gdp2.exception.InvalidDataLineException;
 public final class PairExtractor extends TextFileExtractor
 implements Serializable, BinListGenerator {
 
-
 	private static final long serialVersionUID = -2160273514926102255L; // generated ID
-
 	private ChromosomeListOfLists<Integer>	positionList;		// list of position start
 	private ChromosomeListOfLists<Double>	scoreList;			// list of scores
 

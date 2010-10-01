@@ -10,6 +10,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.extractor.StrandedExtractor;
 import yu.einstein.gdp2.core.generator.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
@@ -64,9 +65,13 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, true);
+		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
+		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true);
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 			extractor.setSelectedChromosomes(nctd.getSelectedChromosomes());
+			if (isStrandNeeded) {
+				((StrandedExtractor) extractor).selectStrand(nctd.getStrandToExtract());
+			}
 		} else {
 			throw new InterruptedException();
 		}
@@ -77,7 +82,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	protected ScoredChromosomeWindowList generateList() throws Exception {
 		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false, false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				scoreCalculation = nctd.getScoreCalculationMethod();
@@ -85,7 +90,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false, false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);

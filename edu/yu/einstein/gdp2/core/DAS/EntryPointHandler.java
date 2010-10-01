@@ -48,7 +48,7 @@ public class EntryPointHandler extends DefaultHandler {
 					} else if (attributes.getQName(i).equalsIgnoreCase("STOP")) {
 						currentEntryPoint.setStop(Integer.parseInt(attributes.getValue(i)));
 					} else if (attributes.getQName(i).equalsIgnoreCase("ORIENTATION")) {
-						currentEntryPoint.setOrientation(Strand.get(attributes.getValue(i)));
+						currentEntryPoint.setOrientation(Strand.get(attributes.getValue(i).charAt(0)));
 					}
 				}
 			}

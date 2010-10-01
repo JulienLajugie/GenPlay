@@ -37,11 +37,10 @@ import yu.einstein.gdp2.exception.InvalidDataLineException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PSLExtractor extends TextFileExtractor implements Serializable, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
+public final class PSLExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = -7099425835087057587L;	//generated ID
-
 	private ChromosomeListOfLists<Integer>	startList;		// list of position start
 	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
 	private ChromosomeListOfLists<String> 	nameList;		// list of name
@@ -49,8 +48,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
 	private ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
 	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
-
 	private String							searchURL;		// url of the gene database for the search
+	private Strand 							selectedStrand;	// strand to extract, null for both
 
 
 	/**
@@ -80,7 +79,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		}
 	}
 
-	
+
 	@Override
 	protected boolean extractLine(String extractedLine)	throws InvalidDataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
@@ -103,23 +102,26 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				nameList.add(chromosome, splitedLine[9]);
-				startList.add(chromosome, Integer.parseInt(splitedLine[15]));
-				stopList.add(chromosome, Integer.parseInt(splitedLine[16]));
-				scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
-				strandList.add(chromosome, Strand.get(splitedLine[8]));
-				// add exons
-				String[] exonStartsStr = splitedLine[20].split(",");
-				String[] exonLengthsStr = splitedLine[18].split(",");
-				int[] exonStarts = new int[exonStartsStr.length];
-				int[] exonStops = new int[exonStartsStr.length];
-				for (int i = 0; i < exonStartsStr.length; i++) {
-					exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
-					exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i].trim());
+				Strand strand = Strand.get(splitedLine[8].charAt(0));
+				if (isStrandSelected(strand)) {
+					nameList.add(chromosome, splitedLine[9]);
+					startList.add(chromosome, Integer.parseInt(splitedLine[15]));
+					stopList.add(chromosome, Integer.parseInt(splitedLine[16]));
+					scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
+					strandList.add(chromosome, strand);
+					// add exons
+					String[] exonStartsStr = splitedLine[20].split(",");
+					String[] exonLengthsStr = splitedLine[18].split(",");
+					int[] exonStarts = new int[exonStartsStr.length];
+					int[] exonStops = new int[exonStartsStr.length];
+					for (int i = 0; i < exonStartsStr.length; i++) {
+						exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
+						exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i].trim());
+					}
+					exonStartsList.add(chromosome, exonStarts);
+					exonStopsList.add(chromosome, exonStops);
+					lineCount++;
 				}
-				exonStartsList.add(chromosome, exonStarts);
-				exonStopsList.add(chromosome, exonStops);
-				lineCount++;
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
@@ -179,5 +181,21 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+	}
+
+
+	@Override
+	public boolean isStrandSelected(Strand aStrand) {
+		if (selectedStrand == null) {
+			return true;
+		} else {
+			return selectedStrand.equals(aStrand);
+		}
+	}
+
+
+	@Override
+	public void selectStrand(Strand strandToSelect) {
+		selectedStrand = strandToSelect;		
 	}
 }

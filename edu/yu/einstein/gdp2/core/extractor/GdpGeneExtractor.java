@@ -97,7 +97,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 				} else {
 					String name = splitedLine[0].trim();
 					nameList.add(chromosome, name);
-					Strand strand = Strand.get(splitedLine[2].trim());
+					Strand strand = Strand.get(splitedLine[2].trim().charAt(0));
 					strandList.add(chromosome, strand);
 					int start = Integer.parseInt(splitedLine[3].trim());
 					startList.add(chromosome, start);

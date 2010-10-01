@@ -17,6 +17,7 @@ import javax.swing.JDialog;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 
 
 /**
@@ -33,6 +34,7 @@ public class NewCurveTrackDialog extends JDialog {
 	private final ChromoSelectionPanel 	chromoSelectionPanel;		// panel for selecting chromosomes
 	private final CalculMethodPanel 	calculMethodPanel;			// panel for the method of score calculation 
 	private final DataPrecisionPanel 	dataPrecisionPanel;			// panel for the precision of the data
+	private final StrandSelectionPanel	strandSelectionPanel;		// panel for the selection of the strand to extract
 	private final JButton 				jbOk; 						// Button OK
 	private final JButton 				jbCancel; 					// Button cancel
 	private int 						approved = CANCEL_OPTION;	// indicate if the user canceled or validated	
@@ -53,7 +55,7 @@ public class NewCurveTrackDialog extends JDialog {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", true, true, false, false, false);
+		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", false, false, false, false, true, true);
 		ctd.showDialog(null);
 		ctd.dispose();
 	}
@@ -66,9 +68,11 @@ public class NewCurveTrackDialog extends JDialog {
 	 * @param isBinSizeNeeded true if the binsize need to be asked
 	 * @param isPrecisionNeeded true if the precision need to be asked
 	 * @param isMethodNeeded true if the method of calculation need to be asked
-	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked 
+	 * @param isStrandNeeded true if the strand selection need to be asked 
+	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked
 	 */
-	public NewCurveTrackDialog(String trackName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded, boolean isMethodNeeded, boolean isChromoSelectionNeeded) {
+	public NewCurveTrackDialog(String trackName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded, 
+			boolean isMethodNeeded, boolean isStrandNeeded, boolean isChromoSelectionNeeded) {
 		super();
 		// create panels
 		trackNamePanel = new TrackNamePanel(trackName);
@@ -76,6 +80,7 @@ public class NewCurveTrackDialog extends JDialog {
 		chromoSelectionPanel = new ChromoSelectionPanel();
 		calculMethodPanel = new CalculMethodPanel();
 		dataPrecisionPanel = new DataPrecisionPanel();
+		strandSelectionPanel = new StrandSelectionPanel();
 
 		// create the OK button
 		jbOk = new JButton("OK");
@@ -86,6 +91,7 @@ public class NewCurveTrackDialog extends JDialog {
 				calculMethodPanel.saveDefault();
 				dataPrecisionPanel.saveDefault();
 				chromoSelectionPanel.saveDefault();
+				strandSelectionPanel.saveDefault();
 				approved = APPROVE_OPTION;
 				setVisible(false);
 			}
@@ -124,9 +130,9 @@ public class NewCurveTrackDialog extends JDialog {
 		if (isChromoSelectionNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.BOTH;
-			c.gridheight = 4;
+			c.gridheight = 5;
 			c.gridwidth = 2;
-			if (!isNameNeeded && !isBinSizeNeeded && !isMethodNeeded && !isPrecisionNeeded) {
+			if (!isNameNeeded && !isBinSizeNeeded && !isMethodNeeded && !isPrecisionNeeded && !isStrandNeeded) {
 				c.gridx = 0;
 			} else {
 				c.gridx = 1;
@@ -173,12 +179,26 @@ public class NewCurveTrackDialog extends JDialog {
 			c.weighty = 1;
 			add(dataPrecisionPanel, c);
 		}
+		
+		
+		if (isStrandNeeded) {
+			c = new GridBagConstraints();
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridwidth = leftPanelsGridWidth;
+			c.gridx = 0;
+			c.gridy = 4;
+			c.insets = new Insets(INSET, INSET, INSET, INSET);
+			c.ipadx = INSET * 2;
+			c.weightx = 1;
+			c.weighty = 1;
+			add(strandSelectionPanel, c);
+		}
 
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_END;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 5;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -188,7 +208,7 @@ public class NewCurveTrackDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
-		c.gridy = 4;
+		c.gridy = 5;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -244,6 +264,14 @@ public class NewCurveTrackDialog extends JDialog {
 	}
 
 
+	/**
+	 * @return the Strand to extract. Null if both
+	 */
+	public Strand getStrandToExtract() {
+		return strandSelectionPanel.getStrandToExtract();
+	}
+	
+	
 	/**
 	 * Shows the component
 	 * @param parent parent component. Can be null

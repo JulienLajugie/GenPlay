@@ -11,11 +11,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.generator.BinListGenerator;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
@@ -30,15 +32,17 @@ import yu.einstein.gdp2.exception.InvalidDataLineException;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ElandExtendedExtractor extends TextFileExtractor implements Serializable, BinListGenerator {
+public final class ElandExtendedExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, BinListGenerator {
 
 	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
 
 	private ChromosomeListOfLists<Integer>	positionList;		// list of position
+	private ChromosomeListOfLists<Strand>	strandList;			// list of strand
 	private int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count
 	private int 							multiMatchCount = 0;// multi-match line count 
+	private Strand 							selectedStrand;		// strand to extract, null for both
 
 
 	/**
@@ -49,8 +53,10 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	public ElandExtendedExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
 		positionList = new ChromosomeArrayListOfLists<Integer>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
 		for (int i = 0; i < chromosomeManager.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
+			strandList.add(new ArrayList<Strand>());
 		}
 		matchTypeCount = new int[chromosomeManager.size()][3];		
 		for(short i = 0; i < chromosomeManager.size(); i++) {
@@ -207,14 +213,20 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				i++;
 				j++;
 			}
-			positionNumber = Integer.parseInt(new String(positionChar, 0, j));
-			// add data for the statistics
-			matchTypeCount[chromoNumber][0] += match0MNumber;
-			matchTypeCount[chromoNumber][1] += match1MNumber;
-			matchTypeCount[chromoNumber][2] += match2MNumber;
-			// add the data
-			positionList.add(chromo, positionNumber);
-			lineCount++;
+			// retrieve the strand
+			char strandChar = (char) (line[i] & 0xFF); // because byte goes from -128 to 127 and char from 0 to 255
+			Strand strand = Strand.get(strandChar);
+			if (isStrandSelected(strand)) {
+				positionNumber = Integer.parseInt(new String(positionChar, 0, j));
+				// add data for the statistics
+				matchTypeCount[chromoNumber][0] += match0MNumber;
+				matchTypeCount[chromoNumber][1] += match1MNumber;
+				matchTypeCount[chromoNumber][2] += match2MNumber;
+				// add the data
+				positionList.add(chromo, positionNumber);
+				strandList.add(chromo, strand);
+				lineCount++;
+			}
 			return false;
 		}
 	}
@@ -241,5 +253,21 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, positionList);
+	}
+
+
+	@Override
+	public boolean isStrandSelected(Strand aStrand) {
+		if (selectedStrand == null) {
+			return true;
+		} else {
+			return selectedStrand.equals(aStrand);
+		}
+	}
+
+
+	@Override
+	public void selectStrand(Strand strandToSelect) {
+		selectedStrand = strandToSelect;		
 	}
 }

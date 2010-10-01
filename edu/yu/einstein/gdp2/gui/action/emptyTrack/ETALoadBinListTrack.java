@@ -11,6 +11,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.extractor.StrandedExtractor;
 import yu.einstein.gdp2.core.generator.BinListGenerator;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
@@ -76,7 +77,8 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		binListGenerator = (BinListGenerator)extractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), true);
+		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
+		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true);
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 			name = nctd.getTrackName();
 			binSize = nctd.getBinSize();
@@ -84,6 +86,9 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			precision = nctd.getDataPrecision();
 			selectedChromo = nctd.getSelectedChromosomes();
 			extractor.setSelectedChromosomes(selectedChromo);
+			if (isStrandNeeded) {
+				((StrandedExtractor) extractor).selectStrand(nctd.getStrandToExtract());
+			}
 		} else {
 			throw new InterruptedException();
 		}

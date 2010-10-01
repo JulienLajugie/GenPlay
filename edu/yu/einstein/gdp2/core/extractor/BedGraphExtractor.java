@@ -133,7 +133,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		return true;
 	}
 
-
+	
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
