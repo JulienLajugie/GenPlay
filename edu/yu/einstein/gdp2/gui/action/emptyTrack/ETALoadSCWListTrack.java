@@ -10,6 +10,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.extractor.StrandedExtractor;
 import yu.einstein.gdp2.core.generator.ScoredChromosomeWindowListGenerator;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
@@ -29,11 +30,13 @@ import yu.einstein.gdp2.util.Utils;
  */
 public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<ScoredChromosomeWindowList> {
 
-	private static final long serialVersionUID = -7836987725953057426L;	// generated ID
-	private static final String ACTION_NAME = "Load Variable Window Track";	// action name
-	private static final String DESCRIPTION = "Load a track with variable window sizes"; // tooltip
-	private ScoreCalculationMethod scoreCalculation = null;
-	
+	private static final long serialVersionUID = -7836987725953057426L;						// generated ID
+	private static final String ACTION_NAME = "Load Variable Window Track";					// action name
+	private static final String DESCRIPTION = "Load a track with variable window sizes"; 	// tooltip
+	private ScoreCalculationMethod 	scoreCalculation = null;								// method of calculation for the score
+	private Strand					strand = null;											// strand to extract
+	private int						strandShift = 0;										// position shift on a strand
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -70,7 +73,10 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 			extractor.setSelectedChromosomes(nctd.getSelectedChromosomes());
 			if (isStrandNeeded) {
-				((StrandedExtractor) extractor).selectStrand(nctd.getStrandToExtract());
+				strand = nctd.getStrandToExtract();
+				strandShift = nctd.getStrandShiftValue();
+				((StrandedExtractor) extractor).selectStrand(strand);
+				((StrandedExtractor) extractor).setStrandShift(strandShift);
 			}
 		} else {
 			throw new InterruptedException();
@@ -109,9 +115,24 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			SCWListTrack newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
+			String history = new String(); 
 			if (scoreCalculation != null) {
-				newTrack.getHistory().add("Method of Calculation = " + scoreCalculation, Color.GRAY);
-			}			
+				history += "Method of Calculation = " + scoreCalculation;
+			}	
+			if (strand != null) {
+				history += ", Strand = ";
+				if (strand == Strand.FIVE) {
+					history += "5'";
+				} else {
+					history += "3'";
+				}
+			}
+			if (strandShift != 0) {
+				history += ", Strand Shift = " + strandShift +"bp";
+			}
+			if (!history.isEmpty()) {
+				newTrack.getHistory().add(history, Color.GRAY);
+			}
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

@@ -257,10 +257,10 @@ public class NewCurveTrackDialog extends JDialog {
 
 
 	/**
-	 * @return the name of the track
+	 * @return the strand shifting value
 	 */
-	public String getTrackName() {
-		return trackNamePanel.getTrackName();
+	public int getStrandShiftValue () {
+		return strandSelectionPanel.getShiftValue();
 	}
 
 
@@ -269,6 +269,14 @@ public class NewCurveTrackDialog extends JDialog {
 	 */
 	public Strand getStrandToExtract() {
 		return strandSelectionPanel.getStrandToExtract();
+	}
+	
+	
+	/**
+	 * @return the name of the track
+	 */
+	public String getTrackName() {
+		return trackNamePanel.getTrackName();
 	}
 	
 	

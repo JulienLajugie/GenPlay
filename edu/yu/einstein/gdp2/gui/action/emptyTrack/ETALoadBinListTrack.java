@@ -11,6 +11,7 @@ import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.extractor.StrandedExtractor;
 import yu.einstein.gdp2.core.generator.BinListGenerator;
 import yu.einstein.gdp2.core.list.binList.BinList;
@@ -37,7 +38,10 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	private ScoreCalculationMethod 	scoreCalculation = null;								// Method of calculation of the score of the BinList
 	private DataPrecision 			precision = DataPrecision.PRECISION_32BIT;				// Precision of the Data
 	private BinListGenerator 		binListGenerator;										// BinList Generator
-
+	private Strand					strand = null;											// strand to extract
+	private int						strandShift = 0;										// position shift on a strand
+	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -67,6 +71,17 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			if (binListGenerator.isCriterionNeeded()) {
 				history += ", Method of Calculation = " + scoreCalculation;
 			}
+			if (strand != null) {
+				history += ", Strand = ";
+				if (strand == Strand.FIVE) {
+					history += "5'";
+				} else {
+					history += "3'";
+				}
+			}
+			if (strandShift != 0) {
+				history += ", Strand Shift = " + strandShift +"bp";
+			}
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			newTrack.getHistory().add(history, Color.GRAY);
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
@@ -87,7 +102,10 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			selectedChromo = nctd.getSelectedChromosomes();
 			extractor.setSelectedChromosomes(selectedChromo);
 			if (isStrandNeeded) {
-				((StrandedExtractor) extractor).selectStrand(nctd.getStrandToExtract());
+				strand = nctd.getStrandToExtract();
+				strandShift = nctd.getStrandShiftValue();
+				((StrandedExtractor) extractor).selectStrand(strand);
+				((StrandedExtractor) extractor).setStrandShift(strandShift);
 			}
 		} else {
 			throw new InterruptedException();

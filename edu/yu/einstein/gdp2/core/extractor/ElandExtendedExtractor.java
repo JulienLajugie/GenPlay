@@ -43,7 +43,8 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	private int 							QCCount = 0;		// quality control line count
 	private int 							multiMatchCount = 0;// multi-match line count 
 	private Strand 							selectedStrand;		// strand to extract, null for both
-
+	private int 							strandShift;	// value of the shift to perform on the selected strand
+	
 
 	/**
 	 * Creates an instance of {@link ElandExtendedExtractor}
@@ -223,8 +224,9 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				matchTypeCount[chromoNumber][1] += match1MNumber;
 				matchTypeCount[chromoNumber][2] += match2MNumber;
 				// add the data
-				positionList.add(chromo, positionNumber);
 				strandList.add(chromo, strand);
+				positionNumber = getShiftedPosition(strand, chromo, positionNumber);
+				positionList.add(chromo, positionNumber);
 				lineCount++;
 			}
 			return false;
@@ -269,5 +271,21 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	@Override
 	public void selectStrand(Strand strandToSelect) {
 		selectedStrand = strandToSelect;		
+	}
+
+
+	@Override
+	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
+		if (strand == Strand.FIVE) {
+			return Math.min(chromosome.getLength(), position + strandShift);
+		} else {
+			return Math.max(0, position - strandShift);
+		}
+	}
+
+
+	@Override
+	public void setStrandShift(int shiftValue) {
+		strandShift = shiftValue; 
 	}
 }

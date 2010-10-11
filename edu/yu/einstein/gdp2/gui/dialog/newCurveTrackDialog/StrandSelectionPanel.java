@@ -4,11 +4,17 @@
  */
 package yu.einstein.gdp2.gui.dialog.newCurveTrackDialog;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.text.DecimalFormat;
+
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.text.NumberFormatter;
 
 import yu.einstein.gdp2.core.enums.Strand;
 
@@ -20,15 +26,20 @@ import yu.einstein.gdp2.core.enums.Strand;
 class StrandSelectionPanel extends JPanel {
 
 	private static final long serialVersionUID = -2426572515664231706L;	//generated ID
-	private final JRadioButton	jrPlus;							// 5' Strand radio button
-	private final JRadioButton	jrMinus;						// 3' Strand radio button 
-	private final JRadioButton	jrBoth;							// both strands radio button
-	private final ButtonGroup	radioGroup;						// group for the raio buttons
-	private static boolean		jrPlusDefaultState = false;	 	// default selection state of the 5' button 
-	private static boolean		jrMinusDefaultState = false;	// default selection state of the 3' button
-	private static boolean		jrBothDefaultState = true;		// default selection state of the both button
+	private static final DecimalFormat DF = new DecimalFormat("###,###,###"); // decimal format
+	private final JRadioButton			jrPlus;							// 5' Strand radio button
+	private final JRadioButton			jrMinus;						// 3' Strand radio button 
+	private final JRadioButton			jrBoth;							// both strands radio button
+	private final ButtonGroup			radioGroup;						// group for the raio buttons
+	private final JFormattedTextField 	jftfShift;						// text field shift
+	private final JLabel				jlShift1;						// first label shift
+	private final JLabel				jlShift2;						// second label shift
+	private static boolean				jrPlusDefaultState = false;	 	// default selection state of the 5' button 
+	private static boolean				jrMinusDefaultState = false;	// default selection state of the 3' button
+	private static boolean				jrBothDefaultState = true;		// default selection state of the both button
+	private static int					shiftDefaultValue = 0;			// default shift value 
 
-
+	
 	/**
 	 * Creates an instance of {@link StrandSelectionPanel}
 	 */
@@ -46,13 +57,61 @@ class StrandSelectionPanel extends JPanel {
 		jrMinus.setSelected(jrMinusDefaultState);
 		jrBoth.setSelected(jrBothDefaultState);
 
-		// add the components
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		add(jrPlus);
-		add(jrMinus);
-		add(jrBoth);
+		jlShift1 = new JLabel("Shift:  ");
 		
+		jftfShift = new JFormattedTextField(DF);
+		((NumberFormatter) jftfShift.getFormatter()).setMinimum(0);
+		jftfShift.setColumns(5);
+		jftfShift.setValue(shiftDefaultValue);
+		
+		jlShift2 = new JLabel("bp");
+				
+		// add the components
+		setLayout(new GridBagLayout());
+		
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridwidth = 3;
+		c.anchor = GridBagConstraints.LINE_START;
+		add(jrPlus, c);
+		
+		c = new GridBagConstraints();
+		c.gridwidth = 3;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		add(jrMinus, c);
+		
+		c = new GridBagConstraints();
+		c.gridwidth = 3;		
+		c.gridy = 2;
+		c.anchor = GridBagConstraints.LINE_START;
+		add(jrBoth, c);
+		
+		c = new GridBagConstraints();
+		c.gridy = 3;
+		add(jlShift1, c);
+		
+		c = new GridBagConstraints();
+		c.gridx = 1;
+		c.gridy = 3;
+		add(jftfShift, c);
+		
+		c = new GridBagConstraints();
+		c.gridx = 2;
+		c.gridy = 3;
+		add(jlShift2, c);
 		setBorder(BorderFactory.createTitledBorder("Selected Strand"));
+	}
+
+
+	/**
+	 * @return the shift value
+	 */
+	int getShiftValue() {
+		Number shiftNumber = ((Number) jftfShift.getValue());
+		if (shiftNumber != null) {
+			return shiftNumber.intValue();
+		}
+		return 0;
 	}
 
 
@@ -68,8 +127,8 @@ class StrandSelectionPanel extends JPanel {
 			return null;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Saves the selected state of the radio buttons
 	 */
@@ -77,5 +136,6 @@ class StrandSelectionPanel extends JPanel {
 		jrPlusDefaultState = jrPlus.isSelected();
 		jrMinusDefaultState = jrMinus.isSelected();
 		jrBothDefaultState = jrBoth.isSelected();
+		shiftDefaultValue = getShiftValue();
 	}
 }

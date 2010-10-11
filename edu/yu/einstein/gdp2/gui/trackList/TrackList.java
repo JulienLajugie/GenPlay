@@ -564,8 +564,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * @author Chirag Gorasia
 	 * @return an array containing all the {@link SCWListTrack}
@@ -590,8 +590,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		}		
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * @author Chirag Gorasia
 	 * @return an array containing all the {@link GeneListTrack}
@@ -855,8 +855,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void undoCountChanged() {
 		int undoCount = ConfigurationManager.getInstance().getUndoCount();
-		for (Track<?> currentTrack: getBinListTracks()) {
-			((BinListTrack) currentTrack).setUndoCount(undoCount);
-		}		
+		if (getBinListTracks() != null) {
+			for (Track<?> currentTrack: getBinListTracks()) {
+				((BinListTrack) currentTrack).setUndoCount(undoCount);
+			}		
+		}
 	}
 }

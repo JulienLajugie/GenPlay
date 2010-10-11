@@ -46,7 +46,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	private ChromosomeListOfLists<Double>	scoreList;		// list of scores
 	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
 	private Strand 							selectedStrand;	// strand to extract, null for both
-
+	private int 							strandShift;	// value of the shift to perform on the selected strand
+	
 
 	/**
 	 * Creates an instance of {@link GFFExtractor}
@@ -99,8 +100,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 				Strand strand = Strand.get(splitedLine[6].charAt(0));
 				if (isStrandSelected(strand)) {
 					nameList.add(chromosome, splitedLine[2]);
-					startList.add(chromosome, Integer.parseInt(splitedLine[3]));
-					stopList.add(chromosome, Integer.parseInt(splitedLine[4]));
+					int start = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[3]));
+					startList.add(chromosome, start);
+					int stop = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[4]));
+					stopList.add(chromosome, stop);
 					scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
 					strandList.add(chromosome, strand);
 					lineCount++;
@@ -173,5 +176,21 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	@Override
 	public void selectStrand(Strand strandToSelect) {
 		selectedStrand = strandToSelect;		
+	}
+
+
+	@Override
+	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
+		if (strand == Strand.FIVE) {
+			return Math.min(chromosome.getLength(), position + strandShift);
+		} else {
+			return Math.max(0, position - strandShift);
+		}
+	}
+
+
+	@Override
+	public void setStrandShift(int shiftValue) {
+		strandShift = shiftValue; 
 	}
 }

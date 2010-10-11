@@ -4,6 +4,7 @@
  */
 package yu.einstein.gdp2.core.extractor;
 
+import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.Strand;
 
 
@@ -24,4 +25,19 @@ public interface StrandedExtractor {
 	 * @param strandToSelect select the specified strand. Set the parameter to null to select both strands
 	 */
 	public void selectStrand(Strand strandToSelect);
+	
+	
+	/**
+	 * @param shiftValue shift value to set
+	 */
+	public void setStrandShift(int shiftValue);
+	
+
+	/**
+	 * Returns the shifted position on a specified chromosome and a specified strand
+	 * @param strand current {@link Strand}
+	 * @param chromosome current {@link Chromosome}
+	 * @param position a position
+	 */
+	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position);
 }

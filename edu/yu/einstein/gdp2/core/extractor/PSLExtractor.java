@@ -50,7 +50,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
 	private String							searchURL;		// url of the gene database for the search
 	private Strand 							selectedStrand;	// strand to extract, null for both
-
+	private int 							strandShift = 0;// value of the shift to perform on the selected strand
+	
 
 	/**
 	 * Creates an instance of {@link PSLExtractor}
@@ -105,8 +106,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 				Strand strand = Strand.get(splitedLine[8].charAt(0));
 				if (isStrandSelected(strand)) {
 					nameList.add(chromosome, splitedLine[9]);
-					startList.add(chromosome, Integer.parseInt(splitedLine[15]));
-					stopList.add(chromosome, Integer.parseInt(splitedLine[16]));
+					int start = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[15]));
+					startList.add(chromosome, start);
+					int stop = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[16]));
+					stopList.add(chromosome, stop);
 					scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
 					strandList.add(chromosome, strand);
 					// add exons
@@ -115,8 +118,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					int[] exonStarts = new int[exonStartsStr.length];
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
-						exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
-						exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i].trim());
+						int exonStart = getShiftedPosition(strand, chromosome, Integer.parseInt(exonStartsStr[i].trim()));
+						exonStarts[i] = exonStart;
+						int exonLength = Integer.parseInt(exonLengthsStr[i].trim()); 
+						exonStops[i] = exonStarts[i] + exonLength;
 					}
 					exonStartsList.add(chromosome, exonStarts);
 					exonStopsList.add(chromosome, exonStops);
@@ -197,5 +202,21 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	@Override
 	public void selectStrand(Strand strandToSelect) {
 		selectedStrand = strandToSelect;		
+	}
+
+
+	@Override
+	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
+		if (strand == Strand.FIVE) {
+			return Math.min(chromosome.getLength(), position + strandShift);
+		} else {
+			return Math.max(0, position - strandShift);
+		}
+	}
+
+
+	@Override
+	public void setStrandShift(int shiftValue) {
+		strandShift = shiftValue; 
 	}
 }
