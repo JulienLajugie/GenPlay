@@ -15,6 +15,7 @@ import yu.einstein.gdp2.gui.action.project.PAFullScreen;
 import yu.einstein.gdp2.gui.action.project.PAHelp;
 import yu.einstein.gdp2.gui.action.project.PALoadProject;
 import yu.einstein.gdp2.gui.action.project.PAOption;
+import yu.einstein.gdp2.gui.action.project.PARNAPosToDNAPos;
 import yu.einstein.gdp2.gui.action.project.PASaveProject;
 
 
@@ -31,6 +32,7 @@ public final class MainMenu extends JPopupMenu {
 	private final JMenuItem jmiLoadProject;	// menu load project
 	private final JMenuItem jmiFullScreen;	// full screen
 	private final JMenuItem jmiOption;		// option
+	private final JMenuItem jmiRNAToDNAPos;	// option
 	private final JMenuItem jmiHelp;		// help
 	private final JMenuItem jmiAbout;		// about
 	private final JMenuItem jmiExit;		// exit
@@ -47,6 +49,7 @@ public final class MainMenu extends JPopupMenu {
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
 		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
 		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
+		jmiRNAToDNAPos = new JMenuItem(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
 		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
 		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
@@ -56,6 +59,8 @@ public final class MainMenu extends JPopupMenu {
 		addSeparator();
 		add(jmiFullScreen);
 		add(jmiOption);
+		addSeparator();
+		add(jmiRNAToDNAPos);
 		addSeparator();
 		add(jmiHelp);
 		add(jmiAbout);

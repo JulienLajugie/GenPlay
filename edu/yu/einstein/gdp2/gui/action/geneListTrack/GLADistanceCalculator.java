@@ -61,7 +61,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 			if (otherTrack != null) {
 				GeneList geneList1 = new GeneList(selectedTrack.getData());
 				GeneList geneList2 = new GeneList(otherTrack.getData());
-				graphName = "distance between " + selectedTrack.getName().substring(0, 10) + " and " + otherTrack.getName().substring(0, 10);
+				graphName = "Distance between \"" + selectedTrack.toString().substring(0, 10) + "\" and \"" + otherTrack.toString().substring(0, 10) + "\"";
 				dcd = new DistanceCalculatorDialog();
 				if (dcd.showDialog(getRootPane()) == DistanceCalculatorDialog.APPROVE_OPTION) {
 					if (dcd.getSelectionFlag() == 3 || dcd.getSelectionFlag() == 6 || dcd.getSelectionFlag() == 9 || dcd.getSelectionFlag() == 12 || dcd.getSelectionFlag() == 15 || dcd.getSelectionFlag() == 18) {
@@ -113,7 +113,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 				i++;
 			}
 			scatPlotData.add(new ScatterPlotData(plotData, graphName, ScatterPlotData.generateRandomColor()));
-			ScatterPlotPane.showDialog(getRootPane(), "distande", "Count", scatPlotData);
+			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Count", scatPlotData);
 		}
 	}
 }

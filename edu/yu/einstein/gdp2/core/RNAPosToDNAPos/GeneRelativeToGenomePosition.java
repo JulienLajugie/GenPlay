@@ -2,7 +2,7 @@
  * @author Chirag Gorasia
  * @version 0.1
  */
-package yu.einstein.gdp2.core.rescorer;
+package yu.einstein.gdp2.core.RNAPosToDNAPos;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,12 +25,13 @@ import java.util.StringTokenizer;
  * @version 0.1
  */
 public class GeneRelativeToGenomePosition {
-	
+
 	private static Map<String, List<Double>> startStopScore; // map to store the start stop and score
 	private File coverageFile;								 // the coverage file
 	private File annotationFile;							 // the annotation file
 	private File repositionedFile;							 // the  output file created with genomic positions
-	
+
+
 	/**
 	 * Creates an instance of {@link GeneRelativeToGenomePosition} 
 	 * @param coverageFile
@@ -42,42 +43,49 @@ public class GeneRelativeToGenomePosition {
 		this.annotationFile = annotationFile;
 		this.repositionedFile = repositionedFile;
 	}
-	
+
 	/**
 	 * private method to populate the startStopScore hashmap
 	 * @throws IOException
 	 */
 	private void loadCoverageFileOnHashMap() throws IOException {
 		startStopScore = new HashMap<String, List<Double>>();
-		
-		// coverage file
-		BufferedReader buf = new BufferedReader(new FileReader(coverageFile));
-		String lineRead = buf.readLine();
-		StringTokenizer strtok;
+		BufferedReader buf = null;
+		try {
+			// coverage file
+			buf = new BufferedReader(new FileReader(coverageFile));
+			String lineRead = buf.readLine();
+			StringTokenizer strtok;
 
-		List<Double> tempList = new ArrayList<Double>();
-		while (lineRead != null) {
-			strtok = new StringTokenizer(lineRead, "\t\n");
-			while (strtok.hasMoreTokens()) {
-				String gene = strtok.nextToken();
-				double start = Double.parseDouble(strtok.nextToken());
-				double stop = Double.parseDouble(strtok.nextToken());
-				double score = Double.parseDouble(strtok.nextToken());
-				if (startStopScore.containsKey(gene) == true) {
-					startStopScore.get(gene).add(start);
-					startStopScore.get(gene).add(stop);
-					startStopScore.get(gene).add(score);
-				} else {
-					tempList.add(start);
-					tempList.add(stop);
-					tempList.add(score);
-					startStopScore.put(gene, tempList);
-				}	
+			List<Double> tempList = new ArrayList<Double>();
+			while (lineRead != null) {
+				strtok = new StringTokenizer(lineRead, "\t\n");
+				while (strtok.hasMoreTokens()) {
+					String gene = strtok.nextToken();
+					double start = Double.parseDouble(strtok.nextToken());
+					double stop = Double.parseDouble(strtok.nextToken());
+					double score = Double.parseDouble(strtok.nextToken());
+					if (startStopScore.containsKey(gene) == true) {
+						startStopScore.get(gene).add(start);
+						startStopScore.get(gene).add(stop);
+						startStopScore.get(gene).add(score);
+					} else {
+						tempList.add(start);
+						tempList.add(stop);
+						tempList.add(score);
+						startStopScore.put(gene, tempList);
+					}	
+				}
+				lineRead = buf.readLine();
+				tempList = new ArrayList<Double>();
 			}
-			lineRead = buf.readLine();
-			tempList = new ArrayList<Double>();
+		} finally {
+			if (buf != null) {
+				buf.close();
+			}
 		}
 	}
+
 
 	/**
 	 * private method to populate and sort an intermediate array having the start stop and scores
@@ -93,7 +101,7 @@ public class GeneRelativeToGenomePosition {
 			intermediatestartstopscorearray[j][2] = value.get(i+2);
 			j++;
 		}
-		
+
 		// sorting intermediatestartstopscorearray
 		for (int i = 0; i < intermediatestartstopscorearray.length; i++) {
 			for (j = i+1; j < intermediatestartstopscorearray.length; j++) {
@@ -112,7 +120,8 @@ public class GeneRelativeToGenomePosition {
 		}
 		return intermediatestartstopscorearray;
 	}
-	
+
+
 	/**
 	 * private method to populate the missing range values in an arraylist
 	 * @param tempList
@@ -137,7 +146,8 @@ public class GeneRelativeToGenomePosition {
 		}
 		return tempList;
 	}
-	
+
+
 	/**
 	 * private method to populate an array out of the final list of start stop and score values
 	 * @param tempList
@@ -154,7 +164,8 @@ public class GeneRelativeToGenomePosition {
 		}	
 		return startstopscorearray;
 	}
-	
+
+
 	/**
 	 * private method to merge the absolute lengths list and list of start stop values from the coverage file
 	 * @param absolutebplengths
@@ -187,7 +198,8 @@ public class GeneRelativeToGenomePosition {
 		}
 		return mergedList;
 	}
-	
+
+
 	/**
 	 * private method to populate an array list with the repositioned values
 	 * @param startstopscorearray
@@ -241,7 +253,8 @@ public class GeneRelativeToGenomePosition {
 		}
 		return finalStartStopScore;
 	}
-	
+
+
 	/**
 	 * private method to print the start stop and score values into the output file
 	 * @param chromosome
@@ -259,13 +272,17 @@ public class GeneRelativeToGenomePosition {
 			}
 		}
 	}
-	
+
+
 	/**
 	 * private method to sort the repositioned file
 	 * @throws IOException
 	 */
 	private void sortRepositionedFile() throws IOException {
-		BufferedReader buf = new BufferedReader(new FileReader(repositionedFile));
+		BufferedReader buf = null;
+		BufferedWriter bufWriter = null;
+		try {
+		buf = new BufferedReader(new FileReader(repositionedFile));
 		List<FileDataLineForSorting> file = new ArrayList<FileDataLineForSorting>();
 		String lineRead = buf.readLine();
 		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
@@ -281,31 +298,39 @@ public class GeneRelativeToGenomePosition {
 				strtok = new StringTokenizer(lineRead,"\t\n");
 			}
 		}			
-		
+
 		Collections.sort(file);
 		// write the sorted data to the file
-		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
+		bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
 		Iterator<FileDataLineForSorting> iter = file.iterator();
 		while (iter.hasNext()) {
 			FileDataLineForSorting fs = iter.next();
 			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t" + fs.getScore() + "\n");
 		}
-		bufWriter.close();		
+		bufWriter.close();
+		} finally {
+			if (buf != null) {
+				buf.close();
+			}
+			if (bufWriter != null) {
+				bufWriter.close();
+			}
+		}
 	}
 
-	
+
 	/**
 	 * Method to get the Genome positions and scores
 	 */
 	public void rePosition() {
 		try {
 			loadCoverageFileOnHashMap();
-		
+
 			BufferedReader newbuf = new BufferedReader(new FileReader(annotationFile));
 			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
 			String lineReadFromFile2 = newbuf.readLine();
 			StringTokenizer newstrtok = new StringTokenizer(lineReadFromFile2,"\t\n");
-			
+
 			while (lineReadFromFile2 != null) {			
 				String chrmomosome = newstrtok.nextToken();
 				int chrStart = Integer.parseInt(newstrtok.nextToken());
@@ -322,15 +347,15 @@ public class GeneRelativeToGenomePosition {
 						List<Double> value = startStopScore.get(key);
 						double[][] intermediatestartstopscorearray = new double[value.size()/3][3];
 						intermediatestartstopscorearray = populateAndSortIntermediateArray(value, intermediatestartstopscorearray);
-						
+
 						// now copy sorted array to a list and while adding the array also add the zeros
 						List<Double> tempList = new ArrayList<Double>();
 						tempList = populateMissingValuesIntoList(tempList,intermediatestartstopscorearray);
-										
+
 						// now copy this list to the finalarray
 						double[][] startstopscorearray = new double[tempList.size()/3][3];
 						startstopscorearray = populateFinalArray(tempList, startstopscorearray)	;				
-						
+
 						// get to the exon positions and lengths in the file
 						int i = 0;
 						while (newstrtok.hasMoreTokens()) {
@@ -369,11 +394,11 @@ public class GeneRelativeToGenomePosition {
 						// Merge the two sorted lists
 						List<Integer> mergedList = new ArrayList<Integer>();
 						mergedList = listsMerger(absolutebplengths, tempList, mergedList);
-						
+
 						// populate a list which contains the final start stop and score values
 						List<Double> finalStartStopScore = new ArrayList<Double>();
 						finalStartStopScore = populateRepositionedArrayList(startstopscorearray, mergedList, absolutebplengths, exonStarts, basePairs, finalStartStopScore);
-						
+
 						// write the list to the output file
 						printToOutputFile(chrmomosome, finalStartStopScore, bufWriter);
 						// System.out.println("One NM value done");
@@ -385,10 +410,11 @@ public class GeneRelativeToGenomePosition {
 				}				
 			}
 			bufWriter.close();
+			newbuf.close();
 			
 			// We sort the output file
 			sortRepositionedFile();			
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

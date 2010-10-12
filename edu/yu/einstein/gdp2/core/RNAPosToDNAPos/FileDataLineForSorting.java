@@ -3,7 +3,7 @@
  * @version 0.1
  */
 
-package yu.einstein.gdp2.core.rescorer;
+package yu.einstein.gdp2.core.RNAPosToDNAPos;
 
 import java.util.HashMap;
 import java.util.Map;

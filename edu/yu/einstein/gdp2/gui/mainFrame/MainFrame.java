@@ -43,6 +43,7 @@ import yu.einstein.gdp2.gui.action.project.PALoadProject;
 import yu.einstein.gdp2.gui.action.project.PAMoveLeft;
 import yu.einstein.gdp2.gui.action.project.PAMoveRight;
 import yu.einstein.gdp2.gui.action.project.PAOption;
+import yu.einstein.gdp2.gui.action.project.PARNAPosToDNAPos;
 import yu.einstein.gdp2.gui.action.project.PASaveProject;
 import yu.einstein.gdp2.gui.action.project.PAZoomIn;
 import yu.einstein.gdp2.gui.action.project.PAZoomOut;
@@ -63,7 +64,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 267; 						// GenPlay version
+	private static final int VERSION_NUMBER = 269; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -337,6 +338,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
+		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
 	}
 	
 
