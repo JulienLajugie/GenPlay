@@ -34,6 +34,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAddConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAAverage;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLADivideConstant;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAFilter;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAGenerateBinList;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAIndex;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAIndexByChromosome;
@@ -210,6 +211,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
+		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
 		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());
 		getActionMap().put(SCWLAIndexByChromosome.ACTION_KEY, new SCWLAIndexByChromosome());		
