@@ -78,7 +78,7 @@ public class SCWLATransfrag extends TrackListAction {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final ScoredChromosomeWindowList scwList = selectedTrack.getData();
-			final TransfragDialog tfDialog = new TransfragDialog();			
+			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);			
 			int res = tfDialog.showTransfragDialog(getRootPane());
 			if (res == TransfragDialog.APPROVE_OPTION) {
 				int resType = tfDialog.getResultType();
@@ -106,7 +106,7 @@ public class SCWLATransfrag extends TrackListAction {
 							}.actionPerformed(null);
 							
 													
-						} else if (resType == TransfragDialog.GENERATE_BIN_LIST) {
+						} else if (resType == TransfragDialog.GENERATE_SCORED_LIST) {
 							new TrackListActionOperationWorker<ScoredChromosomeWindowList>(){
 								
 								private static final long serialVersionUID = 1L;

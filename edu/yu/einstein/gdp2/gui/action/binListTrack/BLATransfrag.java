@@ -81,7 +81,7 @@ public class BLATransfrag extends TrackListAction {
 		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final BinList binList = selectedTrack.getData();
-			final TransfragDialog tfDialog = new TransfragDialog();			
+			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.BINLIST_TRANSFRAG);			
 			int res = tfDialog.showTransfragDialog(getRootPane());
 			if (res == TransfragDialog.APPROVE_OPTION) {
 				int resType = tfDialog.getResultType();
@@ -108,7 +108,7 @@ public class BLATransfrag extends TrackListAction {
 							}.actionPerformed(null);
 							
 													
-						} else if (resType == TransfragDialog.GENERATE_BIN_LIST) {
+						} else if (resType == TransfragDialog.GENERATE_SCORED_LIST) {
 							new TrackListActionOperationWorker<BinList>(){
 								private static final long serialVersionUID = -182674743663404937L;
 								@Override

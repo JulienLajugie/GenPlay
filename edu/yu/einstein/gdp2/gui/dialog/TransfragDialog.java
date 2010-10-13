@@ -35,15 +35,23 @@ public class TransfragDialog extends JDialog{
 	 */
 	public static final int GENERATE_GENE_LIST = 0;
 	/**
-	 * Generate a Fixed Window Option
+	 * Generate a Fixed Window Option or scored chromosome window list
 	 */
-	public static final int GENERATE_BIN_LIST = 1;
+	public static final int GENERATE_SCORED_LIST = 1;
+	/**
+	 * The dialog is for binlist transfrag
+	 */
+	public static final int BINLIST_TRANSFRAG = 0;	
+	/**
+	 * The dialog is for SCWL transfrag
+	 */
+	public static final int SCWLIST_TRANSFRAG = 1;
 	
 	private final JLabel				jlGapSize;		// label for Gap size
 	private final JFormattedTextField	jftGapSize;		// formatted text field for Gap size
 	private final JLabel				jlGenerate;		// label for the word generate
 	private final JRadioButton 			jrbGeneList;	// radio button gene list 
-	private final JRadioButton 			jrbBinList;		// radio button SCW list
+	private final JRadioButton 			jrbScoredList;	// radio button binlist or SCW list
 	private final JButton 				jbCancel;		// cancel button
 	private final JButton 				jbOk;			// ok button
 	
@@ -51,7 +59,12 @@ public class TransfragDialog extends JDialog{
 	private int generateType;						// the type of list to generate
 	private int gapSize;
 	
-	public TransfragDialog() {
+	
+	/**
+	 * Creates an instance of {@link TransfragDialog}
+	 * @param transfragType type of the transfrag dialog
+	 */
+	public TransfragDialog(int transfragType) {
 		super();
 		jlGapSize = new JLabel("Enter the Gap: ");
 		DecimalFormat numFormat = new DecimalFormat("##.##");
@@ -63,7 +76,11 @@ public class TransfragDialog extends JDialog{
 		jlGenerate = new JLabel("Generate");
 		
 		jrbGeneList = new JRadioButton("Gene List");
-		jrbBinList = new JRadioButton("Fixed Window List");
+		if (transfragType == BINLIST_TRANSFRAG) {
+			jrbScoredList = new JRadioButton("Fixed Window List");
+		} else {
+			jrbScoredList = new JRadioButton("Variable Window List");
+		}
 		
 		jrbGeneList.addChangeListener(new ChangeListener() {
 			
@@ -74,7 +91,7 @@ public class TransfragDialog extends JDialog{
 			}
 		});
 		
-		jrbBinList.addChangeListener(new ChangeListener() {
+		jrbScoredList.addChangeListener(new ChangeListener() {
 			
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -85,8 +102,8 @@ public class TransfragDialog extends JDialog{
 		
 		ButtonGroup radioGroup = new ButtonGroup();
 		radioGroup.add(jrbGeneList);
-		radioGroup.add(jrbBinList);
-		radioGroup.setSelected(jrbBinList.getModel(), true);
+		radioGroup.add(jrbScoredList);
+		radioGroup.setSelected(jrbScoredList.getModel(), true);
 		
 		jbOk = new JButton("OK");
 		jbOk.setPreferredSize(new Dimension(75, 30));
@@ -114,8 +131,6 @@ public class TransfragDialog extends JDialog{
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-//		c.weightx = 1;
-//		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(jlGapSize, c);
@@ -126,15 +141,12 @@ public class TransfragDialog extends JDialog{
 		
 		c.gridy = 1;
 		c.gridx = 0;
-		//c.gridwidth = 2;
 		add(jlGenerate, c);
 		
 		c.gridx = 1;
-		//c.gridwidth = 2;
-		add(jrbBinList, c);
+		add(jrbScoredList, c);
 		
 		c.gridy = 2;
-		//c.gridwidth = 2;
 		add(jrbGeneList, c);
 		
 		c.gridy = 3;
@@ -184,8 +196,8 @@ public class TransfragDialog extends JDialog{
 	protected void resultTypeChanged() {
 		if (jrbGeneList.isSelected()) {
 			generateType = TransfragDialog.GENERATE_GENE_LIST;
-		} else if (jrbBinList.isSelected()) {
-			generateType = TransfragDialog.GENERATE_BIN_LIST;
+		} else if (jrbScoredList.isSelected()) {
+			generateType = TransfragDialog.GENERATE_SCORED_LIST;
 		}
 	}
 	
