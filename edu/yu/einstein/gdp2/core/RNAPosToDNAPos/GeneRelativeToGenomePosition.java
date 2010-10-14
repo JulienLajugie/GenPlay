@@ -59,25 +59,32 @@ public class GeneRelativeToGenomePosition {
 
 			List<Double> tempList = new ArrayList<Double>();
 			while (lineRead != null) {
-				strtok = new StringTokenizer(lineRead, "\t\n");
-				while (strtok.hasMoreTokens()) {
-					String gene = strtok.nextToken();
-					double start = Double.parseDouble(strtok.nextToken());
-					double stop = Double.parseDouble(strtok.nextToken());
-					double score = Double.parseDouble(strtok.nextToken());
-					if (startStopScore.containsKey(gene) == true) {
-						startStopScore.get(gene).add(start);
-						startStopScore.get(gene).add(stop);
-						startStopScore.get(gene).add(score);
-					} else {
-						tempList.add(start);
-						tempList.add(stop);
-						tempList.add(score);
-						startStopScore.put(gene, tempList);
-					}	
+				// if the line is a header we skip it
+				if ((lineRead.charAt(0) == '#') ||
+						((lineRead.length() > 7) && (lineRead.substring(0, 7).equalsIgnoreCase("browser"))) ||
+						((lineRead.length() > 5) && (lineRead.substring(0, 5).equalsIgnoreCase("track")))) {
+					lineRead = buf.readLine();
+				} else {
+					strtok = new StringTokenizer(lineRead, "\t\n");
+					while (strtok.hasMoreTokens()) {
+						String gene = strtok.nextToken();
+						double start = Double.parseDouble(strtok.nextToken());
+						double stop = Double.parseDouble(strtok.nextToken());
+						double score = Double.parseDouble(strtok.nextToken());
+						if (startStopScore.containsKey(gene) == true) {
+							startStopScore.get(gene).add(start);
+							startStopScore.get(gene).add(stop);
+							startStopScore.get(gene).add(score);
+						} else {
+							tempList.add(start);
+							tempList.add(stop);
+							tempList.add(score);
+							startStopScore.put(gene, tempList);
+						}	
+					}
+					lineRead = buf.readLine();
+					tempList = new ArrayList<Double>();
 				}
-				lineRead = buf.readLine();
-				tempList = new ArrayList<Double>();
 			}
 		} finally {
 			if (buf != null) {
@@ -282,32 +289,32 @@ public class GeneRelativeToGenomePosition {
 		BufferedReader buf = null;
 		BufferedWriter bufWriter = null;
 		try {
-		buf = new BufferedReader(new FileReader(repositionedFile));
-		List<FileDataLineForSorting> file = new ArrayList<FileDataLineForSorting>();
-		String lineRead = buf.readLine();
-		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
-		while (lineRead != null) {
-			String chrName = strtok.nextToken();
-			int start = Integer.parseInt(strtok.nextToken());
-			int stop = Integer.parseInt(strtok.nextToken());
-			double score = Double.parseDouble(strtok.nextToken());
-			FileDataLineForSorting fileSorter = new FileDataLineForSorting(chrName, start, stop, score);
-			file.add(fileSorter);
-			lineRead = buf.readLine();
-			if (lineRead != null) {
-				strtok = new StringTokenizer(lineRead,"\t\n");
-			}
-		}			
+			buf = new BufferedReader(new FileReader(repositionedFile));
+			List<FileDataLineForSorting> file = new ArrayList<FileDataLineForSorting>();
+			String lineRead = buf.readLine();
+			StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
+			while (lineRead != null) {
+				String chrName = strtok.nextToken();
+				int start = Integer.parseInt(strtok.nextToken());
+				int stop = Integer.parseInt(strtok.nextToken());
+				double score = Double.parseDouble(strtok.nextToken());
+				FileDataLineForSorting fileSorter = new FileDataLineForSorting(chrName, start, stop, score);
+				file.add(fileSorter);
+				lineRead = buf.readLine();
+				if (lineRead != null) {
+					strtok = new StringTokenizer(lineRead,"\t\n");
+				}
+			}			
 
-		Collections.sort(file);
-		// write the sorted data to the file
-		bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
-		Iterator<FileDataLineForSorting> iter = file.iterator();
-		while (iter.hasNext()) {
-			FileDataLineForSorting fs = iter.next();
-			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t" + fs.getScore() + "\n");
-		}
-		bufWriter.close();
+			Collections.sort(file);
+			// write the sorted data to the file
+			bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
+			Iterator<FileDataLineForSorting> iter = file.iterator();
+			while (iter.hasNext()) {
+				FileDataLineForSorting fs = iter.next();
+				bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t" + fs.getScore() + "\n");
+			}
+			bufWriter.close();
 		} finally {
 			if (buf != null) {
 				buf.close();
@@ -411,7 +418,7 @@ public class GeneRelativeToGenomePosition {
 			}
 			bufWriter.close();
 			newbuf.close();
-			
+
 			// We sort the output file
 			sortRepositionedFile();			
 		} catch (IOException e) {
