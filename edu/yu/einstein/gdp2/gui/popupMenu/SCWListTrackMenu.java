@@ -22,10 +22,12 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLALogOnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMax;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMin;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAMultiplyConstant;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalize;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLARepartition;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
+import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASumScore;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATransfrag;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
@@ -61,10 +63,12 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem	jmiMax;					// menu max
 	private final JMenuItem	jmiMin;					// menu min
 	private final JMenuItem jmiMultiplyConstant;	// menu multiply constant
+	private final JMenuItem	jmiNormalize;			// menu normalize
 	private final JMenuItem	jmiNormalizeStdScore;	// menu normalize standard score
 	private final JMenuItem	jmiShowRepartition;		// menu show repartition of the SCWListTrack
 	private final JMenuItem	jmiStandardDeviation;	// menu standard deviation
 	private final JMenuItem jmiSubtractConstant;	// menu subtract constant
+	private final JMenuItem jmiSumScore;			// menu sum score
 	private final JMenuItem	jmiTransfrag;			// menu transfrag of the SCWListTrack
 	private final JMenuItem jmiTwoTracks;			// menu two tracks operation
 
@@ -93,10 +97,12 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiMax = new JMenuItem(actionMap.get(SCWLAMax.ACTION_KEY));
 		jmiMin = new JMenuItem(actionMap.get(SCWLAMin.ACTION_KEY));
 		jmiMultiplyConstant = new JMenuItem(actionMap.get(SCWLAMultiplyConstant.ACTION_KEY));
+		jmiNormalize = new JMenuItem(actionMap.get(SCWLANormalize.ACTION_KEY));
 		jmiNormalizeStdScore = new JMenuItem(actionMap.get(SCWLANormalizeStandardScore.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(SCWLARepartition.ACTION_KEY));
 		jmiStandardDeviation = new JMenuItem(actionMap.get(SCWLAStandardDeviation.ACTION_KEY));
 		jmiSubtractConstant = new JMenuItem(actionMap.get(SCWLASubtractConstant.ACTION_KEY));
+		jmiSumScore= new JMenuItem(actionMap.get(SCWLASumScore.ACTION_KEY));
 		jmiTransfrag = new JMenuItem(actionMap.get(SCWLATransfrag.ACTION_KEY));
 		jmiTwoTracks = new JMenuItem(actionMap.get(SCWLATwoTracks.ACTION_KEY));
 		
@@ -114,20 +120,23 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiIndexPerChromosome);
 		jmOperation.add(jmiLog);
 		jmOperation.add(jmiLogWithDamper);
+		jmOperation.add(jmiNormalize);
 		jmOperation.add(jmiNormalizeStdScore);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiMin);
 		jmOperation.add(jmiMax);
+		jmOperation.add(jmiCountNonNullLength);
+		jmOperation.add(jmiSumScore);
 		jmOperation.add(jmiAverage);
 		jmOperation.add(jmiStandardDeviation);
-		jmOperation.add(jmiCountNonNullLength);
-		jmOperation.addSeparator();
-		jmOperation.add(jmiGenerateBinList);
+		jmOperation.add(jmiCountNonNullLength);		
 		jmOperation.addSeparator();
 		jmOperation.add(jmiFilter);
 		jmOperation.add(jmiTransfrag);
+		jmOperation.addSeparator();
 		jmOperation.add(jmiShowRepartition);
-				
+		jmOperation.addSeparator();
+		jmOperation.add(jmiGenerateBinList);				
 		add(jmiSave, 9);
 	}
 }

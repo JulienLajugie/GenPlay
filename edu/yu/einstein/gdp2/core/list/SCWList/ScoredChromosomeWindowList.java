@@ -50,11 +50,126 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	transient private Double 	max = null;			// greatest value of the BinList 
 	transient private Double 	average = null;		// average of the BinList
 	transient private Double 	stDev = null;		// standard deviation of the BinList
+	transient private Double	scoreSum = null;	// sum of the scores of all windows
 	transient private Long 		nonNullLength = null;// count of none-null bins in the BinList
-	
+
 	private OverLappingManagement overLapManagement;
 
+	
+	/**
+	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
+	 */
+	public static int getCreationStepCount() {
+		return 5;
+	}
 
+
+	/**
+	 * overLappingExist method
+	 * Scan the original list to find overlapping region.
+	 * 
+	 * @param	startList	list of position start
+	 * @param	stopList	list of position stop
+	 * @return	true is an overlapping region is found
+	 */
+	public static boolean overLappingExist (ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList) {
+		ChromosomeManager chromosomeManagerTmp = ChromosomeManager.getInstance();
+		int index = 0;
+		boolean isFound = false;
+		for(final Chromosome currentChromosome : chromosomeManagerTmp) {
+			while (index < startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size()) {
+				isFound = searchOverLappingPositionsForIndex(chromosomeManagerTmp, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
+				if (isFound) {
+					return true;
+				} else {
+					index++;
+				}
+			}
+		}
+		return false;
+	}
+	
+
+	/**
+	 * searchOverLappingPositionsForIndex method
+	 * This method search if the index is involved on an overlapping region
+	 * 
+	 * @param	ChromosomeManager	a static ChromosomeManager instance
+	 * @param	startList			list of position start
+	 * @param	stopList			list of position stop
+	 * @param 	currentChromosome	Chromosome
+	 * @param 	index				current index
+	 * @return						true if the current index is involved on an overlapping region
+	 */
+	private static boolean searchOverLappingPositionsForIndex (	ChromosomeManager chromosomeManagerTmp,
+																ChromosomeListOfLists<Integer> startList,
+																ChromosomeListOfLists<Integer> stopList,
+																Chromosome currentChromosome,
+																int index) {
+		int size = startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size();
+		int nextIndex = index + 1;
+		if (nextIndex < size) {
+			boolean valid = true;
+			while (valid & (stopList.get(currentChromosome, index) > startList.get(currentChromosome, nextIndex))) {
+				if (stopList.get(currentChromosome, index) > startList.get(currentChromosome, nextIndex)) {
+					return true;
+				}
+				if ((nextIndex + 1) < size) {
+					nextIndex++;
+				} else {
+					valid = false;
+				}
+			}
+		}
+		return false;
+	}
+	
+
+	/**
+	 * Creates an instance of {@link ScoredChromosomeWindow} 
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
+	 */
+	public ScoredChromosomeWindowList (final BinList binList) throws InterruptedException, ExecutionException {
+		super();
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
+		
+		for(final Chromosome currentChromosome : chromosomeManager) {
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+				@Override
+				public List<ScoredChromosomeWindow> call() throws Exception {
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();	
+					for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
+						if (binList.get(currentChromosome, i) != 0.0) {
+							resultList.add(new ScoredChromosomeWindow( 	(i * binList.getBinSize()),
+																		((i + 1) * binList.getBinSize()),
+																		binList.get(currentChromosome, i)));
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		List<List<ScoredChromosomeWindow>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<ScoredChromosomeWindow> currentList: result) {
+				add(currentList);
+			}
+		}
+		generateStatistics();
+	}
+	
+	
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindowList}
 	 * @param startList list of start positions
@@ -124,8 +239,9 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		// generate the statistics
 		generateStatistics();
 	}
-	
 
+
+	
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindow} 
 	 * @throws ExecutionException 
@@ -151,52 +267,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	
 	
 	/**
-	 * Creates an instance of {@link ScoredChromosomeWindow} 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
-	 */
-	public ScoredChromosomeWindowList (final BinList binList) throws InterruptedException, ExecutionException {
-		super();
-		// retrieve the instance of the OperationPool
-		final OperationPool op = OperationPool.getInstance();
-		// list for the threads
-		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
-		
-		for(final Chromosome currentChromosome : chromosomeManager) {
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
-				@Override
-				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();	
-					for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
-						if (binList.get(currentChromosome, i) != 0.0) {
-							resultList.add(new ScoredChromosomeWindow( 	(i * binList.getBinSize()),
-																		((i + 1) * binList.getBinSize()),
-																		binList.get(currentChromosome, i)));
-						}
-					}
-					// tell the operation pool that a chromosome is done
-					op.notifyDone();
-					return resultList;
-				}
-			};
-
-			threadList.add(currentThread);
-		}
-		List<List<ScoredChromosomeWindow>> result = null;
-		// starts the pool
-		result = op.startPool(threadList);
-		// add the chromosome results
-		if (result != null) {
-			for (List<ScoredChromosomeWindow> currentList: result) {
-				add(currentList);
-			}
-		}
-		generateStatistics();
-	}
-
-
-	
-	/**
 	 * Performs a deep clone of the current {@link ScoredChromosomeWindowList}
 	 * @return a new ScoredChromosomeWindowList
 	 */
@@ -212,14 +282,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			e.printStackTrace();
 			return null;
 		}
-	}
-	
-	
-	/**
-	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
-	 */
-	public static int getCreationStepCount() {
-		return 5;
 	}
 
 
@@ -343,13 +405,14 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		max = Double.NEGATIVE_INFINITY;
 		average = 0d;
 		stDev = 0d;
+		scoreSum = 0d;
 		nonNullLength = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
 		final double[] mins = new double[chromosomeManager.size()];
 		final double[] maxs = new double[chromosomeManager.size()];
 		final double[] stDevs = new double[chromosomeManager.size()];
-		final double[] sumScoreByLengths = new double[chromosomeManager.size()];
+		final double[] scoreSums = new double[chromosomeManager.size()];
 		final long[] nonNullLengths = new long[chromosomeManager.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
@@ -362,12 +425,12 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 				public Void call() throws Exception {
 					mins[currentIndex] = Double.POSITIVE_INFINITY;
 					maxs[currentIndex] = Double.NEGATIVE_INFINITY;
-					if (currentList != null) {				
+					if (currentList != null) {	
 						for (ScoredChromosomeWindow currentWindow: currentList) {
 							if (currentWindow.getScore() != 0) {
 								mins[currentIndex] = Math.min(mins[currentIndex], currentWindow.getScore());
 								maxs[currentIndex] = Math.max(maxs[currentIndex], currentWindow.getScore());
-								sumScoreByLengths[currentIndex] += currentWindow.getScore() * currentWindow.getSize();
+								scoreSums[currentIndex] += currentWindow.getScore() * currentWindow.getSize();
 								nonNullLengths[currentIndex] += currentWindow.getSize();
 							}
 						}
@@ -383,18 +446,17 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		// start the pool of thread 
 		op.startPool(threadList);
 
-		double sumScoreByLength = 0;
 		// compute the genome wide result from the chromosomes results
 		for (int i = 0; i < chromosomeManager.size(); i++) {
 			min = Math.min(min, mins[i]);
 			max = Math.max(max, maxs[i]);
-			sumScoreByLength += sumScoreByLengths[i];
+			scoreSum += scoreSums[i];
 			nonNullLength += nonNullLengths[i];
 		}
 
 		if (nonNullLength != 0) {
 			// compute the average
-			average = sumScoreByLength / (double) nonNullLength;
+			average = scoreSum / (double) nonNullLength;
 			threadList.clear();
 
 			// compute the standard deviation for each chromosome
@@ -521,12 +583,19 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	
 	
 	/**
+	 * @return the sum of the scores
+	 */
+	public final Double getScoreSum() {
+		return scoreSum;
+	}
+	
+	
+	/**
 	 * @return the standard deviation of the BinList
 	 */
 	public Double getStDev() {
 		return stDev;
 	}
-	
 	
 	/**
 	 * Computes the statistics of the list after unserialization
@@ -544,61 +613,9 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	}
 	
 	/**
-	 * overLappingExist method
-	 * Scan the original list to find overlapping region.
-	 * 
-	 * @param	startList	list of position start
-	 * @param	stopList	list of position stop
-	 * @return	true is an overlapping region is found
+	 * @param scoreSum the scoreSum to set
 	 */
-	public static boolean overLappingExist (ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList) {
-		ChromosomeManager chromosomeManagerTmp = ChromosomeManager.getInstance();
-		int index = 0;
-		boolean isFound = false;
-		for(final Chromosome currentChromosome : chromosomeManagerTmp) {
-			while (index < startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size()) {
-				isFound = searchOverLappingPositionsForIndex(chromosomeManagerTmp, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
-				if (isFound) {
-					return true;
-				} else {
-					index++;
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * searchOverLappingPositionsForIndex method
-	 * This method search if the index is involved on an overlapping region
-	 * 
-	 * @param	ChromosomeManager	a static ChromosomeManager instance
-	 * @param	startList			list of position start
-	 * @param	stopList			list of position stop
-	 * @param 	currentChromosome	Chromosome
-	 * @param 	index				current index
-	 * @return						true if the current index is involved on an overlapping region
-	 */
-	private static boolean searchOverLappingPositionsForIndex (	ChromosomeManager chromosomeManagerTmp,
-																ChromosomeListOfLists<Integer> startList,
-																ChromosomeListOfLists<Integer> stopList,
-																Chromosome currentChromosome,
-																int index) {
-		int size = startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size();
-		int nextIndex = index + 1;
-		if (nextIndex < size) {
-			boolean valid = true;
-			while (valid & (stopList.get(currentChromosome, index) > startList.get(currentChromosome, nextIndex))) {
-				if (stopList.get(currentChromosome, index) > startList.get(currentChromosome, nextIndex)) {
-					return true;
-				}
-				if ((nextIndex + 1) < size) {
-					nextIndex++;
-				} else {
-					valid = false;
-				}
-			}
-		}
-		return false;
+	public final void setScoreSum(Double scoreSum) {
+		this.scoreSum = scoreSum;
 	}
 }
