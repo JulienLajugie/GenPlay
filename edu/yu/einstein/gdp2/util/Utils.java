@@ -402,6 +402,10 @@ public class Utils {
 	 * @return A color
 	 */
 	public static Color scoreToColor(double score, double min, double max) {
+		// set the score to min if the score is smaller than min
+		score = Math.max(min, score);
+		// set the score to max if the score is greater than max
+		score = Math.min(max, score);
 		double distance = max - min;
 		double newScore = score - min;
 		double distanceQuarter = distance / 4;

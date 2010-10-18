@@ -20,7 +20,8 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 
-import yu.einstein.gdp2.core.list.geneList.operation.GLOIndexScores;
+import yu.einstein.gdp2.core.list.geneList.operation.GLOMax;
+import yu.einstein.gdp2.core.list.geneList.operation.GLOMin;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
@@ -39,7 +40,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	private int 				geneLinesCount = 0;					// number of line of genes
 	private int 				mouseStartDragY = -1;				// position of the mouse when start dragging
 	private Gene 				geneUnderMouse = null;				// gene under the cursor of the mouse
-
+	private double 				min;								// min score of a GeneList
+	private double				max;								// max score of a GeneList
+	
 	
 	/**
 	 * Creates an instance of {@link GeneListTrackGraphics}
@@ -49,7 +52,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	protected GeneListTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList data) {
 		super(displayedGenomeWindow, data);
 		try {
-			this.data = new GLOIndexScores(data, null).compute();
+			min = new GLOMin(data, null).compute();
+			max = new GLOMax(data, null).compute();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -125,9 +129,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 								if (geneToPrint.getExonScores() != null) {
 									// if we have just one exon score
 									if (geneToPrint.getExonScores().length == 1) {
-										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[0], 0, 1000));
+										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[0], min, max));
 									} else { // if we have values for each exon
-										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[j], 0, 1000));
+										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[j], min, max));
 									}
 								}
 								g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);

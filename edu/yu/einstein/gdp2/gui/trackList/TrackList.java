@@ -109,6 +109,7 @@ import yu.einstein.gdp2.gui.action.geneListTrack.GLADistanceCalculator;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractExons;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAGeneRenamer;
+import yu.einstein.gdp2.gui.action.geneListTrack.GLAScoreExons;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLASearchGene;
 import yu.einstein.gdp2.gui.action.scoredTrack.STASetYAxis;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -195,11 +196,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ETALoadFromDAS.ACTION_KEY, new ETALoadFromDAS());
 		getActionMap().put(ETAGenerateMultiCurvesTrack.ACTION_KEY, new ETAGenerateMultiCurvesTrack());
 		// add gene list actions
-		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
-		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
-		getActionMap().put(GLAExtractExons.ACTION_KEY, new GLAExtractExons());
-		getActionMap().put(GLAGeneRenamer.ACTION_KEY, new GLAGeneRenamer());
 		getActionMap().put(GLADistanceCalculator.ACTION_KEY, new GLADistanceCalculator());
+		getActionMap().put(GLAExtractExons.ACTION_KEY, new GLAExtractExons());
+		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
+		getActionMap().put(GLAGeneRenamer.ACTION_KEY, new GLAGeneRenamer());
+		getActionMap().put(GLAScoreExons.ACTION_KEY, new GLAScoreExons());
+		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(CTAHistory.ACTION_KEY, new CTAHistory());

@@ -20,7 +20,7 @@ import yu.einstein.gdp2.gui.track.GeneListTrack;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GLASearchGene  extends TrackListActionWorker<Void> {
+public final class GLASearchGene extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 	// generated ID
 	private static final String 	ACTION_NAME = "Seach Gene";			// action name

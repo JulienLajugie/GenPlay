@@ -62,7 +62,10 @@ public class GLOIndexScores implements Operation<GeneList> {
 							Gene copyCurrentGene = new Gene(currentGene);
 							if (copyCurrentGene.getExonScores() != null){
 								for(int j = 0; j < copyCurrentGene.getExonScores().length; j++) {
-									copyCurrentGene.getExonScores()[j] = (copyCurrentGene.getExonScores()[j] - min) * indexFactor;							
+									double score = (copyCurrentGene.getExonScores()[j] - min) * indexFactor;
+									score = Math.max(0, score);
+									score = Math.min(1000, score);
+									copyCurrentGene.getExonScores()[j] = score;							
 								}
 							}
 							resultList.add(copyCurrentGene);

@@ -31,7 +31,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	private final int 		startFrom;			// start reference (see constants below)
 	private final int 		stopDistance;		// distant from the stop reference
 	private final int 		stopFrom;			// stop reference
-	private boolean				stopped = false;// true if the operation must be stopped
+	private boolean			stopped = false;	// true if the operation must be stopped
 
 
 	/**
@@ -86,6 +86,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		this.stopFrom = stopFrom;
 	}
 
+	
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
@@ -204,15 +205,21 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 							// invalid argument
 							throw new IllegalArgumentException("Invalid Stop Reference");
 						}
-						geneToAdd.setExonStarts(null);
-						geneToAdd.setExonStops(null);
 						geneToAdd.setExonScores(null);
 						// add the new gene
 						if ((newStart < newStop) && (currentGene.getStrand() == Strand.FIVE)) {
+							int[] exonStart = {newStart};
+							int[] exonStop = {newStop};
+							geneToAdd.setExonStarts(exonStart);
+							geneToAdd.setExonStops(exonStop);							
 							geneToAdd.setTxStart(newStart);
 							geneToAdd.setTxStop(newStop);
 							resultList.add(geneToAdd);
 						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
+							int[] exonStart = {newStop};
+							int[] exonStop = {newStart};
+							geneToAdd.setExonStarts(exonStart);
+							geneToAdd.setExonStops(exonStop);							
 							geneToAdd.setTxStart(newStop);
 							geneToAdd.setTxStop(newStart);
 							resultList.add(geneToAdd);	
