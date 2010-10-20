@@ -7,6 +7,7 @@ package yu.einstein.gdp2.core.extractor;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
@@ -52,7 +53,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	private String							searchURL;		// url of the gene database for the search
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private int 							strandShift;	// value of the shift to perform on the selected strand
-	
+
 
 	/**
 	 * Creates an instance of {@link BedExtractor}
@@ -119,8 +120,10 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 							String name = splitedLine[3].trim();
 							nameList.add(chromosome, name);
 							if (splitedLine.length > 4) {
-								double score = Double.parseDouble(splitedLine[4].trim());
-								scoreList.add(chromosome, score);
+								if (!splitedLine[4].trim().equals("-")) {
+									double score = Double.parseDouble(splitedLine[4].trim());
+									scoreList.add(chromosome, score);
+								}
 								if (splitedLine.length > 11) {
 									if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
 										String[] exonStartsStr = splitedLine[11].split(",");
@@ -182,6 +185,34 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		boolean areExonsScored = false;
+		// check if there is values in the exon scores list
+		for (List<double[]> currentExonScores: exonScoresList) {
+			if ((currentExonScores != null) && (!currentExonScores.isEmpty())) {
+				areExonsScored = true;
+			}
+		}
+		// if there is no exon score value we check if there is a general gene score value
+		if (!areExonsScored) {
+			boolean areGenesScored = false;
+			for (int i = 0; i < scoreList.size() && !areGenesScored; i++) {
+				for (int j = 0; j < scoreList.size(i) && !areGenesScored; j++) {
+					if ((scoreList.get(i, j) != 0) && (scoreList.get(i, j) != 1)) {
+						areGenesScored = true;
+					}
+				}
+			}
+			// in this case (where there is no exon specific score values but there is 
+			// genes score values) we attribute the gene score values as exon scores
+			if (areGenesScored) {			
+				for (int i = 0; i < scoreList.size(); i++) {
+					for (int j = 0; j < scoreList.size(i); j++) {
+						double[] scoreToAdd = {scoreList.get(i, j)};
+						exonScoresList.get(i).add(scoreToAdd);
+					}
+				}
+			}
+		}
 		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
 

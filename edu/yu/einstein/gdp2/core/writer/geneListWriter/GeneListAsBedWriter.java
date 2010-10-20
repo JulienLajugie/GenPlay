@@ -114,7 +114,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 				writer.close();
 			}
 		}
-	}	
+	}
 	
 	
 	/**
