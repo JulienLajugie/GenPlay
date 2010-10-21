@@ -30,6 +30,7 @@ public class BLOFindIslands implements Operation<BinList[]> {
 		this.island = new IslandFinder(binList);
 	}
 	
+	
 	@Override
 	public BinList[] compute () throws InterruptedException, ExecutionException {
 		this.outputBinList = new BinList[this.list.length];
@@ -97,6 +98,7 @@ public class BLOFindIslands implements Operation<BinList[]> {
 	public void setList(IslandResultType[] list) {
 		this.list = list;
 	}
+	
 
 	@Override
 	public void stop() {

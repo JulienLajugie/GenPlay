@@ -26,9 +26,9 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 /**
  * IslandFinder
- * This class implements the island approach. 
+ * This class implements the island approach.
  * It contains algorithm to separate data on island and some statistics methods corresponding.
- * @author Nicolas Fourel 
+ * @author Nicolas Fourel
  */
 public class IslandFinder implements Serializable, Stoppable {
 	
@@ -166,7 +166,7 @@ public class IslandFinder implements Serializable, Stoppable {
 					// so, it's necessary the end of the island
 					islandStopPos = jTmp - gapFound - 1;
 					// the island must have a valid number of windows
-					if ((islandStopPos - islandStartPos) >= this.islandMinLength ) {
+					if (((islandStopPos - islandStartPos) + 1) >= this.islandMinLength ) {
 						islandsStart.add(islandStartPos);
 						islandsStop.add(islandStopPos);
 					}
