@@ -15,8 +15,8 @@ import javax.swing.filechooser.FileFilter;
 public final class GFFFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 1615779972078858623L;	// generated ID
-	public static final String[] EXTENSIONS = {"gff", "gtf", "gff3"};
-	public static final String DESCRIPTION = "GFF Files (*.gff; *.gtf; *.gff3)";
+	public static final String[] EXTENSIONS = {"gff", "gff3"};
+	public static final String DESCRIPTION = "GFF Files (*.gff; *.gff3)";
 	
 	
 	/**

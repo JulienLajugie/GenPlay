@@ -25,6 +25,7 @@ import yu.einstein.gdp2.gui.fileFilter.BedGraphWith0Filter;
 import yu.einstein.gdp2.gui.fileFilter.ElandExtendedFilter;
 import yu.einstein.gdp2.gui.fileFilter.ExtendedFileFilter;
 import yu.einstein.gdp2.gui.fileFilter.GFFFilter;
+import yu.einstein.gdp2.gui.fileFilter.GTFFilter;
 import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.PSLFilter;
 import yu.einstein.gdp2.gui.fileFilter.PairFilter;
@@ -300,7 +301,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as BinList
 	 */
 	public static ExtendedFileFilter[] getReadableBinListFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PairFilter(), new ElandExtendedFilter(), new PSLFilter(), new SAMFilter(), new SerializedBinListFilter()};
 		return filters;
 	}
 
@@ -309,7 +310,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as GeneList
 	 */
 	public static ExtendedFileFilter[] getReadableGeneFileFilters() {
-		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedFilter(), new GdpGeneFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
 
@@ -318,7 +319,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as Repeats
 	 */
 	public static ExtendedFileFilter[] getReadableRepeatFileFilters() {
-		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
 	}
 
@@ -327,7 +328,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SCWList
 	 */
 	public static ExtendedFileFilter[] getReadableSCWFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
 		return filters;
 	}
 
@@ -345,7 +346,7 @@ public class Utils {
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as stripes
 	 */
 	public static ExtendedFileFilter[] getReadableStripeFileFilters() {
-		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new WiggleFilter(), new PSLFilter()};
+		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter(), new GTFFilter(), new WiggleFilter(), new PSLFilter()};
 		return filters;
 	}
 

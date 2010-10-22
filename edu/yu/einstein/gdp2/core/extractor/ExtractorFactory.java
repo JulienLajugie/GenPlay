@@ -58,8 +58,7 @@ public final class ExtractorFactory {
 		if (fileExtension.equalsIgnoreCase("gff")) {
 			return new GFFExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("gtf")) {
-			// TODO return gtf extractor
-			return null;
+			return new GTFExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("gff3")) {
 			// TODO return gff3 extractor
 			return null;
@@ -124,6 +123,8 @@ public final class ExtractorFactory {
 				if (isHeader) {
 					if (line.substring(0, 5).equalsIgnoreCase("##GFF")) {
 						return new GFFExtractor(fileToExtract, logFile);
+					} else if (line.substring(0, 5).equalsIgnoreCase("##GTF")) {
+						return new GTFExtractor(fileToExtract, logFile);
 					} else if (line.substring(0, 5).equalsIgnoreCase("track")) {
 						String lineTmp = line.toLowerCase();
 						if (lineTmp.contains("type")) {
