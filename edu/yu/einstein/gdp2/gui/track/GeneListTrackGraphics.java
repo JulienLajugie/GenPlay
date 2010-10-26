@@ -13,6 +13,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
@@ -20,8 +22,6 @@ import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 
-import yu.einstein.gdp2.core.list.geneList.operation.GLOMax;
-import yu.einstein.gdp2.core.list.geneList.operation.GLOMin;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.util.Utils;
 
@@ -35,6 +35,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 	private static final long serialVersionUID = 1372400925707415741L; // generated ID
 	private static final double	MIN_X_RATIO_PRINT_NAME = GeneList.MIN_X_RATIO_PRINT_NAME;
+	private static final double SCORE_SATURATION = 0.01d;			// saturation of the score of the exon for the display
 	private static final short	GENE_HEIGHT = 6;					// size of a gene in pixel
 	private int 				firstLineToDisplay = 0;				// number of the first line to be displayed
 	private int 				geneLinesCount = 0;					// number of line of genes
@@ -42,8 +43,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	private Gene 				geneUnderMouse = null;				// gene under the cursor of the mouse
 	private double 				min;								// min score of a GeneList
 	private double				max;								// max score of a GeneList
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GeneListTrackGraphics}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
@@ -52,13 +53,42 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	protected GeneListTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList data) {
 		super(displayedGenomeWindow, data);
 		try {
-			min = new GLOMin(data, null).compute();
-			max = new GLOMax(data, null).compute();
+			setSaturatedMinMax();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		firstLineToDisplay = 0;
 		this.data.setFontMetrics(fm);
+	}
+
+
+	/**
+	 *  Computes the minimum and maximum saturated values of the exon scores
+	 */
+	private void setSaturatedMinMax() {
+		// put the scores of every exon in a big list
+		List<Double> scoreList = new ArrayList<Double>();
+		for (List<Gene> currentList: data) {
+			if (!currentList.isEmpty()) {
+				for (Gene currentGene: currentList) {
+					for (double currentScore: currentGene.getExonScores()) {
+						if (currentScore != 0) {
+							scoreList.add(currentScore);
+						}
+					}
+				}
+			}
+		}
+		if (!scoreList.isEmpty()) {
+			// sort the list
+			Collections.sort(scoreList);
+
+			int minIndex = (int)(SCORE_SATURATION * scoreList.size());
+			int maxIndex = scoreList.size() - (int)(SCORE_SATURATION * scoreList.size());
+
+			min = scoreList.get(minIndex - 1);
+			max = scoreList.get(maxIndex - 1);
+		}
 	}
 
 
@@ -224,7 +254,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		} else {				
 			displayedLineCount = (getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2) + 1;
 		}	
-		
+
 		// search if the mouse is on a line where there is genes printed on the track
 		int mouseLine = -1;
 		int i = 0;
@@ -298,7 +328,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			super.mouseWheelMoved(e);
 		}
 	}
-	
+
 
 	@Override
 	protected void xFactorChanged() {
