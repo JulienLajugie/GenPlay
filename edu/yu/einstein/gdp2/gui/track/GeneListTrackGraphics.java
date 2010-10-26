@@ -13,6 +13,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,16 +34,19 @@ import yu.einstein.gdp2.util.Utils;
  */
 public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
-	private static final long serialVersionUID = 1372400925707415741L; // generated ID
-	private static final double	MIN_X_RATIO_PRINT_NAME = GeneList.MIN_X_RATIO_PRINT_NAME;
-	private static final double SCORE_SATURATION = 0.01d;			// saturation of the score of the exon for the display
-	private static final short	GENE_HEIGHT = 6;					// size of a gene in pixel
-	private int 				firstLineToDisplay = 0;				// number of the first line to be displayed
-	private int 				geneLinesCount = 0;					// number of line of genes
-	private int 				mouseStartDragY = -1;				// position of the mouse when start dragging
-	private Gene 				geneUnderMouse = null;				// gene under the cursor of the mouse
-	private double 				min;								// min score of a GeneList
-	private double				max;								// max score of a GeneList
+	private static final long serialVersionUID = 1372400925707415741L; 	// generated ID
+	private static final double				MIN_X_RATIO_PRINT_NAME = 
+		GeneList.MIN_X_RATIO_PRINT_NAME;								// the name of the genes are printed if the ratio is higher than this value			
+	private static final double 			SCORE_SATURATION = 0.01d;	// saturation of the score of the exon for the display
+	private static final short				GENE_HEIGHT = 6;			// size of a gene in pixel
+	protected static final DecimalFormat 	SCORE_FORMAT = 
+		new DecimalFormat("#.###");										// decimal format for the score
+	private int 							firstLineToDisplay = 0;		// number of the first line to be displayed
+	private int 							geneLinesCount = 0;			// number of line of genes
+	private int 							mouseStartDragY = -1;		// position of the mouse when start dragging
+	private Gene 							geneUnderMouse = null;		// gene under the cursor of the mouse
+	private double 							min;						// min score of a GeneList
+	private double							max;						// max score of a GeneList
 
 
 	/**
@@ -290,13 +294,35 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 				}
 			}
 		}
-		// set the cursor and the tooltip text if there is a gene under the mouse cursor
+		// unset the tool text and the mouse cursor if there is no gene under the mouse
 		if (geneUnderMouse == null) {
 			setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 			setToolTipText(null);
 		} else {
+			// if there is a gene under the mouse we also check 
+			// if there is an exon with a score under the mouse cursor
+			Double scoreUnderMouse = null;
+			if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) { 
+				for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreUnderMouse == null); k++) {
+					if (mousePosition.x >= genomePosToScreenPos(geneUnderMouse.getExonStarts()[k]) &&
+							(mousePosition.x <= genomePosToScreenPos(geneUnderMouse.getExonStops()[k]))) {
+						if (geneUnderMouse.getExonScores().length == 1) {	
+							scoreUnderMouse = geneUnderMouse.getExonScores()[0];
+						} else {
+							scoreUnderMouse = geneUnderMouse.getExonScores()[k];
+						}
+					}
+				}
+			}
+			// set the cursor and the tooltip text if there is a gene under the mouse cursor
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
-			setToolTipText(geneUnderMouse.getName());
+			if (scoreUnderMouse == null) {
+				// if there is a gene but no exon score
+				setToolTipText(geneUnderMouse.getName());
+			} else {
+				// if there is a gene and an exon score
+				setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
+			}
 		}
 	}
 

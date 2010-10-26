@@ -31,7 +31,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	private static final long 				serialVersionUID = -9200672145021160494L;	// generated ID
 	private static final Color				TRACK_COLOR = Color.black;					// default color
 	private static final GraphicsType 		TYPE_OF_GRAPH = GraphicsType.BAR;			// type of graph
-	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.##");	// decimal format for the score
+	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.###");	// decimal format for the score
 	protected Color							trackColor;									// color of the graphics
 	protected GraphicsType 					typeOfGraph;								// type graphics
 	protected History 						history = null; 							// history containing a description of the
