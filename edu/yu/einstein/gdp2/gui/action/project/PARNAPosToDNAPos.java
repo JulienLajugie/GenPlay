@@ -12,11 +12,12 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import yu.einstein.gdp2.core.RNAPosToDNAPos.GeneRelativeToGenomePosition;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
+import yu.einstein.gdp2.core.rescorer.GeneRelativeToGenomePositionWithExtraFields;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
 import yu.einstein.gdp2.gui.fileFilter.BedGraphFilter;
+import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -59,7 +60,9 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		File fileRef;
 		File fileData;
-		File fileOut;
+		File fileOutGDP;
+		File fileOutWithGenomicPositions;
+		File fileOutWithGenomicPositionsWithExtraFields;
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		FileNameExtensionFilter textFileFilter = new FileNameExtensionFilter("Text file (*.txt)", "txt");
 		FileFilter[] fileFilters1 = {textFileFilter, new BedGraphFilter()};
@@ -70,15 +73,36 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 			if (fileRef != null) {
 				JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 				jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				jfc.setDialogTitle("Select Output File");
-				jfc.addChoosableFileFilter(new BedGraphFilter());
+				jfc.setDialogTitle("Select GDP Output File");
+				jfc.addChoosableFileFilter(new GdpGeneFilter());
 				jfc.setAcceptAllFileFilterUsed(false);
 				int returnVal = jfc.showSaveDialog(parent);
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					fileOut = Utils.addExtension(jfc.getSelectedFile(), "bgr");
-					final GeneRelativeToGenomePosition grtgp = new GeneRelativeToGenomePosition(fileData, fileRef, fileOut);
-					notifyActionStart("Generating Output File", 1, false);
-					grtgp.rePosition();
+					fileOutGDP = Utils.addExtension(jfc.getSelectedFile(), "gdp");
+					
+					jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					jfc.setDialogTitle("Select Output File for Genomic Positions");
+					jfc.addChoosableFileFilter(new BedGraphFilter());
+					jfc.setAcceptAllFileFilterUsed(false);
+					returnVal = jfc.showSaveDialog(parent);
+					if(returnVal == JFileChooser.APPROVE_OPTION) {
+						fileOutWithGenomicPositions = Utils.addExtension(jfc.getSelectedFile(), "bgr");
+						
+						jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+						jfc.setDialogTitle("Select Output File for Genomic Positions and Extra Fields");
+						jfc.addChoosableFileFilter(new BedGraphFilter());
+						jfc.setAcceptAllFileFilterUsed(false);
+						returnVal = jfc.showSaveDialog(parent);
+						if(returnVal == JFileChooser.APPROVE_OPTION) {
+							fileOutWithGenomicPositionsWithExtraFields = Utils.addExtension(jfc.getSelectedFile(), "bgr");
+					
+							final GeneRelativeToGenomePositionWithExtraFields grtgp = new GeneRelativeToGenomePositionWithExtraFields(fileData, fileRef, fileOutWithGenomicPositions, fileOutGDP, fileOutWithGenomicPositionsWithExtraFields);
+							notifyActionStart("Generating Output Files", 1, false);
+							grtgp.rePosition();
+						}
+					}
 				}
 			}
 		}
