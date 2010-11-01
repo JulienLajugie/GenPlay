@@ -13,16 +13,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 public class GeneRelativeToGenomePositionWithExtraFields {
 	private static Map<String, List<Double>> startStopScore; 						 // map to store the start stop and score
 	private static Map<String, List<List<String>>> remainderLineFromCoverageFile;	 // map containing all lines of the coverage file
+	
+	private static final int BGR_FILE = 0;
+	private static final int GDP_FILE = 1;
+	private static final int BGR_FILE_WITH_EXTRA_FIELDS = 2;
+	private int outputFileType;
+	
 	private File coverageFile;								 						 // the coverage file
 	private File annotationFile;							 						 // the annotation file
-	private File repositionedFile;							 						 // the  output file created with genomic positions
-	private File gdpFile;									 						 // gdp file
-	private File outputFileWithExtraFields;					 						 // output file with extra fields
+//	private File repositionedFile;							 						 // the  output file created with genomic positions
+//	private File gdpFile;									 						 // gdp file
+//	private File outputFileWithExtraFields;					 						 // output file with extra fields
+	
+	private File outputFile;
 	
 	/**
 	 * Creates an instance of {@link GeneRelativeToGenomePosition} 
@@ -30,12 +39,14 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 	 * @param annotationFile
 	 * @param repositionedFile
 	 */
-	public GeneRelativeToGenomePositionWithExtraFields(File coverageFile, File annotationFile, File repositionedFile, File gdpFile, File outputFileWithExtraFields) {
+	public GeneRelativeToGenomePositionWithExtraFields(File coverageFile, File annotationFile, /*File repositionedFile, File gdpFile, File outputFileWithExtraFields,*/ File outputFile, int outputFileType) {
 		this.coverageFile = coverageFile;
 		this.annotationFile = annotationFile;
-		this.repositionedFile = repositionedFile;
-		this.gdpFile = gdpFile;
-		this.outputFileWithExtraFields = outputFileWithExtraFields;
+//		this.repositionedFile = repositionedFile;
+//		this.gdpFile = gdpFile;
+//		this.outputFileWithExtraFields = outputFileWithExtraFields;
+		this.outputFile = outputFile;
+		this.outputFileType = outputFileType;
 	}
 	
 	/**
@@ -52,24 +63,31 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		List<List<String>> tempList = new ArrayList<List<String>>();
 		
 		while (lineRead != null && lineRead.length() > 0) {
-			strtok = new StringTokenizer(lineRead, "\t\n");
-			String gene = strtok.nextToken();
-			// now skip the start stop and score and store the remainder of the line
-			List<String> toBeAdded = new ArrayList<String>();
-			toBeAdded.add(strtok.nextToken());
-			toBeAdded.add(strtok.nextToken());
-			toBeAdded.add(strtok.nextToken());
-			String remainingLine = "";
-			while (strtok.hasMoreTokens()) {
-				remainingLine += strtok.nextToken()+"\t";
+			try {
+				strtok = new StringTokenizer(lineRead, "\t\n");
+				String gene = strtok.nextToken();
+				// now skip the start stop and score and store the remainder of the line
+				List<String> toBeAdded = new ArrayList<String>();
+				toBeAdded.add(strtok.nextToken());
+				toBeAdded.add(strtok.nextToken());
+				// uncomment the next line for junction files
+				//strtok.nextToken();
+				toBeAdded.add(strtok.nextToken());
+				String remainingLine = "";
+				while (strtok.hasMoreTokens()) {
+					remainingLine += strtok.nextToken()+"\t";
+				}
+				toBeAdded.add(remainingLine);
+				if (remainderLineFromCoverageFile.containsKey(gene) == true) {
+					remainderLineFromCoverageFile.get(gene).add(toBeAdded);					
+				} else {
+					tempList.add(toBeAdded);
+					remainderLineFromCoverageFile.put(gene, tempList);
+				}
+			} catch (NoSuchElementException e) {
+				lineRead = buf.readLine();
+				tempList = new ArrayList<List<String>>();
 			}
-			toBeAdded.add(remainingLine);
-			if (remainderLineFromCoverageFile.containsKey(gene) == true) {
-				remainderLineFromCoverageFile.get(gene).add(toBeAdded);					
-			} else {
-				tempList.add(toBeAdded);
-				remainderLineFromCoverageFile.put(gene, tempList);
-			}	
 			lineRead = buf.readLine();
 			tempList = new ArrayList<List<String>>();		
 		}		
@@ -89,21 +107,28 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 
 		List<Double> tempList = new ArrayList<Double>();
 		while (lineRead != null && lineRead.length() > 0) {
-			strtok = new StringTokenizer(lineRead, "\t\n");
-			String gene = strtok.nextToken();
-			double start = Double.parseDouble(strtok.nextToken());
-			double stop = Double.parseDouble(strtok.nextToken());
-			double score = Double.parseDouble(strtok.nextToken());
-			if (startStopScore.containsKey(gene)) {
-				startStopScore.get(gene).add(start);
-				startStopScore.get(gene).add(stop);
-				startStopScore.get(gene).add(score);
-			} else {
-				tempList.add(start);
-				tempList.add(stop);
-				tempList.add(score);
-				startStopScore.put(gene, tempList);
-			}		
+			try {
+				strtok = new StringTokenizer(lineRead, "\t\n");
+				String gene = strtok.nextToken();
+				double start = Double.parseDouble(strtok.nextToken());
+				double stop = Double.parseDouble(strtok.nextToken());
+				// uncomment the next line for junction files
+				//strtok.nextToken();
+				double score = Double.parseDouble(strtok.nextToken());
+				if (startStopScore.containsKey(gene)) {
+					startStopScore.get(gene).add(start);
+					startStopScore.get(gene).add(stop);
+					startStopScore.get(gene).add(score);
+				} else {
+					tempList.add(start);
+					tempList.add(stop);
+					tempList.add(score);
+					startStopScore.put(gene, tempList);
+				}
+			} catch (NoSuchElementException e) {
+				lineRead = buf.readLine();
+				tempList = new ArrayList<Double>();
+			}					
 			lineRead = buf.readLine();
 			tempList = new ArrayList<Double>();
 		}
@@ -390,7 +415,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 	 * @throws IOException 
 	 */
 	private void scoreToRPKM() throws IOException {
-		BufferedReader bufReader = new BufferedReader(new FileReader(gdpFile));
+		BufferedReader bufReader = new BufferedReader(new FileReader(outputFile));
 		Map<String, List<String>> gdpFileMap = new HashMap<String, List<String>>();
 		double totalScoreOfAllExons = 0;
 		
@@ -428,7 +453,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		totalScoreOfAllExons = 1000000000 / totalScoreOfAllExons;
 		
 		Iterator<String> iter = gdpFileMap.keySet().iterator();
-		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(gdpFile));
+		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
 		while (iter.hasNext()) {
 			List<String> starts = new ArrayList<String>();
 			String finalStarts = "";
@@ -478,7 +503,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 	 * @throws IOException
 	 */
 	private void sortRepositionedFile() throws IOException {
-		BufferedReader buf = new BufferedReader(new FileReader(repositionedFile));
+		BufferedReader buf = new BufferedReader(new FileReader(outputFile));
 		List<FileDataLineForSorting> file = new ArrayList<FileDataLineForSorting>();
 		String lineRead = buf.readLine();
 		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
@@ -497,7 +522,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		
 		Collections.sort(file);
 		// write the sorted data to the file
-		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
+		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
 		Iterator<FileDataLineForSorting> iter = file.iterator();
 		while (iter.hasNext()) {
 			FileDataLineForSorting fs = iter.next();
@@ -516,9 +541,10 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 			loadCoverageFileCompletelyOnHashMap();
 	
 			BufferedReader newbuf = new BufferedReader(new FileReader(annotationFile));
-			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
-			BufferedWriter bufWriter2 = new BufferedWriter(new FileWriter(gdpFile));
-			BufferedWriter bufWriterForThirdFile = new BufferedWriter(new FileWriter(outputFileWithExtraFields));
+//			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
+//			BufferedWriter bufWriter2 = new BufferedWriter(new FileWriter(gdpFile));
+//			BufferedWriter bufWriterForThirdFile = new BufferedWriter(new FileWriter(outputFileWithExtraFields));
+			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
 			String lineReadFromFile2 = newbuf.readLine();
 			StringTokenizer newstrtok = new StringTokenizer(lineReadFromFile2,"\t\n");
 			
@@ -600,14 +626,20 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 						finalStartStopScore = populateRepositionedArrayList(startstopscorearray, mergedList, absolutebplengths, exonStarts, basePairs, finalStartStopScore, newRemainingString, remainderStringForPrinting);
 						
 						// write the list to the output file
-						printToOutputFile(chrmomosome, finalStartStopScore, bufWriter);
+						if (outputFileType == BGR_FILE) {
+							printToOutputFile(chrmomosome, finalStartStopScore, bufWriter);
+						}
 						// System.out.println("One NM value done");
 						
 						// write to output file in gdp format
-						printToOutputFileDifferentFormat(key, chrmomosome, strand, chrStart, chrStop, finalStartStopScore, exonStarts, basePairs, bufWriter2);
+						if (outputFileType == GDP_FILE) {
+							printToOutputFileDifferentFormat(key, chrmomosome, strand, chrStart, chrStop, finalStartStopScore, exonStarts, basePairs, bufWriter);
+						}
 						
 						// write to output file including extra fields from the input file
-						printOutputWithExtraFieldsToFile(key, chrmomosome, chrStart, finalStartStopScore, remainderStringForPrinting, bufWriterForThirdFile);
+						if (outputFileType == BGR_FILE_WITH_EXTRA_FIELDS) {
+							printOutputWithExtraFieldsToFile(key, chrmomosome, chrStart, finalStartStopScore, remainderStringForPrinting, bufWriter);
+						}
 					}					
 				}
 				lineReadFromFile2 = newbuf.readLine();
@@ -616,14 +648,18 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 				}				
 			}
 			bufWriter.close();
-			bufWriter2.close();
-			bufWriterForThirdFile.close();
+//			bufWriter2.close();
+//			bufWriterForThirdFile.close();
 			
 			// We sort the output file
-			sortRepositionedFile();	
+			if (outputFileType == BGR_FILE) {
+				sortRepositionedFile();
+			}
 			
 			// Score to RPKM
-			scoreToRPKM();
+			if (outputFileType == GDP_FILE) {
+				scoreToRPKM();
+			}
 			
 		}catch (IOException e) {
 			e.printStackTrace();
@@ -631,7 +667,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 	}
 	
 	public static void main (String args[]) {
-		GeneRelativeToGenomePositionWithExtraFields gr = new GeneRelativeToGenomePositionWithExtraFields(new File(args[0]), new File(args[1]), new File(args[2]), new File(args[3]), new File(args[4]));
+		GeneRelativeToGenomePositionWithExtraFields gr = new GeneRelativeToGenomePositionWithExtraFields(new File(args[0]), new File(args[1]), new File(args[2]), 2);
 		gr.rePosition();		
 	}
 }
