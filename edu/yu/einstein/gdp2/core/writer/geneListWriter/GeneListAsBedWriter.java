@@ -63,8 +63,13 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 					lineToPrint += "\t";
 					lineToPrint += currentGene.getName();
 					lineToPrint += "\t";
-					// add 1 for the score
-					lineToPrint += "1";
+					// add the RPKM of the gene for the score if there is one
+					Double score = currentGene.getGeneRPKM();
+					if (score == null) {
+						lineToPrint += "0";
+					} else {
+						lineToPrint += score;
+					}
 					lineToPrint += "\t";
 					lineToPrint += currentGene.getStrand().toString();
 					// add "-" for thickStart, thickEnd, itemRgb, blockCount
