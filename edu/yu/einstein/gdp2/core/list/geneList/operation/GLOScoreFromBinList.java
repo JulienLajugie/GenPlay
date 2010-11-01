@@ -80,7 +80,6 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 										}
 									}
 								}
-								System.out.println(scores[k]);
 							}
 							Gene geneToAdd = new Gene(currentGeneList.get(j));
 							geneToAdd.setExonScores(scores);

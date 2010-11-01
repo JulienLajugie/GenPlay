@@ -350,5 +350,20 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	@Override
 	public String toString() {
 		return chromo.toString() + "\t" + txStart + "\t" + txStop +"\t" + name + "\t" + strand;
-	}	
+	}
+
+
+	public Double getGeneRPKM() {
+		if ((getExonScores() == null) || (getExonScores().length == 0)) {
+			return null;
+		} else {
+			int exonicLength = 0;
+			double scoreByLengthSum = 0;
+			for (int i = 0; i < getExonScores().length; i++) {
+				exonicLength += exonStops[i] - exonStarts[i];
+				scoreByLengthSum += exonScores[i] * (double) (exonStops[i] - exonStarts[i]); 
+			}
+			return scoreByLengthSum / exonicLength;  
+		}
+	}
 }

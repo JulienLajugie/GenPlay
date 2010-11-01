@@ -56,14 +56,17 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 		if ((getTrackList().getSelectedTrack() != null) && (getTrackList().getSelectedTrack() instanceof GeneListTrack)) {
 			selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				binListTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Select the track with the scores:", getTrackList().getBinListTracks());
-				if (binListTrack != null) {
-					ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
-					if (method != null) {
-						resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
-						if (resultTrack != null) {
-							Operation<GeneList> operation = new GLOScoreFromBinList(selectedTrack.getData(), binListTrack.getData(), method);
-							return operation;
+				Track<?>[] blts = getTrackList().getBinListTracks();
+				if (blts != null) {
+					binListTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Select the track with the scores:", blts);
+					if (binListTrack != null) {
+						ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
+						if (method != null) {
+							resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
+							if (resultTrack != null) {
+								Operation<GeneList> operation = new GLOScoreFromBinList(selectedTrack.getData(), binListTrack.getData(), method);
+								return operation;
+							}
 						}
 					}
 				}
