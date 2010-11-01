@@ -98,9 +98,9 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 						if(returnVal == JFileChooser.APPROVE_OPTION) {
 							fileOutWithGenomicPositionsWithExtraFields = Utils.addExtension(jfc.getSelectedFile(), "bgr");
 					
-							final GeneRelativeToGenomePositionWithExtraFields grtgp = new GeneRelativeToGenomePositionWithExtraFields(fileData, fileRef, fileOutWithGenomicPositions, fileOutGDP, fileOutWithGenomicPositionsWithExtraFields);
+							//final GeneRelativeToGenomePositionWithExtraFields grtgp = new GeneRelativeToGenomePositionWithExtraFields(fileData, fileRef, fileOutWithGenomicPositions, fileOutGDP, fileOutWithGenomicPositionsWithExtraFields);
 							notifyActionStart("Generating Output Files", 1, false);
-							grtgp.rePosition();
+							//grtgp.rePosition();
 						}
 					}
 				}

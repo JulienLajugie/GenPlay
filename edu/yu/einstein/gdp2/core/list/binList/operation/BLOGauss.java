@@ -26,6 +26,7 @@ public class BLOGauss implements Operation<BinList> {
 
 	private final BinList 	binList;		// input list
 	private final int 		sigma;			// sigma parameter of the gaussian
+	private final boolean	fillNullValues; // true to fill the null values
 	private boolean			stopped = false;// true if the operation must be stopped
 	
 	
@@ -34,10 +35,12 @@ public class BLOGauss implements Operation<BinList> {
 	 * Applies a gaussian filter on the BinList and returns the result in a new BinList.
 	 * @param binList {@link BinList} to gauss
 	 * @param sigma parameter of the gaussian filter
+	 * @param fillNullValues set to true to fill the null values
 	 */
-	public BLOGauss(BinList binList, int sigma) {
+	public BLOGauss(BinList binList, int sigma, boolean fillNullValues) {
 		this.binList = binList;
 		this.sigma = sigma;
+		this.fillNullValues = fillNullValues;
 	}
 	
 	
@@ -63,7 +66,7 @@ public class BLOGauss implements Operation<BinList> {
 					if ((currentList != null) && (currentList.size() != 0)) {
 						listToAdd = ListFactory.createList(precision, currentList.size());
 						for(int j = 0; j < currentList.size() && !stopped; j++) {
-							if(currentList.get(j) != 0)  {
+							if ((currentList.get(j) != 0) || (fillNullValues)) {
 								// apply the array of coefficients centered on the current value to gauss
 								double SumCoef = 0;
 								double SumNormSignalCoef = 0;
