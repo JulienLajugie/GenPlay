@@ -548,12 +548,24 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 			String lineReadFromFile2 = newbuf.readLine();
 			StringTokenizer newstrtok = new StringTokenizer(lineReadFromFile2,"\t\n");
 			
-			while (lineReadFromFile2 != null) {			
-				String chrmomosome = newstrtok.nextToken();
-				int chrStart = Integer.parseInt(newstrtok.nextToken());
-				int chrStop = Integer.parseInt(newstrtok.nextToken());	// for the stop position
-				String geneFromFile2 = newstrtok.nextToken();
+			while (lineReadFromFile2 != null) {	
+				String chrmomosome = "";
+				int chrStart = 0;
+				int chrStop = 0;
+				String geneFromFile2 = "";
 				String strand = "";
+				try {
+					chrmomosome = newstrtok.nextToken();
+					chrStart = Integer.parseInt(newstrtok.nextToken());
+					chrStop = Integer.parseInt(newstrtok.nextToken());	// for the stop position
+					geneFromFile2 = newstrtok.nextToken();
+					strand = "";
+				} catch (NoSuchElementException e) {
+					lineReadFromFile2 = newbuf.readLine();
+					if (lineReadFromFile2 != null) {
+						newstrtok = new StringTokenizer(lineReadFromFile2,"\t\n");
+					}
+				}
 
 				Iterator<String> iter = startStopScore.keySet().iterator();
 				while (iter.hasNext()) {
@@ -666,8 +678,8 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}
 	}
 	
-	public static void main (String args[]) {
-		GeneRelativeToGenomePositionWithExtraFields gr = new GeneRelativeToGenomePositionWithExtraFields(new File(args[0]), new File(args[1]), new File(args[2]), 2);
-		gr.rePosition();		
-	}
+//	public static void main (String args[]) {
+//		GeneRelativeToGenomePositionWithExtraFields gr = new GeneRelativeToGenomePositionWithExtraFields(new File(args[0]), new File(args[1]), new File(args[2]), 2);
+//		gr.rePosition();		
+//	}
 }
