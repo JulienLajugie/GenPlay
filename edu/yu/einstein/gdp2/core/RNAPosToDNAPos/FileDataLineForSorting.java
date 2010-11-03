@@ -2,7 +2,7 @@
  * @author Chirag Gorasia
  * @version 0.1
  */
-package yu.einstein.gdp2.core.rescorer;
+package yu.einstein.gdp2.core.RNAPosToDNAPos;
 
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;

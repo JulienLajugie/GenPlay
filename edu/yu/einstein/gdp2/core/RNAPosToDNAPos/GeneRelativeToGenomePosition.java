@@ -1,4 +1,9 @@
-package yu.einstein.gdp2.core.rescorer;
+/**
+ * @author Chirag Gorasia
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+package yu.einstein.gdp2.core.RNAPosToDNAPos;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,38 +21,38 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
-public class GeneRelativeToGenomePositionWithExtraFields {
-	private static Map<String, List<Double>> startStopScore; 						 // map to store the start stop and score
-	private static Map<String, List<List<String>>> remainderLineFromCoverageFile;	 // map containing all lines of the coverage file
-	
-	private static final int BGR_FILE = 0;
-	private static final int GDP_FILE = 1;
-	private static final int BGR_FILE_WITH_EXTRA_FIELDS = 2;
-	private int outputFileType;
-	
-	private File coverageFile;								 						 // the coverage file
-	private File annotationFile;							 						 // the annotation file
-//	private File repositionedFile;							 						 // the  output file created with genomic positions
-//	private File gdpFile;									 						 // gdp file
-//	private File outputFileWithExtraFields;					 						 // output file with extra fields
-	
-	private File outputFile;
+import yu.einstein.gdp2.core.enums.RNAToDNAResultType;
+
+
+/**
+ * Creates a file with DNA coordinate from a RNA coordinate coverage file and an annotation file 
+ * @author Chirag Gorasia
+ * @author Julien Lajugie
+ * @version 0.1
+ */
+public class GeneRelativeToGenomePosition {
+	private static Map<String, List<Double>> startStopScore; 						// map to store the start stop and score
+	private static Map<String, List<List<String>>> remainderLineFromCoverageFile;	// map containing all lines of the coverage file
+	private RNAToDNAResultType outputFileType;										// result type
+	private File coverageFile;								 						// coverage file
+	private File annotationFile;							 						// annotation file
+	private File outputFile;														// output file
+
 	
 	/**
 	 * Creates an instance of {@link GeneRelativeToGenomePosition} 
-	 * @param coverageFile
-	 * @param annotationFile
-	 * @param repositionedFile
+	 * @param coverageFile coverage file
+	 * @param annotationFile annotation file
+	 * @param outputFile output file
+	 * @param outputFileType type of output
 	 */
-	public GeneRelativeToGenomePositionWithExtraFields(File coverageFile, File annotationFile, /*File repositionedFile, File gdpFile, File outputFileWithExtraFields,*/ File outputFile, int outputFileType) {
+	public GeneRelativeToGenomePosition(File coverageFile, File annotationFile, File outputFile, RNAToDNAResultType outputFileType) {
 		this.coverageFile = coverageFile;
 		this.annotationFile = annotationFile;
-//		this.repositionedFile = repositionedFile;
-//		this.gdpFile = gdpFile;
-//		this.outputFileWithExtraFields = outputFileWithExtraFields;
 		this.outputFile = outputFile;
 		this.outputFileType = outputFileType;
 	}
+	
 	
 	/**
 	 * private method to populate the startStopScore hash map
@@ -93,6 +98,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}		
 	}
 	
+	
 	/**
 	 * private method to populate the startStopScore hashmap
 	 * @throws IOException
@@ -134,6 +140,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}
 	}
 
+	
 	/**
 	 * private method to populate and sort an intermediate array having the start stop and scores
 	 * @param value
@@ -169,6 +176,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}
 		return intermediatestartstopscorearray;
 	}
+	
 	
 	/**
 	 * private method to populate the missing range values in an arraylist
@@ -220,6 +228,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		return tempList;
 	}
 	
+	
 	/**
 	 * private method to populate an array out of the final list of start stop and score values
 	 * @param tempList
@@ -236,6 +245,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}	
 		return startstopscorearray;
 	}
+	
 	
 	/**
 	 * private method to merge the list of absolute lengths and list of start stop values from the coverage file
@@ -269,6 +279,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}
 		return mergedList;
 	}
+	
 	
 	/**
 	 * private method to populate an array list with the repositioned values and weighted scores
@@ -326,6 +337,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		return finalStartStopScore;
 	}
 	
+	
 	/**
 	 * private method to print the start stop and score values to the output file
 	 * @param chromosome
@@ -343,6 +355,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 			}
 		}
 	}
+	
 	
 	/**
 	 * private method to print the start stop and score values to the output file
@@ -362,6 +375,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 			}
 		}
 	}
+	
 	
 	/**
 	 * Private method to write file in gdp format
@@ -409,6 +423,7 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 		}
 		bufWriter.write(key + "\t" + chrmomosome + "\t" + strand + "\t" + chrStart + "\t" + chrStop + "\t" + starts + "\t" + stops + "\t" + scores + "\n");
 	}
+	
 	
 	/**
 	 * Private method to convert exon scores to RPKM
@@ -541,9 +556,6 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 			loadCoverageFileCompletelyOnHashMap();
 	
 			BufferedReader newbuf = new BufferedReader(new FileReader(annotationFile));
-//			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(repositionedFile));
-//			BufferedWriter bufWriter2 = new BufferedWriter(new FileWriter(gdpFile));
-//			BufferedWriter bufWriterForThirdFile = new BufferedWriter(new FileWriter(outputFileWithExtraFields));
 			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
 			String lineReadFromFile2 = newbuf.readLine();
 			StringTokenizer newstrtok = new StringTokenizer(lineReadFromFile2,"\t\n");
@@ -638,18 +650,18 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 						finalStartStopScore = populateRepositionedArrayList(startstopscorearray, mergedList, absolutebplengths, exonStarts, basePairs, finalStartStopScore, newRemainingString, remainderStringForPrinting);
 						
 						// write the list to the output file
-						if (outputFileType == BGR_FILE) {
+						if (outputFileType == RNAToDNAResultType.BGR) {
 							printToOutputFile(chrmomosome, finalStartStopScore, bufWriter);
 						}
 						// System.out.println("One NM value done");
 						
 						// write to output file in gdp format
-						if (outputFileType == GDP_FILE) {
+						if (outputFileType == RNAToDNAResultType.GDP) {
 							printToOutputFileDifferentFormat(key, chrmomosome, strand, chrStart, chrStop, finalStartStopScore, exonStarts, basePairs, bufWriter);
 						}
 						
 						// write to output file including extra fields from the input file
-						if (outputFileType == BGR_FILE_WITH_EXTRA_FIELDS) {
+						if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
 							printOutputWithExtraFieldsToFile(key, chrmomosome, chrStart, finalStartStopScore, remainderStringForPrinting, bufWriter);
 						}
 					}					
@@ -660,16 +672,14 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 				}				
 			}
 			bufWriter.close();
-//			bufWriter2.close();
-//			bufWriterForThirdFile.close();
 			
 			// We sort the output file
-			if (outputFileType == BGR_FILE) {
+			if (outputFileType == RNAToDNAResultType.BGR) {
 				sortRepositionedFile();
 			}
 			
 			// Score to RPKM
-			if (outputFileType == GDP_FILE) {
+			if (outputFileType == RNAToDNAResultType.GDP) {
 				scoreToRPKM();
 			}
 			
@@ -677,9 +687,4 @@ public class GeneRelativeToGenomePositionWithExtraFields {
 			e.printStackTrace();
 		}
 	}
-	
-//	public static void main (String args[]) {
-//		GeneRelativeToGenomePositionWithExtraFields gr = new GeneRelativeToGenomePositionWithExtraFields(new File(args[0]), new File(args[1]), new File(args[2]), 2);
-//		gr.rePosition();		
-//	}
 }

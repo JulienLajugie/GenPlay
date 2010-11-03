@@ -13,8 +13,9 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import yu.einstein.gdp2.core.RNAPosToDNAPos.GeneRelativeToGenomePosition;
+import yu.einstein.gdp2.core.enums.RNAToDNAResultType;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
-import yu.einstein.gdp2.core.rescorer.GeneRelativeToGenomePositionWithExtraFields;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.dialog.RNAPosToDNAPosOutputFileTypeDialog;
 import yu.einstein.gdp2.gui.fileFilter.BedFilter;
@@ -35,7 +36,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 		"Replace positions relative to a reference (RNA) to DNA positions"; // tooltip
 	private static final String 	ACTION_NAME = "RNA To DNA Reference";	// action name
 	private final 		Component 	parent;									// parent component
-	private int outputFileType;												// output file type
+	private RNAToDNAResultType outputFileType;								// output file type
 
 
 	/**
@@ -76,47 +77,36 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 			if (fileRef != null) {
 
 				RNAPosToDNAPosOutputFileTypeDialog rnaToDnaDialog = new RNAPosToDNAPosOutputFileTypeDialog();
-				int notApproved = rnaToDnaDialog.showDialog(getRootPane());
+				int rtddResult = rnaToDnaDialog.showDialog(getRootPane());
 				outputFileType = rnaToDnaDialog.getSelectedOutputFileType();
 
-				int returnVal = 0;
-				if (outputFileType == 1 && notApproved != 1) {
-					JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
-					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-					jfc.setDialogTitle("Select Output GDP File");
-					jfc.addChoosableFileFilter(new GdpGeneFilter());
-					jfc.setAcceptAllFileFilterUsed(false);
-					returnVal = jfc.showSaveDialog(parent);
-					if(returnVal == JFileChooser.APPROVE_OPTION) {
-						fileOutput = Utils.addExtension(jfc.getSelectedFile(), "gdp");
+				if (rtddResult == RNAPosToDNAPosOutputFileTypeDialog.APPROVE_OPTION) {
+					if (outputFileType == RNAToDNAResultType.GDP) {
+						JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+						jfc.setDialogTitle("Select Output GDP File");
+						jfc.addChoosableFileFilter(new GdpGeneFilter());
+						jfc.setAcceptAllFileFilterUsed(false);
+						int returnVal = jfc.showSaveDialog(parent);
+						if(returnVal == JFileChooser.APPROVE_OPTION) {
+							fileOutput = Utils.addExtension(jfc.getSelectedFile(), "gdp");
+						}
+					} else {
+						JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+						jfc.setDialogTitle("Select Output BGR File");
+						jfc.addChoosableFileFilter(new BedGraphFilter());
+						jfc.setAcceptAllFileFilterUsed(false);
+						int returnVal = jfc.showSaveDialog(parent);
+						if(returnVal == JFileChooser.APPROVE_OPTION) {
+							fileOutput = Utils.addExtension(jfc.getSelectedFile(), "bgr");						
+						}
 					}
-				}
-				if(outputFileType == 0 && notApproved != 1) {
-					JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
-					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-					jfc.setDialogTitle("Select Output File for Genomic Positions and Extra Fields");
-					jfc.addChoosableFileFilter(new BedGraphFilter());
-					jfc.setAcceptAllFileFilterUsed(false);
-					returnVal = jfc.showSaveDialog(parent);
-					if(returnVal == JFileChooser.APPROVE_OPTION) {
-						fileOutput = Utils.addExtension(jfc.getSelectedFile(), "bgr");						
+					if (fileOutput != null) {
+						final GeneRelativeToGenomePosition grtgp = new GeneRelativeToGenomePosition(fileData, fileRef, fileOutput, outputFileType);
+						notifyActionStart("Generating Output Files", 1, false);
+						grtgp.rePosition();
 					}
-				}
-				if (outputFileType == 2 && notApproved != 1) {
-					JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
-					jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-					jfc.setDialogTitle("Select Output File for Genomic Positions and Extra Fields");
-					jfc.addChoosableFileFilter(new BedGraphFilter());
-					jfc.setAcceptAllFileFilterUsed(false);
-					returnVal = jfc.showSaveDialog(parent);
-					if(returnVal == JFileChooser.APPROVE_OPTION && outputFileType == 2) {
-						fileOutput = Utils.addExtension(jfc.getSelectedFile(), "bgr");
-					}
-				}
-				if (fileOutput != null) {
-					final GeneRelativeToGenomePositionWithExtraFields grtgp = new GeneRelativeToGenomePositionWithExtraFields(fileData, fileRef, fileOutput, outputFileType);
-					notifyActionStart("Generating Output Files", 1, false);
-					grtgp.rePosition();
 				}
 			}
 		}
