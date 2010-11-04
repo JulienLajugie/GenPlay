@@ -62,6 +62,7 @@ import yu.einstein.gdp2.gui.action.allTrack.ATARename;
 import yu.einstein.gdp2.gui.action.allTrack.ATASaveAsImage;
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
 import yu.einstein.gdp2.gui.action.allTrack.ATASetHeight;
+import yu.einstein.gdp2.gui.action.allTrack.ATASetVerticalLineCount;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAddConstant;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAAverage;
 import yu.einstein.gdp2.gui.action.binListTrack.BLACountNonNullBins;
@@ -187,6 +188,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
 		getActionMap().put(ATASetHeight.ACTION_KEY, new ATASetHeight());
+		getActionMap().put(ATASetVerticalLineCount.ACTION_KEY, new ATASetVerticalLineCount());
 		// add empty list actions
 		getActionMap().put(ETALoadBinListTrack.ACTION_KEY, new ETALoadBinListTrack());
 		getActionMap().put(ETALoadGeneListTrack.ACTION_KEY, new ETALoadGeneListTrack());

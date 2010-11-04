@@ -75,10 +75,13 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		for (List<Gene> currentList: data) {
 			if (!currentList.isEmpty()) {
 				for (Gene currentGene: currentList) {
-					for (double currentScore: currentGene.getExonScores()) {
-						if (currentScore != 0) {
-							scoreList.add(currentScore);
+					if (currentGene.getExonScores() != null) {
+						for (double currentScore: currentGene.getExonScores()) {
+							if (currentScore != 0) {
+								scoreList.add(currentScore);
+							}
 						}
+
 					}
 				}
 			}
