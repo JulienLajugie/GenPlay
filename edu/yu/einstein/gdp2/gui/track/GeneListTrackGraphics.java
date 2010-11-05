@@ -39,6 +39,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		GeneList.MIN_X_RATIO_PRINT_NAME;								// the name of the genes are printed if the ratio is higher than this value			
 	private static final double 			SCORE_SATURATION = 0.01d;	// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;			// size of a gene in pixel
+	private static final short				UTR_HEIGHT = 3;				// height of a UTR region of a gene in pixel
 	protected static final DecimalFormat 	SCORE_FORMAT = 
 		new DecimalFormat("#.###");										// decimal format for the score
 	private int 							firstLineToDisplay = 0;		// number of the first line to be displayed
@@ -139,6 +140,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 				if (currentLine < genesToPrint.size()) {
 					// For each gene of the current line
 					for (Gene geneToPrint : genesToPrint.get(currentLine)) {
+						// retrieve the screen x coordinate of the start and stop position
+						int x1 = genomePosToScreenPos(geneToPrint.getStart());
+						int x2 = genomePosToScreenPos(geneToPrint.getStop());
 						// Choose the color depending on the strand
 						if (geneToPrint.getStrand() == Strand.FIVE) {
 							g.setColor(Color.RED);
@@ -146,8 +150,6 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 							g.setColor(Color.BLUE);
 						}
 						// Draw the gene
-						int x1 = genomePosToScreenPos(geneToPrint.getStart());
-						int x2 = genomePosToScreenPos(geneToPrint.getStop());
 						g.drawLine(x1, currentHeight, x2, currentHeight);
 						// Draw the name of the gene if the zoom is small enough
 						if (isGeneNamePrinted) {
@@ -171,7 +173,39 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[j], min, max));
 									}
 								}
-								g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);
+								// case where the exon is not at all in a UTR (untranslated region) 
+								if ((geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] <= geneToPrint.getUTR3Bound())) {
+									g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);
+								} else {
+									// case where the whole exon is in a UTR
+									if ((geneToPrint.getExonStops()[j] <= geneToPrint.getUTR5Bound()) || (geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR3Bound())) {
+										g.fillRect(exonX, currentHeight + 1, exonWidth, UTR_HEIGHT);										
+									} else {
+										// case where the exon is in both UTR
+										if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
+											int UTR5Width = genomePosToScreenPos(geneToPrint.getUTR5Bound()) - exonX;
+											int TRWidth = genomePosToScreenPos(geneToPrint.getUTR3Bound()) - exonX - UTR5Width;
+											int UTR3Width = exonWidth - UTR5Width - TRWidth; 
+											g.fillRect(exonX, currentHeight + 1, UTR5Width, UTR_HEIGHT);
+											g.fillRect(exonX + UTR5Width, currentHeight + 1, TRWidth, GENE_HEIGHT);
+											g.fillRect(exonX + UTR5Width + TRWidth, currentHeight + 1, UTR3Width, UTR_HEIGHT);
+
+										} else {								
+											// case where part of the exon is in the UTR and part is not
+											if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR5Bound())) {
+												// case where part is in the 5'UTR
+												int UTRWidth = genomePosToScreenPos(geneToPrint.getUTR5Bound()) - exonX;
+												g.fillRect(exonX, currentHeight + 1, UTRWidth, UTR_HEIGHT);
+												g.fillRect(exonX + UTRWidth, currentHeight + 1, exonWidth - UTRWidth, GENE_HEIGHT);											
+											} else if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR3Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
+												// case where part is in the 3' UTR 
+												int TRWidth = genomePosToScreenPos(geneToPrint.getUTR3Bound()) - exonX; // TRWidth is the with of the TRANSLATED region
+												g.fillRect(exonX, currentHeight + 1, TRWidth, GENE_HEIGHT);
+												g.fillRect(exonX + TRWidth, currentHeight + 1, exonWidth - TRWidth, UTR_HEIGHT);											
+											}
+										}
+									}
+								}
 							}
 						}
 					}

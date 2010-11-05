@@ -13,6 +13,7 @@ import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.manager.ChromosomeManager;
@@ -102,7 +103,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 								exonStart[0] = regionStart;
 								exonStop[0] = regionStop;
 								exonScore[0] = regionScore;
-								newGene = new Gene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), '+', regionStart, regionStop, exonStart, exonStop, exonScore);
+								newGene = new Gene(chromosomeName + "." + Integer.toString(geneCounter++), new Chromosome(chromosomeName, chromosomeLength), Strand.get('+'), regionStart, regionStop, exonStart, exonStop, exonScore);
 								resultGeneList.add(newGene);
 							}
 							j++;

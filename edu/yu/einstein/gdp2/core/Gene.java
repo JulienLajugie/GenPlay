@@ -22,12 +22,20 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	private Strand		strand;			// strand of the gene
 	private int 		start;	 		// start position of the gene
 	private int 		stop;	 		// end position of the gene
+	private int			UTR5Bound;		// 5' UTR boundary
+	private int			UTR3Bound;		// 3' UTR bondary
 	private int[] 		exonStarts; 	// exon start positions
 	private int[] 		exonStops; 		// exon end positions
 	private double[]	exonScores;		// exon score
-		
 	
 	
+	/**
+	 * Creates an instance of {@link Gene}
+	 */
+	public Gene() {
+		super();
+	}
+
 
 	/**
 	 * Creates an instance of {@link Gene} having the exact same values as the {@link Gene} in parameter
@@ -39,6 +47,8 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.strand = gene.strand;
 		this.start = gene.start;
 		this.stop = gene.stop;
+		this.UTR5Bound = gene.UTR5Bound;
+		this.UTR3Bound = gene.UTR3Bound;
 		this.exonStarts = null;
 		if (gene.exonStarts != null) {
 			this.exonStarts = gene.exonStarts.clone();
@@ -56,76 +66,81 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 	/**
 	 * Public constructor.
+	 * @param name Name of gene
+	 * @param chromo chromosome
+	 * @param strand Strand of the gene
+	 * @param start Transcription start position
+	 * @param stop Transcription end position
+	 * @param UTR5Bound transcription 5' bond
+	 * @param UTR3Bound transcription 3' bond
+	 * @param exonStarts Exon start positions
+	 * @param exonStops Exon end positions
+	 * @param exonScores Exon scores
+	 */
+	public Gene(String name, Chromosome chromo, Strand strand, int start, int stop, int UTR5Bound,int UTR3Bound, int[] exonStarts, int[] exonStops, double[] exonScores) {
+		this.name = name;
+		this.chromo = chromo;
+		this.strand = strand;
+		this.start = start;
+		this.stop = stop;
+		this.UTR5Bound = UTR5Bound;
+		this.UTR3Bound = UTR3Bound;
+		this.exonStarts = exonStarts;
+		this.exonStops = exonStops;
+		this.exonScores = exonScores;
+	}
+
+
+	/**
+	 * Public constructor.
 	 * @param name Name of gene.
 	 * @param chromo chromosome
 	 * @param strand Strand of the gene.
-	 * @param txStart Transcription start position.
-	 * @param txStop Transcription end position.
+	 * @param start Transcription start position.
+	 * @param stop Transcription end position.
 	 * @param exonStarts Exon start positions.
 	 * @param exonStops Exon end positions.
 	 * @param exonScores Exon scores
 	 */
-	public Gene(String name, Chromosome chromo, Strand strand, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
+	public Gene(String name, Chromosome chromo, Strand strand, int start, int stop, int[] exonStarts, int[] exonStops, double[] exonScores) {
 		this.name = name;
 		this.chromo = chromo;
 		this.strand = strand;
-		this.start = txStart;
-		this.stop = txStop;
+		this.start = start;
+		this.stop = stop;
+		this.UTR5Bound = this.start;
+		this.UTR3Bound = this.stop;
 		this.exonStarts = exonStarts;
 		this.exonStops = exonStops;
 		this.exonScores = exonScores;
 	}
-
-	/**
-	 * Creates an instance of {@link Gene}
-	 * @param name name of the gene
-	 * @param chromo chromosome
-	 * @param strandSymbol char representing the strand of a gene (ie '+' or '-') 
-	 * @param txStart transcription start position
-	 * @param txStop transcription end position
-	 * @param exonStarts exon start positions
-	 * @param exonStops exon end positions
-	 * @param exonScores exon scores
-	 */
-	public Gene(String name, Chromosome chromo, char strandSymbol, int txStart, int txStop, int[] exonStarts, int[] exonStops, double[] exonScores) {
-		this.name = name;
-		this.chromo = chromo;
-		this.strand = Strand.get(strandSymbol);
-		this.start = txStart;
-		this.stop = txStop;
-		this.exonStarts = exonStarts;
-		this.exonStops = exonStops;
-		this.exonScores = exonScores;
-	}
-
 	
-	/**
-	 * Creates an instance of {@link Gene}
-	 */
-	public Gene() {
-		super();
-	}
-
 
 	/**
-	 * A gene is superior to another one if its start position is greater 
-	 * or if its start position is equal but its stop position is greater. 
+	 * Adds an exon to the Gene with no score
+	 * @param exonStart start position of the exon
+	 * @param exonStop stop position of the exon
 	 */
-	@Override
-	public int compareTo(Gene otherGene) {
-		if (start > otherGene.getStart()) {
-			return 1;
-		} else if (start < otherGene.getStart()) {
-			return -1;
+	public void addExon(int exonStart, int exonStop) {
+		// case where it's the first exon
+		if (exonStarts == null) {
+			exonStarts = new int[1];
+			exonStops = new int[1];
+			exonStarts[0] = exonStart;
+			exonStops[0] = exonStop;
 		} else {
-			if (stop > otherGene.getStop()) {
-				return 1;
-			} else if (stop < otherGene.getStop()) {
-				return -1;
-			} else {
-				return 0;
+			int length = exonStarts.length;
+			int[] exonStartsTmp = new int[length + 1];
+			int[] exonStopsTmp = new int[length + 1];
+			for (int i = 0; i < exonStarts.length; i++) {
+				exonStartsTmp[i] = exonStarts[i];
+				exonStopsTmp[i] = exonStops[i];
 			}
-		}		
+			exonStartsTmp[length] = exonStart;
+			exonStopsTmp[length] = exonStop;
+			exonStarts = exonStartsTmp;
+			exonStops = exonStopsTmp;
+		}
 	}
 
 	
@@ -163,35 +178,29 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		}
 	}
 	
-	
+
 	/**
-	 * Adds an exon to the Gene with no score
-	 * @param exonStart start position of the exon
-	 * @param exonStop stop position of the exon
+	 * A gene is superior to another one if its start position is greater 
+	 * or if its start position is equal but its stop position is greater. 
 	 */
-	public void addExon(int exonStart, int exonStop) {
-		// case where it's the first exon
-		if (exonStarts == null) {
-			exonStarts = new int[1];
-			exonStops = new int[1];
-			exonStarts[0] = exonStart;
-			exonStops[0] = exonStop;
+	@Override
+	public int compareTo(Gene otherGene) {
+		if (start > otherGene.getStart()) {
+			return 1;
+		} else if (start < otherGene.getStart()) {
+			return -1;
 		} else {
-			int length = exonStarts.length;
-			int[] exonStartsTmp = new int[length + 1];
-			int[] exonStopsTmp = new int[length + 1];
-			for (int i = 0; i < exonStarts.length; i++) {
-				exonStartsTmp[i] = exonStarts[i];
-				exonStopsTmp[i] = exonStops[i];
+			if (stop > otherGene.getStop()) {
+				return 1;
+			} else if (stop < otherGene.getStop()) {
+				return -1;
+			} else {
+				return 0;
 			}
-			exonStartsTmp[length] = exonStart;
-			exonStopsTmp[length] = exonStop;
-			exonStarts = exonStartsTmp;
-			exonStops = exonStopsTmp;
-		}
+		}		
 	}
+
 	
-		
 	/**
 	 * @param aName Name of a chromosome
 	 * @return True if <i>aName</i> equals the name of the chromosome. False otherwise.
@@ -200,7 +209,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return name.equalsIgnoreCase(aName);
 	}
 
-	
+
 	/**
 	 * @return The chromosome of the gene.
 	 */
@@ -215,7 +224,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	public double[] getExonScores() {
 		return exonScores;
 	}
-
+	
 	
 	/**
 	 * @return the exonStarts
@@ -223,8 +232,8 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	public int[] getExonStarts() {
 		return exonStarts;
 	}
-
 	
+		
 	/**
 	 * @return the exonStops
 	 */
@@ -232,12 +241,54 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		return exonStops;
 	}
 
+	
+	/**
+	 * @return the RPKM value of a gene calculated from the RPKM of its exons
+	 */
+	public Double getGeneRPKM() {
+		if ((getExonScores() == null) || (getExonScores().length == 0)) {
+			return null;
+		} else {
+			int exonicLength = 0;
+			double scoreByLengthSum = 0;
+			for (int i = 0; i < getExonScores().length; i++) {
+				exonicLength += exonStops[i] - exonStarts[i];
+				scoreByLengthSum += exonScores[i] * (double) (exonStops[i] - exonStarts[i]); 
+			}
+			return scoreByLengthSum / exonicLength;  
+		}
+	}
 
+	
+	/**
+	 * @return the middle position of the genes
+	 */
+	public double getMiddle() {
+		return (start + stop) / 2d;
+	}
+
+	
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
+	}
+
+	
+	/**
+	 * @return the start position of the gene
+	 */
+	public int getStart() {
+		return start;
+	}
+
+
+	/**
+	 * @return the stop position of the gene
+	 */
+	public int getStop() {
+		return stop;
 	}
 
 
@@ -250,29 +301,21 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 	
 	/**
-	 * @return the start position of the gene
+	 * @return the 3' bondary of the translation
 	 */
-	public int getStart() {
-		return start;
+	public int getUTR3Bound() {
+		return UTR3Bound;
 	}
 	
 	
 	/**
-	 * @return the middle position of the genes
+	 * @return the 5' bondary of the translation
 	 */
-	public double getMiddle() {
-		return (start + stop) / 2d;
+	public int getUTR5Bound() {
+		return UTR5Bound;
 	}
 
 	
-	/**
-	 * @return the stop position of the gene
-	 */
-	public int getStop() {
-		return stop;
-	}
-
-
 	/**
 	 * @param chromo the chromo to set
 	 */
@@ -314,14 +357,6 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 
 	/**
-	 * @param strand the strand to set
-	 */
-	public void setStrand(Strand strand) {
-		this.strand = strand;
-	}
-
-
-	/**
 	 * @param start the start position of the gene to set
 	 */
 	public void setStart(int start) {
@@ -335,25 +370,34 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	public void setStop(int stop) {
 		this.stop = stop;
 	}
-	
-	
-	@Override
-	public String toString() {
-		return chromo.toString() + "\t" + start + "\t" + stop +"\t" + name + "\t" + strand;
+
+
+	/**
+	 * @param strand the strand to set
+	 */
+	public void setStrand(Strand strand) {
+		this.strand = strand;
 	}
 
 
-	public Double getGeneRPKM() {
-		if ((getExonScores() == null) || (getExonScores().length == 0)) {
-			return null;
-		} else {
-			int exonicLength = 0;
-			double scoreByLengthSum = 0;
-			for (int i = 0; i < getExonScores().length; i++) {
-				exonicLength += exonStops[i] - exonStarts[i];
-				scoreByLengthSum += exonScores[i] * (double) (exonStops[i] - exonStarts[i]); 
-			}
-			return scoreByLengthSum / exonicLength;  
-		}
+	/**
+	 * @param UTR3Bound the 3' translation bound to set
+	 */
+	public void setUTR3Bond(int UTR3Bound) {
+		this.UTR3Bound = UTR3Bound;
+	}
+	
+	
+	/**
+	 * @param UTR5Bond the 5' translation bound to set
+	 */
+	public void setUTR5Bound(int UTR5Bound) {
+		this.UTR5Bound = UTR5Bound;
+	}
+
+
+	@Override
+	public String toString() {
+		return chromo.toString() + "\t" + start + "\t" + stop +"\t" + name + "\t" + strand;
 	}
 }

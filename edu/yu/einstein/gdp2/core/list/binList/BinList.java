@@ -936,9 +936,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 	}
 
-
-
-
+	
 	/**
 	 * Uncompresses the BinList
 	 * @throws CompressionException

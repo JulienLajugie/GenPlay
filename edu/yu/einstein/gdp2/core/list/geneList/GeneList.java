@@ -166,6 +166,84 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	
 	
 	/**
+	 * 
+	 * @param nameList
+	 * @param strandList
+	 * @param startList
+	 * @param stopList
+	 * @param uTR5BoundList
+	 * @param uTR3BoundList
+	 * @param exonStartsList
+	 * @param exonStopsList
+	 * @param exonScoresList
+	 * @param searchURL
+	 * @throws InvalidChromosomeException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	public GeneList(final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList, final ChromosomeListOfLists<Integer> startList,
+			final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<Integer> UTR5BoundList, final ChromosomeListOfLists<Integer> UTR3BoundList, 
+			final ChromosomeListOfLists<int[]> exonStartsList, final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, 
+			String searchURL) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		super();
+		if (searchURL != null) {
+			this.searchURL = searchURL;
+		}
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();		
+		for(final Chromosome currentChromosome : chromosomeManager) {			
+			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
+				@Override
+				public List<Gene> call() throws Exception {
+					List<Gene> resultList = new ArrayList<Gene>();
+					for(int j = 0; j < nameList.size(currentChromosome); j++) {
+						String name = nameList.get(currentChromosome, j);
+						Strand strand = strandList.get(currentChromosome, j);
+						int start = startList.get(currentChromosome, j);
+						int stop = stopList.get(currentChromosome, j);
+						int UTR5Bound = UTR5BoundList.get(currentChromosome, j);
+						int UTR3Bound = UTR3BoundList.get(currentChromosome, j);
+						int[] exonStarts = null;
+						if (exonStartsList.size(currentChromosome) > 0) {
+							exonStarts = exonStartsList.get(currentChromosome, j);
+						}
+						int[] exonStops = null;
+						if (exonStopsList.size(currentChromosome) > 0) {
+							exonStops = exonStopsList.get(currentChromosome, j);
+						}
+						double[] exonScores = null;
+						if ((exonScoresList != null) && (exonScoresList.size(currentChromosome) > 0)) {
+							exonScores = exonScoresList.get(currentChromosome, j);	
+						}			
+						resultList.add(new Gene(name, currentChromosome, strand, start, stop, UTR5Bound, UTR3Bound, exonStarts, exonStops, exonScores));
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+			
+			threadList.add(currentThread);
+		}		
+		List<List<Gene>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<Gene> currentList: result) {
+				add(currentList);
+			}
+		}			
+		// sort the gene list	
+		for (List<Gene> chromosomeGeneList : this) {
+			Collections.sort(chromosomeGeneList);
+		}
+	}
+
+
+	/**
 	 * Recursive and dichotomic search algorithm.  
 	 * @param list List in which the search is performed.
 	 * @param value Searched value.

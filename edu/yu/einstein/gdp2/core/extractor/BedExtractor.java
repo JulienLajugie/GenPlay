@@ -42,17 +42,19 @@ implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, Chromosom
 ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
-	private ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private ChromosomeListOfLists<String> 	nameList;		// list of name
-	private ChromosomeListOfLists<Double>	scoreList;		// list of scores
-	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
-	private ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
-	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
-	private ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
-	private String							searchURL;		// url of the gene database for the search
-	private Strand 							selectedStrand;	// strand to extract, null for both
-	private int 							strandShift;	// value of the shift to perform on the selected strand
+	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
+	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
+	private final ChromosomeListOfLists<String> 	nameList;		// list of name
+	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
+	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
+	private final ChromosomeListOfLists<Integer>	UTR5BoundList;	// list of translation 5' bounds
+	private final ChromosomeListOfLists<Integer>	UTR3BoundList;	// list of translation 3' bounds
+	private final ChromosomeListOfLists<int[]> 		exonStartsList;	// list of list of exon starts
+	private final ChromosomeListOfLists<int[]> 		exonStopsList;	// list of list of exon stops
+	private final ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
+	private String									searchURL;		// url of the gene database for the search
+	private Strand 									selectedStrand;	// strand to extract, null for both
+	private int 									strandShift;	// value of the shift to perform on the selected strand
 
 
 	/**
@@ -68,6 +70,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 		nameList = new ChromosomeArrayListOfLists<String>();
 		scoreList = new ChromosomeArrayListOfLists<Double>();
 		strandList = new ChromosomeArrayListOfLists<Strand>();
+		UTR5BoundList = new ChromosomeArrayListOfLists<Integer>();
+		UTR3BoundList = new ChromosomeArrayListOfLists<Integer>();
 		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
 		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
 		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
@@ -78,6 +82,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 			nameList.add(new ArrayList<String>());
 			scoreList.add(new DoubleArrayAsDoubleList());
 			strandList.add(new ArrayList<Strand>());
+			UTR5BoundList.add(new IntArrayAsIntegerList());
+			UTR3BoundList.add(new IntArrayAsIntegerList());
 			exonStartsList.add(new ArrayList<int[]>());
 			exonStopsList.add(new ArrayList<int[]>());
 			exonScoresList.add(new ArrayList<double[]>());
@@ -124,25 +130,39 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 									double score = Double.parseDouble(splitedLine[4].trim());
 									scoreList.add(chromosome, score);
 								}
-								if (splitedLine.length > 11) {
-									if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
-										String[] exonStartsStr = splitedLine[11].split(",");
-										String[] exonLengthsStr = splitedLine[10].split(",");
-										int[] exonStarts = new int[exonLengthsStr.length];
-										int[] exonStops = new int[exonLengthsStr.length];
-										for (int i = 0; i < exonLengthsStr.length; i++) {
-											exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
-											exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
-										}
-										exonStartsList.add(chromosome, exonStarts);
-										exonStopsList.add(chromosome, exonStops);
-										if (splitedLine.length > 12) {
-											String[] exonScoresStr = splitedLine[12].split(",");
-											double[] exonScores = new double[exonScoresStr.length];
-											for (int i = 0; i < exonScoresStr.length; i++) {
-												exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+								if (splitedLine.length > 7) {
+									int UTR5Bound;
+									int UTR3Bound;
+									try { 
+										UTR5Bound = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[6].trim()));
+										UTR3Bound = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[7].trim()));
+									} catch (NumberFormatException e) {
+										System.out.println("oups");
+										UTR5Bound = start;
+										UTR3Bound = stop;
+									}
+									UTR5BoundList.add(chromosome, UTR5Bound);
+									UTR3BoundList.add(chromosome, UTR3Bound);
+									if (splitedLine.length > 11) {
+										if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
+											String[] exonStartsStr = splitedLine[11].split(",");
+											String[] exonLengthsStr = splitedLine[10].split(",");
+											int[] exonStarts = new int[exonLengthsStr.length];
+											int[] exonStops = new int[exonLengthsStr.length];
+											for (int i = 0; i < exonLengthsStr.length; i++) {
+												exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
+												exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
 											}
-											exonScoresList.add(chromosome, exonScores);
+											exonStartsList.add(chromosome, exonStarts);
+											exonStopsList.add(chromosome, exonStops);
+											if (splitedLine.length > 12) {
+												String[] exonScoresStr = splitedLine[12].split(",");
+												double[] exonScores = new double[exonScoresStr.length];
+												for (int i = 0; i < exonScoresStr.length; i++) {
+													exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+												}
+												exonScoresList.add(chromosome, exonScores);
+											}
 										}
 									}
 								}
@@ -213,7 +233,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 				}
 			}
 		}
-		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+		return new GeneList(nameList, strandList, startList, stopList, UTR5BoundList, UTR3BoundList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
 
 
