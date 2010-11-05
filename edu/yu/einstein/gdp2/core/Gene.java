@@ -20,13 +20,14 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	private String 		name; 			// name of the gene
 	private Chromosome	chromo;			// chromosome
 	private Strand		strand;			// strand of the gene
-	private int 		txStart; 		// transcription start position
-	private int 		txStop; 		// transcription end position
-	private double		txMiddle;		// transcription middle position
+	private int 		start;	 		// start position of the gene
+	private int 		stop;	 		// end position of the gene
 	private int[] 		exonStarts; 	// exon start positions
 	private int[] 		exonStops; 		// exon end positions
 	private double[]	exonScores;		// exon score
-
+		
+	
+	
 
 	/**
 	 * Creates an instance of {@link Gene} having the exact same values as the {@link Gene} in parameter
@@ -36,9 +37,8 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.name = gene.name;
 		this.chromo = gene.chromo;
 		this.strand = gene.strand;
-		this.txStart = gene.txStart;
-		this.txStop = gene.txStop;
-		this.setTxMiddle((this.txStart + this.txStop)/2);
+		this.start = gene.start;
+		this.stop = gene.stop;
 		this.exonStarts = null;
 		if (gene.exonStarts != null) {
 			this.exonStarts = gene.exonStarts.clone();
@@ -69,9 +69,8 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.name = name;
 		this.chromo = chromo;
 		this.strand = strand;
-		this.txStart = txStart;
-		this.txStop = txStop;
-		this.setTxMiddle((this.txStart + this.txStop)/2);
+		this.start = txStart;
+		this.stop = txStop;
 		this.exonStarts = exonStarts;
 		this.exonStops = exonStops;
 		this.exonScores = exonScores;
@@ -92,9 +91,8 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 		this.name = name;
 		this.chromo = chromo;
 		this.strand = Strand.get(strandSymbol);
-		this.txStart = txStart;
-		this.txStop = txStop;
-		this.setTxMiddle((this.txStart + this.txStop)/2);
+		this.start = txStart;
+		this.stop = txStop;
 		this.exonStarts = exonStarts;
 		this.exonStops = exonStops;
 		this.exonScores = exonScores;
@@ -115,14 +113,14 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	 */
 	@Override
 	public int compareTo(Gene otherGene) {
-		if (txStart > otherGene.getTxStart()) {
+		if (start > otherGene.getStart()) {
 			return 1;
-		} else if (txStart < otherGene.getTxStart()) {
+		} else if (start < otherGene.getStart()) {
 			return -1;
 		} else {
-			if (txStop > otherGene.getTxStop()) {
+			if (stop > otherGene.getStop()) {
 				return 1;
-			} else if (txStop < otherGene.getTxStop()) {
+			} else if (stop < otherGene.getStop()) {
 				return -1;
 			} else {
 				return 0;
@@ -252,26 +250,26 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 	
 	/**
-	 * @return the txStart
+	 * @return the start position of the gene
 	 */
-	public int getTxStart() {
-		return txStart;
+	public int getStart() {
+		return start;
 	}
 	
 	
 	/**
-	 * @return the txMiddle
+	 * @return the middle position of the genes
 	 */
-	public double getTxMiddle() {
-		return txMiddle;
+	public double getMiddle() {
+		return (start + stop) / 2d;
 	}
 
 	
 	/**
-	 * @return the txStop
+	 * @return the stop position of the gene
 	 */
-	public int getTxStop() {
-		return txStop;
+	public int getStop() {
+		return stop;
 	}
 
 
@@ -324,32 +322,24 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 
 
 	/**
-	 * @param txStart the txStart to set
+	 * @param start the start position of the gene to set
 	 */
-	public void setTxStart(int txStart) {
-		this.txStart = txStart;
-	}
-	
-	
-	/**
-	 * @param txMiddle the txMiddle to set
-	 */
-	public void setTxMiddle(double txMiddle) {
-		this.txMiddle = txMiddle;
+	public void setStart(int start) {
+		this.start = start;
 	}
 
 
 	/**
-	 * @param txStop the txStop to set
+	 * @param stop the stop to set
 	 */
-	public void setTxStop(int txStop) {
-		this.txStop = txStop;
+	public void setStop(int stop) {
+		this.stop = stop;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return chromo.toString() + "\t" + txStart + "\t" + txStop +"\t" + name + "\t" + strand;
+		return chromo.toString() + "\t" + start + "\t" + stop +"\t" + name + "\t" + strand;
 	}
 
 

@@ -57,9 +57,9 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 					String lineToPrint = new String();
 					lineToPrint = currentGene.getChromo().toString();
 					lineToPrint += "\t";
-					lineToPrint += currentGene.getTxStart();
+					lineToPrint += currentGene.getStart();
 					lineToPrint += "\t";
-					lineToPrint += currentGene.getTxStop();
+					lineToPrint += currentGene.getStop();
 					lineToPrint += "\t";
 					lineToPrint += currentGene.getName();
 					lineToPrint += "\t";
@@ -94,7 +94,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 						lineToPrint += "-";
 					} else {
 						for (int currentStart : currentGene.getExonStarts()) {
-							lineToPrint += currentStart - currentGene.getTxStart();
+							lineToPrint += currentStart - currentGene.getStart();
 							lineToPrint += ",";
 						}
 						// remove last comma

@@ -91,9 +91,9 @@ public class GeneHandler extends DefaultHandler {
 				previousGroupID = groupID;
 			} else if (!groupID.equalsIgnoreCase(previousGroupID)) {	// if we have a new group we add the previous gene to the list
 				// set the gene start
-				currentGene.setTxStart(currentGene.getExonStarts()[0]);
+				currentGene.setStart(currentGene.getExonStarts()[0]);
 				// set the gene stop
-				currentGene.setTxStop(currentGene.getExonStops()[currentGene.getExonStops().length - 1]);
+				currentGene.setStop(currentGene.getExonStops()[currentGene.getExonStops().length - 1]);
 				currentGene.setName(name);
 				currentGene.setStrand(orientation);
 				currentGene.setChromo(chromosome);

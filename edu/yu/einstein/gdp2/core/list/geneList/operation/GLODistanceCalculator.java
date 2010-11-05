@@ -141,7 +141,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 		switch(selectionCase) {
 		case POSITIVE_START_START:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 0, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 0, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}
@@ -151,7 +151,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_START_MIDDLE:	
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 1, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 1, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -161,7 +161,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_START_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 2, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 0, 2, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -171,7 +171,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_MIDDLE_START:	
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getTxMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 0, (int)firstList.get(j).getMiddle());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -181,7 +181,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_MIDDLE_MIDDLE:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getTxMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 1, (int)firstList.get(j).getMiddle());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -191,7 +191,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_MIDDLE_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getTxMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 1, 2, (int)firstList.get(j).getMiddle());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -201,7 +201,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_STOP_START:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 0, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 0, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -211,7 +211,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_STOP_MIDDLE:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 1, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 1, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -221,7 +221,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case POSITIVE_STOP_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 0, 2, 2, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -231,7 +231,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_START_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 0, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 0, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -241,7 +241,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_START_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 1, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 1, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -251,7 +251,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_START_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 2, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 0, 2, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -261,7 +261,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_MIDDLE_START:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 0, firstList.get(j).getTxStart());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 0, firstList.get(j).getStart());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -271,7 +271,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_MIDDLE_MIDDLE:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getTxMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 1, (int)firstList.get(j).getMiddle());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -281,7 +281,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_MIDDLE_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getTxMiddle());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 1, 2, (int)firstList.get(j).getMiddle());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -291,7 +291,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_STOP_START:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 0, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 0, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -301,7 +301,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_STOP_MIDDLE:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 1, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 1, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -311,7 +311,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case NEGATIVE_STOP_STOP:
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[k++] = dc.getClosestDistance();
 				}											
@@ -321,7 +321,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_START_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();																						
 			}
 			distanceByChromosomes = distanceArray;
@@ -329,7 +329,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_START_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				if (dc.getClosestDistance() >= 0) {
 					distanceArray[j] = dc.getClosestDistance();
 				}											
@@ -339,7 +339,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_START_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();																					
 			}
 			distanceByChromosomes = distanceArray;
@@ -347,7 +347,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_MIDDLE_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();																						
 			}
 			distanceByChromosomes = distanceArray;
@@ -355,7 +355,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_MIDDLE_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -363,7 +363,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_MIDDLE_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -371,7 +371,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_STOP_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -379,7 +379,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_STOP_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -387,7 +387,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_RELATIVE_STOP_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -395,7 +395,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_START_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -403,7 +403,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_START_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -411,7 +411,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_START_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -419,7 +419,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_MIDDLE_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -427,7 +427,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_MIDDLE_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -435,7 +435,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_MIDDLE_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -443,7 +443,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_STOP_START: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -451,7 +451,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_STOP_MIDDLE: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;
@@ -459,7 +459,7 @@ public class GLODistanceCalculator implements Operation<long[][]>{
 
 		case BOTH_ABSOLUTE_STOP_STOP: 
 			for (int j = 0; j < firstList.size() && !stopped; j++) {
-				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getTxStop());
+				dc = new DistanceCalculator(secondList, chrindex, 1, 2, 2, firstList.get(j).getStop());
 				distanceArray[j] = dc.getClosestDistance();
 			}
 			distanceByChromosomes = distanceArray;

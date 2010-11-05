@@ -463,10 +463,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getTxStop());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStop()) {
+			return (refValue - listOfGenes.get(indexStart).getStop());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStop()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
 			return getDistanceNegativeStopStop(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeStopStop(listOfGenes, indexStart, indexStart + middle);
@@ -485,10 +485,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (int) (refValue - listOfGenes.get(indexStart).getTxMiddle());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxMiddle()) {
+			return (int) (refValue - listOfGenes.get(indexStart).getMiddle());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddle()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxMiddle()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddle()) {
 			return getDistanceNegativeStopMiddle(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeStopMiddle(listOfGenes, indexStart, indexStart + middle);
@@ -507,10 +507,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getTxStart());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStart()) {
+			return (refValue - listOfGenes.get(indexStart).getStart());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
 			return getDistanceNegativeStopStart(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeStopStart(listOfGenes, indexStart, indexStart + middle);
@@ -529,10 +529,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getTxStop());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStop()) {
+			return (refValue - listOfGenes.get(indexStart).getStop());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStop()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
 			return getDistanceNegativeMiddleStop(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeMiddleStop(listOfGenes, indexStart, indexStart + middle);
@@ -551,10 +551,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (int) (refValue - listOfGenes.get(indexStart).getTxMiddle());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxMiddle()) {
+			return (int) (refValue - listOfGenes.get(indexStart).getMiddle());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddle()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxMiddle()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddle()) {
 			return getDistanceNegativeMiddleMiddle(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeMiddleMiddle(listOfGenes, indexStart, indexStart + middle);
@@ -573,10 +573,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeMiddleStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getTxStart());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStart()) {
+			return (refValue - listOfGenes.get(indexStart).getStart());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
 			return getDistanceNegativeMiddleStart(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeMiddleStart(listOfGenes, indexStart, indexStart + middle);
@@ -595,10 +595,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getTxStop());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStop()) {
+			return (refValue - listOfGenes.get(indexStart).getStop());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStop()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
 			return getDistanceNegativeStartStop(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeStartStop(listOfGenes, indexStart, indexStart + middle);
@@ -617,10 +617,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (int) (refValue - listOfGenes.get(indexStart).getTxMiddle());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxMiddle()) {
+			return (int) (refValue - listOfGenes.get(indexStart).getMiddle());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddle()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxMiddle()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddle()) {
 			return getDistanceNegativeStartMiddle(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeStartMiddle(listOfGenes, indexStart, indexStart + middle);
@@ -639,10 +639,10 @@ public class DistanceCalculator {
 	private int getDistanceNegativeStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (middle == 0) {
-			return (refValue - listOfGenes.get(indexStart).getTxStart());
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStart()) {
+			return (refValue - listOfGenes.get(indexStart).getStart());
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
 			return getDistanceNegativeStartStart(listOfGenes, indexStart + middle, indexStop);
 		} else {
 			return getDistanceNegativeStartStart(listOfGenes, indexStart, indexStart + middle);
@@ -661,10 +661,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveStopStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getTxStop() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStop()) {
+			return (listOfGenes.get(indexStart).getStop() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStop()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
 			return getDistancePositiveStopStop(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveStopStop(listOfGenes, indexStart, indexStart + middle);
@@ -683,10 +683,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveStopMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (int) (listOfGenes.get(indexStart).getTxMiddle() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxMiddle()) {
+			return (int) (listOfGenes.get(indexStart).getMiddle() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddle()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxMiddle()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddle()) {
 			return getDistancePositiveStopMiddle(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveStopMiddle(listOfGenes, indexStart, indexStart + middle);
@@ -705,10 +705,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveStopStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getTxStart() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStart()) {
+			return (listOfGenes.get(indexStart).getStart() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
 			return getDistancePositiveStopStart(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveStopStart(listOfGenes, indexStart, indexStart + middle);
@@ -727,10 +727,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveMiddleStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getTxStop() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStop()) {
+			return (listOfGenes.get(indexStart).getStop() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStop()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
 			return getDistancePositiveMiddleStop(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveMiddleStop(listOfGenes, indexStart, indexStart + middle);
@@ -749,10 +749,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveMiddleMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (int) (listOfGenes.get(indexStart).getTxMiddle() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxMiddle()) {
+			return (int) (listOfGenes.get(indexStart).getMiddle() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddle()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxMiddle()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddle()) {
 			return getDistancePositiveMiddleMiddle(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveMiddleMiddle(listOfGenes, indexStart, indexStart + middle);
@@ -772,9 +772,9 @@ public class DistanceCalculator {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
 			return getDistancePositiveMiddleStart(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveMiddleStart(listOfGenes, indexStart, indexStart + middle);
@@ -793,10 +793,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveStartStop(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getTxStop() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStop()) {
+			return (listOfGenes.get(indexStart).getStop() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStop()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStop()) {
 			return getDistancePositiveStartStop(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveStartStop(listOfGenes, indexStart, indexStart + middle);
@@ -815,10 +815,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveStartMiddle(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (int) (listOfGenes.get(indexStart).getTxMiddle() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxMiddle()) {
+			return (int) (listOfGenes.get(indexStart).getMiddle() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getMiddle()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxMiddle()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getMiddle()) {
 			return getDistancePositiveStartMiddle(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveStartMiddle(listOfGenes, indexStart, indexStart + middle);
@@ -837,10 +837,10 @@ public class DistanceCalculator {
 	private int getDistancePositiveStartStart(List<Gene> listOfGenes, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
-			return (listOfGenes.get(indexStart).getTxStart() - refValue);
-		} else if (refValue == listOfGenes.get(indexStart + middle).getTxStart()) {
+			return (listOfGenes.get(indexStart).getStart() - refValue);
+		} else if (refValue == listOfGenes.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (refValue > listOfGenes.get(indexStart + middle).getTxStart()) {
+		} else if (refValue > listOfGenes.get(indexStart + middle).getStart()) {
 			return getDistancePositiveStartStart(listOfGenes, indexStart + middle + 1, indexStop);
 		} else {
 			return getDistancePositiveStartStart(listOfGenes, indexStart, indexStart + middle);

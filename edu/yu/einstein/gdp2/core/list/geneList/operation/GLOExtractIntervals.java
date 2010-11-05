@@ -112,44 +112,44 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 						switch (startFrom) {
 						case BEFORE_START:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.max(0, currentGene.getTxStart() - startDistance);
+								newStart = Math.max(0, currentGene.getStart() - startDistance);
 							} else {
-								newStart = Math.min(chromoLength, currentGene.getTxStop() + startDistance);
+								newStart = Math.min(chromoLength, currentGene.getStop() + startDistance);
 							}
 							break;
 						case AFTER_START:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.min(chromoLength, currentGene.getTxStart() + startDistance);
+								newStart = Math.min(chromoLength, currentGene.getStart() + startDistance);
 							} else {
-								newStart = Math.max(0, currentGene.getTxStop() - startDistance);
+								newStart = Math.max(0, currentGene.getStop() - startDistance);
 							}
 							break;
 						case BEFORE_MIDDLE:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.max(0, (currentGene.getTxStop() + currentGene.getTxStart())/2 - startDistance);
+								newStart = Math.max(0, (currentGene.getStop() + currentGene.getStart())/2 - startDistance);
 							} else {
-								newStart = Math.min(chromoLength, (currentGene.getTxStart() + currentGene.getTxStop())/2 + startDistance);
+								newStart = Math.min(chromoLength, (currentGene.getStart() + currentGene.getStop())/2 + startDistance);
 							}
 							break;
 						case AFTER_MIDDLE:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.min(chromoLength, (currentGene.getTxStop() + currentGene.getTxStart())/2 + startDistance);
+								newStart = Math.min(chromoLength, (currentGene.getStop() + currentGene.getStart())/2 + startDistance);
 							} else {
-								newStart = Math.max(0, (currentGene.getTxStart() + currentGene.getTxStop())/2 - startDistance);
+								newStart = Math.max(0, (currentGene.getStart() + currentGene.getStop())/2 - startDistance);
 							}
 							break;
 						case BEFORE_STOP:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.max(0, currentGene.getTxStop() - startDistance);
+								newStart = Math.max(0, currentGene.getStop() - startDistance);
 							} else {
-								newStart = Math.min(chromoLength, currentGene.getTxStart() + startDistance);
+								newStart = Math.min(chromoLength, currentGene.getStart() + startDistance);
 							}
 							break;
 						case AFTER_STOP:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStart = Math.min(chromoLength, currentGene.getTxStop() + startDistance);
+								newStart = Math.min(chromoLength, currentGene.getStop() + startDistance);
 							} else {
-								newStart = Math.max(0, currentGene.getTxStart() - startDistance);
+								newStart = Math.max(0, currentGene.getStart() - startDistance);
 							}
 							break;
 						default:
@@ -161,44 +161,44 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 						switch (stopFrom) {
 						case BEFORE_START:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.max(0, currentGene.getTxStart() - stopDistance);
+								newStop = Math.max(0, currentGene.getStart() - stopDistance);
 							} else {
-								newStop =  Math.min(chromoLength, currentGene.getTxStop() + stopDistance);
+								newStop =  Math.min(chromoLength, currentGene.getStop() + stopDistance);
 							}
 							break;
 						case AFTER_START:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.min(chromoLength, currentGene.getTxStart() + stopDistance);
+								newStop = Math.min(chromoLength, currentGene.getStart() + stopDistance);
 							} else {
-								newStop = Math.max(0, currentGene.getTxStop() - stopDistance);
+								newStop = Math.max(0, currentGene.getStop() - stopDistance);
 							}
 							break;
 						case BEFORE_MIDDLE:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.max(0, (currentGene.getTxStop() + currentGene.getTxStart())/2 - stopDistance);
+								newStop = Math.max(0, (currentGene.getStop() + currentGene.getStart())/2 - stopDistance);
 							} else {
-								newStop =  Math.min(chromoLength, (currentGene.getTxStart() + currentGene.getTxStop())/2 + stopDistance);
+								newStop =  Math.min(chromoLength, (currentGene.getStart() + currentGene.getStop())/2 + stopDistance);
 							}
 							break;
 						case AFTER_MIDDLE:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.min(chromoLength, (currentGene.getTxStop() + currentGene.getTxStart())/2 + stopDistance);
+								newStop = Math.min(chromoLength, (currentGene.getStop() + currentGene.getStart())/2 + stopDistance);
 							} else {
-								newStop = Math.max(0, (currentGene.getTxStart() + currentGene.getTxStop())/2 - stopDistance);
+								newStop = Math.max(0, (currentGene.getStart() + currentGene.getStop())/2 - stopDistance);
 							}
 							break;
 						case BEFORE_STOP:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.max(0, currentGene.getTxStop() - stopDistance);
+								newStop = Math.max(0, currentGene.getStop() - stopDistance);
 							} else {
-								newStop =  Math.min(chromoLength, currentGene.getTxStart() + stopDistance);
+								newStop =  Math.min(chromoLength, currentGene.getStart() + stopDistance);
 							}
 							break;
 						case AFTER_STOP:
 							if (currentGene.getStrand() == Strand.FIVE) {
-								newStop = Math.min(chromoLength, currentGene.getTxStop() + stopDistance);
+								newStop = Math.min(chromoLength, currentGene.getStop() + stopDistance);
 							} else {
-								newStop = Math.max(0, currentGene.getTxStart() - stopDistance);
+								newStop = Math.max(0, currentGene.getStart() - stopDistance);
 							}
 							break;
 						default:
@@ -212,16 +212,16 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 							int[] exonStop = {newStop};
 							geneToAdd.setExonStarts(exonStart);
 							geneToAdd.setExonStops(exonStop);							
-							geneToAdd.setTxStart(newStart);
-							geneToAdd.setTxStop(newStop);
+							geneToAdd.setStart(newStart);
+							geneToAdd.setStop(newStop);
 							resultList.add(geneToAdd);
 						} else if ((newStart > newStop) && (currentGene.getStrand() == Strand.THREE)) {
 							int[] exonStart = {newStop};
 							int[] exonStop = {newStart};
 							geneToAdd.setExonStarts(exonStart);
 							geneToAdd.setExonStops(exonStop);							
-							geneToAdd.setTxStart(newStop);
-							geneToAdd.setTxStop(newStart);
+							geneToAdd.setStart(newStop);
+							geneToAdd.setStop(newStart);
 							resultList.add(geneToAdd);	
 						}
 					}

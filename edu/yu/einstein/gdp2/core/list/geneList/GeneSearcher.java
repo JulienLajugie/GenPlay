@@ -57,8 +57,8 @@ public final class GeneSearcher implements Serializable {
 			return false;
 		}
 		if ((lastGeneFound != null) && 
-				(gene.getTxStart() == lastGeneFound.getTxStart()) && 
-				(gene.getTxStop() == lastGeneFound.getTxStop())) {
+				(gene.getStart() == lastGeneFound.getStart()) && 
+				(gene.getStop() == lastGeneFound.getStop())) {
 			// case where the current gene has the same start and stop positions as the last gene
 			return false;
 		}

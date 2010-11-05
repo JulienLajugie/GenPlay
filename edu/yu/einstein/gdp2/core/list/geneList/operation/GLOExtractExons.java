@@ -104,9 +104,9 @@ public class GLOExtractExons implements Operation<GeneList> {
 		Gene outputGene = new Gene(inputGene);
 		if (outputGene.getStrand() == Strand.FIVE) {
 			// new start
-			outputGene.setTxStart(outputGene.getExonStarts()[0]);
+			outputGene.setStart(outputGene.getExonStarts()[0]);
 			// new stop
-			outputGene.setTxStop(outputGene.getExonStops()[0]);
+			outputGene.setStop(outputGene.getExonStops()[0]);
 			// new exon starts
 			int[] exonStart = new int[1];
 			exonStart[0] = outputGene.getExonStarts()[0];
@@ -125,9 +125,9 @@ public class GLOExtractExons implements Operation<GeneList> {
 			outputGene.setName(outputGene.getName() + "(1st)");
 		} else {
 			// new start
-			outputGene.setTxStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
+			outputGene.setStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
 			// new stop
-			outputGene.setTxStop(outputGene.getExonStops()[outputGene.getExonStops().length - 1]);
+			outputGene.setStop(outputGene.getExonStops()[outputGene.getExonStops().length - 1]);
 			// new exon starts
 			int[] exonStart = new int[1];
 			exonStart[0] = outputGene.getExonStarts()[outputGene.getExonStarts().length - 1];
@@ -157,9 +157,9 @@ public class GLOExtractExons implements Operation<GeneList> {
 		Gene outputGene = new Gene(inputGene);
 		if (outputGene.getStrand() == Strand.FIVE) {
 			// new start
-			outputGene.setTxStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
+			outputGene.setStart(outputGene.getExonStarts()[outputGene.getExonStarts().length - 1]);
 			// new stop
-			outputGene.setTxStop(outputGene.getExonStops()[outputGene.getExonStops().length - 1]);
+			outputGene.setStop(outputGene.getExonStops()[outputGene.getExonStops().length - 1]);
 			// new exon starts
 			int[] exonStart = new int[1];
 			exonStart[0] = outputGene.getExonStarts()[outputGene.getExonStarts().length - 1];
@@ -178,9 +178,9 @@ public class GLOExtractExons implements Operation<GeneList> {
 			outputGene.setName(outputGene.getName() + "(last)");
 		} else {
 			// new start
-			outputGene.setTxStart(outputGene.getExonStarts()[0]);
+			outputGene.setStart(outputGene.getExonStarts()[0]);
 			// new stop
-			outputGene.setTxStop(outputGene.getExonStops()[0]);
+			outputGene.setStop(outputGene.getExonStops()[0]);
 			// new exon starts
 			int[] exonStart = new int[1];
 			exonStart[0] = outputGene.getExonStarts()[0];
@@ -212,9 +212,9 @@ public class GLOExtractExons implements Operation<GeneList> {
 			for (int i = 0; i < inputGene.getExonStarts().length; i++) {
 				Gene outputGene = new Gene(inputGene);
 				// new start
-				outputGene.setTxStart(outputGene.getExonStarts()[i]);
+				outputGene.setStart(outputGene.getExonStarts()[i]);
 				// new stop
-				outputGene.setTxStop(outputGene.getExonStops()[i]);
+				outputGene.setStop(outputGene.getExonStops()[i]);
 				// new exon starts
 				int[] exonStart = new int[1];
 				exonStart[0] = outputGene.getExonStarts()[i];
@@ -242,9 +242,9 @@ public class GLOExtractExons implements Operation<GeneList> {
 			for (int i = inputGene.getExonStarts().length - 1; i >= 0; i--) {
 				Gene outputGene = new Gene(inputGene);
 				// new start
-				outputGene.setTxStart(outputGene.getExonStarts()[i]);
+				outputGene.setStart(outputGene.getExonStarts()[i]);
 				// new stop
-				outputGene.setTxStop(outputGene.getExonStops()[i]);
+				outputGene.setStop(outputGene.getExonStops()[i]);
 				// new exon starts
 				int[] exonStart = new int[1];
 				exonStart[0] = outputGene.getExonStarts()[i];

@@ -146,8 +146,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 							g.setColor(Color.BLUE);
 						}
 						// Draw the gene
-						int x1 = genomePosToScreenPos(geneToPrint.getTxStart());
-						int x2 = genomePosToScreenPos(geneToPrint.getTxStop());
+						int x1 = genomePosToScreenPos(geneToPrint.getStart());
+						int x2 = genomePosToScreenPos(geneToPrint.getStop());
 						g.drawLine(x1, currentHeight, x2, currentHeight);
 						// Draw the name of the gene if the zoom is small enough
 						if (isGeneNamePrinted) {
@@ -288,8 +288,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 				int j = 0;
 				while ((j < printedGenes.get(mouseLine).size()) && (geneUnderMouse == null)) {
 					Gene currentGene = printedGenes.get(mouseLine).get(j);
-					if (mousePosition.x >= genomePosToScreenPos(currentGene.getTxStart()) &&
-							(mousePosition.x <= genomePosToScreenPos(currentGene.getTxStop()))) {
+					if (mousePosition.x >= genomePosToScreenPos(currentGene.getStart()) &&
+							(mousePosition.x <= genomePosToScreenPos(currentGene.getStop()))) {
 						// we found a gene under the mouse
 						geneUnderMouse = currentGene;
 					}

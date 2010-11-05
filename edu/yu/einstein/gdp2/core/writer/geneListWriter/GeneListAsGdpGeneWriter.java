@@ -61,9 +61,9 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 					lineToPrint += "\t";
 					lineToPrint += currentGene.getStrand().toString();
 					lineToPrint += "\t";
-					lineToPrint += currentGene.getTxStart();
+					lineToPrint += currentGene.getStart();
 					lineToPrint += "\t";
-					lineToPrint += currentGene.getTxStop();
+					lineToPrint += currentGene.getStop();
 					lineToPrint += "\t";
 					if (currentGene.getExonStarts() == null) {
 						lineToPrint += "-";

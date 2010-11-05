@@ -178,9 +178,9 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
-		} else if (value == list.get(indexStart + middle).getTxStart()) {
+		} else if (value == list.get(indexStart + middle).getStart()) {
 			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getTxStart()) {
+		} else if (value > list.get(indexStart + middle).getStart()) {
 			return findStart(list, value, indexStart + middle + 1, indexStop);
 		} else {
 			return findStart(list, value, indexStart, indexStart + middle);
@@ -201,9 +201,9 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
-		} else if (value == list.get(indexStart + middle).getTxStop()) {
+		} else if (value == list.get(indexStart + middle).getStop()) {
 			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getTxStop()) {
+		} else if (value > list.get(indexStart + middle).getStop()) {
 			return findStop(list, value, indexStart + middle + 1, indexStop);
 		} else {
 			return findStop(list, value, indexStart, indexStart + middle);
@@ -250,15 +250,15 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 						organizedGenes[i] = true;
 						organizedGeneCount++;
 					} else {
-						long currentStart = genomePosToAbsoluteScreenPos(currentList.get(i).getTxStart(), fittedXRatio);
+						long currentStart = genomePosToAbsoluteScreenPos(currentList.get(i).getStart(), fittedXRatio);
 						long previousStop;
 						// if we don't print the gene names the previous stop is the stop position of the gene + the minimum length between two genes 
 						int lastIndex = fittedDataList.get(currentLine).size() - 1;
 						if (!isGeneNamePrinted) {
-							previousStop = genomePosToAbsoluteScreenPos(fittedDataList.get(currentLine).get(lastIndex).getTxStop(), fittedXRatio) + MIN_DISTANCE_BETWEEN_2_GENES;
+							previousStop = genomePosToAbsoluteScreenPos(fittedDataList.get(currentLine).get(lastIndex).getStop(), fittedXRatio) + MIN_DISTANCE_BETWEEN_2_GENES;
 						} else { // if we print the name the previous stop is the max between the stop of the gene and the end position of the name of the gene (+ MIN_DISTANCE_BETWEEN_2_GENES in both case) 
-							long previousNameStop = fontMetrics.stringWidth(fittedDataList.get(currentLine).get(lastIndex).getName()) + genomePosToAbsoluteScreenPos(fittedDataList.get(currentLine).get(lastIndex).getTxStart(), fittedXRatio);
-							long previousGeneStop = genomePosToAbsoluteScreenPos(fittedDataList.get(currentLine).get(lastIndex).getTxStop(), fittedXRatio);
+							long previousNameStop = fontMetrics.stringWidth(fittedDataList.get(currentLine).get(lastIndex).getName()) + genomePosToAbsoluteScreenPos(fittedDataList.get(currentLine).get(lastIndex).getStart(), fittedXRatio);
+							long previousGeneStop = genomePosToAbsoluteScreenPos(fittedDataList.get(currentLine).get(lastIndex).getStop(), fittedXRatio);
 							previousStop = (previousNameStop > previousGeneStop) ? previousNameStop : previousGeneStop; 
 							previousStop += MIN_DISTANCE_BETWEEN_2_GENES; 
 						}

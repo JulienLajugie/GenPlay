@@ -17,14 +17,14 @@ public class GeneListMiddlePositionComparator implements Comparator<Gene>{
 
 	@Override
 	public int compare(Gene first, Gene second) {
-		if (first.getTxStop() > second.getTxStop()) {
+		if (first.getStop() > second.getStop()) {
 			return 1;
-		} else if (first.getTxStop() < second.getTxStop()) {
+		} else if (first.getStop() < second.getStop()) {
 			return -1;
 		} else {
-			if (first.getTxStart() > second.getTxStart()) {
+			if (first.getStart() > second.getStart()) {
 				return 1;
-			} else if (first.getTxStart() < second.getTxStart()) {
+			} else if (first.getStart() < second.getStart()) {
 				return -1;
 			} else {
 				return 0;

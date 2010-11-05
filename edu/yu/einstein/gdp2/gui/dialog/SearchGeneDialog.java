@@ -165,11 +165,11 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			jbNext.setEnabled(true);
 			jbPrevious.setEnabled(true);
 			// we want to see larger than the gene found
-			int windowStart = geneFound.getTxStart() - (geneFound.getTxStop() - geneFound.getTxStart()) * 3;
+			int windowStart = geneFound.getStart() - (geneFound.getStop() - geneFound.getStart()) * 3;
 			int minimumDisplayableStart = - geneFound.getChromo().getLength();
 			// we don't want the start to be smaller than the minimum displayable position
 			windowStart = Math.max(windowStart, minimumDisplayableStart);
-			int windowStop = geneFound.getTxStop() + (geneFound.getTxStop() - geneFound.getTxStart()) * 3;
+			int windowStop = geneFound.getStop() + (geneFound.getStop() - geneFound.getStart()) * 3;
 			int maximumDisplayableStop = geneFound.getChromo().getLength() * 2;
 			// we don't want the stop to be greater than the maximum displayable position
 			windowStop = Math.min(windowStop, maximumDisplayableStop);
