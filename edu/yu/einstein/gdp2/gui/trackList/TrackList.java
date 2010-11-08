@@ -55,6 +55,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
+import yu.einstein.gdp2.gui.action.allTrack.ATAInsert;
 import yu.einstein.gdp2.gui.action.allTrack.ATALoadStripes;
 import yu.einstein.gdp2.gui.action.allTrack.ATAPaste;
 import yu.einstein.gdp2.gui.action.allTrack.ATARemoveStripes;
@@ -181,6 +182,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATACopy.ACTION_KEY, new ATACopy());
 		getActionMap().put(ATACut.ACTION_KEY, new ATACut());
 		getActionMap().put(ATADelete.ACTION_KEY, new ATADelete());
+		getActionMap().put(ATAInsert.ACTION_KEY, new ATAInsert());
 		getActionMap().put(ATALoadStripes.ACTION_KEY, new ATALoadStripes());
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
 		getActionMap().put(ATARemoveStripes.ACTION_KEY, new ATARemoveStripes());
@@ -266,7 +268,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAStandardDeviation.ACTION_KEY, new BLAStandardDeviation());
 		getActionMap().put(BLASubtractConstant.ACTION_KEY, new BLASubtractConstant());
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
-		//getActionMap().put(BLATransfragGeneList.ACTION_KEY, new BLATransfragGeneList());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
 	}
@@ -276,19 +277,21 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * Adds key listener to the {@link InputMap}
 	 */
 	private void addKeyToInputMap() {
+		// all tracks
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATACopy.ACCELERATOR, ATACopy.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATACut.ACCELERATOR, ATACut.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAPaste.ACCELERATOR, ATAPaste.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATADelete.ACCELERATOR, ATADelete.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAInsert.ACCELERATOR, ATAInsert.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAPaste.ACCELERATOR, ATAPaste.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATARename.ACCELERATOR, ATARename.ACTION_KEY);
-
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GLASearchGene.ACCELERATOR, GLASearchGene.ACTION_KEY);
-
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAUndo.ACCELERATOR, CTAUndo.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATASave.ACCELERATOR, ATASave.ACTION_KEY);
+		// curve tracks
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAHistory.ACCELERATOR, CTAHistory.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTARedo.ACCELERATOR, CTARedo.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAReset.ACCELERATOR, CTAReset.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAHistory.ACCELERATOR, CTAHistory.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATASave.ACCELERATOR, ATASave.ACTION_KEY);		
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAUndo.ACCELERATOR, CTAUndo.ACTION_KEY);
+		// gene tracks
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GLASearchGene.ACCELERATOR, GLASearchGene.ACTION_KEY);
 	}
 
 
@@ -870,5 +873,22 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				((BinListTrack) currentTrack).setUndoCount(undoCount);
 			}		
 		}
+	}
+
+
+	/**
+	 * Inserts a blank track right above the specified index
+	 * @param trackIndex index where to insert the blank track
+	 */
+	public void insertTrack(int trackIndex) {
+		for (int i = trackList.length - 2; i >= trackIndex; i--) {
+			trackList[i + 1] = trackList[i];
+		}
+
+		trackList[trackIndex] = new EmptyTrack(displayedGenomeWindow, trackList.length);
+		trackList[trackIndex].addPropertyChangeListener(this);
+		trackList[trackIndex].addGenomeWindowListener(this);
+		selectedTrack = null;
+		rebuildPanel();
 	}
 }

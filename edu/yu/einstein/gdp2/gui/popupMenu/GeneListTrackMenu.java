@@ -55,7 +55,7 @@ public final class GeneListTrackMenu extends TrackMenu {
 		scoreExons = new JMenuItem(actionMap.get(GLAScoreExons.ACTION_KEY));
 		searchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
 			
-		add(saveGeneTrack, 8);
+		add(saveGeneTrack, 9);
 		addSeparator();
 		add(searchGene);
 		add(extractInterval);

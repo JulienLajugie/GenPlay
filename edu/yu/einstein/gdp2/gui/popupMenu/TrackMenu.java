@@ -15,6 +15,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
+import yu.einstein.gdp2.gui.action.allTrack.ATAInsert;
 import yu.einstein.gdp2.gui.action.allTrack.ATALoadStripes;
 import yu.einstein.gdp2.gui.action.allTrack.ATAPaste;
 import yu.einstein.gdp2.gui.action.allTrack.ATARemoveStripes;
@@ -36,6 +37,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 
 	private final JMenuItem 	jmiCopy;				// menu copy track
 	private final JMenuItem 	jmiCut;					// menu cut track
+	private final JMenuItem 	jmiInsert;				// menu insert blank track
 	private final JMenuItem		jmiPaste;				// menu paste track
 	private final JMenuItem 	jmiDelete;				// menu delete track
 	private final JMenuItem 	jmiRename;				// menu rename track
@@ -60,19 +62,21 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		
 		jmiCopy = new JMenuItem(actionMap.get(ATACopy.ACTION_KEY));
 		jmiCut = new JMenuItem(actionMap.get(ATACut.ACTION_KEY));
-		jmiPaste = new JMenuItem(actionMap.get(ATAPaste.ACTION_KEY));
 		jmiDelete = new JMenuItem(actionMap.get(ATADelete.ACTION_KEY));
+		jmiInsert = new JMenuItem(actionMap.get(ATAInsert.ACTION_KEY));
+		jmiLoadStripes = new JMenuItem(actionMap.get(ATALoadStripes.ACTION_KEY));
+		jmiPaste = new JMenuItem(actionMap.get(ATAPaste.ACTION_KEY));
+		jmiRemoveStripes = new JMenuItem(actionMap.get(ATARemoveStripes.ACTION_KEY));
 		jmiRename = new JMenuItem(actionMap.get(ATARename.ACTION_KEY));
+		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
 		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
 		jmiSetVerticalLineCount = new JMenuItem(actionMap.get(ATASetVerticalLineCount.ACTION_KEY));
-		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
-		jmiLoadStripes = new JMenuItem(actionMap.get(ATALoadStripes.ACTION_KEY));
-		jmiRemoveStripes = new JMenuItem(actionMap.get(ATARemoveStripes.ACTION_KEY));		
 		
 		add(jmiCopy);
 		add(jmiCut);
 		add(jmiPaste);
 		add(jmiDelete);
+		add(jmiInsert);
 		add(jmiRename);
 		add(jmiSetHeight);
 		if (!(trackList.getSelectedTrack().getData() instanceof BinList)

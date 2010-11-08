@@ -195,7 +195,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		add(jmOperation, 0);
 		add(new Separator(), 1);
 
-		add(jmiSave, 9);
+		add(jmiSave, 10);
 	}
 	
 	
