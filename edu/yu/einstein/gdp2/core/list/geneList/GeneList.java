@@ -391,6 +391,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		return resultList;
 	}
 
+	
 	/**
 	 * Performs a deep clone of the current GeneList
 	 * @return a new GeneList
