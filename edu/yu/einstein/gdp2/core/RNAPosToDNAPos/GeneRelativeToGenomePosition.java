@@ -71,12 +71,15 @@ public class GeneRelativeToGenomePosition {
 			try {
 				strtok = new StringTokenizer(lineRead, "\t\n");
 				String gene = strtok.nextToken();
+				
 				// now skip the start stop and score and store the remainder of the line
 				List<String> toBeAdded = new ArrayList<String>();
 				toBeAdded.add(strtok.nextToken());
 				toBeAdded.add(strtok.nextToken());
-				// uncomment the next line for junction files
+				
+				// UNCOMMENT THE NEXT LINE FOR JUNCTION FILES
 				//strtok.nextToken();
+				
 				toBeAdded.add(strtok.nextToken());
 				String remainingLine = "";
 				while (strtok.hasMoreTokens()) {
@@ -170,7 +173,9 @@ public class GeneRelativeToGenomePosition {
 					intermediatestartstopscorearray[j][1] = tempstop;
 					intermediatestartstopscorearray[j][2] = tempscore;
 					
-					Collections.swap(remainingString, i, j);
+					if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+						Collections.swap(remainingString, i, j);
+					}
 				}
 			}
 		}
@@ -192,38 +197,44 @@ public class GeneRelativeToGenomePosition {
 				tempList.add(intermediatestartstopscorearray[i][0]);
 				tempList.add(0.0);
 				
-				tempRemainingListElement.add("0.0");
-				tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][0]).toString());
-				tempRemainingListElement.add("0.0");
-				tempRemainingListElement.add("");
-				
-				newRemainingString.add(tempRemainingListElement);
-				tempRemainingListElement = new ArrayList<String>();
+				if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+					tempRemainingListElement.add("0.0");
+					tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][0]).toString());
+					tempRemainingListElement.add("0.0");
+					tempRemainingListElement.add("");
+					
+					newRemainingString.add(tempRemainingListElement);
+					tempRemainingListElement = new ArrayList<String>();
+				}
 			} 
 			if (i !=0 && intermediatestartstopscorearray[i][0] > intermediatestartstopscorearray[i-1][1]) {
 				tempList.add(intermediatestartstopscorearray[i-1][1]);
 				tempList.add(intermediatestartstopscorearray[i][0]);
 				tempList.add(0.0);
 				
-				tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i-1][1]).toString());
-				tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][0]).toString());
-				tempRemainingListElement.add("0.0");
-				tempRemainingListElement.add("");
-				
-				newRemainingString.add(tempRemainingListElement);
-				tempRemainingListElement = new ArrayList<String>();
+				if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+					tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i-1][1]).toString());
+					tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][0]).toString());
+					tempRemainingListElement.add("0.0");
+					tempRemainingListElement.add("");
+					
+					newRemainingString.add(tempRemainingListElement);
+					tempRemainingListElement = new ArrayList<String>();
+				}
 			}
 			tempList.add(intermediatestartstopscorearray[i][0]);
 			tempList.add(intermediatestartstopscorearray[i][1]);
 			tempList.add(intermediatestartstopscorearray[i][2]);
 			
-			tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][0]).toString());
-			tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][1]).toString());
-			tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][2]).toString());
-			tempRemainingListElement.add(remainingString.get(i).get(3));
-			
-			newRemainingString.add(tempRemainingListElement);
-			tempRemainingListElement = new ArrayList<String>();
+			if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+				tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][0]).toString());
+				tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][1]).toString());
+				tempRemainingListElement.add(new Double(intermediatestartstopscorearray[i][2]).toString());
+				tempRemainingListElement.add(remainingString.get(i).get(3));
+				
+				newRemainingString.add(tempRemainingListElement);
+				tempRemainingListElement = new ArrayList<String>();
+			}
 		}		
 		return tempList;
 	}
@@ -292,6 +303,7 @@ public class GeneRelativeToGenomePosition {
 	 * @return finalStartStopScore
 	 */
 	private List<Double> populateRepositionedArrayList(double[][] startstopscorearray, List<Integer> mergedList, List<Integer> absolutebplengths, List<Integer> exonStarts, List<Integer> basePairs, List<Double> finalStartStopScore, List<List<String>> newRemainingString, List<String> remainderStringForPrinting) {
+		//long time_inside_function = System.currentTimeMillis();
 		int prevLength = 0;
 		for (int i = 0; i < startstopscorearray.length; i++) {
 			int startval = (int)startstopscorearray[i][0];
@@ -331,9 +343,13 @@ public class GeneRelativeToGenomePosition {
 				finalStartStopScore.add((double) position + mergedK1 - prevLength);
 				//finalStartStopScore.add(totalscore * (mergedK1 - mergedK) / length);
 				finalStartStopScore.add(totalscore * (mergedK1 - mergedK));	// changed on 10/19/2010 as per Julien's logic
-				remainderStringForPrinting.add(newRemainingString.get(i).get(3));
+				
+				if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+					remainderStringForPrinting.add(newRemainingString.get(i).get(3));
+				}
 			}
 		}
+		//System.out.println("time inside calculation method " + (System.currentTimeMillis() - time_inside_function));
 		return finalStartStopScore;
 	}
 	
@@ -553,7 +569,10 @@ public class GeneRelativeToGenomePosition {
 	public void rePosition() {
 		try {
 			loadCoverageFileOnHashMap();
-			loadCoverageFileCompletelyOnHashMap();
+			
+			if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+				loadCoverageFileCompletelyOnHashMap();
+			}
 	
 			BufferedReader newbuf = new BufferedReader(new FileReader(annotationFile));
 			BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
@@ -587,13 +606,21 @@ public class GeneRelativeToGenomePosition {
 					}
 					if (key.compareTo(geneFromFile2) == 0) {						
 						List<Double> value = startStopScore.get(key);
-						List<List<String>> remainingString = remainderLineFromCoverageFile.get(key);
+						
+						List<List<String>> remainingString = null;
+						if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+							remainingString = remainderLineFromCoverageFile.get(key);
+						}
 						double[][] intermediatestartstopscorearray = new double[value.size()/3][3];
 						intermediatestartstopscorearray = populateAndSortIntermediateArray(value, intermediatestartstopscorearray, remainingString);
 						
 						// now copy sorted array to a list and while adding the array also add the zeros
 						List<Double> tempList = new ArrayList<Double>();
-						List<List<String>> newRemainingString = new ArrayList<List<String>>();
+						
+						List<List<String>> newRemainingString = null;
+						if (outputFileType == RNAToDNAResultType.BGR_WITH_EXTRA_FIELDS) {
+							newRemainingString = new ArrayList<List<String>>();
+						}
 						tempList = populateMissingValuesIntoList(tempList,intermediatestartstopscorearray, remainingString, newRemainingString);
 						
 						// now copy this list to the finalarray
@@ -653,8 +680,7 @@ public class GeneRelativeToGenomePosition {
 						if (outputFileType == RNAToDNAResultType.BGR) {
 							printToOutputFile(chrmomosome, finalStartStopScore, bufWriter);
 						}
-						// System.out.println("One NM value done");
-						
+											
 						// write to output file in gdp format
 						if (outputFileType == RNAToDNAResultType.GDP) {
 							printToOutputFileDifferentFormat(key, chrmomosome, strand, chrStart, chrStop, finalStartStopScore, exonStarts, basePairs, bufWriter);
