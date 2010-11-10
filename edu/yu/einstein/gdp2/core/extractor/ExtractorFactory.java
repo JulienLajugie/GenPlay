@@ -81,7 +81,9 @@ public final class ExtractorFactory {
 		} else if (fileExtension.equalsIgnoreCase("psl")) {
 			return new PSLExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("sam")) {
-			return new SAMExtractor(fileToExtract, logFile);			
+			return new SAMExtractor(fileToExtract, logFile);
+		} else if (fileExtension.equalsIgnoreCase("snp")) {
+			return new SOAPsnpExtractor(fileToExtract, logFile);
 		} else {
 			return null;
 		}		
@@ -159,6 +161,8 @@ public final class ExtractorFactory {
 									return new PSLExtractor(fileToExtract, logFile);
 								} else if (type.equalsIgnoreCase("sam")) {	
 									return new SAMExtractor(fileToExtract, logFile);
+								} else if (type.equalsIgnoreCase("soapsnp")) {	
+									return new SOAPsnpExtractor(fileToExtract, logFile);
 								} else {
 									return null;
 								}

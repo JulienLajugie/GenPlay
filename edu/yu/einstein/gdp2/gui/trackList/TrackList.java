@@ -107,6 +107,7 @@ import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSCWListTrack;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSNPListTrack;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLADistanceCalculator;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractExons;
 import yu.einstein.gdp2.gui.action.geneListTrack.GLAExtractInterval;
@@ -193,12 +194,13 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATASetVerticalLineCount.ACTION_KEY, new ATASetVerticalLineCount());
 		// add empty list actions
 		getActionMap().put(ETALoadBinListTrack.ACTION_KEY, new ETALoadBinListTrack());
+		getActionMap().put(ETALoadFromDAS.ACTION_KEY, new ETALoadFromDAS());
 		getActionMap().put(ETALoadGeneListTrack.ACTION_KEY, new ETALoadGeneListTrack());
+		getActionMap().put(ETAGenerateMultiCurvesTrack.ACTION_KEY, new ETAGenerateMultiCurvesTrack());
 		getActionMap().put(ETALoadNucleotideListTrack.ACTION_KEY, new ETALoadNucleotideListTrack());
 		getActionMap().put(ETALoadRepeatFamilyListTrack.ACTION_KEY, new ETALoadRepeatFamilyListTrack());
 		getActionMap().put(ETALoadSCWListTrack.ACTION_KEY, new ETALoadSCWListTrack());
-		getActionMap().put(ETALoadFromDAS.ACTION_KEY, new ETALoadFromDAS());
-		getActionMap().put(ETAGenerateMultiCurvesTrack.ACTION_KEY, new ETAGenerateMultiCurvesTrack());
+		getActionMap().put(ETALoadSNPListTrack.ACTION_KEY, new ETALoadSNPListTrack());
 		// add gene list actions
 		getActionMap().put(GLADistanceCalculator.ACTION_KEY, new GLADistanceCalculator());
 		getActionMap().put(GLAExtractExons.ACTION_KEY, new GLAExtractExons());

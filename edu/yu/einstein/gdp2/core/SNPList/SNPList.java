@@ -9,12 +9,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
+import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.SNP;
+import yu.einstein.gdp2.core.enums.Nucleotide;
+import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.core.operationPool.OperationPool;
+import yu.einstein.gdp2.exception.InvalidChromosomeException;
 
 
 /**
@@ -26,7 +34,7 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 
 	private static final long serialVersionUID = 5581991460611158113L;	// generated ID
 
-	
+
 	/**
 	 * Creates an instance of {@link SNPList} containing the specified data.
 	 * @param data data of the list 
@@ -42,22 +50,94 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 		// sort the data
 		sort();
 	}
-	
-	
-	@Override
-	protected void fitToScreen() {
-		// TODO Auto-generated method stub
-		
+
+
+	/**
+	 * Creates an instance of {@link SNPList}
+	 * @param positionList list of position
+	 * @param firstBaseList list of first base
+	 * @param firstBaseCountList list of first base count
+	 * @param secondBaseList list of second base
+	 * @param secondBaseCountList list of second base count
+	 * @param isSecondBaseSignificantList list of boolean
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	public SNPList(final ChromosomeListOfLists<Integer> positionList,
+			final ChromosomeListOfLists<Nucleotide> firstBaseList,
+			final ChromosomeListOfLists<Integer> firstBaseCountList,
+			final ChromosomeListOfLists<Nucleotide> secondBaseList,
+			final ChromosomeListOfLists<Integer> secondBaseCountList,
+			final ChromosomeListOfLists<Boolean> isSecondBaseSignificantList) 
+	throws InterruptedException, ExecutionException {
+		super();
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<SNP>>> threadList = new ArrayList<Callable<List<SNP>>>();		
+		for(final Chromosome currentChromosome : chromosomeManager) {			
+			Callable<List<SNP>> currentThread = new Callable<List<SNP>>() {	
+				@Override
+				public List<SNP> call() throws Exception {
+					List<SNP> resultList = new ArrayList<SNP>();
+					for(int j = 0; j < positionList.size(currentChromosome); j++) {
+						int position = positionList.get(currentChromosome, j);
+						Nucleotide firstBase = firstBaseList.get(currentChromosome, j);
+						int firstBaseCount = firstBaseCountList.get(currentChromosome, j);
+						Nucleotide secondBase = secondBaseList.get(currentChromosome, j);
+						int secondBaseCount = secondBaseCountList.get(currentChromosome, j);
+						boolean isSecondBaseSignificant = isSecondBaseSignificantList.get(currentChromosome, j);						
+						resultList.add(new SNP(position, firstBase, firstBaseCount, secondBase, secondBaseCount, isSecondBaseSignificant));
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}		
+		List<List<SNP>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<SNP> currentList: result) {
+				add(currentList);
+			}
+		}			
+		// sort the SNP list	
+		sort();
 	}
-	
+
+
+	/**
+	 * Does nothing
+	 */
+	@Override
+	protected void fitToScreen() {}
+
 
 	@Override
 	protected List<SNP> getFittedData(int start, int stop) {
-		// TODO Auto-generated method stub
-		return null;
+		List<SNP> result = new ArrayList<SNP>();
+		List<SNP> currentList;
+		try {
+			currentList = get(fittedChromosome);
+		} catch (InvalidChromosomeException e) {
+			e.printStackTrace();
+			fittedDataList = null;
+			return null;
+		}
+		int indexStart = findSNP(currentList, start, 0, currentList.size() - 1);
+		int indexStop = findSNP(currentList, stop, 0, currentList.size() - 1);
+		for (int i = indexStart; i <= indexStop; i++) {
+			result.add(currentList.get(i));
+		}		
+		return result;
 	}
-	
-	
+
+
 	/**
 	 * Sorts the SNPList
 	 */
@@ -68,8 +148,8 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Recursive and dichotomic search algorithm.  
 	 * @param list List in which the search is performed.
@@ -91,8 +171,8 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 			return findSNP(list, value, indexStart, indexStart + middle);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Performs a deep clone of the current SNPList
 	 * @return a new SNPList

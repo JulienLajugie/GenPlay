@@ -14,6 +14,7 @@ import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadGeneListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSCWListTrack;
+import yu.einstein.gdp2.gui.action.emptyTrack.ETALoadSNPListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
 
@@ -28,7 +29,8 @@ public final class EmptyTrackMenu extends TrackMenu {
 	private final JMenuItem jmiLoadSCWLtTrack;						// menu load ScoredChromosomeWindowList track
 	private final JMenuItem jmiLoadBinListTrack;					// menu load BinList track
 	private final JMenuItem	jmiLoadGeneListTrack;					// menu load GeneList track
-	private final JMenuItem jmiLoadNucleotideListTrack;				// menu load Sequence track track
+	private final JMenuItem jmiLoadNucleotideListTrack;				// menu load Sequence track
+	private final JMenuItem jmiLoadSNPListTrack;					// menu load SNPList track
 	private final JMenuItem jmiLoadRepeatFamilyListTrack;			// menu load RepeatFamilyList track
 	private final JMenuItem jmiLoadFromDAS;							// menu load from DAS server
 	private final JMenuItem jmiGenerateMultiTrack;					// menu generate multitrack
@@ -44,6 +46,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 		jmiLoadBinListTrack = new JMenuItem(actionMap.get(ETALoadBinListTrack.ACTION_KEY));
 		jmiLoadGeneListTrack = new JMenuItem(actionMap.get(ETALoadGeneListTrack.ACTION_KEY));
 		jmiLoadNucleotideListTrack = new JMenuItem(actionMap.get(ETALoadNucleotideListTrack.ACTION_KEY));
+		jmiLoadSNPListTrack = new JMenuItem(actionMap.get(ETALoadSNPListTrack.ACTION_KEY));
 		jmiLoadRepeatFamilyListTrack = new JMenuItem(actionMap.get(ETALoadRepeatFamilyListTrack.ACTION_KEY));
 		jmiLoadFromDAS = new JMenuItem(actionMap.get(ETALoadFromDAS.ACTION_KEY));
 		jmiGenerateMultiTrack = new JMenuItem(actionMap.get(ETAGenerateMultiCurvesTrack.ACTION_KEY));
@@ -53,6 +56,7 @@ public final class EmptyTrackMenu extends TrackMenu {
 		add(jmiLoadBinListTrack);
 		add(jmiLoadGeneListTrack);
 		add(jmiLoadNucleotideListTrack);
+		add(jmiLoadSNPListTrack);
 		add(jmiLoadRepeatFamilyListTrack);
 		add(jmiLoadFromDAS);
 		add(jmiGenerateMultiTrack);

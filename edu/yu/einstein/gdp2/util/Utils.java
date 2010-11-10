@@ -30,6 +30,7 @@ import yu.einstein.gdp2.gui.fileFilter.GdpGeneFilter;
 import yu.einstein.gdp2.gui.fileFilter.PSLFilter;
 import yu.einstein.gdp2.gui.fileFilter.PairFilter;
 import yu.einstein.gdp2.gui.fileFilter.SAMFilter;
+import yu.einstein.gdp2.gui.fileFilter.SOAPsnpFilter;
 import yu.einstein.gdp2.gui.fileFilter.SerializedBinListFilter;
 import yu.einstein.gdp2.gui.fileFilter.TwoBitFilter;
 import yu.einstein.gdp2.gui.fileFilter.WiggleFilter;
@@ -332,7 +333,16 @@ public class Utils {
 		return filters;
 	}
 
-
+	
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SNPList
+	 */
+	public static FileFilter[] getReadableSNPFileFilters() {
+		ExtendedFileFilter[] filters = {new SOAPsnpFilter()};
+		return filters;
+	}	
+	
+	
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as sequence track (aka nucleotide list)
 	 */
@@ -432,5 +442,5 @@ public class Utils {
 			b = 0;			
 		}		
 		return new Color(r, v, b);
-	}	
+	}
 }
