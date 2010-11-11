@@ -73,7 +73,7 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				int position = Integer.parseInt(splitedLine[1].trim());
+				int position = Integer.parseInt(splitedLine[1].trim()) - 1;
 				Nucleotide consensusGenotype = Nucleotide.get(splitedLine[3].trim().charAt(0));
 				Nucleotide firstBase = Nucleotide.get(splitedLine[5].trim().charAt(0));
 				int firstBaseCount = Integer.parseInt(splitedLine[7].trim());

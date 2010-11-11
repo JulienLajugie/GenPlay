@@ -34,20 +34,24 @@ import yu.einstein.gdp2.util.Utils;
  */
 public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
-	private static final long serialVersionUID = 1372400925707415741L; 	// generated ID
+	private static final long serialVersionUID = 1372400925707415741L; 		// generated ID
+	private static final Color FIVE_GENE_COLOR = new Color(180, 0, 0);		// color of the genes on the 5' strand
+	private static final Color FIVE_GENE_COLOR2 = new Color(255, 0, 0);		// highlighted color of the genes on the 5' strand
+	private static final Color THREE_GENE_COLOR = new Color(0, 0, 200);		// color of the genes on the 3' strand
+	private static final Color THREE_GENE_COLOR2 = new Color(0, 100, 255);	// highlighted color of the genes on the 3' strand
 	private static final double				MIN_X_RATIO_PRINT_NAME = 
-		GeneList.MIN_X_RATIO_PRINT_NAME;								// the name of the genes are printed if the ratio is higher than this value			
-	private static final double 			SCORE_SATURATION = 0.01d;	// saturation of the score of the exon for the display
-	private static final short				GENE_HEIGHT = 6;			// size of a gene in pixel
-	private static final short				UTR_HEIGHT = 3;				// height of a UTR region of a gene in pixel
+		GeneList.MIN_X_RATIO_PRINT_NAME;									// the name of the genes are printed if the ratio is higher than this value			
+	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
+	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
+	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
 	protected static final DecimalFormat 	SCORE_FORMAT = 
-		new DecimalFormat("#.###");										// decimal format for the score
-	private int 							firstLineToDisplay = 0;		// number of the first line to be displayed
-	private int 							geneLinesCount = 0;			// number of line of genes
-	private int 							mouseStartDragY = -1;		// position of the mouse when start dragging
-	private Gene 							geneUnderMouse = null;		// gene under the cursor of the mouse
-	private double 							min;						// min score of a GeneList
-	private double							max;						// max score of a GeneList
+		new DecimalFormat("#.###");											// decimal format for the score
+	private int 							firstLineToDisplay = 0;			// number of the first line to be displayed
+	private int 							geneLinesCount = 0;				// number of line of genes
+	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
+	private Gene 							geneUnderMouse = null;			// gene under the cursor of the mouse
+	private double 							min;							// min score of a GeneList
+	private double							max;							// max score of a GeneList
 
 
 	/**
@@ -143,11 +147,19 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 						// retrieve the screen x coordinate of the start and stop position
 						int x1 = genomePosToScreenPos(geneToPrint.getStart());
 						int x2 = genomePosToScreenPos(geneToPrint.getStop());
-						// Choose the color depending on the strand
-						if (geneToPrint.getStrand() == Strand.FIVE) {
-							g.setColor(Color.RED);
+						// Choose the color depending on if the gene is under the mouse and on the strand
+						if ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse))) {
+							if (geneToPrint.getStrand() == Strand.FIVE) {
+								g.setColor(FIVE_GENE_COLOR2);
+							} else {
+								g.setColor(THREE_GENE_COLOR2);
+							}
 						} else {
-							g.setColor(Color.BLUE);
+							if (geneToPrint.getStrand() == Strand.FIVE) {
+								g.setColor(FIVE_GENE_COLOR);
+							} else {
+								g.setColor(THREE_GENE_COLOR);
+							}
 						}
 						// Draw the gene
 						g.drawLine(x1, currentHeight, x2, currentHeight);
@@ -277,6 +289,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		super.mouseMoved(e);
+		Gene oldGeneUnderMouse = geneUnderMouse;
 		geneUnderMouse = null;
 		// retrieve the position of the mouse
 		Point mousePosition = e.getPoint();
@@ -360,6 +373,11 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 				// if there is a gene and an exon score
 				setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
 			}
+		}
+		// we repaint the track only if the gene under the mouse changed
+		if (((oldGeneUnderMouse == null) && (geneUnderMouse != null)) 
+				|| ((oldGeneUnderMouse != null) && (!oldGeneUnderMouse.equals(geneUnderMouse)))) {
+			repaint();
 		}
 	}
 
