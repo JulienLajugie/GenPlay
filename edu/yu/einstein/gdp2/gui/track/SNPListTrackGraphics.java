@@ -23,13 +23,13 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 
 	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID	
 	private static final DecimalFormat COUNT_FORMAT = new DecimalFormat("###,###,###"); // format for the count
-	private static final Color BACKGROUND_COLOR = new Color(255, 200, 165);
+	private static final Color BACKGROUND_COLOR = new Color(255, 200, 165);				// color of the stripes in the background
 	private static final Color THYMINE_COLOR = new Color(255, 80, 255);					// color for thymine bases
 	private static final Color CYTOSINE_COLOR = new Color(255, 80, 0);					// color for cytosine bases
 	private static final Color ADENINE_COLOR = Color.blue;								// color for adenine bases
 	private static final Color GUANINE_COLOR = new Color(80, 80, 0);					// color for guanine bases
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link SNPListTrackGraphics}
 	 * @param displayedGenomeWindow
@@ -39,7 +39,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		super(displayedGenomeWindow, data);
 	}
 
-	
+
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawBackground(g);
@@ -50,8 +50,8 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		drawNucleotide(g);
 		drawName(g);
 	}
-	
-	
+
+
 	/**
 	 * Draws the nucleotide name on the left of the track
 	 * @param g {@link Graphics}
@@ -89,8 +89,8 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Draws the SNPs
 	 * @param g {@link Graphics}
@@ -120,6 +120,11 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	}
 
 
+	/**
+	 * Draws the dense representation of a specified SNP
+	 * @param g {@link Graphics}
+	 * @param currentSNP {@link SNP} to draw
+	 */
 	private void drawDenseSNP(Graphics g, SNP currentSNP) {
 		int xPos = genomePosToScreenPos(currentSNP.getPosition());
 		g.setColor(Color.GREEN);
@@ -127,14 +132,25 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	}
 
 
-	private void drawDetailedSNP(Graphics g, SNP currentSNP) {
+	/**
+	 * Draws the detailed representation of a specified SNP
+	 * @param g {@link Graphics}
+	 * @param currentSNP {@link SNP} to draw
+	 */
+	private void drawDetailedSNP(Graphics g, SNP currentSNP) {		
 		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
 		int lineHeight = getHeight() / 4;
 		int halfLineHeight = lineHeight / 2;
 
 		int xPos = genomePosToScreenPos(currentSNP.getPosition());
-		int yPos = 0;		
-		// print first base
+		int yPos = 0;
+		
+		int stripeWidth = twoGenomePosToScreenWidth(currentSNP.getPosition(), currentSNP.getPosition() + 1);
+		g.setColor(new Color(190, 220, 200));		
+		g.fillRect(xPos, 0, stripeWidth , getHeight());
+		
+		
+		// draw first base
 		switch (currentSNP.getFirstBase()) {
 		case ADENINE:
 			yPos = halfLineHeight + halfFontHeight;
@@ -152,8 +168,8 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		String countStr = COUNT_FORMAT.format(currentSNP.getFirstBaseCount());
 		g.setColor(Color.RED);
 		g.drawString(countStr, xPos, yPos);
-		
-		// print second base
+
+		// draw second base
 		switch (currentSNP.getSecondBase()) {
 		case ADENINE:
 			yPos = halfLineHeight + halfFontHeight;

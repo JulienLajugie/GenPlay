@@ -45,17 +45,69 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	}
 
 
-	@Override
-	protected void drawTrack(Graphics g) {
-		setBackground(BACKGROUND_COLOR);
-		drawStripes(g);
-		drawVerticalLines(g);
-		drawNucleotides(g);
-		drawName(g);
-		drawMiddleVerticalLine(g);
+	/**
+	 * Draws a dense representation of a specified {@link Nucleotide} (ie: a colored stripe)
+	 * @param g {@link Graphics}
+	 * @param nucleotide {@link Nucleotide} to draw
+	 * @param position position of the nucleotide
+	 */
+	private void drawDenseNucleotide(Graphics g, Nucleotide nucleotide, int position) {
+		// compute the position on the screen
+		int x = genomePosToScreenPos(position);
+		int nucleoWith = twoGenomePosToScreenWidth(position, position + 1);  
+		// select a different color for each type of base
+		switch (nucleotide) {
+		case THYMINE:
+			g.setColor(THYMINE_COLOR);
+			break;
+		case CYTOSINE:
+			g.setColor(CYTOSINE_COLOR);
+			break;
+		case ADENINE:
+			g.setColor(ADENINE_COLOR);
+			break;
+		case GUANINE:
+			g.setColor(GUANINE_COLOR);
+			break;
+		default:
+			g.setColor(ANY_COLOR);
+			break;
+		}
+		g.fillRect(x, 0, nucleoWith, getHeight());
 	}
 
-
+	
+	/**
+	 * Draws a detailed representation of a specified {@link Nucleotide} (ie: a letter)
+	 * @param g {@link Graphics}
+	 * @param nucleotide {@link Nucleotide} to draw
+	 * @param position position of the nucleotide
+	 */
+	private void drawDetailedNucleotide(Graphics g, Nucleotide nucleotide, int position) {
+			// compute the position on the screen
+			int x = genomePosToScreenPos(position);
+			// select a different color for each type of base
+			switch (nucleotide) {
+			case THYMINE:
+				g.setColor(THYMINE_COLOR);
+				break;
+			case CYTOSINE:
+				g.setColor(CYTOSINE_COLOR);
+				break;
+			case ADENINE:
+				g.setColor(ADENINE_COLOR);
+				break;
+			case GUANINE:
+				g.setColor(GUANINE_COLOR);
+				break;
+			default:
+				g.setColor(ANY_COLOR);
+				break;
+			}
+			g.drawString(String.valueOf(nucleotide.getCode()), x, getHeight() - NUCLEOTIDE_HEIGHT);
+	}
+	
+	
 	/**
 	 * Draws the {@link Nucleotide}
 	 * @param g
@@ -65,32 +117,16 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 			long baseToPrintCount = genomeWindow.getSize();
 			g.setColor(Color.black);
 			// if there is enough room to print something
-			if (maxBaseWidth * baseToPrintCount <= getWidth()) {
+			if (baseToPrintCount <= getWidth()) {
 				Nucleotide[] nucleotides = data.getFittedData(genomeWindow, xFactor);
 				int j = 0;
 				for (int i = genomeWindow.getStart(); i <= genomeWindow.getStop(); i++) {
 					if (nucleotides[j] != null) {
-						// compute the position on the screen
-						int x = genomePosToScreenPos(i);
-						// select a different color for each type of base
-						switch (nucleotides[j]) {
-						case THYMINE:
-							g.setColor(THYMINE_COLOR);
-							break;
-						case CYTOSINE:
-							g.setColor(CYTOSINE_COLOR);
-							break;
-						case ADENINE:
-							g.setColor(ADENINE_COLOR);
-							break;
-						case GUANINE:
-							g.setColor(GUANINE_COLOR);
-							break;
-						default:
-							g.setColor(ANY_COLOR);
-							break;
+						if (maxBaseWidth * baseToPrintCount <= getWidth()) {
+							drawDetailedNucleotide(g, nucleotides[j], i);
+						} else {
+							drawDenseNucleotide(g, nucleotides[j], i);
 						}
-						g.drawString(String.valueOf(nucleotides[j].getCode()), x, getHeight() - NUCLEOTIDE_HEIGHT);
 					}
 					j++;
 				}			
@@ -100,5 +136,16 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				g.drawString("Can't display sequence at this zoom level", 0, getHeight() - NUCLEOTIDE_HEIGHT);
 			}
 		}
+	}
+	
+
+	@Override
+	protected void drawTrack(Graphics g) {
+		setBackground(BACKGROUND_COLOR);
+		drawStripes(g);
+		drawVerticalLines(g);
+		drawNucleotides(g);
+		drawName(g);
+		drawMiddleVerticalLine(g);
 	}
 }

@@ -499,7 +499,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected int twoGenomePosToScreenWidth(int genomePositionStart, int genomePositionStop) {
 		double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
 		double x2 = ((double)(genomePositionStop - genomeWindow.getStart())) * xFactor;
-		double distance = Math.abs(x1 - x2);
+		double distance = Math.ceil(Math.abs(x1 - x2));
 		return (int)Math.round(distance);
 	}
 
