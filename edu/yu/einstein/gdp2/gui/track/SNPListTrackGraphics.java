@@ -28,6 +28,10 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	private static final Color CYTOSINE_COLOR = new Color(255, 80, 0);					// color for cytosine bases
 	private static final Color ADENINE_COLOR = Color.blue;								// color for adenine bases
 	private static final Color GUANINE_COLOR = new Color(80, 80, 0);					// color for guanine bases
+	private static final Color FIRST_BASE_COLOR = new Color(0, 0, 200);					// color of the first base
+	private static final Color SECOND_BASE_COLOR = new Color(200, 0, 0);				// color of the second base
+	private static final Color FIRST_BASE_COLOR2 = new Color(0, 200, 0);				// color of the first base when the second base is not significant
+	private static final Color SECOND_BASE_COLOR2 = Color.BLACK;						// color of a non significant second base
 
 
 	/**
@@ -59,19 +63,25 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	private void drawNucleotide(Graphics g) {
 		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
 		int lineHeight = getHeight() / 4;
-		int halfLineHeight = lineHeight / 2;
+		int halfLineHeight = getHeight() / 8;
 		int yPos = halfLineHeight + halfFontHeight;
+		int leftXPos = 5;
+		int rightXPos = getWidth() - 10;
 		g.setColor(ADENINE_COLOR);
-		g.drawString("A", 5, yPos);
+		g.drawString("A", leftXPos, yPos);
+		g.drawString("A", rightXPos, yPos);
 		g.setColor(CYTOSINE_COLOR);
 		yPos = halfLineHeight + halfFontHeight + lineHeight;
-		g.drawString("C", 5, yPos);
+		g.drawString("C", leftXPos, yPos);
+		g.drawString("C", rightXPos, yPos);
 		g.setColor(GUANINE_COLOR);
 		yPos = halfLineHeight + halfFontHeight + 2 * lineHeight;
-		g.drawString("G", 5, yPos);
+		g.drawString("G", leftXPos, yPos);
+		g.drawString("G", rightXPos, yPos);
 		g.setColor(THYMINE_COLOR);
 		yPos = halfLineHeight + halfFontHeight + 3 * lineHeight;
-		g.drawString("T", 5, yPos);
+		g.drawString("T", leftXPos, yPos);
+		g.drawString("T", rightXPos, yPos);
 	}
 
 
@@ -126,9 +136,58 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param currentSNP {@link SNP} to draw
 	 */
 	private void drawDenseSNP(Graphics g, SNP currentSNP) {
+		// x position of the stripe
 		int xPos = genomePosToScreenPos(currentSNP.getPosition());
-		g.setColor(Color.GREEN);
-		g.drawLine(xPos, 0, xPos, getHeight());
+		// width of the stripe
+		int width = twoGenomePosToScreenWidth(currentSNP.getPosition(), currentSNP.getPosition() + 1);
+		// height of the stripe
+		int lineHeight = getHeight() / 4;
+		// we search for the y position of the stripe for the first base
+		int yPos = 0;
+		switch (currentSNP.getFirstBase()) {
+		case ADENINE:
+			yPos = 0;
+			break;
+		case CYTOSINE:
+			yPos = lineHeight;
+			break;
+		case GUANINE:
+			yPos = 2 * lineHeight;
+			break;
+		case THYMINE:
+			yPos = 3 * lineHeight;
+			break;
+		}
+		// we set the color of the first base depending on if the second base is significant
+		if (currentSNP.isSecondBaseSignificant()) {
+			g.setColor(FIRST_BASE_COLOR);
+		} else {
+			g.setColor(FIRST_BASE_COLOR2);
+		}
+		// we draw the first base
+		g.fillRect(xPos, yPos, width, lineHeight);
+		// we draw the second base only if it's significant
+		if (currentSNP.isSecondBaseSignificant()) {
+			// we search for the second base y position
+			yPos = 0;
+			switch (currentSNP.getSecondBase()) {
+			case ADENINE:
+				yPos = 0;
+				break;
+			case CYTOSINE:
+				yPos = lineHeight;
+				break;
+			case GUANINE:
+				yPos = 2 * lineHeight;
+				break;
+			case THYMINE:
+				yPos = 3 * lineHeight;
+				break;
+			}
+			// we set the color and draw the second base
+			g.setColor(SECOND_BASE_COLOR);
+			g.fillRect(xPos, yPos, width, lineHeight);
+		}
 	}
 
 
@@ -138,18 +197,13 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param currentSNP {@link SNP} to draw
 	 */
 	private void drawDetailedSNP(Graphics g, SNP currentSNP) {		
+		// half height of the font
 		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
-		int lineHeight = getHeight() / 4;
-		int halfLineHeight = lineHeight / 2;
-
+		// height of a line 
+		int lineHeight = getHeight() / 4;		
+		int halfLineHeight = getHeight() / 8;
 		int xPos = genomePosToScreenPos(currentSNP.getPosition());
 		int yPos = 0;
-		
-		int stripeWidth = twoGenomePosToScreenWidth(currentSNP.getPosition(), currentSNP.getPosition() + 1);
-		g.setColor(new Color(190, 220, 200));		
-		g.fillRect(xPos, 0, stripeWidth , getHeight());
-		
-		
 		// draw first base
 		switch (currentSNP.getFirstBase()) {
 		case ADENINE:
@@ -166,7 +220,11 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			break;
 		}
 		String countStr = COUNT_FORMAT.format(currentSNP.getFirstBaseCount());
-		g.setColor(Color.RED);
+		if (currentSNP.isSecondBaseSignificant()) {
+			g.setColor(FIRST_BASE_COLOR);
+		} else {
+			g.setColor(FIRST_BASE_COLOR2);
+		}
 		g.drawString(countStr, xPos, yPos);
 
 		// draw second base
@@ -186,9 +244,9 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		}
 		countStr = COUNT_FORMAT.format(currentSNP.getSecondBaseCount());
 		if (currentSNP.isSecondBaseSignificant()) {
-			g.setColor(Color.BLUE);
+			g.setColor(SECOND_BASE_COLOR);
 		} else {
-			g.setColor(Color.BLACK);
+			g.setColor(SECOND_BASE_COLOR2);
 		}
 		g.drawString(countStr, xPos, yPos);
 	}

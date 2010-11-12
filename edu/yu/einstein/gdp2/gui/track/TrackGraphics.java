@@ -78,8 +78,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		}
 	}
-	
-	
+
+
 	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
 	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
 	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
@@ -137,11 +137,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @return the scroll intensity
 	 */
 	public int computeScrollIntensity(int mouseXPosition) {
-		int res = twoScreenPosToGenomeWidth(mouseXPosition, getWidth() / 2);
+		double res = twoScreenPosToGenomeWidth(mouseXPosition, getWidth() / 2);
 		if (res > 0) {
-			return twoScreenPosToGenomeWidth(mouseXPosition, getWidth() / 2) / 10 + 1;	
+			return (int) (res / 10d) + 1;	
 		} else {
-			return twoScreenPosToGenomeWidth(mouseXPosition, getWidth() / 2) / 10 - 1;
+			return (int) (res / 10d) - 1;
 		}		
 	}
 
@@ -282,33 +282,20 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	/**
 	 * Calls firePropertyChange with a new {@link GenomeWindow} center where the mouse double clicked.
-	 * Starts / stops the scroll mode when the middle button is clicked
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// double left click
 		if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2) && (!isScrollMode)) {
 			// Compute the distance from the cursor to the center of the screen
-			int distance = twoScreenPosToGenomeWidth(getWidth() / 2, e.getX());
+			double distance = twoScreenPosToGenomeWidth(getWidth() / 2, e.getX());
+			distance = Math.floor(distance);
 			GenomeWindow newWindow = new GenomeWindow();
 			newWindow.setChromosome(genomeWindow.getChromosome());
-			newWindow.setStart(genomeWindow.getStart()+ distance);
-			newWindow.setStop(genomeWindow.getStop() + distance);
+			newWindow.setStart(genomeWindow.getStart()+ (int) distance);
+			newWindow.setStop(genomeWindow.getStop() + (int) distance);
 			if ((newWindow.getMiddlePosition()) >= 0 && (newWindow.getMiddlePosition() <= newWindow.getChromosome().getLength())) {
 				setGenomeWindow(newWindow);
-			}
-		} else if (e.getButton() == MouseEvent.BUTTON2) { // click on middle button
-			isScrollMode = !isScrollMode;
-			if (isScrollMode) {
-				setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
-				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
-				scrollModeThread = new ScrollModeThread();
-				scrollModeThread.start();
-				firePropertyChange("scrollMode", false, true);
-			} else {
-				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-				scrollModeThread = null;
-				firePropertyChange("scrollMode", true, false);
 			}
 		}
 	}
@@ -320,20 +307,22 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-			int distance = twoScreenPosToGenomeWidth(e.getX(), mouseStartDragX);
-			GenomeWindow newWindow = new GenomeWindow();
-			newWindow.setChromosome(genomeWindow.getChromosome());
-			newWindow.setStart(genomeWindow.getStart()+ distance);
-			newWindow.setStop(genomeWindow.getStop() + distance);
-			if (newWindow.getMiddlePosition() < 0) {
-				newWindow.setStart(-genomeWindow.getSize() / 2);
-				newWindow.setStop(newWindow.getStart() + genomeWindow.getSize());
-			} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
-				newWindow.setStop(newWindow.getChromosome().getLength() + genomeWindow.getSize() / 2);
-				newWindow.setStart(newWindow.getStop() - genomeWindow.getSize());
+			double distance = twoScreenPosToGenomeWidth(e.getX(), mouseStartDragX);
+			if ((distance > 1) || (distance < -1)) {
+				GenomeWindow newWindow = new GenomeWindow();
+				newWindow.setChromosome(genomeWindow.getChromosome());
+				newWindow.setStart(genomeWindow.getStart()+ (int) distance);
+				newWindow.setStop(genomeWindow.getStop() + (int) distance);
+				if (newWindow.getMiddlePosition() < 0) {
+					newWindow.setStart(-genomeWindow.getSize() / 2);
+					newWindow.setStop(newWindow.getStart() + genomeWindow.getSize());
+				} else if (newWindow.getMiddlePosition() > newWindow.getChromosome().getLength()) {
+					newWindow.setStop(newWindow.getChromosome().getLength() + genomeWindow.getSize() / 2);
+					newWindow.setStart(newWindow.getStop() - genomeWindow.getSize());
+				}
+				setGenomeWindow(newWindow);
+				mouseStartDragX = e.getX();
 			}
-			setGenomeWindow(newWindow);
-			mouseStartDragX = e.getX();
 		}		
 	}
 
@@ -375,8 +364,26 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * Activates/deactivates the scroll mode when the middle button of the mouse is released
+	 */
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON2) { // click on middle button
+			isScrollMode = !isScrollMode;
+			if (isScrollMode) {
+				setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
+				scrollModeThread = new ScrollModeThread();
+				scrollModeThread.start();
+				firePropertyChange("scrollMode", false, true);
+			} else {
+				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+				scrollModeThread = null;
+				firePropertyChange("scrollMode", true, false);
+			}
+		}
+	}
 
 
 	/**
@@ -499,8 +506,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected int twoGenomePosToScreenWidth(int genomePositionStart, int genomePositionStop) {
 		double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
 		double x2 = ((double)(genomePositionStop - genomeWindow.getStart())) * xFactor;
-		double distance = Math.ceil(Math.abs(x1 - x2));
-		return (int)Math.round(distance);
+		double distance = Math.abs(x1 - x2);
+		return (int) Math.ceil(distance);
 	}
 
 
@@ -509,14 +516,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param x2 position 2 on the screen
 	 * @return the distance in base pair between the screen position x1 and x2 
 	 */
-	protected int twoScreenPosToGenomeWidth(int x1, int x2) {
+	protected double twoScreenPosToGenomeWidth(int x1, int x2) {
 		double distance = ((double)(x2 - x1) / (double)getWidth() * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
-		if ((distance > 0) && (distance < 1)) {
-			distance = 1;
-		} else if ((distance < 0) && (distance > -1)) {
-			distance = -1;
-		}	
-		return (int)Math.round(distance);
+		return distance;
 	}
 
 
