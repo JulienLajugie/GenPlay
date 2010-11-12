@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.list.DisplayableListOfLists;
+import yu.einstein.gdp2.util.ColorConverters;
 
 /**
  * A {@link TrackGraphics} part of a {@link NucleotideListTrack}
@@ -22,11 +23,6 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 
 	private static final long serialVersionUID = -7170987212502378002L;				// generated ID
 	private static final int NUCLEOTIDE_HEIGHT = 10;								// y position of the nucleotides on the track
-	private static final Color ANY_COLOR = Color.black;								// color for "N" bases
-	private static final Color THYMINE_COLOR = new Color(0, 200, 0);				// color for thymine bases
-	private static final Color CYTOSINE_COLOR = new Color(0, 0, 200);				// color for cytosine bases
-	private static final Color ADENINE_COLOR = new Color(200, 0, 0);				// color for adenine bases
-	private static final Color GUANINE_COLOR = new Color(255, 200, 0);				// color for guanine bases
 	private int maxBaseWidth = 0;													// size on the screen of the widest base to display (in pixels) 
 	private Integer baseUnderMouseIndex = null;
 
@@ -66,25 +62,10 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						int x = genomePosToScreenPos(position);
 						int nucleoWith = twoGenomePosToScreenWidth(position, position + 1);  
 						// select a different color for each type of base
-						switch (nucleotide) {
-						case THYMINE:
-							g.setColor(THYMINE_COLOR);
-							break;
-						case CYTOSINE:
-							g.setColor(CYTOSINE_COLOR);
-							break;
-						case ADENINE:
-							g.setColor(ADENINE_COLOR);
-							break;
-						case GUANINE:
-							g.setColor(GUANINE_COLOR);
-							break;
-						default:
-							g.setColor(ANY_COLOR);
-							break;
-						}
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 							g.setColor(Color.WHITE);
+						} else {
+							g.setColor(ColorConverters.nucleotideToColor(nucleotide));							
 						}
 						g.fillRect(x, 0, nucleoWith, height);	
 						if (nucleoWith >= 5) {

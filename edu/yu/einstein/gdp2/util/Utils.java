@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.util;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 
@@ -402,45 +401,5 @@ public class Utils {
 			// change of base: logb(x) = logk(x) / logk(b)
 			return Math.log(value) / Math.log(logBase.getValue());									
 		}
-	}
-
-	/**
-	 * Returns a color associated to a score. 
-	 * High intensities are red. Medium are green. Low are blue.
-	 * @param score A score indexed between min and max.
-	 * @param min minimum intensity value
-	 * @param max maximum intensity value
-	 * @return A color
-	 */
-	public static Color scoreToColor(double score, double min, double max) {
-		// set the score to min if the score is smaller than min
-		score = Math.max(min, score);
-		// set the score to max if the score is greater than max
-		score = Math.min(max, score);
-		double distance = max - min;
-		double newScore = score - min;
-		double distanceQuarter = distance / 4;
-		int r = 0;
-		int v = 0;
-		int b = 0;
-
-		if ((newScore >= 0) && (newScore <= distanceQuarter)) {
-			r = 0;
-			v = (int)(newScore * 255 / distanceQuarter);
-			b = 255;			
-		} else if ((newScore > distanceQuarter) && (newScore <= 2 * distanceQuarter)) {
-			r = 0;
-			v = 255;
-			b = (int)(255 - (newScore - distanceQuarter) * 255 / distanceQuarter);			
-		} else if ((newScore > 2 * distanceQuarter) && (newScore <= 3 * distanceQuarter)) {
-			r = (int)((newScore - 2 * distanceQuarter) * 255 / distanceQuarter);
-			v = 255;
-			b = 0;			
-		} else if ((newScore > 3 * distanceQuarter) && (newScore <= distance)) {
-			r = 255;
-			v = (int)(255 - (newScore - 3 * distanceQuarter) * 255 / distanceQuarter);
-			b = 0;			
-		}		
-		return new Color(r, v, b);
 	}
 }

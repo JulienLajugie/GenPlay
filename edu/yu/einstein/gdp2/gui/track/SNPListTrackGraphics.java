@@ -12,6 +12,8 @@ import java.util.List;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.SNP;
 import yu.einstein.gdp2.core.SNPList.SNPList;
+import yu.einstein.gdp2.core.enums.Nucleotide;
+import yu.einstein.gdp2.util.ColorConverters;
 
 
 /**
@@ -24,10 +26,6 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID	
 	private static final DecimalFormat COUNT_FORMAT = new DecimalFormat("###,###,###"); // format for the count
 	private static final Color BACKGROUND_COLOR = new Color(255, 200, 165);				// color of the stripes in the background
-	private static final Color THYMINE_COLOR = new Color(255, 80, 255);					// color for thymine bases
-	private static final Color CYTOSINE_COLOR = new Color(255, 80, 0);					// color for cytosine bases
-	private static final Color ADENINE_COLOR = Color.blue;								// color for adenine bases
-	private static final Color GUANINE_COLOR = new Color(80, 80, 0);					// color for guanine bases
 	private static final Color FIRST_BASE_COLOR = new Color(0, 0, 200);					// color of the first base
 	private static final Color SECOND_BASE_COLOR = new Color(200, 0, 0);				// color of the second base
 	private static final Color FIRST_BASE_COLOR2 = new Color(0, 200, 0);				// color of the first base when the second base is not significant
@@ -67,18 +65,18 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		int yPos = halfLineHeight + halfFontHeight;
 		int leftXPos = 5;
 		int rightXPos = getWidth() - 10;
-		g.setColor(ADENINE_COLOR);
+		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.ADENINE));
 		g.drawString("A", leftXPos, yPos);
 		g.drawString("A", rightXPos, yPos);
-		g.setColor(CYTOSINE_COLOR);
+		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.CYTOSINE));
 		yPos = halfLineHeight + halfFontHeight + lineHeight;
 		g.drawString("C", leftXPos, yPos);
 		g.drawString("C", rightXPos, yPos);
-		g.setColor(GUANINE_COLOR);
+		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.GUANINE));
 		yPos = halfLineHeight + halfFontHeight + 2 * lineHeight;
 		g.drawString("G", leftXPos, yPos);
 		g.drawString("G", rightXPos, yPos);
-		g.setColor(THYMINE_COLOR);
+		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.THYMINE));
 		yPos = halfLineHeight + halfFontHeight + 3 * lineHeight;
 		g.drawString("T", leftXPos, yPos);
 		g.drawString("T", rightXPos, yPos);
@@ -94,7 +92,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		int lineHeight = getHeight() / 4;
 		g.setColor(BACKGROUND_COLOR);
 		for (int i = 0; i < 4; i++) {
-			if (i % 2 == 0) {
+			if (i % 2 == 1) {
 				g.fillRect(0, i * lineHeight, width, lineHeight);
 			}
 		}

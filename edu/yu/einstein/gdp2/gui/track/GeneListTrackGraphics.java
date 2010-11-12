@@ -4,7 +4,6 @@
  */
 package yu.einstein.gdp2.gui.track;
 
-import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Graphics;
@@ -20,11 +19,10 @@ import java.util.List;
 
 import yu.einstein.gdp2.core.Gene;
 import yu.einstein.gdp2.core.GenomeWindow;
-import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 
 import yu.einstein.gdp2.core.manager.ExceptionManager;
-import yu.einstein.gdp2.util.Utils;
+import yu.einstein.gdp2.util.ColorConverters;
 
 
 /**
@@ -35,10 +33,6 @@ import yu.einstein.gdp2.util.Utils;
 public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 	private static final long serialVersionUID = 1372400925707415741L; 		// generated ID
-	private static final Color FIVE_GENE_COLOR = new Color(180, 0, 0);		// color of the genes on the 5' strand
-	private static final Color FIVE_GENE_COLOR2 = new Color(255, 0, 0);		// highlighted color of the genes on the 5' strand
-	private static final Color THREE_GENE_COLOR = new Color(0, 0, 200);		// color of the genes on the 3' strand
-	private static final Color THREE_GENE_COLOR2 = new Color(0, 100, 255);	// highlighted color of the genes on the 3' strand
 	private static final double				MIN_X_RATIO_PRINT_NAME = 
 		GeneList.MIN_X_RATIO_PRINT_NAME;									// the name of the genes are printed if the ratio is higher than this value			
 	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
@@ -148,19 +142,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 						int x1 = genomePosToScreenPos(geneToPrint.getStart());
 						int x2 = genomePosToScreenPos(geneToPrint.getStop());
 						// Choose the color depending on if the gene is under the mouse and on the strand
-						if ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse))) {
-							if (geneToPrint.getStrand() == Strand.FIVE) {
-								g.setColor(FIVE_GENE_COLOR2);
-							} else {
-								g.setColor(THREE_GENE_COLOR2);
-							}
-						} else {
-							if (geneToPrint.getStrand() == Strand.FIVE) {
-								g.setColor(FIVE_GENE_COLOR);
-							} else {
-								g.setColor(THREE_GENE_COLOR);
-							}
-						}
+						boolean isHighlighted = ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse)));
+						g.setColor(ColorConverters.geneToColor(geneToPrint.getStrand(), isHighlighted));
 						// Draw the gene
 						g.drawLine(x1, currentHeight, x2, currentHeight);
 						// Draw the name of the gene if the zoom is small enough
@@ -180,9 +163,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 								if (geneToPrint.getExonScores() != null) {
 									// if we have just one exon score
 									if (geneToPrint.getExonScores().length == 1) {
-										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[0], min, max));
+										g.setColor(ColorConverters.scoreToColor(geneToPrint.getExonScores()[0], min, max));
 									} else { // if we have values for each exon
-										g.setColor(Utils.scoreToColor(geneToPrint.getExonScores()[j], min, max));
+										g.setColor(ColorConverters.scoreToColor(geneToPrint.getExonScores()[j], min, max));
 									}
 								}
 								// case where the exon is not at all in a UTR (untranslated region) 

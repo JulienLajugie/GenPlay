@@ -13,7 +13,7 @@ import yu.einstein.gdp2.core.ScoredChromosomeWindow;
 import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
 import yu.einstein.gdp2.gui.track.SCWListTrackGraphics;
-import yu.einstein.gdp2.util.Utils;
+import yu.einstein.gdp2.util.ColorConverters;
 
 
 /**
@@ -132,7 +132,7 @@ public class SCWListDrawer extends CurveDrawer {
 					if (widthWindow < 1) {
 						widthWindow = 1;
 					}
-					graphics.setColor(Utils.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
+					graphics.setColor(ColorConverters.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
 					graphics.fillRect(x, 0, widthWindow, trackHeight);
 				}
 			}		

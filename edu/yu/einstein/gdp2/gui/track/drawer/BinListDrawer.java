@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.enums.GraphicsType;
 import yu.einstein.gdp2.core.list.binList.BinList;
-import yu.einstein.gdp2.util.Utils;
+import yu.einstein.gdp2.util.ColorConverters;
 
 
 /**
@@ -139,7 +139,7 @@ public final class BinListDrawer extends CurveDrawer {
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
 					int screenXPosition = genomePosToScreenPos(currentGenomePosition);
-					graphics.setColor(Utils.scoreToColor(currentIntensity, scoreMin, scoreMax));
+					graphics.setColor(ColorConverters.scoreToColor(currentIntensity, scoreMin, scoreMax));
 					graphics.fillRect(screenXPosition, 0, screenWindowWidth, trackHeight);
 				}
 				i++;
