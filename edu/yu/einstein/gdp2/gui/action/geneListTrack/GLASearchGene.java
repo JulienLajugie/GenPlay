@@ -23,7 +23,7 @@ import yu.einstein.gdp2.gui.track.GeneListTrack;
 public final class GLASearchGene extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 	// generated ID
-	private static final String 	ACTION_NAME = "Seach Gene";			// action name
+	private static final String 	ACTION_NAME = "Search Gene";		// action name
 	private static final String 	DESCRIPTION = 
 		"Search a gene on the selected track"; 							// tooltip
 

@@ -159,7 +159,7 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 	 * @return The index of a gene with a position start equals to value. 
 	 * Index of the first gene with a start position superior to value if nothing found.
 	 */
-	private int findSNP(List<SNP> list, int value, int indexStart, int indexStop) {
+	public static int findSNP(List<SNP> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;

@@ -52,6 +52,8 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASubtractConstant;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLASumScore;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATransfrag;
 import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
+import yu.einstein.gdp2.gui.action.SNPListTrack.SLAFindNext;
+import yu.einstein.gdp2.gui.action.SNPListTrack.SLAFindPrevious;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
@@ -272,6 +274,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
+		// SNP tracks
+		getActionMap().put(SLAFindNext.ACTION_KEY, new SLAFindNext());
+		getActionMap().put(SLAFindPrevious.ACTION_KEY, new SLAFindPrevious());
 	}
 
 
@@ -294,6 +299,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAUndo.ACCELERATOR, CTAUndo.ACTION_KEY);
 		// gene tracks
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GLASearchGene.ACCELERATOR, GLASearchGene.ACTION_KEY);
+		// SNP tracks
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(SLAFindNext.ACCELERATOR, SLAFindNext.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(SLAFindPrevious.ACCELERATOR, SLAFindPrevious.ACTION_KEY);
 	}
 
 
