@@ -212,9 +212,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 	@Override
 	protected void drawTrack(Graphics g) {
-		drawStripes(g);
 		drawVerticalLines(g);
 		drawGenes(g);
+		drawStripes(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

@@ -84,10 +84,10 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	@Override
 	protected void drawTrack(Graphics g) {
-		drawStripes(g);
 		drawHorizontalLines(g);
 		drawVerticalLines(g);
 		drawData(g);
+		drawStripes(g);
 		drawScore(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);

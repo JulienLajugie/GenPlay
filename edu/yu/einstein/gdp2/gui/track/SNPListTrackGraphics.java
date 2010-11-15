@@ -24,13 +24,14 @@ import yu.einstein.gdp2.util.ColorConverters;
 public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 
 	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID	
-	private static final DecimalFormat COUNT_FORMAT = new DecimalFormat("###,###,###"); // format for the count
-	private static final Color BACKGROUND_COLOR = new Color(255, 200, 165);				// color of the stripes in the background
-	private static final Color FIRST_BASE_COLOR = new Color(0, 0, 200);					// color of the first base
-	private static final Color SECOND_BASE_COLOR = new Color(200, 0, 0);				// color of the second base
-	private static final Color FIRST_BASE_COLOR2 = new Color(0, 200, 0);				// color of the first base when the second base is not significant
-	private static final Color SECOND_BASE_COLOR2 = Color.BLACK;						// color of a non significant second base
-
+	private static final DecimalFormat 	COUNT_FORMAT = new DecimalFormat("###,###,###");// format for the count
+	private static final Color 			BACKGROUND_COLOR = new Color(255, 200, 165);	// color of the stripes in the background
+	private static final Color 			FIRST_BASE_COLOR = new Color(0, 0, 200);		// color of the first base
+	private static final Color 			SECOND_BASE_COLOR = new Color(200, 0, 0);		// color of the second base
+	private static final Color 			FIRST_BASE_COLOR2 = new Color(0, 200, 0);		// color of the first base when the second base is not significant
+	private static final Color 			SECOND_BASE_COLOR2 = Color.BLACK;				// color of a non significant second base
+	private static final Nucleotide[] 	LINE_BASES = {Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};
+	
 
 	/**
 	 * Creates an instance of {@link SNPListTrackGraphics}
@@ -45,11 +46,11 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawBackground(g);
-		drawStripes(g);
 		drawVerticalLines(g);
 		drawMiddleVerticalLine(g);
 		drawSNP(g);
 		drawNucleotide(g);
+		drawStripes(g);
 		drawName(g);
 	}
 
@@ -59,27 +60,18 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param g {@link Graphics}
 	 */
 	private void drawNucleotide(Graphics g) {
-		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
-		int lineHeight = getHeight() / 4;
-		int halfLineHeight = getHeight() / 8;
-		int yPos = halfLineHeight + halfFontHeight;
+		double halfFontHeight = g.getFontMetrics().getHeight() / 2d;
+		double lineHeight = getHeight() / 4d;
+		double halfLineHeight = getHeight() / 8d;
 		int leftXPos = 5;
 		int rightXPos = getWidth() - 10;
-		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.ADENINE));
-		g.drawString("A", leftXPos, yPos);
-		g.drawString("A", rightXPos, yPos);
-		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.CYTOSINE));
-		yPos = halfLineHeight + halfFontHeight + lineHeight;
-		g.drawString("C", leftXPos, yPos);
-		g.drawString("C", rightXPos, yPos);
-		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.GUANINE));
-		yPos = halfLineHeight + halfFontHeight + 2 * lineHeight;
-		g.drawString("G", leftXPos, yPos);
-		g.drawString("G", rightXPos, yPos);
-		g.setColor(ColorConverters.nucleotideToColor(Nucleotide.THYMINE));
-		yPos = halfLineHeight + halfFontHeight + 3 * lineHeight;
-		g.drawString("T", leftXPos, yPos);
-		g.drawString("T", rightXPos, yPos);
+		for (int i = 0; i < 4; i++) {
+			int yPos = (int) (lineHeight * i + halfLineHeight + halfFontHeight);
+			Nucleotide nucleotideToPrint = LINE_BASES[i];
+			g.setColor(ColorConverters.nucleotideToColor(nucleotideToPrint));
+			g.drawString(nucleotideToPrint.toString(), leftXPos, yPos);
+			g.drawString(nucleotideToPrint.toString(), rightXPos, yPos);			
+		}
 	}
 
 
@@ -89,11 +81,11 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 */
 	private void drawBackground(Graphics g) {
 		int width = getWidth();
-		int lineHeight = getHeight() / 4;
+		double lineHeight = getHeight() / 4d;
 		g.setColor(BACKGROUND_COLOR);
 		for (int i = 0; i < 4; i++) {
 			if (i % 2 == 1) {
-				g.fillRect(0, i * lineHeight, width, lineHeight);
+				g.fillRect(0, (int) (i * lineHeight), width, (int) Math.ceil(lineHeight));
 			}
 		}
 	}

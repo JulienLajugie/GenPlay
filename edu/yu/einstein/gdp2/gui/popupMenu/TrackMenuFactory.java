@@ -11,6 +11,7 @@ import yu.einstein.gdp2.gui.track.MultiCurvesTrack;
 import yu.einstein.gdp2.gui.track.NucleotideListTrack;
 import yu.einstein.gdp2.gui.track.RepeatFamilyListTrack;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
+import yu.einstein.gdp2.gui.track.SNPListTrack;
 import yu.einstein.gdp2.gui.track.Track;
 import yu.einstein.gdp2.gui.trackList.TrackList;
 
@@ -42,6 +43,8 @@ public final class TrackMenuFactory {
 			return new NucleotideListTrackMenu(tl);
 		} else if (tl.getSelectedTrack() instanceof MultiCurvesTrack) {
 			return new MultiCurvesTrackMenu(tl);
+		} else if (tl.getSelectedTrack() instanceof SNPListTrack) {
+			return new SNPListTrackMenu(tl);
 		} else {
 			return null;
 		}

@@ -109,9 +109,9 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 
 	@Override
 	protected void drawTrack(Graphics g) {
-		drawStripes(g);
 		drawVerticalLines(g);
 		drawRepeat(g);
+		drawStripes(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

@@ -30,8 +30,8 @@ public final class EmptyTrackGraphics extends TrackGraphics<Void> {
 
 	@Override
 	protected void drawTrack(Graphics g) {
-		drawStripes(g);
 		drawVerticalLines(g);
+		drawStripes(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

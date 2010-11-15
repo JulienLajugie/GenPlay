@@ -84,7 +84,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
 	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
 	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
-	private static final Color			STRIPES_COLOR = Color.orange;	// color of the stripes
+	private static final Color			STRIPES_COLOR = Color.GRAY;		// color of the stripes
+	private static final int			STRIPES_TRANSPARENCY = 150;		// transparency of the stripes
 	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
 	protected static final int 			FONT_SIZE = 10;					// size of the font
 	protected final FontMetrics 		fm = 
@@ -184,7 +185,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawStripes(Graphics g) {
 		if (stripeList != null) {
 			int height = getHeight();
-			g.setColor(STRIPES_COLOR);
+			// create a transparent color for the stripes
+			Color color = new Color(STRIPES_COLOR.getRed(), STRIPES_COLOR.getGreen(), STRIPES_COLOR.getBlue(), STRIPES_TRANSPARENCY);
+			g.setColor(color);
 			List<ChromosomeWindow> chromoStripeList = stripeList.getFittedData(genomeWindow, xFactor);//(start, stop);
 			if (chromoStripeList != null) {
 				for (ChromosomeWindow currentStripe: chromoStripeList) {
@@ -355,20 +358,14 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	/**
 	 * Sets the variable mouseStartDragX when the user press the button 1 of the mouse.
+	 * Activates/deactivates the scroll mode when the middle button of the mouse is released
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
 		if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
 			mouseStartDragX = e.getX();
-		}		
-	}
-
-
-	/**
-	 * Activates/deactivates the scroll mode when the middle button of the mouse is released
-	 */
-	@Override
-	public void mouseReleased(MouseEvent e) {
+		}
+		// Activates/deactivates scroll mode
 		if (e.getButton() == MouseEvent.BUTTON2) { // click on middle button
 			isScrollMode = !isScrollMode;
 			if (isScrollMode) {
@@ -384,6 +381,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		}
 	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 
 
 	/**
