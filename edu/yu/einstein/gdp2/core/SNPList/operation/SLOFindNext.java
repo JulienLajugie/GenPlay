@@ -42,20 +42,26 @@ public class SLOFindNext implements Operation<SNP> {
 		List<SNP> list = inputList.get(chromosome);
 		int nextSNPIndex = SNPList.findSNP(list, position + 1, 0, list.size() - 1);
 		// can't be greater than the last index of the list
-		nextSNPIndex = Math.min(nextSNPIndex, list.size() - 1);
-		return list.get(nextSNPIndex);
+		if (nextSNPIndex >= list.size()) {
+			return null;
+		} else {		
+			return list.get(nextSNPIndex);
+		}
 	}
 
+	
 	@Override
 	public String getDescription() {
 		return "Search Next SNP";
 	}
 
+	
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Next SNP";
 	}
 
+	
 	@Override
 	public int getStepCount() {
 		return 1;

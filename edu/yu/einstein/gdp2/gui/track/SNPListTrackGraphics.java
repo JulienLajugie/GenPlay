@@ -5,7 +5,10 @@
 package yu.einstein.gdp2.gui.track;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -26,11 +29,10 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID	
 	private static final DecimalFormat 	COUNT_FORMAT = new DecimalFormat("###,###,###");// format for the count
 	private static final Color 			BACKGROUND_COLOR = new Color(255, 200, 165);	// color of the stripes in the background
-	private static final Color 			FIRST_BASE_COLOR = new Color(0, 0, 200);		// color of the first base
-	private static final Color 			SECOND_BASE_COLOR = new Color(200, 0, 0);		// color of the second base
-	private static final Color 			FIRST_BASE_COLOR2 = new Color(0, 200, 0);		// color of the first base when the second base is not significant
-	private static final Color 			SECOND_BASE_COLOR2 = Color.BLACK;				// color of a non significant second base
-	private static final Nucleotide[] 	LINE_BASES = {Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};
+	private static final Color			NOT_SIGNIFICANT_COLOR = Color.GRAY;				// color of a not significant base
+	private static final Nucleotide[] 	LINE_BASES = 
+	{Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};	// bases ordered the way they are printed on the track
+	private SNP 						snpUnderMouse = null;							// snp under the mouse cursor, null if none 
 	
 
 	/**
@@ -50,8 +52,22 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		drawMiddleVerticalLine(g);
 		drawSNP(g);
 		drawNucleotide(g);
+		if (snpUnderMouse != null) {
+			drawSNPUnderMouse(g);
+		}
 		drawStripes(g);
 		drawName(g);
+	}
+
+
+	private void drawSNPUnderMouse(Graphics g) {
+		// x position of the stripe
+		int xPos = genomePosToScreenPos(snpUnderMouse.getPosition());
+		// width of the stripe
+		int width = twoGenomePosToScreenWidth(snpUnderMouse.getPosition(), snpUnderMouse.getPosition() + 1);
+		Color color = new Color(150, 150, 150, 100);
+		g.setColor(color);
+		g.fillRect(xPos, 0, width, getHeight());		
 	}
 
 
@@ -110,11 +126,10 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 				int secondBaseWidth = g.getFontMetrics().stringWidth(secondBaseString);
 				int widthSNP = Math.max(firstBaseWidth, secondBaseWidth);
 				// check if there is enough space to print the values for the current SNP
+				drawDenseSNP(g, currentSNP);
 				if (xFactor / widthSNP > 1) {
 					drawDetailedSNP(g, currentSNP);
-				} else {
-					drawDenseSNP(g, currentSNP);
-				}
+				} 
 			}	
 		}
 	}
@@ -131,7 +146,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		// width of the stripe
 		int width = twoGenomePosToScreenWidth(currentSNP.getPosition(), currentSNP.getPosition() + 1);
 		// height of the stripe
-		int lineHeight = getHeight() / 4;
+		double lineHeight = getHeight() / 4d;
 		// we search for the y position of the stripe for the first base
 		int yPos = 0;
 		switch (currentSNP.getFirstBase()) {
@@ -139,44 +154,53 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			yPos = 0;
 			break;
 		case CYTOSINE:
-			yPos = lineHeight;
+			yPos = (int) lineHeight;
 			break;
 		case GUANINE:
-			yPos = 2 * lineHeight;
+			yPos = (int) (2 * lineHeight);
 			break;
 		case THYMINE:
-			yPos = 3 * lineHeight;
+			yPos = (int) (3 * lineHeight);
 			break;
 		}
-		// we set the color of the first base depending on if the second base is significant
-		if (currentSNP.isSecondBaseSignificant()) {
-			g.setColor(FIRST_BASE_COLOR);
-		} else {
-			g.setColor(FIRST_BASE_COLOR2);
-		}
+		// we set the color of the SNP depending on the type of the first base
+		Color snpColor = ColorConverters.nucleotideToColor(currentSNP.getFirstBase()); 
+		g.setColor(snpColor);
 		// we draw the first base
-		g.fillRect(xPos, yPos, width, lineHeight);
-		// we draw the second base only if it's significant
-		if (currentSNP.isSecondBaseSignificant()) {
-			// we search for the second base y position
+		g.fillRect(xPos, yPos, width, (int) Math.ceil(lineHeight));
+		if (width >= 5) {
+			g.setColor(Color.BLACK);
+			g.drawRect(xPos, yPos, width - 1, (int) Math.ceil(lineHeight) - 1);
+		}
+		
+		// we search for the second base y position
+		yPos = 0;
+		switch (currentSNP.getSecondBase()) {
+		case ADENINE:
 			yPos = 0;
-			switch (currentSNP.getSecondBase()) {
-			case ADENINE:
-				yPos = 0;
-				break;
-			case CYTOSINE:
-				yPos = lineHeight;
-				break;
-			case GUANINE:
-				yPos = 2 * lineHeight;
-				break;
-			case THYMINE:
-				yPos = 3 * lineHeight;
-				break;
-			}
-			// we set the color and draw the second base
-			g.setColor(SECOND_BASE_COLOR);
-			g.fillRect(xPos, yPos, width, lineHeight);
+			break;
+		case CYTOSINE:
+			yPos = (int) lineHeight;
+			break;
+		case GUANINE:
+			yPos = (int) (2 * lineHeight);
+			break;
+		case THYMINE:
+			yPos = (int) (3 * lineHeight);
+			break;
+		}
+		// we set the color and draw the second base
+		if (currentSNP.isSecondBaseSignificant()) {
+			snpColor = ColorConverters.nucleotideToColor(currentSNP.getSecondBase()); 
+		} else {
+			// if the second base is not significant we draw it in gray
+			snpColor = NOT_SIGNIFICANT_COLOR; 
+		}				
+		g.setColor(snpColor);
+		g.fillRect(xPos, yPos, width, (int) Math.ceil(lineHeight));
+		if (width >= 5) {
+			g.setColor(Color.BLACK);
+			g.drawRect(xPos, yPos, width - 1, (int) Math.ceil(lineHeight) - 1);
 		}
 	}
 
@@ -187,6 +211,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param currentSNP {@link SNP} to draw
 	 */
 	private void drawDetailedSNP(Graphics g, SNP currentSNP) {		
+		g.setColor(Color.WHITE);
 		// half height of the font
 		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
 		// height of a line 
@@ -210,11 +235,6 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			break;
 		}
 		String countStr = COUNT_FORMAT.format(currentSNP.getFirstBaseCount());
-		if (currentSNP.isSecondBaseSignificant()) {
-			g.setColor(FIRST_BASE_COLOR);
-		} else {
-			g.setColor(FIRST_BASE_COLOR2);
-		}
 		g.drawString(countStr, xPos, yPos);
 
 		// draw second base
@@ -233,11 +253,67 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			break;
 		}
 		countStr = COUNT_FORMAT.format(currentSNP.getSecondBaseCount());
-		if (currentSNP.isSecondBaseSignificant()) {
-			g.setColor(SECOND_BASE_COLOR);
-		} else {
-			g.setColor(SECOND_BASE_COLOR2);
-		}
 		g.drawString(countStr, xPos, yPos);
+	}
+	
+	
+	/**
+	 * Resets the tooltip and the highlighted base when the mouse exits the track
+	 */
+	@Override
+	public void mouseExited(MouseEvent e) {
+		super.mouseExited(e);
+		if (snpUnderMouse != null) {
+			snpUnderMouse = null;
+			setToolTipText(null);
+			repaint();
+		}
+	}
+	
+	
+	/**
+	 * Sets the mouse cursor, the tooltip and the SNP with the mouse over when the mouse move
+	 */
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		super.mouseMoved(e);
+		//long baseToPrintCount = genomeWindow.getSize();
+		SNP oldSnpUnderMouse = snpUnderMouse;
+		snpUnderMouse = null;		
+		if (!getScrollMode()) {
+			// if the zoom is too out we can't print the bases and so there is none under the mouse
+			//if (baseToPrintCount <= getWidth()) {
+				// retrieve the position of the mouse
+				Point mousePosition = e.getPoint();
+				// retrieve the list of the printed nucleotides
+				List<SNP> printedSNPs = data.getFittedData(genomeWindow, xFactor);
+				// do nothing if there is no genes
+				if (printedSNPs != null) {
+					int i = 0;
+					while ((i < printedSNPs.size()) && (snpUnderMouse == null)) {
+						SNP currentSNP = printedSNPs.get(i);
+						if ((mousePosition.x >= genomePosToScreenPos(currentSNP.getPosition())) &&
+								(mousePosition.x <= genomePosToScreenPos(currentSNP.getPosition() + 1))) {
+							// we found a gene under the mouse
+							snpUnderMouse = currentSNP;
+						}
+						i++;
+					}					
+					// we repaint the track only if the gene under the mouse changed
+					if (((oldSnpUnderMouse == null) && (snpUnderMouse != null)) 
+							|| ((oldSnpUnderMouse != null) && (!oldSnpUnderMouse.equals(snpUnderMouse)))) {
+						repaint();
+					}				
+				//}
+			}
+			if (snpUnderMouse != null) {
+				setCursor(new Cursor(Cursor.HAND_CURSOR));
+				setToolTipText(snpUnderMouse.getFirstBase() + " = " + snpUnderMouse.getFirstBaseCount() +
+						", " + snpUnderMouse.getSecondBase() + " = " + snpUnderMouse.getSecondBaseCount());
+			} else {
+				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+				setToolTipText(null);
+			}
+		}
 	}
 }

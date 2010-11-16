@@ -40,10 +40,13 @@ public class SLOFindPrevious implements Operation<SNP> {
 	@Override
 	public SNP compute() throws Exception {
 		List<SNP> list = inputList.get(chromosome);
-		int previousSNPIndex = SNPList.findSNP(list, position - 1, 0, list.size() - 1) - 1;
+		int previousSNPIndex = SNPList.findSNP(list, position, 0, list.size() - 1) - 1;
 		// the previous SNP of the first SNP is the first element itself
-		previousSNPIndex = Math.max(0, previousSNPIndex);
-		return list.get(previousSNPIndex);
+		if (previousSNPIndex < 0) {
+			return null;
+		} else {
+			return list.get(previousSNPIndex);
+		}
 	}
 
 	@Override
