@@ -24,7 +24,7 @@ final class PercentagePanel extends FilterPanel {
 			"X and Y are two decimals and X + Y <= 100";								// description of the filter
 	private final static String TEXT_MIN = "Percentage of lowest values to filter";		// text of the min label
 	private final static String TEXT_MAX = "Percentage of greatest values to filter";	// text of the max label
-	private final static DecimalFormat DF = new DecimalFormat("0%");					// decimal format for the input numbers
+	private final static DecimalFormat DF = new DecimalFormat("0.##%");					// decimal format for the input numbers
 	private static Number 	defaultMin = 0.01;											// default/last min value
 	private static Number 	defaultMax = 0.01;											// default/last max value
 	private static boolean 	defaultIsSaturation = false;								// default/last saturation state

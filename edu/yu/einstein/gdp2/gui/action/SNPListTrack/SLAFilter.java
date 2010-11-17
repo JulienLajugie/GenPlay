@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.SNPList.SNPList;
-import yu.einstein.gdp2.core.SNPList.operation.SLOFilter;
+import yu.einstein.gdp2.core.SNPList.operation.SLOFilterThresholds;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
@@ -58,7 +58,7 @@ public class SLAFilter extends TrackListActionOperationWorker<SNPList> {
 			Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Thresholds", "Remove SNPs with a first base count smaller than", 
 					"And the second base count smaller than", new DecimalFormat("###,###,###"), 0, Integer.MAX_VALUE, 0, 0);
 			if (thresholds != null) {
-				Operation<SNPList> operation = new SLOFilter(inputList, thresholds[0].intValue(), thresholds[1].intValue());
+				Operation<SNPList> operation = new SLOFilterThresholds(inputList, thresholds[0].intValue(), thresholds[1].intValue());
 				return operation;
 			}
 		}

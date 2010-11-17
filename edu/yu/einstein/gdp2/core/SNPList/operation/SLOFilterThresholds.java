@@ -20,7 +20,7 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SLOFilter implements Operation<SNPList> {
+public class SLOFilterThresholds implements Operation<SNPList> {
 
 	private final SNPList 	inputList;				// input list
 	private final int 		firstBaseThreshold;		// first base count must be greater than this threshold
@@ -29,12 +29,12 @@ public class SLOFilter implements Operation<SNPList> {
 	
 	
 	/**
-	 * Creates an instance of {@link SLOFilter}
+	 * Creates an instance of {@link SLOFilterThresholds}
 	 * @param inputList input SNP list
 	 * @param firstBaseThreshold first base count must be greater than this threshold
 	 * @param secondBaseThreshold second base count must be greater than this threshold
 	 */
-	public SLOFilter(SNPList inputList, int firstBaseThreshold, int secondBaseThreshold) {
+	public SLOFilterThresholds(SNPList inputList, int firstBaseThreshold, int secondBaseThreshold) {
 		this.inputList = inputList;
 		this.firstBaseThreshold = firstBaseThreshold;
 		this.secondBaseThreshold = secondBaseThreshold;
