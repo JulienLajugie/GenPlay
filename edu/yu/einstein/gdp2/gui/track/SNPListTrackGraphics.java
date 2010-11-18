@@ -307,9 +307,18 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 				//}
 			}
 			if (snpUnderMouse != null) {
+				// changes the cursor of the mouse
 				setCursor(new Cursor(Cursor.HAND_CURSOR));
-				setToolTipText(snpUnderMouse.getFirstBase() + " = " + snpUnderMouse.getFirstBaseCount() +
-						", " + snpUnderMouse.getSecondBase() + " = " + snpUnderMouse.getSecondBaseCount());
+				// tooltip text 
+				String toolTipText = snpUnderMouse.getFirstBase() + " = " + snpUnderMouse.getFirstBaseCount() +
+				", " + snpUnderMouse.getSecondBase() + " = " + snpUnderMouse.getSecondBaseCount();
+				// add the ratio 1st base count / 2nd base count to the tooltip text if the 2nd base count is not null
+				if (snpUnderMouse.getSecondBaseCount() != 0) {
+					DecimalFormat df = new DecimalFormat("###,###.###");
+					double ratio = snpUnderMouse.getFirstBaseCount() / (double) snpUnderMouse.getSecondBaseCount();
+					toolTipText += ", Ratio = " + df.format(ratio);
+				}
+				setToolTipText(toolTipText);
 			} else {
 				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 				setToolTipText(null);

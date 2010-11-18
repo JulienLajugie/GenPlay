@@ -5,6 +5,7 @@
  */
 package yu.einstein.gdp2.gui.popupMenu;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import yu.einstein.gdp2.gui.action.allTrack.ATASave;
@@ -27,17 +28,16 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public final class GeneListTrackMenu extends TrackMenu {
 
 	private static final long serialVersionUID = -7024046901324869134L; // generated ID
-
-	private final JMenuItem	distanceCalculator;		// distance Calculator menu
-	private final JMenuItem extractExons;			// extract exons menu
-	private final JMenuItem extractInterval;		// extract interval menu
-	private final JMenuItem renameGenes;			// rename genes menu
-	private final JMenuItem saveGeneTrack;			// save the gene track
-	private final JMenuItem scoreExons;				// save the exons of the genelist
-	private final JMenuItem searchGene;				// search gene menu
-
-
-
+	
+	private final JMenu		jmOperation;					// category operation
+	
+	private final JMenuItem	jmiDistanceCalculator;	// distance Calculator menu
+	private final JMenuItem jmiExtractExons;		// extract exons menu
+	private final JMenuItem jmiExtractInterval;		// extract interval menu
+	private final JMenuItem jmiRenameGenes;			// rename genes menu
+	private final JMenuItem jmiSaveGeneTrack;		// save the gene track
+	private final JMenuItem jmiScoreExons;			// save the exons of the genelist
+	private final JMenuItem jmiSearchGene;			// search gene menu
 
 	
 	/**
@@ -47,21 +47,26 @@ public final class GeneListTrackMenu extends TrackMenu {
 	public GeneListTrackMenu(TrackList tl) {
 		super(tl);
 
-		distanceCalculator = new JMenuItem(actionMap.get(GLADistanceCalculator.ACTION_KEY));
-		extractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
-		extractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
-		renameGenes = new JMenuItem(actionMap.get(GLAGeneRenamer.ACTION_KEY));
-		saveGeneTrack = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
-		scoreExons = new JMenuItem(actionMap.get(GLAScoreExons.ACTION_KEY));
-		searchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
+		jmOperation = new JMenu("Operation");
+		
+		jmiDistanceCalculator = new JMenuItem(actionMap.get(GLADistanceCalculator.ACTION_KEY));
+		jmiExtractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
+		jmiExtractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
+		jmiRenameGenes = new JMenuItem(actionMap.get(GLAGeneRenamer.ACTION_KEY));
+		jmiSaveGeneTrack = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
+		jmiScoreExons = new JMenuItem(actionMap.get(GLAScoreExons.ACTION_KEY));
+		jmiSearchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
 			
-		add(saveGeneTrack, 9);
-		addSeparator();
-		add(searchGene);
-		add(extractInterval);
-		add(extractExons);
-		add(scoreExons);
-		add(renameGenes);
-		add(distanceCalculator);
+		jmOperation.add(jmiSearchGene);
+		jmOperation.add(jmiExtractInterval);
+		jmOperation.add(jmiExtractExons);
+		jmOperation.add(jmiScoreExons);
+		jmOperation.add(jmiRenameGenes);
+		jmOperation.add(jmiDistanceCalculator);
+		
+		add(jmOperation, 0);
+		add(new Separator(), 1);
+
+		add(jmiSaveGeneTrack, 11);
 	}
 }

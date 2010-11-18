@@ -137,6 +137,6 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiGenerateBinList);				
-		add(jmiSave, 9);
+		add(jmiSave, 10);
 	}
 }

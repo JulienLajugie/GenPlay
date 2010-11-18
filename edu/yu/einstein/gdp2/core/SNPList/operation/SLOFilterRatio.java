@@ -24,18 +24,18 @@ import yu.einstein.gdp2.core.operationPool.OperationPool;
 public class SLOFilterRatio implements Operation<SNPList>{
 
 	private final SNPList 	inputList;			// input SNP list
-	private final double 	thresholdHigh;		// the ratio must be smaller than this threshold
-	private final double 	thresholdLow;		// the ratio must be greater than this threshold
+	private final double 	thresholdLow;		// remove SNPs with ratio smaller than this threshold
+	private final double 	thresholdHigh;		// remove SNPs with ratio greater than this threshold
 	private boolean			stopped = false;	// true if the operation must be stopped
 
-	
+
 	/**
 	 * Creates an instance of {@link SLOFilterRatio}
 	 * @param inputList input {@link SNPList} 
-	 * @param thresholdHigh the SNP with a (first base count) on (second base count) ratio strictly greater than this value are removed
-	 * @param thresholdLow the SNP with a ratio strictly smaller than this value are removed
+	 * @param thresholdLow the SNPs with a (first base count) on (second base count) ratio strictly smaller than this value are removed
+	 * @param thresholdHigh the SNPs with a ratio strictly greater than this value are removed
 	 */
-	public SLOFilterRatio(SNPList inputList, double thresholdHigh, double thresholdLow) {
+	public SLOFilterRatio(SNPList inputList, double thresholdLow, double thresholdHigh) {
 		this.inputList = inputList;
 		this.thresholdHigh = thresholdHigh;
 		this.thresholdLow = thresholdLow;
@@ -57,10 +57,13 @@ public class SLOFilterRatio implements Operation<SNPList>{
 						for (int i = 0; i < currentList.size() && !stopped; i++) {
 							int currentFirstBaseCount = currentList.get(i).getFirstBaseCount();
 							int currentSecondBaseCount = currentList.get(i).getSecondBaseCount();
-							double ratio = currentFirstBaseCount / (double) currentSecondBaseCount;
-							if ((ratio >= thresholdLow) && 
-									(ratio <= thresholdHigh)) {
+							// we can't calculate the ratio if second base count = 0
+							if (currentSecondBaseCount > 0) {
+								double ratio = currentFirstBaseCount / (double) currentSecondBaseCount;
+								if ((ratio >= thresholdLow) && 
+										(ratio <= thresholdHigh)) {
 									resultList.add(currentList.get(i));
+								}
 							}
 						}
 					}
@@ -81,25 +84,25 @@ public class SLOFilterRatio implements Operation<SNPList>{
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Filter ratio, high threshold = " + thresholdHigh + ", low threshold = " + thresholdLow;
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Filtering";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
 		stopped = true;

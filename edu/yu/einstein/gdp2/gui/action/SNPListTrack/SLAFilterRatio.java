@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import yu.einstein.gdp2.core.SNPList.SNPList;
-import yu.einstein.gdp2.core.SNPList.operation.SLOFilterThresholds;
+import yu.einstein.gdp2.core.SNPList.operation.SLOFilterRatio;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.operation.Operation;
 import yu.einstein.gdp2.gui.action.TrackListActionOperationWorker;
@@ -19,30 +19,31 @@ import yu.einstein.gdp2.gui.track.Track;
 
 
 /**
- * Removes the SNPs where the first and second base counts are smaller than specified thresholds
+ * Removes the SNPs with a ratio (first base count) on (second base count)
+ * greater or smaller than a specified value
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SLAFilter extends TrackListActionOperationWorker<SNPList> {
+public class SLAFilterRatio extends TrackListActionOperationWorker<SNPList> {
 
-	private static final long serialVersionUID = 3111075603423951805L;	// generated ID
-	private static final String 	ACTION_NAME = "Filter SNPs";		// action name
+	private static final long serialVersionUID = 2056103615608319188L;	// generated ID
+	private static final String 	ACTION_NAME = "Ratio Threshold";	// action name
 	private static final String 	DESCRIPTION = 
-		"Removes the SNPs where the first and second base counts " +
-		"are smaller than specified thresholds";						// tooltip
+		"Removes the SNPs with a ratio (first base count) on (second base count)" +
+		"greater or smaller than a specified value";					// tooltip
 	private Track<?> 				selectedTrack;						// selected track
 	
 	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "SLAFilter";
+	public static final String ACTION_KEY = "SLAFilterRatio";
 
 
 	/**
-	 * Creates an instance of {@link SLAFindNext}
+	 * Creates an instance of {@link SLAFilterRatio}
 	 */
-	public SLAFilter() {
+	public SLAFilterRatio() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -55,10 +56,10 @@ public class SLAFilter extends TrackListActionOperationWorker<SNPList> {
 		selectedTrack = getTrackList().getSelectedTrack();
 		if ((selectedTrack != null) && (selectedTrack.getData() instanceof SNPList)) {
 			SNPList inputList = (SNPList) selectedTrack.getData();
-			Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Thresholds", "Remove SNPs with a first base count smaller than", 
-					"And the second base count smaller than", new DecimalFormat("###,###,###"), 0, Integer.MAX_VALUE, 0, 0);
+			Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Ratios", "Remove SNPs with a ratio (1st base count) / (2nd base count) smaller than", 
+					"Or greater than", new DecimalFormat("###,###.###"), 0, Double.POSITIVE_INFINITY, 0, Double.POSITIVE_INFINITY);
 			if (thresholds != null) {
-				Operation<SNPList> operation = new SLOFilterThresholds(inputList, thresholds[0].intValue(), thresholds[1].intValue());
+				Operation<SNPList> operation = new SLOFilterRatio(inputList, thresholds[0].doubleValue(), thresholds[1].doubleValue());
 				return operation;
 			}
 		}
@@ -72,8 +73,7 @@ public class SLAFilter extends TrackListActionOperationWorker<SNPList> {
 			int index = selectedTrack.getTrackNumber() - 1;
 			Track<?> newTrack = new SNPListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getStripes());
-			
-			
 		}		
 	}
+
 }
