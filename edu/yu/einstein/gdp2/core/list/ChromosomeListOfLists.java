@@ -23,7 +23,6 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * Adds an element to the list of the specified chromosome
 	 * @param chromosome chromosome of the item 
 	 * @param element element to add
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
 	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException;
@@ -32,7 +31,6 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	/**
 	 * @param chromosome a {@link Chromosome}
 	 * @return the list associated to the specified {@link Chromosome} 
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
 	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException;
@@ -42,7 +40,6 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @param chromosome index of a chromosome
 	 * @param index
 	 * @return the data with the specified index on the specified chromosome
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
 	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException;
@@ -93,7 +90,6 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	/**
 	 * @param chromosome
 	 * @return the size of the list for a specified chromosome
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 */
 	public int size(Chromosome chromosome) throws InvalidChromosomeException;

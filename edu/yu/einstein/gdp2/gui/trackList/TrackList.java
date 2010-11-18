@@ -55,6 +55,7 @@ import yu.einstein.gdp2.gui.action.SCWListTrack.SCWLATwoTracks;
 import yu.einstein.gdp2.gui.action.SNPListTrack.SLAFilter;
 import yu.einstein.gdp2.gui.action.SNPListTrack.SLAFindNext;
 import yu.einstein.gdp2.gui.action.SNPListTrack.SLAFindPrevious;
+import yu.einstein.gdp2.gui.action.SNPListTrack.SLARemoveSNPsNotInGenes;
 import yu.einstein.gdp2.gui.action.allTrack.ATACopy;
 import yu.einstein.gdp2.gui.action.allTrack.ATACut;
 import yu.einstein.gdp2.gui.action.allTrack.ATADelete;
@@ -279,6 +280,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SLAFilter.ACTION_KEY, new SLAFilter());
 		getActionMap().put(SLAFindNext.ACTION_KEY, new SLAFindNext());
 		getActionMap().put(SLAFindPrevious.ACTION_KEY, new SLAFindPrevious());
+		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
 	}
 
 

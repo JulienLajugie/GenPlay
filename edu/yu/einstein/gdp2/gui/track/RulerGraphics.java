@@ -46,7 +46,7 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 
 	/**
 	 * Draws the absolute units. 
-	 * @param g2D
+	 * @param g {@link Graphics}
 	 */
 	private void drawAbsoluteUnits(Graphics g) {
 		int width = getWidth();
@@ -68,7 +68,7 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 
 	/**
 	 * Draws the relative units.
-	 * @param g2D
+	 * @param g {@link Graphics}
 	 */
 	private void drawRelativeUnits(Graphics g) {
 		int height = getHeight();

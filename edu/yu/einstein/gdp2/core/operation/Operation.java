@@ -12,9 +12,9 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
 
 /**
  * Operation on a {@link BinList}
+ * T: result type of the operation
  * @author Julien Lajugie
  * @version 0.1
- * @param result type of the operation
  */
 public interface Operation<T> extends Stoppable {
 	

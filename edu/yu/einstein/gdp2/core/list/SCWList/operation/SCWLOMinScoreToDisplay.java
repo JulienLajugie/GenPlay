@@ -5,7 +5,6 @@
 package yu.einstein.gdp2.core.list.SCWList.operation;
 
 import yu.einstein.gdp2.core.list.SCWList.ScoredChromosomeWindowList;
-import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.operation.Operation;
 
 
@@ -22,7 +21,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 
 	/**
 	 * Calculates the minimum score to display on a ScoredChromosomeWindowList track
-	 * @param binList input {@link BinList}
+	 * @param scwList input {@link ScoredChromosomeWindowList}
 	 */
 	public SCWLOMinScoreToDisplay(ScoredChromosomeWindowList scwList) {
 		this.scwList = scwList;

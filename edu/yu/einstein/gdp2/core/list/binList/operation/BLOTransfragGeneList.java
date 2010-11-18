@@ -41,7 +41,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 	 * separated by more than a specified number of zero value bins.
 	 * Computes the average on these regions.
 	 * Returns a new {@link GeneList} with the defined regions having their average/max/sum as a score
-	 * @param geneList input GeneList
+	 * @param binList input BinList
 	 * @param zeroBinGap number of zero value windows defining a gap between two islands
 	 * @param operation operation to use to compute the score of the intervals
 	 */

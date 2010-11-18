@@ -33,7 +33,6 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 	 * Creates an instance of {@link ChromosomeWindowList}
 	 * @param startList list of start positions
 	 * @param stopList list of stop positions
-	 * @throws ManagerDataNotLoadedException
 	 * @throws InvalidChromosomeException
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 

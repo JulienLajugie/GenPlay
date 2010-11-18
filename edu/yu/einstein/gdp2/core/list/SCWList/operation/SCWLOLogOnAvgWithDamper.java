@@ -32,7 +32,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 	
 	/**
 	 * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link ScoredChromosomeWindowList}
-	 * @param binList input {@link ScoredChromosomeWindowList}
+	 * @param scwList input {@link ScoredChromosomeWindowList}
 	 * @param logBase base of the logarithm
 	 * @param damper a double value
 	 */

@@ -48,7 +48,6 @@ public final class ExtractorFactory {
 	 * @param fileToExtract
 	 * @param logFile
 	 * @return an {@link Extractor} if the extension of the file is known. null otherwise
-	 * @throws IOException
 	 */
 	public static Extractor checkFileExtension(File fileToExtract, File logFile) {
 		String fileExtension = Utils.getExtension(fileToExtract);

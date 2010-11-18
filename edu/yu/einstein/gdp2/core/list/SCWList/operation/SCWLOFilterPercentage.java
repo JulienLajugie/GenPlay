@@ -29,7 +29,7 @@ public class SCWLOFilterPercentage implements Operation<ScoredChromosomeWindowLi
 
 	/**
 	 * Creates an instance of {@link SCWLOFilterPercentage}
-	 * @param binList {@link ScoredChromosomeWindowList} to filter
+	 * @param inputList {@link ScoredChromosomeWindowList} to filter
 	 * @param lowPercentage percentage of low values to filter
 	 * @param highPercentage percentage of high values to filter
 	 * @param isSaturation true to saturate, false to remove the filtered values

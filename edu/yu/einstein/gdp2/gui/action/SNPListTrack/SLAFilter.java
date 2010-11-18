@@ -76,5 +76,4 @@ public class SLAFilter extends TrackListActionOperationWorker<SNPList> {
 			
 		}		
 	}
-
 }

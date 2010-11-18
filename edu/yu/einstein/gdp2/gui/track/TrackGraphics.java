@@ -213,7 +213,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	/**
 	 * Draws the vertical lines
-	 * @param g2D Graphics2D
+	 * @param g {@link Graphics}
 	 */
 	protected void drawVerticalLines(Graphics g) {
 		g.setColor(LINE_COLOR);

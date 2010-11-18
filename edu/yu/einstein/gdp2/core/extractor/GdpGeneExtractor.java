@@ -69,7 +69,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param Extractedline line read from the data file  
+	 * @param extractedLine line read from the data file  
 	 * @return true when the extraction is done
 	 * @throws InvalidDataLineException 
 	 */

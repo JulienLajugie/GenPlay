@@ -315,7 +315,7 @@ public class ScatterPlotPane extends JPanel {
 
 
 	/**
-	 * @param p {@link Point} of a screen position
+	 * @param screenPoint {@link Point} of a screen position
 	 * @return original data Point corresponding to the specified screen position
 	 */
 	private Point2D getDataPoint(Point screenPoint) {

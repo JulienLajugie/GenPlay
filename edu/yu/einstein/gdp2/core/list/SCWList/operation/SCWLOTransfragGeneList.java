@@ -40,7 +40,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 	/**
 	 * Creates an instance of {@link SCWLOTransfrag}
 	 * @param scwList input list
-	 * @param zeroBinGap minimum size of the gap separating two intervals
+	 * @param zeroSCWGap minimum size of the gap separating two intervals
 	 * @param operation operation to use to compute the score of the intervals
 	 */
 	public SCWLOTransfragGeneList(ScoredChromosomeWindowList scwList, int zeroSCWGap, ScoreCalculationMethod operation) {

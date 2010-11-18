@@ -77,7 +77,6 @@ public abstract class Extractor implements Serializable {
 	 * Extracts the data from a file.
 	 * @throws FileNotFoundException
 	 * @throws IOException
-	 * @throws ManagerDataNotLoadedException
 	 */
 	public abstract void extract() throws Exception;
 
@@ -153,7 +152,7 @@ public abstract class Extractor implements Serializable {
 
 	/**
 	 * Sets the chromosomes selected for the extraction
-	 * @param selectedChromo array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the {@link ChromosomeManager}	
+	 * @param selectedChromosomes array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the {@link ChromosomeManager}	
 	 */
 	public void setSelectedChromosomes(boolean[] selectedChromosomes) {
 		this.selectedChromo = selectedChromosomes;

@@ -48,8 +48,6 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * IslandFinder constructor
 	 * 
 	 * @param binList			the related binList
-	 * @param windowMinValue	limit reads number to get an eligible windows
-	 * @param gap				minimum windows number needed to separate 2 islands
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
@@ -63,7 +61,7 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * IslandFinder constructor
 	 * 
 	 * @param binList			the related binList
-	 * @param readCountLimit	limit reads number to get an eligible windows
+	 * @param windowLimitValue	limit reads number to get an eligible windows
 	 * @param gap				minimum windows number needed to separate 2 islands
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
@@ -269,8 +267,6 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * 
 	 * @param 	value	number of reads of the window
 	 * @return			the window score
-	 * @throws InvalidLambdaPoissonParameterException
-	 * @throws InvalidFactorialParameterException
 	 */
 	private double windowScore (double value) {
 		double result = -1.0;

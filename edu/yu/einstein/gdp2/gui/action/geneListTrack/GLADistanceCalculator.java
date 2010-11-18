@@ -43,7 +43,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 
 
 	/**
-	 * Creates an instance of {@link BLADistanceCalculator}
+	 * Creates an instance of {@link GLADistanceCalculator}
 	 */
 	public GLADistanceCalculator() {
 		super();

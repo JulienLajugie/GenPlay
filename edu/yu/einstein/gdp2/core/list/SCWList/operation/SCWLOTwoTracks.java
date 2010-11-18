@@ -34,8 +34,9 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 	
 	/**
 	 * Adds a specified constant to the scores of each window of a {@link ScoredChromosomeWindow}
-	 * @param scwList input list
-	 * @param constant constant to add
+	 * @param list1 1st input list
+	 * @param list2 2nd input list 
+	 * @param scm {@link ScoreCalculationTwoTrackMethod}
 	 */
 	public SCWLOTwoTracks(	ChromosomeListOfLists<?> list1,
 							ChromosomeListOfLists<?> list2,

@@ -46,8 +46,6 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	/**
 	 * SCWLTwoTracks constructor
 	 * 
-	 * @param scwList1	first track
-	 * @param scwList2	second track
 	 * @param scm		operation
 	 */
 	public SCWLTwoTracksEngine (ScoreCalculationTwoTrackMethod scm) {

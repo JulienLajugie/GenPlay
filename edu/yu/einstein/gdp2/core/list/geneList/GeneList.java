@@ -166,20 +166,20 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	
 	
 	/**
-	 * 
-	 * @param nameList
-	 * @param strandList
-	 * @param startList
-	 * @param stopList
-	 * @param uTR5BoundList
-	 * @param uTR3BoundList
-	 * @param exonStartsList
-	 * @param exonStopsList
-	 * @param exonScoresList
-	 * @param searchURL
+	 * Creates an instance of {@link GeneList}
+	 * @param nameList a list of gene names
+	 * @param strandList a list of {@link Strand}
+	 * @param startList a list of start positions
+	 * @param stopList a list of stop positions
+	 * @param UTR5BoundList 5' UTR bound
+	 * @param UTR3BoundList 3' UTR bound
+	 * @param exonStartsList a list of exon start arrays
+	 * @param exonStopsList a list of exon stop arrays
+	 * @param exonScoresList a list of exon score arrays
+	 * @param searchURL url of the gene database
 	 * @throws InvalidChromosomeException
-	 * @throws InterruptedException
-	 * @throws ExecutionException
+	 * @throws ExecutionException 
+	 * @throws InterruptedException 
 	 */
 	public GeneList(final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList, final ChromosomeListOfLists<Integer> startList,
 			final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<Integer> UTR5BoundList, final ChromosomeListOfLists<Integer> UTR3BoundList, 

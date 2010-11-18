@@ -94,12 +94,12 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * searchOverLappingPositionsForIndex method
 	 * This method search if the index is involved on an overlapping region
 	 * 
-	 * @param	ChromosomeManager	a static ChromosomeManager instance
-	 * @param	startList			list of position start
-	 * @param	stopList			list of position stop
-	 * @param 	currentChromosome	Chromosome
-	 * @param 	index				current index
-	 * @return						true if the current index is involved on an overlapping region
+	 * @param	chromosomeManagerTmp a static ChromosomeManager instance
+	 * @param	startList			 list of position start
+	 * @param	stopList			 list of position stop
+	 * @param 	currentChromosome	 Chromosome
+	 * @param 	index				 current index
+	 * @return						 true if the current index is involved on an overlapping region
 	 */
 	private static boolean searchOverLappingPositionsForIndex (	ChromosomeManager chromosomeManagerTmp,
 																ChromosomeListOfLists<Integer> startList,
@@ -600,7 +600,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	/**
 	 * Computes the statistics of the list after unserialization
 	 * @param in {@link ObjectInputStream}
-	 * @throws IOExceptionm
+	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

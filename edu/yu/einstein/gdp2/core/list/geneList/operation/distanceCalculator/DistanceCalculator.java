@@ -454,7 +454,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value. 
@@ -476,7 +476,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value. 
@@ -498,7 +498,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value. 
@@ -520,7 +520,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value. 
@@ -542,7 +542,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value. 
@@ -564,7 +564,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value. 
@@ -586,7 +586,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value. 
@@ -608,7 +608,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value. 
@@ -630,7 +630,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value. 
@@ -652,7 +652,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value. 
@@ -674,7 +674,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value. 
@@ -696,7 +696,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value. 
@@ -718,7 +718,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value. 
@@ -740,7 +740,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value. 
@@ -762,7 +762,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value. 
@@ -784,7 +784,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position Stop equals to value. 
@@ -806,7 +806,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position middle equals to value. 
@@ -828,7 +828,7 @@ public class DistanceCalculator {
 
 	/**
 	 * Recursive and dichotomic search algorithm.  
-	 * @param list List in which the search is performed.
+	 * @param listOfGenes List in which the search is performed.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
 	 * @return The index of a gene with a position start equals to value. 

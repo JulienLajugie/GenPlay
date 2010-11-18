@@ -23,8 +23,8 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 
 	private static final long serialVersionUID = -7170987212502378002L;				// generated ID
 	private static final int NUCLEOTIDE_HEIGHT = 10;								// y position of the nucleotides on the track
-	private int maxBaseWidth = 0;													// size on the screen of the widest base to display (in pixels) 
-	private Integer baseUnderMouseIndex = null;
+	private int 		maxBaseWidth = 0;											// size on the screen of the widest base to display (in pixels) 
+	private Integer 	baseUnderMouseIndex = null;									// index of the base under the mouse
 
 
 	/**
@@ -127,9 +127,9 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawNucleotideBackgrounds(g);
-		drawStripes(g);
 		drawVerticalLines(g);
 		drawNucleotideLetters(g);
+		drawStripes(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

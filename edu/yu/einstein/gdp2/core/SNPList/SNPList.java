@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.Chromosome;
+import yu.einstein.gdp2.core.GenomeWindow;
 import yu.einstein.gdp2.core.SNP;
 import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
@@ -118,6 +119,28 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 	protected void fitToScreen() {}
 
 
+	/**
+	 * @param genomeWindow a {@link GenomeWindow}
+	 * @return a list with all the SNPs in the specified GenomeWindow
+	 */
+	public List<SNP> get(GenomeWindow genomeWindow) {
+		List<SNP> result = new ArrayList<SNP>();
+		List<SNP> currentList;
+		try {
+			currentList = get(genomeWindow.getChromosome());
+		} catch (InvalidChromosomeException e) {
+			return null;
+		}
+		int indexStart = findSNP(currentList, genomeWindow.getStart(), 0, currentList.size() - 1);
+		int indexStop = findSNP(currentList, genomeWindow.getStop(), 0, currentList.size() - 1) - 1;
+		for (int i = indexStart; i <= indexStop; i++) {
+			result.add(currentList.get(i));
+		}		
+		return result;
+	}
+
+
+
 	@Override
 	protected List<SNP> getFittedData(int start, int stop) {
 		List<SNP> result = new ArrayList<SNP>();
@@ -129,12 +152,16 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 			fittedDataList = null;
 			return null;
 		}
-		int indexStart = findSNP(currentList, start, 0, currentList.size() - 1);
-		int indexStop = findSNP(currentList, stop, 0, currentList.size() - 1);
-		for (int i = indexStart; i <= indexStop; i++) {
-			result.add(currentList.get(i));
-		}		
-		return result;
+		if ((currentList != null) && (!currentList.isEmpty())) {
+			int indexStart = findSNP(currentList, start, 0, currentList.size() - 1);
+			int indexStop = findSNP(currentList, stop, 0, currentList.size() - 1) - 1;
+			for (int i = indexStart; i <= indexStop; i++) {
+				result.add(currentList.get(i));
+			}		
+			return result;
+		} else {
+			return null;
+		}
 	}
 
 

@@ -76,7 +76,7 @@ public class ScatterPlotData {
 	
 	
 	/**
-	 * @param graphColor the color of the graph to set
+	 * @param color the color of the graph to set
 	 */
 	public final void setColor(Color color) {
 		this.color = color;

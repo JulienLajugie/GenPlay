@@ -35,7 +35,7 @@ public final class IslandFinderPanel extends JPanel implements PeakFinderPanel {
 	
 	/**
 	 * Constructor, create an instance of IslandDialog.
-	 * @param island 	IslandFinder object, needs to define p-value/readCountLimit parameters.
+	 * @param bloFindIslands 	IslandFinder object, needs to define p-value/readCountLimit parameters.
 	 */
 	public IslandFinderPanel(BLOFindIslands bloFindIslands) {
 		super();

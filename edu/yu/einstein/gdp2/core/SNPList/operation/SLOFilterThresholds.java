@@ -94,7 +94,7 @@ public class SLOFilterThresholds implements Operation<SNPList> {
 	
 	@Override
 	public int getStepCount() {
-		return 2;
+		return 1;
 	}
 
 	

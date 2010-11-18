@@ -33,7 +33,6 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 	 * @param inputList input {@link ScoredChromosomeWindowList}
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
-	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
 	public SCWLOFilterBandStop(ScoredChromosomeWindowList inputList, double lowThreshold, double highThreshold) {
 		this.inputList = inputList;

@@ -21,7 +21,7 @@ import yu.einstein.gdp2.core.enums.RNAToDNAResultType;
 
 
 /**
- * A frame to select the Output File Type for the {@link PARNAPosToDNAPos}
+ * A frame to select the Output File Type for the {@link RNAPosToDNAPosOutputFileTypeDialog}
  * @author Chirag Gorasia
  * @author Julien Lajugie
  * @version 0.1

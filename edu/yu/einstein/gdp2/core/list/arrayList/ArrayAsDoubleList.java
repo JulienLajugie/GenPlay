@@ -21,9 +21,9 @@ import yu.einstein.gdp2.exception.CompressionException;
 /**
  * Abstract class. Represents a {@link Serializable} and {@link CompressibleList} of {@link Double}.
  * The internal implementation of the data storage is left to the subclasses.
+ * T type of the internal data representing the List of Double
  * @author Julien Lajugie
  * @version 0.1
- * @param T type of the internal data representing the List of Double
  */
 public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implements Serializable, List<Double>, CompressibleList {
 

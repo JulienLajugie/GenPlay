@@ -29,7 +29,7 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 	
 	/**
 	 * Creates an instance of {@link SCWLOInvertConstant}
-	 * @param binList input {@link ScoredChromosomeWindowList}
+	 * @param scwList input {@link ScoredChromosomeWindowList}
 	 * @param constant constant a in f(x) = a / x
 	 */
 	public SCWLOInvertConstant(ScoredChromosomeWindowList scwList, double constant) {

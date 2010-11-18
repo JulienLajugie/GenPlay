@@ -53,7 +53,7 @@ public final class STASetYAxis extends TrackListAction {
 		if (selectedTrack != null) {
 			double currentMin = selectedTrack.getYMin();
 			double currentMax = selectedTrack.getYMax();
-			Number[] minMax = TwoNumbersOptionPane.getValue(getRootPane(), "Y Axis", "Minimum:", "Maximum:", new DecimalFormat("#.#"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, currentMin, currentMax);			
+			Number[] minMax = TwoNumbersOptionPane.getValue(getRootPane(), "Y Axis", "Minimum:", "Maximum:", new DecimalFormat("#.###"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, currentMin, currentMax);			
 			if ((minMax != null) && (minMax[0] != null) && (minMax[1] != null)) {				
 				Double newMin = minMax[0].doubleValue();
 				Double newMax = minMax[1].doubleValue();

@@ -389,7 +389,7 @@ public final class Gene implements Serializable, Cloneable, Comparable<Gene> {
 	
 	
 	/**
-	 * @param UTR5Bond the 5' translation bound to set
+	 * @param UTR5Bound the 5' translation bound to set
 	 */
 	public void setUTR5Bound(int UTR5Bound) {
 		this.UTR5Bound = UTR5Bound;

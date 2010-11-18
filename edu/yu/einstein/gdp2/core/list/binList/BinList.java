@@ -921,7 +921,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Recompresses the list if needed after unserialization.
 	 * Computes the statistics of the list
 	 * @param in {@link ObjectInputStream}
-	 * @throws IOExceptionm
+	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

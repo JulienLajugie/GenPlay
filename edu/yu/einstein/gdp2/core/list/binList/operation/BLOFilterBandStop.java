@@ -34,7 +34,6 @@ public class BLOFilterBandStop implements Operation<BinList> {
 	 * @param binList input {@link BinList}
 	 * @param lowThreshold low threshold
 	 * @param highThreshold high threshold
-	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
 	public BLOFilterBandStop(BinList binList, double lowThreshold, double highThreshold) {
 		this.binList = binList;

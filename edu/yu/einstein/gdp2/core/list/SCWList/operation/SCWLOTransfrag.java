@@ -20,7 +20,7 @@ import yu.einstein.gdp2.util.SCWLists;
  * Defines regions as "islands" of non zero value ScoredChromosomeWindows 
  * separated by more than a specified number of zero value ScoredChromosomeWindows.
  * Computes the average/sum/max on these regions.
- * Returns a new {@link SCWList} with the defined regions having their average/max/sum as a score
+ * Returns a new {@link ScoredChromosomeWindowList} with the defined regions having their average/max/sum as a score
  * @author Chirag Gorasia
  * @version 0.1
  */
@@ -35,7 +35,7 @@ public class SCWLOTransfrag implements Operation<ScoredChromosomeWindowList> {
 	/**
 	 * Creates an instance of {@link SCWLOTransfrag}
 	 * @param scwList input list
-	 * @param zeroBinGap minimum size of the gap separating two intervals
+	 * @param zeroSCWGap minimum size of the gap separating two intervals
 	 * @param operation operation to use to compute the score of the intervals
 	 */
 	public SCWLOTransfrag(ScoredChromosomeWindowList scwList, int zeroSCWGap, ScoreCalculationMethod operation) {

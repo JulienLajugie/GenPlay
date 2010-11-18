@@ -49,8 +49,8 @@ public class ScatterPlotAxis implements Serializable {
 
 	/**
 	 * Creates an instance of a {@link ScatterPlotAxis}
-	 * @param min minimum of the axis
-	 * @param max maximum of the axis
+	 * @param dataMin minimum of the axis
+	 * @param dataMax maximum of the axis
 	 * @param orientation orientation of the axis
 	 * @param name name of the axis
 	 */
