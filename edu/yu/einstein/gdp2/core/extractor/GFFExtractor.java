@@ -28,6 +28,7 @@ import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -81,10 +82,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	 */
 	@Override
 	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
-		String[] splitedLine = extractedLine.split("\t");
-		if (splitedLine.length == 1) {
-			splitedLine = extractedLine.split(" ");
-		}
+		String[] splitedLine = Utils.parseLine(extractedLine);
 		if (splitedLine.length < 7) {
 			throw new InvalidDataLineException(extractedLine);
 		}

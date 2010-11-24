@@ -18,6 +18,7 @@ import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -79,10 +80,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 			searchURL = extractedLine.split("\"")[1].trim();
 			return false;
 		} else {
-			String[] splitedLine = extractedLine.split("\t");
-			if (splitedLine.length == 1) {
-				splitedLine = extractedLine.split(" ");
-			}
+			String[] splitedLine = Utils.parseLine(extractedLine);
 			if (splitedLine.length < 3) {
 				throw new InvalidDataLineException(extractedLine);
 			}

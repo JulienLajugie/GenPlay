@@ -30,6 +30,7 @@ import yu.einstein.gdp2.core.list.geneList.GeneList;
 import yu.einstein.gdp2.core.list.repeatFamilyList.RepeatFamilyList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -86,10 +87,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
 		}
-		String[] splitedLine = extractedLine.split("\t");
-		if (splitedLine.length == 1) {
-			splitedLine = extractedLine.split(" ");
-		}
+		String[] splitedLine = Utils.parseLine(extractedLine);
 		if (splitedLine.length < 21) {
 			throw new InvalidDataLineException(extractedLine);
 		}

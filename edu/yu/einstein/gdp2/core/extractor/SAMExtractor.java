@@ -18,6 +18,7 @@ import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.util.Utils;
 
 /**
  * A SAM file extractor
@@ -48,7 +49,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Bin
 	protected boolean extractLine(String line) throws InvalidDataLineException {
 		// if the line starts with @ it's header line so we skip it
 		if (line.trim().charAt(0) != '@') {
-			String[] splitedLine = line.split("\t");
+			String[] splitedLine = Utils.parseLine(line);
 			try {
 				Chromosome chromosome = chromosomeManager.get(splitedLine[2]);
 				// checks if we need to extract the data on the chromosome

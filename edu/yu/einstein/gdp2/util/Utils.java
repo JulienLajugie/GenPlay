@@ -6,6 +6,8 @@ package yu.einstein.gdp2.util;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -60,7 +62,7 @@ public class Utils {
 		}
 	}
 
-	
+
 	/**
 	 * @param chromoList array of boolean. 
 	 * @return true if all the booleans are set to true or if the array is null. False otherwise 
@@ -77,7 +79,7 @@ public class Utils {
 		return true;
 	}
 
-	
+
 	/**
 	 * Asks if the user wants to replace a file if this file already exists.
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
@@ -332,7 +334,7 @@ public class Utils {
 		return filters;
 	}
 
-	
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SNPList
 	 */
@@ -340,8 +342,8 @@ public class Utils {
 		ExtendedFileFilter[] filters = {new SOAPsnpFilter()};
 		return filters;
 	}	
-	
-	
+
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as sequence track (aka nucleotide list)
 	 */
@@ -401,5 +403,48 @@ public class Utils {
 			// change of base: logb(x) = logk(x) / logk(b)
 			return Math.log(value) / Math.log(logBase.getValue());									
 		}
+	}
+
+
+	/**
+	 * This methods parse a line and returns an array of strings containing
+	 * all the fields from the input line that are separated either by one or many 
+	 * continuous spaces or tabs except if this tabs or spaces are from inside double quotes.
+	 * @param line input line to parse
+	 * @return an array of strings containing the fields of the input line
+	 */
+	public static String[] parseLine(String line) {
+		List<String> parsedLine = new ArrayList<String>();
+		int i = 0;
+		while (i < line.length()) {
+			// skip all the space and tabs
+			while ((i < line.length()) && 
+					((line.charAt(i) == ' ') || (line.charAt(i) == '\t'))) {
+				i++;
+			}
+			if (i < line.length()) {
+				// if the spaces and tabs weren't at the end of the line
+				int indexStart = i; // retrieve the start index
+				boolean isInsideQuotes = false; // when we start we're not inside double quotes
+				while ((i < line.length()) && 
+						(isInsideQuotes || ((line.charAt(i) != ' ') && (line.charAt(i) != '\t')))) {
+					// loop until we meet a new space or tab that is not between double quotes
+					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
+						isInsideQuotes = !isInsideQuotes;
+					}
+					i++;
+				}
+				// add the field to the result list
+				parsedLine.add(line.substring(indexStart, i));
+			}
+		}
+		
+		if (parsedLine.isEmpty()) { // if our list is empty we return null
+			return null;
+		} else { // if there is element in our list we transform it in an array and return it
+			String[] returnArray = new String[parsedLine.size()];
+			return parsedLine.toArray(returnArray);
+		}
+
 	}
 }

@@ -18,6 +18,7 @@ import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.core.list.arrayList.IntArrayAsIntegerList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.util.Utils;
 
 
 /**
@@ -64,7 +65,7 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 
 	@Override
 	protected boolean extractLine(String line) throws InvalidDataLineException {
-		String[] splitedLine = line.split("\t");
+		String[] splitedLine = Utils.parseLine(line);
 		try {
 			Chromosome chromosome = chromosomeManager.get(splitedLine[0].trim()) ;
 			int chromosomeStatus = checkChromosomeStatus(chromosome);

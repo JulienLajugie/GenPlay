@@ -24,6 +24,7 @@ import yu.einstein.gdp2.core.list.binList.BinList;
 import yu.einstein.gdp2.core.list.chromosomeWindowList.ChromosomeWindowList;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
+import yu.einstein.gdp2.util.Utils;
 
 /**
  * A Wiggle file extractor
@@ -44,11 +45,11 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	private int 			currentStep;					// last step specified
 	private int 			currentPosition;				// current position
 	private boolean 		isFixedStep = false;			// true if we are extrating a fixedStep line
-//	private int 			binSize = -1;					// size of the bin (only used if constant through the entire file)
-//
-//	private Boolean 		isStepUnique = null;			// true if the bin size is constant through the entire file
+	//	private int 			binSize = -1;					// size of the bin (only used if constant through the entire file)
+	//
+	//	private Boolean 		isStepUnique = null;			// true if the bin size is constant through the entire file
 
-	
+
 	/**
 	 * Creates an instance of {@link WiggleExtractor}
 	 * @param dataFile file containing the data
@@ -69,7 +70,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	protected boolean extractLine(String line) throws InvalidDataLineException {
-		String[] splittedLine = line.split(" ");
+		String[] splittedLine = Utils.parseLine(line);
 
 		int i = 0;
 		while (i < splittedLine.length) {
@@ -95,7 +96,12 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("chrom="))) {
 				// retrieve chromosome
 				String chromStr = splittedLine[i].trim().substring(6);
-				currentChromo = chromosomeManager.get(chromStr.trim());
+				try {
+					currentChromo = chromosomeManager.get(chromStr.trim());
+				} catch (InvalidChromosomeException e) {
+					currentChromo = null;
+					throw new InvalidDataLineException(line);
+				}
 				// check if the extraction is done
 				if (checkChromosomeStatus(currentChromo) == AFTER_LAST_SELECTED) {
 					return true;
@@ -113,26 +119,9 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				String spanStr = splittedLine[i].trim().substring(5);
 				currentSpan = Integer.parseInt(spanStr);				
 			} else {
-				if (isFixedStep) {
-					double score = Double.parseDouble(splittedLine[i]); 
-					try {
-						if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-							startList.add(currentChromo, currentPosition);
-							stopList.add(currentChromo, currentPosition + currentSpan);
-							scoreList.add(currentChromo, score);
-						}
-						lineCount++;
-						currentPosition += currentStep;
-					} catch (Exception e) {
-						throw new InvalidDataLineException(line);
-					}					
-				} else {
-					if (splittedLine.length < 2) {
-						throw new InvalidDataLineException(line);
-					} else {
-						currentPosition = Integer.parseInt(splittedLine[i].trim());
-						double score = Double.parseDouble(splittedLine[i + 1]);
-						i++;
+				if (currentChromo != null) {
+					if (isFixedStep) {
+						double score = Double.parseDouble(splittedLine[i]); 
 						try {
 							if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
 								startList.add(currentChromo, currentPosition);
@@ -140,43 +129,62 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 								scoreList.add(currentChromo, score);
 							}
 							lineCount++;
+							currentPosition += currentStep;
 						} catch (Exception e) {
 							throw new InvalidDataLineException(line);
-						}		
-					}
-				}			
+						}					
+					} else {
+						if (splittedLine.length < 2) {
+							throw new InvalidDataLineException(line);
+						} else {
+							currentPosition = Integer.parseInt(splittedLine[i].trim());
+							double score = Double.parseDouble(splittedLine[i + 1]);
+							i++;
+							try {
+								if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
+									startList.add(currentChromo, currentPosition);
+									stopList.add(currentChromo, currentPosition + currentSpan);
+									scoreList.add(currentChromo, score);
+								}
+								lineCount++;
+							} catch (Exception e) {
+								throw new InvalidDataLineException(line);
+							}		
+						}
+					}			
+				}
 			}
 			i++;
 		}
 		return false;
 	}
 
-	
-//	/**
-//	 * @return if the step is constant through the entire file
-//	 */
-//	private boolean checkIfStepIsUnique() {
-//		for (short i = 0; i < startList.size(); i++) {
-//			for (int j = 0; j < startList.size(i); j++) {
-//				if (binSize == -1) {
-//					binSize = stopList.get(i, j) - startList.get(i, j);
-//				} else {
-//					int currentBinsize = stopList.get(i, j) - startList.get(i, j);
-//					// if the size of a window not always the same
-//					// or if the start is not a multiple of the bin size
-//					// the step is not unique
-//					if (currentBinsize != binSize) {
-//						return false;
-//					}
-//					if (startList.get(i, j) % binSize != 0) {
-//						return false;
-//					}
-//				}
-//			}
-//		}
-//		return true;
-//	}
-	
+
+	//	/**
+	//	 * @return if the step is constant through the entire file
+	//	 */
+	//	private boolean checkIfStepIsUnique() {
+	//		for (short i = 0; i < startList.size(); i++) {
+	//			for (int j = 0; j < startList.size(i); j++) {
+	//				if (binSize == -1) {
+	//					binSize = stopList.get(i, j) - startList.get(i, j);
+	//				} else {
+	//					int currentBinsize = stopList.get(i, j) - startList.get(i, j);
+	//					// if the size of a window not always the same
+	//					// or if the start is not a multiple of the bin size
+	//					// the step is not unique
+	//					if (currentBinsize != binSize) {
+	//						return false;
+	//					}
+	//					if (startList.get(i, j) % binSize != 0) {
+	//						return false;
+	//					}
+	//				}
+	//			}
+	//		}
+	//		return true;
+	//	}
+
 
 	@Override
 	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
@@ -189,27 +197,27 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
-	
+
 	@Override
 	public boolean isBinSizeNeeded() {
-//		if (isStepUnique == null) {
-//			isStepUnique = checkIfStepIsUnique();
-//		}
-//		return !isStepUnique;
+		//		if (isStepUnique == null) {
+		//			isStepUnique = checkIfStepIsUnique();
+		//		}
+		//		return !isStepUnique;
 		return true;
 	}
 
 
 	@Override
 	public boolean isCriterionNeeded() {
-//		if (isStepUnique == null) {
-//			isStepUnique = checkIfStepIsUnique();
-//		}
-//		return !isStepUnique;
+		//		if (isStepUnique == null) {
+		//			isStepUnique = checkIfStepIsUnique();
+		//		}
+		//		return !isStepUnique;
 		return true;
 	}
-	
-	
+
+
 	@Override
 	public boolean isPrecisionNeeded() {
 		return true;
@@ -218,17 +226,17 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public BinList toBinList(int aBinSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-//		if (isStepUnique == null) {
-//			isStepUnique = checkIfStepIsUnique();
-//		}
-//		if (isStepUnique) {
-//			return new BinList(binSize, precision, startList, scoreList);
-//		} else {
-			return new BinList(aBinSize, precision, method, startList, stopList, scoreList);
-//		}
+		//		if (isStepUnique == null) {
+		//			isStepUnique = checkIfStepIsUnique();
+		//		}
+		//		if (isStepUnique) {
+		//			return new BinList(binSize, precision, startList, scoreList);
+		//		} else {
+		return new BinList(aBinSize, precision, method, startList, stopList, scoreList);
+		//		}
 	}
-	
-	
+
+
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
