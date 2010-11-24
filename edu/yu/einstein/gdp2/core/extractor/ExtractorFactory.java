@@ -81,7 +81,7 @@ public final class ExtractorFactory {
 			return new PSLExtractor(fileToExtract, logFile);
 		} else if (fileExtension.equalsIgnoreCase("sam")) {
 			return new SAMExtractor(fileToExtract, logFile);
-		} else if (fileExtension.equalsIgnoreCase("snp")) {
+		} else if (fileExtension.equalsIgnoreCase("soapsnp")) {
 			return new SOAPsnpExtractor(fileToExtract, logFile);
 		} else {
 			return null;
