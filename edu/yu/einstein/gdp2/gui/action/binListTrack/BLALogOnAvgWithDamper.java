@@ -56,7 +56,7 @@ public final class BLALogOnAvgWithDamper extends TrackListActionOperationWorker<
 		if (selectedTrack != null) {
 			LogBase logBase = Utils.chooseLogBase(getRootPane());
 			if (logBase != null) {
-				Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper to add: f(x)=x + damper", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
+				Number damper = NumberOptionPane.getValue(getRootPane(), "Damper", "Enter a value for damper where: f(x) = log((x + damper) / (avg + damper))", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 				if(damper != null) {
 					BinList binList = selectedTrack.getData();
 					Operation<BinList> operation = new BLOLogOnAvgWithDamper(binList, logBase, damper.doubleValue());
