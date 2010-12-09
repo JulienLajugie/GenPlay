@@ -16,7 +16,7 @@ public class SOAPsnpFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -8560834231830725642L; // generated ID
 	public static final String[] EXTENSIONS = {"SNP"};
-	public static final String DESCRIPTION = "SOAP SNP files (*.snp)";
+	public static final String DESCRIPTION = "SOAP SNP files (*.soapsnp)";
 	
 	
 	/**

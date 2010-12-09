@@ -55,6 +55,7 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 
 	/**
 	 * Creates an instance of {@link SNPList}
+	 * @param nameList list of name; null if the SNPs are not named
 	 * @param positionList list of position
 	 * @param firstBaseList list of first base
 	 * @param firstBaseCountList list of first base count
@@ -64,7 +65,8 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public SNPList(final ChromosomeListOfLists<Integer> positionList,
+	public SNPList(final ChromosomeListOfLists<String> nameList,
+			final ChromosomeListOfLists<Integer> positionList,
 			final ChromosomeListOfLists<Nucleotide> firstBaseList,
 			final ChromosomeListOfLists<Integer> firstBaseCountList,
 			final ChromosomeListOfLists<Nucleotide> secondBaseList,
@@ -88,7 +90,11 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 						Nucleotide secondBase = secondBaseList.get(currentChromosome, j);
 						int secondBaseCount = secondBaseCountList.get(currentChromosome, j);
 						boolean isSecondBaseSignificant = isSecondBaseSignificantList.get(currentChromosome, j);						
-						resultList.add(new SNP(position, firstBase, firstBaseCount, secondBase, secondBaseCount, isSecondBaseSignificant));
+						String name = null;
+						if (nameList != null) {
+							name = nameList.get(currentChromosome, j);;
+						}
+						resultList.add(new SNP(name, position, firstBase, firstBaseCount, secondBase, secondBaseCount, isSecondBaseSignificant));
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();

@@ -150,7 +150,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		pack();
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-		setTitle("Track configuration");
+		setTitle("Extract Intervals");
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);

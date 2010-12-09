@@ -88,7 +88,7 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		pack();
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
-		setTitle("Exon Extractor");
+		setTitle("Extract Exons");
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);

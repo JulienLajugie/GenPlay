@@ -98,6 +98,6 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 
 	@Override
 	public SNPList toSNPList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new SNPList(positionList, firstBaseList, firstBaseCountList, secondBaseList, secondBaseCountList, isSecondBaseSignificantList);
+		return new SNPList(null, positionList, firstBaseList, firstBaseCountList, secondBaseList, secondBaseCountList, isSecondBaseSignificantList);
 	}
 }

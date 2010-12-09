@@ -17,6 +17,7 @@ import yu.einstein.gdp2.core.enums.Nucleotide;
 public class SNP implements Serializable, Comparable<SNP> {
 	
 	private static final long serialVersionUID = 6378547913690473618L;	// generated ID
+	private final String		name;					// name of the SNP
 	private final int 			position;				// position of the SNP
 	private final Nucleotide 	firstBase;				// first base
 	private final int 			firstBaseCount;			// count of the first base
@@ -26,7 +27,8 @@ public class SNP implements Serializable, Comparable<SNP> {
 	
 	
 	/**
-	 * Creates an instance of {@link SNP} 
+	 * Creates an instance of {@link SNP}
+	 * @param name name of the SNP 
 	 * @param position position of the SNP
 	 * @param firstBase first base
 	 * @param firstBaseCount count of the best base
@@ -34,7 +36,8 @@ public class SNP implements Serializable, Comparable<SNP> {
 	 * @param secondBaseCount count of the second base
 	 * @param isSecondBaseSignificant true if the second base is significant
 	 */
-	public SNP(int position, Nucleotide firstBase, int firstBaseCount, Nucleotide secondBase, int secondBaseCount, boolean isSecondBaseSignificant) {
+	public SNP(String name, int position, Nucleotide firstBase, int firstBaseCount, Nucleotide secondBase, int secondBaseCount, boolean isSecondBaseSignificant) {
+		this.name = name;
 		this.position = position;
 		this.firstBase = firstBase;
 		this.firstBaseCount = firstBaseCount;
@@ -71,6 +74,14 @@ public class SNP implements Serializable, Comparable<SNP> {
 		return firstBaseCount;
 	}
 
+
+	/**
+	 * @return the name of the SNP
+	 */
+	public final String getName() {
+		return name;
+	}
+	
 
 	/**
 	 * @return the position of the SNP

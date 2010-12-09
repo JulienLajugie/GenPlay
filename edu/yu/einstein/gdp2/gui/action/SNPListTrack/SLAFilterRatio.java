@@ -56,7 +56,7 @@ public class SLAFilterRatio extends TrackListActionOperationWorker<SNPList> {
 		selectedTrack = getTrackList().getSelectedTrack();
 		if ((selectedTrack != null) && (selectedTrack.getData() instanceof SNPList)) {
 			SNPList inputList = (SNPList) selectedTrack.getData();
-			Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Ratios", "Remove SNPs with a ratio (1st base count) / (2nd base count) smaller than", 
+			Number[] thresholds = TwoNumbersOptionPane.getValue(getRootPane(), "Ratio", "Remove SNPs with a ratio (1st base count) / (2nd base count) smaller than", 
 					"Or greater than", new DecimalFormat("###,###.###"), 0, Double.POSITIVE_INFINITY, 0, Double.POSITIVE_INFINITY);
 			if (thresholds != null) {
 				Operation<SNPList> operation = new SLOFilterRatio(inputList, thresholds[0].doubleValue(), thresholds[1].doubleValue());

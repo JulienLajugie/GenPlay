@@ -94,7 +94,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
-		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
+		if ((extractedLine.trim().length() >= 10) && (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL="))) {
 			searchURL = extractedLine.split("\"")[1].trim();
 			return false;
 		} else {
@@ -162,6 +162,10 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 											}
 										}
 									}
+								} else {
+									// if the file contains no infomation about the UTR sites
+									UTR5BoundList.add(chromosome, start);
+									UTR3BoundList.add(chromosome, stop);
 								}
 							}
 						}
