@@ -80,7 +80,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 			searchURL = extractedLine.split("\"")[1].trim();
 			return false;
 		} else {
-			String[] splitedLine = Utils.parseLine(extractedLine);
+			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 			if (splitedLine.length < 3) {
 				throw new InvalidDataLineException(extractedLine);
 			}

@@ -72,7 +72,7 @@ implements Serializable, BinListGenerator {
 			return false;
 		}
 
-		String[] splitedLine = Utils.parseLine(extractedLine);
+		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 10) {
 			throw new InvalidDataLineException(extractedLine);
 		}

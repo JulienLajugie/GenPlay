@@ -82,7 +82,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	protected boolean extractLine(String line) throws InvalidDataLineException {
-		String[] splitedLine = Utils.parseLine(line);
+		String[] splitedLine = Utils.parseLineTabOnly(line);
 		if (splitedLine.length < 8) {
 			throw new InvalidDataLineException(line);
 		}

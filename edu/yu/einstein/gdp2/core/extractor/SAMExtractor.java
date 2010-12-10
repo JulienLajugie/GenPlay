@@ -49,7 +49,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Bin
 	protected boolean extractLine(String line) throws InvalidDataLineException {
 		// if the line starts with @ it's header line so we skip it
 		if (line.trim().charAt(0) != '@') {
-			String[] splitedLine = Utils.parseLine(line);
+			String[] splitedLine = Utils.parseLineTabOnly(line);
 			try {
 				Chromosome chromosome = chromosomeManager.get(splitedLine[2]);
 				// checks if we need to extract the data on the chromosome

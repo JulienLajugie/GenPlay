@@ -9,9 +9,7 @@ import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
 import yu.einstein.gdp2.core.SNPList.SNPList;
-import yu.einstein.gdp2.core.enums.Nucleotide;
 import yu.einstein.gdp2.core.generator.SNPListGenerator;
-import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
 import yu.einstein.gdp2.exception.InvalidChromosomeException;
 import yu.einstein.gdp2.exception.InvalidDataLineException;
 

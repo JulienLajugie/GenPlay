@@ -413,7 +413,7 @@ public class Utils {
 	 * @param line input line to parse
 	 * @return an array of strings containing the fields of the input line
 	 */
-	public static String[] parseLine(String line) {
+	public static String[] parseLineTabAndSpace(String line) {
 		List<String> parsedLine = new ArrayList<String>();
 		int i = 0;
 		while (i < line.length()) {
@@ -429,6 +429,47 @@ public class Utils {
 				while ((i < line.length()) && 
 						(isInsideQuotes || ((line.charAt(i) != ' ') && (line.charAt(i) != '\t')))) {
 					// loop until we meet a new space or tab that is not between double quotes
+					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
+						isInsideQuotes = !isInsideQuotes;
+					}
+					i++;
+				}
+				// add the field to the result list
+				parsedLine.add(line.substring(indexStart, i));
+			}
+		}
+		
+		if (parsedLine.isEmpty()) { // if our list is empty we return null
+			return null;
+		} else { // if there is element in our list we transform it in an array and return it
+			String[] returnArray = new String[parsedLine.size()];
+			return parsedLine.toArray(returnArray);
+		}
+	}
+	
+	/**
+	 * This methods parse a line and returns an array of strings containing
+	 * all the fields from the input line that are separated by one or many 
+	 * continuous tabs except if this tabs are from inside double quotes.
+	 * @param line input line to parse
+	 * @return an array of strings containing the fields of the input line
+	 */
+	public static String[] parseLineTabOnly(String line) {
+		List<String> parsedLine = new ArrayList<String>();
+		int i = 0;
+		while (i < line.length()) {
+			// skip all the tabs
+			while ((i < line.length()) && 
+					(line.charAt(i) == '\t')) {
+				i++;
+			}
+			if (i < line.length()) {
+				// if the tabs weren't at the end of the line
+				int indexStart = i; // retrieve the start index
+				boolean isInsideQuotes = false; // when we start we're not inside double quotes
+				while ((i < line.length()) && 
+						(isInsideQuotes || (line.charAt(i) != '\t'))) {
+					// loop until we meet a new tab that is not between double quotes
 					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
 						isInsideQuotes = !isInsideQuotes;
 					}

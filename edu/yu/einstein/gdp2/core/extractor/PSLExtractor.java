@@ -87,7 +87,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
 		}
-		String[] splitedLine = Utils.parseLine(extractedLine);
+		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 21) {
 			throw new InvalidDataLineException(extractedLine);
 		}
