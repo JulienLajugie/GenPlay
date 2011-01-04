@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import yu.einstein.gdp2.core.Chromosome;
 import yu.einstein.gdp2.core.enums.DataPrecision;
 import yu.einstein.gdp2.core.enums.ScoreCalculationMethod;
+import yu.einstein.gdp2.core.enums.Strand;
 import yu.einstein.gdp2.core.generator.BinListGenerator;
 import yu.einstein.gdp2.core.list.ChromosomeArrayListOfLists;
 import yu.einstein.gdp2.core.list.ChromosomeListOfLists;
@@ -25,10 +26,12 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class SAMExtractor extends TextFileExtractor implements Serializable, BinListGenerator {
+public class SAMExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, BinListGenerator {
 
 	private static final long serialVersionUID = -1917159784796564734L; // generated ID
 	private ChromosomeListOfLists<Integer>	positionList;				// list of position
+	private Strand 							selectedStrand;	// strand to extract, null for both
+	private int 							strandShift;	// value of the shift to perform on the selected strand
 
 
 	/**
@@ -56,20 +59,27 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Bin
 				int chromosomeStatus = checkChromosomeStatus(chromosome);
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					return true;
-				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
-					return false;
-				} else {
-					int position = Integer.parseInt(splitedLine[3]);
-					positionList.get(chromosome).add(position);		
-					lineCount++;
+				} else if (chromosomeStatus != NEED_TO_BE_SKIPPED) {
+					Strand strand = null;
+					int flag = Integer.parseInt(splitedLine[1].trim());
+					boolean isReversedRead = (flag & 0x10) == 0x10;
+					if (isReversedRead) {
+						strand = Strand.THREE;
+					} else {
+						strand = Strand.FIVE;
+					}
+					if ((strand == null) || (isStrandSelected(strand))) {
+						int position = Integer.parseInt(splitedLine[3]);
+						positionList.get(chromosome).add(position);		
+						lineCount++;
+					}
 					return false;
 				}
 			} catch (InvalidChromosomeException e) {
 				return false;
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 
@@ -95,5 +105,38 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Bin
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) 
 	throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, positionList);
+	}
+
+	@Override
+	public boolean isStrandSelected(Strand aStrand) {
+		if (selectedStrand == null) {
+			return true;
+		} else {
+			return selectedStrand.equals(aStrand);
+		}
+	}
+
+
+	@Override
+	public void selectStrand(Strand strandToSelect) {
+		selectedStrand = strandToSelect;		
+	}
+
+
+	@Override
+	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
+		if (strand == null) {
+			return position;
+		} else if (strand == Strand.FIVE) {
+			return Math.min(chromosome.getLength(), position + strandShift);
+		} else {
+			return Math.max(0, position - strandShift);
+		}
+	}
+
+
+	@Override
+	public void setStrandShift(int shiftValue) {
+		strandShift = shiftValue; 
 	}
 }

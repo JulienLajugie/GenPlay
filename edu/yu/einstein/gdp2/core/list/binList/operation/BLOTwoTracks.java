@@ -96,7 +96,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Add";
+		return "Operation on two tracks: " + scm.toString();
 	}
 
 
@@ -108,7 +108,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 
 	@Override
 	public String getProcessingDescription() {
-		return "Adding";
+		return "Two Tracks Operation";
 	}
 	
 	
