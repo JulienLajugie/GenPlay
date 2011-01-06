@@ -70,7 +70,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	protected boolean extractLine(String line) throws InvalidDataLineException {
-		String[] splittedLine = Utils.parseLineTabOnly(line);
+		String[] splittedLine = Utils.parseLineTabAndSpace(line);
 
 		int i = 0;
 		while (i < splittedLine.length) {
