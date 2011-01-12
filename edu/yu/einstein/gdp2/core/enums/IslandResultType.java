@@ -19,8 +19,12 @@ public enum IslandResultType {
 	/**
 	 * Value will be the score of an island
 	 */
-	IFSCORE ("Island Finder Score");
-
+	IFSCORE ("Island Finder Score"),
+	/**
+	 * Value will be the maximum of the island
+	 */	
+	SUMMIT ("Island Summit");	
+	
 	
 	private final String name; // String representing the filter 
 	

@@ -40,7 +40,7 @@ import yu.einstein.gdp2.gui.dialog.peakFinderDialog.islandPanel.IslandFinderPane
 public class PeakFinderDialog extends JDialog implements TreeSelectionListener {
 
 	private static final long serialVersionUID = 5563029408513103813L;
-	private static final Dimension 	PEAK_FINDER_DIALOG_DIMENSION = new Dimension(550, 550); // dimension of this window
+	private static final Dimension 	PEAK_FINDER_DIALOG_DIMENSION = new Dimension(550, 600); // dimension of this window
 	private final JTree 			jt; 						// Tree
 	private final JScrollPane 		jspTreeView; 				// Scroll pane containing the tree
 	private final JPanel			jpPeakFinder;				// right panel

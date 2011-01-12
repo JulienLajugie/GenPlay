@@ -31,11 +31,13 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 	//Storage values
 	protected static boolean 	FilteredStore;
 	protected static boolean 	IFScoreStore;
+	protected static boolean 	SummitStore;
 	
 	//Graphics elements
 	private final JLabel					jlResultType;					// label for result type 
 	private final JCheckBox					jcbIFScore;						// check box to choose Island Finder Score output value
 	private final JCheckBox					jcbFiltered;					// check box to choose original date filtered output value
+	private final JCheckBox					jcbSummit;						// check box to choose summit of the island output
 	
 	
 	/**
@@ -50,23 +52,28 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 		this.jlResultType = new JLabel("Result Type");
 		this.jcbFiltered = new JCheckBox("Start values");
 		this.jcbIFScore = new JCheckBox("Island score");
+		this.jcbSummit = new JCheckBox("Island Summit");
 		
 		//Dimension
 		this.jlResultType.setPreferredSize(new Dimension(IslandDialogOutput.NAME_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
 		this.jcbFiltered.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
 		this.jcbIFScore.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
+		this.jcbSummit.setPreferredSize(new Dimension(IslandDialogOutput.GARBAGE_WIDTH, IslandDialogFieldset.LINE_HEIGHT));
 		
 		//Set selected boxes
 		this.jcbFiltered.setSelected(this.getBoolStoredValue(FilteredStore, false));
 		this.jcbIFScore.setSelected(this.getBoolStoredValue(IFScoreStore, false));
+		this.jcbSummit.setSelected(this.getBoolStoredValue(SummitStore, false));
 		
 		//Tool Tip Text
 		String sResultType = "Output result type";
-		String sFiltered = "Windows values will be the windows value";
-		String sIFScore = "Windows values will be the island score";
+		String sFiltered = "Windows value will be the windows value";
+		String sIFScore = "Windows value will be the island score";
+		String sSummit = "Windows value will be the island summit";
 		this.jlResultType.setToolTipText(sResultType);
 		this.jcbFiltered.setToolTipText(sFiltered);
 		this.jcbIFScore.setToolTipText(sIFScore);
+		this.jcbSummit.setToolTipText(sSummit);
 		
 		//Layout
 		this.setLayout(new GridBagLayout());
@@ -100,6 +107,15 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 		gbc.insets = new Insets (0, 0, IslandDialogFieldset.LINE_BOTTOM_INSET_HEIGHT, 0);
 		add(jcbIFScore, gbc);
 		
+		//jcbSummit
+		gbc.gridx = 2;
+		gbc.gridy = 2;
+		gbc.gridwidth = 1;
+		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.fill = GridBagConstraints.WEST;
+		gbc.insets = new Insets (0, 0, IslandDialogFieldset.LINE_BOTTOM_INSET_HEIGHT, 0);
+		add(jcbSummit, gbc);
+		
 		// Dimension
 		this.setRows(gbc.gridy + 1);
 		
@@ -129,4 +145,9 @@ final class IslandDialogOutput extends IslandDialogFieldset{
 	protected boolean IFScoreSelected () {
 		return this.jcbIFScore.isSelected();
 	}
+	
+	protected boolean summitScoreSelected () {
+		return this.jcbSummit.isSelected();
+	}
+	
 }

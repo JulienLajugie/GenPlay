@@ -95,25 +95,29 @@ public final class IslandFinderPanel extends JPanel implements PeakFinderPanel {
 		IslandDialogInput.IslandMinLengthStore = this.idfInput.getMinIslandLength();
 		IslandDialogOutput.FilteredStore = this.idfOutput.filteredSelected();
 		IslandDialogOutput.IFScoreStore = this.idfOutput.IFScoreSelected();
+		IslandDialogOutput.SummitStore = this.idfOutput.summitScoreSelected();
 	}
 
 
 	@Override
 	public Operation<BinList[]> validateInput() {
-		if (this.idfOutput.filteredSelected() | this.idfOutput.IFScoreSelected()) {	// requirements to approved
+		if (this.idfOutput.filteredSelected() | this.idfOutput.IFScoreSelected() | this.idfOutput.summitScoreSelected()) {	// requirements to approved
 			//All islands finder parameters must be set
 			this.bloFindIslands.getIsland().setWindowMinValue(this.idfInput.getWindowLimitValue());
 			this.bloFindIslands.getIsland().setGap(this.idfInput.getGap());
 			this.bloFindIslands.getIsland().setIslandMinScore(this.idfInput.getIslandLimitScore());
 			this.bloFindIslands.getIsland().setIslandMinLength(this.idfInput.getMinIslandLength());
 			//IslandResultType array to manage the right number of track for the BLAIslands object
-			IslandResultType[] list = new IslandResultType[2];
+			IslandResultType[] list = new IslandResultType[3];
 			if (this.idfOutput.filteredSelected()) {
 				list[0] = IslandResultType.FILTERED;
 			}
 			if (this.idfOutput.IFScoreSelected()) {
 				list[1] = IslandResultType.IFSCORE;
 			}
+			if (this.idfOutput.summitScoreSelected()) {
+				list[2] = IslandResultType.SUMMIT;
+			}			
 			this.bloFindIslands.setList(list);
 			return bloFindIslands;
 		} else {

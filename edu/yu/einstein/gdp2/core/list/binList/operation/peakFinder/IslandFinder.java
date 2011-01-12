@@ -31,7 +31,7 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
  * @author Nicolas Fourel
  */
 public class IslandFinder implements Serializable, Stoppable {
-	
+
 	private static final long serialVersionUID = -4661852717981921332L;
 	private final BinList 				binList;			// input binlist
 	private int							gap;				// minimum windows number needed to separate 2 islands
@@ -42,8 +42,8 @@ public class IslandFinder implements Serializable, Stoppable {
 	private IslandResultType 			resultType;			// type of the result (constant, score, average)
 	private HashMap <Double, Double>	readScoreStorage;	// store the score for a read, the read is use as index and the score as value
 	private boolean 					stopped = false;	// true when the action must be stopped
-	
-	
+
+
 	/**
 	 * IslandFinder constructor
 	 * 
@@ -56,7 +56,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		this.lambda = lambdaCalcul();
 		this.readScoreStorage = new HashMap <Double, Double>();
 	}
-	
+
 	/**
 	 * IslandFinder constructor
 	 * 
@@ -76,10 +76,10 @@ public class IslandFinder implements Serializable, Stoppable {
 		this.resultType = resultType;
 		this.readScoreStorage = new HashMap <Double, Double>();
 	}
-	
-	
+
+
 	/////////////////////////////////////////////////////////	main method
-	
+
 	/**
 	 * findIsland method
 	 * This method define island from data.
@@ -103,13 +103,16 @@ public class IslandFinder implements Serializable, Stoppable {
 					if (currentList != null) {
 						List<List<Integer>> islandsPositions;
 						List<Double> scoreIsland;
-						
+						List<Double> islandSummits;
+
 						// Search all islands position (0: start; 1: stop)
 						islandsPositions = searchIslandPosition(currentList);
 						// Calculate all islands score
 						scoreIsland = islandScore(currentList, islandsPositions.get(0), islandsPositions.get(1));
+						// Calculate all islands summit
+						islandSummits = islandSummits(currentList, islandsPositions.get(0), islandsPositions.get(1));
 						// Create the result list
-						resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1));
+						resultList = getListIsland(precision, currentList, scoreIsland, islandsPositions.get(0), islandsPositions.get(1), islandSummits);
 					} else {
 						resultList = null;
 					}
@@ -128,9 +131,9 @@ public class IslandFinder implements Serializable, Stoppable {
 			return null;
 		}
 	}
-	
+
 	/////////////////////////////////////////////////////////	Main methods
-	
+
 	/**
 	 * searchIslandPosition method
 	 * This method determines the positions of all islands.
@@ -178,7 +181,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		islandsPositions.add(islandsStop);
 		return islandsPositions;
 	}
-	
+
 	/**
 	 * calculateScoreIsland method
 	 * This method calculate the score for all islands.
@@ -190,8 +193,8 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @return					list of score islands
 	 */
 	private List<Double> islandScore (List<Double> currentList,
-										List<Integer> islandsStart,
-										List<Integer> islandsStop) {
+			List<Integer> islandsStart,
+			List<Integer> islandsStop) {
 		List<Double> scoreIsland = new ArrayList<Double> ();
 		int currentPos = 0;
 		double sumScore;
@@ -209,7 +212,38 @@ public class IslandFinder implements Serializable, Stoppable {
 		}
 		return scoreIsland;
 	}
-	
+
+
+	/**
+	 * islandSummits method
+	 * This method calculate the summit value for each island.
+	 * The summit of an island is the greatest window score contained in it.
+	 * 
+	 * @param currentList		current list of windows value
+	 * @param islandsStart		start positions of all islands
+	 * @param islandsStop		stop positions of all islands
+	 * @return					list of score islands
+	 */
+	private List<Double> islandSummits (List<Double> currentList,
+			List<Integer> islandsStart,
+			List<Integer> islandsStop) {
+		List<Double> scoreIsland = new ArrayList<Double> ();
+		int currentPos = 0;
+		double summitScore;
+		while (currentPos < islandsStart.size() && !stopped) {
+			summitScore = Double.NEGATIVE_INFINITY; // the summit is the smallest double value
+			int i = islandsStart.get(currentPos);
+			while (i <= islandsStop.get(currentPos) && !stopped) {	// Loop for the sum
+				summitScore = Math.max(summitScore, currentList.get(i));
+				i++;
+			}
+			scoreIsland.add(summitScore);
+			currentPos++;
+		}
+		return scoreIsland;
+	}
+
+
 	/**
 	 * getListIsland method
 	 * This method makes a list of double to determine the value of each windows of the BinList.
@@ -220,13 +254,15 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * @param currentList		current list of windows value
 	 * @param islandsStart		start positions of all islands
 	 * @param islandsStop		stop positions of all islands
+	 * @param islandSummits		summit values of the islands
 	 * @return					list of windows values
 	 */
 	private List<Double> getListIsland (	DataPrecision precision,
-											List<Double> currentList,
-											List<Double> scoreIsland,
-											List<Integer> islandsStart,
-											List<Integer> islandsStop) {
+			List<Double> currentList,
+			List<Double> scoreIsland,
+			List<Integer> islandsStart,
+			List<Integer> islandsStop,
+			List<Double> islandSummits) {
 		List<Double> resultList = ListFactory.createList(precision, currentList.size());
 		int currentPos = 0;	// position on the island start and stop arrays
 		double value = 0.0;
@@ -240,6 +276,9 @@ public class IslandFinder implements Serializable, Stoppable {
 							break;
 						case IFSCORE:
 							value = scoreIsland.get(currentPos);	// we keep the island score value
+							break;
+						case SUMMIT:
+							value = islandSummits.get(currentPos);
 						}
 					} else {
 						value = 0.0;
@@ -257,10 +296,10 @@ public class IslandFinder implements Serializable, Stoppable {
 		}
 		return resultList;
 	}
-	
-	
+
+
 	/////////////////////////////////////////////////////////	statistics methods
-	
+
 	/**
 	 * scoreOfWindow method
 	 * This method calculate the window score with the number of reads of this window.
@@ -272,27 +311,27 @@ public class IslandFinder implements Serializable, Stoppable {
 		double result = -1.0;
 		synchronized (readScoreStorage) {
 
-		if (this.readScoreStorage.containsKey(value)){	// if the score is stored
-			try {
-				result = this.readScoreStorage.get(value);	// we get it
-			} catch (Exception e) {
-				System.out.println("value: " + value);
-				e.printStackTrace();
+			if (this.readScoreStorage.containsKey(value)){	// if the score is stored
+				try {
+					result = this.readScoreStorage.get(value);	// we get it
+				} catch (Exception e) {
+					System.out.println("value: " + value);
+					e.printStackTrace();
+				}
+			} else {	// else we have to calculated it
+				try {
+					result = -1*Poisson.logPoisson(lambda, (int)value);
+					this.readScoreStorage.put(value, result);
+				} catch (InvalidLambdaPoissonParameterException e) {
+					e.printStackTrace();
+				} catch (InvalidFactorialParameterException e) {
+					e.printStackTrace();
+				}
 			}
-		} else {	// else we have to calculated it
-			try {
-				result = -1*Poisson.logPoisson(lambda, (int)value);
-				this.readScoreStorage.put(value, result);
-			} catch (InvalidLambdaPoissonParameterException e) {
-				e.printStackTrace();
-			} catch (InvalidFactorialParameterException e) {
-				e.printStackTrace();
-			}
-		}
 		}
 		return result;
 	}
-	
+
 	/**
 	 * lambdaCalcul method
 	 * This method calculate the lambda value.
@@ -316,7 +355,7 @@ public class IslandFinder implements Serializable, Stoppable {
 		result = totalScore.compute() / windowsNumber.compute();
 		return result;
 	}
-	
+
 	/**
 	 * findPValue method
 	 * This method calculate the p-value with a read count limit.
@@ -334,23 +373,23 @@ public class IslandFinder implements Serializable, Stoppable {
 			}
 			if (!MathFunctions.isInteger(read)) {
 				value = MathFunctions.linearInterpolation(	(int)Math.round(read - 0.5d),
-															value,
-															(int)Math.round(read + 0.5d),
-															value + Poisson.poisson(this.lambda, (int)Math.round(read + 0.5d)),
-															read);
+						value,
+						(int)Math.round(read + 0.5d),
+						value + Poisson.poisson(this.lambda, (int)Math.round(read + 0.5d)),
+						read);
 			}
 		} else if (read == 1.0) {
 			value = Poisson.poisson(this.lambda, 0);
 		}
 		return (1 - value);
 	}
-	
-	
+
+
 	// Setters
 	public void setGap(int gap) {
 		this.gap = gap;
 	}
-	
+
 	public void setIslandMinLength(int minIslandLength) {
 		this.islandMinLength = minIslandLength;
 	}
@@ -371,11 +410,11 @@ public class IslandFinder implements Serializable, Stoppable {
 	public BinList getBinList() {
 		return binList;
 	}
-	
+
 	public int getGap() {
 		return gap;
 	}
-	
+
 	public int getMinIslandLength() {
 		return islandMinLength;
 	}
@@ -400,5 +439,5 @@ public class IslandFinder implements Serializable, Stoppable {
 	public void stop() {
 		this.stopped = true;
 	}
-	
+
 }
