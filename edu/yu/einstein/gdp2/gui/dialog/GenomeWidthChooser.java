@@ -194,6 +194,26 @@ public final class GenomeWidthChooser extends JDialog {
 	
 	/**
 	 * Displays a GenomeWidthChooser dialog, and returns  
+	 * an integer value for the moving window size.
+	 * @param parent The parent {@link Component} from which the dialog is displayed..
+	 * @param aWindowSize a size of bins.
+	 * @return An Integer value of the moving window size if OK has been pressed. Null otherwise. 
+	 */
+	public static Integer getMovingWindowSize(Component parent, int aWindowSize) {
+		windowSize = aWindowSize;
+		validGenomeWidth = windowSize * 10;
+		type = "Moving Window Size";
+		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
+		FS.setVisible(true);
+		if(validated)
+			return validGenomeWidth;
+		else
+			return null;
+	}
+	
+	
+	/**
+	 * Displays a GenomeWidthChooser dialog, and returns  
 	 * an integer value for the width of a moving standard deviation.
 	 * @param parent The parent {@link Component} from which the dialog is displayed..
 	 * @param aWindowSize greatest size of the bins of the curves.
