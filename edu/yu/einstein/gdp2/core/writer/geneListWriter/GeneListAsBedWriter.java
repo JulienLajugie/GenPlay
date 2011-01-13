@@ -23,8 +23,9 @@ import yu.einstein.gdp2.gui.statusBar.Stoppable;
 public final class GeneListAsBedWriter extends GeneListWriter implements Stoppable {
 
 	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
+	private boolean isGeneListScored = false;	// true if the gene list is scored
 
-	
+
 	/**
 	 * Creates an instance of {@link GeneListAsBedWriter}.
 	 * @param outputFile output {@link File}
@@ -38,6 +39,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 
 	@Override
 	public void write() throws IOException, InterruptedException {
+		isGeneListScored = isGeneListScored();
 		BufferedWriter writer = null;
 		try {
 			// try to create a output file
@@ -47,75 +49,82 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 			writer.newLine();
 			// print the data
 			for (List<Gene> currentList : data) {
-				for (Gene currentGene : currentList) {
-					// if the operation need to be stopped we close the writer and delete the file 
-					if (needsToBeStopped) {
-						writer.close();
-						outputFile.delete();
-						throw new InterruptedException();
-					}
-					String lineToPrint = new String();
-					lineToPrint = currentGene.getChromo().toString();
-					lineToPrint += "\t";
-					lineToPrint += currentGene.getStart();
-					lineToPrint += "\t";
-					lineToPrint += currentGene.getStop();
-					lineToPrint += "\t";
-					lineToPrint += currentGene.getName();
-					lineToPrint += "\t";
-					// add the RPKM of the gene for the score if there is one
-					Double score = currentGene.getGeneRPKM();
-					if (score == null) {
-						lineToPrint += "0";
-					} else {
-						lineToPrint += score;
-					}
-					lineToPrint += "\t";
-					lineToPrint += currentGene.getStrand().toString();
-					lineToPrint += "\t";
-					lineToPrint += currentGene.getUTR5Bound();
-					lineToPrint += "\t";
-					lineToPrint += currentGene.getUTR3Bound();
-					// add "-" for itemRgb
-					lineToPrint += "\t-\t";
-					if ((currentGene.getExonStops() == null) || (currentGene.getExonStarts() == null)) {
-						lineToPrint += "-\t-";
-					} else {
-						// exon count
-						lineToPrint += currentGene.getExonStarts().length;
+				if (currentList != null) {
+					for (Gene currentGene : currentList) {
+						// if the operation need to be stopped we close the writer and delete the file 
+						if (needsToBeStopped) {
+							writer.close();
+							outputFile.delete();
+							throw new InterruptedException();
+						}
+						String lineToPrint = new String();
+						lineToPrint = currentGene.getChromo().toString();
 						lineToPrint += "\t";
-						// exon lengths
-						for (int i = 0; i < currentGene.getExonStops().length; i++) {
-							lineToPrint += currentGene.getExonStops()[i] - currentGene.getExonStarts()[i];
-							lineToPrint += ",";
-						}
-						// remove last comma
-						lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-					}
-					lineToPrint += "\t";
-					// exon starts
-					if (currentGene.getExonStarts() == null) {
-						lineToPrint += "-";
-					} else {
-						for (int currentStart : currentGene.getExonStarts()) {
-							lineToPrint += currentStart - currentGene.getStart();
-							lineToPrint += ",";
-						}
-						// remove last comma
-						lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
-					}
-					// exon scores
-					if (currentGene.getExonScores() != null) {
+						lineToPrint += currentGene.getStart();
 						lineToPrint += "\t";
-						for (double currentScore : currentGene.getExonScores()) {
-							lineToPrint += currentScore;
-							lineToPrint += ",";
+						lineToPrint += currentGene.getStop();
+						lineToPrint += "\t";
+						lineToPrint += currentGene.getName();
+						lineToPrint += "\t";
+						// add the RPKM of the gene for the score if there is one
+						if (!isGeneListScored) {
+							lineToPrint += "1";
+						} else {
+							Double score = currentGene.getGeneRPKM();
+							if (score == null) {
+								// if there is no score for the gene we put a default 1
+								lineToPrint += "0";
+							} else {
+								lineToPrint += score;
+							}
 						}
-						// remove last comma
-						lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+						lineToPrint += "\t";
+						lineToPrint += currentGene.getStrand().toString();
+						lineToPrint += "\t";
+						lineToPrint += currentGene.getUTR5Bound();
+						lineToPrint += "\t";
+						lineToPrint += currentGene.getUTR3Bound();
+						// add "-" for itemRgb
+						lineToPrint += "\t-\t";
+						if ((currentGene.getExonStops() == null) || (currentGene.getExonStarts() == null)) {
+							lineToPrint += "-\t-";
+						} else {
+							// exon count
+							lineToPrint += currentGene.getExonStarts().length;
+							lineToPrint += "\t";
+							// exon lengths
+							for (int i = 0; i < currentGene.getExonStops().length; i++) {
+								lineToPrint += currentGene.getExonStops()[i] - currentGene.getExonStarts()[i];
+								lineToPrint += ",";
+							}
+							// remove last comma
+							lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+						}
+						lineToPrint += "\t";
+						// exon starts
+						if (currentGene.getExonStarts() == null) {
+							lineToPrint += "-";
+						} else {
+							for (int currentStart : currentGene.getExonStarts()) {
+								lineToPrint += currentStart - currentGene.getStart();
+								lineToPrint += ",";
+							}
+							// remove last comma
+							lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+						}
+						// exon scores
+						if (currentGene.getExonScores() != null) {
+							lineToPrint += "\t";
+							for (double currentScore : currentGene.getExonScores()) {
+								lineToPrint += currentScore;
+								lineToPrint += ",";
+							}
+							// remove last comma
+							lineToPrint = lineToPrint.substring(0, lineToPrint.length() - 1);
+						}
+						writer.write(lineToPrint);
+						writer.newLine();					
 					}
-					writer.write(lineToPrint);
-					writer.newLine();					
 				}
 			}
 		} finally {
@@ -124,8 +133,25 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 			}
 		}
 	}
-	
-	
+
+
+	/**
+	 * @return true if the genes are scored, false otherwise
+	 */
+	private boolean isGeneListScored() {
+		for (List<Gene> currentList : data) {
+			if (currentList != null) {
+				for (Gene currentGene : currentList) {
+					Double rpkm = currentGene.getGeneRPKM();
+					if ((rpkm != null) && (rpkm != 0)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Stops the writer while it's writing a file
 	 */
