@@ -122,7 +122,9 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 						stopList.add(chromosome, stop);
 						if (splitedLine.length > 3) {
 							String name = splitedLine[3].trim();
-							nameList.add(chromosome, name);
+							if (!name.trim().equals("-")) {
+								nameList.add(chromosome, name);
+							}
 							if (splitedLine.length > 4) {
 								if (!splitedLine[4].trim().equals("-")) {
 									double score = Double.parseDouble(splitedLine[4].trim());
