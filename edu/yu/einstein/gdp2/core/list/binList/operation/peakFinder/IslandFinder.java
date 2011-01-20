@@ -278,7 +278,11 @@ public class IslandFinder implements Serializable, Stoppable {
 							value = scoreIsland.get(currentPos);	// we keep the island score value
 							break;
 						case SUMMIT:
-							value = islandSummits.get(currentPos);
+							if (currentList.get(i) < islandSummits.get(currentPos)) {
+								value = 0d;
+							} else {
+								value = islandSummits.get(currentPos);
+							}
 						}
 					} else {
 						value = 0.0;
