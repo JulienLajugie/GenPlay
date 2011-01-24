@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -35,6 +36,7 @@ import yu.einstein.gdp2.core.manager.ChromosomeManager;
 import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.core.manager.ExceptionManager;
 import yu.einstein.gdp2.core.manager.ZoomManager;
+import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.action.project.PAAbout;
 import yu.einstein.gdp2.gui.action.project.PAExit;
 import yu.einstein.gdp2.gui.action.project.PAFullScreen;
@@ -71,6 +73,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	public static final String APPLICATION_TITLE = " - GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") -";
 	private static final String DEFAULT_PROJECT_NAME = "New Project";
 	private final static String ICON_PATH = "yu/einstein/gdp2/resource/icon.png"; // path of the icon of the application
+	private final static String DEMO_PROJECT_PATH = "yu/einstein/gdp2/resource/CHiP-Seq_tutorial_project.gen"; // path in the resource to the preloaded project. no preloaded project if null
+	//private final static String DEMO_PROJECT_PATH = null; // path in the resource to the preloaded project. no preloaded project if null
 	
 	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
 	private final Image 				iconImage; 				// icon of the application
@@ -97,7 +101,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		}
 		return instance;
 	}
-
+	
 	
 	/**
 	 * Starts the application
@@ -107,13 +111,44 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				MainFrame mainFrame = MainFrame.getInstance();
+				// create and show a singleton instance of MainFrame
+				final MainFrame mainFrame = MainFrame.getInstance();
 				mainFrame.setVisible(true);
-				if (args.length == 1) {
+				// check if there it is a demo version with preloaded project
+				final boolean isDemo = (DEMO_PROJECT_PATH != null); 
+				// if a project file was specified as an arguments or if it's a demo version 
+				// we create a worker that will load the project
+				if (args.length == 1 || isDemo) {
 					try {
-						mainFrame.getTrackList().loadProject(new File(args[0]));
-						// unlock the tracks
-						mainFrame.getTrackList().actionEnds();
+						new TrackListActionWorker<Void>() {
+							private static final long serialVersionUID = 1529681223619405640L; // generated ID
+							/**
+							 * Saves the project
+							 */
+							@Override
+							protected Void processAction() throws Exception {
+								notifyActionStart("Loading Project", 1, false);
+								if (isDemo) {
+									// if it's a demo we need to retrive the project from resource in the jar
+									InputStream is = mainFrame.getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
+									mainFrame.getTrackList().loadProject(is);
+								} else {
+									// case where a file was specified as an argument
+									mainFrame.getTrackList().loadProject(new File(args[0]));
+								}
+								return null;
+							}
+							
+							@Override
+							protected void doAtTheEnd(Void actionResult) {
+								// unlock the tracks
+								mainFrame.getTrackList().actionEnds();
+								// change the title of the main frame
+								mainFrame.setTitle("CHiP-Seq Tutorial" + MainFrame.APPLICATION_TITLE);
+							}							
+						}.actionPerformed(null);
+						
+
 					} catch (Exception e) {
 						ExceptionManager.handleException(mainFrame.getRootPane(), e, "Error while loading the project.");
 					}

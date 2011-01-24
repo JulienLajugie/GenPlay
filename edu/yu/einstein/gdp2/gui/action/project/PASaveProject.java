@@ -77,9 +77,7 @@ public class PASaveProject extends TrackListActionWorker<Void> {
 
 	@Override
 	protected void doAtTheEnd(Void actionResult) {
-		if (actionResult != null) {
-			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-			mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
-		}
+		JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+		mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
 	}
 }

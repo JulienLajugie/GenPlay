@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
@@ -858,6 +859,20 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		}
 	}
 
+	
+	public void loadProject(InputStream is) throws Exception {
+		try {
+			//FileInputStream fis = new FileInputStream(inputFile);
+			GZIPInputStream gz = new GZIPInputStream(is);
+			ObjectInputStream ois = new ObjectInputStream(gz);
+			trackList = (Track[])ois.readObject();
+			rebuildPanel();
+		} catch (IOException e) {
+			// a IOException is likely to be caused by a invalid file type 
+			throw new InvalidFileTypeException();
+		}
+	}
+	
 
 	/**
 	 * Unlocks the track handles when an action ends
