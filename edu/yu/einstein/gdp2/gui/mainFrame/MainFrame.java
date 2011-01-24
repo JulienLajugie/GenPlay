@@ -73,8 +73,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	public static final String APPLICATION_TITLE = " - GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") -";
 	private static final String DEFAULT_PROJECT_NAME = "New Project";
 	private final static String ICON_PATH = "yu/einstein/gdp2/resource/icon.png"; // path of the icon of the application
-	private final static String DEMO_PROJECT_PATH = "yu/einstein/gdp2/resource/CHiP-Seq_tutorial_project.gen"; // path in the resource to the preloaded project. no preloaded project if null
-	//private final static String DEMO_PROJECT_PATH = null; // path in the resource to the preloaded project. no preloaded project if null
+	//private final static String DEMO_PROJECT_PATH = "yu/einstein/gdp2/resource/CHiP-Seq_tutorial_project.gen"; // path in the resource to the preloaded project. no preloaded project if null
+	private final static String DEMO_PROJECT_PATH = null; // path in the resource to the preloaded project. no preloaded project if null
 	
 	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
 	private final Image 				iconImage; 				// icon of the application
