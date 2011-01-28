@@ -87,7 +87,7 @@ public final class StatusBar extends JPanel {
 		statusLabel.setDescription(actionDescription);
 		statusLabel.setStep(1);
 		statusLabel.setStepCount(stepCount);
-		statusLabel.startCounter();		
+		statusLabel.startCounter();
 		// initialize the stop button
 		stopButton.setStoppable(stoppable);
 	}

@@ -24,8 +24,8 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class PALoadProject extends TrackListActionWorker<Void> {
-	
+public class PALoadProject extends TrackListActionWorker<Boolean> {
+
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
 		"Load a project from a file"; 								// tooltip
@@ -33,14 +33,14 @@ public class PALoadProject extends TrackListActionWorker<Void> {
 	private static final String 	ACTION_NAME = "Load Project";	// action name
 	private final 		TrackList	trackList;						// track list where to load the project
 	private File 					selectedFile;					// selected file
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "PALoadProject";
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link PALoadProject}
 	 */
@@ -50,26 +50,29 @@ public class PALoadProject extends TrackListActionWorker<Void> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-        putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
 
 
 	@Override
-	protected Void processAction() throws Exception {
+	protected Boolean processAction() throws Exception {
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		FileFilter[] fileFilters = {new GenPlayProjectFilter()};
 		selectedFile = Utils.chooseFileToLoad(trackList.getRootPane(), "Load Project", defaultDirectory, fileFilters);
 		if (selectedFile != null) {
 			notifyActionStart("Loading Project", 1, false);
 			trackList.loadProject(selectedFile);
+			return true;
 		}
-		return null;
+		return false;
 	}
-	
-	
+
+
 	@Override
-	protected void doAtTheEnd(Void actionResult) {
-		JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-		mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+	protected void doAtTheEnd(Boolean actionResult) {
+		if (actionResult) {
+			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+			mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+		}
 	}
 }

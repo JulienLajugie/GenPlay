@@ -25,7 +25,7 @@ import yu.einstein.gdp2.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class PASaveProject extends TrackListActionWorker<Void> {
+public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = -8503082838697971220L;	// generated ID
 	private static final String 	DESCRIPTION = 
@@ -34,7 +34,7 @@ public class PASaveProject extends TrackListActionWorker<Void> {
 	private static final String 	ACTION_NAME = "Save Project";	// action name
 	private final 		TrackList	trackList;						// track list containing the project to save
 	private File 					selectedFile;					// selected file
-	
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -56,7 +56,7 @@ public class PASaveProject extends TrackListActionWorker<Void> {
 
 
 	@Override
-	protected Void processAction() throws Exception {
+	protected Boolean processAction() throws Exception {
 		final JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Project");
@@ -69,15 +69,18 @@ public class PASaveProject extends TrackListActionWorker<Void> {
 			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
 				trackList.saveProject(selectedFile);
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 
 	@Override
-	protected void doAtTheEnd(Void actionResult) {
-		JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-		mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+	protected void doAtTheEnd(Boolean actionResult) {
+		if (actionResult) {
+			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+			mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+		}
 	}
 }
