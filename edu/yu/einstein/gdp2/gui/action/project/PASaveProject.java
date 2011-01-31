@@ -80,7 +80,8 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
 			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-			mainFrame.setTitle(selectedFile.getName() + MainFrame.APPLICATION_TITLE);
+			String projectName = Utils.getFileNameWithoutExtension(selectedFile);
+			mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
 		}
 	}
 }

@@ -57,6 +57,7 @@ import yu.einstein.gdp2.gui.popupMenu.MainMenu;
 import yu.einstein.gdp2.gui.statusBar.StatusBar;
 import yu.einstein.gdp2.gui.track.Ruler;
 import yu.einstein.gdp2.gui.trackList.TrackList;
+import yu.einstein.gdp2.util.Utils;
 
 /**
  * Main Frame of the application.
@@ -66,7 +67,7 @@ import yu.einstein.gdp2.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 325; 						// GenPlay version
+	private static final int VERSION_NUMBER = 327; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -75,6 +76,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private final static String ICON_PATH = "yu/einstein/gdp2/resource/icon.png"; // path of the icon of the application
 	//private final static String DEMO_PROJECT_PATH = "yu/einstein/gdp2/resource/CHiP-Seq_tutorial_project.gen"; // path in the resource to the preloaded project. no preloaded project if null
 	private final static String DEMO_PROJECT_PATH = null; // path in the resource to the preloaded project. no preloaded project if null
+	private final static String DEMO_PROJECT_NAME = "ChIP-Seq Tutorial (hg19)"; // path in the resource to the preloaded project. no preloaded project if null
 	
 	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
 	private final Image 				iconImage; 				// icon of the application
@@ -144,7 +146,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 								// unlock the tracks
 								mainFrame.getTrackList().actionEnds();
 								// change the title of the main frame
-								mainFrame.setTitle("CHiP-Seq Tutorial" + MainFrame.APPLICATION_TITLE);
+								if (args.length == 1) {
+									String projectName = Utils.getFileNameWithoutExtension(new File(args[0]));
+									mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
+								} else {
+									mainFrame.setTitle(DEMO_PROJECT_NAME + MainFrame.APPLICATION_TITLE);
+								}
 							}							
 						}.actionPerformed(null);
 						

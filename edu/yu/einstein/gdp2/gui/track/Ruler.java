@@ -23,6 +23,7 @@ import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import yu.einstein.gdp2.gui.event.genomeWindowEvent.GenomeWindowListener;
 
+
 /**
  * A ruler
  * @author Julien Lajugie
@@ -79,7 +80,7 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		rulerButton.setBackground(Color.white);
 		rulerButton.setMargin(new Insets(0, 0, 0, 0));
 		rulerButton.setFocusPainted(false);
-		ClassLoader cl = this.getClass().getClassLoader();
+		ClassLoader cl = ClassLoader.getSystemClassLoader();//this.getClass().getClassLoader();
 		rulerButton.setIcon(new ImageIcon(cl.getResource(ICON_PATH)));
 		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.lightGray));	
 		rulerButton.setPreferredSize(new Dimension(HANDLE_WIDTH + 1, RULER_HEIGHT));
