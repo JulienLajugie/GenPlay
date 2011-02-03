@@ -17,6 +17,7 @@ import yu.einstein.gdp2.core.manager.ConfigurationManager;
 import yu.einstein.gdp2.gui.action.TrackListActionWorker;
 import yu.einstein.gdp2.gui.dialog.DASDialog;
 import yu.einstein.gdp2.gui.track.SCWListTrack;
+import yu.einstein.gdp2.util.TrackColor;
 
 
 /**
@@ -84,6 +85,7 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
 			SCWListTrack newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load From DAS Server", Color.GRAY);
+			newTrack.setTrackColor(TrackColor.getTrackColor());
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes);
 		}							
 	}

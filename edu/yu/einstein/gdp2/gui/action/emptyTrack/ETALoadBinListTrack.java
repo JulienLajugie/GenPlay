@@ -21,6 +21,7 @@ import yu.einstein.gdp2.gui.action.TrackListActionExtractorWorker;
 import yu.einstein.gdp2.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import yu.einstein.gdp2.gui.track.BinListTrack;
 import yu.einstein.gdp2.gui.trackList.TrackList;
+import yu.einstein.gdp2.util.TrackColor;
 import yu.einstein.gdp2.util.Utils;
 
 
@@ -84,6 +85,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			}
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			newTrack.getHistory().add(history, Color.GRAY);
+			newTrack.setTrackColor(TrackColor.getTrackColor());
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}
