@@ -87,6 +87,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAGenerateSCWList;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
+import yu.einstein.gdp2.gui.action.binListTrack.BLALoessRegression;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMax;
@@ -264,6 +265,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAIndex.ACTION_KEY, new BLAIndex());
 		getActionMap().put(BLAIndexByChromosome.ACTION_KEY, new BLAIndexByChromosome());
 		getActionMap().put(BLAInvertConstant.ACTION_KEY, new BLAInvertConstant());
+		getActionMap().put(BLALoessRegression.ACTION_KEY, new BLALoessRegression());
 		getActionMap().put(BLALog.ACTION_KEY, new BLALog());
 		getActionMap().put(BLALogOnAvgWithDamper.ACTION_KEY, new BLALogOnAvgWithDamper());
 		getActionMap().put(BLAMax.ACTION_KEY, new BLAMax());

@@ -27,6 +27,7 @@ import yu.einstein.gdp2.gui.action.binListTrack.BLAGenerateSCWList;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndex;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAIndexByChromosome;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAInvertConstant;
+import yu.einstein.gdp2.gui.action.binListTrack.BLALoessRegression;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALog;
 import yu.einstein.gdp2.gui.action.binListTrack.BLALogOnAvgWithDamper;
 import yu.einstein.gdp2.gui.action.binListTrack.BLAMax;
@@ -68,9 +69,10 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiInvertConstant;				// menu invert BinListTrack
 	
 	private final JMenuItem		jmiTwoTracks;					// menu operates BinListTrack by another one
-	
-	private final JMenuItem		jmiGauss;						// menu gauss BinListTrack
+
 	private final JMenuItem		jmiMovingAverage;				// menu moving average on BinListTrack
+	private final JMenuItem		jmiGauss;						// menu gauss BinListTrack
+	private final JMenuItem		jmiLoessRegression;				// menu Loess regression
 	private final JMenuItem		jmiIndex;						// menu index BinListTrack
 	private final JMenuItem		jmiIndexPerChromosome;			// menu index BinListTrack per chromosome
 	private final JMenuItem		jmiLog;							// menu log BinListTrack
@@ -121,9 +123,11 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiInvertConstant = new JMenuItem(actionMap.get(BLAInvertConstant.ACTION_KEY));
 		
 		jmiTwoTracks = new JMenuItem(actionMap.get(BLATwoTracks.ACTION_KEY));
-		
-		jmiGauss = new JMenuItem(actionMap.get(BLAGauss.ACTION_KEY));
+
 		jmiMovingAverage = new JMenuItem(actionMap.get(BLAMovingAverage.ACTION_KEY));
+		jmiGauss = new JMenuItem(actionMap.get(BLAGauss.ACTION_KEY));
+		jmiLoessRegression = new JMenuItem(actionMap.get(BLALoessRegression.ACTION_KEY));
+		
 		jmiIndex = new JMenuItem(actionMap.get(BLAIndex.ACTION_KEY));
 		jmiIndexPerChromosome = new JMenuItem(actionMap.get(BLAIndexByChromosome.ACTION_KEY));
 		jmiLog = new JMenuItem(actionMap.get(BLALog.ACTION_KEY));
@@ -164,8 +168,10 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.addSeparator();
 		jmOperation.add(jmiTwoTracks);
 		jmOperation.addSeparator();
-		jmOperation.add(jmiGauss);
 		jmOperation.add(jmiMovingAverage);
+		jmOperation.add(jmiGauss);
+		jmOperation.add(jmiLoessRegression);
+		jmOperation.addSeparator();
 		jmOperation.add(jmiIndex);
 		jmOperation.add(jmiIndexPerChromosome);
 		jmOperation.add(jmiLog);
