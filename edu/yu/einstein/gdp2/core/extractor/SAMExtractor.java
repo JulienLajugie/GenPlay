@@ -70,6 +70,9 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
 						int position = Integer.parseInt(splitedLine[3]);
+						// we subtract 1 to the position because sam file position  
+						// are 1 base and genplay is 0 based
+						position--;
 						positionList.get(chromosome).add(position);		
 						lineCount++;
 					}

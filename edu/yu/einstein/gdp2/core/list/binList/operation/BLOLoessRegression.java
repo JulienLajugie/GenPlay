@@ -54,7 +54,8 @@ public class BLOLoessRegression implements Operation<BinList> {
 		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient 
 		final double[] weights = new double[halfWidth + 1];
 		for(int i = 0; i <= halfWidth; i++) {
-			weights[i] = (1 - (i / halfWidth) ^ 3) ^ 3;
+			weights[i] = Math.pow(1d - Math.pow(i / (double) halfWidth,  3d), 3d);
+			System.out.println(weights[i]);
 		}
 		// we compute the Loess regression
 		for(short i = 0; i < binList.size(); i++) {
@@ -77,13 +78,13 @@ public class BLOLoessRegression implements Operation<BinList> {
 									int i = k + halfWidth;
 									if(((j + k) >= 0) && ((j + k) < currentList.size()))  {
 										int distance = Math.abs(k);
-										if(currentList.get(j + k) != 0)  {
+										//if(currentList.get(j + k) != 0)  {
 											sumWts += weights[distance];
 											sumWtX += i * weights[distance];
 											sumWtX2 += (i ^ 2) * weights[distance];											
 											sumWtY += currentList.get(j + k) * weights[distance];
 											sumWtXY += i * currentList.get(j + k) * weights[distance];										
-										}
+										//}
 									}
 								}
 								double denom = (sumWts * sumWtX2) - Math.pow(sumWtX, 2);

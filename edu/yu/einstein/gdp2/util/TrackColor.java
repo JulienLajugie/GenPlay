@@ -18,7 +18,6 @@ import java.awt.Color;
  */
 public enum TrackColor {
 
-	RED (Color.RED),
 	DARK_BLUE (new Color(0x0000CD)),
 	LIGHT_GREEN(new Color(0x7FFF00)),
 	GRAY (new Color(0x696969)),
@@ -29,6 +28,7 @@ public enum TrackColor {
 	ORANGE (new Color(0xFF4500)),
 	PURPLE (new Color(0x800080)),
 	LIGHT_BLUE (new Color(0xADD8E6)),
+	RED (Color.RED),
 	BLACK (Color.BLACK),
 	YELLOW (new Color(0xFFD700)),
 	DARK_CYAN (new Color(0x008B8B));
@@ -38,7 +38,7 @@ public enum TrackColor {
 
 
 	/**
-	 * Private constructor. Creates an instance of a {@link TrackColorEnum}
+	 * Private constructor. Creates an instance of a {@link TrackColor}
 	 * @param color color of the enum element
 	 */
 	private TrackColor(Color color){
