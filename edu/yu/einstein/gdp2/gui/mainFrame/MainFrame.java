@@ -67,7 +67,7 @@ import yu.einstein.gdp2.util.Utils;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 331; 						// GenPlay version
+	private static final int VERSION_NUMBER = 332; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
