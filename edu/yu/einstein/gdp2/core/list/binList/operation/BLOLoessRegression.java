@@ -15,14 +15,9 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *     
- *     The program "GenPlay" written by Julien Lajugie 
- *     julien.lajugie@einstein.yu.edu  is available at genplay.einstein.yu.edu
- *     
+ *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-/**
- * @author Julien Lajugie
- * @version 0.1
- */
 package yu.einstein.gdp2.core.list.binList.operation;
 
 import java.util.ArrayList;
@@ -49,8 +44,8 @@ public class BLOLoessRegression implements Operation<BinList> {
 	private final int 		halfMovingWindow;	// half size of the moving window in bp
 	private final boolean	fillNullValues; 	// true to fill the null values
 	private boolean			stopped = false;	// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link BLOLoessRegression}
 	 * Applies a Loess regression on the BinList and returns the result in a new BinList.
@@ -63,8 +58,8 @@ public class BLOLoessRegression implements Operation<BinList> {
 		this.halfMovingWindow = halfMovingWindow;
 		this.fillNullValues = fillNullValues;
 	}
-	
-	
+
+
 	@Override
 	public BinList compute() throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
@@ -89,32 +84,31 @@ public class BLOLoessRegression implements Operation<BinList> {
 						for(int j = 0; j < currentList.size() && !stopped; j++) {
 							if ((currentList.get(j) != 0) || (fillNullValues)) {
 								// apply the array of coefficients centered on the current value to gauss
-							    double sumWts = 0;
-							    double sumWtX = 0;
-							    double sumWtX2 = 0;
-							    double sumWtY = 0;
-							    double sumWtXY = 0;
+								double sumWts = 0;
+								double sumWtX = 0;
+								double sumWtX2 = 0;
+								double sumWtY = 0;
+								double sumWtXY = 0;
 								for (int k = -halfWidth; k <= halfWidth && !stopped; k++) {
-									int i = k + halfWidth;
-									if(((j + k) >= 0) && ((j + k) < currentList.size()))  {
+									int movingX = j + k; // x coordinate of the current point in the moving window
+									if((movingX >= 0) && (movingX < currentList.size()))  {
 										int distance = Math.abs(k);
-										//if(currentList.get(j + k) != 0)  {
+										if(currentList.get(j + k) != 0)  {
 											sumWts += weights[distance];
-											sumWtX += i * weights[distance];
-											sumWtX2 += (i ^ 2) * weights[distance];											
-											sumWtY += currentList.get(j + k) * weights[distance];
-											sumWtXY += i * currentList.get(j + k) * weights[distance];										
-										//}
+											sumWtX += movingX * weights[distance];
+											sumWtX2 += (movingX ^ 2) * weights[distance];											
+											sumWtY += currentList.get(movingX) * weights[distance];
+											sumWtXY += movingX * currentList.get(movingX) * weights[distance];										
+										}
 									}
 								}
 								double denom = (sumWts * sumWtX2) - Math.pow(sumWtX, 2);
-								System.out.println(denom);
 								if(denom == 0) {
 									listToAdd.set(j, 0d);
 								} else {
 									double WLRSlope = (sumWts * sumWtXY - sumWtX * sumWtY) / denom;
 									double WLRIntercept = (sumWtX2 * sumWtY - sumWtX * sumWtXY) / denom;
-									double yLoess = WLRSlope * currentList.get(j) + WLRIntercept;									
+									double yLoess = WLRSlope * j + WLRIntercept;									
 									listToAdd.set(j, yLoess);
 								}
 							} else {
@@ -137,25 +131,25 @@ public class BLOLoessRegression implements Operation<BinList> {
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Loess Regression, half moving window size = " + halfMovingWindow + "bp";
 	}
-	
-	
+
+
 	@Override
 	public int getStepCount() {
 		return BinList.getCreationStepCount(binList.getBinSize()) + 1;
 	}
-	
-	
+
+
 	@Override
 	public String getProcessingDescription() {
 		return "Computing Loess Regression";
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;
