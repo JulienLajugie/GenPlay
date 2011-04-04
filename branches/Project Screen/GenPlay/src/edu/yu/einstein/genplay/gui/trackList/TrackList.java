@@ -22,31 +22,18 @@ package edu.yu.einstein.genplay.gui.trackList;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
@@ -194,11 +181,17 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			trackList[i].addGenomeWindowListener(this);
 			jpTrackList.add(trackList[i]);
 		}
+
+		
+		for (int i = 0; i < trackCount; i++) {
+			jpTrackList.add(trackList[i]);
+		}
 		setViewportView(jpTrackList);
 		addActionsToActionMap();
 		addKeyToInputMap();
-	}
 
+	}
+	
 
 	/**
 	 * Adds the action to the {@link ActionMap}
@@ -462,7 +455,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	/**
 	 * Rebuilds the list based on the data of the array of track
 	 */
-	private void rebuildPanel() {
+	public void rebuildPanel() {
 		jpTrackList.removeAll();
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setTrackNumber(i + 1);
@@ -825,75 +818,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * Saves the current list of tracks into a file
-	 */
-	public void saveProject(File outputFile) {
-		try {
-			// remove all the references to the listener so we don't save them
-			for (Track<?> currentTrack: trackList) {
-				currentTrack.removePropertyChangeListener(this);
-				currentTrack.removeGenomeWindowListener(this);
-			}
-			FileOutputStream fos = new FileOutputStream(outputFile);
-			GZIPOutputStream gz = new GZIPOutputStream(fos);
-			ObjectOutputStream oos = new ObjectOutputStream(gz);
-			// there is bug during the serialization with the nimbus LAF if the track list is visible 
-			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
-				setViewportView(null);
-			}
-			oos.writeObject(this.trackList);
-			// there is bug during the serialization with the nimbus LAF if the track list is visible
-			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
-				setViewportView(jpTrackList);
-			}
-			oos.flush();
-			oos.close();
-			gz.flush();
-			gz.close();
-			// rebuild the references to the listener
-			for (Track<?> currentTrack: trackList) {
-				currentTrack.addPropertyChangeListener(this);
-				currentTrack.addGenomeWindowListener(this);
-			}
-		} catch (IOException e) {
-			ExceptionManager.handleException(getRootPane(), e, "An error occurred while saving the project"); 
-		}
-	}
-
-
-	/**
-	 * Loads a list of tracks from a file
-	 * @throws Exception 
-	 */
-	public void loadProject(File inputFile) throws Exception {
-		try {
-			FileInputStream fis = new FileInputStream(inputFile);
-			GZIPInputStream gz = new GZIPInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(gz);
-			trackList = (Track[])ois.readObject();
-			rebuildPanel();
-		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type 
-			throw new InvalidFileTypeException();
-		}
-	}
-
-	
-	public void loadProject(InputStream is) throws Exception {
-		try {
-			//FileInputStream fis = new FileInputStream(inputFile);
-			GZIPInputStream gz = new GZIPInputStream(is);
-			ObjectInputStream ois = new ObjectInputStream(gz);
-			trackList = (Track[])ois.readObject();
-			rebuildPanel();
-		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type 
-			throw new InvalidFileTypeException();
-		}
-	}
-	
-
-	/**
 	 * Unlocks the track handles when an action ends
 	 */
 	public void actionEnds() {
@@ -936,11 +860,35 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for (int i = trackList.length - 2; i >= trackIndex; i--) {
 			trackList[i + 1] = trackList[i];
 		}
-
 		trackList[trackIndex] = new EmptyTrack(displayedGenomeWindow, trackList.length);
 		trackList[trackIndex].addPropertyChangeListener(this);
 		trackList[trackIndex].addGenomeWindowListener(this);
 		selectedTrack = null;
 		rebuildPanel();
 	}
+
+
+	public void setTrackList (Track<?>[] trackList) {
+		this.trackList = trackList;
+		rebuildPanel();
+	}
+	
+	
+	
+	/**
+	 * @return the trackList
+	 */
+	public Track<?>[] getTrackList() {
+		return trackList;
+	}
+
+
+	/**
+	 * @return the jpTrackList
+	 */
+	public JPanel getJpTrackList() {
+		return jpTrackList;
+	}
+	
+	
 }

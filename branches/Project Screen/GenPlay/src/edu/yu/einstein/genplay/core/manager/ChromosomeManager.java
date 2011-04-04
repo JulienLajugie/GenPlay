@@ -20,36 +20,39 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager;
 
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.ChromosomeComparator;
 
 
 /**
  * The ChromosomeManager class provides tools to load and access and list of {@link Chromosome}.
  * This class follows the design pattern <i>Singleton</i> 
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class ChromosomeManager implements Serializable, Iterable<Chromosome> {
 
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
-	private static ChromosomeManager 			instance = null;		// unique instance of the singleton
-	private final List<Chromosome> 				chromsomeList;			// List of chromosome 
-	private final Hashtable<String, Integer> 	chromosomeHash;			// Hashtable indexed by chromosome name
-	private long genomomeLength = 0;
+	private static 	ChromosomeManager 			instance = null;		// unique instance of the singleton
+	private  		Assembly 					assembly;				// List of chromosome 
+	private final 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
+	private		String		projectName;
+	private		String		cladeName;
+	private		String		genomeName;
+	private 	List<File>	varFiles;
+	
 	
 	/**
 	 * @return an instance of a {@link ChromosomeManager}. 
@@ -72,57 +75,22 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 */
 	private ChromosomeManager() {
 		super();
-		chromsomeList = new ArrayList<Chromosome>();
-		chromosomeHash = new Hashtable<String, Integer>();
-		// create the default chromosome configuration
-		createDefaultChromosomeArray();
-		for (int i = 0; i < chromsomeList.size(); i++) {
-			chromosomeHash.put(chromsomeList.get(i).getName(), i);
-		}
-		computeGenomeSize();
+		chromosomeHash = new HashMap<String, Integer>();
 	}
-
-
-
+	
+	
 	/**
-	 * Creates a default list of chromosomes
+	 * {@link ChromosomeManager} initialization 
+	 * @param assembly assembly used for the project
 	 */
-	private void createDefaultChromosomeArray() {
-		// the actual default configuration correspond to the hg19 assembly
-		chromsomeList.add(new Chromosome("chr1", 249250621));
-		chromsomeList.add(new Chromosome("chr2", 243199373));
-		chromsomeList.add(new Chromosome("chr3", 198022430));
-		chromsomeList.add(new Chromosome("chr4", 191154276));
-		chromsomeList.add(new Chromosome("chr5", 180915260));
-		chromsomeList.add(new Chromosome("chr6", 171115067));
-		chromsomeList.add(new Chromosome("chr7", 159138663));
-		chromsomeList.add(new Chromosome("chr8", 146364022));
-		chromsomeList.add(new Chromosome("chr9", 141213431));
-		chromsomeList.add(new Chromosome("chr10", 135534747));
-		chromsomeList.add(new Chromosome("chr11", 135006516));
-		chromsomeList.add(new Chromosome("chr12", 133851895));
-		chromsomeList.add(new Chromosome("chr13", 115169878));
-		chromsomeList.add(new Chromosome("chr14", 107349540));
-		chromsomeList.add(new Chromosome("chr15", 102531392));
-		chromsomeList.add(new Chromosome("chr16", 90354753));
-		chromsomeList.add(new Chromosome("chr17", 81195210));
-		chromsomeList.add(new Chromosome("chr18", 78077248));
-		chromsomeList.add(new Chromosome("chr19", 59128983));
-		chromsomeList.add(new Chromosome("chr20", 63025520));
-		chromsomeList.add(new Chromosome("chr21", 48129895));
-		chromsomeList.add(new Chromosome("chr22", 51304566));
-		chromsomeList.add(new Chromosome("chrX", 155270560));
-		chromsomeList.add(new Chromosome("chrY", 59373566));
-	}
-
-
-	/**
-	 * Compute the size of the genome
-	 */
-	private synchronized void computeGenomeSize() {
-		genomomeLength = 0;
-		for (Chromosome currenChromosome: chromsomeList) {
-			genomomeLength += currenChromosome.getLength();
+	public void setAssembly (Assembly assembly) {
+		this.assembly = assembly;
+		List<String> chromosomeNames = new ArrayList<String>(assembly.getChromosomeList().keySet());
+		Collections.sort(chromosomeNames, new ChromosomeComparator());
+		int cpt = 0;
+		for (String s: chromosomeNames) {
+			chromosomeHash.put(s, cpt);
+			cpt++;
 		}
 	}
 	
@@ -131,7 +99,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @return the lenght of the genome in bp
 	 */
 	public long getGenomeLength() {
-		return genomomeLength;
+		return assembly.getGenomeLength();
 	}
 	
 	
@@ -141,14 +109,16 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @throws InvalidChromosomeException
 	 */
 	public Chromosome get(int index) {
-		if ((index >= 0) && (index < chromsomeList.size())) {
-			return chromsomeList.get(index);
+		for (Chromosome chromosome: assembly.getChromosomeList().values()){
+			if (chromosomeHash.get(chromosome.getName()) == index) {
+				return chromosome;
+			}
 		}
 		// throw an exception if nothing found
 		throw new InvalidChromosomeException();
 	}
-
-
+	
+	
 	/**
 	 * @param chromosomeName name of a {@link Chromosome}
 	 * @return the first chromosome having the specified name
@@ -157,20 +127,20 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	public Chromosome get(String chromosomeName) throws InvalidChromosomeException {
 		Integer result = chromosomeHash.get(chromosomeName);
 		if (result != null) {
-			return chromsomeList.get(result.intValue());
+			return assembly.getChromosomeList().get(chromosomeName);
 		}
 		// throw an exception if nothing found
 		throw new InvalidChromosomeException();
-	}	
-
-
+	}
+	
+	
 	/**
 	 * @param chromosome a {@link Chromosome}
 	 * @return the index of the specified chromosome
 	 * @throws InvalidChromosomeException
 	 */
 	public short getIndex(Chromosome chromosome) throws InvalidChromosomeException {
-		short index = (short)chromsomeList.indexOf(chromosome);
+		short index = (short)chromosomeHash.get(chromosome.getName()).intValue();
 		if (index == -1) {
 			// if nothing has been found
 			throw new InvalidChromosomeException();
@@ -186,56 +156,19 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @throws InvalidChromosomeException
 	 */
 	public short getIndex(String chromosomeName) throws InvalidChromosomeException {
-		if ((chromosomeName != null) && (chromosomeName.length() > 0)) {
-			Integer result = chromosomeHash.get(chromosomeName);
-			if (result != null) {
-				return result.shortValue();
-			}
+		short index = (short)chromosomeHash.get(chromosomeName).intValue();
+		if (index == -1) {
+			// if nothing has been found
+			throw new InvalidChromosomeException();
+		} else {
+			return index;
 		}
-		// If nothing has been found
-		throw new InvalidChromosomeException();
 	}
 
 
 	@Override
 	public Iterator<Chromosome> iterator() {
-		return chromsomeList.iterator();
-	}
-
-
-	/**
-	 * Loads the data of the manager.
-	 * @param configurationFile configuration file
-	 * @throws IOException
-	 */
-	public void loadConfigurationFile(File configurationFile) throws IOException {
-		BufferedReader reader = null;
-		try {
-			// try to open the input file
-			reader = new BufferedReader(new FileReader(configurationFile));
-			// remove all the data in the chromosome list
-			chromsomeList.clear();
-			// extract data
-			String line = null;
-			int i = 0;
-			while((line = reader.readLine()) != null) {
-				String[] splitedLine = line.split("\t");
-				String name = splitedLine[0].trim();
-				int length = Integer.parseInt(splitedLine[1].trim());
-				chromsomeList.add(new Chromosome(name, length));
-				i++;
-			}
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-			chromosomeHash.clear();
-			for (int i = 0; i < chromsomeList.size(); i++) {
-				chromosomeHash.put(chromsomeList.get(i).getName(), i);
-			}
-			// compute the size of the genome
-			computeGenomeSize();
-		}	
+		return assembly.getChromosomeList().values().iterator();
 	}
 
 
@@ -257,7 +190,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @return the size of the list of chromosome (ie: the number of chromosomes)
 	 */
 	public int size() {
-		return chromsomeList.size();
+		return assembly.getChromosomeList().size();
 	}
 
 
@@ -265,7 +198,88 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @return an array containing all the chromosomes of the manager
 	 */
 	public Chromosome[] toArray() {
-		Chromosome[] returnArray = new Chromosome[chromsomeList.size()];
-		return chromsomeList.toArray(returnArray);
+		Chromosome[] returnArray = new Chromosome[assembly.getChromosomeList().size()];
+		List<String> chromosomeNames = new ArrayList<String>(assembly.getChromosomeList().keySet());
+		Collections.sort(chromosomeNames, new ChromosomeComparator());
+		int cpt = 0;
+		for (String s: chromosomeNames) {
+			returnArray[cpt] = assembly.getChromosomeList().get(s);
+			cpt++;
+		}
+		return returnArray;
 	}
+
+
+	/**
+	 * @return the assembly
+	 */
+	public Assembly getAssembly() {
+		return assembly;
+	}
+
+
+	/**
+	 * @return the varFiles
+	 */
+	public List<File> getVarFiles() {
+		return varFiles;
+	}
+
+
+	/**
+	 * @param varFiles the varFiles to set
+	 */
+	public void setVarFiles(List<File> varFiles) {
+		this.varFiles = varFiles;
+	}
+
+
+	/**
+	 * @return the projectName
+	 */
+	public String getProjectName() {
+		return projectName;
+	}
+
+
+	/**
+	 * @param projectName the projectName to set
+	 */
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+
+	/**
+	 * @return the genomeName
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
+	/**
+	 * @param genomeName the genomeName to set
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+	}
+
+
+	/**
+	 * @return the cladeName
+	 */
+	public String getCladeName() {
+		return cladeName;
+	}
+
+
+	/**
+	 * @param cladeName the cladeName to set
+	 */
+	public void setCladeName(String cladeName) {
+		this.cladeName = cladeName;
+	}
+	
+	
 }

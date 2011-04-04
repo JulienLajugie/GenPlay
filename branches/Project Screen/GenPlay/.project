@@ -20,4 +20,16 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sourceforge.metrics.nature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/edu/yu/einstein/genplay/resource/genplay_banner_447x91.png</name>
+			<type>1</type>
+			<location>D:/Documents/GenPlay/GenPlayBanner447x91.png</location>
+		</link>
+		<link>
+			<name>src/edu/yu/einstein/genplay/resource/genplay_banner_738x148.png</name>
+			<type>1</type>
+			<location>D:/Documents/GenPlay/GenPlay_Banner.png</location>
+		</link>
+	</linkedResources>
 </projectDescription>

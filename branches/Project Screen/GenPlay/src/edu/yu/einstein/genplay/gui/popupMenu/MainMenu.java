@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
+import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
@@ -45,6 +46,7 @@ public final class MainMenu extends JPopupMenu {
 
 	private static final long serialVersionUID = -8543113416095307670L; // generated ID
 
+	private final JMenuItem jmiNewProject;	// menu new project
 	private final JMenuItem jmiSaveProject;	// menu save project
 	private final JMenuItem jmiLoadProject;	// menu load project
 	private final JMenuItem jmiFullScreen;	// full screen
@@ -62,6 +64,7 @@ public final class MainMenu extends JPopupMenu {
 	public MainMenu(ActionMap actionMap) {
 		super("Main Menu");		
 		
+		jmiNewProject = new JMenuItem(actionMap.get(PANewProject.ACTION_KEY));
 		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
 		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
@@ -71,6 +74,7 @@ public final class MainMenu extends JPopupMenu {
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
 		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
 		
+		add(jmiNewProject);
 		add(jmiLoadProject);
 		add(jmiSaveProject);
 		addSeparator();
