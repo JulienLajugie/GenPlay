@@ -20,7 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -60,10 +59,16 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 
 	@Override
 	protected void drawScore(Graphics g) {
-		g.setColor(Color.red);
+		g.setColor(getScoreColor());
 		double middlePosition = genomeWindow.getMiddlePosition();
 		double middleScore = data.getScore((int) middlePosition);
-		g.drawString("y=" + SCORE_FORMAT.format(middleScore), getWidth() / 2 + 3, getHeight() - 2);	
+		int scoreYPosition = 0;
+		if (getScorePosition() == BOTTOM_SCORE_POSITION) {
+			scoreYPosition =  getHeight() - 2;
+		} else if (getScorePosition() == TOP_SCORE_POSITION) {
+			scoreYPosition = g.getFontMetrics().getHeight();
+		}	
+		g.drawString("y=" + SCORE_FORMAT.format(middleScore), getWidth() / 2 + 3, scoreYPosition);	
 	}
 
 

@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.track.BinListTrack;
 public final class BLANormalize extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = 1672001436769889976L;	// generated ID
-	private static final String 	ACTION_NAME = "Nomalize";			// action name
+	private static final String 	ACTION_NAME = "Normalize";			// action name
 	private static final String 	DESCRIPTION = 
 		"Normalize the scores of the selected track";					// tooltip
 	private BinListTrack 			selectedTrack;						// selected track

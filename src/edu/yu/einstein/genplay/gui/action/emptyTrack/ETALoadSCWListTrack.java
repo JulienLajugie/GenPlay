@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.io.File;
 
 import javax.swing.ActionMap;
+import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -89,7 +90,24 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
 		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true);
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-			extractor.setSelectedChromosomes(nctd.getSelectedChromosomes());
+			selectedChromo = nctd.getSelectedChromosomes();			
+			// if not all the chromosomes are selected we need
+			// to ask the user if the file is sorted or not
+			if (!Utils.allChromosomeSelected(selectedChromo)) {
+				int dialogResult = JOptionPane.showConfirmDialog(getRootPane(), "GenPlay can accelerate the loading if you know that your file is sorted by chromosome." +
+						"Press yes only if you know that your file is sorted.\n" +
+						"If you press yes and your file is not sorted, the file may load incompletely, leading to a loss of valuable information.\n" +
+						"The chromosomes must be ordered the same way it is ordered in the chromosome selection combo-box.\n\n" +
+						"Is your file sorted?", "Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (dialogResult == JOptionPane.YES_OPTION) {
+					extractor.setFileSorted(true);
+				} else if (dialogResult == JOptionPane.NO_OPTION) {
+					extractor.setFileSorted(false);
+				} else if (dialogResult == JOptionPane.CLOSED_OPTION) {
+					throw new InterruptedException();
+				}			
+			}	
+			extractor.setSelectedChromosomes(selectedChromo);
 			if (isStrandNeeded) {
 				strand = nctd.getStrandToExtract();
 				strandShift = nctd.getStrandShiftValue();

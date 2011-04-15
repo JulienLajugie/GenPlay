@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = 3820923997838773226L;	// generated ID
-	private static final String 	ACTION_NAME = "Nomalize";			// action name
+	private static final String 	ACTION_NAME = "Normalize";			// action name
 	private static final String 	DESCRIPTION = 
 		"Normalize the scores of the selected track";					// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track

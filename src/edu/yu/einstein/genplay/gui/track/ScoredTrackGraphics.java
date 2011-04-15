@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.track;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.math.RoundingMode;
+import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -36,15 +37,27 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	private static final long serialVersionUID = 985376787707775754L;	// generated ID
-	private static final boolean 	SHOW_HORIZONTAL_GRID = true;		// show the horizontal grid
-	private static final int		HORIZONTAL_LINES_COUNT = 10;		// number of Y lines displayed
-	protected double				yFactor;							// factor between the displayed intensity range and the screen height
-	protected boolean				showHorizontalGrid;					// shows horizontal grid if true 
-	protected int					horizontalLinesCount;				// number of horizontal lines
-	protected double 				yMax;								// maximum score	
-	protected double 				yMin;								// minimum score
+	
+	/**
+	 * The score of the track is drawn on top of the track
+	 */
+	public static final int TOP_SCORE_POSITION = 0;
+	/**
+	 * The score of the track is drawn on the bottom of the track
+	 */
+	public static final int BOTTOM_SCORE_POSITION = 1;
+	
+	private static final boolean 	SHOW_HORIZONTAL_GRID = true;			// show the horizontal grid
+	private static final int		HORIZONTAL_LINES_COUNT = 10;			// number of Y lines displayed
+	protected double				yFactor;								// factor between the displayed intensity range and the screen height
+	protected boolean				showHorizontalGrid;						// shows horizontal grid if true 
+	protected int					horizontalLinesCount;					// number of horizontal lines
+	protected double 				yMax;									// maximum score	
+	protected double 				yMin;									// minimum score
+	protected Color					scoreColor = Color.RED;					// color of the score
+	protected int 					scorePosition = BOTTOM_SCORE_POSITION; 	// position of the score (top or bottom)
 
-
+	
 	/**
 	 * Creates an instance of {@link ScoredTrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
@@ -120,6 +133,22 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	
 	/**
+	 * @return the color of the score
+	 */
+	public final Color getScoreColor() {
+		return scoreColor;
+	}
+
+
+	/**
+	 * @return the position of the score
+	 */
+	public final int getScorePosition() {
+		return scorePosition;
+	}
+	
+
+	/**
 	 * @return the yMax
 	 */
 	public final double getYMax() {
@@ -133,7 +162,7 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	public final double getYMin() {
 		return yMin;
 	}
-	
+
 
 	/**
 	 * @return true if the horizontal grid is visible
@@ -152,8 +181,8 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		}
 		super.paintComponent(g);
 	}
-
-
+	
+	
 	/**
 	 * @param score a double value
 	 * @return the value on the screen
@@ -175,6 +204,28 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	public final void setHorizontalLinesCount(int horizontalLinesCount) {
 		this.horizontalLinesCount = horizontalLinesCount;
 		this.repaint();
+	}
+
+
+	/**
+	 * @param scoreColor the color of the score to set
+	 */
+	public final void setScoreColor(Color scoreColor) {
+		this.scoreColor = scoreColor;
+		this.repaint();
+	}
+
+
+	/**
+	 * @param scorePosition the position of the score to set
+	 */
+	public final void setScorePosition(int scorePosition) {
+		if ((scorePosition == TOP_SCORE_POSITION) || (scorePosition == BOTTOM_SCORE_POSITION)) {
+			this.scorePosition = scorePosition;
+			this.repaint();
+		} else {
+			throw new InvalidParameterException("Invalid score position");
+		}
 	}
 	
 	

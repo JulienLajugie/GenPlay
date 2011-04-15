@@ -20,7 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
-import java.awt.Color;
 import java.awt.Graphics;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -64,13 +63,19 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	protected void drawScore(Graphics g) {
 		try {
 			short currentChromosome = ChromosomeManager.getInstance().getIndex(genomeWindow.getChromosome());
-			g.setColor(Color.red);
+			g.setColor(getScoreColor());
 			int xMid = (int) genomeWindow.getMiddlePosition();
 			double yMid = 0;
+			int scoreYPosition = 0;
+			if (getScorePosition() == BOTTOM_SCORE_POSITION) {
+				scoreYPosition =  getHeight() - 2;
+			} else if (getScorePosition() == TOP_SCORE_POSITION) {
+				scoreYPosition = g.getFontMetrics().getHeight();
+			}			
 			if ((data.get(currentChromosome) != null) && ((xMid / data.getBinSize()) < data.size(currentChromosome))) {
 				yMid = data.getScore(xMid);
 			}
-			g.drawString("y=" + SCORE_FORMAT.format(yMid), getWidth() / 2 + 3,	getHeight() - 2);
+			g.drawString("y=" + SCORE_FORMAT.format(yMid), getWidth() / 2 + 3, scoreYPosition);
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while drawing the coordinates");
 		}

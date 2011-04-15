@@ -45,7 +45,7 @@ public class ETALoadFromDAS extends TrackListAction {
 	private static final long serialVersionUID = -4045220235804063954L;	// generated ID
 	private static final String ACTION_NAME = "Load from DAS Server"; 	// action name
 	private static final String DESCRIPTION = "Load a track from " +
-			"data retrieve from a DAS server"; 							// tooltip
+			"data retrieved from a DAS server"; 						// tooltip
 
 
 	/**

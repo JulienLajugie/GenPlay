@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import java.awt.Color;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
 
 /**
@@ -53,13 +55,29 @@ public abstract class ScoredTrack<T> extends Track<T> {
 
 
 	/**
+	 * @return the color of the score
+	 */
+	public final Color getScoreColor() {
+		return ((ScoredTrackGraphics<?>)trackGraphics).getScoreColor();
+	}
+
+
+	/**
+	 * @return the position of the score
+	 */
+	public final int getScorePosition() {
+		return ((ScoredTrackGraphics<?>)trackGraphics).getScorePosition();
+	}
+
+
+	/**
 	 * @return the yMax
 	 */
 	public final double getYMax() {
 		return ((ScoredTrackGraphics<?>)trackGraphics).getYMax();
-	}
-
-
+	}	
+	
+	
 	/**
 	 * @return the yMin
 	 */
@@ -73,9 +91,9 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	 */
 	public final boolean isShowHorizontalGrid() {
 		return ((ScoredTrackGraphics<?>)trackGraphics).isShowHorizontalGrid();
-	}	
-	
-	
+	}
+
+
 	/**
 	 * @param horizontalLinesCount the the number of horizontal lines to show
 	 */
@@ -85,13 +103,30 @@ public abstract class ScoredTrack<T> extends Track<T> {
 
 
 	/**
+	 * @param scoreColor the color of the score to set
+	 */
+	public final void setScoreColor(Color scoreColor) {
+		((ScoredTrackGraphics<?>)trackGraphics).setScoreColor(scoreColor);
+	}
+	
+	
+
+	/**
+	 * @param scorePosition the position of the score to set
+	 */
+	public final void setScorePosition(int scorePosition) {
+		((ScoredTrackGraphics<?>)trackGraphics).setScorePosition(scorePosition);
+	}
+
+
+	/**
 	 * @param showHorizontalGrid set to true to show the horizontal grid
 	 */
 	public final void setShowHorizontalGrid(boolean showHorizontalGrid) {
 		((ScoredTrackGraphics<?>)trackGraphics).setShowHorizontalGrid(showHorizontalGrid) ;
 	}
-
-
+	
+	
 	/**
 	 * @param yMax the yMax to set
 	 */

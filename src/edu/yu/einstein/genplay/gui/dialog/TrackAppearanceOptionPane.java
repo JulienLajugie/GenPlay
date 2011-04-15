@@ -22,13 +22,15 @@ package edu.yu.einstein.genplay.gui.dialog;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -36,11 +38,15 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.gui.track.CurveTrackGraphics;
+import edu.yu.einstein.genplay.gui.track.ScoredTrackGraphics;
 
 
 
@@ -63,19 +69,30 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	 */
 	public static final int 	CANCEL_OPTION = 1;
 
-	private static final Dimension		APPEARANCE_FRAME_DIMENSION = 
-		new Dimension(340, 200);									// Dimension of this frame
 	private static final int 			MAX_LINE_COUNT = 100;		// maximum number of lines
+	
+	private final JPanel				jpGrid;						// panel with grid options
 	private final JLabel				jlHorizontalGrid;			// label horizontal grid
 	private final JCheckBox				jcbHorizontalGrid;			// check box horizontal grid
 	private final JLabel				jlYLineCount;				// label YLine	
 	private final JFormattedTextField 	jftfYLineCount;				// textField YLine
 	private final JLabel 				jlXLineCount;				// label XLine
 	private final JFormattedTextField 	jftfXLineCount;				// textField XLine
+	
+	private final JPanel				jpCurve;					// panel with curve options
 	private final JLabel				jlGraphicsType;				// label type of graphics
 	private final JComboBox				jcbGraphicsType;			// combo Box type of graphics
 	private final JLabel				jlCurvesColor;				// label curve color
 	private final JButton				jbCurvesColor;				// button to choose the color
+	
+	private final JPanel				jpScore;					// panel with score options
+	private final JLabel				jlScorePosition;			// label score position
+	private final JRadioButton			jrbTopPosition;				// radio button top score position
+	private final JRadioButton			jrbBottomPosition;			// radio button bottom score position
+	private final ButtonGroup			scorePositionGroup;			// goup for the score position
+	private final JLabel				jlScoreColor;				// label score color
+	private final JButton				jbScoreColor;				// button score color
+	
 	private final JButton 				jbOk;						// button OK
 	private final JButton 				jbCancel;					// button cancel
 
@@ -84,6 +101,9 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	private int							yLineCount;					// number of horrizontal lines
 	private GraphicsType				graphicsType;				// type of graphics
 	private Color						curvesColor;				// color of the curves	
+	private int 						scorePosition;				// position of the score
+	private Color						scoreColor;					// color of the score
+	
 	private int							approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
 
@@ -94,8 +114,10 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	 * @param yLineCount a yLine value to show in the corresponding text field
 	 * @param trackColor a common curve color
 	 * @param trackType the type of the track
+	 * @param scorePosition position of the score
+	 * @param scoreColor color of the score
 	 */
-	public TrackAppearanceOptionPane(boolean showHorizontalLines, int xLineCount, int yLineCount, Color trackColor, GraphicsType trackType) {
+	public TrackAppearanceOptionPane(boolean showHorizontalLines, int xLineCount, int yLineCount, Color trackColor, GraphicsType trackType, int scorePosition, Color scoreColor) {
 		super();
 		
 		this.showHorizontalGrid = showHorizontalLines;
@@ -103,7 +125,11 @@ public final class TrackAppearanceOptionPane extends JDialog {
 		this.yLineCount = yLineCount;
 		this.curvesColor = trackColor;
 		this.graphicsType = trackType;
+		this.scorePosition = scorePosition;
+		this.scoreColor = scoreColor;
 		
+		jpGrid = new JPanel();
+		jpGrid.setBorder(BorderFactory.createTitledBorder("Grid Options"));
 		jlHorizontalGrid = new JLabel("Show horizontal grid:");
 		jcbHorizontalGrid = new JCheckBox();
 		jcbHorizontalGrid.addChangeListener(new ChangeListener() {
@@ -130,6 +156,8 @@ public final class TrackAppearanceOptionPane extends JDialog {
 		jftfXLineCount.setColumns(2);	
 		jftfXLineCount.setValue(xLineCount);		
 
+		jpCurve = new JPanel();
+		jpCurve.setBorder(BorderFactory.createTitledBorder("Curve Options"));
 		jlGraphicsType = new JLabel("Type of the graphics:");
 		GraphicsType[] typesOfGraph = GraphicsType.values();
 		jcbGraphicsType = new JComboBox(typesOfGraph);
@@ -151,9 +179,50 @@ public final class TrackAppearanceOptionPane extends JDialog {
 		});
 		jbCurvesColor.setBackground(curvesColor);
 		jbCurvesColor.setForeground(new Color(curvesColor.getRGB() ^ 0xffffff));
-		jbCurvesColor.setBackground(curvesColor);
-		jbCurvesColor.setForeground(new Color(curvesColor.getRGB() ^ 0xffffff));
+		//jbCurvesColor.setBackground(curvesColor);
+		//jbCurvesColor.setForeground(new Color(curvesColor.getRGB() ^ 0xffffff));
 
+		jpScore = new JPanel();
+		jpScore.setBorder(BorderFactory.createTitledBorder("Score Options"));
+		jlScorePosition = new JLabel("Score Position:");
+		jrbTopPosition = new JRadioButton("Top");
+		jrbTopPosition.addChangeListener(new ChangeListener() {			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				if (jrbTopPosition.isSelected()) {
+					TrackAppearanceOptionPane.this.scorePosition = CurveTrackGraphics.TOP_SCORE_POSITION;
+				}
+			}
+		});
+		jrbBottomPosition = new JRadioButton("Bottom");
+		jrbBottomPosition.addChangeListener(new ChangeListener() {			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				if (jrbBottomPosition.isSelected()) {
+					TrackAppearanceOptionPane.this.scorePosition = CurveTrackGraphics.BOTTOM_SCORE_POSITION;
+				}
+			}
+		});
+		// create the group for the radio buttons
+		scorePositionGroup = new ButtonGroup();
+		scorePositionGroup.add(jrbTopPosition);
+		scorePositionGroup.add(jrbBottomPosition);
+		// select the appropriate radio button
+		if (scorePosition == ScoredTrackGraphics.TOP_SCORE_POSITION) {
+			jrbTopPosition.setSelected(true);
+		} else if (scorePosition == ScoredTrackGraphics.BOTTOM_SCORE_POSITION) {
+			jrbBottomPosition.setSelected(true);
+		}
+		jlScoreColor = new JLabel("Color of the score:");
+		jbScoreColor = new JButton("Color");
+		jbScoreColor.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chooseScoreColor();				
+			}
+		});
+		jbScoreColor.setBackground(scoreColor);
+		
 		jbOk = new JButton("OK");
 		jbOk.addActionListener(new ActionListener() {
 			@Override
@@ -170,69 +239,181 @@ public final class TrackAppearanceOptionPane extends JDialog {
 			}
 		});
 
-		setLayout(new GridBagLayout());
+		
+		jpGrid.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-
+		
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
-		add(jlHorizontalGrid, c);
+		jpGrid.add(jlHorizontalGrid, c);
 
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.CENTER;
-		add(jcbHorizontalGrid, c);
+		jpGrid.add(jcbHorizontalGrid, c);
 
 		c.gridx = 0;
 		c.gridy = 1;
 		c.anchor = GridBagConstraints.LINE_START;
-		add(jlYLineCount, c);
+		jpGrid.add(jlYLineCount, c);
 
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.LINE_END;
-		add(jftfYLineCount, c);
+		jpGrid.add(jftfYLineCount, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
 		c.anchor = GridBagConstraints.LINE_START;
-		add(jlXLineCount, c);
+		jpGrid.add(jlXLineCount, c);
 
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.LINE_END;
-		add(jftfXLineCount, c);
+		jpGrid.add(jftfXLineCount, c);
 
+		jpCurve.setLayout(new GridBagLayout());
+		c = new GridBagConstraints();
+		
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_START;
-		add(jlGraphicsType, c);
+		jpCurve.add(jlGraphicsType, c);
 
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.LINE_END;
-		add(jcbGraphicsType, c);	
+		jpCurve.add(jcbGraphicsType, c);	
 
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 1;
 		c.anchor = GridBagConstraints.LINE_START;
-		add(jlCurvesColor, c);
+		jpCurve.add(jlCurvesColor, c);
 
 		c.gridx = 1;
 		c.anchor = GridBagConstraints.LINE_END;
-		add(jbCurvesColor, c);		
+		jpCurve.add(jbCurvesColor, c);		
+
+		jpScore.setLayout(new GridBagLayout());
+		c = new GridBagConstraints();
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 2;
+		c.anchor = GridBagConstraints.LINE_START;
+		jpScore.add(jlScorePosition, c);
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 1;
+		c.anchor = GridBagConstraints.LINE_START;
+		jpScore.add(jrbTopPosition, c);
+		
+		c.gridx = 1;
+		c.gridy = 1;
+		c.anchor = GridBagConstraints.LINE_END;
+		jpScore.add(jrbBottomPosition, c);
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.anchor = GridBagConstraints.LINE_START;
+		jpScore.add(jlScoreColor, c);
+		
+		c.gridx = 1;
+		c.gridy = 2;
+		c.anchor = GridBagConstraints.LINE_END;
+		jpScore.add(jbScoreColor, c);
+		
+		setLayout(new GridBagLayout());
+		c = new GridBagConstraints();
+		Insets insets = new Insets(5, 5, 5, 5);
+		
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 2;
+		c.fill = GridBagConstraints.BOTH;
+		c.insets = insets;
+		add(jpGrid, c);
 
 		c.gridx = 0;
-		c.gridy = 6;
+		c.gridy = 1;
+		c.gridwidth = 2;
+		c.insets = insets;
+		add(jpCurve, c);
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.gridwidth = 2;
+		c.insets = insets;
+		add(jpScore, c);
+		
+		c.gridx = 0;
+		c.gridy = 3;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_END;
 		add(jbOk, c);
 
 		c.gridx = 1;
 		add(jbCancel, c);
 
-		setSize(APPEARANCE_FRAME_DIMENSION);
+		pack();
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		setTitle("Track configuration");
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);
+	}
+
+
+	/**
+	 * Asks the user to choose a color.
+	 */
+	private void chooseCurveColor() {		
+		Color newCurveColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected curves", curvesColor);
+		if (newCurveColor != null) {
+			curvesColor = newCurveColor;
+			jbCurvesColor.setBackground(curvesColor);
+			jbCurvesColor.setForeground(new Color(curvesColor.getRGB() ^ 0xffffff));
+		}		
+	}
+
+
+	protected void chooseScoreColor() {
+		Color newScoreColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected track score", scoreColor);
+		if (newScoreColor != null) {
+			scoreColor = newScoreColor;
+			jbScoreColor.setBackground(scoreColor);
+		}	
+	}
+
+
+	/**
+	 * @return The value of curvesColor
+	 */
+	public final Color getCurvesColor() {
+		return curvesColor;
+	}
+	
+
+	/**
+	 * @return The value graphicsType
+	 */
+	public final GraphicsType getGraphicsType() {
+		return graphicsType;
+	}
+	
+
+	/**
+	 * @return the scoreColor
+	 */
+	public final Color getScoreColor() {
+		return scoreColor;
+	}
+	
+	/**
+	 * @return the scorePosition
+	 */
+	public final int getScorePosition() {
+		return scorePosition;
 	}
 
 
@@ -250,7 +431,6 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	public final int getXLineCount() {
 		return xLineCount;
 	}
-	
 
 	/**
 	 * @return The value of yLineCount.
@@ -258,41 +438,14 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	public final int getYLineCount() {
 		return yLineCount;
 	}
-	
 
-	/**
-	 * @return The value of curvesColor
-	 */
-	public final Color getCurvesColor() {
-		return curvesColor;
-	}
 	
-
-	/**
-	 * @return The value graphicsType
-	 */
-	public final GraphicsType getGraphicsType() {
-		return graphicsType;
-	}
 
 	/**
 	 * Hides this frame when Cancel is pressed. 
 	 */
 	private void jbCancelActionPerformed() {
 		this.setVisible(false);
-	}
-
-
-	/**
-	 * Asks the user to choose a color.
-	 */
-	private void chooseCurveColor() {		
-		Color newCurvewColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected curves", curvesColor);
-		if (newCurvewColor != null) {
-			curvesColor = newCurvewColor;
-			jbCurvesColor.setBackground(curvesColor);
-			jbCurvesColor.setForeground(new Color(curvesColor.getRGB() ^ 0xffffff));
-		}		
 	}
 
 

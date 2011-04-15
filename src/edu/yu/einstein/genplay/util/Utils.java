@@ -63,16 +63,34 @@ public class Utils {
 
 
 	/**
-	 * Checks if the specified {@link File} name ends with the specified extension.
-	 * If not adds the extension to the file name. 
+	 * Checks if the specified {@link File} name ends with one of the specified extensions.
+	 * If not adds the first specified extension to the file name. 
 	 * @param file a file 
-	 * @param extension a file extension
+	 * @param extensions file extensions
 	 * @return a File with the specified extension
 	 */
-	public static File addExtension(File file, String extension) {
+	public static File addExtension(File file, String... extensions) {		
 		String currentExtension = getExtension(file);
-		if ((currentExtension == null) || (!currentExtension.equalsIgnoreCase(extension))) {
-			String newFile = file.getPath() + "." + extension;
+		boolean specifedExtensionsFound = false;
+		// if there is no extension specified we return the input file
+		if (extensions == null) {
+			return file;
+		}
+		// if the current file has an extension we check if it's one of the specified extension
+		if (currentExtension != null) {
+			int i = 0;
+			while ((i < extensions.length) && !specifedExtensionsFound) {
+				if (currentExtension.equalsIgnoreCase(extensions[i])) {
+					specifedExtensionsFound = true;
+				}
+				i++;
+			}
+		}
+		// if we didn't find one of the specified extensions we return 
+		// a new file having the name of the input file concatenated  
+		// with the first specified extension
+		if (!specifedExtensionsFound) {
+			String newFile = file.getPath() + "." + extensions[0];
 			return new File(newFile);
 		} else {
 			return file;
@@ -455,7 +473,7 @@ public class Utils {
 				parsedLine.add(line.substring(indexStart, i));
 			}
 		}
-		
+
 		if (parsedLine.isEmpty()) { // if our list is empty we return null
 			return null;
 		} else { // if there is element in our list we transform it in an array and return it
@@ -463,7 +481,7 @@ public class Utils {
 			return parsedLine.toArray(returnArray);
 		}
 	}
-	
+
 	/**
 	 * This methods parse a line and returns an array of strings containing
 	 * all the fields from the input line that are separated by one or many 
@@ -496,7 +514,7 @@ public class Utils {
 				parsedLine.add(line.substring(indexStart, i));
 			}
 		}
-		
+
 		if (parsedLine.isEmpty()) { // if our list is empty we return null
 			return null;
 		} else { // if there is element in our list we transform it in an array and return it

@@ -73,7 +73,9 @@ public final class CTAAppearance extends TrackListAction {
 			int yLineCount = selectedTrack.getHorizontalLinesCount();
 			Color trackColor = selectedTrack.getTrackColor();
 			GraphicsType trackType = selectedTrack.getTypeOfGraph();
-			TrackAppearanceOptionPane taop = new TrackAppearanceOptionPane(showHorizontalLines, xLineCount, yLineCount, trackColor, trackType);
+			int scorePosition = selectedTrack.getScorePosition();
+			Color scoreColor = selectedTrack.getScoreColor();			
+			TrackAppearanceOptionPane taop = new TrackAppearanceOptionPane(showHorizontalLines, xLineCount, yLineCount, trackColor, trackType, scorePosition, scoreColor);
 			if (taop.showTrackConfiguration(getRootPane()) == TrackAppearanceOptionPane.APPROVE_OPTION) {
 				if (taop.getShowHorizontalGrid() != showHorizontalLines) {
 					selectedTrack.setShowHorizontalGrid(taop.getShowHorizontalGrid());
@@ -89,6 +91,12 @@ public final class CTAAppearance extends TrackListAction {
 				}
 				if (taop.getGraphicsType() != trackType) {
 					selectedTrack.setTypeOfGraph(taop.getGraphicsType());
+				}
+				if (taop.getScorePosition() != scorePosition) {
+					selectedTrack.setScorePosition(taop.getScorePosition());
+				}
+				if (taop.getScoreColor() != scoreColor) {
+					selectedTrack.setScoreColor(taop.getScoreColor());
 				}
 			}
 		}

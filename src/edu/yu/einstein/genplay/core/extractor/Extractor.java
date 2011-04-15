@@ -52,6 +52,7 @@ public abstract class Extractor implements Serializable {
 	protected String					name = null;			// name
 	protected final ChromosomeManager 	chromosomeManager;		// ChromosomeManager
 	private boolean[] 					selectedChromo = null;	// array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the ChromosomeManager
+	private boolean						isFileSorted = true;	// boolean indicating if the data file is sorted
 	private int		 					lastSelectedChromoIndex;// index of the last chromosome to extract
 
 
@@ -77,7 +78,7 @@ public abstract class Extractor implements Serializable {
 			return NEED_TO_BE_EXTRACTED;
 		} else {
 			int index = chromosomeManager.getIndex(chromosome);
-			if (index > lastSelectedChromoIndex) {
+			if ((index > lastSelectedChromoIndex) && isFileSorted) {
 				return AFTER_LAST_SELECTED;
 			} else {
 				if (selectedChromo[index]) {
@@ -185,5 +186,21 @@ public abstract class Extractor implements Serializable {
 			}
 			lastSelectedChromoIndex = lastIndex;
 		}
+	}
+
+
+	/**
+	 * @param isFileSorted the isFileSorted to set
+	 */
+	public void setFileSorted(boolean isFileSorted) {
+		this.isFileSorted = isFileSorted;
+	}
+
+
+	/**
+	 * @return the isFileSorted
+	 */
+	public boolean isFileSorted() {
+		return isFileSorted;
 	}
 }

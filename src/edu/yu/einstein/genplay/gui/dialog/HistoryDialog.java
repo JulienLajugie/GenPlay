@@ -36,8 +36,10 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.util.History;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -138,12 +140,15 @@ public final class HistoryDialog extends JDialog {
 		JFileChooser jfc = new JFileChooser();
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save " + trackName + " history");
-		jfc.setSelectedFile(new File(".txt"));
+		FileNameExtensionFilter webPageFilter = new FileNameExtensionFilter("Web Pages", "html", "htm");
+		jfc.addChoosableFileFilter(webPageFilter);
 		int returnVal = jfc.showSaveDialog(getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			if (!cancelBecauseFileExist(jfc.getSelectedFile())) {
+			File selectedFile = jfc.getSelectedFile();
+			selectedFile = Utils.addExtension(selectedFile, webPageFilter.getExtensions());
+			if (!cancelBecauseFileExist(selectedFile)) {
 				try {
-					history.save(jfc.getSelectedFile());
+					history.save(selectedFile);
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(getRootPane(), "Error while saving the history", "Error", JOptionPane.ERROR_MESSAGE);
 					e.printStackTrace();
@@ -160,7 +165,7 @@ public final class HistoryDialog extends JDialog {
 	 */
 	private boolean cancelBecauseFileExist(File f) {
 		if (f.exists()) {
-			int res = JOptionPane.showInternalConfirmDialog(getContentPane(), "The file " + f.getName() + " already exists. Do you want to replace the existing file?.", "File already exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
+			int res = JOptionPane.showConfirmDialog(getRootPane(), "The file " + f.getName() + " already exists. Do you want to replace the existing file?", "File already exists", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null);
 			if (res == JOptionPane.NO_OPTION) {
 				return true;
 			}
