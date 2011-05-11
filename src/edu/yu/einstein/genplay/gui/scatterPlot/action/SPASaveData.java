@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -106,8 +107,8 @@ public class SPASaveData extends ScatterPlotAction {
 				for (int j = 0; j < data.size(); j++) {
 					writer.write(", ");
 					if (i < data.get(j).getData().length) {
-						writer.write(Integer.toString((int)data.get(j).getData()[i][1]));
-
+						DecimalFormat df = new DecimalFormat("#.###");
+						writer.write(df.format(data.get(j).getData()[i][1]));
 					} else {
 						writer.write(Integer.toString(0));						
 					}					

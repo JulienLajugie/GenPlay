@@ -82,39 +82,6 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	}
 
 
-	/**
-	 *  Computes the minimum and maximum saturated values of the exon scores
-	 */
-	private void setSaturatedMinMax() {
-		// put the scores of every exon in a big list
-		List<Double> scoreList = new ArrayList<Double>();
-		for (List<Gene> currentList: data) {
-			if (!currentList.isEmpty()) {
-				for (Gene currentGene: currentList) {
-					if (currentGene.getExonScores() != null) {
-						for (double currentScore: currentGene.getExonScores()) {
-							if (currentScore != 0) {
-								scoreList.add(currentScore);
-							}
-						}
-
-					}
-				}
-			}
-		}
-		if (!scoreList.isEmpty()) {
-			// sort the list
-			Collections.sort(scoreList);
-
-			int minIndex = (int)(SCORE_SATURATION * scoreList.size());
-			int maxIndex = scoreList.size() - (int)(SCORE_SATURATION * scoreList.size());
-
-			min = scoreList.get(minIndex - 1);
-			max = scoreList.get(maxIndex - 1);
-		}
-	}
-
-
 	@Override
 	protected void chromosomeChanged() {
 		firstLineToDisplay = 0;
@@ -413,6 +380,48 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	}
 
 
+	/**
+	 * Sets the data
+	 * @param geneList GeneList to set
+	 */
+	protected void setData(GeneList geneList) {
+		this.data = geneList;
+	}
+
+
+	/**
+	 *  Computes the minimum and maximum saturated values of the exon scores
+	 */
+	private void setSaturatedMinMax() {
+		// put the scores of every exon in a big list
+		List<Double> scoreList = new ArrayList<Double>();
+		for (List<Gene> currentList: data) {
+			if (!currentList.isEmpty()) {
+				for (Gene currentGene: currentList) {
+					if (currentGene.getExonScores() != null) {
+						for (double currentScore: currentGene.getExonScores()) {
+							if (currentScore != 0) {
+								scoreList.add(currentScore);
+							}
+						}
+
+					}
+				}
+			}
+		}
+		if (!scoreList.isEmpty()) {
+			// sort the list
+			Collections.sort(scoreList);
+
+			int minIndex = (int)(SCORE_SATURATION * scoreList.size());
+			int maxIndex = scoreList.size() - (int)(SCORE_SATURATION * scoreList.size());
+
+			min = scoreList.get(minIndex - 1);
+			max = scoreList.get(maxIndex - 1);
+		}
+	}
+	
+	
 	@Override
 	protected void xFactorChanged() {
 		firstLineToDisplay = 0;

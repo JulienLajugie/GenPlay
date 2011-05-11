@@ -83,7 +83,7 @@ import edu.yu.einstein.genplay.util.Utils;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 343; 						// GenPlay version
+	private static final int VERSION_NUMBER = 347; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -171,8 +171,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 								}
 							}							
 						}.actionPerformed(null);
-						
-
 					} catch (Exception e) {
 						ExceptionManager.handleException(mainFrame.getRootPane(), e, "Error while loading the project.");
 					}

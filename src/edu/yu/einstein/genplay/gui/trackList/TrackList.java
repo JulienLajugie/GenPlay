@@ -135,8 +135,11 @@ import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadSNPListTrack;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLADistanceCalculator;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractInterval;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAFilterScore;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAFilterStrand;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -230,8 +233,11 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(GLADistanceCalculator.ACTION_KEY, new GLADistanceCalculator());
 		getActionMap().put(GLAExtractExons.ACTION_KEY, new GLAExtractExons());
 		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
+		getActionMap().put(GLAFilterScore.ACTION_KEY, new GLAFilterScore());
+		getActionMap().put(GLAFilterStrand.ACTION_KEY, new GLAFilterStrand());
 		getActionMap().put(GLAGeneRenamer.ACTION_KEY, new GLAGeneRenamer());
 		getActionMap().put(GLAScoreExons.ACTION_KEY, new GLAScoreExons());
+		getActionMap().put(GLAScoreRepartitionAroundStart.ACTION_KEY, new GLAScoreRepartitionAroundStart());
 		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());

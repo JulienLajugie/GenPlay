@@ -207,16 +207,23 @@ public final class ChromosomeChooser extends JDialog {
 	
 
 	/**
-	 * Only public function. Displays a ChromosomeChooser dialog, and returns a list of booleans 
+	 * Displays a ChromosomeChooser dialog, and returns a list of booleans 
 	 * corresponding to the check / uncheck states of the chromosomes if the OK has been pressed.
+	 * All the chromosomes are selected when the window appears
 	 * @param parent The Component from which the dialog is displayed.
 	 * @return a list of booleans corresponding to the check / uncheck states
 	 * of the chromosomes if the OK has been pressed. Else returns null. 
 	 */
 	public static boolean[] getSelectedChromo(Component parent) {
 		ChromosomeChooser CCOP = new ChromosomeChooser(parent);
+	
+		// check all the chromosomes
+		for (int i = 0; i < jcbChromos.length; i++) {
+			jcbChromos[i].setSelected(true);
+		}
+		jcbSelectAll.setSelected(true);	
+		
 		CCOP.setVisible(true);	
-
 		if(validated) {
 			boolean[] returnArray = new boolean[chromosomeManager.size()];
 			for(int i = 0; i < chromosomeManager.size(); i++) {
@@ -234,7 +241,7 @@ public final class ChromosomeChooser extends JDialog {
 		
 	
 	/**
-	 * Only public function. Displays a ChromosomeChooser dialog, and returns a list of booleans 
+	 * Displays a ChromosomeChooser dialog, and returns a list of booleans 
 	 * corresponding to the check / uncheck states of the chromosomes if the OK has been pressed.
 	 * @param parent The Component from which the dialog is displayed.
 	 * @param selectedChromo list of the chromosomes that should appear as selected when the dialog is shown

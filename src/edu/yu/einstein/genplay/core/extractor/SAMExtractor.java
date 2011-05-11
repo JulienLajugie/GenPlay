@@ -87,6 +87,14 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
 						int position = Integer.parseInt(splitedLine[3]);
+						// on the three strand we need to add the length
+						// of sequence to the position because the sam format
+						// store the 5' complemented sequence with its start position
+						// (ie the stop position on the 3' strand)
+						if (strand.equals(Strand.THREE)) {
+							String sequence = splitedLine[9].trim();
+							position = position + sequence.length();
+						}
 						// we subtract 1 to the position because sam file position  
 						// are 1 base and genplay is 0 based
 						position--;

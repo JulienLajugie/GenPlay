@@ -48,4 +48,13 @@ public class GeneListTrack extends Track<GeneList> {
 	protected TrackGraphics<GeneList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList data) {
 		return new GeneListTrackGraphics(displayedGenomeWindow, data);
 	}
+	
+	
+	/**
+	 * Sets the data of the {@link GeneListTrack}
+	 * @param geneList GeneList to set
+	 */
+	public void setData(GeneList geneList) {
+		((GeneListTrackGraphics) trackGraphics).setData(geneList);
+	}
 }
