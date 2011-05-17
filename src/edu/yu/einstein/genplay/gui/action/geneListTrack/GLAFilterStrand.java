@@ -68,7 +68,7 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 			GeneList geneList = selectedTrack.getData();
 			Strand selectedStrand = (Strand) JOptionPane.showInputDialog(getRootPane(), "Keep the genes that are on the strand:", "Select Strand", JOptionPane.QUESTION_MESSAGE, null, Strand.values(), Strand.FIVE);
 			if (selectedStrand != null) {
-				Operation<GeneList> operation = new GLOFilterStrand(geneList, selectedStrand); 
+				operation = new GLOFilterStrand(geneList, selectedStrand); 
 				return operation;
 			}
 		}
@@ -79,7 +79,7 @@ public class GLAFilterStrand extends TrackListActionOperationWorker<GeneList> {
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult);
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

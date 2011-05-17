@@ -27,6 +27,7 @@ import javax.swing.JRadioButtonMenuItem;
 import edu.yu.einstein.genplay.gui.scatterPlot.action.SPABarChart;
 import edu.yu.einstein.genplay.gui.scatterPlot.action.SPAChangeColor;
 import edu.yu.einstein.genplay.gui.scatterPlot.action.SPACurveChart;
+import edu.yu.einstein.genplay.gui.scatterPlot.action.SPALoadData;
 import edu.yu.einstein.genplay.gui.scatterPlot.action.SPAPointChart;
 import edu.yu.einstein.genplay.gui.scatterPlot.action.SPASaveData;
 import edu.yu.einstein.genplay.gui.scatterPlot.action.SPASaveImage;
@@ -48,6 +49,7 @@ public class ScatterPlotMenu extends JPopupMenu {
 	private final JRadioButtonMenuItem 	jrbmiCurveChart;		// draw join points to form a curve
 	private final JMenuItem				jmiSaveImage;			// menu save plot as image
 	private final JMenuItem				jmiSaveData;			// menu save the data in CSV file
+	private final JMenuItem				jmiLoadData;			// menu load data from a CSV file
 	private final JMenuItem 			jmiChangeColor;			// change graph colors
 	private final JMenuItem				jmiXAxisOptions;		// menu for setting x axis parameters
 	private final JMenuItem				jmiYAxisOptions;		// menu for setting y axis parameters
@@ -64,6 +66,7 @@ public class ScatterPlotMenu extends JPopupMenu {
 
 		jmiSaveData = new JMenuItem(new SPASaveData(scatterPlotPane));
 		jmiSaveImage = new JMenuItem(new SPASaveImage(scatterPlotPane));
+		jmiLoadData = new JMenuItem(new SPALoadData(scatterPlotPane));
 		
 		jmiChangeColor = new JMenuItem(new SPAChangeColor(scatterPlotPane));
 
@@ -79,6 +82,7 @@ public class ScatterPlotMenu extends JPopupMenu {
 		addSeparator();
 		add(jmiSaveData);
 		add(jmiSaveImage);
+		add(jmiLoadData);
 		addSeparator();
 		add(jmiChangeColor);
 		

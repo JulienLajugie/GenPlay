@@ -67,7 +67,7 @@ public class ScatterPlotPane extends JPanel {
 	private final ScatterPlotAxis 			yAxis;			// y axis
 	private final List<ScatterPlotData> 	data;			// data to plot
 	private GraphicsType 					chartType;		// type of chart
-	private final int 						legendWidth;	// with of the legend
+	private int 							legendWidth;	// with of the legend
 
 
 	/**
@@ -135,6 +135,28 @@ public class ScatterPlotPane extends JPanel {
 
 
 	/**
+	 * Adds data to the list of ScatterPlotData showed in the component
+	 * @param dataToAdd list of {@link ScatterPlotData} to add
+	 */
+	public void addData(List<ScatterPlotData> dataToAdd) {
+		this.data.addAll(dataToAdd);
+		this.repaint();
+	}
+
+
+	/**
+	 * Adds data to the list of ScatterPlotData showed in the component
+	 * @param dataToAdd {@link ScatterPlotData} to add
+	 */
+	public void addData(ScatterPlotData dataToAdd) {
+		this.data.add(dataToAdd);
+		findDataBounds(data);
+		this.legendWidth = computeLegendWidth();
+		this.repaint();
+	}
+
+
+	/**
 	 * @return the width of the legend text in pixels
 	 */
 	private int computeLegendWidth() {
@@ -182,6 +204,17 @@ public class ScatterPlotPane extends JPanel {
 
 
 	/**
+	 * Draws the background of the chart
+	 * @param g {@link Graphics}
+	 * @param clip rectangle where to draw the chart
+	 */
+	private void drawChartBackground(Graphics g, Rectangle clip) {
+		g.setColor(Color.WHITE);
+		g.fillRect(clip.x, clip.y, clip.width, clip.height);			
+	}
+
+
+	/**
 	 * Method to plot the data points as a curve chart
 	 * @param g (Graphics)
 	 */
@@ -204,17 +237,6 @@ public class ScatterPlotPane extends JPanel {
 				}
 			}
 		}
-	}
-
-
-	/**
-	 * Draws the background of the chart
-	 * @param g {@link Graphics}
-	 * @param clip rectangle where to draw the chart
-	 */
-	private void drawChartBackground(Graphics g, Rectangle clip) {
-		g.setColor(Color.WHITE);
-		g.fillRect(clip.x, clip.y, clip.width, clip.height);			
 	}
 
 

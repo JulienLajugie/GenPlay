@@ -69,7 +69,7 @@ public class GLAFilterScore extends TrackListActionOperationWorker<GeneList> {
 			GeneList geneList = selectedTrack.getData();
 			Number threshold = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Remove genes with a score smaller than:", new DecimalFormat("0.###"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if (threshold != null) {
-				Operation<GeneList> operation = new GLOFilterScore(geneList, threshold.doubleValue()); 
+				operation = new GLOFilterScore(geneList, threshold.doubleValue()); 
 				return operation;
 			}
 		}
@@ -80,7 +80,7 @@ public class GLAFilterScore extends TrackListActionOperationWorker<GeneList> {
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult);
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

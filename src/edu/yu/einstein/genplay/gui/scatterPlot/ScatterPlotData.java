@@ -32,7 +32,7 @@ import java.util.Random;
  */
 public class ScatterPlotData {
 
-	private final double[][] 	data;	// data of the scatter plot
+	private double[][] 			data;	// data of the scatter plot
 	private final String 		name;	// name of the scatter plot
 	private Color				color;	// color of the scatter plot
 	
@@ -45,6 +45,17 @@ public class ScatterPlotData {
 	 */
 	public ScatterPlotData(double[][] data, String name, Color color) {
 		this.data = data;
+		this.name = name;
+		this.color = color;
+	}
+
+
+	/**
+	 * Creates an instance of {@link ScatterPlotData}
+	 * @param name name of the scatter plot
+	 * @param color color of the plot
+	 */
+	public ScatterPlotData(String name, Color color) {
 		this.name = name;
 		this.color = color;
 	}
@@ -88,6 +99,14 @@ public class ScatterPlotData {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(double[][] data) {
+		this.data = data;
 	}
 	
 	

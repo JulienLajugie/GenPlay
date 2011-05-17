@@ -51,7 +51,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.###");	// decimal format for the score
 	protected Color							trackColor;									// color of the graphics
 	protected GraphicsType 					typeOfGraph;								// type graphics
-	protected History 						history = null; 							// history containing a description of the
+	protected History 						history = null; 							// history containing a description of the action made on the track
 	protected URRManager<T> 				urrManager; 								// manager that handles the undo / redo / reset of the track
 		
 	

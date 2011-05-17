@@ -74,7 +74,7 @@ public final class CTAReset extends TrackListActionWorker<Void> {
 			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
 				notifyActionStart("Reseting Track", 1, false);
-				selectedTrack.resetBinList();				
+				selectedTrack.resetData();				
 			}		
 		}
 		return null;

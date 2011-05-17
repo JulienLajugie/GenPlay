@@ -37,7 +37,9 @@ import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.util.ColorConverters;
+import edu.yu.einstein.genplay.util.History;
 
 
 
@@ -63,8 +65,10 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	private Gene 							geneUnderMouse = null;			// gene under the cursor of the mouse
 	private double 							min;							// min score of a GeneList
 	private double							max;							// max score of a GeneList
+	protected History 						history = null; 				// history containing a description of the action made on the track
+	protected URRManager<GeneList> 			urrManager; 					// manager that handles the undo / redo / reset of the track
 
-
+	
 	/**
 	 * Creates an instance of {@link GeneListTrackGraphics}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
@@ -201,6 +205,38 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		drawStripes(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
+	}
+
+
+	/**
+	 * @return the history of the current track.
+	 */
+	protected History getHistory() {
+		return history;
+	}
+
+
+	/**
+	 * @return true if the action redo is possible
+	 */
+	protected boolean isRedoable() {
+		return urrManager.isRedoable();
+	}
+
+
+	/**
+	 * @return true if the track can be reseted
+	 */
+	protected boolean isResetable() {
+		return urrManager.isResetable();
+	}
+
+
+	/**
+	 * @return true if the action undo is possible
+	 */
+	protected boolean isUndoable() {
+		return urrManager.isUndoable();
 	}
 
 
@@ -349,8 +385,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
 	 */
@@ -361,8 +397,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			mouseStartDragY = e.getY();
 		}		
 	}
-
-
+	
 	/**
 	 * Changes the scroll position of the panel when the wheel of the mouse is used with the right button
 	 */
@@ -378,17 +413,63 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			super.mouseWheelMoved(e);
 		}
 	}
-
+	
+	
+	/**
+	 * Redoes last action
+	 */
+	protected void redoData() {
+		try {
+			if (isRedoable()) {
+				data = urrManager.redo();
+				repaint();
+				history.redo();
+			}
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while redoing");
+			history.setLastAsError();
+		}
+	}
+	
 
 	/**
-	 * Sets the data
-	 * @param geneList GeneList to set
+	 * Resets the data 
+	 * Copies the value of the original data into the current value
 	 */
-	protected void setData(GeneList geneList) {
-		this.data = geneList;
+	protected void resetData() {
+		try {
+			if (isResetable()) {
+				data = urrManager.reset();
+				repaint();
+				history.reset();
+			}
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while reseting");
+			history.setLastAsError();
+		}
+	}
+	
+	
+	/**
+	 * Sets the data showed in the track
+	 * @param data the data showed in the track
+	 * @param description description of the data
+	 */
+	protected void setData(GeneList data, String description) {
+		if (data != null) {
+			try {
+				history.add(description);
+				urrManager.set(data);
+				this.data = data;
+				repaint();
+			} catch (Exception e) {
+				ExceptionManager.handleException(getRootPane(), e, "Error while updating the track");
+				history.setLastAsError();
+			}
+		}
 	}
 
-
+	
 	/**
 	 *  Computes the minimum and maximum saturated values of the exon scores
 	 */
@@ -418,6 +499,32 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 			min = scoreList.get(minIndex - 1);
 			max = scoreList.get(maxIndex - 1);
+		}
+	}
+
+	
+	/**
+	 * Changes the undo count of the track
+	 * @param undoCount
+	 */
+	protected void setUndoCount(int undoCount) {
+		urrManager.setLength(undoCount);		
+	}
+	
+	
+	/**
+	 * Undoes last action
+	 */
+	protected void undoData() {
+		try {
+			if (isUndoable()) {
+				data = urrManager.undo();
+				repaint();
+				history.undo();
+			}
+		} catch (Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while undoing");
+			history.setLastAsError();
 		}
 	}
 	

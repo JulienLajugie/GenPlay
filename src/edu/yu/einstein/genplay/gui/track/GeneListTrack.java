@@ -20,8 +20,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import java.awt.Color;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.util.History;
 
 /**
  * A track containing a {@link GeneList}
@@ -51,10 +54,87 @@ public class GeneListTrack extends Track<GeneList> {
 	
 	
 	/**
-	 * Sets the data of the {@link GeneListTrack}
-	 * @param geneList GeneList to set
+	 * @return the history of the current track.
 	 */
-	public void setData(GeneList geneList) {
-		((GeneListTrackGraphics) trackGraphics).setData(geneList);
+	public History getHistory() {
+		return ((GeneListTrackGraphics) trackGraphics).getHistory();
+	}
+
+	
+	/**
+	 * @return true if the action redo is possible.
+	 */
+	public boolean isRedoable() {
+		return ((GeneListTrackGraphics) trackGraphics).isRedoable();
+	}
+
+	
+	/**
+	 * @return true if the track can be reseted
+	 */
+	public boolean isResetable() {
+		return ((GeneListTrackGraphics) trackGraphics).isResetable();
+	}
+
+	
+	/**
+	 * @return true if the action undo is possible.
+	 */
+	public boolean isUndoable() {
+		return ((GeneListTrackGraphics) trackGraphics).isUndoable();
+	}
+
+	
+	/**
+	 * Redoes last action
+	 */
+	public void redo() {
+		((GeneListTrackGraphics) trackGraphics).redoData();
+	}
+	
+	/**
+	 * Resets the Data. Restore the original data
+	 */
+	public void resetData() {
+		((CurveTrackGraphics<?>) trackGraphics).resetData();
+	}
+
+	
+	/**
+	 * Sets the data showed in the track
+	 * @param data
+	 * @param description description of the data
+	 */
+	public void setData(GeneList data, String description) {
+		((GeneListTrackGraphics) trackGraphics).setData(data, description);
+	}
+
+	
+	/**
+	 * Renames the track
+	 * @param newName a new name for the track
+	 */
+	@Override
+	public void setName(String newName) {
+		// add the name of the track to the history
+		getHistory().add("Track Name: \"" + newName + "\"",	new Color(0, 100, 0));
+		super.setName(newName);
+	}
+
+	
+	/**
+	 * Changes the undo count of the track
+	 * @param undoCount
+	 */
+	public void setUndoCount(int undoCount) {
+		((GeneListTrackGraphics) trackGraphics).setUndoCount(undoCount);
+	}
+	
+
+	/**
+	 * Undoes last action
+	 */
+	public void undo() {
+		((CurveTrackGraphics<?>) trackGraphics).undoData();
 	}
 }

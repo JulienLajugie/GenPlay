@@ -92,8 +92,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private final static String ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
 	//private final static String DEMO_PROJECT_PATH = "yu/einstein/gdp2/resource/ChIP-Seq_tutorial_project.gen"; // path in the resource to the preloaded project. no preloaded project if null
 	
-	private final static String DEMO_PROJECT_PATH = null; // path in the resource to the preloaded project. no preloaded project if null
-	private final static String DEMO_PROJECT_NAME = "ChIP-Seq Tutorial (hg19)"; // path in the resource to the preloaded project. no preloaded project if null
+	private final static String DEMO_PROJECT_PATH = null; 							// path in the resource to the preloaded project. no preloaded project if null
+	private final static String DEMO_PROJECT_NAME = "ChIP-Seq Tutorial (hg19)"; 	// path in the resource to the preloaded project. no preloaded project if null
+	private final static Dimension WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
+	private final static Dimension WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
 	
 	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
 	private final Image 				iconImage; 				// icon of the application
@@ -249,8 +251,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		// set the application behavior when closed
 		setDefaultCloseOperation();
 
-		setMinimumSize(new Dimension(200, 150));
-		setPreferredSize(new Dimension(800, 600));
+		setMinimumSize(WINDOW_MINIMUM_SIZE);
+		setPreferredSize(WINDOW_DEFAULT_SIZE);
 		pack();
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLocationByPlatform(true);

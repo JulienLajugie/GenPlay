@@ -107,7 +107,7 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 	/**
 	 * Resets the Data. Restore the original data
 	 */
-	public void resetBinList() {
+	public void resetData() {
 		((CurveTrackGraphics<?>) trackGraphics).resetData();
 	}
 
