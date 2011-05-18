@@ -36,6 +36,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.util.ColorConverters;
@@ -83,6 +84,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		}
 		firstLineToDisplay = 0;
 		this.data.setFontMetrics(fm);
+		this.history = new History();
+		urrManager = new URRManager<GeneList>(ConfigurationManager.getInstance().getUndoCount(), data);
 	}
 
 

@@ -84,7 +84,7 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Rename Genes";
+		return "Operation: Rename Genes, input file: " + fileName.getName();
 	}
 
 

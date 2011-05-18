@@ -18,37 +18,67 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.popupMenu;
+package edu.yu.einstein.genplay.gui.track;
 
-import javax.swing.JMenuItem;
-
-import edu.yu.einstein.genplay.gui.action.curveTrack.CTAAppearance;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.util.History;
 
 
 /**
- * Abstract class. Popup menus for a {@link CurveTrack}
+ * Interface implemented by tracks that can be undone / redone
+ * reseted and that contains an history of operations
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class CurveTrackMenu extends ScoredTrackMenu {
-
-	private static final long serialVersionUID = -767811267010609433L; 	// generated ID
-	private final JMenuItem 				jmiAppearance;				// menu item appearance
-	private final VersionedTrackMenuItems 	versionedTrackMenuItems;	// versioned track menu items
+public interface VersionedTrack {
 	
-		
+	
 	/**
-	 * Creates an instance of {@link CurveTrackMenu}
+	 * @return the history of the current track.
 	 */
-	public CurveTrackMenu(TrackList tl) {
-		super(tl);		
-		jmiAppearance= new JMenuItem(actionMap.get(CTAAppearance.ACTION_KEY));
-		versionedTrackMenuItems = new VersionedTrackMenuItems(this, trackList);
-		
-		add(jmiAppearance);
-		addSeparator();
-		versionedTrackMenuItems.addItemsToMenu();
-	}
+	public History getHistory();
+
+
+	/**
+	 * @return true if the action redo is possible
+	 */
+	public boolean isRedoable();
+
+
+	/**
+	 * @return true if the track can be reseted
+	 */
+	public boolean isResetable();
+
+
+	/**
+	 * @return true if the action undo is possible
+	 */
+	public boolean isUndoable();
+
+	
+	/**
+	 * Redoes last action
+	 */
+	public void redoData();
+	
+
+	/**
+	 * Resets the data 
+	 * Copies the value of the original data into the current value
+	 */
+	public void resetData();
+
+
+	
+	/**
+	 * Changes the undo count of the track
+	 * @param undoCount
+	 */
+	public void setUndoCount(int undoCount);
+	
+	
+	/**
+	 * Undoes last action
+	 */
+	public void undoData();
 }

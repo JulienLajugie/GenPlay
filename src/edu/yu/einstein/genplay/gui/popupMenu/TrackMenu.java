@@ -131,6 +131,6 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	 */
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent arg0) {
-		trackList.lockTrackHandles();		
+		trackList.lockTrackHandles();
 	}
 }

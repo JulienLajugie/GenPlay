@@ -46,10 +46,12 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 	private static final String 	DESCRIPTION = "Rename Genes";
 	private GeneListTrack selectedTrack;
 	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "GLAGeneRenamer";
+	
 	
 	/**
 	 * Creates an instance of {@link GLAGeneRenamer}
@@ -61,6 +63,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
+	
 	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
@@ -72,7 +75,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 			int retVal = jfc.showOpenDialog(getRootPane());
 			if (retVal == JFileChooser.APPROVE_OPTION) {
 				File fileName = jfc.getSelectedFile();
-				Operation<GeneList> operation = new GLOGeneRenamer(geneList, fileName); 
+				operation = new GLOGeneRenamer(geneList, fileName); 
 				return operation;
 			}
 		}
@@ -83,9 +86,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			int selectedIndex = getTrackList().getSelectedTrackIndex();
-			GeneListTrack glt = new GeneListTrack(getTrackList().getGenomeWindow(), selectedIndex + 1, actionResult);
-			getTrackList().setTrack(selectedIndex, glt, selectedTrack.getPreferredHeight(), selectedTrack.getName(), selectedTrack.getStripes());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

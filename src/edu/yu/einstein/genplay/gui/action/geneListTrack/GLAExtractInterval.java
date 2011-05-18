@@ -24,14 +24,10 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractIntervals;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ExtractGeneIntervalsDialog;
-import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
-
 
 
 /**
@@ -46,7 +42,6 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 	private static final String 	DESCRIPTION = "Extract intervals " +
 			"defined relative to genes"; 								// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
-	private Track<?> 				resultTrack;						// result track
 	
 	
 	/**
@@ -73,11 +68,8 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 			GeneList geneList = selectedTrack.getData();
 			ExtractGeneIntervalsDialog dialog = new ExtractGeneIntervalsDialog();
 			if (dialog.showDialog(getRootPane()) == ExtractGeneIntervalsDialog.APPROVE_OPTION) {
-				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
-				if (resultTrack != null) {
-					Operation<GeneList> operation = new GLOExtractIntervals(geneList, dialog.getStartDistance(), dialog.getStartFrom(), dialog.getStopDistance(), dialog.getStopFrom()); 
-					return operation;
-				}
+				operation = new GLOExtractIntervals(geneList, dialog.getStartDistance(), dialog.getStartFrom(), dialog.getStopDistance(), dialog.getStopFrom()); 
+				return operation;
 			}
 		}
 		return null;
@@ -87,9 +79,7 @@ public final class GLAExtractInterval  extends TrackListActionOperationWorker<Ge
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			int index = resultTrack.getTrackNumber() - 1;
-			Track<?> newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "intervals extracted from " + selectedTrack.getName(), selectedTrack.getStripes());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

@@ -102,7 +102,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 		this.stopFrom = stopFrom;
 	}
 
-	
+
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
@@ -258,9 +258,37 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 	}
 
 
+	/**
+	 * @return a string representing the distance from argument.
+	 * See constant on top of the class
+	 */
+	private String distanceFromToString(int distanceFrom) {
+		switch (distanceFrom) {
+		case AFTER_MIDDLE:
+			return "after gene middle positions";
+		case AFTER_START:
+			return "after gene start positions";
+		case AFTER_STOP:
+			return "after gene stop positions";
+		case BEFORE_MIDDLE:
+			return "before gene middle positions";
+		case BEFORE_START:
+			return "before gene start positions";
+		case BEFORE_STOP:
+			return "before gene stop positions";
+		default:
+			return null;
+		}
+
+	}
+
+
 	@Override
 	public String getDescription() {
-		return "Operation: Extract Intervals";
+		return "Operation: Extract Intervals starting "
+		 + startDistance + " bp " + distanceFromToString(startFrom) 
+		 + " and ending " 
+		 + stopDistance + " bp " + distanceFromToString(stopFrom) ;
 	}
 
 

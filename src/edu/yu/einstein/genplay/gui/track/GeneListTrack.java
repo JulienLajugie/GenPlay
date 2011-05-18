@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.util.History;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GeneListTrack extends Track<GeneList> {
+public class GeneListTrack extends Track<GeneList> implements VersionedTrack {
 
 	private static final long serialVersionUID = 907497013953591152L; // generated ID
 
@@ -88,7 +88,7 @@ public class GeneListTrack extends Track<GeneList> {
 	/**
 	 * Redoes last action
 	 */
-	public void redo() {
+	public void redoData() {
 		((GeneListTrackGraphics) trackGraphics).redoData();
 	}
 	
@@ -96,7 +96,7 @@ public class GeneListTrack extends Track<GeneList> {
 	 * Resets the Data. Restore the original data
 	 */
 	public void resetData() {
-		((CurveTrackGraphics<?>) trackGraphics).resetData();
+		((GeneListTrackGraphics) trackGraphics).resetData();
 	}
 
 	
@@ -134,7 +134,7 @@ public class GeneListTrack extends Track<GeneList> {
 	/**
 	 * Undoes last action
 	 */
-	public void undo() {
-		((CurveTrackGraphics<?>) trackGraphics).undoData();
+	public void undoData() {
+		((GeneListTrackGraphics) trackGraphics).undoData();
 	}
 }

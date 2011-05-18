@@ -121,7 +121,7 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Genes Scored from Fixed Variable Track";
+		return "Operation: Score Exons, Method of calculation: " + method + ", from track: ";
 	}
 
 

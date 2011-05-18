@@ -24,14 +24,11 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ExtractExonsDialog;
 import edu.yu.einstein.genplay.gui.dialog.ExtractGeneIntervalsDialog;
-import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
@@ -42,17 +39,18 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = 4450568171298987897L;
-	private static final String 	ACTION_NAME = "Extract Exons"; // action name
+	private static final String 	ACTION_NAME = "Extract Exons"; 		// action name
 	private static final String 	DESCRIPTION = "Extract Exons " +
 			"defined relative to genes"; 								// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
-	private Track<?> 				resultTrack;
+
 	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "GLAExtractExons";
 
+	
 	/**
 	 * Creates an instance of {@link GLAExtractExons}
 	 */
@@ -63,6 +61,7 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
+	
 	@Override
 	public Operation<GeneList> initializeOperation() throws Exception {
 		selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
@@ -70,22 +69,18 @@ public class GLAExtractExons extends TrackListActionOperationWorker<GeneList> {
 			GeneList geneList = selectedTrack.getData();
 			ExtractExonsDialog dialog = new ExtractExonsDialog();
 			if (dialog.showDialog(getRootPane()) == ExtractGeneIntervalsDialog.APPROVE_OPTION) {
-				resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
-				if (resultTrack != null) {
-					Operation<GeneList> operation = new GLOExtractExons(geneList, dialog.getSelectedExonOption()); 
+					operation = new GLOExtractExons(geneList, dialog.getSelectedExonOption()); 
 					return operation;
-				}
 			}
 		}
 		return null;
 	}
+	
 
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			int index = resultTrack.getTrackNumber() - 1;
-			Track<?> newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "exons extracted from " + selectedTrack.getName(), selectedTrack.getStripes());
+			selectedTrack.setData(actionResult, operation.getDescription());
 		}
 	}
 }

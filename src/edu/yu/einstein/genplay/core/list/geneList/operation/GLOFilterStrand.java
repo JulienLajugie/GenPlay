@@ -92,7 +92,7 @@ public class GLOFilterStrand implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Filter Strand";
+		return "Operation: Filter Strand, only genes on \""+ strandToKeep + "\" strand kept";
 	}
 
 

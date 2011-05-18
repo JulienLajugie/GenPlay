@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.curveTrack;
+package edu.yu.einstein.genplay.gui.action.versionedTrack;
 
 import java.awt.event.KeyEvent;
 
@@ -26,40 +26,38 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
-
+import edu.yu.einstein.genplay.gui.track.VersionedTrack;
 
 
 /**
- * Undoes the last action performed on  the selected {@link BinListTrack}
+ * Redoes the last action performed on the selected {@link VersionedTrack}
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class CTAUndo extends TrackListActionWorker<Void> {
+public final class VTARedo extends TrackListActionWorker<Void> {
 
-	private static final long serialVersionUID = 7486534068270241965L; 	// generated ID
-	private static final String 	ACTION_NAME = "Undo";				// action name
+	private static final long serialVersionUID = 6836640129258678255L; 	// generated ID
+	private static final String 	ACTION_NAME = "Redo";				// action name
 	private static final String 	DESCRIPTION = 
-		"Undo the last action performed on the selected track"; 		// tooltip
+		"Redo the last action performed on the selected track"; 		// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK); 
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK);
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "CTAUndo";
+	public static final String ACTION_KEY = "VTARedo";
 
 
 	/**
-	 * Creates an instance of {@link CTAUndo}
+	 * Creates an instance of {@link VTARedo}
 	 */
-	public CTAUndo() {
+	public VTARedo() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -70,10 +68,12 @@ public final class CTAUndo extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		if (getTrackList().getSelectedTrack() instanceof CurveTrack<?>) {
-			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
-			notifyActionStart("Undoing", 1, false);		
-			selectedTrack.undo();
+		if (getTrackList().getSelectedTrack() instanceof VersionedTrack) {
+			VersionedTrack selectedTrack = (VersionedTrack) getTrackList().getSelectedTrack();
+			if (selectedTrack != null) {
+				notifyActionStart("Redoing", 1, false);
+				selectedTrack.redoData();
+			}	
 		}
 		return null;
 	}

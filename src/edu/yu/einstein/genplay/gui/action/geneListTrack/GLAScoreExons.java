@@ -25,7 +25,6 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromBinList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
@@ -49,7 +48,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 		"Give a score to the exons of the genes from a scored track";	// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
 	private BinListTrack 			binListTrack;						// binlist track
-	private Track<?>				resultTrack; 						// result track
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -79,11 +78,8 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 					if (binListTrack != null) {
 						ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
 						if (method != null) {
-							resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
-							if (resultTrack != null) {
-								Operation<GeneList> operation = new GLOScoreFromBinList(selectedTrack.getData(), binListTrack.getData(), method);
-								return operation;
-							}
+							operation = new GLOScoreFromBinList(selectedTrack.getData(), binListTrack.getData(), method);
+							return operation;
 						}
 					}
 				}
@@ -96,9 +92,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			int index = resultTrack.getTrackNumber();
-			GeneListTrack newTrack = new GeneListTrack(resultTrack.getGenomeWindow(), index, actionResult);
-			getTrackList().setTrack(index - 1, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " with score from " + binListTrack.getName(), null);
+			selectedTrack.setData(actionResult, operation.getDescription() + binListTrack.getName());
 		}		
 	}
 }

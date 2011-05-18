@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.curveTrack;
+package edu.yu.einstein.genplay.gui.action.versionedTrack;
 
 import java.awt.event.KeyEvent;
 
@@ -32,34 +32,34 @@ import edu.yu.einstein.genplay.gui.track.CurveTrack;
 
 
 /**
- * Redoes the last action performed on the selected {@link BinListTrack}
+ * Resets the selected {@link BinListTrack}
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class CTARedo extends TrackListActionWorker<Void> {
+public final class VTAReset extends TrackListActionWorker<Void> {
 
-	private static final long serialVersionUID = 6836640129258678255L; 	// generated ID
-	private static final String 	ACTION_NAME = "Redo";				// action name
+	private static final long serialVersionUID = 4801183816800208961L;	// generated ID
+	private static final String 	ACTION_NAME = "Reset";				// action name
 	private static final String 	DESCRIPTION = 
-		"Redo the last action performed on the selected track"; 		// tooltip
+		"Reset the selected track";								 		// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK);
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "redo";
+	public static final String ACTION_KEY = "reset";
 
 
 	/**
-	 * Creates an instance of {@link CTARedo}
+	 * Creates an instance of {@link VTAReset}
 	 */
-	public CTARedo() {
+	public VTAReset() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -73,9 +73,9 @@ public final class CTARedo extends TrackListActionWorker<Void> {
 		if (getTrackList().getSelectedTrack() instanceof CurveTrack<?>) {
 			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				notifyActionStart("Redoing", 1, false);
-				selectedTrack.redo();
-			}	
+				notifyActionStart("Reseting Track", 1, false);
+				selectedTrack.resetData();				
+			}		
 		}
 		return null;
 	}

@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.util.History;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> {
+public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> implements VersionedTrack {
 	
 	private static final long serialVersionUID = 5068563286341191108L;	// generated ID
 
@@ -100,7 +100,7 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 	/**
 	 * Redoes last action
 	 */
-	public void redo() {
+	public void redoData() {
 		((CurveTrackGraphics<?>) trackGraphics).redoData();
 	}
 	
@@ -162,7 +162,7 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 	/**
 	 * Undoes last action
 	 */
-	public void undo() {
+	public void undoData() {
 		((CurveTrackGraphics<?>) trackGraphics).undoData();
 	}
 }

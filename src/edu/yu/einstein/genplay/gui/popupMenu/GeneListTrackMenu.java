@@ -61,6 +61,8 @@ public final class GeneListTrackMenu extends TrackMenu {
 	private final JMenuItem jmiScoreRepartition;	// show the score repartition around the start of the genes
 	private final JMenuItem jmiSearchGene;			// search gene menu
 
+	private final VersionedTrackMenuItems	versionedTrackMenuItems;	// versioned track menu items 
+	
 	
 	/**
 	 * Creates an instance of a {@link GeneListTrackMenu}
@@ -81,7 +83,8 @@ public final class GeneListTrackMenu extends TrackMenu {
 		jmiScoreExons = new JMenuItem(actionMap.get(GLAScoreExons.ACTION_KEY));
 		jmiScoreRepartition = new JMenuItem(actionMap.get(GLAScoreRepartitionAroundStart.ACTION_KEY));
 		jmiSearchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
-			
+		versionedTrackMenuItems = new VersionedTrackMenuItems(this, trackList);
+		
 		jmOperation.add(jmiSearchGene);
 		jmOperation.add(jmiExtractInterval);
 		jmOperation.add(jmiExtractExons);
@@ -98,5 +101,8 @@ public final class GeneListTrackMenu extends TrackMenu {
 		add(new Separator(), 1);
 
 		add(jmiSaveGeneTrack, 11);
+		
+		addSeparator();
+		versionedTrackMenuItems.addItemsToMenu();
 	}
 }

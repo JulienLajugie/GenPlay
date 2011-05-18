@@ -120,10 +120,6 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLASumScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATransfrag;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATwoTracks;
 import edu.yu.einstein.genplay.gui.action.curveTrack.CTAAppearance;
-import edu.yu.einstein.genplay.gui.action.curveTrack.CTAHistory;
-import edu.yu.einstein.genplay.gui.action.curveTrack.CTARedo;
-import edu.yu.einstein.genplay.gui.action.curveTrack.CTAReset;
-import edu.yu.einstein.genplay.gui.action.curveTrack.CTAUndo;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETAGenerateMultiCurvesTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadBinListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadFromDAS;
@@ -142,6 +138,10 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
+import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
+import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
+import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
+import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -241,10 +241,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
-		getActionMap().put(CTAHistory.ACTION_KEY, new CTAHistory());
-		getActionMap().put(CTARedo.ACTION_KEY, new CTARedo());
-		getActionMap().put(CTAReset.ACTION_KEY, new CTAReset());
-		getActionMap().put(CTAUndo.ACTION_KEY, new CTAUndo());		
+		getActionMap().put(VTAHistory.ACTION_KEY, new VTAHistory());
+		getActionMap().put(VTARedo.ACTION_KEY, new VTARedo());
+		getActionMap().put(VTAReset.ACTION_KEY, new VTAReset());
+		getActionMap().put(VTAUndo.ACTION_KEY, new VTAUndo());		
 		// add scored track actions
 		getActionMap().put(STASetYAxis.ACTION_KEY, new STASetYAxis());
 		// add SCWList actions
@@ -327,10 +327,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATARename.ACCELERATOR, ATARename.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATASave.ACCELERATOR, ATASave.ACTION_KEY);
 		// curve tracks
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAHistory.ACCELERATOR, CTAHistory.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTARedo.ACCELERATOR, CTARedo.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAReset.ACCELERATOR, CTAReset.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(CTAUndo.ACCELERATOR, CTAUndo.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTAHistory.ACCELERATOR, VTAHistory.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTARedo.ACCELERATOR, VTARedo.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTAReset.ACCELERATOR, VTAReset.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTAUndo.ACCELERATOR, VTAUndo.ACTION_KEY);
 		// gene tracks
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(GLASearchGene.ACCELERATOR, GLASearchGene.ACTION_KEY);
 		// SNP tracks

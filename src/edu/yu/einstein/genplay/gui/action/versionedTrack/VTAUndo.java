@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.curveTrack;
+package edu.yu.einstein.genplay.gui.action.versionedTrack;
 
 import java.awt.event.KeyEvent;
 
@@ -26,40 +26,38 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
-
+import edu.yu.einstein.genplay.gui.track.VersionedTrack;
 
 
 /**
- * Resets the selected {@link BinListTrack}
+ * Undoes the last action performed on  the selected {@link VersionedTrack}
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class CTAReset extends TrackListActionWorker<Void> {
+public final class VTAUndo extends TrackListActionWorker<Void> {
 
-	private static final long serialVersionUID = 4801183816800208961L;	// generated ID
-	private static final String 	ACTION_NAME = "Reset";				// action name
+	private static final long serialVersionUID = 7486534068270241965L; 	// generated ID
+	private static final String 	ACTION_NAME = "Undo";				// action name
 	private static final String 	DESCRIPTION = 
-		"Reset the selected track";								 		// tooltip
+		"Undo the last action performed on the selected track"; 		// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK); 
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "reset";
+	public static final String ACTION_KEY = "VTAUndo";
 
 
 	/**
-	 * Creates an instance of {@link CTAReset}
+	 * Creates an instance of {@link VTAUndo}
 	 */
-	public CTAReset() {
+	public VTAUndo() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -70,12 +68,10 @@ public final class CTAReset extends TrackListActionWorker<Void> {
 
 	@Override
 	protected Void processAction() throws Exception {
-		if (getTrackList().getSelectedTrack() instanceof CurveTrack<?>) {
-			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
-			if (selectedTrack != null) {
-				notifyActionStart("Reseting Track", 1, false);
-				selectedTrack.resetData();				
-			}		
+		if (getTrackList().getSelectedTrack() instanceof VersionedTrack) {
+			VersionedTrack selectedTrack = (VersionedTrack) getTrackList().getSelectedTrack();
+			notifyActionStart("Undoing", 1, false);		
+			selectedTrack.undoData();
 		}
 		return null;
 	}

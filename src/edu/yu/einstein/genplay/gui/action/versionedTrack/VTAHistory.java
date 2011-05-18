@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.curveTrack;
+package edu.yu.einstein.genplay.gui.action.versionedTrack;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -28,17 +28,16 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.HistoryDialog;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
+import edu.yu.einstein.genplay.gui.track.VersionedTrack;
 import edu.yu.einstein.genplay.util.History;
 
 
 /**
- * Shows the history of the selected {@link BinListTrack}
+ * Shows the history of the selected {@link VersionedTrack}
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class CTAHistory extends TrackListAction {
+public final class VTAHistory extends TrackListAction {
 
 	private static final long serialVersionUID = 6153915221242216274L;  // generated ID
 	private static final String 	ACTION_NAME = "Show History";		// action name
@@ -55,13 +54,13 @@ public final class CTAHistory extends TrackListAction {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "CTAHistory";
+	public static final String ACTION_KEY = "VTAHistory";
 
 
 	/**
-	 * Creates an instance of {@link CTAHistory}
+	 * Creates an instance of {@link VTAHistory}
 	 */
-	public CTAHistory() {
+	public VTAHistory() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -72,10 +71,10 @@ public final class CTAHistory extends TrackListAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if (getTrackList().getSelectedTrack() instanceof CurveTrack<?>) {
-			CurveTrack<?> selectedTrack = (CurveTrack<?>) getTrackList().getSelectedTrack();
+		if (getTrackList().getSelectedTrack() instanceof VersionedTrack) {
+			VersionedTrack selectedTrack = (VersionedTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				String trackName = selectedTrack.getName();
+				String trackName = getTrackList().getSelectedTrack().getName();
 				History history = selectedTrack.getHistory();
 				HistoryDialog.showHistoryDialog(getRootPane(), trackName, history);
 			}		

@@ -91,7 +91,7 @@ public class GLOFilterScore implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Filter Score";
+		return "Operation: Filter Score, remove genes with a score smaller than " + score;
 	}
 
 

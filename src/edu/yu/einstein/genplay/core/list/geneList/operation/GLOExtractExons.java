@@ -67,7 +67,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 		this.exonOption = exonOption;
 	}
 
-	
+
 	@Override
 	public GeneList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
@@ -112,7 +112,7 @@ public class GLOExtractExons implements Operation<GeneList> {
 		}
 	}
 
-	
+
 	/**
 	 * @param inputGene a {@link Gene}
 	 * @return a gene representing the first exon of the specified gene
@@ -292,7 +292,16 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Extract Exons";
+		switch (exonOption) {
+		case 0:
+			return "Operation: Extract First Exons";
+		case 1:
+			return "Operation: Extract Last Exons";
+		case 2:
+			return "Operation: Extract All Exons";
+		default:
+			return "Operation: Extract Exons";
+		}
 	}
 
 
