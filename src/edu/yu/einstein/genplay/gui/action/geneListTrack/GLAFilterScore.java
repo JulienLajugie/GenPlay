@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterScore;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
@@ -69,7 +69,7 @@ public class GLAFilterScore extends TrackListActionOperationWorker<GeneList> {
 			GeneList geneList = selectedTrack.getData();
 			Number threshold = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Remove genes with a score smaller than:", new DecimalFormat("0.###"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if (threshold != null) {
-				operation = new GLOFilterScore(geneList, threshold.doubleValue()); 
+				//operation = new GLOFilterThreshold(geneList, threshold.doubleValue(), threshold.doubleValue()); 
 				return operation;
 			}
 		}

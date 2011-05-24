@@ -32,24 +32,30 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
- * Creates a new GeneList containing only the genes with a score at least equal to the specified one
+ * Removes the genes with an overall RPKM above and under specified thresholds
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLOFilterScore implements Operation<GeneList> {
+public class GLOFilterThreshold implements Operation<GeneList> {
 	private final GeneList 	geneList;			// input list
-	private final double	score;				// all the genes with a score lower than this value will be removed
+	private final double 	lowThreshold;		// filters the genes with an overall RPKM under this threshold
+	private final double 	highThreshold;		// filters the genes with an overall RPKM above this threshold
+	private final boolean	isSaturation;		// true if we saturate, false if we remove the filtered values 
 	private boolean			stopped = false;	// true if the operation must be stopped
 	
 	
 	/**
-	 * Creates an instance of {@link GLOFilterScore}
+	 * Creates an instance of {@link GLOFilterThreshold}
 	 * @param geneList input list 
-	 * @param score all the genes with a score (gene RPKM) lower than this value will be removed
+	 * @param lowThreshold filters the genes with an overall RPKM under this threshold
+	 * @param highThreshold filters the genes with an overall RPKM above this threshold
+	 * @param isSaturation true to saturate, false to remove the filtered values
 	 */
-	public GLOFilterScore(GeneList geneList, double	score) {
+	public GLOFilterThreshold(GeneList geneList, double	lowThreshold, double highThreshold, boolean isSaturation) {
 		this.geneList = geneList;
-		this.score = score;
+		this.lowThreshold = lowThreshold;
+		this.highThreshold = highThreshold;
+		this.isSaturation = isSaturation;
 	}
 	
 	
@@ -69,8 +75,33 @@ public class GLOFilterScore implements Operation<GeneList> {
 					List<Gene> resultList = new ArrayList<Gene>();
 					for (int j = 0; j < currentList.size() && !stopped; j++) {
 						Gene currentGene = currentList.get(j);
-						if ((currentGene.getGeneRPKM() != null) && (currentGene.getGeneRPKM() >= score)) {
-							resultList.add(currentGene);
+						if ((currentGene.getGeneRPKM() != null)) {
+							Gene geneToAdd = null;
+							if (currentGene.getGeneRPKM() > highThreshold) {
+								// if the score is greater than the high threshold
+								if (isSaturation) {
+									// set the value to high threshold (saturation)
+									geneToAdd = new Gene(currentGene);
+									for (int k = 0; k < currentGene.getExonScores().length; k++) {
+										currentGene.getExonScores()[k] = highThreshold;
+									}
+								}
+							} else if (currentGene.getGeneRPKM() < lowThreshold) {
+								// if the score is smaller than the low threshold
+								if (isSaturation) {
+									// set the value to low threshold (saturation)
+									geneToAdd = new Gene(currentGene);
+									for (int k = 0; k < currentGene.getExonScores().length; k++) {
+										currentGene.getExonScores()[k] = lowThreshold;
+									}
+								}
+							} else {
+								// if the score is between the two threshold
+								geneToAdd = new Gene(currentGene);
+							}
+							if (geneToAdd != null) {
+								resultList.add(currentGene);
+							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -91,7 +122,13 @@ public class GLOFilterScore implements Operation<GeneList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Filter Score, remove genes with a score smaller than " + score;
+		String optionStr;
+		if (isSaturation) {
+			optionStr = ", option = saturation";
+		} else {
+			optionStr = ", option = remove";
+		}
+		return "Operation: Threshold Filter, minimum = " + lowThreshold + ", maximum = " + highThreshold + optionStr;
 	}
 
 

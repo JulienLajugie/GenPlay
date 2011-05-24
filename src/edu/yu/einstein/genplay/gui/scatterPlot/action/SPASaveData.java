@@ -27,9 +27,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.Arrays;
+//import java.util.List;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
@@ -66,53 +68,54 @@ public class SPASaveData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String defaultDirectoryPath = ConfigurationManager.getInstance().getDefaultDirectory();		
-		JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");
-		jfc.setFileFilter(filter);
-		int retValue = jfc.showSaveDialog(getScatterPlotPane());
-		if (retValue == JFileChooser.APPROVE_OPTION) {
-			File file = jfc.getSelectedFile();
-			if (!Utils.cancelBecauseFileExist(getScatterPlotPane(), file)) {
-				file = Utils.addExtension(file, "csv");
-				writeData(file);
+		int selectedIndex = -1; 
+		if (getScatterPlotPane().getData().size() == 1) {
+			selectedIndex = 0;
+		} else {
+			String[] graphNames = getScatterPlotPane().getGraphNames();
+			String selectedValue = (String) JOptionPane.showInputDialog(getScatterPlotPane(), "Select a graph", "Choose Color", JOptionPane.PLAIN_MESSAGE, null, graphNames, graphNames[0]);
+			if (selectedValue != null) {
+				selectedIndex = Arrays.binarySearch(graphNames, selectedValue);
+			}
+		}
+		if (selectedIndex >= 0) {
+			String defaultDirectoryPath = ConfigurationManager.getInstance().getDefaultDirectory();		
+			JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
+			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");
+			jfc.setFileFilter(filter);
+			int retValue = jfc.showSaveDialog(getScatterPlotPane());
+			if (retValue == JFileChooser.APPROVE_OPTION) {
+				File file = jfc.getSelectedFile();
+				if (!Utils.cancelBecauseFileExist(getScatterPlotPane(), file)) {
+					file = Utils.addExtension(file, "csv");
+					writeData(file, getScatterPlotPane().getData().get(selectedIndex));
+				}
 			}
 		}
 	}
 
 
 	/**
-	 * Writes the data of the {@link ScatterPlotPane} in a specified file
+	 * Writes the data of the specified {@link ScatterPlotData} in a specified file
 	 * @param file {@link File}
 	 */
-	private void writeData(File file) {
+	private void writeData(File file, ScatterPlotData scatterPlotData) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.write(getScatterPlotPane().getxAxis().getName());
-			int maxLength = getScatterPlotPane().getData().get(0).getData().length;
-			int graphNumber = 0;
-			String[] graphNames = getScatterPlotPane().getGraphNames();
-			List<ScatterPlotData> data = getScatterPlotPane().getData();
-			for (int i = 0; i < graphNames.length; i++) {
-				writer.write(", " + graphNames[i] + " " + getScatterPlotPane().getyAxis().getName());
-				if (maxLength < data.get(i).getData().length) {
-					maxLength = data.get(i).getData().length;
-					graphNumber = i;
-				}
-			}	
+			String graphName = scatterPlotData.getName();
+			writer.write(", " + graphName + " " + getScatterPlotPane().getyAxis().getName());
 			writer.newLine();
-			for (int i = 0; i < maxLength; i++){
-				writer.write(Double.toString(data.get(graphNumber).getData()[i][0]));
-				for (int j = 0; j < data.size(); j++) {
-					writer.write(", ");
-					if (i < data.get(j).getData().length) {
-						DecimalFormat df = new DecimalFormat("#.###");
-						writer.write(df.format(data.get(j).getData()[i][1]));
-					} else {
-						writer.write(Integer.toString(0));						
-					}					
-				}
+			for (int i = 0; i < scatterPlotData.getData().length; i++){
+				writer.write(Double.toString(scatterPlotData.getData()[i][0]));
+				writer.write(", ");
+				if (i < scatterPlotData.getData().length) {
+					DecimalFormat df = new DecimalFormat("#.###");
+					writer.write(df.format(scatterPlotData.getData()[i][1]));
+				} else {
+					writer.write(Integer.toString(0));						
+				}					
 				writer.newLine();
 			}			
 			writer.close();
@@ -122,4 +125,46 @@ public class SPASaveData extends ScatterPlotAction {
 			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
 		}
 	}
+
+
+//	/**
+//	 * Writes the data of the {@link ScatterPlotPane} in a specified file
+//	 * @param file {@link File}
+//	 */
+//	private void writeData(File file) {
+//		try {
+//			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+//			writer.write(getScatterPlotPane().getxAxis().getName());
+//			int maxLength = getScatterPlotPane().getData().get(0).getData().length;
+//			int graphNumber = 0;
+//			String[] graphNames = getScatterPlotPane().getGraphNames();
+//			List<ScatterPlotData> data = getScatterPlotPane().getData();
+//			for (int i = 0; i < graphNames.length; i++) {
+//				writer.write(", " + graphNames[i] + " " + getScatterPlotPane().getyAxis().getName());
+//				if (maxLength < data.get(i).getData().length) {
+//					maxLength = data.get(i).getData().length;
+//					graphNumber = i;
+//				}
+//			}	
+//			writer.newLine();
+//			for (int i = 0; i < maxLength; i++){
+//				writer.write(Double.toString(data.get(graphNumber).getData()[i][0]));
+//				for (int j = 0; j < data.size(); j++) {
+//					writer.write(", ");
+//					if (i < data.get(j).getData().length) {
+//						DecimalFormat df = new DecimalFormat("#.###");
+//						writer.write(df.format(data.get(j).getData()[i][1]));
+//					} else {
+//						writer.write(Integer.toString(0));						
+//					}					
+//				}
+//				writer.newLine();
+//			}			
+//			writer.close();
+//		} catch (FileNotFoundException e) {
+//			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file. \n" + e.getLocalizedMessage());
+//		} catch (IOException e) {
+//			ExceptionManager.handleException(getRootPane(), e, "Error while saving the scatter plot data as a CSV file");
+//		}
+//	}
 }

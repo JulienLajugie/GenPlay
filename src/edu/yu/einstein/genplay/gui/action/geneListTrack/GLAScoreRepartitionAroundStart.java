@@ -94,7 +94,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 							if (binCount != null) {
 								ScoreCalculationMethod scm = Utils.chooseScoreCalculation(getRootPane());
 								if (scm != null) {
-									Operation<double[][]> operation = new GLOScoreRepartitionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm); 
+									operation = new GLOScoreRepartitionAroundStart(geneList, binList, selectedChromo, binSize.intValue(), binCount.intValue(), scm); 
 									return operation;
 								}
 							}
