@@ -67,14 +67,16 @@ public class GLOFilterCount implements Operation<GeneList> {
 		Arrays.fill(selectedChromo, true);
 		
 		int totalLenght = new GLOCountGenes(geneList,selectedChromo).compute().intValue();
-		
+		if (totalLenght == 0) {
+			return new GeneList(geneList, geneList.getSearchURL());
+		}
 		double[] allScores = new double[totalLenght];
 		int i = 0;
 		for (List<Gene> currentList: geneList) {
 			if (currentList != null) {
 				for (int j = 0; j < currentList.size() && !stopped; j++) {
 					Double currentScore = currentList.get(j).getGeneRPKM();
-					if (currentScore != 0) {
+					if ((currentScore != null) && (currentScore != 0)) {
 						allScores[i] = currentScore;
 						i++;
 					}

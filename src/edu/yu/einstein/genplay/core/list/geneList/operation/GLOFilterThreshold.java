@@ -83,7 +83,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 									// set the value to high threshold (saturation)
 									geneToAdd = new Gene(currentGene);
 									for (int k = 0; k < currentGene.getExonScores().length; k++) {
-										currentGene.getExonScores()[k] = highThreshold;
+										geneToAdd.getExonScores()[k] = highThreshold;
 									}
 								}
 							} else if (currentGene.getGeneRPKM() < lowThreshold) {
@@ -92,7 +92,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 									// set the value to low threshold (saturation)
 									geneToAdd = new Gene(currentGene);
 									for (int k = 0; k < currentGene.getExonScores().length; k++) {
-										currentGene.getExonScores()[k] = lowThreshold;
+										geneToAdd.getExonScores()[k] = lowThreshold;
 									}
 								}
 							} else {
@@ -100,7 +100,7 @@ public class GLOFilterThreshold implements Operation<GeneList> {
 								geneToAdd = new Gene(currentGene);
 							}
 							if (geneToAdd != null) {
-								resultList.add(currentGene);
+								resultList.add(geneToAdd);
 							}
 						}
 					}

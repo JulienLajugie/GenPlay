@@ -23,12 +23,15 @@ package edu.yu.einstein.genplay.gui.action.geneListTrack;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromBinList;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
@@ -47,7 +50,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	private static final String 	DESCRIPTION = 
 		"Give a score to the exons of the genes from a scored track";	// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
-	private BinListTrack 			binListTrack;						// binlist track
+	private CurveTrack<?> 			curveTrack;							// curve track
 
 
 	/**
@@ -72,13 +75,17 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 		if ((getTrackList().getSelectedTrack() != null) && (getTrackList().getSelectedTrack() instanceof GeneListTrack)) {
 			selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 			if (selectedTrack != null) {
-				Track<?>[] blts = getTrackList().getBinListTracks();
-				if (blts != null) {
-					binListTrack = (BinListTrack) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Select the track with the scores:", blts);
-					if (binListTrack != null) {
+				Track<?>[] cts = getTrackList().getCurveTracks();
+				if (cts != null) {
+					curveTrack = (CurveTrack<?>) TrackChooser.getTracks(getRootPane(), "Choose A Track", "Select the track with the scores:", cts);
+					if (curveTrack != null) {
 						ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
 						if (method != null) {
-							operation = new GLOScoreFromBinList(selectedTrack.getData(), binListTrack.getData(), method);
+							if (curveTrack.getData() instanceof BinList) {
+								operation = new GLOScoreFromBinList(selectedTrack.getData(), (BinList) curveTrack.getData(), method);
+							} else if (curveTrack.getData() instanceof ScoredChromosomeWindowList) {
+								operation = new GLOScoreFromSCWList(selectedTrack.getData(), (ScoredChromosomeWindowList) curveTrack.getData(), method);
+							}
 							return operation;
 						}
 					}
@@ -92,7 +99,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			selectedTrack.setData(actionResult, operation.getDescription() + binListTrack.getName());
+			selectedTrack.setData(actionResult, operation.getDescription() + curveTrack.getName());
 		}		
 	}
 }

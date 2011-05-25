@@ -27,7 +27,7 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLADistanceCalculator;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractInterval;
-import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAFilterScore;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAFilter;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAFilterStrand;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
@@ -76,7 +76,7 @@ public final class GeneListTrackMenu extends TrackMenu {
 		jmiDistanceCalculator = new JMenuItem(actionMap.get(GLADistanceCalculator.ACTION_KEY));
 		jmiExtractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
 		jmiExtractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
-		jmiFilterScore = new JMenuItem(actionMap.get(GLAFilterScore.ACTION_KEY));
+		jmiFilterScore = new JMenuItem(actionMap.get(GLAFilter.ACTION_KEY));
 		jmiFilterStrand = new JMenuItem(actionMap.get(GLAFilterStrand.ACTION_KEY));		
 		jmiRenameGenes = new JMenuItem(actionMap.get(GLAGeneRenamer.ACTION_KEY));
 		jmiSaveGeneTrack = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));

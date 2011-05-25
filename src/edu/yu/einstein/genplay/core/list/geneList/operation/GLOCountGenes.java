@@ -32,13 +32,13 @@ import edu.yu.einstein.genplay.core.operation.Operation;
  * @version 0.1
  */
 public class GLOCountGenes implements Operation<Long> {
-	
+
 	private final GeneList 	geneList;		// input GeneList
 	private final boolean[] chromoList;		// 1 boolean / chromosome. 
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean			stopped = false;// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GLOCountGenes}.
 	 * Counts the genes on the selected chromosomes of the {@link GeneList}.
@@ -50,43 +50,46 @@ public class GLOCountGenes implements Operation<Long> {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}
-	
-	
-	
+
+
+
 	@Override
 	public Long compute() throws InterruptedException, ExecutionException {
 		long total = 0;
 		for (int i = 0; i < geneList.size() && !stopped; i++) {
 			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				total += geneList.size(i);
+				for (int j = 0; j < geneList.size(i) && !stopped; j++) {
+					if ((geneList.get(i, j).getGeneRPKM() != null) && (geneList.get(i, j).getGeneRPKM() != 0))
+						total++;
+				}
 			}
 		}
 		if (stopped) {
-			 return null;
+			return null;
 		} else {
 			return total;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Count Genes";
 	}
-	
-	
+
+
 	@Override
 	public int getStepCount() {
 		return 1;
 	}
-	
-	
+
+
 	@Override
 	public String getProcessingDescription() {
 		return "Counting Non Null Windows";
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

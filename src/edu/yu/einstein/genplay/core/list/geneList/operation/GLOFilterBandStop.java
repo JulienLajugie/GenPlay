@@ -74,8 +74,8 @@ public class GLOFilterBandStop implements Operation<GeneList> {
 					List<Gene> resultList = new ArrayList<Gene>();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						for (int j = 0; j < currentList.size() && !stopped; j++) {
-							double currentValue = currentList.get(j).getGeneRPKM(); 
-							if ((currentValue < lowThreshold) && (currentValue > highThreshold)) {
+							Double currentValue = currentList.get(j).getGeneRPKM(); 
+							if ((currentValue == null) || (currentValue < lowThreshold) && (currentValue > highThreshold)) {
 								Gene geneToAdd = new Gene(currentList.get(j));
 								resultList.add(geneToAdd);
 							}					

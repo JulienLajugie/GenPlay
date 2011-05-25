@@ -20,41 +20,41 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.geneListTrack;
 
-import java.text.DecimalFormat;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterBandStop;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterCount;
+import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterPercentage;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
+import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 
 /**
- * Removes the genes that have a score lower than the specified value
+ * Filter the selected {@link GeneListTrack}
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GLAFilterScore extends TrackListActionOperationWorker<GeneList> {
+public class GLAFilter extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = -5807756062510954560L;	// generated id
-	private static final String 	ACTION_NAME = "Filter Score"; 		// action name
-	private static final String 	DESCRIPTION = "Remove the genes " +
-			"that have a score lower than the specified value"; 		// tooltip
+	private static final String 	ACTION_NAME = "Filter";		 		// action name
+	private static final String 	DESCRIPTION = "Filter the selected track";	// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
 	
 	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "GLAFilterScore";
+	public static final String ACTION_KEY = "GLAFilter";
 
 
 	/**
-	 * Creates an instance of {@link GLAFilterScore}
+	 * Creates an instance of {@link GLAFilter}
 	 */
-	public GLAFilterScore() {
+	public GLAFilter() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -66,11 +66,24 @@ public class GLAFilterScore extends TrackListActionOperationWorker<GeneList> {
 	public Operation<GeneList> initializeOperation() {
 		selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			GeneList geneList = selectedTrack.getData();
-			Number threshold = NumberOptionPane.getValue(getRootPane(), "Enter Value", "Remove genes with a score smaller than:", new DecimalFormat("0.###"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
-			if (threshold != null) {
-				//operation = new GLOFilterThreshold(geneList, threshold.doubleValue(), threshold.doubleValue()); 
-				return operation;
+			FilterDialog filterDialog = new FilterDialog();
+			if (filterDialog.showFilterDialog(getRootPane()) == FilterDialog.APPROVE_OPTION) {
+				GeneList geneList = selectedTrack.getData();
+				Number min = filterDialog.getMinInput();
+				Number max = filterDialog.getMaxInput();
+				boolean isSaturation = filterDialog.isSaturation(); 
+				switch (filterDialog.getFilterType()) {
+				case COUNT:
+					return new GLOFilterCount(geneList, min.intValue(), max.intValue(), isSaturation);
+				case PERCENTAGE:
+					return new GLOFilterPercentage(geneList, min.doubleValue(), max.doubleValue(), isSaturation);
+				case THRESHOLD:
+					return new GLOFilterThreshold(geneList, min.doubleValue(), max.doubleValue(), isSaturation);
+				case BANDSTOP:
+					return new GLOFilterBandStop(geneList, min.doubleValue(), max.doubleValue());
+				default:
+					throw new IllegalArgumentException("Invalid Saturation Type");
+				}
 			}
 		}
 		return null;
