@@ -35,6 +35,11 @@ import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
+
+/**
+ * Shows the repartition of the scores around the start position of each gene.
+ * @author Julien Lajugie
+ */
 public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 
 	private boolean							stopped = false;		// true if the operation must be stopped
@@ -46,6 +51,16 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 	private final ScoreCalculationMethod 	scoreCalculationMethod; // method for the calculation of the bin of scores
 
 
+	/**
+	 * Creates an instance of {@link GLOScoreRepartitionAroundStart}. 
+	 * Shows the repartition of the scores around the start position of each gene.
+	 * @param geneList input gene list
+	 * @param binList list containing the scores
+	 * @param selectedChromosomes chromosome on which we show the repartition
+	 * @param binSize size of the bins of score
+	 * @param binCount count of bins each side of the promoter
+	 * @param scoreCalculationMethod {@link ScoreCalculationMethod} to compute the score of the bins
+	 */
 	public GLOScoreRepartitionAroundStart(GeneList geneList, BinList binList, boolean[] selectedChromosomes,
 			int binSize, int binCount, ScoreCalculationMethod scoreCalculationMethod) {
 		this.geneList = geneList;
@@ -173,6 +188,14 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 	}
 
 
+	/**
+	 * Retrieves the average score of the bins between a start and a stop position on a specified chromosome
+	 * @param currentChromo chromosome position
+	 * @param start start position
+	 * @param stop stop position
+	 * @param binList list with the scores
+	 * @return the average score of the bins between a start and a stop position on a specified chromosome
+	 */
 	protected double retrieveScore(Chromosome currentChromo, int start, int stop, BinList binList) {
 		//TODO handle the first and last windows when only a small part of the start and stop 
 		//are in the window
@@ -181,6 +204,8 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 		int stopIndex = (int) Math.ceil(stop / (double) binList.getBinSize());
 		int count = 0;
 		double totalScore = 0;
+		startIndex = Math.max(0, startIndex);
+		stopIndex = Math.min(binList.size(currentChromo) - 1, stopIndex);
 		for (int i = startIndex; i <= stopIndex; i++) {
 			double score = binList.get(currentChromo, i);
 			if (score != 0) {

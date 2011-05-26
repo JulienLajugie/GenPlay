@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.FilterType;
 import edu.yu.einstein.genplay.core.enums.IslandResultType;
@@ -303,6 +304,52 @@ public class Utils {
 
 
 	/**
+	 * Recursive function. Returns the index where the start value of the window is found
+	 * or the index right after if the exact value is not find.
+	 * @param list
+	 * @param value
+	 * @param indexStart
+	 * @param indexStop
+	 * @return
+	 */
+	private static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == list.get(indexStart + middle).getStart()) {
+			return indexStart + middle;
+		} else if (value > list.get(indexStart + middle).getStart()) {
+			return findStart(list, value, indexStart + middle + 1, indexStop);
+		} else {
+			return findStart(list, value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the stop value of the window is found
+	 * or the index right before if the exact value is not find.
+	 * @param list
+	 * @param value
+	 * @param indexStart
+	 * @param indexStop
+	 * @return
+	 */
+	private static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == list.get(indexStart + middle).getStop()) {
+			return indexStart + middle;
+		} else if (value > list.get(indexStart + middle).getStop()) {
+			return findStop(list, value, indexStart + middle + 1, indexStop);
+		} else {
+			return findStop(list, value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
 	 * @param file a {@link File}
 	 * @return the extension of the file. null if none
 	 */
@@ -359,7 +406,7 @@ public class Utils {
 	public static ExtendedFileFilter[] getReadableRepeatFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
-	}
+	}	
 
 
 	/**
@@ -372,19 +419,19 @@ public class Utils {
 
 
 	/**
-	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SNPList
-	 */
-	public static FileFilter[] getReadableSNPFileFilters() {
-		ExtendedFileFilter[] filters = {new SOAPsnpFilter()};
-		return filters;
-	}	
-
-
-	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as sequence track (aka nucleotide list)
 	 */
 	public static FileFilter[] getReadableSequenceFileFilters() {
 		ExtendedFileFilter[] filters = {new TwoBitFilter()};
+		return filters;
+	}
+
+
+	/**
+	 * @return the {@link ExtendedFileFilter} associated to the files that can be loaded as SNPList
+	 */
+	public static FileFilter[] getReadableSNPFileFilters() {
+		ExtendedFileFilter[] filters = {new SOAPsnpFilter()};
 		return filters;
 	}
 
@@ -415,7 +462,7 @@ public class Utils {
 		return filters;
 	}
 
-
+	
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as SCWList
 	 */
@@ -423,8 +470,8 @@ public class Utils {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter()};
 		return filters;
 	}
-
-
+	
+	
 	/**
 	 * Returns the logarithm of a double value. The logarithm is computed in the specified base 
 	 * @param logBase
@@ -441,87 +488,6 @@ public class Utils {
 		}
 	}
 
-	
-	/**
-	 * 
-	 * @param <T>
-	 * @param list
-	 * @param indexStart
-	 * @param indexStop
-	 * @return
-	 */
-	public static <T extends ChromosomeWindow> List<T> searchInterval(List<T> list, int positionStart, int positionStop) {
-		if ((list == null) || (list.size() == 0)) {
-			return null;
-		}
-		
-		ArrayList<T> resultList = new ArrayList<T>();
-
-		int indexStart = findStart(list, positionStart, 0, list.size() - 1);
-		int indexStop = findStop(list, positionStop, 0, list.size() - 1);
-		if (indexStart > 0) {
-			if (list.get(indexStart - 1).getStop() >= positionStart) {
-				T currentWindow = list.get(indexStart - 1); 
-				resultList.add(currentWindow);
-			}
-		}
-		for (int i = indexStart; i <= indexStop; i++) {
-			resultList.add(list.get(i));
-		}
-		if (indexStop + 1 < list.size()) {
-			if (list.get(indexStop + 1).getStart() <= positionStop) {
-				T currentWindow = list.get(indexStop + 1); 
-				resultList.add(currentWindow);
-			}
-		}
-		return resultList;
-	}
-	
-	
-	/**
-	 * Recursive function. Returns the index where the start value of the window is found
-	 * or the index right after if the exact value is not find.
-	 * @param list
-	 * @param value
-	 * @param indexStart
-	 * @param indexStop
-	 * @return
-	 */
-	private static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive function. Returns the index where the stop value of the window is found
-	 * or the index right before if the exact value is not find.
-	 * @param list
-	 * @param value
-	 * @param indexStart
-	 * @param indexStop
-	 * @return
-	 */
-	private static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
-	}
 
 	/**
 	 * This methods parse a line and returns an array of strings containing
@@ -564,6 +530,7 @@ public class Utils {
 		}
 	}
 
+	
 	/**
 	 * This methods parse a line and returns an array of strings containing
 	 * all the fields from the input line that are separated by one or many 
@@ -603,5 +570,43 @@ public class Utils {
 			String[] returnArray = new String[parsedLine.size()];
 			return parsedLine.toArray(returnArray);
 		}
+	}
+
+	/**
+	 * Returns a sublist of the input list. The first window contains or
+	 * starts after the specified start positions.
+	 * The last window contains or stops before the specified stop position. 
+	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow}, 
+	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
+	 * @param list input list
+	 * @param positionStart
+	 * @param positionStop
+	 * @return a sublist of the input list
+	 */
+	public static <T extends ChromosomeWindow> List<T> searchInterval(List<T> list, int positionStart, int positionStop) {
+		if ((list == null) || (list.size() == 0)) {
+			return null;
+		}
+		
+		ArrayList<T> resultList = new ArrayList<T>();
+
+		int indexStart = findStart(list, positionStart, 0, list.size() - 1);
+		int indexStop = findStop(list, positionStop, 0, list.size() - 1);
+		if (indexStart > 0) {
+			if (list.get(indexStart - 1).getStop() >= positionStart) {
+				T currentWindow = list.get(indexStart - 1); 
+				resultList.add(currentWindow);
+			}
+		}
+		for (int i = indexStart; i <= indexStop; i++) {
+			resultList.add(list.get(i));
+		}
+		if (indexStop + 1 < list.size()) {
+			if (list.get(indexStop + 1).getStart() <= positionStop) {
+				T currentWindow = list.get(indexStop + 1); 
+				resultList.add(currentWindow);
+			}
+		}
+		return resultList;
 	}
 }
