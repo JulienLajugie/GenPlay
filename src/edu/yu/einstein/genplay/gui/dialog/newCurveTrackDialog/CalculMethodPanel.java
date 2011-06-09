@@ -41,7 +41,7 @@ class CalculMethodPanel extends JPanel {
 	private static final int 				PANEL_WIDTH = 150;	// width of the panel
 	private final JComboBox 				jcbCalculMetod; 	// combo box for the score calculation method
 	private static ScoreCalculationMethod 	defaultMethod = 
-		ScoreCalculationMethod.AVERAGE;							// default method of calculation
+		ScoreCalculationMethod.SUM;								// default method of calculation
 	
 	
 	/**

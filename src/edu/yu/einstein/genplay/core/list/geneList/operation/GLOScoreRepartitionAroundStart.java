@@ -141,7 +141,11 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 						// compute the average if it's the method for the score calculation
 						if (scoreCalculationMethod == ScoreCalculationMethod.AVERAGE) {
 							for (int j = 0; j < totalBinCount; j++) {
-								chromoResult[j] /= count[j];
+								if (count[j] != 0) {
+									chromoResult[j] /= count[j];
+								} else {
+									chromoResult[j] = 0;
+								}
 							}
 						}
 						op.notifyDone();
@@ -180,7 +184,11 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 		// compute the average if it's the method for the score calculation
 		if (scoreCalculationMethod == ScoreCalculationMethod.AVERAGE) {
 			for (int i = 0; i < totalBinCount; i++) {
-				result[i][1] /= count[i];
+				if (count[i] != 0) {
+					result[i][1] /= count[i];
+				} else {
+					result[i][1] = 0;
+				}
 			}
 		}
 		return result;
