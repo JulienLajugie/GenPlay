@@ -45,9 +45,9 @@ import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ScreenThread;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.memoryTest.MemoryTestBench;
+/*import edu.yu.einstein.genplay.memoryTest.MemoryTestBench;
 import edu.yu.einstein.genplay.memoryTest.MultiGenomeObjectFactory;
-import edu.yu.einstein.genplay.memoryTest.ObjectFactory;
+import edu.yu.einstein.genplay.memoryTest.ObjectFactory;*/
 
 
 /**
@@ -270,14 +270,14 @@ public class Launcher {
 	}
 
 
-	@SuppressWarnings("unused")	// Development
-	private static void memoryTest () {
+	//@SuppressWarnings("unused")	// Development
+	/*private static void memoryTest () {
 		MemoryTestBench bench = new MemoryTestBench();
 		ObjectFactory multiGenome = new MultiGenomeObjectFactory();
 		bench.showMemoryUsage(multiGenome);
 		//((MultiGenomeObjectFactory)multiGenome).compute();
 		//bench.showMemoryUsage(multiGenome);
-	}
+	}*/
 
 
 	/**

@@ -24,12 +24,7 @@
 		<link>
 			<name>src/edu/yu/einstein/genplay/resource/genplay_banner_447x91.png</name>
 			<type>1</type>
-			<location>D:/Documents/GenPlay/GenPlayBanner447x91.png</location>
-		</link>
-		<link>
-			<name>src/edu/yu/einstein/genplay/resource/genplay_banner_738x148.png</name>
-			<type>1</type>
-			<location>D:/Documents/GenPlay/GenPlay_Banner.png</location>
+			<location>C:/Program Files/eclipse/workspace/GenPlay/src/edu/yu/einstein/genplay/resource/genplay_banner_447x91.png</location>
 		</link>
 	</linkedResources>
 </projectDescription>

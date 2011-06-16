@@ -24,10 +24,10 @@ import javax.swing.JMenuItem;
 import javax.swing.event.PopupMenuEvent;
 
 import edu.yu.einstein.genplay.gui.action.curveTrack.CTAAppearance;
-import edu.yu.einstein.genplay.gui.action.versionedTrack.CTAHistory;
-import edu.yu.einstein.genplay.gui.action.versionedTrack.CTARedo;
-import edu.yu.einstein.genplay.gui.action.versionedTrack.CTAReset;
-import edu.yu.einstein.genplay.gui.action.versionedTrack.CTAUndo;
+import edu.yu.einstein.genplay.gui.action.curveTrack.CTAHistory;
+import edu.yu.einstein.genplay.gui.action.curveTrack.CTARedo;
+import edu.yu.einstein.genplay.gui.action.curveTrack.CTAReset;
+import edu.yu.einstein.genplay.gui.action.curveTrack.CTAUndo;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
