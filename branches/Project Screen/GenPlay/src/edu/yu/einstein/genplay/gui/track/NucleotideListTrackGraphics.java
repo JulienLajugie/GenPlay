@@ -147,6 +147,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 		drawVerticalLines(g);
 		drawNucleotideLetters(g);
 		drawStripes(g);
+		drawMultiGenomeInformation(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

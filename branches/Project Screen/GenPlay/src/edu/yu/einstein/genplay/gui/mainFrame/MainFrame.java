@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
@@ -53,6 +54,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
@@ -78,11 +80,11 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 343; 						// GenPlay version
+	private static final int VERSION_NUMBER = 350; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
-	public static final String APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") - ";
+	public static final String APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") - Multi-Genome beta version ";
 	private final static String ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
 		
 	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
@@ -125,6 +127,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		
 		Chromosome chromosome = instance.get(0);
 		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
+		//GenomeWindow genomeWindow = ProjectManager.getInstance().getGenomeWindow(chromosome);
 		ruler = new Ruler(genomeWindow);
 		ruler.getOptionButton().addActionListener(this);
 		ruler.addGenomeWindowListener(this);
@@ -191,6 +194,13 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			loader.setSelectedFile(ProjectRecordingManager.getInstance().getFileToLoad());
 			loader.actionPerformed(null);
 		}
+		
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			PAMultiGenome process = new PAMultiGenome();
+			process.actionPerformed(null);
+			
+		}
+		
 	}
 	
 	
@@ -200,11 +210,11 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	public void setTitle () {
 		setTitle(	MainFrame.APPLICATION_TITLE +
-					ChromosomeManager.getInstance().getProjectName()
+					ProjectManager.getInstance().getProjectName()
 					+ " - " + 
-					ChromosomeManager.getInstance().getGenomeName()
+					ProjectManager.getInstance().getGenomeName()
 					+ " " + 
-					ChromosomeManager.getInstance().getAssembly().getName());
+					ProjectManager.getInstance().getAssembly().getName());
 	}
 	
 	

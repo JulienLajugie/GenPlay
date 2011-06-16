@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -34,6 +35,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -48,15 +51,18 @@ import edu.yu.einstein.genplay.gui.launcher.Launcher;
  * @author Nicolas Fourel
  */
 class AssemblyPanel extends JPanel implements ActionListener {
-	
+
 	private static final long serialVersionUID = -5768796908632202321L;
-	
+
+	private final static 	String 		ICON_PATH = "edu/yu/einstein/genplay/resource/tools.png"; 	// path of the tools icon
+	private 	 			ImageIcon	icon; 
+
 	private static final int COMBO_WIDTH = 200;	// Combo box width value
 	private static final int COMBO_HEIGTH = 20;	// Combo box height value
-	
+
 	private static final String CLADE_DEFAULT_VALUE = "mammal";	// Default clade value
 	private static final String GENOME_DEFAULT_VALUE = "human";	// Default genome value
-	
+
 	private JLabel 		jlClade;			// Clade label
 	private JLabel 		jlGenome;			// Genome label
 	private JLabel 		jlAssembly;			// Assembly label
@@ -64,14 +70,14 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private JComboBox 	jcGenome;			// Genome combo box
 	private JComboBox 	jcAssembly;			// Assembly combo box
 	private String 		selectedClade;		// Selected Clade
-	private String 		selectedGenome;		// Selected Clade
-	private String 		selectedAssembly;	// Selected Clade
-	
+	private String 		selectedGenome;		// Selected Genome
+	private String 		selectedAssembly;	// Selected Assembly
+
 	private ChromosomeChooser 					chromosomeChooser;	// Chromosome chooser object
 	private JButton 							jbChromosome;		// Button to create a chromosome chooser object
 	private Map<Integer, Map<Integer, Object>> 	data;				// Data used for the chromosome selection
-	
-	
+
+
 	/**
 	 * Constructor of {@link AssemblyPanel}
 	 */
@@ -81,41 +87,43 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		
+
 		//Labels
 		jlClade = new JLabel("Clade:");
 		jlGenome = new JLabel("Genome:");
 		jlAssembly = new JLabel("Assembly:");
-		
+
 		//Combo boxes
 		jcClade = new JComboBox();
 		jcGenome = new JComboBox();
 		jcAssembly = new JComboBox();
-		
+
 		//Size Combo boxes
 		Dimension comboDim = new Dimension(COMBO_WIDTH, COMBO_HEIGTH);
 		jcClade.setPreferredSize(comboDim);
 		jcGenome.setPreferredSize(comboDim);
 		jcAssembly.setPreferredSize(comboDim);
-		
+
 		//Boxes color
 		jcClade.setBackground(ProjectScreenManager.getAssemblyColor());
 		jcGenome.setBackground(ProjectScreenManager.getAssemblyColor());
 		jcAssembly.setBackground(ProjectScreenManager.getAssemblyColor());
-		
+
 		//Chromosome selection button
-		jbChromosome = new JButton("...");
+		icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH)));
+		jbChromosome = new JButton(icon);
 		jbChromosome.setPreferredSize(new Dimension(20, 20));
-		
+		jbChromosome.setMargin(new Insets(0, 0, 0, 0));
+
 		//Layout
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+
 		//Insets
 		Insets labelInsets = new Insets (10, 28, 10, 30);
 		Insets boxInsets = new Insets (0, 0, 0, 0);
 		Insets buttonInsets = new Insets (0, 5, 0, 0);
-		
+
 		//jlClade
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -128,7 +136,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.weighty = 0;
 		add(jlClade, gbc);
-		
+
 		//jcClade
 		gbc.gridx = 1;
 		gbc.gridy = 0;
@@ -140,7 +148,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.insets = boxInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jcClade, gbc);
-		
+
 		//jlGenome
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -152,7 +160,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.insets = labelInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlGenome, gbc);
-		
+
 		//jcGenome
 		gbc.gridx = 1;
 		gbc.gridy = 1;
@@ -164,7 +172,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.insets = boxInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jcGenome, gbc);
-		
+
 		//jlAssembly
 		gbc.gridx = 0;
 		gbc.gridy = 2;
@@ -176,7 +184,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.insets = labelInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jlAssembly, gbc);
-		
+
 		//jcAssembly
 		gbc.gridx = 1;
 		gbc.gridy = 2;
@@ -188,7 +196,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.insets = boxInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jcAssembly, gbc);
-		
+
 		//jbChromosome
 		gbc.gridx = 2;
 		gbc.gridy = 2;
@@ -200,24 +208,24 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		gbc.insets = buttonInsets;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jbChromosome, gbc);
-		
+
 		//Background
 		setBackground(ProjectScreenManager.getAssemblyColor());
-		
+
 		//init boxes and data
 		initClade ();
 		initGenome ();
 		initAssembly ();
 		selectedAssembly = jcAssembly.getSelectedItem().toString();
 		initData ();
-		
+
 		//Listeners
 		jcClade.addActionListener(this);
 		jcGenome.addActionListener(this);
 		jbChromosome.addActionListener(this);
 	}
-	
-	
+
+
 	/**
 	 * Initialization of the clade combo box.
 	 */
@@ -230,8 +238,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcClade.setSelectedItem(CLADE_DEFAULT_VALUE);
 		selectedClade = jcClade.getSelectedItem().toString();
 	}
-	
-	
+
+
 	/**
 	 * Initialization of the genome combo box.
 	 */
@@ -245,8 +253,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcGenome.setSelectedItem(GENOME_DEFAULT_VALUE);
 		selectedGenome = jcGenome.getSelectedItem().toString();
 	}
-	
-	
+
+
 	/**
 	 * Initialization of the assembly combo box
 	 */
@@ -259,8 +267,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		}
 		jcAssembly.setSelectedIndex(0);
 	}
-	
-	
+
+
 	/**
 	 * This listener updates combo boxes when an action is performed.
 	 */
@@ -290,8 +298,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * This method initiates the data.
 	 * Data need to be initiates for the first run.
@@ -300,7 +308,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		data = new HashMap<Integer, Map<Integer,Object>>();
 		Map<Integer,Object> line;
 		int row = 0;
-		
+
 		Assembly assembly = Launcher.getCladeList().get(selectedClade).getGenomeList().get(selectedGenome).getAssemblyList().get(findAssembly());
 		List<String> chromosomeNames = new ArrayList<String>(assembly.getChromosomeList().keySet());
 		Collections.sort(chromosomeNames, new ChromosomeComparator());
@@ -314,8 +322,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			row++;
 		}
 	}
-	
-	
+
+
 	/**
 	 * This method gets the label from the assembly box and convert it in order to get the original name.
 	 * @return	the name of the selected assembly.
@@ -333,8 +341,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		String assembly = sdf.format(date_tmp);
 		return assembly.concat(" ").concat(assembly_tmp.substring(10, assembly_tmp.length()-1));
 	}
-	
-	
+
+
 	/**
 	 * @return the selectedClade
 	 */
@@ -365,8 +373,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	protected void setData(Map<Integer, Map<Integer, Object>> data) {
 		this.data = data;
 	}
-	
-	
+
+
 	/**
 	 * @return the selected chromosome list
 	 */
@@ -383,12 +391,12 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		return chromosomeList;
 	}
 
-	
+
 	/**
 	 * Destruction of the chromosome chooser object
 	 */
 	protected void destruct() {
 		this.chromosomeChooser = null;
 	}
-	
+
 }

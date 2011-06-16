@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
@@ -95,6 +96,10 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 				strandShift = nctd.getStrandShiftValue();
 				((StrandedExtractor) extractor).selectStrand(strand);
 				((StrandedExtractor) extractor).setStrandShift(strandShift);
+			}
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				genomeName = nctd.getGenomeName();
+				extractor.setGenomeName(genomeName);
 			}
 		} else {
 			throw new InterruptedException();

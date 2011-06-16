@@ -25,12 +25,15 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.JFrame;
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.loadProject.LoadProject;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.NewProject;
@@ -45,6 +48,9 @@ public class ProjectScreenManager extends JFrame {
 	
 	private static final long serialVersionUID = -5785973410951935317L;
 	
+	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
+	private 	 			Image 	iconImage; 													// icon of the application
+	
 	//Ratio
 	private static final Double BANNER_RATIO 	= 0.15;
 	private static final Double TYPE_RATIO 		= 0.08;
@@ -52,7 +58,7 @@ public class ProjectScreenManager extends JFrame {
 		private static final Double NAME_RATIO 				= 0.1;
 		private static final Double ASSEMBLY_RATIO 			= 0.25;
 		private static final Double GENOME_RATIO 			= 0.15;
-		private static final Double VAR_RATIO 				= 0.5;
+		private static final Double VCF_RATIO 				= 0.5;
 		private static final Double LINE_RATIO 				= 0.1;
 		private static final Double PROJECT_CHOOSER_RATIO 	= 0.05;
 	private static final Double CONFIRM_RATIO 	= 0.07;
@@ -66,7 +72,7 @@ public class ProjectScreenManager extends JFrame {
 		private static final int NAME_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*NAME_RATIO);
 		private static final int ASSEMBLY_HEIGHT 			= (int)Math.round(CONTENT_HEIGHT*ASSEMBLY_RATIO);
 		private static final int GENOME_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*GENOME_RATIO);
-		private static final int VAR_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*VAR_RATIO);
+		private static final int VCF_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*VCF_RATIO);
 		private static final int LINE_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*LINE_RATIO);
 		private static final int PROJECT_CHOOSER_HEIGHT 	= (int)Math.round(CONTENT_HEIGHT*PROJECT_CHOOSER_RATIO);
 	private static final int CONFIRM_HEIGHT = (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
@@ -78,15 +84,15 @@ public class ProjectScreenManager extends JFrame {
 		protected static final Dimension NAME_DIM 				= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
 		protected static final Dimension ASSEMBLY_DIM 			= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
 		protected static final Dimension GENOME_DIM 			= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
-		protected static final Dimension VAR_DIM 				= new Dimension (SCREEN_WIDTH, VAR_HEIGHT);
+		protected static final Dimension VCF_DIM 				= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
 	protected static final Dimension LOAD_DIM 		= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
 		protected static final Dimension LINE_DIM 				= new Dimension (SCREEN_WIDTH, LINE_HEIGHT);
 		protected static final Dimension PROJECT_CHOOSER_DIM 	= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
 	protected static final Dimension CONFIRM_DIM 	= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
 	
 	//Tool tip text
-	protected static final String ADD_VAR_FILES 	= "Add var file(s)";
-	protected static final String DEL_VAR_FILES 	= "Delete selection";
+	protected static final String ADD_VCF_FILE 		= "Add vcf file";
+	protected static final String DEL_VCF_FILES 	= "Delete selection";
 	protected static final String CONFIRM_FILES		= "Confirm selection";
 	protected static final String CANCEL_FILES		= "Cancel modification";
 	protected static final String SELECT_FILES 		= "Enable selection";
@@ -116,7 +122,7 @@ public class ProjectScreenManager extends JFrame {
 		protected static final Color NAME_COLOR 			= COLOR;
 		protected static final Color ASSEMBLY_COLOR 		= COLOR;
 		protected static final Color GENOME_COLOR 			= COLOR;
-		protected static final Color VAR_COLOR 				= COLOR;
+		protected static final Color VCF_COLOR 				= COLOR;
 		protected static final Color TABLE_PANEL_COLOR 		= COLOR;
 		protected static final Color TABLE_BUTTON_COLOR 	= COLOR;
 	protected static final Color LOAD_COLOR 	= COLOR;
@@ -137,7 +143,6 @@ public class ProjectScreenManager extends JFrame {
 	private	String		clade;		// Name of the selected clade
 	private	String		genome;		// Name of the selected genome
 	private	String		assembly;	// Name of the selected assembly
-	private List<File>	varFiles;	// Var files list
 	
 	
 	/**
@@ -160,33 +165,17 @@ public class ProjectScreenManager extends JFrame {
 		return instance;
 	}
 	
-	/**
-	 * Private constructor.
-	 * Creates an instance of singleton {@link MainFrame}
-	 * @throws HeadlessException
-	 *//*
-	private ProjectScreenManager(CountDownLatch projectSignal) throws HeadlessException {
-		super();
-		this.projectSignal = projectSignal;
-	}*/
-	
-	
-	/**
-	 * @return the instance of the singleton {@link ProjectScreenManager}.
-	 *//*
-	public static ProjectScreenManager getInstance (CountDownLatch loginSignal) {
-		if (instance == null) {
-			instance = new ProjectScreenManager(loginSignal);
-		}
-		return instance;
-	}*/
-	
 	
 	/**
 	 * Main method of the class.
 	 * It initializes frame and panels.
 	 */
 	public void initScreen () {
+		
+		iconImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH));
+		setIconImage(iconImage);
+		
+		
 		//Init panels
 		bannerPanel = new BannerPanel();
 		projectType = new ProjectType(this);
@@ -255,6 +244,8 @@ public class ProjectScreenManager extends JFrame {
 	 * This method gather new project information. 
 	 */
 	protected static void confirmCreate () {
+		Boolean valid = true;
+		
 		//Name
 		getInstance().name = newProject.getProjectName();
 		
@@ -263,27 +254,34 @@ public class ProjectScreenManager extends JFrame {
 		getInstance().genome = newProject.getGenomeName();
 		getInstance().assembly = newProject.getAssemblyName();
 		
-		//Var files
+		if (getInstance().name == null) {
+			valid = false;
+		}
+		
+		//VCF files
 		if (!newProject.isSimpleProject()) {
-			getInstance().varFiles = newProject.getFiles();
-		} else {
-			getInstance().varFiles = null;
+			if (!newProject.isValidMultigenomeProject()) {
+				valid = false;
+			}
 		}
 		
 		//Decrement countDown object
-		Boolean valid = false;
-		if (getInstance().name != null) {
-			if (newProject.isSimpleProject()) {
-				valid = true;
-			} else {
-				if (getInstance().varFiles.size() > 0 ) {
-					valid = true;
-				}
-			}
-		}
 		if (valid) {
 			getInstance().projectSignal.countDown();
 		}
+	}
+	
+	/*public void forceCountDown () {	// Only for development!!
+		getInstance().projectSignal.countDown();
+	}*/
+	
+	
+	/**
+	 * This method determines if user chose a simple or a multi genome project. 
+	 * @return true if user chose a simple genome project.
+	 */
+	public boolean isSimpleProject () {
+		return newProject.isSimpleProject();
 	}
 	
 	
@@ -362,11 +360,36 @@ public class ProjectScreenManager extends JFrame {
 	}
 
 
+	public Map<String, List<String>> getGenomeGroupAssociation () {
+		return newProject.getGenomeGroupAssociation();
+	}
+	
+	public Map<String, List<File>> getGenomeFilesAssociation () {
+		return newProject.getGenomeFilesAssociation();
+	}
+	
+	public Map<String, String> getGenomeNamesAssociation () {
+		return newProject.getGenomeNamesAssociation();
+	}
+	
+	public Map<VCFType, List<File>> getFilesTypeAssociation () {
+		return newProject.getFilesTypeAssociation();
+	}
+	
+
 	/**
-	 * @return the varFiles
+	 * @return the screenWidth
 	 */
-	public List<File> getVarFiles() {
-		return varFiles;
+	public static int getScreenWidth() {
+		return SCREEN_WIDTH;
+	}
+
+
+	/**
+	 * @return the screenHeight
+	 */
+	public static int getScreenHeight() {
+		return SCREEN_HEIGHT;
 	}
 
 
@@ -421,8 +444,8 @@ public class ProjectScreenManager extends JFrame {
 	/**
 	 * @return the varDim
 	 */
-	public static Dimension getVarDim() {
-		return VAR_DIM;
+	public static Dimension getVCFDim() {
+		return VCF_DIM;
 	}
 
 
@@ -462,7 +485,7 @@ public class ProjectScreenManager extends JFrame {
 	 * @return the addVarFiles
 	 */
 	public static String getAddVarFiles() {
-		return ADD_VAR_FILES;
+		return ADD_VCF_FILE;
 	}
 
 
@@ -470,7 +493,7 @@ public class ProjectScreenManager extends JFrame {
 	 * @return the delVarFiles
 	 */
 	public static String getDelVarFiles() {
-		return DEL_VAR_FILES;
+		return DEL_VCF_FILES;
 	}
 
 	
@@ -581,8 +604,8 @@ public class ProjectScreenManager extends JFrame {
 	/**
 	 * @return the varColor
 	 */
-	public static Color getVarColor() {
-		return VAR_COLOR;
+	public static Color getVCFColor() {
+		return VCF_COLOR;
 	}
 
 

@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.enums.Strand;
 
 
-
 /**
  * Parse a DNS XML file and extract the list of {@link Gene}
  * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>

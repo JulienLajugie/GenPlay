@@ -76,7 +76,7 @@ class ChromosomeChooser extends JDialog {
 		setSize(DIALOG_SIZE);
 		setBackground(CHROMOSOME_CHOOSER_COLOR);
 		setResizable(false);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(this.getRootPane());
 		
 		//Table
 		tableModel = new ChromosomeChooserTableModel(columnNames);

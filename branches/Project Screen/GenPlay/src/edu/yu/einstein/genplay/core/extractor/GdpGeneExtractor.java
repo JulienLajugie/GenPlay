@@ -115,8 +115,10 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 					Strand strand = Strand.get(splitedLine[2].trim().charAt(0));
 					strandList.add(chromosome, strand);
 					int start = Integer.parseInt(splitedLine[3].trim());
+					start = getMultiGenomePosition(chromosome, start);
 					startList.add(chromosome, start);
 					int stop = Integer.parseInt(splitedLine[4].trim());
+					stop = getMultiGenomePosition(chromosome, stop);
 					stopList.add(chromosome, stop);
 					String[] exonStartsStr = splitedLine[5].split(",");
 					String[] exonStopsStr = splitedLine[6].split(",");
@@ -124,7 +126,9 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
 						exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
+						exonStarts[i] = getMultiGenomePosition(chromosome, exonStarts[i]);
 						exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
+						exonStops[i] = getMultiGenomePosition(chromosome, exonStops[i]);
 					}
 					exonStartsList.add(chromosome, exonStarts);
 					exonStopsList.add(chromosome, exonStops);

@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 
 
 /**
- * This class is the table model used in {@link VarPanel} class.
+ * This class is the table model used in {@link VCFPanel_old} class.
  * @author Nicolas Fourel
  */
 class ChromosomeChooserTableModel extends AbstractTableModel {
@@ -72,7 +72,6 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 		if (data != null) {
 			return data.size();
 		} else {
-			System.out.println("data null");
 			return 0;
 		}
 	}

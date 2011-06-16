@@ -23,12 +23,12 @@ package edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
 
 
@@ -41,12 +41,12 @@ public class NewProject extends JPanel {
 	
 	private static final long serialVersionUID = 2223959265643927573L;
 	
-	private GridBagConstraints 		gbc;			// Grid bag constraints
-	private NamePanel 				namePanel;		// Name panel
-	private AssemblyPanel 			assemblyPanel;	// Assembly panel
-	private GenomeProjectTypePanel 	genomePanel;	// Genome panel
-	private static VarPanel 		varPanel;		// Var files panel
-	private static JPanel 			fakePanel;		// Fake panel 
+	private GridBagConstraints 			gbc;			// Grid bag constraints
+	private NamePanel 					namePanel;		// Name panel
+	private AssemblyPanel 				assemblyPanel;	// Assembly panel
+	private GenomeProjectTypePanel 		genomePanel;	// Genome panel
+	private static MultiGenomePanel		multiGenomePanel;
+	private static JPanel 				fakePanel;		// Fake panel 
 	
 	
 	/**
@@ -71,15 +71,16 @@ public class NewProject extends JPanel {
 		namePanel = new NamePanel();
 		assemblyPanel = new AssemblyPanel();
 		genomePanel = new GenomeProjectTypePanel();
-		varPanel = new VarPanel();
+		//VCFPanel_old = new VCFPanel_old();
+		multiGenomePanel = new MultiGenomePanel();
 		
 		//Fake panel
 		fakePanel = new JPanel();
-		fakePanel.setSize(ProjectScreenManager.getVarDim());
+		fakePanel.setSize(ProjectScreenManager.getVCFDim());
 		fakePanel.setPreferredSize(fakePanel.getSize());
 		fakePanel.setMinimumSize(fakePanel.getSize());
 		fakePanel.setMaximumSize(fakePanel.getSize());
-		fakePanel.setBackground(ProjectScreenManager.getVarColor());
+		fakePanel.setBackground(ProjectScreenManager.getVCFColor());
 		
 		//Name panel
 		gbc.gridx = 0;
@@ -99,7 +100,7 @@ public class NewProject extends JPanel {
 		//Fake panel
 		gbc.gridx = 0;
 		gbc.gridy = 3;
-		add(varPanel, gbc);
+		add(multiGenomePanel, gbc);
 		add(fakePanel, gbc);
 		
 		//Size
@@ -120,7 +121,7 @@ public class NewProject extends JPanel {
 	 */
 	public static void showVarTable () {
 		fakePanel.setVisible(false);
-		varPanel.setVisible(true);
+		multiGenomePanel.setVisible(true);
 	}
 	
 	
@@ -128,7 +129,7 @@ public class NewProject extends JPanel {
 	 * This method hides the var panel
 	 */
 	public static void hideVarTable () {
-		varPanel.setVisible(false);
+		multiGenomePanel.setVisible(false);
 		fakePanel.setVisible(true);
 	}
 	
@@ -187,16 +188,28 @@ public class NewProject extends JPanel {
 	}
 	
 	
-	/**
-	 * @return the var file list
-	 */
-	public List<File> getFiles () {
-		if (varPanel.getFiles().size() == 0) {
-			JOptionPane.showMessageDialog(getRootPane(), "Please add at least one var file", "Invalid var file", JOptionPane.WARNING_MESSAGE);
-			return new ArrayList<File>();
-		} else {
-			return varPanel.getFiles();
-		}
+	public Map<String, List<String>> getGenomeGroupAssociation () {
+		return multiGenomePanel.getGenomeGroupAssociation();
+	}
+	
+	
+	public Map<String, List<File>> getGenomeFilesAssociation () {
+		return multiGenomePanel.getGenomeFilesAssociation();
+	}
+	
+	
+	public Map<String, String> getGenomeNamesAssociation () {
+		return multiGenomePanel.getGenomeNamesAssociation();
+	}
+	
+	
+	public Map<VCFType, List<File>> getFilesTypeAssociation () {
+		return multiGenomePanel.getFilesTypeAssociation();
+	}
+	
+	
+	public boolean isValidMultigenomeProject () {
+		return multiGenomePanel.isValidMultigenomeProject();
 	}
 	
 }

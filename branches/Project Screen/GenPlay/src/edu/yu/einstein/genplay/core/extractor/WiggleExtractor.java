@@ -141,8 +141,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 						double score = Double.parseDouble(splittedLine[i]); 
 						try {
 							if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-								startList.add(currentChromo, currentPosition);
-								stopList.add(currentChromo, currentPosition + currentSpan);
+								startList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition));
+								stopList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition + currentSpan));
 								scoreList.add(currentChromo, score);
 							}
 							lineCount++;
@@ -159,8 +159,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 							i++;
 							try {
 								if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-									startList.add(currentChromo, currentPosition);
-									stopList.add(currentChromo, currentPosition + currentSpan);
+									startList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition));
+									stopList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition + currentSpan));
 									scoreList.add(currentChromo, score);
 								}
 								lineCount++;

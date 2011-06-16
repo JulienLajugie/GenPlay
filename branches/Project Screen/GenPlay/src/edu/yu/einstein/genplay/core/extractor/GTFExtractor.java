@@ -127,8 +127,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					if ((strand != null) && (isStrandSelected(strand))) {
 						// retrieve the start position
 						int start = Integer.parseInt(splitedLine[3].trim());
+						start = getMultiGenomePosition(chromo, start);
 						// retrieve the stop position
 						int stop = Integer.parseInt(splitedLine[4].trim());
+						stop = getMultiGenomePosition(chromo, stop);
 						// retrieve the score
 						Double score = null;
 						String scoreStr = splitedLine[5].trim();

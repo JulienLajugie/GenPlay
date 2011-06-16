@@ -76,6 +76,7 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 	 * @return the chromosome
 	 */
 	public final Chromosome getChromosome() {
+		//System.out.println("chromosome name: " + chromosome.getName());
 		return chromosome;
 	}
 

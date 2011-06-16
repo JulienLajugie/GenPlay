@@ -336,7 +336,6 @@ public class IslandFinder implements Serializable, Stoppable {
 				try {
 					result = this.readScoreStorage.get(value);	// we get it
 				} catch (Exception e) {
-					System.out.println("value: " + value);
 					e.printStackTrace();
 				}
 			} else {	// else we have to calculated it

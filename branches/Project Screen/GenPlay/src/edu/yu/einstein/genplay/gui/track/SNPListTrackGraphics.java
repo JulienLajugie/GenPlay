@@ -73,6 +73,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			drawSNPUnderMouse(g);
 		}
 		drawStripes(g);
+		drawMultiGenomeInformation(g);
 		drawName(g);
 	}
 

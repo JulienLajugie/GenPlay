@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
  * 	- save a project
  * 	- load a project
  * 	- load project basics information (not the track list)
- * @author Nicolas
+ * @author Nicolas Fourel
  */
 public class ProjectRecordingManager {
 
@@ -71,7 +71,6 @@ public class ProjectRecordingManager {
 	}
 	
 	
-	
 	/**
 	 * Saves the current list of tracks into a file
 	 */
@@ -90,11 +89,18 @@ public class ProjectRecordingManager {
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackList.setViewportView(null);
 			}
-			oos.writeObject(ChromosomeManager.getInstance().getProjectName());
-			oos.writeObject(ChromosomeManager.getInstance().getCladeName());
-			oos.writeObject(ChromosomeManager.getInstance().getGenomeName());
-			oos.writeObject(ChromosomeManager.getInstance().getVarFiles());
-			oos.writeObject(ChromosomeManager.getInstance().getAssembly());
+			ProjectManager instance = ProjectManager.getInstance();
+			oos.writeObject(instance.getProjectName());
+			oos.writeObject(instance.getCladeName());
+			oos.writeObject(instance.getGenomeName());
+			oos.writeObject(instance.isMultiGenomeProject());
+			/*if (instance.isMultiGenomeProject()) {
+				oos.writeObject(MultiGenomeManager.getInstance());
+				oos.writeObject(MetaGenomeManager.getInstance());
+				oos.writeObject(ReferenceGenomeManager.getInstance());
+			}*/
+			oos.writeObject(instance.getVarFiles());
+			oos.writeObject(ProjectManager.getInstance().getAssembly());
 			Integer count = 0;
 			for (Track<?> currentTrack: trackList.getTrackList()) {
 				if (!(currentTrack instanceof EmptyTrack)) {
@@ -132,8 +138,8 @@ public class ProjectRecordingManager {
 	 * A project file has to be set before!
 	 * @throws Exception
 	 */
-	public void createChromosomeManager () throws Exception {
-		createChromosomeManager (fileToLoad);
+	public void initManagers () throws Exception {
+		initManagers (fileToLoad);
 	}
 	
 	
@@ -142,10 +148,10 @@ public class ProjectRecordingManager {
 	 * @param inputFile		project file
 	 * @throws Exception
 	 */
-	public void createChromosomeManager (File inputFile) throws Exception {
+	public void initManagers (File inputFile) throws Exception {
 		fileToLoad = inputFile;
 		FileInputStream fis = new FileInputStream(inputFile);
-		createChromosomeManager(fis);
+		initManagers(fis);
 	}
 	
 	
@@ -155,16 +161,17 @@ public class ProjectRecordingManager {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public void createChromosomeManager (InputStream is) throws Exception {
+	public void initManagers (InputStream is) throws Exception {
 		try {
 			GZIPInputStream gz = new GZIPInputStream(is);
 			ois = new ObjectInputStream(gz);
 			
-			ChromosomeManager instance = ChromosomeManager.getInstance();
+			ProjectManager instance = ProjectManager.getInstance();
 			
 			instance.setProjectName((String)ois.readObject());
 			instance.setCladeName((String)ois.readObject());
 			instance.setGenomeName((String)ois.readObject());
+			instance.setMultiGenomeProject((Boolean)ois.readObject());
 			instance.setVarFiles((List<File>)ois.readObject());
 			instance.setAssembly((Assembly)ois.readObject());
 			ois.readObject();// read the track number object but don't affected because not used
@@ -215,17 +222,21 @@ public class ProjectRecordingManager {
 			String projectName = (String)ois.readObject();
 			ois.readObject();// read the clade object but don't affected because not used
 			String genomeName = (String)ois.readObject();
-			List<?> varFiles = (List<?>)ois.readObject();
+			boolean isMultiGenome = (Boolean)ois.readObject();
+			@SuppressWarnings("unused")
+			List<?> varFiles = (List<?>)ois.readObject();	//Development
 			String assemblyName = ((Assembly)ois.readObject()).getDisplayName();
 			Integer count = (Integer)ois.readObject();
 			
 			list.add(projectName);
 			list.add(genomeName + " - " + assemblyName);
-			if (varFiles != null) {
+			
+			if (isMultiGenome) {
 				list.add("multi");
 			} else {
 				list.add("simple");
 			}
+			
 			Date date = new Date(inputFile.lastModified());
 			SimpleDateFormat sdf = new SimpleDateFormat("MM / d / yyyy");
 			list.add(sdf.format(date));

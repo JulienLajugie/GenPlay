@@ -74,7 +74,7 @@ public class DASDialog extends JDialog {
 	private final static Dimension WINDOW_SIZE = 
 		new Dimension(600, 300);						// size of the window
 	private final static String SERVER_LIST_PATH = 
-		"yu/einstein/gdp2/resource/DASServerList.xml";	// config file path
+		"edu/yu/einstein/genplay/resource/DASServerList.xml";	// config file path
 	
 	/**
 	 * Return value when Cancel has been clicked.

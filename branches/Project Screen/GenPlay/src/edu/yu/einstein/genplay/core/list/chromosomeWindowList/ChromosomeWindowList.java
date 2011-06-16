@@ -115,7 +115,7 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 		if (fittedXRatio > 1) {
 			fittedDataList = currentChromosomeList;
 		} else {
-			fittedDataList = new ArrayList<ChromosomeWindow>();			
+			fittedDataList = new ArrayList<ChromosomeWindow>();
 			if (currentChromosomeList.size() > 1) {
 				fittedDataList.add(new ChromosomeWindow(currentChromosomeList.get(0)));
 				int i = 1;
@@ -132,7 +132,7 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 					}
 					fittedDataList.add(new ChromosomeWindow(currentChromosomeList.get(i)));
 					i++;
-					j++;						
+					j++;
 				}
 			}
 		}

@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.extractor.Extractor;
 import edu.yu.einstein.genplay.core.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.generator.Generator;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -49,6 +50,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	protected String							name;					// a name 
 	protected Extractor							extractor;				// an extractor
 	protected boolean[]							selectedChromo = null;	// selected chromo
+	protected String							genomeName = null;		// genome name for a multi genome project
 
 	/**
 	 * Public constructor 
@@ -83,6 +85,9 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
 				name = extractor.getName();
 				doBeforeExtraction();
+				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+					extractor.setGenomeName(genomeName);
+				}
 				notifyActionStart("Loading File", 1, extractor instanceof Stoppable);
 				extractor.extract();
 				notifyActionStop();

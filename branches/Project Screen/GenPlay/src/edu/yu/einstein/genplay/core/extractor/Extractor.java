@@ -32,6 +32,8 @@ import java.util.Date;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -53,8 +55,8 @@ public abstract class Extractor implements Serializable {
 	protected final ChromosomeManager 	chromosomeManager;		// ChromosomeManager
 	private boolean[] 					selectedChromo = null;	// array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the ChromosomeManager
 	private int		 					lastSelectedChromoIndex;// index of the last chromosome to extract
-
-
+	private	String						genomeName;
+	
 	/**
 	 * Constructor
 	 * @param dataFile file containing the data
@@ -186,4 +188,27 @@ public abstract class Extractor implements Serializable {
 			lastSelectedChromoIndex = lastIndex;
 		}
 	}
+
+
+	/**
+	 * @param genomeName the genomeName to set
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+	}
+	
+	
+	/**
+	 * @param chromosome	current chromosome
+	 * @param position		current position
+	 * @return				the associated associated meta genome position
+	 */
+	protected int getMultiGenomePosition (Chromosome chromosome, int position) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return ShiftCompute.computeShift(genomeName, chromosome, position);
+		} else {
+			return position;
+		}
+	}
+	
 }

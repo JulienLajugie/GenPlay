@@ -106,7 +106,9 @@ implements Serializable, BinListGenerator {
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				positionList.add(chromosome, Integer.parseInt(splitedLine[4]));
+				int position = Integer.parseInt(splitedLine[4]);
+				position = getMultiGenomePosition(chromosome, position);
+				positionList.add(chromosome, position);
 				scoreList.add(chromosome, Double.parseDouble(splitedLine[9]));
 				lineCount++;
 				return false;

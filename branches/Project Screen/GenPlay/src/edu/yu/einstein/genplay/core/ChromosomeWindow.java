@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
 public class ChromosomeWindow implements Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
 	private static final long serialVersionUID = -6548181911063983578L; // generated ID
-	private static final DecimalFormat POSITION_FORMAT = 
+	private static DecimalFormat POSITION_FORMAT = 
 		new DecimalFormat("###,###,###"); // Format used for the toString() method
 	private int  	start;		// Position start of the window
 	private int 	stop;		// Position stop of the window
@@ -162,7 +162,6 @@ public class ChromosomeWindow implements Serializable, Cloneable, Comparable<Chr
 	public int getSize() {
 		return stop - start;
 	}
-	
 	
 	
 	/**

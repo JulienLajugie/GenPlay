@@ -141,6 +141,14 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			}
 			// calculate how many scroll on the Y axis are necessary to show all the genes
 			geneLinesCount = genesToPrint.size() - displayedLineCount + 2;
+
+			//-------------------------------------------------------------
+			/*BlankZoneDrawer drawer = null;
+			if (getGenomeName() != null) {
+				drawer = new BlankZoneDrawer(g, getGenomeName());
+			}*/
+			//-------------------------------------------------------------
+
 			// For each line of genes on the screen
 			for (int i = 0; i < displayedLineCount; i++) {
 				// Calculate the height of the gene
@@ -158,6 +166,19 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 						// retrieve the screen x coordinate of the start and stop position
 						int x1 = genomePosToScreenPos(geneToPrint.getStart());
 						int x2 = genomePosToScreenPos(geneToPrint.getStop());
+
+						//-------------------------------------------------------------
+						/*if (drawer != null) {
+							int values[] = drawer.getBlankPosition(geneToPrint.getStart(), geneToPrint.getStop(), genomeWindow, xFactor);
+							if (values[0] >= 0 && values[1] > values[0]) {
+								int start = genomePosToScreenPos(values[0]);
+								int stop = genomePosToScreenPos(values[1]);
+								int width = twoGenomePosToScreenWidth(start, stop);
+								drawer.drawBlankZone(g, start, width, getHeight());
+							}
+						}*/
+						//-------------------------------------------------------------
+
 						// Choose the color depending on if the gene is under the mouse and on the strand
 						boolean isHighlighted = ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse)));
 						g.setColor(ColorConverters.geneToColor(geneToPrint.getStrand(), isHighlighted));
@@ -232,6 +253,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		drawVerticalLines(g);
 		drawGenes(g);
 		drawStripes(g);
+		drawMultiGenomeInformation(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

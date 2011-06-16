@@ -75,9 +75,6 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			System.out.println("actionResult");
-			//Launcher l = new Launcher();
-			//Launcher.;
 			MainFrame.getInstance().dispose();
 		}
 	}

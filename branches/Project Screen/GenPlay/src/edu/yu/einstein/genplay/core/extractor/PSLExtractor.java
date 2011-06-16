@@ -122,8 +122,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 				if (isStrandSelected(strand)) {
 					nameList.add(chromosome, splitedLine[9]);
 					int start = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[15]));
+					start = getMultiGenomePosition(chromosome, start);
 					startList.add(chromosome, start);
 					int stop = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[16]));
+					stop = getMultiGenomePosition(chromosome, stop);
 					stopList.add(chromosome, stop);
 					scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
 					strandList.add(chromosome, strand);
@@ -134,9 +136,12 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
 						int exonStart = getShiftedPosition(strand, chromosome, Integer.parseInt(exonStartsStr[i].trim()));
+						exonStart = getMultiGenomePosition(chromosome, exonStart);
 						exonStarts[i] = exonStart;
 						int exonLength = Integer.parseInt(exonLengthsStr[i].trim()); 
-						exonStops[i] = exonStarts[i] + exonLength;
+						int exonStop = exonStarts[i] + exonLength;
+						exonStop = getMultiGenomePosition(chromosome, exonStop);
+						exonStops[i] = exonStop;
 					}
 					exonStartsList.add(chromosome, exonStarts);
 					exonStopsList.add(chromosome, exonStops);

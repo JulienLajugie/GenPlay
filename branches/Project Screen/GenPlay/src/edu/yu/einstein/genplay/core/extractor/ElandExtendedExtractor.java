@@ -243,6 +243,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				// add the data
 				strandList.add(chromo, strand);
 				positionNumber = getShiftedPosition(strand, chromo, positionNumber);
+				positionNumber = getMultiGenomePosition(chromo, positionNumber);
 				positionList.add(chromo, positionNumber);
 				lineCount++;
 			}

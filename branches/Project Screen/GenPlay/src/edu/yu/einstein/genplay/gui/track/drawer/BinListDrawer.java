@@ -95,6 +95,8 @@ public final class BinListDrawer extends CurveDrawer {
 				i++;
 				currentGenomePosition = firstGenomePosition + i * windowData;			
 			}
+		} else {
+			System.out.println("data are null");
 		}
 	}
 

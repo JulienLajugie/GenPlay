@@ -83,7 +83,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
 			selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
 			if (selectedFile != null) {
-				ProjectRecordingManager.getInstance().createChromosomeManager(selectedFile);
+				ProjectRecordingManager.getInstance().initManagers(selectedFile);
 			}
 		}
 		if (selectedFile != null) {
@@ -100,6 +100,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			selectedFile = null;
 			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
 			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
+			//GenomeWindow genomeWindow = ProjectManager.getInstance().getGenomeWindow(chromosome);
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().updateChromosomePanel(genomeWindow);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);

@@ -27,7 +27,10 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.NucleotideListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
@@ -46,7 +49,8 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 	private static final String 	DESCRIPTION = "Load a track showing DNA sequences";	// tooltip
 	private File 					selectedFile;		// selected file
 	private TwoBitSequenceList 		tbsl = null;		// list of sequence
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -69,26 +73,41 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 		if (selectedFile != null) {
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+					genomeName = genomeDialog.getGenomeName();
+				} else {
+					throw new InterruptedException();
+				}
+			}
 			notifyActionStart("Loading Sequence File", 1, true);
-			tbsl = new TwoBitSequenceList();
+			tbsl = new TwoBitSequenceList(genomeName);
 			tbsl.extract(selectedFile);
 			return tbsl;
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(TwoBitSequenceList actionResult) {
-		if (actionResult != null) {
+		boolean valid = true;
+		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+			valid = false;
+		}
+		if (actionResult != null && valid) {
 			int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
 			NucleotideListTrack newTrack = new NucleotideListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				newTrack.setGenomeName(genomeName);
+			}
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Stops the extraction of the list of sequence
 	 */

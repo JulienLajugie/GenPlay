@@ -133,7 +133,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 		setGenomeWindow(genomeWindow);
 		jcbChromosome.removeAllItems();
 		ChromosomeManager instance = ChromosomeManager.getInstance();
-		List<String> chromosomeNames = new ArrayList<String>(instance.getAssembly().getChromosomeList().keySet());
+		List<String> chromosomeNames = new ArrayList<String>(instance.getChromosomeList().keySet());
 		Collections.sort(chromosomeNames, new ChromosomeComparator());
 		for (String s: chromosomeNames) {
 			jcbChromosome.addItem(instance.get(s));

@@ -647,6 +647,30 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	@Override
 	protected void fitToScreen() {
 		try {
+			/*System.out.println("fittedChromosome: " + fittedChromosome);
+			if (fittedChromosome.getName().equals("chr1")) {
+				int indexChr = chromosomeManager.getIndex(fittedChromosome);
+				int indexName = chromosomeManager.getIndex(fittedChromosome.getName());
+				System.out.println("name: " + chromosomeManager.get(fittedChromosome.getName()).getName());
+				System.out.println("index with chromosome: " + indexChr + ": " + chromosomeManager.get(indexChr).getName());
+				System.out.println("index with name: " + indexName + ": " + chromosomeManager.get(indexName).getName());
+				if (fittedChromosome.equals(chromosomeManager.get(fittedChromosome.getName()))) {
+					System.out.println("chromosome are equals");
+				} else {
+					System.out.println("chromosome are not equals");
+				}
+			}
+			System.out.println("bin size: " + size());
+			if (get(chromosomeManager.getIndex(fittedChromosome)) == null) {
+				System.out.println("get by index = null");
+			} else {
+				System.out.println("get by index != null");
+			}
+			if (get(fittedChromosome) == null) {
+				System.out.println("get by chromosome = null");
+			} else {
+				System.out.println("get by chromosome != null");
+			}*/
 			if (get(fittedChromosome) == null) {
 				fittedDataList = null;
 				return;

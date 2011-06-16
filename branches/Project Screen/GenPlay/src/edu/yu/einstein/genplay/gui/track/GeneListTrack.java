@@ -42,6 +42,10 @@ public class GeneListTrack extends Track<GeneList> {
 	public GeneListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,  GeneList data) {
 		super(displayedGenomeWindow, trackNumber, data);
 	}
+	
+	/*public GeneListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,  GeneList data, String genome) {
+		super(displayedGenomeWindow, trackNumber, data, genome);
+	}*/
 
 
 	@Override

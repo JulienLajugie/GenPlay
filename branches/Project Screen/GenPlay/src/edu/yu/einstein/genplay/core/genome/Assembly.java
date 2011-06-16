@@ -48,7 +48,8 @@ public class Assembly implements Serializable{
 	 * @param name	name of the assembly
 	 * @param date	date of build of the assembly
 	 */
-	protected Assembly (String name, String date) {
+	//protected Assembly (String name, String date) {
+	public Assembly (String name, String date) {
 		chromosomeList = new HashMap<String, Chromosome>();
 		this.name = name;
 		sdf = new SimpleDateFormat("MM yyyy");
@@ -124,7 +125,7 @@ public class Assembly implements Serializable{
 
 
 	/**
-	 * @return the lenght of the genome in bp
+	 * @return the length of the genome in bp
 	 */
 	public long getGenomeLength() {
 		return genomomeLength;

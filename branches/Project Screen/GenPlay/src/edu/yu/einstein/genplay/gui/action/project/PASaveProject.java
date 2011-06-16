@@ -24,8 +24,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
@@ -78,7 +78,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		jfc.setDialogTitle("Save Project");
 		jfc.addChoosableFileFilter(new GenPlayProjectFilter());
 		jfc.setAcceptAllFileFilterUsed(false);
-		File f = new File(ChromosomeManager.getInstance().getProjectName().concat(".gen"));
+		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gen"));
 		jfc.setSelectedFile(f);
 		int returnVal = jfc.showSaveDialog(trackList.getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
