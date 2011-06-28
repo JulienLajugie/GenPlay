@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.Development;
 
 
 /**
@@ -66,6 +67,7 @@ public class MetaGenomeManager {
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getChromosomeList().values()) {
 			chromosomeLength.put(chromosome, chromosome.getLength());
 		}
+		
 	}
 	
 	

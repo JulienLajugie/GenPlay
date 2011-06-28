@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
@@ -143,6 +145,19 @@ public class ProjectScreenManager extends JFrame {
 	private	String		clade;		// Name of the selected clade
 	private	String		genome;		// Name of the selected genome
 	private	String		assembly;	// Name of the selected assembly
+	
+	
+	public static void showPopUp (String title, String info) {
+		JOptionPane.showMessageDialog(instance, info, title, JOptionPane.WARNING_MESSAGE);
+	}
+	
+	public static void showPopUp (String title, List<String> info) {
+		String chaine = "";
+		for (String s: info) {
+			chaine = s + " - ";
+		}
+		JOptionPane.showMessageDialog(instance, chaine, title, JOptionPane.WARNING_MESSAGE);
+	}
 	
 	
 	/**

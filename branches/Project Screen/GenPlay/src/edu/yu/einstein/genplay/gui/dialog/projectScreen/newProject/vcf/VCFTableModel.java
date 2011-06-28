@@ -59,7 +59,7 @@ class VCFTableModel extends AbstractTableModel {
 	
 	
 	protected TableCellEditor getCellEditor(int row, int col) {
-		return data.getEditor(row);
+		return data.getEditor(row, col);
 	}
 	
 }

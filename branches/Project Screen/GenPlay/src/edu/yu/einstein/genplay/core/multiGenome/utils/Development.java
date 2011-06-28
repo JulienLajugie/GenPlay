@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.genome.Assembly;
@@ -17,7 +18,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectManager;
 public class Development {
 
 	private static Date delay_start;
-	private static Date delays[] = new Date[3];
+	private static Date delays[] = new Date[2];
 	private static Map<String, Chromosome> chromosomeList;
 	
 	
@@ -101,7 +102,7 @@ public class Development {
 		Date delay_stop = new Date();
 		Date delay = new Date(delay_stop.getTime() - delay_start.getTime());
 		delays[pos] = delay;
-		delay_start = null;
+		delay_start = delay_stop;
 		//memory();
 	}
 	
@@ -111,11 +112,13 @@ public class Development {
 		for (int i = 0; i < delays.length; i++) {
 			total = total + delays[i].getTime();
 		}
-		Date all = new Date(total);
-		System.out.println("=== Time counters");
-		System.out.println("total: " + sdf.format(all));
+		//Date all = new Date(total);
+		//System.out.println("=== Time counters");
+		//System.out.println("total: " + sdf.format(all));
 		for (int i = 0; i < delays.length; i++) {
-			System.out.println(i + ": " + sdf.format(delays[i]) + " (" + (delays[i].getTime()*100/total) + "%)");
+			String info = i + ": " + sdf.format(delays[i]) + " (" + (delays[i].getTime()*100/total) + "%)";
+			//System.out.println(info);
+			addOutput1(info);
 		}
 	}
 	

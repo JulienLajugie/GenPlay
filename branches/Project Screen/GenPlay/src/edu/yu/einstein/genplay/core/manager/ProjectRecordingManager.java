@@ -99,7 +99,6 @@ public class ProjectRecordingManager {
 				oos.writeObject(MetaGenomeManager.getInstance());
 				oos.writeObject(ReferenceGenomeManager.getInstance());
 			}*/
-			oos.writeObject(instance.getVarFiles());
 			oos.writeObject(ProjectManager.getInstance().getAssembly());
 			Integer count = 0;
 			for (Track<?> currentTrack: trackList.getTrackList()) {
@@ -160,7 +159,7 @@ public class ProjectRecordingManager {
 	 * @param is	InputStream object
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public void initManagers (InputStream is) throws Exception {
 		try {
 			GZIPInputStream gz = new GZIPInputStream(is);
@@ -172,7 +171,6 @@ public class ProjectRecordingManager {
 			instance.setCladeName((String)ois.readObject());
 			instance.setGenomeName((String)ois.readObject());
 			instance.setMultiGenomeProject((Boolean)ois.readObject());
-			instance.setVarFiles((List<File>)ois.readObject());
 			instance.setAssembly((Assembly)ois.readObject());
 			ois.readObject();// read the track number object but don't affected because not used
 			

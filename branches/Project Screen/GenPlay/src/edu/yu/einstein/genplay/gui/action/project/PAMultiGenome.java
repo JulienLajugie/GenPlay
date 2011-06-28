@@ -44,15 +44,15 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
-		"Performs the multi genome algorithm"; 							// tooltip
-	private static final int 		MNEMONIC = KeyEvent.VK_M; 			// mnemonic key
-	private static final String 	ACTION_NAME = "Multi Genome";		// action name
+		"Performs the multi genome algorithm"; 								// tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
+	private static		 String 	ACTION_NAME = "Multi-genome loading";	// action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PALoadProject";
+	public static final String ACTION_KEY = "Multi Genome";
 
 
 	/**
@@ -65,12 +65,13 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
-	
+
 
 	@Override
 	protected Track<?>[] processAction() throws Exception {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			notifyActionStart(ACTION_NAME, 1, false);
+			MultiGenomeManager.getInstance().initMultiGenomeInformation();
 			MultiGenomeManager.getInstance().compute();
 		}
 		return null;
@@ -79,10 +80,14 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
-		ChromosomeManager.getInstance().setChromosomeList();
-		ControlPanel control = MainFrame.getInstance().getControlPanel();
-		Chromosome chromosome = ChromosomeManager.getInstance().get(0);
-		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
-		control.updateChromosomePanel(genomeWindow);
+		if (!MultiGenomeManager.getInstance().hasBeenInitialized()) {
+			ChromosomeManager.getInstance().setChromosomeList();
+			ControlPanel control = MainFrame.getInstance().getControlPanel();
+			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
+			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
+			control.updateChromosomePanel(genomeWindow);
+			MultiGenomeManager.getInstance().setHasBeenInitialized();
+		}
 	}
+	
 }

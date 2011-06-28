@@ -66,7 +66,7 @@ public class RowPanel extends JPanel {
 		snpsBox = new CellSelectionPanel(MultiGenomeManager.getSnpsDefaultColor());
 		svBox = new CellSelectionPanel(MultiGenomeManager.getSvDefaultColor());
 		
-		snpsBox.betaLimit();
+		//snpsBox.betaLimit();
 		svBox.betaLimit();
 		
 		Dimension genomeDim = new Dimension(MultiGenomePanel.getGroupLabelWidth(), MultiGenomePanel.getRowHeight());

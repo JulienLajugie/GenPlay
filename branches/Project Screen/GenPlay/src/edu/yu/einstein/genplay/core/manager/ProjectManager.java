@@ -20,8 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager;
 
-import java.io.File;
-import java.util.List;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 
 
@@ -36,9 +34,8 @@ public class ProjectManager {
 	private		String		cladeName;
 	private		String		genomeName;
 	private  	Assembly 	assembly;
-	private 	List<File>	varFiles;
 	private		boolean		multiGenomeProject;
-
+	
 
 	/**
 	 * @return an instance of a {@link ProjectManager}. 
@@ -133,22 +130,6 @@ public class ProjectManager {
 	 */
 	public void setAssembly(Assembly assembly) {
 		this.assembly = assembly;
-	}
-
-
-	/**
-	 * @return the varFiles
-	 */
-	public List<File> getVarFiles() {
-		return varFiles;
-	}
-
-
-	/**
-	 * @param varFiles the varFiles to set
-	 */
-	public void setVarFiles(List<File> varFiles) {
-		this.varFiles = varFiles;
 	}
 
 

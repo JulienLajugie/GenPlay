@@ -77,6 +77,11 @@ public class VCFMultiGenomeInformation {
 		
 		//showAllAssociation();
 		
+		//initMultiGenomeInformation();
+	}
+	
+	
+	public void initMultiGenomeInformation () {
 		for (String genomeName: genomeNamesAssociation.keySet()) {
 			multiGenomeInformation.put(genomeName, new VCFGenomeInformation());
 		}
@@ -92,10 +97,10 @@ public class VCFMultiGenomeInformation {
 	 * @param type			the information type
 	 * @param offset		the offset position
 	 */
-	public void addInformation (String genome, Chromosome chromosome, Integer position, VariantType type, int length) {
-		multiGenomeInformation.get(genome).addInformation(chromosome, position, type, length);
+	public void addInformation (String genome, Chromosome chromosome, Integer position, VariantType type, int length, Map<String, String> info) {
+		multiGenomeInformation.get(genome).addInformation(chromosome, position, type, length, info);
 	}
-
+	
 
 	/**
 	 * @param chromosome 	the related chromosome
@@ -175,9 +180,9 @@ public class VCFMultiGenomeInformation {
 	
 	
 	/**
-	 * @return vcf files containing indel information
+	 * @return vcf files
 	 */
-	public List<File> getIndelVCFFiles () {
+	public List<File> getVCFFiles () {
 		List<File> list = new ArrayList<File>();
 		for (List<File> fileList: filesTypeAssociation.values()) {
 			for (File file: fileList) {
@@ -247,13 +252,22 @@ public class VCFMultiGenomeInformation {
 	}
 	
 	
+	private int getGenomeNumber () {
+		int cpt = 0;
+		for (List<String> list: genomeGroupAssociation.values()) {
+			cpt = cpt + list.size();
+		}
+		return cpt;
+	}
+	
+	
 	/**
 	 * Creates an array with all genome names association.
 	 * Used for display.
 	 * @return	genome names association array
 	 */
 	public Object[] getFormattedGenomeArray () {
-		String[] names = new String[genomeNamesAssociation.size() + 1];
+		String[] names = new String[getGenomeNumber() + 1];
 		names[0] = ReferenceGenomeManager.getInstance().getReferenceName();
 		int index = 1;
 		List<String> namesList = new ArrayList<String>();
@@ -329,7 +343,7 @@ public class VCFMultiGenomeInformation {
 		for (String groupName: genomeFilesAssociation.keySet()) {
 			String info = groupName + ":";
 			for (File vcf: genomeFilesAssociation.get(groupName)) {
-				info = info + " " + vcf.getName();
+				info = info + " " + vcf.getAbsolutePath();
 			}
 			System.out.println(info);
 		}

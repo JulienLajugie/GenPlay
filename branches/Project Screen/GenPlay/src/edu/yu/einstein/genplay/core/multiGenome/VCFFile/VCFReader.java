@@ -157,7 +157,16 @@ public class VCFReader {
 		String detail[];
 		for (String s: details) {
 			detail = s.split("=");
-			info.put(detail[0], detail[1]);
+			if (detail.length == 2) {
+				if (detail[0].equals("Description")) {
+					int start = line.indexOf("\"") + 1;
+					int stop = line.indexOf("\"", start);
+					String element = line.substring(start, stop);
+					info.put(detail[0], element);
+				} else {
+					info.put(detail[0], detail[1]);
+				}
+			}
 		}
 		return info;
 	}
@@ -333,8 +342,8 @@ public class VCFReader {
 	public List<String> getColumnNames() {
 		return columnNames;
 	}
-	
-	
+
+
 	/**
 	 * @return the columnNames
 	 */

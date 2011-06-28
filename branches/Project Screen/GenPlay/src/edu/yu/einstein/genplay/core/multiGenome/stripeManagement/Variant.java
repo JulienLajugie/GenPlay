@@ -35,6 +35,9 @@ public class Variant {
 	private ChromosomeWindow position; 	// Start and stop of the variation
 	private ChromosomeWindow deadZone; 	// Start and stop of the dead zone
 										// A dead zone is the additional space due to the synchronization effect
+	private boolean isOnFirstAllele;
+	private boolean isOnSecondAllele;
+	private double qualityScore;
 	
 	
 	/**
@@ -129,5 +132,55 @@ public class Variant {
 		}
 		return true;
 	}
+
+
+	/**
+	 * @return the isOnFirstAllele
+	 */
+	public boolean isOnFirstAllele() {
+		return isOnFirstAllele;
+	}
+
+
+	/**
+	 * @param isOnFirstAllele the isOnFirstAllele to set
+	 */
+	public void setOnFirstAllele(boolean isOnFirstAllele) {
+		this.isOnFirstAllele = isOnFirstAllele;
+	}
+
+
+	/**
+	 * @return the isOnSecondAllele
+	 */
+	public boolean isOnSecondAllele() {
+		return isOnSecondAllele;
+	}
+
+
+	/**
+	 * @param isOnSecondAllele the isOnSecondAllele to set
+	 */
+	public void setOnSecondAllele(boolean isOnSecondAllele) {
+		this.isOnSecondAllele = isOnSecondAllele;
+	}
+
+
+	/**
+	 * @return the qualityScore
+	 */
+	public double getQualityScore() {
+		return qualityScore;
+	}
+
+
+	/**
+	 * @param qualityScore the qualityScore to set
+	 */
+	public void setQualityScore(double qualityScore) {
+		this.qualityScore = qualityScore;
+	}
+	
+	
 	
 }

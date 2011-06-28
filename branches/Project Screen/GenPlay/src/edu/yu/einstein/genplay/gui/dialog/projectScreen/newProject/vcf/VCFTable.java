@@ -20,6 +20,7 @@ class VCFTable extends JTable {
 
 	protected void updateTable () {
 		model.fireTableDataChanged();
+		//model.fireTableStructureChanged();
 	}
 
 	

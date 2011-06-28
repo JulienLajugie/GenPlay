@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+
 import javax.swing.SwingUtilities;
 
 import edu.yu.einstein.genplay.core.enums.VCFType;
@@ -45,9 +46,6 @@ import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ScreenThread;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-/*import edu.yu.einstein.genplay.memoryTest.MemoryTestBench;
-import edu.yu.einstein.genplay.memoryTest.MultiGenomeObjectFactory;
-import edu.yu.einstein.genplay.memoryTest.ObjectFactory;*/
 
 
 /**
@@ -266,6 +264,7 @@ public class Launcher {
 				screenProject.getGenomeFilesAssociation(),
 				screenProject.getGenomeNamesAssociation(),
 				screenProject.getFilesTypeAssociation());
+		
 		//multiGenomeManager.showAllAssociation();
 	}
 

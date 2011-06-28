@@ -32,6 +32,7 @@ import java.util.NoSuchElementException;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MetaGenomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.ChromosomeComparator;
 
@@ -49,6 +50,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	private static 	ChromosomeManager 			instance = null;		// unique instance of the singleton
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			Map<String, Chromosome> 	chromosomeList;
+	private			Chromosome					currentChromosome;
 	
 	
 	
@@ -223,11 +225,52 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @return the chromosomeList
 	 */
 	public Map<String, Chromosome> getChromosomeList() {
-		return chromosomeList;
+		//if(!ProjectManager.getInstance().isMultiGenomeProject()) {
+			return chromosomeList;
+		//}
+		//return getMultiGenomeChromosomeList();
+	}
+	
+	
+	/**
+	 * @return the chromosomeList
+	 */
+	public Map<String, Chromosome> getCurrentMultiGenomeChromosomeList() {
+	//private Map<String, Chromosome> getMultiGenomeChromosomeList() {
+		if (MultiGenomeManager.CHROMOSOME_LIST_OPTION == MultiGenomeManager.FULL_CHROMOSOME_LIST) {
+			return chromosomeList;
+		} else {
+			Map<String, Chromosome> newList = new HashMap<String, Chromosome>();
+			newList.put(getCurrentChromosome().getName(), getCurrentChromosome());
+			return newList;
+		}
+		
+	}
+	
+	
+	/**
+	 * @return the currentChromosome
+	 */
+	public Chromosome getCurrentChromosome() {
+		if (currentChromosome == null) {
+			return get(0);
+		}
+		return currentChromosome;
 	}
 
-	
-	
+
+	/**
+	 * @param currentChromosome the currentChromosome to set
+	 */
+	public boolean setCurrentChromosome(Chromosome currentChromosome) {
+		if (this.currentChromosome != currentChromosome){
+			this.currentChromosome = currentChromosome;
+			return true;
+		}
+		return false;
+	}
+
+
 	private class ChromosomeManagerIterator implements Iterator<Chromosome> {
 
 		private int currentIndex = 0;

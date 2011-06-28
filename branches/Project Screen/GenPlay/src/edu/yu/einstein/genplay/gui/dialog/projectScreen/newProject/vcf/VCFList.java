@@ -3,7 +3,7 @@ package edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Point;
+//import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -20,11 +20,21 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 
 
 class VCFList {
+
+	/**
+	 * Return value when OK has been clicked.
+	 */
+	public static final int 	APPROVE_OPTION = 0;
+	/**
+	 * Return value when Cancel has been clicked.
+	 */
+	public static final int 	CANCEL_OPTION = 1;
+	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+
 
 	private JDialog 			dialog;
 	private String				title;
@@ -40,13 +50,15 @@ class VCFList {
 	}
 
 
-	protected void display () {
+	protected int display () {
 		if (dialog == null) {
 			dialog = getDialog();
-		} else {
-			dialog.setVisible(true);
-			dialog.toFront();
 		}
+		dialog.setModal(true);
+		dialog.setVisible(true);
+		dialog.setLocationRelativeTo(VCFLoader.getInstance());
+		dialog.toFront();
+		return approved;
 	}
 
 
@@ -54,11 +66,11 @@ class VCFList {
 		//Dialog
 		dialog = new JDialog();
 		dialog.setVisible(false);
-		dialog.setTitle(title + " list manager");
+		dialog.setTitle(title + " list editor");
 		dialog.setResizable(false);
 		dialog.setAlwaysOnTop(true);
-		//dialog.setLocationRelativeTo(null);
-		initLocation();
+		dialog.setLocationRelativeTo(VCFLoader.getInstance());
+		//initLocation();
 		Dimension dim = new Dimension(VCFLoader.getDialogListWidth(), VCFLoader.getDialogListHeight());
 		dialog.setSize(dim);
 		dialog.setMinimumSize(dim);
@@ -117,7 +129,7 @@ class VCFList {
 				}
 				if (inputValue != null && !inputValue.equals("")) {
 					addElement(inputValue);
-					
+
 				}
 			}
 		});
@@ -150,36 +162,26 @@ class VCFList {
 
 		return dialog;
 	}
-	
-	
-	private void initLocation () {
+
+
+	/*private void initLocation () {
 		Point point = ProjectScreenManager.getInstance().getLocation();
 		int x = (int) (point.getX() + ((VCFLoader.getDialogWidth() - VCFLoader.getDialogListWidth()) / 4));
 		int y = (int) (point.getY() + (VCFLoader.getDialogHeight() / 4));
 		dialog.setLocation(x, y);
-	}
+	}*/
 
 
 	private void closeDialog () {
+		approved = APPROVE_OPTION;
 		dialog.setVisible(false);
 		VCFLoader.getInstance().setAllCellEditor();
 	}
-	
-	
-	protected void hide () {
-		dialog.setVisible(false);
-	}
-	
+
 
 	private JList getList () {
-		listModel = new DefaultListModel();
-		for (String s: elements) {
-			if (!s.equals(VCFLoader.GROUP_LIST) &&
-				!s.equals(VCFLoader.GENOME_LIST) &&
-				!s.equals(VCFLoader.FILE_LIST)) {
-				listModel.addElement(s);
-			}
-		}
+		initListModel();
+
 		JList list = new JList(listModel);
 		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		list.setLayoutOrientation(JList.VERTICAL);
@@ -188,22 +190,26 @@ class VCFList {
 	}
 
 
-	private void addElement (String s) {
-		//String addElement = null;
-		/*if (elements.contains(VCFManager.GROUP_LIST)) {
-			addElement = VCFManager.GROUP_LIST;
-		} else if (elements.contains(VCFManager.GENOME_LIST)) {
-			addElement = VCFManager.GENOME_LIST;
-		} else if (elements.contains(VCFManager.FILE_LIST)) {
-			addElement = VCFManager.FILE_LIST;
+	private void initListModel () {
+		if(listModel == null) {
+			listModel = new DefaultListModel();
+			for (String s: elements) {
+				if (!s.equals(VCFLoader.GROUP_LIST) &&
+						!s.equals(VCFLoader.GENOME_LIST) &&
+						!s.equals(VCFLoader.FILE_LIST)) {
+					listModel.addElement(s);
+				}
+			}
 		}
-		if (addElement != null) {
-			elements.remove(addElement);
-		}*/
-		elements.add(s);
-		listModel.addElement(s);
-		//elements.add(addElement);
-		//listModel.addElement(addElement);
+	}
+
+
+	protected void addElement (String s) {
+		if (!elements.contains(s)) {
+			elements.add(s);
+			initListModel();
+			listModel.addElement(s);
+		}
 	}
 
 
@@ -223,6 +229,14 @@ class VCFList {
 
 	protected List<String> getElementsList() {
 		return elements;
+	}
+
+	protected void showElements () {
+		String s = "";
+		for (String element: elements) {
+			s = s + " " + element;
+		}
+		System.out.println(s);
 	}
 
 }

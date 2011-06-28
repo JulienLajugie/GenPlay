@@ -35,6 +35,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -86,7 +87,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	public static final String APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") - Multi-Genome beta version ";
 	private final static String ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
-		
+
 	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
 	private final Image 				iconImage; 				// icon of the application
 	private Ruler 						ruler; 					// Ruler component
@@ -94,9 +95,9 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private ControlPanel 				controlPanel; 			// ControlPanel component
 	private StatusBar 					statusBar; 				// Status bar component
 	private Rectangle 					screenBounds; 			// position and dimension of this frame
-	
 
-	
+
+
 	/**
 	 * @return the instance of the singleton MainFrame
 	 */
@@ -111,7 +112,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return instance;
 	}
 
-	
+
 	/**
 	 * Private constructor. Creates an instance of singleton {@link MainFrame}
 	 */
@@ -120,28 +121,29 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		ClassLoader cl = this.getClass().getClassLoader();
 		iconImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH));
 		setIconImage(iconImage);
-		
+
 		ChromosomeManager instance = ChromosomeManager.getInstance();
-		
+
 		setTitle();
-		
+
 		Chromosome chromosome = instance.get(0);
+		instance.setCurrentChromosome(chromosome);
 		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 		//GenomeWindow genomeWindow = ProjectManager.getInstance().getGenomeWindow(chromosome);
 		ruler = new Ruler(genomeWindow);
 		ruler.getOptionButton().addActionListener(this);
 		ruler.addGenomeWindowListener(this);
-		
+
 		trackList = new TrackList(genomeWindow);
 		trackList.addPropertyChangeListener(this);
 		trackList.addGenomeWindowListener(this);
-			
+
 		controlPanel = new ControlPanel(genomeWindow);
 		controlPanel.addGenomeWindowListener(this);
 
 		statusBar = new StatusBar();
-		
-		
+
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
@@ -187,37 +189,32 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		pack();
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLocationByPlatform(true);
-		
-		
+
+
 		if (ProjectRecordingManager.getInstance().isLoadingEvent()) {
 			PALoadProject loader = new PALoadProject();
 			loader.setSelectedFile(ProjectRecordingManager.getInstance().getFileToLoad());
 			loader.actionPerformed(null);
 		}
-		
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			PAMultiGenome process = new PAMultiGenome();
-			process.actionPerformed(null);
-			
-		}
-		
+
+		initMultiGenome();
 	}
-	
-	
+
+
 	/**
 	 * Sets the main frame title.
 	 * Application title - Project name - Genome name - Assembly name.
 	 */
 	public void setTitle () {
 		setTitle(	MainFrame.APPLICATION_TITLE +
-					ProjectManager.getInstance().getProjectName()
-					+ " - " + 
-					ProjectManager.getInstance().getGenomeName()
-					+ " " + 
-					ProjectManager.getInstance().getAssembly().getName());
+				ProjectManager.getInstance().getProjectName()
+				+ " - " + 
+				ProjectManager.getInstance().getGenomeName()
+				+ " " + 
+				ProjectManager.getInstance().getAssembly().getName());
 	}
-	
-	
+
+
 	/**
 	 * Shows the main menu when the button in the ruler is clicked
 	 */
@@ -226,7 +223,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		new MainMenu(getRootPane().getActionMap()).show(this, getMousePosition().x, getMousePosition().y);
 	}
 
-	
+
 	/**
 	 * Customizes the look and feel
 	 */
@@ -237,9 +234,13 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		UIManager.put("control", new Color(228, 236, 247));
 	}
 
-	
+
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		boolean hasChanged = ChromosomeManager.getInstance().setCurrentChromosome(evt.getNewWindow().getChromosome());
+		if (hasChanged) {
+			initMultiGenome();
+		}
 		if (evt.getSource() != ruler) {
 			ruler.setGenomeWindow(evt.getNewWindow());
 		}
@@ -252,6 +253,15 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	}
 
 
+	private void initMultiGenome () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			PAMultiGenome process = new PAMultiGenome();
+			process.actionPerformed(null);
+		}
+	}
+
+
+
 	/**
 	 * @return the controlPanel
 	 */
@@ -259,7 +269,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return controlPanel;
 	}
 
-	
+
 	/**
 	 * @return the icon of the application
 	 */
@@ -268,7 +278,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return iconImage;
 	}
 
-	
+
 	/**
 	 * @return the ruler
 	 */
@@ -276,7 +286,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return ruler;
 	}
 
-	
+
 	/**
 	 * @return the statusBar
 	 */
@@ -284,7 +294,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return statusBar;
 	}
 
-	
+
 	/**
 	 * @return the trackList
 	 */
@@ -292,7 +302,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return trackList;
 	}
 
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (isEnabled()) {
@@ -305,7 +315,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Sets the action map of the main frame. This actions are associated with
@@ -326,7 +336,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
 	}
-	
+
 
 	/**
 	 * Asks the user to confirm that he wants to close the application before
@@ -344,7 +354,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		});
 	}
-	
+
 
 	/**
 	 * Sets the input map. This map contain the short cuts of the applications.
@@ -360,7 +370,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
 	}
 
-	
+
 	/**
 	 * Changes the look and feel of the application
 	 */
@@ -378,7 +388,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Shows the option screen
@@ -402,7 +412,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		optionDialog.dispose();
 	}
 
-	
+
 	/**
 	 * Toggles the full screen mode
 	 */

@@ -13,7 +13,7 @@ import edu.yu.einstein.genplay.core.enums.VCFType;
 
 class VCFData {
 
-	private VCFLoader 			manager;
+	private VCFLoader 			loader;
 	private List<List<Object>> 	data;			// table data
 	private VCFList[] 			dialogList;
 	private String[] 			columnNames;	// Column names
@@ -21,14 +21,14 @@ class VCFData {
 
 
 	protected VCFData (VCFLoader manager) {
-		this.manager = manager;
+		this.loader = manager;
 		data = new ArrayList<List<Object>>();
 		tableCellEditor = new Hashtable<Integer, TableCellEditor>();
 		initColumnNames();
 		initDialogsList();
 	}
 
-	
+
 	private void initColumnNames () {
 		this.columnNames = new String[5];
 		this.columnNames[0] = "Group";
@@ -40,22 +40,36 @@ class VCFData {
 
 
 	protected void initDialogsList() {
-		dialogList = new VCFList[5];
-		for (int i = 0; i < 5; i++) {
-			dialogList[i] = new VCFList(getColumnName(i), getFirstList(i));
+		if(dialogList == null) {
+			dialogList = new VCFList[5];
+			for (int i = 0; i < 5; i++) {
+				dialogList[i] = new VCFList(getColumnName(i), getFirstList(i));
+			}
+			dialogList[3].setFile(true);
 		}
-		dialogList[3].setFile(true);
 	}
 
-	
+
 	/**
 	 * @param data the data to set
 	 */
 	protected void setData(List<List<Object>> data) {
-		this.data = data;
+		//this.data = data;
+		this.data = new ArrayList<List<Object>>();
+		for (List<Object> list: data) {
+			this.data.add(list);
+		}
+
+		initDialogsList();
+		for(int i = 0; i < dialogList.length; i++) {
+			for (List<Object> elements: data) {
+				dialogList[i].addElement(elements.get(i).toString());
+			}
+		}
+		VCFLoader.getInstance().setAllCellEditor();
 	}
-	
-	
+
+
 	/**
 	 * @return the data
 	 */
@@ -63,7 +77,7 @@ class VCFData {
 		return data;
 	}
 
-	
+
 	protected void addRow () {
 		List<Object> list = new ArrayList<Object>();
 		for (int i = 0; i < 5 ; i++) {
@@ -77,7 +91,7 @@ class VCFData {
 		for (int i: rows) {
 			data.remove(i);
 		}
-		List<List<Object>> 	newList = new ArrayList<List<Object>>();
+		List<List<Object>> newList = new ArrayList<List<Object>>();
 		for (List<Object> line: data) {
 			newList.add(line);
 		}
@@ -92,6 +106,7 @@ class VCFData {
 		for (String s: list) {
 			box.addItem(s);
 		}
+
 		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -100,20 +115,14 @@ class VCFData {
 				if (box.getName().equals("3")) {
 					for (int i = 0; i < data.size(); i++) {
 						if (value.equals(getValueAt(i, 3))) {
-							manager.updateRawNames(value, i);
+							loader.updateRawNames(value, i, null);
 							break;
 						}
 					}
 				}
-				if (value.equals(VCFLoader.GROUP_LIST)) {
-					dialogList[0].display();
-				} else if (value.equals(VCFLoader.GENOME_LIST)) {
-					dialogList[1].display();
-				} else if (value.equals(VCFLoader.FILE_LIST)) {
-					dialogList[3].display();
-				}
 			}
 		});
+
 		return box;
 	}
 
@@ -128,6 +137,7 @@ class VCFData {
 			list.add(VCFLoader.GENOME_LIST);
 			break;
 		case 2:
+			list.add(VCFLoader.TYPE_LIST);
 			list.add(VCFType.INDELS.toString());
 			list.add(VCFType.SNPS.toString());
 			list.add(VCFType.SV.toString());
@@ -150,6 +160,11 @@ class VCFData {
 	}
 
 
+	protected String[] getColumnNames() {
+		return columnNames;
+	}
+
+
 	protected String getColumnName(int col) {
 		return columnNames[col];
 	}
@@ -158,10 +173,10 @@ class VCFData {
 	protected int getRowCount() {
 		return data.size();
 	}
-	
+
 
 	protected Object getValueAt(int row, int col) {
-		if (row >= 0) {
+		if (row >= 0 && row < getRowCount()) {
 			return data.get(row).get(col);
 		} else {
 			return null;
@@ -170,7 +185,11 @@ class VCFData {
 
 
 	protected void setValueAt(Object value, int row, int col) {
-		data.get(row).set(col, value);
+		if (row < getRowCount()) {
+			data.get(row).set(col, value);
+		} else {
+			loader.fixRowBug(row, col);
+		}
 	}
 
 
@@ -202,23 +221,29 @@ class VCFData {
 	}
 
 
-	protected TableCellEditor getEditor(int row) {
-		return (TableCellEditor)tableCellEditor.get(new Integer(row));
+	protected TableCellEditor getEditor(int row, int col) {
+		if (tableCellEditor.get(row) != null) {
+			return (TableCellEditor)tableCellEditor.get(row);
+		}
+		return null;
 	}
 
-	
+
+	protected void displayList(int col) {
+		dialogList[col].display();
+	}
+
+
 	protected int getNumberElementList (int col) {
 		List<String> list = getColumnList(col);
 		int size;
-		if (col != 1) {
-			List<String> listCleared = new ArrayList<String>();
-			for (String s: list) {
-				if (!listCleared.contains(s)) {
-					listCleared.add(s);
-				}
+		List<String> listCleared = new ArrayList<String>();
+		for (String s: list) {
+			if (!listCleared.contains(s)) {
+				listCleared.add(s);
 			}
-			list = listCleared;
 		}
+		list = listCleared;
 		size = list.size();
 		if (list.contains(VCFLoader.GROUP_LIST) ||
 				list.contains(VCFLoader.GENOME_LIST) ||
@@ -227,10 +252,10 @@ class VCFData {
 		}
 		return size;
 	}
-	
 
-	@SuppressWarnings("unused") // For development
-	private void showData () {
+
+	/*@SuppressWarnings("unused") // For development
+	protected void showData () {
 		for (int row = 0; row < data.size(); row++) {
 			String line = row + " ::: ";
 			for (int col = 0; col < 5; col++) {
@@ -238,6 +263,16 @@ class VCFData {
 			}
 			System.out.println(line);
 		}
-	}
+	}*/
+
+
+	/*@SuppressWarnings("unused") // For development
+	protected void showElements () {
+		for(int i = 0; i < dialogList.length; i++) {
+			System.out.println(i + ": ");
+			dialogList[i].showElements();
+		}
+	}*/
+
 
 }

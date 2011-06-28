@@ -47,6 +47,8 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPSManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFSNPInformation;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -142,7 +144,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
-		addMouseListener(this);		
+		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 	}
@@ -236,10 +238,21 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripe != null) {
-			for (String genomeFullName: multiGenomeStripe.getColorAssociation().keySet()) {
-				drawGenome(g, genomeFullName);
+			if (MultiGenomeManager.getInstance().isReady()) {
+				drawMultiGenomeLine(g);
+				for (String genomeFullName: multiGenomeStripe.getColorAssociation().keySet()) {
+					drawGenome(g, genomeFullName);
+				}
 			}
 		}
+	}
+
+
+	private void drawMultiGenomeLine (Graphics g) {
+		Color color = new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), multiGenomeStripe.getTransparency());
+		g.setColor(color);
+		int y = getHeight() / 2;
+		g.drawLine(0, y, getWidth(), y);
 	}
 
 
@@ -255,20 +268,71 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		} catch (Exception e) {
 			genomeRawName = genome;
 		}
-		List<Variant> fittedDataList = MultiGenomeManager.getInstance().getMultiGenomeInformation().getMultiGenomeInformation(genomeRawName).getFittedData(genomeWindow, xFactor);
+
+		// Indels & SV
+		List<Variant> fittedDataList = null;
+		try {
+			fittedDataList = MultiGenomeManager.getInstance().getMultiGenomeInformation().getMultiGenomeInformation(genomeRawName).getFittedData(genomeWindow, xFactor);
+		} catch (Exception e) {}
 		Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(genome);
 		if (fittedDataList != null) {
 			for (Variant variant: fittedDataList) {
 				if (association.containsKey(variant.getType())) {
-					drawRect(g, association.get(variant.getType()), variant.getStart(), variant.getStop());
+					//drawRect(g, association.get(variant.getType()), variant.getStart(), variant.getStop());
+					drawRect(g, variant, association.get(variant.getType()));
 					if (variant.deadZoneExists()) {
-						drawRect(g, Color.black, variant.getDeadZone().getStart(), variant.getDeadZone().getStop());
+						//drawRect(g, Color.black, variant.getDeadZone().getStart(), variant.getDeadZone().getStop());
+						drawRect(g, variant, Color.black);
 					}
 				} else if (variant.getType().equals(VariantType.MIX)) {
-					drawRect(g, Color.white, variant.getStart(), variant.getStop());
+					//drawRect(g, Color.white, variant.getStart(), variant.getStop());
+					drawRect(g, variant, Color.white);
 				}
 			}
 		}
+
+		// SNPs
+		if (association.containsKey(VariantType.SNPS)) {
+			List<VCFSNPInformation> data = SNPSManager.getInstance().getSNPSList(genome, genomeWindow, xFactor);
+			Color color = association.get(VariantType.SNPS);
+			for (VCFSNPInformation snp: data) {
+				drawSNP(g, snp, color);
+			}
+		}
+	}
+
+
+	/**
+	 * Draws a rectangle
+	 * @param g			graphics object
+	 * @param variant	the variant
+	 * @param color		the color
+	 */
+	//private void drawRect (Graphics g, Color color, int start, int stop) {
+	private void drawRect (Graphics g, Variant variant, Color color) {
+		int x = genomePosToScreenPos(variant.getStart());
+		int width = twoGenomePosToScreenWidth(variant.getStart(), variant.getStop());
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
+		Color blankColor = new Color(0, 0, 0, multiGenomeStripe.getTransparency());
+		g.setColor(newColor);
+
+		int middle = getHeight() / 2;
+		int height = (int) (variant.getQualityScore() * middle / 100);
+		int top = middle - height;
+
+		if (variant.isOnFirstAllele()) {
+			g.setColor(newColor);
+		} else {
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, top, width, height);
+
+		if (variant.isOnSecondAllele()) {
+			g.setColor(newColor);
+		} else {
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, middle, width, height);
 	}
 
 
@@ -279,12 +343,36 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param start	the start position
 	 * @param stop	the stop position
 	 */
-	private void drawRect (Graphics g, Color color, int start, int stop) {
-		int x = genomePosToScreenPos(start);
-		int width = twoGenomePosToScreenWidth(start, stop);
+	private void drawSNP (Graphics g, VCFSNPInformation snp, Color color) {
+		int pos = snp.getMetaGenomePosition();
+		int x = genomePosToScreenPos(pos);
+		int width = twoGenomePosToScreenWidth(pos, pos + 1);
+
 		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
+		Color blankColor = new Color(0, 0, 0, multiGenomeStripe.getTransparency());
 		g.setColor(newColor);
-		g.fillRect(x, 0, width, getHeight());
+
+		int middle = getHeight() / 2;
+		int height = (int) (snp.getQuality() * middle / 100);
+		int top = middle - height;
+
+		if (snp.isOnFirstAllele()) {
+			//System.out.println("isOnFirstAllele: " + top + " - " + height);
+			g.setColor(newColor);
+		} else {
+			//System.out.println("!isOnFirstAllele: " + top + " - " + height);
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, top, width, height);
+
+		if (snp.isOnSecondAllele()) {
+			//System.out.println("isOnSecondAllele: " + middle + " - " + height);
+			g.setColor(newColor);
+		} else {
+			//System.out.println("!isOnSecondAllele: " + middle + " - " + height);
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, middle, width, height);
 	}
 
 
@@ -652,7 +740,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.genomeName = genomeName;
 	}
 
-	
-	
-	
+
+
+
 }

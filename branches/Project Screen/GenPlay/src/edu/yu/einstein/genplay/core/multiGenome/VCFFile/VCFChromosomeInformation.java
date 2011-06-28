@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import edu.yu.einstein.genplay.core.enums.VariantType;
 
 
@@ -56,8 +57,8 @@ public class VCFChromosomeInformation {
 	 * @param length	the length
 	 * @param offset	the offset position
 	 */
-	public void addInformation (Integer position, VariantType type, int length) {
-		positionInformation.put(position, new VCFPositionInformation(type, length));
+	public void addInformation (Integer position, VariantType type, int length, Map<String, String> info) {
+		positionInformation.put(position, new VCFPositionInformation(type, length, info));
 	}
 
 	
