@@ -52,12 +52,12 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
  */
 public class ProjectRecordingManager {
 
-	private static ProjectRecordingManager instance;
-	private File 				fileToLoad;
-	private Track<?>[]			trackList;
-	private ObjectInputStream 	ois;
-	private boolean 			trackListReadyToLoad = false;
-	private boolean 			loadingEvent = false;
+	private static 	ProjectRecordingManager instance;							// Unique instance of the singleton
+	private 		File 					fileToLoad;							// The project file to load
+	private 		Track<?>[]				trackList;							// The list of tracks to save
+	private 		ObjectInputStream 		ois;								// The input file stream
+	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
+	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
 	
 	
 	/**
@@ -94,11 +94,6 @@ public class ProjectRecordingManager {
 			oos.writeObject(instance.getCladeName());
 			oos.writeObject(instance.getGenomeName());
 			oos.writeObject(instance.isMultiGenomeProject());
-			/*if (instance.isMultiGenomeProject()) {
-				oos.writeObject(MultiGenomeManager.getInstance());
-				oos.writeObject(MetaGenomeManager.getInstance());
-				oos.writeObject(ReferenceGenomeManager.getInstance());
-			}*/
 			oos.writeObject(ProjectManager.getInstance().getAssembly());
 			Integer count = 0;
 			for (Track<?> currentTrack: trackList.getTrackList()) {
@@ -159,7 +154,6 @@ public class ProjectRecordingManager {
 	 * @param is	InputStream object
 	 * @throws Exception
 	 */
-	//@SuppressWarnings("unchecked")
 	public void initManagers (InputStream is) throws Exception {
 		try {
 			GZIPInputStream gz = new GZIPInputStream(is);

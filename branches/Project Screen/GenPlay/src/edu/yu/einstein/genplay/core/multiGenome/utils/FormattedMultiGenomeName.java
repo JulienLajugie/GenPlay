@@ -31,11 +31,11 @@ package edu.yu.einstein.genplay.core.multiGenome.utils;
  * @author Nicolas
  */
 public class FormattedMultiGenomeName {
-
-	private static final String separator1 = " - ";
-	private static final String separator2 = " (";
-	private static final String separator3 = ")";
-	private static String elements[];
+	
+	private static final 	String separator1 = " - ";	// First separator
+	private static final 	String separator2 = " (";	// Second separator
+	private static final 	String separator3 = ")";	// Third separator
+	private static 			String elements[];			// Strings for the full name (group, genome, raw name)
 	
 	
 	/**
@@ -109,6 +109,5 @@ public class FormattedMultiGenomeName {
 		setElements(fullName);
 		return elements[2];
 	}
-	
 	
 }

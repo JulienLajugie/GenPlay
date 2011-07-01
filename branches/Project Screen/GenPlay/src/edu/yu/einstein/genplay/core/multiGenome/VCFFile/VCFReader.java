@@ -47,9 +47,9 @@ public class VCFReader {
 	private 		TabixReader 			vcfParser;	// Tabix object for the VCF file (Tabix Java API)
 	private 		Map<String, String> 	headerInfo;	// Header main information
 	private 		Map<String, Map<Integer, Map<String, String>>> 	headerAttributes;	// Header attributes information
-	private			List<String>			columnNames;
-	private			List<String>			fixedColumn;
-	private			List<String>			genomeNames;
+	private			List<String>			columnNames;	// All column header names
+	private			List<String>			fixedColumn;	// Fixed header names included in the VCF file
+	private			List<String>			genomeNames;	// Dynamic header names included in the VCF file (raw genome names)
 
 
 	/**
@@ -65,6 +65,9 @@ public class VCFReader {
 	}
 
 
+	/**
+	 * Initializes column header list.
+	 */
 	private void initFixedColumnList () {
 		fixedColumn = new ArrayList<String>();
 		fixedColumn.add("CHROM");
@@ -286,12 +289,6 @@ public class VCFReader {
 			String info[] = line.split("[\t]");
 			Map<String, Object> row = new HashMap<String, Object>();
 			for (String columnName: columnNames) {
-				/*String chaine = "";
-				for (String s: info) {
-					chaine += s + " ";
-				}
-				chaine += " - " + columnName;
-				System.out.println(chaine);*/
 				if (fields.indexOf(columnName) != -1) {
 					row.put(columnName, info[columnNames.indexOf(columnName)]);
 				}
@@ -360,6 +357,5 @@ public class VCFReader {
 		}
 		return genomeNames;
 	}
-
 
 }

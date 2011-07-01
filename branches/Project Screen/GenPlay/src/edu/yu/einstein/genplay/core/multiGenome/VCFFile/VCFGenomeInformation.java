@@ -209,6 +209,11 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	}
 
 
+	/**
+	 * @param start	start position
+	 * @param stop	stop position
+	 * @return the lsit of fitted data
+	 */
 	protected List<Variant> getFittedData(int start, int stop) {
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
@@ -248,7 +253,7 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the start position
 	 */
 	private int findStart(List<Variant> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
@@ -271,7 +276,7 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the stop position
 	 */
 	private int findStop(List<Variant> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;

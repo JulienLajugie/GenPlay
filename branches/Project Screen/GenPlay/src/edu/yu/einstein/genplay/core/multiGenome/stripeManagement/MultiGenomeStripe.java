@@ -24,19 +24,21 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
- * 
+ * This class stores information about multi genome information stripes to display.
+ * Each track have an instance of this class.
+ * Stripes information are specific of genomes and VCF files, they are about:
+ * - association between variant type and color
+ * - transparency
  * @author Nicolas Fourel
  */
 public class MultiGenomeStripe {
 
-	private Map<String, Map<VariantType, Color>> colorAssociation;
-	private int transparency;
-	private String genomeName;
+	private Map<String, Map<VariantType, Color>> 	colorAssociation;	// Association between variant type and color
+	private int 									transparency;		// Transparency (0 -> 100)
+	private String 									genomeName;			// Genome name
 	
 	
 	/**
@@ -66,39 +68,11 @@ public class MultiGenomeStripe {
 	}
 	
 	
-	public void showInformation () {
-		for (String name: colorAssociation.keySet()) {
-			for (VariantType type: colorAssociation.get(name).keySet()) {
-				System.out.println(name + " - " + type + ": " + colorAssociation.get(name).get(type));
-			}
-		}
-	}
-	
-	
+	/**
+	 * Initializes color stripes.
+	 */
 	private void initStripes () {
 		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
-		for(Object genome: MultiGenomeManager.getInstance().getFormattedGenomeArray()) {
-			String fullName = genome.toString();
-			String rawName;
-			try {
-				rawName = FormattedMultiGenomeName.getRawName(fullName);
-			} catch (Exception e) {
-				rawName = fullName;
-			}
-			Map<VariantType, Color> colors = new HashMap<VariantType, Color>();
-			if (genomeName.equals(rawName)) {
-				colors.put(VariantType.INSERTION, MultiGenomeManager.getInsertionDefaultColor());
-				colors.put(VariantType.DELETION, MultiGenomeManager.getDeletionDefaultColor());
-				//colors.put(VariantType.SV, MultiGenomeManager.getSvDefaultColor());
-				//colors.put(VariantType.SNPS, MultiGenomeManager.getSnpsDefaultColor());
-			} else {
-				colors.put(VariantType.INSERTION, MultiGenomeManager.getDefaultColor());
-				/*colors.put(VariantType.DELETION, MultiGenomeManager.getDefaultColor());
-				colors.put(VariantType.SV, MultiGenomeManager.getDefaultColor());
-				colors.put(VariantType.SNPS, MultiGenomeManager.getDefaultColor());*/
-			}
-			colorAssociation.put(fullName, colors);
-		}
 	}
 	
 	
@@ -132,6 +106,18 @@ public class MultiGenomeStripe {
 	 */
 	public void setTransparency(int alpha) {
 		this.transparency = alpha * 100 / 255;
+	}
+	
+	
+	/**
+	 * Shows information about color/variant type association.
+	 */
+	public void showInformation () {
+		for (String name: colorAssociation.keySet()) {
+			for (VariantType type: colorAssociation.get(name).keySet()) {
+				System.out.println(name + " - " + type + ": " + colorAssociation.get(name).get(type));
+			}
+		}
 	}
 	
 }

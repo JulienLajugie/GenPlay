@@ -32,13 +32,13 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  */
 public class VCFPositionInformation {
 
-	private VariantType 	type;						// The indel type
+	private VariantType 		type;						// The indel type
 	private Map<String, String> info;					// The genome information (ex: GT:GQ -> X/X:Y)
-	private int				length;						// The indel length
-	private int				genomePosition;				// The genome position
-	private int 			initialReferenceOffset;		// The offset between the genome position and the reference genome position
-	private int 			initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
-	private int 			extraOffset;				// Offset when multiple insertions happen at the same reference position
+	private int					length;						// The indel length
+	private int					genomePosition;				// The genome position
+	private int 				initialReferenceOffset;		// The offset between the genome position and the reference genome position
+	private int 				initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
+	private int 				extraOffset;				// Offset when multiple insertions happen at the same reference position
 
 
 	/**
@@ -88,6 +88,10 @@ public class VCFPositionInformation {
 	}
 
 
+	/**
+	 * @param title header name
+	 * @return		the associated value
+	 */
 	public String getInfoValue (String title) {
 		if (info != null) {
 			if (info.get(title) != null) {
@@ -98,6 +102,9 @@ public class VCFPositionInformation {
 	}
 
 
+	/**
+	 * @return true if VCF information are phased
+	 */
 	public boolean isPhased () {
 		String value = getInfoValue("GT").substring(1, 2);
 		if (value.equals("/")) {
@@ -108,10 +115,11 @@ public class VCFPositionInformation {
 	}
 
 
+	/**
+	 * @return the Genome Type information.
+	 */
 	public int[] getGT () {
 		int[] values = new int[2];
-		//System.out.println(genomePosition + " - " + initialReferenceOffset + " - " + initialMetaGenomeOffset + " - " + type.toString());
-		//System.out.println("GT: " + getInfoValue("GT") + ", 0-1: " + getInfoValue("GT").substring(0, 1) + ", 2: " + getInfoValue("GT").substring(2));
 		if (type.equals(VariantType.BLANK)) {
 			values[0] = 1;
 			values[1] = 1;
@@ -123,6 +131,9 @@ public class VCFPositionInformation {
 	}
 
 
+	/**
+	 * @return the Quality information
+	 */
 	public double getQuality () {
 		if (type.equals(VariantType.BLANK)) {
 			return 100;

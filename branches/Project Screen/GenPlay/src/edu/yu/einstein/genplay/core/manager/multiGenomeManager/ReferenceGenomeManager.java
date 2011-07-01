@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.Development;
  * This class symbolizes the reference genome in a multi genome project.
  * It stores all variation positions and manages their indexes for scanning. 
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class ReferenceGenomeManager {
 
@@ -45,7 +46,7 @@ public class ReferenceGenomeManager {
 	private 		int 							currentIndex;		// The current index (for variation position list scanning uses)
 	private 		int 							previousIndex;		// The previous index (for variation position list scanning uses)
 	private 		boolean 						validIndex;			// Stores the index validity
-	
+
 
 	/**
 	 * Constructor of {@link ReferenceGenomeManager}
@@ -114,15 +115,6 @@ public class ReferenceGenomeManager {
 	}
 
 
-	@SuppressWarnings("unused")
-	//For development
-	private void showCurrentPositionList () {
-		for (int i = 0; i < modifiedPosition.get(currentChromosome).size(); i++) {
-			System.out.println(modifiedPosition.get(currentChromosome).get(i));
-		}
-	}
-
-
 	/**
 	 * Verifies if the current position is valid
 	 */
@@ -169,8 +161,8 @@ public class ReferenceGenomeManager {
 			Development.increaseCommonPositions();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds a position, the current chromosome is already known
 	 * @param position

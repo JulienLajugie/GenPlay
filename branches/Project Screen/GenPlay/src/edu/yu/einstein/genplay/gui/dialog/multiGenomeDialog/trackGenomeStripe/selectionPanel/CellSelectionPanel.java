@@ -81,7 +81,10 @@ class CellSelectionPanel extends JPanel {
 		colorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				setColor(JColorChooser.showDialog(getCurrentInstance(), "Choose color", getColor()));
+				Color newColor = JColorChooser.showDialog(getCurrentInstance(), "Choose color", getColor());
+				if (newColor != null) {
+					setColor(newColor);
+				}
 			}
 		});
 		setColor(color);

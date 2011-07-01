@@ -31,13 +31,13 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  */
 public class Variant {
 
-	private VariantType type;			// Type of variation
-	private ChromosomeWindow position; 	// Start and stop of the variation
-	private ChromosomeWindow deadZone; 	// Start and stop of the dead zone
-										// A dead zone is the additional space due to the synchronization effect
-	private boolean isOnFirstAllele;
-	private boolean isOnSecondAllele;
-	private double qualityScore;
+	private VariantType 		type;				// Type of variation
+	private ChromosomeWindow 	position; 			// Start and stop of the variation
+	private ChromosomeWindow 	deadZone; 			// Start and stop of the dead zone
+													// A dead zone is the additional space due to the synchronization effect
+	private boolean 			isOnFirstAllele;	// Says if the variant is present on the first allele or not
+	private boolean 			isOnSecondAllele;	// Says if the variant is present on the second allele or not
+	private double 				qualityScore;		// Quality score of the variant
 	
 	
 	/**
@@ -180,7 +180,5 @@ public class Variant {
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
-	
-	
 	
 }

@@ -49,9 +49,8 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 	private static 	ChromosomeManager 			instance = null;		// unique instance of the singleton
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
-	private			Map<String, Chromosome> 	chromosomeList;
-	private			Chromosome					currentChromosome;
-	
+	private			Map<String, Chromosome> 	chromosomeList;			// List of chromosome
+	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
 	
 	
 	
@@ -81,10 +80,12 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	}
 	
 	
+	/**
+	 * Initializes the chromosome list
+	 */
 	public void setChromosomeList () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			chromosomeList = MetaGenomeManager.getInstance().getChromosomeList();
-			//MetaGenomeManager.getInstance().showData();
 			if (chromosomeList == null) {
 				chromosomeList = ProjectManager.getInstance().getAssembly().getChromosomeList();
 			}
@@ -177,12 +178,6 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	}
 
 
-	@Override
-	public Iterator<Chromosome> iterator() {
-		return new ChromosomeManagerIterator();
-	}
-
-
 	/**
 	 * Methods used for the serialization of the singleton object.
 	 * The readResolve method is called when ObjectInputStream has 
@@ -225,19 +220,17 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @return the chromosomeList
 	 */
 	public Map<String, Chromosome> getChromosomeList() {
-		//if(!ProjectManager.getInstance().isMultiGenomeProject()) {
-			return chromosomeList;
-		//}
-		//return getMultiGenomeChromosomeList();
+		return chromosomeList;
 	}
 	
 	
 	/**
-	 * @return the chromosomeList
+	 * In a multi genome project, the list of chromosome can be different as usual.
+	 * See the CHROMOSOME_LOADING_OPTION in {@link MultiGenomeManager}.
+	 * @return the chromosomeList for multi genome scan algorithm
 	 */
 	public Map<String, Chromosome> getCurrentMultiGenomeChromosomeList() {
-	//private Map<String, Chromosome> getMultiGenomeChromosomeList() {
-		if (MultiGenomeManager.CHROMOSOME_LIST_OPTION == MultiGenomeManager.FULL_CHROMOSOME_LIST) {
+		if (MultiGenomeManager.CHROMOSOME_LOADING_OPTION == MultiGenomeManager.FULL) {
 			return chromosomeList;
 		} else {
 			Map<String, Chromosome> newList = new HashMap<String, Chromosome>();
@@ -270,11 +263,24 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 		return false;
 	}
 
+	
+	@Override
+	/**
+	 * Constructor for chromosome manager iterator.
+	 */
+	public Iterator<Chromosome> iterator() {
+		return new ChromosomeManagerIterator();
+	}
 
+	
+	/**
+	 * Iterator for chromosome manager.
+	 * @author Julien
+	 * @author Nicolas
+	 */
 	private class ChromosomeManagerIterator implements Iterator<Chromosome> {
 
 		private int currentIndex = 0;
-		
 		
 		@Override
 		public boolean hasNext() {

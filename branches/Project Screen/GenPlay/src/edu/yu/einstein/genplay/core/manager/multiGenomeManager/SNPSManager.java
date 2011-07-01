@@ -37,29 +37,37 @@ import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFSNPInformation;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
+
+/**
+ * This class manages SNPs information.
+ * The main functionality is to create the list of SNPs in order to display them.
+ * @author Nicolas Fourel
+ * @version 0.1
+ */
 public class SNPSManager {
 
-	private static 	SNPSManager 	instance;			// The instance of the class
-	private List<String> 	fields;
+	private static 	SNPSManager 				instance;				// The instance of the class
 
-	private boolean genomeChanged;
-	private boolean genomeWindowChanged;
+	private 		boolean 					genomeChanged;			// Says if genome has changed compare to previous scan
+	private 		boolean 					genomeWindowChanged;	// Says if genome window has changed compare to previous scan
+	private 		double 						ratioThreshold;			// Ratio threshold to do not show up SNPs when zoom is not important enough
+	
+	//Dynamic variables
+	private 		List<VCFSNPInformation> 	list;					// List of SNP position
+	private 		List<String> 				fields;					// List of header for VCF file query
+	private 		GenomeWindow 				genomeWindow;			// The current genome window
+	private 		String 						fullGenomeName;			// The current full genome name
+	private 		String 						groupName;				// The current group name
+	private 		String 						rawName;				// The current genome raw name
+	private 		VCFReader 					reader;					// The current VCF reader
 
-	private List<VCFSNPInformation> list;
-	private double ratioThreshold;
-	private GenomeWindow genomeWindow;
-	private String fullGenomeName;
-	private String groupName;
-	private String rawName;
-	private VCFReader reader;
 
-
+	/**
+	 * Constructor of {@link SNPSManager}
+	 */
 	private SNPSManager () {
-		
-
 		genomeChanged = false;
 		genomeWindowChanged = false;
-
 		list = new ArrayList<VCFSNPInformation>();
 		ratioThreshold = 0.05;
 		fullGenomeName = null;
@@ -80,6 +88,10 @@ public class SNPSManager {
 	}
 	
 	
+	/**
+	 * Initializes headers for VCF file queries
+	 * @param genome the genome raw name
+	 */
 	private void initFields (String genome) {
 		fields = new ArrayList<String>();
 		fields.add("CHROM");
@@ -93,6 +105,12 @@ public class SNPSManager {
 	}
 
 
+	/**
+	 * @param fullGenomeName	the full current genome name
+	 * @param genomeWindow		the current genome window
+	 * @param xFactor			the current x ratio
+	 * @return					the list of SNPs
+	 */
 	public List<VCFSNPInformation> getSNPSList (String fullGenomeName, GenomeWindow genomeWindow, double xFactor) {
 
 		if (xFactor > ratioThreshold) {
@@ -112,6 +130,11 @@ public class SNPSManager {
 	}
 
 
+	/**
+	 * Checks if genome and screen information has been changed in order to do not repeat some operation.
+	 * @param fullGenomeName	the full current genome name
+	 * @param genomeWindow		the current genome window
+	 */
 	private void initChangements(String fullGenomeName, GenomeWindow genomeWindow) {
 		if (this.fullGenomeName == null || !this.fullGenomeName.equals(fullGenomeName)) {
 			genomeChanged = true;
@@ -127,6 +150,9 @@ public class SNPSManager {
 	}
 
 
+	/**
+	 * Initializes genome names for scanning process 
+	 */
 	private void initNames () {
 		if (genomeChanged) {
 			groupName = null;
@@ -140,6 +166,9 @@ public class SNPSManager {
 	}
 
 
+	/**
+	 * Initializes the VCF file reader 
+	 */
 	private void initReader () {
 		if (genomeWindowChanged || genomeChanged) {
 			VCFMultiGenomeInformation genomeInformation = MultiGenomeManager.getInstance().getMultiGenomeInformation();
@@ -157,6 +186,9 @@ public class SNPSManager {
 	}
 
 
+	/**
+	 * Main algorithm for making the list of SNPs.
+	 */
 	private void makeList () {
 		if (genomeWindowChanged || genomeChanged) {
 			if (reader != null) {
@@ -228,6 +260,10 @@ public class SNPSManager {
 	}
 
 
+	/**
+	 * @param n the raw nucleotide information
+	 * @return	the associated nucleotide
+	 */
 	private Nucleotide getAssociatedNucleotide (String n) {
 		Nucleotide nucleotide = null;
 		if (n.equals("A")) {
@@ -241,6 +277,5 @@ public class SNPSManager {
 		}
 		return nucleotide;
 	}
-
 
 }

@@ -43,28 +43,31 @@ import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFReader;
  * This class manages a multi genome project.
  * It reads vcf files, analyzes them and perform synchronization algorithms to display information.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class MultiGenomeManager {
 
-	public static final int FULL_CHROMOSOME_LIST = 1;
-	public static final int NO_CHROMOSOME_LIST = 0;
-	public static		int	CHROMOSOME_LIST_OPTION = FULL_CHROMOSOME_LIST;
-	
-	private static 	MultiGenomeManager 			instance = null;		// unique instance of the singleton
-	private			List<String> 				fields;					// VCF column Filter
-	private 		Map<File, VCFReader> 		fileReaders;			// VCF Readers for every files
-	private			VCFMultiGenomeInformation	genomesInformation;		// Genomes information
-	private			MetaGenomeManager			metaGenomeManager;		// Meta genome
-	private			ReferenceGenomeManager		referenceGenomeManager;	// Reference genome
-	private			CoordinateSystemType 		cst;
-	private			boolean						hasBeenInitialized;
-	private			boolean						dataComputed = false;
+	public 	static final 	int 						FULL					 	= 1;	// Algorithm computed for every loaded chromosome when project is created
+	public 	static final 	int 						SEQUENTIAL 					= 0;	// Algorithm computed at every changement of chromosome
+	public 	static			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
 
-	private static final Color DEFAULT_COLOR = Color.black;
-	private static final Color INSERTION_DEFAULT_COLOR = Color.green;
-	private static final Color DELETION_DEFAULT_COLOR = Color.red;
-	private static final Color SNPS_DEFAULT_COLOR = Color.cyan;
-	private static final Color SV_DEFAULT_COLOR = Color.magenta;
+	private static final 	Color 						DEFAULT_COLOR 				= Color.black;
+	private static final 	Color 						INSERTION_DEFAULT_COLOR 	= Color.green;
+	private static final 	Color 						DELETION_DEFAULT_COLOR 		= Color.red;
+	private static final 	Color 						SNPS_DEFAULT_COLOR			= Color.cyan;
+	private static final 	Color 						SV_DEFAULT_COLOR 			= Color.magenta;
+
+	private static 			MultiGenomeManager 			instance = null;		// unique instance of the singleton
+	private					List<String> 				fields;					// VCF column Filter
+	private 				Map<File, VCFReader> 		fileReaders;			// VCF Readers for every VCF files
+	private					VCFMultiGenomeInformation	genomesInformation;		// Genomes information
+	private					MetaGenomeManager			metaGenomeManager;		// Meta genome manager instance
+	private					ReferenceGenomeManager		referenceGenomeManager;	// Reference genome manager instance
+	private					CoordinateSystemType 		cst;
+	private					boolean						hasBeenInitialized;		// Uses when multi genome manager has been initialized
+	private					boolean						dataComputed = false;	// Uses after every multi genome process
+
+
 
 
 	/**
@@ -113,8 +116,11 @@ public class MultiGenomeManager {
 			Map<VCFType, List<File>> filesTypeAssociation) {
 		genomesInformation.setGenomes(genomeGroupAssociation, genomeFilesAssociation, genomeNamesAssociation, filesTypeAssociation);
 	}
-	
-	
+
+
+	/**
+	 * Initializes genomes information.
+	 */
 	public void initMultiGenomeInformation () {
 		genomesInformation.initMultiGenomeInformation();
 	}
@@ -134,11 +140,11 @@ public class MultiGenomeManager {
 		}
 	}
 
-	
+
 	/**
-	 * @return the ready
+	 * @return true if data has been computed
 	 */
-	public boolean isReady() {
+	public boolean dataHasBeenComputed() {
 		return dataComputed;
 	}
 
@@ -223,7 +229,7 @@ public class MultiGenomeManager {
 	 */
 	private void createPositions (Chromosome chromosome, List<String> genomeNames, List<Map<String, Object>> result, VCFType vcfType) {
 		if (result != null) {
-			
+
 			for (Map<String, Object> info: result) {	// Scans every result lines
 				boolean isSNP = false;
 				VariantType type = null;
@@ -268,7 +274,7 @@ public class MultiGenomeManager {
 						for (int i = 0; i < titles.length; i++) {
 							format.put(titles[i], values[i]);
 						}
-						
+
 						genomesInformation.addInformation(	genomeName,
 								chromosome,
 								Integer.parseInt(info.get("POS").toString()),
@@ -284,6 +290,12 @@ public class MultiGenomeManager {
 	}
 
 
+	/**
+	 * Gets information from format field
+	 * @param format	the format string field
+	 * @param element	the information title
+	 * @return			the value
+	 */
 	private Object formatParser (String format, String element) {
 		Object o = null;
 		int elementIndex = format.indexOf(element);
@@ -496,12 +508,106 @@ public class MultiGenomeManager {
 
 
 	/**
+	 * @param usualName	the understandable genome name
+	 * @return	the raw genome name
+	 */
+	public String getRawGenomeName (String usualName) {
+		return genomesInformation.getRawGenomeName(usualName);
+	}
+
+
+	/**
+	 * @param vcf 	a VCF file
+	 * @return		the associated VCF file
+	 */
+	public VCFReader getReader (File vcf) {
+		return fileReaders.get(vcf);
+	}
+
+
+	/**
+	 * @return the genomesInformation
+	 */
+	public VCFChromosomeInformation getChromosomeInformation(String genome, Chromosome chromosome) {
+		return genomesInformation.getChromosomeInformation(genome, chromosome);
+	}
+
+
+	/**
+	 * @return the hasBeenInitialized
+	 */
+	public boolean hasBeenInitialized() {
+		return hasBeenInitialized;
+	}
+
+
+	/**
+	 * @param hasBeenInitialized the hasBeenInitialized to set
+	 */
+	public void setHasBeenInitialized() {
+		this.hasBeenInitialized = true;
+	}
+
+
+	//////////////////////////// getColor methods
+
+	/**
+	 * @return the defaultColor
+	 */
+	public static Color getDefaultColor() {
+		return DEFAULT_COLOR;
+	}
+
+
+	/**
+	 * @return the insertionDefaultColor
+	 */
+	public static Color getInsertionDefaultColor() {
+		return INSERTION_DEFAULT_COLOR;
+	}
+
+
+	/**
+	 * @return the deletionDefaultColor
+	 */
+	public static Color getDeletionDefaultColor() {
+		return DELETION_DEFAULT_COLOR;
+	}
+
+
+	/**
+	 * @return the snpsDefaultColor
+	 */
+	public static Color getSnpsDefaultColor() {
+		return SNPS_DEFAULT_COLOR;
+	}
+
+
+	/**
+	 * @return the svDefaultColor
+	 */
+	public static Color getSvDefaultColor() {
+		return SV_DEFAULT_COLOR;
+	}
+
+
+	////////////////////////////// Show methods
+
+	/**
 	 * Shows genomes information.
 	 */
 	public void showData () {
 		genomesInformation.showData();
 		//Development.showMax();
 		//Development.showIndelCounts();
+	}
+
+
+	/**
+	 * Shows all genome association information
+	 */
+	public void showAllAssociation () {
+		genomesInformation.showAllAssociation();
 	}
 
 
@@ -529,99 +635,5 @@ public class MultiGenomeManager {
 			fileReaders.get(vcf).showColumnNames();
 		}
 	}
-
-
-	/**
-	 * @param usualName	the understandable genome name
-	 * @return	the raw genome name
-	 */
-	public String getRawGenomeName (String usualName) {
-		return genomesInformation.getRawGenomeName(usualName);
-	}
-
-
-	public VCFReader getReader (File vcf) {
-		return fileReaders.get(vcf);
-	}
-
-
-	/**
-	 * @return the genomesInformation
-	 */
-	public VCFChromosomeInformation getChromosomeInformation(String genome, Chromosome chromosome) {
-		return genomesInformation.getChromosomeInformation(genome, chromosome);
-	}
-
-
-	/**
-	 * Shows all genome association information
-	 */
-	public void showAllAssociation () {
-		genomesInformation.showAllAssociation();
-	}
-
-
-	/**
-	 * @return the defaultColor
-	 */
-	public static Color getDefaultColor() {
-		return DEFAULT_COLOR;
-	}
-
-	/**
-	 * @return the insertionDefaultColor
-	 */
-	public static Color getInsertionDefaultColor() {
-		return INSERTION_DEFAULT_COLOR;
-		//return getColor();
-	}
-
-	/**
-	 * @return the deletionDefaultColor
-	 */
-	public static Color getDeletionDefaultColor() {
-		return DELETION_DEFAULT_COLOR;
-		//return getColor();
-	}
-
-	/**
-	 * @return the snpsDefaultColor
-	 */
-	public static Color getSnpsDefaultColor() {
-		return SNPS_DEFAULT_COLOR;
-		//return getColor();
-	}
-
-	/**
-	 * @return the svDefaultColor
-	 */
-	public static Color getSvDefaultColor() {
-		return SV_DEFAULT_COLOR;
-		//return getColor();
-	}
-
-
-	/**
-	 * @return the hasBeenInitialized
-	 */
-	public boolean hasBeenInitialized() {
-		return hasBeenInitialized;
-	}
-
-
-	/**
-	 * @param hasBeenInitialized the hasBeenInitialized to set
-	 */
-	public void setHasBeenInitialized() {
-		this.hasBeenInitialized = true;
-	}
-	
-	
-	/*private static Color getColor () {
-		int red = (int)(Math.random() * 255);
-		int blue = (int)(Math.random() * 255);
-		int green = (int)(Math.random() * 255);
-		return new Color(red, green, blue);
-	}*/
 
 }

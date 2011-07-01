@@ -76,11 +76,13 @@ public class VCFMultiGenomeInformation {
 		this.filesTypeAssociation = filesTypeAssociation;
 		
 		//showAllAssociation();
-		
 		//initMultiGenomeInformation();
 	}
 	
 	
+	/**
+	 * Initializes multi genome information.
+	 */
 	public void initMultiGenomeInformation () {
 		for (String genomeName: genomeNamesAssociation.keySet()) {
 			multiGenomeInformation.put(genomeName, new VCFGenomeInformation());
@@ -252,6 +254,9 @@ public class VCFMultiGenomeInformation {
 	}
 	
 	
+	/**
+	 * @return the total number of genome
+	 */
 	private int getGenomeNumber () {
 		int cpt = 0;
 		for (List<String> list: genomeGroupAssociation.values()) {

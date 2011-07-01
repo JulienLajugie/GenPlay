@@ -127,33 +127,32 @@ class MultiGenomePanel extends JPanel {
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String xmlPath = fc.getSelectedFile().getPath();
 			xmlFile = new File(xmlPath);
+
+			// Stream & Parsers
+			FileInputStream xml;
+			SAXParser parser;
+			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setValidating(true);
+			SettingsHandler xmlParser = new SettingsHandler();
+			try {
+				xml = new FileInputStream(xmlFile);
+				parser = parserFactory.newSAXParser();
+				parser.parse(xml, xmlParser);
+			} catch (ParserConfigurationException e1) {
+				e1.printStackTrace();
+			} catch (SAXException e1) {
+				e1.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			// Manager initialization
+			addData(xmlParser.getData());
+			vcfLoader.setData(data);
+			vcfLoader.initStatisticsInformation();
 		}
-
-		// Stream & Parsers
-		FileInputStream xml;
-		SAXParser parser;
-		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-		parserFactory.setValidating(true);
-		SettingsHandler xmlParser = new SettingsHandler();
-		try {
-			xml = new FileInputStream(xmlFile);
-			parser = parserFactory.newSAXParser();
-			parser.parse(xml, xmlParser);
-		} catch (ParserConfigurationException e1) {
-			e1.printStackTrace();
-		} catch (SAXException e1) {
-			e1.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-
-		// Manager initialization
-		addData(xmlParser.getData());
-		vcfLoader.setData(data);
-		vcfLoader.initStatisticsInformation();
 	}
 
 

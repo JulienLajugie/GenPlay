@@ -30,11 +30,11 @@ import edu.yu.einstein.genplay.core.genome.Assembly;
 public class ProjectManager {
 
 	private static	ProjectManager	instance = null;		// unique instance of the singleton
-	private		String		projectName;
-	private		String		cladeName;
-	private		String		genomeName;
-	private  	Assembly 	assembly;
-	private		boolean		multiGenomeProject;
+	private			String			projectName;			// project name
+	private			String			cladeName;				// clade name
+	private			String			genomeName;				// genome name
+	private  		Assembly 		assembly;				// assembly name
+	private			boolean			multiGenomeProject;		// True if it is a multi genome project, false if it is a simple genome project 
 	
 
 	/**
@@ -140,6 +140,5 @@ public class ProjectManager {
 		this.multiGenomeProject = multiGenomeProject;
 		ChromosomeManager.getInstance().setChromosomeList();
 	}
-
 
 }

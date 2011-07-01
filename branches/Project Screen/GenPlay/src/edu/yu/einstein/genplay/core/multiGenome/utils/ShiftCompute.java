@@ -281,10 +281,6 @@ public class ShiftCompute {
 	private static void finishReversedShifting (int metaGenomePosition) {
 		VCFPositionInformation position = chromInfo.getPositionInformation(referencePosition);
 		if (metaGenomePosition >= position.getMetaGenomePosition()) {
-
-			/*if (metaGenomePosition == position.getMetaGenomePosition()) {
-				newPosition = position.getGenomePosition();
-			} else */
 			if (metaGenomePosition >= position.getMetaGenomePosition()) {
 				if (metaGenomePosition < position.getNextMetaGenomePosition()) {
 					newPosition = -1;

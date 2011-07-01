@@ -31,20 +31,18 @@ import edu.yu.einstein.genplay.core.enums.Nucleotide;
 public class VCFSNPInformation {
 	
 	
-	private Nucleotide 	nReference;
-	private Nucleotide 	nAlternative;
-	
-	private int			genomePosition;		// The genome position
+	private Nucleotide 	nReference;				// Nucleotide in the reference
+	private Nucleotide 	nAlternative;			// Nucleotide in the variant
+	private int			genomePosition;			// The genome position
 	private int			metaGenomePosition;		// The meta genome position
-	
-	private Map<String, String> info;					// The genome information (ex: GT:GQ -> X/X:Y)
-	private boolean 	isOnFirstAllele;
-	private boolean 	isOnSecondAllele;
-	
-	
-	public VCFSNPInformation () {}
+	private Map<String, String> info;			// The genome information (ex: GT:GQ -> X/X:Y)
+	private boolean 	isOnFirstAllele;		// Says if the variant is present on the first allele or not
+	private boolean 	isOnSecondAllele;		// Says if the variant is present on the second allele or not
 	
 	
+	/**
+	 * Constructor of {@link VCFSNPInformation}
+	 */
 	public VCFSNPInformation (int genomePosition, int metaGenomePosition, Nucleotide nReference, Nucleotide nAlternative) {
 		this.genomePosition = genomePosition;
 		this.metaGenomePosition = metaGenomePosition;
@@ -117,6 +115,10 @@ public class VCFSNPInformation {
 	}
 	
 	
+	/**
+	 * @param title header name
+	 * @return		the associated value
+	 */
 	public String getInfoValue (String title) {
 		if (info != null) {
 			if (info.get(title) != null) {
@@ -127,6 +129,9 @@ public class VCFSNPInformation {
 	}
 
 
+	/**
+	 * @return true if the SNP information is phased
+	 */
 	public boolean isPhased () {
 		String value = getInfoValue("GT").substring(1, 2);
 		if (value.equals("/")) {
@@ -137,6 +142,9 @@ public class VCFSNPInformation {
 	}
 
 
+	/**
+	 * @return the Genome Type information.
+	 */
 	public int[] getGT () {
 		int[] values = new int[2];
 		values[0] = Integer.parseInt(getInfoValue("GT").substring(0, 1));
@@ -145,6 +153,9 @@ public class VCFSNPInformation {
 	}
 
 
+	/**
+	 * @return the Quality information
+	 */
 	public double getQuality () {
 		return Double.parseDouble(getInfoValue("GQ"));
 	}
@@ -188,7 +199,5 @@ public class VCFSNPInformation {
 	public void setInfo(Map<String, String> info) {
 		this.info = info;
 	}
-	
-	
 	
 }

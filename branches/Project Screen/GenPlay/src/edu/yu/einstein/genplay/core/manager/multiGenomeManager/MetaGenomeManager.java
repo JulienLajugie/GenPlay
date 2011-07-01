@@ -24,29 +24,28 @@ import java.util.HashMap;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.utils.Development;
 
 
 /**
  * This class symbolizes the meta genome in a multi genome project.
  * A meta genome represents a virtual genome containing every information of all VCF files loaded.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class MetaGenomeManager {
 
 	private static 	MetaGenomeManager 			instance;			// The instance of the class
 	private 		Map<Chromosome, Integer> 	chromosomeLength;	// The chromosome length list
-	private			Map<String, Chromosome> 	chromosomeList;
-	private 		long 						genomomeLength = 0;
+	private			Map<String, Chromosome> 	chromosomeList;		// The chromosome list for multi genome project
+	private 		long 						genomomeLength = 0;	// Genome length
+
 
 	/**
 	 * Constructor of {@link MetaGenomeManager}
 	 */
-	private MetaGenomeManager () {
-		//initializeChromosomeLength();
-	}
-	
-	
+	private MetaGenomeManager () {}
+
+
 	/**
 	 * @return the instance of the singleton {@link MetaGenomeManager}.
 	 */
@@ -67,10 +66,10 @@ public class MetaGenomeManager {
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getChromosomeList().values()) {
 			chromosomeLength.put(chromosome, chromosome.getLength());
 		}
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Compute the size of the genome
 	 */
@@ -100,36 +99,49 @@ public class MetaGenomeManager {
 	public void updateChromosomeLength (Chromosome chromosome, int length) {
 		chromosomeLength.put(chromosome, chromosomeLength.get(chromosome) + length);
 	}
-	
-	
+
+
+	/**
+	 * Initializes the chromosome list
+	 */
 	public void initChromosomeList () {
 		chromosomeList = new HashMap<String, Chromosome>();
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getChromosomeList().values()) {
 			chromosomeList.put(chromosome.getName(), new Chromosome(chromosome.getName(), chromosome.getLength()));
 		}
 	}
-	
-	
+
+
+	/**
+	 * Updates the chromosome list.
+	 * It consists on set new chromosome lengths.
+	 */
 	public void updateChromosomeList () {
 		for (Chromosome chromosome: chromosomeLength.keySet()) {
 			chromosomeList.get(chromosome.getName()).setLength(chromosomeLength.get(chromosome));
 		}
 	}
-	
-	
+
+
+	/**
+	 * @return the chromosome list
+	 */
 	public Map<String, Chromosome> getChromosomeList () {
 		return chromosomeList;
 	}
-	
-	
+
+
 	/**
 	 * @return the length of the genome in bp
 	 */
 	public long getGenomeLength() {
 		return genomomeLength;
 	}
-	
-	
+
+
+	/**
+	 * Shows meta genome mananger information.
+	 */
 	public void showData () {
 		System.out.println("========== chromosomeLength");
 		for (Chromosome chromosome: chromosomeLength.keySet()) {
