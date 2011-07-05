@@ -46,7 +46,7 @@ public class BannerPanel extends JPanel {
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		
+
 		//Background color
 		setBackground(ProjectScreenManager.getBannerColor());
 		
