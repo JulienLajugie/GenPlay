@@ -11,7 +11,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-class TransparencyPanel extends JPanel implements ChangeListener {
+class QualityPanel extends JPanel implements ChangeListener {
 
 	private static final long serialVersionUID = -3751033351191803873L;
 
@@ -19,13 +19,13 @@ class TransparencyPanel extends JPanel implements ChangeListener {
 	private JLabel name;
 	private JLabel value;
 	private JSlider slider;
-	private static final int TRANSPARENCY_MIN = 0;
-	private static final int TRANSPARENCY_MAX = 100;
-	private static int TRANSPARENCY_INIT = 50;
+	private static final int QUALITY_MIN = 0;
+	private static final int QUALITY_MAX = 100;
+	private static int QUALITY_INIT = 50;
 	private static final int SLIDER_RIGHT_OFFSET = 20;
 
 
-	protected TransparencyPanel (int width) {
+	protected QualityPanel (int width) {
 		//Dimension
 		Dimension panelDim = new Dimension(width, MultiGenomePanel.getThresholdPanelHeight());
 		setSize(panelDim);
@@ -35,7 +35,7 @@ class TransparencyPanel extends JPanel implements ChangeListener {
 
 
 		//Name label
-		name = new JLabel("Transparency:");
+		name = new JLabel("Quality score >=");
 		Dimension labelDim = new Dimension(MultiGenomePanel.getThresholdLabelWidth(), MultiGenomePanel.getThresholdLineHeight());
 		name.setSize(labelDim);
 		name.setPreferredSize(labelDim);
@@ -43,7 +43,7 @@ class TransparencyPanel extends JPanel implements ChangeListener {
 		name.setMaximumSize(labelDim);
 
 		//Slider
-		slider = new JSlider(JSlider.HORIZONTAL, TRANSPARENCY_MIN, TRANSPARENCY_MAX, TRANSPARENCY_INIT);
+		slider = new JSlider(JSlider.HORIZONTAL, QUALITY_MIN, QUALITY_MAX, QUALITY_INIT);
 		slider.addChangeListener(this);
 		slider.setMajorTickSpacing(10);
 		slider.setMinorTickSpacing(1);
@@ -56,7 +56,7 @@ class TransparencyPanel extends JPanel implements ChangeListener {
 		slider.setMaximumSize(sliderDim);
 
 		//Value label
-		value = new JLabel(TRANSPARENCY_INIT + " %");
+		value = new JLabel(QUALITY_INIT + "");
 		Dimension valueDim = new Dimension(40, MultiGenomePanel.getThresholdLineHeight());
 		value.setSize(valueDim);
 		value.setPreferredSize(valueDim);
@@ -106,26 +106,18 @@ class TransparencyPanel extends JPanel implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		JSlider source = (JSlider)e.getSource();
-		int transparency = (int)source.getValue();
-		value.setText(transparency + " %");
+		int quality = (int)source.getValue();
+		value.setText(quality + "");
 	}
 	
 	
-	protected int getAlphaTransparency () {
-		int transparency = getTransparency();
-		int alpha = transparency * 255 / 100;
-		return alpha;
+	protected int getQuality () {
+		return Integer.parseInt(value.getText());
 	}
 	
 	
-	private int getTransparency () {
-		String s = value.getText().substring(0, value.getText().length()-2);
-		return 100 - Integer.parseInt(s);
-	}
-	
-	
-	protected void initTransparency (int transparency) {
-		slider.setValue(100 - transparency);
+	protected void initQuality (int quality) {
+		slider.setValue(quality);
 	}
 
 

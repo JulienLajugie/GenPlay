@@ -75,6 +75,7 @@ public final class ATAMultiGenomeStripes extends TrackListAction {
 			genomePanel.setTrackGenomeGroupName(selectedTrack.getGenomeName());
 			genomePanel.initColors(selectedTrack.getStripeInformation().getColorAssociation());
 			genomePanel.initTransparency(selectedTrack.getStripeInformation().getTransparency());
+			genomePanel.initQuality(selectedTrack.getStripeInformation().getQuality());
 			if (genomePanel.showDialog(getRootPane()) == MultiGenomePanel.APPROVE_OPTION) {
 				selectedTrack.setStripeInformation(genomePanel.getMultiGenomeStripe());
 			}

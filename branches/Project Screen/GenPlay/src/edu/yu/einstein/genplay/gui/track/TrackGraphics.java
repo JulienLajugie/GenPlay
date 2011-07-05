@@ -266,6 +266,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param genome	the genome name
 	 */
 	private void drawGenome (Graphics g, String genome) {
+		// Gets genome raw name
 		String genomeRawName;
 		try {
 			genomeRawName = FormattedMultiGenomeName.getRawName(genome);
@@ -283,9 +284,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		if (fittedDataList != null) {
 			for (Variant variant: fittedDataList) {
 				if (association.containsKey(variant.getType())) {
-					drawRect(g, variant, association.get(variant.getType()), blankColor);
-					if (variant.deadZoneExists()) {
-						drawRect(g, variant, Color.black, blankColor);
+					if (variant.getQualityScore() >= multiGenomeStripe.getQuality()) {
+						drawRect(g, variant, association.get(variant.getType()), blankColor);
+						if (variant.deadZoneExists()) {
+							drawRect(g, variant, Color.black, blankColor);
+						}
 					}
 				} else if (variant.getType().equals(VariantType.MIX)) {
 					drawRect(g, variant, Color.white, blankColor);
@@ -298,7 +301,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			List<VCFSNPInformation> data = SNPSManager.getInstance().getSNPSList(genome, genomeWindow, xFactor);
 			Color color = association.get(VariantType.SNPS);
 			for (VCFSNPInformation snp: data) {
-				drawSNP(g, snp, color, blankColor);
+				if (snp.getQuality() >= multiGenomeStripe.getQuality()) {
+					drawSNP(g, snp, color, blankColor);
+				}
 			}
 		}
 	}
@@ -311,16 +316,18 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param color		the color
 	 */
 	private void drawRect (Graphics g, Variant variant, Color color, Color blankColor) {
+		// Sets position and length
 		int x = genomePosToScreenPos(variant.getStart());
 		int width = twoGenomePosToScreenWidth(variant.getStart(), variant.getStop());
-		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
-		
-		g.setColor(newColor);
-
 		int middle = getHeight() / 2;
 		int height = (int) (variant.getQualityScore() * middle / 100);
 		int top = middle - height;
 
+		// Sets color
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
+		g.setColor(newColor);
+
+		// Draws the top half part of the track
 		if (variant.isOnFirstAllele()) {
 			g.setColor(newColor);
 		} else {
@@ -328,6 +335,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 		g.fillRect(x, top, width, height);
 
+		// Draws the bottom half part of the track
 		if (variant.isOnSecondAllele()) {
 			g.setColor(newColor);
 		} else {
@@ -345,17 +353,19 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param stop	the stop position
 	 */
 	private void drawSNP (Graphics g, VCFSNPInformation snp, Color color, Color blankColor) {
+		// Sets position and length
 		int pos = snp.getMetaGenomePosition();
 		int x = genomePosToScreenPos(pos);
 		int width = twoGenomePosToScreenWidth(pos, pos + 1);
-
-		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
-		g.setColor(newColor);
-
 		int middle = getHeight() / 2;
 		int height = (int) (snp.getQuality() * middle / 100);
 		int top = middle - height;
 
+		// Sets color
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
+		g.setColor(newColor);
+
+		// Draws the top half part of the track
 		if (snp.isOnFirstAllele()) {
 			g.setColor(newColor);
 		} else {
@@ -363,6 +373,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 		g.fillRect(x, top, width, height);
 
+		// Draws the bottom half part of the track
 		if (snp.isOnSecondAllele()) {
 			g.setColor(newColor);
 		} else {

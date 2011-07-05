@@ -38,6 +38,7 @@ public class MultiGenomeStripe {
 
 	private Map<String, Map<VariantType, Color>> 	colorAssociation;	// Association between variant type and color
 	private int 									transparency;		// Transparency (0 -> 100)
+	private int										quality;			// Quality threshold (0 -> 100)
 	private String 									genomeName;			// Genome name
 	
 	
@@ -109,6 +110,22 @@ public class MultiGenomeStripe {
 	}
 	
 	
+	/**
+	 * @return the quality
+	 */
+	public int getQuality() {
+		return quality;
+	}
+
+
+	/**
+	 * @param quality the quality to set
+	 */
+	public void setQuality(int quality) {
+		this.quality = quality;
+	}
+
+
 	/**
 	 * Shows information about color/variant type association.
 	 */

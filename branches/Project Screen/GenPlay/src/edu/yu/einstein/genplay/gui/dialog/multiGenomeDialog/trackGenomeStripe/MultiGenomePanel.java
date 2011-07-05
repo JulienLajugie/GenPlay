@@ -56,10 +56,10 @@ public class MultiGenomePanel extends JDialog {
 	private static final int CELL_VCF_TYPE_WIDTH = 60;
 	private static final int COLOR_BUTTON_SIDE = 13;
 
-	private static final int TRANSPARENCY_PANEL_HEIGHT = 50;
-	private static final int TRANSPARENCY_LABEL_WIDTH = 100;
-	private static final int TRANSPARENCY_LINE_HEIGHT = 20;
-	private static final int TRANSPARENCY_INSET = 15;
+	private static final int THRESHOLD_PANEL_HEIGHT = 50;
+	private static final int THRESHOLD_LABEL_WIDTH = 100;
+	private static final int THRESHOLD_LINE_HEIGHT = 20;
+	private static final int THRESHOLD_INSET = 15;
 	
 	private static final int DESCRIPTION_PANEL_HEIGHT = 70;
 	private static final int DESCRIPTION_LINE_HEIGHT = 20;
@@ -80,6 +80,7 @@ public class MultiGenomePanel extends JDialog {
 
 	private GenomeSelectionPanel 	selectionPanel;
 	private TransparencyPanel 		transparencyPanel;
+	private QualityPanel			qualityPanel;
 	private DescriptionTrackPanel 	descriptionPanel;
 	private ValidationPanel 		validationPanel;
 	
@@ -105,6 +106,7 @@ public class MultiGenomePanel extends JDialog {
 		//Panels
 		selectionPanel = new GenomeSelectionPanel();
 		transparencyPanel = new TransparencyPanel(dialogWidth);
+		qualityPanel = new QualityPanel(dialogWidth);
 		descriptionPanel = new DescriptionTrackPanel(dialogWidth);
 		validationPanel = new ValidationPanel(this);
 		
@@ -115,19 +117,24 @@ public class MultiGenomePanel extends JDialog {
 		gbc.insets = new Insets(0, 0, 0, 0);
 		add(selectionPanel, gbc);
 		
-		//descriptionPanel
+		//transparencyPanel
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		add(transparencyPanel, gbc);
 		
-		//descriptionPanel
+		//qualityPanel
 		gbc.gridx = 0;
 		gbc.gridy = 2;
+		add(qualityPanel, gbc);
+		
+		//descriptionPanel
+		gbc.gridx = 0;
+		gbc.gridy = 3;
 		add(descriptionPanel, gbc);
 		
 		//validationPanel
 		gbc.gridx = 0;
-		gbc.gridy = 3;
+		gbc.gridy = 4;
 		add(validationPanel, gbc);
 
 		//Dimension
@@ -162,7 +169,7 @@ public class MultiGenomePanel extends JDialog {
 	private void initSize () {
 		initGroupNameWidth();
 		dialogWidth = groupLabelWidth + (HORIZONTAL_INSET * 2) + (CELL_VCF_TYPE_WIDTH * 4);
-		dialogHeight = HEADER_HEIGHT + getSelectionPanelHeight() + TRANSPARENCY_PANEL_HEIGHT + DESCRIPTION_PANEL_HEIGHT + (DESCRIPTION_INSET * 2) + VALIDATION_HEIGHT;
+		dialogHeight = HEADER_HEIGHT + getSelectionPanelHeight() + (THRESHOLD_PANEL_HEIGHT * 2) + DESCRIPTION_PANEL_HEIGHT + (DESCRIPTION_INSET * 2) + VALIDATION_HEIGHT;
 	}
 	
 
@@ -203,6 +210,11 @@ public class MultiGenomePanel extends JDialog {
 	}
 	
 	
+	public void initQuality (int quality) {
+		qualityPanel.initQuality(quality);
+	}
+	
+	
 	protected void validChoice () {
 		approved = APPROVE_OPTION;
 		setVisible(false);
@@ -223,6 +235,7 @@ public class MultiGenomePanel extends JDialog {
 		MultiGenomeStripe stripeInformation = selectionPanel.getMultiGenomeStripe();
 		int alpha = transparencyPanel.getAlphaTransparency();
 		stripeInformation.setTransparency(alpha);
+		stripeInformation.setQuality(qualityPanel.getQuality());
 		return stripeInformation;
 	}
 	
@@ -265,29 +278,29 @@ public class MultiGenomePanel extends JDialog {
 	/**
 	 * @return the transparencyPanelHeight
 	 */
-	public static int getTransparencyPanelHeight() {
-		return TRANSPARENCY_PANEL_HEIGHT;
+	public static int getThresholdPanelHeight() {
+		return THRESHOLD_PANEL_HEIGHT;
 	}
 
 	/**
 	 * @return the transparencyLabelWidth
 	 */
-	public static int getTransparencyLabelWidth() {
-		return TRANSPARENCY_LABEL_WIDTH;
+	public static int getThresholdLabelWidth() {
+		return THRESHOLD_LABEL_WIDTH;
 	}
 
 	/**
 	 * @return the transparencyLineHeight
 	 */
-	public static int getTransparencyLineHeight() {
-		return TRANSPARENCY_LINE_HEIGHT;
+	public static int getThresholdLineHeight() {
+		return THRESHOLD_LINE_HEIGHT;
 	}
 
 	/**
 	 * @return the transparencyInset
 	 */
-	public static int getTransparencyInset() {
-		return TRANSPARENCY_INSET;
+	public static int getThresholdInset() {
+		return THRESHOLD_INSET;
 	}
 	
 	/**
