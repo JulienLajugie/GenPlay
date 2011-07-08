@@ -157,19 +157,17 @@ public class MultiGenomeManager {
 		fields = new ArrayList<String>();
 		fields.add("CHROM");
 		fields.add("POS");
+		fields.add("ID");
+		fields.add("REF");
+		fields.add("ALT");
+		fields.add("QUAL");
+		fields.add("FILTER");
+		fields.add("INFO");
 		fields.add("FORMAT");
-		if (type == VCFType.INDELS) {
-			fields.add("REF");
-			fields.add("ALT");
-		} else if (type == VCFType.SV) {
-			fields.add("INFO");
-		}  else if (type == VCFType.SNPS) {
-			fields.add("REF");
-			fields.add("ALT");
-		}
 		for (String name: names) {
 			fields.add(name);
 		}
+		
 	}
 
 
@@ -205,12 +203,15 @@ public class MultiGenomeManager {
 				for (final Chromosome chromosome: chromosomeList.values()) {
 					//Adds the chromosome to the reference genome chromosome list
 					referenceGenomeManager.addChromosome(chromosome.getName());
-
+					
 					//Performs query on the current VCF to get all data regarding the chromosome
-					List<Map<String, Object>> result = fileReaders.get(vcf).query(chromosome.getName(),
+					/*List<Map<String, Object>> result = fileReaders.get(vcf).query(chromosome.getName(),
 							0,
 							chromosome.getLength(),
-							fields);
+							fields);*/
+					List<Map<String, Object>> result = fileReaders.get(vcf).query(chromosome.getName(),
+							0,
+							chromosome.getLength());
 
 					//Analyse query results
 					createPositions(chromosome, genomeNames, result, vcfType);
@@ -267,9 +268,11 @@ public class MultiGenomeManager {
 				if (!isSNP) {
 					referenceGenomeManager.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString()));
 					Map<String, String> format;
+					//System.out.println(info.toString());
 					String titles[] = info.get("FORMAT").toString().split(":");
 					for (String genomeName: genomeNames) {
 						format = new HashMap<String, String>();
+						//System.out.println(genomeName);
 						String values[] = info.get(genomeName).toString().split(":");
 						for (int i = 0; i < titles.length; i++) {
 							format.put(titles[i], values[i]);

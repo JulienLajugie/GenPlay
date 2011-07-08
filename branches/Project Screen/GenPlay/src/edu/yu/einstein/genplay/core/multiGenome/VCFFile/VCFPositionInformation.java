@@ -47,9 +47,9 @@ public class VCFPositionInformation {
 	 * @param type		indel type
 	 * @param offset	difference between the meta genome and the current genome
 	 */
-	//public VCFPositionInformation (VariantType type, int length, Map<String, String> info) {
-	public VCFPositionInformation (int position, VariantType type, int length, Map<String, String> info) {
-		this.referencePosition = position;
+	public VCFPositionInformation (VariantType type, int length, Map<String, String> info) {
+	//public VCFPositionInformation (int position, VariantType type, int length, Map<String, String> info) {
+		//this.referencePosition = position;
 		this.type = type;
 		this.length = length;
 		this.info = info;
