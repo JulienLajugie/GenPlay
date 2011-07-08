@@ -35,6 +35,7 @@ public class VCFPositionInformation {
 	private VariantType 		type;						// The indel type
 	private Map<String, String> info;					// The genome information (ex: GT:GQ -> X/X:Y)
 	private int					length;						// The indel length
+	private int					referencePosition;
 	private int					genomePosition;				// The genome position
 	private int 				initialReferenceOffset;		// The offset between the genome position and the reference genome position
 	private int 				initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
@@ -46,13 +47,23 @@ public class VCFPositionInformation {
 	 * @param type		indel type
 	 * @param offset	difference between the meta genome and the current genome
 	 */
-	public VCFPositionInformation (VariantType type, int length, Map<String, String> info) {
+	//public VCFPositionInformation (VariantType type, int length, Map<String, String> info) {
+	public VCFPositionInformation (int position, VariantType type, int length, Map<String, String> info) {
+		this.referencePosition = position;
 		this.type = type;
 		this.length = length;
 		this.info = info;
 		initialReferenceOffset = 0;
 		initialMetaGenomeOffset = 0;
 		extraOffset = 0;
+	}
+
+
+	/**
+	 * @return the referencePosition
+	 */
+	public int getReferencePosition() {
+		return referencePosition;
 	}
 
 
