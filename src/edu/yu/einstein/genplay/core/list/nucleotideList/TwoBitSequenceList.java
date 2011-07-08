@@ -52,13 +52,14 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	private transient RandomAccessFile	twoBitFile;						// 2bit file
 	private TwoBitSequence 				sequence = null;				// sequence being extracted
 	private boolean						needToBeStopped = false;		// true if the execution need to be stopped
-
+	protected String					genomeName = null;				// genome name for a multi genome project
 	
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
 	 */
-	public TwoBitSequenceList() {
+	public TwoBitSequenceList(String genomeName) {
 		super();
+		this.genomeName = genomeName;
 		// initializes the lists
 		for (int i = 0; i < chromosomeManager.size(); i++) {
 			add(null);
@@ -133,7 +134,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 						throw new InterruptedException();
 					}
 					long currentPosition = twoBitFile.getFilePointer();
-					sequence = new TwoBitSequence();
+					sequence = new TwoBitSequence(genomeName, chromosomeManager.get(k));
 					sequence.extract(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
 					set(k, sequence);
 					twoBitFile.seek(currentPosition);

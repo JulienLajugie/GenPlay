@@ -67,7 +67,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final JButton 				jbCancel; 			// Button cancel
 	private final JSplitPane 			jspDivider; 		// Divider between the tree and the panel
 	private final String 				zoomFile; 			// zoom config file
-	private final String 				chromosomeFile; 	// chromosome config file
 	private final String 				logFile; 			// log file
 	private final String 				defaultDirectory; 	// default directory
 	private final String 				lookAndFeel; 		// look and feel
@@ -97,7 +96,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		super();
 		cm = ConfigurationManager.getInstance();
 		zoomFile = cm.getZoomFile();
-		chromosomeFile = cm.getChromosomeFile();
 		logFile = cm.getLogFile();
 		dasServerListFile = cm.getDASServerListFile();
 		defaultDirectory = cm.getDefaultDirectory();
@@ -194,7 +192,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				// the cm the way it was when the window was opened
 				if (approved == CANCEL_OPTION) {
 					cm.setZoomFile(zoomFile);
-					cm.setChromosomeFile(chromosomeFile);
 					cm.setLogFile(logFile);
 					cm.setDASServerListFile(dasServerListFile);
 					cm.setDefaultDirectory(defaultDirectory);
@@ -291,14 +288,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	 */
 	public boolean zoomFileChanged() {
 		return !zoomFile.equals(cm.getZoomFile());
-	}
-
-	
-	/**
-	 * @return true if chromosomeFile changed
-	 */
-	public boolean chromosomeFileChanged() {
-		return !chromosomeFile.equals(cm.getChromosomeFile());
 	}
 
 	

@@ -168,7 +168,16 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 		setGenomeWindow(newGenomeWindow);		
 	}		
 
-
+	
+	/**
+	 * This method updates the chromosome panel when a project is loaded. 
+	 * @param genomeWindow the new genome window object
+	 */
+	public void updateChromosomePanel (GenomeWindow genomeWindow) {
+		chromosomePanel.updateChromosomePanel(genomeWindow);
+	}
+	
+	
 	/**
 	 * Zooms in
 	 */

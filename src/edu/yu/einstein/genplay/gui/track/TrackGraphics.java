@@ -35,19 +35,26 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPSManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFSNPInformation;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-
 
 
 /**
@@ -56,6 +63,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @version 0.1
  */
 public abstract class TrackGraphics<T> extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator {
+
 
 	/**
 	 * The ScrollModeThread class is used to scroll the track horizontally 
@@ -117,6 +125,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
 	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 	protected T 						data;							// data showed in the track
+	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information
+	private String 						genomeName;						// genome on which the track is based (ie aligned on)
 
 
 	/**
@@ -130,9 +140,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.data = data;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			multiGenomeStripe = new MultiGenomeStripe();
+		}
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
-		addMouseListener(this);		
+		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 	}
@@ -217,6 +230,156 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Draws stripes showing information for multi genome
+	 * @param g
+	 */
+	protected void drawMultiGenomeInformation(Graphics g) {
+		if (multiGenomeStripe != null) {
+			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
+				drawMultiGenomeLine(g);
+				for (String genomeFullName: multiGenomeStripe.getColorAssociation().keySet()) {
+					drawGenome(g, genomeFullName);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Draws the line on the middle of a multi genome track
+	 * @param g
+	 */
+	private void drawMultiGenomeLine (Graphics g) {
+		Color color = new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), multiGenomeStripe.getTransparency());
+		g.setColor(color);
+		int y = getHeight() / 2;
+		g.drawLine(0, y, getWidth(), y);
+	}
+
+
+	/**
+	 * Draws all stripe information related to a genome.
+	 * @param g			graphics object
+	 * @param genome	the genome name
+	 */
+	private void drawGenome (Graphics g, String genome) {
+		// Gets genome raw name
+		String genomeRawName;
+		try {
+			genomeRawName = FormattedMultiGenomeName.getRawName(genome);
+		} catch (Exception e) {
+			genomeRawName = genome;
+		}
+
+		// Indels & SV
+		List<Variant> fittedDataList = null;
+		try {
+			fittedDataList = MultiGenomeManager.getInstance().getMultiGenomeInformation().getMultiGenomeInformation(genomeRawName).getFittedData(genomeWindow, xFactor);
+		} catch (Exception e) {}
+		Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(genome);
+		Color blankColor = new Color(0, 0, 0, multiGenomeStripe.getTransparency());
+		if (fittedDataList != null) {
+			for (Variant variant: fittedDataList) {
+				if (association.containsKey(variant.getType())) {
+					if (variant.getQualityScore() >= multiGenomeStripe.getQuality()) {
+						drawRect(g, variant, association.get(variant.getType()), blankColor);
+						if (variant.deadZoneExists()) {
+							drawRect(g, variant, Color.black, blankColor);
+						}
+					}
+				} else if (variant.getType().equals(VariantType.MIX)) {
+					drawRect(g, variant, Color.white, blankColor);
+				}
+			}
+		}
+
+		// SNPs
+		if (association.containsKey(VariantType.SNPS)) {
+			List<VCFSNPInformation> data = SNPSManager.getInstance().getSNPSList(genome, genomeWindow, xFactor);
+			Color color = association.get(VariantType.SNPS);
+			for (VCFSNPInformation snp: data) {
+				if (snp.getQuality() >= multiGenomeStripe.getQuality()) {
+					drawSNP(g, snp, color, blankColor);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Draws a rectangle symbolizing variants
+	 * @param g			graphics object
+	 * @param variant	the variant
+	 * @param color		the color
+	 */
+	private void drawRect (Graphics g, Variant variant, Color color, Color blankColor) {
+		// Sets position and length
+		int x = genomePosToScreenPos(variant.getStart());
+		int width = twoGenomePosToScreenWidth(variant.getStart(), variant.getStop());
+		int middle = getHeight() / 2;
+		int height = (int) (variant.getQualityScore() * middle / 100);
+		int top = middle - height;
+
+		// Sets color
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
+		g.setColor(newColor);
+
+		// Draws the top half part of the track
+		if (variant.isOnFirstAllele()) {
+			g.setColor(newColor);
+		} else {
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, top, width, height);
+
+		// Draws the bottom half part of the track
+		if (variant.isOnSecondAllele()) {
+			g.setColor(newColor);
+		} else {
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, middle, width, height);
+	}
+
+
+	/**
+	 * Draws a rectangle symbolizing SNP
+	 * @param g		graphics object
+	 * @param color	the color
+	 * @param blankColor color of the blank regions for the multi-genome information
+	 */
+	private void drawSNP (Graphics g, VCFSNPInformation snp, Color color, Color blankColor) {
+		// Sets position and length
+		int pos = snp.getMetaGenomePosition();
+		int x = genomePosToScreenPos(pos);
+		int width = twoGenomePosToScreenWidth(pos, pos + 1);
+		int middle = getHeight() / 2;
+		int height = (int) (snp.getQuality() * middle / 100);
+		int top = middle - height;
+
+		// Sets color
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
+		g.setColor(newColor);
+
+		// Draws the top half part of the track
+		if (snp.isOnFirstAllele()) {
+			g.setColor(newColor);
+		} else {
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, top, width, height);
+
+		// Draws the bottom half part of the track
+		if (snp.isOnSecondAllele()) {
+			g.setColor(newColor);
+		} else {
+			g.setColor(blankColor);
+		}
+		g.fillRect(x, middle, width, height);
 	}
 
 
@@ -453,7 +616,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	/**
 	 * Save the track as a PNG image.
-	 * @param file ouput file
+	 * @param file output file
 	 */
 	public void saveAsImage(File file) {
 		BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -550,4 +713,38 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		}
 	}
+
+
+	/**
+	 * @return the stripeInformation
+	 */
+	protected MultiGenomeStripe getStripeInformation() {
+		return multiGenomeStripe;
+	}
+
+
+	/**
+	 * @param stripeInformation the stripeInformation to set
+	 */
+	protected void setStripeInformation(MultiGenomeStripe stripeInformation) {
+		this.multiGenomeStripe = stripeInformation;
+		repaint();
+	}
+
+
+	/**
+	 * @return the genomeName
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
+	/**
+	 * @param genomeName the genomeName to set
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+	}
+
 }

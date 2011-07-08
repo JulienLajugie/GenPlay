@@ -48,6 +48,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	private static final long serialVersionUID = 1383058897700926018L; // generated ID
 	private int currentStep = 1;			// current step of the action
 	protected SwingWorker<T, Void> worker;	// worker that will process the action
+	protected String							genomeName = null;		// genome name for a multi genome project
 	
 	
 	/**

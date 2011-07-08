@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
-
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 
 
 /**
@@ -46,14 +46,15 @@ public class NewCurveTrackDialog extends JDialog {
 
 	private static final long serialVersionUID = -4896476921693184496L; // generated ID
 	private static final int 			INSET = 7;					// inset between the components
-	private final TrackNamePanel 		trackNamePanel;				// panel for the track name
-	private final BinSizePanel			binSizePanel;				// panel for the binsize
-	private final ChromoSelectionPanel 	chromoSelectionPanel;		// panel for selecting chromosomes
-	private final CalculMethodPanel 	calculMethodPanel;			// panel for the method of score calculation 
-	private final DataPrecisionPanel 	dataPrecisionPanel;			// panel for the precision of the data
-	private final StrandSelectionPanel	strandSelectionPanel;		// panel for the selection of the strand to extract
-	private final JButton 				jbOk; 						// Button OK
-	private final JButton 				jbCancel; 					// Button cancel
+	private final 	TrackNamePanel 		trackNamePanel;				// panel for the track name
+	private final 	BinSizePanel			binSizePanel;			// panel for the binsize
+	private final 	ChromoSelectionPanel 	chromoSelectionPanel;	// panel for selecting chromosomes
+	private final 	CalculMethodPanel 	calculMethodPanel;			// panel for the method of score calculation 
+	private final 	DataPrecisionPanel 	dataPrecisionPanel;			// panel for the precision of the data
+	private final 	StrandSelectionPanel	strandSelectionPanel;	// panel for the selection of the strand to extract
+	private 		GenomeSelectionPanel	genomeSelectionPanel;	// panel for the selection of the genome in a multigenome project
+	private final 	JButton 				jbOk; 					// Button OK
+	private final 	JButton 				jbCancel; 				// Button cancel
 	private int 						approved = CANCEL_OPTION;	// indicate if the user canceled or validated	
 
 	/**
@@ -98,6 +99,9 @@ public class NewCurveTrackDialog extends JDialog {
 		calculMethodPanel = new CalculMethodPanel();
 		dataPrecisionPanel = new DataPrecisionPanel();
 		strandSelectionPanel = new StrandSelectionPanel();
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			genomeSelectionPanel = new GenomeSelectionPanel();
+		}
 
 		// create the OK button
 		jbOk = new JButton("OK");
@@ -109,6 +113,9 @@ public class NewCurveTrackDialog extends JDialog {
 				dataPrecisionPanel.saveDefault();
 				chromoSelectionPanel.saveDefault();
 				strandSelectionPanel.saveDefault();
+				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+					genomeSelectionPanel.saveDefault();
+				}
 				approved = APPROVE_OPTION;
 				setVisible(false);
 			}
@@ -147,7 +154,7 @@ public class NewCurveTrackDialog extends JDialog {
 		if (isChromoSelectionNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.BOTH;
-			c.gridheight = 5;
+			c.gridheight = 6;
 			c.gridwidth = 2;
 			if (!isNameNeeded && !isBinSizeNeeded && !isMethodNeeded && !isPrecisionNeeded && !isStrandNeeded) {
 				c.gridx = 0;
@@ -197,7 +204,6 @@ public class NewCurveTrackDialog extends JDialog {
 			add(dataPrecisionPanel, c);
 		}
 		
-		
 		if (isStrandNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL;
@@ -210,12 +216,25 @@ public class NewCurveTrackDialog extends JDialog {
 			c.weighty = 1;
 			add(strandSelectionPanel, c);
 		}
+		
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			c = new GridBagConstraints();
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.gridwidth = leftPanelsGridWidth;
+			c.gridx = 0;
+			c.gridy = 5;
+			c.insets = new Insets(INSET, INSET, INSET, INSET);
+			c.ipadx = INSET * 2;
+			c.weightx = 1;
+			c.weighty = 1;
+			add(genomeSelectionPanel, c);
+		}
 
 		c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_END;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 0;
-		c.gridy = 5;
+		c.gridy = 6;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -225,7 +244,7 @@ public class NewCurveTrackDialog extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 1;
-		c.gridy = 5;
+		c.gridy = 6;
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
@@ -294,6 +313,14 @@ public class NewCurveTrackDialog extends JDialog {
 	 */
 	public String getTrackName() {
 		return trackNamePanel.getTrackName();
+	}
+	
+	
+	/**
+	 * @return the name of the genome
+	 */
+	public String getGenomeName () {
+		return genomeSelectionPanel.getGenomeName();
 	}
 	
 	

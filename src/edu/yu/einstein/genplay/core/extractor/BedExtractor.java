@@ -25,7 +25,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
@@ -134,8 +133,10 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 					if ((strand == null) || (isStrandSelected(strand))) {
 						strandList.add(chromosome, strand);
 						int start = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[1].trim()));
+						start = getMultiGenomePosition(chromosome, start);
 						startList.add(chromosome, start);
 						int stop = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[2].trim()));
+						stop = getMultiGenomePosition(chromosome, stop);
 						stopList.add(chromosome, stop);
 						if (splitedLine.length > 3) {
 							String name = splitedLine[3].trim();
@@ -157,6 +158,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 										UTR5Bound = start;
 										UTR3Bound = stop;
 									}
+									//UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
+									//UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
 									UTR5BoundList.add(chromosome, UTR5Bound);
 									UTR3BoundList.add(chromosome, UTR3Bound);
 									if (splitedLine.length > 11) {
@@ -166,6 +169,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 											int[] exonStarts = new int[exonLengthsStr.length];
 											int[] exonStops = new int[exonLengthsStr.length];
 											for (int i = 0; i < exonLengthsStr.length; i++) {
+												//exonStarts[i] = getMultiGenomePosition(chromosome, Integer.parseInt(exonStartsStr[i]) + start);
+												//exonStops[i] = getMultiGenomePosition(chromosome, exonStarts[i] + Integer.parseInt(exonLengthsStr[i]));
 												exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
 												exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
 											}

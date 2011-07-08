@@ -22,16 +22,14 @@ package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -40,6 +38,7 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Saves the project into a file
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public class PASaveProject extends TrackListActionWorker<Boolean> {
@@ -79,13 +78,16 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		jfc.setDialogTitle("Save Project");
 		jfc.addChoosableFileFilter(new GenPlayProjectFilter());
 		jfc.setAcceptAllFileFilterUsed(false);
+		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gen"));
+		jfc.setSelectedFile(f);
 		int returnVal = jfc.showSaveDialog(trackList.getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
-				trackList.saveProject(selectedFile);
+				ProjectRecordingManager.getInstance().saveProject(selectedFile);
+				//trackList.saveProject(selectedFile);
 				return true;
 			}
 		}
@@ -96,9 +98,9 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-			String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-			mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
+			//JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
+			//String projectName = Utils.getFileNameWithoutExtension(selectedFile);
+			//mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
 		}
 	}
 }

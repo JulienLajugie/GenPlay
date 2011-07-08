@@ -55,7 +55,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 
 	private static final long serialVersionUID = -8481919273684304592L; // generated ID
 	private static final DecimalFormat SIZE_FORMAT = new DecimalFormat("###,###,###");	// Format of the zoom string
-	private final JLabel 							jlZoom;				// zoom lable
+	private final JLabel 							jlZoom;				// zoom label
 	private final JButton 							jbPlus;				// button '+'
 	private final JButton 							jbMinus;			// button '-'
 	private final JSlider 							jsZoom;				// zoom slider

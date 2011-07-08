@@ -21,14 +21,15 @@
 package edu.yu.einstein.genplay.gui.action.emptyTrack;
 
 import java.io.File;
-
 import javax.swing.ActionMap;
-
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
@@ -45,7 +46,7 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 	private static final long serialVersionUID = -6264760599336397028L;	// generated ID
 	private static final String 	ACTION_NAME = "Load Gene Track";	// action name
 	private static final String 	DESCRIPTION = "Load a track showing the genes";	// tooltip
-
+	
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -61,6 +62,19 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+	}
+	
+	
+	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+				genomeName = genomeDialog.getGenomeName();
+			} else {
+				throw new InterruptedException();
+			}
+		}
 	}
 
 
@@ -83,11 +97,23 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 
 	@Override
 	public void doAtTheEnd(GeneList actionResult) {
-		if (actionResult != null) {
+		boolean valid = true;
+		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+			valid = false;
+		}
+		if (actionResult != null && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			GeneListTrack newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			//GeneListTrack newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			GeneListTrack newTrack;
+			newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				//newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult, genomeName);
+				newTrack.setGenomeName(genomeName);
+			} else {
+				//newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			}
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

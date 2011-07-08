@@ -28,8 +28,10 @@ import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
-
+import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -54,13 +56,19 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	private int[] 	maskBlockStarts;			// the starting position for each masked block
 	private int[] 	maskBlockSizes;				// the length of each masked block
 	private boolean	needToBeStopped = false; 	// true if the execution need to be stopped
+	protected String	genomeName = null;		// genome name for a multi genome project
+	private final Chromosome chromosome;		// chromosome of the current list
 	
 	
 	/**
 	 * Default constructor. Creates an instance of {@link TwoBitSequence}
+	 * @param chromosome	chromosome of the current list
+	 * @param genomeName	genome name for a multi genome project
 	 */
-	public TwoBitSequence() {
+	public TwoBitSequence(String genomeName, Chromosome chromosome) {
 		super();
+		this.genomeName = genomeName;
+		this.chromosome = chromosome;
 	}
 	
 	
@@ -221,6 +229,13 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		if ((position < 0) || (position > dnaSize)) { 
 			return null;
 		}
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			position = ShiftCompute.computeReversedShift(genomeName, chromosome, position);
+			if (position < 0) {
+				return Nucleotide.ANY;
+			}
+		}
+		
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
 			if (position < nBlockStarts[i] + nBlockSizes[i]) {
@@ -240,7 +255,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			return Nucleotide.get((byte)result2Bit);
 		} catch (IOException e) {
 			return null;
-		}		
+		}
 	}
 
 

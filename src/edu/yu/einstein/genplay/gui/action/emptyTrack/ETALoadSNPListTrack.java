@@ -28,7 +28,10 @@ import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.SNPListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
@@ -45,7 +48,7 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 	private static final long serialVersionUID = -2828875849368222868L; // generated ID
 	private static final String 	ACTION_NAME = "Load SNP Track";	// action name
 	private static final String 	DESCRIPTION = "Load a track showing the SNPs";	// tooltip
-
+	
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -65,12 +68,32 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 
 	
 	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+				genomeName = genomeDialog.getGenomeName();
+			} else {
+				throw new InterruptedException();
+			}
+		}
+	}
+	
+	
+	@Override
 	public void doAtTheEnd(SNPList actionResult) {
-		if (actionResult != null) {
+		boolean valid = true;
+		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+			valid = false;
+		}
+		if (actionResult != null && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			SNPListTrack newTrack = new SNPListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				newTrack.setGenomeName(genomeName);
+			}
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

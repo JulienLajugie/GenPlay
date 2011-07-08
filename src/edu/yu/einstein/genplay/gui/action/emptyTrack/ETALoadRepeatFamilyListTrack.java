@@ -28,7 +28,10 @@ import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.RepeatFamilyListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
@@ -46,7 +49,6 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 	private static final String ACTION_NAME = "Load Repeat Track";		// action name
 	private static final String DESCRIPTION = "Load a track showing the repeats";	// tooltip
 
-
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -61,6 +63,19 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+	}
+	
+	
+	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+				genomeName = genomeDialog.getGenomeName();
+			} else {
+				throw new InterruptedException();
+			}
+		}
 	}
 
 
@@ -83,11 +98,18 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 
 	@Override
 	public void doAtTheEnd(RepeatFamilyList actionResult) {
-		if (actionResult != null) {
+		boolean valid = true;
+		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+			valid = false;
+		}
+		if (actionResult != null && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			RepeatFamilyListTrack newTrack = new RepeatFamilyListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				newTrack.setGenomeName(genomeName);
+			}
 			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes);
 		}
 	}

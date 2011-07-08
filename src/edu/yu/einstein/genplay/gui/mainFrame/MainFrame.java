@@ -35,23 +35,19 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.manager.ZoomManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
@@ -59,6 +55,8 @@ import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
@@ -72,12 +70,12 @@ import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.track.Ruler;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * Main Frame of the application.
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
@@ -87,26 +85,18 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	/**
 	 * Title of the application
 	 */
-	public static final String APPLICATION_TITLE = " - GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") -";
-	private static final String DEFAULT_PROJECT_NAME = "New Project";
-	private final static String ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
-	//private final static String DEMO_PROJECT_PATH = "yu/einstein/gdp2/resource/ChIP-Seq_tutorial_project.gen"; // path in the resource to the preloaded project. no preloaded project if null
-	
-	private final static String DEMO_PROJECT_PATH = null; 							// path in the resource to the preloaded project. no preloaded project if null
-	private final static String DEMO_PROJECT_NAME = "ChIP-Seq Tutorial (hg19)"; 	// path in the resource to the preloaded project. no preloaded project if null
-	private final static Dimension WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
-	private final static Dimension WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
-	
-	private static MainFrame 			instance = null; 		// instance of the singleton MainFrame
-	private final Image 				iconImage; 				// icon of the application
-	private final Ruler 				ruler; 					// Ruler component
-	private final TrackList 			trackList; 				// TrackList component
-	private final ControlPanel 			controlPanel; 			// ControlPanel component
-	private final StatusBar 			statusBar; 				// Statut bar component
-	private final ConfigurationManager 	configurationManager; 	// ConfigurationManager
-	private final ChromosomeManager 	chromosomeManager; 		// ChromosomeManager
-	private final ZoomManager 			zoomManager; 			// ZoomManager
-	private Rectangle 					screenBounds; 			// position and dimension of this frame
+	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") - Multi-Genome beta version ";
+	private final static String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
+	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
+	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
+
+	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
+	private final 	Image 				iconImage; 			// icon of the application
+	private 		Ruler 				ruler; 				// Ruler component
+	private 		TrackList 			trackList; 			// TrackList component
+	private 		ControlPanel		controlPanel; 		// ControlPanel component
+	private 		StatusBar 			statusBar; 			// Status bar component
+	private 		Rectangle			screenBounds; 		// position and dimension of this frame
 
 	
 	/**
@@ -123,80 +113,22 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return instance;
 	}
 	
-	
-	/**
-	 * Starts the application
-	 * @param args
-	 */
-	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// create and show a singleton instance of MainFrame
-				final MainFrame mainFrame = MainFrame.getInstance();
-				mainFrame.setVisible(true);
-				// check if there it is a demo version with preloaded project
-				final boolean isDemo = (DEMO_PROJECT_PATH != null); 
-				// if a project file was specified as an arguments or if it's a demo version 
-				// we create a worker that will load the project
-				if (args.length == 1 || isDemo) {
-					try {
-						new TrackListActionWorker<Void>() {
-							private static final long serialVersionUID = 1529681223619405640L; // generated ID
-							/**
-							 * Saves the project
-							 */
-							@Override
-							protected Void processAction() throws Exception {
-								notifyActionStart("Loading Project", 1, false);
-								if (isDemo) {
-									// if it's a demo we need to retrive the project from resource in the jar
-									InputStream is = mainFrame.getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
-									mainFrame.getTrackList().loadProject(is);
-								} else {
-									// case where a file was specified as an argument
-									mainFrame.getTrackList().loadProject(new File(args[0]));
-								}
-								return null;
-							}
-							
-							@Override
-							protected void doAtTheEnd(Void actionResult) {
-								// unlock the tracks
-								mainFrame.getTrackList().actionEnds();
-								// change the title of the main frame
-								if (args.length == 1) {
-									String projectName = Utils.getFileNameWithoutExtension(new File(args[0]));
-									mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
-								} else {
-									mainFrame.setTitle(DEMO_PROJECT_NAME + MainFrame.APPLICATION_TITLE);
-								}
-							}							
-						}.actionPerformed(null);
-					} catch (Exception e) {
-						ExceptionManager.handleException(mainFrame.getRootPane(), e, "Error while loading the project.");
-					}
-				}
-			}
-		});
-	}
 
-	
 	/**
 	 * Private constructor. Creates an instance of singleton {@link MainFrame}
 	 */
 	private MainFrame() {
-		super(DEFAULT_PROJECT_NAME + APPLICATION_TITLE, GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 		ClassLoader cl = this.getClass().getClassLoader();
 		iconImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH));
 		setIconImage(iconImage);
-		configurationManager = ConfigurationManager.getInstance();
-		chromosomeManager = ChromosomeManager.getInstance();
-		zoomManager = ZoomManager.getInstance();
-		// load the managers from the configuration files
-		loadManagers();
 
-		Chromosome chromosome = chromosomeManager.get(0);
+		ChromosomeManager instance = ChromosomeManager.getInstance();
+
+		setTitle();
+
+		Chromosome chromosome = instance.get(0);
+		instance.setCurrentChromosome(chromosome);
 		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 		ruler = new Ruler(genomeWindow);
 		ruler.getOptionButton().addActionListener(this);
@@ -256,9 +188,32 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		pack();
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLocationByPlatform(true);
+
+
+		if (ProjectRecordingManager.getInstance().isLoadingEvent()) {
+			PALoadProject loader = new PALoadProject();
+			loader.setSelectedFile(ProjectRecordingManager.getInstance().getFileToLoad());
+			loader.actionPerformed(null);
+		}
+
+		initMultiGenome();
 	}
 
-	
+
+	/**
+	 * Sets the main frame title.
+	 * Application title - Project name - Genome name - Assembly name.
+	 */
+	public void setTitle () {
+		setTitle(	MainFrame.APPLICATION_TITLE +
+				ProjectManager.getInstance().getProjectName()
+				+ " - " + 
+				ProjectManager.getInstance().getGenomeName()
+				+ " " + 
+				ProjectManager.getInstance().getAssembly().getName());
+	}
+
+
 	/**
 	 * Shows the main menu when the button in the ruler is clicked
 	 */
@@ -267,7 +222,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		new MainMenu(getRootPane().getActionMap()).show(this, getMousePosition().x, getMousePosition().y);
 	}
 
-	
+
 	/**
 	 * Customizes the look and feel
 	 */
@@ -278,9 +233,13 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		UIManager.put("control", new Color(228, 236, 247));
 	}
 
-	
+
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		boolean hasChanged = ChromosomeManager.getInstance().setCurrentChromosome(evt.getNewWindow().getChromosome());
+		if (hasChanged) {
+			initMultiGenome();
+		}
 		if (evt.getSource() != ruler) {
 			ruler.setGenomeWindow(evt.getNewWindow());
 		}
@@ -292,7 +251,17 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		}
 	}
 
-	
+
+
+	private void initMultiGenome () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			PAMultiGenome process = new PAMultiGenome();
+			process.actionPerformed(null);
+		}
+	}
+
+
+
 	/**
 	 * @return the controlPanel
 	 */
@@ -300,7 +269,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return controlPanel;
 	}
 
-	
+
 	/**
 	 * @return the icon of the application
 	 */
@@ -309,7 +278,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return iconImage;
 	}
 
-	
+
 	/**
 	 * @return the ruler
 	 */
@@ -317,7 +286,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return ruler;
 	}
 
-	
+
 	/**
 	 * @return the statusBar
 	 */
@@ -325,7 +294,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return statusBar;
 	}
 
-	
+
 	/**
 	 * @return the trackList
 	 */
@@ -333,40 +302,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		return trackList;
 	}
 
-	
-	/**
-	 * Loads the managers with the configuration files
-	 */
-	private void loadManagers() {
-		// load configuration manager
-		try {
-			configurationManager.loadConfigurationFile();
-		} catch (Exception e) {
-			// do nothing if the configuration file is not found
-		}
-		// load chromosome manager
-		try {
-			if (configurationManager.getChromosomeFile() != "") {
-				chromosomeManager.loadConfigurationFile(new File(configurationManager.getChromosomeFile()));
-			}
-		} catch (IOException e) {
-			ExceptionManager.handleException(getRootPane(), e, "Chromosome file not found.");
-		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Chromosome file corrupted");
-		}
-		// load the zoom manager
-		try {
-			if (configurationManager.getZoomFile() != "") {
-				zoomManager.loadConfigurationFile(new File(configurationManager.getZoomFile()));
-			}
-		} catch (IOException e) {
-			ExceptionManager.handleException(getRootPane(), e, "Zoom file not found.");
-		} catch (Exception e) {
-			ExceptionManager.handleException(getRootPane(), e, "Zoom file corrupted");
-		}
-	}
 
-	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (isEnabled()) {
@@ -379,7 +315,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Sets the action map of the main frame. This actions are associated with
@@ -390,7 +326,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAExit.ACTION_KEY, new PAExit(this));
 		getRootPane().getActionMap().put(PAFullScreen.ACTION_KEY, new PAFullScreen(this));
 		getRootPane().getActionMap().put(PAHelp.ACTION_KEY, new PAHelp(getRootPane()));
-		getRootPane().getActionMap().put(PALoadProject.ACTION_KEY, new PALoadProject(trackList));
+		getRootPane().getActionMap().put(PALoadProject.ACTION_KEY, new PALoadProject());
+		getRootPane().getActionMap().put(PANewProject.ACTION_KEY, new PANewProject());
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
 		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackList));
 		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
@@ -399,7 +336,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
 	}
-	
+
 
 	/**
 	 * Asks the user to confirm that he wants to close the application before
@@ -417,7 +354,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		});
 	}
-	
+
 
 	/**
 	 * Sets the input map. This map contain the short cuts of the applications.
@@ -433,13 +370,13 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
 	}
 
-	
+
 	/**
 	 * Changes the look and feel of the application
 	 */
 	private void setLookAndFeel() {
 		try {
-			UIManager.setLookAndFeel(configurationManager.getLookAndFeel());
+			UIManager.setLookAndFeel(ConfigurationManager.getInstance().getLookAndFeel());
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while loading the look and feel specified in the config file");
@@ -451,7 +388,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Shows the option screen
@@ -475,7 +412,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		optionDialog.dispose();
 	}
 
-	
+
 	/**
 	 * Toggles the full screen mode
 	 */

@@ -27,14 +27,15 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.ChromosomeComparator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -122,12 +123,28 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 			jcbChromosome.setSelectedIndex(mwe.getWheelRotation() + jcbChromosome.getSelectedIndex());
 		}		
 	}
+	
+	
+	/**
+	 * This method updates the chromosome panel when a project is loaded. 
+	 * @param genomeWindow the new genome window object
+	 */
+	public void updateChromosomePanel (GenomeWindow genomeWindow) {
+		setGenomeWindow(genomeWindow);
+		jcbChromosome.removeAllItems();
+		ChromosomeManager instance = ChromosomeManager.getInstance();
+		List<String> chromosomeNames = new ArrayList<String>(instance.getChromosomeList().keySet());
+		Collections.sort(chromosomeNames, new ChromosomeComparator());
+		for (String s: chromosomeNames) {
+			jcbChromosome.addItem(instance.get(s));
+		}
+	}
 
 
 	@Override
 	public void itemStateChanged(ItemEvent arg0) {
 		Chromosome newChromosome = (Chromosome)jcbChromosome.getSelectedItem();
-		if (!newChromosome.equals(currentGenomeWindow.getChromosome())) {
+		if (newChromosome != null && !newChromosome.equals(currentGenomeWindow.getChromosome())) {
 			GenomeWindow newGenomeWindow = new GenomeWindow(newChromosome, 0, newChromosome.getLength());
 			setGenomeWindow(newGenomeWindow);
 		}		

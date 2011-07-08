@@ -129,6 +129,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 		drawVerticalLines(g);
 		drawRepeat(g);
 		drawStripes(g);
+		drawMultiGenomeInformation(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

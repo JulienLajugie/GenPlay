@@ -34,6 +34,7 @@ import java.io.Serializable;
  * Class containing the project
  * @author Julien Lajugie
  * @author Chirag Gorasia
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class ConfigurationManager implements Serializable {
@@ -43,7 +44,6 @@ public final class ConfigurationManager implements Serializable {
 	private static String TEMP_DIR = System.getProperty("java.io.tmpdir"); 	// java directory for temporary files
 	private static String CONFIG_FILE = "GenPlay_config.cfg"; 				// path of the config file
 	private static final String DEFAULT_ZOOM_FILE = ""; 					// path of the default zoom config file
-	private static final String DEFAULT_CHROMOSOME_FILE = ""; 				// path of the default chromosome config file
 	private static final String DEFAULT_LOG_FILE = 
 		new File(TEMP_DIR, "GenPlayLog.txt").getAbsolutePath(); 			// path of the default log file
 	private final static String DEFAULT_DAS_SERVER_PATH = 
@@ -59,7 +59,6 @@ public final class ConfigurationManager implements Serializable {
 	private static final int MAX_TRACK_HEIGHT = 2000; 						// maximum height of the tracks
 	private static final int DEFAULT_UNDO_COUNT = 1; 						// default number of undo in memory
 	private String zoomFile = DEFAULT_ZOOM_FILE; 							// zoom config file
-	private String chromosomeFile = DEFAULT_CHROMOSOME_FILE; 				// chromosome config file
 	private String logFile = DEFAULT_LOG_FILE; 								// log file
 	private String defaultDirectory = DEFAULT_DEFAULT_DIRECTORY; 			// default directory
 	private String lookAndFeel = DEFAULT_LOOK_AND_FEEL; 					// look and feel
@@ -67,7 +66,10 @@ public final class ConfigurationManager implements Serializable {
 	private int trackCount = DEFAULT_TRACK_COUNT; 							// track count
 	private int trackHeight = DEFAULT_TRACK_HEIGHT; 						// track height
 	private int undoCount = DEFAULT_UNDO_COUNT; 							// number of undo in memory
-
+	
+	private int projectNumber = 5;
+	private String[] projects;
+	private String currentProjectPath;
 	
 	/**
 	 * @return an instance of a {@link ConfigurationManager}. Makes sure that
@@ -91,6 +93,7 @@ public final class ConfigurationManager implements Serializable {
 	 */
 	private ConfigurationManager() {
 		super();
+		projects = new String[projectNumber];
 	}
 
 	
@@ -107,8 +110,6 @@ public final class ConfigurationManager implements Serializable {
 			if ((key != null) && (key.length() > 0) && (value != null) && (value.length() > 0)) {
 				if (key.equalsIgnoreCase("zoom file")) {
 					zoomFile = value;
-				} else if (key.equalsIgnoreCase("chromosome file")) {
-					chromosomeFile = value;
 				} else if (key.equalsIgnoreCase("log file")) {
 					logFile = value;
 				} else if (key.equalsIgnoreCase("DAS Server List file")) {
@@ -123,19 +124,13 @@ public final class ConfigurationManager implements Serializable {
 					trackHeight = Integer.parseInt(value);
 				} else if (key.equalsIgnoreCase("undo count")) {
 					undoCount = Integer.parseInt(value);
+				} else {
+					extractProject(key, value);
 				}
 			}
 		}
 	}
-
 	
-	/**
-	 * @return the chromosomeFile
-	 */
-	public final String getChromosomeFile() {
-		return chromosomeFile;
-	}
-
 	
 	/**
 	 * @return the defaultDirectory
@@ -267,7 +262,6 @@ public final class ConfigurationManager implements Serializable {
 	 */
 	public void restoreDefault() {
 		zoomFile = DEFAULT_ZOOM_FILE;
-		chromosomeFile = DEFAULT_CHROMOSOME_FILE;
 		logFile = DEFAULT_LOG_FILE;
 		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
 		new File(dasServerListFile).delete();
@@ -276,14 +270,6 @@ public final class ConfigurationManager implements Serializable {
 		trackCount = DEFAULT_TRACK_COUNT;
 		trackHeight = DEFAULT_TRACK_HEIGHT;
 		undoCount = DEFAULT_UNDO_COUNT;
-	}
-
-	
-	/**
-	 * @param chromosomeFile the chromosomeFile to set
-	 */
-	public final void setChromosomeFile(String chromosomeFile) {
-		this.chromosomeFile = chromosomeFile;
 	}
 
 	
@@ -362,8 +348,6 @@ public final class ConfigurationManager implements Serializable {
 			writer = new BufferedWriter(new FileWriter(configFile));
 			writer.write("zoom file: " + zoomFile);
 			writer.newLine();
-			writer.write("chromosome file: " + chromosomeFile);
-			writer.newLine();
 			writer.write("log file: " + logFile);
 			writer.newLine();
 			writer.write("DAS Server List file: " + dasServerListFile);
@@ -377,10 +361,79 @@ public final class ConfigurationManager implements Serializable {
 			writer.write("track height: " + trackHeight);
 			writer.newLine();
 			writer.write("undo count: " + undoCount);
+			writeProjects (writer);
 		} finally {
 			if (writer != null) {
 				writer.close();
 			}
 		}
 	}
+	
+	
+	/**
+	 * This method extracts a project from the configuration manager file.
+	 * If the file is not found, the value is set to null.
+	 * @param key	key from a configuration file line ("project X")
+	 * @param value	value from a configuration file line (pathname)
+	 */
+	private void extractProject (String key, String value) {
+		if (key.substring(0, 8).equals("project ")) {
+			int number = Integer.parseInt(key.substring(8, 9));
+			if (new File(value).exists()) {
+				projects[number-1] = value;
+			} else {
+				projects[number-1] = null;
+			}
+		}
+	}
+	
+	
+	/**
+	 * This method writes the projects list content in the configuration file.
+	 * It updates the list before writing information.
+	 * @param writer	the writer used during the configuration file writing process.
+	 */
+	private void writeProjects (BufferedWriter writer) {
+		updateProjectsList();
+		try {
+			for (int i = 1; i <= projects.length; i++) {
+				if (projects[i-1] != null){
+					writer.newLine();
+					writer.write("project " + i + ": " + projects[i-1]);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * This method updates the project list.
+	 * The last pathname is the oldest project.
+	 * The first pathname is the newest one.
+	 */
+	private void updateProjectsList () {
+		for (int i = projectNumber-2; i >= 0; i--) {
+			projects[i+1] = projects[i];
+		}
+		projects[0] = this.currentProjectPath;
+	}
+
+
+	/**
+	 * @param currentProjectPath the currentProjectPath to set
+	 */
+	public void setCurrentProjectPath(String currentProjectPath) {
+		this.currentProjectPath = currentProjectPath;
+	}
+
+
+	/**
+	 * @return the projects
+	 */
+	public String[] getProjects() {
+		return projects;
+	}
+	
 }

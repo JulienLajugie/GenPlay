@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
@@ -116,8 +115,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 				if (isStrandSelected(strand)) {
 					nameList.add(chromosome, splitedLine[2]);
 					int start = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[3]));
+					start = getMultiGenomePosition(chromosome, start);
 					startList.add(chromosome, start);
 					int stop = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[4]));
+					stop = getMultiGenomePosition(chromosome, stop);
 					stopList.add(chromosome, stop);
 					scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
 					strandList.add(chromosome, strand);

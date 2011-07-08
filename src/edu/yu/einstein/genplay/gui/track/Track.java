@@ -41,6 +41,7 @@ import javax.swing.border.Border;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -70,6 +71,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private final TrackHandle		trackHandle;						// handle of the track
 	protected final TrackGraphics<T>trackGraphics;						// graphics part of the track
+	protected String genomeName;										// genome on which the track is based (ie aligned on)
 
 
 	/**
@@ -109,11 +111,11 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
 		setPreferredHeight(defaultHeight);
 	}
-
+	
 
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);		
+		listenerList.add(genomeWindowListener);
 	}
 
 
@@ -225,7 +227,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @return the stripe list of the track
 	 */
 	public ChromosomeWindowList getStripes() {
-		return trackGraphics.getStripes();		
+		return trackGraphics.getStripes();
 	}
 
 
@@ -242,6 +244,22 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public int getVerticalLineCount() {
 		return trackGraphics.getVerticalLineCount();
+	}
+	
+
+	/**
+	 * @return the stripeInformation
+	 */
+	public MultiGenomeStripe getStripeInformation() {
+		return trackGraphics.getStripeInformation();
+	}
+
+
+	/**
+	 * @param stripeInformation the stripeInformation to set
+	 */
+	public void setStripeInformation(MultiGenomeStripe stripeInformation) {
+		trackGraphics.setStripeInformation(stripeInformation);
 	}
 
 
@@ -383,4 +401,21 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void unlockHandle() {
 		trackHandle.unlock();
 	}
+
+
+	/**
+	 * @return the genomeName
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
+	/**
+	 * @param genomeName the genomeName to set
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+		getStripeInformation().setGenomeName(genomeName);
+	}	
 }

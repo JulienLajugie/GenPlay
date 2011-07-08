@@ -49,6 +49,7 @@ public final class EmptyTrackGraphics extends TrackGraphics<Void> {
 	protected void drawTrack(Graphics g) {
 		drawVerticalLines(g);
 		drawStripes(g);
+		drawMultiGenomeInformation(g);
 		drawName(g);
 		drawMiddleVerticalLine(g);
 	}

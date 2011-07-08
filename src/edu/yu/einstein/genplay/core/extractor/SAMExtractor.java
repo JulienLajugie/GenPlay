@@ -98,6 +98,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 						// we subtract 1 to the position because sam file position  
 						// are 1 base and genplay is 0 based
 						position--;
+						position = getMultiGenomePosition(chromosome, position);
 						positionList.get(chromosome).add(position);		
 						lineCount++;
 					}

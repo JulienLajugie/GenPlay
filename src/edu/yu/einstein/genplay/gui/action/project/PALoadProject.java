@@ -22,16 +22,17 @@ package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-
 import javax.swing.ActionMap;
-import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
-
+import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -39,17 +40,17 @@ import edu.yu.einstein.genplay.util.Utils;
 /**
  * Loads a project from a file
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public class PALoadProject extends TrackListActionWorker<Boolean> {
+public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
 		"Load a project from a file"; 								// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_L; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Load Project";	// action name
-	private final 		TrackList	trackList;						// track list where to load the project
-	private File 					selectedFile;					// selected file
+	private File 					selectedFile = null;			// selected file
 
 
 	/**
@@ -61,36 +62,48 @@ public class PALoadProject extends TrackListActionWorker<Boolean> {
 	/**
 	 * Creates an instance of {@link PALoadProject}
 	 */
-	public PALoadProject(TrackList trackList) {
+	public PALoadProject() {
 		super();
-		this.trackList = trackList;
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 	}
 
+	
+	public void setSelectedFile(File selectedFile) {
+		this.selectedFile = selectedFile;
+	}
+	
 
 	@Override
-	protected Boolean processAction() throws Exception {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
-		FileFilter[] fileFilters = {new GenPlayProjectFilter()};
-		selectedFile = Utils.chooseFileToLoad(trackList.getRootPane(), "Load Project", defaultDirectory, fileFilters);
+	protected Track<?>[] processAction() throws Exception {
+		if (selectedFile == null) {
+			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
+			selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
+			if (selectedFile != null) {
+				ProjectRecordingManager.getInstance().initManagers(selectedFile);
+			}
+		}
 		if (selectedFile != null) {
 			notifyActionStart("Loading Project", 1, false);
-			trackList.loadProject(selectedFile);
-			return true;
+			return ProjectRecordingManager.getInstance().getTrackList();
 		}
-		return false;
+		return null;
 	}
 
 
 	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		if (actionResult) {
-			JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-			String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-			mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
+	protected void doAtTheEnd(Track<?>[] actionResult) {
+		if (actionResult != null) {
+			selectedFile = null;
+			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
+			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
+			//GenomeWindow genomeWindow = ProjectManager.getInstance().getGenomeWindow(chromosome);
+			MainFrame.getInstance().setTitle();
+			MainFrame.getInstance().getControlPanel().updateChromosomePanel(genomeWindow);
+			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
 		}
-	}
+	}	
 }

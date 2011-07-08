@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
@@ -143,6 +144,9 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 				((StrandedExtractor) extractor).selectStrand(strand);
 				((StrandedExtractor) extractor).setStrandShift(strandShift);
 			}
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				genomeName = nctd.getGenomeName();
+			}
 		} else {
 			throw new InterruptedException();
 		}
@@ -159,8 +163,6 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			notifyActionStart("Generating Track", 1, true);
 		}
 		return ((BinListGenerator) extractor).toBinList(binSize, precision, scoreCalculation);
-
-
 	}
 
 
