@@ -34,12 +34,12 @@ public class Variant {
 	private VariantType 		type;				// Type of variation
 	private ChromosomeWindow 	position; 			// Start and stop of the variation
 	private ChromosomeWindow 	deadZone; 			// Start and stop of the dead zone
-													// A dead zone is the additional space due to the synchronization effect
+	// A dead zone is the additional space due to the synchronization effect
 	private boolean 			isOnFirstAllele;	// Says if the variant is present on the first allele or not
 	private boolean 			isOnSecondAllele;	// Says if the variant is present on the second allele or not
 	private double 				qualityScore;		// Quality score of the variant
-	
-	
+
+
 	/**
 	 * Constructor of {@link Variant}
 	 * @param type		variation type
@@ -49,7 +49,7 @@ public class Variant {
 		this.type = type;
 		this.position = position;
 	}
-	
+
 
 	/**
 	 * @param type the type to set
@@ -73,32 +73,32 @@ public class Variant {
 	public ChromosomeWindow getPosition() {
 		return position;
 	}
-	
-	
+
+
 	/**
 	 * @param start the new start position
 	 */
 	public void setStart(int start) {
 		position.setStart(start);
 	}
-	
-	
+
+
 	/**
 	 * @param stop the new stop position
 	 */
 	public void setStop(int stop) {
 		position.setStop(stop);
 	}
-	
-	
+
+
 	/**
 	 * @return the start position
 	 */
 	public int getStart() {
 		return position.getStart();
 	}
-	
-	
+
+
 	/**
 	 * @return the stop position
 	 */
@@ -121,8 +121,8 @@ public class Variant {
 	public void setDeadZone(ChromosomeWindow deadZone) {
 		this.deadZone = deadZone;
 	}
-	
-	
+
+
 	/**
 	 * @return true if a dead zone exist
 	 */
@@ -180,5 +180,35 @@ public class Variant {
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
+
+
+	public int compareTo (Variant variant) {
+		int result;
+		if (this.getStart() < variant.getStart()) {
+			result = -1;
+		} else if (this.getStart() > variant.getStart()) {
+			result = 1;
+		} else {
+			result = -1;
+			if (this.getStop() == variant.getStop() &&
+					//this.getDeadZone().getStart() == variant.getDeadZone().getStart() &&
+					//this.getDeadZone().getStop() == variant.getDeadZone().getStop() &&
+					this.getQualityScore() == variant.getQualityScore()) {
+				result = 0;
+			}
+		}
+		return result;
+	}
 	
+	
+	public void show () {
+		String info = "";
+		info += "start: " + getStart() + "\n";
+		info += "stop: " + getStop() + "\n";
+		info += "isOnFirstAllele: " + isOnFirstAllele() + "\n";
+		info += "isOnSecondAllele: " + isOnSecondAllele() + "\n";
+		info += "quality: " + getQualityScore() + "\n";
+		System.out.println(info);
+	}
+
 }

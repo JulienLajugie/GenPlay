@@ -43,6 +43,7 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 
 	private 	Map<Chromosome, VCFChromosomeInformation> 	genomeInformation;			// Chromosomes information
 	//private		List<VCFChromosomeInformation>				genomeInformation;
+	//private		Map<VCFChromosomeInformation, Integer>					chromosomeHash;
 	private 	List<Variant> 								fittedDataList;				// List of variation according to the current chromosome and the x-ratio
 	protected 	Chromosome									fittedChromosome = null;	// Chromosome with the adapted data
 	protected 	Double										fittedXRatio = null;		// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
@@ -57,12 +58,21 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 		//int i = 1;
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values()) {
 			//short index = ChromosomeManager.getInstance().getIndex(chromosome);
-			//genomeInformation.add(index, new VCFChromosomeInformation(chromosome));
+			//genomeInformation.add(new VCFChromosomeInformation(chromosome));
+			
 			//System.out.println("add: " + index + " - " + chromosome.getName());
 			genomeInformation.put(chromosome, new VCFChromosomeInformation());
 			//i++;
 		}
 	}
+	
+	/*private void addToChromosomeHash (VCFChromosomeInformation position, Integer index) {
+		
+	}*/
+	
+	
+	
+	
 	
 	
 	/**
