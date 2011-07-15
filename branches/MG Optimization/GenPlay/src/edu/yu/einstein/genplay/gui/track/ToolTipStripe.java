@@ -33,6 +33,8 @@ public class ToolTipStripe extends JDialog {
 	private JLabel value[];
 	private JPanel pane;
 	private Variant variant;
+	private JButton nextVariant;
+	private JButton previousVariant;
 
 
 	protected ToolTipStripe (TrackGraphics<?> origin) {
@@ -109,7 +111,7 @@ public class ToolTipStripe extends JDialog {
 		Insets inset = new Insets(0, 0, 0, 0);
 
 		// Next variant
-		JButton nextVariant = new JButton("next");
+		nextVariant = new JButton("next");
 		nextVariant.setSize(buttonDim);
 		nextVariant.setMinimumSize(buttonDim);
 		nextVariant.setMaximumSize(buttonDim);
@@ -119,13 +121,13 @@ public class ToolTipStripe extends JDialog {
 		nextVariant.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				initVariant();
+				initVariant(nextVariant);
 			}
 		});
 
 
 		// Previous variant
-		JButton previousVariant = new JButton("previous");
+		previousVariant = new JButton("previous");
 		previousVariant.setSize(buttonDim);
 		previousVariant.setMinimumSize(buttonDim);
 		previousVariant.setMaximumSize(buttonDim);
@@ -135,7 +137,7 @@ public class ToolTipStripe extends JDialog {
 		previousVariant.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				initVariant();
+				initVariant(previousVariant);
 			}
 		});
 
@@ -198,17 +200,15 @@ public class ToolTipStripe extends JDialog {
 	}
 
 
-	private void initVariant () {
+	private void initVariant (JButton button) {
 		Variant newVariant = origin.getNextVariant(getVariant());
-		System.out.println("========== variant");
-		variant.show();
+		if (this.variant.compareTo(newVariant) == 0) {
+			button.setEnabled(false);
+		}
+		System.out.println("========== variant");variant.show();
 		this.variant = newVariant;
-		System.out.println("========== new variant");
-		variant.show();
-		//initContent(newVariant);
+		System.out.println("========== new variant");variant.show();
 		updateContent();
-		//pane.revalidate();
-		//pane.repaint();
 	}
 
 
