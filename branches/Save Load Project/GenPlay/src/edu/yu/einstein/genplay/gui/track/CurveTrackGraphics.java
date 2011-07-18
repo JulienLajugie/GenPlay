@@ -25,6 +25,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
@@ -46,6 +48,7 @@ import edu.yu.einstein.genplay.util.History;
 public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredTrackGraphics<T> implements MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long 				serialVersionUID = -9200672145021160494L;	// generated ID
+	private static final int 				SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final Color				TRACK_COLOR = Color.black;					// default color
 	private static final GraphicsType 		TYPE_OF_GRAPH = GraphicsType.BAR;			// type of graph
 	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.###");	// decimal format for the score
@@ -53,7 +56,37 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	protected GraphicsType 					typeOfGraph;								// type graphics
 	protected History 						history = null; 							// history containing a description of the action made on the track
 	protected URRManager<T> 				urrManager; 								// manager that handles the undo / redo / reset of the track
-		
+	
+	
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(trackColor);
+		out.writeObject(typeOfGraph);
+		out.writeObject(history);
+		out.writeObject(urrManager);		
+	}
+	
+	
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		trackColor = (Color) in.readObject();
+		typeOfGraph = (GraphicsType) in.readObject();
+		history = (History) in.readObject();
+		urrManager = (URRManager<T>) in.readObject();
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link CurveTrackGraphics}

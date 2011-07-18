@@ -42,6 +42,7 @@ import java.util.zip.GZIPOutputStream;
 public class URRManager<T extends Serializable> implements Serializable {
 
 	private static final long serialVersionUID = -7259155655274729887L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private int 									length; 			// number of action that can be undone / redone
 	private T 										currentObject; 		// current object
 	private T 										initialObjectSaver; // initial object to restore with the reset action
@@ -50,7 +51,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 	private transient List<ByteArrayOutputStream> 	redoList; 			// a list of object to restore with the redo action in a compressed form.
 	private List<T> 								undoListSaver; 		// the list of undo in an uncompressed form. Used only for the serialization
 	private List<T> 								redoListSaver; 		// the list of redo in an uncompressed form. Used only for the serialization
-
+	
 	
 	/**
 	 * Creates an instance of {@link URRManager}
@@ -114,8 +115,14 @@ public class URRManager<T extends Serializable> implements Serializable {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
+		in.readInt();
+		length = in.readInt();
+		currentObject = (T) in.readObject();
+		initialObjectSaver = (T) in.readObject();
+		undoListSaver = (List<T>) in.readObject();
+		redoListSaver = (List<T>) in.readObject();		
 		undoList = new LinkedList<ByteArrayOutputStream>();
 		redoList = new LinkedList<ByteArrayOutputStream>();
 		if (initialObjectSaver != null) {
@@ -123,6 +130,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 			initialObjectSaver = null;
 		}
 		if (undoListSaver != null) {
+			System.out.println("yes1");
 			// if the undo saver list is longer than the authorized count of
 			// undo
 			// we remove the first elements of the undo saver
@@ -135,6 +143,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 			undoListSaver = null;
 		}
 		if (redoListSaver != null) {
+			System.out.println("yes2");
 			// if the redo saver list is longer than the authorized count of
 			// undo
 			// we remove the first elements of the redo saver
@@ -183,6 +192,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 	 */
 	public T reset() throws IOException, ClassNotFoundException {
 		set(unzipAndUnserialize(initialObject));
+		initialObject = null;
 		return currentObject;
 	}
 
@@ -312,6 +322,9 @@ public class URRManager<T extends Serializable> implements Serializable {
 	 * @throws IOException
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(length);
+		out.writeObject(currentObject);
 		try {
 			// unserialize the initial BinList
 			if (this.isResetable()) {
@@ -325,14 +338,16 @@ public class URRManager<T extends Serializable> implements Serializable {
 				}
 			}
 			// unserialize the redo BinLists
-			if (this.isRedoable()) {
+			if (this.isRedoable()) {				
 				redoListSaver = new ArrayList<T>();
 				for (ByteArrayOutputStream currentRedo : redoList) {
 					redoListSaver.add(unzipAndUnserialize(currentRedo));
 				}
 			}
 			// write the savers
-			out.defaultWriteObject();
+			out.writeObject(initialObjectSaver);
+			out.writeObject(undoListSaver);
+			out.writeObject(redoListSaver);
 			// delete the savers
 			initialObjectSaver = null;
 			undoListSaver = null;

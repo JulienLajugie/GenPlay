@@ -21,6 +21,9 @@
 package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -33,8 +36,30 @@ import edu.yu.einstein.genplay.util.History;
  */
 public class GeneListTrack extends Track<GeneList> implements VersionedTrack {
 
-	private static final long serialVersionUID = 907497013953591152L; // generated ID
+	private static final long serialVersionUID = 907497013953591152L; 	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link GeneListTrack}

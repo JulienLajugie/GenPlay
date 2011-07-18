@@ -701,7 +701,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void copyTrack() {
 		if (selectedTrack != null) {
 			try {
-				copiedTrack = selectedTrack.deepClone();
+				copiedTrack = selectedTrack.deepClone(); 
+				// we need to clone the selected track because the user may copy the
+				// then modify the track and finally paste the track.  If we don't do the deep clone
+				// all the modification made after the cloning will be copied (and we don't want that)
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while copying the track");
 			}

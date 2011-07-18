@@ -25,6 +25,9 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -44,6 +47,7 @@ import edu.yu.einstein.genplay.util.ColorConverters;
 public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 
 	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID	
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final DecimalFormat 	COUNT_FORMAT = new DecimalFormat("###,###,###");// format for the count
 	private static final Color 			BACKGROUND_COLOR = new Color(255, 200, 165);	// color of the stripes in the background
 	private static final Color			NOT_SIGNIFICANT_COLOR = Color.GRAY;				// color of a not significant base
@@ -51,6 +55,28 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	{Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};	// bases ordered the way they are printed on the track
 	private SNP 						snpUnderMouse = null;							// snp under the mouse cursor, null if none 
 	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		snpUnderMouse = null;
+	}
+		
 
 	/**
 	 * Creates an instance of {@link SNPListTrackGraphics}

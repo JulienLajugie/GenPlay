@@ -20,9 +20,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.nucleotideList;
 
+import java.awt.FontMetrics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
@@ -45,6 +47,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide>, Stoppable {
 
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private transient RandomAccessFile 	raf;			// 2bit random access file  
 	private String	filePath;					// path of the 2bit file (used for the serialization)
 	private int 	headerSize;					// the size in byte of the header of the sequence
@@ -58,6 +61,39 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	private boolean	needToBeStopped = false; 	// true if the execution need to be stopped
 	protected String	genomeName = null;		// genome name for a multi genome project
 	private final Chromosome chromosome;		// chromosome of the current list
+	
+	
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	/*private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		filePath
+		headerSize
+		name
+		offset
+		dnaSize
+		nBlockStarts
+		nBlockSizes
+		maskBlockStarts
+		maskBlockSizes
+		genomeName
+		chromosome
+	}*/
+	
+	
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	/*private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		needToBeStopped
+	}*/
 	
 	
 	/**

@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
@@ -35,8 +37,32 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
  */
 public final class GenomeWindow extends ChromosomeWindow implements Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
-	private static final long serialVersionUID = 8873056842762282328L; // generated ID
+	private static final long serialVersionUID = 8873056842762282328L; 	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Chromosome chromosome;	// Chromosome of the window
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosome);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosome = (Chromosome) in.readObject();
+	}
 	
 	
 	/**

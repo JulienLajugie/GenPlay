@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.chromosomeWindowList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +34,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -44,7 +47,29 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 public final class ChromosomeWindowList extends DisplayableListOfLists<ChromosomeWindow, List<ChromosomeWindow>> implements Serializable {
 
 	private static final long serialVersionUID = -2180037918131928807L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link ChromosomeWindowList}
@@ -61,6 +86,7 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ChromosomeWindow>>> threadList = new ArrayList<Callable<List<ChromosomeWindow>>>();		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {			
 			Callable<List<ChromosomeWindow>> currentThread = new Callable<List<ChromosomeWindow>>() {	
 				@Override

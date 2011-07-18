@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -35,11 +37,37 @@ import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
 public class ChromosomeWindow implements Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
 	private static final long serialVersionUID = -6548181911063983578L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final DecimalFormat POSITION_FORMAT = 
 		new DecimalFormat("###,###,###"); // Format used for the toString() method
 	private int  	start;		// Position start of the window
 	private int 	stop;		// Position stop of the window
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(start);
+		out.writeInt(stop);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		start = in.readInt();
+		stop = in.readInt();
+	}
+	
 	
 	/**
 	 * Default constructor. 

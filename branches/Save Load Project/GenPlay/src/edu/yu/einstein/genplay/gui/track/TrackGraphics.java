@@ -33,6 +33,8 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +108,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
 	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
 	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
@@ -113,15 +116,15 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private static final int			STRIPES_TRANSPARENCY = 150;		// transparency of the stripes
 	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
 	protected static final int 			FONT_SIZE = 10;					// size of the font
-	protected final FontMetrics 		fm = 
+	protected FontMetrics 		fm = 
 		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
-	private final List<GenomeWindowListener> gwListenerList;			// list of GenomeWindowListener
+	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
 	private int 						verticalLineCount;				// number of vertical lines to print
-	private int 						mouseStartDragX = -1;			// position of the mouse when start dragging
+	transient private int				mouseStartDragX = -1;			// position of the mouse when start dragging
 	protected double					xFactor;						// factor between the genomic width and the screen width
 	protected GenomeWindow				genomeWindow;					// the genome window displayed by the track
-	private boolean 					isScrollMode;					// true if the scroll mode is on
-	private int 						scrollModeIntensity = 0;		// Intensity of the scroll.
+	transient private boolean			isScrollMode = false;			// true if the scroll mode is on
+	transient private int				scrollModeIntensity = 0;		// Intensity of the scroll.
 	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
 	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 	protected T 						data;							// data showed in the track
@@ -129,6 +132,45 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private String 						genomeName;						// genome on which the track is based (ie aligned on)
 
 
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(verticalLineCount);
+		out.writeDouble(xFactor);
+		out.writeObject(gwListenerList);
+		out.writeObject(genomeWindow);
+		out.writeObject(stripeList);
+		out.writeObject(data);
+		out.writeObject(multiGenomeStripe);
+		out.writeObject(genomeName);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		verticalLineCount = in.readInt();
+		xFactor = in.readDouble();
+		gwListenerList = (List<GenomeWindowListener>) in.readObject();
+		genomeWindow = (GenomeWindow) in.readObject();
+		stripeList = (ChromosomeWindowList) in.readObject();
+		data = (T) in.readObject();
+		multiGenomeStripe = (MultiGenomeStripe) in.readObject();
+		genomeName = (String) in.readObject();
+		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
+	}
+	
+	
 	/**
 	 * Creates an instance of {@link TrackGraphics}
 	 * @param displayedGenomeWindow {@link GenomeWindow} currently displayed

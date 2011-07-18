@@ -30,6 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -60,6 +61,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	public TwoBitSequenceList(String genomeName) {
 		super();
 		this.genomeName = genomeName;
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// initializes the lists
 		for (int i = 0; i < chromosomeManager.size(); i++) {
 			add(null);
@@ -127,6 +129,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		for (int i = 0; i < sequenceCount; i++) {
 			short k = 0;
 			boolean found = false;
+			ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 			while ((k < chromosomeManager.size()) && (!found)) {
 				if (chromosomeManager.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
 					// if the execution need to be stopped we generate an InterruptedException

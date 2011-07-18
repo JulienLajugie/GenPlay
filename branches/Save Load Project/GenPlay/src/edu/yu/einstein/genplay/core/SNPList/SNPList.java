@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.SNP;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -59,6 +60,7 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 	 */
 	public SNPList(Collection<? extends List<SNP>> data) {
 		addAll(data);
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// add the eventual missing chromosomes
 		if (size() < chromosomeManager.size()) {
 			for (int i = size(); i < chromosomeManager.size(); i++){
@@ -95,6 +97,7 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<SNP>>> threadList = new ArrayList<Callable<List<SNP>>>();		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {			
 			Callable<List<SNP>> currentThread = new Callable<List<SNP>>() {	
 				@Override

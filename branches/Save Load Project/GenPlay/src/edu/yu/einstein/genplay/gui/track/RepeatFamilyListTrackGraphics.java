@@ -25,6 +25,9 @@ import java.awt.Graphics;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
@@ -41,12 +44,39 @@ import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFamilyList> {
 
 	private static final long 	serialVersionUID = 477730131587880969L; // generated ID
+	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private static final short 	REPEAT_HEIGHT = 6;						// height of a repeat in pixel
 	private static final short 	SPACE_HEIGHT = 3;						// height of the space between two families of repeats
 	private int 				firstLineToDisplay = 0;					// number of the first line to be displayed
 	private int 				repeatLinesCount = 0;					// number of lines of repeats
 	private int 				mouseStartDragY = -1;					// position of the mouse when start dragging
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(repeatLinesCount);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		repeatLinesCount = in.readInt();
+		firstLineToDisplay = 0;
+		mouseStartDragY = -1;
+	}
+	
+	
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrackGraphics}

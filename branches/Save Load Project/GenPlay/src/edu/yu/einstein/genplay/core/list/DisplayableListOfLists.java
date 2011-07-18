@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.Chromosome;
@@ -39,10 +41,35 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 public abstract class DisplayableListOfLists<T, U> extends ChromosomeArrayListOfLists<T> implements Serializable, Cloneable, ChromosomeListOfLists<T>, DisplayableDataList<U> {
 
 	private static final long serialVersionUID = -2238871286451859789L;	// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	protected U		 					fittedDataList;					// List of data of the current chromosome adapted to the screen resolution
 	protected Chromosome				fittedChromosome = null;		// Chromosome with the adapted data
 	protected Double					fittedXRatio = null;			// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
+	
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
+	
+	
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		fittedChromosome = null;
+		fittedXRatio = null;
+		fittedDataList = null;
+	}
+	
 	
 	/**
 	 * Adapts the data to the screen resolution.

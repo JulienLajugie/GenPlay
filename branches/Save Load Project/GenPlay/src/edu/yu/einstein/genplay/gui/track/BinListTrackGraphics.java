@@ -21,6 +21,8 @@
 package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -40,7 +42,29 @@ import edu.yu.einstein.genplay.gui.track.drawer.CurveDrawer;
 public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 
 	private static final long 	serialVersionUID = 1745399422702517182L; // generated ID
-
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
+	
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
+	
+	
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+	
 	
 	/**
 	 * Creates an instance of a {@link BinListTrackGraphics}

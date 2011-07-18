@@ -56,6 +56,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 public abstract class Track<T> extends JPanel implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator {
 
 	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 				// minimum height of a track
 	private static final int 	TRACK_HEIGHT = 100; 					// height of a track
 	public static final Border 	REGULAR_BORDER =
@@ -66,14 +67,46 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		BorderFactory.createMatteBorder(2, 0, 1, 0, Color.black);		// alternative border when a track is dragged up
 	public static final Border 	DRAG_DOWN_BORDER = 
 		BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black);		// alternative border when a track is dragged down
-	private final List<GenomeWindowListener> listenerList = 
+	private List<GenomeWindowListener> listenerList = 
 		new ArrayList<GenomeWindowListener>();							// list of GenomeWindowListener
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
-	private final TrackHandle		trackHandle;						// handle of the track
-	protected final TrackGraphics<T>trackGraphics;						// graphics part of the track
+	private TrackHandle				trackHandle;						// handle of the track
+	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
 	protected String genomeName;										// genome on which the track is based (ie aligned on)
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(listenerList);
+		out.writeObject(trackHandle);
+		out.writeObject(trackGraphics);
+		out.writeObject(genomeName);
+	
+	}
 
 
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		defaultHeight = TRACK_HEIGHT;
+		in.readInt();
+		listenerList = (List<GenomeWindowListener>) in.readObject();
+		trackHandle = (TrackHandle) in.readObject();
+		trackGraphics = (TrackGraphics<T>) in.readObject();
+		genomeName = (String) in.readObject();
+	}
+	
+	
 	/**
 	 * Constructor
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
