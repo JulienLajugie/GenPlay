@@ -78,7 +78,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 	}
 
@@ -91,7 +91,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		in.defaultReadObject();
 		try {
 			generateStatistics();
 		} catch (Exception e) {

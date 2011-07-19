@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.core.list.nucleotideList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
@@ -46,14 +48,50 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucleotide[]> implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -2253030492143151302L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private final static String 		TWOBIT_SIGNATURE = "1A412743";	// signature of a 2bit file
 	private boolean 					reverseBytes = false;			// true if the bytes of a multi-byte entity need to be reversed when read
-	private  int 						version;						// version of the 2bit file
-	private  String						filePath;						// path of the 2bit file  (used for the serialization)
+	private int 						version;						// version of the 2bit file
+	private String						filePath;						// path of the 2bit file  (used for the serialization)
 	private transient RandomAccessFile	twoBitFile;						// 2bit file
 	private TwoBitSequence 				sequence = null;				// sequence being extracted
 	private boolean						needToBeStopped = false;		// true if the execution need to be stopped
 	protected String					genomeName = null;				// genome name for a multi genome project
+	
+	
+
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeBoolean(reverseBytes);
+		out.writeInt(version);
+		out.writeObject(filePath);
+		out.writeObject(sequence);
+		out.writeObject(genomeName);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		reverseBytes = in.readBoolean();
+		version = in.readInt();
+		filePath = (String) in.readObject();
+		sequence = (TwoBitSequence) in.readObject();
+		needToBeStopped = false;
+		genomeName = (String) in.readObject();
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}

@@ -52,8 +52,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	private			Map<String, Chromosome> 	chromosomeList;			// List of chromosome
 	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
 	
-	
-	
+		
 	/**
 	 * @return an instance of a {@link ChromosomeManager}. 
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern

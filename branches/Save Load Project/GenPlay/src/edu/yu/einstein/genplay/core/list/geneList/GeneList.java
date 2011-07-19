@@ -65,7 +65,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(fontMetrics);
 		out.writeObject(searchURL);
