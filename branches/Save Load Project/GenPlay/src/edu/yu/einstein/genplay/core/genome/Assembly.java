@@ -20,6 +20,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.genome;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,15 +35,50 @@ import edu.yu.einstein.genplay.core.Chromosome;
  * This class contains assembly information
  * @author Nicolas Fourel
  */
-public class Assembly implements Serializable{
+public class Assembly implements Serializable {
 
-	private static final long 		serialVersionUID = -1933285290898527392L;	// generated ID
+	private static final long serialVersionUID = -1933285290898527392L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Map<String, Chromosome>	chromosomeList;
 	private String 					name;
 	private Date 					date;
 	private String 					indexName;
 	private SimpleDateFormat 		sdf;
 	private long 					genomomeLength = 0;
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeList);
+		out.writeObject(name);
+		out.writeObject(date);
+		out.writeObject(indexName);
+		out.writeObject(sdf);
+		out.writeLong(genomomeLength);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeList = (Map<String, Chromosome>) in.readObject();
+		name = (String) in.readObject();
+		date = (Date) in.readObject();
+		indexName = (String) in.readObject();
+		sdf = (SimpleDateFormat) in.readObject();
+		genomomeLength = in.readLong();
+	}
 	
 	
 	/**

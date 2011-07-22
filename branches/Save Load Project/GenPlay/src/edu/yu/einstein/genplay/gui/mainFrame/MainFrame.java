@@ -209,7 +209,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 				ProjectManager.getInstance().getProjectName()
 				+ " - " + 
 				ProjectManager.getInstance().getGenomeName()
-				+ " " + 
+				+ " - " + 
 				ProjectManager.getInstance().getAssembly().getName());
 	}
 

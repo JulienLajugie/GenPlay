@@ -60,8 +60,7 @@ public class IntArrayAsIntegerList extends AbstractList<Integer> implements Seri
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		data = (int[]) in.readObject();
-		size = in.readInt();
-		
+		size = in.readInt();		
 	}
 	
 	

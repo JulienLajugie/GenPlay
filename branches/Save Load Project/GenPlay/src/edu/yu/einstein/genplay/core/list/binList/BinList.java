@@ -948,7 +948,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER); // save the version of the saved format number
 		out.writeInt(binSize);
 		out.writeObject(precision);				

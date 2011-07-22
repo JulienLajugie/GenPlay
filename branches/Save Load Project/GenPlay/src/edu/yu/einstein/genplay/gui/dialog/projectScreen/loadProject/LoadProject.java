@@ -38,7 +38,7 @@ public class LoadProject extends JPanel {
 	private static final long serialVersionUID = 661493677940668400L;
 	
 	private final ProjectList 			projectList;		// Panel containing the list of projects
-	private final ProjectInformation 	projectInformation;	// Panel about project informatiom
+	private final ProjectInformationPanel 	projectInformation;	// Panel about project informatiom
 	
 	
 	/**
@@ -46,7 +46,7 @@ public class LoadProject extends JPanel {
 	 */
 	public LoadProject (String[] projectPath) {
 		super();
-		projectInformation = new ProjectInformation();
+		projectInformation = new ProjectInformationPanel();
 		projectList = new ProjectList(this, projectPath);
 		
 		init();

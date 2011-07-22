@@ -27,6 +27,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
@@ -63,7 +64,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(trackColor);
 		out.writeObject(typeOfGraph);

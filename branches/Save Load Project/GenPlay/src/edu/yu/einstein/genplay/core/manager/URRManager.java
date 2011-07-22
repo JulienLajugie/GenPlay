@@ -130,7 +130,6 @@ public class URRManager<T extends Serializable> implements Serializable {
 			initialObjectSaver = null;
 		}
 		if (undoListSaver != null) {
-			System.out.println("yes1");
 			// if the undo saver list is longer than the authorized count of
 			// undo
 			// we remove the first elements of the undo saver
@@ -143,7 +142,6 @@ public class URRManager<T extends Serializable> implements Serializable {
 			undoListSaver = null;
 		}
 		if (redoListSaver != null) {
-			System.out.println("yes2");
 			// if the redo saver list is longer than the authorized count of
 			// undo
 			// we remove the first elements of the redo saver

@@ -27,14 +27,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
 import javax.swing.UIManager;
-import edu.yu.einstein.genplay.core.genome.Assembly;
+
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
@@ -49,8 +49,137 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
  * 	- load a project
  * 	- load project basics information (not the track list)
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 public class ProjectRecordingManager {
+
+
+	/**
+	 * This class contains information about a project
+	 * @author Julien Lajugie
+	 */
+	public class ProjectInformations implements Serializable {
+
+		private static final long serialVersionUID = 5252641489962010266L; // generated ID
+		private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+		private String projectName;				// project name
+		private String projectGenome;			// project genome
+		private String projectType;				// project type
+		private String projectDate;				// project date
+		private String projectTrackNumber;		// number of track in the project
+
+		
+		/**
+		 * Method used for serialization
+		 * @param out
+		 * @throws IOException
+		 */
+		private void writeObject(ObjectOutputStream out) throws IOException {
+			out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+			out.writeObject(projectName);
+			out.writeObject(projectGenome);
+			out.writeObject(projectType);
+			out.writeObject(projectDate);
+			out.writeObject(projectTrackNumber);
+		}
+
+
+		/**
+		 * Method used for unserialization
+		 * @param in
+		 * @throws IOException
+		 * @throws ClassNotFoundException
+		 */
+		private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+			in.readInt();
+			projectName = (String) in.readObject();
+			projectGenome = (String) in.readObject();
+			projectType = (String) in.readObject();
+			projectDate = (String) in.readObject();
+			projectTrackNumber = (String) in.readObject();
+		}
+
+
+		/**
+		 * @param projectName the projectName to set
+		 */
+		public void setProjectName(String projectName) {
+			this.projectName = projectName;
+		}
+
+
+		/**
+		 * @return the projectName
+		 */
+		public String getProjectName() {
+			return projectName;
+		}
+
+
+		/**
+		 * @param projectGenome the projectGenome to set
+		 */
+		public void setProjectGenome(String projectGenome) {
+			this.projectGenome = projectGenome;
+		}
+
+
+		/**
+		 * @return the projectGenome
+		 */
+		public String getProjectGenome() {
+			return projectGenome;
+		}
+
+
+		/**
+		 * @param projectType the projectType to set
+		 */
+		public void setProjectType(String projectType) {
+			this.projectType = projectType;
+		}
+
+
+		/**
+		 * @return the projectType
+		 */
+		public String getProjectType() {
+			return projectType;
+		}
+
+
+		/**
+		 * @param projectDate the projectDate to set
+		 */
+		public void setProjectDate(String projectDate) {
+			this.projectDate = projectDate;
+		}
+
+
+		/**
+		 * @return the projectDate
+		 */
+		public String getProjectDate() {
+			return projectDate;
+		}
+
+
+		/**
+		 * @param projectTrackNumber the projectTrackNumber to set
+		 */
+		public void setProjectTrackNumber(String projectTrackNumber) {
+			this.projectTrackNumber = projectTrackNumber;
+		}
+
+
+		/**
+		 * @return the projectTrackNumber
+		 */
+		public String getProjectTrackNumber() {
+			return projectTrackNumber;
+		}		
+	}
+
 
 	private static 	ProjectRecordingManager instance;							// Unique instance of the singleton
 	private 		File 					fileToLoad;							// The project file to load
@@ -58,8 +187,8 @@ public class ProjectRecordingManager {
 	private 		ObjectInputStream 		ois;								// The input file stream
 	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
 	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
-	
-	
+
+
 	/**
 	 * @return the instance of the singleton {@link ProjectRecordingManager}.
 	 */
@@ -69,8 +198,8 @@ public class ProjectRecordingManager {
 		}
 		return instance;
 	}
-	
-	
+
+
 	/**
 	 * Saves the current list of tracks into a file
 	 */
@@ -88,22 +217,12 @@ public class ProjectRecordingManager {
 			// there is bug during the serialization with the nimbus LAF if the track list is visible 
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackList.setViewportView(null);
-			}
-			ProjectManager instance = ProjectManager.getInstance();
-			oos.writeObject(instance.getProjectName());
-			oos.writeObject(instance.getCladeName());
-			oos.writeObject(instance.getGenomeName());
-			oos.writeObject(instance.isMultiGenomeProject());
-			oos.writeObject(ProjectManager.getInstance().getAssembly());
-			Integer count = 0;
-			for (Track<?> currentTrack: trackList.getTrackList()) {
-				if (!(currentTrack instanceof EmptyTrack)) {
-					count++;
-				}
-			}
-			oos.writeObject(count);
+			}			
+			oos.writeObject(retrieveProjectInformations());
+			oos.writeObject(ProjectManager.getInstance());
+			oos.writeObject(ChromosomeManager.getInstance());
 			oos.writeObject(trackList.getTrackList());
-			
+
 			// there is bug during the serialization with the nimbus LAF if the track list is visible
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackList.setViewportView(trackList.getJpTrackList());
@@ -125,8 +244,41 @@ public class ProjectRecordingManager {
 			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project"); 
 		}
 	}
-	
-	
+
+
+	/**
+	 * @return a {@link ProjectInformations} object containing informations about the project
+	 */
+	private ProjectInformations retrieveProjectInformations() {
+		ProjectInformations projectInformations = new ProjectInformations();
+		ProjectManager projectManager = ProjectManager.getInstance();
+		projectInformations.setProjectName(projectManager.getProjectName());
+		projectInformations.setProjectGenome(projectManager.getGenomeName());
+		if (projectManager.isMultiGenomeProject()) {
+			projectInformations.setProjectType("Multi Genome Project");
+		} else {
+			projectInformations.setProjectType("Simple Genome Project");
+		}
+
+		GregorianCalendar calendar = new GregorianCalendar();
+		String currentDate = (calendar.get(Calendar.MONTH) + 1) + "/" +
+		calendar.get(Calendar.DATE) + "/" +
+		calendar.get(Calendar.YEAR);
+		projectInformations.setProjectDate(currentDate);
+
+		// we count the number of non-empty tracks in the track list
+		TrackList trackList = MainFrame.getInstance().getTrackList();
+		Integer trackCount = 0;
+		for (Track<?> currentTrack: trackList.getTrackList()) {
+			if (!(currentTrack instanceof EmptyTrack)) {
+				trackCount++;
+			}
+		}		
+		projectInformations.setProjectTrackNumber(Integer.toString(trackCount));
+		return projectInformations;
+	}
+
+
 	/**
 	 * Creates/sets chromosome manager object.
 	 * A project file has to be set before!
@@ -135,8 +287,8 @@ public class ProjectRecordingManager {
 	public void initManagers () throws Exception {
 		initManagers (fileToLoad);
 	}
-	
-	
+
+
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param inputFile		project file
@@ -147,8 +299,8 @@ public class ProjectRecordingManager {
 		FileInputStream fis = new FileInputStream(inputFile);
 		initManagers(fis);
 	}
-	
-	
+
+
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param is	InputStream object
@@ -158,24 +310,17 @@ public class ProjectRecordingManager {
 		try {
 			GZIPInputStream gz = new GZIPInputStream(is);
 			ois = new ObjectInputStream(gz);
-			
-			ProjectManager instance = ProjectManager.getInstance();
-			
-			instance.setProjectName((String)ois.readObject());
-			instance.setCladeName((String)ois.readObject());
-			instance.setGenomeName((String)ois.readObject());
-			instance.setMultiGenomeProject((Boolean)ois.readObject());
-			instance.setAssembly((Assembly)ois.readObject());
-			ois.readObject();// read the track number object but don't affected because not used
-			
+			ois.readObject();
+			ois.readObject(); // init the project manager
+			ois.readObject(); // init the chromosome manager
 			trackListReadyToLoad = true;
 		} catch (IOException e) {
 			// a IOException is likely to be caused by a invalid file type 
 			throw new InvalidFileTypeException();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Reads the track list object.
 	 * @return a track list
@@ -194,41 +339,44 @@ public class ProjectRecordingManager {
 		}
 		return null;
 	}
-	
-	
-	/**
-	 * Reads the project basics information.
-	 * They are displayed on the loading project screen.
-	 * Track list are not in those information.
-	 * @param inputFile	project file
-	 * @return			an ordered string list
-	 * @throws Exception
-	 */
-	public List<String> getProjectHeader (File inputFile) throws Exception {
-		List<String> list = new ArrayList<String>();
+
+
+
+	public ProjectInformations getProjectHeader (File inputFile) throws Exception {
 		try {
 			FileInputStream fis = new FileInputStream(inputFile);
 			GZIPInputStream gz = new GZIPInputStream(fis);
 			ObjectInputStream ois = new ObjectInputStream(gz);
-			
+			ProjectInformations projectInformations = (ProjectInformations) ois.readObject();
+			return projectInformations;
+		} catch (IOException e) {
+			// a IOException is likely to be caused by a invalid file type 
+			throw new InvalidFileTypeException();
+		}
+		/*List<String> list = new ArrayList<String>();
+		try {
+			FileInputStream fis = new FileInputStream(inputFile);
+			GZIPInputStream gz = new GZIPInputStream(fis);
+			ObjectInputStream ois = new ObjectInputStream(gz);
+
 			String projectName = (String)ois.readObject();
 			ois.readObject();// read the clade object but don't affected because not used
 			String genomeName = (String)ois.readObject();
 			boolean isMultiGenome = (Boolean)ois.readObject();
-			@SuppressWarnings("unused")
-			List<?> varFiles = (List<?>)ois.readObject();	//Development
+			//@SuppressWarnings("unused")
+			//List<?> varFiles = (List<?>)ois.readObject();	//Development
 			String assemblyName = ((Assembly)ois.readObject()).getDisplayName();
 			Integer count = (Integer)ois.readObject();
-			
+
 			list.add(projectName);
 			list.add(genomeName + " - " + assemblyName);
-			
+
 			if (isMultiGenome) {
 				list.add("multi");
 			} else {
 				list.add("simple");
 			}
-			
+
 			Date date = new Date(inputFile.lastModified());
 			SimpleDateFormat sdf = new SimpleDateFormat("MM / d / yyyy");
 			list.add(sdf.format(date));
@@ -237,7 +385,7 @@ public class ProjectRecordingManager {
 			// a IOException is likely to be caused by a invalid file type 
 			throw new InvalidFileTypeException();
 		}
-		return list;
+		return list;*/
 	}
 
 
@@ -271,5 +419,5 @@ public class ProjectRecordingManager {
 	public void setLoadingEvent(boolean loadingEvent) {
 		this.loadingEvent = loadingEvent;
 	}
-	
+
 }

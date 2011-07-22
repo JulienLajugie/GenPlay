@@ -22,6 +22,7 @@ package edu.yu.einstein.genplay.gui.trackList;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ActionMap;
@@ -149,7 +150,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator {
+public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator, Serializable {
 
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
 	private final JPanel 		jpTrackList;					// panel with the tracks

@@ -20,6 +20,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.arrayList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,8 +43,30 @@ import edu.yu.einstein.genplay.exception.CompressionException;
 public final class BooleanArrayAsDoubleList extends ArrayAsDoubleList<byte[]> implements Serializable, List<Double>, CompressibleList {
 
 	private static final long serialVersionUID = -5280328695672981245L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+
 	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
 	
+		
 	/**
 	 * Creates an instance of {@link BooleanArrayAsDoubleList}
 	 */

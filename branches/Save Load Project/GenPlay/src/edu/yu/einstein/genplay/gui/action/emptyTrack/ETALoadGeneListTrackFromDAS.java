@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.dialog.DASDialog;
+import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 
 

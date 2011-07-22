@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.track;
 import java.awt.Graphics;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -50,7 +51,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	 * @param out
 	 * @throws IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 	}
 	

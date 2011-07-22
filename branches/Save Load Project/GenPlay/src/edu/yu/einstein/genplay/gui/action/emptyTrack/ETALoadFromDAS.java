@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.dialog.DASDialog;
+import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 
 
 
@@ -78,11 +78,8 @@ public class ETALoadFromDAS extends TrackListAction {
 					DASType dasType = dasDialog.getSelectedDasType();
 					int resType = dasDialog.getGenerateType();
 					int dataRange = dasDialog.getDataRange();
-					GenomeWindow genomeWindow = new GenomeWindow();
+					GenomeWindow genomeWindow = dasDialog.getUserSpecifiedGenomeWindow();
 					GenomeWindow currentWindow = getTrackList().getGenomeWindow();
-					genomeWindow.setChromosome(dasDialog.getSelectedChromosome());
-					genomeWindow.setStart((int)dasDialog.getUserSpecifiedStart());
-					genomeWindow.setStop((int)dasDialog.getUserSpecifiedStop());
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						// case where the result type is a GeneList
 						new ETALoadGeneListTrackFromDAS(dataSource, dasConnector, dasType, dataRange, genomeWindow, currentWindow, selectedTrackIndex).actionPerformed(arg0);

@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.launcher.Launcher;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
@@ -67,7 +68,7 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 			return true;
 		} else {
 			System.out.println("NO_OPTION");
-			return false;
+			return null;
 		}
 	}
 
@@ -76,6 +77,7 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
 			MainFrame.getInstance().dispose();
+			Launcher.main(new String[0]);
 		}
 	}
 	
