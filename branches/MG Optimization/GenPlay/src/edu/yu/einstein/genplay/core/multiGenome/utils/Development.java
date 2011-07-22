@@ -398,4 +398,19 @@ public class Development {
 		System.out.println("Max deletion: " + maxDeletion);
 	}
 	
+	
+	
+	
+	
+	private static int counter = 0;
+	
+	
+	public static void increaseCounter () {
+		counter++;
+	}
+	
+	public static void showCounter () {
+		System.out.println("counter: " + counter);
+	}
+	
 }

@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * - association between variant type and color
  * - transparency
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class MultiGenomeStripe {
 
@@ -74,6 +75,15 @@ public class MultiGenomeStripe {
 	 */
 	private void initStripes () {
 		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
+	}
+	
+	
+	public boolean hasBeenRequired (String genome) {
+		if (colorAssociation.get(genome).size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	

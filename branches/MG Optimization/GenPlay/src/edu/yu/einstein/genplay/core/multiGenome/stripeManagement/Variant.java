@@ -22,22 +22,22 @@ package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 
 
 /**
  * This class symbolizes a variation information.
  * All variation are specific to a type and a start/stop couple of data.
- * @author Nicolas
+ * @author Nicolas Fourel
+ * @version 0.1
  */
 public class Variant {
 
-	private VariantType 		type;				// Type of variation
-	private ChromosomeWindow 	position; 			// Start and stop of the variation
-	private ChromosomeWindow 	deadZone; 			// Start and stop of the dead zone
-	// A dead zone is the additional space due to the synchronization effect
-	private boolean 			isOnFirstAllele;	// Says if the variant is present on the first allele or not
-	private boolean 			isOnSecondAllele;	// Says if the variant is present on the second allele or not
-	private double 				qualityScore;		// Quality score of the variant
+	private MGPosition 			variantPosition;		// The real variant position
+	private VariantType 		type;					// Type of variation
+	private ChromosomeWindow 	position; 				// Start and stop of the variation
+	private ChromosomeWindow 	deadZone; 				// Start and stop of the dead zone
+	private double 				qualityScore;			// The quality of the variant
 
 
 	/**
@@ -45,9 +45,18 @@ public class Variant {
 	 * @param type		variation type
 	 * @param position	chromosome window
 	 */
-	public Variant (VariantType type, ChromosomeWindow position) {
+	public Variant (VariantType type, ChromosomeWindow position, MGPosition positionInformation) {
 		this.type = type;
 		this.position = position;
+		this.variantPosition = positionInformation;
+	}
+
+	
+	/**
+	 * @return the variantPosition
+	 */
+	public MGPosition getVariantPosition() {
+		return variantPosition;
 	}
 
 
@@ -138,15 +147,7 @@ public class Variant {
 	 * @return the isOnFirstAllele
 	 */
 	public boolean isOnFirstAllele() {
-		return isOnFirstAllele;
-	}
-
-
-	/**
-	 * @param isOnFirstAllele the isOnFirstAllele to set
-	 */
-	public void setOnFirstAllele(boolean isOnFirstAllele) {
-		this.isOnFirstAllele = isOnFirstAllele;
+		return variantPosition.isOnFirstAllele();
 	}
 
 
@@ -154,15 +155,7 @@ public class Variant {
 	 * @return the isOnSecondAllele
 	 */
 	public boolean isOnSecondAllele() {
-		return isOnSecondAllele;
-	}
-
-
-	/**
-	 * @param isOnSecondAllele the isOnSecondAllele to set
-	 */
-	public void setOnSecondAllele(boolean isOnSecondAllele) {
-		this.isOnSecondAllele = isOnSecondAllele;
+		return variantPosition.isOnSecondAllele();
 	}
 
 

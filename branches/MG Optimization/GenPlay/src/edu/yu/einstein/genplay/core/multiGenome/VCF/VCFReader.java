@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCFFile;
+package edu.yu.einstein.genplay.core.multiGenome.VCF;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,6 +31,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
 
@@ -39,17 +46,22 @@ import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
  * This class handles VCF files.
  * It indexes information to perform fast queries.
  * It also get VCF header information.
- * @author Nicolas
+ * @author Nicolas Fourel
+ * @version 0.1
  */
 public class VCFReader {
 
-	private final 	File 					vcf;		// Path of the VCF file
-	private 		TabixReader 			vcfParser;	// Tabix object for the VCF file (Tabix Java API)
-	private 		Map<String, String> 	headerInfo;	// Header main information
-	private 		Map<String, Map<Integer, Map<String, String>>> 	headerAttributes;	// Header attributes information
-	private			List<String>			columnNames;	// All column header names
-	private			List<String>			fixedColumn;	// Fixed header names included in the VCF file
-	private			List<String>			genomeNames;	// Dynamic header names included in the VCF file (raw genome names)
+	private final 	File 						vcf;			// Path of the VCF file
+	private 		TabixReader 				vcfParser;		// Tabix object for the VCF file (Tabix Java API)
+	private 		Map<String, String> 		headerInfo;		// Header main information
+	private			List<String>				columnNames;	// All column header names
+	private			List<String>				fixedColumn;	// Fixed header names included in the VCF file
+	private			List<String>				genomeNames;	// Dynamic header names included in the VCF file (raw genome names)
+	private			Map<String, Class<?>>		fieldType;		// Association between field type and java class
+	private List<VCFHeaderType> 				altHeader;		// Header for the ALT field
+	private List<VCFHeaderType> 				filterHeader;	// Header for the FILTER field
+	private ArrayList<VCFHeaderAdvancedType> 	infoHeader;		// Header for the INFO field
+	private ArrayList<VCFHeaderAdvancedType> 	formatHeader;	// Header for the FORMAT field
 
 
 	/**
@@ -60,6 +72,7 @@ public class VCFReader {
 	public VCFReader (File vcf) throws IOException {
 		this.vcf = vcf;
 		initFixedColumnList();
+		initFieldType();
 		indexVCFFile();
 		processHeader();
 	}
@@ -83,7 +96,20 @@ public class VCFReader {
 
 
 	/**
-	 * This method indexs the VCF file using the Tabix Java API.
+	 * Initializes field/java class association.
+	 */
+	private void initFieldType () {
+		fieldType = new HashMap<String, Class<?>>();
+		fieldType.put("Integer", Integer.class);
+		fieldType.put("Float", Float.class);
+		fieldType.put("Flag", Boolean.class);
+		fieldType.put("Character", char.class);
+		fieldType.put("String", String.class);
+	}
+
+
+	/**
+	 * This method indexes the VCF file using the Tabix Java API.
 	 * @throws IOException
 	 */
 	private void indexVCFFile () throws IOException {
@@ -113,25 +139,42 @@ public class VCFReader {
 	public void processHeader () throws FileNotFoundException, IOException {
 		boolean valid = true;
 		headerInfo = new HashMap<String, String>();
-		headerAttributes = new HashMap<String, Map<Integer, Map<String, String>>>();
-		Integer row = 0;
+		altHeader = new ArrayList<VCFHeaderType>();
+		filterHeader = new ArrayList<VCFHeaderType>();
+		infoHeader = new ArrayList<VCFHeaderAdvancedType>();
+		formatHeader = new ArrayList<VCFHeaderAdvancedType>();
 		while (valid) {
 			String line = vcfParser.readLine();
 			if (line.length() > 0) {
 				if (line.substring(0, 2).equals("##")) {
 					int equalChar = line.indexOf("=");
 					String type = line.substring(2, equalChar);
+
 					if (type.equals("INFO") || type.equals("ALT") || type.equals("FILTER") || type.equals("FORMAT")) {
 						Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 1));
 
-						if (headerAttributes.containsKey(type)) {
-							headerAttributes.get(type).put(headerAttributes.get(type).size(), info);
-						} else {
-							Map<Integer, Map<String, String>> attribute = new HashMap<Integer, Map<String, String>>();
-							attribute.put(0, info);
-							headerAttributes.put(type, attribute);
+						VCFHeaderType headerType = null;
+
+						if (type.equals("ALT")) {
+							headerType = new VCFHeaderAltType();
+							altHeader.add(headerType);
+						} else if (type.equals("FILTER")) {
+							headerType = new VCFHeaderFilterType();
+							filterHeader.add(headerType);
+						} else if (type.equals("INFO")) {
+							headerType = new VCFHeaderInfoType();
+							infoHeader.add((VCFHeaderAdvancedType) headerType);
+						} else if (type.equals("FORMAT")) {
+							headerType = new VCFHeaderFormatType();
+							formatHeader.add((VCFHeaderAdvancedType) headerType);
 						}
-						row++;
+
+						headerType.setId(info.get("ID"));
+						headerType.setDescription(info.get("Description"));
+						if (headerType instanceof VCFHeaderAdvancedType) {
+							((VCFHeaderAdvancedType) headerType).setNumber(Integer.parseInt(info.get("Number")));
+							((VCFHeaderAdvancedType) headerType).setType(fieldType.get(info.get("Type")));
+						}
 					} else {
 						headerInfo.put(type, line.substring(equalChar + 1, line.length() - 1));
 					}
@@ -182,26 +225,6 @@ public class VCFReader {
 		System.out.println("===== Header information");
 		for (String key: headerInfo.keySet()) {
 			System.out.println(key + ": " + headerInfo.get(key));
-		}
-	}
-
-
-	/**
-	 * Shows the attributes header information
-	 */
-	public void showHeaderAttributes () {
-		System.out.println("===== Header attributes information");
-		String line;
-		for (String type: headerAttributes.keySet()) {
-			Map<Integer, Map<String, String>> typeValues = headerAttributes.get(type);
-			for (Integer number: typeValues.keySet()) {
-				Map<String, String> rows = typeValues.get(number);
-				line = type + " " + number + ": ";
-				for (String attributes: rows.keySet()) {
-					line = line + attributes + " = " + rows.get(attributes) + "; ";
-				}
-				System.out.println(line);
-			}
 		}
 	}
 
@@ -356,6 +379,129 @@ public class VCFReader {
 			genomeNames = list;
 		}
 		return genomeNames;
+	}
+
+	
+/**
+ * Gets the value according to the INFO field and a specific field
+ * @param info	the INFO string
+ * @param field	the specific field
+ * @return		the value of the specific field of the INFO field
+ */
+	public Object getInfoValues (String info, String field) {
+		Object result = null;
+		int indexInList = getIndex(infoHeader, field);
+		if (indexInList != -1) {
+			int indexInString = info.indexOf(field);
+			if (indexInString != -1) {
+				Class<?> type = infoHeader.get(indexInList).getType();
+				if (type == Boolean.class) {
+					result = true;
+				} else {
+					int start = indexInString + field.length() + 1;
+					int stop = info.indexOf(";", start);
+					String value = info.substring(start, stop);
+					if (type == Integer.class) {
+						result = Integer.parseInt(value);
+					} else if (type == Float.class) {
+						result = Float.parseFloat(value);
+					} else if (type == char.class) {
+						result = value.charAt(0);
+					} else if (type == String.class) {
+						result = value;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * Gets the value of the FORMAT field and a specific field
+	 * @param value	the FORMAT string
+	 * @param field the specific field
+	 * @return		the value of the specific field of the FORMAT field
+	 */
+	public Object getFormatValue (String value, String field) {
+		Object result = null;
+		int indexInList = getIndex(formatHeader, field);
+		if (indexInList != -1) {
+			Class<?> type = formatHeader.get(indexInList).getType();
+			if (type == Integer.class) {
+				try {
+					result = Integer.parseInt(value);
+				} catch (Exception e) {
+					result = value;
+				}
+				
+			} else if (type == Float.class) {
+				result = Float.parseFloat(value);
+			} else if (type == char.class) {
+				result = value.charAt(0);
+			} else if (type == String.class) {
+				result = value;
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * Gets the index of a specific ID field in a advanced type header list
+	 * @param list	the advanced type header list
+	 * @param id	the specific ID field
+	 * @return		the index
+	 */
+	private int getIndex (List<VCFHeaderAdvancedType> list, String id) {		
+		boolean found = false;
+		int index = 0;
+
+		while (!found && index < list.size()) {
+			if (id.equals(list.get(index).getId())) {
+				found = true;
+			}
+			index++;
+		}
+
+		if (found) {
+			return index;
+		} else {
+			return -1;
+		}
+	}
+
+
+
+	/**
+	 * @return the altHeader
+	 */
+	public List<VCFHeaderType> getAltHeader() {
+		return altHeader;
+	}
+
+
+	/**
+	 * @return the filterHeader
+	 */
+	public List<VCFHeaderType> getFilterHeader() {
+		return filterHeader;
+	}
+
+
+	/**
+	 * @return the infoHeader
+	 */
+	public ArrayList<VCFHeaderAdvancedType> getInfoHeader() {
+		return infoHeader;
+	}
+
+
+	/**
+	 * @return the formatHeader
+	 */
+	public ArrayList<VCFHeaderAdvancedType> getFormatHeader() {
+		return formatHeader;
 	}
 
 }

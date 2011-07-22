@@ -1,3 +1,23 @@
+/*******************************************************************************
+ *     GenPlay, Einstein Genome Analyzer
+ *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
+ *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Component;
@@ -13,9 +33,16 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
+
+/**
+ * This class shows variant stripe information.
+ * @author Nicolas Fourel
+ */
 public class ToolTipStripe extends JDialog {
 
 	private static final long serialVersionUID = -4932470485711131874L;
@@ -35,8 +62,12 @@ public class ToolTipStripe extends JDialog {
 	private Variant variant;
 	private JButton nextVariant;
 	private JButton previousVariant;
+	private Variant[] variants;
 
 
+	/**
+	 * Constructor of {@link ToolTipStripe}
+	 */
 	protected ToolTipStripe (TrackGraphics<?> origin) {
 		super(MainFrame.getInstance());
 		this.origin = origin;
@@ -51,19 +82,27 @@ public class ToolTipStripe extends JDialog {
 	}
 
 
+	/**
+	 * Method for showing the dialog box.
+	 * @param variant	variant to show information
+	 * @param X			X position on the screen
+	 * @param Y			Y position on the screen
+	 */
 	protected void show (Variant variant, int X, int Y) {
 		this.variant = variant;
+		variants = origin.getShortVariantList(this.variant);
 		initContent(variant);
 		setLocation(X, Y);
 		setVisible(true);
 	}
 
 
+	/**
+	 * Initializes the content of the dialog box according to a variant
+	 * @param variant	variant to show information
+	 */
 	private void initContent (Variant variant) {
 		// Panel
-		/*if (pane != null) {
-			pane.removeAll();
-		}*/
 		pane = new JPanel();
 
 		int height = LINE_NUMBER * LINE_HEIGHT;
@@ -153,7 +192,10 @@ public class ToolTipStripe extends JDialog {
 	}
 
 
-
+	/**
+	 * Updates the dialog box content.
+	 * All labels (values) are updated
+	 */
 	private void updateContent () {
 		for (int i = 0; i < fields.length; i++) {
 			value[i].setText(getText(i));
@@ -161,6 +203,12 @@ public class ToolTipStripe extends JDialog {
 	}
 
 
+	/**
+	 * Gets the specific text for a label.
+	 * The right order is given by the "field" object.
+	 * @param index	index of the value (according to the field)
+	 * @return the related value
+	 */
 	private String getText (int index) {
 		String text = ""; 
 		switch (index) {
@@ -200,15 +248,30 @@ public class ToolTipStripe extends JDialog {
 	}
 
 
+
 	private void initVariant (JButton button) {
-		Variant newVariant = origin.getNextVariant(getVariant());
-		if (this.variant.compareTo(newVariant) == 0) {
-			button.setEnabled(false);
+		Variant newVariant;
+		if (button.equals(nextVariant)) {
+			newVariant = variants[1]; 
+		} else {
+			newVariant = variants[0];
 		}
-		System.out.println("========== variant");variant.show();
-		this.variant = newVariant;
-		System.out.println("========== new variant");variant.show();
-		updateContent();
+
+		if (newVariant == null) {
+			button.setEnabled(false);
+		} else {
+			variants = origin.getShortVariantList(newVariant);
+			this.variant = newVariant;
+			updateContent();
+			//int variantStart = variant.getStart() + ((variant.getStop() - variant.getStart()) / 2);
+			int variantStart = variant.getStart();
+			int width = MainFrame.getInstance().getControlPanel().getGenomeWindow().getSize();
+			int startWindow = variantStart - (width / 2);
+			int stopWindow = startWindow + width;
+			Chromosome chromosome = MainFrame.getInstance().getControlPanel().getGenomeWindow().getChromosome();
+			GenomeWindow genomeWindow = new GenomeWindow(chromosome, startWindow, stopWindow);
+			MainFrame.getInstance().getControlPanel().setGenomeWindow(genomeWindow);
+		}
 	}
 
 

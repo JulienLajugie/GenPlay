@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCFFile;
+package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,21 +42,22 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * A genome belongs to a group which can have multiple genomes.
  * A group is related to a VCF file.
  * @author Nicolas Fourel
+ * @version 0.1
  */
-public class VCFMultiGenomeInformation {
+public class MGMultiGenomeInformation {
 
-	private Map<String, VCFGenomeInformation> 	multiGenomeInformation;	// Genomes information: key are genome raw names
+	private Map<String, MGGenomeInformation> 	multiGenomeInformation;	// Genomes information: key are genome raw names
 	private Map<String, List<String>> 			genomeGroupAssociation;	// Keys are group names, values are genome raw names
 	private Map<String, String> 				genomeNamesAssociation;	// Keys are genome raw names, values are understandable names
 	private Map<String, List<File>>				genomeFilesAssociation;	// Keys are group names, values are VCF files
 	private Map<VCFType, List<File>>			filesTypeAssociation;	// Keys are information type (indel, SNPs, sv), values are associated files
 
-	
+
 	/**
-	 * Constructor of {@link VCFMultiGenomeInformation}
+	 * Constructor of {@link MGMultiGenomeInformation}
 	 */
-	public VCFMultiGenomeInformation () {
-		multiGenomeInformation = new HashMap<String, VCFGenomeInformation>();
+	public MGMultiGenomeInformation () {
+		multiGenomeInformation = new HashMap<String, MGGenomeInformation>();
 	}
 
 
@@ -74,20 +75,22 @@ public class VCFMultiGenomeInformation {
 		this.genomeFilesAssociation = genomeFilesAssociation;
 		this.genomeNamesAssociation = genomeNamesAssociation;
 		this.filesTypeAssociation = filesTypeAssociation;
-		
+
 		//showAllAssociation();
 		//initMultiGenomeInformation();
 	}
-	
-	
+
+
 	/**
 	 * Initializes multi genome information.
 	 */
 	public void initMultiGenomeInformation () {
 		for (String genomeName: genomeNamesAssociation.keySet()) {
-			multiGenomeInformation.put(genomeName, new VCFGenomeInformation());
+			//String fullName = 
+			multiGenomeInformation.put(genomeName, new MGGenomeInformation(genomeName));
 		}
-		multiGenomeInformation.put(ProjectManager.getInstance().getAssembly().getDisplayName(), new VCFGenomeInformation());
+		String referenceGenomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
+		multiGenomeInformation.put(referenceGenomeFullName, new MGGenomeInformation(referenceGenomeFullName));
 	}
 
 
@@ -96,20 +99,24 @@ public class VCFMultiGenomeInformation {
 	 * @param genome		the related genome
 	 * @param chromosome	the related chromosome
 	 * @param position		the position
+	 * @param positionInformation 
+	 * @param vcfType 
 	 * @param type			the information type
 	 * @param info map containing genome variation information 
 	 */
-	public void addInformation (String genome, Chromosome chromosome, Integer position, VariantType type, int length, Map<String, String> info) {
-		multiGenomeInformation.get(genome).addInformation(chromosome, position, type, length, info);
+	public void addInformation (String genome, Chromosome chromosome, Integer position, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
+		String groupName = getGroupNameFromRawName(genome);
+		String fullGenomeName = FormattedMultiGenomeName.getFullFormattedGenomeName(groupName, genomeNamesAssociation.get(genome), genome);
+		multiGenomeInformation.get(genome).addInformation(chromosome, position, fullGenomeName, VCFLine, positionInformation, vcfType);
 	}
-	
+
 
 	/**
 	 * @param chromosome 	the related chromosome
 	 * @return 				list of valid chromosome containing position information
 	 */
-	public List<VCFChromosomeInformation> getCurrentChromosomeInformation (Chromosome chromosome) {
-		List<VCFChromosomeInformation> info = new ArrayList<VCFChromosomeInformation>();
+	public List<MGChromosomeInformation> getCurrentChromosomeInformation (Chromosome chromosome) {
+		List<MGChromosomeInformation> info = new ArrayList<MGChromosomeInformation>();
 		for (String genomeName: multiGenomeInformation.keySet()) {
 			if (!genomeName.equals(ReferenceGenomeManager.getInstance().getReferenceName())) {
 				info.add(multiGenomeInformation.get(genomeName).getChromosomeInformation(chromosome));
@@ -117,19 +124,19 @@ public class VCFMultiGenomeInformation {
 		}
 		return info;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param genome
 	 * @param chromosome
 	 * @return
 	 */
-	public VCFChromosomeInformation getChromosomeInformation (String genome, Chromosome chromosome) {
+	public MGChromosomeInformation getChromosomeInformation (String genome, Chromosome chromosome) {
 		return multiGenomeInformation.get(genome).getChromosomeInformation(chromosome);
 	}
 
-	
+
 	/**
 	 * @param genome		the genome
 	 * @param chromosome	the chromosome
@@ -139,24 +146,24 @@ public class VCFMultiGenomeInformation {
 	public VariantType getType (String genome, Chromosome chromosome, Integer position) {
 		return multiGenomeInformation.get(genome).getType(chromosome, position);
 	}
-	
-	
+
+
 	/**
 	 * @return the multiGenomeInformation
 	 */
-	public Map<String, VCFGenomeInformation> getMultiGenomeInformation() {
+	public Map<String, MGGenomeInformation> getMultiGenomeInformation() {
 		return multiGenomeInformation;
 	}
-	
-	
+
+
 	/**
 	 * @return the multiGenomeInformation
 	 */
-	public VCFGenomeInformation getMultiGenomeInformation(String genome) {
+	public MGGenomeInformation getMultiGenomeInformation(String genome) {
 		return multiGenomeInformation.get(genome);
 	}
-	
-	
+
+
 	/**
 	 * @return the genomeGroupAssociation
 	 */
@@ -179,8 +186,8 @@ public class VCFMultiGenomeInformation {
 	public Map<String, List<File>> getGenomeFilesAssociation() {
 		return genomeFilesAssociation;
 	}
-	
-	
+
+
 	/**
 	 * @return vcf files
 	 */
@@ -193,8 +200,8 @@ public class VCFMultiGenomeInformation {
 		}
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * @param file	a VCF file
 	 * @return		the group name related to the VCF file
@@ -209,8 +216,8 @@ public class VCFMultiGenomeInformation {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param file	a VCF file
 	 * @return		the genome raw names list related to the VCF file
@@ -222,10 +229,24 @@ public class VCFMultiGenomeInformation {
 		} else {
 			return new ArrayList<String>();
 		}
-		
+
 	}
-	
-	
+
+
+	/**
+	 * @param raw 	the raw genome name
+	 * @return		the group name
+	 */
+	private String getGroupNameFromRawName (String raw) {
+		for (String group: genomeGroupAssociation.keySet()) {
+			if (genomeGroupAssociation.get(group).contains(raw)) {
+				return group;
+			}
+		}
+		return null;
+	}
+
+
 	/**
 	 * @param usualName the usual genome name
 	 * @return	the raw genome name associated to the given usual genome name
@@ -238,8 +259,8 @@ public class VCFMultiGenomeInformation {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param vcf	the vcf file
 	 * @return		the vcf type related to the vcf file
@@ -252,8 +273,8 @@ public class VCFMultiGenomeInformation {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @return the total number of genome
 	 */
@@ -264,8 +285,8 @@ public class VCFMultiGenomeInformation {
 		}
 		return cpt;
 	}
-	
-	
+
+
 	/**
 	 * Creates an array with all genome names association.
 	 * Used for display.
@@ -289,8 +310,8 @@ public class VCFMultiGenomeInformation {
 		}
 		return names;
 	}
-	
-	
+
+
 	/**
 	 * Shows content information
 	 */
@@ -301,8 +322,8 @@ public class VCFMultiGenomeInformation {
 			multiGenomeInformation.get(genomeName).showData();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows all association information
 	 */
@@ -312,8 +333,8 @@ public class VCFMultiGenomeInformation {
 		showGenomeFilesAssociation();
 		showFilesTypeAssociation();
 	}
-	
-	
+
+
 	/**
 	 * Shows every raw genomes name for every genome group
 	 */
@@ -327,8 +348,8 @@ public class VCFMultiGenomeInformation {
 			System.out.println(info);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows every association between raw and usual genome names
 	 */
@@ -338,8 +359,8 @@ public class VCFMultiGenomeInformation {
 			System.out.println(rawNames + " : " + genomeNamesAssociation.get(rawNames));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows all vcf file names for every genome group
 	 */
@@ -353,8 +374,8 @@ public class VCFMultiGenomeInformation {
 			System.out.println(info);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows all vcf file names for every vcf type
 	 */
@@ -369,5 +390,33 @@ public class VCFMultiGenomeInformation {
 		}
 	}
 
-	
+
+	/**
+	 * @param rawGenomeInformation the raw genome name
+	 * @param chromosome the chromosome
+	 * @param position position of the variant on the reference genome
+	 * @return the associated position information
+	 */
+	/*public VCFPositionInformation getPositionInformation (String rawGenomeName, Chromosome chromosome, int position) {
+		String group = getGroupNameFromRawName(rawGenomeName);
+		
+		VCFPositionInformation result = null;
+		for (String current: genomeGroupAssociation.get(group)) {
+			System.out.println(rawGenomeName + " - " + current);
+			if (!current.equals(rawGenomeName)) {
+				result = multiGenomeInformation.get(current).getPositionInformation(chromosome, position);
+			}
+			if (result != null) {
+				return result;
+			}
+		}
+		return result;
+		
+		/*if (multiGenomeInformation.get(rawGenomeName) != null) {
+			return multiGenomeInformation.get(rawGenomeName).getPositionInformation(chromosome, position);
+		}
+		return null;*/
+	//}
+
+
 }

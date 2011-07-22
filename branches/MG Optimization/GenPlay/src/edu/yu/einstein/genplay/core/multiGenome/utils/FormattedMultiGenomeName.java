@@ -28,7 +28,8 @@ package edu.yu.einstein.genplay.core.multiGenome.utils;
  * - genome raw name
  * This class can generate the formatted genome name or extract information.
  * 
- * @author Nicolas
+ * @author Nicolas Fourel
+ * @version 0.1
  */
 public class FormattedMultiGenomeName {
 	

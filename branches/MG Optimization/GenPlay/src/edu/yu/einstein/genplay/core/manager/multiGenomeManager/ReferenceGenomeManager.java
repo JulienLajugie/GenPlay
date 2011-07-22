@@ -142,7 +142,7 @@ public class ReferenceGenomeManager {
 	protected void addChromosome (String chromosome) {
 		setCurrentChromosome(chromosome);
 		if (!modifiedPosition.containsKey(chromosome)) {
-			Development.increaseAddChromosome();
+			//Development.increaseAddChromosome();
 			modifiedPosition.put(chromosome, new ArrayList<Integer>());
 		}
 	}
@@ -153,7 +153,7 @@ public class ReferenceGenomeManager {
 	 * @param position
 	 */
 	protected void addPosition (Integer position) {
-		Development.increaseAllPositions();
+		//Development.increaseAllPositions();
 		if (!modifiedPosition.get(currentChromosome).contains(position)) {
 			modifiedPosition.get(currentChromosome).add(position);
 			Development.increaseDifferentPositions();

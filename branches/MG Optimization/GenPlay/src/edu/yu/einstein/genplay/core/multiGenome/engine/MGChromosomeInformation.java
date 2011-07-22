@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCFFile;
+package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,71 +27,82 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 
 
 /**
  * This class manages the chromosome information.
  * Those information are the position and its relative information.
  * @author Nicolas Fourel
+ * @version 0.1
  */
-public class VCFChromosomeInformation {
+public class MGChromosomeInformation {
 
+	private final MGGenomeInformation genomeInformation;
 	private Chromosome chromosome;
-	private Map<Integer, VCFPositionInformation>	positionInformation;	// Positions information
-	//private List<VCFPositionInformation>	positionInformation;	// Positions information
+	private Map<Integer, MGPosition>	variants;	// Positions information
 	private int[]									positionIndex;			// Mapping table for reference genome position
 	private Integer 								currentPosition;		// Current position
 	private Integer 								previousPosition;		// Previous position accessed
-	//private int 								currentPosition;		// Current position
-	//private int 								previousPosition;		// Previous position accessed
-	
+
 
 	/**
-	 * Constructor of {@link VCFChromosomeInformation}
+	 * Constructor of {@link MGChromosomeInformation}
 	 */
-	protected VCFChromosomeInformation () {
-	//protected VCFChromosomeInformation (Chromosome chromosome) {	
-		//this.chromosome = chromosome;
-		this.positionInformation = new TreeMap<Integer, VCFPositionInformation>();
-		//this.positionInformation = new ArrayList<VCFPositionInformation>();
-		//currentPosition = -1;
-		//previousPosition = -1;
+	protected MGChromosomeInformation (Chromosome chromosome, MGGenomeInformation genomeInformation) {
+		this.genomeInformation = genomeInformation;
+		this.variants = new TreeMap<Integer, MGPosition>();
 	}
 
 
 	/**
 	 * Adds a position information.
 	 * @param position	the position
+	 * @param vcfType 
+	 * @param positionInformation2 
 	 * @param type		the information type
 	 * @param length	the length
 	 * @param info map containing genome variation information 
 	 */
-	public void addInformation (Integer position, VariantType type, int length, Map<String, String> info) {
-		positionInformation.put(position, new VCFPositionInformation(type, length, info));
-		//int index = positionInformation.size();
-		//positionInformation.add(new VCFPositionInformation(position, type, length, info));
+	public void addVariant (Integer position, String fullGenomeName, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
+		if (vcfType == VCFType.INDELS) {
+			variants.put(position, new VCFIndel(fullGenomeName, chromosome, VCFLine, positionInformation));
+		} else if (vcfType == VCFType.SV) {
+			// not supported yet
+		} else if (vcfType == VCFType.SNPS) {
+			// would probably never happen
+			variants.put(position, new VCFSNP(fullGenomeName, chromosome, VCFLine, positionInformation));
+		}
 	}
 
-	
+	/**
+	 * Adds a position information.
+	 * @param position	the position
+	 * @param variant	the variant
+	 */
+	public void addBlank (Integer position, MGPosition variant) {
+		variants.put(position, variant);
+	}
+
+
 	/**
 	 * Creates the index list.
 	 * All reference genome position are indexed by consecutive integer.
 	 */
 	public void createPositionIndexList () {
-		List<Integer> position = new ArrayList<Integer>(positionInformation.keySet());
-		/*List<Integer> position = new ArrayList<Integer>();
-		for (VCFPositionInformation posInfo: positionInformation) {
-			position.add(posInfo.getReferencePosition());
-		}*/
+		List<Integer> position = new ArrayList<Integer>(variants.keySet());
 		Collections.sort(position);
 		positionIndex = new int[position.size()];
 		for (int i = 0; i < position.size(); i++) {
 			positionIndex[i] = position.get(i);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Resets the index list.
 	 */
@@ -99,8 +110,8 @@ public class VCFChromosomeInformation {
 		positionIndex = null;
 		createPositionIndexList();
 	}
-	
-	
+
+
 	/**
 	 * @return the positionIndex
 	 */
@@ -119,8 +130,8 @@ public class VCFChromosomeInformation {
 			return false;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Calculates the current genome position.
 	 * Uses information from the previous position stored.
@@ -131,25 +142,26 @@ public class VCFChromosomeInformation {
 		if (isFirstPosition()) {
 			position = positionIndex[0];
 		} else {
-			int nextGenomePosition = positionInformation.get(previousPosition).getNextGenomePosition();
-			int nextReferenceGenomePosition = positionInformation.get(previousPosition).getNextReferenceGenomePosition();
+			int nextGenomePosition = 0;
+			int nextReferenceGenomePosition = 0;
+			MGPosition current = variants.get(previousPosition);
+			if (current instanceof VCFIndel) {
+				nextGenomePosition = ((VCFIndel)variants.get(previousPosition)).getNextGenomePosition();
+				nextReferenceGenomePosition = ((VCFIndel)variants.get(previousPosition)).getNextReferenceGenomePosition();
+			} else if (current instanceof VCFBlank) {
+				nextGenomePosition = ((VCFBlank)variants.get(previousPosition)).getNextGenomePosition();
+				nextReferenceGenomePosition = ((VCFBlank)variants.get(previousPosition)).getNextReferenceGenomePosition();
+			} else if (current instanceof VCFSNP) {
+				nextGenomePosition = ((VCFSNP)variants.get(previousPosition)).getNextGenomePosition();
+				nextReferenceGenomePosition = ((VCFSNP)variants.get(previousPosition)).getNextReferenceGenomePosition();
+			}
+			
 			position = nextGenomePosition + (currentPosition - nextReferenceGenomePosition);
 		}
 		return position;
 	}
-	
-	
-	/**
-	 * @param position	the position information
-	 * @return			true if a position information is defined for this chromosome
-	 */
-	/*public boolean isInInformation (VCFPositionInformation position) {
-		List<String> l = new ArrayList<String>();
-		//l.
-		return positionInformation.containsKey(position.getGenomePosition());
-	}*/
-	
-	
+
+
 	/**
 	 * @return the chromosome
 	 */
@@ -163,45 +175,44 @@ public class VCFChromosomeInformation {
 	 * @return the type of a specified position
 	 */
 	protected VariantType getType (int position) {
-		if (positionInformation.get(position) != null) {
-			positionInformation.get(position).getType();
+		if (variants.get(position) != null) {
+			variants.get(position).getType();
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param position 	the position value
 	 * @return			the position information according to the given position
 	 */
-	public VCFPositionInformation getPositionInformation (int position) {
-		return positionInformation.get(position);
+	public MGPosition getPosition (int position) {
+		return variants.get(position);
 	}
-	
-	
+
+
 	/**
 	 * @param index 	the position value
 	 * @return			the position information according to the given position
 	 */
-	public VCFPositionInformation getPositionInformationFromIndex (int index) {
-		return positionInformation.get(positionIndex[index]);
+	public MGPosition getPositionInformationFromIndex (int index) {
+		return variants.get(positionIndex[index]);
 	}
-	
-	
+
+
 	/**
 	 * @return	the current position information
 	 */
-	public VCFPositionInformation getCurrentPositionInformation () {
-		return positionInformation.get(currentPosition);
+	public MGPosition getCurrentPositionInformation () {
+		return variants.get(currentPosition);
 	}
-	
-	
+
+
 	/**
 	 * @return the position information list
 	 */
-	public Map<Integer, VCFPositionInformation> getPositionInformationList() {
-	//public List<VCFPositionInformation> getPositionInformationList() {
-		return positionInformation;
+	public Map<Integer, MGPosition> getPositionInformationList() {
+		return variants;
 	}
 
 
@@ -218,33 +229,52 @@ public class VCFChromosomeInformation {
 	 * @param position	the previous position
 	 */
 	public void updatePreviousPosition (int position) {
-		if (getPositionInformation(position) != null) {
+		if (getPosition(position) != null) {
 			previousPosition = position;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the previous position
 	 */
-	public VCFPositionInformation getPreviousPosition () {
+	public MGPosition getPreviousPosition () {
 		if (previousPosition != null) {
-		//if (previousPosition != -1) {
-			return getPositionInformation(previousPosition);
+			return getPosition(previousPosition);
 		} else {
-			return getPositionInformation(currentPosition);
+			return getPosition(currentPosition);
 		}
 	}
-	
+
+
+	/**
+	 * @return the genomeInformation
+	 */
+	public MGGenomeInformation getGenomeInformation() {
+		return genomeInformation;
+	}
+
+
+	/**
+	 * @param position position of the variant on the reference genome
+	 * @return the associated position information
+	 */
+	public MGPositionInformation getPositionInformation (int position) {
+		if (variants.get(position) != null) {
+			return variants.get(position).getPositionInformation();
+		}
+		return null;
+	}
+
 
 	/**
 	 * Shows positions information.
 	 */
 	public void showData () {
-		for (Integer position: positionInformation.keySet()) {
+		/*for (Integer position: variants.keySet()) {
 			positionInformation.get(position).showData();
-		}
-		
+		}*/
+
 		/*for (VCFPositionInformation posInfo: positionInformation) {
 			posInfo.showData();
 		}*/

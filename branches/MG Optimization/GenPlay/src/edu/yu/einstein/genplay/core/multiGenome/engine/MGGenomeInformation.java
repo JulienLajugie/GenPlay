@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCFFile;
+package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +27,7 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.DisplayableDataList;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
@@ -38,52 +39,42 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
  * This class manages the genome information.
  * Those information are the chromosome and its relative information.
  * @author Nicolas Fourel
+ * @version 0.1
  */
-public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> {
+public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 
-	private 	Map<Chromosome, VCFChromosomeInformation> 	genomeInformation;			// Chromosomes information
-	//private		List<VCFChromosomeInformation>				genomeInformation;
-	//private		Map<VCFChromosomeInformation, Integer>					chromosomeHash;
+	private		final String								genomeFullName;				// The full genome information
+	private 	Map<Chromosome, MGChromosomeInformation> 	genomeInformation;			// Chromosomes information
 	private 	List<Variant> 								fittedDataList;				// List of variation according to the current chromosome and the x-ratio
 	protected 	Chromosome									fittedChromosome = null;	// Chromosome with the adapted data
 	protected 	Double										fittedXRatio = null;		// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
+	private		int											smallestFittedDataIndex;	// The smaller index of the returned fitted data list
+	private		int											highestFittedDataIndex;		// The highest index of the returned fitted data list
 
 
 	/**
-	 * Constructor of {@link VCFGenomeInformation}
+	 * Constructor of {@link MGGenomeInformation}
 	 */
-	protected VCFGenomeInformation () {
-		genomeInformation = new HashMap<Chromosome, VCFChromosomeInformation>();
-		//genomeInformation = new ArrayList<VCFChromosomeInformation>();
-		//int i = 1;
+	protected MGGenomeInformation (String genomeFullName) {
+		this.genomeFullName = genomeFullName;
+		genomeInformation = new HashMap<Chromosome, MGChromosomeInformation>();
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values()) {
-			//short index = ChromosomeManager.getInstance().getIndex(chromosome);
-			//genomeInformation.add(new VCFChromosomeInformation(chromosome));
-			
-			//System.out.println("add: " + index + " - " + chromosome.getName());
-			genomeInformation.put(chromosome, new VCFChromosomeInformation());
-			//i++;
+			genomeInformation.put(chromosome, new MGChromosomeInformation(chromosome, this));
 		}
 	}
-	
-	/*private void addToChromosomeHash (VCFChromosomeInformation position, Integer index) {
-		
-	}*/
-	
-	
-	
-	
-	
-	
+
+
 	/**
 	 * Adds a position information according to a chromosome.
 	 * @param chromosome	the related chromosome
 	 * @param position		the position
+	 * @param positionInformation 
+	 * @param vcfType 
 	 * @param type			the information type
 	 * @param info map containing genome variation information 
 	 */
-	protected void addInformation (Chromosome chromosome, Integer position, VariantType type, Integer length, Map<String, String> info) {
-		getChromosomeInformation(chromosome).addInformation(position, type, length, info);
+	protected void addInformation (Chromosome chromosome, Integer position, String fullGenomeName, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
+		getChromosomeInformation(chromosome).addVariant(position, fullGenomeName, VCFLine, positionInformation, vcfType);
 	}
 
 
@@ -91,9 +82,7 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	 * @param chromosome 	the related chromosome
 	 * @return				valid chromosome containing position information
 	 */
-	protected VCFChromosomeInformation getChromosomeInformation (Chromosome chromosome) {
-		//System.out.println(chromosome.getName() + " gets " + ChromosomeManager.getInstance().getIndex(chromosome) + " - " + genomeInformation.get(ChromosomeManager.getInstance().getIndex(chromosome)).getChromosome().getName());
-		//return genomeInformation.get(ChromosomeManager.getInstance().getIndex(chromosome));
+	protected MGChromosomeInformation getChromosomeInformation (Chromosome chromosome) {
 		return genomeInformation.get(chromosome);
 	}
 
@@ -111,8 +100,7 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	/**
 	 * @return the genomeInformation
 	 */
-	protected Map<Chromosome, VCFChromosomeInformation> getGenomeInformation() {
-	//protected List<VCFChromosomeInformation> getGenomeInformation() {
+	protected Map<Chromosome, MGChromosomeInformation> getGenomeInformation() {
 		return genomeInformation;
 	}
 
@@ -125,11 +113,6 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 			System.out.println("= chromosome name: " + chromosome.getName());
 			getChromosomeInformation(chromosome).showData();
 		}
-		
-		/*for (VCFChromosomeInformation chromosomeInformation: genomeInformation) {
-			System.out.println("= chromosome name: " + chromosomeInformation.getChromosome().getName());
-			getChromosomeInformation(chromosomeInformation.getChromosome()).showData();
-		}*/
 	}
 
 
@@ -141,9 +124,8 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	 * Merges two windows together if the gap between this two windows is not visible 
 	 */
 	protected void fitToScreen() {
-		VCFChromosomeInformation chromosomeInformation = getChromosomeInformation(fittedChromosome);
-		Map<Integer, VCFPositionInformation> currentChromosomePositionList;
-		//List<VCFPositionInformation> currentChromosomePositionList;
+		MGChromosomeInformation chromosomeInformation = getChromosomeInformation(fittedChromosome);
+		Map<Integer, MGPosition> currentChromosomePositionList;
 		try {
 			currentChromosomePositionList = chromosomeInformation.getPositionInformationList();
 		} catch (InvalidChromosomeException e) {
@@ -155,37 +137,34 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 		fittedDataList = new ArrayList<Variant>();
 
 		if (fittedXRatio > 1) {
-			for (VCFPositionInformation position: currentChromosomePositionList.values()) {
-			//for (VCFPositionInformation position: currentChromosomePositionList) {
+			for (MGPosition position: currentChromosomePositionList.values()) {
 				addVariant(position);
 			}
 		} else {
-			//int[] indexes = chromosomeInformation.getPositionIndex();	//test
-			if (currentChromosomePositionList.size() > 1) {
+
+			if (currentChromosomePositionList.size() > 0) {
 				addVariant(chromosomeInformation.getPositionInformationFromIndex(0));
 				//addVariant(chromosomeInformation.getPositionInformationFromIndex(indexes[0]));
 				int i = 1;
 				int j = 0;
 				while (i < currentChromosomePositionList.size()) {
 					double distance = (chromosomeInformation.getPositionInformationFromIndex(i).getMetaGenomePosition() - fittedDataList.get(j).getStop()) * fittedXRatio;
-					//double distance = (chromosomeInformation.getPositionInformationFromIndex(indexes[i]).getMetaGenomePosition() - fittedDataList.get(j).getStop()) * fittedXRatio;
 					// we merge two intervals together if there is a gap smaller than 1 pixel
+					int count = 1;
 					while ((distance < 1) && (i + 1 < currentChromosomePositionList.size())) {
 						// the new stop position is the max of the current stop and the stop of the new merged interval
 						int newStop = Math.max(fittedDataList.get(j).getStop(), chromosomeInformation.getPositionInformationFromIndex(i).getNextMetaGenomePosition());
-						//int newStop = Math.max(fittedDataList.get(j).getStop(), chromosomeInformation.getPositionInformationFromIndex(indexes[i]).getNextMetaGenomePosition());
 						fittedDataList.get(j).setStop(newStop);
-						double width = (chromosomeInformation.getPositionInformationFromIndex(i).getNextMetaGenomePosition() - chromosomeInformation.getPositionInformationFromIndex(j).getMetaGenomePosition()) * fittedXRatio;
-						//double width = (chromosomeInformation.getPositionInformationFromIndex(indexes[i]).getNextMetaGenomePosition() - chromosomeInformation.getPositionInformationFromIndex(indexes[j]).getMetaGenomePosition()) * fittedXRatio;
-						if (width < 1) {
-							fittedDataList.get(j).setType(VariantType.MIX);
-						}
+						fittedDataList.get(j).setType(VariantType.MIX);
+						count++;
 						i++;
 						distance = (chromosomeInformation.getPositionInformationFromIndex(i).getMetaGenomePosition() - fittedDataList.get(j).getStop()) * fittedXRatio;
-						//distance = (chromosomeInformation.getPositionInformationFromIndex(indexes[i]).getMetaGenomePosition() - fittedDataList.get(j).getStop()) * fittedXRatio;
 					}
+					/*if (fittedDataList.get(j).getType().equals(VariantType.MIX)) {
+						double newQuality = fittedDataList.get(j).getQualityScore() / count;
+						fittedDataList.get(j).setQualityScore(newQuality);
+					}*/
 					addVariant(chromosomeInformation.getPositionInformationFromIndex(i));
-					//addVariant(chromosomeInformation.getPositionInformationFromIndex(indexes[i]));
 					i++;
 					j++;
 				}
@@ -198,27 +177,15 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	 * Add a variant object from a position information to the fitted list
 	 * @param positionInformation	the position information
 	 */
-	private void addVariant (VCFPositionInformation positionInformation) {
+	private void addVariant (MGPosition positionInformation) {
 		ChromosomeWindow chromosome = new ChromosomeWindow(positionInformation.getMetaGenomePosition() + 1, positionInformation.getNextMetaGenomePosition());
-		int[] gt = positionInformation.getGT();
-		Variant variant = new Variant(positionInformation.getType(), chromosome);
+		Variant variant = new Variant(positionInformation.getType(), chromosome, positionInformation);
 
 		if (positionInformation.getExtraOffset() > 0) {
 			ChromosomeWindow extraChromosome = new ChromosomeWindow(positionInformation.getNextMetaGenomePosition() - positionInformation.getExtraOffset(), positionInformation.getNextMetaGenomePosition());
 			variant.setDeadZone(extraChromosome);
 		}
-
-		if (gt[0] == 0) {
-			variant.setOnFirstAllele(false);
-		} else {
-			variant.setOnFirstAllele(true);
-		}
-		if (gt[1] == 0) {
-			variant.setOnSecondAllele(false);
-		} else {
-			variant.setOnSecondAllele(true);
-		}
-
+		
 		variant.setQualityScore(positionInformation.getQuality());
 
 		fittedDataList.add(variant);
@@ -244,7 +211,7 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 	/**
 	 * @param start	start position
 	 * @param stop	stop position
-	 * @return the lsit of fitted data
+	 * @return the list of fitted data
 	 */
 	protected List<Variant> getFittedData(int start, int stop) {
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
@@ -255,27 +222,60 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 
 		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
 		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
+
+		// Last index exclusion
+		if (indexStop > 0) {
+			indexStop--;
+		}
+
+		smallestFittedDataIndex = indexStart;
+		highestFittedDataIndex = indexStop;
+
 		if (indexStart > 0) {
 			if (fittedDataList.get(indexStart - 1).getStop() >= start) {
+				smallestFittedDataIndex = indexStart - 1;
 				Variant currentVariant = fittedDataList.get(indexStart - 1);
 				ChromosomeWindow chromosome = new ChromosomeWindow(start, currentVariant.getStop());
-				Variant newLastVariant = new Variant(currentVariant.getType(), chromosome);
+				Variant newLastVariant = new Variant(currentVariant.getType(), chromosome, currentVariant.getVariantPosition());
 				resultList.add(newLastVariant);
 			}
 		}
+
 		for (int i = indexStart; i <= indexStop; i++) {
 			resultList.add(fittedDataList.get(i));
 		}
+
 		if (indexStop + 1 < fittedDataList.size()) {
 			if (fittedDataList.get(indexStop + 1).getStart() <= stop) {
-				Variant currentVariant = fittedDataList.get(indexStop + 1); 
+				highestFittedDataIndex = indexStop + 1;
+				Variant currentVariant = fittedDataList.get(indexStop + 1);
 				ChromosomeWindow chromosome = new ChromosomeWindow(currentVariant.getStart(), stop);
-				Variant newLastVariant = new Variant(currentVariant.getType(), chromosome);
+				Variant newLastVariant = new Variant(currentVariant.getType(), chromosome, currentVariant.getVariantPosition());
 				resultList.add(newLastVariant);
 			}
 		}
+
 		return resultList;
 	}
+
+
+
+	public Variant getNextFittedVariant (int offset) {
+		Variant variant = null;
+		if (highestFittedDataIndex + offset < fittedDataList.size()) {
+			variant = fittedDataList.get(highestFittedDataIndex + offset);
+		}
+		return variant;
+	}
+
+	public Variant getPreviousFittedVariant (int offset) {
+		Variant variant = null;
+		if (highestFittedDataIndex - offset >= 0) {
+			variant = fittedDataList.get(highestFittedDataIndex - offset);
+		}
+		return variant;
+	}
+
 
 
 	/**
@@ -321,6 +321,27 @@ public class VCFGenomeInformation implements DisplayableDataList<List<Variant>> 
 		} else {
 			return findStop(list, value, indexStart, indexStart + middle);
 		}
+	}
+
+
+	/**
+	 * @return the genomeFullName
+	 */
+	public String getGenomeFullName() {
+		return genomeFullName;
+	}
+
+
+	/**
+	 * @param chromosome the chromosome
+	 * @param position position of the variant on the reference genome
+	 * @return the associated position information
+	 */
+	public MGPositionInformation getPositionInformation (Chromosome chromosome, int position) {
+		if (genomeInformation.get(chromosome) != null) {
+			return genomeInformation.get(chromosome).getPositionInformation(position);
+		}
+		return null;
 	}
 
 }
