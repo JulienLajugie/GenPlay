@@ -131,9 +131,9 @@ public class RowPanel extends JPanel {
 					deletionBox.initCell(colorAssociation.get(type));
 				} else if (type.equals(VariantType.SNPS)) {
 					snpsBox.initCell(colorAssociation.get(type));
-				} else if (type.equals(VariantType.SV)) {
+				}/* else if (type.equals(VariantType.SV)) {
 					svBox.initCell(colorAssociation.get(type));
-				}
+				}*/
 			}
 		}
 	}
@@ -153,9 +153,9 @@ public class RowPanel extends JPanel {
 		if (snpsBox.isSelected()) {
 			stripe.put(VariantType.SNPS, snpsBox.getColor());
 		}
-		if (svBox.isSelected()) {
+		/*if (svBox.isSelected()) {
 			stripe.put(VariantType.SV, svBox.getColor());
-		}
+		}*/
 		return stripe;
 	}
 	

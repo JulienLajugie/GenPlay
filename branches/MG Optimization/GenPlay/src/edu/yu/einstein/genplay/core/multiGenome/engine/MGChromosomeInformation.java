@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSV;
 
 
 /**
@@ -72,7 +73,7 @@ public class MGChromosomeInformation {
 		if (vcfType == VCFType.INDELS) {
 			variants.put(position, new VCFIndel(fullGenomeName, chromosome, VCFLine, positionInformation));
 		} else if (vcfType == VCFType.SV) {
-			// not supported yet
+			variants.put(position, new VCFSV(fullGenomeName, chromosome, VCFLine, positionInformation));
 		} else if (vcfType == VCFType.SNPS) {
 			// would probably never happen
 			variants.put(position, new VCFSNP(fullGenomeName, chromosome, VCFLine, positionInformation));
