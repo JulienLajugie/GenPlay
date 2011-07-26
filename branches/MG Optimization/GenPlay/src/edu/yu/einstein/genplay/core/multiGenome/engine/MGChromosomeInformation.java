@@ -55,6 +55,7 @@ public class MGChromosomeInformation {
 	 * Constructor of {@link MGChromosomeInformation}
 	 */
 	protected MGChromosomeInformation (Chromosome chromosome, MGGenomeInformation genomeInformation) {
+		this.chromosome = chromosome;
 		this.genomeInformation = genomeInformation;
 		this.variants = new TreeMap<Integer, MGPosition>();
 	}
@@ -272,9 +273,14 @@ public class MGChromosomeInformation {
 	 * Shows positions information.
 	 */
 	public void showData () {
-		/*for (Integer position: variants.keySet()) {
-			positionInformation.get(position).showData();
-		}*/
+		for (MGPosition position: variants.values()) {
+			System.out.println("------------------------------------------------------------");
+			System.out.println(position.getType().name() + " (" + position.getLength() + ")");
+			System.out.println(position.getGenomePosition() + " -> " + position.getNextGenomePosition());
+			System.out.println(position.getReferenceGenomePosition() + " -> " + position.getNextReferenceGenomePosition() + " (" + position.getInitialReferenceOffset() + ", " + position.getNextReferencePositionOffset() + ")");
+			System.out.println(position.getMetaGenomePosition() + " -> " + position.getNextMetaGenomePosition() + " (" + position.getInitialMetaGenomeOffset() + ", " + position.getNextMetaGenomePositionOffset() + ")");
+			System.out.println(position.getExtraOffset());
+		}
 
 		/*for (VCFPositionInformation posInfo: positionInformation) {
 			posInfo.showData();

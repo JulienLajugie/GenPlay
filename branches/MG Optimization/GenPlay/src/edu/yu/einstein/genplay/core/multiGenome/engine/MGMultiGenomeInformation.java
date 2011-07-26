@@ -99,7 +99,7 @@ public class MGMultiGenomeInformation {
 	 * @param genome		the related genome
 	 * @param chromosome	the related chromosome
 	 * @param position		the position
-	 * @param positionInformation 
+	 * @param positionInformation
 	 * @param vcfType 
 	 * @param type			the information type
 	 * @param info map containing genome variation information 
@@ -107,6 +107,7 @@ public class MGMultiGenomeInformation {
 	public void addInformation (String genome, Chromosome chromosome, Integer position, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
 		String groupName = getGroupNameFromRawName(genome);
 		String fullGenomeName = FormattedMultiGenomeName.getFullFormattedGenomeName(groupName, genomeNamesAssociation.get(genome), genome);
+		System.out.println(groupName + " -> " + fullGenomeName);
 		multiGenomeInformation.get(genome).addInformation(chromosome, position, fullGenomeName, VCFLine, positionInformation, vcfType);
 	}
 
@@ -122,6 +123,11 @@ public class MGMultiGenomeInformation {
 				info.add(multiGenomeInformation.get(genomeName).getChromosomeInformation(chromosome));
 			}
 		}
+		
+		/*System.out.println("getCurrentChromosomeInformation");
+		for (int i = 0; i < info.size(); i++) {
+			System.out.println(i + " -> " + info.get(i).getChromosome().getName());
+		}*/
 		return info;
 	}
 

@@ -102,7 +102,14 @@ public class MGPositionInformation {
 	public Object getFormatValue(String genomeRawName, String field) {
 		Object result = null;
 		String[] formatHeader = VCFLine.get("FORMAT").toString().split(":");
-		String[] formatValues = VCFLine.get(genomeRawName).toString().split(":");
+		String[] formatValues;
+		if (formatHeader.length == 1) {
+			formatValues = new String[1];
+			//showLine();
+			formatValues[0] = VCFLine.get(genomeRawName).toString();
+		} else {
+			formatValues = VCFLine.get(genomeRawName).toString().split(":");
+		}
 		for (int i = 0; i < formatHeader.length; i++) {
 			if (formatHeader[i].equals(field)) {
 				return reader.getFormatValue(formatValues[i], field);
@@ -111,4 +118,13 @@ public class MGPositionInformation {
 		return result;
 	}
 
+	
+	private void showLine () {
+		String info = "";
+		for (String key: VCFLine.keySet()) {
+			info += key + ": " + VCFLine.get(key) + " | ";
+		}
+		System.out.println(info);
+	}
+	
 }

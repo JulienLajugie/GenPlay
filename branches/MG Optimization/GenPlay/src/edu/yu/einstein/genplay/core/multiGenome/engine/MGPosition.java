@@ -126,4 +126,5 @@ public interface MGPosition {
 	public Object getFormatValue (String field);
 
 
+
 }

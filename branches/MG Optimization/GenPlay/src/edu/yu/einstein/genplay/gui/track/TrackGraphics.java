@@ -324,7 +324,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 			// Start variant list scan
 			for (Variant variant: variantList) {
-				//variant.show();
+				variant.show();
 				if (variant.getType().equals(VariantType.MIX)) {
 					Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), multiGenomeStripe.getTransparency());
 					drawRect(g, variant, mixColor, mixColor);

@@ -183,7 +183,7 @@ public class VCFReader {
 					if (line.substring(0, 1).equals("#")) {
 						columnNames = new ArrayList<String>();
 						for (String name: line.substring(1, line.length()).split("[\t]")) {
-							columnNames.add(name);
+							columnNames.add(name.trim());
 						}
 					}
 				}
@@ -394,12 +394,17 @@ public class VCFReader {
 		if (indexInList != -1) {
 			int indexInString = info.indexOf(field);
 			if (indexInString != -1) {
+				//System.out.println(info + "; " + indexInString + ", " + indexInList);
+				//showInfoHeader();
 				Class<?> type = infoHeader.get(indexInList).getType();
 				if (type == Boolean.class) {
 					result = true;
 				} else {
 					int start = indexInString + field.length() + 1;
 					int stop = info.indexOf(";", start);
+					if (stop == -1) {
+						stop = info.length();
+					}
 					String value = info.substring(start, stop);
 					if (type == Integer.class) {
 						result = Integer.parseInt(value);
@@ -460,8 +465,9 @@ public class VCFReader {
 		while (!found && index < list.size()) {
 			if (id.equals(list.get(index).getId())) {
 				found = true;
+			} else {
+				index++;
 			}
-			index++;
 		}
 
 		if (found) {
@@ -504,4 +510,11 @@ public class VCFReader {
 		return formatHeader;
 	}
 
+	private void showInfoHeader () {
+		String info = "";
+		for (int i = 0; i < infoHeader.size(); i++) {
+			info += i + ": " + infoHeader.get(i).getId() + "; ";
+		}
+		System.out.println(info);
+	}
 }

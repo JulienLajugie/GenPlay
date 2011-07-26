@@ -27,6 +27,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.PositionCalculation;
 
 /**
  * This class represent the VCF indel file type.
@@ -82,7 +83,7 @@ public class VCFIndel implements MGPosition {
 	@Override
 	public VariantType getType() {
 		VariantType type;
-		int length = getLength();
+		int length = (getAlternative().length() - getReference().length());
 		if (length > 0) {
 			type = VariantType.INSERTION;
 		} else if (length < 0) {
@@ -95,7 +96,7 @@ public class VCFIndel implements MGPosition {
 
 	@Override
 	public int getLength() {
-		return (getAlternative().length() - getReference().length());
+		return Math.abs(getAlternative().length() - getReference().length());
 	}
 
 	@Override
@@ -129,54 +130,32 @@ public class VCFIndel implements MGPosition {
 
 	@Override
 	public int getNextGenomePosition() {
-		int nextGenomePosition = genomePosition + 1;
-		if (getType() == VariantType.INSERTION) {
-			nextGenomePosition += getLength();
-		}
-		return nextGenomePosition;
+		return PositionCalculation.getNextGenomePosition(this);
 	}
 
 	@Override
 	public int getReferenceGenomePosition() {
-		int position = genomePosition + initialReferenceOffset;
-		return position;
+		return PositionCalculation.getReferenceGenomePosition(this);
 	}
 
 	@Override
 	public int getNextReferenceGenomePosition() {
-		int position = getNextGenomePosition();
-		return getNextReferenceGenomePosition(position);
+		return PositionCalculation.getNextReferenceGenomePosition(this);
 	}
 
 	@Override
 	public int getNextReferenceGenomePosition(int position) {
-		int current = getReferenceGenomePosition();
-		int difference = position - genomePosition;
-		if (getType() == VariantType.INSERTION) {
-			if (difference > getLength()) {
-				current += difference - getLength();
-			} else {
-				System.out.println("WARNING: difference < length");
-			}
-		} else {
-			current += difference;
-			if (getType() == VariantType.DELETION) {
-				current += getLength();
-			}
-		}
-		return current;
+		return PositionCalculation.getNextReferenceGenomePosition(this, position);
 	}
 
 	@Override
 	public int getMetaGenomePosition() {
-		int position = genomePosition + initialMetaGenomeOffset;
-		return position;
+		return PositionCalculation.getMetaGenomePosition(this);
 	}
 
 	@Override
 	public int getNextMetaGenomePosition() {
-		int position = getNextGenomePosition();
-		return getNextMetaGenomePosition(position);
+		return PositionCalculation.getNextMetaGenomePosition(this);
 	}
 
 	@Override
@@ -186,14 +165,7 @@ public class VCFIndel implements MGPosition {
 
 	@Override
 	public int getNextMetaGenomePosition(int position) {
-		int current = getMetaGenomePosition() + (position - genomePosition);
-		if (getType() != VariantType.INSERTION) {
-			current += getLength();
-		}
-		if (position > (genomePosition + getLength())) {
-			current += extraOffset;
-		}
-		return current;
+		return PositionCalculation.getNextMetaGenomePosition(this, position);
 	}
 
 	@Override
@@ -208,9 +180,7 @@ public class VCFIndel implements MGPosition {
 
 	@Override
 	public int getNextReferencePositionOffset() {
-		int nextGenomePosition = getNextGenomePosition();
-		int nextReferencePosition = getNextReferenceGenomePosition(nextGenomePosition);
-		return nextReferencePosition - nextGenomePosition;
+		return PositionCalculation.getNextReferencePositionOffset(this);
 	}
 
 	@Override
@@ -220,14 +190,12 @@ public class VCFIndel implements MGPosition {
 
 	@Override
 	public int getNextMetaGenomePositionOffset() {
-		int nextGenomePosition = getNextGenomePosition();
-		int nextMetaGenomePosition = getNextMetaGenomePosition(nextGenomePosition);
-		return nextMetaGenomePosition - nextGenomePosition;
+		return PositionCalculation.getNextMetaGenomePositionOffset(this);
 	}
 
 	@Override
 	public void addExtraOffset(int offset) {
-		this.extraOffset += extraOffset;
+		this.extraOffset += offset;
 	}
 
 	@Override
