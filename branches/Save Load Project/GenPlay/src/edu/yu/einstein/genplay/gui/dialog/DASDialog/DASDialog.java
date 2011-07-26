@@ -22,7 +22,6 @@ package edu.yu.einstein.genplay.gui.dialog.DASDialog;
 
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,6 +39,8 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 
 
 /**
@@ -50,9 +51,7 @@ import edu.yu.einstein.genplay.core.DAS.DataSource;
 public class DASDialog extends JDialog {
 
 	private static final long serialVersionUID = 4995384388348077375L;	// generated ID
-	private final static Dimension WINDOW_SIZE = 
-		new Dimension(600, 360);						// size of the window
-	private final static int MARGIN = 5;				// margin between the components in the window
+	private final static int MARGIN = 10;				// margin between the components in the window
 	/**
 	 * Return value when Cancel has been clicked.
 	 */
@@ -85,6 +84,7 @@ public class DASDialog extends JDialog {
 	private final DataSelectionPanel 		dataSelectionPanel;			// panel selection of the data
 	private final GenerateTrackTypePanel 	generateTrackTypePanel;		// panel selection of the generated track type 
 	private final DataRangePanel 			dataRangePanel;				// panel selection of the data range
+	private final GenomeSelectionPanel		genomeSelectionPanel;		// panel for the selection of the genome in a multigenome project
 	private final JButton 					jbCancel;					// cancel button
 	private final JButton 					jbOk;						// ok button
 	private int								approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not 
@@ -103,6 +103,13 @@ public class DASDialog extends JDialog {
 		dataSelectionPanel = new DataSelectionPanel();
 		generateTrackTypePanel = new GenerateTrackTypePanel();
 		dataRangePanel = new DataRangePanel();
+		
+		// creates the multi-genome panel if the project is a multi-genome project
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			genomeSelectionPanel = new GenomeSelectionPanel();
+		} else {
+			genomeSelectionPanel =  null;
+		}
 		
 		// create the cancel button
 		jbCancel = new JButton("Cancel");
@@ -131,6 +138,7 @@ public class DASDialog extends JDialog {
 		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LAST_LINE_START;
+		c.insets = new Insets(MARGIN, MARGIN, 0, MARGIN);
 		add(dataSelectionPanel, c);
 
 		c.gridx = 0;
@@ -138,7 +146,7 @@ public class DASDialog extends JDialog {
 		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LAST_LINE_START;
-		c.insets = new Insets(MARGIN, 0, MARGIN, 0);
+		c.insets = new Insets(MARGIN, MARGIN, MARGIN, MARGIN);
 		add(generateTrackTypePanel, c);
 		
 		c.gridx = 0;		
@@ -146,28 +154,43 @@ public class DASDialog extends JDialog {
 		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LAST_LINE_START;
-		c.insets = new Insets(0, 0, 0, 0);
+		c.insets = new Insets(0, MARGIN, MARGIN, MARGIN);
 		add(dataRangePanel, c);
 		
+		// add the genome selection panel if the project is a mutli-genome project
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			c.gridx = 0;		
+			c.gridy = 3;
+			c.gridwidth = 2;
+			c.fill = GridBagConstraints.BOTH;
+			c.anchor = GridBagConstraints.LAST_LINE_START;
+			c.insets = new Insets(0, MARGIN, MARGIN, MARGIN);
+			add(genomeSelectionPanel, c);
+		}
+		
 		c.gridx = 0;		
-		c.gridy = 3;
+		c.gridy = 4;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(0, MARGIN, MARGIN, 0);
+		c.weightx = 1;
 		add(jbOk, c);
 
 		c.gridx = 1;		
-		c.gridy = 3;
+		c.gridy = 4;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
 		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(0, 0, MARGIN, 0);
+		c.weightx = 1;
 		add(jbCancel, c);
 
 		setTitle("Retrieve DAS Data");
 		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
-		setPreferredSize(WINDOW_SIZE);
-		setMinimumSize(WINDOW_SIZE);
+		pack();
+		setResizable(false);
 		setModal(true);		
 	}
 
@@ -219,11 +242,27 @@ public class DASDialog extends JDialog {
 		return dataRangePanel.getUserSpecifiedGenomeWindow();
 	}
 
+	
+	/**
+	 * @return the name of the Genome used for the mapping of the DAS data
+	 */
+	public final String getSelectedGenome() {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return genomeSelectionPanel.getGenomeName();
+		} else {
+			return null;
+		}
+	}
+	
 
 	/**
 	 * Method called when the button okay is clicked
 	 */
 	protected void jbOkClicked() {
+		// save the current selection so it become the default selection for the next time
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			genomeSelectionPanel.saveDefault();
+		}
 		approved = APPROVE_OPTION;
 		setVisible(false);
 	}

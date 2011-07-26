@@ -27,7 +27,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
 
@@ -40,16 +43,19 @@ import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 public class SCWHandler extends DefaultHandler {
 
 	private final List<ScoredChromosomeWindow>	SCWList;				// list of SCW
+	private final Chromosome 					chromosome;				// chromosome being extracted	
 	private String 								currentMarkup = null;	// current XML markup
 	private	ScoredChromosomeWindow				currentSCW = null;		// current SCW
-
+	private String 								genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
+	
 
 	/**
 	 * Creates an instance of {@link SCWHandler}
 	 */
-	public SCWHandler() {
+	public SCWHandler(Chromosome chromosome) {
 		super();
 		SCWList = new ArrayList<ScoredChromosomeWindow>();
+		this.chromosome = chromosome;
 	}
 
 
@@ -93,9 +99,9 @@ public class SCWHandler extends DefaultHandler {
 		if (currentMarkup != null) {
 			String elementValue = new String(ch, start, length);
 			if (currentMarkup.equals("START")) {
-				currentSCW.setStart(Integer.parseInt(elementValue));
+				currentSCW.setStart(getMultiGenomePosition(Integer.parseInt(elementValue)));
 			} else if (currentMarkup.equals("END")) {
-				currentSCW.setStop(Integer.parseInt(elementValue));
+				currentSCW.setStop(getMultiGenomePosition(Integer.parseInt(elementValue)));
 			} else if (currentMarkup.equals("SCORE")) {
 				// if the score is not specified we set a 0 score value
 				if (elementValue.trim().equals("-")) {
@@ -105,5 +111,34 @@ public class SCWHandler extends DefaultHandler {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * @param position		current position
+	 * @return				the associated associated meta genome position
+	 */
+	private int getMultiGenomePosition (int position) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return ShiftCompute.computeShift(genomeName, chromosome, position);
+		} else {
+			return position;
+		}
+	}	
+	
+	
+	/**
+	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+	}
+
+
+	/**
+	 * @return the name of the genome on which the data were mapped.  For multi-genome project only
+	 */
+	public String getGenomeName() {
+		return genomeName;
 	}
 }

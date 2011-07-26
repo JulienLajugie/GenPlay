@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel;
 
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
@@ -30,12 +30,12 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
- * Panel for the score calculation method of a {@link NewCurveTrackDialog} 
+ * Panel for the selection of a genome as a reference in a multi-genome project
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
-class GenomeSelectionPanel extends JPanel {
+public class GenomeSelectionPanel extends JPanel {
 
 	private static final long serialVersionUID = -2863825210102188370L;	// generated ID
 	private static final int 				PANEL_WIDTH = 150;	// width of the panel
@@ -46,7 +46,7 @@ class GenomeSelectionPanel extends JPanel {
 	/**
 	 * Creates an instance of a {@link GenomeSelectionPanel}
 	 */
-	GenomeSelectionPanel() {
+	public GenomeSelectionPanel() {
 		super();
 		jcbGenome = new JComboBox(MultiGenomeManager.getInstance().getFormattedGenomeArray());
 		jcbGenome.setSelectedIndex(defaultGenome);
@@ -59,7 +59,7 @@ class GenomeSelectionPanel extends JPanel {
 	/**
 	 * @return the selected score calculation method
 	 */
-	int getGenomeIndex() {
+	public int getGenomeIndex() {
 		return jcbGenome.getSelectedIndex();
 	}
 	
@@ -67,7 +67,7 @@ class GenomeSelectionPanel extends JPanel {
 	/**
 	 * @return the name of the selected genome
 	 */
-	String getGenomeName () {
+	public String getGenomeName () {
 		String name;
 		try {
 			name = FormattedMultiGenomeName.getRawName((String)jcbGenome.getSelectedItem());
@@ -81,7 +81,7 @@ class GenomeSelectionPanel extends JPanel {
 	/**
 	 * Saves the selected method of calculation as default
 	 */
-	void saveDefault() {
+	public void saveDefault() {
 		defaultGenome = getGenomeIndex();
 	}
 }

@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 
 
 
@@ -54,7 +55,8 @@ import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 public class DASConnector {
 
 	private final String serverAddress;	// address of a DAS Server
-
+	private String genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
+	
 
 	/**
 	 * Creates an instance of {@link DASConnector} 
@@ -162,6 +164,11 @@ public class DASConnector {
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
 				GeneHandler gh = new GeneHandler(currentChromo);
+				// if the current project is a muti genome project we set the 
+				// name of the genome that was used for the mapping of the data
+				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+					gh.setGenomeName(genomeName);
+				}
 				parser.parse(connection.getInputStream(), gh);
 				List<Gene> currentGeneList = gh.getGeneList();
 				resultList.add(currentGeneList);
@@ -228,6 +235,11 @@ public class DASConnector {
 			parserFactory.setValidating(true);
 			SAXParser parser = parserFactory.newSAXParser();
 			GeneHandler gh = new GeneHandler(currentChromo);
+			// if the current project is a muti genome project we set the 
+			// name of the genome that was used for the mapping of the data
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				gh.setGenomeName(genomeName);
+			}
 			parser.parse(connection.getInputStream(), gh);
 			List<Gene> currentGeneList = gh.getGeneList();
 			resultList.add(currentGeneList);
@@ -336,7 +348,12 @@ public class DASConnector {
 				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
-				SCWHandler scwh = new SCWHandler();				
+				SCWHandler scwh = new SCWHandler(currentChromo);				
+				// if the current project is a muti genome project we set the 
+				// name of the genome that was used for the mapping of the data
+				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+					scwh.setGenomeName(genomeName);
+				}
 				parser.parse(connection.getInputStream(), scwh);
 				List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
 				resultList.add(currentSCWList);
@@ -400,7 +417,12 @@ public class DASConnector {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			parserFactory.setValidating(true);
 			SAXParser parser = parserFactory.newSAXParser();
-			SCWHandler scwh = new SCWHandler();				
+			SCWHandler scwh = new SCWHandler(currentChromo);
+			// if the current project is a muti genome project we set the 
+			// name of the genome that was used for the mapping of the data
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				scwh.setGenomeName(genomeName);
+			}
 			parser.parse(connection.getInputStream(), scwh);
 			List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
 			resultList.add(currentSCWList);
@@ -515,6 +537,23 @@ public class DASConnector {
 		return new URL(URLStr);
 	}
 
+
+	/**
+	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+	}
+
+
+	/**
+	 * @return the name of the genome on which the data were mapped.  For multi-genome project only
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+	
 	//	public static void main(String[] args) {
 	//		try {
 	//			long startTime = System.currentTimeMillis();

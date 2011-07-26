@@ -56,7 +56,7 @@ public abstract class Extractor implements Serializable {
 	private boolean[] 					selectedChromo = null;	// array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the ChromosomeManager
 	private boolean						isFileSorted = true;	// boolean indicating if the data file is sorted
 	private int		 					lastSelectedChromoIndex;// index of the last chromosome to extract
-	private	String						genomeName;
+	private	String						genomeName;				// name of the genome used for the mapping of the data
 	
 	/**
 	 * Constructor

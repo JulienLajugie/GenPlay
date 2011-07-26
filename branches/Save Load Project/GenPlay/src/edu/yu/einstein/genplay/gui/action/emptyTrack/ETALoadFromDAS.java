@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 
@@ -75,11 +76,17 @@ public class ETALoadFromDAS extends TrackListAction {
 				if (res == DASDialog.APPROVE_OPTION) {
 					DataSource dataSource = dasDialog.getSelectedDataSource();
 					DASConnector dasConnector = dasDialog.getSelectedDasConnector();
+					// if we working on a multi genome project we need to
+					// specify on which genome the data were mapped
+					if (ProjectManager.getInstance().isMultiGenomeProject()) {
+						String selectedGenome = dasDialog.getSelectedGenome();
+						dasConnector.setGenomeName(selectedGenome);
+					}
 					DASType dasType = dasDialog.getSelectedDasType();
 					int resType = dasDialog.getGenerateType();
 					int dataRange = dasDialog.getDataRange();
 					GenomeWindow genomeWindow = dasDialog.getUserSpecifiedGenomeWindow();
-					GenomeWindow currentWindow = getTrackList().getGenomeWindow();
+					GenomeWindow currentWindow = getTrackList().getGenomeWindow();					
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						// case where the result type is a GeneList
 						new ETALoadGeneListTrackFromDAS(dataSource, dasConnector, dasType, dataRange, genomeWindow, currentWindow, selectedTrackIndex).actionPerformed(arg0);
