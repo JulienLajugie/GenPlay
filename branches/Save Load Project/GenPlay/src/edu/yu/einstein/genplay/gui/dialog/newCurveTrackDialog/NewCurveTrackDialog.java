@@ -320,7 +320,7 @@ public class NewCurveTrackDialog extends JDialog {
 	/**
 	 * @return the read length value. Returns zero if the read length is not specified 
 	 */
-	int getReadLengthValue() {
+	public int getReadLengthValue() {
 		return readDefinitionPanel.getReadLengthValue();
 	}
 	
