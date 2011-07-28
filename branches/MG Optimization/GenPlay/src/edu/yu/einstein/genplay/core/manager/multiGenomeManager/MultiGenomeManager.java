@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
@@ -173,8 +172,6 @@ public class MultiGenomeManager {
 		Map<String, Chromosome> chromosomeList = ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList();
 		for (final File vcf: fileReaders.keySet()) {
 
-
-
 			VCFType vcfType = genomesInformation.getTypeFromVCF(vcf);
 			if (vcfType != VCFType.SNPS) {
 				VCFReader reader = fileReaders.get(vcf);
@@ -188,7 +185,7 @@ public class MultiGenomeManager {
 							0,
 							chromosome.getLength());
 
-					final List<String> genomeNames = reader.getRawGenomesNames();
+					final List<String> genomeNames = genomesInformation.getAllRawGenomeNames();
 
 					//Analyse query results
 					createPositions(chromosome, genomeNames, result, vcfType, reader);
@@ -295,13 +292,9 @@ public class MultiGenomeManager {
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
 	private void updateInsert (List<MGChromosomeInformation> chromosomeList, int refPosition, int maxLength) {
-		//System.out.println("-------------------------- " + refPosition + " & " + maxLength);
 		for (MGChromosomeInformation chromosomeInformation: chromosomeList) {								// Scan VCF content by chromosome
 			MGPosition position = chromosomeInformation.getPosition(refPosition);							// Gets the current position in a new variable
-			//System.out.println(chromosomeInformation.getChromosome().getName());
 			if (position != null) {																			// If an information exists at this position
-				//System.out.println("position != null");
-				//System.out.println(position.getLength() + " ? " + maxLength);
 				if (position.getLength() < maxLength) {														// If the current event length is smaller than the maximum length found
 					position.addExtraOffset(maxLength - position.getLength());								// The difference is added into the meta genome "extra" offset
 				}

@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 
 /**
@@ -68,7 +69,7 @@ public class ToolTipStripe extends JDialog {
 	/**
 	 * Constructor of {@link ToolTipStripe}
 	 */
-	protected ToolTipStripe (TrackGraphics<?> origin) {
+	public ToolTipStripe (TrackGraphics<?> origin) {
 		super(MainFrame.getInstance());
 		this.origin = origin;
 		setResizable(false);
@@ -88,7 +89,7 @@ public class ToolTipStripe extends JDialog {
 	 * @param X			X position on the screen
 	 * @param Y			Y position on the screen
 	 */
-	protected void show (Variant variant, int X, int Y) {
+	public void show (Variant variant, int X, int Y) {
 		this.variant = variant;
 		variants = origin.getShortVariantList(this.variant);
 		initContent(variant);
@@ -213,10 +214,10 @@ public class ToolTipStripe extends JDialog {
 		String text = ""; 
 		switch (index) {
 		case 0:
-			text += "NC";
+			text += variant.getVariantPosition().getFullGenomeName();
 			break;
 		case 1:
-			text += "NC";
+			text += variant.getVariantPosition().getChromosomeName();
 			break;
 		case 2:
 			text += variant.getType().toString();
@@ -231,7 +232,11 @@ public class ToolTipStripe extends JDialog {
 			text += getAllelePresence(variant.isOnSecondAllele());
 			break;
 		case 6:
-			text += variant.getQualityScore();
+			if (variant.getQualityScore() != null) {
+				text += variant.getQualityScore();
+			} else {
+				text += ".";
+			}
 			break;
 		default:
 			break;

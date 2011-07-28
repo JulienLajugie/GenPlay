@@ -70,9 +70,11 @@ public class MGPositionInformation {
 
 	public Double getQuality() {
 		try {
+			
 			return Double.valueOf(VCFLine.get("QUAL").toString());
 		} catch (Exception e) {
-			return null;
+			System.out.println("catch");
+			return 50.0;
 		}
 	}
 

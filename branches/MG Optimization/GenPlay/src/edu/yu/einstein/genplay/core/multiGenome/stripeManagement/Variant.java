@@ -37,7 +37,7 @@ public class Variant {
 	private VariantType 		type;					// Type of variation
 	private ChromosomeWindow 	position; 				// Start and stop of the variation
 	private ChromosomeWindow 	deadZone; 				// Start and stop of the dead zone
-	private double 				qualityScore;			// The quality of the variant
+	private Double 				qualityScore;			// The quality of the variant
 
 
 	/**
@@ -162,17 +162,18 @@ public class Variant {
 	/**
 	 * @return the qualityScore
 	 */
-	public double getQualityScore() {
-		return qualityScore;
+	public Double getQualityScore() {
+		//return qualityScore;
+		return variantPosition.getQuality();
 	}
 
 
 	/**
 	 * @param qualityScore the qualityScore to set
 	 */
-	public void setQualityScore(double qualityScore) {
+	/*public void setQualityScore(Double qualityScore) {
 		this.qualityScore = qualityScore;
-	}
+	}*/
 
 
 	public int compareTo (Variant variant) {

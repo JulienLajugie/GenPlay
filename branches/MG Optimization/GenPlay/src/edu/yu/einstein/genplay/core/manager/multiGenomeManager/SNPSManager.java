@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeInformation;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
@@ -54,7 +55,7 @@ public class SNPSManager {
 	private 		double 						ratioThreshold;			// Ratio threshold to do not show up SNPs when zoom is not important enough
 
 	//Dynamic variables
-	private 		List<VCFSNP> 	list;					// List of SNP position
+	private 		List<MGPosition> 	list;					// List of SNP position
 	private 		List<String> 				fields;					// List of header for VCF file query
 	private 		GenomeWindow 				genomeWindow;			// The current genome window
 	private 		String 						fullGenomeName;			// The current full genome name
@@ -69,7 +70,7 @@ public class SNPSManager {
 	private SNPSManager () {
 		genomeChanged = false;
 		genomeWindowChanged = false;
-		list = new ArrayList<VCFSNP>();
+		list = new ArrayList<MGPosition>();
 		ratioThreshold = 0.05;
 		fullGenomeName = null;
 		groupName = null;
@@ -112,7 +113,7 @@ public class SNPSManager {
 	 * @param xFactor			the current x ratio
 	 * @return					the list of SNPs
 	 */
-	public List<VCFSNP> getSNPSList (String fullGenomeName, GenomeWindow genomeWindow, double xFactor) {
+	public List<MGPosition> getSNPSList (String fullGenomeName, GenomeWindow genomeWindow, double xFactor) {
 
 		if (xFactor > ratioThreshold) {
 			initChangements(fullGenomeName, genomeWindow);
@@ -124,7 +125,7 @@ public class SNPSManager {
 			genomeChanged = false;
 			genomeWindowChanged = false;
 		} else {
-			list = new ArrayList<VCFSNP>();
+			list = new ArrayList<MGPosition>();
 		}
 
 		return list;
@@ -193,7 +194,7 @@ public class SNPSManager {
 	private void makeList () {
 		if (genomeWindowChanged || genomeChanged) {
 			if (reader != null) {
-				list = new ArrayList<VCFSNP>();
+				list = new ArrayList<MGPosition>();
 				Chromosome chromosome = genomeWindow.getChromosome();
 				int start = genomeWindow.getStart();
 				int stop = genomeWindow.getStop();
@@ -220,6 +221,9 @@ public class SNPSManager {
 
 				if (results != null) {
 					for (Map<String, Object> resultLine: results) {
+						MGPositionInformation positionInformation = new MGPositionInformation(chromosome, resultLine, reader);
+						MGPosition info = new VCFSNP(rawName, chromosome, resultLine, positionInformation);
+						
 						int genomePosition = Integer.parseInt(resultLine.get("POS").toString());
 						int metaGenomePosition;
 						try {
@@ -227,37 +231,8 @@ public class SNPSManager {
 						} catch (Exception e) {
 							metaGenomePosition = genomePosition;
 						}
-						Nucleotide nReference = getAssociatedNucleotide(resultLine.get("REF").toString());
-						Nucleotide nAlternative = getAssociatedNucleotide(resultLine.get("ALT").toString());
-
-						Map<String, String> format = new HashMap<String, String>();
-						String titles[] = resultLine.get("FORMAT").toString().split(":");
-						String values[] = resultLine.get(rawName).toString().split(":");
-						for (int i = 0; i < titles.length; i++) {
-							format.put(titles[i], values[i]);
-						}
-
-
-						///VCFSNP info = null;
-						/*MGPosition info = new VCFSNP(genomePosition, metaGenomePosition, nReference, nAlternative);
-
-						info.setInfo(format);
-						int[] gt = info.getGT();
-						if (gt[0] == 0) {
-							info.setOnFirstAllele(false);
-						} else {
-							info.setOnFirstAllele(true);
-						}
-						if (gt[1] == 0) {
-							info.setOnSecondAllele(false);
-						} else {
-							info.setOnSecondAllele(true);
-						}*/
-						 
-						//list.add(info);
 						
-						
-						
+						list.add(info);
 						
 					}
 				}

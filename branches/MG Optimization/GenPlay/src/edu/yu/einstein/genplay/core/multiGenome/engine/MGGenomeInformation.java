@@ -186,7 +186,7 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 			variant.setDeadZone(extraChromosome);
 		}
 		
-		variant.setQualityScore(positionInformation.getQuality());
+		//variant.setQualityScore(positionInformation.getQuality());
 
 		fittedDataList.add(variant);
 	}

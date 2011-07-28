@@ -86,7 +86,6 @@ public class MGMultiGenomeInformation {
 	 */
 	public void initMultiGenomeInformation () {
 		for (String genomeName: genomeNamesAssociation.keySet()) {
-			//String fullName = 
 			multiGenomeInformation.put(genomeName, new MGGenomeInformation(genomeName));
 		}
 		String referenceGenomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
@@ -107,7 +106,6 @@ public class MGMultiGenomeInformation {
 	public void addInformation (String genome, Chromosome chromosome, Integer position, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
 		String groupName = getGroupNameFromRawName(genome);
 		String fullGenomeName = FormattedMultiGenomeName.getFullFormattedGenomeName(groupName, genomeNamesAssociation.get(genome), genome);
-		System.out.println(groupName + " -> " + fullGenomeName);
 		multiGenomeInformation.get(genome).addInformation(chromosome, position, fullGenomeName, VCFLine, positionInformation, vcfType);
 	}
 
@@ -123,7 +121,7 @@ public class MGMultiGenomeInformation {
 				info.add(multiGenomeInformation.get(genomeName).getChromosomeInformation(chromosome));
 			}
 		}
-		
+
 		/*System.out.println("getCurrentChromosomeInformation");
 		for (int i = 0; i < info.size(); i++) {
 			System.out.println(i + " -> " + info.get(i).getChromosome().getName());
@@ -268,6 +266,20 @@ public class MGMultiGenomeInformation {
 
 
 	/**
+	 * @return the list of all raw genome names in the project
+	 */
+	public List<String> getAllRawGenomeNames () {
+		List<String> result = new ArrayList<String>();
+		for (List<String> rawNames: genomeGroupAssociation.values()) {
+			for (String rawName: rawNames) {
+				result.add(rawName);
+			}
+		}
+		return result;
+	}
+
+
+	/**
 	 * @param vcf	the vcf file
 	 * @return		the vcf type related to the vcf file
 	 */
@@ -405,7 +417,7 @@ public class MGMultiGenomeInformation {
 	 */
 	/*public VCFPositionInformation getPositionInformation (String rawGenomeName, Chromosome chromosome, int position) {
 		String group = getGroupNameFromRawName(rawGenomeName);
-		
+
 		VCFPositionInformation result = null;
 		for (String current: genomeGroupAssociation.get(group)) {
 			System.out.println(rawGenomeName + " - " + current);
@@ -417,7 +429,7 @@ public class MGMultiGenomeInformation {
 			}
 		}
 		return result;
-		
+
 		/*if (multiGenomeInformation.get(rawGenomeName) != null) {
 			return multiGenomeInformation.get(rawGenomeName).getPositionInformation(chromosome, position);
 		}

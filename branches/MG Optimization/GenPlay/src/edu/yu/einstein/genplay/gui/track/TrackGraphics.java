@@ -51,9 +51,11 @@ import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeMa
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPSManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripe;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -296,16 +298,16 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 
 		// Get SNPs variant list
-		List<VCFSNP> snpList = null;
+		List<MGPosition> snpList = null;
 		if (association.containsKey(VariantType.SNPS)) {
 			snpList = SNPSManager.getInstance().getSNPSList(genome, genomeWindow, xFactor);
 		} else {
-			snpList = new ArrayList<VCFSNP>();
+			snpList = new ArrayList<MGPosition>();
 		}
-		
+
 		if (!(indelList.size() == 0 && snpList.size() == 0)) {
 			//System.out.println("!(indelList.size() == 0 && snpList.size() == 0)");
-			
+
 			// Gets list of every variant
 			mixList(genome, indelList, snpList);
 
@@ -356,7 +358,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param snpList	snp list
 	 * @return			the variant list
 	 */
-	private List<Variant> mixList (String genome, List<Variant> indelList, List<VCFSNP> snpList) {
+	private List<Variant> mixList (String genome, List<Variant> indelList, List<MGPosition> snpList) {
 		int indelIndex = 0;
 		int snpIndex = 0;
 		int indelSize = indelList.size();
@@ -487,10 +489,17 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param snp	the VCFSNPInformation object
 	 * @return		the variant object
 	 */
-	private Variant getVariant (VCFSNP snp) {
-		ChromosomeWindow chromosome = new ChromosomeWindow(snp.getMetaGenomePosition(), snp.getMetaGenomePosition() + 1);
+	private Variant getVariant (MGPosition position) {
+		ChromosomeWindow chromosome = new ChromosomeWindow(position.getMetaGenomePosition(), position.getMetaGenomePosition() + 1);
+		Variant variant = new Variant(position.getType(), chromosome, position);
+		System.out.println(position.getQuality());
+		//variant.setQualityScore(position.getQuality());
+		
+
+
+		/*ChromosomeWindow chromosome = new ChromosomeWindow(snp.getMetaGenomePosition(), snp.getMetaGenomePosition() + 1);
 		Variant variant = new Variant(VariantType.SNPS, chromosome, snp);
-		variant.setQualityScore(snp.getQuality());
+		variant.setQualityScore(snp.getQuality());*/
 		return variant;
 	}
 
@@ -621,9 +630,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 		return result;
 	}
-	
-	
-	protected Variant[] getShortVariantList (Variant variant) {
+
+
+	public Variant[] getShortVariantList (Variant variant) {
 		Variant array[] = new Variant[2];
 		array[0] = getPreviousVariant(variant);
 		array[1] = getNextVariant(variant);

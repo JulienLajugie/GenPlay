@@ -101,8 +101,6 @@ public interface MGPosition {
 	
 	// Directly related to the VCF
 	
-	//public void setPositionInformation (Chromosome chromosome, Map<String, Object> line);
-	
 	public MGPositionInformation getPositionInformation ();
 
 	public String getId ();
