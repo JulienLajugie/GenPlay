@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 
@@ -90,7 +91,7 @@ public class Assembly implements Serializable {
 	public Assembly (String name, String date) {
 		chromosomeList = new HashMap<String, Chromosome>();
 		this.name = name;
-		sdf = new SimpleDateFormat("MM yyyy");
+		sdf = new SimpleDateFormat("MM yyyy", Locale.US);
 		try {
 			this.date = sdf.parse(date);
 			sdf.applyPattern("yyyy MM");
