@@ -106,6 +106,7 @@ public class MultiGenomeManager {
 	 * @param genomeGroupAssociation	association between groups and genome names
 	 * @param genomeFilesAssociation	association between groups and VCF files
 	 * @param genomeNamesAssociation	association between genome raw names and explicit names
+	 * @param filesTypeAssociation 		association between VCF types and VCF files.
 	 */
 	public void setGenomes (Map<String, List<String>> genomeGroupAssociation, 
 			Map<String,List<File>> genomeFilesAssociation,
@@ -437,7 +438,9 @@ public class MultiGenomeManager {
 
 
 	/**
-	 * @return the genomesInformation
+	 * @param genome 		the raw genome name
+	 * @param chromosome 	the chromosome
+	 * @return 				the chromosome information object
 	 */
 	public MGChromosomeInformation getChromosomeInformation(String genome, Chromosome chromosome) {
 		return genomesInformation.getChromosomeInformation(genome, chromosome);

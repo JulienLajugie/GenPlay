@@ -59,6 +59,10 @@ public enum VCFType {
 	}
 	
 	
+	/**
+	 * @param s name of the type
+	 * @return	the type associated to the name
+	 */
 	public static VCFType getTypeFromString (String s) {
 		if (s.equals(INDELS.name)) {
 			return INDELS;

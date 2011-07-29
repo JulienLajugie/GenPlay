@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -245,6 +244,7 @@ public class SNPSManager {
 	 * @param n the raw nucleotide information
 	 * @return	the associated nucleotide
 	 */
+	@SuppressWarnings("unused")
 	private Nucleotide getAssociatedNucleotide (String n) {
 		Nucleotide nucleotide = null;
 		if (n.equals("A")) {

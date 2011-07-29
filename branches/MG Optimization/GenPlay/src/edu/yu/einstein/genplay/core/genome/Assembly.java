@@ -93,6 +93,9 @@ public class Assembly implements Serializable{
 	}
 	
 	
+	/**
+	 * @return the assembly name for display
+	 */
 	public String getDisplayName () {
 		sdf.applyPattern("MMM yyyy (");
 		return sdf.format(this.date).concat(name).concat(")");

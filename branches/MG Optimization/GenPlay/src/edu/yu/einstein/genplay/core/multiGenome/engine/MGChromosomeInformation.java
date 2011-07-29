@@ -63,12 +63,11 @@ public class MGChromosomeInformation {
 
 	/**
 	 * Adds a position information.
-	 * @param position	the position
-	 * @param vcfType 
-	 * @param positionInformation2 
-	 * @param type		the information type
-	 * @param length	the length
-	 * @param info map containing genome variation information 
+	 * @param position 				position of the variant on the reference genome
+	 * @param fullGenomeName 		the full genome name
+	 * @param VCFLine 				the VCF line (presents in the file)
+	 * @param positionInformation 	the position information associated to the VCF line
+	 * @param vcfType 				the VCF file type
 	 */
 	public void addVariant (Integer position, String fullGenomeName, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
 		if (vcfType == VCFType.INDELS) {
