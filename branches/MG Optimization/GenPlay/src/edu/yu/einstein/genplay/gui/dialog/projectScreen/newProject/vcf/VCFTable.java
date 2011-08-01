@@ -26,7 +26,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 /**
- * 
+ * This class manages the table information of the VCF loader
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -37,18 +37,25 @@ class VCFTable extends JTable {
 	private VCFTableModel 	model;
 
 
+	/**
+	 * Constructor of {@link VCFTable}
+	 * @param model the table model
+	 */
 	protected VCFTable (VCFTableModel model) {
 		super(model);
 		this.model = model;
 	}
 
 
+	/**
+	 * Updates the table
+	 */
 	protected void updateTable () {
 		model.fireTableDataChanged();
-		//model.fireTableStructureChanged();
 	}
 
-	
+
+	@Override
 	public TableCellEditor getCellEditor(int row, int col) {
 		if (col == 4) {
 			TableCellEditor editor = model.getCellEditor(row, col);
@@ -58,23 +65,24 @@ class VCFTable extends JTable {
 		}
 		return super.getCellEditor(row, col);
 	}
-	
-	
-	public String getToolTipText(MouseEvent e) {
-        String tip = null;
-        java.awt.Point p = e.getPoint();
-        int rowIndex = rowAtPoint(p);
-        int colIndex = columnAtPoint(p);
-        int realColumnIndex = convertColumnIndexToModel(colIndex);
 
-        Object o = model.getValueAt(rowIndex, realColumnIndex);
-        if (o != null) {
-        	tip = o.toString();
-        } else {
-        	tip = super.getToolTipText(e);
-        }
-        
-        return tip;
-    }
+
+	@Override
+	public String getToolTipText(MouseEvent e) {
+		String tip = null;
+		java.awt.Point p = e.getPoint();
+		int rowIndex = rowAtPoint(p);
+		int colIndex = columnAtPoint(p);
+		int realColumnIndex = convertColumnIndexToModel(colIndex);
+
+		Object o = model.getValueAt(rowIndex, realColumnIndex);
+		if (o != null) {
+			tip = o.toString();
+		} else {
+			tip = super.getToolTipText(e);
+		}
+
+		return tip;
+	}
 
 }

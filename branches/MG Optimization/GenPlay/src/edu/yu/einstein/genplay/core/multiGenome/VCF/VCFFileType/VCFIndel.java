@@ -46,6 +46,10 @@ public class VCFIndel implements MGPosition {
 
 	/**
 	 * Constructor of {@link VCFIndel}
+	 * @param fullGenomeName 		the full genome name
+	 * @param chromosome 			the chromosome
+	 * @param VCFLine 				the line from the VCF
+	 * @param positionInformation 	the position information object
 	 */
 	public VCFIndel (String fullGenomeName, Chromosome chromosome, Map<String, Object> VCFLine, MGPositionInformation positionInformation) {
 		this.fullGenomeName = fullGenomeName;

@@ -159,6 +159,8 @@ public class GenomeSelectionDialog extends JDialog {
 			}
 		});
 		
+		getRootPane().setDefaultButton(confirm);
+		
 		FlowLayout layout = new FlowLayout();
 		layout.setHgap(20);
 		layout.setVgap(10);

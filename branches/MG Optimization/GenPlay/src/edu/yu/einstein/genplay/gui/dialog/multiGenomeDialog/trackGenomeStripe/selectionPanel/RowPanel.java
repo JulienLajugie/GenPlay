@@ -36,8 +36,9 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.Mu
 
 
 /**
- * 
+ * This class displays a line of check/color boxes for a genome and every VCF type.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class RowPanel extends JPanel {
 
@@ -50,6 +51,10 @@ public class RowPanel extends JPanel {
 	private CellSelectionPanel svBox;
 	
 	
+	/**
+	 * Constructor of {@link RowPanel}
+	 * @param genomeGroupName the group name of the genome
+	 */
 	protected RowPanel (String genomeGroupName) {
 		
 		//Dimension

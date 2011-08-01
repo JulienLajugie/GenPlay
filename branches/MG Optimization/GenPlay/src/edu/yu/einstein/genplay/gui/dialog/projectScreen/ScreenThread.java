@@ -23,14 +23,15 @@ package edu.yu.einstein.genplay.gui.dialog.projectScreen;
 /**
  * This class allows the Project screen manager object initialization to be process in a different thread.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class ScreenThread extends Thread {
 	
 	/**
-	 * This method computes the init method of the project screen manager object
+	 * This method computes the init method of the project screen object
 	 */
 	public void run() {
-		ProjectScreenManager.getInstance().initScreen();
+		ProjectScreen.getInstance().initScreen();
     }
 
 }

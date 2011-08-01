@@ -20,11 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.table.AbstractTableModel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf.VCFLoader;
@@ -39,8 +36,8 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	
 	private static final long serialVersionUID = 136782955769801093L;
 	
-	private String[] 							columnNames;	// Column names
-	private Map<Integer, Map<Integer, Object>> 	data;			// table data
+	private String[] 			columnNames;	// Column names
+	private List<List<Object>> 	data;			// table data
 	
 	
 	/**
@@ -50,7 +47,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	public ChromosomeChooserTableModel (String[] columNames) {
 		super();
 		this.columnNames = columNames;
-		this.data = new HashMap<Integer, Map<Integer,Object>>();
+		this.data = new ArrayList<List<Object>>();
 	}
 	
 	
@@ -59,7 +56,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	 * @param columNames 	column names
 	 * @param data 			data
 	 */
-	public ChromosomeChooserTableModel (String[] columNames, Map<Integer, Map<Integer, Object>> data) {
+	public ChromosomeChooserTableModel (String[] columNames, List<List<Object>> data) {
 		super();
 		this.columnNames = columNames;
 		this.data = data;
@@ -84,7 +81,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if (data.containsKey(rowIndex)) {
+		if (rowIndex < data.size()) {
 			return data.get(rowIndex).get(columnIndex);
 		}
 		return null;
@@ -126,11 +123,11 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	 * @param col	the column
 	 */
 	public void setValueAt(Object value, int row, int col) {
-		if (data.containsKey(row)) {
-			data.get(row).put(col, value);
+		if (row < data.size()) {
+			data.get(row).set(col, value);
 			fireTableCellUpdated(row, col);
 		} else {
-			data.put(row, new HashMap<Integer, Object>());
+			data.add(row, new ArrayList<Object>());
 			setValueAt(value, row, col);
 		}
 	}
@@ -226,18 +223,6 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	
 	
 	/**
-	 * @return the var file list
-	 */
-	protected List<File> getFiles () {
-		List<File> list = new ArrayList<File>();
-		for (Map<Integer, Object> row: data.values()) {
-			list.add((File)row.get(1));
-		}
-		return list;
-	}
-	
-	
-	/**
 	 * Sets all selected column rows
 	 * @param list
 	 * @param value
@@ -252,7 +237,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	/**
 	 * @return the data
 	 */
-	protected  Map<Integer, Map<Integer, Object>> getData () {
+	protected  List<List<Object>> getData () {
 		return data;
 	}
 	
@@ -260,17 +245,14 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	/**
 	 * @param data	data to set
 	 */
-	protected  void setData (Map<Integer, Map<Integer, Object>> data) {
-		Map<Integer,Object> line;
-		int cpt = 0;
-		for (Map<Integer,Object> row: data.values()) {
-			line = new HashMap<Integer, Object>();
-			line.put(0, row.get(0));
-			line.put(1, row.get(1));
-			line.put(2, row.get(2));
-			line.put(3, row.get(3));
-			this.data.put(cpt, line);
-			cpt++;
+	protected  void setData (List<List<Object>> data) {
+		List<Object> line;
+		for  (List<Object> row: data) {
+			line = new ArrayList<Object>();
+			for (int i = 0; i < 4; i++) {
+				line.add(row.get(i));
+			}
+			this.data.add(line);
 		}
 		fireTableDataChanged();
 	}
@@ -284,7 +266,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 		String name;
 		String end;
 		Boolean select;
-		for (Map<Integer, Object> row: this.data.values()){
+		for (List<Object> row: this.data){
 			name = row.get(1).toString();
 			if (name.substring(0, 3).equals("chr")) {
 				select = true;

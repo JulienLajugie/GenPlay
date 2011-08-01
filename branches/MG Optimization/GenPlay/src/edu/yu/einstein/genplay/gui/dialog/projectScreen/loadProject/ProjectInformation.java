@@ -31,7 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 
 /**
  * This class displays project information:
@@ -46,7 +46,7 @@ class ProjectInformation extends JPanel {
 	
 	private static final long serialVersionUID = 970034695447470123L;
 	
-	private final static Dimension PANEL_DIM = new Dimension (ProjectScreenManager.getLoadDim().width - 70, 170);
+	private final static Dimension PANEL_DIM = new Dimension (ProjectScreen.getLoadDim().width - 70, 170);
 	
 	private JLabel jlProjectName;			// Label name for project name
 	private JLabel jlProjectGenome;			// Label name for project genome
@@ -66,7 +66,7 @@ class ProjectInformation extends JPanel {
 	 */
 	protected ProjectInformation () {
 		//Misc
-		setBackground(ProjectScreenManager.getLoadColor());
+		setBackground(ProjectScreen.getLoadColor());
 		setBorder(BorderFactory.createTitledBorder("Information"));
 		
 		//Size

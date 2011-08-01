@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-//import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -43,7 +42,8 @@ import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 
 /**
- * 
+ * This class manages dialog list editor.
+ * Some columns can be edited using a dialog object displayed by this class.
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -60,20 +60,29 @@ class VCFList {
 	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
 
-	private JDialog 			dialog;
-	private String				title;
-	private List<String> 		elements;
-	private JList 				list;
-	private DefaultListModel 	listModel;
-	private boolean 			isFile;
+	private JDialog 			dialog;		// the dialog list editor instance
+	private String				title;		// the dialog title
+	private List<String> 		elements;	// the elements of the list (to display)
+	private JList 				list;		// the list component
+	private DefaultListModel 	listModel;	// the list model component
+	private boolean 			isFile;		// is true if elements are file (different behavior)
 
 
+	/**
+	 * Constructor of {@link VCFList}
+	 * @param title		the dialog title
+	 * @param elements	the list of elements
+	 */
 	protected VCFList (String title, List<String> elements) {
 		this.title = title;
 		this.elements = elements;
 	}
 
 
+	/**
+	 * Displays the dialog
+	 * @return 0 if the user approved the changes / 1 otherwise
+	 */
 	protected int display () {
 		if (dialog == null) {
 			dialog = getDialog();
@@ -86,6 +95,10 @@ class VCFList {
 	}
 
 
+	/**
+	 * Creates the dialog list editor
+	 * @return the dialog list editor
+	 */
 	private JDialog getDialog () {
 		//Dialog
 		dialog = new JDialog();
@@ -188,14 +201,9 @@ class VCFList {
 	}
 
 
-	/*private void initLocation () {
-		Point point = ProjectScreenManager.getInstance().getLocation();
-		int x = (int) (point.getX() + ((VCFLoader.getDialogWidth() - VCFLoader.getDialogListWidth()) / 4));
-		int y = (int) (point.getY() + (VCFLoader.getDialogHeight() / 4));
-		dialog.setLocation(x, y);
-	}*/
-
-
+	/**
+	 * Closes the dialog list editor
+	 */
 	private void closeDialog () {
 		approved = APPROVE_OPTION;
 		dialog.setVisible(false);
@@ -203,6 +211,10 @@ class VCFList {
 	}
 
 
+	/**
+	 * Creates the list component
+	 * @return the list component
+	 */
 	private JList getList () {
 		initListModel();
 
@@ -214,6 +226,9 @@ class VCFList {
 	}
 
 
+	/**
+	 * Initializes the list model component
+	 */
 	private void initListModel () {
 		if(listModel == null) {
 			listModel = new DefaultListModel();
@@ -228,6 +243,10 @@ class VCFList {
 	}
 
 
+	/**
+	 * Adds an element to the list
+	 * @param s
+	 */
 	protected void addElement (String s) {
 		if (!elements.contains(s)) {
 			elements.add(s);
@@ -237,6 +256,10 @@ class VCFList {
 	}
 
 
+	/**
+	 * Removes an element from the list
+	 * @param s element to remove
+	 */
 	private void removeElement (String s) {
 		elements.remove(s);
 		listModel.removeElement(s);
@@ -251,10 +274,17 @@ class VCFList {
 	}
 
 
+	/**
+	 * @return all elements from the list
+	 */
 	protected List<String> getElementsList() {
 		return elements;
 	}
 
+	
+	/**
+	 * Shows elemetns in the console
+	 */
 	protected void showElements () {
 		String s = "";
 		for (String element: elements) {

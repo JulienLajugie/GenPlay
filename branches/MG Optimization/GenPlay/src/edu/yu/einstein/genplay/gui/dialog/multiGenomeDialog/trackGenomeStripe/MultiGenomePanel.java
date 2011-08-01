@@ -93,6 +93,10 @@ public class MultiGenomePanel extends JDialog {
 	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
 	
+	/**
+	 * Constructor of {@link MultiGenomePanel}
+	 * @param genomeNames the genome names array
+	 */
 	public MultiGenomePanel (Object genomeNames[]) {
 
 		//Layout Manager
@@ -186,11 +190,17 @@ public class MultiGenomePanel extends JDialog {
 	}
 	
 	
+	/**
+	 * @param name the new name of the track
+	 */
 	public void setTrackName (String name) {
 		descriptionPanel.setTrackName(name);
 	}
 	
 	
+	/**
+	 * @param name the new genome group name of the track
+	 */
 	public void setTrackGenomeGroupName (String name) {
 		descriptionPanel.setTrackGenomeGroupName(name);
 	}
@@ -205,11 +215,17 @@ public class MultiGenomePanel extends JDialog {
 	}
 	
 	
+	/**
+	 * @param transparency the transparency of the stripes color
+	 */
 	public void initTransparency (int transparency) {
 		transparencyPanel.initTransparency(transparency);
 	}
 	
 	
+	/**
+	 * @param quality the quality filter
+	 */
 	public void initQuality (int quality) {
 		qualityPanel.initQuality(quality);
 	}
@@ -241,7 +257,8 @@ public class MultiGenomePanel extends JDialog {
 	
 	
 	/**
-	 * @return the genomeNames
+	 * @param index 			the index in the genome name array
+	 * @return the genomeNames	the name of the genome
 	 */
 	public static String getGenomeNames(int index) {
 		return (String) genomeNames[index];
@@ -430,11 +447,17 @@ public class MultiGenomePanel extends JDialog {
 		return DESCRIPTION_COLOR;
 	}
 
-
+	/**
+	 * @param size a height 
+	 * @return the dynamic vertical inset
+	 */
 	public static int getVerticalInset (int size) {
 		return (ROW_HEIGHT - size) / 2;
 	}
 	
+	/**
+	 * @return the dynamic vertical inset
+	 */
 	public static int getVerticalInset () {
 		return ROW_HEIGHT / 4;
 	}

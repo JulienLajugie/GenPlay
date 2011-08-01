@@ -24,7 +24,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 
 /**
- * 
+ * This class is the table model for the {@link VCFTable} object
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -36,6 +36,10 @@ class VCFTableModel extends AbstractTableModel {
 	private VCFData		data;			// Table data	
 
 
+	/**
+	 * Constructor of {@link VCFTableModel}
+	 * @param data the VCF data object
+	 */
 	protected VCFTableModel (VCFData data) {
 		this.data = data;
 	}

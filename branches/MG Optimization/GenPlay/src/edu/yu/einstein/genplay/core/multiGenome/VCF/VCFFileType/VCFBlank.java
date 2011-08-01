@@ -48,6 +48,9 @@ public class VCFBlank implements MGPosition {
 
 	/**
 	 * Constructor of {@link VCFBlank}
+	 * @param fullGenomeName 	the full genome name
+	 * @param chromosome 		the chromosome
+	 * @param length 			the length of the variation
 	 */
 	public VCFBlank (String fullGenomeName, Chromosome chromosome, int length) {
 		this.fullGenomeName = fullGenomeName;

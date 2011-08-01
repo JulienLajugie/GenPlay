@@ -29,7 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 
 
 /**
@@ -77,11 +77,11 @@ public class NewProject extends JPanel {
 		
 		//Fake panel
 		fakePanel = new JPanel();
-		fakePanel.setSize(ProjectScreenManager.getVCFDim());
+		fakePanel.setSize(ProjectScreen.getVCFDim());
 		fakePanel.setPreferredSize(fakePanel.getSize());
 		fakePanel.setMinimumSize(fakePanel.getSize());
 		fakePanel.setMaximumSize(fakePanel.getSize());
-		fakePanel.setBackground(ProjectScreenManager.getVCFColor());
+		fakePanel.setBackground(ProjectScreen.getVCFColor());
 		
 		//Name panel
 		gbc.gridx = 0;
@@ -105,15 +105,15 @@ public class NewProject extends JPanel {
 		add(fakePanel, gbc);
 		
 		//Size
-		setSize(ProjectScreenManager.getNewDim());
+		setSize(ProjectScreen.getNewDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		assemblyPanel.setPreferredSize(ProjectScreenManager.getAssemblyDim());
-		genomePanel.setPreferredSize(ProjectScreenManager.getGenomeDim());
+		assemblyPanel.setPreferredSize(ProjectScreen.getAssemblyDim());
+		genomePanel.setPreferredSize(ProjectScreen.getGenomeDim());
 		
 		//Background
-		setBackground(ProjectScreenManager.getNewColor());
+		setBackground(ProjectScreen.getNewColor());
 	}
 	
 	

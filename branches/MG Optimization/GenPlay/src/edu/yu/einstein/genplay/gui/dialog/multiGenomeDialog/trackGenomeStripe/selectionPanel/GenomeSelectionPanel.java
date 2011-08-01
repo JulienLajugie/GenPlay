@@ -47,6 +47,9 @@ public class GenomeSelectionPanel extends JPanel{
 	private ContentPanel content;
 	
 	
+	/**
+	 * Constructor of {@link GenomeSelectionPanel}
+	 */
 	public GenomeSelectionPanel () {
 		
 		header = new HeaderPanel();

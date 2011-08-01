@@ -38,7 +38,7 @@ class ProjectType extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = 5891323545514431816L;
 	
-	private ProjectScreenManager 	spm;			// ScreenProjectManager object
+	private ProjectScreen 			projectScreen;	// Screen Project object
 	private JRadioButton 			newRadio;		// The radio button to choose a new project
 	private JRadioButton 			loadRadio;		// The radio button to choose to load a project
 	private ButtonGroup 			projectRadio;	// The button group
@@ -46,10 +46,11 @@ class ProjectType extends JPanel implements ActionListener {
 	
 	/**
 	 * Constructor of {@link ProjectType}
+	 * @param projectScreen the project screen object
 	 */
-	protected ProjectType(ProjectScreenManager spm) {
+	protected ProjectType(ProjectScreen projectScreen) {
 		super();
-		this.spm = spm;
+		this.projectScreen = projectScreen;
 		init();
 	}
 	
@@ -60,7 +61,7 @@ class ProjectType extends JPanel implements ActionListener {
 	 */
 	private void init() {
 		//Size
-		setSize(ProjectScreenManager.TYPE_DIM);
+		setSize(ProjectScreen.TYPE_DIM);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -71,9 +72,9 @@ class ProjectType extends JPanel implements ActionListener {
 		loadRadio = new JRadioButton("Load an existing project");
 		
 		//Color
-		setBackground(ProjectScreenManager.TYPE_COLOR);
-		newRadio.setBackground(ProjectScreenManager.TYPE_COLOR);
-		loadRadio.setBackground(ProjectScreenManager.TYPE_COLOR);
+		setBackground(ProjectScreen.TYPE_COLOR);
+		newRadio.setBackground(ProjectScreen.TYPE_COLOR);
+		loadRadio.setBackground(ProjectScreen.TYPE_COLOR);
 		
 		//Listener
 		newRadio.addActionListener(this);
@@ -113,9 +114,9 @@ class ProjectType extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == newRadio) {
-			spm.toNewScreenProject();
+			projectScreen.toNewScreenProject();
 		} else if (arg0.getSource() == loadRadio) {
-			spm.toLoadScreenProject();
+			projectScreen.toLoadScreenProject();
 		}
 	}
 }

@@ -46,6 +46,10 @@ public class VCFSV implements MGPosition {
 
 	/**
 	 * Constructor of {@link VCFSV}
+	 * @param fullGenomeName 		the full genome name
+	 * @param chromosome 			the chromosome
+	 * @param VCFLine 				the line from the VCF
+	 * @param positionInformation 	the position information object
 	 */
 	public VCFSV (String fullGenomeName, Chromosome chromosome, Map<String, Object> VCFLine, MGPositionInformation positionInformation) {
 		this.fullGenomeName = fullGenomeName;

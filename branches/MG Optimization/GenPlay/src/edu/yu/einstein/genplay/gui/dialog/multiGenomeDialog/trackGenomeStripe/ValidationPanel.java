@@ -28,6 +28,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+
 /**
  * 
  * @author Nicolas Fourel
@@ -82,6 +84,7 @@ class ValidationPanel extends JPanel {
 			}
 		});
 		
+		MainFrame.getInstance().getRootPane().setDefaultButton(confirm);
 		
 		FlowLayout layout = new FlowLayout();
 		layout.setHgap(20);
@@ -90,6 +93,7 @@ class ValidationPanel extends JPanel {
 		
 		add(confirm);
 		add(cancel);
+		
 	}
 
 

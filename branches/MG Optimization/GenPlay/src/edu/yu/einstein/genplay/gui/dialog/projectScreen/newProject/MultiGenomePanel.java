@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
 
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf.SettingsHandler;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf.VCFLoader;
 import edu.yu.einstein.genplay.gui.fileFilter.XMLFilter;
@@ -79,13 +79,13 @@ class MultiGenomePanel extends JPanel {
 		fc.setFileFilter(new XMLFilter());
 
 		//Size
-		Dimension dim = ProjectScreenManager.getVCFDim();
+		Dimension dim = ProjectScreen.getVCFDim();
 		setSize(dim);
 		setPreferredSize(dim);
 		setMinimumSize(dim);
 		setMaximumSize(dim);
 
-		setBackground(ProjectScreenManager.getVCFColor());
+		setBackground(ProjectScreen.getVCFColor());
 
 		//Layout
 		FlowLayout flow = new FlowLayout(FlowLayout.CENTER);

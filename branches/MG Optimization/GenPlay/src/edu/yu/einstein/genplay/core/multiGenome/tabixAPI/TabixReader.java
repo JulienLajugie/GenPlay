@@ -36,6 +36,12 @@ import java.util.Arrays;
 import java.lang.StringBuffer;
 
 
+/**
+ * This class handle the way to communicate between an indexed VCF file (using Tabix) and Java.
+ * The author is mentioned on the license above, however, the layout has been reformatted. 
+ * @author Nicolas Fourel
+ * @version 0.1
+ */
 public class TabixReader {
 
 	private String mFn;
@@ -62,8 +68,8 @@ public class TabixReader {
 
 	/**
 	 * The constructor
-	 *
 	 * @param fn File name of the data file
+	 * @throws IOException 
 	 */
 	public TabixReader(final String fn) throws IOException {
 		mFn = fn;
@@ -87,6 +93,12 @@ public class TabixReader {
 	}
 
 
+	/**
+	 * Reads an int primitive object
+	 * @param is	the input stream
+	 * @return		the int value
+	 * @throws IOException
+	 */
 	public static int readInt(final InputStream is) throws IOException {
 		byte[] buf = new byte[4];
 		is.read(buf);
@@ -94,6 +106,12 @@ public class TabixReader {
 	}
 
 
+	/**
+	 * Reads a long primitive object
+	 * @param is	the input stream
+	 * @return		the int value
+	 * @throws IOException
+	 */
 	public static long readLong(final InputStream is) throws IOException {
 		byte[] buf = new byte[8];
 		is.read(buf);
@@ -101,6 +119,12 @@ public class TabixReader {
 	}
 
 
+	/**
+	 * Reads a line
+	 * @param is	the input stream
+	 * @return		a String value
+	 * @throws IOException
+	 */
 	public static String readLine(final InputStream is) throws IOException {
 		StringBuffer buf = new StringBuffer();
 		int c;
@@ -112,9 +136,9 @@ public class TabixReader {
 
 
 	/**
-	 * Read the Tabix index from a file
-	 *
+	 * Reads the Tabix index from a file
 	 * @param fp File pointer
+	 * @throws IOException 
 	 */
 	public void readIndex(final File fp) throws IOException {
 		if (fp == null) return;
@@ -173,6 +197,7 @@ public class TabixReader {
 
 	/**
 	 * Read the Tabix index from the default file.
+	 * @throws IOException 
 	 */
 	public void readIndex() throws IOException {
 		readIndex(new File(mFn + ".tbi"));
@@ -180,7 +205,9 @@ public class TabixReader {
 
 
 	/**
-	 * Read one line from the data file.
+	 * Reads one line from the data file.
+	 * @return the line as String object
+	 * @throws IOException 
 	 */
 	public String readLine() throws IOException {
 		return readLine(mFp);
@@ -216,6 +243,13 @@ public class TabixReader {
 	}
 
 
+	/**
+	 * Performs a query
+	 * @param tid 	the chromosome
+	 * @param beg	start position
+	 * @param end	stop position
+	 * @return		the iterator to scan the result
+	 */
 	public Iterator query(final int tid, final int beg, final int end) {
 		TPair64[] off, chunks;
 		long min_off;
@@ -266,6 +300,11 @@ public class TabixReader {
 	}
 
 
+	/**
+	 * Performs a query
+	 * @param reg 	the string query
+	 * @return 		the iterator to scan the result
+	 */
 	public Iterator query(final String reg) {
 		int[] x = parseReg(reg);
 		if (x[0] != -1) {	//The chromosome is not necessary presents in the file

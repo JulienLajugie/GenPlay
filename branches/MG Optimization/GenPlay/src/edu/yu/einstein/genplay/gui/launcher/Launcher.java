@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ScreenThread;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
@@ -57,7 +57,7 @@ public class Launcher {
 
 	private static final String DEMO_PROJECT_PATH = null;
 
-	private static ProjectScreenManager 	screenProject;
+	private static ProjectScreen 	screenProject;
 	private static Map<String, Clade> 		cladeList;
 
 
@@ -294,7 +294,7 @@ public class Launcher {
 
 		//Welcome screen initialization
 		CountDownLatch projectSignal = new CountDownLatch(1);
-		screenProject = ProjectScreenManager.getInstance();
+		screenProject = ProjectScreen.getInstance();
 		screenProject.setProjectSignal(projectSignal);
 
 		ConfigurationManager.getInstance();

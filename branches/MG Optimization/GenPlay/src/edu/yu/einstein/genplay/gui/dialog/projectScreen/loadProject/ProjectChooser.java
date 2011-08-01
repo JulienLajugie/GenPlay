@@ -30,7 +30,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 
 /**
@@ -55,13 +55,13 @@ class ProjectChooser extends JPanel {
 		//Misc
 		this.projectList = projectList;
 		setVisible(false);
-		setBackground(ProjectScreenManager.getLoadColor());
+		setBackground(ProjectScreen.getLoadColor());
 		
 		//Size
-		setPreferredSize(ProjectScreenManager.getProjectChooserDim());
-		setSize(ProjectScreenManager.getProjectChooserDim());
-		setMinimumSize(ProjectScreenManager.getProjectChooserDim());
-		setMaximumSize(ProjectScreenManager.getProjectChooserDim());
+		setPreferredSize(ProjectScreen.getProjectChooserDim());
+		setSize(ProjectScreen.getProjectChooserDim());
+		setMinimumSize(ProjectScreen.getProjectChooserDim());
+		setMaximumSize(ProjectScreen.getProjectChooserDim());
 		
 		//layout
 		BorderLayout borderLayout = new BorderLayout();
@@ -90,7 +90,7 @@ class ProjectChooser extends JPanel {
 		chooseProject.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int returnVal = chooser.showOpenDialog(ProjectScreenManager.getInstance());
+				int returnVal = chooser.showOpenDialog(ProjectScreen.getInstance());
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
 					path.setText(chooser.getSelectedFile().getPath());
 					getProjectList().setButtonOther(chooser.getSelectedFile());

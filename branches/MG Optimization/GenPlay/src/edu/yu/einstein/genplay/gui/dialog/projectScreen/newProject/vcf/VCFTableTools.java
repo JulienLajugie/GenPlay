@@ -33,7 +33,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
- * 
+ * This class provides the graphical tool components in order to modify the table.
+ * They allow users to:
+ * - add a row
+ * - remove a row
+ * - edit lists
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -41,11 +45,15 @@ public class VCFTableTools extends JPanel {
 
 	private static final long serialVersionUID = -3988945009145488219L;
 
-	private JComboBox columnBox;
-	private String[] columnNames;
-	private VCFLoader loader;
+	private JComboBox 	columnBox;		// combo box for selecting a column
+	private String[] 	columnNames;	// column names
+	private VCFLoader 	loader;			// VCF loader instance
 
 
+	/**
+	 * Constructor of {@link VCFTableTools}
+	 * @param loader the VCF loader object
+	 */
 	protected VCFTableTools (VCFLoader loader) {
 		this.loader = loader;
 		this.columnNames = loader.getVCFData().getColumnNames();
@@ -177,8 +185,6 @@ public class VCFTableTools extends JPanel {
 		gbc.gridy = 1;
 		gbc.insets = new Insets(15, 10, 15, 0);
 		add(editList, gbc);
-
-
 
 	}
 

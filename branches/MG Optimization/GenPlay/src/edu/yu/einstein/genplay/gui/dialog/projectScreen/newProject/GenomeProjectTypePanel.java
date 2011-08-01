@@ -28,7 +28,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 
 /**
  * This class allows users to choose a simple genome project
@@ -50,7 +50,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	 */
 	protected GenomeProjectTypePanel () {
 		//Size
-		setSize(ProjectScreenManager.getGenomeDim());
+		setSize(ProjectScreen.getGenomeDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -61,9 +61,9 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		multiRadio = new JRadioButton("Multi Genome Project");
 		
 		//Color
-		setBackground(ProjectScreenManager.getGenomeColor());
-		simpleRadio.setBackground(ProjectScreenManager.getGenomeColor());
-		multiRadio.setBackground(ProjectScreenManager.getGenomeColor());
+		setBackground(ProjectScreen.getGenomeColor());
+		simpleRadio.setBackground(ProjectScreen.getGenomeColor());
+		multiRadio.setBackground(ProjectScreen.getGenomeColor());
 		
 		//Listener
 		simpleRadio.addActionListener(this);

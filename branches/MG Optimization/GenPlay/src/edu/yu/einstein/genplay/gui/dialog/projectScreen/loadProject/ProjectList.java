@@ -33,7 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 
 /**
  * This class displays the 5 last projects recorded.
@@ -55,12 +55,14 @@ class ProjectList extends JPanel {
 	
 	/**
 	 * Constructor of {@link ProjectList}
+	 * @param loadProject the load project object
+	 * @param projectPath project paths array
 	 */
 	protected ProjectList (LoadProject loadProject, String[] projectPath) {
 		this.loadProject = loadProject;
 		
 		//Background
-		setBackground(ProjectScreenManager.getLoadColor());
+		setBackground(ProjectScreen.getLoadColor());
 		
 		//Layout
 		GridBagLayout grid = new GridBagLayout();
@@ -84,11 +86,11 @@ class ProjectList extends JPanel {
 		
 		//Fake chooser
 		fakeChooser = new JPanel();
-		fakeChooser.setPreferredSize(ProjectScreenManager.getProjectChooserDim());
-		fakeChooser.setSize(ProjectScreenManager.getProjectChooserDim());
-		fakeChooser.setMinimumSize(ProjectScreenManager.getProjectChooserDim());
-		fakeChooser.setMaximumSize(ProjectScreenManager.getProjectChooserDim());
-		fakeChooser.setBackground(ProjectScreenManager.getLoadColor());
+		fakeChooser.setPreferredSize(ProjectScreen.getProjectChooserDim());
+		fakeChooser.setSize(ProjectScreen.getProjectChooserDim());
+		fakeChooser.setMinimumSize(ProjectScreen.getProjectChooserDim());
+		fakeChooser.setMaximumSize(ProjectScreen.getProjectChooserDim());
+		fakeChooser.setBackground(ProjectScreen.getLoadColor());
 		add(fakeChooser, gbc);
 	}
 	
@@ -144,11 +146,11 @@ class ProjectList extends JPanel {
 			}
 			
 			//Radio
-			radio.setPreferredSize(ProjectScreenManager.getLineDim());
-			radio.setSize(ProjectScreenManager.getLineDim());
-			radio.setMinimumSize(ProjectScreenManager.getLineDim());
-			radio.setMaximumSize(ProjectScreenManager.getLineDim());
-			radio.setBackground(ProjectScreenManager.getLoadColor());
+			radio.setPreferredSize(ProjectScreen.getLineDim());
+			radio.setSize(ProjectScreen.getLineDim());
+			radio.setMinimumSize(ProjectScreen.getLineDim());
+			radio.setMaximumSize(ProjectScreen.getLineDim());
+			radio.setBackground(ProjectScreen.getLoadColor());
 			radio.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -195,11 +197,11 @@ class ProjectList extends JPanel {
 		//Button other
 		radioOther = new JRadioButton();
 		radioOther.setText(OTHER_NAME);
-		radioOther.setPreferredSize(ProjectScreenManager.getLineDim());
-		radioOther.setSize(ProjectScreenManager.getLineDim());
-		radioOther.setMinimumSize(ProjectScreenManager.getLineDim());
-		radioOther.setMaximumSize(ProjectScreenManager.getLineDim());
-		radioOther.setBackground(ProjectScreenManager.getLoadColor());
+		radioOther.setPreferredSize(ProjectScreen.getLineDim());
+		radioOther.setSize(ProjectScreen.getLineDim());
+		radioOther.setMinimumSize(ProjectScreen.getLineDim());
+		radioOther.setMaximumSize(ProjectScreen.getLineDim());
+		radioOther.setBackground(ProjectScreen.getLoadColor());
 		radioOther.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

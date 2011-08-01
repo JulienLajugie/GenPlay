@@ -78,6 +78,10 @@ public class MultiGenomeStripe {
 	}
 	
 	
+	/**
+	 * @param genome the full genome name
+	 * @return true if it has to be displayed
+	 */
 	public boolean hasBeenRequired (String genome) {
 		if (colorAssociation.get(genome).size() > 0) {
 			return true;

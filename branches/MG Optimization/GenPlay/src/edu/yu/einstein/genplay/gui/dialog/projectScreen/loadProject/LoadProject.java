@@ -26,7 +26,7 @@ import java.awt.Insets;
 import java.io.File;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
 
 /**
  * This class displays radio buttons to load the 5 last projects,
@@ -43,6 +43,7 @@ public class LoadProject extends JPanel {
 	
 	/**
 	 * Constructor of {@link LoadProject}
+	 * @param projectPath project paths array
 	 */
 	public LoadProject (String[] projectPath) {
 		super();
@@ -59,7 +60,7 @@ public class LoadProject extends JPanel {
 	 */
 	private void init() {
 		//Size
-		setSize(ProjectScreenManager.getLoadDim());
+		setSize(ProjectScreen.getLoadDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -86,7 +87,7 @@ public class LoadProject extends JPanel {
 		
 		//Misc
 		setVisible(false);
-		setBackground(ProjectScreenManager.getLoadColor());
+		setBackground(ProjectScreen.getLoadColor());
 	}
 	
 	

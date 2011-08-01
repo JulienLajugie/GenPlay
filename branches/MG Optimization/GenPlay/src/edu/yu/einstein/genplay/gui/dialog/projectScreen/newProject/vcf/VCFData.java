@@ -31,21 +31,25 @@ import javax.swing.table.TableCellEditor;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 
 /**
- * 
+ * This class handles the data contains in the VCF loader.
  * @author Nicolas Fourel
  * @version 0.1
  */
 class VCFData {
 
-	private VCFLoader 			loader;
+	private VCFLoader 			loader;			// VCF loader
 	private List<List<Object>> 	data;			// table data
-	private VCFList[] 			dialogList;
-	private String[] 			columnNames;	// Column names
-	private Hashtable<Integer, TableCellEditor> tableCellEditor;
+	private VCFList[] 			dialogList;		// the dialog list editors array
+	private String[] 			columnNames;	// column names
+	private Hashtable<Integer, TableCellEditor> tableCellEditor;	// map to store all table cell editor
 
 
-	protected VCFData (VCFLoader manager) {
-		this.loader = manager;
+	/**
+	 * Constructor of {@link VCFData}
+	 * @param loader the VCF loader
+	 */
+	protected VCFData (VCFLoader loader) {
+		this.loader = loader;
 		data = new ArrayList<List<Object>>();
 		tableCellEditor = new Hashtable<Integer, TableCellEditor>();
 		initColumnNames();
@@ -53,6 +57,9 @@ class VCFData {
 	}
 
 
+	/**
+	 * Initializes the name of columns
+	 */
 	private void initColumnNames () {
 		this.columnNames = new String[5];
 		this.columnNames[0] = "Group";
@@ -63,6 +70,9 @@ class VCFData {
 	}
 
 
+	/**
+	 * Initializes the dialog list editors
+	 */
 	protected void initDialogsList() {
 		if(dialogList == null) {
 			dialogList = new VCFList[5];
@@ -78,7 +88,6 @@ class VCFData {
 	 * @param data the data to set
 	 */
 	protected void setData(List<List<Object>> data) {
-		//this.data = data;
 		this.data = new ArrayList<List<Object>>();
 		for (List<Object> list: data) {
 			this.data.add(list);
@@ -102,6 +111,9 @@ class VCFData {
 	}
 
 
+	/**
+	 * Adds a row
+	 */
 	protected void addRow () {
 		List<Object> list = new ArrayList<Object>();
 		for (int i = 0; i < 5 ; i++) {
@@ -111,6 +123,10 @@ class VCFData {
 	}
 
 
+	/**
+	 * Removes rows
+	 * @param rows rows to remove
+	 */
 	protected void removeRows (int[] rows) {
 		for (int i: rows) {
 			data.remove(i);
@@ -123,6 +139,10 @@ class VCFData {
 	}
 
 
+	/**
+	 * @param col the column index
+	 * @return a combo box according to the column type
+	 */
 	protected JComboBox getNewComboBox (int col) {
 		JComboBox box = new JComboBox();
 		box.setName("" + col);
@@ -151,9 +171,13 @@ class VCFData {
 	}
 
 
-	private List<String> getFirstList (int row) {
+	/**
+	 * @param col the column index
+	 * @return the first according to the column
+	 */
+	private List<String> getFirstList (int col) {
 		List<String> list = new ArrayList<String>();
-		switch (row) {
+		switch (col) {
 		case 0:
 			list.add(VCFLoader.GROUP_LIST);
 			break;
@@ -179,26 +203,44 @@ class VCFData {
 	}
 
 
+	/**
+	 * @return the number of column
+	 */
 	protected int getColumnCount() {
 		return columnNames.length;
 	}
 
 
+	/**
+	 * @return the column names
+	 */
 	protected String[] getColumnNames() {
 		return columnNames;
 	}
 
 
+	/**
+	 * @param col the column index
+	 * @return the name of the column
+	 */
 	protected String getColumnName(int col) {
 		return columnNames[col];
 	}
 
 
+	/**
+	 * @return the number of row
+	 */
 	protected int getRowCount() {
 		return data.size();
 	}
 
 
+	/**
+	 * @param row the row index
+	 * @param col the column index
+	 * @return the object at the row/col position
+	 */
 	protected Object getValueAt(int row, int col) {
 		if (row >= 0 && row < getRowCount()) {
 			return data.get(row).get(col);
@@ -208,6 +250,11 @@ class VCFData {
 	}
 
 
+	/**
+	 * @param value value to put at the row/col position
+	 * @param row the row index
+	 * @param col the column index
+	 */
 	protected void setValueAt(Object value, int row, int col) {
 		if (row < getRowCount()) {
 			data.get(row).set(col, value);
@@ -217,6 +264,10 @@ class VCFData {
 	}
 
 
+	/**
+	 * @param col the column index
+	 * @return the list of string at the column
+	 */
 	protected List<String> getColumnList (int col) {
 		List<String> list = new ArrayList<String>();
 		for (int i = 0; i < getRowCount(); i++) {
@@ -226,11 +277,20 @@ class VCFData {
 	}
 
 
+	/**
+	 * Adds an editor for a specific row
+	 * @param row 	row index
+	 * @param e		table cell editor
+	 */
 	protected void addEditorForRow(int row, TableCellEditor e ) {
 		tableCellEditor.put(new Integer(row), e);
 	}
 
 
+	/**
+	 * Removes an editor at specific rows
+	 * @param rows row index array
+	 */
 	protected void removeEditorForRow(int[] rows) {
 		for (int row: rows) {
 			removeEditorForRow(row);
@@ -238,6 +298,10 @@ class VCFData {
 	}
 
 
+	/**
+	 * Removes an editor at a specific row
+	 * @param row row index
+	 */
 	protected void removeEditorForRow(int row) {
 		if (tableCellEditor.get(row) != null) {
 			tableCellEditor.remove(new Integer(row));
@@ -245,6 +309,11 @@ class VCFData {
 	}
 
 
+	/**
+	 * @param row the row index
+	 * @param col the column index
+	 * @return the table cell editor at the specifi row/col position
+	 */
 	protected TableCellEditor getEditor(int row, int col) {
 		if (tableCellEditor.get(row) != null) {
 			return (TableCellEditor)tableCellEditor.get(row);
@@ -253,11 +322,19 @@ class VCFData {
 	}
 
 
+	/**
+	 * Displays the dialog list editor of a column
+	 * @param col the column index
+	 */
 	protected void displayList(int col) {
 		dialogList[col].display();
 	}
 
 
+	/**
+	 * @param col the column index
+	 * @return the number of element in a list
+	 */
 	protected int getNumberElementList (int col) {
 		List<String> list = getColumnList(col);
 		int size;
@@ -276,27 +353,5 @@ class VCFData {
 		}
 		return size;
 	}
-
-
-	/*@SuppressWarnings("unused") // For development
-	protected void showData () {
-		for (int row = 0; row < data.size(); row++) {
-			String line = row + " ::: ";
-			for (int col = 0; col < 5; col++) {
-				line = line + col + ": " + getValueAt(row, col) + "; ";
-			}
-			System.out.println(line);
-		}
-	}*/
-
-
-	/*@SuppressWarnings("unused") // For development
-	protected void showElements () {
-		for(int i = 0; i < dialogList.length; i++) {
-			System.out.println(i + ": ");
-			dialogList[i].showElements();
-		}
-	}*/
-
 
 }

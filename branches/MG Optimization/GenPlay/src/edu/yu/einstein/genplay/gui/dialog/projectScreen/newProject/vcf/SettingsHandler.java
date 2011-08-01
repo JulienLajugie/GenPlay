@@ -31,17 +31,21 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * 
+ * This class manages the multi genome settings.
+ * It concerns all association maps loading/saving.
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class SettingsHandler extends DefaultHandler {
 
 
-	private List<List<Object>> 	data;
-	private String[] attributeNames;
+	private List<List<Object>> 	data;	// the data
+	private String[] attributeNames;	// the attribute names
 
 
+	/**
+	 * Constructor of {@link SettingsHandler}
+	 */
 	public SettingsHandler () {
 		super();
 		data = new ArrayList<List<Object>>();
@@ -86,6 +90,10 @@ public class SettingsHandler extends DefaultHandler {
 
 
 
+	/**
+	 * Writes the multi genome setting in a XML file
+	 * @param xml a XML file
+	 */
 	public void write (File xml) {
 		try{
 			// Create file 
