@@ -49,8 +49,17 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.PositionCalculation;
  */
 public class MultiGenomeManager {
 
-	public 	static final 	int 						FULL					 	= 1;	// Algorithm computed for every loaded chromosome when project is created
-	public 	static final 	int 						SEQUENTIAL 					= 0;	// Algorithm computed at every changement of chromosome
+	/**
+	 * FULL value for CHROMOSOME_LOADING_OPTION option involves the loading of every chromosomes when multi genome project starts
+	 */
+	public 	static final 	int 						FULL					 	= 1;
+	/**
+	 * SEQUENTIAL value for CHROMOSOME_LOADING_OPTION option involves the sequential loading (one by one) of chromosomes during a multi genome project (low memory cost)
+	 */
+	public 	static final 	int 						SEQUENTIAL 					= 0;
+	/**
+	 * CHROMOSOME_LOADING_OPTION to choose the chromosome loading mode
+	 */
 	public 	static			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
 
 	private static final 	Color 						DEFAULT_COLOR 				= Color.black;

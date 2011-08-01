@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.gui.launcher.Launcher;
 /**
  * This class provides a panel including combo boxes to choose an assembly.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 class AssemblyPanel extends JPanel implements ActionListener {
 

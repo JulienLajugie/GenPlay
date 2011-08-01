@@ -50,6 +50,11 @@ import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.MultiGenomeInformationPanel;
 
+/**
+ * 
+ * @author Nicolas Fourel
+ * @version 0.1
+ */
 public class VCFLoader extends JDialog {
 
 	private static final long serialVersionUID = -1686983714031041874L;

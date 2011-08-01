@@ -36,17 +36,18 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
  * This class manages all information regarding new project information.
  * It displays and organize the communication of every panels. 
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class NewProject extends JPanel {
 	
 	private static final long serialVersionUID = 2223959265643927573L;
 	
-	private GridBagConstraints 			gbc;			// Grid bag constraints
-	private NamePanel 					namePanel;		// Name panel
-	private AssemblyPanel 				assemblyPanel;	// Assembly panel
-	private GenomeProjectTypePanel 		genomePanel;	// Genome panel
-	private static MultiGenomePanel		multiGenomePanel;
-	private static JPanel 				fakePanel;		// Fake panel 
+	private GridBagConstraints 			gbc;				// Grid bag constraints
+	private NamePanel 					namePanel;			// Name panel
+	private AssemblyPanel 				assemblyPanel;		// Assembly panel
+	private GenomeProjectTypePanel 		genomePanel;		// Genome panel
+	private static MultiGenomePanel		multiGenomePanel;	// Multi genome panel
+	private static JPanel 				fakePanel;			// Fake panel 
 	
 	
 	/**
@@ -188,26 +189,41 @@ public class NewProject extends JPanel {
 	}
 	
 	
+	/**
+	 * @return the genome/group association
+	 */
 	public Map<String, List<String>> getGenomeGroupAssociation () {
 		return multiGenomePanel.getGenomeGroupAssociation();
 	}
 	
 	
+	/**
+	 * @return the genome/VCF association
+	 */
 	public Map<String, List<File>> getGenomeFilesAssociation () {
 		return multiGenomePanel.getGenomeFilesAssociation();
 	}
 	
 	
+	/**
+	 * @return the raw/usual genome names association
+	 */
 	public Map<String, String> getGenomeNamesAssociation () {
 		return multiGenomePanel.getGenomeNamesAssociation();
 	}
 	
 	
+	/**
+	 * @return the VCF type/files association
+	 */
 	public Map<VCFType, List<File>> getFilesTypeAssociation () {
 		return multiGenomePanel.getFilesTypeAssociation();
 	}
 	
 	
+	/**
+	 * @return true if the multi genome project is valid
+	 */
 	public boolean isValidMultigenomeProject () {
 		return multiGenomePanel.isValidMultigenomeProject();
 	}

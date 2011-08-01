@@ -66,6 +66,7 @@ public class MGMultiGenomeInformation {
 	 * @param genomeGroupAssociation	association between groups and genome names
 	 * @param genomeFilesAssociation	association between groups and VCF files
 	 * @param genomeNamesAssociation	association between genome raw names and explicit names
+	 * @param filesTypeAssociation 		association between VCF file type and the VCF files
 	 */
 	public void setGenomes (Map<String, List<String>> genomeGroupAssociation,
 			Map<String, List<File>> genomeFilesAssociation,
@@ -95,13 +96,12 @@ public class MGMultiGenomeInformation {
 
 	/**
 	 * Adds a position information according to a genome and a chromosome.
-	 * @param genome		the related genome
-	 * @param chromosome	the related chromosome
-	 * @param position		the position
-	 * @param positionInformation
-	 * @param vcfType 
-	 * @param type			the information type
-	 * @param info map containing genome variation information 
+	 * @param genome 				the genome raw name
+	 * @param chromosome 			the related chromosome
+	 * @param position 				the genome reference position
+	 * @param VCFLine 				the text line from the VCF file
+	 * @param positionInformation 	the common information related to the position
+	 * @param vcfType 				the VCF type
 	 */
 	public void addInformation (String genome, Chromosome chromosome, Integer position, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
 		String groupName = getGroupNameFromRawName(genome);
@@ -121,20 +121,14 @@ public class MGMultiGenomeInformation {
 				info.add(multiGenomeInformation.get(genomeName).getChromosomeInformation(chromosome));
 			}
 		}
-
-		/*System.out.println("getCurrentChromosomeInformation");
-		for (int i = 0; i < info.size(); i++) {
-			System.out.println(i + " -> " + info.get(i).getChromosome().getName());
-		}*/
 		return info;
 	}
 
 
 	/**
-	 * 
-	 * @param genome
-	 * @param chromosome
-	 * @return
+	 * @param genome		a genome raw name
+	 * @param chromosome	a chromosome
+	 * @return				the chromosome information object according to a genome and a chromosome.
 	 */
 	public MGChromosomeInformation getChromosomeInformation (String genome, Chromosome chromosome) {
 		return multiGenomeInformation.get(genome).getChromosomeInformation(chromosome);
@@ -161,7 +155,8 @@ public class MGMultiGenomeInformation {
 
 
 	/**
-	 * @return the multiGenomeInformation
+	 * @param genome a genome raw name
+	 * @return the multiGenomeInformation object according to the genome name
 	 */
 	public MGGenomeInformation getMultiGenomeInformation(String genome) {
 		return multiGenomeInformation.get(genome);
@@ -248,6 +243,20 @@ public class MGMultiGenomeInformation {
 			}
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * @return the list of all genome raw names in the project
+	 */
+	public List<String> getAllGenomeRawNames () {
+		List<String> list = new ArrayList<String>();
+		for (List<String> names: genomeGroupAssociation.values()) {
+			for (String name: names) {
+				list.add(name);
+			}
+		}
+		return list;
 	}
 
 

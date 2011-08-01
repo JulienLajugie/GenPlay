@@ -185,7 +185,7 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 			ChromosomeWindow extraChromosome = new ChromosomeWindow(positionInformation.getNextMetaGenomePosition() - positionInformation.getExtraOffset(), positionInformation.getNextMetaGenomePosition());
 			variant.setDeadZone(extraChromosome);
 		}
-		
+
 		//variant.setQualityScore(positionInformation.getQuality());
 
 		fittedDataList.add(variant);
@@ -259,7 +259,10 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	}
 
 
-
+	/**
+	 * @param offset	value to add to the current highest fitted data index
+	 * @return the next fitted variant according to the current highest fitted data index and the offset parameter
+	 */
 	public Variant getNextFittedVariant (int offset) {
 		Variant variant = null;
 		if (highestFittedDataIndex + offset < fittedDataList.size()) {
@@ -268,14 +271,18 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 		return variant;
 	}
 
+	
+	/**
+	 * @param offset	value to add to the current smallest fitted data index
+	 * @return the next fitted variant according to the current smallest fitted data index and the offset parameter
+	 */
 	public Variant getPreviousFittedVariant (int offset) {
 		Variant variant = null;
-		if (highestFittedDataIndex - offset >= 0) {
-			variant = fittedDataList.get(highestFittedDataIndex - offset);
+		if (smallestFittedDataIndex - offset >= 0) {
+			variant = fittedDataList.get(smallestFittedDataIndex - offset);
 		}
 		return variant;
 	}
-
 
 
 	/**

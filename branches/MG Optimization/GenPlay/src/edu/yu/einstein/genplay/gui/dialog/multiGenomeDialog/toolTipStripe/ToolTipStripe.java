@@ -48,26 +48,33 @@ public class ToolTipStripe extends JDialog {
 
 	private static final long serialVersionUID = -4932470485711131874L;
 
-	private final String fields[] = {"Genome:", "Chromosome:", "Type:", "Position:", "First allele:", "Second allele:", "Quality:"};
-	private final int LABEL_WIDTH = 110;
-	private final int VALUE_WIDTH = 180;
-	private final int LINE_HEIGHT = 20;
-	private final int LINE_NUMBER = fields.length;
-	private final int OFFSET_HEIGHT = 7 * LINE_NUMBER;
-	private final int OFFSET_WIDTH = 40;
+	private final String fields[] = {"Genome:", 		// Names of all information to display
+			"Chromosome:", 
+			"Type:", 
+			"Position:", 
+			"First allele:", 
+			"Second allele:", 
+			"Quality:"};
+	private final int LABEL_WIDTH = 110;				// width of all name label
+	private final int VALUE_WIDTH = 180;				// width of all value label
+	private final int LINE_HEIGHT = 20;					// height of a line
+	private final int LINE_NUMBER = fields.length;		// number of line to display
+	private final int OFFSET_HEIGHT = 7 * LINE_NUMBER;	// height offset for display
+	private final int OFFSET_WIDTH = 40;				// width offset for display
 
-	private TrackGraphics<?> origin;
-	private JLabel label[];
-	private JLabel value[];
-	private JPanel pane;
-	private Variant variant;
-	private JButton nextVariant;
-	private JButton previousVariant;
-	private Variant[] variants;
+	private TrackGraphics<?> origin;	// the associated track graphics object
+	private JLabel label[];				// gathers all name label
+	private JLabel value[];				// gathers all value label
+	private JPanel pane;				// dialog panel
+	private Variant variant;			// the current variant object to display
+	private JButton nextVariant;		// button leading to the next variant
+	private JButton previousVariant;	// button leading to the previous variant
+	private Variant[] variants;			// contains the previous and the next variant
 
 
 	/**
 	 * Constructor of {@link ToolTipStripe}
+	 * @param origin the associated track  graphics object
 	 */
 	public ToolTipStripe (TrackGraphics<?> origin) {
 		super(MainFrame.getInstance());

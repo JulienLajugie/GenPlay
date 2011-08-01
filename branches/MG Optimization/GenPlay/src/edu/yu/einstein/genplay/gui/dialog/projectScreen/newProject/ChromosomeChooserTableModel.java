@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf.VCFLoader
 /**
  * This class is the table model used in {@link VCFLoader} class.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 class ChromosomeChooserTableModel extends AbstractTableModel {
 	
@@ -44,6 +45,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	
 	/**
 	 * Constructor of {@link ChromosomeChooserTableModel}
+	 * @param columNames column names
 	 */
 	public ChromosomeChooserTableModel (String[] columNames) {
 		super();
@@ -54,6 +56,8 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	
 	/**
 	 * Constructor of {@link ChromosomeChooserTableModel}
+	 * @param columNames 	column names
+	 * @param data 			data
 	 */
 	public ChromosomeChooserTableModel (String[] columNames, Map<Integer, Map<Integer, Object>> data) {
 		super();

@@ -40,6 +40,9 @@ public class MGPositionInformation {
 
 	/**
 	 * Constructor of {@link MGPositionInformation}
+	 * @param chromosome 	the chromosome
+	 * @param line 			the line information from the VCF file
+	 * @param reader 		the VCF reader associated to the the VCF file
 	 */
 	public MGPositionInformation (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
 		this.chromosome = chromosome;
@@ -48,6 +51,9 @@ public class MGPositionInformation {
 	}
 
 
+	/**
+	 * @return the chromosome name
+	 */
 	public String getChromosomeName() {
 		if (chromosome != null) {
 			return chromosome.getName();
@@ -56,18 +62,33 @@ public class MGPositionInformation {
 	}
 	
 
+	/**
+	 * @return the ID field
+	 */
 	public String getId() {
 		return VCFLine.get("ID").toString();
 	}
 
+	
+	/**
+	 * @return the REF field
+	 */
 	public String getReference() {
 		return VCFLine.get("REF").toString();
 	}
 
+	
+	/**
+	 * @return the ALT field
+	 */
 	public String getAlternative() {
 		return VCFLine.get("ALT").toString();
 	}
 
+	
+	/**
+	 * @return the QUAL field or 50.0 if it is unknown (defined as a '.')
+	 */
 	public Double getQuality() {
 		try {
 			
@@ -78,6 +99,10 @@ public class MGPositionInformation {
 		}
 	}
 
+	
+	/**
+	 * @return the FILTER field
+	 */
 	public boolean getFilter() {
 		if (VCFLine.get("FILTER").toString().equals("PASS")) {
 			return true;
@@ -85,22 +110,46 @@ public class MGPositionInformation {
 		return false;
 	}
 
+	
+	/**
+	 * @return the INFO field
+	 */
 	public String getInfo() {
 		return VCFLine.get("INFO").toString();
 	}
 
+	
+	/**
+	 * @param field an ID from the INFO field
+	 * @return the value associated to the ID
+	 */
 	public Object getInfoValue(String field) {
 		return reader.getInfoValues(VCFLine.get("INFO").toString(), field);
 	}
 
+	
+	/**
+	 * @return the FORMAT field
+	 */
 	public String getFormat() {
 		return VCFLine.get("FORMAT").toString();
 	}
 
+	
+	/**
+	 * @param genomeRawName the genome raw name
+	 * @return the format value for the given genome name
+	 */
 	public String getFormatValues(String genomeRawName) {
 		return VCFLine.get(genomeRawName).toString();
 	}
 
+	
+	/**
+	 * @param genomeRawName the genome raw name
+	 * @param field			an ID from the FORMAT field
+	 * @return				the value associated to the ID
+	 */
 	public Object getFormatValue(String genomeRawName, String field) {
 		Object result = null;
 		String[] formatHeader = VCFLine.get("FORMAT").toString().split(":");
@@ -121,6 +170,8 @@ public class MGPositionInformation {
 	}
 
 	
+	
+	@SuppressWarnings("unused")
 	private void showLine () {
 		String info = "";
 		for (String key: VCFLine.keySet()) {

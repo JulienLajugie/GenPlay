@@ -510,11 +510,4 @@ public class VCFReader {
 		return formatHeader;
 	}
 
-	private void showInfoHeader () {
-		String info = "";
-		for (int i = 0; i < infoHeader.size(); i++) {
-			info += i + ": " + infoHeader.get(i).getId() + "; ";
-		}
-		System.out.println(info);
-	}
 }

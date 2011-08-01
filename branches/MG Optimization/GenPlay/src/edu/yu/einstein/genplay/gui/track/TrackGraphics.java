@@ -49,7 +49,6 @@ import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPSManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenomeInformation;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
@@ -64,7 +63,9 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 /**
  * Graphics part of a track
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
+ * @param <T> type of data
  */
 public abstract class TrackGraphics<T> extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator {
 
@@ -507,9 +508,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	/**
 	 * Adds a variant to the variant list.
 	 * Filters are performed here.
-	 * @param list		variant list
-	 * @param variant	variant to insert
-	 * @return			variant list
+	 * @param association	Variant type / color association
+	 * @param variant		variant to insert
 	 */
 	private void addVariant (Map<VariantType, Color> association, Variant variant) {
 		if (controlFilter(association, variant)) {
@@ -518,6 +518,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * Performs filter controls
+	 * @param association	Variant type / color association
+	 * @param variant		variant to control
+	 * @return	true if the variant passed filters
+	 */
 	private boolean controlFilter (Map<VariantType, Color> association, Variant variant) {
 		boolean insert = true;
 
@@ -582,6 +588,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * @param variant the current variant
+	 * @return	the index in the variant list of the variant
+	 */
 	private int getVariantIndex (Variant variant) {
 		int index = -1;
 
@@ -606,6 +616,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * @param variant	the current variant
+	 * @return the previous variant compare to the current variant
+	 */
 	private Variant getPreviousVariant (Variant variant) {
 		Variant result;
 		int currentIndex = getVariantIndex(variant);
@@ -619,6 +633,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * @param variant	the current variant
+	 * @return the next variant compare to the current variant
+	 */
 	private Variant getNextVariant (Variant variant) {
 		Variant result;
 		int currentIndex = getVariantIndex(variant);
@@ -632,13 +650,16 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * @param variant the current variant
+	 * @return	a list containing the previous and the next variant compare to the current variant
+	 */
 	public Variant[] getShortVariantList (Variant variant) {
 		Variant array[] = new Variant[2];
 		array[0] = getPreviousVariant(variant);
 		array[1] = getNextVariant(variant);
 		return array;
 	}
-
 
 
 	/**

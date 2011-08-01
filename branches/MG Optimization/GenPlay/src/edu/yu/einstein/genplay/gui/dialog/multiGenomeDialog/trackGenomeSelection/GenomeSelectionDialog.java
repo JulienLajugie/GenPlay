@@ -60,6 +60,7 @@ public class GenomeSelectionDialog extends JDialog {
 	
 	/**
 	 * Creates an instance of a {@link GenomeSelectionDialog}
+	 * @param genomeNames name of genomes to display
 	 */
 	public GenomeSelectionDialog(Object[] genomeNames) {
 		super();

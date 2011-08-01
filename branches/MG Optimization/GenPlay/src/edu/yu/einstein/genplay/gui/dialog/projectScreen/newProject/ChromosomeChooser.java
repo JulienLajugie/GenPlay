@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
  * This class displays every chromosome of the choosen assembly.
  * They can be selected or unselected before creating a project.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 class ChromosomeChooser extends JDialog {
 	

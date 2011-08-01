@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
  * This class allows users to choose a simple genome project
  * or a multi genome project.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	

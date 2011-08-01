@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
 /**
  * This class manages the name project information.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 class NamePanel extends JPanel {
 	

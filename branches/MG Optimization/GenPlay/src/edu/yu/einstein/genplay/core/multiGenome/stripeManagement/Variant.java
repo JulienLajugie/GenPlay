@@ -37,13 +37,13 @@ public class Variant {
 	private VariantType 		type;					// Type of variation
 	private ChromosomeWindow 	position; 				// Start and stop of the variation
 	private ChromosomeWindow 	deadZone; 				// Start and stop of the dead zone
-	private Double 				qualityScore;			// The quality of the variant
 
 
 	/**
 	 * Constructor of {@link Variant}
-	 * @param type		variation type
-	 * @param position	chromosome window
+	 * @param type					variation type
+	 * @param position				chromosome window
+	 * @param positionInformation 	position information object
 	 */
 	public Variant (VariantType type, ChromosomeWindow position, MGPosition positionInformation) {
 		this.type = type;
@@ -163,19 +163,16 @@ public class Variant {
 	 * @return the qualityScore
 	 */
 	public Double getQualityScore() {
-		//return qualityScore;
 		return variantPosition.getQuality();
 	}
 
-
-	/**
-	 * @param qualityScore the qualityScore to set
-	 */
-	/*public void setQualityScore(Double qualityScore) {
-		this.qualityScore = qualityScore;
-	}*/
-
-
+/**
+ * 
+ * @param variant variant object to compare
+ * @return	-1 	if the current variant starts before the one to compare
+ * 			 0 	if they start at the same position
+ * 			 1 	if the current variant starts after the one to compare
+ */
 	public int compareTo (Variant variant) {
 		int result;
 		if (this.getStart() < variant.getStart()) {
@@ -195,6 +192,9 @@ public class Variant {
 	}
 	
 	
+	/**
+	 * Shows variant information
+	 */
 	public void show () {
 		String info = "";
 		info += "start: " + getStart() + "\n";
