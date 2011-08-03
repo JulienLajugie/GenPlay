@@ -100,7 +100,6 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			selectedFile = null;
 			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
 			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
-			//GenomeWindow genomeWindow = ProjectManager.getInstance().getGenomeWindow(chromosome);
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().updateChromosomePanel(genomeWindow);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
