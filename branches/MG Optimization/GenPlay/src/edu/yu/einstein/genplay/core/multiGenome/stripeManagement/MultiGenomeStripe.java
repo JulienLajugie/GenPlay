@@ -21,9 +21,14 @@
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -40,9 +45,8 @@ public class MultiGenomeStripe {
 	private Map<String, Map<VariantType, Color>> 	colorAssociation;	// Association between variant type and color
 	private int 									transparency;		// Transparency (0 -> 100)
 	private int										quality;			// Quality threshold (0 -> 100)
-	private String 									genomeName;			// Genome name
-	
-	
+
+
 	/**
 	 * Constructor of {@link MultiGenomeStripe}
 	 */
@@ -50,8 +54,8 @@ public class MultiGenomeStripe {
 		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
 		transparency = 50;
 	}
-	
-	
+
+
 	/**
 	 * @return the colorAssociation
 	 */
@@ -68,16 +72,8 @@ public class MultiGenomeStripe {
 	public void addColorInformation (String genomeName, Map<VariantType, Color> association) {
 		colorAssociation.put(genomeName, association);
 	}
-	
-	
-	/**
-	 * Initializes color stripes.
-	 */
-	private void initStripes () {
-		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
-	}
-	
-	
+
+
 	/**
 	 * @param genome the full genome name
 	 * @return true if it has to be displayed
@@ -89,22 +85,25 @@ public class MultiGenomeStripe {
 			return false;
 		}
 	}
-	
-	
-	/**
-	 * @return the genomeName
-	 */
-	public String getGenomeName() {
-		return genomeName;
-	}
 
 
 	/**
-	 * @param genomeName the genomeName to set
+	 * @return the list of the required raw genome names
 	 */
-	public void setGenomeName(String genomeName) {
-		this.genomeName = genomeName;
-		initStripes();
+	public Map<String, List<VariantType>> getRequiredGenomes () {
+		Map<String, List<VariantType>> genomes = new HashMap<String, List<VariantType>>();
+		for (String fullGenomeName: colorAssociation.keySet()) {
+			if (!fullGenomeName.equals(ReferenceGenomeManager.getInstance().getReferenceName())) {
+				if (hasBeenRequired(fullGenomeName)) {
+					List<VariantType> types = new ArrayList<VariantType>();
+					for (VariantType type: colorAssociation.get(fullGenomeName).keySet()) {
+						types.add(type);
+					}
+					genomes.put(FormattedMultiGenomeName.getRawName(fullGenomeName), types);
+				}
+			}
+		}
+		return genomes;
 	}
 
 
@@ -122,8 +121,8 @@ public class MultiGenomeStripe {
 	public void setTransparency(int alpha) {
 		this.transparency = alpha * 100 / 255;
 	}
-	
-	
+
+
 	/**
 	 * @return the quality
 	 */
@@ -150,5 +149,5 @@ public class MultiGenomeStripe {
 			}
 		}
 	}
-	
+
 }

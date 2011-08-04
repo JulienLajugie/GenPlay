@@ -22,7 +22,7 @@ package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 
 /**
@@ -31,31 +31,31 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class Variant {
+public class DisplayableVariant {
 
-	private MGPosition 			variantPosition;		// The real variant position
+	private Variant 			variantPosition;		// The real variant position
 	private VariantType 		type;					// Type of variation
 	private ChromosomeWindow 	position; 				// Start and stop of the variation
 	private ChromosomeWindow 	deadZone; 				// Start and stop of the dead zone
 
 
 	/**
-	 * Constructor of {@link Variant}
+	 * Constructor of {@link DisplayableVariant}
 	 * @param type					variation type
 	 * @param position				chromosome window
 	 * @param positionInformation 	position information object
 	 */
-	public Variant (VariantType type, ChromosomeWindow position, MGPosition positionInformation) {
+	public DisplayableVariant (VariantType type, ChromosomeWindow position, Variant positionInformation) {
 		this.type = type;
 		this.position = position;
 		this.variantPosition = positionInformation;
 	}
 
-	
+
 	/**
 	 * @return the variantPosition
 	 */
-	public MGPosition getVariantPosition() {
+	public Variant getVariantPosition() {
 		return variantPosition;
 	}
 
@@ -65,6 +65,9 @@ public class Variant {
 	 */
 	public void setType(VariantType type) {
 		this.type = type;
+		if (type == VariantType.MIX) {
+			variantPosition = null;
+		}
 	}
 
 
@@ -147,7 +150,10 @@ public class Variant {
 	 * @return the isOnFirstAllele
 	 */
 	public boolean isOnFirstAllele() {
-		return variantPosition.isOnFirstAllele();
+		if (variantPosition != null) {
+			return variantPosition.isOnFirstAllele();
+		}
+		return false;
 	}
 
 
@@ -155,7 +161,10 @@ public class Variant {
 	 * @return the isOnSecondAllele
 	 */
 	public boolean isOnSecondAllele() {
-		return variantPosition.isOnSecondAllele();
+		if (variantPosition != null) {
+			return variantPosition.isOnSecondAllele();
+		}
+		return false;
 	}
 
 
@@ -163,35 +172,38 @@ public class Variant {
 	 * @return the qualityScore
 	 */
 	public Double getQualityScore() {
-		return variantPosition.getQuality();
+		if (variantPosition != null) {
+			return variantPosition.getQuality();
+		}
+		return null;
 	}
 
-/**
- * 
- * @param variant variant object to compare
- * @return	-1 	if the current variant starts before the one to compare
- * 			 0 	if they start at the same position
- * 			 1 	if the current variant starts after the one to compare
- */
-	public int compareTo (Variant variant) {
+	/**
+	 * 
+	 * @param displayableVariant variant object to compare
+	 * @return	-1 	if the current variant starts before the one to compare
+	 * 			 0 	if they start at the same position
+	 * 			 1 	if the current variant starts after the one to compare
+	 */
+	public int compareTo (DisplayableVariant displayableVariant) {
 		int result;
-		if (this.getStart() < variant.getStart()) {
+		if (this.getStart() < displayableVariant.getStart()) {
 			result = -1;
-		} else if (this.getStart() > variant.getStart()) {
+		} else if (this.getStart() > displayableVariant.getStart()) {
 			result = 1;
 		} else {
 			result = -1;
-			if (this.getStop() == variant.getStop() &&
+			if (this.getStop() == displayableVariant.getStop() &&
 					//this.getDeadZone().getStart() == variant.getDeadZone().getStart() &&
 					//this.getDeadZone().getStop() == variant.getDeadZone().getStop() &&
-					this.getQualityScore() == variant.getQualityScore()) {
+					this.getQualityScore() == displayableVariant.getQualityScore()) {
 				result = 0;
 			}
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Shows variant information
 	 */

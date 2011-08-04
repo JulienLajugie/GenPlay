@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
@@ -54,7 +54,7 @@ public class ToolTipStripe extends JDialog {
 			"Position:", 
 			"First allele:", 
 			"Second allele:", 
-			"Quality:"};
+	"Quality:"};
 	private final int LABEL_WIDTH = 110;				// width of all name label
 	private final int VALUE_WIDTH = 180;				// width of all value label
 	private final int LINE_HEIGHT = 20;					// height of a line
@@ -66,10 +66,10 @@ public class ToolTipStripe extends JDialog {
 	private JLabel label[];				// gathers all name label
 	private JLabel value[];				// gathers all value label
 	private JPanel pane;				// dialog panel
-	private Variant variant;			// the current variant object to display
+	private DisplayableVariant displayableVariant;			// the current variant object to display
 	private JButton nextVariant;		// button leading to the next variant
 	private JButton previousVariant;	// button leading to the previous variant
-	private Variant[] variants;			// contains the previous and the next variant
+	private DisplayableVariant[] displayableVariants;			// contains the previous and the next variant
 
 
 	/**
@@ -92,14 +92,14 @@ public class ToolTipStripe extends JDialog {
 
 	/**
 	 * Method for showing the dialog box.
-	 * @param variant	variant to show information
+	 * @param displayableVariant	variant to show information
 	 * @param X			X position on the screen
 	 * @param Y			Y position on the screen
 	 */
-	public void show (Variant variant, int X, int Y) {
-		this.variant = variant;
-		variants = origin.getShortVariantList(this.variant);
-		initContent(variant);
+	public void show (DisplayableVariant displayableVariant, int X, int Y) {
+		this.displayableVariant = displayableVariant;
+		displayableVariants = origin.getShortDisplayableVariantList(this.displayableVariant);
+		initContent(displayableVariant);
 		setLocation(X, Y);
 		setVisible(true);
 	}
@@ -107,9 +107,9 @@ public class ToolTipStripe extends JDialog {
 
 	/**
 	 * Initializes the content of the dialog box according to a variant
-	 * @param variant	variant to show information
+	 * @param displayableVariant	variant to show information
 	 */
-	private void initContent (Variant variant) {
+	private void initContent (DisplayableVariant displayableVariant) {
 		// Panel
 		pane = new JPanel();
 
@@ -221,28 +221,44 @@ public class ToolTipStripe extends JDialog {
 		String text = ""; 
 		switch (index) {
 		case 0:
-			text += variant.getVariantPosition().getFullGenomeName();
+			if (displayableVariant.getVariantPosition() != null) {
+				text += displayableVariant.getVariantPosition().getFullGenomeName();
+			} else {
+				text += "Undefined";
+			}
 			break;
 		case 1:
-			text += variant.getVariantPosition().getChromosomeName();
+			if (displayableVariant.getVariantPosition() != null) {
+				text += displayableVariant.getVariantPosition().getChromosomeName();
+			} else {
+				text += "Undefined";
+			}
 			break;
 		case 2:
-			text += variant.getType().toString();
+			text += displayableVariant.getType().toString();
 			break;
 		case 3:
-			text += variant.getStart() + " to " + variant.getStop();
+			text += displayableVariant.getStart() + " to " + displayableVariant.getStop();
 			break;
 		case 4:
-			text += getAllelePresence(variant.isOnFirstAllele());
+			if (displayableVariant.getVariantPosition() != null) {
+				text += getAllelePresence(displayableVariant.isOnFirstAllele());
+			} else {
+				text += "Undefined";
+			}
 			break;
 		case 5:
-			text += getAllelePresence(variant.isOnSecondAllele());
+			if (displayableVariant.getVariantPosition() != null) {
+				text += getAllelePresence(displayableVariant.isOnSecondAllele());
+			} else {
+				text += "Undefined";
+			}
 			break;
 		case 6:
-			if (variant.getQualityScore() != null) {
-				text += variant.getQualityScore();
+			if (displayableVariant.getVariantPosition() != null) {
+				text += displayableVariant.getQualityScore();
 			} else {
-				text += ".";
+				text += "Undefined";
 			}
 			break;
 		default:
@@ -255,28 +271,28 @@ public class ToolTipStripe extends JDialog {
 	/**
 	 * @return the variant
 	 */
-	public Variant getVariant() {
-		return variant;
+	public DisplayableVariant getDisplayableVariant() {
+		return displayableVariant;
 	}
 
 
 
 	private void initVariant (JButton button) {
-		Variant newVariant;
+		DisplayableVariant newDisplayableVariant;
 		if (button.equals(nextVariant)) {
-			newVariant = variants[1]; 
+			newDisplayableVariant = displayableVariants[1]; 
 		} else {
-			newVariant = variants[0];
+			newDisplayableVariant = displayableVariants[0];
 		}
 
-		if (newVariant == null) {
+		if (newDisplayableVariant == null) {
 			button.setEnabled(false);
 		} else {
-			variants = origin.getShortVariantList(newVariant);
-			this.variant = newVariant;
+			displayableVariants = origin.getShortDisplayableVariantList(newDisplayableVariant);
+			this.displayableVariant = newDisplayableVariant;
 			updateContent();
 			//int variantStart = variant.getStart() + ((variant.getStop() - variant.getStart()) / 2);
-			int variantStart = variant.getStart();
+			int variantStart = displayableVariant.getStart();
 			int width = MainFrame.getInstance().getControlPanel().getGenomeWindow().getSize();
 			int startWindow = variantStart - (width / 2);
 			int stopWindow = startWindow + width;

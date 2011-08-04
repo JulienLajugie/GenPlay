@@ -45,10 +45,10 @@ public class MGChromosomeInformation {
 
 	private final MGGenomeInformation genomeInformation;
 	private Chromosome chromosome;
-	private Map<Integer, MGPosition>	variants;	// Positions information
-	private int[]									positionIndex;			// Mapping table for reference genome position
-	private Integer 								currentPosition;		// Current position
-	private Integer 								previousPosition;		// Previous position accessed
+	private Map<Integer, Variant>	variants;			// Positions information, keys are reference genome position and values are variants
+	private int[]						positionIndex;		// Mapping table for reference genome position
+	private Integer 					currentPosition;	// Current position
+	private Integer 					previousPosition;	// Previous position accessed
 
 
 	/**
@@ -57,7 +57,7 @@ public class MGChromosomeInformation {
 	protected MGChromosomeInformation (Chromosome chromosome, MGGenomeInformation genomeInformation) {
 		this.chromosome = chromosome;
 		this.genomeInformation = genomeInformation;
-		this.variants = new TreeMap<Integer, MGPosition>();
+		this.variants = new TreeMap<Integer, Variant>();
 	}
 
 
@@ -85,7 +85,7 @@ public class MGChromosomeInformation {
 	 * @param position	the position
 	 * @param variant	the variant
 	 */
-	public void addBlank (Integer position, MGPosition variant) {
+	public void addBlank (Integer position, Variant variant) {
 		variants.put(position, variant);
 	}
 
@@ -145,7 +145,7 @@ public class MGChromosomeInformation {
 		} else {
 			int nextGenomePosition = 0;
 			int nextReferenceGenomePosition = 0;
-			MGPosition current = variants.get(previousPosition);
+			Variant current = variants.get(previousPosition);
 			if (current instanceof VCFIndel) {
 				nextGenomePosition = ((VCFIndel)variants.get(previousPosition)).getNextGenomePosition();
 				nextReferenceGenomePosition = ((VCFIndel)variants.get(previousPosition)).getNextReferenceGenomePosition();
@@ -187,7 +187,7 @@ public class MGChromosomeInformation {
 	 * @param position 	the position value
 	 * @return			the position information according to the given position
 	 */
-	public MGPosition getPosition (int position) {
+	public Variant getPosition (int position) {
 		return variants.get(position);
 	}
 
@@ -196,7 +196,7 @@ public class MGChromosomeInformation {
 	 * @param index 	the position value
 	 * @return			the position information according to the given position
 	 */
-	public MGPosition getPositionInformationFromIndex (int index) {
+	public Variant getPositionInformationFromIndex (int index) {
 		return variants.get(positionIndex[index]);
 	}
 
@@ -204,7 +204,7 @@ public class MGChromosomeInformation {
 	/**
 	 * @return	the current position information
 	 */
-	public MGPosition getCurrentPositionInformation () {
+	public Variant getCurrentPositionInformation () {
 		return variants.get(currentPosition);
 	}
 
@@ -212,7 +212,7 @@ public class MGChromosomeInformation {
 	/**
 	 * @return the position information list
 	 */
-	public Map<Integer, MGPosition> getPositionInformationList() {
+	public Map<Integer, Variant> getPositionInformationList() {
 		return variants;
 	}
 
@@ -239,7 +239,7 @@ public class MGChromosomeInformation {
 	/**
 	 * @return the previous position
 	 */
-	public MGPosition getPreviousPosition () {
+	public Variant getPreviousPosition () {
 		if (previousPosition != null) {
 			return getPosition(previousPosition);
 		} else {
@@ -272,7 +272,7 @@ public class MGChromosomeInformation {
 	 * Shows positions information.
 	 */
 	public void showData () {
-		for (MGPosition position: variants.values()) {
+		for (Variant position: variants.values()) {
 			System.out.println("------------------------------------------------------------");
 			System.out.println(position.getType().name() + " (" + position.getLength() + ")");
 			System.out.println(position.getGenomePosition() + " -> " + position.getNextGenomePosition());

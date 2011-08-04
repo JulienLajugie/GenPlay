@@ -24,14 +24,14 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSV;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 /**
  * Gathers methods of position calculation for multi genome algorithm
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class PositionCalculation {
+public class GenomePositionCalculation {
 	
 	
 	
@@ -39,7 +39,7 @@ public class PositionCalculation {
 	 * @param variant 	a variant
 	 * @return			its next position on the genome 
 	 */
-	public static int getNextGenomePosition(MGPosition variant) {
+	public static int getNextGenomePosition(Variant variant) {
 		int nextGenomePosition = variant.getGenomePosition() + 1;
 		if (isInsertion(variant)) {
 			nextGenomePosition += variant.getLength();
@@ -52,7 +52,7 @@ public class PositionCalculation {
 	 * @param variant 	a variant
 	 * @return 			its position on the reference genome
 	 */
-	public static int getReferenceGenomePosition(MGPosition variant) {
+	public static int getReferenceGenomePosition(Variant variant) {
 		int position = variant.getGenomePosition() + variant.getInitialReferenceOffset();
 		return position;
 	}
@@ -62,7 +62,7 @@ public class PositionCalculation {
 	 * @param variant 	a variant
 	 * @return			its next position on the reference genome
 	 */
-	public static int getNextReferenceGenomePosition(MGPosition variant) {
+	public static int getNextReferenceGenomePosition(Variant variant) {
 		int position = getNextGenomePosition(variant);
 		return getNextReferenceGenomePosition(variant, position);
 	}
@@ -73,7 +73,7 @@ public class PositionCalculation {
 	 * @param position	an offset position
 	 * @return			its position on the reference genome according to the offset value
 	 */
-	public static int getNextReferenceGenomePosition(MGPosition variant, int position) {
+	public static int getNextReferenceGenomePosition(Variant variant, int position) {
 		int current = getReferenceGenomePosition(variant);
 		int difference = position - variant.getGenomePosition();
 		if (isInsertion(variant)) {
@@ -96,7 +96,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			its position on the meta genome
 	 */
-	public static int getMetaGenomePosition(MGPosition variant) {
+	public static int getMetaGenomePosition(Variant variant) {
 		int position = variant.getGenomePosition() + variant.getInitialMetaGenomeOffset();
 		return position;
 	}
@@ -106,7 +106,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			its next position on the meta genome
 	 */
-	public static int getNextMetaGenomePosition(MGPosition variant) {
+	public static int getNextMetaGenomePosition(Variant variant) {
 		int position = getNextGenomePosition(variant);
 		return getNextMetaGenomePosition(variant, position);
 	}
@@ -117,7 +117,7 @@ public class PositionCalculation {
 	 * @param position	an offset position
 	 * @return			its position ont the meta genome according to the offset value
 	 */
-	public static int getNextMetaGenomePosition(MGPosition variant, int position) {
+	public static int getNextMetaGenomePosition(Variant variant, int position) {
 		int current = getMetaGenomePosition(variant) + (position - variant.getGenomePosition());
 		if (!isInsertion(variant)) {
 			current += variant.getLength();
@@ -133,7 +133,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			the next offset value of the variant on the reference genome
 	 */
-	public static int getNextReferencePositionOffset(MGPosition variant) {
+	public static int getNextReferencePositionOffset(Variant variant) {
 		int nextGenomePosition = getNextGenomePosition(variant);
 		int nextReferencePosition = getNextReferenceGenomePosition(variant, nextGenomePosition);
 		return nextReferencePosition - nextGenomePosition;
@@ -144,7 +144,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			the next offset value of the variant on the meta genome 
 	 */
-	public static int getNextMetaGenomePositionOffset(MGPosition variant) {
+	public static int getNextMetaGenomePositionOffset(Variant variant) {
 		int nextGenomePosition = getNextGenomePosition(variant);
 		int nextMetaGenomePosition = getNextMetaGenomePosition(variant, nextGenomePosition);
 		return nextMetaGenomePosition - nextGenomePosition;
@@ -155,7 +155,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			true if the variant is an insertion
 	 */
-	public static boolean isInsertion (MGPosition variant) {
+	public static boolean isInsertion (Variant variant) {
 		if (variant.getType() == VariantType.INSERTION ||
 				variant.getType() == VariantType.INS) {
 			return true;
@@ -168,7 +168,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			true if the variant is a deletion
 	 */
-	public static boolean isDeletion (MGPosition variant) {
+	public static boolean isDeletion (Variant variant) {
 		if (variant.getType() == VariantType.DELETION ||
 				variant.getType() == VariantType.DEL) {
 			return true;
@@ -181,7 +181,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			true if the variant is a SNP
 	 */
-	public static boolean isSNP (MGPosition variant) {
+	public static boolean isSNP (Variant variant) {
 		if (variant.getType() == VariantType.SNPS ||
 				variant.getType() == VariantType.SVSNPS) {
 			return true;
@@ -194,7 +194,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			true if the variant is an InDel VCF type
 	 */
-	public static boolean isInDelType (MGPosition variant) {
+	public static boolean isInDelType (Variant variant) {
 		if (variant instanceof VCFIndel) {
 			return true;
 		}
@@ -206,7 +206,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			true if the variant is an SNP VCF type
 	 */
-	public static boolean isSNPType (MGPosition variant) {
+	public static boolean isSNPType (Variant variant) {
 		if (variant instanceof VCFSNP) {
 			return true;
 		}
@@ -218,7 +218,7 @@ public class PositionCalculation {
 	 * @param variant	a variant
 	 * @return			true if the variant is an SV VCF type
 	 */
-	public static boolean isSVType (MGPosition variant) {
+	public static boolean isSVType (Variant variant) {
 		if (variant instanceof VCFSV) {
 			return true;
 		}

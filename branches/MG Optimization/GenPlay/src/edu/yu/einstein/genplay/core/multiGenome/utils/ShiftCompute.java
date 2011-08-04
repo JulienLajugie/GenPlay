@@ -22,7 +22,7 @@ package edu.yu.einstein.genplay.core.multiGenome.utils;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeInformation;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 
 /**
@@ -183,7 +183,7 @@ public class ShiftCompute {
 	 * @param genomePosition	the given genome position
 	 */
 	private static void finishShifting (int genomePosition) {
-		MGPosition position = chromInfo.getPosition(referencePosition);
+		Variant position = chromInfo.getPosition(referencePosition);
 		if (genomePosition >= position.getGenomePosition()) {
 			if (genomePosition == position.getGenomePosition()) {
 				newPosition = position.getMetaGenomePosition();
@@ -280,7 +280,7 @@ public class ShiftCompute {
 	 * @param metaGenomePosition	the given genome position
 	 */
 	private static void finishReversedShifting (int metaGenomePosition) {
-		MGPosition position = chromInfo.getPosition(referencePosition);
+		Variant position = chromInfo.getPosition(referencePosition);
 		if (metaGenomePosition >= position.getMetaGenomePosition()) {
 			if (metaGenomePosition >= position.getMetaGenomePosition()) {
 				if (metaGenomePosition < position.getNextMetaGenomePosition()) {

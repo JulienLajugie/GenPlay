@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @version 0.1
  */
 public class ProjectScreen extends JFrame {
-
+	
 	private static final long serialVersionUID = -5785973410951935317L;
 
 	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application

@@ -42,6 +42,8 @@ public class NewProject extends JPanel {
 	
 	private static final long serialVersionUID = 2223959265643927573L;
 	
+	protected static final String DEFAULT_PROJECT_NAME = "New Project";
+	
 	private GridBagConstraints 			gbc;				// Grid bag constraints
 	private NamePanel 					namePanel;			// Name panel
 	private AssemblyPanel 				assemblyPanel;		// Assembly panel

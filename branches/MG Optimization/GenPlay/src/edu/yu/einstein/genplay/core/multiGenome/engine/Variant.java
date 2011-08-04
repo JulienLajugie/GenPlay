@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface MGPosition {
+public interface Variant {
 
 	
 	// Attributes

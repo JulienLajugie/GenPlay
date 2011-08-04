@@ -22,7 +22,7 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFBlank implements MGPosition {
+public class VCFBlank implements Variant {
 
 	private final static String DEFAULT_STRING_VALUE = "";
 	

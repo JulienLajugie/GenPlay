@@ -86,8 +86,9 @@ public class MGMultiGenomeInformation {
 	 * Initializes multi genome information.
 	 */
 	public void initMultiGenomeInformation () {
-		for (String genomeName: genomeNamesAssociation.keySet()) {
-			multiGenomeInformation.put(genomeName, new MGGenomeInformation(genomeName));
+		for (String genomeRawName: genomeNamesAssociation.keySet()) {
+			String genomeFullName = FormattedMultiGenomeName.getFullFormattedGenomeName(getGroupNameFromRawName(genomeRawName), genomeNamesAssociation.get(genomeRawName), genomeRawName);
+			multiGenomeInformation.put(genomeRawName, new MGGenomeInformation(genomeFullName));
 		}
 		String referenceGenomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
 		multiGenomeInformation.put(referenceGenomeFullName, new MGGenomeInformation(referenceGenomeFullName));

@@ -60,7 +60,7 @@ class NamePanel extends JPanel {
 		jlName = new JLabel("Name: ");
 		
 		//Name text field
-		jtName = new JTextField();
+		jtName = new JTextField(NewProject.DEFAULT_PROJECT_NAME);
 		jtName.setPreferredSize(JTF_DIM);
 		jtName.setMinimumSize(JTF_DIM);
 		

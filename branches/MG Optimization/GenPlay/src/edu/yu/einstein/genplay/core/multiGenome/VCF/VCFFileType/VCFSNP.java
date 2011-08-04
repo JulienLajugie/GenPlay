@@ -24,17 +24,17 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.core.multiGenome.utils.PositionCalculation;
+import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
 /**
  * This class represent the VCF SNPs file type.
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFSNP implements MGPosition {
+public class VCFSNP implements Variant {
 	
 	private	MGPositionInformation 	positionInformation;		// The common genome position information
 	private String 					fullGenomeName;				// The genome name
@@ -126,32 +126,32 @@ public class VCFSNP implements MGPosition {
 
 	@Override
 	public int getNextGenomePosition() {
-		return PositionCalculation.getNextGenomePosition(this);
+		return GenomePositionCalculation.getNextGenomePosition(this);
 	}
 
 	@Override
 	public int getReferenceGenomePosition() {
-		return PositionCalculation.getReferenceGenomePosition(this);
+		return GenomePositionCalculation.getReferenceGenomePosition(this);
 	}
 
 	@Override
 	public int getNextReferenceGenomePosition() {
-		return PositionCalculation.getNextReferenceGenomePosition(this);
+		return GenomePositionCalculation.getNextReferenceGenomePosition(this);
 	}
 
 	@Override
 	public int getNextReferenceGenomePosition(int position) {
-		return PositionCalculation.getNextReferenceGenomePosition(this, position);
+		return GenomePositionCalculation.getNextReferenceGenomePosition(this, position);
 	}
 
 	@Override
 	public int getMetaGenomePosition() {
-		return PositionCalculation.getMetaGenomePosition(this);
+		return GenomePositionCalculation.getMetaGenomePosition(this);
 	}
 
 	@Override
 	public int getNextMetaGenomePosition() {
-		return PositionCalculation.getNextMetaGenomePosition(this);
+		return GenomePositionCalculation.getNextMetaGenomePosition(this);
 	}
 
 	@Override
@@ -161,7 +161,7 @@ public class VCFSNP implements MGPosition {
 
 	@Override
 	public int getNextMetaGenomePosition(int position) {
-		return PositionCalculation.getNextMetaGenomePosition(this, position);
+		return GenomePositionCalculation.getNextMetaGenomePosition(this, position);
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class VCFSNP implements MGPosition {
 
 	@Override
 	public int getNextReferencePositionOffset() {
-		return PositionCalculation.getNextReferencePositionOffset(this);
+		return GenomePositionCalculation.getNextReferencePositionOffset(this);
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class VCFSNP implements MGPosition {
 
 	@Override
 	public int getNextMetaGenomePositionOffset() {
-		return PositionCalculation.getNextMetaGenomePositionOffset(this);
+		return GenomePositionCalculation.getNextMetaGenomePositionOffset(this);
 	}
 
 	@Override

@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.DisplayableDataList;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
@@ -41,11 +41,11 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
+public class MGGenomeInformation implements DisplayableDataList<List<DisplayableVariant>> {
 
 	private		final String								genomeFullName;				// The full genome information
 	private 	Map<Chromosome, MGChromosomeInformation> 	genomeInformation;			// Chromosomes information
-	private 	List<Variant> 								fittedDataList;				// List of variation according to the current chromosome and the x-ratio
+	private 	List<DisplayableVariant> 					fittedDataList;				// List of variation according to the current chromosome and the x-ratio
 	protected 	Chromosome									fittedChromosome = null;	// Chromosome with the adapted data
 	protected 	Double										fittedXRatio = null;		// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 	private		int											smallestFittedDataIndex;	// The smaller index of the returned fitted data list
@@ -125,7 +125,7 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 */
 	protected void fitToScreen() {
 		MGChromosomeInformation chromosomeInformation = getChromosomeInformation(fittedChromosome);
-		Map<Integer, MGPosition> currentChromosomePositionList;
+		Map<Integer, Variant> currentChromosomePositionList;
 		try {
 			currentChromosomePositionList = chromosomeInformation.getPositionInformationList();
 		} catch (InvalidChromosomeException e) {
@@ -134,10 +134,10 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 			return;
 		}
 
-		fittedDataList = new ArrayList<Variant>();
+		fittedDataList = new ArrayList<DisplayableVariant>();
 
 		if (fittedXRatio > 1) {
-			for (MGPosition position: currentChromosomePositionList.values()) {
+			for (Variant position: currentChromosomePositionList.values()) {
 				addVariant(position);
 			}
 		} else {
@@ -170,6 +170,18 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 				}
 			}
 		}
+		showFittedDataList();
+	}
+	
+	/**
+	 * Shows the fitted data list in the console
+	 */
+	private void showFittedDataList () {
+		String info = "";
+		for (int i = 0; i < fittedDataList.size(); i++) {
+			info += i + ": " + fittedDataList.get(i).getStart() + " -> " + fittedDataList.get(i).getStop() + " (" + fittedDataList.get(i).getType() +  ")\n";
+		}
+		System.out.println(info);
 	}
 
 
@@ -177,23 +189,21 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 * Add a variant object from a position information to the fitted list
 	 * @param positionInformation	the position information
 	 */
-	private void addVariant (MGPosition positionInformation) {
-		ChromosomeWindow chromosome = new ChromosomeWindow(positionInformation.getMetaGenomePosition() + 1, positionInformation.getNextMetaGenomePosition());
-		Variant variant = new Variant(positionInformation.getType(), chromosome, positionInformation);
+	private void addVariant (Variant positionInformation) {
+		ChromosomeWindow chromosome = new ChromosomeWindow(positionInformation.getMetaGenomePosition(), positionInformation.getNextMetaGenomePosition());
+		DisplayableVariant displayableVariant = new DisplayableVariant(positionInformation.getType(), chromosome, positionInformation);
 
 		if (positionInformation.getExtraOffset() > 0) {
 			ChromosomeWindow extraChromosome = new ChromosomeWindow(positionInformation.getNextMetaGenomePosition() - positionInformation.getExtraOffset(), positionInformation.getNextMetaGenomePosition());
-			variant.setDeadZone(extraChromosome);
+			displayableVariant.setDeadZone(extraChromosome);
 		}
 
-		//variant.setQualityScore(positionInformation.getQuality());
-
-		fittedDataList.add(variant);
+		fittedDataList.add(displayableVariant);
 	}
 
 
 	@Override
-	public final List<Variant> getFittedData(GenomeWindow window, double xRatio) {
+	public final List<DisplayableVariant> getFittedData(GenomeWindow window, double xRatio) {
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
 			fittedChromosome = window.getChromosome();
 			if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
@@ -213,12 +223,12 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 * @param stop	stop position
 	 * @return the list of fitted data
 	 */
-	protected List<Variant> getFittedData(int start, int stop) {
+	protected List<DisplayableVariant> getFittedData(int start, int stop) {
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
 		}
 
-		ArrayList<Variant> resultList = new ArrayList<Variant>();
+		ArrayList<DisplayableVariant> resultList = new ArrayList<DisplayableVariant>();
 
 		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
 		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
@@ -234,10 +244,10 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 		if (indexStart > 0) {
 			if (fittedDataList.get(indexStart - 1).getStop() >= start) {
 				smallestFittedDataIndex = indexStart - 1;
-				Variant currentVariant = fittedDataList.get(indexStart - 1);
-				ChromosomeWindow chromosome = new ChromosomeWindow(start, currentVariant.getStop());
-				Variant newLastVariant = new Variant(currentVariant.getType(), chromosome, currentVariant.getVariantPosition());
-				resultList.add(newLastVariant);
+				DisplayableVariant currentDisplayableVariant = fittedDataList.get(indexStart - 1);
+				ChromosomeWindow chromosome = new ChromosomeWindow(start, currentDisplayableVariant.getStop());
+				DisplayableVariant newLastDisplayableVariant = new DisplayableVariant(currentDisplayableVariant.getType(), chromosome, currentDisplayableVariant.getVariantPosition());
+				resultList.add(newLastDisplayableVariant);
 			}
 		}
 
@@ -248,10 +258,10 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 		if (indexStop + 1 < fittedDataList.size()) {
 			if (fittedDataList.get(indexStop + 1).getStart() <= stop) {
 				highestFittedDataIndex = indexStop + 1;
-				Variant currentVariant = fittedDataList.get(indexStop + 1);
-				ChromosomeWindow chromosome = new ChromosomeWindow(currentVariant.getStart(), stop);
-				Variant newLastVariant = new Variant(currentVariant.getType(), chromosome, currentVariant.getVariantPosition());
-				resultList.add(newLastVariant);
+				DisplayableVariant currentDisplayableVariant = fittedDataList.get(indexStop + 1);
+				ChromosomeWindow chromosome = new ChromosomeWindow(currentDisplayableVariant.getStart(), stop);
+				DisplayableVariant newLastDisplayableVariant = new DisplayableVariant(currentDisplayableVariant.getType(), chromosome, currentDisplayableVariant.getVariantPosition());
+				resultList.add(newLastDisplayableVariant);
 			}
 		}
 
@@ -263,12 +273,12 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 * @param offset	value to add to the current highest fitted data index
 	 * @return the next fitted variant according to the current highest fitted data index and the offset parameter
 	 */
-	public Variant getNextFittedVariant (int offset) {
-		Variant variant = null;
+	public DisplayableVariant getNextFittedDisplayableVariant (int offset) {
+		DisplayableVariant displayableVariant = null;
 		if (highestFittedDataIndex + offset < fittedDataList.size()) {
-			variant = fittedDataList.get(highestFittedDataIndex + offset);
+			displayableVariant = fittedDataList.get(highestFittedDataIndex + offset);
 		}
-		return variant;
+		return displayableVariant;
 	}
 
 	
@@ -276,12 +286,12 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 * @param offset	value to add to the current smallest fitted data index
 	 * @return the next fitted variant according to the current smallest fitted data index and the offset parameter
 	 */
-	public Variant getPreviousFittedVariant (int offset) {
-		Variant variant = null;
+	public DisplayableVariant getPreviousFittedDisplayableVariant (int offset) {
+		DisplayableVariant displayableVariant = null;
 		if (smallestFittedDataIndex - offset >= 0) {
-			variant = fittedDataList.get(smallestFittedDataIndex - offset);
+			displayableVariant = fittedDataList.get(smallestFittedDataIndex - offset);
 		}
-		return variant;
+		return displayableVariant;
 	}
 
 
@@ -294,7 +304,7 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 * @param indexStop
 	 * @return the start position
 	 */
-	private int findStart(List<Variant> list, int value, int indexStart, int indexStop) {
+	private int findStart(List<DisplayableVariant> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -317,7 +327,7 @@ public class MGGenomeInformation implements DisplayableDataList<List<Variant>> {
 	 * @param indexStop
 	 * @return the stop position
 	 */
-	private int findStop(List<Variant> list, int value, int indexStart, int indexStop) {
+	private int findStop(List<DisplayableVariant> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;

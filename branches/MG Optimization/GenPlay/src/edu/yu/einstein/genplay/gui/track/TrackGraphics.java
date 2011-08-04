@@ -47,13 +47,9 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPSManager;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenomeInformation;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.ListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripe;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
@@ -130,9 +126,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
 	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 	protected T 						data;							// data showed in the track
-	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information
+	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information (for MG project)
+	private ListCreator					listCreator;					// displayable variants list creator (for MG project)
 	private String 						genomeName;						// genome on which the track is based (ie aligned on)
-	private List<Variant> 				variantList;					// list of variant for multi genome project
+	private List<DisplayableVariant> 	displayableVariantList;			// list of variant for multi genome project
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
@@ -147,6 +144,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			multiGenomeStripe = new MultiGenomeStripe();
+			listCreator = new ListCreator();
 		}
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
@@ -245,17 +243,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripe != null) {
 			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
+				listCreator.setRawGenomeNames(multiGenomeStripe.getRequiredGenomes());
+				listCreator.setQuality((double) multiGenomeStripe.getQuality());
+				displayableVariantList = listCreator.getFittedData(genomeWindow, xFactor);
 				drawMultiGenomeLine(g);
-				variantList = new ArrayList<Variant>();
-				//System.out.println("variantList: NEW");
-				for (String genomeFullName: multiGenomeStripe.getColorAssociation().keySet()) {
-					if (	multiGenomeStripe.hasBeenRequired(genomeFullName) &&
-							!genomeFullName.equals(ReferenceGenomeManager.getInstance().getReferenceName())) {
-						//System.out.println("======================== " + genomeFullName);
-						drawGenome(g, genomeFullName);
-						//System.out.println("========================");
-					}
-				}
+				drawGenome(g);
 			}
 		}
 	}
@@ -274,75 +266,34 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * Draws all stripe information related to a genome.
-	 * @param g			graphics object
-	 * @param genome	the genome name
+	 * Draws displayable variants
+	 * @param g	graphics object
 	 */
-	private void drawGenome (Graphics g, String genome) {
-		// Gets genome raw name
-		String genomeRawName;
-		try {
-			genomeRawName = FormattedMultiGenomeName.getRawName(genome);
-		} catch (Exception e) {
-			genomeRawName = genome;
-		}
-
-		// Color association
-		Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(genome);
-
-		// Get indels & SV variant list
-		List<Variant> indelList = null;
-		try {
-			indelList = MultiGenomeManager.getInstance().getMultiGenomeInformation().getMultiGenomeInformation(genomeRawName).getFittedData(genomeWindow, xFactor);
-		} catch (Exception e) {
-			indelList = new ArrayList<Variant>();
-		}
-
-		// Get SNPs variant list
-		List<MGPosition> snpList = null;
-		if (association.containsKey(VariantType.SNPS)) {
-			snpList = SNPSManager.getInstance().getSNPSList(genome, genomeWindow, xFactor);
-		} else {
-			snpList = new ArrayList<MGPosition>();
-		}
-
-		if (!(indelList.size() == 0 && snpList.size() == 0)) {
-			//System.out.println("!(indelList.size() == 0 && snpList.size() == 0)");
-
-			// Gets list of every variant
-			mixList(genome, indelList, snpList);
-
-			// Adds edge variant to the list
-			completeEdgeList(genomeRawName, association);
-		} else {
-			//System.out.println("indelList.size() == 0 && snpList.size() == 0");
-		}
-
+	private void drawGenome (Graphics g) {
 		// Requirement for variant list scan
-		if (variantList.size() > 0) {
+		if (displayableVariantList.size() > 0) {
 
 			// Set color for unused position and dead area
 			Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), multiGenomeStripe.getTransparency());
 			Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), multiGenomeStripe.getTransparency());
 
 			// Start variant list scan
-			for (Variant variant: variantList) {
-				variant.show();
-				if (variant.getType().equals(VariantType.MIX)) {
+			for (DisplayableVariant displayableVariant: displayableVariantList) {
+				if (displayableVariant.getType().equals(VariantType.MIX)) {
 					Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), multiGenomeStripe.getTransparency());
-					drawRect(g, variant, mixColor, mixColor);
-				} else if (variant.getType().equals(VariantType.BLANK)) {
-					drawRect(g, variant, blankZoneColor, noAlleleColor);
-				}
-				else {
-					//variant.show();
+					drawRect(g, displayableVariant, mixColor, mixColor);
+				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
+					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
+				} else {
+					// Color association
+					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getVariantPosition().getFullGenomeName());
 
 					// Draws the stripe
-					drawRect(g, variant, association.get(variant.getType()), noAlleleColor);
+					drawRect(g, displayableVariant, association.get(displayableVariant.getType()), noAlleleColor);
 
 					// Draws the dead zone
-					if (variant.deadZoneExists()) {
-						drawRect(g, variant, blankZoneColor, noAlleleColor);
+					if (displayableVariant.deadZoneExists()) {
+						drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
 					}
 				}
 			}
@@ -352,223 +303,26 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * Mix indel/SV list with the SNP list.
-	 * Mix is realised according to the meta genome position of the variant.
-	 * The returned list takes in account filter (quality score).
-	 * @param indelList	indel/sv list
-	 * @param snpList	snp list
-	 * @return			the variant list
-	 */
-	private List<Variant> mixList (String genome, List<Variant> indelList, List<MGPosition> snpList) {
-		int indelIndex = 0;
-		int snpIndex = 0;
-		int indelSize = indelList.size();
-		int snpSize = snpList.size();
-
-
-		Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(genome);
-
-		/*System.out.println("--------------");
-		System.out.println("variantList: " + variantList.size());
-		System.out.println("indelSize: " + indelSize);
-		System.out.println("snpSize: " + snpSize);*/
-
-		// Mix both list until one is done
-		while (indelIndex < indelSize && snpIndex < snpSize) {
-			//System.out.println("indelIndex: " + indelIndex + " (" + indelSize + "); snpIndex: " + snpIndex+ " (" + snpSize + ")");
-			int indelPos = indelList.get(indelIndex).getStart();
-			int snpPos = snpList.get(snpIndex).getMetaGenomePosition();
-			if (indelPos < snpPos) {
-				addVariant(association, indelList.get(indelIndex));
-				indelIndex++;
-			} else if (snpPos < indelPos) {
-				addVariant(association, getVariant(snpList.get(snpIndex)));
-				snpIndex++;
-			} else {
-				addVariant(association, indelList.get(indelIndex));
-				addVariant(association, getVariant(snpList.get(snpIndex)));
-				indelIndex++;
-				snpIndex++;
-			}
-		}
-
-		// If indel/sv list is not done, it finishes it
-		if (indelIndex < indelSize) {
-			while (indelIndex < indelSize) {
-				//System.out.println("indelIndex: " + indelIndex + " (" + indelSize + ")");
-				addVariant(association, indelList.get(indelIndex));
-				indelIndex++;
-			}
-		}
-
-		// If snp list is not done, it finishes it
-		if (snpIndex < snpSize) {
-			while (snpIndex < snpSize) {
-				//System.out.println("snpIndex: " + snpIndex+ " (" + snpSize + ")");
-				addVariant(association, getVariant(snpList.get(snpIndex)));
-				snpIndex++;
-			}
-		}
-
-		/*System.out.println("===== variantList of " + genome + " (" + variantList.size() + "): ");
-		for (Variant variant: variantList) {
-			variant.show();
-			//System.out.println(variant.getStart() + "; " + variant.getStop());
-		}*/
-
-		return variantList;
-	}
-
-
-	private void completeEdgeList (String genomeRawName, Map<VariantType, Color> association) {
-		Variant previousIndel = null;
-		Variant nextIndel = null;
-
-		MGGenomeInformation info = MultiGenomeManager.getInstance().getMultiGenomeInformation().getMultiGenomeInformation(genomeRawName);
-
-
-		// Looking for the next correct indel
-		boolean found = false;
-		int cpt = 1;
-		while (!found) {
-			Variant current = info.getNextFittedVariant(cpt);
-			if (current != null) {
-				if (controlFilter(association, current)) {
-					nextIndel = current;
-					found = true;
-				} else {
-					cpt++;
-				}
-			} else {
-				found = true;
-			}
-		}
-
-		// Looking for the previous correct indel
-		found = false;
-		cpt = 1;
-		while (!found) {
-			Variant current = info.getPreviousFittedVariant(cpt);
-			if (current != null) {
-				if (controlFilter(association, current)) {
-					previousIndel = current;
-					found = true;
-				} else {
-					cpt++;
-				}
-			} else {
-				found = true;
-			}
-		}
-
-
-		// Adds edge variants to the variant list
-		List<Variant> newVariantList = new ArrayList<Variant>();
-		for (int i = 0; i < variantList.size(); i++) {
-			if (i == 0 && previousIndel != null) {
-				newVariantList.add(previousIndel);
-			}
-			newVariantList.add(variantList.get(i));
-			if (i == (variantList.size() - 1) && nextIndel != null) {
-				newVariantList.add(nextIndel);
-			}
-		}
-
-		variantList = newVariantList;
-
-
-		/*System.out.println("===== variantList of " + genomeRawName + " (" + variantList.size() + "): ");
-		for (Variant variant: variantList) {
-			variant.show();
-			//System.out.println(variant.getStart() + "; " + variant.getStop());
-		}*/
-	}
-
-
-	/**
-	 * Creates a variant object from a VCFSNP object
-	 * @param snp	the VCFSNPInformation object
-	 * @return		the variant object
-	 */
-	private Variant getVariant (MGPosition position) {
-		ChromosomeWindow chromosome = new ChromosomeWindow(position.getMetaGenomePosition(), position.getMetaGenomePosition() + 1);
-		Variant variant = new Variant(position.getType(), chromosome, position);
-		System.out.println(position.getQuality());
-		//variant.setQualityScore(position.getQuality());
-		
-
-
-		/*ChromosomeWindow chromosome = new ChromosomeWindow(snp.getMetaGenomePosition(), snp.getMetaGenomePosition() + 1);
-		Variant variant = new Variant(VariantType.SNPS, chromosome, snp);
-		variant.setQualityScore(snp.getQuality());*/
-		return variant;
-	}
-
-
-	/**
-	 * Adds a variant to the variant list.
-	 * Filters are performed here.
-	 * @param association	Variant type / color association
-	 * @param variant		variant to insert
-	 */
-	private void addVariant (Map<VariantType, Color> association, Variant variant) {
-		if (controlFilter(association, variant)) {
-			variantList.add(variant);
-		}
-	}
-
-
-	/**
-	 * Performs filter controls
-	 * @param association	Variant type / color association
-	 * @param variant		variant to control
-	 * @return	true if the variant passed filters
-	 */
-	private boolean controlFilter (Map<VariantType, Color> association, Variant variant) {
-		boolean insert = true;
-
-		if (variant.getQualityScore() < multiGenomeStripe.getQuality()) {
-			insert = false;
-		}
-
-		if (!association.containsKey(variant.getType()) &&
-				!variant.getType().equals(VariantType.MIX) &&
-				!variant.getType().equals(VariantType.BLANK)){
-			insert = false;
-		}
-
-		return insert;
-	}
-
-
-	/**
 	 * Draws a rectangle symbolizing variants
 	 * @param g			graphics object
-	 * @param variant	the variant
+	 * @param displayableVariant	the variant
 	 * @param color		the color
 	 */
-	private void drawRect (Graphics g, Variant variant, Color color, Color noAlleleColor) {
+	private void drawRect (Graphics g, DisplayableVariant displayableVariant, Color color, Color noAlleleColor) {
 		// Sets position and length
-		if (variant.getStart() >= genomeWindow.getStart() && variant.getStop() <= genomeWindow.getStop()) {
-			int x = genomePosToScreenPos(variant.getStart());
-			int width = twoGenomePosToScreenWidth(variant.getStart(), variant.getStop());
+		if (displayableVariant.getStart() >= genomeWindow.getStart() && displayableVariant.getStop() <= genomeWindow.getStop()) {
+			int x = genomePosToScreenPos(displayableVariant.getStart());
+			int width = twoGenomePosToScreenWidth(displayableVariant.getStart(), displayableVariant.getStop());
 			int middle = getHeight() / 2;
-			int height = (int) (variant.getQualityScore() * middle / 100);
+			int height = (int) (displayableVariant.getQualityScore() * middle / 100);
 			int top = middle - height;
 
 			// Sets color
-			Color newColor = null;
-			try {
-				newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
-			} catch (Exception e) {
-				System.out.println("=========== ERROR");
-				System.out.println(variant.getType());
-				multiGenomeStripe.showInformation();
-			}
+			Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
 			g.setColor(newColor);
 
 			// Draws the top half part of the track
-			if (variant.isOnFirstAllele()) {
+			if (displayableVariant.isOnFirstAllele()) {
 				g.setColor(newColor);
 			} else {
 				g.setColor(noAlleleColor);
@@ -576,27 +330,25 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			g.fillRect(x, top, width, height);
 
 			// Draws the bottom half part of the track
-			if (variant.isOnSecondAllele()) {
+			if (displayableVariant.isOnSecondAllele()) {
 				g.setColor(newColor);
 			} else {
 				g.setColor(noAlleleColor);
 			}
 			g.fillRect(x, middle, width, height);
-		} else {
-			//variant.show();
 		}
 	}
 
 
 	/**
-	 * @param variant the current variant
+	 * @param displayableVariant the current variant
 	 * @return	the index in the variant list of the variant
 	 */
-	private int getVariantIndex (Variant variant) {
+	private int getDisplayableVariantIndex (DisplayableVariant displayableVariant) {
 		int index = -1;
 
-		for (int i = 0; i < variantList.size(); i++) {
-			int result = variantList.get(i).compareTo(variant);
+		for (int i = 0; i < displayableVariantList.size(); i++) {
+			int result = displayableVariantList.get(i).compareTo(displayableVariant);
 			if (result == 0) {
 				index = i;
 			} else if (result == 1) {
@@ -611,53 +363,53 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	/**
 	 * @return the variantList
 	 */
-	public List<Variant> getVariantList() {
-		return variantList;
+	public List<DisplayableVariant> getDisplayableVariantList() {
+		return displayableVariantList;
 	}
 
 
 	/**
-	 * @param variant	the current variant
+	 * @param displayableVariant	the current variant
 	 * @return the previous variant compare to the current variant
 	 */
-	private Variant getPreviousVariant (Variant variant) {
-		Variant result;
-		int currentIndex = getVariantIndex(variant);
+	private DisplayableVariant getPreviousDisplayableVariant (DisplayableVariant displayableVariant) {
+		DisplayableVariant result;
+		int currentIndex = getDisplayableVariantIndex(displayableVariant);
 		int previousIndex = currentIndex - 1;
 		if (currentIndex != -1 && previousIndex >= 0) {
-			result = variantList.get(previousIndex);
+			result = displayableVariantList.get(previousIndex);
 		} else {
-			result = variant;
+			result = displayableVariant;
 		}
 		return result;
 	}
 
 
 	/**
-	 * @param variant	the current variant
+	 * @param displayableVariant	the current variant
 	 * @return the next variant compare to the current variant
 	 */
-	private Variant getNextVariant (Variant variant) {
-		Variant result;
-		int currentIndex = getVariantIndex(variant);
+	private DisplayableVariant getNextDisplayableVariant (DisplayableVariant displayableVariant) {
+		DisplayableVariant result;
+		int currentIndex = getDisplayableVariantIndex(displayableVariant);
 		int nextIndex = currentIndex + 1;
-		if (currentIndex != -1 && nextIndex < variantList.size()) {
-			result = variantList.get(nextIndex);
+		if (currentIndex != -1 && nextIndex < displayableVariantList.size()) {
+			result = displayableVariantList.get(nextIndex);
 		} else {
-			result = variant;
+			result = displayableVariant;
 		}
 		return result;
 	}
 
 
 	/**
-	 * @param variant the current variant
+	 * @param displayableVariant the current variant
 	 * @return	a list containing the previous and the next variant compare to the current variant
 	 */
-	public Variant[] getShortVariantList (Variant variant) {
-		Variant array[] = new Variant[2];
-		array[0] = getPreviousVariant(variant);
-		array[1] = getNextVariant(variant);
+	public DisplayableVariant[] getShortDisplayableVariantList (DisplayableVariant displayableVariant) {
+		DisplayableVariant array[] = new DisplayableVariant[2];
+		array[0] = getPreviousDisplayableVariant(displayableVariant);
+		array[1] = getNextDisplayableVariant(displayableVariant);
 		return array;
 	}
 
@@ -763,10 +515,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		if (e.getButton() == MouseEvent.BUTTON3) {
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				double pos = screenPosToGenomePos(e.getX());
-				Variant variant = getVariant(pos);
-				if (variant != null) {
+				DisplayableVariant displayableVariant = getDisplayableVariant(pos);
+				if (displayableVariant != null) {
 					ToolTipStripe toolTip = new ToolTipStripe(this);
-					toolTip.show(variant, e.getXOnScreen(), e.getYOnScreen());
+					toolTip.show(displayableVariant, e.getXOnScreen(), e.getYOnScreen());
 				} else {
 					System.out.println(pos + ": no variant");
 				}
@@ -775,16 +527,16 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
-	private Variant getVariant(double pos) {
-		Variant variant = null;
-		if (variantList != null) {
-			for (Variant current: variantList) {
+	private DisplayableVariant getDisplayableVariant(double pos) {
+		DisplayableVariant displayableVariant = null;
+		if (displayableVariantList != null) {
+			for (DisplayableVariant current: displayableVariantList) {
 				if (pos >= current.getStart() && pos < current.getStop()) {
 					return current;
 				}
 			}
 		}
-		return variant;
+		return displayableVariant;
 	}
 
 

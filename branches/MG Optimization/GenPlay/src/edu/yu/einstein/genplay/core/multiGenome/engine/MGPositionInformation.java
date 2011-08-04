@@ -66,7 +66,7 @@ public class MGPositionInformation {
 	 * @return the ID field
 	 */
 	public String getId() {
-		return VCFLine.get("ID").toString();
+		return getString(VCFLine.get("ID"));
 	}
 
 	
@@ -74,7 +74,7 @@ public class MGPositionInformation {
 	 * @return the REF field
 	 */
 	public String getReference() {
-		return VCFLine.get("REF").toString();
+		return getString(VCFLine.get("REF"));
 	}
 
 	
@@ -82,7 +82,7 @@ public class MGPositionInformation {
 	 * @return the ALT field
 	 */
 	public String getAlternative() {
-		return VCFLine.get("ALT").toString();
+		return getString(VCFLine.get("ALT"));
 	}
 
 	
@@ -91,8 +91,7 @@ public class MGPositionInformation {
 	 */
 	public Double getQuality() {
 		try {
-			
-			return Double.valueOf(VCFLine.get("QUAL").toString());
+			return Double.valueOf(getString(VCFLine.get("QUAL")));
 		} catch (Exception e) {
 			System.out.println("catch");
 			return 50.0;
@@ -104,7 +103,7 @@ public class MGPositionInformation {
 	 * @return the FILTER field
 	 */
 	public boolean getFilter() {
-		if (VCFLine.get("FILTER").toString().equals("PASS")) {
+		if (getString(VCFLine.get("FILTER")).equals("PASS")) {
 			return true;
 		}
 		return false;
@@ -115,7 +114,7 @@ public class MGPositionInformation {
 	 * @return the INFO field
 	 */
 	public String getInfo() {
-		return VCFLine.get("INFO").toString();
+		return getString(VCFLine.get("INFO"));
 	}
 
 	
@@ -124,7 +123,7 @@ public class MGPositionInformation {
 	 * @return the value associated to the ID
 	 */
 	public Object getInfoValue(String field) {
-		return reader.getInfoValues(VCFLine.get("INFO").toString(), field);
+		return reader.getInfoValues(getString(VCFLine.get("INFO")), field);
 	}
 
 	
@@ -132,7 +131,7 @@ public class MGPositionInformation {
 	 * @return the FORMAT field
 	 */
 	public String getFormat() {
-		return VCFLine.get("FORMAT").toString();
+		return getString(VCFLine.get("FORMAT"));
 	}
 
 	
@@ -141,7 +140,7 @@ public class MGPositionInformation {
 	 * @return the format value for the given genome name
 	 */
 	public String getFormatValues(String genomeRawName) {
-		return VCFLine.get(genomeRawName).toString();
+		return getString(VCFLine.get(genomeRawName));
 	}
 
 	
@@ -152,14 +151,20 @@ public class MGPositionInformation {
 	 */
 	public Object getFormatValue(String genomeRawName, String field) {
 		Object result = null;
-		String[] formatHeader = VCFLine.get("FORMAT").toString().split(":");
+		String[] formatHeader = getString(VCFLine.get("FORMAT")).split(":");
 		String[] formatValues;
 		if (formatHeader.length == 1) {
 			formatValues = new String[1];
-			//showLine();
-			formatValues[0] = VCFLine.get(genomeRawName).toString();
+			
+			try {
+				formatValues[0] = getString(VCFLine.get(genomeRawName));
+			} catch (Exception e) {
+				System.out.println(genomeRawName);
+				showLine();
+			}
+			
 		} else {
-			formatValues = VCFLine.get(genomeRawName).toString().split(":");
+			formatValues = getString(VCFLine.get(genomeRawName)).split(":");
 		}
 		for (int i = 0; i < formatHeader.length; i++) {
 			if (formatHeader[i].equals(field)) {
@@ -170,8 +175,18 @@ public class MGPositionInformation {
 	}
 
 	
+	/**
+	 * Casts an object to a String value and performs a trim operation
+	 * @param o Object to cast
+	 * @return	a String value
+	 */
+	private String getString (Object o) {
+		return o.toString().trim();
+	}
 	
-	@SuppressWarnings("unused")
+	
+	
+	//@SuppressWarnings("unused")
 	private void showLine () {
 		String info = "";
 		for (String key: VCFLine.keySet()) {
