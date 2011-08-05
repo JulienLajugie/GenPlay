@@ -157,6 +157,13 @@ public class ProjectScreenManager extends JFrame {
 		super();
 	}
 
+	
+	@Override
+	public void dispose() {
+		ProjectScreenManager.instance = null;
+		super.dispose();
+	}
+	
 
 	/**
 	 * @return the instance of the singleton {@link ProjectScreenManager}.
@@ -219,6 +226,7 @@ public class ProjectScreenManager extends JFrame {
 		instance.setLocationRelativeTo(null);
 		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		instance.setVisible(true);
+		System.out.println("ggod");
 	}
 
 
