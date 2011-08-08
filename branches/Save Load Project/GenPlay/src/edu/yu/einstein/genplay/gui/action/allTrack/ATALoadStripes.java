@@ -27,7 +27,10 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -61,7 +64,20 @@ public final class ATALoadStripes extends TrackListActionExtractorWorker<Chromos
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
-
+	
+	@Override
+	protected void doBeforeExtraction() throws InterruptedException {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+				genomeName = genomeDialog.getGenomeName();
+			} else {
+				throw new InterruptedException();
+			}
+		}
+	}
+	
+	
 	@Override
 	protected File retrieveFileToExtract() {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();

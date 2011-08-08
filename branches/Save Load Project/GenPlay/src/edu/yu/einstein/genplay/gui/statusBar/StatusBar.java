@@ -83,7 +83,7 @@ public final class StatusBar extends JPanel {
 		gbc.weightx = 0;
 		gbc.weighty = 1;
 		gbc.gridx = 3;	
-		gbc.ipadx = 10;
+		//gbc.ipadx = 10;
 		add(memoryPanel, gbc);
 		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
 	}

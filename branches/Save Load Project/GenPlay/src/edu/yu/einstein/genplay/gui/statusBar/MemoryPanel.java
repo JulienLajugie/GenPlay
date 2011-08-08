@@ -109,11 +109,23 @@ public final class MemoryPanel extends JProgressBar {
 	 */
 	private synchronized void setMemory(long maxMemory, long usedMemory) {
 		NumberFormat nf = new DecimalFormat("###,###,###");
+		// compute the percentage of memory used
 		int usedOnMax = (int)(usedMemory / (double)maxMemory * 100);
+		// use this percentage to set the progress of the progress bar 
 		setValue(usedOnMax);
+		// set the color of the progress bar
 		Color foregroundColor = memoryToColor(usedOnMax);
 		setForeground(foregroundColor);
-		setString(" " + nf.format(usedMemory) + " MB / " + nf.format(maxMemory) + " MB (" + usedOnMax + "%)");
+		// prepare the string that needs to be printed
+		String stringToPrint = " " + nf.format(usedMemory) + " MB / " + nf.format(maxMemory) + " MB (" + usedOnMax + "%)"; 
+		// compute the width of the string to print
+		int width = getFontMetrics(getFont()).stringWidth(stringToPrint);
+		// if the string is too large for the component we make the component bigger
+		if (width + 10 > getMinimumSize().width) {
+			setMinimumSize(new Dimension(width + 10, getMinimumSize().height));
+		}
+		// print the new string
+		setString(stringToPrint);
 	}
 	
 	
