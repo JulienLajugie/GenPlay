@@ -27,6 +27,9 @@ import java.awt.Point;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ import edu.yu.einstein.genplay.util.History;
 public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 	private static final long serialVersionUID = 1372400925707415741L; 		// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final double				MIN_X_RATIO_PRINT_NAME = 
 		GeneList.MIN_X_RATIO_PRINT_NAME;									// the name of the genes are printed if the ratio is higher than this value			
 	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
@@ -69,6 +73,41 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	protected History 						history = null; 				// history containing a description of the action made on the track
 	protected URRManager<GeneList> 			urrManager; 					// manager that handles the undo / redo / reset of the track
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(geneLinesCount);
+		out.writeDouble(min);
+		out.writeDouble(max);
+		out.writeObject(history);
+		out.writeObject(urrManager);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */	
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		mouseStartDragY = -1;
+		geneUnderMouse = null;
+		firstLineToDisplay = 0;
+		in.readInt();
+		geneLinesCount = in.readInt();
+		min = in.readDouble();
+		max = in.readDouble();
+		history = (History) in.readObject();
+		urrManager = (URRManager<GeneList>) in.readObject();
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link GeneListTrackGraphics}

@@ -20,7 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.extractor;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Strand;
 
 
@@ -44,16 +43,16 @@ public interface StrandedExtractor {
 	
 	
 	/**
-	 * @param shiftValue shift value to set
+	 * @return the {@link ReadLengthAndShiftHandler} that will compute the position 
+	 * of read by applying the shift and the read length values
 	 */
-	public void setStrandShift(int shiftValue);
+	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler();
 	
-
+	
 	/**
-	 * Returns the shifted position on a specified chromosome and a specified strand
-	 * @param strand current {@link Strand}
-	 * @param chromosome current {@link Chromosome}
-	 * @param position a position
+	 * Sets the handler that will compute the position of read by applying the shift
+	 * and the read length values
+	 * @param handler ReadLengthAndShiftHandler
 	 */
-	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position);
+	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler);
 }

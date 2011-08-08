@@ -21,8 +21,12 @@
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
 import edu.yu.einstein.genplay.core.enums.VariantType;
 
 
@@ -34,12 +38,44 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * - transparency
  * @author Nicolas Fourel
  */
-public class MultiGenomeStripe {
+public class MultiGenomeStripe implements Serializable {
 
+	private static final long serialVersionUID = -4999509228556102365L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Map<String, Map<VariantType, Color>> 	colorAssociation;	// Association between variant type and color
 	private int 									transparency;		// Transparency (0 -> 100)
 	private int										quality;			// Quality threshold (0 -> 100)
 	private String 									genomeName;			// Genome name
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(colorAssociation);
+		out.writeInt(transparency);
+		out.writeInt(quality);
+		out.writeObject(genomeName);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		colorAssociation = (Map<String, Map<VariantType, Color>>) in.readObject(); 
+		transparency = in.readInt();
+		quality = in.readInt();
+		genomeName = (String) in.readObject();
+	}
 	
 	
 	/**

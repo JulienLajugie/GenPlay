@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.list.geneList;
 import java.awt.FontMetrics;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -39,6 +40,7 @@ import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -51,12 +53,39 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>>> implements Serializable {
 
 	private static final long serialVersionUID = 1068181566225377150L; 	// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	MIN_DISTANCE_BETWEEN_2_GENES = 5;		// minimum distance in pixel between two genes 
 	private FontMetrics			fontMetrics = null;						// dimension of the font used to print the name of the genes
 	private String				searchURL = null;						// URL of the gene database
-	private GeneSearcher		geneSearcher;							// object used to search genes
+	private GeneSearcher		geneSearcher = null;					// object used to search genes
 	
 	
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(fontMetrics);
+		out.writeObject(searchURL);
+	}
+	
+	
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		fontMetrics = (FontMetrics) in.readObject(); 
+		searchURL = (String) in.readObject();
+		geneSearcher = null;
+	}
+	
+		
 	/**
 	 * The name of the genes are printed if the horizontal ratio is above this value
 	 */
@@ -69,6 +98,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	public GeneList(Collection<? extends List<Gene>> data) {
 		addAll(data);
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// add the eventual missing chromosomes
 		if (size() < chromosomeManager.size()) {
 			for (int i = size(); i < chromosomeManager.size(); i++){
@@ -93,6 +123,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	public GeneList(Collection<? extends List<Gene>> data, String searchURL) {
 		addAll(data);
 		// add the eventual missing chromosomes
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		if (size() < chromosomeManager.size()) {
 			for (int i = size(); i < chromosomeManager.size(); i++){
 				add(null);
@@ -134,6 +165,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {			
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
 				@Override
@@ -210,6 +242,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {			
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
 				@Override

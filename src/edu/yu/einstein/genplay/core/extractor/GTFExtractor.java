@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
@@ -70,8 +71,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
 	private final ChromosomeArrayListOfLists<Double>scoreList;		// list of scores
 	private Strand 									selectedStrand;	// strand to extract, null for both
-	private int 									strandShift;	// value of the shift to perform on the selected strand
-
+	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
+	
 
 	/**
 	 * Creates an instance of {@link GTFExtractor}
@@ -127,9 +128,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					if ((strand != null) && (isStrandSelected(strand))) {
 						// retrieve the start position
 						int start = Integer.parseInt(splitedLine[3].trim());
-						start = getMultiGenomePosition(chromo, start);
 						// retrieve the stop position
 						int stop = Integer.parseInt(splitedLine[4].trim());
+						// compute the read position with specified strand shift and read length
+						if (readHandler != null) {
+							ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, start, stop, strand);
+							start = resultStartStop.getStart();
+							stop = resultStartStop.getStop();							
+						}
+						// if we are in a multi-genome project, we compute the position on the meta genome start = getMultiGenomePosition(chromo, start);						
 						stop = getMultiGenomePosition(chromo, stop);
 						// retrieve the score
 						Double score = null;
@@ -209,22 +216,6 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	@Override
 	public void selectStrand(Strand strandToSelect) {
 		selectedStrand = strandToSelect;		
-	}
-
-
-	@Override
-	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
-		if (strand == Strand.FIVE) {
-			return Math.min(chromosome.getLength(), position + strandShift);
-		} else {
-			return Math.max(0, position - strandShift);
-		}
-	}
-
-
-	@Override
-	public void setStrandShift(int shiftValue) {
-		strandShift = shiftValue; 
 	}
 
 
@@ -366,5 +357,17 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			gene.setExonScores(null);
 		}
 		return gene;
+	}
+	
+	
+	@Override
+	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
+		return readHandler;
+	}
+
+
+	@Override
+	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
+		this.readHandler = handler;
 	}
 }

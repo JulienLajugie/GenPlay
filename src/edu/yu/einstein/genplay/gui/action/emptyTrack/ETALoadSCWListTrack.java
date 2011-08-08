@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
@@ -56,8 +57,9 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	private ScoreCalculationMethod 	scoreCalculation = null;								// method of calculation for the score
 	private Strand					strand = null;											// strand to extract
 	private int						strandShift = 0;										// position shift on a strand
+	private int 					readLength = 0;											// user specified length of the reads (0 to keep the original length)
 
-
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -112,8 +114,9 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			if (isStrandNeeded) {
 				strand = nctd.getStrandToExtract();
 				strandShift = nctd.getStrandShiftValue();
+				readLength = nctd.getReadLengthValue();
 				((StrandedExtractor) extractor).selectStrand(strand);
-				((StrandedExtractor) extractor).setStrandShift(strandShift);
+				((StrandedExtractor) extractor).setReadLengthAndShiftHandler(new ReadLengthAndShiftHandler(strandShift, readLength));
 			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				genomeName = nctd.getGenomeName();
@@ -170,6 +173,9 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			}
 			if (strandShift != 0) {
 				history += ", Strand Shift = " + strandShift +"bp";
+			}
+			if (readLength != 0) {
+				history += ", Read Length = " + readLength +"bp";
 			}
 			if (!history.isEmpty()) {
 				newTrack.getHistory().add(history, Color.GRAY);

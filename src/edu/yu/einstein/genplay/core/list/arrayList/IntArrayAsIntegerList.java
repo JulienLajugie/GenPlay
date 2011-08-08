@@ -20,6 +20,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.arrayList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -27,12 +30,38 @@ import java.util.List;
 
 public class IntArrayAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer> {
 
-	private static final long serialVersionUID = -8787392051503707843L;
+	private static final long serialVersionUID = -8787392051503707843L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	RESIZE_MIN = 1000;		// minimum length added every time the array is resized
 	private static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
 	private static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	private int[] 				data;					// int data array
 	private int 				size;					// size of the list
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(data);
+		out.writeInt(size);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		data = (int[]) in.readObject();
+		size = in.readInt();		
+	}
 	
 	
 	/**

@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
 
 /**
@@ -30,6 +34,28 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 public class MultiCurvesTrack extends ScoredTrack<CurveTrack<?>[]> {
 
 	private static final long serialVersionUID = -8961218330334104474L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
 	
 	
 	/**

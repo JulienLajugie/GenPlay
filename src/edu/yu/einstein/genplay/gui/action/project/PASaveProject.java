@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -86,8 +87,10 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 			selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
+				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
+				ProjectManager.getInstance().setProjectName(projectName);
 				ProjectRecordingManager.getInstance().saveProject(selectedFile);
-				//trackList.saveProject(selectedFile);
+				MainFrame.getInstance().setTitle();
 				return true;
 			}
 		}
@@ -96,11 +99,5 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 
 	@Override
-	protected void doAtTheEnd(Boolean actionResult) {
-		if (actionResult) {
-			//JFrame mainFrame = (JFrame)trackList.getTopLevelAncestor();
-			//String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-			//mainFrame.setTitle(projectName + MainFrame.APPLICATION_TITLE);
-		}
-	}
+	protected void doAtTheEnd(Boolean actionResult) {}
 }

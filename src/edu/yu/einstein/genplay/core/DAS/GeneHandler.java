@@ -30,6 +30,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
 /**
@@ -40,19 +42,20 @@ import edu.yu.einstein.genplay.core.enums.Strand;
  */
 public class GeneHandler extends DefaultHandler {
 
-	private final	List<Gene>	geneList;				// list of genes
+	private final	List<Gene>	geneList;	// list of genes
 	private String 	currentMarkup = null;	// current XML markup
 	private	Gene	currentGene = null;		// current gene
 
 	private String previousGroupID = null;
 
-	private	String 	groupID;	// a group define a gene for the different exons
+	private	String 	groupID;				// a group define a gene for the different exons
 	private	int 	start;
 	private	int 	end;
 	private	double 	score;
 	private Strand 	orientation;
 	private String  name;
-	private final Chromosome chromosome;
+	private final Chromosome chromosome;	// chromosome being extracted
+	private String genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
 	
 
 	/**
@@ -107,9 +110,9 @@ public class GeneHandler extends DefaultHandler {
 				previousGroupID = groupID;
 			} else if (!groupID.equalsIgnoreCase(previousGroupID)) {	// if we have a new group we add the previous gene to the list
 				// set the gene start
-				currentGene.setStart(currentGene.getExonStarts()[0]);
+				currentGene.setStart(getMultiGenomePosition(currentGene.getExonStarts()[0]));
 				// set the gene stop
-				currentGene.setStop(currentGene.getExonStops()[currentGene.getExonStops().length - 1]);
+				currentGene.setStop(getMultiGenomePosition(currentGene.getExonStops()[currentGene.getExonStops().length - 1]));
 				currentGene.setName(name);
 				currentGene.setStrand(orientation);
 				currentGene.setChromo(chromosome);
@@ -117,7 +120,7 @@ public class GeneHandler extends DefaultHandler {
 				previousGroupID = groupID;
 				currentGene = new Gene();
 			} 
-			currentGene.addExon(start, end, score);			
+			currentGene.addExon(getMultiGenomePosition(start), getMultiGenomePosition(end), score);			
 		}
 	}
 
@@ -141,5 +144,34 @@ public class GeneHandler extends DefaultHandler {
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * @param position		current position
+	 * @return				the associated associated meta genome position
+	 */
+	private int getMultiGenomePosition (int position) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return ShiftCompute.computeShift(genomeName, chromosome, position);
+		} else {
+			return position;
+		}
+	}	
+	
+	
+	/**
+	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+	}
+
+
+	/**
+	 * @return the name of the genome on which the data were mapped.  For multi-genome project only
+	 */
+	public String getGenomeName() {
+		return genomeName;
 	}
 }

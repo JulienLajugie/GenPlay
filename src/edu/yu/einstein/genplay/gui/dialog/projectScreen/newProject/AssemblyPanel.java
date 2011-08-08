@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -330,7 +331,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	 */
 	protected String findAssembly () {
 		Date date_tmp = null;
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM yyyy", Locale.US);
 		String assembly_tmp = getSelectedAssembly();
 		try {
 			date_tmp = sdf.parse(assembly_tmp.substring(0, 8));

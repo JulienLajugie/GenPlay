@@ -85,7 +85,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	/**
 	 * Title of the application
 	 */
-	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ") - Multi-Genome beta version ";
+	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
 	private final static String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
 	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
 	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
@@ -205,12 +205,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 * Application title - Project name - Genome name - Assembly name.
 	 */
 	public void setTitle () {
-		setTitle(	MainFrame.APPLICATION_TITLE +
-				ProjectManager.getInstance().getProjectName()
+		setTitle(	MainFrame.APPLICATION_TITLE 
 				+ " - " + 
+				ProjectManager.getInstance().getProjectName()
+				+ " - (" + 
 				ProjectManager.getInstance().getGenomeName()
-				+ " " + 
-				ProjectManager.getInstance().getAssembly().getName());
+				+ ", " + 
+				ProjectManager.getInstance().getAssembly().getName()
+				+ ")");
 	}
 
 

@@ -42,9 +42,36 @@ import java.util.List;
 public final class History implements Serializable {
 
 	private static final long serialVersionUID = -1385318410072807666L; // generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private List<String> history; 	// history
 	private List<String> redo; 		// redo history
-
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(history);
+		out.writeObject(redo);
+	}
+	
+	
+	/**
+	 * Method used of unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		history = (List<String>) in.readObject();
+		redo = (List<String>) in.readObject();		
+	}
+	
 	
 	/**
 	 * Public constructor. Initializes the history.

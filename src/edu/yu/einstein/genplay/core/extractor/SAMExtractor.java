@@ -25,12 +25,14 @@ import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
@@ -46,10 +48,12 @@ import edu.yu.einstein.genplay.util.Utils;
 public class SAMExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, BinListGenerator {
 
 	private static final long serialVersionUID = -1917159784796564734L; // generated ID
-	private ChromosomeListOfLists<Integer>	positionList;				// list of position
-	private Strand 							selectedStrand;	// strand to extract, null for both
-	private int 							strandShift;	// value of the shift to perform on the selected strand
-
+	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
+	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
+	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
+	private Strand 									selectedStrand;	// strand to extract, null for both
+	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
+	
 
 	/**
 	 * Creates an instance of {@link SAMExtractor}
@@ -58,9 +62,13 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 	 */
 	public SAMExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
-		positionList = new ChromosomeArrayListOfLists<Integer>();
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		scoreList = new ChromosomeArrayListOfLists<Double>();
 		for (int i = 0; i < chromosomeManager.size(); i++) {
-			positionList.add(new IntArrayAsIntegerList());
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
+			scoreList.add(new DoubleArrayAsDoubleList());
 		}
 	}
 
@@ -86,20 +94,27 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 						strand = Strand.FIVE;
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
-						int position = Integer.parseInt(splitedLine[3]);
-						// on the three strand we need to add the length
-						// of sequence to the position because the sam format
-						// store the 5' complemented sequence with its start position
-						// (ie the stop position on the 3' strand)
-						if (strand.equals(Strand.THREE)) {
-							String sequence = splitedLine[9].trim();
-							position = position + sequence.length();
-						}
 						// we subtract 1 to the position because sam file position  
 						// are 1 base and genplay is 0 based
-						position--;
-						position = getMultiGenomePosition(chromosome, position);
-						positionList.get(chromosome).add(position);		
+						int start = Integer.parseInt(splitedLine[3]) - 1;
+						// in order to find the stop position we need to 
+						// add the length of sequence to the start position
+						String sequence = splitedLine[9].trim();
+						int stop = start + sequence.length();
+						// compute the read position with specified strand shift and read length
+						if (readHandler != null) {
+							ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+							start = resultStartStop.getStart();
+							stop = resultStartStop.getStop();							
+						}
+						// if we are in a multi-genome project, we compute the position on the meta genome 
+						start = getMultiGenomePosition(chromosome, start);
+						stop = getMultiGenomePosition(chromosome, stop);
+						startList.add(chromosome, start);
+						stopList.add(chromosome, stop);
+						// TODO: add a BinList constructor that doesn't need 
+						// as score list so we don't need the useless next line
+						scoreList.add(chromosome, 1.0);
 						lineCount++;
 					}
 					return false;
@@ -120,7 +135,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 
 	@Override
 	public boolean isCriterionNeeded() {
-		return false;
+		return true;
 	}
 
 
@@ -133,7 +148,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) 
 	throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(binSize, precision, positionList);
+		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
 	@Override
@@ -153,19 +168,13 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 
 
 	@Override
-	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
-		if (strand == null) {
-			return position;
-		} else if (strand == Strand.FIVE) {
-			return Math.min(chromosome.getLength(), position + strandShift);
-		} else {
-			return Math.max(0, position - strandShift);
-		}
+	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
+		return readHandler;
 	}
 
 
 	@Override
-	public void setStrandShift(int shiftValue) {
-		strandShift = shiftValue; 
+	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
+		this.readHandler = handler;
 	}
 }

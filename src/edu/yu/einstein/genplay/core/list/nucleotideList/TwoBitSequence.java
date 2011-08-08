@@ -23,17 +23,19 @@ package edu.yu.einstein.genplay.core.list.nucleotideList;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
+
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-
 
 
 /**
@@ -45,6 +47,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide>, Stoppable {
 
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private transient RandomAccessFile 	raf;			// 2bit random access file  
 	private String	filePath;					// path of the 2bit file (used for the serialization)
 	private int 	headerSize;					// the size in byte of the header of the sequence
@@ -57,7 +60,51 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	private int[] 	maskBlockSizes;				// the length of each masked block
 	private boolean	needToBeStopped = false; 	// true if the execution need to be stopped
 	protected String	genomeName = null;		// genome name for a multi genome project
-	private final Chromosome chromosome;		// chromosome of the current list
+	private Chromosome chromosome;				// chromosome of the current list
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(filePath);
+		out.writeInt(headerSize);
+		out.writeObject(name);
+		out.writeInt(offset);
+		out.writeInt(dnaSize);
+		out.writeObject(nBlockStarts);
+		out.writeObject(nBlockSizes);
+		out.writeObject(maskBlockStarts);
+		out.writeObject(maskBlockSizes);
+		out.writeObject(genomeName);
+		out.writeObject(chromosome);
+	}
+	
+	
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		filePath = (String) in.readObject();	
+		headerSize = in.readInt();
+		name = (String) in.readObject();
+		offset = in.readInt();
+		dnaSize = in.readInt();
+		nBlockStarts = (int[]) in.readObject();
+		nBlockSizes = (int[]) in.readObject();
+		maskBlockStarts = (int[]) in.readObject();
+		maskBlockSizes = (int[]) in.readObject();
+		genomeName = (String) in.readObject();
+		chromosome = (Chromosome) in.readObject();
+		needToBeStopped = false;
+	}
 	
 	
 	/**

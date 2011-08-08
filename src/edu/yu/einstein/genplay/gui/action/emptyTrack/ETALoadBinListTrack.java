@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -60,7 +61,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	private BinListGenerator 		binListGenerator;										// BinList Generator
 	private Strand					strand = null;											// strand to extract
 	private int						strandShift = 0;										// position shift on a strand
-	
+	private int 					readLength = 0;											// user specified length of the reads (0 to keep the original length)
 	
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -102,6 +103,9 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			if (strandShift != 0) {
 				history += ", Strand Shift = " + strandShift +"bp";
 			}
+			if (readLength != 0) {
+				history += ", Read Length = " + readLength +"bp";
+			}
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			newTrack.getHistory().add(history, Color.GRAY);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
@@ -141,8 +145,9 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			if (isStrandNeeded) {
 				strand = nctd.getStrandToExtract();
 				strandShift = nctd.getStrandShiftValue();
+				readLength = nctd.getReadLengthValue();
 				((StrandedExtractor) extractor).selectStrand(strand);
-				((StrandedExtractor) extractor).setStrandShift(strandShift);
+				((StrandedExtractor) extractor).setReadLengthAndShiftHandler(new ReadLengthAndShiftHandler(strandShift, readLength));
 			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				genomeName = nctd.getGenomeName();

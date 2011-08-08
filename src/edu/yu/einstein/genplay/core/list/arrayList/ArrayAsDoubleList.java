@@ -45,13 +45,53 @@ import edu.yu.einstein.genplay.exception.CompressionException;
 public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implements Serializable, List<Double>, CompressibleList {
 
 	private static final long serialVersionUID = -4745728013829849L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	protected static final int 	RESIZE_MIN = 1000;		// minimum length added every time the array is resized
 	protected static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
 	protected static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
 	protected T					data;					// byte data array (8 booleans / byte)
 	protected int 				size = 0;				// size of the list	
-	transient private boolean				isCompressed = false;	// true if the list is compressed
+	private boolean				isCompressed = false;	// true if the list is compressed
 	transient private ByteArrayOutputStream	compressedData = null; 	// list compressed as a ByteArrayOutputStream
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		/* Makes sure that the list is uncompressed before serialization.
+		   Recompresses the list is the list has been uncompressed. */
+		if (isCompressed()) {
+			try {
+				uncompress();
+				out.writeObject(data);
+				compress();
+			} catch (CompressionException e) {
+				e.printStackTrace();
+			}
+		} else {
+			out.writeObject(data);
+		}
+		out.writeInt(size);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		data = (T) in.readObject();
+		size = in.readInt();
+		isCompressed = false;
+	}
 
 
 	/**
@@ -128,26 +168,5 @@ public abstract class ArrayAsDoubleList<T> extends AbstractList<Double> implemen
 	@Override
 	public boolean isCompressed() {
 		return isCompressed;
-	}
-
-
-	/**
-	 * Makes sure that the list is uncompressed before serialization.
-	 * Recompresses the list is the list has been uncompressed.
-	 * @param out {@link ObjectOutputStream}
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		if (isCompressed()) {
-			try {
-				uncompress();
-				out.defaultWriteObject();
-				compress();
-			} catch (CompressionException e) {
-				e.printStackTrace();
-			}
-		} else {
-			out.defaultWriteObject();
-		}
-	}
+	}	 
 }

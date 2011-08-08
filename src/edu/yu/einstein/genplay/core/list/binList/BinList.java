@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.CompressibleList;
 import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.CompressionException;
 
@@ -54,12 +55,13 @@ import edu.yu.einstein.genplay.exception.CompressionException;
 public final class BinList extends DisplayableListOfLists<Double, double[]> implements Serializable {
 
 	private static final long serialVersionUID = -6114967730638134020L; // generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; 			// saved format version 
 
-	private final int 				binSize;		// size of the bins
-	private final DataPrecision 	precision;		// precision of the data
-	private int 					fittedBinSize;	// size of the bins of the fitted data
+	private int 				binSize;		// size of the bins
+	private DataPrecision 		precision;		// precision of the data
+	private int 				fittedBinSize;	// size of the bins of the fitted data
 
-	private boolean					isCompressed = false;			// true if the compressed mode is on
+	private boolean				isCompressed = false;			// true if the compressed mode is on
 
 	/*
 	 * The  following parameters are used for the display of the BinList.
@@ -73,20 +75,20 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	private final static int 	ACCELERATOR_FACTOR = 100;	// factor used for the acceleration. Indicates how much bigger is the binSize of the accelerator binlist
 	private final static int	ACCELERATOR_MAX_BINSIZE = 
 		500000000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that 
-	private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
-	private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome
+	transient private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
+	transient private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome
 
 	/*
 	 * The following values are statistic values of the BinList
 	 * They are transient because they depend on the chromosome manager that is also transient
 	 * They are calculated at the creation of the BinList to avoid being recalculated
 	 */
-	transient private Double 	min = null;			// smallest value of the BinList
-	transient private Double 	max = null;			// greatest value of the BinList 
-	transient private Double 	average = null;		// average of the BinList
-	transient private Double 	stDev = null;		// standar deviation of the BinList
-	transient private Double 	sumScore = null;	// sum of the scores of the BinList
-	transient private Long 		binCount = null;	// count of none-null bins in the BinList
+	private Double 	min = null;			// smallest value of the BinList
+	private Double 	max = null;			// greatest value of the BinList 
+	private Double 	average = null;		// average of the BinList
+	private Double 	stDev = null;		// standar deviation of the BinList
+	private Double 	sumScore = null;	// sum of the scores of the BinList
+	private Long 	binCount = null;	// count of none-null bins in the BinList
 
 
 	/**
@@ -124,6 +126,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();	
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
@@ -180,6 +183,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
@@ -256,7 +260,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 			final List<Double> currentList = binList.get(currentChromosome);
 
@@ -327,7 +331,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();		
 
-
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 			final List<Double> currentScores = scores.get(currentChromosome);
 			final List<Integer> currentPositions = positions.get(currentChromosome);
@@ -370,8 +374,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 		finalizeConstruction();
 	}
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link BinList}
 	 * @param binSize size of the bins
@@ -392,6 +396,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// for each chromosome
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
@@ -453,6 +458,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager)  {
 			final List<ScoredChromosomeWindow> currentList = list.get(currentChromosome);
 
@@ -725,6 +731,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws InterruptedException 
 	 */
 	private void generateStatistics() throws InterruptedException, ExecutionException {
+		// retrieve the chromosome manager
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// retrieve the instance of the OperationPool singleton
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
@@ -924,10 +932,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Prints the {@link BinList} on the standard output
 	 */
 	public void print() {
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(short i = 0; i < size(); i++) {
 			if(get(i) != null) {
 				for (int j = 0; j < size(i); j++) {
-					System.out.println(getChromosomeManager().get(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
+					System.out.println(chromosomeManager.get(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
 				}
 			}
 		}
@@ -935,25 +944,51 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 
 	/**
-	 * Recompresses the list if needed after unserialization.
-	 * Computes the statistics of the list
+	 * Serializes the fields needed to save a BinList
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER); // save the version of the saved format number
+		out.writeInt(binSize);
+		out.writeObject(precision);				
+		out.writeInt(fittedBinSize);
+		out.writeDouble(min);
+		out.writeDouble(max);
+		out.writeDouble(average);
+		out.writeDouble(stDev);
+		out.writeDouble(sumScore);
+		out.writeLong(binCount);
+	}
+
+
+	/**
+	 * Unserializes the saved fields.  The number format field can be used to specify a
+	 * different loading depending on the saved format
 	 * @param in {@link ObjectInputStream}
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
+		in.readInt(); // read the saved format number (useful if there is different loading method depending on the saved format number) 
+		binSize = in.readInt();
+		precision = (DataPrecision) in.readObject();
+		fittedBinSize = in.readInt();
+		min = in.readDouble();
+		max = in.readDouble();
+		average = in.readDouble();
+		stDev = in.readDouble();
+		sumScore = in.readDouble();
+		binCount = in.readLong();
 		try {
-			generateStatistics();
-			if (isCompressed) {
-				compress();
-			}
+			generateAcceleratorBinList();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new IOException();
 		}
+
 	}
 
-	
+
 	/**
 	 * Uncompresses the BinList
 	 * @throws CompressionException

@@ -56,6 +56,8 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 		
 		//Add valid button
 		add(valid);
+		// set valid button as the default button of the project screen manager
+		ProjectScreenManager.getInstance().getRootPane().setDefaultButton(valid);
 	}
 	
 	

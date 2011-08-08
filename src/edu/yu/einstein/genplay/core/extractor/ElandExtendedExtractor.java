@@ -31,12 +31,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
@@ -54,14 +56,16 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
 
 	private ChromosomeListOfLists<Integer>	positionList;		// list of position
+	private ChromosomeListOfLists<Integer>	stopPositionList;	// list of stop position. Only used when a read length is specified
+	private ChromosomeListOfLists<Double>	scoreList;			// list of score. Only used when a read length is specified
 	private ChromosomeListOfLists<Strand>	strandList;			// list of strand
 	private int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count
 	private int 							multiMatchCount = 0;// multi-match line count 
 	private Strand 							selectedStrand;		// strand to extract, null for both
-	private int 							strandShift;	// value of the shift to perform on the selected strand
-	
+	private ReadLengthAndShiftHandler		readHandler;		// handler that computes the position of read by applying the shift
+
 
 	/**
 	 * Creates an instance of {@link ElandExtendedExtractor}
@@ -242,7 +246,20 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				matchTypeCount[chromoNumber][2] += match2MNumber;
 				// add the data
 				strandList.add(chromo, strand);
-				positionNumber = getShiftedPosition(strand, chromo, positionNumber);
+				// compute the read position with specified strand shift and read length
+				if (readHandler != null) {
+					ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, positionNumber, positionNumber, strand);
+					positionNumber = resultStartStop.getStart();
+					// if a read length is specified we need to add a stop position
+					if (readHandler.getReadLength() != 0) {
+						int stop = resultStartStop.getStop();
+						stop = getMultiGenomePosition(chromo, stop);
+						stopPositionList.add(chromo, stop);
+						// TODO: add a BinList constructor that doesn't need 
+						// as score list so we don't need the useless next line
+						scoreList.add(chromo, 1.0);
+					}
+				}
 				positionNumber = getMultiGenomePosition(chromo, positionNumber);
 				positionList.add(chromo, positionNumber);
 				lineCount++;
@@ -272,7 +289,12 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		return new BinList(binSize, precision, positionList);
+		// case where a read length is specified
+		if ((readHandler != null) && (readHandler.getReadLength() != 0)) {
+			return new BinList(binSize, precision, ScoreCalculationMethod.SUM, positionList, stopPositionList, scoreList);
+		} else { // case where there is no specified read length
+			return new BinList(binSize, precision, positionList);
+		}
 	}
 
 
@@ -293,17 +315,22 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
-		if (strand == Strand.FIVE) {
-			return Math.min(chromosome.getLength(), position + strandShift);
-		} else {
-			return Math.max(0, position - strandShift);
-		}
+	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
+		return readHandler;
 	}
 
 
 	@Override
-	public void setStrandShift(int shiftValue) {
-		strandShift = shiftValue; 
+	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
+		this.readHandler = handler;
+		if (readHandler.getReadLength() != 0) {
+			// if a read length is specified we need to have a stop position list
+			stopPositionList = new ChromosomeArrayListOfLists<Integer>();
+			scoreList = new ChromosomeArrayListOfLists<Double>();
+			for (int i = 0; i < chromosomeManager.size(); i++) {
+				stopPositionList.add(new IntArrayAsIntegerList());
+				scoreList.add(new DoubleArrayAsDoubleList());
+			}
+		}
 	}
 }

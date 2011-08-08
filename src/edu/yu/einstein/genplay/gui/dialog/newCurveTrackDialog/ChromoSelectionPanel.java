@@ -20,11 +20,12 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -68,9 +69,21 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 		jcpSelectedChromo = new JScrollPane(jlSelectedChromo);
 		jbModifySelection = new JButton("Modify Selection");
 		jbModifySelection.addActionListener(this);
-		setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		add(jcpSelectedChromo);
-		add(jbModifySelection);
+		setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.PAGE_START;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		add(jcpSelectedChromo, gbc);
+		
+		gbc = new GridBagConstraints();
+		gbc.gridy = 1;
+		gbc.anchor = GridBagConstraints.PAGE_START;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		add(jbModifySelection, gbc);
 		setBorder(BorderFactory.createTitledBorder("Selected Chromosomes"));
 	}
 

@@ -24,6 +24,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
@@ -39,11 +42,36 @@ import edu.yu.einstein.genplay.util.ColorConverters;
 public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOfLists<Nucleotide, Nucleotide[]>> {
 
 	private static final long serialVersionUID = -7170987212502378002L;				// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;						// saved format version
 	private static final int NUCLEOTIDE_HEIGHT = 10;								// y position of the nucleotides on the track
-	private int 		maxBaseWidth = 0;											// size on the screen of the widest base to display (in pixels) 
+	private int 		maxBaseWidth = 0;											// size on the screen of the widest base to display (in pixels)
 	private Integer 	baseUnderMouseIndex = null;									// index of the base under the mouse
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(maxBaseWidth);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		maxBaseWidth = in.readInt();
+		baseUnderMouseIndex = null;	
+	}
+
+	
 	/**
 	 * Creates an instance of {@link NucleotideListTrackGraphics}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display

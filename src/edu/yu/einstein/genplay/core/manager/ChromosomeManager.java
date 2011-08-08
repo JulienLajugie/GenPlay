@@ -20,6 +20,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,13 +50,42 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.ChromosomeCom
 public final class ChromosomeManager implements Serializable, Iterable<Chromosome> {
 
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static 	ChromosomeManager 			instance = null;		// unique instance of the singleton
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			Map<String, Chromosome> 	chromosomeList;			// List of chromosome
 	private			Chromosome					currentChromosome;		// Current chromosome in the genome window (uses for multi genome project)
+
 	
-	
-	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeHash);
+		out.writeObject(chromosomeList);
+		out.writeObject(currentChromosome);		
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeHash = (Map<String, Integer>) in.readObject();
+		chromosomeList = (Map<String, Chromosome>) in.readObject();
+		currentChromosome = (Chromosome) in.readObject();
+		instance = this;
+	}
+			
+		
 	/**
 	 * @return an instance of a {@link ChromosomeManager}. 
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern

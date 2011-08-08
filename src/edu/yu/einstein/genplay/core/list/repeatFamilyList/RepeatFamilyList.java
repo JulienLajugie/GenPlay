@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.list.repeatFamilyList;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +36,7 @@ import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -46,7 +49,29 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily, List<RepeatFamily>> implements Serializable {
 
 	private static final long serialVersionUID = -7553643226353657650L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+	
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyList}
@@ -66,6 +91,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<RepeatFamily>>> threadList = new ArrayList<Callable<List<RepeatFamily>>>();		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {			
 
 			Callable<List<RepeatFamily>> currentThread = new Callable<List<RepeatFamily>>() {	

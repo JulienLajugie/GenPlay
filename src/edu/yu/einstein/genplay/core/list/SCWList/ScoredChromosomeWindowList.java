@@ -56,7 +56,8 @@ import edu.yu.einstein.genplay.util.DoubleLists;
 public final class ScoredChromosomeWindowList extends DisplayableListOfLists<ScoredChromosomeWindow, List<ScoredChromosomeWindow>> implements Serializable {
 
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
-
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
 	/*
 	 * The following values are statistic values of the list
 	 * They are transient because they depend on the chromosome manager that is also transient
@@ -70,6 +71,32 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	transient private Long 		nonNullLength = null;// count of none-null bins in the BinList
 
 	private OverLappingManagement overLapManagement;
+
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
+
+
+	/**
+	 * Method used for unserialization. Computes the statistics of the list after unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		try {
+			generateStatistics();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	
 	/**
@@ -152,7 +179,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
-		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
@@ -214,7 +241,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		} else {
 			runOverLapEngine = false;
 		}
-		
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(final Chromosome currentChromosome : chromosomeManager) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
@@ -265,6 +292,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	public ScoredChromosomeWindowList(Collection<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
 		super();
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		addAll(data);
 		// add the eventual missing chromosomes
 		if (size() < chromosomeManager.size()) {
@@ -415,7 +443,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
+		
 		// set the default value
 		min = Double.POSITIVE_INFINITY;
 		max = Double.NEGATIVE_INFINITY;
@@ -613,20 +642,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		return stDev;
 	}
 	
-	/**
-	 * Computes the statistics of the list after unserialization
-	 * @param in {@link ObjectInputStream}
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
-		try {
-			generateStatistics();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	/**
 	 * @param scoreSum the scoreSum to set

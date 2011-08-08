@@ -89,7 +89,9 @@ public class Launcher {
 				e.printStackTrace();
 			}
 		} else {
+			System.out.println("test1");
 			projectScreen();
+			System.out.println("test2");
 
 			if (!screenProject.isSimpleProject()) {
 				//generateRealMultiGenomeManager();
@@ -296,7 +298,6 @@ public class Launcher {
 		CountDownLatch projectSignal = new CountDownLatch(1);
 		screenProject = ProjectScreenManager.getInstance();
 		screenProject.setProjectSignal(projectSignal);
-
 		ConfigurationManager.getInstance();
 		ProjectManager projectManager = ProjectManager.getInstance();
 		ZoomManager.getInstance();
@@ -309,11 +310,12 @@ public class Launcher {
 
 		//Wait for the thread stop
 		try {
+			System.out.println("11");
 			projectSignal.await();
+			System.out.println("12");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
 
 		if (screenProject.isLoadingEvent()) {
 			try {

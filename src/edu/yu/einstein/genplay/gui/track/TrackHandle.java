@@ -29,6 +29,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,6 +44,7 @@ import javax.swing.JPanel;
 public final class TrackHandle extends JPanel implements MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = -1789820124134205454L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	HANDLE_WIDTH = 50;							// width of the handle
 	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;				// height of the resize zone
 	private static final Color 	BACKGROUND_COLOR = new Color(228, 236, 247);// background color 
@@ -54,6 +58,34 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	private int 				startDragY = 0; 			// height of the mouse when start draggin
 	private boolean 			trackDragged = false;		// true if the user is dragging the track
 	private boolean				selected = false;			// true if the track is selected
+
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(trackNumber);
+		out.writeObject(jlNumber);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		trackNumber = in.readInt();
+		jlNumber = (JLabel) in.readObject();
+		startDragY = 0; 
+		trackDragged = false;
+		selected = false;
+	}
 
 
 	/**

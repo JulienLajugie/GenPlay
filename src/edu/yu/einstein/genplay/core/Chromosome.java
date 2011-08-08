@@ -20,6 +20,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
@@ -31,10 +34,36 @@ import java.io.Serializable;
 public final class Chromosome implements Cloneable, Serializable {
 
 	private static final long serialVersionUID = -8339402742378578413L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private String name;	// Name of the chromosome
 	private int length;	// Length of the chromosome
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(name);
+		out.writeInt(length);
+	}
 
 
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		name = (String) in.readObject();
+		length = in.readInt();
+	}
+
+	
 	/**
 	 * Constructor. Creates an instance of a Chromosome.
 	 * @param name Name of the chromosome.

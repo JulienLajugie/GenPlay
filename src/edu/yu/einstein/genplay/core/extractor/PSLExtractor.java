@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -68,9 +69,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
 	private String							searchURL;		// url of the gene database for the search
 	private Strand 							selectedStrand;	// strand to extract, null for both
-	private int 							strandShift = 0;// value of the shift to perform on the selected strand
+	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
 	
-
+	
 	/**
 	 * Creates an instance of {@link PSLExtractor}
 	 * @param dataFile file containing the data
@@ -121,11 +122,18 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 				Strand strand = Strand.get(splitedLine[8].charAt(0));
 				if (isStrandSelected(strand)) {
 					nameList.add(chromosome, splitedLine[9]);
-					int start = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[15]));
+					int start = Integer.parseInt(splitedLine[15]);
+					int stop = Integer.parseInt(splitedLine[16]);
+					// compute the read position with specified strand shift and read length
+					if (readHandler != null) {
+						ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+						start = resultStartStop.getStart();
+						stop = resultStartStop.getStop();							
+					}
+					// if we are in a multi-genome project, we compute the position on the meta genome					
 					start = getMultiGenomePosition(chromosome, start);
-					startList.add(chromosome, start);
-					int stop = getShiftedPosition(strand, chromosome, Integer.parseInt(splitedLine[16]));
 					stop = getMultiGenomePosition(chromosome, stop);
+					startList.add(chromosome, start);
 					stopList.add(chromosome, stop);
 					scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
 					strandList.add(chromosome, strand);
@@ -135,7 +143,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					int[] exonStarts = new int[exonStartsStr.length];
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
-						int exonStart = getShiftedPosition(strand, chromosome, Integer.parseInt(exonStartsStr[i].trim()));
+						// exons are for genes only so we don't need to 
+						// worry about the strand shift and the read length
+						// since these operations are not available for genes
+						int exonStart = Integer.parseInt(exonStartsStr[i].trim());
 						exonStart = getMultiGenomePosition(chromosome, exonStart);
 						exonStarts[i] = exonStart;
 						int exonLength = Integer.parseInt(exonLengthsStr[i].trim()); 
@@ -226,17 +237,13 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 
 	@Override
-	public int getShiftedPosition(Strand strand, Chromosome chromosome, int position) {
-		if (strand == Strand.FIVE) {
-			return Math.min(chromosome.getLength(), position + strandShift);
-		} else {
-			return Math.max(0, position - strandShift);
-		}
+	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
+		return readHandler;
 	}
 
 
 	@Override
-	public void setStrandShift(int shiftValue) {
-		strandShift = shiftValue; 
+	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
+		this.readHandler = handler;
 	}
 }

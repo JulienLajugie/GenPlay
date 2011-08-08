@@ -22,6 +22,8 @@ package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.math.RoundingMode;
 import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
@@ -37,6 +39,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	private static final long serialVersionUID = 985376787707775754L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
 	/**
 	 * The score of the track is drawn on top of the track
@@ -57,6 +60,41 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	protected Color					scoreColor = Color.RED;					// color of the score
 	protected int 					scorePosition = BOTTOM_SCORE_POSITION; 	// position of the score (top or bottom)
 
+	
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeDouble(yFactor);
+		out.writeBoolean(showHorizontalGrid);
+		out.writeInt(horizontalLinesCount);
+		out.writeDouble(yMax);
+		out.writeDouble(yMin);
+		out.writeObject(scoreColor);
+		out.writeInt(scorePosition);
+	}
+	
+	
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		yFactor = in.readDouble();
+		showHorizontalGrid = in.readBoolean();
+		horizontalLinesCount = in.readInt();
+		yMax = in.readDouble();
+		yMin = in.readDouble();
+		scoreColor = (Color) in.readObject();
+		scorePosition = in.readInt();
+	}
+	
 	
 	/**
 	 * Creates an instance of {@link ScoredTrackGraphics}
