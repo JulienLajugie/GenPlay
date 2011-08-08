@@ -33,41 +33,58 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class DisplayableVariant {
 
-	private Variant 			variantPosition;		// The real variant position
-	private VariantType 		type;					// Type of variation
-	private ChromosomeWindow 	position; 				// Start and stop of the variation
-	private ChromosomeWindow 	deadZone; 				// Start and stop of the dead zone
+	private Variant 			variant;		// The native variant
+	private ChromosomeWindow 	position; 		// Start and stop of the variation
+	private ChromosomeWindow 	deadZone; 		// Start and stop of the dead zone
 
 
 	/**
 	 * Constructor of {@link DisplayableVariant}
-	 * @param type					variation type
-	 * @param position				chromosome window
-	 * @param positionInformation 	position information object
+	 * @param variant 	native variant
+	 * @param start		start position of the displayable variant
+	 * @param stop		stop position of the displayable variant
 	 */
-	public DisplayableVariant (VariantType type, ChromosomeWindow position, Variant positionInformation) {
-		this.type = type;
-		this.position = position;
-		this.variantPosition = positionInformation;
+	public DisplayableVariant (Variant variant, int start, int stop) {
+		this.variant = variant;
+		this.position = new ChromosomeWindow(start, stop);
+		if (this.variant != null) {
+			if (this.variant.getExtraOffset() > 0) {
+				deadZone = new ChromosomeWindow(variant.getNextMetaGenomePosition() - variant.getExtraOffset(), variant.getNextMetaGenomePosition());
+			}
+		}
+	}
+	
+	
+	/**
+	 * Constructor of {@link DisplayableVariant}
+	 * @param variant 	native variant
+	 */
+	public DisplayableVariant (Variant variant) {
+		this.variant = variant;
+		this.position = new ChromosomeWindow(variant.getMetaGenomePosition(), variant.getNextMetaGenomePosition());
+		if (this.variant != null) {
+			if (this.variant.getExtraOffset() > 0) {
+				deadZone = new ChromosomeWindow(variant.getNextMetaGenomePosition() - variant.getExtraOffset(), variant.getNextMetaGenomePosition());
+			}
+		}
+	}
+	
+	
+	/**
+	 * Constructor of {@link DisplayableVariant}
+	 * @param start		start position of the displayable variant
+	 * @param stop		stop position of the displayable variant
+	 */
+	public DisplayableVariant (int start, int stop) {
+		this.position = new ChromosomeWindow(start, stop);
 	}
 
 
 	/**
 	 * @return the variantPosition
 	 */
-	public Variant getVariantPosition() {
-		return variantPosition;
-	}
-
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(VariantType type) {
-		this.type = type;
-		if (type == VariantType.MIX) {
-			variantPosition = null;
-		}
+	public Variant getNativeVariant() {
+		return variant;
 	}
 
 
@@ -75,7 +92,10 @@ public class DisplayableVariant {
 	 * @return the type
 	 */
 	public VariantType getType() {
-		return type;
+		if (variant != null) {
+			return variant.getType();
+		}
+		return VariantType.MIX;
 	}
 
 
@@ -128,14 +148,6 @@ public class DisplayableVariant {
 
 
 	/**
-	 * @param deadZone the deadZone to set
-	 */
-	public void setDeadZone(ChromosomeWindow deadZone) {
-		this.deadZone = deadZone;
-	}
-
-
-	/**
 	 * @return true if a dead zone exist
 	 */
 	public boolean deadZoneExists () {
@@ -150,8 +162,8 @@ public class DisplayableVariant {
 	 * @return the isOnFirstAllele
 	 */
 	public boolean isOnFirstAllele() {
-		if (variantPosition != null) {
-			return variantPosition.isOnFirstAllele();
+		if (variant != null) {
+			return variant.isOnFirstAllele();
 		}
 		return false;
 	}
@@ -161,8 +173,8 @@ public class DisplayableVariant {
 	 * @return the isOnSecondAllele
 	 */
 	public boolean isOnSecondAllele() {
-		if (variantPosition != null) {
-			return variantPosition.isOnSecondAllele();
+		if (variant != null) {
+			return variant.isOnSecondAllele();
 		}
 		return false;
 	}
@@ -172,10 +184,10 @@ public class DisplayableVariant {
 	 * @return the qualityScore
 	 */
 	public Double getQualityScore() {
-		if (variantPosition != null) {
-			return variantPosition.getQuality();
+		if (variant != null) {
+			return variant.getQuality();
 		}
-		return null;
+		return 100.0;
 	}
 
 	/**

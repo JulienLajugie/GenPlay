@@ -31,7 +31,7 @@ public class ScreenThread extends Thread {
 	 * This method computes the init method of the project screen object
 	 */
 	public void run() {
-		ProjectScreen.getInstance().initScreen();
+		ProjectScreenFrame.getInstance().initScreen();
     }
 
 }

@@ -26,29 +26,29 @@ import java.awt.Insets;
 import java.io.File;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 /**
  * This class displays radio buttons to load the 5 last projects,
  * it also lets users choosing an older project. 
  * @author Nicolas Fourel
  */
-public class LoadProject extends JPanel {
+public class LoadProjectPanel extends JPanel {
 	
 	private static final long serialVersionUID = 661493677940668400L;
 	
-	private final ProjectList 			projectList;		// Panel containing the list of projects
-	private final ProjectInformation 	projectInformation;	// Panel about project informatiom
+	private final ProjectListPanel 			projectListPanel;		// Panel containing the list of projects
+	private final ProjectInformationPanel 	projectInformationPanel;	// Panel about project informatiom
 	
 	
 	/**
-	 * Constructor of {@link LoadProject}
+	 * Constructor of {@link LoadProjectPanel}
 	 * @param projectPath project paths array
 	 */
-	public LoadProject (String[] projectPath) {
+	public LoadProjectPanel (String[] projectPath) {
 		super();
-		projectInformation = new ProjectInformation();
-		projectList = new ProjectList(this, projectPath);
+		projectInformationPanel = new ProjectInformationPanel();
+		projectListPanel = new ProjectListPanel(this, projectPath);
 		
 		init();
 	}
@@ -56,11 +56,11 @@ public class LoadProject extends JPanel {
 	
 	/**
 	 * Main method of the class.
-	 * It initializes the {@link LoadProject} panel.
+	 * It initializes the {@link LoadProjectPanel} panel.
 	 */
 	private void init() {
 		//Size
-		setSize(ProjectScreen.getLoadDim());
+		setSize(ProjectScreenFrame.getLoadDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -76,18 +76,18 @@ public class LoadProject extends JPanel {
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.weightx = 1;
 		gbc.insets = new Insets(0, 0, 0, 0);
-		add(projectInformation, gbc);
+		add(projectInformationPanel, gbc);
 		
 		//projectList
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.insets = new Insets(0, 70, 0, 0);
-		add(projectList, gbc);
+		add(projectListPanel, gbc);
 		
 		//Misc
 		setVisible(false);
-		setBackground(ProjectScreen.getLoadColor());
+		setBackground(ProjectScreenFrame.getLoadColor());
 	}
 	
 	
@@ -95,7 +95,7 @@ public class LoadProject extends JPanel {
 	 * @return the chosen project
 	 */
 	public File getProject () {
-		return projectList.getProject();
+		return projectListPanel.getProject();
 	}
 	
 	
@@ -105,7 +105,7 @@ public class LoadProject extends JPanel {
 	 * @param path	path of the project
 	 */
 	protected void showProjectInformation (String path) {
-		projectInformation.showProjectInformation(path);
+		projectInformationPanel.showProjectInformation(path);
 	}
 	
 }

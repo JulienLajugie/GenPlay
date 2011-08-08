@@ -223,13 +223,13 @@ public class SNPSManager {
 						MGPositionInformation positionInformation = new MGPositionInformation(chromosome, resultLine, reader);
 						Variant info = new VCFSNP(rawName, chromosome, resultLine, positionInformation);
 						
-						int genomePosition = Integer.parseInt(resultLine.get("POS").toString());
+						/*int genomePosition = Integer.parseInt(resultLine.get("POS").toString());
 						int metaGenomePosition;
 						try {
 							metaGenomePosition = ShiftCompute.computeShift(rawName, chromosome, genomePosition);
 						} catch (Exception e) {
 							metaGenomePosition = genomePosition;
-						}
+						}*/
 						
 						list.add(info);
 						

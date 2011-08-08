@@ -31,7 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 /**
  * This class displays project information:
@@ -42,11 +42,11 @@ import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
  * - track number
  * @author Nicolas Fourel
  */
-class ProjectInformation extends JPanel {
+class ProjectInformationPanel extends JPanel {
 	
 	private static final long serialVersionUID = 970034695447470123L;
 	
-	private final static Dimension PANEL_DIM = new Dimension (ProjectScreen.getLoadDim().width - 70, 170);
+	private final static Dimension PANEL_DIM = new Dimension (ProjectScreenFrame.getLoadDim().width - 70, 170);
 	
 	private JLabel jlProjectName;			// Label name for project name
 	private JLabel jlProjectGenome;			// Label name for project genome
@@ -62,11 +62,11 @@ class ProjectInformation extends JPanel {
 	
 	
 	/**
-	 * Constructor of {@link ProjectInformation}
+	 * Constructor of {@link ProjectInformationPanel}
 	 */
-	protected ProjectInformation () {
+	protected ProjectInformationPanel () {
 		//Misc
-		setBackground(ProjectScreen.getLoadColor());
+		setBackground(ProjectScreenFrame.getLoadColor());
 		setBorder(BorderFactory.createTitledBorder("Information"));
 		
 		//Size

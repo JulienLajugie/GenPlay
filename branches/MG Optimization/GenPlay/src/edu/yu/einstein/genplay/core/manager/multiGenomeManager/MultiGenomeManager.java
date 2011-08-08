@@ -144,7 +144,7 @@ public class MultiGenomeManager {
 			compileData();
 			MetaGenomeManager.getInstance().computeGenomeSize();
 			MetaGenomeManager.getInstance().updateChromosomeList();
-			showData();
+			//showData();
 		}
 	}
 

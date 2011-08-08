@@ -37,8 +37,8 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.loadProject.LoadProject;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.NewProject;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.loadProject.LoadProjectPanel;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.NewProjectPanel;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ProjectScreen extends JFrame {
+public class ProjectScreenFrame extends JFrame {
 	
 	private static final long serialVersionUID = -5785973410951935317L;
 
@@ -126,11 +126,11 @@ public class ProjectScreen extends JFrame {
 
 	private static final 	String 					CREATE_BUTTON = "Create";	// Text of the button if you choose a new project
 	private static final 	String 					LOAD_BUTTON = "Load";		// Text of the button if you choose to load a project
-	private static 			ProjectScreen 	instance = null;			// The instance of the class
+	private static 			ProjectScreenFrame 	instance = null;			// The instance of the class
 	private 				BannerPanel 			bannerPanel;				// The banner
-	private 				ProjectType 			projectType;				// The type of the project (new/load)
-	private static 			NewProject 				newProject;					// Panel for a new project
-	private static 			LoadProject 			loadProject;				// Panel for loading a project
+	private 				ProjectTypePanel 			projectTypePanel;				// The type of the project (new/load)
+	private static 			NewProjectPanel 				newProjectPanel;					// Panel for a new project
+	private static 			LoadProjectPanel 			loadProjectPanel;				// Panel for loading a project
 	private 				ConfirmPanel 			confirmPanel;				// Panel to confirm the user choice
 	private 				GridBagConstraints 		gbc;						// Constraints for the GriBagLayout
 	private					CountDownLatch 			projectSignal;
@@ -170,17 +170,17 @@ public class ProjectScreen extends JFrame {
 	 * Creates an instance of singleton {@link MainFrame}
 	 * @throws HeadlessException
 	 */
-	private ProjectScreen() throws HeadlessException {
+	private ProjectScreenFrame() throws HeadlessException {
 		super();
 	}
 
 
 	/**
-	 * @return the instance of the singleton {@link ProjectScreen}.
+	 * @return the instance of the singleton {@link ProjectScreenFrame}.
 	 */
-	public static ProjectScreen getInstance () {
+	public static ProjectScreenFrame getInstance () {
 		if (instance == null) {
-			instance = new ProjectScreen();
+			instance = new ProjectScreenFrame();
 		}
 		return instance;
 	}
@@ -198,9 +198,9 @@ public class ProjectScreen extends JFrame {
 
 		//Init panels
 		bannerPanel = new BannerPanel();
-		projectType = new ProjectType(this);
-		newProject = new NewProject();
-		loadProject = new LoadProject(ConfigurationManager.getInstance().getProjects());
+		projectTypePanel = new ProjectTypePanel(this);
+		newProjectPanel = new NewProjectPanel();
+		loadProjectPanel = new LoadProjectPanel(ConfigurationManager.getInstance().getProjects());
 		confirmPanel = new ConfirmPanel();
 
 		//Layout
@@ -217,14 +217,14 @@ public class ProjectScreen extends JFrame {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
-		add(projectType, gbc);
+		add(projectTypePanel, gbc);
 
 		//newProject
 		gbc.gridy = 2;
-		add(newProject, gbc);
+		add(newProjectPanel, gbc);
 
 		//loadProject
-		add(loadProject, gbc);
+		add(loadProjectPanel, gbc);
 
 		//confirmPanel
 		gbc.gridy = 3;
@@ -241,21 +241,21 @@ public class ProjectScreen extends JFrame {
 
 
 	/**
-	 * This method show the {@link LoadProject} panel
+	 * This method show the {@link LoadProjectPanel} panel
 	 */
 	protected void toLoadScreenProject () {
-		newProject.setVisible(false);
-		loadProject.setVisible(true);
+		newProjectPanel.setVisible(false);
+		loadProjectPanel.setVisible(true);
 		confirmPanel.setConfirmButton(LOAD_BUTTON);
 	}
 
 
 	/**
-	 * This method show the {@link NewProject} panel
+	 * This method show the {@link NewProjectPanel} panel
 	 */
 	protected void toNewScreenProject () {
-		loadProject.setVisible(false);
-		newProject.setVisible(true);
+		loadProjectPanel.setVisible(false);
+		newProjectPanel.setVisible(true);
 		confirmPanel.setConfirmButton(CREATE_BUTTON);
 	}
 
@@ -267,20 +267,20 @@ public class ProjectScreen extends JFrame {
 		Boolean valid = true;
 
 		//Name
-		getInstance().name = newProject.getProjectName();
+		getInstance().name = newProjectPanel.getProjectName();
 
 		//Clade
-		getInstance().clade = newProject.getCladeName();
-		getInstance().genome = newProject.getGenomeName();
-		getInstance().assembly = newProject.getAssemblyName();
+		getInstance().clade = newProjectPanel.getCladeName();
+		getInstance().genome = newProjectPanel.getGenomeName();
+		getInstance().assembly = newProjectPanel.getAssemblyName();
 
 		if (getInstance().name == null) {
 			valid = false;
 		}
 
 		//VCF files
-		if (!newProject.isSimpleProject()) {
-			if (!newProject.isValidMultigenomeProject()) {
+		if (!newProjectPanel.isSimpleProject()) {
+			if (!newProjectPanel.isValidMultigenomeProject()) {
 				valid = false;
 			}
 		}
@@ -297,7 +297,7 @@ public class ProjectScreen extends JFrame {
 	 * @return true if user chose a simple genome project.
 	 */
 	public boolean isSimpleProject () {
-		return newProject.isSimpleProject();
+		return newProjectPanel.isSimpleProject();
 	}
 
 
@@ -305,7 +305,7 @@ public class ProjectScreen extends JFrame {
 	 * This method gather loading project information. 
 	 */
 	protected static void confirmLoading () {
-		if (loadProject.getProject() != null) {
+		if (loadProjectPanel.getProject() != null) {
 			getInstance().projectSignal.countDown();
 		}
 	}
@@ -323,7 +323,7 @@ public class ProjectScreen extends JFrame {
 	 * @return selected project
 	 */
 	public File getProject () {
-		return loadProject.getProject();
+		return loadProjectPanel.getProject();
 	}
 
 
@@ -332,7 +332,7 @@ public class ProjectScreen extends JFrame {
 	 * 			no if the user creates a new project
 	 */
 	public boolean isLoadingEvent () {
-		return loadProject.isVisible();
+		return loadProjectPanel.isVisible();
 	}
 
 
@@ -340,7 +340,7 @@ public class ProjectScreen extends JFrame {
 	 * @return the selected chromosome list
 	 */
 	public Map<String, Chromosome> getNewChromosomeList() {
-		return newProject.getNewChromosomeList();
+		return newProjectPanel.getNewChromosomeList();
 	}
 
 
@@ -380,7 +380,7 @@ public class ProjectScreen extends JFrame {
 	 * @return the raw genome name/group association map
 	 */
 	public Map<String, List<String>> getGenomeGroupAssociation () {
-		return newProject.getGenomeGroupAssociation();
+		return newProjectPanel.getGenomeGroupAssociation();
 	}
 
 
@@ -388,7 +388,7 @@ public class ProjectScreen extends JFrame {
 	 * @return the genome group name/VCF file association map
 	 */
 	public Map<String, List<File>> getGenomeFilesAssociation () {
-		return newProject.getGenomeFilesAssociation();
+		return newProjectPanel.getGenomeFilesAssociation();
 	}
 
 
@@ -396,7 +396,7 @@ public class ProjectScreen extends JFrame {
 	 * @return the raw/usual genome name association map
 	 */
 	public Map<String, String> getGenomeNamesAssociation () {
-		return newProject.getGenomeNamesAssociation();
+		return newProjectPanel.getGenomeNamesAssociation();
 	}
 
 
@@ -404,7 +404,7 @@ public class ProjectScreen extends JFrame {
 	 * @return the VCF type/files association map
 	 */
 	public Map<VCFType, List<File>> getFilesTypeAssociation () {
-		return newProject.getFilesTypeAssociation();
+		return newProjectPanel.getFilesTypeAssociation();
 	}
 
 

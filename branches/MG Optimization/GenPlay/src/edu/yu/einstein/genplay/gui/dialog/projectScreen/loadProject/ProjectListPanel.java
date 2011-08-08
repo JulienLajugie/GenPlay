@@ -33,36 +33,36 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 /**
  * This class displays the 5 last projects recorded.
  * @author Nicolas Fourel
  */
-class ProjectList extends JPanel {
+class ProjectListPanel extends JPanel {
 	
 	private static final long serialVersionUID = 2899780798513668868L;
 	
 	private static final 	String 					OTHER_NAME = "Other";	// Name for the field uses to load an existing projects
-	private					LoadProject				loadProject;			// The load project object
+	private					LoadProjectPanel				loadProjectPanel;			// The load project object
 	private 				GridBagConstraints 		gbc;					// Constraints for GridBagLayout
 	private 				Map<JRadioButton, File> projectList;			// The list of existing project
 	private 				ButtonGroup 			group;					// The button group
 	private 				JRadioButton 			radioOther;				// The radio button for the field uses to load an existing projects
-	private 				ProjectChooser 			projectChooser;			// The chooser file to choose an other project
+	private 				ProjectChooserPanel 			projectChooserPanel;			// The chooser file to choose an other project
 	private 				JPanel 					fakeChooser;			// A panel for graphism synchronization
 
 	
 	/**
-	 * Constructor of {@link ProjectList}
-	 * @param loadProject the load project object
+	 * Constructor of {@link ProjectListPanel}
+	 * @param loadProjectPanel the load project object
 	 * @param projectPath project paths array
 	 */
-	protected ProjectList (LoadProject loadProject, String[] projectPath) {
-		this.loadProject = loadProject;
+	protected ProjectListPanel (LoadProjectPanel loadProjectPanel, String[] projectPath) {
+		this.loadProjectPanel = loadProjectPanel;
 		
 		//Background
-		setBackground(ProjectScreen.getLoadColor());
+		setBackground(ProjectScreenFrame.getLoadColor());
 		
 		//Layout
 		GridBagLayout grid = new GridBagLayout();
@@ -79,18 +79,18 @@ class ProjectList extends JPanel {
 		buildButtonOther();
 		
 		//Project chooser
-		projectChooser = new ProjectChooser(this);
+		projectChooserPanel = new ProjectChooserPanel(this);
 		gbc.gridy++;
 		gbc.insets = new Insets(0, 0, 0, 10);
-		add(projectChooser, gbc);
+		add(projectChooserPanel, gbc);
 		
 		//Fake chooser
 		fakeChooser = new JPanel();
-		fakeChooser.setPreferredSize(ProjectScreen.getProjectChooserDim());
-		fakeChooser.setSize(ProjectScreen.getProjectChooserDim());
-		fakeChooser.setMinimumSize(ProjectScreen.getProjectChooserDim());
-		fakeChooser.setMaximumSize(ProjectScreen.getProjectChooserDim());
-		fakeChooser.setBackground(ProjectScreen.getLoadColor());
+		fakeChooser.setPreferredSize(ProjectScreenFrame.getProjectChooserDim());
+		fakeChooser.setSize(ProjectScreenFrame.getProjectChooserDim());
+		fakeChooser.setMinimumSize(ProjectScreenFrame.getProjectChooserDim());
+		fakeChooser.setMaximumSize(ProjectScreenFrame.getProjectChooserDim());
+		fakeChooser.setBackground(ProjectScreenFrame.getLoadColor());
 		add(fakeChooser, gbc);
 	}
 	
@@ -121,7 +121,7 @@ class ProjectList extends JPanel {
 	 */
 	protected void setButtonOther (File file) {
 		projectList.put(radioOther, file);
-		loadProject.showProjectInformation(file.getPath());
+		loadProjectPanel.showProjectInformation(file.getPath());
 	}
 	
 	
@@ -146,20 +146,20 @@ class ProjectList extends JPanel {
 			}
 			
 			//Radio
-			radio.setPreferredSize(ProjectScreen.getLineDim());
-			radio.setSize(ProjectScreen.getLineDim());
-			radio.setMinimumSize(ProjectScreen.getLineDim());
-			radio.setMaximumSize(ProjectScreen.getLineDim());
-			radio.setBackground(ProjectScreen.getLoadColor());
+			radio.setPreferredSize(ProjectScreenFrame.getLineDim());
+			radio.setSize(ProjectScreenFrame.getLineDim());
+			radio.setMinimumSize(ProjectScreenFrame.getLineDim());
+			radio.setMaximumSize(ProjectScreenFrame.getLineDim());
+			radio.setBackground(ProjectScreenFrame.getLoadColor());
 			radio.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					if (radio.getText() != "...") {
-						loadProject.showProjectInformation(radio.getName());
+						loadProjectPanel.showProjectInformation(radio.getName());
 					} else {
-						loadProject.showProjectInformation(null);
+						loadProjectPanel.showProjectInformation(null);
 					}
-					projectChooser.setVisible(false);
+					projectChooserPanel.setVisible(false);
 					fakeChooser.setVisible(true);
 				}
 			});
@@ -167,9 +167,9 @@ class ProjectList extends JPanel {
 			if (i == 0) {
 				radio.setSelected(true);
 				if (radio.getText() != "...") {
-					loadProject.showProjectInformation(radio.getName());
+					loadProjectPanel.showProjectInformation(radio.getName());
 				} else {
-					loadProject.showProjectInformation(null);
+					loadProjectPanel.showProjectInformation(null);
 				}
 			}
 			
@@ -197,17 +197,17 @@ class ProjectList extends JPanel {
 		//Button other
 		radioOther = new JRadioButton();
 		radioOther.setText(OTHER_NAME);
-		radioOther.setPreferredSize(ProjectScreen.getLineDim());
-		radioOther.setSize(ProjectScreen.getLineDim());
-		radioOther.setMinimumSize(ProjectScreen.getLineDim());
-		radioOther.setMaximumSize(ProjectScreen.getLineDim());
-		radioOther.setBackground(ProjectScreen.getLoadColor());
+		radioOther.setPreferredSize(ProjectScreenFrame.getLineDim());
+		radioOther.setSize(ProjectScreenFrame.getLineDim());
+		radioOther.setMinimumSize(ProjectScreenFrame.getLineDim());
+		radioOther.setMaximumSize(ProjectScreenFrame.getLineDim());
+		radioOther.setBackground(ProjectScreenFrame.getLoadColor());
 		radioOther.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				loadProject.showProjectInformation(null);
+				loadProjectPanel.showProjectInformation(null);
 				fakeChooser.setVisible(false);
-				projectChooser.setVisible(true);
+				projectChooserPanel.setVisible(true);
 			}
 		});
 		

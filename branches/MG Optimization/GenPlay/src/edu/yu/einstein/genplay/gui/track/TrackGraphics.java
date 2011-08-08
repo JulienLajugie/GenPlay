@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.ListCreator;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripe;
@@ -127,7 +127,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 	protected T 						data;							// data showed in the track
 	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information (for MG project)
-	private ListCreator					listCreator;					// displayable variants list creator (for MG project)
+	private DisplayableVariantListCreator					displayableVariantListCreator;					// displayable variants list creator (for MG project)
 	private String 						genomeName;						// genome on which the track is based (ie aligned on)
 	private List<DisplayableVariant> 	displayableVariantList;			// list of variant for multi genome project
 
@@ -144,7 +144,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			multiGenomeStripe = new MultiGenomeStripe();
-			listCreator = new ListCreator();
+			displayableVariantListCreator = new DisplayableVariantListCreator();
 		}
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
@@ -243,9 +243,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripe != null) {
 			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
-				listCreator.setRawGenomeNames(multiGenomeStripe.getRequiredGenomes());
-				listCreator.setQuality((double) multiGenomeStripe.getQuality());
-				displayableVariantList = listCreator.getFittedData(genomeWindow, xFactor);
+				displayableVariantListCreator.setRawGenomeNames(multiGenomeStripe.getRequiredGenomes());
+				displayableVariantListCreator.setQuality((double) multiGenomeStripe.getQuality());
+				displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
 				drawMultiGenomeLine(g);
 				drawGenome(g);
 			}
@@ -276,7 +276,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// Set color for unused position and dead area
 			Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), multiGenomeStripe.getTransparency());
 			Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), multiGenomeStripe.getTransparency());
-
 			// Start variant list scan
 			for (DisplayableVariant displayableVariant: displayableVariantList) {
 				if (displayableVariant.getType().equals(VariantType.MIX)) {
@@ -286,7 +285,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
 				} else {
 					// Color association
-					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getVariantPosition().getFullGenomeName());
+					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getNativeVariant().getFullGenomeName());
 
 					// Draws the stripe
 					drawRect(g, displayableVariant, association.get(displayableVariant.getType()), noAlleleColor);
@@ -297,7 +296,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					}
 				}
 			}
-
 		}
 	}
 
@@ -311,10 +309,17 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private void drawRect (Graphics g, DisplayableVariant displayableVariant, Color color, Color noAlleleColor) {
 		// Sets position and length
 		if (displayableVariant.getStart() >= genomeWindow.getStart() && displayableVariant.getStop() <= genomeWindow.getStop()) {
+
 			int x = genomePosToScreenPos(displayableVariant.getStart());
 			int width = twoGenomePosToScreenWidth(displayableVariant.getStart(), displayableVariant.getStop());
 			int middle = getHeight() / 2;
-			int height = (int) (displayableVariant.getQualityScore() * middle / 100);
+			int height = 0;
+			try {
+				height = (int) (displayableVariant.getQualityScore() * middle / 100);
+			} catch (Exception e) {
+				displayableVariant.show();
+			}
+			//int height = (int) (displayableVariant.getQualityScore() * middle / 100);
 			int top = middle - height;
 
 			// Sets color

@@ -43,7 +43,7 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 	 */
 	protected ConfirmPanel () {
 		//Size
-		setSize(ProjectScreen.getConfirmDim());
+		setSize(ProjectScreenFrame.getConfirmDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -53,7 +53,7 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 		valid.addActionListener(this);
 		
 		//Background color
-		setBackground(ProjectScreen.getConfirmColor());
+		setBackground(ProjectScreenFrame.getConfirmColor());
 		
 		//Add valid button
 		add(valid);
@@ -76,10 +76,10 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String name = ((JButton)(arg0.getSource())).getText();
-		if (name.equals(ProjectScreen.getCreateButton())) {
-			ProjectScreen.confirmCreate();
+		if (name.equals(ProjectScreenFrame.getCreateButton())) {
+			ProjectScreenFrame.confirmCreate();
 		} else {
-			ProjectScreen.confirmLoading();
+			ProjectScreenFrame.confirmLoading();
 		}
 	}
 	

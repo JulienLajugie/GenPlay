@@ -27,7 +27,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 /**
  * This class manages the name project information.
@@ -48,19 +48,19 @@ class NamePanel extends JPanel {
 	 */
 	protected NamePanel () {
 		//Size
-		setSize(ProjectScreen.getNameDim());
+		setSize(ProjectScreenFrame.getNameDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
 		
 		//Background
-		setBackground(ProjectScreen.getNameColor());
+		setBackground(ProjectScreenFrame.getNameColor());
 		
 		//Name label
 		jlName = new JLabel("Name: ");
 		
 		//Name text field
-		jtName = new JTextField(NewProject.DEFAULT_PROJECT_NAME);
+		jtName = new JTextField(NewProjectPanel.DEFAULT_PROJECT_NAME);
 		jtName.setPreferredSize(JTF_DIM);
 		jtName.setMinimumSize(JTF_DIM);
 		

@@ -28,7 +28,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 /**
  * This class allows users to choose a simple genome project
@@ -50,7 +50,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	 */
 	protected GenomeProjectTypePanel () {
 		//Size
-		setSize(ProjectScreen.getGenomeDim());
+		setSize(ProjectScreenFrame.getGenomeDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -61,9 +61,9 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		multiRadio = new JRadioButton("Multi Genome Project");
 		
 		//Color
-		setBackground(ProjectScreen.getGenomeColor());
-		simpleRadio.setBackground(ProjectScreen.getGenomeColor());
-		multiRadio.setBackground(ProjectScreen.getGenomeColor());
+		setBackground(ProjectScreenFrame.getGenomeColor());
+		simpleRadio.setBackground(ProjectScreenFrame.getGenomeColor());
+		multiRadio.setBackground(ProjectScreenFrame.getGenomeColor());
 		
 		//Listener
 		simpleRadio.addActionListener(this);
@@ -102,9 +102,9 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == simpleRadio) {
-			NewProject.hideVarTable();
+			NewProjectPanel.hideVarTable();
 		} else {
-			NewProject.showVarTable();
+			NewProjectPanel.showVarTable();
 		}
 	}
 	

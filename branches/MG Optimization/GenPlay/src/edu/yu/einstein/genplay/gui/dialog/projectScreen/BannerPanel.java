@@ -43,13 +43,13 @@ public class BannerPanel extends JPanel {
 	 */
 	protected BannerPanel () {
 		//Size Panel
-		setSize(ProjectScreen.getBannerDim());
+		setSize(ProjectScreenFrame.getBannerDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
 
 		//Background color
-		setBackground(ProjectScreen.getBannerColor());
+		setBackground(ProjectScreenFrame.getBannerColor());
 		
 		//Load the image
 		banner = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource(BANNER_PATH));

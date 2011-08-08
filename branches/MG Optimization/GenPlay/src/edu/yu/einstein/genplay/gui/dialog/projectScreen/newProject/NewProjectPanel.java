@@ -29,16 +29,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 
 /**
  * This class manages all information regarding new project information.
- * It displays and organize the communication of every panels. 
+ * It displays and organizes the communication of every panels. 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class NewProject extends JPanel {
+public class NewProjectPanel extends JPanel {
 	
 	private static final long serialVersionUID = 2223959265643927573L;
 	
@@ -53,9 +53,9 @@ public class NewProject extends JPanel {
 	
 	
 	/**
-	 * Constructor of {@link NewProject}
+	 * Constructor of {@link NewProjectPanel}
 	 */
-	public NewProject () {
+	public NewProjectPanel () {
 		super();
 		init();
 	}
@@ -63,7 +63,7 @@ public class NewProject extends JPanel {
 	
 	/**
 	 * Main method of the class.
-	 * It initializes the {@link NewProject} panel.
+	 * It initializes the {@link NewProjectPanel} panel.
 	 */
 	private void init() {
 		//Layout
@@ -79,11 +79,11 @@ public class NewProject extends JPanel {
 		
 		//Fake panel
 		fakePanel = new JPanel();
-		fakePanel.setSize(ProjectScreen.getVCFDim());
+		fakePanel.setSize(ProjectScreenFrame.getVCFDim());
 		fakePanel.setPreferredSize(fakePanel.getSize());
 		fakePanel.setMinimumSize(fakePanel.getSize());
 		fakePanel.setMaximumSize(fakePanel.getSize());
-		fakePanel.setBackground(ProjectScreen.getVCFColor());
+		fakePanel.setBackground(ProjectScreenFrame.getVCFColor());
 		
 		//Name panel
 		gbc.gridx = 0;
@@ -107,15 +107,15 @@ public class NewProject extends JPanel {
 		add(fakePanel, gbc);
 		
 		//Size
-		setSize(ProjectScreen.getNewDim());
+		setSize(ProjectScreenFrame.getNewDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		assemblyPanel.setPreferredSize(ProjectScreen.getAssemblyDim());
-		genomePanel.setPreferredSize(ProjectScreen.getGenomeDim());
+		assemblyPanel.setPreferredSize(ProjectScreenFrame.getAssemblyDim());
+		genomePanel.setPreferredSize(ProjectScreenFrame.getGenomeDim());
 		
 		//Background
-		setBackground(ProjectScreen.getNewColor());
+		setBackground(ProjectScreenFrame.getNewColor());
 	}
 	
 	

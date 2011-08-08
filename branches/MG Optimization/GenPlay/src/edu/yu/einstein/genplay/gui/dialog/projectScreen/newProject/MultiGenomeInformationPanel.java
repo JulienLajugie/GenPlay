@@ -27,7 +27,7 @@ import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 
 /**
@@ -59,13 +59,13 @@ public class MultiGenomeInformationPanel extends JPanel {
 	 */
 	protected  MultiGenomeInformationPanel () {
 		
-		Dimension paneDim = new Dimension(ProjectScreen.getVCFDim().width, 70);
+		Dimension paneDim = new Dimension(ProjectScreenFrame.getVCFDim().width, 70);
 		setSize(paneDim);
 		setMinimumSize(paneDim);
 		setMaximumSize(paneDim);
 		setPreferredSize(paneDim);
 		
-		setBackground(ProjectScreen.getVCFColor());
+		setBackground(ProjectScreenFrame.getVCFColor());
 		
 		// Label
 		groupLabel = new JLabel("Group :");

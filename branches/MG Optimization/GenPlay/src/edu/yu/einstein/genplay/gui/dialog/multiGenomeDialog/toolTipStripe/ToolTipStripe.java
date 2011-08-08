@@ -221,15 +221,15 @@ public class ToolTipStripe extends JDialog {
 		String text = ""; 
 		switch (index) {
 		case 0:
-			if (displayableVariant.getVariantPosition() != null) {
-				text += displayableVariant.getVariantPosition().getFullGenomeName();
+			if (displayableVariant.getNativeVariant() != null) {
+				text += displayableVariant.getNativeVariant().getFullGenomeName();
 			} else {
 				text += "Undefined";
 			}
 			break;
 		case 1:
-			if (displayableVariant.getVariantPosition() != null) {
-				text += displayableVariant.getVariantPosition().getChromosomeName();
+			if (displayableVariant.getNativeVariant() != null) {
+				text += displayableVariant.getNativeVariant().getChromosomeName();
 			} else {
 				text += "Undefined";
 			}
@@ -241,21 +241,21 @@ public class ToolTipStripe extends JDialog {
 			text += displayableVariant.getStart() + " to " + displayableVariant.getStop();
 			break;
 		case 4:
-			if (displayableVariant.getVariantPosition() != null) {
+			if (displayableVariant.getNativeVariant() != null) {
 				text += getAllelePresence(displayableVariant.isOnFirstAllele());
 			} else {
 				text += "Undefined";
 			}
 			break;
 		case 5:
-			if (displayableVariant.getVariantPosition() != null) {
+			if (displayableVariant.getNativeVariant() != null) {
 				text += getAllelePresence(displayableVariant.isOnSecondAllele());
 			} else {
 				text += "Undefined";
 			}
 			break;
 		case 6:
-			if (displayableVariant.getVariantPosition() != null) {
+			if (displayableVariant.getNativeVariant() != null) {
 				text += displayableVariant.getQualityScore();
 			} else {
 				text += "Undefined";

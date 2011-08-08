@@ -30,7 +30,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 
 /**
@@ -38,30 +38,30 @@ import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
  * A file dialog box is also available.
  * @author Nicolas Fourel
  */
-class ProjectChooser extends JPanel {
+class ProjectChooserPanel extends JPanel {
 	
 	private static final long serialVersionUID = 8028393644918726073L;
 	
-	private ProjectList 	projectList;	// Panel containing the list of projects
+	private ProjectListPanel 	projectListPanel;	// Panel containing the list of projects
 	private JFileChooser 	chooser;		// The file chooser panel, to select a project 
 	private JTextField 		path;			// The path of the selected project
 	
 	
 	/**
-	 * Constructor of {@link ProjectChooser}
-	 * @param projectList	Panel containing the list of projects
+	 * Constructor of {@link ProjectChooserPanel}
+	 * @param projectListPanel	Panel containing the list of projects
 	 */
-	protected ProjectChooser (final ProjectList projectList) {
+	protected ProjectChooserPanel (final ProjectListPanel projectListPanel) {
 		//Misc
-		this.projectList = projectList;
+		this.projectListPanel = projectListPanel;
 		setVisible(false);
-		setBackground(ProjectScreen.getLoadColor());
+		setBackground(ProjectScreenFrame.getLoadColor());
 		
 		//Size
-		setPreferredSize(ProjectScreen.getProjectChooserDim());
-		setSize(ProjectScreen.getProjectChooserDim());
-		setMinimumSize(ProjectScreen.getProjectChooserDim());
-		setMaximumSize(ProjectScreen.getProjectChooserDim());
+		setPreferredSize(ProjectScreenFrame.getProjectChooserDim());
+		setSize(ProjectScreenFrame.getProjectChooserDim());
+		setMinimumSize(ProjectScreenFrame.getProjectChooserDim());
+		setMaximumSize(ProjectScreenFrame.getProjectChooserDim());
 		
 		//layout
 		BorderLayout borderLayout = new BorderLayout();
@@ -90,10 +90,10 @@ class ProjectChooser extends JPanel {
 		chooseProject.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int returnVal = chooser.showOpenDialog(ProjectScreen.getInstance());
+				int returnVal = chooser.showOpenDialog(ProjectScreenFrame.getInstance());
 				if(returnVal == JFileChooser.APPROVE_OPTION) {
 					path.setText(chooser.getSelectedFile().getPath());
-					getProjectList().setButtonOther(chooser.getSelectedFile());
+					getProjectListPanel().setButtonOther(chooser.getSelectedFile());
 				}
 			}
 		});
@@ -108,8 +108,8 @@ class ProjectChooser extends JPanel {
 	 * This method is used in the chooseProject button listener.
 	 * @return the project list panel
 	 */
-	private ProjectList getProjectList() {
-		return projectList;
+	private ProjectListPanel getProjectListPanel() {
+		return projectListPanel;
 	}
 	
 }

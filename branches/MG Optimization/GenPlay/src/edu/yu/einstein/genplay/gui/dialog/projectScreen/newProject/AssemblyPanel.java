@@ -44,7 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreen;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 import edu.yu.einstein.genplay.gui.launcher.Launcher;
 
 /**
@@ -75,7 +75,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private String 		selectedGenome;		// Selected Genome
 	private String 		selectedAssembly;	// Selected Assembly
 
-	private ChromosomeChooser 					chromosomeChooser;	// Chromosome chooser object
+	private ChromosomeChooserDialog 					chromosomeChooserDialog;	// Chromosome chooser object
 	private JButton 							jbChromosome;		// Button to create a chromosome chooser object
 	private List<List<Object>> 					data;				// Data used for the chromosome selection
 
@@ -84,7 +84,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	 */
 	protected AssemblyPanel () {
 		//Size Panel
-		setSize(ProjectScreen.getAssemblyDim());
+		setSize(ProjectScreenFrame.getAssemblyDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -106,9 +106,9 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcAssembly.setPreferredSize(comboDim);
 
 		//Boxes color
-		jcClade.setBackground(ProjectScreen.getAssemblyColor());
-		jcGenome.setBackground(ProjectScreen.getAssemblyColor());
-		jcAssembly.setBackground(ProjectScreen.getAssemblyColor());
+		jcClade.setBackground(ProjectScreenFrame.getAssemblyColor());
+		jcGenome.setBackground(ProjectScreenFrame.getAssemblyColor());
+		jcAssembly.setBackground(ProjectScreenFrame.getAssemblyColor());
 
 		//Chromosome selection button
 		icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH)));
@@ -211,7 +211,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		add(jbChromosome, gbc);
 
 		//Background
-		setBackground(ProjectScreen.getAssemblyColor());
+		setBackground(ProjectScreenFrame.getAssemblyColor());
 
 		//init boxes and data
 		initClade ();
@@ -288,14 +288,14 @@ class AssemblyPanel extends JPanel implements ActionListener {
 				}
 			}
 		} else if (arg0.getSource() == jbChromosome) {
-			if (chromosomeChooser == null || !chromosomeChooser.isVisible()){
+			if (chromosomeChooserDialog == null || !chromosomeChooserDialog.isVisible()){
 				if (!selectedAssembly.equals(jcAssembly.getSelectedItem().toString())) {
 					initData ();
 				}
 				String title = "Chromosome chooser - " + selectedGenome + " - " + jcAssembly.getSelectedItem().toString();
-				chromosomeChooser = new ChromosomeChooser(this, title, data);
+				chromosomeChooserDialog = new ChromosomeChooserDialog(this, title, data);
 				selectedAssembly = jcAssembly.getSelectedItem().toString();
-				chromosomeChooser.setVisible(true);
+				chromosomeChooserDialog.setVisible(true);
 			}
 		}
 	}
@@ -399,7 +399,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	 * Destruction of the chromosome chooser object
 	 */
 	protected void destruct() {
-		this.chromosomeChooser = null;
+		this.chromosomeChooserDialog = null;
 	}
 
 }
