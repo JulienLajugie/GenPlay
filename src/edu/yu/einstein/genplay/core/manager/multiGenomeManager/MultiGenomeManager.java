@@ -59,8 +59,11 @@ public class MultiGenomeManager {
 	public 	static final 	int 						SEQUENTIAL 					= 0;
 	/**
 	 * CHROMOSOME_LOADING_OPTION to choose the chromosome loading mode
+	 * It must be used only for development, some functionalities cannot work in a SEQUENTIAL mode.
+	 * The loading of some type of file requires to perform operation on every chromosome,
+	 * the SEQUENTIAL mode loading only one chromosome, it can lead to a null pointer exception error. 
 	 */
-	public 	static			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
+	public 	static			int							CHROMOSOME_LOADING_OPTION 	= FULL;
 
 	private static final 	Color 						DEFAULT_COLOR 				= Color.black;
 	private static final 	Color 						INSERTION_DEFAULT_COLOR 	= Color.green;

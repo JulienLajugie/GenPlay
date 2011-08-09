@@ -72,7 +72,9 @@ public class ShiftCompute {
 		referencePosition = -1;
 		newPosition = genomePosition;
 		chromInfo = MultiGenomeManager.getInstance().getChromosomeInformation(genome, chromosome);
-		indexes = chromInfo.getPositionIndex();
+
+			indexes = chromInfo.getPositionIndex();
+		
 		found = false;
 	}
 

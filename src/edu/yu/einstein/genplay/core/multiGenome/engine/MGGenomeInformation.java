@@ -26,6 +26,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 
 
 /**
@@ -75,6 +76,10 @@ public class MGGenomeInformation {
 	 * @return				valid chromosome containing position information
 	 */
 	protected MGChromosomeInformation getChromosomeInformation (Chromosome chromosome) {
+		if (genomeInformation.get(chromosome) == null &&
+				MultiGenomeManager.CHROMOSOME_LOADING_OPTION == MultiGenomeManager.SEQUENTIAL) {
+			System.err.println("A null pointer exception can appear because of the CHROMOSOME_LOADING_OPTION set to SEQUENTIAL");
+		}
 		return genomeInformation.get(chromosome);
 	}
 

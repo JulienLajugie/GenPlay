@@ -94,7 +94,7 @@ public class MGChromosomeInformation {
 	 * Creates the index list.
 	 * All reference genome position are indexed by consecutive integer.
 	 */
-	public void createPositionIndexList () {
+	private void createPositionIndexList () {
 		List<Integer> position = new ArrayList<Integer>(variants.keySet());
 		Collections.sort(position);
 		positionIndex = new int[position.size()];
