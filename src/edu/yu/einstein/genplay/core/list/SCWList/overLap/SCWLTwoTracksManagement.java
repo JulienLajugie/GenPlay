@@ -69,10 +69,18 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 		}
 	}
 	
+	/**
+	 * Runs the two tracks overlap process
+	 * @param chromosome the chromosome
+	 */
 	public void run(Chromosome chromosome) {
 		this.twoTracksEngineList.get(chromosomeManager.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
 	}
 
+	/**
+	 * @param chromosome the chromosome
+	 * @return the new list of scored chromosome window
+	 */
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
 		return this.twoTracksEngineList.get(chromosomeManager.getIndex(chromosome)).getList();
 	}

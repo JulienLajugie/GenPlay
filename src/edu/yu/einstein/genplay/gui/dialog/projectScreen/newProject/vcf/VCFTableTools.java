@@ -1,3 +1,23 @@
+/*******************************************************************************
+ *     GenPlay, Einstein Genome Analyzer
+ *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
+ *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf;
 
 import java.awt.Dimension;
@@ -12,15 +32,28 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * This class provides the graphical tool components in order to modify the table.
+ * They allow users to:
+ * - add a row
+ * - remove a row
+ * - edit lists
+ * @author Nicolas Fourel
+ * @version 0.1
+ */
 public class VCFTableTools extends JPanel {
 
 	private static final long serialVersionUID = -3988945009145488219L;
 
-	private JComboBox columnBox;
-	private String[] columnNames;
-	private VCFLoader loader;
+	private JComboBox 	columnBox;		// combo box for selecting a column
+	private String[] 	columnNames;	// column names
+	private VCFLoader 	loader;			// VCF loader instance
 
 
+	/**
+	 * Constructor of {@link VCFTableTools}
+	 * @param loader the VCF loader object
+	 */
 	protected VCFTableTools (VCFLoader loader) {
 		this.loader = loader;
 		this.columnNames = loader.getVCFData().getColumnNames();
@@ -152,8 +185,6 @@ public class VCFTableTools extends JPanel {
 		gbc.gridy = 1;
 		gbc.insets = new Insets(15, 10, 15, 0);
 		add(editList, gbc);
-
-
 
 	}
 

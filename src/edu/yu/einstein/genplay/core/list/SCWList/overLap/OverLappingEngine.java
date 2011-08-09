@@ -58,6 +58,7 @@ final class OverLappingEngine implements Serializable {
 	/**
 	 * OverLapEngine constructor
 	 * The OverLapManagement class controls this class
+	 * @param scm the score calculation method
 	 */
 	protected OverLappingEngine (ScoreCalculationMethod scm) {
 		this.scm = scm;

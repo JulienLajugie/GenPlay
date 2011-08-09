@@ -46,9 +46,10 @@ import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 public class OverLappingManagement implements Serializable {
 	
 	private static final long serialVersionUID = 419831643761204027L;
-	protected final ChromosomeManager 			chromosomeManager;		// ChromosomeManager
-	private 		SCWLOptions 				sortSCW;				//use the sort option for chromosome list
-	private 		List<OverLappingEngine> 	overLappingEngineList;	//overlapping engine for chromosome list
+	
+	protected final ChromosomeManager 			chromosomeManager;		// TChromosomeManager
+	private 		SCWLOptions 				sortSCW;				// use the sort option for chromosome list
+	private 		List<OverLappingEngine> 	overLappingEngineList;	// overlapping engine for chromosome list
 	
 	/**
 	 * OverLapManagement constructor
@@ -74,6 +75,8 @@ public class OverLappingManagement implements Serializable {
 	 * run method
 	 * This method allow to run the overlapping engine for a specific chromosome
 	 * @param chromosome	Chromosome
+	 * @throws InterruptedException 
+	 * @throws ExecutionException 
 	 */
 	public void run (Chromosome chromosome) throws InterruptedException, ExecutionException {
 		this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).init(this.sortSCW.getList().get(chromosome));	//the overlapengine is ran for the chromosome list
@@ -83,6 +86,10 @@ public class OverLappingManagement implements Serializable {
 	
 	////////////////////////////////////////////////	GETTERS & SETTERS
 
+	/**
+	 * @param chromosome the chromosome
+	 * @return	the sorted score chromosome window list associated to the chromosome
+	 */
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
 		return this.sortSCW.getList(chromosome);
 	}
@@ -99,6 +106,10 @@ public class OverLappingManagement implements Serializable {
 		return this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).getNewScoreList();
 	}
 	
+	/**
+	 * Sets the score calculation method
+	 * @param scm the score calculation method
+	 */
 	public void setScoreCalculationMethod (ScoreCalculationMethod scm) {
 		this.overLappingEngineList = new ArrayList<OverLappingEngine>();
 		for (int i = 0; i < chromosomeManager.size(); i++) {

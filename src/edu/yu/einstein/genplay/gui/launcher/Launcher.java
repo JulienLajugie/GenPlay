@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ScreenThread;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
@@ -57,7 +57,7 @@ public class Launcher {
 
 	private static final String DEMO_PROJECT_PATH = null;
 
-	private static ProjectScreenManager 	screenProject;
+	private static ProjectScreenFrame 	screenProject;
 	private static Map<String, Clade> 		cladeList;
 
 
@@ -89,10 +89,8 @@ public class Launcher {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("test1");
 			projectScreen();
-			System.out.println("test2");
-
+			
 			if (!screenProject.isSimpleProject()) {
 				//generateRealMultiGenomeManager();
 				//generateTestMultiGenomeManager();
@@ -296,7 +294,7 @@ public class Launcher {
 
 		//Welcome screen initialization
 		CountDownLatch projectSignal = new CountDownLatch(1);
-		screenProject = ProjectScreenManager.getInstance();
+		screenProject = ProjectScreenFrame.getInstance();
 		screenProject.setProjectSignal(projectSignal);
 		ConfigurationManager.getInstance();
 		ProjectManager projectManager = ProjectManager.getInstance();
@@ -310,9 +308,7 @@ public class Launcher {
 
 		//Wait for the thread stop
 		try {
-			System.out.println("11");
 			projectSignal.await();
-			System.out.println("12");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

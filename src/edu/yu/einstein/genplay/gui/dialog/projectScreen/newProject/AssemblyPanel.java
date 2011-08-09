@@ -44,12 +44,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 import edu.yu.einstein.genplay.gui.launcher.Launcher;
 
 /**
  * This class provides a panel including combo boxes to choose an assembly.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 class AssemblyPanel extends JPanel implements ActionListener {
 
@@ -74,17 +75,16 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private String 		selectedGenome;		// Selected Genome
 	private String 		selectedAssembly;	// Selected Assembly
 
-	private ChromosomeChooser 					chromosomeChooser;	// Chromosome chooser object
+	private ChromosomeChooserDialog 					chromosomeChooserDialog;	// Chromosome chooser object
 	private JButton 							jbChromosome;		// Button to create a chromosome chooser object
-	private Map<Integer, Map<Integer, Object>> 	data;				// Data used for the chromosome selection
-
+	private List<List<Object>> 					data;				// Data used for the chromosome selection
 
 	/**
 	 * Constructor of {@link AssemblyPanel}
 	 */
 	protected AssemblyPanel () {
 		//Size Panel
-		setSize(ProjectScreenManager.getAssemblyDim());
+		setSize(ProjectScreenFrame.getAssemblyDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -106,9 +106,9 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcAssembly.setPreferredSize(comboDim);
 
 		//Boxes color
-		jcClade.setBackground(ProjectScreenManager.getAssemblyColor());
-		jcGenome.setBackground(ProjectScreenManager.getAssemblyColor());
-		jcAssembly.setBackground(ProjectScreenManager.getAssemblyColor());
+		jcClade.setBackground(ProjectScreenFrame.getAssemblyColor());
+		jcGenome.setBackground(ProjectScreenFrame.getAssemblyColor());
+		jcAssembly.setBackground(ProjectScreenFrame.getAssemblyColor());
 
 		//Chromosome selection button
 		icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH)));
@@ -211,7 +211,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		add(jbChromosome, gbc);
 
 		//Background
-		setBackground(ProjectScreenManager.getAssemblyColor());
+		setBackground(ProjectScreenFrame.getAssemblyColor());
 
 		//init boxes and data
 		initClade ();
@@ -288,14 +288,14 @@ class AssemblyPanel extends JPanel implements ActionListener {
 				}
 			}
 		} else if (arg0.getSource() == jbChromosome) {
-			if (chromosomeChooser == null || !chromosomeChooser.isVisible()){
+			if (chromosomeChooserDialog == null || !chromosomeChooserDialog.isVisible()){
 				if (!selectedAssembly.equals(jcAssembly.getSelectedItem().toString())) {
 					initData ();
 				}
 				String title = "Chromosome chooser - " + selectedGenome + " - " + jcAssembly.getSelectedItem().toString();
-				chromosomeChooser = new ChromosomeChooser(this, title, data);
+				chromosomeChooserDialog = new ChromosomeChooserDialog(this, title, data);
 				selectedAssembly = jcAssembly.getSelectedItem().toString();
-				chromosomeChooser.setVisible(true);
+				chromosomeChooserDialog.setVisible(true);
 			}
 		}
 	}
@@ -306,20 +306,22 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	 * Data need to be initiates for the first run.
 	 */
 	private void initData () {
-		data = new HashMap<Integer, Map<Integer,Object>>();
-		Map<Integer,Object> line;
+		data = new ArrayList<List<Object>>();
+		List<Object> line;
 		int row = 0;
 
 		Assembly assembly = Launcher.getCladeList().get(selectedClade).getGenomeList().get(selectedGenome).getAssemblyList().get(findAssembly());
 		List<String> chromosomeNames = new ArrayList<String>(assembly.getChromosomeList().keySet());
 		Collections.sort(chromosomeNames, new ChromosomeComparator());
-		for (String s: chromosomeNames) {
-			line = new HashMap<Integer, Object>();
-			line.put(0, row + 1);
-			line.put(1, assembly.getChromosomeList().get(s).getName());
-			line.put(2, assembly.getChromosomeList().get(s).getLength());
-			line.put(3, true);
-			data.put(row, line);
+		Map<String, Chromosome> chromosomeList = assembly.getChromosomeList();
+		for (String chromosomeName: chromosomeNames) {
+			line = new ArrayList<Object>();
+			Chromosome chromosome = chromosomeList.get(chromosomeName);
+			line.add(row + 1);
+			line.add(chromosome.getName());
+			line.add(chromosome.getLength());
+			line.add(true);
+			data.add(line);
 			row++;
 		}
 	}
@@ -371,7 +373,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	/**
 	 * @param data the data to set
 	 */
-	protected void setData(Map<Integer, Map<Integer, Object>> data) {
+	protected void setData(List<List<Object>> data) {
 		this.data = data;
 	}
 
@@ -384,7 +386,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			initData ();
 		}
 		Map<String, Chromosome> chromosomeList = new HashMap<String, Chromosome>();
-		for (Map<Integer, Object> row: data.values()) {
+		for (List<Object> row: data) {
 			if ((Boolean)row.get(3)) {
 				chromosomeList.put(row.get(1).toString(), new Chromosome(row.get(1).toString(), Integer.parseInt(row.get(2).toString())));
 			}
@@ -397,7 +399,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	 * Destruction of the chromosome chooser object
 	 */
 	protected void destruct() {
-		this.chromosomeChooser = null;
+		this.chromosomeChooserDialog = null;
 	}
 
 }

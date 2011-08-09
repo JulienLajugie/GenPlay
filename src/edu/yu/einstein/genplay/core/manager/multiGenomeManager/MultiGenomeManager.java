@@ -29,14 +29,16 @@ import java.util.List;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFChromosomeInformation;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFMultiGenomeInformation;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFPositionInformation;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
+import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
 
 /**
@@ -47,8 +49,17 @@ import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFReader;
  */
 public class MultiGenomeManager {
 
-	public 	static final 	int 						FULL					 	= 1;	// Algorithm computed for every loaded chromosome when project is created
-	public 	static final 	int 						SEQUENTIAL 					= 0;	// Algorithm computed at every changement of chromosome
+	/**
+	 * FULL value for CHROMOSOME_LOADING_OPTION option involves the loading of every chromosomes when multi genome project starts
+	 */
+	public 	static final 	int 						FULL					 	= 1;
+	/**
+	 * SEQUENTIAL value for CHROMOSOME_LOADING_OPTION option involves the sequential loading (one by one) of chromosomes during a multi genome project (low memory cost)
+	 */
+	public 	static final 	int 						SEQUENTIAL 					= 0;
+	/**
+	 * CHROMOSOME_LOADING_OPTION to choose the chromosome loading mode
+	 */
 	public 	static			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
 
 	private static final 	Color 						DEFAULT_COLOR 				= Color.black;
@@ -58,16 +69,13 @@ public class MultiGenomeManager {
 	private static final 	Color 						SV_DEFAULT_COLOR 			= Color.magenta;
 
 	private static 			MultiGenomeManager 			instance = null;		// unique instance of the singleton
-	private					List<String> 				fields;					// VCF column Filter
 	private 				Map<File, VCFReader> 		fileReaders;			// VCF Readers for every VCF files
-	private					VCFMultiGenomeInformation	genomesInformation;		// Genomes information
+	private					MGMultiGenomeInformation	genomesInformation;		// Genomes information
 	private					MetaGenomeManager			metaGenomeManager;		// Meta genome manager instance
 	private					ReferenceGenomeManager		referenceGenomeManager;	// Reference genome manager instance
 	private					CoordinateSystemType 		cst;
 	private					boolean						hasBeenInitialized;		// Uses when multi genome manager has been initialized
 	private					boolean						dataComputed = false;	// Uses after every multi genome process
-
-
 
 
 	/**
@@ -90,7 +98,7 @@ public class MultiGenomeManager {
 	 * Constructor of {@link MultiGenomeManager}
 	 */
 	private MultiGenomeManager () {
-		this.genomesInformation = new VCFMultiGenomeInformation();
+		this.genomesInformation = new MGMultiGenomeInformation();
 		this.metaGenomeManager = MetaGenomeManager.getInstance();
 		this.referenceGenomeManager = ReferenceGenomeManager.getInstance();
 		this.metaGenomeManager.initChromosomeList();
@@ -107,6 +115,7 @@ public class MultiGenomeManager {
 	 * @param genomeGroupAssociation	association between groups and genome names
 	 * @param genomeFilesAssociation	association between groups and VCF files
 	 * @param genomeNamesAssociation	association between genome raw names and explicit names
+	 * @param filesTypeAssociation 		association between VCF types and VCF files.
 	 */
 	public void setGenomes (Map<String, List<String>> genomeGroupAssociation, 
 			Map<String,List<File>> genomeFilesAssociation,
@@ -135,6 +144,7 @@ public class MultiGenomeManager {
 			compileData();
 			MetaGenomeManager.getInstance().computeGenomeSize();
 			MetaGenomeManager.getInstance().updateChromosomeList();
+			//showData();
 		}
 	}
 
@@ -144,28 +154,6 @@ public class MultiGenomeManager {
 	 */
 	public boolean dataHasBeenComputed() {
 		return dataComputed;
-	}
-
-
-	/**
-	 * Initializes vcf filter.
-	 * Uses to select vcf columns in order to build genomes information. 
-	 */
-	private void initialyzeVCFFilter (List<String> names, VCFType type) {
-		fields = new ArrayList<String>();
-		fields.add("CHROM");
-		fields.add("POS");
-		fields.add("ID");
-		fields.add("REF");
-		fields.add("ALT");
-		fields.add("QUAL");
-		fields.add("FILTER");
-		fields.add("INFO");
-		fields.add("FORMAT");
-		for (String name: names) {
-			fields.add(name);
-		}
-		
 	}
 
 
@@ -193,26 +181,26 @@ public class MultiGenomeManager {
 		boolean valid = false;
 		Map<String, Chromosome> chromosomeList = ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList();
 		for (final File vcf: fileReaders.keySet()) {
-			final List<String> genomeNames = genomesInformation.getGenomeNamesFromVCF(vcf);
+
 			VCFType vcfType = genomesInformation.getTypeFromVCF(vcf);
 			if (vcfType != VCFType.SNPS) {
+				VCFReader reader = fileReaders.get(vcf);
 				valid = true;
-				initialyzeVCFFilter(genomeNames, vcfType);
 				for (final Chromosome chromosome: chromosomeList.values()) {
 					//Adds the chromosome to the reference genome chromosome list
 					referenceGenomeManager.addChromosome(chromosome.getName());
-					
+
 					//Performs query on the current VCF to get all data regarding the chromosome
-					/*List<Map<String, Object>> result = fileReaders.get(vcf).query(chromosome.getName(),
-							0,
-							chromosome.getLength(),
-							fields);*/
-					List<Map<String, Object>> result = fileReaders.get(vcf).query(chromosome.getName(),
+					List<Map<String, Object>> result = reader.query(chromosome.getName(),
 							0,
 							chromosome.getLength());
 
+					
+					final List<String> genomeNames = getRawGenomeNames(reader);
+
 					//Analyse query results
-					createPositions(chromosome, genomeNames, result, vcfType);
+					createPositions(chromosome, genomeNames, result, vcfType, reader);
+					result = null;
 				}
 			}
 		}
@@ -225,92 +213,26 @@ public class MultiGenomeManager {
 	 * @param chromosome	current chromosome
 	 * @param genomeNames	genome raw names list
 	 * @param result		query result
+	 * @param reader 
 	 */
-	private void createPositions (Chromosome chromosome, List<String> genomeNames, List<Map<String, Object>> result, VCFType vcfType) {
+	private void createPositions (Chromosome chromosome, List<String> genomeNames, List<Map<String, Object>> result, VCFType vcfType, VCFReader reader) {
 		if (result != null) {
-
 			for (Map<String, Object> info: result) {	// Scans every result lines
-				boolean isSNP = false;
-				VariantType type = null;
-				int length = -1;
-				if (vcfType == VCFType.INDELS) {
-					int refLength = info.get("REF").toString().length();
-					int altLength = info.get("ALT").toString().length();
-					length = Math.abs(refLength - altLength);
-					if (refLength > altLength) {				// Deletion: reference value length > new value length 
-						type = VariantType.DELETION;
-					} else if (refLength < altLength){			// Insertion: reference value length < new value length
-						type = VariantType.INSERTION;
-					} else {
-						isSNP = true;
-					}
-				} else if (vcfType == VCFType.SV) {
-					String formatInfo = info.get("INFO").toString();
-					String typeResult = (String) formatParser(formatInfo, "SVTYPE");
-					String lengthResult = (String) formatParser(formatInfo, "SVLEN");
-					if (typeResult.equals("DEL")) {
-						type = VariantType.DELETION;
-					} else if (typeResult.equals("INS")) {
-						type = VariantType.INSERTION; 
-					} else {
-						type = VariantType.SV;
-					}
-					if (lengthResult.charAt(0) == '-') {
-						lengthResult = lengthResult.substring(1);
-					}
-					length = Integer.parseInt(lengthResult);
-				} else if (vcfType == VCFType.SNPS) {
-					isSNP = true;
-				}
-
-				if (!isSNP) {
-					referenceGenomeManager.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString()));
-					Map<String, String> format;
-					//System.out.println(info.toString());
-					String titles[] = info.get("FORMAT").toString().split(":");
-					for (String genomeName: genomeNames) {
-						format = new HashMap<String, String>();
-						//System.out.println(genomeName);
-						String values[] = info.get(genomeName).toString().split(":");
-						for (int i = 0; i < titles.length; i++) {
-							format.put(titles[i], values[i]);
-						}
-
-						genomesInformation.addInformation(	genomeName,
-								chromosome,
-								Integer.parseInt(info.get("POS").toString()),
-								type,
-								length,
-								format);
-					}
+				referenceGenomeManager.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString().trim()));
+				//System.out.println();
+				MGPositionInformation positionInformation = new MGPositionInformation(chromosome, info, reader);
+				for (String genomeName: genomeNames) {
+					genomesInformation.addInformation(	genomeName,
+							chromosome,
+							Integer.parseInt(info.get("POS").toString()),
+							info,
+							positionInformation,
+							vcfType);
 				}
 			}
-
 		}
 
 	}
-
-
-	/**
-	 * Gets information from format field
-	 * @param format	the format string field
-	 * @param element	the information title
-	 * @return			the value
-	 */
-	private Object formatParser (String format, String element) {
-		Object o = null;
-		int elementIndex = format.indexOf(element);
-		if (elementIndex != -1) {
-			int startIndex = elementIndex + element.length() + 1;
-			int stopIndex = format.indexOf(";", startIndex);
-			if (stopIndex == -1) {
-				stopIndex = format.length();
-			}
-			o = format.substring(startIndex, stopIndex);
-		}
-		return o;
-	}
-
 
 
 	/**
@@ -321,22 +243,22 @@ public class MultiGenomeManager {
 	private void compileData () {
 		Map<String, Chromosome> chromosomeList = ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList();
 		for (Chromosome chromosome: chromosomeList.values()) {														// Scan by chromosome
-			List<VCFChromosomeInformation> currentChromosomeList =
+			List<MGChromosomeInformation> currentChromosomeList =
 				genomesInformation.getCurrentChromosomeInformation(chromosome);										// List of all existing chromosome in VCF files
 			referenceGenomeManager.setList(chromosome.getName());
 
-			for (VCFChromosomeInformation chromosomeInformation: currentChromosomeList) {							// Resets all index lists
+			for (MGChromosomeInformation chromosomeInformation: currentChromosomeList) {							// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 
 			while (referenceGenomeManager.isValidIndex()) {															// Scan by position
 				List<Integer> insertPositions = new ArrayList<Integer>();											// List of all length insertion position. Used at the end to update all tracks.
 				int currentRefPosition = referenceGenomeManager.getCurrentPosition();								// Current position of the reference genome
-				for (VCFChromosomeInformation chromosomeInformation: currentChromosomeList) {						// Scan VCF content by chromosome
+				for (MGChromosomeInformation chromosomeInformation: currentChromosomeList) {						// Scan VCF content by chromosome
 					chromosomeInformation.setCurrentPosition(currentRefPosition);
-					VCFPositionInformation currentInformation =
+					Variant currentInformation =
 						chromosomeInformation.getCurrentPositionInformation();										// Current position information according to a specific VCF file
-					VCFPositionInformation previousInformation =
+					Variant previousInformation =
 						chromosomeInformation.getPreviousPosition();												// Previous position information according to a specific VCF file
 
 					if (currentInformation != null) {																// The chromosome can have an information at this position, or not.
@@ -349,7 +271,7 @@ public class MultiGenomeManager {
 							currentInformation.setInitialMetaGenomeOffset(previousInformation.getNextMetaGenomePositionOffset());	// Initial meta genome offset must be set according to the previous position
 							currentInformation.setInitialReferenceOffset(previousInformation.getNextReferencePositionOffset());		// Initial reference genome offset must be set according to the previous position
 						}
-						if (currentInformation.getType() == VariantType.INSERTION) {								// If the current position is an insertion
+						if (GenomePositionCalculation.isInsertion(currentInformation)) {									// If the current position is an insertion
 							insertPositions.add(currentInformation.getLength());									// It is necessary to store its length in order to update other tracks
 						}
 					}
@@ -365,7 +287,7 @@ public class MultiGenomeManager {
 				updatePreviousPosition (currentChromosomeList, currentRefPosition);									// The previous position is set with the current position
 				referenceGenomeManager.nextIndex();																	// Increases the current index
 			}
-			for (VCFChromosomeInformation chromosomeInformation: currentChromosomeList) {							// Resets all index lists
+			for (MGChromosomeInformation chromosomeInformation: currentChromosomeList) {							// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 			genomesInformation.getChromosomeInformation(ReferenceGenomeManager.getInstance().getReferenceName(), chromosome).resetIndexList();
@@ -381,20 +303,18 @@ public class MultiGenomeManager {
 	 * @param refPosition		reference genome position
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
-	private void updateInsert (List<VCFChromosomeInformation> chromosomeList, int refPosition, int maxLength) {
-		for (VCFChromosomeInformation chromosomeInformation: chromosomeList) {								// Scan VCF content by chromosome
-			VCFPositionInformation position = chromosomeInformation.getPositionInformation(refPosition);	// Gets the current position in a new variable
+	private void updateInsert (List<MGChromosomeInformation> chromosomeList, int refPosition, int maxLength) {
+		for (MGChromosomeInformation chromosomeInformation: chromosomeList) {								// Scan VCF content by chromosome
+			Variant position = chromosomeInformation.getPosition(refPosition);							// Gets the current position in a new variable
 			if (position != null) {																			// If an information exists at this position
 				if (position.getLength() < maxLength) {														// If the current event length is smaller than the maximum length found
 					position.addExtraOffset(maxLength - position.getLength());								// The difference is added into the meta genome "extra" offset
 				}
 			} else { 																						// If there is no information, needs to add a "blank" position
-				VCFPositionInformation previousPosition = chromosomeInformation.getPreviousPosition();
-				chromosomeInformation.addInformation(refPosition,											// Adds a blank position
-						VariantType.BLANK,
-						maxLength,
-						null);
-				position = chromosomeInformation.getPositionInformation(refPosition);
+				Variant previousPosition = chromosomeInformation.getPreviousPosition();
+				Variant blank = new VCFBlank(chromosomeInformation.getGenomeInformation().getGenomeFullName(), chromosomeInformation.getChromosome(), maxLength);
+				chromosomeInformation.addBlank(refPosition, blank);
+				position = chromosomeInformation.getPosition(refPosition);
 				if (previousPosition == null) {
 					position.setGenomePosition(refPosition);													// Sets the relative genome position
 					position.setInitialReferenceOffset(0);														// Sets the initial reference genome offset
@@ -418,11 +338,13 @@ public class MultiGenomeManager {
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
 	private void updateReferenceGenome (Chromosome chromosome, int refPosition, int maxLength) {
-		VCFChromosomeInformation chromosomeInformation = genomesInformation.getChromosomeInformation(ReferenceGenomeManager.getInstance().getReferenceName(), chromosome);
-		chromosomeInformation.addInformation(refPosition, VariantType.BLANK, maxLength, null);
-		VCFPositionInformation position = chromosomeInformation.getPositionInformation(refPosition);
+		MGChromosomeInformation chromosomeInformation = genomesInformation.getChromosomeInformation(ReferenceGenomeManager.getInstance().getReferenceName(), chromosome);
+		Variant blank = new VCFBlank(ReferenceGenomeManager.getInstance().getReferenceName(), chromosome, maxLength);
+		chromosomeInformation.addBlank(refPosition, blank);
+
+		Variant position = chromosomeInformation.getPosition(refPosition);
 		if (chromosomeInformation.getPositionInformationList().size() > 1) {
-			VCFPositionInformation previousPosition = chromosomeInformation.getPreviousPosition();
+			Variant previousPosition = chromosomeInformation.getPreviousPosition();
 			position.setGenomePosition(																	// Sets the relative genome position
 					refPosition -
 					previousPosition.getNextReferencePositionOffset());
@@ -442,8 +364,8 @@ public class MultiGenomeManager {
 	 * @param currentChromosomeList	list of concerned chromosome
 	 * @param currentRefPosition	current position (from the reference chromosome)
 	 */
-	private void updatePreviousPosition (List<VCFChromosomeInformation> currentChromosomeList, int currentRefPosition) {
-		for (VCFChromosomeInformation chromosomeInformation: currentChromosomeList) {	// Scan by chromosome
+	private void updatePreviousPosition (List<MGChromosomeInformation> currentChromosomeList, int currentRefPosition) {
+		for (MGChromosomeInformation chromosomeInformation: currentChromosomeList) {	// Scan by chromosome
 			chromosomeInformation.updatePreviousPosition(currentRefPosition);			// Update the last index of the current chromosome information list
 		}
 	}
@@ -474,12 +396,30 @@ public class MultiGenomeManager {
 		}
 		return max;
 	}
+	
+	
+	/**
+	 * Creates a raw genome names according to the ones required and specific to a VCF file
+	 * @param reader the VCF file reader
+	 * @return the list containing the required raw genome name(s) from the VCF file 
+	 */
+	private List<String> getRawGenomeNames (VCFReader reader) {
+		final List<String> allRawGenomeNames = genomesInformation.getAllRawGenomeNames();
+		final List<String> VCFRawGenomeNames = reader.getRawGenomesNames();
+		List<String> names = new ArrayList<String>();
+		for (String name: VCFRawGenomeNames) {
+			if (allRawGenomeNames.contains(name)) {
+				names.add(name);
+			}
+		}
+		return names;
+	}
 
 
 	/**
 	 * @return the multiGenomeInformation
 	 */
-	public VCFMultiGenomeInformation getMultiGenomeInformation() {
+	public MGMultiGenomeInformation getMultiGenomeInformation() {
 		return genomesInformation;
 	}
 
@@ -527,9 +467,11 @@ public class MultiGenomeManager {
 
 
 	/**
-	 * @return the genomesInformation
+	 * @param genome 		the raw genome name
+	 * @param chromosome 	the chromosome
+	 * @return 				the chromosome information object
 	 */
-	public VCFChromosomeInformation getChromosomeInformation(String genome, Chromosome chromosome) {
+	public MGChromosomeInformation getChromosomeInformation(String genome, Chromosome chromosome) {
 		return genomesInformation.getChromosomeInformation(genome, chromosome);
 	}
 
@@ -599,8 +541,6 @@ public class MultiGenomeManager {
 	 */
 	public void showData () {
 		genomesInformation.showData();
-		//Development.showMax();
-		//Development.showIndelCounts();
 	}
 
 
@@ -630,7 +570,7 @@ public class MultiGenomeManager {
 			fileReaders.get(vcf).showHeaderInfo();
 		}
 		if (showAttributes){
-			fileReaders.get(vcf).showHeaderAttributes();
+			//fileReaders.get(vcf).showHeaderAttributes();
 		}
 		if (showColumns){
 			fileReaders.get(vcf).showColumnNames();

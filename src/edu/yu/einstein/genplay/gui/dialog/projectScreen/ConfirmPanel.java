@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 /**
  * This class manages the button which validates the project screen.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class ConfirmPanel extends JPanel implements ActionListener {
 	
@@ -42,7 +43,7 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 	 */
 	protected ConfirmPanel () {
 		//Size
-		setSize(ProjectScreenManager.getConfirmDim());
+		setSize(ProjectScreenFrame.getConfirmDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -52,12 +53,12 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 		valid.addActionListener(this);
 		
 		//Background color
-		setBackground(ProjectScreenManager.getConfirmColor());
+		setBackground(ProjectScreenFrame.getConfirmColor());
 		
 		//Add valid button
 		add(valid);
 		// set valid button as the default button of the project screen manager
-		ProjectScreenManager.getInstance().getRootPane().setDefaultButton(valid);
+		ProjectScreenFrame.getInstance().getRootPane().setDefaultButton(valid);
 	}
 	
 	
@@ -77,10 +78,10 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String name = ((JButton)(arg0.getSource())).getText();
-		if (name.equals(ProjectScreenManager.getCreateButton())) {
-			ProjectScreenManager.confirmCreate();
+		if (name.equals(ProjectScreenFrame.getCreateButton())) {
+			ProjectScreenFrame.confirmCreate();
 		} else {
-			ProjectScreenManager.confirmLoading();
+			ProjectScreenFrame.confirmLoading();
 		}
 	}
 	

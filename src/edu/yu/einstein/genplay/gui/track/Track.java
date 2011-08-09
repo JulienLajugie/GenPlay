@@ -449,6 +449,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public void setGenomeName(String genomeName) {
 		this.genomeName = genomeName;
-		getStripeInformation().setGenomeName(genomeName);
+		//getStripeInformation().setGenomeName(genomeName);
 	}	
 }

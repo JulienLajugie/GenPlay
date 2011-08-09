@@ -74,8 +74,9 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	/**
 	 * init method
 	 * Initializes attributes to run the process.
-	 * @param list1 
-	 * @param list2 
+	 * @param list1 		first list
+	 * @param list2 		second list
+	 * @param chromosome 	chromosome
 	 */
 	public void init (ChromosomeListOfLists<?> list1, ChromosomeListOfLists<?> list2, Chromosome chromosome) {
 		//index 0 refers to the first track
@@ -403,6 +404,9 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	
 	///////////////////////////	GETTERS
 	
+	/**
+	 * @return the new score chromosome window list
+	 */
 	public List<ScoredChromosomeWindow> getList() {
 		return newScwList;
 	}
@@ -450,6 +454,9 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	
 	///////////////////////////	MISC
 	
+	/**
+	 * @return the string to display information
+	 */
 	public String showList() {
 		String s = "";
 		for (int i=0; i < newScwList.size(); i++) {

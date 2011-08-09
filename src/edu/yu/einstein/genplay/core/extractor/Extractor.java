@@ -95,6 +95,7 @@ public abstract class Extractor implements Serializable {
 
 	/**
 	 * Extracts the data from a file.
+	 * @throws Exception 
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */

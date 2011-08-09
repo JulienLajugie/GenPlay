@@ -133,6 +133,14 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 			}
 		}
 	}
+	
+	
+	/**
+	 * @return the genome window
+	 */
+	public GenomeWindow getGenomeWindow() {
+		return currentGenomeWindow;
+	}
 
 
 	/**

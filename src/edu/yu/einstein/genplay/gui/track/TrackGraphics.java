@@ -49,11 +49,10 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPSManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFSNPInformation;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripe;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -62,7 +61,9 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 /**
  * Graphics part of a track
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
+ * @param <T> type of data
  */
 public abstract class TrackGraphics<T> extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowEventsGenerator {
 
@@ -128,9 +129,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
 	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 	protected T 						data;							// data showed in the track
-	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information
+	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information (for MG project)
+	private DisplayableVariantListCreator					displayableVariantListCreator;					// displayable variants list creator (for MG project)
 	private String 						genomeName;						// genome on which the track is based (ie aligned on)
-
+	private List<DisplayableVariant> 	displayableVariantList;			// list of variant for multi genome project
 
 	/**
 	 * Method used for serialization
@@ -184,6 +186,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			multiGenomeStripe = new MultiGenomeStripe();
+			displayableVariantListCreator = new DisplayableVariantListCreator();
 		}
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
@@ -282,10 +285,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripe != null) {
 			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
+				displayableVariantListCreator.setRawGenomeNames(multiGenomeStripe.getRequiredGenomes());
+				displayableVariantListCreator.setQuality((double) multiGenomeStripe.getQuality());
+				displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
 				drawMultiGenomeLine(g);
-				for (String genomeFullName: multiGenomeStripe.getColorAssociation().keySet()) {
-					drawGenome(g, genomeFullName);
-				}
+				drawGenome(g);
 			}
 		}
 	}
@@ -293,7 +297,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	/**
 	 * Draws the line on the middle of a multi genome track
-	 * @param g
+	 * @param g	graphics object
 	 */
 	private void drawMultiGenomeLine (Graphics g) {
 		Color color = new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), multiGenomeStripe.getTransparency());
@@ -304,48 +308,34 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * Draws all stripe information related to a genome.
-	 * @param g			graphics object
-	 * @param genome	the genome name
+	 * Draws displayable variants
+	 * @param g	graphics object
 	 */
-	private void drawGenome (Graphics g, String genome) {
-		// Gets genome raw name
-		String genomeRawName;
-		try {
-			genomeRawName = FormattedMultiGenomeName.getRawName(genome);
-		} catch (Exception e) {
-			genomeRawName = genome;
-		}
+	private void drawGenome (Graphics g) {
+		// Requirement for variant list scan
+		if (displayableVariantList.size() > 0) {
 
-		// Indels & SV
-		List<Variant> fittedDataList = null;
-		try {
-			fittedDataList = MultiGenomeManager.getInstance().getMultiGenomeInformation().getMultiGenomeInformation(genomeRawName).getFittedData(genomeWindow, xFactor);
-		} catch (Exception e) {}
-		Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(genome);
-		Color blankColor = new Color(0, 0, 0, multiGenomeStripe.getTransparency());
-		if (fittedDataList != null) {
-			for (Variant variant: fittedDataList) {
-				if (association.containsKey(variant.getType())) {
-					if (variant.getQualityScore() >= multiGenomeStripe.getQuality()) {
-						drawRect(g, variant, association.get(variant.getType()), blankColor);
-						if (variant.deadZoneExists()) {
-							drawRect(g, variant, Color.black, blankColor);
-						}
+			// Set color for unused position and dead area
+			Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), multiGenomeStripe.getTransparency());
+			Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), multiGenomeStripe.getTransparency());
+			// Start variant list scan
+			for (DisplayableVariant displayableVariant: displayableVariantList) {
+				if (displayableVariant.getType().equals(VariantType.MIX)) {
+					Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), multiGenomeStripe.getTransparency());
+					drawRect(g, displayableVariant, mixColor, mixColor);
+				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
+					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
+				} else {
+					// Color association
+					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getNativeVariant().getFullGenomeName());
+
+					// Draws the stripe
+					drawRect(g, displayableVariant, association.get(displayableVariant.getType()), noAlleleColor);
+
+					// Draws the dead zone
+					if (displayableVariant.deadZoneExists()) {
+						drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
 					}
-				} else if (variant.getType().equals(VariantType.MIX)) {
-					drawRect(g, variant, Color.white, blankColor);
-				}
-			}
-		}
-
-		// SNPs
-		if (association.containsKey(VariantType.SNPS)) {
-			List<VCFSNPInformation> data = SNPSManager.getInstance().getSNPSList(genome, genomeWindow, xFactor);
-			Color color = association.get(VariantType.SNPS);
-			for (VCFSNPInformation snp: data) {
-				if (snp.getQuality() >= multiGenomeStripe.getQuality()) {
-					drawSNP(g, snp, color, blankColor);
 				}
 			}
 		}
@@ -355,73 +345,119 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	/**
 	 * Draws a rectangle symbolizing variants
 	 * @param g			graphics object
-	 * @param variant	the variant
+	 * @param displayableVariant	the variant
 	 * @param color		the color
 	 */
-	private void drawRect (Graphics g, Variant variant, Color color, Color blankColor) {
+	private void drawRect (Graphics g, DisplayableVariant displayableVariant, Color color, Color noAlleleColor) {
 		// Sets position and length
-		int x = genomePosToScreenPos(variant.getStart());
-		int width = twoGenomePosToScreenWidth(variant.getStart(), variant.getStop());
-		int middle = getHeight() / 2;
-		int height = (int) (variant.getQualityScore() * middle / 100);
-		int top = middle - height;
+		if (displayableVariant.getStart() >= genomeWindow.getStart() && displayableVariant.getStop() <= genomeWindow.getStop()) {
 
-		// Sets color
-		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
-		g.setColor(newColor);
+			int x = genomePosToScreenPos(displayableVariant.getStart());
+			int width = twoGenomePosToScreenWidth(displayableVariant.getStart(), displayableVariant.getStop());
+			int middle = getHeight() / 2;
+			int height = 0;
+			try {
+				height = (int) (displayableVariant.getQualityScore() * middle / 100);
+			} catch (Exception e) {
+				displayableVariant.show();
+			}
+			//int height = (int) (displayableVariant.getQualityScore() * middle / 100);
+			int top = middle - height;
 
-		// Draws the top half part of the track
-		if (variant.isOnFirstAllele()) {
+			// Sets color
+			Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
 			g.setColor(newColor);
-		} else {
-			g.setColor(blankColor);
-		}
-		g.fillRect(x, top, width, height);
 
-		// Draws the bottom half part of the track
-		if (variant.isOnSecondAllele()) {
-			g.setColor(newColor);
-		} else {
-			g.setColor(blankColor);
+			// Draws the top half part of the track
+			if (displayableVariant.isOnFirstAllele()) {
+				g.setColor(newColor);
+			} else {
+				g.setColor(noAlleleColor);
+			}
+			g.fillRect(x, top, width, height);
+
+			// Draws the bottom half part of the track
+			if (displayableVariant.isOnSecondAllele()) {
+				g.setColor(newColor);
+			} else {
+				g.setColor(noAlleleColor);
+			}
+			g.fillRect(x, middle, width, height);
 		}
-		g.fillRect(x, middle, width, height);
 	}
 
 
 	/**
-	 * Draws a rectangle symbolizing SNP
-	 * @param g		graphics object
-	 * @param color	the color
-	 * @param blankColor color of the blank regions for the multi-genome information
+	 * @param displayableVariant the current variant
+	 * @return	the index in the variant list of the variant
 	 */
-	private void drawSNP (Graphics g, VCFSNPInformation snp, Color color, Color blankColor) {
-		// Sets position and length
-		int pos = snp.getMetaGenomePosition();
-		int x = genomePosToScreenPos(pos);
-		int width = twoGenomePosToScreenWidth(pos, pos + 1);
-		int middle = getHeight() / 2;
-		int height = (int) (snp.getQuality() * middle / 100);
-		int top = middle - height;
+	private int getDisplayableVariantIndex (DisplayableVariant displayableVariant) {
+		int index = -1;
 
-		// Sets color
-		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), multiGenomeStripe.getTransparency());
-		g.setColor(newColor);
-
-		// Draws the top half part of the track
-		if (snp.isOnFirstAllele()) {
-			g.setColor(newColor);
-		} else {
-			g.setColor(blankColor);
+		for (int i = 0; i < displayableVariantList.size(); i++) {
+			int result = displayableVariantList.get(i).compareTo(displayableVariant);
+			if (result == 0) {
+				index = i;
+			} else if (result == 1) {
+				break;
+			}
 		}
-		g.fillRect(x, top, width, height);
 
-		// Draws the bottom half part of the track
-		if (snp.isOnSecondAllele()) {
-			g.setColor(newColor);
+		return index;
+	}
+
+
+	/**
+	 * @return the variantList
+	 */
+	public List<DisplayableVariant> getDisplayableVariantList() {
+		return displayableVariantList;
+	}
+
+
+	/**
+	 * @param displayableVariant	the current variant
+	 * @return the previous variant compare to the current variant
+	 */
+	private DisplayableVariant getPreviousDisplayableVariant (DisplayableVariant displayableVariant) {
+		DisplayableVariant result;
+		int currentIndex = getDisplayableVariantIndex(displayableVariant);
+		int previousIndex = currentIndex - 1;
+		if (currentIndex != -1 && previousIndex >= 0) {
+			result = displayableVariantList.get(previousIndex);
 		} else {
-			g.setColor(blankColor);
+			result = displayableVariant;
 		}
-		g.fillRect(x, middle, width, height);
+		return result;
+	}
+
+
+	/**
+	 * @param displayableVariant	the current variant
+	 * @return the next variant compare to the current variant
+	 */
+	private DisplayableVariant getNextDisplayableVariant (DisplayableVariant displayableVariant) {
+		DisplayableVariant result;
+		int currentIndex = getDisplayableVariantIndex(displayableVariant);
+		int nextIndex = currentIndex + 1;
+		if (currentIndex != -1 && nextIndex < displayableVariantList.size()) {
+			result = displayableVariantList.get(nextIndex);
+		} else {
+			result = displayableVariant;
+		}
+		return result;
+	}
+
+
+	/**
+	 * @param displayableVariant the current variant
+	 * @return	a list containing the previous and the next variant compare to the current variant
+	 */
+	public DisplayableVariant[] getShortDisplayableVariantList (DisplayableVariant displayableVariant) {
+		DisplayableVariant array[] = new DisplayableVariant[2];
+		array[0] = getPreviousDisplayableVariant(displayableVariant);
+		array[1] = getNextDisplayableVariant(displayableVariant);
+		return array;
 	}
 
 
@@ -523,7 +559,33 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				setGenomeWindow(newWindow);
 			}
 		}
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				double pos = screenPosToGenomePos(e.getX());
+				DisplayableVariant displayableVariant = getDisplayableVariant(pos);
+				if (displayableVariant != null) {
+					ToolTipStripe toolTip = new ToolTipStripe(this);
+					toolTip.show(displayableVariant, e.getXOnScreen(), e.getYOnScreen());
+				} else {
+					System.out.println(pos + ": no variant");
+				}
+			}
+		}
 	}
+
+
+	private DisplayableVariant getDisplayableVariant(double pos) {
+		DisplayableVariant displayableVariant = null;
+		if (displayableVariantList != null) {
+			for (DisplayableVariant current: displayableVariantList) {
+				if (pos >= current.getStart() && pos < current.getStop()) {
+					return current;
+				}
+			}
+		}
+		return displayableVariant;
+	}
+
 
 
 	/**
@@ -742,6 +804,17 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected double twoScreenPosToGenomeWidth(int x1, int x2) {
 		double distance = ((double)(x2 - x1) / (double)getWidth() * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
 		return distance;
+	}
+
+
+	/**
+	 * @param x position on the screen
+	 * @return position on the genome 
+	 */
+	protected double screenPosToGenomePos(int x) {
+		double distance = twoScreenPosToGenomeWidth(0, x);
+		double genomePosition = genomeWindow.getStart() + Math.floor(distance);
+		return genomePosition;
 	}
 
 

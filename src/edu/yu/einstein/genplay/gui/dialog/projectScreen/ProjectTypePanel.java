@@ -34,33 +34,34 @@ import javax.swing.JRadioButton;
  * loading an existing project.
  * @author Nicolas Fourel
  */
-class ProjectType extends JPanel implements ActionListener {
+class ProjectTypePanel extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = 5891323545514431816L;
 	
-	private ProjectScreenManager 	spm;			// ScreenProjectManager object
+	private ProjectScreenFrame 			projectScreenFrame;	// Screen Project object
 	private JRadioButton 			newRadio;		// The radio button to choose a new project
 	private JRadioButton 			loadRadio;		// The radio button to choose to load a project
 	private ButtonGroup 			projectRadio;	// The button group
 	
 	
 	/**
-	 * Constructor of {@link ProjectType}
+	 * Constructor of {@link ProjectTypePanel}
+	 * @param projectScreenFrame the project screen object
 	 */
-	protected ProjectType(ProjectScreenManager spm) {
+	protected ProjectTypePanel(ProjectScreenFrame projectScreenFrame) {
 		super();
-		this.spm = spm;
+		this.projectScreenFrame = projectScreenFrame;
 		init();
 	}
 	
 	
 	/**
 	 * Main method of the class.
-	 * It initializes the {@link ProjectType} panel.
+	 * It initializes the {@link ProjectTypePanel} panel.
 	 */
 	private void init() {
 		//Size
-		setSize(ProjectScreenManager.TYPE_DIM);
+		setSize(ProjectScreenFrame.TYPE_DIM);
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
@@ -71,9 +72,9 @@ class ProjectType extends JPanel implements ActionListener {
 		loadRadio = new JRadioButton("Load an existing project");
 		
 		//Color
-		setBackground(ProjectScreenManager.TYPE_COLOR);
-		newRadio.setBackground(ProjectScreenManager.TYPE_COLOR);
-		loadRadio.setBackground(ProjectScreenManager.TYPE_COLOR);
+		setBackground(ProjectScreenFrame.TYPE_COLOR);
+		newRadio.setBackground(ProjectScreenFrame.TYPE_COLOR);
+		loadRadio.setBackground(ProjectScreenFrame.TYPE_COLOR);
 		
 		//Listener
 		newRadio.addActionListener(this);
@@ -113,9 +114,9 @@ class ProjectType extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == newRadio) {
-			spm.toNewScreenProject();
+			projectScreenFrame.toNewScreenProject();
 		} else if (arg0.getSource() == loadRadio) {
-			spm.toLoadScreenProject();
+			projectScreenFrame.toLoadScreenProject();
 		}
 	}
 }

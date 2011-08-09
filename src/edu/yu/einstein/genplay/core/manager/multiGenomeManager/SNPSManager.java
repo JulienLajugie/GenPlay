@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +30,11 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.enums.VCFType;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFMultiGenomeInformation;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFReader;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFSNPInformation;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
@@ -51,9 +52,9 @@ public class SNPSManager {
 	private 		boolean 					genomeChanged;			// Says if genome has changed compare to previous scan
 	private 		boolean 					genomeWindowChanged;	// Says if genome window has changed compare to previous scan
 	private 		double 						ratioThreshold;			// Ratio threshold to do not show up SNPs when zoom is not important enough
-	
+
 	//Dynamic variables
-	private 		List<VCFSNPInformation> 	list;					// List of SNP position
+	private 		List<Variant> 	list;					// List of SNP position
 	private 		List<String> 				fields;					// List of header for VCF file query
 	private 		GenomeWindow 				genomeWindow;			// The current genome window
 	private 		String 						fullGenomeName;			// The current full genome name
@@ -68,7 +69,7 @@ public class SNPSManager {
 	private SNPSManager () {
 		genomeChanged = false;
 		genomeWindowChanged = false;
-		list = new ArrayList<VCFSNPInformation>();
+		list = new ArrayList<Variant>();
 		ratioThreshold = 0.05;
 		fullGenomeName = null;
 		groupName = null;
@@ -86,8 +87,8 @@ public class SNPSManager {
 		}
 		return instance;
 	}
-	
-	
+
+
 	/**
 	 * Initializes headers for VCF file queries
 	 * @param genome the genome raw name
@@ -111,7 +112,7 @@ public class SNPSManager {
 	 * @param xFactor			the current x ratio
 	 * @return					the list of SNPs
 	 */
-	public List<VCFSNPInformation> getSNPSList (String fullGenomeName, GenomeWindow genomeWindow, double xFactor) {
+	public List<Variant> getSNPSList (String fullGenomeName, GenomeWindow genomeWindow, double xFactor) {
 
 		if (xFactor > ratioThreshold) {
 			initChangements(fullGenomeName, genomeWindow);
@@ -119,11 +120,11 @@ public class SNPSManager {
 			initReader();
 
 			makeList();
-			
+
 			genomeChanged = false;
 			genomeWindowChanged = false;
 		} else {
-			list = new ArrayList<VCFSNPInformation>();
+			list = new ArrayList<Variant>();
 		}
 
 		return list;
@@ -171,7 +172,7 @@ public class SNPSManager {
 	 */
 	private void initReader () {
 		if (genomeWindowChanged || genomeChanged) {
-			VCFMultiGenomeInformation genomeInformation = MultiGenomeManager.getInstance().getMultiGenomeInformation();
+			MGMultiGenomeInformation genomeInformation = MultiGenomeManager.getInstance().getMultiGenomeInformation();
 			List<File> fileList = genomeInformation.getGenomeFilesAssociation().get(groupName);
 			reader = null;
 			if (fileList != null) {
@@ -192,17 +193,17 @@ public class SNPSManager {
 	private void makeList () {
 		if (genomeWindowChanged || genomeChanged) {
 			if (reader != null) {
-				list = new ArrayList<VCFSNPInformation>();
+				list = new ArrayList<Variant>();
 				Chromosome chromosome = genomeWindow.getChromosome();
 				int start = genomeWindow.getStart();
 				int stop = genomeWindow.getStop();
-				
+
 				if (start < 0) {
 					start = 0;
 				} else {
 					start = ShiftCompute.computeReversedShift(rawName, chromosome, start);
 				}
-				
+
 				if (stop > MetaGenomeManager.getInstance().getGenomeLength()) {
 					stop = (int) MetaGenomeManager.getInstance().getGenomeLength();
 				} else {
@@ -219,40 +220,19 @@ public class SNPSManager {
 
 				if (results != null) {
 					for (Map<String, Object> resultLine: results) {
-						int genomePosition = Integer.parseInt(resultLine.get("POS").toString());
+						MGPositionInformation positionInformation = new MGPositionInformation(chromosome, resultLine, reader);
+						Variant info = new VCFSNP(rawName, chromosome, resultLine, positionInformation);
+						
+						/*int genomePosition = Integer.parseInt(resultLine.get("POS").toString());
 						int metaGenomePosition;
 						try {
 							metaGenomePosition = ShiftCompute.computeShift(rawName, chromosome, genomePosition);
 						} catch (Exception e) {
 							metaGenomePosition = genomePosition;
-						}
-						Nucleotide nReference = getAssociatedNucleotide(resultLine.get("REF").toString());
-						Nucleotide nAlternative = getAssociatedNucleotide(resultLine.get("ALT").toString());
-
-						Map<String, String> format = new HashMap<String, String>();
-						String titles[] = resultLine.get("FORMAT").toString().split(":");
-							String values[] = resultLine.get(rawName).toString().split(":");
-							for (int i = 0; i < titles.length; i++) {
-								format.put(titles[i], values[i]);
-							}
-						
-						VCFSNPInformation info = new VCFSNPInformation(genomePosition, metaGenomePosition, nReference, nAlternative);
-						
-						info.setInfo(format);
-						
-						int[] gt = info.getGT();
-						if (gt[0] == 0) {
-							info.setOnFirstAllele(false);
-						} else {
-							info.setOnFirstAllele(true);
-						}
-						if (gt[1] == 0) {
-							info.setOnSecondAllele(false);
-						} else {
-							info.setOnSecondAllele(true);
-						}
+						}*/
 						
 						list.add(info);
+						
 					}
 				}
 			}
@@ -264,6 +244,7 @@ public class SNPSManager {
 	 * @param n the raw nucleotide information
 	 * @return	the associated nucleotide
 	 */
+	@SuppressWarnings("unused")
 	private Nucleotide getAssociatedNucleotide (String n) {
 		Nucleotide nucleotide = null;
 		if (n.equals("A")) {

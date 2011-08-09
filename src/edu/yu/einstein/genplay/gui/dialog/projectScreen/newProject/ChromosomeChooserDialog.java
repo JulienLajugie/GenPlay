@@ -26,30 +26,31 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 /**
  * This class displays every chromosome of the choosen assembly.
  * They can be selected or unselected before creating a project.
  * @author Nicolas Fourel
+ * @version 0.1
  */
-class ChromosomeChooser extends JDialog {
+class ChromosomeChooserDialog extends JDialog {
 	
 	private static final long serialVersionUID = -6288396580036623890L;
 	
 	private static final 	Dimension 	DIALOG_SIZE 				= new Dimension(430, 600);					// Window size
 	private static final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(DIALOG_SIZE.width, 65);		// Button panel size
-	private static final 	Color 		CHROMOSOME_CHOOSER_COLOR 	= ProjectScreenManager.getAssemblyColor();	// Chromosome chooser color
-	private static final 	Color 		TABLE_COLOR 				= ProjectScreenManager.getAssemblyColor();	// Table color
-	private static final 	Color 		SCROLL_COLOR 				= ProjectScreenManager.getAssemblyColor();	// Scroll bar color
-	private static final 	Color 		BUTTON_PANEL_COLOR 			= ProjectScreenManager.getAssemblyColor();	// Button panel color
+	private static final 	Color 		CHROMOSOME_CHOOSER_COLOR 	= ProjectScreenFrame.getAssemblyColor();	// Chromosome chooser color
+	private static final 	Color 		TABLE_COLOR 				= ProjectScreenFrame.getAssemblyColor();	// Table color
+	private static final 	Color 		SCROLL_COLOR 				= ProjectScreenFrame.getAssemblyColor();	// Scroll bar color
+	private static final 	Color 		BUTTON_PANEL_COLOR 			= ProjectScreenFrame.getAssemblyColor();	// Button panel color
 	private final 			String[] 					columnNames = {"#", "Name", "Length", ""};				// Column names
 	private 				JTable 						chromosomeTable;										// Chromosome table
 	private 				ChromosomeChooserTableModel tableModel;												// Chromosome table model
@@ -57,9 +58,12 @@ class ChromosomeChooser extends JDialog {
 	
 	
 	/**
-	 * Constructor of {@link ChromosomeChooser}
+	 * Constructor of {@link ChromosomeChooserDialog}
+	 * @param assemblyPanel the assembly panel
+	 * @param title 		the chromosome chooser title
+	 * @param data 			the data to display
 	 */
-	protected ChromosomeChooser (AssemblyPanel assemblyPanel, String title, Map<Integer, Map<Integer, Object>> data) {
+	protected ChromosomeChooserDialog (AssemblyPanel assemblyPanel, String title, List<List<Object>> data) {
 		this.assemblyPanel = assemblyPanel;
 		init(title, data);
 	}
@@ -70,7 +74,7 @@ class ChromosomeChooser extends JDialog {
 	 * @param title	dialog title
 	 * @param data	table data
 	 */
-	protected void init (String title, Map<Integer, Map<Integer, Object>> data) {
+	protected void init (String title, List<List<Object>> data) {
 		//JDialog information
 		setTitle(title);
 		setSize(DIALOG_SIZE);
@@ -93,7 +97,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Confirm button
 		JButton confirmChr = new JButton("Ok");
-		confirmChr.setToolTipText(ProjectScreenManager.getConfirmFiles());
+		confirmChr.setToolTipText(ProjectScreenFrame.getConfirmFiles());
 		confirmChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -104,7 +108,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Cancel button
 		JButton cancelChr = new JButton("Cancel");
-		cancelChr.setToolTipText(ProjectScreenManager.getCancelFiles());
+		cancelChr.setToolTipText(ProjectScreenFrame.getCancelFiles());
 		cancelChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -114,7 +118,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Select button
 		JButton selectChr = new JButton("Select");
-		selectChr.setToolTipText(ProjectScreenManager.getSelectFiles());
+		selectChr.setToolTipText(ProjectScreenFrame.getSelectFiles());
 		selectChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -124,7 +128,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Unselect button
 		JButton unselectChr = new JButton("Unselect");
-		unselectChr.setToolTipText(ProjectScreenManager.getUnselectFiles());
+		unselectChr.setToolTipText(ProjectScreenFrame.getUnselectFiles());
 		unselectChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -134,7 +138,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Up button
 		JButton upChr = new JButton("Up");
-		upChr.setToolTipText(ProjectScreenManager.getMoveUpFiles());
+		upChr.setToolTipText(ProjectScreenFrame.getMoveUpFiles());
 		upChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -144,7 +148,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Down button
 		JButton downChr = new JButton("Down");
-		downChr.setToolTipText(ProjectScreenManager.getMoveDownFiles());
+		downChr.setToolTipText(ProjectScreenFrame.getMoveDownFiles());
 		downChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -154,7 +158,7 @@ class ChromosomeChooser extends JDialog {
 		
 		//Down button
 		JButton basicChr = new JButton("Basics");
-		basicChr.setToolTipText(ProjectScreenManager.getSelectBasicChr());
+		basicChr.setToolTipText(ProjectScreenFrame.getSelectBasicChr());
 		basicChr.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -180,6 +184,7 @@ class ChromosomeChooser extends JDialog {
 		topPane.add(basicChr);
 		
 		//BotPane
+		getRootPane().setDefaultButton(confirmChr);
 		JPanel botPane = new JPanel();
 		botPane.add(confirmChr);
 		botPane.add(cancelChr);
@@ -241,7 +246,7 @@ class ChromosomeChooser extends JDialog {
 	/**
 	 * @param data the data to set
 	 */
-	protected void setData(Map<Integer, Map<Integer, Object>> data) {
+	protected void setData(List<List<Object>> data) {
 		assemblyPanel.setData(data);
 		tableModel = null;
 	}

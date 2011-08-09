@@ -28,6 +28,7 @@ package edu.yu.einstein.genplay.core.enums;
  */
 public enum VariantType {
 	
+	// From indel type VCF file
 	/**
 	 * For an insertion
 	 */
@@ -36,14 +37,43 @@ public enum VariantType {
 	 * For a deletion
 	 */
 	DELETION ("Deletion"),
+	
+	
+	// From SNPs type VCF file
 	/**
 	 * For SNPs
 	 */
 	SNPS ("SNPs"),
+	
+	
+	// From SV type VCF file
 	/**
-	 * For structural variation
+	 * For a SV deletion
 	 */
-	SV ("SV"),
+	DEL ("Deletion (SV)"),
+	/**
+	 * For a SV insertion
+	 */
+	INS ("Insertion (SV)"),
+	/**
+	 * For a SV duplication
+	 */
+	DUP ("Duplication (SV)"),
+	/**
+	 * For a SV inversion
+	 */
+	INV ("Inversion (SV)"),
+	/**
+	 * For a SV copy number variation
+	 */
+	CNV ("Copy Number Variation (SV)"),
+	/**
+	 * For SV SNPs (would not exist)
+	 */
+	SVSNPS ("SNPs (SV)"),
+	
+	
+	// For display
 	/**
 	 * When type are mixed during the fitting screen data process
 	 */
@@ -52,7 +82,7 @@ public enum VariantType {
 	 * When there is an insertion in another genome
 	 */
 	BLANK ("Blank");
-
+	
 	
 	private final String name; // String representing the indel 
 	

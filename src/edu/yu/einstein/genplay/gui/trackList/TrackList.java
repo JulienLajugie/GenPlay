@@ -166,6 +166,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	/**
 	 * Creates an instance of {@link TrackList}
+	 * @param displayedGenomeWindow the displayed genome window
 	 */
 	public TrackList(GenomeWindow displayedGenomeWindow) {
 		super();
@@ -880,11 +881,13 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	}
 
 
+	/**
+	 * @param trackList the new track list
+	 */
 	public void setTrackList (Track<?>[] trackList) {
 		this.trackList = trackList;
 		rebuildPanel();
 	}
-	
 	
 	
 	/**
@@ -901,6 +904,5 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public JPanel getJpTrackList() {
 		return jpTrackList;
 	}
-	
 	
 }

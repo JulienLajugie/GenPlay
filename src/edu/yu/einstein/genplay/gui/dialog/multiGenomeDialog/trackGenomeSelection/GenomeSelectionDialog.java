@@ -52,14 +52,15 @@ public class GenomeSelectionDialog extends JDialog {
 	 */
 	public static final int 	CANCEL_OPTION = 1;
 	
-	private static final long serialVersionUID = -2863825210102188370L;	// generated ID
-	private static final int 						defaultGenome = 0;	// default genome
-	private JComboBox 				jcbGenome; 	// combo box to choose the genome
-	private int	approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private static final 	long 		serialVersionUID = -2863825210102188370L;	// generated ID
+	private static final 	int 		defaultGenome = 0;							// default genome
+	private 				JComboBox 	jcbGenome; 									// combo box to choose the genome
+	private 				int			approved = CANCEL_OPTION;					// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 	
 	
 	/**
 	 * Creates an instance of a {@link GenomeSelectionDialog}
+	 * @param genomeNames name of genomes to display
 	 */
 	public GenomeSelectionDialog(Object[] genomeNames) {
 		super();
@@ -157,6 +158,8 @@ public class GenomeSelectionDialog extends JDialog {
 				cancelChoice();
 			}
 		});
+		
+		getRootPane().setDefaultButton(confirm);
 		
 		FlowLayout layout = new FlowLayout();
 		layout.setHgap(20);

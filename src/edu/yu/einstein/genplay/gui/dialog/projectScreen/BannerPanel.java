@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 /**
  * This class load the banner on the project screen top.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class BannerPanel extends JPanel {
 	
@@ -42,13 +43,13 @@ public class BannerPanel extends JPanel {
 	 */
 	protected BannerPanel () {
 		//Size Panel
-		setSize(ProjectScreenManager.getBannerDim());
+		setSize(ProjectScreenFrame.getBannerDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
 
 		//Background color
-		setBackground(ProjectScreenManager.getBannerColor());
+		setBackground(ProjectScreenFrame.getBannerColor());
 		
 		//Load the image
 		banner = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource(BANNER_PATH));

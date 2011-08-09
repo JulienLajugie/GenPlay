@@ -27,6 +27,7 @@ import java.util.Map;
 /**
  * This class compare chromosome regarding their names.
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class ChromosomeComparator implements Comparator<String> {
 

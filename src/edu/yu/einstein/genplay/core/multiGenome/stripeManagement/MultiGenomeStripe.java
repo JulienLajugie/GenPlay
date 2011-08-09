@@ -24,10 +24,14 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -37,6 +41,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * - association between variant type and color
  * - transparency
  * @author Nicolas Fourel
+ * @version 0.1
  */
 public class MultiGenomeStripe implements Serializable {
 
@@ -45,9 +50,8 @@ public class MultiGenomeStripe implements Serializable {
 	private Map<String, Map<VariantType, Color>> 	colorAssociation;	// Association between variant type and color
 	private int 									transparency;		// Transparency (0 -> 100)
 	private int										quality;			// Quality threshold (0 -> 100)
-	private String 									genomeName;			// Genome name
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -58,7 +62,6 @@ public class MultiGenomeStripe implements Serializable {
 		out.writeObject(colorAssociation);
 		out.writeInt(transparency);
 		out.writeInt(quality);
-		out.writeObject(genomeName);
 	}
 
 
@@ -74,7 +77,6 @@ public class MultiGenomeStripe implements Serializable {
 		colorAssociation = (Map<String, Map<VariantType, Color>>) in.readObject(); 
 		transparency = in.readInt();
 		quality = in.readInt();
-		genomeName = (String) in.readObject();
 	}
 	
 	
@@ -85,8 +87,8 @@ public class MultiGenomeStripe implements Serializable {
 		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
 		transparency = 50;
 	}
-	
-	
+
+
 	/**
 	 * @return the colorAssociation
 	 */
@@ -103,30 +105,38 @@ public class MultiGenomeStripe implements Serializable {
 	public void addColorInformation (String genomeName, Map<VariantType, Color> association) {
 		colorAssociation.put(genomeName, association);
 	}
-	
-	
+
+
 	/**
-	 * Initializes color stripes.
+	 * @param genome the full genome name
+	 * @return true if it has to be displayed
 	 */
-	private void initStripes () {
-		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
-	}
-	
-	
-	/**
-	 * @return the genomeName
-	 */
-	public String getGenomeName() {
-		return genomeName;
+	public boolean hasBeenRequired (String genome) {
+		if (colorAssociation.get(genome).size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
 	/**
-	 * @param genomeName the genomeName to set
+	 * @return the list of the required raw genome names
 	 */
-	public void setGenomeName(String genomeName) {
-		this.genomeName = genomeName;
-		initStripes();
+	public Map<String, List<VariantType>> getRequiredGenomes () {
+		Map<String, List<VariantType>> genomes = new HashMap<String, List<VariantType>>();
+		for (String fullGenomeName: colorAssociation.keySet()) {
+			if (!fullGenomeName.equals(ReferenceGenomeManager.getInstance().getReferenceName())) {
+				if (hasBeenRequired(fullGenomeName)) {
+					List<VariantType> types = new ArrayList<VariantType>();
+					for (VariantType type: colorAssociation.get(fullGenomeName).keySet()) {
+						types.add(type);
+					}
+					genomes.put(FormattedMultiGenomeName.getRawName(fullGenomeName), types);
+				}
+			}
+		}
+		return genomes;
 	}
 
 
@@ -144,8 +154,8 @@ public class MultiGenomeStripe implements Serializable {
 	public void setTransparency(int alpha) {
 		this.transparency = alpha * 100 / 255;
 	}
-	
-	
+
+
 	/**
 	 * @return the quality
 	 */
@@ -172,5 +182,5 @@ public class MultiGenomeStripe implements Serializable {
 			}
 		}
 	}
-	
+
 }

@@ -42,6 +42,11 @@ public class BLOFindIslands implements Operation<BinList[]> {
 	private IslandFinder 		island;
 
 	
+	/**
+	 * @param binList
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
 	public BLOFindIslands (BinList binList) throws InterruptedException, ExecutionException {
 		this.inputBinList = binList;
 		this.island = new IslandFinder(binList);

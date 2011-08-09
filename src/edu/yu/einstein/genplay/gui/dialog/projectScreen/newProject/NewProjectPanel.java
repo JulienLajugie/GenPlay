@@ -29,30 +29,33 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenManager;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 
 /**
  * This class manages all information regarding new project information.
- * It displays and organize the communication of every panels. 
+ * It displays and organizes the communication of every panels. 
  * @author Nicolas Fourel
+ * @version 0.1
  */
-public class NewProject extends JPanel {
+public class NewProjectPanel extends JPanel {
 	
 	private static final long serialVersionUID = 2223959265643927573L;
 	
-	private GridBagConstraints 			gbc;			// Grid bag constraints
-	private NamePanel 					namePanel;		// Name panel
-	private AssemblyPanel 				assemblyPanel;	// Assembly panel
-	private GenomeProjectTypePanel 		genomePanel;	// Genome panel
-	private static MultiGenomePanel		multiGenomePanel;
-	private static JPanel 				fakePanel;		// Fake panel 
+	protected static final String DEFAULT_PROJECT_NAME = "New Project";
+	
+	private GridBagConstraints 			gbc;				// Grid bag constraints
+	private NamePanel 					namePanel;			// Name panel
+	private AssemblyPanel 				assemblyPanel;		// Assembly panel
+	private GenomeProjectTypePanel 		genomePanel;		// Genome panel
+	private static MultiGenomePanel		multiGenomePanel;	// Multi genome panel
+	private static JPanel 				fakePanel;			// Fake panel 
 	
 	
 	/**
-	 * Constructor of {@link NewProject}
+	 * Constructor of {@link NewProjectPanel}
 	 */
-	public NewProject () {
+	public NewProjectPanel () {
 		super();
 		init();
 	}
@@ -60,7 +63,7 @@ public class NewProject extends JPanel {
 	
 	/**
 	 * Main method of the class.
-	 * It initializes the {@link NewProject} panel.
+	 * It initializes the {@link NewProjectPanel} panel.
 	 */
 	private void init() {
 		//Layout
@@ -76,11 +79,11 @@ public class NewProject extends JPanel {
 		
 		//Fake panel
 		fakePanel = new JPanel();
-		fakePanel.setSize(ProjectScreenManager.getVCFDim());
+		fakePanel.setSize(ProjectScreenFrame.getVCFDim());
 		fakePanel.setPreferredSize(fakePanel.getSize());
 		fakePanel.setMinimumSize(fakePanel.getSize());
 		fakePanel.setMaximumSize(fakePanel.getSize());
-		fakePanel.setBackground(ProjectScreenManager.getVCFColor());
+		fakePanel.setBackground(ProjectScreenFrame.getVCFColor());
 		
 		//Name panel
 		gbc.gridx = 0;
@@ -104,15 +107,15 @@ public class NewProject extends JPanel {
 		add(fakePanel, gbc);
 		
 		//Size
-		setSize(ProjectScreenManager.getNewDim());
+		setSize(ProjectScreenFrame.getNewDim());
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		assemblyPanel.setPreferredSize(ProjectScreenManager.getAssemblyDim());
-		genomePanel.setPreferredSize(ProjectScreenManager.getGenomeDim());
+		assemblyPanel.setPreferredSize(ProjectScreenFrame.getAssemblyDim());
+		genomePanel.setPreferredSize(ProjectScreenFrame.getGenomeDim());
 		
 		//Background
-		setBackground(ProjectScreenManager.getNewColor());
+		setBackground(ProjectScreenFrame.getNewColor());
 	}
 	
 	
@@ -188,26 +191,41 @@ public class NewProject extends JPanel {
 	}
 	
 	
+	/**
+	 * @return the genome/group association
+	 */
 	public Map<String, List<String>> getGenomeGroupAssociation () {
 		return multiGenomePanel.getGenomeGroupAssociation();
 	}
 	
 	
+	/**
+	 * @return the genome/VCF association
+	 */
 	public Map<String, List<File>> getGenomeFilesAssociation () {
 		return multiGenomePanel.getGenomeFilesAssociation();
 	}
 	
 	
+	/**
+	 * @return the raw/usual genome names association
+	 */
 	public Map<String, String> getGenomeNamesAssociation () {
 		return multiGenomePanel.getGenomeNamesAssociation();
 	}
 	
 	
+	/**
+	 * @return the VCF type/files association
+	 */
 	public Map<VCFType, List<File>> getFilesTypeAssociation () {
 		return multiGenomePanel.getFilesTypeAssociation();
 	}
 	
 	
+	/**
+	 * @return true if the multi genome project is valid
+	 */
 	public boolean isValidMultigenomeProject () {
 		return multiGenomePanel.isValidMultigenomeProject();
 	}

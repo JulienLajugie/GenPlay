@@ -1,3 +1,23 @@
+/*******************************************************************************
+ *     GenPlay, Einstein Genome Analyzer
+ *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
+ *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.vcf;
 
 import java.awt.BorderLayout;
@@ -27,9 +47,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableColumn;
 import edu.yu.einstein.genplay.core.enums.VCFType;
-import edu.yu.einstein.genplay.core.multiGenome.VCFFile.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.MultiGenomeInformationPanel;
 
+/**
+ * 
+ * @author Nicolas Fourel
+ * @version 0.1
+ */
 public class VCFLoader extends JDialog {
 
 	private static final long serialVersionUID = -1686983714031041874L;
@@ -77,9 +102,11 @@ public class VCFLoader extends JDialog {
 	private JScrollPane 	scrollPane;
 	private JPanel			buttonPanel;
 	private boolean			validVCF = false;
-	//private boolean			validVCF = true; // only for development
 	
 	
+	/**
+	 * Constructor of {@link VCFLoader}
+	 */
 	public VCFLoader () {
 		instance = this;
 		
@@ -141,12 +168,18 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * Closes the VCF loader dialog
+	 */
 	public void closeDialog () {
 		initStatisticsInformation();
 		setVisible(false);
 	}
 	
 	
+	/**
+	 * Initializes the statistics information
+	 */
 	public void initStatisticsInformation () {
 		int group = data.getNumberElementList(0);
 		int genome = data.getNumberElementList(1);
@@ -222,6 +255,9 @@ public class VCFLoader extends JDialog {
 		validationPanel.setMaximumSize(validationDimension);
 		validationPanel.setPreferredSize(validationDimension);
 		
+		
+		getRootPane().setDefaultButton(confirm);
+		
 		return validationPanel;
 	}
 	
@@ -280,12 +316,18 @@ public class VCFLoader extends JDialog {
 	}
 
 	
+	/**
+	 * Adds a row
+	 */
 	protected void addRow () {
 		data.addRow();
 		table.updateTable();
 	}
 	
 	
+	/**
+	 * @param rows rows to remove
+	 */
 	protected void removeRows (int[] rows) {
 		data.removeRows(rows);
 		data.removeEditorForRow(rows);
@@ -297,13 +339,18 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * @param row row number
+	 * @param col column number
+	 */
 	protected void fixRowBug (int row, int col) {
 		model.fireTableDataChanged();
 	}
 	
 	
-	
-	
+	/**
+	 * Sets all cell editors
+	 */
 	protected void setAllCellEditor () {
 		for (int i = 0; i < 5 ; i++) {
 			TableColumn column = table.getColumnModel().getColumn(i);
@@ -312,6 +359,12 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * Updates the raw names list
+	 * @param path	VCF file path
+	 * @param row	row to apply changes
+	 * @param name	name of the selected genome (if exists)
+	 */
 	protected void updateRawNames (String path, int row, String name) {
 		File vcf = new File(path);
 		if (vcf.isFile()) {
@@ -335,6 +388,10 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * Initializes the data
+	 * @param data the new data array
+	 */
 	public void setData (List<List<Object>> data) {
 		this.data.setData(data);
 		if (data.size() == 0) {
@@ -356,6 +413,9 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * @return the data
+	 */
 	protected VCFData getVCFData () {
 		return data;
 	}
@@ -369,11 +429,18 @@ public class VCFLoader extends JDialog {
 	}
 
 
+	/**
+	 * @param col 	the column number
+	 * @return		the name of the column
+	 */
 	protected String getColumnName(int col) {
 		return model.getColumnName(col);
 	}
 	
 	
+	/**
+	 * @return the raw genome name/group association map
+	 */
 	public Map<String, List<String>> getGenomeGroupAssociation () {
 		if (validVCF) {
 			Map<String, List<String>> map = new HashMap<String, List<String>>();
@@ -395,6 +462,9 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * @return the genome group name/VCF file association map
+	 */
 	public Map<String, List<File>> getGenomeFilesAssociation () {
 		if (validVCF) {
 			Map<String, List<File>> map = new HashMap<String, List<File>>();
@@ -416,6 +486,9 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * @return the raw/usual genome name association map
+	 */
 	public Map<String, String> getGenomeNamesAssociation () {
 		if (validVCF) {
 			Map<String, String> map = new HashMap<String, String>();
@@ -430,6 +503,9 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * @return the VCF type/files association map
+	 */
 	public Map<VCFType, List<File>> getFilesTypeAssociation () {
 		if (validVCF) {
 			Map<VCFType, List<File>> map = new HashMap<VCFType, List<File>>();
@@ -451,6 +527,9 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	/**
+	 * @return true if the multi genome settings are valid
+	 */
 	public boolean isValidMultigenomeProject () {
 		validVCF = checkVCFValidity();
 		return validVCF;
@@ -517,11 +596,6 @@ public class VCFLoader extends JDialog {
 		return instance;
 	}
 
-	
-	/*protected void showElements () {
-		data.showData();
-		data.showElements();
-	}*/
 	
 	/**
 	 * @return the dialogWidth

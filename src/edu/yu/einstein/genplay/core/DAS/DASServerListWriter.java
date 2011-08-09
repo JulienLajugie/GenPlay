@@ -36,6 +36,7 @@ public class DASServerListWriter {
 	/**
 	 * @param tableData of type Object[][]
 	 * @param fileName of type String
+	 * @throws IOException 
 	 */
 	public void write(Object[][] tableData, String fileName) throws IOException {
 		BufferedWriter writer = null;

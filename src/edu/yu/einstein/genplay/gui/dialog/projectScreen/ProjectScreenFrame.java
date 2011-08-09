@@ -37,17 +37,18 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.loadProject.LoadProject;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.NewProject;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.loadProject.LoadProjectPanel;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.NewProjectPanel;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
  * This class manages all the screen project.
  * It defines different sizes, colors, panels...
  * @author Nicolas Fourel
+ * @version 0.1
  */
-public class ProjectScreenManager extends JFrame {
-
+public class ProjectScreenFrame extends JFrame {
+	
 	private static final long serialVersionUID = -5785973410951935317L;
 
 	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
@@ -77,53 +78,59 @@ public class ProjectScreenManager extends JFrame {
 	private static final int VCF_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*VCF_RATIO);
 	private static final int LINE_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*LINE_RATIO);
 	private static final int PROJECT_CHOOSER_HEIGHT 	= (int)Math.round(CONTENT_HEIGHT*PROJECT_CHOOSER_RATIO);
-	private static final int CONFIRM_HEIGHT 			= (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
+	private static final int CONFIRM_HEIGHT = (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
 
-	//Dimensions
-	protected static final Dimension BANNER_DIM 		= new Dimension (SCREEN_WIDTH, BANNER_HEIGHT);
-	protected static final Dimension TYPE_DIM 			= new Dimension (SCREEN_WIDTH, TYPE_HEIGHT);
-	protected static final Dimension NEW_DIM 			= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
-	protected static final Dimension NAME_DIM 			= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
-	protected static final Dimension ASSEMBLY_DIM 		= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
-	protected static final Dimension GENOME_DIM 		= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
-	protected static final Dimension VCF_DIM 			= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
-	protected static final Dimension LOAD_DIM 			= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
-	protected static final Dimension LINE_DIM 			= new Dimension (SCREEN_WIDTH, LINE_HEIGHT);
-	protected static final Dimension PROJECT_CHOOSER_DIM= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
-	protected static final Dimension CONFIRM_DIM 		= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
+	// Banner panel dimensions
+	protected static final Dimension BANNER_DIM 	= new Dimension (SCREEN_WIDTH, BANNER_HEIGHT);
+	
+	// Type panel dimensions
+	protected static final Dimension TYPE_DIM 		= new Dimension (SCREEN_WIDTH, TYPE_HEIGHT);
+
+	// New project panel dimensions
+	protected static final Dimension NEW_DIM 		= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
+	protected static final Dimension NAME_DIM 		= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
+	protected static final Dimension ASSEMBLY_DIM 	= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
+	protected static final Dimension GENOME_DIM 	= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
+	protected static final Dimension VCF_DIM 		= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
+
+	// Load project panel dimensions
+	protected static final Dimension LOAD_DIM 				= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
+	protected static final Dimension LINE_DIM 				= new Dimension (SCREEN_WIDTH, LINE_HEIGHT);
+	protected static final Dimension PROJECT_CHOOSER_DIM 	= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
+	protected static final Dimension CONFIRM_DIM 			= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
 
 	//Tool tip text
-	protected static final String ADD_VCF_FILE 			= "Add vcf file";
-	protected static final String DEL_VCF_FILES 		= "Delete selection";
-	protected static final String CONFIRM_FILES			= "Confirm selection";
-	protected static final String CANCEL_FILES			= "Cancel modification";
-	protected static final String SELECT_FILES 			= "Enable selection";
-	protected static final String UNSELECT_FILES 		= "Disable selection";
-	protected static final String MOVE_UP_FILES 		= "Move up selection";
-	protected static final String MOVE_DOWN_FILES 		= "Move down selection";
-	protected static final String SELECT_BASIC_CHR 		= "Select basics chromosome";
+	protected static final String ADD_VCF_FILE 		= "Add vcf file";
+	protected static final String DEL_VCF_FILES 	= "Delete selection";
+	protected static final String CONFIRM_FILES		= "Confirm selection";
+	protected static final String CANCEL_FILES		= "Cancel modification";
+	protected static final String SELECT_FILES 		= "Enable selection";
+	protected static final String UNSELECT_FILES 	= "Disable selection";
+	protected static final String MOVE_UP_FILES 	= "Move up selection";
+	protected static final String MOVE_DOWN_FILES 	= "Move down selection";
+	protected static final String SELECT_BASIC_CHR 	= "Select basics chromosome";
 
-	// colors
-	protected static final Color COLOR 					= Color.white;
-	protected static final Color BANNER_COLOR 			= COLOR;
-	protected static final Color TYPE_COLOR 			= COLOR;
-	protected static final Color NEW_COLOR 				= COLOR;
+	//Real colors
+	protected static final Color COLOR 			= Color.white;
+	protected static final Color BANNER_COLOR 	= COLOR;
+	protected static final Color TYPE_COLOR 	= COLOR;
+	protected static final Color NEW_COLOR 		= COLOR;
 	protected static final Color NAME_COLOR 			= COLOR;
 	protected static final Color ASSEMBLY_COLOR 		= COLOR;
 	protected static final Color GENOME_COLOR 			= COLOR;
 	protected static final Color VCF_COLOR 				= COLOR;
 	protected static final Color TABLE_PANEL_COLOR 		= COLOR;
 	protected static final Color TABLE_BUTTON_COLOR 	= COLOR;
-	protected static final Color LOAD_COLOR 			= COLOR;
-	protected static final Color CONFIRM_COLOR 			= COLOR;
+	protected static final Color LOAD_COLOR 	= COLOR;
+	protected static final Color CONFIRM_COLOR 	= COLOR;
 
 	private static final 	String 					CREATE_BUTTON = "Create";	// Text of the button if you choose a new project
 	private static final 	String 					LOAD_BUTTON = "Load";		// Text of the button if you choose to load a project
-	private static 			ProjectScreenManager 	instance = null;			// The instance of the class
+	private static 			ProjectScreenFrame 	instance = null;			// The instance of the class
 	private 				BannerPanel 			bannerPanel;				// The banner
-	private 				ProjectType 			projectType;				// The type of the project (new/load)
-	private static 			NewProject 				newProject;					// Panel for a new project
-	private static 			LoadProject 			loadProject;				// Panel for loading a project
+	private 				ProjectTypePanel 			projectTypePanel;				// The type of the project (new/load)
+	private static 			NewProjectPanel 				newProjectPanel;					// Panel for a new project
+	private static 			LoadProjectPanel 			loadProjectPanel;				// Panel for loading a project
 	private 				ConfirmPanel 			confirmPanel;				// Panel to confirm the user choice
 	private 				GridBagConstraints 		gbc;						// Constraints for the GriBagLayout
 	private					CountDownLatch 			projectSignal;
@@ -134,11 +141,21 @@ public class ProjectScreenManager extends JFrame {
 	private	String		assembly;	// Name of the selected assembly
 
 
+	/**
+	 * Shows a popup
+	 * @param title title of the popup
+	 * @param info	information to display
+	 */
 	public static void showPopUp (String title, String info) {
 		JOptionPane.showMessageDialog(instance, info, title, JOptionPane.WARNING_MESSAGE);
 	}
 
-	
+
+	/**
+	 * Shows a popup with several information
+	 * @param title title of the popup
+	 * @param info	information to display
+	 */
 	public static void showPopUp (String title, List<String> info) {
 		String chaine = "";
 		for (String s: info) {
@@ -153,24 +170,17 @@ public class ProjectScreenManager extends JFrame {
 	 * Creates an instance of singleton {@link MainFrame}
 	 * @throws HeadlessException
 	 */
-	private ProjectScreenManager() throws HeadlessException {
+	private ProjectScreenFrame() throws HeadlessException {
 		super();
 	}
 
-	
-	@Override
-	public void dispose() {
-		ProjectScreenManager.instance = null;
-		super.dispose();
-	}
-	
 
 	/**
-	 * @return the instance of the singleton {@link ProjectScreenManager}.
+	 * @return the instance of the singleton {@link ProjectScreenFrame}.
 	 */
-	public static ProjectScreenManager getInstance () {
+	public static ProjectScreenFrame getInstance () {
 		if (instance == null) {
-			instance = new ProjectScreenManager();
+			instance = new ProjectScreenFrame();
 		}
 		return instance;
 	}
@@ -185,11 +195,12 @@ public class ProjectScreenManager extends JFrame {
 		iconImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH));
 		setIconImage(iconImage);
 
+
 		//Init panels
 		bannerPanel = new BannerPanel();
-		projectType = new ProjectType(this);
-		newProject = new NewProject();
-		loadProject = new LoadProject(ConfigurationManager.getInstance().getProjects());
+		projectTypePanel = new ProjectTypePanel(this);
+		newProjectPanel = new NewProjectPanel();
+		loadProjectPanel = new LoadProjectPanel(ConfigurationManager.getInstance().getProjects());
 		confirmPanel = new ConfirmPanel();
 
 		//Layout
@@ -206,14 +217,14 @@ public class ProjectScreenManager extends JFrame {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
-		add(projectType, gbc);
+		add(projectTypePanel, gbc);
 
 		//newProject
 		gbc.gridy = 2;
-		add(newProject, gbc);
+		add(newProjectPanel, gbc);
 
 		//loadProject
-		add(loadProject, gbc);
+		add(loadProjectPanel, gbc);
 
 		//confirmPanel
 		gbc.gridy = 3;
@@ -226,26 +237,25 @@ public class ProjectScreenManager extends JFrame {
 		instance.setLocationRelativeTo(null);
 		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		instance.setVisible(true);
-		System.out.println("ggod");
 	}
 
 
 	/**
-	 * This method show the {@link LoadProject} panel
+	 * This method show the {@link LoadProjectPanel} panel
 	 */
 	protected void toLoadScreenProject () {
-		newProject.setVisible(false);
-		loadProject.setVisible(true);
+		newProjectPanel.setVisible(false);
+		loadProjectPanel.setVisible(true);
 		confirmPanel.setConfirmButton(LOAD_BUTTON);
 	}
 
 
 	/**
-	 * This method show the {@link NewProject} panel
+	 * This method show the {@link NewProjectPanel} panel
 	 */
 	protected void toNewScreenProject () {
-		loadProject.setVisible(false);
-		newProject.setVisible(true);
+		loadProjectPanel.setVisible(false);
+		newProjectPanel.setVisible(true);
 		confirmPanel.setConfirmButton(CREATE_BUTTON);
 	}
 
@@ -257,20 +267,20 @@ public class ProjectScreenManager extends JFrame {
 		Boolean valid = true;
 
 		//Name
-		getInstance().name = newProject.getProjectName();
+		getInstance().name = newProjectPanel.getProjectName();
 
 		//Clade
-		getInstance().clade = newProject.getCladeName();
-		getInstance().genome = newProject.getGenomeName();
-		getInstance().assembly = newProject.getAssemblyName();
+		getInstance().clade = newProjectPanel.getCladeName();
+		getInstance().genome = newProjectPanel.getGenomeName();
+		getInstance().assembly = newProjectPanel.getAssemblyName();
 
 		if (getInstance().name == null) {
 			valid = false;
 		}
 
 		//VCF files
-		if (!newProject.isSimpleProject()) {
-			if (!newProject.isValidMultigenomeProject()) {
+		if (!newProjectPanel.isSimpleProject()) {
+			if (!newProjectPanel.isValidMultigenomeProject()) {
 				valid = false;
 			}
 		}
@@ -287,7 +297,7 @@ public class ProjectScreenManager extends JFrame {
 	 * @return true if user chose a simple genome project.
 	 */
 	public boolean isSimpleProject () {
-		return newProject.isSimpleProject();
+		return newProjectPanel.isSimpleProject();
 	}
 
 
@@ -295,7 +305,7 @@ public class ProjectScreenManager extends JFrame {
 	 * This method gather loading project information. 
 	 */
 	protected static void confirmLoading () {
-		if (loadProject.getProject() != null) {
+		if (loadProjectPanel.getProject() != null) {
 			getInstance().projectSignal.countDown();
 		}
 	}
@@ -313,7 +323,7 @@ public class ProjectScreenManager extends JFrame {
 	 * @return selected project
 	 */
 	public File getProject () {
-		return loadProject.getProject();
+		return loadProjectPanel.getProject();
 	}
 
 
@@ -322,7 +332,7 @@ public class ProjectScreenManager extends JFrame {
 	 * 			no if the user creates a new project
 	 */
 	public boolean isLoadingEvent () {
-		return loadProject.isVisible();
+		return loadProjectPanel.isVisible();
 	}
 
 
@@ -330,7 +340,7 @@ public class ProjectScreenManager extends JFrame {
 	 * @return the selected chromosome list
 	 */
 	public Map<String, Chromosome> getNewChromosomeList() {
-		return newProject.getNewChromosomeList();
+		return newProjectPanel.getNewChromosomeList();
 	}
 
 
@@ -366,20 +376,35 @@ public class ProjectScreenManager extends JFrame {
 	}
 
 
+	/**
+	 * @return the raw genome name/group association map
+	 */
 	public Map<String, List<String>> getGenomeGroupAssociation () {
-		return newProject.getGenomeGroupAssociation();
+		return newProjectPanel.getGenomeGroupAssociation();
 	}
 
+
+	/**
+	 * @return the genome group name/VCF file association map
+	 */
 	public Map<String, List<File>> getGenomeFilesAssociation () {
-		return newProject.getGenomeFilesAssociation();
+		return newProjectPanel.getGenomeFilesAssociation();
 	}
 
+
+	/**
+	 * @return the raw/usual genome name association map
+	 */
 	public Map<String, String> getGenomeNamesAssociation () {
-		return newProject.getGenomeNamesAssociation();
+		return newProjectPanel.getGenomeNamesAssociation();
 	}
 
+
+	/**
+	 * @return the VCF type/files association map
+	 */
 	public Map<VCFType, List<File>> getFilesTypeAssociation () {
-		return newProject.getFilesTypeAssociation();
+		return newProjectPanel.getFilesTypeAssociation();
 	}
 
 
@@ -661,4 +686,5 @@ public class ProjectScreenManager extends JFrame {
 	public static String getLoadButton() {
 		return LOAD_BUTTON;
 	}
+
 }
