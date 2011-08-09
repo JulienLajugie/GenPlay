@@ -45,13 +45,9 @@ public class DisplayableVariant {
 	 * @param stop		stop position of the displayable variant
 	 */
 	public DisplayableVariant (Variant variant, int start, int stop) {
-		this.variant = variant;
-		this.position = new ChromosomeWindow(start, stop);
-		if (this.variant != null) {
-			if (this.variant.getExtraOffset() > 0) {
-				deadZone = new ChromosomeWindow(variant.getNextMetaGenomePosition() - variant.getExtraOffset(), variant.getNextMetaGenomePosition());
-			}
-		}
+		setVariant(variant);
+		setPosition(start, stop);
+		setDeadZone();
 	}
 	
 	
@@ -60,13 +56,9 @@ public class DisplayableVariant {
 	 * @param variant 	native variant
 	 */
 	public DisplayableVariant (Variant variant) {
-		this.variant = variant;
-		this.position = new ChromosomeWindow(variant.getMetaGenomePosition(), variant.getNextMetaGenomePosition());
-		if (this.variant != null) {
-			if (this.variant.getExtraOffset() > 0) {
-				deadZone = new ChromosomeWindow(variant.getNextMetaGenomePosition() - variant.getExtraOffset(), variant.getNextMetaGenomePosition());
-			}
-		}
+		setVariant(variant);
+		setPosition(variant.getMetaGenomePosition(), variant.getNextMetaGenomePosition());
+		setDeadZone();
 	}
 	
 	
@@ -76,7 +68,43 @@ public class DisplayableVariant {
 	 * @param stop		stop position of the displayable variant
 	 */
 	public DisplayableVariant (int start, int stop) {
-		this.position = new ChromosomeWindow(start, stop);
+		setPosition(start, stop);
+	}
+	
+	
+	
+
+
+	/**
+	 * @param variant the variant to set
+	 */
+	private void setVariant(Variant variant) {
+		this.variant = variant;
+	}
+
+
+	/**
+	 * @param position the position to set
+	 */
+	private void setPosition(int start, int stop) {
+		this.position = getFittedChromosomeWindow(start, stop);
+	}
+
+
+	/**
+	 * @param deadZone the deadZone to set
+	 */
+	private void setDeadZone() {
+		if (this.variant != null) {
+			if (this.variant.getExtraOffset() > 0) {
+				deadZone = getFittedChromosomeWindow(variant.getNextMetaGenomePosition() - variant.getExtraOffset(), variant.getNextMetaGenomePosition());
+			}
+		}
+	}
+	
+	
+	private ChromosomeWindow getFittedChromosomeWindow (int start, int stop) {
+		return new ChromosomeWindow(start, stop);
 	}
 
 

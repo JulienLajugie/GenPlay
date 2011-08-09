@@ -147,7 +147,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 				boolean isValid = true;
 				int index = 0;
-				int stopIndex = fittedVariantList.size() - 1;
+				int stopIndex = fittedVariantList.size();
 
 				while (isValid) {
 
@@ -158,7 +158,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 					int start = current.getMetaGenomePosition();
 
 					// Gets the stop
-					int stop = current.getNextMetaGenomePosition();
+					int stop = current.getNextMetaGenomePosition() - 1;
 					int nextIndex = index + 1;
 
 					// Checks if it is necessary to merge variants
@@ -241,11 +241,17 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 				// Solve bug for displaying stripes at the edge of the screen
 				boolean edgeBug = false;
 				if (currentStart < screenStart && currentStop > screenStart) {
+					edgeBug = true;
 					currentStart = screenStart;
-					edgeBug = true;
+					if (currentStop > screenStop) {
+						currentStop = screenStop;
+					}
 				} else if (currentStart < screenStop && currentStop > screenStop) {
-					currentStop = screenStop;
 					edgeBug = true;
+					currentStop = screenStop;
+					if (currentStart < screenStart) {
+						currentStart = screenStart;
+					}
 				}
 
 				// If bug appeared

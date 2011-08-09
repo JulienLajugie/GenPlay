@@ -151,9 +151,11 @@ public class RowPanel extends JPanel {
 		Map<VariantType, Color> stripe = new HashMap<VariantType, Color>();
 		if (insertionBox.isSelected()) {
 			stripe.put(VariantType.INSERTION, insertionBox.getColor());
+			stripe.put(VariantType.INS, insertionBox.getColor());
 		}
 		if (deletionBox.isSelected()) {
 			stripe.put(VariantType.DELETION, deletionBox.getColor());
+			stripe.put(VariantType.DEL, deletionBox.getColor());
 		}
 		if (snpsBox.isSelected()) {
 			stripe.put(VariantType.SNPS, snpsBox.getColor());
