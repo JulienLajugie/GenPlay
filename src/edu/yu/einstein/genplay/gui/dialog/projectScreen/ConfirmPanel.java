@@ -84,5 +84,4 @@ public class ConfirmPanel extends JPanel implements ActionListener {
 			ProjectScreenFrame.confirmLoading();
 		}
 	}
-	
 }

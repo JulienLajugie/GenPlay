@@ -48,11 +48,11 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @version 0.1
  */
 public class ProjectScreenFrame extends JFrame {
-	
+
 	private static final long serialVersionUID = -5785973410951935317L;
 
 	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
-	private 	 			Image 	iconImage; 													// icon of the application
+	private static			Image 	iconImage; 													// icon of the application
 
 	//Ratio
 	private static final Double BANNER_RATIO 			= 0.15;
@@ -82,7 +82,7 @@ public class ProjectScreenFrame extends JFrame {
 
 	// Banner panel dimensions
 	protected static final Dimension BANNER_DIM 	= new Dimension (SCREEN_WIDTH, BANNER_HEIGHT);
-	
+
 	// Type panel dimensions
 	protected static final Dimension TYPE_DIM 		= new Dimension (SCREEN_WIDTH, TYPE_HEIGHT);
 
@@ -126,14 +126,15 @@ public class ProjectScreenFrame extends JFrame {
 
 	private static final 	String 					CREATE_BUTTON = "Create";	// Text of the button if you choose a new project
 	private static final 	String 					LOAD_BUTTON = "Load";		// Text of the button if you choose to load a project
-	private static 			ProjectScreenFrame 	instance = null;			// The instance of the class
-	private 				BannerPanel 			bannerPanel;				// The banner
-	private 				ProjectTypePanel 			projectTypePanel;				// The type of the project (new/load)
-	private static 			NewProjectPanel 				newProjectPanel;					// Panel for a new project
-	private static 			LoadProjectPanel 			loadProjectPanel;				// Panel for loading a project
-	private 				ConfirmPanel 			confirmPanel;				// Panel to confirm the user choice
-	private 				GridBagConstraints 		gbc;						// Constraints for the GriBagLayout
-	private					CountDownLatch 			projectSignal;
+	private static 			ProjectScreenFrame 		instance = null;			// The instance of the class
+	private static 			NewProjectPanel 		newProjectPanel;			// Panel for a new project
+	private static 			LoadProjectPanel 		loadProjectPanel;			// Panel for loading a project
+	private static			boolean					isFrameInitialized = false;	// true if the frame has been initialized
+	private static			BannerPanel 			bannerPanel;				// The banner
+	private static			ProjectTypePanel 		projectTypePanel;			// The type of the project (new/load)
+	private static			ConfirmPanel 			confirmPanel;				// Panel to confirm the user choice
+	private static			GridBagConstraints 		gbc;						// Constraints for the GriBagLayout
+	private	static			CountDownLatch 			projectSignal;
 
 	private	String		name;		// Name of the project
 	private	String		clade;		// Name of the selected clade
@@ -191,52 +192,56 @@ public class ProjectScreenFrame extends JFrame {
 	 * It initializes frame and panels.
 	 */
 	public void initScreen () {
+		if (isFrameInitialized) {
+			instance.setVisible(true);
+		} else {
+			// set the icon of the frame
+			iconImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH));
+			setIconImage(iconImage);
 
-		iconImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH));
-		setIconImage(iconImage);
+			//Init panels
+			bannerPanel = new BannerPanel();
+			projectTypePanel = new ProjectTypePanel(this);
+			newProjectPanel = new NewProjectPanel();
+			loadProjectPanel = new LoadProjectPanel(ConfigurationManager.getInstance().getProjects());
+			confirmPanel = new ConfirmPanel();
 
+			//Layout
+			setLayout(new GridBagLayout());
+			gbc = new GridBagConstraints();
 
-		//Init panels
-		bannerPanel = new BannerPanel();
-		projectTypePanel = new ProjectTypePanel(this);
-		newProjectPanel = new NewProjectPanel();
-		loadProjectPanel = new LoadProjectPanel(ConfigurationManager.getInstance().getProjects());
-		confirmPanel = new ConfirmPanel();
+			//bannerPanel
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.PAGE_START;
+			add(bannerPanel, gbc);
 
-		//Layout
-		setLayout(new GridBagLayout());
-		gbc = new GridBagConstraints();
+			//projectType
+			gbc.gridx = 0;
+			gbc.gridy = 1;
+			gbc.anchor = GridBagConstraints.PAGE_START;
+			add(projectTypePanel, gbc);
 
-		//bannerPanel
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.PAGE_START;
-		add(bannerPanel, gbc);
+			//newProject
+			gbc.gridy = 2;
+			add(newProjectPanel, gbc);
 
-		//projectType
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.anchor = GridBagConstraints.PAGE_START;
-		add(projectTypePanel, gbc);
+			//loadProject
+			add(loadProjectPanel, gbc);
 
-		//newProject
-		gbc.gridy = 2;
-		add(newProjectPanel, gbc);
+			//confirmPanel
+			gbc.gridy = 3;
+			add(confirmPanel, gbc);
 
-		//loadProject
-		add(loadProjectPanel, gbc);
-
-		//confirmPanel
-		gbc.gridy = 3;
-		add(confirmPanel, gbc);
-
-		//Init frame
-		instance.setTitle("GenPlay");
-		instance.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		instance.setResizable(false);
-		instance.setLocationRelativeTo(null);
-		instance.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		instance.setVisible(true);
+			//Init frame
+			instance.setTitle("GenPlay");
+			instance.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+			instance.setResizable(false);
+			instance.setLocationRelativeTo(null);
+			instance.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			isFrameInitialized = true;
+			instance.setVisible(true);
+		}
 	}
 
 
@@ -287,7 +292,7 @@ public class ProjectScreenFrame extends JFrame {
 
 		//Decrement countDown object
 		if (valid) {
-			getInstance().projectSignal.countDown();
+			projectSignal.countDown();
 		}
 	}
 
@@ -306,7 +311,7 @@ public class ProjectScreenFrame extends JFrame {
 	 */
 	protected static void confirmLoading () {
 		if (loadProjectPanel.getProject() != null) {
-			getInstance().projectSignal.countDown();
+			projectSignal.countDown();
 		}
 	}
 
@@ -315,7 +320,7 @@ public class ProjectScreenFrame extends JFrame {
 	 * @param projectSignal the projectSignal to set
 	 */
 	public void setProjectSignal(CountDownLatch projectSignal) {
-		this.projectSignal = projectSignal;
+		ProjectScreenFrame.projectSignal = projectSignal;
 	}
 
 
@@ -686,5 +691,4 @@ public class ProjectScreenFrame extends JFrame {
 	public static String getLoadButton() {
 		return LOAD_BUTTON;
 	}
-
 }

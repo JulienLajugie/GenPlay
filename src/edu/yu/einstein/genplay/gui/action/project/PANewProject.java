@@ -21,10 +21,12 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
+
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 import edu.yu.einstein.genplay.gui.launcher.Launcher;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
@@ -41,7 +43,13 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	private static final int 		MNEMONIC = KeyEvent.VK_N; 			// mnemonic key
 	private static final String 	ACTION_NAME = "New Project";		// action name
 
-
+	
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK); 
+	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -57,19 +65,17 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 	
 
 	@Override
 	protected Boolean processAction() throws Exception {
 		int result = JOptionPane.showConfirmDialog(getRootPane(), "This operation will erase all unsaved data. Do you want to continue?", "New Project", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-		
 		if (result == JOptionPane.YES_OPTION) {
-			System.out.println("YES_OPTION");
 			return true;
 		} else {
-			System.out.println("NO_OPTION");
-			return null;
+			return false;
 		}
 	}
 
@@ -77,10 +83,9 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			ProjectScreenFrame.getInstance().dispose();
-			MainFrame.getInstance().dispose();			
+			MainFrame.getInstance().setVisible(false);
+
 			Launcher.main(new String[0]);
 		}
-	}
-	
+	}	
 }

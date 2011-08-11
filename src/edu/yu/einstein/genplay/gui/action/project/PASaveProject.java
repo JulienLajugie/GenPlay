@@ -24,6 +24,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
+import javax.swing.KeyStroke;
+
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
@@ -52,7 +54,13 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	private final 		TrackList	trackList;						// track list containing the project to save
 	private File 					selectedFile;					// selected file
 
-
+	
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK); 
+	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -61,6 +69,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	/**
 	 * Creates an instance of {@link PASaveProject}
+	 * @param trackList singleton TrackList of the project
 	 */
 	public PASaveProject(TrackList trackList) {
 		super();
@@ -69,6 +78,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+        putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 

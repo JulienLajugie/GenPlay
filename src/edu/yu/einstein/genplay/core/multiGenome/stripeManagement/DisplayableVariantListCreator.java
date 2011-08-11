@@ -263,8 +263,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 
 	/**
-	 * @param variants list of variants
-	 * @param indexes list of indexes of the list of variants
 	 * @return the start index
 	 */
 	private int findStart () {
@@ -278,8 +276,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 
 	/**
-	 * @param variants list of variants
-	 * @param indexes list of indexes of the list of variants
 	 * @return the stop index
 	 */
 	private int findStop () {
@@ -337,7 +333,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 	/**
 	 * Sets the raw genome names and checks if they are different.
-	 * @param rawGenomeNames the raw genome names to set
+	 * @param genomes the raw genome names to set
 	 */
 	public void setRawGenomeNames(Map<String, List<VariantType>> genomes) {
 		if (setsAreDifferents(this.genomes.keySet(), genomes.keySet())) {

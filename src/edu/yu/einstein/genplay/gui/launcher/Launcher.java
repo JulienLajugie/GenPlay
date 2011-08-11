@@ -23,15 +23,12 @@ package edu.yu.einstein.genplay.gui.launcher;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
 
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
@@ -44,8 +41,9 @@ import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ScreenThread;
+import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenThread;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrameThread;
 
 
 /**
@@ -56,22 +54,22 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 public class Launcher {
 
 	private static final String DEMO_PROJECT_PATH = null;
-
 	private static ProjectScreenFrame 	screenProject;
-	private static Map<String, Clade> 		cladeList;
-
-
+	private static Map<String, Clade> 	cladeList;
+	private static Thread mainFrameThread;
+	static Thread thread;
+	
+	
 	/**
 	 * Starts the application
 	 * @param args
 	 */
 	public static void main(final String[] args) {
-
+		// if the DEMO_PROJECT_PATH static parameter has been set it means that we're starting a Demo project
 		final boolean isDemo = (DEMO_PROJECT_PATH != null);
-
 		boolean isProjectLoaded = false;
 		File f = new File("");
-
+		// if we are loading a demo we are loading the file specified in the DEMO_PROJECT_PATH parameter
 		if (isDemo) {
 			InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
 			try {
@@ -80,7 +78,7 @@ public class Launcher {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else if (args.length == 1) {
+		} else if (args.length == 1) { // if it's not a demo but a file path has been specified to the main method
 			try {
 				f = new File(args[0]);
 				ProjectRecordingManager.getInstance().initManagers(new File(args[0]));
@@ -88,19 +86,20 @@ public class Launcher {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else {
-			projectScreen();
-			
+		} else { // normal execution of the software
+			// load the project screen prompted the user enter information about the new project 
+			projectScreen();			
+			// generate the multi-genome manager if the user starts a multi-genome project
 			if (!screenProject.isSimpleProject()) {
 				//generateRealMultiGenomeManager();
 				//generateTestMultiGenomeManager();
 				//generateHg18ToHg19MultiGenomeManager();
 				generateMultiGenomeManager();
 			}
-
+			// starts the main frame of the application
 			mainScreen();
 		}
-
+		// in the case of a demo or if a file path has been specified to the main method
 		if (isProjectLoaded) {
 			mainScreen();
 			PALoadProject load = new PALoadProject();
@@ -108,9 +107,159 @@ public class Launcher {
 			load.actionPerformed(null);
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	public static void reinit() {
+		projectScreen();			
+		// generate the multi-genome manager if the user starts a multi-genome project
+		if (!screenProject.isSimpleProject()) {
+			//generateRealMultiGenomeManager();
+			//generateTestMultiGenomeManager();
+			//generateHg18ToHg19MultiGenomeManager();
+			generateMultiGenomeManager();
+		}
+		// starts the main frame of the application
+		mainScreen();
+	}
+	
+
+	/**
+	 * Generates the multigenome manager
+	 */
+	private static void generateMultiGenomeManager() {
+		MultiGenomeManager multiGenomeManager = null;
+		multiGenomeManager = MultiGenomeManager.getInstance();
+		multiGenomeManager.setGenomes(screenProject.getGenomeGroupAssociation(),
+				screenProject.getGenomeFilesAssociation(),
+				screenProject.getGenomeNamesAssociation(),
+				screenProject.getFilesTypeAssociation());		
+		//multiGenomeManager.showAllAssociation();
+	}
 
 
-	@SuppressWarnings("unused")	//Development
+	/**
+	 * Displays the project screen manager which is the first screen of GenPlay.
+	 */
+	private static void projectScreen() {
+		if (mainFrameThread != null) {
+			//System.out.println(mainFrameThread.getState());
+			MainFrameThread.yield();
+			System.out.println(Thread.currentThread().getName());
+		}
+		//Get assemblies from xml files
+		cladeList = new HashMap<String, Clade>();
+		try {
+			RetrieveAssemblies genomeHandler = new RetrieveAssemblies();
+			cladeList = genomeHandler.getCladeList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		//Welcome screen initialization
+		CountDownLatch projectSignal = new CountDownLatch(1);
+		screenProject = ProjectScreenFrame.getInstance();
+		screenProject.setProjectSignal(projectSignal);
+		ConfigurationManager.getInstance();
+		ProjectManager projectManager = ProjectManager.getInstance();
+		ZoomManager.getInstance();
+		// load the managers from the configuration files
+		loadManagers();
+
+		//Create a new thread to display the welcome screen
+		if (thread == null) {
+				thread = new ProjectScreenThread();
+				thread.setName("project screen");
+				thread.start();
+		} else {
+			//System.out.println(thread.getState());
+			//ProjectScreenFrame.getInstance().initScreen();
+			//screenProject.setVisible(true);
+			thread = new ProjectScreenThread();
+			thread.start();
+		}
+
+		System.out.println("test1");
+		System.out.println("thread alive" + thread.isAlive());
+		//Wait for the thread stop
+		try {
+			projectSignal.await();
+			System.out.println("test2");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		if (screenProject.isLoadingEvent()) {
+			try {
+				ProjectRecordingManager.getInstance().setFileToLoad(screenProject.getProject());
+				ProjectRecordingManager.getInstance().setLoadingEvent(true);
+				ProjectRecordingManager.getInstance().initManagers();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			Clade clade = cladeList.get(screenProject.getClade());
+			Genome genome = clade.getGenomeList().get(screenProject.getGenome());
+			Assembly assembly = genome.getAssemblyList().get(screenProject.getAssembly());
+			assembly.setChromosomeList(screenProject.getNewChromosomeList());
+
+			projectManager.setProjectName(screenProject.getName());
+			projectManager.setCladeName(clade.getName());
+			projectManager.setGenomeName(genome.getName());
+			//projectManager.setVarFiles(screenProject.getVarFiles());
+			projectManager.setAssembly(assembly);
+		}
+		screenProject.setVisible(false);
+		//System.out.println(thread.getState());
+		//screenProject.setVisible(true);
+	}
+
+
+	/**
+	 * Displays the main screen of GenPlay.
+	 */
+	private static void mainScreen() {
+		mainFrameThread = new MainFrameThread();
+		SwingUtilities.invokeLater(mainFrameThread);
+	}
+
+
+	/**
+	 * Loads the managers with the configuration files
+	 */
+	private static void loadManagers() {
+		// load configuration manager
+		try {
+			ConfigurationManager.getInstance().loadConfigurationFile();
+		} catch (Exception e) {
+			// do nothing if the configuration file is not found
+		}
+		// load the zoom manager
+		try {
+			if (ConfigurationManager.getInstance().getZoomFile() != "") {
+				ZoomManager.getInstance().loadConfigurationFile(new File(ConfigurationManager.getInstance().getZoomFile()));
+			}
+		} catch (IOException e) {
+			ExceptionManager.handleException(screenProject.getRootPane(), e, "Zoom file not found.");
+		} catch (Exception e) {
+			ExceptionManager.handleException(screenProject.getRootPane(), e, "Zoom file corrupted");
+		}
+	}
+
+
+	/**
+	 * @return the cladeList
+	 */
+	public static Map<String, Clade> getCladeList() {
+		return cladeList;
+	}
+
+	
+/*	@SuppressWarnings("unused")	//Development
 	private static void generateRealMultiGenomeManager() {
 		// Declaration
 		Map<String, List<String>> genomeGroupAssociation = new HashMap<String, List<String>>();
@@ -254,133 +403,5 @@ public class Launcher {
 				genomeFilesAssociation,
 				genomeNamesAssociation,
 				filesTypeAssociation);
-	}
-
-
-	private static void generateMultiGenomeManager() {
-		MultiGenomeManager multiGenomeManager = null;
-		multiGenomeManager = MultiGenomeManager.getInstance();
-		multiGenomeManager.setGenomes(screenProject.getGenomeGroupAssociation(),
-				screenProject.getGenomeFilesAssociation(),
-				screenProject.getGenomeNamesAssociation(),
-				screenProject.getFilesTypeAssociation());
-		
-		//multiGenomeManager.showAllAssociation();
-	}
-
-
-	//@SuppressWarnings("unused")	// Development
-	/*private static void memoryTest () {
-		MemoryTestBench bench = new MemoryTestBench();
-		ObjectFactory multiGenome = new MultiGenomeObjectFactory();
-		bench.showMemoryUsage(multiGenome);
-		//((MultiGenomeObjectFactory)multiGenome).compute();
-		//bench.showMemoryUsage(multiGenome);
 	}*/
-
-
-	/**
-	 * Displays the project screen manager which is the first screen of GenPlay.
-	 */
-	private static void projectScreen() {
-		//Get assemblies from xml files
-		cladeList = new HashMap<String, Clade>();
-		try {
-			RetrieveAssemblies genomeHandler = new RetrieveAssemblies();
-			cladeList = genomeHandler.getCladeList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		//Welcome screen initialization
-		CountDownLatch projectSignal = new CountDownLatch(1);
-		screenProject = ProjectScreenFrame.getInstance();
-		screenProject.setProjectSignal(projectSignal);
-		ConfigurationManager.getInstance();
-		ProjectManager projectManager = ProjectManager.getInstance();
-		ZoomManager.getInstance();
-		// load the managers from the configuration files
-		loadManagers();
-
-		//Create a new thread to display the welcome screen
-		Thread thread = new ScreenThread();
-		thread.start();
-
-		//Wait for the thread stop
-		try {
-			projectSignal.await();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		if (screenProject.isLoadingEvent()) {
-			try {
-				ProjectRecordingManager.getInstance().setFileToLoad(screenProject.getProject());
-				ProjectRecordingManager.getInstance().setLoadingEvent(true);
-				ProjectRecordingManager.getInstance().initManagers();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			Clade clade = cladeList.get(screenProject.getClade());
-			Genome genome = clade.getGenomeList().get(screenProject.getGenome());
-			Assembly assembly = genome.getAssemblyList().get(screenProject.getAssembly());
-			assembly.setChromosomeList(screenProject.getNewChromosomeList());
-
-			projectManager.setProjectName(screenProject.getName());
-			projectManager.setCladeName(clade.getName());
-			projectManager.setGenomeName(genome.getName());
-			//projectManager.setVarFiles(screenProject.getVarFiles());
-			projectManager.setAssembly(assembly);
-		}
-
-		screenProject.dispose();
-	}
-
-
-	/**
-	 * Displays the main screen of GenPlay.
-	 */
-	private static void mainScreen() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				// create and show a singleton instance of MainFrame
-				final MainFrame mainFrame = MainFrame.getInstance();
-				mainFrame.setVisible(true);
-			}
-		});
-	}
-
-
-	/**
-	 * Loads the managers with the configuration files
-	 */
-	private static void loadManagers() {
-		// load configuration manager
-		try {
-			ConfigurationManager.getInstance().loadConfigurationFile();
-		} catch (Exception e) {
-			// do nothing if the configuration file is not found
-		}
-		// load the zoom manager
-		try {
-			if (ConfigurationManager.getInstance().getZoomFile() != "") {
-				ZoomManager.getInstance().loadConfigurationFile(new File(ConfigurationManager.getInstance().getZoomFile()));
-			}
-		} catch (IOException e) {
-			ExceptionManager.handleException(screenProject.getRootPane(), e, "Zoom file not found.");
-		} catch (Exception e) {
-			ExceptionManager.handleException(screenProject.getRootPane(), e, "Zoom file corrupted");
-		}
-	}
-
-
-	/**
-	 * @return the cladeList
-	 */
-	public static Map<String, Clade> getCladeList() {
-		return cladeList;
-	}
-
 }

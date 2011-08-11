@@ -25,7 +25,15 @@ package edu.yu.einstein.genplay.gui.dialog.projectScreen;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ScreenThread extends Thread {
+public class ProjectScreenThread extends Thread {
+		
+	/**
+	 * Creates an instance of {@link ProjectScreenThread} and set the name of the thread 
+	 */
+	public ProjectScreenThread() {
+		super("ProjectFrame Thread");
+	}
+	
 	
 	/**
 	 * This method computes the init method of the project screen object
@@ -33,5 +41,4 @@ public class ScreenThread extends Thread {
 	public void run() {
 		ProjectScreenFrame.getInstance().initScreen();
     }
-
 }

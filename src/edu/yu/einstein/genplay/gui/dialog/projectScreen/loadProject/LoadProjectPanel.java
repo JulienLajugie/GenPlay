@@ -106,6 +106,5 @@ public class LoadProjectPanel extends JPanel {
 	 */
 	protected void showProjectInformation (String path) {
 		projectInformationPanel.showProjectInformation(path);
-	}
-	
+	}	
 }

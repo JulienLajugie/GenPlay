@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.action.project;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import javax.swing.ActionMap;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -52,7 +53,13 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	private static final String 	ACTION_NAME = "Load Project";	// action name
 	private File 					selectedFile = null;			// selected file
 
-
+	
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK); 
+	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -68,6 +75,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+        putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 	
