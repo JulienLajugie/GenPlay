@@ -93,7 +93,7 @@ public class MGPositionInformation {
 		try {
 			return Double.valueOf(getString(VCFLine.get("QUAL")));
 		} catch (Exception e) {
-			System.out.println("catch");
+			//System.out.println("catch");
 			return 100.0;
 		}
 	}
@@ -183,7 +183,6 @@ public class MGPositionInformation {
 	private String getString (Object o) {
 		return o.toString().trim();
 	}
-	
 	
 	
 	//@SuppressWarnings("unused")

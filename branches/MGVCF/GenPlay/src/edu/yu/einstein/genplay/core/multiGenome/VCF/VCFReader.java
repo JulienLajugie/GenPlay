@@ -510,4 +510,12 @@ public class VCFReader {
 		return formatHeader;
 	}
 
+
+	/**
+	 * @return the vcf
+	 */
+	public File getVcf() {
+		return vcf;
+	}
+
 }

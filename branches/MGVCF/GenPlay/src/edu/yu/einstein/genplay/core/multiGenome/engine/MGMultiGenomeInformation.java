@@ -237,7 +237,7 @@ public class MGMultiGenomeInformation {
 	 * @param raw 	the raw genome name
 	 * @return		the group name
 	 */
-	private String getGroupNameFromRawName (String raw) {
+	public String getGroupNameFromRawName (String raw) {
 		for (String group: genomeGroupAssociation.keySet()) {
 			if (genomeGroupAssociation.get(group).contains(raw)) {
 				return group;

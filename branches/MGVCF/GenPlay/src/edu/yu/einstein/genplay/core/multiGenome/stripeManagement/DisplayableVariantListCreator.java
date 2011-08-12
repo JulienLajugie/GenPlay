@@ -20,6 +20,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
+import java.awt.RadialGradientPaint;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,12 +30,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.DisplayableDataList;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNPtmp;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeInformation;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 /**
  * This class adapts VCF variant information to displayable variant.
@@ -42,6 +52,8 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class DisplayableVariantListCreator implements DisplayableDataList<List<DisplayableVariant>> {
 
+
+
 	// Graphic variables
 	private GenomeWindow					currentGenomeWindow;			// Chromosome with the adapted data
 	private Double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
@@ -49,9 +61,12 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	// Filter variables
 	private Map<String, List<VariantType>>	genomes;						// Raw genome names list
 	private Double							quality;						// Variant quality threshold (only equal and greater variants will be selected)
+	private double 							ratioThreshold;					// Ratio threshold to do not show up SNPs when zoom is not important enough
 
 	private List<DisplayableVariant> 		fittedDisplayableVariantList;	// Complete list of the displayable variant
 	private boolean							hasBeenChanged;					// Is true is any information has been modified
+	private boolean							qualityHasBeenChanged;			// Is true is any information has been modified
+	private boolean							genomeHasBeenChanged;			// Is true is any information has been modified
 
 
 	/**
@@ -61,7 +76,10 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		currentGenomeWindow = null;
 		currentXRatio = null;
 		genomes = new HashMap<String, List<VariantType>>();
+		ratioThreshold = 0.05;
 		hasBeenChanged = false;
+		qualityHasBeenChanged = false;
+		genomeHasBeenChanged = false;
 	}
 
 
@@ -77,10 +95,11 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			hasBeenChanged = true;
 		}
 
-		if (hasBeenChanged) {
+		if (hasBeenChanged || qualityHasBeenChanged) {
 			List<Variant> fittedVariantList = getFittedVariantList();
 			createDisplayableVariantList(fittedVariantList);
 			hasBeenChanged = false;
+			qualityHasBeenChanged = false;
 		}
 
 		return getFittedDisplayableVariantList();
@@ -92,7 +111,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 * They are selected according to:
 	 * - the requested genomes
 	 * - the requested variant type
-	 * - the quality 
+	 * - the quality
 	 * @return the list of fitted variant
 	 */
 	private List<Variant> getFittedVariantList () {
@@ -108,19 +127,66 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			Map<Integer, Variant> variants = chromosomeInformation.getPositionInformationList();
 			int[] indexes = chromosomeInformation.getPositionIndex();
 
+			//System.out.println("indexes length: " + indexes.length);
+
 			// Scan the full variant list with the right indexes
 			for (int i = 0; i < indexes.length; i++) {
 				Variant current = variants.get(indexes[i]);
 
 				// The variant is added if pertinent
-				if (passFilter(current)) {
+				if (passFilter(current) && (current.getType() != VariantType.SNPS)) {
 					fittedVariantList.add(current);
 				}
 			}
+
+			/*System.out.println("fittedVariantList size: " + fittedVariantList.size());
+
+			System.out.println("=== " + rawGenomeName);
+			System.out.println(currentXRatio);
+			if (genomes.get(rawGenomeName).contains(VariantType.SNPS) && (currentXRatio > ratioThreshold)) {
+				System.out.println("Contains SNPs");
+
+				// Gets the VCF reader
+				MGMultiGenomeInformation genomeInformation = MultiGenomeManager.getInstance().getMultiGenomeInformation();
+				String groupName = genomeInformation.getGroupNameFromRawName(rawGenomeName);
+				List<File> fileList = genomeInformation.getGenomeFilesAssociation().get(groupName);
+				VCFReader reader = null;
+				if (fileList != null) {
+					for (File file: fileList) {
+						VCFType type = genomeInformation.getTypeFromVCF(file);
+						if (type.equals(VCFType.SNPS)) {
+							reader = MultiGenomeManager.getInstance().getReader(file);
+						}
+					}
+				}
+
+				if (reader != null) {
+					System.out.println("vcf name: " + reader.getVcf().getName());
+					List<Map<String, Object>> result;
+					try {
+						int start = Math.max(0, currentGenomeWindow.getStart());
+						int stop = Math.min(currentGenomeWindow.getChromosome().getLength(), currentGenomeWindow.getStop());
+						//result = reader.query(currentGenomeWindow.getChromosome().getName(), start, stop);
+						result = reader.query(currentGenomeWindow.getChromosome().getName(), 0, currentGenomeWindow.getChromosome().getLength());
+						System.out.println("result size: " + result.size());
+						for (Map<String, Object> line: result) {
+							int genomePosition = Integer.parseInt(line.get("POS").toString());
+							int metaGenomePosition = ShiftCompute.computeShift(rawGenomeName, currentGenomeWindow.getChromosome(), genomePosition);
+							Variant variant = new VCFSNPtmp(genomePosition, metaGenomePosition);
+							//fittedVariantList.add(variant);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}*/
 		}
 
 		// Sorts the list using the start position on the meta genome coordinates
 		Collections.sort(fittedVariantList, new VariantMGPositionComparator());
+
+		//System.out.println("size: " + fittedVariantList.size());
 
 		return fittedVariantList;
 	}
@@ -141,13 +207,13 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			if (currentXRatio > 1) {
 				for (int i = 0; i < fittedVariantList.size(); i++) {
 					Variant current = fittedVariantList.get(i);
-					fittedDisplayableVariantList.add(new DisplayableVariant(fittedVariantList.get(i), current.getMetaGenomePosition(), current.getNextMetaGenomePosition()));
+					fittedDisplayableVariantList.add(new RegularDisplayableVariant(fittedVariantList.get(i), current.getMetaGenomePosition(), current.getNextMetaGenomePosition()));
 				}
 			} else {
 
 				boolean isValid = true;
 				int index = 0;
-				int stopIndex = fittedVariantList.size();
+				int stopIndex = fittedVariantList.size() - 1;
 
 				while (isValid) {
 
@@ -193,9 +259,13 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 					// Creates the displayable variant
 					DisplayableVariant displayableVariant;
 					if (hasBeenMerged) {
-						displayableVariant = new DisplayableVariant(start, stop);
+						displayableVariant = new MIXDisplayableVariant(start, stop);
 					} else {
-						displayableVariant = new DisplayableVariant(current, start, stop);
+						if (current instanceof VCFSNPtmp) {
+							displayableVariant = new SNPDisplayableVariant(current.getGenomePosition());
+						} else {
+							displayableVariant = new RegularDisplayableVariant(current, start, stop);
+						}
 					}
 
 					// Add the displayable variant
@@ -256,7 +326,15 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 				// If bug appeared
 				if (edgeBug) {
-					variantList.add(new DisplayableVariant(current.getNativeVariant(), currentStart, currentStop));	// new start/stop have to be taken in account
+					DisplayableVariant newDisplayableVariant = null;
+					if (current instanceof RegularDisplayableVariant) {
+						newDisplayableVariant = new RegularDisplayableVariant(current.getNativeVariant(), currentStart, currentStop);
+					} else if (current instanceof MIXDisplayableVariant) {
+						newDisplayableVariant = new MIXDisplayableVariant(currentStart, currentStop);
+					} else if (current instanceof SNPDisplayableVariant) {
+						newDisplayableVariant = new SNPDisplayableVariant(currentStart);
+					}
+					variantList.add(newDisplayableVariant);	// new start/stop have to be taken in account
 				} else { // if not
 					variantList.add(current); //the current displayable variant is used
 				}
@@ -337,13 +415,17 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			result = false;
 		}
 
+		/*if (result) {
+			System.out.println("variant: " + variant.getType());
+		}*/
+
 		return result;
 	}
 
 
 	/**
 	 * Sets the raw genome names and checks if they are different.
-	 * @param rawGenomeNames the raw genome names to set
+	 * @param genomes the raw genome names to set
 	 */
 	public void setRawGenomeNames(Map<String, List<VariantType>> genomes) {
 		if (setsAreDifferents(this.genomes.keySet(), genomes.keySet())) {
@@ -406,9 +488,17 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 */
 	public void setQuality(Double quality) {
 		if (this.quality == null || !this.quality.equals(quality)) {
-			hasBeenChanged = true;
+			qualityHasBeenChanged = true;
 		}
 		this.quality = quality;
+	}
+
+
+	/**
+	 * @return the full fitted list of displayable variant
+	 */
+	public List<DisplayableVariant> getFullDisplayableVariantList () {
+		return fittedDisplayableVariantList;
 	}
 
 }

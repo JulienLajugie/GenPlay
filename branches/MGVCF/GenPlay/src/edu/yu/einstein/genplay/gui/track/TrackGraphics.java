@@ -49,9 +49,9 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripe;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
@@ -325,6 +325,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					drawRect(g, displayableVariant, mixColor, mixColor);
 				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
 					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
+				} else if (displayableVariant.getType().equals(VariantType.SNPS)) {
+					Color snpColor = new Color(Color.magenta.getRed(), Color.magenta.getGreen(), Color.magenta.getBlue(), multiGenomeStripe.getTransparency());
+					drawRect(g, displayableVariant, snpColor, snpColor);
 				} else {
 					// Color association
 					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getNativeVariant().getFullGenomeName());
@@ -385,79 +388,13 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			g.fillRect(x, middle, width, height);
 		}
 	}
-
-
-	/**
-	 * @param displayableVariant the current variant
-	 * @return	the index in the variant list of the variant
-	 */
-	private int getDisplayableVariantIndex (DisplayableVariant displayableVariant) {
-		int index = -1;
-
-		for (int i = 0; i < displayableVariantList.size(); i++) {
-			int result = displayableVariantList.get(i).compareTo(displayableVariant);
-			if (result == 0) {
-				index = i;
-			} else if (result == 1) {
-				break;
-			}
-		}
-
-		return index;
-	}
-
+	
 
 	/**
 	 * @return the variantList
 	 */
 	public List<DisplayableVariant> getDisplayableVariantList() {
 		return displayableVariantList;
-	}
-
-
-	/**
-	 * @param displayableVariant	the current variant
-	 * @return the previous variant compare to the current variant
-	 */
-	private DisplayableVariant getPreviousDisplayableVariant (DisplayableVariant displayableVariant) {
-		DisplayableVariant result;
-		int currentIndex = getDisplayableVariantIndex(displayableVariant);
-		int previousIndex = currentIndex - 1;
-		if (currentIndex != -1 && previousIndex >= 0) {
-			result = displayableVariantList.get(previousIndex);
-		} else {
-			result = displayableVariant;
-		}
-		return result;
-	}
-
-
-	/**
-	 * @param displayableVariant	the current variant
-	 * @return the next variant compare to the current variant
-	 */
-	private DisplayableVariant getNextDisplayableVariant (DisplayableVariant displayableVariant) {
-		DisplayableVariant result;
-		int currentIndex = getDisplayableVariantIndex(displayableVariant);
-		int nextIndex = currentIndex + 1;
-		if (currentIndex != -1 && nextIndex < displayableVariantList.size()) {
-			result = displayableVariantList.get(nextIndex);
-		} else {
-			result = displayableVariant;
-		}
-		return result;
-	}
-
-
-	/**
-	 * @param displayableVariant the current variant
-	 * @return	a list containing the previous and the next variant compare to the current variant
-	 */
-	public DisplayableVariant[] getShortDisplayableVariantList (DisplayableVariant displayableVariant) {
-		DisplayableVariant array[] = new DisplayableVariant[2];
-		array[0] = getPreviousDisplayableVariant(displayableVariant);
-		array[1] = getNextDisplayableVariant(displayableVariant);
-		return array;
 	}
 
 
@@ -564,7 +501,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				double pos = screenPosToGenomePos(e.getX());
 				DisplayableVariant displayableVariant = getDisplayableVariant(pos);
 				if (displayableVariant != null) {
-					ToolTipStripe toolTip = new ToolTipStripe(this);
+					ToolTipStripe toolTip = new ToolTipStripe(displayableVariantListCreator.getFullDisplayableVariantList());
 					toolTip.show(displayableVariant, e.getXOnScreen(), e.getYOnScreen());
 				} else {
 					System.out.println(pos + ": no variant");

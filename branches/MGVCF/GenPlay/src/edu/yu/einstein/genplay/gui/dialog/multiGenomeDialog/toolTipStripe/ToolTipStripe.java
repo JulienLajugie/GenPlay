@@ -27,6 +27,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -37,7 +38,6 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 
 /**
@@ -62,23 +62,22 @@ public class ToolTipStripe extends JDialog {
 	private final int OFFSET_HEIGHT = 7 * LINE_NUMBER;	// height offset for display
 	private final int OFFSET_WIDTH = 40;				// width offset for display
 
-	private TrackGraphics<?> origin;	// the associated track graphics object
-	private JLabel label[];				// gathers all name label
-	private JLabel value[];				// gathers all value label
-	private JPanel pane;				// dialog panel
-	private DisplayableVariant displayableVariant;			// the current variant object to display
-	private JButton nextVariant;		// button leading to the next variant
-	private JButton previousVariant;	// button leading to the previous variant
-	private DisplayableVariant[] displayableVariants;			// contains the previous and the next variant
-
+	private List<DisplayableVariant> 	displayableVariantList;	// a list of displayable variant
+	private DisplayableVariant 			displayableVariant;				// the current variant object to display
+	private JButton 					nextVariant;					// button leading to the next variant
+	private JButton 					previousVariant;				// button leading to the previous variant
+	private JLabel 						label[];						// gathers all name label
+	private JLabel 						value[];						// gathers all value label
+	private JPanel 						pane;							// dialog panel
+	
 
 	/**
 	 * Constructor of {@link ToolTipStripe}
-	 * @param origin the associated track  graphics object
+	 * @param fittedDisplayableVariantList the full list of displayable variants
 	 */
-	public ToolTipStripe (TrackGraphics<?> origin) {
+	public ToolTipStripe (List<DisplayableVariant> fittedDisplayableVariantList) {
 		super(MainFrame.getInstance());
-		this.origin = origin;
+		this.displayableVariantList = fittedDisplayableVariantList;
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
@@ -98,7 +97,6 @@ public class ToolTipStripe extends JDialog {
 	 */
 	public void show (DisplayableVariant displayableVariant, int X, int Y) {
 		this.displayableVariant = displayableVariant;
-		displayableVariants = origin.getShortDisplayableVariantList(this.displayableVariant);
 		initContent(displayableVariant);
 		setLocation(X, Y);
 		setVisible(true);
@@ -280,18 +278,16 @@ public class ToolTipStripe extends JDialog {
 	private void initVariant (JButton button) {
 		DisplayableVariant newDisplayableVariant;
 		if (button.equals(nextVariant)) {
-			newDisplayableVariant = displayableVariants[1]; 
+			newDisplayableVariant = getNextDisplayableVariant();
 		} else {
-			newDisplayableVariant = displayableVariants[0];
+			newDisplayableVariant = getPreviousDisplayableVariant();
 		}
 
 		if (newDisplayableVariant == null) {
 			button.setEnabled(false);
 		} else {
-			displayableVariants = origin.getShortDisplayableVariantList(newDisplayableVariant);
 			this.displayableVariant = newDisplayableVariant;
 			updateContent();
-			//int variantStart = variant.getStart() + ((variant.getStop() - variant.getStart()) / 2);
 			int variantStart = displayableVariant.getStart();
 			int width = MainFrame.getInstance().getControlPanel().getGenomeWindow().getSize();
 			int startWindow = variantStart - (width / 2);
@@ -300,6 +296,54 @@ public class ToolTipStripe extends JDialog {
 			GenomeWindow genomeWindow = new GenomeWindow(chromosome, startWindow, stopWindow);
 			MainFrame.getInstance().getControlPanel().setGenomeWindow(genomeWindow);
 		}
+	}
+	
+	
+	/**
+	 * @param regularDisplayableVariant the current variant
+	 * @return	the index in the variant list of the variant
+	 */
+	private int getDisplayableVariantIndex (DisplayableVariant displayableVariant) {
+		for (int i = 0; i < displayableVariantList.size(); i++) {
+			if (displayableVariantList.get(i).equals(displayableVariant)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	
+	/**
+	 * @param regularDisplayableVariant	the current variant
+	 * @return the previous variant compare to the current variant
+	 */
+	private DisplayableVariant getPreviousDisplayableVariant () {
+		DisplayableVariant result;
+		int currentIndex = getDisplayableVariantIndex(displayableVariant);
+		int previousIndex = currentIndex - 1;
+		if (currentIndex != -1 && previousIndex >= 0) {
+			result = displayableVariantList.get(previousIndex);
+		} else {
+			result = displayableVariant;
+		}
+		return result;
+	}
+
+
+	/**
+	 * @param regularDisplayableVariant	the current variant
+	 * @return the next variant compare to the current variant
+	 */
+	private DisplayableVariant getNextDisplayableVariant () {
+		DisplayableVariant result;
+		int currentIndex = getDisplayableVariantIndex(displayableVariant);
+		int nextIndex = currentIndex + 1;
+		if (currentIndex != -1 && nextIndex < displayableVariantList.size()) {
+			result = displayableVariantList.get(nextIndex);
+		} else {
+			result = displayableVariant;
+		}
+		return result;
 	}
 
 

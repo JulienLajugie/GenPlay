@@ -63,7 +63,7 @@ public class MultiGenomeManager {
 	 * The loading of some type of file requires to perform operation on every chromosome,
 	 * the SEQUENTIAL mode loading only one chromosome, it can lead to a null pointer exception error. 
 	 */
-	public 	static			int							CHROMOSOME_LOADING_OPTION 	= FULL;
+	public 	static			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
 
 	private static final 	Color 						DEFAULT_COLOR 				= Color.black;
 	private static final 	Color 						INSERTION_DEFAULT_COLOR 	= Color.green;
