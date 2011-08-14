@@ -20,12 +20,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType;
 
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
@@ -36,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
  */
 public class VCFSNP implements Variant {
 	
-	private	MGPositionInformation 	positionInformation;		// The common genome position information
+	private	MGPosition 	positionInformation;		// The common genome position information
 	private String 					fullGenomeName;				// The genome name
 	private int 					genomePosition;				// The genome position
 	private int 					initialReferenceOffset;		// The offset between the genome position and the reference genome position
@@ -48,10 +47,9 @@ public class VCFSNP implements Variant {
 	 * Constructor of {@link VCFSNP}
 	 * @param fullGenomeName 		the full genome name
 	 * @param chromosome 			the chromosome
-	 * @param VCFLine 				the line from the VCF
 	 * @param positionInformation 	the position information object
 	 */
-	public VCFSNP (String fullGenomeName, Chromosome chromosome, Map<String, Object> VCFLine, MGPositionInformation positionInformation) {
+	public VCFSNP (String fullGenomeName, Chromosome chromosome, MGPosition positionInformation) {
 		this.fullGenomeName = fullGenomeName;
 		initialReferenceOffset = 0;
 		initialMetaGenomeOffset = 0;
@@ -205,7 +203,7 @@ public class VCFSNP implements Variant {
 	}
 	
 	@Override
-	public MGPositionInformation getPositionInformation() {
+	public MGPosition getPositionInformation() {
 		return positionInformation;
 	}
 

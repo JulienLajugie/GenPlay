@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
@@ -52,6 +53,7 @@ import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
 public class VCFReader {
 
 	private final 	File 						vcf;			// Path of the VCF file
+	private final	VCFType						vcfType;		// The type of the VCF file
 	private 		TabixReader 				vcfParser;		// Tabix object for the VCF file (Tabix Java API)
 	private 		Map<String, String> 		headerInfo;		// Header main information
 	private			List<String>				columnNames;	// All column header names
@@ -66,11 +68,28 @@ public class VCFReader {
 
 	/**
 	 * Constructor of {@link VCFReader}
-	 * @param vcf	the VCF file
+	 * @param vcf		the VCF file
+	 * @param vcfType  	the type of the VCF file
+	 * @throws IOException
+	 */
+	public VCFReader (File vcf, VCFType vcfType) throws IOException {
+		this.vcf = vcf;
+		this.vcfType = vcfType;
+		initFixedColumnList();
+		initFieldType();
+		indexVCFFile();
+		processHeader();
+	}
+	
+	
+	/**
+	 * Constructor of {@link VCFReader}
+	 * @param vcf		the VCF file
 	 * @throws IOException
 	 */
 	public VCFReader (File vcf) throws IOException {
 		this.vcf = vcf;
+		this.vcfType = null;
 		initFixedColumnList();
 		initFieldType();
 		indexVCFFile();
@@ -105,6 +124,14 @@ public class VCFReader {
 		fieldType.put("Flag", Boolean.class);
 		fieldType.put("Character", char.class);
 		fieldType.put("String", String.class);
+	}
+	
+
+	/**
+	 * @return the vcfType
+	 */
+	public VCFType getVcfType() {
+		return vcfType;
 	}
 
 

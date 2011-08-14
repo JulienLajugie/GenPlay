@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
 
 
@@ -192,35 +193,52 @@ public class NewProjectPanel extends JPanel {
 	
 	
 	/**
+	 * @return the mapping between genome full names and their files.
+	 */
+	public Map<String, List<File>> getGenomeFileAssociation ()  {
+		return multiGenomePanel.getGenomeFileAssociation();
+	}
+
+
+	/**
+	 * @return the mapping between files and their readers.
+	 */
+	public Map<File, VCFReader> getFileReadersAssociation () {
+		return multiGenomePanel.getFileReadersAssociation();
+	}
+
+	
+	
+	/**
 	 * @return the genome/group association
 	 */
-	public Map<String, List<String>> getGenomeGroupAssociation () {
+	/*public Map<String, List<String>> getGenomeGroupAssociation () {
 		return multiGenomePanel.getGenomeGroupAssociation();
-	}
+	}*/
 	
 	
 	/**
 	 * @return the genome/VCF association
 	 */
-	public Map<String, List<File>> getGenomeFilesAssociation () {
+	/*public Map<String, List<File>> getGenomeFilesAssociation () {
 		return multiGenomePanel.getGenomeFilesAssociation();
-	}
+	}*/
 	
 	
 	/**
 	 * @return the raw/usual genome names association
 	 */
-	public Map<String, String> getGenomeNamesAssociation () {
+	/*public Map<String, String> getGenomeNamesAssociation () {
 		return multiGenomePanel.getGenomeNamesAssociation();
-	}
+	}*/
 	
 	
 	/**
 	 * @return the VCF type/files association
 	 */
-	public Map<VCFType, List<File>> getFilesTypeAssociation () {
+	/*public Map<VCFType, List<File>> getFilesTypeAssociation () {
 		return multiGenomePanel.getFilesTypeAssociation();
-	}
+	}*/
 	
 	
 	/**

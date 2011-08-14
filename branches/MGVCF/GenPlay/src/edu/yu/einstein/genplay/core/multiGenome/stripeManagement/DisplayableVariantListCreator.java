@@ -39,8 +39,8 @@ import edu.yu.einstein.genplay.core.list.DisplayableDataList;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNPtmp;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeInformation;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
@@ -59,7 +59,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	private Double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
 	// Filter variables
-	private Map<String, List<VariantType>>	genomes;						// Raw genome names list
+	private Map<String, List<VariantType>>	genomes;						// Genome names list
 	private Double							quality;						// Variant quality threshold (only equal and greater variants will be selected)
 	private double 							ratioThreshold;					// Ratio threshold to do not show up SNPs when zoom is not important enough
 
@@ -120,10 +120,10 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		List<Variant> fittedVariantList = new ArrayList<Variant>();
 
 		// Scan for every required genomes
-		for (String rawGenomeName: genomes.keySet()) {
+		for (String genomeFullName: genomes.keySet()) {
 
 			// Gets parameters
-			MGChromosomeInformation chromosomeInformation = MultiGenomeManager.getInstance().getChromosomeInformation(rawGenomeName, currentGenomeWindow.getChromosome());
+			MGChromosome chromosomeInformation = MultiGenomeManager.getInstance().getChromosomeInformation(genomeFullName, currentGenomeWindow.getChromosome());
 			Map<Integer, Variant> variants = chromosomeInformation.getPositionInformationList();
 			int[] indexes = chromosomeInformation.getPositionIndex();
 
@@ -406,7 +406,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		boolean result = true;
 
 		// Variant type filter
-		if (!genomes.get(variant.getRawGenomeName()).contains(variant.getType())) {
+		if (!genomes.get(variant.getFullGenomeName()).contains(variant.getType())) {
 			result = false;
 		}
 
@@ -414,10 +414,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		if (variant.getQuality() < quality) {
 			result = false;
 		}
-
-		/*if (result) {
-			System.out.println("variant: " + variant.getType());
-		}*/
 
 		return result;
 	}
@@ -427,7 +423,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 * Sets the raw genome names and checks if they are different.
 	 * @param genomes the raw genome names to set
 	 */
-	public void setRawGenomeNames(Map<String, List<VariantType>> genomes) {
+	public void setGenomeNames(Map<String, List<VariantType>> genomes) {
 		if (setsAreDifferents(this.genomes.keySet(), genomes.keySet())) {
 			hasBeenChanged = true;
 		} else {

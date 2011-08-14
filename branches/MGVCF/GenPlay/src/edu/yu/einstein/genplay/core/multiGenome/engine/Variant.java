@@ -187,7 +187,7 @@ public interface Variant {
 	/**
 	 * @return the position information object
 	 */
-	public MGPositionInformation getPositionInformation ();
+	public MGPosition getPositionInformation ();
 
 	/**
 	 * @return the ID field

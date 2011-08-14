@@ -66,10 +66,10 @@ public class RowPanel extends JPanel {
 		
 		//Components
 		genomeGroup = new JLabel(genomeGroupName);
-		insertionBox = new CellSelectionPanel(MultiGenomeManager.getInsertionDefaultColor());
-		deletionBox = new CellSelectionPanel(MultiGenomeManager.getDeletionDefaultColor());
-		snpsBox = new CellSelectionPanel(MultiGenomeManager.getSnpsDefaultColor());
-		svBox = new CellSelectionPanel(MultiGenomeManager.getSvDefaultColor());
+		insertionBox = new CellSelectionPanel(MultiGenomeManager.INSERTION_DEFAULT_COLOR);
+		deletionBox = new CellSelectionPanel(MultiGenomeManager.DELETION_DEFAULT_COLOR);
+		snpsBox = new CellSelectionPanel(MultiGenomeManager.SNPS_DEFAULT_COLOR);
+		svBox = new CellSelectionPanel(MultiGenomeManager.SV_DEFAULT_COLOR);
 		
 		//snpsBox.betaLimit();
 		svBox.betaLimit();

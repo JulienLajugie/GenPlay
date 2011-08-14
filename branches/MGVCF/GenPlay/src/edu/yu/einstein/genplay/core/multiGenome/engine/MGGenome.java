@@ -22,8 +22,8 @@ package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
@@ -35,39 +35,43 @@ import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManage
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGGenomeInformation {
+public class MGGenome {
 
-	private		final String								genomeFullName;				// The full genome information
-	private 	Map<Chromosome, MGChromosomeInformation> 	genomeInformation;			// Chromosomes information
-	protected 	Chromosome									fittedChromosome = null;	// Chromosome with the adapted data
-	protected 	Double										fittedXRatio = null;		// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
-	//private		int											smallestFittedDataIndex;	// The smaller index of the returned fitted data list
-	//private		int											highestFittedDataIndex;		// The highest index of the returned fitted data list
+	private		final String					genomeName;				// The full genome information
+	private 	Map<Chromosome, MGChromosome> 	genomeInformation;			// Chromosomes information of the genome
 
 
 	/**
-	 * Constructor of {@link MGGenomeInformation}
+	 * Constructor of {@link MGGenome}
+	 * @param genomeName the name of the genome
 	 */
-	protected MGGenomeInformation (String genomeFullName) {
-		this.genomeFullName = genomeFullName;
-		genomeInformation = new HashMap<Chromosome, MGChromosomeInformation>();
+	protected MGGenome (String genomeName) {
+		this.genomeName = genomeName;
+		genomeInformation = new HashMap<Chromosome, MGChromosome>();
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values()) {
-			genomeInformation.put(chromosome, new MGChromosomeInformation(chromosome, this));
+			genomeInformation.put(chromosome, new MGChromosome(this, chromosome));
 		}
 	}
 
 
 	/**
-	 * Adds a position information according to a chromosome.
-	 * @param chromosome 			the chromosome
-	 * @param position 				the reference genome position
-	 * @param fullGenomeName 		the full genome name
-	 * @param VCFLine 				the line information from the VCF file
-	 * @param positionInformation 	the position line information object
-	 * @param vcfType 				the VCF type
+	 * Adds a variant according to a chromosome.
+	 * @param chromosome 	the chromosome
+	 * @param variant 		the variant
 	 */
-	protected void addInformation (Chromosome chromosome, Integer position, String fullGenomeName, Map<String, Object> VCFLine, MGPositionInformation positionInformation, VCFType vcfType) {
-		getChromosomeInformation(chromosome).addVariant(position, fullGenomeName, VCFLine, positionInformation, vcfType);
+	protected void addVariant (Chromosome chromosome, Variant variant) {
+		getChromosomeInformation(chromosome).addVariant(variant);
+	}
+	
+	
+	/**
+	 * Adds a variant according to a chromosome.
+	 * @param chromosome 	the chromosome
+	 * @param position 		the position on the reference genome
+	 * @param variant 		the variant
+	 */
+	protected void addBlank (Chromosome chromosome, int position, Variant variant) {
+		getChromosomeInformation(chromosome).addBlank(position, variant);
 	}
 
 
@@ -75,7 +79,7 @@ public class MGGenomeInformation {
 	 * @param chromosome 	the related chromosome
 	 * @return				valid chromosome containing position information
 	 */
-	protected MGChromosomeInformation getChromosomeInformation (Chromosome chromosome) {
+	protected MGChromosome getChromosomeInformation (Chromosome chromosome) {
 		if (genomeInformation.get(chromosome) == null &&
 				MultiGenomeManager.CHROMOSOME_LOADING_OPTION == MultiGenomeManager.SEQUENTIAL) {
 			System.err.println("A null pointer exception can appear because of the CHROMOSOME_LOADING_OPTION set to SEQUENTIAL");
@@ -97,13 +101,21 @@ public class MGGenomeInformation {
 	/**
 	 * @return the genomeInformation
 	 */
-	protected Map<Chromosome, MGChromosomeInformation> getGenomeInformation() {
+	protected Map<Chromosome, MGChromosome> getGenomeInformation() {
 		return genomeInformation;
 	}
 
 
 	/**
-	 * Shows chromosomes information.
+	 * @return the genomeFullName
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+	
+	/**
+	 * Shows chromosome information.
 	 */
 	protected void showData () {
 		for (Chromosome chromosome: genomeInformation.keySet()) {
@@ -111,26 +123,4 @@ public class MGGenomeInformation {
 			getChromosomeInformation(chromosome).showData();
 		}
 	}
-
-
-	/**
-	 * @return the genomeFullName
-	 */
-	public String getGenomeFullName() {
-		return genomeFullName;
-	}
-
-
-	/**
-	 * @param chromosome the chromosome
-	 * @param position position of the variant on the reference genome
-	 * @return the associated position information
-	 */
-	public MGPositionInformation getPositionInformation (Chromosome chromosome, int position) {
-		if (genomeInformation.get(chromosome) != null) {
-			return genomeInformation.get(chromosome).getPositionInformation(position);
-		}
-		return null;
-	}
-
 }

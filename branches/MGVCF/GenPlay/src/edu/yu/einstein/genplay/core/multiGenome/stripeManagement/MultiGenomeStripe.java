@@ -31,7 +31,6 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -132,7 +131,7 @@ public class MultiGenomeStripe implements Serializable {
 					for (VariantType type: colorAssociation.get(fullGenomeName).keySet()) {
 						types.add(type);
 					}
-					genomes.put(FormattedMultiGenomeName.getRawName(fullGenomeName), types);
+					genomes.put(fullGenomeName, types);
 				}
 			}
 		}

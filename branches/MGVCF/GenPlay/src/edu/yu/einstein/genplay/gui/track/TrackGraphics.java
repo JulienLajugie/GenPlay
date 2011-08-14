@@ -285,7 +285,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripe != null) {
 			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
-				displayableVariantListCreator.setRawGenomeNames(multiGenomeStripe.getRequiredGenomes());
+				displayableVariantListCreator.setGenomeNames(multiGenomeStripe.getRequiredGenomes());
 				displayableVariantListCreator.setQuality((double) multiGenomeStripe.getQuality());
 				displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
 				drawMultiGenomeLine(g);

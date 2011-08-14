@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGPositionInformation {
+public class MGPosition {
 
 	private Chromosome chromosome;
 	private Map<String, Object> VCFLine;
@@ -39,12 +39,12 @@ public class MGPositionInformation {
 
 
 	/**
-	 * Constructor of {@link MGPositionInformation}
+	 * Constructor of {@link MGPosition}
 	 * @param chromosome 	the chromosome
 	 * @param line 			the line information from the VCF file
 	 * @param reader 		the VCF reader associated to the the VCF file
 	 */
-	public MGPositionInformation (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
+	public MGPosition (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
 		this.chromosome = chromosome;
 		this.reader = reader;
 		VCFLine = line;
@@ -61,7 +61,15 @@ public class MGPositionInformation {
 		return ReferenceGenomeManager.getInstance().getReferenceName();
 	}
 	
-
+	
+	/**
+	 * @return the ID field
+	 */
+	public int getPos() {
+		return Integer.parseInt(getString(VCFLine.get("POS")));
+	}
+	
+	
 	/**
 	 * @return the ID field
 	 */

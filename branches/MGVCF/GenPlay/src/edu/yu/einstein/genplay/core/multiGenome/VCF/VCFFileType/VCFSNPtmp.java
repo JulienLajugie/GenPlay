@@ -22,7 +22,7 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 
 /**
  * This class represent the VCF SNPs file type.
@@ -173,7 +173,7 @@ public class VCFSNPtmp implements Variant {
 	public void setInitialMetaGenomeOffset(int offset) {}
 	
 	@Override
-	public MGPositionInformation getPositionInformation() {
+	public MGPosition getPositionInformation() {
 		return null;
 	}
 

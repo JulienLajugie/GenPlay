@@ -48,6 +48,7 @@ import javax.swing.JScrollPane;
 import javax.swing.table.TableColumn;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.MultiGenomeInformationPanel;
 
 /**
@@ -438,92 +439,65 @@ public class VCFLoader extends JDialog {
 	}
 	
 	
+	
 	/**
-	 * @return the raw genome name/group association map
+	 * @return the mapping between genome full names and their files.
 	 */
-	public Map<String, List<String>> getGenomeGroupAssociation () {
-		if (validVCF) {
-			Map<String, List<String>> map = new HashMap<String, List<String>>();
-			List<String> groupList = data.getColumnList(0);
-			List<String> rawNamesList = data.getColumnList(4);
-			for (int i = 0; i < groupList.size(); i++) {
-				String groupName = groupList.get(i);
-				if (map.get(groupName) == null) {
-					map.put(groupName, new ArrayList<String>());
+	public Map<String, List<File>> getGenomeFileAssociation () {
+		Map<String, List<File>> list = new HashMap<String, List<File>>();
+		
+		for (List<Object> line: data.getData()) {
+			String fullGenomeName = FormattedMultiGenomeName.getFullFormattedGenomeName(line.get(0).toString(), line.get(1).toString(), line.get(4).toString());
+			File file = new File(line.get(3).toString());
+			
+			if (list.get(fullGenomeName) == null) {
+				list.put(fullGenomeName, new ArrayList<File>());
+			}
+			
+			list.get(fullGenomeName).add(file);
+		}
+		
+		return list;
+	}
+	
+	
+	/**
+	 * @return the mapping between files and their readers.
+	 */
+	public Map<File, VCFReader> getFileReadersAssociation () {
+		Map<File, VCFReader> list = new HashMap<File, VCFReader>();
+		List<String> filePath = new ArrayList<String>();
+		
+		for (List<Object> line: data.getData()) {
+			String path = line.get(3).toString();
+			if (!filePath.contains(path)) {
+				filePath.add(path);
+				
+				// Gets the type
+				VCFType type = null;
+				String typeName = line.get(2).toString();
+				if (typeName.equals("Indels")) {
+					type = VCFType.INDELS;
+				} else if (typeName.equals("SNPs")) {
+					type = VCFType.SNPS;
+				} else if (typeName.equals("SV")) {
+					type = VCFType.SV;
 				}
-				if (!map.get(groupName).contains(rawNamesList.get(i))) {
-					map.get(groupName).add(rawNamesList.get(i));
+
+				// Gets the reader
+				File file = new File(path);
+				VCFReader reader = null;
+				try {
+					reader = new VCFReader(file, type);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 				
+				list.put(file, reader);
 			}
-			return map;
 		}
-		return null;
-	}
-	
-	
-	/**
-	 * @return the genome group name/VCF file association map
-	 */
-	public Map<String, List<File>> getGenomeFilesAssociation () {
-		if (validVCF) {
-			Map<String, List<File>> map = new HashMap<String, List<File>>();
-			List<String> groupList = data.getColumnList(0);
-			List<String> vcfList = data.getColumnList(3);
-			for (int i = 0; i < groupList.size(); i++) {
-				String groupName = groupList.get(i);
-				String vcfName = vcfList.get(i);
-				if (map.get(groupName) == null) {
-					map.put(groupName, new ArrayList<File>());
-				}
-				if (!map.get(groupName).contains(vcfName)) {
-					map.get(groupName).add(new File(vcfName));
-				}
-			}
-			return map;
-		}
-		return null;
-	}
-	
-	
-	/**
-	 * @return the raw/usual genome name association map
-	 */
-	public Map<String, String> getGenomeNamesAssociation () {
-		if (validVCF) {
-			Map<String, String> map = new HashMap<String, String>();
-			List<String> namesList = data.getColumnList(1);
-			List<String> rawNamesList = data.getColumnList(4);
-			for (int i = 0; i < rawNamesList.size(); i++) {
-				map.put(rawNamesList.get(i), namesList.get(i));
-			}
-			return map;
-		}
-		return null;
-	}
-	
-	
-	/**
-	 * @return the VCF type/files association map
-	 */
-	public Map<VCFType, List<File>> getFilesTypeAssociation () {
-		if (validVCF) {
-			Map<VCFType, List<File>> map = new HashMap<VCFType, List<File>>();
-			List<String> typeList = data.getColumnList(2);
-			List<String> vcfList = data.getColumnList(3);
-			for (int i = 0; i < typeList.size(); i++) {
-				VCFType type = VCFType.getTypeFromString(typeList.get(i));
-				String vcfName = vcfList.get(i);
-				if (map.get(type) == null) {
-					map.put(type, new ArrayList<File>());
-				}
-				if (!map.get(type).contains(vcfName)) {
-					map.get(type).add(new File(vcfName));
-				}
-			}
-			return map;
-		}
-		return null;
+		
+		return list;
 	}
 	
 	
