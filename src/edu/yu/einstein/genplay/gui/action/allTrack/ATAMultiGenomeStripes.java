@@ -70,14 +70,16 @@ public final class ATAMultiGenomeStripes extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			MultiGenomeStripeSelectionDialog genomePanel = new MultiGenomeStripeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
-			genomePanel.setTrackName(selectedTrack.getName());
-			genomePanel.setTrackGenomeGroupName(selectedTrack.getGenomeName());
-			genomePanel.initColors(selectedTrack.getStripeInformation().getColorAssociation());
-			genomePanel.initTransparency(selectedTrack.getStripeInformation().getTransparency());
-			genomePanel.initQuality(selectedTrack.getStripeInformation().getQuality());
-			if (genomePanel.showDialog(getRootPane()) == MultiGenomeStripeSelectionDialog.APPROVE_OPTION) {
-				selectedTrack.setStripeInformation(genomePanel.getMultiGenomeStripe());
+			MultiGenomeStripeSelectionDialog stripeDialog = new MultiGenomeStripeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			stripeDialog.setTrackName(selectedTrack.getName());
+			stripeDialog.setTrackGenomeGroupName(selectedTrack.getGenomeName());
+			stripeDialog.initColors(selectedTrack.getStripeInformation().getColorAssociation());
+			stripeDialog.initTransparency(selectedTrack.getStripeInformation().getTransparency());
+			stripeDialog.initQuality(selectedTrack.getStripeInformation().getQuality());
+			if (stripeDialog.showDialog(getRootPane()) == MultiGenomeStripeSelectionDialog.APPROVE_OPTION) {
+				
+				selectedTrack.setStripeInformation(stripeDialog.getMultiGenomeStripe());
+				
 			}
 			
 		}

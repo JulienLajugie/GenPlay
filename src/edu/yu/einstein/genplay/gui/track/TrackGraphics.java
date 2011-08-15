@@ -49,6 +49,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
@@ -130,7 +131,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
 	protected T 						data;							// data showed in the track
 	private MultiGenomeStripe 			multiGenomeStripe;				// stripes showing multi genome information (for MG project)
-	private DisplayableVariantListCreator					displayableVariantListCreator;					// displayable variants list creator (for MG project)
+	private DisplayableVariantListCreator				displayableVariantListCreator;					// displayable variants list creator (for MG project)
 	private String 						genomeName;						// genome on which the track is based (ie aligned on)
 	private List<DisplayableVariant> 	displayableVariantList;			// list of variant for multi genome project
 
@@ -318,6 +319,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// Set color for unused position and dead area
 			Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), multiGenomeStripe.getTransparency());
 			Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), multiGenomeStripe.getTransparency());
+			
 			// Start variant list scan
 			for (DisplayableVariant displayableVariant: displayableVariantList) {
 				if (displayableVariant.getType().equals(VariantType.MIX)) {
@@ -325,9 +327,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					drawRect(g, displayableVariant, mixColor, mixColor);
 				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
 					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
-				} else if (displayableVariant.getType().equals(VariantType.SNPS)) {
-					Color snpColor = new Color(Color.magenta.getRed(), Color.magenta.getGreen(), Color.magenta.getBlue(), multiGenomeStripe.getTransparency());
-					drawRect(g, displayableVariant, snpColor, snpColor);
 				} else {
 					// Color association
 					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getNativeVariant().getFullGenomeName());
@@ -779,6 +778,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param stripeInformation the stripeInformation to set
 	 */
 	protected void setStripeInformation(MultiGenomeStripe stripeInformation) {
+		SNPManager.getInstance().updateSNP(this.multiGenomeStripe, stripeInformation);
 		this.multiGenomeStripe = stripeInformation;
 		repaint();
 	}

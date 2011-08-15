@@ -39,16 +39,18 @@ public class SNPDisplayableVariant implements DisplayableVariant {
 
 	/**
 	 * Constructor of {@link SNPDisplayableVariant}
+	 * @param variant 	a native variant
 	 * @param position	start position of the SNP displayable variant
 	 */
-	public SNPDisplayableVariant (int position) {
+	public SNPDisplayableVariant (Variant variant, int position) {
+		this.variant = variant;
 		this.position = position;
 	}
 
 
 	@Override
 	public Variant getNativeVariant() {
-		return null;
+		return variant;
 	}
 
 

@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
  */
 public class VCFSNP implements Variant {
 	
-	private	MGPosition 	positionInformation;		// The common genome position information
+	private	MGPosition 				positionInformation;		// The common genome position information
 	private String 					fullGenomeName;				// The genome name
 	private int 					genomePosition;				// The genome position
 	private int 					initialReferenceOffset;		// The offset between the genome position and the reference genome position

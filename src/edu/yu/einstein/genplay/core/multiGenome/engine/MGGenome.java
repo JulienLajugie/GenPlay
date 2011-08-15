@@ -107,7 +107,7 @@ public class MGGenome {
 	/**
 	 * @return the genomeInformation
 	 */
-	protected Map<Chromosome, MGChromosome> getGenomeInformation() {
+	public Map<Chromosome, MGChromosome> getGenomeInformation() {
 		return genomeInformation;
 	}
 
@@ -119,6 +119,16 @@ public class MGGenome {
 		return genomeName;
 	}
 
+	
+	/**
+	 * @param chromosome	a chromosome
+	 * @param position 		reference genome position
+	 * @return				the position information according to the chromosome and the position
+	 */
+	protected MGPosition getMGPosition (Chromosome chromosome, int position) {
+		return genomeInformation.get(chromosome).getMGPosition(position);
+	}
+	
 	
 	/**
 	 * Shows chromosome information.

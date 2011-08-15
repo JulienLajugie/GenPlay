@@ -27,6 +27,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -71,6 +72,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 			notifyActionStart(ACTION_NAME, 1, false);
 			MultiGenomeManager.getInstance().initMultiGenomeInformation();
 			MultiGenomeManager.getInstance().compute();
+			SNPManager.getInstance().reinit();
 		}
 		return null;
 	}

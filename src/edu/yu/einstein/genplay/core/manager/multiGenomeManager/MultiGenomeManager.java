@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSV;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -57,19 +58,19 @@ public class MultiGenomeManager {
 	 * FULL value for CHROMOSOME_LOADING_OPTION option involves the loading of every chromosomes when multi genome project starts
 	 */
 	public 	static final 	int 						FULL					 	= 1;
-	
+
 	/**
 	 * SEQUENTIAL value for CHROMOSOME_LOADING_OPTION option involves the sequential loading (one by one) of chromosomes during a multi genome project (low memory cost)
 	 */
 	public static final 	int 						SEQUENTIAL 					= 0;
-	
+
 	/**
 	 * CHROMOSOME_LOADING_OPTION to choose the chromosome loading mode
 	 * It must be used only for development, some functionalities cannot work in a SEQUENTIAL mode.
 	 * The loading of some type of file requires to perform operation on every chromosome,
 	 * the SEQUENTIAL mode loading only one chromosome, it can lead to a null pointer exception error. 
 	 */
-	public static final		int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
+	public static 			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
 
 	/**
 	 * The default color for a stripe
@@ -92,7 +93,7 @@ public class MultiGenomeManager {
 	 */
 	public static final 	Color 						SV_DEFAULT_COLOR 			= Color.magenta;
 
-	
+
 	private static 			MultiGenomeManager 			instance = null;		// unique instance of the singleton
 	private 				Map<File, VCFReader> 		fileReaders;			// Mapping between files and their readers.
 	private					MGMultiGenome				genomesInformation;		// Genomes information
@@ -211,7 +212,7 @@ public class MultiGenomeManager {
 		return valid;
 	}
 
-	
+
 	/**
 	 * This method compares the list of genome names in the project and the genome names from a VCF file.
 	 * It returns the list of genome from a VCF file only if they have been required.
@@ -231,6 +232,8 @@ public class MultiGenomeManager {
 	}
 	
 	
+	
+
 
 	/**
 	 * Creates insertion and deletion positions from the query results.
@@ -464,6 +467,23 @@ public class MultiGenomeManager {
 	public MGChromosome getChromosomeInformation(String genome, Chromosome chromosome) {
 		return genomesInformation.getChromosomeInformation(genome, chromosome);
 	}
+	
+	
+	/**
+	 * @param genome 		the raw genome name
+	 * @return 				the genome information
+	 */
+	public MGGenome getGenomeInformation(String genome) {
+		return genomesInformation.getGenomeInformation(genome);
+	}
+	
+	
+	/**
+	 * @return the genomesInformation
+	 */
+	public MGMultiGenome getGenomesInformation() {
+		return genomesInformation;
+	}
 
 
 	/**
@@ -482,7 +502,31 @@ public class MultiGenomeManager {
 	}
 
 
-	////////////////////////////// Show methods
+	/**
+	 * @return the fileReaders
+	 */
+	public Map<File, VCFReader> getFileReaders() {
+		return fileReaders;
+	}
+	
+	
+	/**
+	 * @param genomeName 	a name of a genome
+	 * @param type			a {@link VCFType}
+	 * @return				the reader of the vcf according to the genome name and the VCF type
+	 */
+	public VCFReader getReader(String genomeName, VCFType type) {
+		List<File> fileList = genomesInformation.getFiles(genomeName);
+		for (File file: fileList) {
+			if (fileReaders.get(file).getVcfType().equals(type)) {
+				return fileReaders.get(file);
+			}
+		}
+		return null;
+	}
+
+
+	//////////////////////////////Show methods
 
 	/**
 	 * Shows genomes information.

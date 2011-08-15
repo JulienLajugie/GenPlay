@@ -235,6 +235,19 @@ public class MGChromosome {
 		return genomeInformation;
 	}
 
+	
+	/**
+	 * @param position 	reference genome position
+	 * @return			the position information according to the position
+	 */
+	protected MGPosition getMGPosition (int position) {
+		Variant current = variantList.get(position);
+		if (current != null) {
+			return current.getPositionInformation();
+		}
+		return null;
+	}
+	
 
 	/**
 	 * Shows positions information.

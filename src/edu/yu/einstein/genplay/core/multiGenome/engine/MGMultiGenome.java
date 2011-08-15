@@ -71,6 +71,7 @@ public class MGMultiGenome {
 	 * -> can be run several times
 	 */
 	public void initMultiGenomeInformation () {
+		multiGenomeInformation = new HashMap<String, MGGenome>();
 		for (String genomeName: genomeFileAssociation.keySet()) {
 			multiGenomeInformation.put(genomeName, new MGGenome(genomeName));
 		}
@@ -125,6 +126,15 @@ public class MGMultiGenome {
 	public MGChromosome getChromosomeInformation (String genome, Chromosome chromosome) {
 		return multiGenomeInformation.get(genome).getChromosomeInformation(chromosome);
 	}
+	
+	
+	/**
+	 * @param genome		a genome name
+	 * @return				the genome information object according to a genome.
+	 */
+	public MGGenome getGenomeInformation (String genome) {
+		return multiGenomeInformation.get(genome);
+	}
 
 
 	/**
@@ -143,6 +153,15 @@ public class MGMultiGenome {
 		List<String> list = new ArrayList<String>(genomeFileAssociation.keySet()); 
 		Collections.sort(list);
 		return list;
+	}
+	
+	
+	/**
+	 * @param genomeName 	name of a genome
+	 * @return				list of file related to the genome name
+	 */
+	public List<File> getFiles (String genomeName) {
+		return genomeFileAssociation.get(genomeName);
 	}
 
 
@@ -170,6 +189,20 @@ public class MGMultiGenome {
 		}
 		return names;
 	}
+	
+	
+	/**
+	 * @param genomeName 	a genome name
+	 * @param chromosome	a chromosome
+	 * @param position 		reference genome position
+	 * @return				the position information according to the genome name, the chromosome and the position
+	 */
+	public MGPosition getMGPosition (String genomeName, Chromosome chromosome, int position) {
+		return multiGenomeInformation.get(genomeName).getMGPosition(chromosome, position);
+	}
+	
+	
+	
 
 
 	/**
