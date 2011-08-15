@@ -440,4 +440,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			setBounds(screenBounds);
 		}
 	}
+
+
+	public static void reinit() {
+		// if instance is null the mainframe has never been initialized 
+		// so there is no need to do a reinit
+		if (instance != null) {
+			System.out.println("rg");
+			instance.getControlPanel().reinitChromosomePanel();
+		}		
+	}
 }
