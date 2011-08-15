@@ -127,9 +127,10 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	
 	/**
 	 * This method updates the chromosome panel when a project is loaded. 
-	 * @param genomeWindow the new genome window object
 	 */
-	public void updateChromosomePanel (GenomeWindow genomeWindow) {
+	public void updateChromosomePanel () {
+		Chromosome chromosome = ChromosomeManager.getInstance().get(0);
+		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 		setGenomeWindow(genomeWindow);
 		jcbChromosome.removeAllItems();
 		ChromosomeManager instance = ChromosomeManager.getInstance();

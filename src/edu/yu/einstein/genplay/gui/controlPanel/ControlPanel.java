@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
@@ -178,11 +179,12 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 
 	
 	/**
-	 * This method updates the chromosome panel when a project is loaded. 
-	 * @param genomeWindow the new genome window object
+	 * This method reinitializes the elements of the 
+	 * chromosome panel with the values of the {@link ChromosomeManager}. 
+	 * This method needs to be called when the chomosome manager changes.
 	 */
-	public void updateChromosomePanel (GenomeWindow genomeWindow) {
-		chromosomePanel.updateChromosomePanel(genomeWindow);
+	public void reinitChromosomePanel () {
+		chromosomePanel.updateChromosomePanel();
 	}
 	
 	
