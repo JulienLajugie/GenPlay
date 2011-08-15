@@ -20,67 +20,54 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType;
 
-
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
 /**
  * This class represent the VCF SNPs file type.
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFSNP implements Variant {
+public class VCFSNPtmp implements Variant {
 	
-	private	MGPosition 	positionInformation;		// The common genome position information
-	private String 					fullGenomeName;				// The genome name
 	private int 					genomePosition;				// The genome position
-	private int 					initialReferenceOffset;		// The offset between the genome position and the reference genome position
-	private int 					initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
-	private int 					extraOffset;				// Offset when multiple insertions happen at the same reference position
+	private int 					metaGenomePosition;			// The meta genome position
+	
 	
 	
 	/**
-	 * Constructor of {@link VCFSNP}
-	 * @param fullGenomeName 		the full genome name
-	 * @param chromosome 			the chromosome
-	 * @param positionInformation 	the position information object
+	 * Constructor of {@link VCFSNPtmp}
+	 * @param genomePosition 
+	 * @param metaGenomePosition 
 	 */
-	public VCFSNP (String fullGenomeName, Chromosome chromosome, MGPosition positionInformation) {
-		this.fullGenomeName = fullGenomeName;
-		initialReferenceOffset = 0;
-		initialMetaGenomeOffset = 0;
-		extraOffset = 0;
-		this.positionInformation = positionInformation;
+	public VCFSNPtmp (int genomePosition, int metaGenomePosition) {
+		this.genomePosition = genomePosition;
+		this.metaGenomePosition = metaGenomePosition;
 	}
 
 
 	@Override
 	public String getFullGenomeName() {
-		return fullGenomeName;
+		return null;
 	}
 
 	@Override
-	public void setFullGenomeName(String name) {
-		fullGenomeName = name;
-	}
+	public void setFullGenomeName(String name) {}
 
 	@Override
 	public String getRawGenomeName() {
-		return FormattedMultiGenomeName.getRawName(fullGenomeName);
+		return null;
 	}
 
 	@Override
 	public String getUsualGenomeName() {
-		return FormattedMultiGenomeName.getUsualName(fullGenomeName);
+		return null;
 	}
 
 	@Override
 	public String getChromosomeName() {
-		return positionInformation.getChromosomeName();
+		return null;
 	}
 
 	@Override
@@ -95,26 +82,17 @@ public class VCFSNP implements Variant {
 
 	@Override
 	public boolean isPhased() {
-		if (getFormatValue("GT").toString().charAt(1) == '|') {
-			return true;
-		}
 		return false;
 	}
 
 	@Override
 	public boolean isOnFirstAllele() {
-		if (getFormatValue("GT").toString().charAt(0) != '0') {
 			return true;
-		}
-		return false;
 	}
 
 	@Override
 	public boolean isOnSecondAllele() {
-		if (getFormatValue("GT").toString().charAt(2) != '0') {
 			return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -124,137 +102,129 @@ public class VCFSNP implements Variant {
 
 	@Override
 	public int getNextGenomePosition() {
-		return GenomePositionCalculation.getNextGenomePosition(this);
+		return getGenomePosition() + 1;
 	}
 
 	@Override
 	public int getReferenceGenomePosition() {
-		return GenomePositionCalculation.getReferenceGenomePosition(this);
+		return -1;
 	}
 
 	@Override
 	public int getNextReferenceGenomePosition() {
-		return GenomePositionCalculation.getNextReferenceGenomePosition(this);
+		return -1;
 	}
 
 	@Override
 	public int getNextReferenceGenomePosition(int position) {
-		return GenomePositionCalculation.getNextReferenceGenomePosition(this, position);
+		return -1;
 	}
 
 	@Override
 	public int getMetaGenomePosition() {
-		return GenomePositionCalculation.getMetaGenomePosition(this);
+		return metaGenomePosition;
 	}
 
 	@Override
 	public int getNextMetaGenomePosition() {
-		return GenomePositionCalculation.getNextMetaGenomePosition(this);
+		return getMetaGenomePosition() + 1;
 	}
 
 	@Override
-	public void setGenomePosition(int position) {
-		genomePosition = position;
-	}
+	public void setGenomePosition(int position) {}
 
 	@Override
 	public int getNextMetaGenomePosition(int position) {
-		return GenomePositionCalculation.getNextMetaGenomePosition(this, position);
+		return getNextMetaGenomePosition();
 	}
 
 	@Override
 	public int getExtraOffset() {
-		return extraOffset;
+		return -1;
 	}
 
 	@Override
 	public int getInitialReferenceOffset() {
-		return initialReferenceOffset;
+		return -1;
 	}
 
 	@Override
 	public int getNextReferencePositionOffset() {
-		return GenomePositionCalculation.getNextReferencePositionOffset(this);
+		return -1;
 	}
 
 	@Override
 	public int getInitialMetaGenomeOffset() {
-		return initialMetaGenomeOffset;
+		return getMetaGenomePosition() - getGenomePosition();
 	}
 
 	@Override
 	public int getNextMetaGenomePositionOffset() {
-		return GenomePositionCalculation.getNextMetaGenomePositionOffset(this);
+		return getInitialMetaGenomeOffset() + 1;
 	}
 
 	@Override
-	public void addExtraOffset(int offset) {
-		this.extraOffset += extraOffset;
-	}
+	public void addExtraOffset(int offset) {}
 
 	@Override
-	public void setInitialReferenceOffset(int offset) {
-		this.initialReferenceOffset = offset;
-	}
+	public void setInitialReferenceOffset(int offset) {}
 
 	@Override
-	public void setInitialMetaGenomeOffset(int offset) {
-		this.initialMetaGenomeOffset = offset;
-	}
+	public void setInitialMetaGenomeOffset(int offset) {}
 	
 	@Override
 	public MGPosition getPositionInformation() {
-		return positionInformation;
+		return null;
 	}
 
 	@Override
 	public String getId() {
-		return positionInformation.getId();
+		return null;
 	}
 
 	@Override
 	public String getReference() {
-		return positionInformation.getReference();
+		return null;
 	}
 
 	@Override
 	public String getAlternative() {
-		return positionInformation.getAlternative();
+		return null;
 	}
 
 	@Override
 	public Double getQuality() {
-		return positionInformation.getQuality();
+		return null;
 	}
 
 	@Override
 	public boolean getFilter() {
-		return positionInformation.getFilter();
+		return true;
 	}
 
 	@Override
 	public String getInfo() {
-		return positionInformation.getInfo();
+		return null;
 	}
 
 	@Override
 	public Object getInfoValue(String field) {
-		return positionInformation.getInfoValue(field);
+		return null;
 	}
 
 	@Override
 	public String getFormat() {
-		return positionInformation.getFormat();
+		return null;
 	}
 
 	@Override
 	public String getFormatValues () {
-		return positionInformation.getFormatValues(getRawGenomeName());
+		return null;
 	}
 
 	@Override
 	public Object getFormatValue(String field) {
-		return positionInformation.getFormatValue(getRawGenomeName(), field);
+		return null;
 	}
 	
 	

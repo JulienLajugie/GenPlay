@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.fileFilter.XMLFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.newProject.vcf.SettingsHandler;
@@ -246,34 +247,18 @@ class MultiGenomePanel extends JPanel {
 
 
 	/**
-	 * @return the genome/group association
+	 * @return the mapping between genome full names and their files.
 	 */
-	protected Map<String, List<String>> getGenomeGroupAssociation () {
-		return vcfLoader.getGenomeGroupAssociation();
+	protected Map<String, List<File>> getGenomeFileAssociation ()  {
+		return vcfLoader.getGenomeFileAssociation();
 	}
 
 
 	/**
-	 * @return the genome/VCF association
+	 * @return the mapping between files and their readers.
 	 */
-	protected Map<String, List<File>> getGenomeFilesAssociation () {
-		return vcfLoader.getGenomeFilesAssociation();
-	}
-
-
-	/**
-	 * @return the raw/usual genome names association
-	 */
-	protected Map<String, String> getGenomeNamesAssociation () {
-		return vcfLoader.getGenomeNamesAssociation();
-	}
-
-
-	/**
-	 * @return the VCF type/files association
-	 */
-	protected Map<VCFType, List<File>> getFilesTypeAssociation () {
-		return vcfLoader.getFilesTypeAssociation();
+	protected Map<File, VCFReader> getFileReadersAssociation () {
+		return vcfLoader.getFileReadersAssociation();
 	}
 
 

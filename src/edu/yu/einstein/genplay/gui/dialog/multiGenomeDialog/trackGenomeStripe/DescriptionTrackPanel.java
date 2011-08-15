@@ -45,7 +45,7 @@ class DescriptionTrackPanel extends JPanel {
 	public DescriptionTrackPanel (int width) {
 		
 		//Dimension
-		Dimension panelDim = new Dimension(width, MultiGenomePanel.getDescriptionPanelHeight());
+		Dimension panelDim = new Dimension(width, MultiGenomeStripeSelectionDialog.getDescriptionPanelHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
@@ -53,15 +53,15 @@ class DescriptionTrackPanel extends JPanel {
 		
 		
 		//Labels
-		nameLabel = new JLabel(MultiGenomePanel.getDescriptionTrackName());
-		groupLabel = new JLabel(MultiGenomePanel.getDescriptionTrackGroup());
+		nameLabel = new JLabel(MultiGenomeStripeSelectionDialog.getDescriptionTrackName());
+		groupLabel = new JLabel(MultiGenomeStripeSelectionDialog.getDescriptionTrackGroup());
 		nameValue = new JLabel();
 		groupValue = new JLabel();
 		
 		
 		//Label dimension
-		Dimension labelDim = new Dimension(getLabelWidth(), MultiGenomePanel.getDescriptionLineHeight());
-		Dimension valueDim = new Dimension(getValueWidth(), MultiGenomePanel.getDescriptionLineHeight());
+		Dimension labelDim = new Dimension(getLabelWidth(), MultiGenomeStripeSelectionDialog.getDescriptionLineHeight());
+		Dimension valueDim = new Dimension(getValueWidth(), MultiGenomeStripeSelectionDialog.getDescriptionLineHeight());
 		setLabelSize(nameLabel, labelDim);
 		setLabelSize(groupLabel, labelDim);
 		setLabelSize(nameValue, valueDim);
@@ -77,25 +77,25 @@ class DescriptionTrackPanel extends JPanel {
 		//nameLabel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(MultiGenomePanel.getDescriptionInset(), getLeftInset(), 0, 0);
+		gbc.insets = new Insets(MultiGenomeStripeSelectionDialog.getDescriptionInset(), getLeftInset(), 0, 0);
 		add(nameLabel, gbc);
 		
 		//nameValue
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(MultiGenomePanel.getDescriptionInset(), 0, 0, 0);
+		gbc.insets = new Insets(MultiGenomeStripeSelectionDialog.getDescriptionInset(), 0, 0, 0);
 		add(nameValue, gbc);
 		
 		//nameLabel
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.insets = new Insets(0, getLeftInset(), MultiGenomePanel.getDescriptionInset(), 0);
+		gbc.insets = new Insets(0, getLeftInset(), MultiGenomeStripeSelectionDialog.getDescriptionInset(), 0);
 		add(groupLabel, gbc);
 		
 		//nameValue
 		gbc.gridx = 1;
 		gbc.gridy = 1;
-		gbc.insets = new Insets(0, 0, MultiGenomePanel.getDescriptionInset(), 0);
+		gbc.insets = new Insets(0, 0, MultiGenomeStripeSelectionDialog.getDescriptionInset(), 0);
 		add(groupValue, gbc);
 		
 		
@@ -115,15 +115,15 @@ class DescriptionTrackPanel extends JPanel {
 	}
 	
 	private int getLeftInset () {
-		return MultiGenomePanel.getHorizontalInset();
+		return MultiGenomeStripeSelectionDialog.getHorizontalInset();
 	}
 	
 	private int getLabelWidth () {
-		return MultiGenomePanel.getDescriptionLabelWidth();
+		return MultiGenomeStripeSelectionDialog.getDescriptionLabelWidth();
 	}
 	
 	private int getValueWidth () {
-		int width = MultiGenomePanel.getDialogWidth() - getLeftInset() - getLabelWidth();
+		int width = MultiGenomeStripeSelectionDialog.getDialogWidth() - getLeftInset() - getLabelWidth();
 		return width;
 	}
 	

@@ -21,7 +21,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeInformation;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 
@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class ShiftCompute {
 
-	private static MGChromosomeInformation chromInfo;		// Chromosome information which contains position list
+	private static MGChromosome chromInfo;		// Chromosome information which contains position list
 	private static boolean 	found;							// Determines is the new position has been found
 	private static int[] 	indexes;						// List of indexed reference position
 	private static int 		referencePosition;				// The closest inferior reference position according to the given genome position
@@ -135,7 +135,7 @@ public class ShiftCompute {
 	 * @return	the genome position
 	 */
 	private static int getGenomePosition (int referenceGenomePosition) {
-		return chromInfo.getPosition(referenceGenomePosition).getGenomePosition();
+		return chromInfo.getVariant(referenceGenomePosition).getGenomePosition();
 	}
 
 
@@ -145,7 +145,7 @@ public class ShiftCompute {
 	 * @return	the genome position
 	 */
 	private static int getMetaGenomePosition (int referenceGenomePosition) {
-		return chromInfo.getPosition(referenceGenomePosition).getMetaGenomePosition();
+		return chromInfo.getVariant(referenceGenomePosition).getMetaGenomePosition();
 	}
 
 
@@ -185,7 +185,7 @@ public class ShiftCompute {
 	 * @param genomePosition	the given genome position
 	 */
 	private static void finishShifting (int genomePosition) {
-		Variant position = chromInfo.getPosition(referencePosition);
+		Variant position = chromInfo.getVariant(referencePosition);
 		if (genomePosition >= position.getGenomePosition()) {
 			if (genomePosition == position.getGenomePosition()) {
 				newPosition = position.getMetaGenomePosition();
@@ -282,7 +282,7 @@ public class ShiftCompute {
 	 * @param metaGenomePosition	the given genome position
 	 */
 	private static void finishReversedShifting (int metaGenomePosition) {
-		Variant position = chromInfo.getPosition(referencePosition);
+		Variant position = chromInfo.getVariant(referencePosition);
 		if (metaGenomePosition >= position.getMetaGenomePosition()) {
 			if (metaGenomePosition >= position.getMetaGenomePosition()) {
 				if (metaGenomePosition < position.getNextMetaGenomePosition()) {

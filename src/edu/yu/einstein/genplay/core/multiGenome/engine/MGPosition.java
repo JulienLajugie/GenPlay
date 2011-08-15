@@ -27,24 +27,24 @@ import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeMa
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 
 /**
- * This class gather all common genome information contained in a line of a VCF file.
+ * This class gathers all common genome information contained in a line of a VCF file.
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGPositionInformation {
+public class MGPosition {
 
-	private Chromosome chromosome;
-	private Map<String, Object> VCFLine;
-	private VCFReader reader;
+	private Chromosome 				chromosome;	// The chromosome
+	private Map<String, Object> 	VCFLine;	// The line from the VCF file
+	private VCFReader 				reader;		// The reader object of the VCF file
 
 
 	/**
-	 * Constructor of {@link MGPositionInformation}
+	 * Constructor of {@link MGPosition}
 	 * @param chromosome 	the chromosome
 	 * @param line 			the line information from the VCF file
 	 * @param reader 		the VCF reader associated to the the VCF file
 	 */
-	public MGPositionInformation (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
+	public MGPosition (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
 		this.chromosome = chromosome;
 		this.reader = reader;
 		VCFLine = line;
@@ -61,7 +61,15 @@ public class MGPositionInformation {
 		return ReferenceGenomeManager.getInstance().getReferenceName();
 	}
 	
-
+	
+	/**
+	 * @return the ID field
+	 */
+	public int getPos() {
+		return Integer.parseInt(getString(VCFLine.get("POS")));
+	}
+	
+	
 	/**
 	 * @return the ID field
 	 */
@@ -93,7 +101,6 @@ public class MGPositionInformation {
 		try {
 			return Double.valueOf(getString(VCFLine.get("QUAL")));
 		} catch (Exception e) {
-			System.out.println("catch");
 			return 100.0;
 		}
 	}
@@ -155,14 +162,7 @@ public class MGPositionInformation {
 		String[] formatValues;
 		if (formatHeader.length == 1) {
 			formatValues = new String[1];
-			
-			try {
-				formatValues[0] = getString(VCFLine.get(genomeRawName));
-			} catch (Exception e) {
-				System.out.println(genomeRawName);
-				showLine();
-			}
-			
+			formatValues[0] = getString(VCFLine.get(genomeRawName));
 		} else {
 			formatValues = getString(VCFLine.get(genomeRawName)).split(":");
 		}
@@ -176,6 +176,14 @@ public class MGPositionInformation {
 
 	
 	/**
+	 * @return the string of the VCF line
+	 */
+	public String getVCFLine () {
+		return VCFLine.toString();
+	}
+	
+	
+	/**
 	 * Casts an object to a String value and performs a trim operation
 	 * @param o Object to cast
 	 * @return	a String value
@@ -183,16 +191,4 @@ public class MGPositionInformation {
 	private String getString (Object o) {
 		return o.toString().trim();
 	}
-	
-	
-	
-	//@SuppressWarnings("unused")
-	private void showLine () {
-		String info = "";
-		for (String key: VCFLine.keySet()) {
-			info += key + ": " + VCFLine.get(key) + " | ";
-		}
-		System.out.println(info);
-	}
-	
 }

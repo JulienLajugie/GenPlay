@@ -148,11 +148,9 @@ public class Launcher {
 		projectFrame.setVisible(false);
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSimpleProject()) {
-			MultiGenomeManager multiGenomeManager = MultiGenomeManager.getInstance();
-			multiGenomeManager.setGenomes(projectFrame.getGenomeGroupAssociation(),
-					projectFrame.getGenomeFilesAssociation(),
-					projectFrame.getGenomeNamesAssociation(),
-					projectFrame.getFilesTypeAssociation());
+			MultiGenomeManager multiGenomeManager = null;
+			multiGenomeManager = MultiGenomeManager.getInstance();
+			multiGenomeManager.init(projectFrame.getFileReadersAssociation(), projectFrame.getGenomeFileAssociation());
 		}
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);

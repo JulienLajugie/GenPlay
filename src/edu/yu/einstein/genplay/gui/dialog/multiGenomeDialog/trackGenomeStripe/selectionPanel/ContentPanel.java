@@ -28,7 +28,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 
 /**
@@ -45,17 +45,17 @@ class ContentPanel extends JPanel {
 
 	protected ContentPanel () {
 
-		GridLayout layout = new GridLayout(MultiGenomePanel.getGenomeNumber(), 1, 0, 0);
+		GridLayout layout = new GridLayout(MultiGenomeStripeSelectionDialog.getGenomeNumber(), 1, 0, 0);
 		setLayout(layout);
 
-		rows = new RowPanel[MultiGenomePanel.getGenomeNumber()];
-		for (int i = 0; i < MultiGenomePanel.getGenomeNumber(); i++) {
-			rows[i] = new RowPanel(MultiGenomePanel.getGenomeNames(i));
+		rows = new RowPanel[MultiGenomeStripeSelectionDialog.getGenomeNumber()];
+		for (int i = 0; i < MultiGenomeStripeSelectionDialog.getGenomeNumber(); i++) {
+			rows[i] = new RowPanel(MultiGenomeStripeSelectionDialog.getGenomeNames(i));
 			add(rows[i]);
 		}
 
 		//Dimension
-		Dimension panelDim = new Dimension(MultiGenomePanel.getDialogWidth(), MultiGenomePanel.getSelectionPanelHeight());
+		Dimension panelDim = new Dimension(MultiGenomeStripeSelectionDialog.getDialogWidth(), MultiGenomeStripeSelectionDialog.getSelectionPanelHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
@@ -68,9 +68,9 @@ class ContentPanel extends JPanel {
 	 * @param colorAssociation the genome names and colors association
 	 */
 	protected void initColors (Map<String, Map<VariantType, Color>> colorAssociation) {
-		for (int i = 0; i < MultiGenomePanel.getGenomeNumber(); i++) {
-			if (colorAssociation.get(MultiGenomePanel.getGenomeNames(i)) != null) {
-				rows[i].initColors(colorAssociation.get(MultiGenomePanel.getGenomeNames(i)));
+		for (int i = 0; i < MultiGenomeStripeSelectionDialog.getGenomeNumber(); i++) {
+			if (colorAssociation.get(MultiGenomeStripeSelectionDialog.getGenomeNames(i)) != null) {
+				rows[i].initColors(colorAssociation.get(MultiGenomeStripeSelectionDialog.getGenomeNames(i)));
 			}
 		}
 	}

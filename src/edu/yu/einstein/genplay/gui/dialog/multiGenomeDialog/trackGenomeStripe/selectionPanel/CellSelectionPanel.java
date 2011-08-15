@@ -33,7 +33,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 
 /**
@@ -51,7 +51,7 @@ class CellSelectionPanel extends JPanel {
 	
 	protected CellSelectionPanel (Color color) {
 		//Dimension
-		Dimension panelDim = new Dimension(MultiGenomePanel.getCellVcfTypeWidth(), MultiGenomePanel.getRowHeight());
+		Dimension panelDim = new Dimension(MultiGenomeStripeSelectionDialog.getCellVcfTypeWidth(), MultiGenomeStripeSelectionDialog.getRowHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
@@ -72,7 +72,7 @@ class CellSelectionPanel extends JPanel {
 		
 		//Color label
 		colorButton = new JButton();
-		Dimension labelDim = new Dimension(MultiGenomePanel.getColorButtonSide(), MultiGenomePanel.getColorButtonSide());
+		Dimension labelDim = new Dimension(MultiGenomeStripeSelectionDialog.getColorButtonSide(), MultiGenomeStripeSelectionDialog.getColorButtonSide());
 		colorButton.setSize(labelDim);
 		colorButton.setPreferredSize(labelDim);
 		colorButton.setMinimumSize(labelDim);
@@ -92,7 +92,7 @@ class CellSelectionPanel extends JPanel {
 		
 		//Fake label
 		JLabel fake = new JLabel();
-		Dimension fakeDim = new Dimension(MultiGenomePanel.getColorButtonSide()/2, MultiGenomePanel.getColorButtonSide());
+		Dimension fakeDim = new Dimension(MultiGenomeStripeSelectionDialog.getColorButtonSide()/2, MultiGenomeStripeSelectionDialog.getColorButtonSide());
 		fake.setSize(fakeDim);
 		fake.setPreferredSize(fakeDim);
 		fake.setMinimumSize(fakeDim);

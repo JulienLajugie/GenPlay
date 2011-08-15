@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 
 /**
@@ -74,7 +74,7 @@ public class GenomeSelectionPanel extends JPanel{
 		//nameLabel
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(0, MultiGenomePanel.getHorizontalInset(), 0, MultiGenomePanel.getHorizontalInset());
+		gbc.insets = new Insets(0, MultiGenomeStripeSelectionDialog.getHorizontalInset(), 0, MultiGenomeStripeSelectionDialog.getHorizontalInset());
 		add(header, gbc);
 		
 		//nameValue

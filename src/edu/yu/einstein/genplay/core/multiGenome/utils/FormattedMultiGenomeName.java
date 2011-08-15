@@ -26,7 +26,11 @@ package edu.yu.einstein.genplay.core.multiGenome.utils;
  * - genome group name
  * - genome usual name
  * - genome raw name
- * This class can generate the formatted genome name or extract information.
+ * This class can generate the formatted genome name or extract names from it.
+ * 
+ * A raw name is the name of the genome given in a VCF file.
+ * A usual name is associated to a raw name in order to make it more understandable.
+ * A group name gather raw name in a same group (will be used for operation).
  * 
  * @author Nicolas Fourel
  * @version 0.1

@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 
 /**
@@ -48,7 +48,7 @@ public class RowPanel extends JPanel {
 	private CellSelectionPanel insertionBox;
 	private CellSelectionPanel deletionBox;
 	private CellSelectionPanel snpsBox;
-	private CellSelectionPanel svBox;
+	//private CellSelectionPanel svBox;
 	
 	
 	/**
@@ -58,7 +58,7 @@ public class RowPanel extends JPanel {
 	protected RowPanel (String genomeGroupName) {
 		
 		//Dimension
-		Dimension panelDim = new Dimension(MultiGenomePanel.getDialogWidth(), MultiGenomePanel.getRowHeight());
+		Dimension panelDim = new Dimension(MultiGenomeStripeSelectionDialog.getDialogWidth(), MultiGenomeStripeSelectionDialog.getRowHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
@@ -66,15 +66,15 @@ public class RowPanel extends JPanel {
 		
 		//Components
 		genomeGroup = new JLabel(genomeGroupName);
-		insertionBox = new CellSelectionPanel(MultiGenomeManager.getInsertionDefaultColor());
-		deletionBox = new CellSelectionPanel(MultiGenomeManager.getDeletionDefaultColor());
-		snpsBox = new CellSelectionPanel(MultiGenomeManager.getSnpsDefaultColor());
-		svBox = new CellSelectionPanel(MultiGenomeManager.getSvDefaultColor());
+		insertionBox = new CellSelectionPanel(MultiGenomeManager.INSERTION_DEFAULT_COLOR);
+		deletionBox = new CellSelectionPanel(MultiGenomeManager.DELETION_DEFAULT_COLOR);
+		snpsBox = new CellSelectionPanel(MultiGenomeManager.SNPS_DEFAULT_COLOR);
+		//svBox = new CellSelectionPanel(MultiGenomeManager.SV_DEFAULT_COLOR);
 		
 		//snpsBox.betaLimit();
-		svBox.betaLimit();
+		//svBox.betaLimit();
 		
-		Dimension genomeDim = new Dimension(MultiGenomePanel.getGroupLabelWidth(), MultiGenomePanel.getRowHeight());
+		Dimension genomeDim = new Dimension(MultiGenomeStripeSelectionDialog.getGroupLabelWidth(), MultiGenomeStripeSelectionDialog.getRowHeight());
 		genomeGroup.setSize(genomeDim);
 		genomeGroup.setPreferredSize(genomeDim);
 		genomeGroup.setMinimumSize(genomeDim);
@@ -108,9 +108,9 @@ public class RowPanel extends JPanel {
 		add(snpsBox, gbc);
 		
 		//svBox
-		gbc.gridx = 4;
+		/*gbc.gridx = 4;
 		gbc.gridy = 0;
-		add(svBox, gbc);
+		add(svBox, gbc);*/
 		
 	}
 	
@@ -151,9 +151,11 @@ public class RowPanel extends JPanel {
 		Map<VariantType, Color> stripe = new HashMap<VariantType, Color>();
 		if (insertionBox.isSelected()) {
 			stripe.put(VariantType.INSERTION, insertionBox.getColor());
+			stripe.put(VariantType.INS, insertionBox.getColor());
 		}
 		if (deletionBox.isSelected()) {
 			stripe.put(VariantType.DELETION, deletionBox.getColor());
+			stripe.put(VariantType.DEL, deletionBox.getColor());
 		}
 		if (snpsBox.isSelected()) {
 			stripe.put(VariantType.SNPS, snpsBox.getColor());

@@ -15,6 +15,12 @@ import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 
 
+/**
+ * This class is used only for my development.
+ * 
+ * @author Nicolas Fourel
+ * @version 0.1
+ */
 public class Development {
 
 	private static Date delay_start;
@@ -24,7 +30,11 @@ public class Development {
 	
 	/**
 	 * Fake chromosome list, used for development.
+<<<<<<< .working
 	 * @return a fake chromosome list
+=======
+	 * @return a fake list of chromosome
+>>>>>>> .merge-right.r413
 	 */
 	public static Map<String, Chromosome> getFakeChromosomeList () {
 		if (chromosomeList == null) {

@@ -27,7 +27,7 @@ class QualityPanel extends JPanel implements ChangeListener {
 
 	protected QualityPanel (int width) {
 		//Dimension
-		Dimension panelDim = new Dimension(width, MultiGenomePanel.getThresholdPanelHeight());
+		Dimension panelDim = new Dimension(width, MultiGenomeStripeSelectionDialog.getThresholdPanelHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
@@ -36,7 +36,7 @@ class QualityPanel extends JPanel implements ChangeListener {
 
 		//Name label
 		name = new JLabel("Quality score >=");
-		Dimension labelDim = new Dimension(MultiGenomePanel.getThresholdLabelWidth(), MultiGenomePanel.getThresholdLineHeight());
+		Dimension labelDim = new Dimension(MultiGenomeStripeSelectionDialog.getThresholdLabelWidth(), MultiGenomeStripeSelectionDialog.getThresholdLineHeight());
 		name.setSize(labelDim);
 		name.setPreferredSize(labelDim);
 		name.setMinimumSize(labelDim);
@@ -49,7 +49,7 @@ class QualityPanel extends JPanel implements ChangeListener {
 		slider.setMinorTickSpacing(1);
 		//slider.setPaintTicks(true);
 		//slider.setPaintLabels(true);
-		Dimension sliderDim = new Dimension(getSliderWidth(width), MultiGenomePanel.getThresholdLineHeight());
+		Dimension sliderDim = new Dimension(getSliderWidth(width), MultiGenomeStripeSelectionDialog.getThresholdLineHeight());
 		slider.setSize(sliderDim);
 		slider.setPreferredSize(sliderDim);
 		slider.setMinimumSize(sliderDim);
@@ -57,7 +57,7 @@ class QualityPanel extends JPanel implements ChangeListener {
 
 		//Value label
 		value = new JLabel(QUALITY_INIT + "");
-		Dimension valueDim = new Dimension(40, MultiGenomePanel.getThresholdLineHeight());
+		Dimension valueDim = new Dimension(40, MultiGenomeStripeSelectionDialog.getThresholdLineHeight());
 		value.setSize(valueDim);
 		value.setPreferredSize(valueDim);
 		value.setMinimumSize(valueDim);
@@ -73,13 +73,13 @@ class QualityPanel extends JPanel implements ChangeListener {
 		//value
 		gbc.gridx = 1;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(MultiGenomePanel.getThresholdInset(), getSliderLeftInset(), 0, 0);
+		gbc.insets = new Insets(MultiGenomeStripeSelectionDialog.getThresholdInset(), getSliderLeftInset(), 0, 0);
 		add(value, gbc);
 
 		//name
 		gbc.gridx = 0;
 		gbc.gridy = 1;
-		gbc.insets = new Insets(0, MultiGenomePanel.getHorizontalInset(), 0, (SLIDER_RIGHT_OFFSET/2));
+		gbc.insets = new Insets(0, MultiGenomeStripeSelectionDialog.getHorizontalInset(), 0, (SLIDER_RIGHT_OFFSET/2));
 		add(name, gbc);
 
 		//slider
@@ -98,7 +98,7 @@ class QualityPanel extends JPanel implements ChangeListener {
 
 
 	private int getSliderWidth (int width) {
-		int sliderWidth = width - (MultiGenomePanel.getThresholdLabelWidth() + MultiGenomePanel.getHorizontalInset() + SLIDER_RIGHT_OFFSET);
+		int sliderWidth = width - (MultiGenomeStripeSelectionDialog.getThresholdLabelWidth() + MultiGenomeStripeSelectionDialog.getHorizontalInset() + SLIDER_RIGHT_OFFSET);
 		return sliderWidth;
 	}
 

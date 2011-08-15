@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.launcher.Launcher;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.loadProject.LoadProjectPanel;
@@ -331,34 +332,18 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * @return the raw genome name/group association map
+	 * @return the mapping between genome full names and their files.
 	 */
-	public Map<String, List<String>> getGenomeGroupAssociation () {
-		return newProjectPanel.getGenomeGroupAssociation();
+	public Map<String, List<File>> getGenomeFileAssociation ()  {
+		return newProjectPanel.getGenomeFileAssociation();
 	}
 
 
 	/**
-	 * @return the genome group name/VCF file association map
+	 * @return the mapping between files and their readers.
 	 */
-	public Map<String, List<File>> getGenomeFilesAssociation () {
-		return newProjectPanel.getGenomeFilesAssociation();
-	}
-
-
-	/**
-	 * @return the raw/usual genome name association map
-	 */
-	public Map<String, String> getGenomeNamesAssociation () {
-		return newProjectPanel.getGenomeNamesAssociation();
-	}
-
-
-	/**
-	 * @return the VCF type/files association map
-	 */
-	public Map<VCFType, List<File>> getFilesTypeAssociation () {
-		return newProjectPanel.getFilesTypeAssociation();
+	public Map<File, VCFReader> getFileReadersAssociation () {
+		return newProjectPanel.getFileReadersAssociation();
 	}
 
 
