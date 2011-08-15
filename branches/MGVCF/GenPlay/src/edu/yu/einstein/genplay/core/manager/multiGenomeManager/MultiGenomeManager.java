@@ -41,6 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
 
@@ -199,7 +200,7 @@ public class MultiGenomeManager {
 							0,
 							chromosome.getLength());
 
-					final List<String> genomeNames = genomesInformation.getGenomeNameList();
+					final List<String> genomeNames = getRequiredGenomeNamesInVCFFile(reader);
 
 					//Analyse query results
 					createPositions(chromosome, genomeNames, result, vcfType, reader);
@@ -210,6 +211,26 @@ public class MultiGenomeManager {
 		return valid;
 	}
 
+	
+	/**
+	 * This method compares the list of genome names in the project and the genome names from a VCF file.
+	 * It returns the list of genome from a VCF file only if they have been required.
+	 * @param reader	the reader of the VCF file
+	 * @return 			the list of genome names
+	 */
+	private List<String> getRequiredGenomeNamesInVCFFile (VCFReader reader) {
+		final List<String> projectGenomeNames = genomesInformation.getGenomeNameList();
+		final List<String> vcfGenomeNames = reader.getRawGenomesNames();
+		List<String> genomeNames = new ArrayList<String>();
+		for (String fullName: projectGenomeNames) {
+			if (vcfGenomeNames.contains(FormattedMultiGenomeName.getRawName(fullName))) {
+				genomeNames.add(fullName);
+			}
+		}
+		return genomeNames;
+	}
+	
+	
 
 	/**
 	 * Creates insertion and deletion positions from the query results.

@@ -31,8 +31,11 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 
 
 /**
- * This class manages the chromosome information.
- * Those information are the position and its relative information.
+ * This class manages the chromosome information in a multi genome project.
+ * Those information are mainly the list of variant for a specific chromosome.
+ * 
+ * This class can be considered as a "sub-class" of {@link MGGenome}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */

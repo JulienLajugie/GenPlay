@@ -26,7 +26,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 /**
  * 
@@ -41,7 +41,7 @@ class HeaderPanel extends JPanel {
 		//setBackground(MultiGenomePanel.getHeaderColor());
 		
 		//Dimension
-		Dimension panelDim = new Dimension(MultiGenomePanel.getDialogWidth(), MultiGenomePanel.getHeaderHeight());
+		Dimension panelDim = new Dimension(MultiGenomeStripeSelectionDialog.getDialogWidth(), MultiGenomeStripeSelectionDialog.getHeaderHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
@@ -51,17 +51,17 @@ class HeaderPanel extends JPanel {
 		JLabel insertion = new JLabel("Insertion");
 		JLabel deletion = new JLabel("Deletion");
 		JLabel snps = new JLabel("SNPs");
-		JLabel sv = new JLabel("SV");
+		//JLabel sv = new JLabel("SV");
 		
 		group.setHorizontalAlignment(JLabel.CENTER);
 		insertion.setHorizontalAlignment(JLabel.CENTER);
 		deletion.setHorizontalAlignment(JLabel.CENTER);
 		snps.setHorizontalAlignment(JLabel.CENTER);
-		sv.setHorizontalAlignment(JLabel.CENTER);
+		//sv.setHorizontalAlignment(JLabel.CENTER);
 		
 		
-		Dimension groupDim = new Dimension(MultiGenomePanel.getGroupLabelWidth(), MultiGenomePanel.getHeaderHeight());
-		Dimension typeDim = new Dimension(MultiGenomePanel.getCellVcfTypeWidth(), MultiGenomePanel.getHeaderHeight());
+		Dimension groupDim = new Dimension(MultiGenomeStripeSelectionDialog.getGroupLabelWidth(), MultiGenomeStripeSelectionDialog.getHeaderHeight());
+		Dimension typeDim = new Dimension(MultiGenomeStripeSelectionDialog.getCellVcfTypeWidth(), MultiGenomeStripeSelectionDialog.getHeaderHeight());
 		
 		
 		//setLabelSize(fake, selectionDim);
@@ -69,7 +69,7 @@ class HeaderPanel extends JPanel {
 		setLabelSize(insertion, typeDim);
 		setLabelSize(deletion, typeDim);
 		setLabelSize(snps, typeDim);
-		setLabelSize(sv, typeDim);
+		//setLabelSize(sv, typeDim);
 		
 		
 		//Layout
@@ -99,9 +99,9 @@ class HeaderPanel extends JPanel {
 		add(snps, gbc);
 		
 		//sv
-		gbc.gridx = 4;
+		/*gbc.gridx = 4;
 		gbc.gridy = 0;
-		add(sv, gbc);
+		add(sv, gbc);*/
 		
 	}
 	

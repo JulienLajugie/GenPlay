@@ -35,12 +35,12 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
  */
 public class VCFIndel implements Variant {
 
-	private	MGPosition 	positionInformation;		// The common genome position information
-	private String 					fullGenomeName;				// The genome name
-	private int 					genomePosition;				// The genome position
-	private int 					initialReferenceOffset;		// The offset between the genome position and the reference genome position
-	private int 					initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
-	private int 					extraOffset;				// Offset when multiple insertions happen at the same reference position
+	private	MGPosition 		positionInformation;		// The common genome position information
+	private String 			fullGenomeName;				// The genome name
+	private int 			genomePosition;				// The genome position
+	private int 			initialReferenceOffset;		// The offset between the genome position and the reference genome position
+	private int 			initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
+	private int 			extraOffset;				// Offset when multiple insertions happen at the same reference position
 
 
 	/**
@@ -263,6 +263,17 @@ public class VCFIndel implements Variant {
 	@Override
 	public Object getFormatValue(String field) {
 		return positionInformation.getFormatValue(getRawGenomeName(), field);
+	}
+	
+	@Override
+	public String toString () {
+		String info = "Indel " + getType();
+		info += " [" + getFullGenomeName() + "]";
+		info += " GP:[" + getGenomePosition() + " -> " + getNextGenomePosition() + "]";
+		info += " RGP:[" + getReferenceGenomePosition() + " -> " + getNextReferenceGenomePosition() + "]";
+		info += " MGP:[" + getMetaGenomePosition() + " -> " + getNextMetaGenomePosition() + "]";
+		info += " VCF:[" + positionInformation.getVCFLine() + "]";
+		return info;
 	}
 
 }

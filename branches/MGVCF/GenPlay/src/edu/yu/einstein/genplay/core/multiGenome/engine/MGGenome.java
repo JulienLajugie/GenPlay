@@ -29,16 +29,22 @@ import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 
 
+
+
 /**
- * This class manages the genome information.
- * Those information are the chromosome and its relative information.
+ * This class manages the genome information in a multi genome project.
+ * The genome information is all variation information for a specific genome.
+ * Those information are mainly the list of {@link MGChromosome} object.
+ * 
+ * This class can be considered as a "sub-class" of {@link MGMultiGenome}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class MGGenome {
 
 	private		final String					genomeName;				// The full genome information
-	private 	Map<Chromosome, MGChromosome> 	genomeInformation;			// Chromosomes information of the genome
+	private 	Map<Chromosome, MGChromosome> 	genomeInformation;		// Chromosomes information of the genome
 
 
 	/**

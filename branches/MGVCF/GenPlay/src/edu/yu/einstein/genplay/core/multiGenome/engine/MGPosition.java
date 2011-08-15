@@ -27,15 +27,15 @@ import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeMa
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 
 /**
- * This class gather all common genome information contained in a line of a VCF file.
+ * This class gathers all common genome information contained in a line of a VCF file.
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class MGPosition {
 
-	private Chromosome chromosome;
-	private Map<String, Object> VCFLine;
-	private VCFReader reader;
+	private Chromosome 				chromosome;	// The chromosome
+	private Map<String, Object> 	VCFLine;	// The line from the VCF file
+	private VCFReader 				reader;		// The reader object of the VCF file
 
 
 	/**
@@ -101,7 +101,6 @@ public class MGPosition {
 		try {
 			return Double.valueOf(getString(VCFLine.get("QUAL")));
 		} catch (Exception e) {
-			//System.out.println("catch");
 			return 100.0;
 		}
 	}
@@ -163,14 +162,7 @@ public class MGPosition {
 		String[] formatValues;
 		if (formatHeader.length == 1) {
 			formatValues = new String[1];
-			
-			try {
-				formatValues[0] = getString(VCFLine.get(genomeRawName));
-			} catch (Exception e) {
-				System.out.println(genomeRawName);
-				showLine();
-			}
-			
+			formatValues[0] = getString(VCFLine.get(genomeRawName));
 		} else {
 			formatValues = getString(VCFLine.get(genomeRawName)).split(":");
 		}
@@ -184,6 +176,14 @@ public class MGPosition {
 
 	
 	/**
+	 * @return the string of the VCF line
+	 */
+	public String getVCFLine () {
+		return VCFLine.toString();
+	}
+	
+	
+	/**
 	 * Casts an object to a String value and performs a trim operation
 	 * @param o Object to cast
 	 * @return	a String value
@@ -191,15 +191,4 @@ public class MGPosition {
 	private String getString (Object o) {
 		return o.toString().trim();
 	}
-	
-	
-	//@SuppressWarnings("unused")
-	private void showLine () {
-		String info = "";
-		for (String key: VCFLine.keySet()) {
-			info += key + ": " + VCFLine.get(key) + " | ";
-		}
-		System.out.println(info);
-	}
-	
 }

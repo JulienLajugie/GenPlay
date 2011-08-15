@@ -20,9 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
-import java.awt.RadialGradientPaint;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,19 +27,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
-
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.DisplayableDataList;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNPtmp;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 /**
  * This class adapts VCF variant information to displayable variant.
@@ -61,12 +52,10 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	// Filter variables
 	private Map<String, List<VariantType>>	genomes;						// Genome names list
 	private Double							quality;						// Variant quality threshold (only equal and greater variants will be selected)
-	private double 							ratioThreshold;					// Ratio threshold to do not show up SNPs when zoom is not important enough
+	//private double 							ratioThreshold;					// Ratio threshold to do not show up SNPs when zoom is not important enough
 
 	private List<DisplayableVariant> 		fittedDisplayableVariantList;	// Complete list of the displayable variant
 	private boolean							hasBeenChanged;					// Is true is any information has been modified
-	private boolean							qualityHasBeenChanged;			// Is true is any information has been modified
-	private boolean							genomeHasBeenChanged;			// Is true is any information has been modified
 
 
 	/**
@@ -76,10 +65,8 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		currentGenomeWindow = null;
 		currentXRatio = null;
 		genomes = new HashMap<String, List<VariantType>>();
-		ratioThreshold = 0.05;
+		//ratioThreshold = 0.05;
 		hasBeenChanged = false;
-		qualityHasBeenChanged = false;
-		genomeHasBeenChanged = false;
 	}
 
 
@@ -95,11 +82,10 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			hasBeenChanged = true;
 		}
 
-		if (hasBeenChanged || qualityHasBeenChanged) {
+		if (hasBeenChanged) {
 			List<Variant> fittedVariantList = getFittedVariantList();
 			createDisplayableVariantList(fittedVariantList);
 			hasBeenChanged = false;
-			qualityHasBeenChanged = false;
 		}
 
 		return getFittedDisplayableVariantList();
@@ -121,13 +107,11 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 		// Scan for every required genomes
 		for (String genomeFullName: genomes.keySet()) {
-
+			
 			// Gets parameters
 			MGChromosome chromosomeInformation = MultiGenomeManager.getInstance().getChromosomeInformation(genomeFullName, currentGenomeWindow.getChromosome());
 			Map<Integer, Variant> variants = chromosomeInformation.getPositionInformationList();
 			int[] indexes = chromosomeInformation.getPositionIndex();
-
-			//System.out.println("indexes length: " + indexes.length);
 
 			// Scan the full variant list with the right indexes
 			for (int i = 0; i < indexes.length; i++) {
@@ -139,6 +123,9 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 				}
 			}
 
+			
+			
+			////////////////////////// SNPs
 			/*System.out.println("fittedVariantList size: " + fittedVariantList.size());
 
 			System.out.println("=== " + rawGenomeName);
@@ -182,11 +169,10 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 			}*/
 		}
+		/////////////////////////////////////////////////////////////////////////////////////////
 
 		// Sorts the list using the start position on the meta genome coordinates
 		Collections.sort(fittedVariantList, new VariantMGPositionComparator());
-
-		//System.out.println("size: " + fittedVariantList.size());
 
 		return fittedVariantList;
 	}
@@ -484,7 +470,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 */
 	public void setQuality(Double quality) {
 		if (this.quality == null || !this.quality.equals(quality)) {
-			qualityHasBeenChanged = true;
+			hasBeenChanged = true;
 		}
 		this.quality = quality;
 	}

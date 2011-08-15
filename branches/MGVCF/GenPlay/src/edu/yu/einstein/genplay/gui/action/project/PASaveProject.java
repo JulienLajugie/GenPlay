@@ -61,6 +61,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	/**
 	 * Creates an instance of {@link PASaveProject}
+	 * @param trackList the list of track to save
 	 */
 	public PASaveProject(TrackList trackList) {
 		super();

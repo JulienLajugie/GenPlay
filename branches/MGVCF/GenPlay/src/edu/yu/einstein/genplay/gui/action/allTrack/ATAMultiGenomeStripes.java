@@ -26,7 +26,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomePanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -70,13 +70,13 @@ public final class ATAMultiGenomeStripes extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			MultiGenomePanel genomePanel = new MultiGenomePanel(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			MultiGenomeStripeSelectionDialog genomePanel = new MultiGenomeStripeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
 			genomePanel.setTrackName(selectedTrack.getName());
 			genomePanel.setTrackGenomeGroupName(selectedTrack.getGenomeName());
 			genomePanel.initColors(selectedTrack.getStripeInformation().getColorAssociation());
 			genomePanel.initTransparency(selectedTrack.getStripeInformation().getTransparency());
 			genomePanel.initQuality(selectedTrack.getStripeInformation().getQuality());
-			if (genomePanel.showDialog(getRootPane()) == MultiGenomePanel.APPROVE_OPTION) {
+			if (genomePanel.showDialog(getRootPane()) == MultiGenomeStripeSelectionDialog.APPROVE_OPTION) {
 				selectedTrack.setStripeInformation(genomePanel.getMultiGenomeStripe());
 			}
 			

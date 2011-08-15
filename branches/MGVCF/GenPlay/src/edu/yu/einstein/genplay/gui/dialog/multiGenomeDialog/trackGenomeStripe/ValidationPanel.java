@@ -39,20 +39,20 @@ class ValidationPanel extends JPanel {
 	private static final long serialVersionUID = 8752558211729628953L;
 
 	
-	private MultiGenomePanel multiGenomePanel;
+	private MultiGenomeStripeSelectionDialog multiGenomeStripeSelectionDialog;
 	
 	
-	protected ValidationPanel (final MultiGenomePanel multiGenomePanel) {
-		this.multiGenomePanel = multiGenomePanel;
+	protected ValidationPanel (final MultiGenomeStripeSelectionDialog multiGenomeStripeSelectionDialog) {
+		this.multiGenomeStripeSelectionDialog = multiGenomeStripeSelectionDialog;
 		
 		//Dimension
-		Dimension panelDim = new Dimension(MultiGenomePanel.getDialogWidth(), MultiGenomePanel.getValidationHeight());
+		Dimension panelDim = new Dimension(MultiGenomeStripeSelectionDialog.getDialogWidth(), MultiGenomeStripeSelectionDialog.getValidationHeight());
 		setSize(panelDim);
 		setPreferredSize(panelDim);
 		setMinimumSize(panelDim);
 		setMaximumSize(panelDim);
 		
-		Dimension buttonDim = new Dimension(MultiGenomePanel.getValidationButtonSide(), 25);
+		Dimension buttonDim = new Dimension(MultiGenomeStripeSelectionDialog.getValidationButtonSide(), 25);
 		
 		//Confirm button
 		JButton confirm = new JButton("Ok");
@@ -65,7 +65,7 @@ class ValidationPanel extends JPanel {
 		confirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				getMultiGenomePanel().validChoice();
+				getMultiGenomeStripeSelectionDialog().validChoice();
 			}
 		});
 		
@@ -80,7 +80,7 @@ class ValidationPanel extends JPanel {
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				getMultiGenomePanel().cancelChoice();
+				getMultiGenomeStripeSelectionDialog().cancelChoice();
 			}
 		});
 		
@@ -100,8 +100,8 @@ class ValidationPanel extends JPanel {
 	/**
 	 * @return the multiGenomePanel
 	 */
-	private MultiGenomePanel getMultiGenomePanel() {
-		return multiGenomePanel;
+	private MultiGenomeStripeSelectionDialog getMultiGenomeStripeSelectionDialog() {
+		return multiGenomeStripeSelectionDialog;
 	}
 	
 }

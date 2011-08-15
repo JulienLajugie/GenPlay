@@ -22,6 +22,7 @@ package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +30,15 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
- * This class manages the genome information.
- * Those information are all genome names and their relative information.
- * A genome has a raw name (from the VCF file) and an explicit name given by users.
- * A genome belongs to a group which can have multiple genomes.
- * A group is related to a VCF file.
+ * This class manages the multi genome information in a multi genome project.
+ * It gathers all genome information of the project.
+ * The main information is the list of {@link MGGenome}.
+ * The second one is the mapping between the full genome name (see description of {@link FormattedMultiGenomeName}) and their associated VCF file.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -138,7 +140,9 @@ public class MGMultiGenome {
 	 * @return the list of genome names
 	 */
 	public List<String> getGenomeNameList () {
-		return new ArrayList<String>(genomeFileAssociation.keySet());
+		List<String> list = new ArrayList<String>(genomeFileAssociation.keySet()); 
+		Collections.sort(list);
+		return list;
 	}
 
 

@@ -27,6 +27,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 /**
  * This interface must be used for every kind of variant.
  * Variants can be different but must implement the followings methods in order to be processed.
+ *
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -241,4 +242,8 @@ public interface Variant {
 	 */
 	public Object getFormatValue (String field);
 
+	/**
+	 * @return a description of the Variant
+	 */
+	public String toString ();
 }

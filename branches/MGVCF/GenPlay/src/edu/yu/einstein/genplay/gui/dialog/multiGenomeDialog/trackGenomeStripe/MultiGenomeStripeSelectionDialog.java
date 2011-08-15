@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.se
  * 
  * @author Nicolas Fourel
  */
-public class MultiGenomePanel extends JDialog {
+public class MultiGenomeStripeSelectionDialog extends JDialog {
 
 	private static final long serialVersionUID = 9148947342812016201L;
 
@@ -94,17 +94,17 @@ public class MultiGenomePanel extends JDialog {
 
 	
 	/**
-	 * Constructor of {@link MultiGenomePanel}
+	 * Constructor of {@link MultiGenomeStripeSelectionDialog}
 	 * @param genomeNames the genome names array
 	 */
-	public MultiGenomePanel (Object genomeNames[]) {
+	public MultiGenomeStripeSelectionDialog (Object genomeNames[]) {
 
 		//Layout Manager
 		GridBagLayout layout = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
 		setLayout(layout);
 
-		MultiGenomePanel.genomeNames = genomeNames;
+		MultiGenomeStripeSelectionDialog.genomeNames = genomeNames;
 		initSize();
 
 		//Panels

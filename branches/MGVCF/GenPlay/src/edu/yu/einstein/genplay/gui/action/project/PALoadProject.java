@@ -71,6 +71,9 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	}
 
 	
+	/**
+	 * @param selectedFile the file to load
+	 */
 	public void setSelectedFile(File selectedFile) {
 		this.selectedFile = selectedFile;
 	}
