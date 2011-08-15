@@ -49,6 +49,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
@@ -325,10 +326,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					drawRect(g, displayableVariant, mixColor, mixColor);
 				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
 					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
-				} else if (displayableVariant.getType().equals(VariantType.SNPS)) {
-					Color snpColor = new Color(Color.magenta.getRed(), Color.magenta.getGreen(), Color.magenta.getBlue(), multiGenomeStripe.getTransparency());
-					drawRect(g, displayableVariant, snpColor, snpColor);
 				} else {
+					/*if (displayableVariant.getType().equals(VariantType.SNPS)) {
+						System.out.println("SNP (drawGenome)");
+					}*/
+					
 					// Color association
 					Map<VariantType, Color> association = multiGenomeStripe.getColorAssociation().get(displayableVariant.getNativeVariant().getFullGenomeName());
 
@@ -779,6 +781,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param stripeInformation the stripeInformation to set
 	 */
 	protected void setStripeInformation(MultiGenomeStripe stripeInformation) {
+		SNPManager.getInstance().updateSNP(this.multiGenomeStripe, stripeInformation);
 		this.multiGenomeStripe = stripeInformation;
 		repaint();
 	}
