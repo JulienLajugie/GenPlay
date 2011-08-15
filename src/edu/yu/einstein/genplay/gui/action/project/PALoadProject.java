@@ -22,12 +22,11 @@ package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -100,7 +99,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			ProjectRecordingManager.getInstance().initManagers(selectedFile);
 		}
 		notifyActionStart("Loading Project", 1, false);
-		return null;
+		return ProjectRecordingManager.getInstance().getTrackList();
 	}
 
 
@@ -108,10 +107,8 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		if (actionResult != null) {
 			skipFileSelection = false;
-			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
-			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 			MainFrame.getInstance().setTitle();
-			MainFrame.getInstance().getControlPanel().updateChromosomePanel(genomeWindow);
+			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
 		}
 	}	

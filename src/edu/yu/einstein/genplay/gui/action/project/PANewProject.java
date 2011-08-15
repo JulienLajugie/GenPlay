@@ -86,5 +86,5 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 			MainFrame.getInstance().dispose();
 			ProjectFrame.getInstance().setVisible(true);
 		}
-	}	
+	}
 }

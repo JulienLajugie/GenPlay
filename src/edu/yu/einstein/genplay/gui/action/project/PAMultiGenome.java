@@ -21,15 +21,13 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
+
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -82,12 +80,8 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		if (!MultiGenomeManager.getInstance().hasBeenInitialized()) {
 			ChromosomeManager.getInstance().setChromosomeList();
-			ControlPanel control = MainFrame.getInstance().getControlPanel();
-			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
-			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
-			control.updateChromosomePanel(genomeWindow);
+			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 			MultiGenomeManager.getInstance().setHasBeenInitialized();
 		}
-	}
-	
+	}	
 }
