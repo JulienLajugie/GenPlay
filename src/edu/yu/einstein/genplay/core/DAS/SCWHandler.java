@@ -51,6 +51,7 @@ public class SCWHandler extends DefaultHandler {
 
 	/**
 	 * Creates an instance of {@link SCWHandler}
+	 * @param chromosome current {@link Chromosome}
 	 */
 	public SCWHandler(Chromosome chromosome) {
 		super();

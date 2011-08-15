@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 /**
  * An abstract class providing common tools for the different kind of scored {@link Track} 
  * (ie: tracks having a value on the y axis)
+ * @param <T> type of the data shown in the track
  * @author Julien Lajugie
  * @version 0.1
  */

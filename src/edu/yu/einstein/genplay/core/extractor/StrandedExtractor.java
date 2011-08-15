@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.enums.Strand;
 public interface StrandedExtractor {
 
 	/**
+	 * @param aStrand a {@link Strand}
 	 * @return true if the specified strand is selected
 	 */
 	public boolean isStrandSelected(Strand aStrand);

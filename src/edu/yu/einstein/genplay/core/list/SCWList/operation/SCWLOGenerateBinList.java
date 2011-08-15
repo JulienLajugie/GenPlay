@@ -42,6 +42,7 @@ public class SCWLOGenerateBinList implements Operation<BinList> {
 	
 	/**
 	 * Creates a BinList from the data of the input {@link ScoredChromosomeWindowList}
+	 * @param scwList input list
 	 * @param binSize size of the bins
 	 * @param precision precision of the data (eg: 1/8/16/32/64-BIT)
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)

@@ -20,8 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.operation;
 
-import java.util.concurrent.ExecutionException;
-
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -29,7 +27,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 /**
  * Operation on a {@link BinList}
- * T: result type of the operation
+ * @param <T> result type of the operation
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -51,8 +49,7 @@ public interface Operation<T> extends Stoppable {
 	/**
 	 * Processes the operation
 	 * @return the result of the operation
-	 * @throws InterruptedException
-	 * @throws ExecutionException
+	 * @throws Exception
 	 */
 	public T compute() throws Exception;
 	

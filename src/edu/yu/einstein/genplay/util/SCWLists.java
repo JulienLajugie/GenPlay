@@ -22,6 +22,7 @@ package edu.yu.einstein.genplay.util;
 
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 
 
@@ -86,7 +87,9 @@ public class SCWLists {
 	
 	/**
 	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
-	 * @param list
+	 * @param list input list of ScoredChromosomeWindow
+	 * @param regionStart index of the first {@link ChromosomeWindow}
+	 * @param regionStop index of the last {@link ChromosomeWindow}
 	 * @return the non-zero maximum of the specified list
 	 */
 	public static double maxNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
@@ -102,7 +105,9 @@ public class SCWLists {
 	
 	/**
 	 * Returns the minimum of the list in parameter. Doesn't take the 0 value elements into account.
-	 * @param list
+	 * @param list input list of ScoredChromosomeWindow
+	 * @param regionStart index of the first {@link ChromosomeWindow}
+	 * @param regionStop index of the last {@link ChromosomeWindow}
 	 * @return the non-zero minimum of the specified list
 	 */
 	public static double minNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {

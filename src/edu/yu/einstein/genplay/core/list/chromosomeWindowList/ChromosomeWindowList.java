@@ -204,7 +204,7 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
 	 */
 	private int findStart(List<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
@@ -227,7 +227,7 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
 	 */
 	private int findStop(List<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;

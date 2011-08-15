@@ -28,7 +28,7 @@ import java.util.Map;
  * This class contains clade information
  * @author Nicolas Fourel
  */
-public class Clade implements Serializable {
+public class Clade implements Serializable, Comparable<Clade> {
 
 	private static final long 	serialVersionUID = -898740770908389562L;	// generated ID
 	private Map<String, Genome>		genomeList;		// the genome list
@@ -77,4 +77,17 @@ public class Clade implements Serializable {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return getName();
+	}
+
+
+	/**
+	 * Clades are ordered by their names
+	 */
+	@Override
+	public int compareTo(Clade otherClade) {
+		return getName().compareTo(otherClade.getName());
+	}
 }

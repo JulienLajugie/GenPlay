@@ -41,6 +41,7 @@ public class ScoredTrackMenu extends TrackMenu {
 	
 	/**
 	 * Creates an instance of {@link ScoredTrackMenu}
+	 * @param tl {@link TrackList} of the project
 	 */
 	public ScoredTrackMenu(TrackList tl) {
 		super(tl);		

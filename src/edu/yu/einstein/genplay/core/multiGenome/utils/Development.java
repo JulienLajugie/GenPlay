@@ -24,7 +24,7 @@ public class Development {
 	
 	/**
 	 * Fake chromosome list, used for development.
-	 * @return
+	 * @return a fake chromosome list
 	 */
 	public static Map<String, Chromosome> getFakeChromosomeList () {
 		if (chromosomeList == null) {

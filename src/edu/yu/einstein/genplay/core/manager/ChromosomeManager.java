@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MetaGenomeManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.newProject.ChromosomeComparator;
+import edu.yu.einstein.genplay.gui.projectFrame.newProject.ChromosomeComparator;
 
 
 /**
@@ -286,6 +286,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 
 	/**
 	 * @param currentChromosome the currentChromosome to set
+	 * @return false if the specified {@link Chromosome} already was the current {@link Chromosome}
 	 */
 	public boolean setCurrentChromosome(Chromosome currentChromosome) {
 		if (this.currentChromosome != currentChromosome){
@@ -340,6 +341,4 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 		}
 		
 	}
-	
-
 }

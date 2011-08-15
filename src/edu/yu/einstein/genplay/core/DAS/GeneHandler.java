@@ -60,6 +60,7 @@ public class GeneHandler extends DefaultHandler {
 
 	/**
 	 * Creates an instance of {@link GeneHandler}
+	 * @param chromosome current {@link Chromosome}
 	 */
 	public GeneHandler(Chromosome chromosome) {
 		super();

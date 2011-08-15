@@ -95,6 +95,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
+	 * @param genomeName name of the genome the {@link TwoBitSequenceList} represents
 	 */
 	public TwoBitSequenceList(String genomeName) {
 		super();

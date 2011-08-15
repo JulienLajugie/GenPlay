@@ -24,12 +24,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 
 /**
- * This class represents a generic list organized by chromosome.
+ * This class represents a generic list organized by chromosome
+ * @param <T> type of the objects stored in the list
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -75,6 +77,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * @param chromosome a {@link Chromosome}
 	 * @param index
 	 * @param element element to set
+	 * @throws InvalidChromosomeException if the specified {@link Chromosome} is not a chromosome of the {@link ChromosomeManager}
 	 */
 	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException;
 	
@@ -84,6 +87,7 @@ public interface ChromosomeListOfLists<T> extends Cloneable, Serializable, List<
 	 * Sets the list of elements on the specified {@link Chromosome} 
 	 * @param chromosome a {@link Chromosome}
 	 * @param list list to set
+	 * @throws InvalidChromosomeException if the specified {@link Chromosome} is not a chromosome of the {@link ChromosomeManager}
 	 */
 	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException;
 

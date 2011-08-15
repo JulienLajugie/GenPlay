@@ -80,4 +80,8 @@ public class Genome implements Serializable {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

@@ -202,6 +202,7 @@ public class ProjectRecordingManager {
 
 	/**
 	 * Saves the current list of tracks into a file
+	 * @param outputFile file where the project needs to be saved
 	 */
 	public void saveProject(File outputFile) {
 		try {

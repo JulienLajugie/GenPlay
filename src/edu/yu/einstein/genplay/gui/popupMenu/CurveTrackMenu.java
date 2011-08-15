@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.popupMenu;
 import javax.swing.JMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.curveTrack.CTAAppearance;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
@@ -41,6 +42,7 @@ public abstract class CurveTrackMenu extends ScoredTrackMenu {
 		
 	/**
 	 * Creates an instance of {@link CurveTrackMenu}
+	 * @param tl {@link TrackList} of {@link MainFrame}
 	 */
 	public CurveTrackMenu(TrackList tl) {
 		super(tl);		

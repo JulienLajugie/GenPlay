@@ -87,6 +87,7 @@ public final class ZoomManager implements Serializable {
 
 
 	/**
+	 * @param currentZoom the current zoom value
 	 * @return the new zoom value after a zoom out
 	 */
 	public int getZoomIn(int currentZoom) {
@@ -119,6 +120,7 @@ public final class ZoomManager implements Serializable {
 
 
 	/**
+	 * @param currentZoom the current zoom value
 	 * @return the new zoom value after a zoom in 
 	 */
 	public int getZoomOut(int currentZoom) {

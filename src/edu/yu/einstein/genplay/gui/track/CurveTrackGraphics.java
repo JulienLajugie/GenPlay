@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.util.History;
 
 /**
  * An abstract class providing tools to draw a curve {@link TrackGraphics}
+ * @param <T> type of the data shown in the track
  * @author Julien Lajugie
  * @version 0.1
  */

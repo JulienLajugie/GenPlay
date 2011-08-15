@@ -121,7 +121,7 @@ public class VCFReader {
 
 	/**
 	 * This method checks if the VCF has been indexed.
-	 * @return
+	 * @return true if the VCF is indexed
 	 */
 	private boolean isVCFIndexed () {
 		if (this.vcfParser != null) {
@@ -195,7 +195,7 @@ public class VCFReader {
 	/**
 	 * This method parses the content of attributes header information.
 	 * @param line
-	 * @return
+	 * @return the parsed line
 	 */
 	private Map<String, String> parseVCFHeaderInfo (String line) {
 		Map<String, String> info = new HashMap<String, String>();

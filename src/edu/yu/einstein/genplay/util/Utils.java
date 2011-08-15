@@ -140,6 +140,7 @@ public class Utils {
 	 * @param parentComponent determines the Frame in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
 	 * @param title title of the open dialog
 	 * @param defaultDirectory default directory
+	 * @param choosableFileFilters {@link FileFilter} available
 	 * @return a file to load
 	 */
 	final public static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters) {
@@ -310,7 +311,7 @@ public class Utils {
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not find 
 	 */
 	private static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
@@ -333,7 +334,7 @@ public class Utils {
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
 	 */
 	private static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;

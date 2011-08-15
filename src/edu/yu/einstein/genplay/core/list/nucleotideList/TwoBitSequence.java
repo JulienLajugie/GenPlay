@@ -121,6 +121,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	
 	/**
 	 * Extract the information about a sequence from a {@link TwoBitSequence}
+	 * @param filePath path to the file containing the sequence
 	 * @param raf {@link RandomAccessFile}
 	 * @param offset offset of the sequence in the file
 	 * @param name name of the sequence

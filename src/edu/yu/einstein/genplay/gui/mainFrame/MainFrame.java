@@ -98,7 +98,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private 		StatusBar 			statusBar; 			// Status bar component
 	private 		Rectangle			screenBounds; 		// position and dimension of this frame
 
-	
+
 	/**
 	 * @return the instance of the singleton MainFrame
 	 */
@@ -112,7 +112,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		}
 		return instance;
 	}
-	
+
 
 	/**
 	 * Private constructor. Creates an instance of singleton {@link MainFrame}
@@ -192,7 +192,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 		if (ProjectRecordingManager.getInstance().isLoadingEvent()) {
 			PALoadProject loader = new PALoadProject();
-			loader.setSelectedFile(ProjectRecordingManager.getInstance().getFileToLoad());
+			loader.setSkipFileSelection(true);
 			loader.actionPerformed(null);
 		}
 

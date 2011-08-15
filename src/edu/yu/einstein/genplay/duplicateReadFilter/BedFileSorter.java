@@ -137,10 +137,12 @@ public class BedFileSorter implements Comparable<BedFileSorter>{
 	
 	/**
 	 * Creates an instance of {@link BedFileSorter}
-	 * @param chromosomeName
-	 * @param start
-	 * @param stop
-	 * @param score
+	 * @param readName name of the read
+	 * @param chromosomeName name of the chromosome of the read
+	 * @param start start position of the read
+	 * @param stop stop position of the read
+	 * @param score score of the read
+	 * @param strand strand of the read
 	 */
 	public BedFileSorter(String readName, String chromosomeName, int start, int stop, double score, String strand) {
 		this.readName = readName;

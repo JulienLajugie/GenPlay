@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 /**
  * A generic track
+ * @param <T> type of the data shown in the track
  * @author Julien Lajugie
  * @version 0.1
  */

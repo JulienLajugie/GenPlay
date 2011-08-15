@@ -23,16 +23,12 @@ package edu.yu.einstein.genplay.gui.launcher;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
 
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.genome.RetrieveAssemblies;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
@@ -40,194 +36,129 @@ import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.ZoomManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenFrame;
-import edu.yu.einstein.genplay.gui.dialog.projectScreen.ProjectScreenThread;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrameThread;
+import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 
 /**
  * This class loads GenPlay with a welcome screen.
  * Then, the main frame is loaded.
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  */
 public class Launcher {
 
-	private static final String DEMO_PROJECT_PATH = null;
-	private static ProjectScreenFrame 	screenProject;
-	private static Map<String, Clade> 	cladeList;
-	private static Thread mainFrameThread;
-	static Thread thread;
-	
-	
 	/**
-	 * Starts the application
-	 * @param args
+	 * This constant can be set to a project file path in the resource folder of the jar.
+	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
-	public static void main(final String[] args) {
-		// if the DEMO_PROJECT_PATH static parameter has been set it means that we're starting a Demo project
-		final boolean isDemo = (DEMO_PROJECT_PATH != null);
-		boolean isProjectLoaded = false;
-		File f = new File("");
-		// if we are loading a demo we are loading the file specified in the DEMO_PROJECT_PATH parameter
-		if (isDemo) {
-			InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
-			try {
-				ProjectRecordingManager.getInstance().initManagers(is);
-				isProjectLoaded = true;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else if (args.length == 1) { // if it's not a demo but a file path has been specified to the main method
-			try {
-				f = new File(args[0]);
-				ProjectRecordingManager.getInstance().initManagers(new File(args[0]));
-				isProjectLoaded = true;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else { // normal execution of the software
-			// load the project screen prompted the user enter information about the new project 
-			projectScreen();			
-			// generate the multi-genome manager if the user starts a multi-genome project
-			if (!screenProject.isSimpleProject()) {
-				//generateRealMultiGenomeManager();
-				//generateTestMultiGenomeManager();
-				//generateHg18ToHg19MultiGenomeManager();
-				generateMultiGenomeManager();
-			}
-			// starts the main frame of the application
-			mainScreen();
-		}
-		// in the case of a demo or if a file path has been specified to the main method
-		if (isProjectLoaded) {
-			mainScreen();
-			PALoadProject load = new PALoadProject();
-			load.setSelectedFile(f);
-			load.actionPerformed(null);
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	public static void reinit() {
-		projectScreen();			
-		// generate the multi-genome manager if the user starts a multi-genome project
-		if (!screenProject.isSimpleProject()) {
-			//generateRealMultiGenomeManager();
-			//generateTestMultiGenomeManager();
-			//generateHg18ToHg19MultiGenomeManager();
-			generateMultiGenomeManager();
-		}
-		// starts the main frame of the application
-		mainScreen();
-	}
-	
+	private static final String DEMO_PROJECT_PATH = null; 
+
 
 	/**
-	 * Generates the multigenome manager
+	 * Starts the application
+	 * @param args a project file path can be specified. In this case the project  
+	 * screen will be skipped and the project file will be directly loaded
 	 */
-	private static void generateMultiGenomeManager() {
-		MultiGenomeManager multiGenomeManager = null;
-		multiGenomeManager = MultiGenomeManager.getInstance();
-		multiGenomeManager.setGenomes(screenProject.getGenomeGroupAssociation(),
-				screenProject.getGenomeFilesAssociation(),
-				screenProject.getGenomeNamesAssociation(),
-				screenProject.getFilesTypeAssociation());		
-		//multiGenomeManager.showAllAssociation();
+	public static void main(final String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {			
+			@Override
+			public void run() {
+				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
+				boolean isDemo = (DEMO_PROJECT_PATH != null);
+				if (isDemo) {
+					startDemoProject();
+				} else if (args.length == 1) { // if a project file path has been specified to the main method we load this file
+					File file = new File(args[0]);
+					startProjectFromFile(file);
+				} else { // normal execution of the software
+					startProjectFrame();
+				}
+			}
+		});
+	}
+
+
+	/**
+	 * This method starts a demo project.  The project file needs to be in the resource folder and 
+	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
+	 */
+	private static void startDemoProject() {
+		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
+		try {
+			ProjectRecordingManager.getInstance().initManagers(is);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		MainFrame.getInstance().setVisible(true);
+		PALoadProject load = new PALoadProject();
+		load.setSkipFileSelection(true);
+		load.actionPerformed(null);
+	}
+
+
+	/**
+	 * This method starts a project from a file.
+	 * @param file project file to load
+	 */
+	public static void startProjectFromFile(File file) {
+		try {
+			ProjectRecordingManager.getInstance().initManagers(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		MainFrame.getInstance().setVisible(true);
+		PALoadProject load = new PALoadProject();
+		load.setSkipFileSelection(true);
+		load.actionPerformed(null);
 	}
 
 
 	/**
 	 * Displays the project screen manager which is the first screen of GenPlay.
 	 */
-	private static void projectScreen() {
-		if (mainFrameThread != null) {
-			//System.out.println(mainFrameThread.getState());
-			MainFrameThread.yield();
-			System.out.println(Thread.currentThread().getName());
-		}
-		//Get assemblies from xml files
-		cladeList = new HashMap<String, Clade>();
-		try {
-			RetrieveAssemblies genomeHandler = new RetrieveAssemblies();
-			cladeList = genomeHandler.getCladeList();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+	private static void startProjectFrame() {
 		//Welcome screen initialization
-		CountDownLatch projectSignal = new CountDownLatch(1);
-		screenProject = ProjectScreenFrame.getInstance();
-		screenProject.setProjectSignal(projectSignal);
+		ProjectFrame projectFrame = ProjectFrame.getInstance();
 		ConfigurationManager.getInstance();
-		ProjectManager projectManager = ProjectManager.getInstance();
+		ProjectManager.getInstance();
 		ZoomManager.getInstance();
 		// load the managers from the configuration files
 		loadManagers();
-
 		//Create a new thread to display the welcome screen
-		if (thread == null) {
-				thread = new ProjectScreenThread();
-				thread.setName("project screen");
-				thread.start();
-		} else {
-			//System.out.println(thread.getState());
-			//ProjectScreenFrame.getInstance().initScreen();
-			//screenProject.setVisible(true);
-			thread = new ProjectScreenThread();
-			thread.start();
-		}
-
-		System.out.println("test1");
-		System.out.println("thread alive" + thread.isAlive());
-		//Wait for the thread stop
-		try {
-			projectSignal.await();
-			System.out.println("test2");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		if (screenProject.isLoadingEvent()) {
-			try {
-				ProjectRecordingManager.getInstance().setFileToLoad(screenProject.getProject());
-				ProjectRecordingManager.getInstance().setLoadingEvent(true);
-				ProjectRecordingManager.getInstance().initManagers();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			Clade clade = cladeList.get(screenProject.getClade());
-			Genome genome = clade.getGenomeList().get(screenProject.getGenome());
-			Assembly assembly = genome.getAssemblyList().get(screenProject.getAssembly());
-			assembly.setChromosomeList(screenProject.getNewChromosomeList());
-
-			projectManager.setProjectName(screenProject.getName());
-			projectManager.setCladeName(clade.getName());
-			projectManager.setGenomeName(genome.getName());
-			//projectManager.setVarFiles(screenProject.getVarFiles());
-			projectManager.setAssembly(assembly);
-		}
-		screenProject.setVisible(false);
-		//System.out.println(thread.getState());
-		//screenProject.setVisible(true);
+		projectFrame.initScreen();
 	}
 
 
 	/**
-	 * Displays the main screen of GenPlay.
+	 * This method is used by the ProjectFrame after closing 
+	 * to initiate a new project.
 	 */
-	private static void mainScreen() {
-		mainFrameThread = new MainFrameThread();
-		SwingUtilities.invokeLater(mainFrameThread);
+	public static void initiateNewProject() {
+		ProjectFrame projectFrame = ProjectFrame.getInstance();
+		Clade clade = projectFrame.getSelectedClade();
+		Genome genome = projectFrame.getSelectedGenome();
+		Assembly assembly = projectFrame.getSelectedAssembly();
+		assembly.setChromosomeList(projectFrame.getSelectedChromosomes());
+		ProjectManager projectManager = ProjectManager.getInstance();
+		projectManager.setProjectName(projectFrame.getProjectName());
+		projectManager.setCladeName(clade.getName());
+		projectManager.setGenomeName(genome.getName());
+		projectManager.setAssembly(assembly);
+		projectFrame.setVisible(false);
+		// generate the multi-genome manager if the user starts a multi-genome project
+		if (!projectFrame.isSimpleProject()) {
+			MultiGenomeManager multiGenomeManager = MultiGenomeManager.getInstance();
+			multiGenomeManager.setGenomes(projectFrame.getGenomeGroupAssociation(),
+					projectFrame.getGenomeFilesAssociation(),
+					projectFrame.getGenomeNamesAssociation(),
+					projectFrame.getFilesTypeAssociation());
+		}
+		// starts the main frame of the application
+		MainFrame.getInstance().setVisible(true);
 	}
-
-
+	
+	
 	/**
 	 * Loads the managers with the configuration files
 	 */
@@ -244,164 +175,9 @@ public class Launcher {
 				ZoomManager.getInstance().loadConfigurationFile(new File(ConfigurationManager.getInstance().getZoomFile()));
 			}
 		} catch (IOException e) {
-			ExceptionManager.handleException(screenProject.getRootPane(), e, "Zoom file not found.");
+			ExceptionManager.handleException(ProjectFrame.getInstance().getRootPane(), e, "Zoom file not found.");
 		} catch (Exception e) {
-			ExceptionManager.handleException(screenProject.getRootPane(), e, "Zoom file corrupted");
+			ExceptionManager.handleException(ProjectFrame.getInstance().getRootPane(), e, "Zoom file corrupted");
 		}
 	}
-
-
-	/**
-	 * @return the cladeList
-	 */
-	public static Map<String, Clade> getCladeList() {
-		return cladeList;
-	}
-
-	
-/*	@SuppressWarnings("unused")	//Development
-	private static void generateRealMultiGenomeManager() {
-		// Declaration
-		Map<String, List<String>> genomeGroupAssociation = new HashMap<String, List<String>>();
-		Map<String, List<File>> genomeFilesAssociation = new HashMap<String, List<File>>();
-		Map<String, String> genomeNamesAssociation = new HashMap<String, String>();
-		Map<VCFType, List<File>> filesTypeAssociation = new HashMap<VCFType, List<File>>();
-		List<File> vcfIndel = new ArrayList<File>();
-		List<File> vcfCEU = new ArrayList<File>();
-		List<File> vcfYRI = new ArrayList<File>();
-
-		// File type list
-		File ceuFile = new File("D:\\Documents\\VCF\\ftp\\trio\\indels\\CEU.trio.2010_10.indel.genotypes.vcf.gz");
-		File yriFile = new File("D:\\Documents\\VCF\\ftp\\trio\\indels\\YRI.trio.2010_10.indel.genotypes.vcf.gz");
-		vcfIndel.add(ceuFile);
-		vcfIndel.add(yriFile);
-		filesTypeAssociation.put(VCFType.INDELS, vcfIndel);
-
-		// File group list
-		vcfCEU.add(ceuFile);
-		vcfYRI.add(yriFile);
-
-		// CEU
-		List<String> listCEU = new ArrayList<String>();
-		listCEU.add("NA12891");
-		listCEU.add("NA12892");
-		listCEU.add("NA12878");
-		genomeGroupAssociation.put("CEU", listCEU);
-		genomeFilesAssociation.put("CEU", vcfCEU);
-		genomeNamesAssociation.put("NA12891", "Father");
-		genomeNamesAssociation.put("NA12892", "Mother");
-		genomeNamesAssociation.put("NA12878", "Daughter");
-
-		// YRI
-		List<String> listYRI = new ArrayList<String>();
-		listYRI.add("NA19239");
-		listYRI.add("NA19238");
-		listYRI.add("NA19240");
-		genomeGroupAssociation.put("YRI", listYRI);
-		genomeFilesAssociation.put("YRI", vcfYRI);
-		genomeNamesAssociation.put("NA19239", "Father");
-		genomeNamesAssociation.put("NA19238", "Mother");
-		genomeNamesAssociation.put("NA19240", "Daughter");
-
-		MultiGenomeManager multiGenomeManager = null;
-
-		multiGenomeManager = MultiGenomeManager.getInstance();
-		multiGenomeManager.setGenomes(genomeGroupAssociation,
-				genomeFilesAssociation,
-				genomeNamesAssociation,
-				filesTypeAssociation);
-	}
-
-
-	@SuppressWarnings("unused")	//Development
-	private static void generateTestMultiGenomeManager() {
-		// Declaration
-		Map<String, List<String>> genomeGroupAssociation = new HashMap<String, List<String>>();
-		Map<String, List<File>> genomeFilesAssociation = new HashMap<String, List<File>>();
-		Map<String, String> genomeNamesAssociation = new HashMap<String, String>();
-		Map<VCFType, List<File>> filesTypeAssociation = new HashMap<VCFType, List<File>>();
-		List<File> vcfIndel = new ArrayList<File>();
-		List<File> vcfGenome01 = new ArrayList<File>();
-		List<File> vcfGenome02 = new ArrayList<File>();
-		List<File> vcfGenome03 = new ArrayList<File>();
-
-		// File type list
-		File genome01File = new File("D:\\Documents\\VCF\\test3\\personnal_genome_01.sites.vcf.gz");
-		File genome02File = new File("D:\\Documents\\VCF\\test3\\personnal_genome_02.sites.vcf.gz");
-		File genome03File = new File("D:\\Documents\\VCF\\test3\\personnal_genome_03.sites.vcf.gz");
-		vcfIndel.add(genome01File);
-		vcfIndel.add(genome02File);
-		vcfIndel.add(genome03File);
-		filesTypeAssociation.put(VCFType.INDELS, vcfIndel);
-
-		// File group list
-		vcfGenome01.add(genome01File);
-		vcfGenome02.add(genome02File);
-		vcfGenome03.add(genome03File);
-
-		// Famille 1
-		List<String> listGenome01 = new ArrayList<String>();
-		listGenome01.add("G101");
-		genomeGroupAssociation.put("Family 1", listGenome01);
-		genomeFilesAssociation.put("Family 1", vcfGenome01);
-		genomeNamesAssociation.put("G101", "Person 01");
-
-		// Famille 2
-		List<String> listGenome02 = new ArrayList<String>();
-		listGenome02.add("G201");
-		genomeGroupAssociation.put("Family 2", listGenome02);
-		genomeFilesAssociation.put("Family 2", vcfGenome02);
-		genomeNamesAssociation.put("G201", "Person 01");
-		
-		// Famille 3
-		List<String> listGenome03 = new ArrayList<String>();
-		listGenome03.add("G301");
-		genomeGroupAssociation.put("Family 3", listGenome03);
-		genomeFilesAssociation.put("Family 3", vcfGenome03);
-		genomeNamesAssociation.put("G301", "Person 01");
-
-		MultiGenomeManager multiGenomeManager = null;
-
-		multiGenomeManager = MultiGenomeManager.getInstance();
-		multiGenomeManager.setGenomes(genomeGroupAssociation,
-				genomeFilesAssociation,
-				genomeNamesAssociation,
-				filesTypeAssociation);
-	}
-	
-	
-	@SuppressWarnings("unused")	//Development
-	private static void generateHg18ToHg19MultiGenomeManager() {
-		// Declaration
-		Map<String, List<String>> genomeGroupAssociation = new HashMap<String, List<String>>();
-		Map<String, List<File>> genomeFilesAssociation = new HashMap<String, List<File>>();
-		Map<String, String> genomeNamesAssociation = new HashMap<String, String>();
-		Map<VCFType, List<File>> filesTypeAssociation = new HashMap<VCFType, List<File>>();
-		List<File> vcfIndel = new ArrayList<File>();
-		List<File> vcfGenome01 = new ArrayList<File>();
-
-		// File type list
-		//File genome01File = new File("D:\\Documents\\VCF\\Hg18ToHg19\\hg18ToHg19_chr1.vcf.gz");
-		File genome01File = new File("D:\\Documents\\VCF\\Hg18ToHg19\\hg18ToHg19.vcf.gz");
-		vcfIndel.add(genome01File);
-		filesTypeAssociation.put(VCFType.SV, vcfIndel);
-
-		// File group list
-		vcfGenome01.add(genome01File);
-
-		// Famille 1
-		List<String> listGenome01 = new ArrayList<String>();
-		listGenome01.add("NCBI36");
-		genomeGroupAssociation.put("Reference", listGenome01);
-		genomeFilesAssociation.put("Reference", vcfGenome01);
-		genomeNamesAssociation.put("NCBI36", "Hg18");
-
-		MultiGenomeManager multiGenomeManager = null;
-
-		multiGenomeManager = MultiGenomeManager.getInstance();
-		multiGenomeManager.setGenomes(genomeGroupAssociation,
-				genomeFilesAssociation,
-				genomeNamesAssociation,
-				filesTypeAssociation);
-	}*/
 }

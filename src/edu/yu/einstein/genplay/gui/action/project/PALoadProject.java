@@ -51,7 +51,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 		"Load a project from a file"; 								// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_L; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Load Project";	// action name
-	private File 					selectedFile = null;			// selected file
+	private boolean					skipFileSelection = false;		// true if the file selection need to be skipped. Default is false
 
 	
 	/**
@@ -79,25 +79,27 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	}
 
 	
-	public void setSelectedFile(File selectedFile) {
-		this.selectedFile = selectedFile;
+	/**
+	 * Sets the user selection of a file to load needs to be skipped 
+	 * @param skipFileSelection true if no files need to be selected by the user
+	 */
+	public void setSkipFileSelection(boolean skipFileSelection) {
+		this.skipFileSelection = skipFileSelection;
 	}
 	
 
 	@Override
 	protected Track<?>[] processAction() throws Exception {
-		if (selectedFile == null) {
+		if (!skipFileSelection) {
 			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
 			FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
-			selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
-			if (selectedFile != null) {
-				ProjectRecordingManager.getInstance().initManagers(selectedFile);
+			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
+			if (selectedFile == null) {
+				return null;
 			}
+			ProjectRecordingManager.getInstance().initManagers(selectedFile);
 		}
-		if (selectedFile != null) {
-			notifyActionStart("Loading Project", 1, false);
-			return ProjectRecordingManager.getInstance().getTrackList();
-		}
+		notifyActionStart("Loading Project", 1, false);
 		return null;
 	}
 
@@ -105,7 +107,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		if (actionResult != null) {
-			selectedFile = null;
+			skipFileSelection = false;
 			Chromosome chromosome = ChromosomeManager.getInstance().get(0);
 			GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 			MainFrame.getInstance().setTitle();

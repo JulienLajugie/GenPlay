@@ -52,8 +52,10 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	protected boolean[]							selectedChromo = null;	// selected chromo
 	protected String							genomeName = null;		// genome name for a multi genome project
 
+	
 	/**
 	 * Public constructor 
+	 * @param extractorClass {@link Class} of the {@link Extractor}
 	 */
 	public TrackListActionExtractorWorker(Class<? extends Generator> extractorClass) {
 		super();

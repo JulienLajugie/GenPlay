@@ -36,6 +36,7 @@ public interface ChromosomeWindowListGenerator extends Generator {
 	
 	/**
 	 * @return a new {@link ChromosomeWindowList}
+	 * @throws InvalidChromosomeException
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */

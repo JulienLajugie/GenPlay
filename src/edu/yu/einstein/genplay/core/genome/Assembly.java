@@ -174,4 +174,8 @@ public class Assembly implements Serializable {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return getDisplayName();
+	}
 }

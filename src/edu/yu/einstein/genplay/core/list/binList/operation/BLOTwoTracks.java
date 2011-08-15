@@ -55,7 +55,8 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 	 * Adds the scores of the bins of the two specified BinLists
 	 * @param binList1
 	 * @param binList2
-	 * @param precision precision of the result {@link BinList} 
+	 * @param precision precision of the result {@link BinList}
+	 * @param scm {@link ScoreCalculationTwoTrackMethod} method used to compute the scores
 	 */
 	public BLOTwoTracks(BinList binList1, BinList binList2, DataPrecision precision, ScoreCalculationTwoTrackMethod scm) {
 		this.binList1 = binList1;

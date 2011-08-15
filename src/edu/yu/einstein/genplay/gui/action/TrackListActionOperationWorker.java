@@ -47,6 +47,7 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 	/**
 	 * Initializes the Operation
 	 * @return an initialized Operation or null if the user canceled
+	 * @throws Exception
 	 */
 	public abstract Operation<T> initializeOperation() throws Exception;
 

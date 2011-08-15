@@ -27,8 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.launcher.Launcher;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 
 /**
@@ -83,9 +83,8 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			MainFrame.getInstance().setVisible(false);
-
-			Launcher.main(new String[0]);
+			MainFrame.getInstance().dispose();
+			ProjectFrame.getInstance().setVisible(true);
 		}
 	}	
 }

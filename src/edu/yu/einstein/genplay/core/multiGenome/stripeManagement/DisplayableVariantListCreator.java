@@ -374,7 +374,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 * Checks if two lists of VCFType are strictly similar or not 
 	 * @param list1
 	 * @param list2
-	 * @return
+	 * @return true if the specified list are different
 	 */
 	private boolean listAreDifferents (List<VariantType> list1, List<VariantType> list2) {
 		if (list1.size() != list2.size()) {

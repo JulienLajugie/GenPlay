@@ -78,8 +78,11 @@ public class IslandFinder implements Serializable, Stoppable {
 	 * IslandFinder constructor
 	 * 
 	 * @param binList			the related binList
-	 * @param windowLimitValue	limit reads number to get an eligible windows
 	 * @param gap				minimum windows number needed to separate 2 islands
+	 * @param minIslandLength	minimum size of the island in windows for an island to be eligible
+	 * @param windowLimitValue	limit reads number to get an eligible windows
+	 * @param islandLimitScore  minimum score for an island to eligible
+	 * @param resultType 		{@link IslandResultType} of the result of the IslandFinder operation
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */

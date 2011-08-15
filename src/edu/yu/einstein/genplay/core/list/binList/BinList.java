@@ -896,6 +896,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 
 	/**
+	 * @param position position in the fitted chromosome list
 	 * @return the score of the specified position on the fitted chromosome
 	 */
 	public double getScore(int position) {

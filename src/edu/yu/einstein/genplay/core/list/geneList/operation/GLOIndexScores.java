@@ -48,7 +48,7 @@ public class GLOIndexScores implements Operation<GeneList> {
 	 * Indexes the score values of a {@link GeneList}
 	 * @param geneList input {@link GeneList}
 	 */
-	public GLOIndexScores(GeneList geneList, boolean[] chromoList) {
+	public GLOIndexScores(GeneList geneList) {
 		this.geneList = geneList;
 	}
 

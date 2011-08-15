@@ -169,7 +169,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	
 
 	/**
-	 * Creates an instance of {@link ScoredChromosomeWindow} 
+	 * Creates an instance of {@link ScoredChromosomeWindow} from a specified {@link BinList}
+	 * @param binList BinList used for the creation of the {@link ScoredChromosomeWindow}
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
@@ -218,6 +219,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @param startList list of start positions
 	 * @param stopList list of stop position
 	 * @param scoreList list of score
+	 * @param scm {@link ScoreCalculationMethod} used to create the {@link BinList}
 	 * @throws InvalidChromosomeException
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
@@ -286,7 +288,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 	
 	/**
-	 * Creates an instance of {@link ScoredChromosomeWindow} 
+	 * Creates an instance of {@link ScoredChromosomeWindow} from a list of {@link ScoredChromosomeWindow}
+	 * @param data list of {@link ScoredChromosomeWindow} with the data of the {@link ScoredChromosomeWindow} to create
 	 * @throws ExecutionException 
 	 * @throws InterruptedException 
 	 */
@@ -336,7 +339,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
 	 */
 	private int findStart(List<ScoredChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
@@ -359,7 +362,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @param value
 	 * @param indexStart
 	 * @param indexStop
-	 * @return
+	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
 	 */
 	private int findStop(List<ScoredChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;

@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.exception.CompressionException;
 /**
  * Abstract class. Represents a {@link Serializable} and {@link CompressibleList} of {@link Double}.
  * The internal implementation of the data storage is left to the subclasses.
- * T type of the internal data representing the List of Double
+ * @param <T> type of the internal data representing the List of Double
  * @author Julien Lajugie
  * @version 0.1
  */

@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.util.History;
 
 /**
  * An abstract class providing common tools for the different kind of curve {@link Track}
+ * @param <T> type of the data shown in the track
  * @author Julien Lajugie
  * @version 0.1
  */

@@ -46,6 +46,8 @@ public class Factorial implements Serializable {
 	 * If it is negative the method throw to InvalidFactorialParameterException.
 	 * 
 	 * @param n to calculate its factorial 
+	 * @return the factorial logarithm of the input parameter
+	 * @throws InvalidFactorialParameterException
 	 */
 	public static double logFactorial (int n) throws InvalidFactorialParameterException {
 		double result = 0.0;

@@ -33,7 +33,8 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 /**
- * This class represents a generic list organized by chromosome.
+ * This class represents a generic list organized by {@link Chromosome}
+ * @param <T> type of the objects stored in the list
  * @author Julien Lajugie
  * @version 0.1
  */

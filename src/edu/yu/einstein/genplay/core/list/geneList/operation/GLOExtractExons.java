@@ -60,7 +60,8 @@ public class GLOExtractExons implements Operation<GeneList> {
 
 	/**
 	 * Creates an instance of {@link GLOExtractExons}
-	 * @param geneList
+	 * @param geneList input list
+	 * @param exonOption used to specify to extract only the first exon, the last exon or all the exon
 	 */
 	public GLOExtractExons(GeneList geneList, int exonOption) {
 		this.geneList = geneList;		
