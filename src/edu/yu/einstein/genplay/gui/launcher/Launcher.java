@@ -152,6 +152,8 @@ public class Launcher {
 			multiGenomeManager = MultiGenomeManager.getInstance();
 			multiGenomeManager.init(projectFrame.getFileReadersAssociation(), projectFrame.getGenomeFileAssociation());
 		}
+		
+		MainFrame.reinit();		
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);
 	}
