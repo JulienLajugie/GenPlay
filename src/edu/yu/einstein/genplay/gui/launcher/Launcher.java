@@ -152,7 +152,7 @@ public class Launcher {
 			multiGenomeManager = MultiGenomeManager.getInstance();
 			multiGenomeManager.init(projectFrame.getFileReadersAssociation(), projectFrame.getGenomeFileAssociation());
 		}
-		
+		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
 		MainFrame.reinit();		
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);

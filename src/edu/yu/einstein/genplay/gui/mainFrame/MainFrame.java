@@ -189,13 +189,11 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLocationByPlatform(true);
 
-
 		if (ProjectRecordingManager.getInstance().isLoadingEvent()) {
 			PALoadProject loader = new PALoadProject();
 			loader.setSkipFileSelection(true);
 			loader.actionPerformed(null);
 		}
-
 		initMultiGenome();
 	}
 
@@ -254,14 +252,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	}
 
 
-
 	private void initMultiGenome () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			PAMultiGenome process = new PAMultiGenome();
 			process.actionPerformed(null);
 		}
 	}
-
 
 
 	/**
@@ -442,12 +438,18 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	}
 
 
+	/**
+	 * Reinit the {@link ChromosomeManager} and the chromosome panel of the {@link ControlPanel} if needed 
+	 */
 	public static void reinit() {
-		// if instance is null the mainframe has never been initialized 
+		// if instance is null the mainframe has never been initialized
 		// so there is no need to do a reinit
 		if (instance != null) {
-			System.out.println("rg");
+			ChromosomeManager.getInstance().setChromosomeList();
 			instance.getControlPanel().reinitChromosomePanel();
-		}		
+			instance.getTrackList().resetTrackList();
+			instance.setTitle();
+			instance.getStatusBar().reinit();
+		}
 	}
 }

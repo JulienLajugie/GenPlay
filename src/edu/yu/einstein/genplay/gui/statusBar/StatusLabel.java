@@ -164,4 +164,12 @@ final class StatusLabel extends JLabel {
 		timeCounterThread = null;
 		updateText();
 	}
+	
+	
+	/**
+	 * Erases the text
+	 */
+	void reinit() {
+		setText("");
+	}
 }

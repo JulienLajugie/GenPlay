@@ -83,7 +83,7 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if (actionResult) {
-			MainFrame.getInstance().dispose();
+			MainFrame.getInstance().setVisible(false);
 			ProjectFrame.getInstance().setVisible(true);
 		}
 	}

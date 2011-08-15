@@ -30,11 +30,11 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;

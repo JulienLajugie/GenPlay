@@ -186,16 +186,31 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			trackList[i].addPropertyChangeListener(this);
 			trackList[i].addGenomeWindowListener(this);
 			jpTrackList.add(trackList[i]);
-		}
-
-		
+		}		
 		for (int i = 0; i < trackCount; i++) {
 			jpTrackList.add(trackList[i]);
 		}
 		setViewportView(jpTrackList);
 		addActionsToActionMap();
 		addKeyToInputMap();
-
+	}
+	
+	
+	/**
+	 * Resets the {@link TrackList} by filling it with empty tracks 
+	 */
+	public void resetTrackList() {
+		int trackCount = configurationManager.getTrackCount();
+		int preferredHeight = configurationManager.getTrackHeight();
+		trackList = new Track[trackCount];
+		for (int i = 0; i < trackCount; i++) {
+			trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
+			trackList[i].setPreferredHeight(preferredHeight);
+			trackList[i].addPropertyChangeListener(this);
+			trackList[i].addGenomeWindowListener(this);
+		}		
+		System.gc();
+		rebuildPanel();
 	}
 	
 
@@ -903,6 +918,5 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public JPanel getJpTrackList() {
 		return jpTrackList;
-	}
-	
+	}	
 }

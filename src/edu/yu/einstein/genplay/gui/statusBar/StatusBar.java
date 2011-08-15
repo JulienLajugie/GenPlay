@@ -134,5 +134,14 @@ public final class StatusBar extends JPanel {
 	public void setProgress(int step, int progress) {
 		progressBar.setProgress(progress);
 		statusLabel.setStep(step);
-	}	
+	}
+	
+	
+	/**
+	 * Reinits the status to its default state
+	 */
+	public void reinit() {
+		statusLabel.reinit();
+		progressBar.setProgress(0);		
+	}
 }
