@@ -43,8 +43,6 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class DisplayableVariantListCreator implements DisplayableDataList<List<DisplayableVariant>> {
 
-
-
 	// Graphic variables
 	private GenomeWindow					currentGenomeWindow;			// Chromosome with the adapted data
 	private Double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
@@ -148,7 +146,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 					Variant current = fittedVariantList.get(i);
 					DisplayableVariant displayableVariant;
 					if (current instanceof VCFSNP) {
-						System.out.println("SNP (currentXRatio)");
 						displayableVariant = new SNPDisplayableVariant(current, current.getMetaGenomePosition());
 					} else {
 						displayableVariant = new RegularDisplayableVariant(fittedVariantList.get(i), current.getMetaGenomePosition(), current.getNextMetaGenomePosition());
@@ -208,7 +205,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 						displayableVariant = new MIXDisplayableVariant(start, stop);
 					} else {
 						if (current instanceof VCFSNP) {
-							System.out.println("SNP (merging)");
 							displayableVariant = new SNPDisplayableVariant(current, current.getMetaGenomePosition());
 						} else {
 							displayableVariant = new RegularDisplayableVariant(current, start, stop);

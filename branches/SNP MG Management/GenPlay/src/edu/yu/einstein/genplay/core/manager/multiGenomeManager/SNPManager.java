@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 
 /**
  * SNPs can be enabled or disabled according to a genome.
@@ -91,6 +92,18 @@ public class SNPManager {
 			genomeCounter.put(genomeName, 0);
 		}
 	}
+	
+	
+	/**
+	 * Reinitializes SNP after each {@link PAMultiGenome} action.
+	 */
+	public void reinit () {
+		for (String name: activeGenome.keySet()) {
+			if (activeGenome.get(name)) {
+				addSNP(name);
+			}
+		}
+	}
 
 
 	/**
@@ -98,7 +111,7 @@ public class SNPManager {
 	 * @param genomeName a genome name
 	 */
 	private void addSNP (String genomeName) {
-
+		
 		// Gets the reader
 		VCFReader reader = multiGenome.getReader(genomeName, VCFType.SNPS);
 
@@ -139,6 +152,8 @@ public class SNPManager {
 			}
 
 			activeGenome.put(genomeName, true);
+			
+			performGC();
 		}
 	}
 
@@ -148,6 +163,7 @@ public class SNPManager {
 	 * @param genomeName a genome name
 	 */
 	private void removeSNP (String genomeName) {
+		
 		// Gets the multi genome chromosome list
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>(ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values());
 

@@ -71,6 +71,7 @@ public class MGMultiGenome {
 	 * -> can be run several times
 	 */
 	public void initMultiGenomeInformation () {
+		multiGenomeInformation = new HashMap<String, MGGenome>();
 		for (String genomeName: genomeFileAssociation.keySet()) {
 			multiGenomeInformation.put(genomeName, new MGGenome(genomeName));
 		}
