@@ -286,6 +286,7 @@ public class ProjectFrame extends JFrame {
 	 */
 	protected void confirmLoading () {
 		if (loadProjectPanel.getFileProjectToLoad() != null) {
+			setVisible(false);
 			Launcher.startProjectFromFile(loadProjectPanel.getFileProjectToLoad());
 		}
 	}
