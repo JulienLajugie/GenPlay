@@ -27,9 +27,11 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
+import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -98,6 +100,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			}
 			ProjectRecordingManager.getInstance().initManagers(selectedFile);
 		}
+		MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)
 		notifyActionStart("Loading Project", 1, false);
 		return ProjectRecordingManager.getInstance().getTrackList();
 	}
@@ -110,6 +113,9 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
+			// we retrieve the value of the genome window of the first track and we set the project window with this value
+			GenomeWindow savedWindow = MainFrame.getInstance().getTrackList().getTrackList()[0].getGenomeWindow();
+			MainFrame.getInstance().getControlPanel().setGenomeWindow(savedWindow);
 		}
 	}	
 }

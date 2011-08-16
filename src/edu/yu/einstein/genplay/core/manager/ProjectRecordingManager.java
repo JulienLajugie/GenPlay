@@ -342,8 +342,13 @@ public class ProjectRecordingManager {
 	}
 
 
-
-	public ProjectInformations getProjectHeader (File inputFile) throws Exception {
+	/**
+	 * Retrieve the project informations from an input file
+	 * @param inputFile
+	 * @return the {@link ProjectInformations} of the specified input file
+	 * @throws Exception
+	 */
+	public ProjectInformations getProjectInformation(File inputFile) throws Exception {
 		try {
 			FileInputStream fis = new FileInputStream(inputFile);
 			GZIPInputStream gz = new GZIPInputStream(fis);
@@ -353,40 +358,7 @@ public class ProjectRecordingManager {
 		} catch (IOException e) {
 			// a IOException is likely to be caused by a invalid file type 
 			throw new InvalidFileTypeException();
-		}
-		/*List<String> list = new ArrayList<String>();
-		try {
-			FileInputStream fis = new FileInputStream(inputFile);
-			GZIPInputStream gz = new GZIPInputStream(fis);
-			ObjectInputStream ois = new ObjectInputStream(gz);
-
-			String projectName = (String)ois.readObject();
-			ois.readObject();// read the clade object but don't affected because not used
-			String genomeName = (String)ois.readObject();
-			boolean isMultiGenome = (Boolean)ois.readObject();
-			//@SuppressWarnings("unused")
-			//List<?> varFiles = (List<?>)ois.readObject();	//Development
-			String assemblyName = ((Assembly)ois.readObject()).getDisplayName();
-			Integer count = (Integer)ois.readObject();
-
-			list.add(projectName);
-			list.add(genomeName + " - " + assemblyName);
-
-			if (isMultiGenome) {
-				list.add("multi");
-			} else {
-				list.add("simple");
-			}
-
-			Date date = new Date(inputFile.lastModified());
-			SimpleDateFormat sdf = new SimpleDateFormat("MM / d / yyyy");
-			list.add(sdf.format(date));
-			list.add("" + count);
-		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type 
-			throw new InvalidFileTypeException();
-		}
-		return list;*/
+		}		
 	}
 
 
@@ -420,5 +392,4 @@ public class ProjectRecordingManager {
 	public void setLoadingEvent(boolean loadingEvent) {
 		this.loadingEvent = loadingEvent;
 	}
-
 }

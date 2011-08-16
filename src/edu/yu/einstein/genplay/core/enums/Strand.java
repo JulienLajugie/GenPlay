@@ -30,7 +30,13 @@ import java.util.Map;
  * The Strand class represents a strand.
  */
 public enum Strand {
+	/**
+	 * 5' strand
+	 */
 	FIVE ('+', 'F'),
+	/**
+	 * 3' strand
+	 */
 	THREE ('-', 'R');
 	
 	

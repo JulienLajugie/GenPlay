@@ -205,7 +205,7 @@ class ProjectInformationPanel extends JPanel {
 		if (path != null) {
 			File file = new File(path);
 			try {
-				info = ProjectRecordingManager.getInstance().getProjectHeader(file);
+				info = ProjectRecordingManager.getInstance().getProjectInformation(file);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

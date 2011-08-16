@@ -24,14 +24,21 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.swing.JOptionPane;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
+import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.util.ColorConverters;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -47,7 +54,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	private int 		maxBaseWidth = 0;											// size on the screen of the widest base to display (in pixels)
 	private Integer 	baseUnderMouseIndex = null;									// index of the base under the mouse
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -56,6 +63,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeInt(maxBaseWidth);
+		out.writeObject(data);
 	}
 
 
@@ -69,9 +77,51 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 		in.readInt();
 		maxBaseWidth = in.readInt();
 		baseUnderMouseIndex = null;	
+		twoBitSequenceListUnserialization();
 	}
 
-	
+
+	/**
+	 * Handle the unserialization of a {@link TwoBitSequenceList}.
+	 * 
+	 */
+	private void twoBitSequenceListUnserialization()  {
+		// if the data is a TwoBitSequenceList we want to make sure 
+		// that the file is still at the same location than when
+		// the save was made.  If not we need to ask the user for the new location. 
+		if (data instanceof TwoBitSequenceList) {
+			TwoBitSequenceList twoBitData = ((TwoBitSequenceList) data);
+			try {
+				// restore the connection to the file containing the 2 bit sequences
+				twoBitData.reinitDataFile();
+			} catch (FileNotFoundException e) {
+				// if the file is not found we 
+				String filePath = twoBitData.getDataFilePath();
+				int dialogRes = JOptionPane.showConfirmDialog(getRootPane(), 
+						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", 
+						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (dialogRes == JOptionPane.OK_OPTION) {
+					String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+					File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
+					if (selectedFile != null) {
+						try {
+							twoBitData.setSequenceFilePath(selectedFile.getPath());
+						} catch (FileNotFoundException e1) {
+							twoBitSequenceListUnserialization();
+						}
+					} else {
+						twoBitSequenceListUnserialization();
+					}
+				} else {
+					firePropertyChange("trackNeedToBeDeleted", false, true);
+					System.out.println("Booooooooooommmmmmmm");
+				}				
+			}
+		}
+	}
+
+
+
 	/**
 	 * Creates an instance of {@link NucleotideListTrackGraphics}
 	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
@@ -180,7 +230,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 		drawMiddleVerticalLine(g);
 	}
 
-	
+
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse is dragged
 	 */
@@ -193,7 +243,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 			repaint();
 		}		
 	}
-	
+
 
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse exits the track

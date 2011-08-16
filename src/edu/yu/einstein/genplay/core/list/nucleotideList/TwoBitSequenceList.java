@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.List;
@@ -74,8 +73,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		out.writeObject(sequence);
 		out.writeObject(genomeName);
 	}
-
-
+	
+	
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -231,24 +230,37 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		return result;
 	}
 
-
+	
+	
 	/**
-	 * Methods used for the unserialization of the object.
-	 * Since the random access file can't be serialized we try to recreate it if the file path is still the same
-	 * See javadocs for more information
-	 * @return the unserialized object
-	 * @throws ObjectStreamException
+	 * Re-initializes the connection to the random access file containing the sequences  
+	 * @throws FileNotFoundException
 	 */
-	private Object readResolve() throws ObjectStreamException {
-		try {
-			twoBitFile = new RandomAccessFile(new File(filePath), "r");
-			return this;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public void reinitDataFile() throws FileNotFoundException {
+		sequence.reinitDataFile();
+		twoBitFile = new RandomAccessFile(new File(filePath), "r");
 	}
-
+	
+	
+	/**
+	 * @return the path to the random access file containing the sequences
+	 */
+	public String getDataFilePath() {
+		return filePath;
+	}
+	
+	
+	/**
+	 * Sets the file path to the random access file containing the sequences
+	 * @param filePath path to the 
+	 * @throws FileNotFoundException 
+	 */
+	public void setSequenceFilePath(String filePath) throws FileNotFoundException {
+		sequence.setSequenceFilePath(filePath);
+		this.filePath = filePath;
+		reinitDataFile();
+	}
+	
 
 	/**
 	 * Stops the extraction of the 2bit file 

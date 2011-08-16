@@ -25,7 +25,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.AbstractList;
@@ -105,6 +104,9 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		chromosome = (Chromosome) in.readObject();
 		needToBeStopped = false;
 	}
+	
+	
+
 	
 	
 	/**
@@ -317,28 +319,30 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	
 	
 	/**
-	 * Methods used for the unserialization of the object.
-	 * Since the random access file can't be serialized we try to recreate it if the file path is still the same
-	 * See javadocs for more information
-	 * @return the unserialized object
-	 * @throws ObjectStreamException
-	 */
-	private Object readResolve() throws ObjectStreamException {
-		try {
-			raf = new RandomAccessFile(new File(filePath), "r");
-			return this;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-
-	/**
 	 * Stops the extraction of the data
 	 */
 	@Override
 	public void stop() {
 		needToBeStopped = true;
+	}
+
+
+	/**
+	 * Re-initializes the connection to the random access file containing the sequences  
+	 * @throws FileNotFoundException
+	 */
+	public void reinitDataFile() throws FileNotFoundException {
+		raf = new RandomAccessFile(new File(filePath), "r");		
+	}
+	
+	
+	/**
+	 * Sets the file path to the random access file containing the sequences
+	 * @param filePath path to the 
+	 * @throws FileNotFoundException
+	 */
+	public void setSequenceFilePath(String filePath) throws FileNotFoundException {
+		this.filePath = filePath;
+		reinitDataFile();
 	}
 }
