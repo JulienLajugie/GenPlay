@@ -23,12 +23,15 @@ package edu.yu.einstein.genplay.util;
 import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
+import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
@@ -38,6 +41,7 @@ import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeComparator;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -609,5 +613,21 @@ public class Utils {
 			}
 		}
 		return resultList;
+	}
+	
+	
+	/**
+	 * Sorts a list of chromosome and returned it
+	 * @param map	a list of chromosome indexed by their name
+	 * @return		a list of chromosome sorted according to the names
+	 */
+	public static List<Chromosome> getSortedChromosomeList(Map<String, Chromosome> map) {
+		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
+		List<String> chromosomeNames = new ArrayList<String>(map.keySet());
+		Collections.sort(chromosomeNames, new ChromosomeComparator());
+		for (String chromosomeName: chromosomeNames) {
+			chromosomeList.add(map.get(chromosomeName));
+		}
+		return chromosomeList;
 	}
 }

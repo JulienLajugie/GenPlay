@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
@@ -92,8 +93,8 @@ public class SNPManager {
 			genomeCounter.put(genomeName, 0);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Reinitializes SNP after each {@link PAMultiGenome} action.
 	 */
@@ -111,7 +112,7 @@ public class SNPManager {
 	 * @param genomeName a genome name
 	 */
 	private void addSNP (String genomeName) {
-		
+
 		// Gets the reader
 		VCFReader reader = multiGenome.getReader(genomeName, VCFType.SNPS);
 
@@ -132,30 +133,47 @@ public class SNPManager {
 					e.printStackTrace();
 				}
 
+				// If results exist
 				if (result != null) {
-					for (Map<String, Object> info: result) {	// Scans every result lines
-						int position = Integer.parseInt(info.get("POS").toString());
-						MGPosition positionInformation = null;
-						for (String name: otherGenomeNames) {
-							positionInformation = genomes.getMGPosition(name, chromosome, position);
-							if (positionInformation != null) {
-								break;
+					for (Map<String, Object> info: result) {												// Scans every result lines
+						int position = Integer.parseInt(info.get("POS").toString());						// Gets the reference genome position
+						MGPosition positionInformation = null;												// Declares the MGPosition,
+																											// It is the VCF line information who can already exist for other genomes from the same VCF file,
+																											// if they have been required in the project and already processed
+						for (String name: otherGenomeNames) {												// Scan for the other genomes
+							positionInformation = genomes.getMGPosition(name, chromosome, position);		// Tries to get the MGPosition
+							if (positionInformation != null) {												// If it is not null it exists
+								break;																		// and the loop can be quit to do not scan the other genome (obviously same MGPosition object)
 							}
 						}
-						if (positionInformation == null) {
-							positionInformation = new MGPosition(chromosome, info, reader);
+						if (positionInformation == null) {													// If no MGPosition has been got, it means it does not exist 
+							positionInformation = new MGPosition(chromosome, info, reader);					// and it has to be instanced
 						}
-						Variant variant = new VCFSNP(genomeName, chromosome, positionInformation);
-						genomes.addVariant(genomeName, chromosome, variant);
+						Variant variant = new VCFSNP(genomeName, chromosome, positionInformation);			// Creates the SNP variant
+						genomes.addVariant(genomeName, chromosome, variant);								// Adds the variant
 					}
+					
+					// Updates of all SNPs,
+					// it consists to initializes the reference and meta genome offset.
+					MGChromosome chromosomeInformation = genomes.getChromosomeInformation(genomeName, chromosome);
+					chromosomeInformation.resetIndexList();													// Many position have just been added, the list has to be reinitialized
+					int[] indexes = chromosomeInformation.getPositionIndex();
+					for (int i = 0; i < indexes.length; i++) {
+						chromosomeInformation.setCurrentPosition(indexes[i]);								// Sets the current position
+						Variant current = chromosomeInformation.getCurrentVariant();						// Gets the current variant
+						if (current instanceof VCFSNP) {													// If it is a SNP (it has just been added and has to be updated)
+							chromosomeInformation.updatePreviousPosition(indexes[i-1]);						// Sets the previous position: value of indexes[i-1]
+							Variant previous = chromosomeInformation.getPreviousPosition();					// Gets the previous variant
+							current.setInitialReferenceOffset(previous.getNextReferencePositionOffset());	// Sets the initial reference genome offset
+							current.setInitialMetaGenomeOffset(previous.getNextMetaGenomePositionOffset());	// Sets the initial meta genome offset
+						}
+					}
+
 				}
 			}
-			
-			
-			
 
-			activeGenome.put(genomeName, true);
-			
+			activeGenome.put(genomeName, true);																// The SNPs for that genome are now enabled
+
 			performGC();
 		}
 	}
@@ -166,7 +184,7 @@ public class SNPManager {
 	 * @param genomeName a genome name
 	 */
 	private void removeSNP (String genomeName) {
-		
+
 		// Gets the multi genome chromosome list
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>(ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values());
 
@@ -190,7 +208,7 @@ public class SNPManager {
 			}
 		}
 
-		activeGenome.put(genomeName, false);
+		activeGenome.put(genomeName, false);																// The SNPs for that genome are now disabled
 
 		performGC();
 	}

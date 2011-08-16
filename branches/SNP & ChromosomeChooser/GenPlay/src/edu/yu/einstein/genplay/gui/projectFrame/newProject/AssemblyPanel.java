@@ -44,7 +44,9 @@ import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.genome.RetrieveAssemblies;
+import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -77,7 +79,9 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private Clade 				selectedClade;		// Selected Clade
 	private Genome 				selectedGenome;		// Selected Genome
 	private Assembly 			selectedAssembly;	// Selected Assembly
-	private List<List<Object>> 	chromosomesData;	// Data used for the chromosome selection
+	
+	private List<Chromosome> 	fullChromosomeList;	// List of chromosome to display
+	private List<Chromosome> 	selectedChromosomes;// List of chromosome after selection
 	
 	
 	/**
@@ -218,7 +222,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		initClade();
 		initGenome();
 		initAssembly();
-		initChromosomesData();
+		selectedChromosomes = new ArrayList<Chromosome>();
+		
 		
 		//Listeners
 		jcClade.addActionListener(this);
@@ -280,31 +285,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		}
 		jcAssembly.setSelectedIndex(0);
 		selectedAssembly = (Assembly) jcAssembly.getSelectedItem();
-	}
-
-
-	/**
-	 * This method initializes the data for the chromosome
-	 * Data need to be initialized for the first run.
-	 */
-	private void initChromosomesData() {
-		chromosomesData = new ArrayList<List<Object>>();
-		List<Object> line;
-		int row = 0;
-		Assembly assembly =  getSelectedAssembly();
-		List<String> chromosomeNames = new ArrayList<String>(assembly.getChromosomeList().keySet());
-		Collections.sort(chromosomeNames, new ChromosomeComparator());
-		Map<String, Chromosome> chromosomeList = assembly.getChromosomeList();
-		for (String chromosomeName: chromosomeNames) {
-			line = new ArrayList<Object>();
-			Chromosome chromosome = chromosomeList.get(chromosomeName);
-			line.add(row + 1);
-			line.add(chromosome.getName());
-			line.add(chromosome.getLength());
-			line.add(true);
-			chromosomesData.add(line);
-			row++;
-		}
+		//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
+		fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
 	}
 
 
@@ -329,12 +311,22 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			if (jcAssembly.getSelectedItem() != null) {
 				if (selectedAssembly == null || !selectedAssembly.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
 					selectedAssembly = (Assembly) ((JComboBox)arg0.getSource()).getSelectedItem();
-					initChromosomesData();
+					//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
+					fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
 				}
 			}
 		} else if (arg0.getSource() == jbChromosome) {
 			String title = "Chromosome chooser - " + selectedGenome + " - " + jcAssembly.getSelectedItem().toString();
-			chromosomesData = ChromosomeChooserDialog.getSelectedChromosomes(this, title, chromosomesData);
+			
+			ChromosomeChooserDialog chromosomeChooser = new ChromosomeChooserDialog();
+			chromosomeChooser.setTitle(title);
+			chromosomeChooser.setFullChromosomeList(fullChromosomeList);
+			chromosomeChooser.setListOfSelectedChromosome(selectedChromosomes);
+			chromosomeChooser.setOrdering(false);
+			if (chromosomeChooser.showDialog(getRootPane()) == ChromosomeChooserDialog.APPROVE_OPTION) {
+				fullChromosomeList = chromosomeChooser.getFullChromosomeList();
+				selectedChromosomes = chromosomeChooser.getListOfSelectedChromosome();
+			}
 		}
 	}
 	
@@ -367,14 +359,9 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
 	 */
 	protected Map<String, Chromosome> getSelectedChromosomes() {
-		if (!selectedAssembly.equals(jcAssembly.getSelectedItem().toString())) {
-			initChromosomesData();
-		}
 		Map<String, Chromosome> chromosomeList = new HashMap<String, Chromosome>();
-		for (List<Object> row: chromosomesData) {
-			if ((Boolean)row.get(3)) {
-				chromosomeList.put(row.get(1).toString(), new Chromosome(row.get(1).toString(), Integer.parseInt(row.get(2).toString())));
-			}
+		for (Chromosome chromosome: selectedChromosomes) {
+			chromosomeList.put(chromosome.getName(), chromosome);
 		}
 		return chromosomeList;
 	}

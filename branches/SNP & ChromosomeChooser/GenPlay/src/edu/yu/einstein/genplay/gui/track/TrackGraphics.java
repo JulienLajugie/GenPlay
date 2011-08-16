@@ -510,6 +510,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * @param pos position on the meta genome
+	 * @return	the variant associated to the position if exists, null otherwise.
+	 */
 	private DisplayableVariant getDisplayableVariant(double pos) {
 		DisplayableVariant displayableVariant = null;
 		if (displayableVariantList != null) {
@@ -521,7 +525,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 		return displayableVariant;
 	}
-
 
 
 	/**
