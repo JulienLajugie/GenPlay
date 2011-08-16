@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MetaGenomeManager;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.gui.projectFrame.newProject.ChromosomeComparator;
+import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeComparator;
 
 
 /**

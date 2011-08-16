@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.projectFrame.newProject;
+package edu.yu.einstein.genplay.gui.dialog.chromosomeChooser;
 
 import java.util.Comparator;
 import java.util.HashMap;

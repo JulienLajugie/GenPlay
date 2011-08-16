@@ -18,7 +18,7 @@
  *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.projectFrame.newProject;
+package edu.yu.einstein.genplay.gui.dialog.chromosomeChooser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,46 +29,55 @@ import edu.yu.einstein.genplay.gui.projectFrame.newProject.vcf.VCFLoader;
 
 /**
  * This class is the table model used in {@link VCFLoader} class.
+ * The table shows 4 columns but only 3 objects are stored in the data list.
+ * The first one is the number of the row,
+ * the second one is the chromosome (who displays the name and the length -> 2 columns),
+ * the last one is the boolean for selection.
  * @author Nicolas Fourel
  * @version 0.1
  */
 class ChromosomeChooserTableModel extends AbstractTableModel {
-	
+
 	private static final long serialVersionUID = 136782955769801093L;
-	
+
 	private String[] 			columnNames;	// Column names
 	private List<List<Object>> 	data;			// table data
-	
-	
+
+
 	/**
 	 * Constructor of {@link ChromosomeChooserTableModel}
-	 * @param columNames column names
 	 */
-	public ChromosomeChooserTableModel (String[] columNames) {
+	protected ChromosomeChooserTableModel () {
 		super();
-		this.columnNames = columNames;
+		this.columnNames = ChromosomeChooserDialog.COLUMN_NAMES;
 		this.data = new ArrayList<List<Object>>();
 	}
-	
-	
+
+
 	/**
-	 * Constructor of {@link ChromosomeChooserTableModel}
-	 * @param columNames 	column names
-	 * @param data 			data
+	 * Sets the data
+	 * @param fullList		list of chromosome available for selection
+	 * @param selectedList	list of chromosome selected
 	 */
-	public ChromosomeChooserTableModel (String[] columNames, List<List<Object>> data) {
-		super();
-		this.columnNames = columNames;
-		this.data = data;
+	protected void setData (List<Chromosome> fullList, List<Chromosome> selectedList) {
+		for (int i = 0; i < fullList.size(); i++) {
+			Chromosome chromosome = fullList.get(i);
+			addRow(i, chromosome);
+			if (selectedList.contains(chromosome)) {
+				setValueAt(true, i, 2);
+			} else {
+				setValueAt(false, i, 2);
+			}
+		}
 	}
-	
-	
+
+
 	@Override
 	public int getColumnCount() {
 		return columnNames.length;
 	}
-	
-	
+
+
 	@Override
 	public int getRowCount() {
 		if (data != null) {
@@ -77,17 +86,29 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 			return 0;
 		}
 	}
-	
-	
+
+
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if (rowIndex < data.size()) {
-			return data.get(rowIndex).get(columnIndex);
+			switch (columnIndex) {
+			case 0:
+				return data.get(rowIndex).get(0);
+			case 1:
+				return ((Chromosome)(data.get(rowIndex).get(1))).getName();
+			case 2:
+				return ((Chromosome)(data.get(rowIndex).get(1))).getLength();
+			case 3:
+				return data.get(rowIndex).get(2);
+			default:
+				return null;
+			}
 		}
 		return null;
 	}
-	
-	
+
+
+	@Override
 	public Class<?> getColumnClass(int c) {
 		switch (c) {
 		case 0:
@@ -102,20 +123,20 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 			return Integer.class;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Defines if a cell is editable.
 	 */
 	public boolean isCellEditable(int row, int col) {
-        if (col == 3) {
-        	return true;
-        } else {
-        	return false;
-        }
-    }
-	
-	
+		if (col == 3) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
 	/**
 	 * This method sets the value of a precise cell.
 	 * @param value	the value to add
@@ -124,15 +145,22 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	 */
 	public void setValueAt(Object value, int row, int col) {
 		if (row < data.size()) {
+			if (col == 3) {
+				col = 2;
+			}
 			data.get(row).set(col, value);
 			fireTableCellUpdated(row, col);
 		} else {
-			data.add(row, new ArrayList<Object>());
+			List<Object> line = new ArrayList<Object>();
+			line.add(row);
+			line.add(null);
+			line.add(false);
+			data.add(row, line);
 			setValueAt(value, row, col);
 		}
 	}
-	
-	
+
+
 	/**
 	 * This method adds a row to the table according to a file.
 	 * @param row	the row to add
@@ -140,66 +168,55 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	 */
 	protected void addRow (int row, Chromosome chromosome) {
 		setValueAt(row+1, row, 0);
-		setValueAt(chromosome.getName(), row, 1);
-		setValueAt(chromosome.getLength(), row, 2);
-		setValueAt(true, row, 3);
+		setValueAt(chromosome, row, 1);
+		setValueAt(false, row, 2);
 	}
-	
-	
+
+
 	/**
 	 * This method moves (up or down) a list of row.
 	 * @param list	the list of row numbers to move
 	 * @param toUp	rows will be move up if true, down if false 
 	 */
 	protected void move (int[] list, boolean toUp) {
-		Object objName;
-		Object objLength;
+		Object objChromosome;
 		Object objSelected;
 		if (toUp) {
 			for (int i: list) {
 				if (i > 0) {
-					objName = data.get(i-1).get(1);
-					objLength = data.get(i-1).get(2);
-					objSelected = data.get(i-1).get(3);
-					
+					objChromosome = data.get(i-1).get(1);
+					objSelected = data.get(i-1).get(2);
+
 					setValueAt(i, i-1, 0);
 					setValueAt(data.get(i).get(1), i-1, 1);
 					setValueAt(data.get(i).get(2), i-1, 2);
-					setValueAt(data.get(i).get(3), i-1, 3);
-					
-					
+
 					setValueAt(i+1, i, 0);
-					setValueAt(objName, i, 1);
-					setValueAt(objLength, i, 2);
-					setValueAt(objSelected, i, 3);
+					setValueAt(objChromosome, i, 1);
+					setValueAt(objSelected, i, 2);
 				}
 			}
 		} else {
 			list = reverse(list);
 			for (int i: list) {
 				if (i<(getRowCount()-1)){
-					objName = data.get(i+1).get(1);
-					objLength = data.get(i+1).get(2);
-					objSelected = data.get(i+1).get(3);
-					
-					
+					objChromosome = data.get(i+1).get(1);
+					objSelected = data.get(i+1).get(2);
+
 					setValueAt(i+2, i+1, 0);
 					setValueAt(data.get(i).get(1), i+1, 1);
 					setValueAt(data.get(i).get(2), i+1, 2);
-					setValueAt(data.get(i).get(3), i+1, 3);
-					
-					
+
 					setValueAt(i+1, i, 0);
-					setValueAt(objName, i, 1);
-					setValueAt(objLength, i, 2);
-					setValueAt(objSelected, i, 3);
+					setValueAt(objChromosome, i, 1);
+					setValueAt(objSelected, i, 2);
 				}
 			}
 		}
 		fireTableDataChanged();
 	}
-	
-	
+
+
 	/**
 	 * This methods reverse an array of int
 	 * @param b the int array
@@ -208,7 +225,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	private int[] reverse(int[] b) {
 		int left  = 0;          // index of leftmost element
 		int right = b.length-1; // index of rightmost element
-		
+
 		while (left < right) {
 			// exchange the left and right elements
 			int temp = b[left];
@@ -220,8 +237,8 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 		}
 		return b;
 	}
-	
-	
+
+
 	/**
 	 * Sets all selected column rows
 	 * @param list
@@ -229,35 +246,19 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	 */
 	protected void setSelectedValue (int[] list, boolean value) {
 		for (int i: list) {
-			setValueAt(value, i, 3);
+			setValueAt(value, i, 2);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the data
 	 */
 	protected  List<List<Object>> getData () {
 		return data;
 	}
-	
-	
-	/**
-	 * @param data	data to set
-	 */
-	protected  void setData (List<List<Object>> data) {
-		List<Object> line;
-		for  (List<Object> row: data) {
-			line = new ArrayList<Object>();
-			for (int i = 0; i < 4; i++) {
-				line.add(row.get(i));
-			}
-			this.data.add(line);
-		}
-		fireTableDataChanged();
-	}
-	
-	
+
+
 	/**
 	 * Select all basics chromosome.
 	 * A basic chromosome is chr1....chrX, chrY and chrM
@@ -282,5 +283,33 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 			}
 		}
 	}
-	
+
+
+	/**
+	 * @return the list of selected chromosome
+	 */
+	protected List<Chromosome> getSelectedChromosome () {
+		List<Chromosome> result = new ArrayList<Chromosome>();
+		for (List<Object> row: data) {
+			if ((Boolean) row.get(2)) {
+				Chromosome chromosome = (Chromosome)row.get(1);
+				result.add(chromosome);
+			}
+		}
+		return result;
+	}
+
+
+	/**
+	 * @return the full list of chromosome
+	 */
+	protected List<Chromosome> getFullChromosomeList () {
+		List<Chromosome> result = new ArrayList<Chromosome>();
+		for (List<Object> row: data) {
+			Chromosome chromosome = (Chromosome)row.get(1);
+			result.add(chromosome);
+		}
+		return result;
+	}
+
 }
