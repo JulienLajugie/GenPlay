@@ -268,8 +268,7 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 			Map<String, Chromosome> newList = new HashMap<String, Chromosome>();
 			newList.put(getCurrentChromosome().getName(), getCurrentChromosome());
 			return newList;
-		}
-		
+		}		
 	}
 	
 	

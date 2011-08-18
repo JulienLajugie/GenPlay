@@ -224,6 +224,10 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		initAssembly();
 		selectedChromosomes = new ArrayList<Chromosome>();
 		
+		// default: we select all the chromosomes
+		for (Chromosome currentChromo: fullChromosomeList) {
+			selectedChromosomes.add(currentChromo);
+		}
 		
 		//Listeners
 		jcClade.addActionListener(this);

@@ -106,9 +106,6 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	}
 	
 	
-
-	
-	
 	/**
 	 * Default constructor. Creates an instance of {@link TwoBitSequence}
 	 * @param chromosome	chromosome of the current list
@@ -331,8 +328,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 * Re-initializes the connection to the random access file containing the sequences  
 	 * @throws FileNotFoundException
 	 */
-	public void reinitDataFile() throws FileNotFoundException {
-		raf = new RandomAccessFile(new File(filePath), "r");		
+	private void reinitDataFile() throws FileNotFoundException {
+		raf = new RandomAccessFile(new File(filePath), "r");
 	}
 	
 	

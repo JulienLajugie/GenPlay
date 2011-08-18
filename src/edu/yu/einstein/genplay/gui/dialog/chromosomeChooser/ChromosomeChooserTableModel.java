@@ -128,6 +128,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	/**
 	 * Defines if a cell is editable.
 	 */
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		if (col == 3) {
 			return true;
@@ -146,9 +147,10 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int row, int col) {
 		if (row < data.size()) {
 			if (col == 3) {
-				col = 2;
+				data.get(row).set(2, value);
+			} else {
+				data.get(row).set(col, value);
 			}
-			data.get(row).set(col, value);
 			fireTableCellUpdated(row, col);
 		} else {
 			List<Object> line = new ArrayList<Object>();
@@ -246,7 +248,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 	 */
 	protected void setSelectedValue (int[] list, boolean value) {
 		for (int i: list) {
-			setValueAt(value, i, 2);
+			setValueAt(value, i, 3);
 		}
 	}
 

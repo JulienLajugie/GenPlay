@@ -237,7 +237,6 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	 * @throws FileNotFoundException
 	 */
 	public void reinitDataFile() throws FileNotFoundException {
-		sequence.reinitDataFile();
 		twoBitFile = new RandomAccessFile(new File(filePath), "r");
 	}
 	
@@ -256,6 +255,9 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	 * @throws FileNotFoundException 
 	 */
 	public void setSequenceFilePath(String filePath) throws FileNotFoundException {
+		for (List<Nucleotide> currentSequence: this) {
+			((TwoBitSequence) currentSequence).setSequenceFilePath(filePath);			
+		}
 		sequence.setSequenceFilePath(filePath);
 		this.filePath = filePath;
 		reinitDataFile();

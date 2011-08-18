@@ -145,12 +145,7 @@ public class NewProjectPanel extends JPanel {
 	 * @return the project name or null if it is not valid
 	 */
 	public String getProjectName () {
-		if (namePanel.getProjectName().equals("")) {
-			JOptionPane.showMessageDialog(getRootPane(), "Please fill the project name field", "Invalid project name", JOptionPane.WARNING_MESSAGE);
-			return null;
-		} else {
-			return namePanel.getProjectName();
-		}
+		return namePanel.getProjectName();
 	}
 	
 	

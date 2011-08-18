@@ -256,7 +256,8 @@ public class ProjectFrame extends JFrame {
 	protected void confirmCreate () {
 		Boolean valid = true;
 		// check that a project name is specified
-		if (newProjectPanel.getProjectName() == null) {
+		if (newProjectPanel.getProjectName().equals(""))  {
+			JOptionPane.showMessageDialog(getRootPane(), "Please fill the project name field", "Invalid Project Name", JOptionPane.WARNING_MESSAGE);
 			valid = false;
 		}
 		// in the case of the multi-genome project, check that the multi-genome information is correct
@@ -264,6 +265,10 @@ public class ProjectFrame extends JFrame {
 			if (!newProjectPanel.isValidMultigenomeProject()) {
 				valid = false;
 			}
+		}
+		if (newProjectPanel.getSelectedChromosomes().size() == 0) {
+			JOptionPane.showMessageDialog(getRootPane(), "Please select at least one chromosome", "Invalid Chromosome Selection", JOptionPane.WARNING_MESSAGE);
+			valid = false;
 		}
 		//start a new project
 		if (valid) {
