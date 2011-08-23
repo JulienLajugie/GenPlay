@@ -26,6 +26,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,22 +53,69 @@ import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFReader {
+public class VCFReader implements Serializable {
 
-	private final 	File 						vcf;			// Path of the VCF file
-	private final	VCFType						vcfType;		// The type of the VCF file
-	private 		TabixReader 				vcfParser;		// Tabix object for the VCF file (Tabix Java API)
-	private 		Map<String, String> 		headerInfo;		// Header main information
-	private			List<String>				columnNames;	// All column header names
-	private			List<String>				fixedColumn;	// Fixed header names included in the VCF file
-	private			List<String>				genomeNames;	// Dynamic header names included in the VCF file (raw genome names)
-	private			Map<String, Class<?>>		fieldType;		// Association between field type and java class
+	private static final long serialVersionUID = 7316097355767936880L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
+	private transient	TabixReader 			vcfParser;		// Tabix object for the VCF file (Tabix Java API)
+	private File 								vcf;			// Path of the VCF file
+	private VCFType								vcfType;		// The type of the VCF file
+	private Map<String, String> 				headerInfo;		// Header main information
+	private	List<String>						columnNames;	// All column header names
+	private	List<String>						fixedColumn;	// Fixed header names included in the VCF file
+	private	List<String>						genomeNames;	// Dynamic header names included in the VCF file (raw genome names)
+	private	Map<String, Class<?>>				fieldType;		// Association between field type and java class
 	private List<VCFHeaderType> 				altHeader;		// Header for the ALT field
 	private List<VCFHeaderType> 				filterHeader;	// Header for the FILTER field
 	private ArrayList<VCFHeaderAdvancedType> 	infoHeader;		// Header for the INFO field
 	private ArrayList<VCFHeaderAdvancedType> 	formatHeader;	// Header for the FORMAT field
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(vcf);
+		out.writeObject(vcfType);
+		out.writeObject(headerInfo);
+		out.writeObject(columnNames);
+		out.writeObject(fixedColumn);
+		out.writeObject(genomeNames);
+		out.writeObject(fieldType);
+		out.writeObject(altHeader);
+		out.writeObject(filterHeader);
+		out.writeObject(infoHeader);
+		out.writeObject(formatHeader);
+	}
 
 
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		vcf = (File) in.readObject();
+		vcfType = (VCFType) in.readObject();
+		headerInfo= (Map<String, String>) in.readObject();
+		columnNames = (List<String>) in.readObject();
+		fixedColumn = (List<String>) in.readObject();
+		genomeNames = (List<String>) in.readObject();
+		fieldType = (Map<String, Class<?>>) in.readObject();
+		altHeader = (List<VCFHeaderType>) in.readObject();
+		filterHeader = (List<VCFHeaderType>) in.readObject();
+		infoHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();
+		formatHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();
+		indexVCFFile(); // recreate the tabix reader
+	}
+
+	
 	/**
 	 * Constructor of {@link VCFReader}
 	 * @param vcf		the VCF file

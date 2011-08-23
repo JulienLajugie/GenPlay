@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.engine;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,16 +43,52 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGChromosome {
+public class MGChromosome implements Serializable {
 
-	private final 	MGGenome 			genomeInformation;	// The genome
-	private final	Chromosome 			chromosome;			// The chromosome
-
+	private static final long serialVersionUID = -6878208329536733167L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
+	private MGGenome 					genomeInformation;	// The genome
+	private Chromosome 					chromosome;			// The chromosome
 	private Map<Integer, Variant>		variantList;		// Variant list, keys are reference genome position and values are variants
 	private int[]						positionIndex;		// Mapping table for reference genome position
 	private Integer 					currentPosition;	// Current position
 	private Integer 					previousPosition;	// Previous position accessed
 
+		
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeInformation);
+		out.writeObject(chromosome);
+		out.writeObject(variantList);
+		out.writeObject(positionIndex);
+		out.writeInt(currentPosition);
+		out.writeInt(previousPosition);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeInformation = (MGGenome) in.readObject();
+		chromosome = (Chromosome) in.readObject();
+		variantList = (Map<Integer, Variant>) in.readObject();
+		positionIndex = (int[]) in.readObject();
+		currentPosition = in.readInt();
+		previousPosition = in.readInt();
+	}
+	
 
 	/**
 	 * Constructor of {@link MGChromosome}

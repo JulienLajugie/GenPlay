@@ -21,6 +21,9 @@
 package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,13 +54,47 @@ import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SNPManager {
+public class SNPManager implements Serializable {
 
+	private static final long serialVersionUID = -4204806185089675978L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static 	SNPManager 				instance;			// The instance of the class
-	private final	MultiGenomeManager 		multiGenome;		// Instance of the Multi Genome Manager
-	private final 	MGMultiGenome 			genomes;			// Instance of the MGMultiGenome
+	private 		MultiGenomeManager 		multiGenome;		// Instance of the Multi Genome Manager
+	private 	 	MGMultiGenome 			genomes;			// Instance of the MGMultiGenome
 	private			Map<String, Boolean> 	activeGenome; 		// Mapping list of enable/disable genomes
 	private			Map<String, Integer> 	genomeCounter; 		// Mapping list of enable/disable genomes
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(instance);
+		out.writeObject(multiGenome);
+		out.writeObject(genomes);
+		out.writeObject(activeGenome);
+		out.writeObject(genomeCounter);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		instance = (SNPManager) in.readObject();
+		multiGenome = (MultiGenomeManager) in.readObject();
+		genomes = (MGMultiGenome) in.readObject();
+		activeGenome = (Map<String, Boolean>) in.readObject();
+		genomeCounter = (Map<String, Integer>) in.readObject();		
+	}
 
 
 	/**
@@ -138,8 +175,8 @@ public class SNPManager {
 					for (Map<String, Object> info: result) {												// Scans every result lines
 						int position = Integer.parseInt(info.get("POS").toString());						// Gets the reference genome position
 						MGPosition positionInformation = null;												// Declares the MGPosition,
-																											// It is the VCF line information who can already exist for other genomes from the same VCF file,
-																											// if they have been required in the project and already processed
+						// It is the VCF line information who can already exist for other genomes from the same VCF file,
+						// if they have been required in the project and already processed
 						for (String name: otherGenomeNames) {												// Scan for the other genomes
 							positionInformation = genomes.getMGPosition(name, chromosome, position);		// Tries to get the MGPosition
 							if (positionInformation != null) {												// If it is not null it exists
@@ -152,7 +189,7 @@ public class SNPManager {
 						Variant variant = new VCFSNP(genomeName, chromosome, positionInformation);			// Creates the SNP variant
 						genomes.addVariant(genomeName, chromosome, variant);								// Adds the variant
 					}
-					
+
 					// Updates of all SNPs,
 					// it consists to initializes the reference and meta genome offset.
 					MGChromosome chromosomeInformation = genomes.getChromosomeInformation(genomeName, chromosome);

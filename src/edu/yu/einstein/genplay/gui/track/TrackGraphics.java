@@ -120,7 +120,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected static final int 			FONT_SIZE = 10;					// size of the font
 	protected FontMetrics 		fm = 
 		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
-	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
+	private List<GenomeWindowListener> 	gwListenerList;					// list of GenomeWindowListener
 	private int 						verticalLineCount;				// number of vertical lines to print
 	transient private int				mouseStartDragX = -1;			// position of the mouse when start dragging
 	protected double					xFactor;						// factor between the genomic width and the screen width
@@ -142,14 +142,16 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(gwListenerList);
 		out.writeInt(verticalLineCount);
 		out.writeDouble(xFactor);
-		out.writeObject(gwListenerList);
 		out.writeObject(genomeWindow);
 		out.writeObject(stripeList);
 		out.writeObject(data);
 		out.writeObject(multiGenomeStripe);
+		out.writeObject(displayableVariantListCreator);
 		out.writeObject(genomeName);
+		out.writeObject(displayableVariantList);
 	}
 
 
@@ -162,14 +164,16 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		gwListenerList = (List<GenomeWindowListener>) in.readObject();
 		verticalLineCount = in.readInt();
 		xFactor = in.readDouble();
-		gwListenerList = (List<GenomeWindowListener>) in.readObject();
 		genomeWindow = (GenomeWindow) in.readObject();
 		stripeList = (ChromosomeWindowList) in.readObject();
 		data = (T) in.readObject();
 		multiGenomeStripe = (MultiGenomeStripe) in.readObject();
+		displayableVariantListCreator = (DisplayableVariantListCreator) in.readObject();
 		genomeName = (String) in.readObject();
+		displayableVariantList = (List<DisplayableVariant>) in.readObject();
 		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
 	}
 	
@@ -286,6 +290,14 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripe != null) {
 			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
+				if (displayableVariantListCreator == null) {
+					System.out.println("displayableVariantListCreator");
+				}
+				if (multiGenomeStripe == null) {
+					System.out.println("multiGenomeStripe");
+				}
+				
+				
 				displayableVariantListCreator.setGenomeNames(multiGenomeStripe.getRequiredGenomes());
 				displayableVariantListCreator.setQuality((double) multiGenomeStripe.getQuality());
 				displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);

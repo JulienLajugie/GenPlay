@@ -21,6 +21,10 @@
 package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,12 +46,41 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGMultiGenome {
+public class MGMultiGenome implements Serializable {
 
+	private static final long serialVersionUID = -1420140357798946704L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Map<String, MGGenome> 	multiGenomeInformation;	// Genomes information: key are genome raw names
 	private Map<String, List<File>> genomeFileAssociation;	// Mapping between genome names and their files.
 
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(multiGenomeInformation);
+		out.writeObject(genomeFileAssociation);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		multiGenomeInformation = (Map<String, MGGenome>) in.readObject();
+		genomeFileAssociation = (Map<String, List<File>>) in.readObject();
+	}
+
+	
 	/**
 	 * Constructor of {@link MGMultiGenome}
 	 */

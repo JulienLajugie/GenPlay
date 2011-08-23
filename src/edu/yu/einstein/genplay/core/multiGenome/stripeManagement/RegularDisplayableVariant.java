@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -33,10 +37,40 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class RegularDisplayableVariant implements DisplayableVariant {
 
+	private static final long serialVersionUID = 3660914077815174673L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Variant 			variant;		// The native variant
 	private ChromosomeWindow 	position; 		// Start and stop of the variation
 	private ChromosomeWindow 	deadZone; 		// Start and stop of the dead zone
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variant);
+		out.writeObject(position);
+		out.writeObject(deadZone);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variant = (Variant) in.readObject();
+		position = (ChromosomeWindow) in.readObject();
+		deadZone = (ChromosomeWindow) in.readObject();
+	}
+	
+	
 
 	/**
 	 * Constructor of {@link RegularDisplayableVariant}

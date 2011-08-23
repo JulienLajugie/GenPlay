@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -28,7 +30,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface DisplayableVariant {
+public interface DisplayableVariant extends Serializable {
 
 
 	/**

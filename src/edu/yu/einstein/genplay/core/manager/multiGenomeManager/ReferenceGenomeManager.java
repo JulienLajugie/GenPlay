@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,8 +41,10 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.Development;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ReferenceGenomeManager {
-
+public class ReferenceGenomeManager implements Serializable {
+	
+	private static final long serialVersionUID = -3079733967278577422L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static 	ReferenceGenomeManager 			instance;			// The instance of the class
 	private 		Map<String, List<Integer>> 		modifiedPosition;	// List of all position related to an indel
 	private			String							referenceName;		// The name of the reference genome
@@ -47,7 +53,43 @@ public class ReferenceGenomeManager {
 	private 		int 							previousIndex;		// The previous index (for variation position list scanning uses)
 	private 		boolean 						validIndex;			// Stores the index validity
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(instance);
+		out.writeObject(modifiedPosition);
+		out.writeObject(referenceName);
+		out.writeObject(currentChromosome);
+		out.writeInt(currentIndex);
+		out.writeInt(previousIndex);
+		out.writeBoolean(validIndex);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		instance = (ReferenceGenomeManager) in.readObject();
+		modifiedPosition = (Map<String, List<Integer>>) in.readObject();
+		referenceName = (String) in.readObject();
+		currentChromosome = (String) in.readObject();
+		currentIndex = in.readInt();
+		previousIndex = in.readInt();
+		validIndex = in.readBoolean();
+	}
+	
+	
 	/**
 	 * Constructor of {@link ReferenceGenomeManager}
 	 */

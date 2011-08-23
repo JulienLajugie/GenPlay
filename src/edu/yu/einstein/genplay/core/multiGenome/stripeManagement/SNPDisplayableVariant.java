@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -33,9 +37,36 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class SNPDisplayableVariant implements DisplayableVariant {
 
+	private static final long serialVersionUID = -5300574920101738663L; // generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Variant 			variant;		// The native variant
 	private int 				position;		// Start position of the SNP displayable variant
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variant);
+		out.writeInt(position);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variant = (Variant) in.readObject();
+		position = in.readInt();
+	}
+	
 
 	/**
 	 * Constructor of {@link SNPDisplayableVariant}

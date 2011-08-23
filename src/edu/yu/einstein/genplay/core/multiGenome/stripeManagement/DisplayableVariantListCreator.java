@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,8 +45,10 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class DisplayableVariantListCreator implements DisplayableDataList<List<DisplayableVariant>> {
+public class DisplayableVariantListCreator implements DisplayableDataList<List<DisplayableVariant>>, Serializable {
 
+	private static final long serialVersionUID = 7895054388386894571L;		// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version	
 	// Graphic variables
 	private GenomeWindow					currentGenomeWindow;			// Chromosome with the adapted data
 	private Double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
@@ -54,7 +60,41 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 	private List<DisplayableVariant> 		fittedDisplayableVariantList;	// Complete list of the displayable variant
 	private boolean							hasBeenChanged;					// Is true is any information has been modified
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(currentGenomeWindow);
+		out.writeDouble(currentXRatio);
+		out.writeObject(genomes);
+		out.writeDouble(quality);
+		out.writeObject(fittedDisplayableVariantList);
+		out.writeBoolean(hasBeenChanged);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		currentGenomeWindow = (GenomeWindow) in.readObject();
+		currentXRatio = in.readDouble();
+		genomes = (Map<String, List<VariantType>>) in.readObject();
+		quality = in.readDouble();
+		fittedDisplayableVariantList = (List<DisplayableVariant>) in.readObject();
+		hasBeenChanged = in.readBoolean();
+	}
+	
 
 	/**
 	 * Constructor of {@link DisplayableVariantListCreator}

@@ -20,6 +20,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 
+import java.io.Serializable;
+
 
 /**
  * This class declares methods required for VCF type field:
@@ -28,7 +30,7 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VCFHeaderType {
+public interface VCFHeaderType extends Serializable {
 
 	
 	/**

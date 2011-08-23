@@ -23,6 +23,9 @@ package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +55,11 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenomeManager {
+public class MultiGenomeManager implements Serializable {
 
+	private static final long serialVersionUID = 5101409095108321375L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
 	/**
 	 * FULL value for CHROMOSOME_LOADING_OPTION option involves the loading of every chromosomes when multi genome project starts
 	 */
@@ -103,6 +109,45 @@ public class MultiGenomeManager {
 	private					boolean						hasBeenInitialized;		// Uses when multi genome manager has been initialized
 	private					boolean						dataComputed = false;	// Uses after every multi genome process
 
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(instance);
+		out.writeObject(fileReaders);
+		out.writeObject(genomesInformation);
+		out.writeObject(metaGenomeManager);
+		out.writeObject(referenceGenomeManager);
+		out.writeObject(cst);
+		out.writeBoolean(hasBeenInitialized);
+		out.writeBoolean(dataComputed);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		instance = (MultiGenomeManager) in.readObject();
+		fileReaders = (Map<File, VCFReader>) in.readObject();
+		genomesInformation = (MGMultiGenome) in.readObject();
+		metaGenomeManager = (MetaGenomeManager) in.readObject();
+		referenceGenomeManager = (ReferenceGenomeManager) in.readObject();
+		cst = (CoordinateSystemType) in.readObject();
+		hasBeenInitialized = in.readBoolean();
+		dataComputed = in.readBoolean();		
+	}
+	
 
 	/**
 	 * @return an instance of a {@link MultiGenomeManager}. 

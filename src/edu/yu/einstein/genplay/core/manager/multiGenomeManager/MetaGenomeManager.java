@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import edu.yu.einstein.genplay.core.Chromosome;
@@ -32,14 +36,46 @@ import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MetaGenomeManager {
+public class MetaGenomeManager implements Serializable {
 
+	private static final long serialVersionUID = 8473172631163790164L; 	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static 	MetaGenomeManager 			instance;			// The instance of the class
 	private 		Map<Chromosome, Integer> 	chromosomeLength;	// The chromosome length list
 	private			Map<String, Chromosome> 	chromosomeList;		// The chromosome list for multi genome project
 	private 		long 						genomomeLength = 0;	// Genome length
 
 
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(instance);
+		out.writeObject(chromosomeLength);
+		out.writeObject(chromosomeList);
+		out.writeLong(genomomeLength);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		instance = (MetaGenomeManager) in.readObject();
+		chromosomeLength = (Map<Chromosome, Integer>) in.readObject();
+		chromosomeList = (Map<String, Chromosome>) in.readObject();
+		genomomeLength = in.readLong();
+	}
+	
+	
 	/**
 	 * Constructor of {@link MetaGenomeManager}
 	 */
@@ -97,6 +133,9 @@ public class MetaGenomeManager {
 	 * @param length	the length to add
 	 */
 	public void updateChromosomeLength (Chromosome chromosome, int length) {
+		if (chromosomeLength == null) {
+			System.out.println(chromosomeLength);
+		}
 		chromosomeLength.put(chromosome, chromosomeLength.get(chromosome) + length);
 	}
 

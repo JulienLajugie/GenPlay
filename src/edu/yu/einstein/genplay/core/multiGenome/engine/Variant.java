@@ -21,6 +21,8 @@
 package edu.yu.einstein.genplay.core.multiGenome.engine;
 
 
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.enums.VariantType;
 
 
@@ -31,7 +33,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface Variant {
+public interface Variant extends Serializable {
 
 	
 	// Attributes

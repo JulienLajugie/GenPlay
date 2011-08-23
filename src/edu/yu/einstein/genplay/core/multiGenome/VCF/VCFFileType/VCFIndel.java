@@ -21,6 +21,10 @@
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType;
 
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -35,13 +39,36 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
  */
 public class VCFIndel implements Variant {
 
+	private static final long serialVersionUID = -4289692413957821349L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private	MGPosition 		positionInformation;		// The common genome position information
 	private String 			fullGenomeName;				// The genome name
 	private int 			genomePosition;				// The genome position
 	private int 			initialReferenceOffset;		// The offset between the genome position and the reference genome position
 	private int 			initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
 	private int 			extraOffset;				// Offset when multiple insertions happen at the same reference position
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+	
 
 	/**
 	 * Constructor of {@link VCFIndel}

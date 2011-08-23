@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -35,6 +39,9 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  */
 public class VCFBlank implements Variant {
 
+	private static final long serialVersionUID = 1848765344167402377L;	// generated ID
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; 			// saved format version 
+
 	private final static String DEFAULT_STRING_VALUE = "";
 	
 	private String 		fullGenomeName;				// The genome name
@@ -44,8 +51,43 @@ public class VCFBlank implements Variant {
 	private int 		initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
 	private int 		extraOffset;				// Offset when multiple insertions happen at the same reference position
 	private Integer 	length;
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(fullGenomeName);
+		out.writeObject(chromosome);
+		out.writeInt(genomePosition);
+		out.writeInt(initialReferenceOffset);
+		out.writeInt(initialMetaGenomeOffset);
+		out.writeInt(extraOffset);
+		out.writeInt(length);
+	}
 
 
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		fullGenomeName = (String) in.readObject();	
+		chromosome = (Chromosome) in.readObject();
+		genomePosition = in.readInt();
+		initialReferenceOffset = in.readInt();
+		initialMetaGenomeOffset = in.readInt();
+		extraOffset = in.readInt();
+		length = in.readInt();
+	}
+
+	
 	/**
 	 * Constructor of {@link VCFBlank}
 	 * @param fullGenomeName 	the full genome name

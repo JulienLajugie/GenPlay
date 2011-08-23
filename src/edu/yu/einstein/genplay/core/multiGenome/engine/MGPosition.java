@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.engine;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.Chromosome;
@@ -31,12 +35,42 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGPosition {
+public class MGPosition implements Serializable {
 
+	private static final long serialVersionUID = 3254401647936434675L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Chromosome 				chromosome;	// The chromosome
 	private Map<String, Object> 	VCFLine;	// The line from the VCF file
 	private VCFReader 				reader;		// The reader object of the VCF file
 
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosome);
+		out.writeObject(VCFLine);
+		out.writeObject(reader);		
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosome = (Chromosome) in.readObject();
+		 VCFLine = (Map<String, Object>) in.readObject();
+		 reader = (VCFReader) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link MGPosition}
@@ -60,16 +94,16 @@ public class MGPosition {
 		}
 		return ReferenceGenomeManager.getInstance().getReferenceName();
 	}
-	
-	
+
+
 	/**
 	 * @return the ID field
 	 */
 	public int getPos() {
 		return Integer.parseInt(getString(VCFLine.get("POS")));
 	}
-	
-	
+
+
 	/**
 	 * @return the ID field
 	 */
@@ -77,7 +111,7 @@ public class MGPosition {
 		return getString(VCFLine.get("ID"));
 	}
 
-	
+
 	/**
 	 * @return the REF field
 	 */
@@ -85,7 +119,7 @@ public class MGPosition {
 		return getString(VCFLine.get("REF"));
 	}
 
-	
+
 	/**
 	 * @return the ALT field
 	 */
@@ -93,7 +127,7 @@ public class MGPosition {
 		return getString(VCFLine.get("ALT"));
 	}
 
-	
+
 	/**
 	 * @return the QUAL field or 50.0 if it is unknown (defined as a '.')
 	 */
@@ -105,7 +139,7 @@ public class MGPosition {
 		}
 	}
 
-	
+
 	/**
 	 * @return the FILTER field
 	 */
@@ -116,7 +150,7 @@ public class MGPosition {
 		return false;
 	}
 
-	
+
 	/**
 	 * @return the INFO field
 	 */
@@ -124,7 +158,7 @@ public class MGPosition {
 		return getString(VCFLine.get("INFO"));
 	}
 
-	
+
 	/**
 	 * @param field an ID from the INFO field
 	 * @return the value associated to the ID
@@ -133,7 +167,7 @@ public class MGPosition {
 		return reader.getInfoValues(getString(VCFLine.get("INFO")), field);
 	}
 
-	
+
 	/**
 	 * @return the FORMAT field
 	 */
@@ -141,7 +175,7 @@ public class MGPosition {
 		return getString(VCFLine.get("FORMAT"));
 	}
 
-	
+
 	/**
 	 * @param genomeRawName the genome raw name
 	 * @return the format value for the given genome name
@@ -150,7 +184,7 @@ public class MGPosition {
 		return getString(VCFLine.get(genomeRawName));
 	}
 
-	
+
 	/**
 	 * @param genomeRawName the genome raw name
 	 * @param field			an ID from the FORMAT field
@@ -174,15 +208,15 @@ public class MGPosition {
 		return result;
 	}
 
-	
+
 	/**
 	 * @return the string of the VCF line
 	 */
 	public String getVCFLine () {
 		return VCFLine.toString();
 	}
-	
-	
+
+
 	/**
 	 * Casts an object to a String value and performs a trim operation
 	 * @param o Object to cast

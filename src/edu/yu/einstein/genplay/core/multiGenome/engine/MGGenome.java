@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.engine;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,11 +45,39 @@ import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManage
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGGenome {
+public class MGGenome implements Serializable {
 
-	private		final String					genomeName;				// The full genome information
+	private static final long serialVersionUID = -8473586977950413283L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private		String							genomeName;				// The full genome information
 	private 	Map<Chromosome, MGChromosome> 	genomeInformation;		// Chromosomes information of the genome
+		
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeName);
+		out.writeObject(genomeInformation);		
+	}
 
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeName = (String) in.readObject();
+		genomeInformation = (Map<Chromosome, MGChromosome>) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link MGGenome}
