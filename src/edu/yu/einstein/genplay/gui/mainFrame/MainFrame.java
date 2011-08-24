@@ -236,10 +236,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		boolean hasChanged = ChromosomeManager.getInstance().setCurrentChromosome(evt.getNewWindow().getChromosome());
-		if (hasChanged) {
+		ChromosomeManager cm = ChromosomeManager.getInstance();
+		// if the chromosome changed we reinitialize the multigenome data
+		if ((cm.getCurrentChromosome() == null) ||
+				(!cm.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
+			cm.setCurrentChromosome(evt.getNewWindow().getChromosome());
 			initMultiGenome();
 		}
+		
 		if (evt.getSource() != ruler) {
 			ruler.setGenomeWindow(evt.getNewWindow());
 		}

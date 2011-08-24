@@ -20,6 +20,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  * This class manages the ALT VCF field type information.
  * @author Nicolas Fourel
@@ -27,8 +31,35 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
  */
 public class VCFHeaderAltType implements VCFHeaderType {
 
+	private static final long serialVersionUID = 7171924074043506204L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private String id;				// information ID
 	private String description; 	// field description
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(id);
+		out.writeObject(description);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		id = (String) in.readObject();
+		description = (String) in.readObject();
+	}
 	
 	
 	@Override

@@ -29,7 +29,7 @@ import java.awt.Insets;
 import java.util.Map;
 import javax.swing.JDialog;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.selectionPanel.GenomeSelectionPanel;
 
 
@@ -245,10 +245,10 @@ public class MultiGenomeStripeSelectionDialog extends JDialog {
 	/**
 	 * Creates a track stripe information object:
 	 * - genome name, stripe type and color association
-	 * @return a new track stripe information object
+	 * @return a new {@link MultiGenomeStripes} object
 	 */
-	public MultiGenomeStripe getMultiGenomeStripe () {
-		MultiGenomeStripe stripeInformation = selectionPanel.getMultiGenomeStripe();
+	public MultiGenomeStripes getMultiGenomeStripes () {
+		MultiGenomeStripes stripeInformation = selectionPanel.getMultiGenomeStripes();
 		int alpha = transparencyPanel.getAlphaTransparency();
 		stripeInformation.setTransparency(alpha);
 		stripeInformation.setQuality(qualityPanel.getQuality());

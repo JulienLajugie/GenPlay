@@ -30,8 +30,17 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
  */
 public enum ScoreCalculationMethod {
 
+	/**
+	 * Compute the average
+	 */
 	AVERAGE ("Average"),
+	/**
+	 * Compute the maximum
+	 */
 	MAXIMUM ("Maximum"),
+	/**
+	 * Compute the sum
+	 */
 	SUM ("Sum");
 	
 	private final String name;	// name of the method of score calculation

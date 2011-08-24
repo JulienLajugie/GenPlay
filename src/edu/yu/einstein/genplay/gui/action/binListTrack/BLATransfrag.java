@@ -118,7 +118,7 @@ public class BLATransfrag extends TrackListAction {
 									if (actionResult != null) {
 										int selectedIndex = getTrackList().getSelectedTrackIndex();
 										GeneListTrack glt = new GeneListTrack(getTrackList().getGenomeWindow(), selectedIndex + 1, actionResult);
-										getTrackList().setTrack(selectedIndex, glt, selectedTrack.getPreferredHeight(), selectedTrack.getName(), selectedTrack.getStripes());
+										getTrackList().setTrack(selectedIndex, glt, selectedTrack.getPreferredHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
 									}
 								}
 							}.actionPerformed(null);

@@ -30,6 +30,12 @@ import org.xml.sax.helpers.DefaultHandler;
 import edu.yu.einstein.genplay.core.enums.Strand;
 
 
+/**
+ * Parse a DNS XML file and extract the list of {@link EntryPoint}
+ * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 public class EntryPointHandler extends DefaultHandler {
 
 	private final List<EntryPoint> 	entryPointList;	// list of EntryPoint

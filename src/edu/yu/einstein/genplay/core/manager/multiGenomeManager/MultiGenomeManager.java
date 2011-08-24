@@ -76,7 +76,7 @@ public class MultiGenomeManager implements Serializable {
 	 * The loading of some type of file requires to perform operation on every chromosome,
 	 * the SEQUENTIAL mode loading only one chromosome, it can lead to a null pointer exception error. 
 	 */
-	public static 			int							CHROMOSOME_LOADING_OPTION 	= SEQUENTIAL;
+	public static 			int							CHROMOSOME_LOADING_OPTION 	= FULL;
 
 	/**
 	 * The default color for a stripe

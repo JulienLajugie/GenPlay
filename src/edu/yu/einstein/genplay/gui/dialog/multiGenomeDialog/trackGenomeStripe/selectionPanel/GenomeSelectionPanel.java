@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 
@@ -89,7 +89,7 @@ public class GenomeSelectionPanel extends JPanel{
 	 * - genome name, stripe type and color association
 	 * @return a new track stripe information object
 	 */
-	public MultiGenomeStripe getMultiGenomeStripe () {
+	public MultiGenomeStripes getMultiGenomeStripes () {
 		return content.getMultiGenomeStripe();
 	}
 	

@@ -133,9 +133,6 @@ public class MetaGenomeManager implements Serializable {
 	 * @param length	the length to add
 	 */
 	public void updateChromosomeLength (Chromosome chromosome, int length) {
-		if (chromosomeLength == null) {
-			System.out.println(chromosomeLength);
-		}
 		chromosomeLength.put(chromosome, chromosomeLength.get(chromosome) + length);
 	}
 

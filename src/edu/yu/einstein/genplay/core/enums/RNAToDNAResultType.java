@@ -27,8 +27,17 @@ package edu.yu.einstein.genplay.core.enums;
  * @version 0.1
  */
 public enum RNAToDNAResultType {
+	/**
+	 * GDP Output File
+	 */
 	GDP ("GDP Output File"),
+	/**
+	 * BedGraph Output File
+	 */
 	BGR ("BGR Output File"),
+	/**
+	 * BedGraph Output File with extra fields
+	 */
 	BGR_WITH_EXTRA_FIELDS ("BGR Output File With Extra Fields");
 	
 	private final String 	description;	// description of the result type

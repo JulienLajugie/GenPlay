@@ -26,9 +26,21 @@ package edu.yu.einstein.genplay.core.enums;
  * @version 0.1
  */
 public enum GraphicsType {
+	/**
+	 * Curve graphics
+	 */
 	CURVE ("curve"),
+	/**
+	 * Points graphics
+	 */
 	POINTS ("points"),
+	/**
+	 * Bar graphics
+	 */
 	BAR		("bar"),
+	/**
+	 * Dense graphics
+	 */
 	DENSE	("dense");
 
 

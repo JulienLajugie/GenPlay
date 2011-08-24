@@ -112,7 +112,7 @@ public class BLAIntervalsSummarization extends TrackListActionOperationWorker<Bi
 			// add info to the history
 			newTrack.getHistory().add("Result of the " + method + " of " + selectedTrack.getName() + " calculated on the intervals defined by " + intervalTrack.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "average of " + selectedTrack.getName() + " from intervals of  " + intervalTrack.getName(), null);
+			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), "average of " + selectedTrack.getName() + " from intervals of  " + intervalTrack.getName(), null, null);
 		}
 	}
 }

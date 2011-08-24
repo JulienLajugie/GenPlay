@@ -41,6 +41,7 @@ public class VCFIndel implements Variant {
 
 	private static final long serialVersionUID = -4289692413957821349L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
 	private	MGPosition 		positionInformation;		// The common genome position information
 	private String 			fullGenomeName;				// The genome name
 	private int 			genomePosition;				// The genome position
@@ -56,6 +57,12 @@ public class VCFIndel implements Variant {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(positionInformation);
+		out.writeObject(fullGenomeName);
+		out.writeInt(genomePosition);
+		out.writeInt(initialReferenceOffset);
+		out.writeInt(initialMetaGenomeOffset);
+		out.writeInt(extraOffset);
 	}
 
 
@@ -67,6 +74,12 @@ public class VCFIndel implements Variant {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		positionInformation = (MGPosition) in.readObject();
+		fullGenomeName = (String) in.readObject();
+		genomePosition = in.readInt();
+		initialReferenceOffset = in.readInt();
+		initialMetaGenomeOffset = in.readInt();	
+		extraOffset = in.readInt();		
 	}
 	
 
@@ -84,30 +97,36 @@ public class VCFIndel implements Variant {
 		this.positionInformation = positionInformation;
 	}
 
+	
 	@Override
 	public String getFullGenomeName() {
 		return fullGenomeName;
 	}
 
+	
 	@Override
 	public void setFullGenomeName(String name) {
 		fullGenomeName = name;
 	}
+	
 
 	@Override
 	public String getRawGenomeName() {
 		return FormattedMultiGenomeName.getRawName(fullGenomeName);
 	}
+	
 
 	@Override
 	public String getUsualGenomeName() {
 		return FormattedMultiGenomeName.getUsualName(fullGenomeName);
 	}
+	
 
 	@Override
 	public String getChromosomeName() {
 		return positionInformation.getChromosomeName();
 	}
+	
 
 	@Override
 	public VariantType getType() {
@@ -122,11 +141,13 @@ public class VCFIndel implements Variant {
 		}
 		return type;
 	}
+	
 
 	@Override
 	public int getLength() {
 		return Math.abs(getAlternative().length() - getReference().length());
 	}
+	
 
 	@Override
 	public boolean isPhased() {
@@ -135,6 +156,7 @@ public class VCFIndel implements Variant {
 		}
 		return false;
 	}
+	
 
 	@Override
 	public boolean isOnFirstAllele() {
@@ -143,6 +165,7 @@ public class VCFIndel implements Variant {
 		}
 		return false;
 	}
+	
 
 	@Override
 	public boolean isOnSecondAllele() {
@@ -151,146 +174,175 @@ public class VCFIndel implements Variant {
 		}
 		return false;
 	}
+	
 
 	@Override
 	public int getGenomePosition() {
 		return genomePosition;
 	}
+	
 
 	@Override
 	public int getNextGenomePosition() {
 		return GenomePositionCalculation.getNextGenomePosition(this);
 	}
+	
 
 	@Override
 	public int getReferenceGenomePosition() {
 		return GenomePositionCalculation.getReferenceGenomePosition(this);
 	}
+	
 
 	@Override
 	public int getNextReferenceGenomePosition() {
 		return GenomePositionCalculation.getNextReferenceGenomePosition(this);
 	}
+	
 
 	@Override
 	public int getNextReferenceGenomePosition(int position) {
 		return GenomePositionCalculation.getNextReferenceGenomePosition(this, position);
 	}
+	
 
 	@Override
 	public int getMetaGenomePosition() {
 		return GenomePositionCalculation.getMetaGenomePosition(this);
 	}
+	
 
 	@Override
 	public int getNextMetaGenomePosition() {
 		return GenomePositionCalculation.getNextMetaGenomePosition(this);
 	}
+	
 
 	@Override
 	public void setGenomePosition(int position) {
 		genomePosition = position;
 	}
+	
 
 	@Override
 	public int getNextMetaGenomePosition(int position) {
 		return GenomePositionCalculation.getNextMetaGenomePosition(this, position);
 	}
+	
 
 	@Override
 	public int getExtraOffset() {
 		return extraOffset;
 	}
+	
 
 	@Override
 	public int getInitialReferenceOffset() {
 		return initialReferenceOffset;
 	}
+	
 
 	@Override
 	public int getNextReferencePositionOffset() {
 		return GenomePositionCalculation.getNextReferencePositionOffset(this);
 	}
+	
 
 	@Override
 	public int getInitialMetaGenomeOffset() {
 		return initialMetaGenomeOffset;
 	}
+	
 
 	@Override
 	public int getNextMetaGenomePositionOffset() {
 		return GenomePositionCalculation.getNextMetaGenomePositionOffset(this);
 	}
 
+	
 	@Override
 	public void addExtraOffset(int offset) {
 		this.extraOffset += offset;
 	}
+	
 
 	@Override
 	public void setInitialReferenceOffset(int offset) {
 		this.initialReferenceOffset = offset;
 	}
 
+	
 	@Override
 	public void setInitialMetaGenomeOffset(int offset) {
 		this.initialMetaGenomeOffset = offset;
 	}
+	
 	
 	@Override
 	public MGPosition getPositionInformation() {
 		return positionInformation;
 	}
 
+	
 	@Override
 	public String getId() {
 		return positionInformation.getId();
 	}
 
+	
 	@Override
 	public String getReference() {
 		return positionInformation.getReference();
 	}
+	
 
 	@Override
 	public String getAlternative() {
 		return positionInformation.getAlternative();
 	}
+	
 
 	@Override
 	public Double getQuality() {
 		return positionInformation.getQuality();
 	}
 
+	
 	@Override
 	public boolean getFilter() {
 		return positionInformation.getFilter();
 	}
 
+	
 	@Override
 	public String getInfo() {
 		return positionInformation.getInfo();
 	}
 
+	
 	@Override
 	public Object getInfoValue(String field) {
 		return positionInformation.getInfoValue(field);
 	}
 
+	
 	@Override
 	public String getFormat() {
 		return positionInformation.getFormat();
 	}
 
+	
 	@Override
 	public String getFormatValues () {
 		return positionInformation.getFormatValues(getRawGenomeName());
-	}
+	}	
+	
 
 	@Override
 	public Object getFormatValue(String field) {
 		return positionInformation.getFormatValue(getRawGenomeName(), field);
 	}
+	
 	
 	@Override
 	public String toString () {
@@ -302,5 +354,4 @@ public class VCFIndel implements Variant {
 		info += " VCF:[" + positionInformation.getVCFLine() + "]";
 		return info;
 	}
-
 }

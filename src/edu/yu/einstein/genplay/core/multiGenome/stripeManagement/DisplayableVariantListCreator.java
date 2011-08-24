@@ -125,7 +125,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			createDisplayableVariantList(fittedVariantList);
 			hasBeenChanged = false;
 		}
-
 		return getFittedDisplayableVariantList();
 	}
 

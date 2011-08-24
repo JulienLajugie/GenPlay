@@ -31,12 +31,33 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
  */
 public enum ScoreCalculationTwoTrackMethod {
 
+	/**
+	 * Addition operation
+	 */
 	ADDITION ("Addition"),
+	/**
+	 * Subtraction operation
+	 */
 	SUBTRACTION ("Subtraction"),
+	/**
+	 * Multiplication operation
+	 */
 	MULTIPLICATION ("Multiplication"),
+	/**
+	 * Division operation
+	 */
 	DIVISION ("Division"),
+	/**
+	 * Average operation
+	 */
 	AVERAGE ("Average"),
+	/**
+	 * Maximum operation
+	 */
 	MAXIMUM ("Maximum"),
+	/**
+	 * Minimum operation
+	 */
 	MINIMUM ("Minimum");
 	
 	private final String name;	// name of the method of score calculation
@@ -55,6 +76,9 @@ public enum ScoreCalculationTwoTrackMethod {
 	}
 	
 	
+	/**
+	 * @return the operation between two tracks
+	 */
 	public ScoreCalculationTwoTrackMethod[] getOperationTwoTracks() {
 		ScoreCalculationTwoTrackMethod[] result = {ADDITION, DIVISION};
 		return result;

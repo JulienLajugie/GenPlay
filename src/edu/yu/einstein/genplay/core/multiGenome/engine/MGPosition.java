@@ -67,10 +67,10 @@ public class MGPosition implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		chromosome = (Chromosome) in.readObject();
-		 VCFLine = (Map<String, Object>) in.readObject();
-		 reader = (VCFReader) in.readObject();
+		VCFLine = (Map<String, Object>) in.readObject();
+		reader = (VCFReader) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link MGPosition}

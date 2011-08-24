@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 
@@ -283,10 +283,10 @@ public class SNPManager implements Serializable {
 
 	/**
 	 * Compares previous and new multi genome stripe and updates lists.
-	 * @param previous 	the previous {@link MultiGenomeStripe} object
-	 * @param next		the new {@link MultiGenomeStripe} object
+	 * @param previous 	the previous {@link MultiGenomeStripes} object
+	 * @param next		the new {@link MultiGenomeStripes} object
 	 */
-	public void updateSNP (MultiGenomeStripe previous, MultiGenomeStripe next) {
+	public void updateSNP (MultiGenomeStripes previous, MultiGenomeStripes next) {
 		List<String> nextGenomes = getGenomeNamesForSNP(next.getRequiredGenomes());
 		if (previous != null) {
 			List<String> previousGenomes = getGenomeNamesForSNP(previous.getRequiredGenomes());

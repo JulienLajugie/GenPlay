@@ -30,10 +30,25 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
  */
 public enum DataPrecision {
 	
+	/**
+	 * 1-BIT data
+	 */
 	PRECISION_1BIT ("1-Bit"),
+	/**
+	 * 8-BIT data
+	 */
 	PRECISION_8BIT ("8-Bit"),
+	/**
+	 * 16-BIT data
+	 */
 	PRECISION_16BIT ("16-Bit"),
+	/**
+	 * 32-BIT data
+	 */
 	PRECISION_32BIT ("32-Bit"),
+	/**
+	 * 64-BIT data
+	 */
 	PRECISION_64BIT ("64-Bit");
 	
 	private final String name; // name of the precision

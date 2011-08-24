@@ -37,8 +37,8 @@ public final class Chromosome implements Cloneable, Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private String name;	// Name of the chromosome
 	private int length;	// Length of the chromosome
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -63,14 +63,14 @@ public final class Chromosome implements Cloneable, Serializable {
 		length = in.readInt();
 	}
 
-	
+
 	/**
 	 * Constructor. Creates an instance of a Chromosome.
 	 * @param name Name of the chromosome.
 	 * @param length Length of the chromosome.
 	 */
 	public Chromosome(String name, int length) {
-		this.setName(name);
+		this.name = name;
 		this.length = length;
 	}
 
@@ -94,9 +94,9 @@ public final class Chromosome implements Cloneable, Serializable {
 	/**
 	 * @param name the name of a chromosome to set
 	 */
-	public void setName(String name) {
+	/*public void setName(String name) {
 		this.name = name;
-	}
+	}*/
 
 
 	/**
@@ -137,8 +137,18 @@ public final class Chromosome implements Cloneable, Serializable {
 		}
 		return true;
 	}
+
 	
-	
+	/**
+	 * The hashCode is computed only on the name 
+	 * because it's the only immutable field
+	 */
+	@Override
+	public int hashCode(){
+		return name.hashCode();		
+	}
+
+
 	/**
 	 * Returns true if the name of the current chromosome is equal to the specified string.
 	 * Removes "chr" and "chromosome" before comparing if the string in parameter or if the 

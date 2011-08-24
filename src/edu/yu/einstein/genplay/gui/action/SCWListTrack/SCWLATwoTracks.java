@@ -103,7 +103,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 			newTrack.getHistory().add("Operation: " + this.scm.toString(), Color.GRAY);
 			newTrack.getHistory().add("First track: " + this.selectedTrack.getName(), Color.GRAY);
 			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Color.GRAY);
-			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null);
+			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null);
 		}
 	}
 }

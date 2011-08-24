@@ -73,13 +73,11 @@ public final class ATAMultiGenomeStripes extends TrackListAction {
 			MultiGenomeStripeSelectionDialog stripeDialog = new MultiGenomeStripeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
 			stripeDialog.setTrackName(selectedTrack.getName());
 			stripeDialog.setTrackGenomeGroupName(selectedTrack.getGenomeName());
-			stripeDialog.initColors(selectedTrack.getStripeInformation().getColorAssociation());
-			stripeDialog.initTransparency(selectedTrack.getStripeInformation().getTransparency());
-			stripeDialog.initQuality(selectedTrack.getStripeInformation().getQuality());
+			stripeDialog.initColors(selectedTrack.getMultiGenomeStripes().getColorAssociation());
+			stripeDialog.initTransparency(selectedTrack.getMultiGenomeStripes().getTransparency());
+			stripeDialog.initQuality(selectedTrack.getMultiGenomeStripes().getQuality());
 			if (stripeDialog.showDialog(getRootPane()) == MultiGenomeStripeSelectionDialog.APPROVE_OPTION) {
-				selectedTrack.setStripeInformation(stripeDialog.getMultiGenomeStripe());
-			}
-			
+				selectedTrack.setMultiGenomeStripes(stripeDialog.getMultiGenomeStripes());			}			
 		}
 	}
 }

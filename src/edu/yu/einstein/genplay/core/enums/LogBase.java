@@ -28,8 +28,17 @@ package edu.yu.einstein.genplay.core.enums;
  */
 public enum LogBase {
 	
+	/**
+	 * Binary logarithm
+	 */
 	BASE_2 ("Binary Logarithm (base 2)", 2d),
+	/**
+	 * Exponential logarithm
+	 */
 	BASE_E ("Natural Logarithm (base e)", Math.E),
+	/**
+	 * Decimal logarithm 
+	 */
 	BASE_10 ("Common Logaritm (base 10)", 10d);
 	
 	

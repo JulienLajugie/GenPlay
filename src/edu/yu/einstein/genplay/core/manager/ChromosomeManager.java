@@ -285,14 +285,9 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 
 	/**
 	 * @param currentChromosome the currentChromosome to set
-	 * @return false if the specified {@link Chromosome} already was the current {@link Chromosome}
 	 */
-	public boolean setCurrentChromosome(Chromosome currentChromosome) {
-		if (this.currentChromosome != currentChromosome){
-			this.currentChromosome = currentChromosome;
-			return true;
-		}
-		return false;
+	public void setCurrentChromosome(Chromosome currentChromosome) {
+		this.currentChromosome = currentChromosome;
 	}
 
 	

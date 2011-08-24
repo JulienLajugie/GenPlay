@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeMa
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenomeStripe implements Serializable {
+public class MultiGenomeStripes implements Serializable {
 
 	private static final long serialVersionUID = -4999509228556102365L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -80,9 +80,9 @@ public class MultiGenomeStripe implements Serializable {
 	
 	
 	/**
-	 * Constructor of {@link MultiGenomeStripe}
+	 * Constructor of {@link MultiGenomeStripes}
 	 */
-	public MultiGenomeStripe () {
+	public MultiGenomeStripes () {
 		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
 		transparency = 50;
 	}

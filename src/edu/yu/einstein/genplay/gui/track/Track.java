@@ -41,7 +41,7 @@ import javax.swing.border.Border;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripe;
+import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -73,39 +73,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private TrackHandle				trackHandle;						// handle of the track
 	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
-	protected String genomeName;										// genome on which the track is based (ie aligned on)
-	
-	
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(listenerList);
-		out.writeObject(trackHandle);
-		out.writeObject(trackGraphics);
-		out.writeObject(genomeName);
-	
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		defaultHeight = TRACK_HEIGHT;
-		in.readInt();
-		listenerList = (List<GenomeWindowListener>) in.readObject();
-		trackHandle = (TrackHandle) in.readObject();
-		trackGraphics = (TrackGraphics<T>) in.readObject();
-		genomeName = (String) in.readObject();
-	}
+	protected String 				genomeName;							// genome on which the track is based (ie aligned on)
 	
 	
 	/**
@@ -145,21 +113,21 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
 		setPreferredHeight(defaultHeight);
 	}
-	
+
 
 	@Override
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.add(genomeWindowListener);
 	}
-
-
+	
+	
 	/**
 	 * Creates the {@link TrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data data displayed in the track
 	 */
 	abstract protected TrackGraphics<T> createsTrackGraphics(GenomeWindow displayedGenomeWindow, T data);
-
+	
 
 	/**
 	 * Copies the track
@@ -211,6 +179,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
+	 * @return the genomeName
+	 */
+	public String getGenomeName() {
+		return genomeName;
+	}
+
+
+	/**
 	 * @return the displayed {@link GenomeWindow}
 	 */
 	public GenomeWindow getGenomeWindow() {
@@ -222,6 +198,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public GenomeWindowListener[] getGenomeWindowListeners() {
 		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
 		return listenerList.toArray(genomeWindowListeners);
+	}
+
+
+	/**
+	 * @return the stripeInformation
+	 */
+	public MultiGenomeStripes getMultiGenomeStripes() {
+		return trackGraphics.getMultiGenomeStripes();
 	}
 
 
@@ -282,22 +266,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	
 
 	/**
-	 * @return the stripeInformation
-	 */
-	public MultiGenomeStripe getStripeInformation() {
-		return trackGraphics.getStripeInformation();
-	}
-
-
-	/**
-	 * @param stripeInformation the stripeInformation to set
-	 */
-	public void setStripeInformation(MultiGenomeStripe stripeInformation) {
-		trackGraphics.setStripeInformation(stripeInformation);
-	}
-
-
-	/**
 	 * @return true if the track is selected
 	 */
 	public boolean isSelected() {
@@ -330,6 +298,23 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	}
 
 
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		defaultHeight = TRACK_HEIGHT;
+		in.readInt();
+		listenerList = (List<GenomeWindowListener>) in.readObject();
+		trackHandle = (TrackHandle) in.readObject();
+		trackGraphics = (TrackGraphics<T>) in.readObject();
+		genomeName = (String) in.readObject();
+	}
+
+
 	@Override
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.remove(genomeWindowListener);		
@@ -346,11 +331,29 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
+	 * @param genomeName the genomeName to set
+	 */
+	public void setGenomeName(String genomeName) {
+		this.genomeName = genomeName;
+		//getStripeInformation().setGenomeName(genomeName);
+	}
+
+
+	/**
 	 * Sets the {@link GenomeWindow} displayed by the track
 	 * @param newGenomeWindow new {@link GenomeWindow}
 	 */
 	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
 		trackGraphics.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	/**
+	 * @param multiGenomeStripes the stripeInformation to set
+	 */
+	public void setMultiGenomeStripes(MultiGenomeStripes multiGenomeStripes) {
+		trackGraphics.setMultiGenomeStripes(multiGenomeStripes);
+		repaint();
 	}
 
 
@@ -383,14 +386,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics.setScrollMode(scrollMode);
 	}
 
-
+	
 	/**
 	 * @param selected the value to set
 	 */
 	public void setSelected(boolean selected) {
 		trackHandle.setSelected(selected);
 	}
-
+	
 
 	/**
 	 * shows stripes on the track
@@ -438,18 +441,16 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
-	 * @return the genomeName
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
 	 */
-	public String getGenomeName() {
-		return genomeName;
-	}
-
-
-	/**
-	 * @param genomeName the genomeName to set
-	 */
-	public void setGenomeName(String genomeName) {
-		this.genomeName = genomeName;
-		//getStripeInformation().setGenomeName(genomeName);
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(listenerList);
+		out.writeObject(trackHandle);
+		out.writeObject(trackGraphics);
+		out.writeObject(genomeName);
+	
 	}	
 }
