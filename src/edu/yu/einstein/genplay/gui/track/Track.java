@@ -60,12 +60,24 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 				// minimum height of a track
 	private static final int 	TRACK_HEIGHT = 100; 					// height of a track
+	/**
+	 * Default border of a track
+	 */
 	public static final Border 	REGULAR_BORDER =
 		BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black); 		// regular border of a track
+	/**
+	 * Border of a track when the track starts being dragged
+	 */
 	public static final Border 	DRAG_START_BORDER = 
 		BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black);		// alternative border when a track is dragged
+	/**
+	 * Border of a track when the track is being dragged up
+	 */
 	public static final Border 	DRAG_UP_BORDER = 
 		BorderFactory.createMatteBorder(2, 0, 1, 0, Color.black);		// alternative border when a track is dragged up
+	/**
+	 * Border of a track when the track is being dragged down
+	 */
 	public static final Border 	DRAG_DOWN_BORDER = 
 		BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black);		// alternative border when a track is dragged down
 	private List<GenomeWindowListener> listenerList = 

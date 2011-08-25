@@ -21,7 +21,6 @@
 package edu.yu.einstein.genplay.gui.action.SCWListTrack;
 
 import java.awt.event.ActionEvent;
-import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 
@@ -34,7 +33,6 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.TransfragDialog;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
@@ -73,23 +71,6 @@ public class SCWLATransfrag extends TrackListAction {
 	}
 
 
-	public Operation<ScoredChromosomeWindowList> initializeOperation() {
-		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
-			Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
-			if (gap != null) {
-				ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
-				if (operationType != null) {						
-					Operation<ScoredChromosomeWindowList> operation = new SCWLOTransfrag(scwList, gap.intValue(), operationType);
-					return operation;
-				}
-			}
-		}
-		return null;
-	}
-	
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
@@ -149,4 +130,21 @@ public class SCWLATransfrag extends TrackListAction {
 			}
 		}
 	}
+
+
+//	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+//	selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
+//	if (selectedTrack != null) {
+//		ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
+//		Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
+//		if (gap != null) {
+//			ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
+//			if (operationType != null) {						
+//				Operation<ScoredChromosomeWindowList> operation = new SCWLOTransfrag(scwList, gap.intValue(), operationType);
+//				return operation;
+//			}
+//		}
+//	}
+//	return null;
+//}
 }

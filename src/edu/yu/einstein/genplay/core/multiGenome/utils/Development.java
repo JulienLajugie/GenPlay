@@ -30,11 +30,7 @@ public class Development {
 	
 	/**
 	 * Fake chromosome list, used for development.
-<<<<<<< .working
 	 * @return a fake chromosome list
-=======
-	 * @return a fake list of chromosome
->>>>>>> .merge-right.r413
 	 */
 	public static Map<String, Chromosome> getFakeChromosomeList () {
 		if (chromosomeList == null) {

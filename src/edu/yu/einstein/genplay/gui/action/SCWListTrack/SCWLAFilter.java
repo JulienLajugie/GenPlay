@@ -22,6 +22,7 @@ package edu.yu.einstein.genplay.gui.action.SCWListTrack;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterBandStop;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterCount;
@@ -33,6 +34,11 @@ import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 
 
+/**
+ * Filters the {@link ScoredChromosomeWindow} track.
+ * Different kind of filters are availables
+ * @author Julien Lajugie
+ */
 public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = 960963269753754801L;	// generated ID

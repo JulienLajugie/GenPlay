@@ -25,10 +25,10 @@ import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JOptionPane;
+
 import javax.swing.JPanel;
+
 import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;

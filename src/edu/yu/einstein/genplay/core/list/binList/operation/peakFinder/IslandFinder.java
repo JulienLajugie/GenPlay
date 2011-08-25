@@ -407,53 +407,89 @@ public class IslandFinder implements Serializable, Stoppable {
 		return (1 - value);
 	}
 
-
-	// Setters
+	
+	/**
+	 * @param gap size of the gap in bp to set
+	 */
 	public void setGap(int gap) {
 		this.gap = gap;
 	}
 
+	
+	/**
+	 * @param minIslandLength minimum size of an island
+	 */
 	public void setIslandMinLength(int minIslandLength) {
 		this.islandMinLength = minIslandLength;
 	}
 
+	
+	/**
+	 * @param readCountLimit limit window value to get an eligible window to set
+	 */
 	public void setWindowMinValue(double readCountLimit) {
 		this.windowMinValue = readCountLimit;
 	}
 
+	/**
+	 * @param cutOff island score limit to select island to set
+	 */
 	public void setIslandMinScore(double cutOff) {
 		this.islandMinScore = cutOff;
 	}
 
+	/**
+	 * @param resultType type of the result to set
+	 */
 	public void setResultType(IslandResultType resultType) {
 		this.resultType = resultType;
 	}
 
-	// Getters
+	/**
+	 * @return the input BinList
+	 */
 	public BinList getBinList() {
 		return binList;
 	}
 
+	/**
+	 * @return the size of the gap in bp
+	 */
 	public int getGap() {
 		return gap;
 	}
 
+	/**
+	 * @return the minimum size of an island
+	 */
 	public int getMinIslandLength() {
 		return islandMinLength;
 	}
 
+	/**
+	 * @return the limit window value to get an eligible window
+	 */
 	public double getWindowLimitValue() {
 		return windowMinValue;
 	}
 
+	/**
+	 * @return the island score limit to select island
+	 */
 	public double getIslandLimitScore() {
 		return islandMinScore;
 	}
 
+	/**
+	 * @return the average number of reads in a window
+	 */
 	public double getLambda() {
 		return lambda;
 	}
 
+	/**
+	 * @return the type of the result
+	 */
 	public IslandResultType getResultType() {
 		return resultType;
 	}

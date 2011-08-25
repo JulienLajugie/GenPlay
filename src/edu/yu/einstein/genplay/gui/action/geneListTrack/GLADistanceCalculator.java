@@ -43,7 +43,11 @@ import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 
-
+/**
+ * Computes the number of base pairs at a specific distance 
+ * between the selected track and another track
+ * @author Chirag Gorasia
+ */
 public class GLADistanceCalculator extends TrackListActionOperationWorker<long[][]>{
 
 	private static final long serialVersionUID = 1401297625985870348L;

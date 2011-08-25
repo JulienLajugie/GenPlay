@@ -21,7 +21,6 @@
 package edu.yu.einstein.genplay.gui.action.binListTrack;
 
 import java.awt.event.ActionEvent;
-import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 
@@ -34,7 +33,6 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.TransfragDialog;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
@@ -74,23 +72,6 @@ public class BLATransfrag extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
-
-	public Operation<BinList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			BinList binList = selectedTrack.getData();
-			Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
-			if (gap != null) {
-				ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
-				if(operationType != null) {
-					Operation<BinList> operation = new BLOTransfrag(binList, gap.intValue(), operationType);
-					return operation;						
-				}
-			}
-		}
-		return null;
-	}
-	
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -148,5 +129,22 @@ public class BLATransfrag extends TrackListAction {
 				}
 			}
 		}
-	}		
+	}
+	
+	
+//	public Operation<BinList> initializeOperation() {
+//	selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+//	if (selectedTrack != null) {
+//		BinList binList = selectedTrack.getData();
+//		Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
+//		if (gap != null) {
+//			ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
+//			if(operationType != null) {
+//				Operation<BinList> operation = new BLOTransfrag(binList, gap.intValue(), operationType);
+//				return operation;						
+//			}
+//		}
+//	}
+//	return null;
+//}
 }

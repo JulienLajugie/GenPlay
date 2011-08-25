@@ -24,7 +24,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 
 /**
- * This class is the table model for the {@link VCFTable} object
+ * This class is the table model for the VCFTable object
  * @author Nicolas Fourel
  * @version 0.1
  */

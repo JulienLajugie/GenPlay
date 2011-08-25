@@ -33,6 +33,10 @@ import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 
 
+/**
+ * Count the sum of the lengths in bp of the windows with a score different from 0
+ * @author Julien Lajugie
+ */
 public class SCWLACountNonNullLength extends TrackListActionOperationWorker<Long> {
 
 	private static final long serialVersionUID = -1773399821513504625L;		// generated ID
