@@ -64,6 +64,7 @@ public class MGMultiGenome implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(multiGenomeInformation);
 		out.writeObject(genomeFileAssociation);
+		System.out.println("MGMultiGenome.writeObject()");
 	}
 
 
@@ -105,6 +106,12 @@ public class MGMultiGenome implements Serializable {
 	 */
 	public void initMultiGenomeInformation () {
 		multiGenomeInformation = new HashMap<String, MGGenome>();
+		
+		if(genomeFileAssociation == null) {
+			System.out.println("MGMultiGenome.initMultiGenomeInformation()");
+		}
+			
+		
 		for (String genomeName: genomeFileAssociation.keySet()) {
 			multiGenomeInformation.put(genomeName, new MGGenome(genomeName));
 		}

@@ -32,22 +32,73 @@ import java.util.Map;
  */
 public enum Nucleotide {
 	
+	/**
+	 * Thymine
+	 */
 	THYMINE 	((byte)0, 	'T', "Thymine", 			"T"),
+	/**
+	 * Uracil
+	 */
 	URACIL 		((byte)0, 	'U', "Uracil", 				"U"),
+	/**
+	 * Cytosine
+	 */
 	CYTOSINE 	((byte)1, 	'C', "Cytosine", 			"C"),
+	/**
+	 * Adenine
+	 */
 	ADENINE 	((byte)2, 	'A', "Adenine", 			"A"),
+	/**
+	 * Guanine
+	 */
 	GUANINE 	((byte)3, 	'G', "Guanine", 			"G"),
+	/**
+	 * Any Nucleotide (A or G or C or T)
+	 */
 	ANY 		((byte)4, 	'N', "Any Nucleotide", 		"A or G or C or T"),
+	/**
+	 * Purine (A or G)
+	 */
 	PURINE 		((byte)5, 	'R', "Purine", 				"A or G"),
+	/**
+	 * Pyrimidine (C or T)
+	 */
 	PYRIMIDINE 	((byte)6, 	'Y', "Pyrimidine", 			"C or T"),
+	/**
+	 * Weak Interaction (A or T)
+	 */
 	WEAK 		((byte)7, 	'W', "Weak Interaction", 	"A or T"),
+	/**
+	 * Strong Interaction (C or G)
+	 */
 	STRONG 		((byte)8, 	'S', "Strong Interaction", 	"C or G"),
+	/**
+	 * Amino (A or C)
+	 */
 	AMINO 		((byte)9, 	'M', "Amino", 				"A or C"),
+	/**
+	 * Keto (C or G)
+	 */
 	KETO 		((byte)10, 	'K', "Keto", 				"C or G"),
+	/**
+	 * Not A (C or G or T)
+	 */
 	NOT_A 		((byte)11,	'B', "Not A", 				"C or G or T"),
+	/**
+	 * Not G (A or C or T)
+	 */
 	NOT_G 		((byte)12, 	'H', "Not G", 				"A or C or T"),
+	/**
+	 * Not C (A or G or T)
+	 */
 	NOT_C 		((byte)13, 	'D', "Not C", 				"A or G or T"),
+	/**
+	 * Not T (A or C or G)
+	 */
 	NOT_T 		((byte)14,	'V', "Not T", 				"A or C or G"),	
+	/**
+	 * Gap (Gap of indeterminate length)
+	 */
 	GAP 		((byte)15, 	'-', "Gap", 				"Gap of indeterminate length");
 
 	

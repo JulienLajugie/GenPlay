@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 /**
- * Compute the distance between closest genes from two {@link GeneList}
+ * Computes the distance between closest genes from two {@link GeneList}
  * The position to be used as a reference (ie: start / middle / stop of a gene)
  * must be specified by the user.
  * @author Chirag Gorasia

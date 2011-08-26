@@ -26,6 +26,12 @@ import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 
 
+/**
+ * Computes the distance between closest genes from two {@link GeneList}
+ * The position to be used as a reference (ie: start / middle / stop of a gene)
+ * must be specified by the user.
+ * @author Chirag Gorasia
+ */
 public class DistanceCalculator {
 	private final int strandDirection;
 	private int relAbs = -1;
@@ -75,6 +81,10 @@ public class DistanceCalculator {
 		this.refValue = refValue;
 	}
 	
+	
+	/**
+	 * @return the closest distance
+	 */
 	public long getClosestDistance() {
 		List<Gene> listOfGenes = geneList.get(chromosomeindex);
 		long retValue = 0;

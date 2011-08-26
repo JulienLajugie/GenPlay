@@ -118,7 +118,6 @@ public class MultiGenomeManager implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(instance);
 		out.writeObject(fileReaders);
 		out.writeObject(genomesInformation);
 		out.writeObject(metaGenomeManager);
@@ -138,14 +137,14 @@ public class MultiGenomeManager implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		instance = (MultiGenomeManager) in.readObject();
 		fileReaders = (Map<File, VCFReader>) in.readObject();
 		genomesInformation = (MGMultiGenome) in.readObject();
 		metaGenomeManager = (MetaGenomeManager) in.readObject();
 		referenceGenomeManager = (ReferenceGenomeManager) in.readObject();
 		cst = (CoordinateSystemType) in.readObject();
 		hasBeenInitialized = in.readBoolean();
-		dataComputed = in.readBoolean();		
+		dataComputed = in.readBoolean();
+		instance = this;
 	}
 	
 

@@ -32,7 +32,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import edu.yu.einstein.genplay.core.manager.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.utils.Development;
 
 
 /**
@@ -146,7 +145,6 @@ public class ReferenceGenomeManager implements Serializable {
 			if (i + 1 < list.size()) {
 				if (list.get(i).equals(list.get(i+1))){
 					list.remove(i+1);
-					Development.increaseCommonPositions();
 				} else {
 					i++;
 				}
@@ -195,12 +193,8 @@ public class ReferenceGenomeManager implements Serializable {
 	 * @param position
 	 */
 	protected void addPosition (Integer position) {
-		//Development.increaseAllPositions();
 		if (!modifiedPosition.get(currentChromosome).contains(position)) {
 			modifiedPosition.get(currentChromosome).add(position);
-			Development.increaseDifferentPositions();
-		} else {
-			Development.increaseCommonPositions();
 		}
 	}
 

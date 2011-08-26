@@ -51,12 +51,11 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version	
 	// Graphic variables
 	private GenomeWindow					currentGenomeWindow;			// Chromosome with the adapted data
-	private Double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
+	private double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
 	// Filter variables
 	private Map<String, List<VariantType>>	genomes;						// Genome names list
-	private Double							quality;						// Variant quality threshold (only equal and greater variants will be selected)
-	//private double 							ratioThreshold;					// Ratio threshold to do not show up SNPs when zoom is not important enough
+	private double							quality = 0d;					// Variant quality threshold (only equal and greater variants will be selected)
 
 	private List<DisplayableVariant> 		fittedDisplayableVariantList;	// Complete list of the displayable variant
 	private boolean							hasBeenChanged;					// Is true is any information has been modified
@@ -101,7 +100,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 */
 	public DisplayableVariantListCreator () {
 		currentGenomeWindow = null;
-		currentXRatio = null;
+		currentXRatio = 0d;
 		genomes = new HashMap<String, List<VariantType>>();
 		//ratioThreshold = 0.05;
 		hasBeenChanged = false;
@@ -115,7 +114,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			hasBeenChanged = true;
 		}
 		currentGenomeWindow = genomeWindow;
-		if ((currentXRatio == null) || (!currentXRatio.equals(xRatio))) {
+		if (currentXRatio != xRatio) {
 			currentXRatio = xRatio;
 			hasBeenChanged = true;
 		}
@@ -460,8 +459,8 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 * Sets the quality and checks if it is still the same.
 	 * @param quality the quality to set
 	 */
-	public void setQuality(Double quality) {
-		if (this.quality == null || !this.quality.equals(quality)) {
+	public void setQuality(double quality) {
+		if (this.quality != quality) {
 			hasBeenChanged = true;
 		}
 		this.quality = quality;

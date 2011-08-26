@@ -20,10 +20,24 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.enums;
 
+
+/**
+ * Type of peak finders 
+ * @author Julien Lajugie
+ */
 public enum PeakFinderType {
 
+	/**
+	 * Density peak finder
+	 */
 	DENSITY ("Density Finder"),
+	/**
+	 * Standard deviation peak finder
+	 */
 	STDEV ("Stdev Finder"),
+	/**
+	 * Island peak finder
+	 */
 	ISLAND ("Island Finder");
 	
 	private final String name; // name of the peak finder 

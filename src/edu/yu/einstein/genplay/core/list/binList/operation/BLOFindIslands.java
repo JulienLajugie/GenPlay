@@ -37,9 +37,9 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 public class BLOFindIslands implements Operation<BinList[]> {
 
 	private final BinList 		inputBinList;	// input binlist
-	private BinList[]			outputBinList;
-	private IslandResultType[] 	list;
-	private IslandFinder 		island;
+	private BinList[]			outputBinList;	// result list
+	private IslandResultType[] 	list;			// the types of result
+	private IslandFinder 		island;			// the island finder object
 
 	
 	/**
@@ -106,17 +106,25 @@ public class BLOFindIslands implements Operation<BinList[]> {
 	}
 	
 	
-	//Getters & Setters
+	/**
+	 * @return the {@link IslandFinder} object
+	 */
 	public IslandFinder getIsland() {
 		return island;
 	}
 
 	
+	/**
+	 * @return the result types of the operation
+	 */
 	public IslandResultType[] getResultTypes() {
 		return list;
 	}
 	
 	
+	/**
+	 * @param list an array containing the result types of the operation
+	 */
 	public void setList(IslandResultType[] list) {
 		this.list = list;
 	}

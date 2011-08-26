@@ -72,7 +72,6 @@ public class SNPManager implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(instance);
 		out.writeObject(multiGenome);
 		out.writeObject(genomes);
 		out.writeObject(activeGenome);
@@ -89,11 +88,11 @@ public class SNPManager implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		instance = (SNPManager) in.readObject();
 		multiGenome = (MultiGenomeManager) in.readObject();
 		genomes = (MGMultiGenome) in.readObject();
 		activeGenome = (Map<String, Boolean>) in.readObject();
-		genomeCounter = (Map<String, Integer>) in.readObject();		
+		genomeCounter = (Map<String, Integer>) in.readObject();
+		instance = this;
 	}
 
 

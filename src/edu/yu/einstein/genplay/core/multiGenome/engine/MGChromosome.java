@@ -48,12 +48,12 @@ public class MGChromosome implements Serializable {
 	private static final long serialVersionUID = -6878208329536733167L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
-	private MGGenome 					genomeInformation;	// The genome
-	private Chromosome 					chromosome;			// The chromosome
-	private Map<Integer, Variant>		variantList;		// Variant list, keys are reference genome position and values are variants
-	private int[]						positionIndex;		// Mapping table for reference genome position
-	private Integer 					currentPosition;	// Current position
-	private Integer 					previousPosition;	// Previous position accessed
+	private MGGenome 					genomeInformation;		// The genome
+	private Chromosome 					chromosome;				// The chromosome
+	private Map<Integer, Variant>		variantList;			// Variant list, keys are reference genome position and values are variants
+	private int[]						positionIndex;			// Mapping table for reference genome position
+	private int		 					currentPosition;		// Current position
+	private int							previousPosition = -1;	// Previous position accessed
 
 		
 	/**
@@ -240,7 +240,7 @@ public class MGChromosome implements Serializable {
 	/**
 	 * @param currentPosition the currentPosition to set
 	 */
-	public void setCurrentPosition(Integer currentPosition) {
+	public void setCurrentPosition(int currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 
@@ -260,7 +260,7 @@ public class MGChromosome implements Serializable {
 	 * @return the previous position
 	 */
 	public Variant getPreviousPosition () {
-		if (previousPosition != null) {
+		if (previousPosition != -1) {
 			return getVariant(previousPosition);
 		} else {
 			return getVariant(currentPosition);

@@ -51,7 +51,6 @@ public class ProjectManager implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		//out.writeObject(instance);
 		out.writeObject(projectName);
 		out.writeObject(cladeName);
 		out.writeObject(genomeName);
@@ -68,11 +67,11 @@ public class ProjectManager implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		//instance =  in.readObject();
 		projectName = (String) in.readObject();
 		cladeName = (String) in.readObject();
 		genomeName = (String) in.readObject();
 		assembly = (Assembly) in.readObject();
+		multiGenomeProject = in.readBoolean();
 		instance = this;
 	}
 	

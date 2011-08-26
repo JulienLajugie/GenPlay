@@ -28,6 +28,13 @@ import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.List;
 
+
+/**
+ * This class implements the List of Integer interface but internally 
+ * it contains an array of int that is dynamically resized in order to 
+ * be more memory efficient. 
+ * @author Julien Lajugie
+ */
 public class IntArrayAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer> {
 
 	private static final long serialVersionUID = -8787392051503707843L; // generated ID

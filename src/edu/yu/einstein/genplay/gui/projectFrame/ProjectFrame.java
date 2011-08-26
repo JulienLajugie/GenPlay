@@ -57,7 +57,7 @@ public class ProjectFrame extends JFrame {
 	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
 	private static			Image 	iconImage; 													// icon of the application
 	//Ratio
-	public static final Double BANNER_RATIO 			= 0.15;
+	public static final Double BANNER_RATIO 			= 0.15; 
 	public static final Double TYPE_RATIO 				= 0.08;
 	public static final Double CONTENT_RATIO 			= 0.7;
 	public static final Double NAME_RATIO 				= 0.1;

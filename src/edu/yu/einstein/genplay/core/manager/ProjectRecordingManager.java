@@ -35,6 +35,7 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.swing.UIManager;
 
+import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
@@ -203,8 +204,9 @@ public class ProjectRecordingManager {
 	/**
 	 * Saves the current list of tracks into a file
 	 * @param outputFile file where the project needs to be saved
+	 * @return true if the saving was successful. Returns false otherwise 
 	 */
-	public void saveProject(File outputFile) {
+	public boolean saveProject(File outputFile) {
 		try {
 			TrackList trackList = MainFrame.getInstance().getTrackList();
 			// remove all the references to the listener so we don't save them
@@ -222,6 +224,9 @@ public class ProjectRecordingManager {
 			oos.writeObject(retrieveProjectInformations());
 			oos.writeObject(ProjectManager.getInstance());
 			oos.writeObject(ChromosomeManager.getInstance());
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				oos.writeObject(MultiGenomeManager.getInstance());
+			}
 			oos.writeObject(trackList.getTrackList());
 
 			// there is bug during the serialization with the nimbus LAF if the track list is visible
@@ -242,8 +247,10 @@ public class ProjectRecordingManager {
 			ConfigurationManager.getInstance().setCurrentProjectPath(outputFile.getPath());
 			ConfigurationManager.getInstance().writeConfigurationFile();
 		} catch (IOException e) {
-			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project"); 
+			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
+			return false;
 		}
+		return true;
 	}
 
 
@@ -314,6 +321,9 @@ public class ProjectRecordingManager {
 			ois.readObject();
 			ois.readObject(); // init the project manager
 			ois.readObject(); // init the chromosome manager
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				ois.readObject(); // multi-genome manager
+			}
 			trackListReadyToLoad = true;
 		} catch (IOException e) {
 			// a IOException is likely to be caused by a invalid file type 

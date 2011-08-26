@@ -53,7 +53,6 @@ public class MetaGenomeManager implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(instance);
 		out.writeObject(chromosomeLength);
 		out.writeObject(chromosomeList);
 		out.writeLong(genomomeLength);
@@ -69,10 +68,10 @@ public class MetaGenomeManager implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		instance = (MetaGenomeManager) in.readObject();
 		chromosomeLength = (Map<Chromosome, Integer>) in.readObject();
 		chromosomeList = (Map<String, Chromosome>) in.readObject();
 		genomomeLength = in.readLong();
+		instance = this;
 	}
 	
 	
