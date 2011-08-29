@@ -187,8 +187,11 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 						double[] exonScores = null;
 						if ((exonScoresList != null) && (exonScoresList.size(currentChromosome) > 0)) {
 							exonScores = exonScoresList.get(currentChromosome, j);	
-						}			
-						resultList.add(new Gene(name, currentChromosome, strand, txStart, txStop, exonStarts, exonStops, exonScores));
+						}
+						// we don't add a gene if it is located after the end of a chromosome 
+						if (txStop < currentChromosome.getLength()) {
+							resultList.add(new Gene(name, currentChromosome, strand, txStart, txStop, exonStarts, exonStops, exonScores));
+						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
@@ -266,8 +269,11 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 						double[] exonScores = null;
 						if ((exonScoresList != null) && (exonScoresList.size(currentChromosome) > 0)) {
 							exonScores = exonScoresList.get(currentChromosome, j);	
-						}			
-						resultList.add(new Gene(name, currentChromosome, strand, start, stop, UTR5Bound, UTR3Bound, exonStarts, exonStops, exonScores));
+						}
+						// we don't add a gene if it is located after the end of a chromosome 
+						if (stop < currentChromosome.getLength()) {
+							resultList.add(new Gene(name, currentChromosome, strand, start, stop, UTR5Bound, UTR3Bound, exonStarts, exonStops, exonScores));
+						}
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();

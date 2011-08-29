@@ -520,7 +520,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		// put the scores of every exon in a big list
 		List<Double> scoreList = new ArrayList<Double>();
 		for (List<Gene> currentList: data) {
-			if (!currentList.isEmpty()) {
+			if ((currentList != null) && (!currentList.isEmpty())) {
 				for (Gene currentGene: currentList) {
 					if (currentGene.getExonScores() != null) {
 						for (double currentScore: currentGene.getExonScores()) {

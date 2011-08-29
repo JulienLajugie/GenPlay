@@ -46,8 +46,6 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 
 	private static OperationPool 	instance = null;	// unique instance of this singleton class
 	private ExecutorService 		executor = null;	// thread executor 
-	private final ChromosomeManager cm;					// chromosome manager
-	private final long 				genomeLength;		// total length of the genome in base pais
 	private final List<OperationProgressListener> progressListeners; // list of progress listeners
 	
 
@@ -57,8 +55,6 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	 */
 	private OperationPool(ChromosomeManager chromosomeManager) {
 		super();
-		cm = chromosomeManager;
-		genomeLength = chromosomeManager.getGenomeLength();
 		progressListeners = new ArrayList<OperationProgressListener>();
 	}
 
@@ -103,6 +99,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	 * @throws ExecutionException
 	 */
 	public synchronized <T> List<T> startPool(Collection<? extends Callable<T>> threads) throws InterruptedException, ExecutionException {
+		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		int nbProcessor = Runtime.getRuntime().availableProcessors();
 		executor = Executors.newFixedThreadPool(nbProcessor);
 		// notify the listeners that the operation starts
@@ -134,12 +131,16 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			// compute the completion and check if everything's done 
 			for (short i = 0; i < futures.size(); i++) {
 				if (futures.get(i).isDone() || futures.get(i).isCancelled()) {
-					done += cm.get(i).getLength();					
+					done += chromosomeManager.get(i).getLength();					
 				} else {
 					stillAlive = true;
 				}
 			}
-			double completion = (done / (double) genomeLength) * 100d;
+			long genomeLength = chromosomeManager.getGenomeLength();
+			double completion = 0;
+			if (genomeLength != 0) {
+				completion = (done / (double) genomeLength) * 100d;
+			}
 			int progressState = OperationProgressEvent.IN_PROGRESS;
 			notifyProgressListeners(progressState, completion);
 		}
