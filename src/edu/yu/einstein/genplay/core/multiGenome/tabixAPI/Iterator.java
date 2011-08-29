@@ -2,6 +2,9 @@ package edu.yu.einstein.genplay.core.multiGenome.tabixAPI;
 
 import java.io.IOException;
 
+/**
+ * Iterator for a {@link TabixReader}
+ */
 public class Iterator {
 	
 	private TabixReader tabixReader;
@@ -12,6 +15,14 @@ public class Iterator {
 	private boolean iseof;
 
 	
+	/**
+	 * Creates an instance of {@link Iterator}
+	 * @param tabixReader
+	 * @param _tid
+	 * @param _beg
+	 * @param _end
+	 * @param _off
+	 */
 	public Iterator(final TabixReader tabixReader, final int _tid, final int _beg, final int _end, final TPair64[] _off) {
 		i = -1;
 		n_seeks = 0;
@@ -25,6 +36,10 @@ public class Iterator {
 	}
 
 	
+	/**
+	 * @return the next element in the {@link TabixReader}
+	 * @throws IOException
+	 */
 	public String next() throws IOException {
 		if (iseof) return null;
 		for (;;) {
@@ -107,6 +122,5 @@ public class Iterator {
 			beg = end + 1;
 		}
 		return intv;
-	}
-	
-};
+	}	
+}

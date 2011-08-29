@@ -27,7 +27,7 @@ import edu.yu.einstein.genplay.core.enums.FilterType;
 
 
 /**
- * {@link FilterPanel} for the count filters
+ * Filter panel for the count filters
  * @author Julien Lajugie
  * @version 0.1
  */

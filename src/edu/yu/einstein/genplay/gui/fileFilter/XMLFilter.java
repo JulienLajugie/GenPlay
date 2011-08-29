@@ -28,7 +28,9 @@ package edu.yu.einstein.genplay.gui.fileFilter;
 public class XMLFilter extends ExtendedFileFilter {
 	
 	private static final long serialVersionUID = 3191118665245397752L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"xml"};
+	/** File type description */
 	public static final String DESCRIPTION = "XML Files (*.xml)";
 
 

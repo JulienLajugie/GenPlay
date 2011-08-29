@@ -20,27 +20,35 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.duplicateReadFilter;
 
+
+/**
+ * Class representing a read
+ * @author Chirag Gorasia
+ * @version 0.1
+ */
 public class ReadsData {
-	private String readName;
-	private String strand;
-	private String chromosome;
-	private int start;
-//	private String geneSequence;
-//	private String unusedCodeField;
-//	private int unusedUnknownField;
-//	private String mismatches;
 	
+	private String 	readName;		// the name of the read
+	private String 	strand;			// the strand
+	private String 	chromosome;		// the chromosome
+	private int 	start;			// the start position
+
+	
+	/**
+	 * Creates an instance of {@link ReadsData}
+	 * @param readName name of the read
+	 * @param strand strand
+	 * @param chromosome chromosome
+	 * @param start start position
+	 */
 	public ReadsData(String readName, String strand, String chromosome, int start) {//, String geneSequence, String unusedCodeField, int unusedUnknownField, String mismatches) {
 		this.setReadName(readName);
 		this.setStrand(strand);
 		this.setChromosome(chromosome);
 		this.setStart(start);
-//		this.geneSequence = geneSequence;
-//		this.unusedCodeField = unusedCodeField;
-//		this.unusedUnknownField = unusedUnknownField;
-//		this.mismatches = mismatches;
 	}
 
+	
 	/**
 	 * @param readName the readName to set
 	 */
@@ -48,12 +56,14 @@ public class ReadsData {
 		this.readName = readName;
 	}
 
+	
 	/**
 	 * @return the readName
 	 */
 	public String getReadName() {
 		return readName;
 	}
+	
 
 	/**
 	 * @param strand the strand to set
@@ -62,6 +72,7 @@ public class ReadsData {
 		this.strand = strand;
 	}
 
+	
 	/**
 	 * @return the strand
 	 */
@@ -69,6 +80,7 @@ public class ReadsData {
 		return strand;
 	}
 
+	
 	/**
 	 * @param chromosome the chromosome to set
 	 */
@@ -76,6 +88,7 @@ public class ReadsData {
 		this.chromosome = chromosome;
 	}
 
+	
 	/**
 	 * @return the chromosome
 	 */
@@ -83,12 +96,14 @@ public class ReadsData {
 		return chromosome;
 	}
 
+	
 	/**
 	 * @param start the start to set
 	 */
 	public void setStart(int start) {
 		this.start = start;
 	}
+	
 
 	/**
 	 * @return the start

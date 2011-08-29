@@ -28,15 +28,21 @@ package edu.yu.einstein.genplay.exception;
  */
 public final class PoissonInvalidParameterException extends Exception {
 	
-	private static final long serialVersionUID = -6091702295893962445L;
+	private static final long serialVersionUID = -6091702295893962445L;	// generated ID
 
+	
 	/**
 	 * Creates an instance of {@link PoissonInvalidParameterException}
 	 */
 	public PoissonInvalidParameterException() {
 		super("Invalid parameter passed to Poisson distribution. ");
 	}
+
 	
+	/**
+	 * Creates an instance of {@link PoissonInvalidParameterException}
+	 * @param message message of the exception
+	 */
 	public PoissonInvalidParameterException(String message) {
 		super(message);
 	}

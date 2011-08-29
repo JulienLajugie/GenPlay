@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public class GenPlayProjectFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 3191118665245397752L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"gen"};
+	/** File type description */
 	public static final String DESCRIPTION = "GenPlay Project Files (*.gen)";
 
 

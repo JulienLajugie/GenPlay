@@ -30,7 +30,9 @@ import javax.swing.filechooser.FileFilter;
 public final class WiggleFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 6441730682478032544L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"wig"};
+	/** File type description */
 	public static final String DESCRIPTION = "Wiggle Files (*.wig)";
 	
 	

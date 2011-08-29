@@ -30,7 +30,9 @@ import javax.swing.filechooser.FileFilter;
 public final class GdpGeneFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 4695876018073509736L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"gdp"};
+	/** File type description */
 	public static final String DESCRIPTION = "GenPlay Gene Files (*.gdp)";
 
 	

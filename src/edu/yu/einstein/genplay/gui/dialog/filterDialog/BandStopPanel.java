@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.enums.FilterType;
 
 
 /**
- * {@link FilterPanel} for the band-stop filters
+ * Filter panel for the band-stop filters
  * @author Julien Lajugie
  * @version 0.1
  */

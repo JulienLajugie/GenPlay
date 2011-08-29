@@ -20,10 +20,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.duplicateReadFilter;
 
-/**
- * Class to provide a filter for duplicate reads
- * @author Chirag Gorasia 
- */
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +35,12 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+
+/**
+ * Class to provide a filter for duplicate reads
+ * @author Chirag Gorasia 
+ * @version 1
+ */
 public class DupReadFilter {
 	private Map<String, List<ReadsData>> mapForInputFile = new HashMap<String, List<ReadsData>>();
 	private Map<String, Integer> mapForReadsAlreadyExceeded = new HashMap<String, Integer>();

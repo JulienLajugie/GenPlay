@@ -37,6 +37,12 @@ import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 
+
+/**
+ * 
+ * @author Administrator
+ *
+ */
 public class SPALoadData extends ScatterPlotAction {
 
 	private static final long serialVersionUID = 1879651187524309395L; // generated ID
@@ -73,8 +79,8 @@ public class SPALoadData extends ScatterPlotAction {
 
 
 	/**
-	 * 
-	 * @param file
+	 * Load data from a specified file
+	 * @param file file containing the data to load
 	 */
 	private void loadData(File file) {
 		BufferedReader reader = null;

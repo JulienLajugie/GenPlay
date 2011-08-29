@@ -30,6 +30,11 @@ public final class InvalidDataLineException extends Exception {
 
 	private static final long serialVersionUID = 7000180996789501289L;	// generated ID
 	
+	
+	/**
+	 * Creates an instance of {@link InvalidDataLineException}
+	 * @param line the invalid line
+	 */
 	public InvalidDataLineException(String line) {
 		super("Invalid data line: \"" + line + "\"");
 	}

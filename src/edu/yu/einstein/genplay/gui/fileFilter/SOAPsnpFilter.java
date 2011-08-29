@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public class SOAPsnpFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -8560834231830725642L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"SNP"};
+	/** File type description */
 	public static final String DESCRIPTION = "SOAP SNP files (*.soapsnp)";
 	
 	

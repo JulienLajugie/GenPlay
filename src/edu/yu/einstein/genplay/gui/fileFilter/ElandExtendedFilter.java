@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public final class ElandExtendedFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -8024581610634301136L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"elx"};
+	/** File type description */
 	public static final String DESCRIPTION = "Eland Extended Files (*.elx)";
 	
 	

@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public class GTFFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 3916531769336913421L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"gtf"};
+	/** File type description */
 	public static final String DESCRIPTION = "GTF Files (*.gtf)";
 	
 	

@@ -63,10 +63,14 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 	
 	private final JLabel jlExonOptions;			// exon option label
 	private final JComboBox jcbExonOptions;		// comboBox Exon Options
-	private final JButton jbOk;				// button okay
-	private final JButton jbCancel;			// button cancel
+	private final JButton jbOk;					// button okay
+	private final JButton jbCancel;				// button cancel
 	private int	approved = CANCEL_OPTION;	
 	
+	
+	/**
+	 * Creates an instance of {@link ExtractExonsDialog}
+	 */
 	public ExtractExonsDialog () {
 		super();
 		jlExonOptions = new JLabel("Extract Exon Options: ");

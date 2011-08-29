@@ -35,47 +35,22 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
+
+/**
+ * Class to provide a filter for duplicate reads ()
+ * @author Chirag Gorasia
+ * @version 2
+ */
 public class DupReadFilterv2 {
-	private int maxDupCount;
 	
-//	/**
-//	 * private method to sort the file
-//	 * @throws IOException
-//	 */
-//	private void sortRepositionedFile(File outputFile) throws IOException {
-//		BufferedReader buf = new BufferedReader(new FileReader(outputFile));
-//		List<BedFileSorter> file = new ArrayList<BedFileSorter>();
-//		String lineRead = buf.readLine();
-//		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
-//		while (lineRead != null) {
-//			String readName = strtok.nextToken();			// read name
-//			String chrName = strtok.nextToken();
-//			int start = Integer.parseInt(strtok.nextToken());
-//			int stop = Integer.parseInt(strtok.nextToken());
-//			strtok.nextToken();			// unused field denoted by dash
-//			double score = Double.parseDouble(strtok.nextToken());
-//			String strand = strtok.nextToken();
-//			BedFileSorter fileSorter = new BedFileSorter(readName, chrName, start, stop, score, strand);
-//			file.add(fileSorter);
-//			lineRead = buf.readLine();
-//			if (lineRead != null) {
-//				strtok = new StringTokenizer(lineRead,"\t\n");
-//			}
-//		}			
-//		
-//		Collections.sort(file);
-//		// write the sorted data to the file		
-//		//String sortedFile = outputFile.getParent() + "sorted" + outputFile.getName();
-//		//BufferedWriter bufWriter = new BufferedWriter(new FileWriter(sortedFile));
-//		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
-//		Iterator<BedFileSorter> iter = file.iterator();
-//		while (iter.hasNext()) {
-//			BedFileSorter fs = iter.next();
-//			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t-" + "\t" + fs.getScore() + "\t" + fs.getStrand() + "\n");
-//		}
-//		bufWriter.close();		
-//	}		
+	private int maxDupCount; // maximum duplicate
+
 	
+	/**
+	 * Main method. Usage: " + "java -jar <inputfile> <outputfile>
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main (String args[]) throws IOException {
 		DupReadFilterv2 drf = new DupReadFilterv2();
 		if (args.length != 2) {
@@ -141,5 +116,44 @@ public class DupReadFilterv2 {
 			lineRead = bufReader.readLine();			
 		}
 		bufWriter.close();	
-	}	
+	}
+	
+	
+//	/**
+//	 * private method to sort the file
+//	 * @throws IOException
+//	 */
+//	private void sortRepositionedFile(File outputFile) throws IOException {
+//		BufferedReader buf = new BufferedReader(new FileReader(outputFile));
+//		List<BedFileSorter> file = new ArrayList<BedFileSorter>();
+//		String lineRead = buf.readLine();
+//		StringTokenizer strtok = new StringTokenizer(lineRead,"\t\n");
+//		while (lineRead != null) {
+//			String readName = strtok.nextToken();			// read name
+//			String chrName = strtok.nextToken();
+//			int start = Integer.parseInt(strtok.nextToken());
+//			int stop = Integer.parseInt(strtok.nextToken());
+//			strtok.nextToken();			// unused field denoted by dash
+//			double score = Double.parseDouble(strtok.nextToken());
+//			String strand = strtok.nextToken();
+//			BedFileSorter fileSorter = new BedFileSorter(readName, chrName, start, stop, score, strand);
+//			file.add(fileSorter);
+//			lineRead = buf.readLine();
+//			if (lineRead != null) {
+//				strtok = new StringTokenizer(lineRead,"\t\n");
+//			}
+//		}			
+//		
+//		Collections.sort(file);
+//		// write the sorted data to the file		
+//		//String sortedFile = outputFile.getParent() + "sorted" + outputFile.getName();
+//		//BufferedWriter bufWriter = new BufferedWriter(new FileWriter(sortedFile));
+//		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
+//		Iterator<BedFileSorter> iter = file.iterator();
+//		while (iter.hasNext()) {
+//			BedFileSorter fs = iter.next();
+//			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t-" + "\t" + fs.getScore() + "\t" + fs.getStrand() + "\n");
+//		}
+//		bufWriter.close();		
+//	}		
 }

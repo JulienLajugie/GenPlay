@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public class TwoBitFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = 6699798831056164420L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"2bit"};
+	/** File type description */
 	public static final String DESCRIPTION = "DNA sequence 2bit files (*.2bit)";
 
 

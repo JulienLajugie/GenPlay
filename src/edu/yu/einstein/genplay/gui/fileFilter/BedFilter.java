@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public final class BedFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -7589647687815666483L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"bed"};
+	/** File type description */
 	public static final String DESCRIPTION = "Bed Files (*.bed)";
 	
 	

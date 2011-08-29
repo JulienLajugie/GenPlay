@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.enums.FilterType;
 
 
 /**
- * {@link FilterPanel} for the threshold filter
+ * Filter panel for the threshold filter
  * @author Julien Lajugie
  * @version 0.1
  */

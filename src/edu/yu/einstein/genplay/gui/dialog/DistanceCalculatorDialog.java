@@ -104,6 +104,10 @@ public class DistanceCalculatorDialog extends JDialog {
 	private int selectionFlag; 
 	private int approved = CANCEL_OPTION;
 	
+	
+	/**
+	 * Creates an instance of {@link DistanceCalculatorDialog}
+	 */
 	public DistanceCalculatorDialog() {
 		super();
 						

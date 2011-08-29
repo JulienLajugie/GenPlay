@@ -35,9 +35,16 @@ import java.util.StringTokenizer;
 
 import edu.yu.einstein.genplay.gui.dialog.DupReadFilterDialog;
 
+
+/**
+ * Class to provide a filter for duplicate reads ()
+ * @author Chirag Gorasia
+ * @version 2
+ */
 public class DupReadFilterv3 {
-	private int minDupCount;
-	private int maxDupCount;
+	
+	private int minDupCount;	// minimum duplicate count
+	private int maxDupCount;	// maximum duplicate count 
 	private Map<String, List<ReadsData>> mapForInputFile;
 	
 	private static final int LESS_THAN_EQUAL_TO = 1;
@@ -45,6 +52,12 @@ public class DupReadFilterv3 {
 	private static final int BETWEEN = 3;
 	private static final int MORE_THAN = 4;
 
+	
+	/**
+	 * Main method. Usage: " + "java -jar <inputfile> <outputfile>
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main (String args[]) throws IOException {
 		if (args.length != 2) {
 			System.out.println("Usage: " + "java -jar <inputfile> <outputfile>");

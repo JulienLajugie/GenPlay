@@ -28,11 +28,9 @@ package edu.yu.einstein.genplay.exception;
 
 public final class InvalidFactorialParameterException extends Exception {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6501319100070818381L;
+	private static final long serialVersionUID = 6501319100070818381L;	// generated ID
 
+	
 	/**
 	 * Creates an instance of {@link InvalidFactorialParameterException}
 	 */
@@ -40,6 +38,11 @@ public final class InvalidFactorialParameterException extends Exception {
 		super("Factorial parameter cannot be negative.");
 	}
 	
+	
+	/**
+	 * Creates an instance of {@link InvalidFactorialParameterException} 
+	 * @param message the message of the exception
+	 */
 	public InvalidFactorialParameterException(String message) {
 		super(message);
 	}

@@ -28,18 +28,21 @@ package edu.yu.einstein.genplay.exception;
 
 public final class InvalidLambdaPoissonParameterException extends Exception {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6501319100070818381L;
+	private static final long serialVersionUID = 6501319100070818381L;	// generated ID
 
+	
 	/**
 	 * Creates an instance of {@link InvalidLambdaPoissonParameterException}
 	 */
 	public InvalidLambdaPoissonParameterException() {
 		super("Lambda parameter cannot be negative or equal to 0 to calculate Poisson value.");
 	}
+
 	
+	/**
+	 * Creates an instance of {@link InvalidLambdaPoissonParameterException}
+	 * @param message message of the exception
+	 */
 	public InvalidLambdaPoissonParameterException(String message) {
 		super(message);
 	}

@@ -30,7 +30,9 @@ import javax.swing.filechooser.FileFilter;
 public final class PairFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -2669663045535948437L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"pair"};
+	/** File type description */
 	public static final String DESCRIPTION = "Pair Files (*.pair)";
 	
 	

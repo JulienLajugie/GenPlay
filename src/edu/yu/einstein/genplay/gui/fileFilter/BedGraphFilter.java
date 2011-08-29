@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public final class BedGraphFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -1006499835810531469L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"bgr"};
+	/** File type description */
 	public static final String DESCRIPTION = "BedGraph Files (*.bgr)";
 	
 	

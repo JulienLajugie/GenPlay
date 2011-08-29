@@ -34,19 +34,33 @@ import java.awt.Color;
  */
 public enum TrackColor {
 
+	/** Dark blue {@link Color}  */
 	DARK_BLUE (new Color(0x0000CD)),
+	/** Light blue {@link Color}  */
 	LIGHT_GREEN(new Color(0x7FFF00)),
+	/** Gray {@link Color}  */
 	GRAY (new Color(0x696969)),
+	/** Pink {@link Color}  */
 	PINK (new Color(0xFF69B4)),
+	/**  Brown {@link Color} */
 	BROWN (new Color(0x8B4513)),
+	/** Light cyan {@link Color}  */
 	LIGHT_CYAN (new Color(0x00FFFF)),
+	/**  Dark green {@link Color} */
 	DARK_GREEN (new Color(0x006400)),
+	/** Orange {@link Color}  */
 	ORANGE (new Color(0xFF4500)),
+	/** Purple {@link Color}  */
 	PURPLE (new Color(0x800080)),
+	/** Light blue {@link Color}  */
 	LIGHT_BLUE (new Color(0xADD8E6)),
+	/** Red {@link Color}  */
 	RED (Color.RED),
+	/** Black {@link Color}  */
 	BLACK (Color.BLACK),
+	/** Yellow {@link Color}  */
 	YELLOW (new Color(0xFFD700)),
+	/** Dark cyan {@link Color}  */
 	DARK_CYAN (new Color(0x008B8B));
 
 	private static int currentColorInt = 0; // static field that saves the next selected color index

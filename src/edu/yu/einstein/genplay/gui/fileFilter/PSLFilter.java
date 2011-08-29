@@ -30,7 +30,9 @@ import javax.swing.filechooser.FileFilter;
 public class PSLFilter extends ExtendedFileFilter {
 	
 	private static final long serialVersionUID = 1615779972078858623L;	// generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"psl"};
+	/** File type description */
 	public static final String DESCRIPTION = "PSL files (*.psl)";
 	
 	

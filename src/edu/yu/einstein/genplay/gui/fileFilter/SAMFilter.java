@@ -20,10 +20,19 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.fileFilter;
 
+import javax.swing.filechooser.FileFilter;
+
+/**
+ * A SAM {@link FileFilter}
+ * @author Julien Lajugie
+ * @version 0.1
+ */
 public class SAMFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -2974583437513007093L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"SAM"};
+	/** File type description */
 	public static final String DESCRIPTION = "SAM Files (*.sam)";
 	
 	

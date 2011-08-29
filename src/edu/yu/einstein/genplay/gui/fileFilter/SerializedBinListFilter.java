@@ -31,7 +31,9 @@ import javax.swing.filechooser.FileFilter;
 public class SerializedBinListFilter extends ExtendedFileFilter {
 
 	private static final long serialVersionUID = -7644293615947149616L; // generated ID
+	/** Valid extensions */
 	public static final String[] EXTENSIONS = {"bin"};
+	/** File type description */
 	public static final String DESCRIPTION = "Serialized Fixed Window Files (*.bin)";
 	
 	

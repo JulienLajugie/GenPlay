@@ -38,7 +38,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
-public class TransfragDialog extends JDialog{
+
+/**
+ * Dialog for the transfrag operation
+ * @author Chirag Gorasia 
+ * @version 0.1
+ */
+public class TransfragDialog extends JDialog {
 
 	private static final long serialVersionUID = 4265594104159799587L;
 

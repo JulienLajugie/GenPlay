@@ -57,73 +57,129 @@ public class ProjectFrame extends JFrame {
 	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
 	private static			Image 	iconImage; 													// icon of the application
 	//Ratio
+	/** TODO: Nico add comment */ 
 	public static final Double BANNER_RATIO 			= 0.15; 
+	/** TODO: Nico add comment */
 	public static final Double TYPE_RATIO 				= 0.08;
+	/** TODO: Nico add comment */
 	public static final Double CONTENT_RATIO 			= 0.7;
+	/** TODO: Nico add comment */
 	public static final Double NAME_RATIO 				= 0.1;
+	/** TODO: Nico add comment */
 	public static final Double ASSEMBLY_RATIO 			= 0.25;
+	/** TODO: Nico add comment */
 	public static final Double GENOME_RATIO 			= 0.15;
+	/** TODO: Nico add comment */
 	public static final Double VCF_RATIO 				= 0.5;
+	/** TODO: Nico add comment */
 	public static final Double LINE_RATIO 				= 0.1;
+	/** TODO: Nico add comment */
 	public static final Double PROJECT_CHOOSER_RATIO 	= 0.05;
+	/** TODO: Nico add comment */
 	public static final Double CONFIRM_RATIO 			= 0.07;
 	//Size
+	/** TODO: Nico add comment */
 	public static final int SCREEN_WIDTH 				= 450;
+	/** TODO: Nico add comment */
 	public static final int SCREEN_HEIGHT 				= 700;
+	/** TODO: Nico add comment */
 	public static final int BANNER_HEIGHT 				= (int)Math.round(SCREEN_HEIGHT*BANNER_RATIO);
+	/** TODO: Nico add comment */
 	public static final int TYPE_HEIGHT 				= (int)Math.round(SCREEN_HEIGHT*TYPE_RATIO);
+	/** TODO: Nico add comment */
 	public static final int CONTENT_HEIGHT 			= (int)Math.round(SCREEN_HEIGHT*CONTENT_RATIO);
+	/** TODO: Nico add comment */
 	public static final int NAME_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*NAME_RATIO);
+	/** TODO: Nico add comment */
 	public static final int ASSEMBLY_HEIGHT 			= (int)Math.round(CONTENT_HEIGHT*ASSEMBLY_RATIO);
+	/** TODO: Nico add comment */
 	public static final int GENOME_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*GENOME_RATIO);
+	/** TODO: Nico add comment */
 	public static final int VCF_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*VCF_RATIO);
+	/** TODO: Nico add comment */
 	public static final int LINE_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*LINE_RATIO);
+	/** TODO: Nico add comment */
 	public static final int PROJECT_CHOOSER_HEIGHT 	= (int)Math.round(CONTENT_HEIGHT*PROJECT_CHOOSER_RATIO);
+	/** TODO: Nico add comment */
 	public static final int CONFIRM_HEIGHT = (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
-	// Banner panel dimensions
+
+	/** Banner panel dimensions */
 	public static final Dimension BANNER_DIM 	= new Dimension (SCREEN_WIDTH, BANNER_HEIGHT);
-	// Type panel dimensions
+	/** Type panel dimensions */
 	public static final Dimension TYPE_DIM 		= new Dimension (SCREEN_WIDTH, TYPE_HEIGHT);
+
 	// New project panel dimensions
+	/** TODO: Nico add comment */
 	public static final Dimension NEW_DIM 		= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension NAME_DIM 		= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension ASSEMBLY_DIM 	= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension GENOME_DIM 	= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension VCF_DIM 		= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
 	// Load project panel dimensions
+	/** TODO: Nico add comment */
 	public static final Dimension LOAD_DIM 				= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension LINE_DIM 				= new Dimension (SCREEN_WIDTH, LINE_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension PROJECT_CHOOSER_DIM 	= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
+	/** TODO: Nico add comment */
 	public static final Dimension CONFIRM_DIM 			= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
 	//Tool tip text
+	/** TODO: Nico add comment */
 	public static final String ADD_VCF_FILE 		= "Add vcf file";
+	/** TODO: Nico add comment */
 	public static final String DEL_VCF_FILES 	= "Delete selection";
+	/** TODO: Nico add comment */
 	public static final String CONFIRM_FILES		= "Confirm selection";
+	/** TODO: Nico add comment */
 	public static final String CANCEL_FILES		= "Cancel modification";
+	/** TODO: Nico add comment */
 	public static final String SELECT_FILES 		= "Enable selection";
+	/** TODO: Nico add comment */
 	public static final String UNSELECT_FILES 	= "Disable selection";
+	/** TODO: Nico add comment */
 	public static final String MOVE_UP_FILES 	= "Move up selection";
+	/** TODO: Nico add comment */
 	public static final String MOVE_DOWN_FILES 	= "Move down selection";
+	/** TODO: Nico add comment */
 	public static final String SELECT_BASIC_CHR 	= "Select basics chromosome";
 	//Real colors
+	/** TODO: Nico add comment */
 	public static final	Color COLOR 			= Color.white;
+	/** TODO: Nico add comment */
 	public static final 	Color BANNER_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color TYPE_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color NEW_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color NAME_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color ASSEMBLY_COLOR 	= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color GENOME_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color VCF_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color TABLE_PANEL_COLOR = COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color TABLE_BUTTON_COLOR = COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color LOAD_COLOR 		= COLOR;
+	/** TODO: Nico add comment */
 	public static final 	Color CONFIRM_COLOR 	= COLOR;
+	
 	// Validate button labels
-	public static final 	String 	CREATE_BUTTON = "Create";	// Text of the button if you choose a new project
-	public static final 	String 	LOAD_BUTTON = "Load";		// Text of the button if you choose to load a project
+	/** Text of the button if you choose a new project */
+	public static final 	String 	CREATE_BUTTON = "Create";
+	/** Text of the button if you choose to load a project */
+	public static final 	String 	LOAD_BUTTON = "Load";
 
 	private static ProjectFrame		instance = null;			// The instance of the class
-
 	private NewProjectPanel 		newProjectPanel;			// Panel for a new project
 	private LoadProjectPanel 		loadProjectPanel;			// Panel for loading a project
 	private BannerPanel 			bannerPanel;				// The banner
