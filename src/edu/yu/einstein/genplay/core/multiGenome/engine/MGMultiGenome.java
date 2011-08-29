@@ -64,7 +64,6 @@ public class MGMultiGenome implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(multiGenomeInformation);
 		out.writeObject(genomeFileAssociation);
-		System.out.println("MGMultiGenome.writeObject()");
 	}
 
 

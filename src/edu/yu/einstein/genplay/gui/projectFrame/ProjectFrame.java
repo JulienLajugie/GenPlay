@@ -38,7 +38,6 @@ import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.launcher.Launcher;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -246,7 +245,7 @@ public class ProjectFrame extends JFrame {
 		bannerPanel = new BannerPanel();
 		projectTypePanel = new ProjectTypePanel(this);
 		newProjectPanel = new NewProjectPanel();
-		loadProjectPanel = new LoadProjectPanel(ConfigurationManager.getInstance().getProjects());
+		loadProjectPanel = new LoadProjectPanel();
 		confirmPanel = new ConfirmPanel();
 
 		//Layout
@@ -415,5 +414,17 @@ public class ProjectFrame extends JFrame {
 	 */
 	public void setVarTableVisible(boolean visible) {
 		newProjectPanel.setVarTableVisible(visible);
+	}
+	
+	
+	/**
+	 * Reinitializes the list of the recent project files when the ProjectScreens is shown
+	 */
+	@Override
+	public void setVisible(boolean aFlag) {
+		if (aFlag) {
+			loadProjectPanel .reinitProjectFileList();
+		}
+		super.setVisible(aFlag);
 	}
 }

@@ -24,6 +24,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
+
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
@@ -43,13 +44,11 @@ public class LoadProjectPanel extends JPanel {
 	
 	/**
 	 * Constructor of {@link LoadProjectPanel}
-	 * @param projectPath project paths array
 	 */
-	public LoadProjectPanel (String[] projectPath) {
+	public LoadProjectPanel () {
 		super();
 		projectInformationPanel = new ProjectInformationPanel();
-		projectListPanel = new ProjectListPanel(this, projectPath);
-		
+		projectListPanel = new ProjectListPanel(this);
 		init();
 	}
 	
@@ -106,5 +105,14 @@ public class LoadProjectPanel extends JPanel {
 	 */
 	protected void showProjectInformation (String path) {
 		projectInformationPanel.showProjectInformation(path);
-	}	
+	}
+	
+	
+	/**
+	 * Reinitializes the panel with the list of all the projects to load
+	 */
+	public void reinitProjectFileList() {
+		projectListPanel.removeAll();
+		projectListPanel.initComponents();
+	}
 }

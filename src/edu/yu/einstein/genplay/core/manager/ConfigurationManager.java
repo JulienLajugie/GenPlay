@@ -71,6 +71,7 @@ public final class ConfigurationManager implements Serializable {
 	private String[] projects;
 	private String currentProjectPath;
 	
+	
 	/**
 	 * @return an instance of a {@link ConfigurationManager}. Makes sure that
 	 * there is only one unique instance as specified in the singleton pattern
@@ -414,8 +415,27 @@ public final class ConfigurationManager implements Serializable {
 	 * The first pathname is the newest one.
 	 */
 	private void updateProjectsList () {
-		for (int i = projectNumber-2; i >= 0; i--) {
-			projects[i+1] = projects[i];
+		// first if we want to see if the current project is already in the project list
+		int currentProjectIndex = -1;
+		int i = 0;
+		while ((currentProjectIndex == -1) && (i < projectNumber)) {
+			if ((projects[i] != null) && (projects[i].equalsIgnoreCase(currentProjectPath))) {
+				currentProjectIndex = i;
+			}
+			i++;
+		}
+		if (currentProjectIndex == -1) { // case where the current project is not in the project list
+			for (int j = projectNumber - 2; j >= 0; j--) {
+				// in this case we shift all the project on position down 
+				// and we add the new project at the beginning of the list 
+				projects[j + 1] = projects[j];
+			}
+		} else { // case where the current project is in the project list
+			for (int j = currentProjectIndex; j > 0; j--) {
+				// in this case we don't add the current project since it's already in the list
+				// but we put it in the first position of the list
+				projects[j] = projects[j - 1];
+			}
 		}
 		projects[0] = this.currentProjectPath;
 	}

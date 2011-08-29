@@ -144,7 +144,6 @@ class MultiGenomePanel extends JPanel {
 		add(editVCFFile);
 		add(importXML);
 		add(exportXML);
-
 	}
 
 

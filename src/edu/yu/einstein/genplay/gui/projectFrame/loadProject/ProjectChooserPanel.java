@@ -26,12 +26,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
+
 import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * This class displays a field to write a project path.
@@ -43,7 +45,6 @@ class ProjectChooserPanel extends JPanel {
 	private static final long serialVersionUID = 8028393644918726073L; //generated ID
 	
 	private ProjectListPanel 	projectListPanel;	// Panel containing the list of projects
-	private JFileChooser 	chooser;		// The file chooser panel, to select a project 
 	private JTextField 		path;			// The path of the selected project
 	
 	
@@ -76,12 +77,6 @@ class ProjectChooserPanel extends JPanel {
 		path.setPreferredSize(pathDim);
 		path.setMaximumSize(pathDim);
 		
-		//ProjectChooser
-		chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new File(ConfigurationManager.getInstance().getDefaultDirectory()));
-		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		chooser.setFileFilter(new GenPlayProjectFilter());
-		
 		//Choose button
 		JButton chooseProject = new JButton("...");
 		Dimension addDim = new Dimension(getHeight(), getHeight());
@@ -90,10 +85,12 @@ class ProjectChooserPanel extends JPanel {
 		chooseProject.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				int returnVal = chooser.showOpenDialog(ProjectFrame.getInstance());
-				if(returnVal == JFileChooser.APPROVE_OPTION) {
-					path.setText(chooser.getSelectedFile().getPath());
-					getProjectListPanel().setButtonOther(chooser.getSelectedFile());
+				String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+				FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
+				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
+				if (selectedFile != null) {
+					path.setText(selectedFile.getPath());
+					getProjectListPanel().setButtonOther(selectedFile);
 				}
 			}
 		});

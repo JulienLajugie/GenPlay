@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -40,50 +41,54 @@ import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
  * @author Nicolas Fourel
  */
 class ProjectListPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 2899780798513668868L; //generated ID
-	
+
 	private static final 	String 					OTHER_NAME = "Other";	// Name for the field uses to load an existing projects
-	private					LoadProjectPanel				loadProjectPanel;			// The load project object
 	private 				GridBagConstraints 		gbc;					// Constraints for GridBagLayout
 	private 				Map<JRadioButton, File> projectList;			// The list of existing project
 	private 				ButtonGroup 			group;					// The button group
 	private 				JRadioButton 			radioOther;				// The radio button for the field uses to load an existing projects
-	private 				ProjectChooserPanel 			projectChooserPanel;			// The chooser file to choose an other project
+	private 				ProjectChooserPanel 	projectChooserPanel;	// The chooser file to choose an other project
+	private					LoadProjectPanel		loadProjectPanel;		// The load project object
 	private 				JPanel 					fakeChooser;			// A panel for graphism synchronization
 
-	
+
 	/**
 	 * Constructor of {@link ProjectListPanel}
 	 * @param loadProjectPanel the load project object
-	 * @param projectPath project paths array
 	 */
-	protected ProjectListPanel (LoadProjectPanel loadProjectPanel, String[] projectPath) {
+	protected ProjectListPanel (LoadProjectPanel loadProjectPanel) {
 		this.loadProjectPanel = loadProjectPanel;
-		
+	}
+
+	
+	/**
+	 * Initializes the components of the panel with the list of all the project to load.
+	 */
+	protected void initComponents() {
 		//Background
 		setBackground(ProjectFrame.LOAD_COLOR);
-		
+
 		//Layout
-		GridBagLayout grid = new GridBagLayout();
+		setLayout(new GridBagLayout());
 		gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = -1;
 		gbc.weightx = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.insets = new Insets(0, 0, 0, 0);
-		setLayout(grid);
-		
+
 		//Radio buttons
-		buildProjectList(projectPath);
+		buildProjectList(ConfigurationManager.getInstance().getProjects());
 		buildButtonOther();
-		
+
 		//Project chooser
 		projectChooserPanel = new ProjectChooserPanel(this);
 		gbc.gridy++;
 		gbc.insets = new Insets(0, 0, 0, 10);
 		add(projectChooserPanel, gbc);
-		
+
 		//Fake chooser
 		fakeChooser = new JPanel();
 		fakeChooser.setPreferredSize(ProjectFrame.PROJECT_CHOOSER_DIM);
@@ -93,8 +98,7 @@ class ProjectListPanel extends JPanel {
 		fakeChooser.setBackground(ProjectFrame.LOAD_COLOR);
 		add(fakeChooser, gbc);
 	}
-	
-	
+
 
 	/**
 	 * This method check wich radio button has been selected.
@@ -113,8 +117,8 @@ class ProjectListPanel extends JPanel {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * This method associates a File object to the radio button named "other"
 	 * @param file	file choosen by the user
@@ -123,8 +127,8 @@ class ProjectListPanel extends JPanel {
 		projectList.put(radioOther, file);
 		loadProjectPanel.showProjectInformation(file.getPath());
 	}
-	
-	
+
+
 	/**
 	 * This method generate automatically every radio button in order to choose one of the last 5 projects.
 	 * @param projectPath	list of the 5 last project paths
@@ -134,7 +138,7 @@ class ProjectListPanel extends JPanel {
 		group = new ButtonGroup();
 		for (int i=0; i<5; i++) {
 			final JRadioButton radio = new JRadioButton();
-			
+
 			//File
 			if (projectPath[i] != null) {
 				File file = new File(projectPath[i]);
@@ -144,7 +148,7 @@ class ProjectListPanel extends JPanel {
 			} else {
 				radio.setText("...");
 			}
-			
+
 			//Radio
 			radio.setPreferredSize(ProjectFrame.LINE_DIM);
 			radio.setSize(ProjectFrame.LINE_DIM);
@@ -163,7 +167,7 @@ class ProjectListPanel extends JPanel {
 					fakeChooser.setVisible(true);
 				}
 			});
-			
+
 			if (i == 0) {
 				radio.setSelected(true);
 				if (radio.getText() != "...") {
@@ -172,12 +176,12 @@ class ProjectListPanel extends JPanel {
 					loadProjectPanel.showProjectInformation(null);
 				}
 			}
-			
+
 			//Group
 			group.add(radio);
-			
+
 			addRadioToPanel(radio);
-			
+
 			//List
 			if (projectPath[i] != null) {
 				projectList.put(radio, new File(projectPath[i]));
@@ -186,8 +190,8 @@ class ProjectListPanel extends JPanel {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * This method creates the "other" radio button.
 	 * It must be treated separately from others radio button.
@@ -210,17 +214,17 @@ class ProjectListPanel extends JPanel {
 				projectChooserPanel.setVisible(true);
 			}
 		});
-		
+
 		//Group
 		group.add(radioOther);
-		
+
 		addRadioToPanel(radioOther);
-		
+
 		//List
 		projectList.put(radioOther, null);
 	}
-	
-	
+
+
 	/**
 	 * This method adds radio button to the panel.
 	 * Radio button is added below the previous one. 
@@ -229,6 +233,5 @@ class ProjectListPanel extends JPanel {
 	private void addRadioToPanel (JRadioButton radio) {
 		gbc.gridy++;
 		add(radio, gbc);
-	}
-	
+	}	
 }
