@@ -58,6 +58,7 @@ public final class ConfigurationManager implements Serializable {
 	private static final int MIN_TRACK_HEIGHT = 30; 						// minimum height of the tracks
 	private static final int MAX_TRACK_HEIGHT = 2000; 						// maximum height of the tracks
 	private static final int DEFAULT_UNDO_COUNT = 1; 						// default number of undo in memory
+	private static final int PROJECT_NUMBER = 5;							// number of recent project path to save
 	private String zoomFile = DEFAULT_ZOOM_FILE; 							// zoom config file
 	private String logFile = DEFAULT_LOG_FILE; 								// log file
 	private String defaultDirectory = DEFAULT_DEFAULT_DIRECTORY; 			// default directory
@@ -66,10 +67,8 @@ public final class ConfigurationManager implements Serializable {
 	private int trackCount = DEFAULT_TRACK_COUNT; 							// track count
 	private int trackHeight = DEFAULT_TRACK_HEIGHT; 						// track height
 	private int undoCount = DEFAULT_UNDO_COUNT; 							// number of undo in memory
-	
-	private int projectNumber = 5;
-	private String[] projects;
-	private String currentProjectPath;
+	private String[] projects;												// list of the recent project paths
+	private String currentProjectPath;										// path to the current project
 	
 	
 	/**
@@ -94,7 +93,7 @@ public final class ConfigurationManager implements Serializable {
 	 */
 	private ConfigurationManager() {
 		super();
-		projects = new String[projectNumber];
+		projects = new String[PROJECT_NUMBER];
 	}
 
 	
@@ -418,14 +417,14 @@ public final class ConfigurationManager implements Serializable {
 		// first if we want to see if the current project is already in the project list
 		int currentProjectIndex = -1;
 		int i = 0;
-		while ((currentProjectIndex == -1) && (i < projectNumber)) {
+		while ((currentProjectIndex == -1) && (i < PROJECT_NUMBER)) {
 			if ((projects[i] != null) && (projects[i].equalsIgnoreCase(currentProjectPath))) {
 				currentProjectIndex = i;
 			}
 			i++;
 		}
 		if (currentProjectIndex == -1) { // case where the current project is not in the project list
-			for (int j = projectNumber - 2; j >= 0; j--) {
+			for (int j = PROJECT_NUMBER - 2; j >= 0; j--) {
 				// in this case we shift all the project on position down 
 				// and we add the new project at the beginning of the list 
 				projects[j + 1] = projects[j];
