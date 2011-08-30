@@ -37,7 +37,6 @@ import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.util.TrackColor;
 
 
-
 /**
  * Loads a SCWList track from data retrieve from a DAS server
  * @author Julien Lajugie
