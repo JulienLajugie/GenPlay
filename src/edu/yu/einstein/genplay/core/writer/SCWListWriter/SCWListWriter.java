@@ -15,7 +15,8 @@
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *     
- *     Author: Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.writer.SCWListWriter;
