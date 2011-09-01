@@ -80,11 +80,11 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	private Clade 				selectedClade;		// Selected Clade
 	private Genome 				selectedGenome;		// Selected Genome
 	private Assembly 			selectedAssembly;	// Selected Assembly
-	
+
 	private List<Chromosome> 	fullChromosomeList;	// List of chromosome to display
 	private List<Chromosome> 	selectedChromosomes;// List of chromosome after selection
-	
-	
+
+
 	/**
 	 * Constructor of {@link AssemblyPanel}
 	 */
@@ -224,12 +224,12 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		initGenome();
 		initAssembly();
 		selectedChromosomes = new ArrayList<Chromosome>();
-		
+
 		// default: we select all the chromosomes
 		for (Chromosome currentChromo: fullChromosomeList) {
 			selectedChromosomes.add(currentChromo);
 		}
-		
+
 		//Listeners
 		jcClade.addActionListener(this);
 		jcGenome.addActionListener(this);
@@ -292,6 +292,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		selectedAssembly = (Assembly) jcAssembly.getSelectedItem();
 		//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
 		fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
+		selectedChromosomes = fullChromosomeList;
 	}
 
 
@@ -316,13 +317,13 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			if (jcAssembly.getSelectedItem() != null) {
 				if (selectedAssembly == null || !selectedAssembly.equals(((JComboBox)arg0.getSource()).getSelectedItem())) {
 					selectedAssembly = (Assembly) ((JComboBox)arg0.getSource()).getSelectedItem();
-					//fullChromosomeList = new ArrayList<Chromosome>(selectedAssembly.getChromosomeList().values());
 					fullChromosomeList = Utils.getSortedChromosomeList(selectedAssembly.getChromosomeList());
+					selectedChromosomes = fullChromosomeList;
 				}
 			}
 		} else if (arg0.getSource() == jbChromosome) {
 			String title = "Chromosome chooser - " + selectedGenome + " - " + jcAssembly.getSelectedItem().toString();
-			
+
 			ChromosomeChooserDialog chromosomeChooser = new ChromosomeChooserDialog();
 			chromosomeChooser.setTitle(title);
 			chromosomeChooser.setFullChromosomeList(fullChromosomeList);
@@ -334,8 +335,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the selectedClade
 	 */
@@ -359,7 +360,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		return selectedAssembly;
 	}
 
-	
+
 	/**
 	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
 	 */
