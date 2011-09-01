@@ -367,7 +367,8 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	protected Map<String, Chromosome> getSelectedChromosomes() {
 		Map<String, Chromosome> chromosomeList = new HashMap<String, Chromosome>();
 		for (Chromosome chromosome: selectedChromosomes) {
-			chromosomeList.put(chromosome.getName(), chromosome);
+			// the chromosomes are index by their names in lower case to avoid the case sensitivity problems
+			chromosomeList.put(chromosome.getName().toLowerCase(), chromosome);
 		}
 		return chromosomeList;
 	}

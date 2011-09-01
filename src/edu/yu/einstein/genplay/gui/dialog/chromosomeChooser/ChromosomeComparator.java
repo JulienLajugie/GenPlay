@@ -52,8 +52,11 @@ public class ChromosomeComparator implements Comparator<String> {
 	private void initCharScore () {
 		charScore = new HashMap<Character, Integer>();
 		charScore.put('X', 0);
+		charScore.put('x', 0);
 		charScore.put('Y', 1);
+		charScore.put('y', 1);
 		charScore.put('M', 2);
+		charScore.put('m', 2);
 		charScore.put('_', 3);
 	}
 	

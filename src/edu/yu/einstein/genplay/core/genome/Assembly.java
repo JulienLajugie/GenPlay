@@ -88,7 +88,6 @@ public class Assembly implements Serializable {
 	 * @param name	name of the assembly
 	 * @param date	date of build of the assembly
 	 */
-	//protected Assembly (String name, String date) {
 	public Assembly (String name, String date) {
 		chromosomeList = new HashMap<String, Chromosome>();
 		this.name = name;

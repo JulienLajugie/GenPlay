@@ -41,10 +41,10 @@ public class MetaGenomeManager implements Serializable {
 
 	private static final long serialVersionUID = 8473172631163790164L; 	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static 	MetaGenomeManager 			instance;			// The instance of the class
-	private 		Map<Chromosome, Integer> 	chromosomeLength;	// The chromosome length list
-	private			Map<String, Chromosome> 	chromosomeList;		// The chromosome list for multi genome project
-	private 		long 						genomomeLength = 0;	// Genome length
+	private static 	MetaGenomeManager 			instance;				// The instance of the class
+	private 		Map<Chromosome, Integer> 	chromosomeLength;		// The chromosome length list
+	private			Map<String, Chromosome> 	chromosomeList;			// The chromosome list for multi genome project
+	private 		long 						genomomeLength = 0;		// Genome length
 
 
 	/**

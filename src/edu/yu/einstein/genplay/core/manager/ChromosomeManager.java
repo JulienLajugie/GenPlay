@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Map.Entry;
 
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MetaGenomeManager;
@@ -154,9 +155,9 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @throws InvalidChromosomeException
 	 */
 	public Chromosome get(int index) {
-		for (Chromosome chromosome: chromosomeList.values()){
-			if (chromosomeHash.get(chromosome.getName()) == index) {
-				return chromosome;
+		for (Entry<String, Integer> currentEntry: chromosomeHash.entrySet()) {
+			if (currentEntry.getValue() == index) {
+				return chromosomeList.get(currentEntry.getKey());
 			}
 		}
 		// throw an exception if nothing found
@@ -170,6 +171,8 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @throws InvalidChromosomeException
 	 */
 	public Chromosome get(String chromosomeName) throws InvalidChromosomeException {
+		// we put the chromosome name in lower case to avoid problems related to case sensitivity
+		chromosomeName = chromosomeName.toLowerCase();
 		Integer result = chromosomeHash.get(chromosomeName);
 		if (result != null) {
 			return chromosomeList.get(chromosomeName);
@@ -185,7 +188,8 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @throws InvalidChromosomeException
 	 */
 	public short getIndex(Chromosome chromosome) throws InvalidChromosomeException {
-		short index = (short)chromosomeHash.get(chromosome.getName()).intValue();
+		// we put the chromosome name in lower case to avoid problems related to case sensitivity
+		short index = (short)chromosomeHash.get(chromosome.getName().toLowerCase()).intValue();
 		if (index == -1) {
 			// if nothing has been found
 			throw new InvalidChromosomeException();
@@ -201,6 +205,8 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 	 * @throws InvalidChromosomeException
 	 */
 	public short getIndex(String chromosomeName) throws InvalidChromosomeException {
+		// we put the chromosome name in lower case to avoid problems related to case sensitivity
+		chromosomeName = chromosomeName.toLowerCase();
 		short index = (short)chromosomeHash.get(chromosomeName).intValue();
 		if (index == -1) {
 			// if nothing has been found
@@ -322,7 +328,8 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 		@Override
 		public Chromosome next() throws NoSuchElementException {
 			for (Chromosome chromosome: chromosomeList.values()){
-				if (chromosomeHash.get(chromosome.getName()) == currentIndex) {
+				// we put the chromosome name in lower case to avoid problems related to case sensitivity
+				if (chromosomeHash.get(chromosome.getName().toLowerCase()) == currentIndex) {
 					currentIndex++;
 					return chromosome;
 				}

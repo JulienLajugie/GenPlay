@@ -241,27 +241,29 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			Strand strand = Strand.get(strandChar);
 			if (isStrandSelected(strand)) {
 				positionNumber = Integer.parseInt(new String(positionChar, 0, j));
-				// add data for the statistics
-				matchTypeCount[chromoNumber][0] += match0MNumber;
-				matchTypeCount[chromoNumber][1] += match1MNumber;
-				matchTypeCount[chromoNumber][2] += match2MNumber;
-				// add the data
-				strandList.add(chromo, strand);
-				// compute the read position with specified strand shift and read length
-				if (readHandler != null) {
-					ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, positionNumber, positionNumber, strand);
-					positionNumber = resultStartStop.getStart();
-					// if a read length is specified we need to add a stop position
-					if (readHandler.getReadLength() != 0) {
-						int stop = resultStartStop.getStop();
-						stop = getMultiGenomePosition(chromo, stop);
-						stopPositionList.add(chromo, stop);
-						// TODO: add a BinList constructor that doesn't need 
-						// as score list so we don't need the useless next line
-						scoreList.add(chromo, 1.0);
+				if (positionNumber <= chromo.getLength()) {
+					// add data for the statistics
+					matchTypeCount[chromoNumber][0] += match0MNumber;
+					matchTypeCount[chromoNumber][1] += match1MNumber;
+					matchTypeCount[chromoNumber][2] += match2MNumber;
+					// add the data
+					strandList.add(chromo, strand);
+					// compute the read position with specified strand shift and read length
+					positionNumber = getMultiGenomePosition(chromo, positionNumber);
+					if (readHandler != null) {
+						ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, positionNumber, positionNumber, strand);
+						positionNumber = resultStartStop.getStart();
+						// if a read length is specified we need to add a stop position
+						if (readHandler.getReadLength() != 0) {
+							int stop = resultStartStop.getStop();
+							stop = getMultiGenomePosition(chromo, stop);
+							stopPositionList.add(chromo, stop);
+							// TODO: add a BinList constructor that doesn't need 
+							// as score list so we don't need the useless next line
+							scoreList.add(chromo, 1.0);
+						}
 					}
 				}
-				positionNumber = getMultiGenomePosition(chromo, positionNumber);
 				positionList.add(chromo, positionNumber);
 				lineCount++;
 			}

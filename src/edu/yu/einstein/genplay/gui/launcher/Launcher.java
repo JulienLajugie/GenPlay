@@ -105,13 +105,13 @@ public class Launcher {
 	public static void startProjectFromFile(File file) {
 		try {
 			ProjectRecordingManager.getInstance().initManagers(file);
+			MainFrame.getInstance().setVisible(true);
+			PALoadProject load = new PALoadProject();
+			load.setSkipFileSelection(true);
+			load.actionPerformed(null);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Invalid Project File: The specifed file is not a valid project file");
 		}
-		MainFrame.getInstance().setVisible(true);
-		PALoadProject load = new PALoadProject();
-		load.setSkipFileSelection(true);
-		load.actionPerformed(null);
 	}
 
 
@@ -158,8 +158,8 @@ public class Launcher {
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);
 	}
-	
-	
+
+
 	/**
 	 * Loads the managers with the configuration files
 	 */
