@@ -74,4 +74,15 @@ public class MultiCurvesTrack extends ScoredTrack<CurveTrack<?>[]> {
 	protected TrackGraphics<CurveTrack<?>[]> createsTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack<?>[] data) {
 		return new MultiCurvesTrackGraphics(displayedGenomeWindow, data);
 	}
+	
+	
+	/**
+	 * We don't really to deepClone a {@link MultiCurvesTrack} because it would force us to
+	 * deepClone the data of the {@link CurveTrack} that are referenced.
+	 * Instead we just want to create another {@link MultiCurvesTrack} with the same references.
+	 */
+	@Override
+	public Track<?> deepClone() throws IOException, ClassNotFoundException {
+		return new MultiCurvesTrack(getGenomeWindow(), getTrackNumber(), getData());
+	}
 }
