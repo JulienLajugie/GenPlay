@@ -156,7 +156,12 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			removePropertyChangeListener(curList);
 		}
 		GenomeWindowListener[] gwlSaver = getGenomeWindowListeners();
-		listenerList.clear();
+		listenerList.clear();		
+		// we remove the listeners of the track graphics as well
+		PropertyChangeListener[] trackGraphicsPclSaver = trackGraphics.getPropertyChangeListeners();
+		for (PropertyChangeListener curList: trackGraphicsPclSaver)	{
+			trackGraphics.removePropertyChangeListener(curList);
+		}		
 		// we clone the object
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -170,6 +175,9 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (GenomeWindowListener curList: gwlSaver) {
 			addGenomeWindowListener(curList);
 		}
+		for (PropertyChangeListener curList: trackGraphicsPclSaver) {
+			trackGraphics.addPropertyChangeListener(curList);
+		}		
 		return (Track<?>) ois.readObject();
 	}
 

@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.event.genomeWindowEvent;
 
+import java.util.EventListener;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
 
 
@@ -32,7 +34,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public interface GenomeWindowListener {
+public interface GenomeWindowListener extends EventListener {
 
 	
 	/**

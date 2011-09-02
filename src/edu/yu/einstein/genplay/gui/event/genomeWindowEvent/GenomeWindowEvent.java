@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.event.genomeWindowEvent;
 
+import java.util.EventObject;
+
 import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -31,11 +33,12 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GenomeWindowEvent {
+public final class GenomeWindowEvent extends EventObject {
 	
+	private static final long serialVersionUID = -5909384700520572038L;	// generated ID
 	private final GenomeWindowEventsGenerator 	source;		// GenomeWindowEventsGenerator that emitted the event
-	private final GenomeWindow 			oldWindow;	// old GenomeWindow
-	private final GenomeWindow 			newWindow;	// new GenomeWindow
+	private final GenomeWindow 					oldWindow;	// old GenomeWindow
+	private final GenomeWindow 					newWindow;	// new GenomeWindow
 	
 	
 	/**
@@ -45,6 +48,7 @@ public final class GenomeWindowEvent {
 	 * @param newWindow value of the {@link GenomeWindow} after changes
 	 */
 	public GenomeWindowEvent(GenomeWindowEventsGenerator source, GenomeWindow oldWindow, GenomeWindow newWindow) {
+		super(source);
 		this.source = source;
 		this.oldWindow = oldWindow;
 		this.newWindow = newWindow;
