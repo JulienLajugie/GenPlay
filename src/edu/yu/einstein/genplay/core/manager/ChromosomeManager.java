@@ -318,13 +318,14 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 		
 		@Override
 		public boolean hasNext() {
-			if (currentIndex < chromosomeHash.size() - 1) {
+			if (currentIndex < chromosomeHash.size()) {
 				return true;
 			} else {
 				return false;
 			}
 		}
 
+		
 		@Override
 		public Chromosome next() throws NoSuchElementException {
 			for (Chromosome chromosome: chromosomeList.values()){
@@ -337,10 +338,10 @@ public final class ChromosomeManager implements Serializable, Iterable<Chromosom
 			throw new NoSuchElementException(); 
 		}
 
+		
 		@Override
 		public void remove() throws UnsupportedOperationException {
 			throw new UnsupportedOperationException();				
-		}
-		
+		}		
 	}
 }
