@@ -793,6 +793,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void deleteTrack() {
 		if (selectedTrack != null) {
+			selectedTrack.delete();
 			int selectedTrackIndex = getSelectedTrackIndex();
 			for (int i = selectedTrackIndex + 1; i < trackList.length; i++) {
 				trackList[i - 1] = trackList[i];

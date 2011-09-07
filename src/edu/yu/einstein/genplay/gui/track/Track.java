@@ -471,7 +471,19 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		out.writeObject(listenerList);
 		out.writeObject(trackHandle);
 		out.writeObject(trackGraphics);
-		out.writeObject(genomeName);
-	
+		out.writeObject(genomeName);	
+	}
+
+
+	/**
+	 * This function is called when the track is deleted.
+	 * Removes all the listeners.  Can be overridden.
+	 */
+	public void delete() {
+		trackGraphics.delete();
+		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
+			removePropertyChangeListener(curList);
+		}
+		listenerList.clear();		
 	}	
 }

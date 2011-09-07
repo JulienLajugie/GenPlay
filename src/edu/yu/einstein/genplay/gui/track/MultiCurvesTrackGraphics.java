@@ -78,6 +78,19 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 		setYMax(findYMax());
 	}
 
+	
+	/**
+	 * Removes itself from the list of PropertyChangeListener of the curveTrack
+	 * showed inside this track 
+	 */
+	@Override
+	protected void delete() {
+		for (Track<?> currentTrack: data) {
+			currentTrack.trackGraphics.removePropertyChangeListener(this);
+		}
+		super.delete();
+	}
+	
 
 	@Override
 	protected void drawData(Graphics g) {

@@ -33,6 +33,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -805,5 +806,16 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
 			}
 		}
+	}
+
+	
+	/**
+	 * This function is called when the track is deleted.
+	 * Removes all the listeners.  Can be overridden.
+	 */
+	protected void delete() {
+		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
+			removePropertyChangeListener(curList);
+		}	
 	}
 }
