@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.action.emptyTrack;
 
 import java.awt.Color;
 import java.io.File;
+import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -91,7 +92,8 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			MultiGenomeStripes multiGenomeStripes = getTrackList().getSelectedTrack().getMultiGenomeStripes();
 			BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			// write in the history
-			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision();
+			DecimalFormat dF = new DecimalFormat("###,###,###,###,###,###.##");
+			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision() + ", Score Count = " + dF.format(actionResult.getSumScore());
 			if (binListGenerator.isCriterionNeeded()) {
 				history += ", Method of Calculation = " + scoreCalculation;
 			}

@@ -21,14 +21,19 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.extractor;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.Random;
+import java.util.TreeSet;
 
 import edu.yu.einstein.genplay.exception.InvalidDataLineException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -42,11 +47,12 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 	private static final long serialVersionUID = 1224425396819320502L;	//generated ID
-	private boolean	needToBeStopped = false;	// set to true if the execution of the extractor needs to be stopped
-	protected int 	totalCount = 0;				// total number of line in the file minus the header
-	protected int 	lineCount = 0;				// number of line extracted
-	
-	
+	private boolean	needToBeStopped = false;			// set to true if the execution of the extractor needs to be stopped
+	private TreeSet<Integer> randomLineNumbers = null;	// if this list is different from null the extractor extract only the lines that are in this list  
+	protected int 	totalCount = 0;						// total number of line in the file minus the header
+	protected int 	lineCount = 0;						// number of line extracted
+
+
 	/**
 	 * Creates an instance of {@link TextFileExtractor}
 	 * @param dataFile file containing the data
@@ -59,8 +65,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			name = retrievedName;
 		}
 	}
-	
-	
+
+
 	private String retrieveName() {
 		BufferedReader reader = null;
 		try {
@@ -143,6 +149,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			startTime = System.currentTimeMillis();
 			// extract data
 			String line = null;
+			int currentLineNumber = 1; // current line number 
 			boolean isExtractionDone = false; // true when the last selected chromosome has been extracted
 			// we stop at the end of the file or when the last selected chromosome has been extracted
 			while(((line = reader.readLine()) != null) && (!isExtractionDone)){
@@ -179,7 +186,14 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				if (isDataLine) {
 					try {
 						totalCount++;
-						isExtractionDone = extractLine(line);
+						// we extract a line if either way:
+						// 1. the whole file needs to be extracted (ie: the randomLineNumbers variable is not set)
+						// 2. we extract a random part of the file and the current line was selected as one of the random line to extract 
+						// (ie the current line number is present in the randomLineNumbers set) 
+						if ((randomLineNumbers == null) || (randomLineNumbers.contains(currentLineNumber))) {
+							isExtractionDone = extractLine(line);
+						}
+						currentLineNumber++;
 					} catch (InvalidDataLineException e) {
 						//logMessage("The following line can't be extracted: \"" + line + "\"");
 						//e.printStackTrace();
@@ -194,8 +208,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Stops the extraction
 	 */
@@ -224,4 +238,55 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			}
 		}
 	}
+
+
+	/**
+	 * Counts the number of line in a file.  About 6 times faster than readLines.
+	 * @param filename input file
+	 * @return the number of line in the specified file
+	 * @throws IOException
+	 */
+	private int countLines(File file) throws IOException {
+		InputStream is = new BufferedInputStream(new FileInputStream(file));
+		try {
+			byte[] c = new byte[1024];
+			int count = 0;
+			int readChars = 0;
+			while ((readChars = is.read(c)) != -1) {
+				for (int i = 0; i < readChars; ++i) {
+					if (c[i] == '\n')
+						++count;
+				}
+			}
+			return count;
+		} finally {
+			is.close();
+		}
+	}
+
+
+	/**
+	 * Creates a list of random integers that represents the numbers of the line to extract.
+	 * @param randomCount count of lines to extract
+	 * @throws IOException
+	 */
+	public void generateRandomLineNumbers(int randomCount) throws IOException {
+		// we compute how many lines there is in the file
+		int lineCount = countLines(dataFile);
+		// if there is less line in the file than the specified number of line to extract 
+		// we extract the entire file
+		if (lineCount > randomCount) {
+			randomLineNumbers = new TreeSet<Integer>();
+			Random randomGenerator = new Random();
+			while (randomLineNumbers.size() < randomCount) {
+				// the add function in a set works only if the element to add is not already present
+				randomLineNumbers.add(randomGenerator.nextInt(lineCount) + 1);
+			}
+		}
+		System.out.println(randomLineNumbers);
+	}
+
+
+
+
 }
