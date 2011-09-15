@@ -48,7 +48,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 	private static final long serialVersionUID = 1224425396819320502L;	//generated ID
 	private boolean	needToBeStopped = false;			// set to true if the execution of the extractor needs to be stopped
-	private TreeSet<Integer> randomLineNumbers = null;	// if this list is different from null the extractor extract only the lines that are in this list  
+	private Integer	randomLineCount = null;				// number of random lines to extract in the text file. Extract the entire file if null
 	protected int 	totalCount = 0;						// total number of line in the file minus the header
 	protected int 	lineCount = 0;						// number of line extracted
 
@@ -141,6 +141,11 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	public void extract() throws FileNotFoundException, IOException, InterruptedException {
 		BufferedReader reader = null;
 		try {
+			// if the randomLineCount variable is not null we generate a tree set of random line numbers to extract
+			TreeSet<Integer> randomLineNumbers = null;
+			if (randomLineCount != null) {
+				randomLineNumbers = generateRandomLineNumbers(randomLineCount);
+			}
 			// try to open the input file
 			reader = new BufferedReader(new FileReader(dataFile));
 			// log the basic information
@@ -270,7 +275,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	 * @param randomCount count of lines to extract
 	 * @throws IOException
 	 */
-	public void generateRandomLineNumbers(int randomCount) throws IOException {
+	private TreeSet<Integer> generateRandomLineNumbers(int randomCount) throws IOException {
+		TreeSet<Integer> randomLineNumbers = new TreeSet<Integer>();
 		// we compute how many lines there is in the file
 		int lineCount = countLines(dataFile);
 		// if there is less line in the file than the specified number of line to extract 
@@ -283,7 +289,25 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				randomLineNumbers.add(randomGenerator.nextInt(lineCount) + 1);
 			}
 		}
-		System.out.println(randomLineNumbers);
+		return randomLineNumbers;
+	}
+
+
+	/**
+	 * Set the number of random lines to extract in the text file
+	 * @param randomLineCount number of random lines to extract in the text file. Extract the entire file if null
+	 */
+	public void setRandomLineCount(Integer randomLineCount) {
+		this.randomLineCount = randomLineCount;
+	}
+
+
+	/**
+	 * 
+	 * @return the number of random lines to extract in the text file. The entire file will be extracted if null
+	 */
+	public Integer getRandomLineCount() {
+		return randomLineCount;
 	}
 
 
