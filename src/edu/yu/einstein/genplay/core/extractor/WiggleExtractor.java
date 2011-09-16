@@ -259,4 +259,14 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
+	
+	
+	/**
+	 * We raise a new UnsupportedOperationException because it's not possible to load
+	 * a random fraction of a wiggle file
+	 */
+	@Override
+	public void setRandomLineCount(Integer randomLineCount) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Wiggle files need to be entirely extracted");		
+	}
 }

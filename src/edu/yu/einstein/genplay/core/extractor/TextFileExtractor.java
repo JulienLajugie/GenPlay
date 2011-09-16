@@ -21,16 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.extractor;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.TreeSet;
@@ -67,6 +64,9 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	}
 
 
+	/**
+	 * @return 
+	 */
 	private String retrieveName() {
 		BufferedReader reader = null;
 		try {
@@ -76,23 +76,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			String line = null;
 
 			while (((line = reader.readLine()) != null) && isHeader) {
-				isHeader = false;
-				if (line.length() == 0) {
-					isHeader = true;
-				}
-				// comment line
-				if (line.charAt(0) == '#') {
-					isHeader = true;
-				} 
-				// browser line
-				if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
-					isHeader = true;
-				}
-				// track line
-				if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
-					isHeader = true;
-					isTrackInfo = true;
-				}
+				isHeader = !isDataLine(line);
+				isTrackInfo = isTrackInfoLine(line);
 				if (isHeader && isTrackInfo) {
 					String lineTmp = line.toLowerCase();
 					if (lineTmp.contains("name")) {
@@ -126,7 +111,48 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		return null;
 	}
 
+	
+	/**
+	 * @param line line from the data file
+	 * @return true if the line contains actual data. False otherwise
+	 */
+	private boolean isDataLine(String line) {
+		// the following line is an optimization:
+		// if the line starts with chr it's a data line so we skip the other tests
+		if ((line.length() >= 3) && (line.substring(0, 3).equalsIgnoreCase("chr"))) {
+			return true;
+		}
+		if (line.length() == 0) {
+			return false;
+		}
+		// comment line
+		if (line.charAt(0) == '#') {
+			return false;
+		}
+		// track line
+		if ((line.length() >= 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
+			return false;
+		}
+		// browser line
+		if ((line.length() >= 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
+			return false;
+		}
+		return false;		
+	}
+	
 
+	/**
+	 * @param line line from the data file
+	 * @return true if the line is a track info line (line starting with 'track'). False otherwise
+	 */
+	private boolean isTrackInfoLine(String line) {
+		if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
+			return true;
+		}
+		return false;
+	}	
+	
+	
 	/**
 	 * Extracts the data from a line. 
 	 * @param line a line from the data file that is not a header line. 
@@ -163,30 +189,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				if (needToBeStopped) {
 					throw new InterruptedException();
 				}
-				boolean isDataLine = true;
-				// the following line is an optimization:
-				// if the line starts with chr it's a data line so we skip the other tests
-				if ((line.length() <= 2) || (!line.substring(0, 3).equalsIgnoreCase("chr"))) {
-					// case when the line is empty
-					if (line.length() == 0) {
-						isDataLine = false;
-					} else if (line.charAt(0) == '#') {
-						// comment line
-						isDataLine = false;
-					} else if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
-						// browser line
-						isDataLine = false;
-					} else if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
-						// track line
-						isDataLine = false;
-						String[] splitedLine = line.split(" ");
-						for (String currentOption: splitedLine) {					
-							if ((currentOption.trim().length() > 4) && (currentOption.trim().substring(0, 4).equalsIgnoreCase("name"))) {
-								name = currentOption.substring(5).trim();
-							}
-						}
-					}
-				}
+				boolean isDataLine = isDataLine(line);
 				// data line
 				if (isDataLine) {
 					try {
@@ -246,26 +249,24 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 
 	/**
-	 * Counts the number of line in a file.  About 6 times faster than readLines.
+	 * Counts the number of line in a file
 	 * @param filename input file
 	 * @return the number of line in the specified file
 	 * @throws IOException
 	 */
 	private int countLines(File file) throws IOException {
-		InputStream is = new BufferedInputStream(new FileInputStream(file));
+		BufferedReader reader = new BufferedReader(new FileReader(file));
 		try {
-			byte[] c = new byte[1024];
+			String line = null;
 			int count = 0;
-			int readChars = 0;
-			while ((readChars = is.read(c)) != -1) {
-				for (int i = 0; i < readChars; ++i) {
-					if (c[i] == '\n')
-						++count;
+			while ((line = reader.readLine()) != null) {
+				if (isDataLine(line)) {
+					count++;
 				}
 			}
 			return count;
 		} finally {
-			is.close();
+			reader.close();
 		}
 	}
 
@@ -296,8 +297,9 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	/**
 	 * Set the number of random lines to extract in the text file
 	 * @param randomLineCount number of random lines to extract in the text file. Extract the entire file if null
+	 * @throws UnsupportedOperationException if the extractor doesn't support this operation (eg: Wiggle Extractors)
 	 */
-	public void setRandomLineCount(Integer randomLineCount) {
+	public void setRandomLineCount(Integer randomLineCount) throws UnsupportedOperationException {
 		this.randomLineCount = randomLineCount;
 	}
 
@@ -309,8 +311,5 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	public Integer getRandomLineCount() {
 		return randomLineCount;
 	}
-
-
-
 
 }
