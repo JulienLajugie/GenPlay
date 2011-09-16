@@ -195,7 +195,7 @@ public class SNPManager implements Serializable {
 					MGChromosome chromosomeInformation = genomes.getChromosomeInformation(genomeName, chromosome);
 					chromosomeInformation.resetIndexList();													// Many position have just been added, the list has to be reinitialized
 					int[] indexes = chromosomeInformation.getPositionIndex();
-					for (int i = 0; i < indexes.length; i++) {
+					for (int i = 1; i < indexes.length; i++) {
 						chromosomeInformation.setCurrentPosition(indexes[i]);								// Sets the current position
 						Variant current = chromosomeInformation.getCurrentVariant();						// Gets the current variant
 						if (current instanceof VCFSNP) {													// If it is a SNP (it has just been added and has to be updated)

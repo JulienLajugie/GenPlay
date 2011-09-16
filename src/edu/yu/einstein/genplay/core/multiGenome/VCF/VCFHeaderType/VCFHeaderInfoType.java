@@ -33,10 +33,10 @@ import java.io.ObjectOutputStream;
 public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 	
 	private static final long serialVersionUID = 7571808386657588806L; // generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;			// saved format version
 	private String id;				// information ID
 	private String description; 	// field description
-	private int number;				// the number of values that can be included
+	private String number;			// the number of values that can be included
 	private Class<?> type;			// type of the value. Can be Integer, Float, Character, and String (and Flag for INFO field)
 
 	
@@ -50,7 +50,7 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(id);
 		out.writeObject(description);
-		out.writeInt(number);
+		out.writeObject(number);
 		out.writeObject(type);
 	}
 
@@ -62,10 +62,14 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
+		int savedVersion = in.readInt();
 		id = (String) in.readObject();
 		description = (String) in.readObject();
-		number = in.readInt();
+		if (savedVersion == 0) { // in version 0 number was an integer
+			number = Integer.toString(in.readInt());
+		} else {
+			number = (String) in.readObject();
+		}
 		type = (Class<?>) in.readObject();	
 	}
 	
@@ -97,13 +101,13 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 
 	
 	@Override
-	public int getNumber() {
+	public String getNumber() {
 		return number;
 	}
 	
 
 	@Override
-	public void setNumber(int number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 

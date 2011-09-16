@@ -53,7 +53,7 @@ public class ShiftCompute {
 		initParameters(genome, chromosome, genomePosition);
 
 		// Dichotomic scan
-		if (indexes.length > 0) {
+		if ((indexes != null) && (indexes.length > 0)) {
 			dichotomicScan(genomePosition);
 			finishShifting(genomePosition);
 		}

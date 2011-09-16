@@ -250,7 +250,7 @@ public class VCFReader implements Serializable {
 						headerType.setId(info.get("ID"));
 						headerType.setDescription(info.get("Description"));
 						if (headerType instanceof VCFHeaderAdvancedType) {
-							((VCFHeaderAdvancedType) headerType).setNumber(Integer.parseInt(info.get("Number")));
+							((VCFHeaderAdvancedType) headerType).setNumber(info.get("Number"));
 							((VCFHeaderAdvancedType) headerType).setType(fieldType.get(info.get("Type")));
 						}
 					} else {

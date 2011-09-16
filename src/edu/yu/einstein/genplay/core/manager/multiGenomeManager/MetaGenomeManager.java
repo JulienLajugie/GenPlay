@@ -143,7 +143,7 @@ public class MetaGenomeManager implements Serializable {
 	public void initChromosomeList () {
 		chromosomeList = new HashMap<String, Chromosome>();
 		for (Chromosome chromosome: ChromosomeManager.getInstance().getChromosomeList().values()) {
-			chromosomeList.put(chromosome.getName(), new Chromosome(chromosome.getName(), chromosome.getLength()));
+			chromosomeList.put(chromosome.getName().toLowerCase(), new Chromosome(chromosome.getName(), chromosome.getLength()));
 		}
 	}
 

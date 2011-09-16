@@ -34,13 +34,13 @@ public interface VCFHeaderAdvancedType extends VCFHeaderType {
 	/**
 	 * @return the number
 	 */
-	public int getNumber();
+	public String getNumber();
 
 	
 	/**
 	 * @param number the number to set
 	 */
-	public void setNumber(int number);
+	public void setNumber(String number);
 
 	
 	/**
