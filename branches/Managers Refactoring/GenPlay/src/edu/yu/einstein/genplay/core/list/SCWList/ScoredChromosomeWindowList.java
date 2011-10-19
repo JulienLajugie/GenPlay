@@ -34,14 +34,15 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.OverLappingManagement;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.DoubleLists;
@@ -58,6 +59,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
 	
 	/*
 	 * The following values are statistic values of the list
@@ -81,6 +83,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
 	}
 
 
@@ -92,6 +95,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
 		try {
 			generateStatistics();
 		} catch (Exception e) {
@@ -117,12 +121,12 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @return	true is an overlapping region is found
 	 */
 	public static boolean overLappingExist (ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList) {
-		ChromosomeManager chromosomeManagerTmp = ChromosomeManager.getInstance();
+		ProjectChromosome projectChromosomeTmp = ProjectManager.getInstance().getProjectChromosome();
 		int index = 0;
 		boolean isFound = false;
-		for(final Chromosome currentChromosome : chromosomeManagerTmp) {
-			while (index < startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size()) {
-				isFound = searchOverLappingPositionsForIndex(chromosomeManagerTmp, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
+		for(final Chromosome currentChromosome : projectChromosomeTmp) {
+			while (index < startList.get(projectChromosomeTmp.getIndex(currentChromosome)).size()) {
+				isFound = searchOverLappingPositionsForIndex(projectChromosomeTmp, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
 				if (isFound) {
 					return true;
 				} else {
@@ -138,19 +142,19 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * searchOverLappingPositionsForIndex method
 	 * This method search if the index is involved on an overlapping region
 	 * 
-	 * @param	chromosomeManagerTmp a static ChromosomeManager instance
+	 * @param	projectChromosomeTmp a static ChromosomeManager instance
 	 * @param	startList			 list of position start
 	 * @param	stopList			 list of position stop
 	 * @param 	currentChromosome	 Chromosome
 	 * @param 	index				 current index
 	 * @return						 true if the current index is involved on an overlapping region
 	 */
-	private static boolean searchOverLappingPositionsForIndex (	ChromosomeManager chromosomeManagerTmp,
+	private static boolean searchOverLappingPositionsForIndex (	ProjectChromosome projectChromosomeTmp,
 																ChromosomeListOfLists<Integer> startList,
 																ChromosomeListOfLists<Integer> stopList,
 																Chromosome currentChromosome,
 																int index) {
-		int size = startList.get(chromosomeManagerTmp.getIndex(currentChromosome)).size();
+		int size = startList.get(projectChromosomeTmp.getIndex(currentChromosome)).size();
 		int nextIndex = index + 1;
 		if (nextIndex < size) {
 			boolean valid = true;
@@ -181,8 +185,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {
+		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
@@ -244,8 +247,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		} else {
 			runOverLapEngine = false;
 		}
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {
+		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
@@ -296,11 +298,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 */
 	public ScoredChromosomeWindowList(Collection<? extends List<ScoredChromosomeWindow>> data) throws InterruptedException, ExecutionException {
 		super();
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		addAll(data);
 		// add the eventual missing chromosomes
-		if (size() < chromosomeManager.size()) {
-			for (int i = size(); i < chromosomeManager.size(); i++){
+		if (size() < projectChromosome.size()) {
+			for (int i = size(); i < projectChromosome.size(); i++){
 				add(null);
 			}
 		}
@@ -447,7 +448,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		
 		// set the default value
 		min = Double.POSITIVE_INFINITY;
@@ -458,11 +458,11 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		nonNullLength = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
-		final double[] mins = new double[chromosomeManager.size()];
-		final double[] maxs = new double[chromosomeManager.size()];
-		final double[] stDevs = new double[chromosomeManager.size()];
-		final double[] scoreSums = new double[chromosomeManager.size()];
-		final long[] nonNullLengths = new long[chromosomeManager.size()];
+		final double[] mins = new double[projectChromosome.size()];
+		final double[] maxs = new double[projectChromosome.size()];
+		final double[] stDevs = new double[projectChromosome.size()];
+		final double[] scoreSums = new double[projectChromosome.size()];
+		final long[] nonNullLengths = new long[projectChromosome.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < size(); i++)  {
@@ -496,7 +496,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		op.startPool(threadList);
 
 		// compute the genome wide result from the chromosomes results
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			min = Math.min(min, mins[i]);
 			max = Math.max(max, maxs[i]);
 			scoreSum += scoreSums[i];
@@ -535,7 +535,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			op.startPool(threadList);
 
 			// compute the genome wide standard deviation
-			for (int i = 0; i < chromosomeManager.size(); i++) {
+			for (int i = 0; i < projectChromosome.size(); i++) {
 				stDev += stDevs[i];
 			}
 			stDev = Math.sqrt(stDev / (double) nonNullLength);

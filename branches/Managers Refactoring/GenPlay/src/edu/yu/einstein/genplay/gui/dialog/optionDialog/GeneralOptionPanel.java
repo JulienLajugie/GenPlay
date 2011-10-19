@@ -65,8 +65,8 @@ final class GeneralOptionPanel extends OptionPanel {
 		super("General");
 
 		jlDefaultDir = new JLabel("Default directory: ");
-		if (configurationManager.getDefaultDirectory() != null) {
-			jtfDefautlDir = new JTextField(new File(configurationManager.getDefaultDirectory()).getPath());
+		if (projectConfiguration.getDefaultDirectory() != null) {
+			jtfDefautlDir = new JTextField(new File(projectConfiguration.getDefaultDirectory()).getPath());
 		} else {
 			jtfDefautlDir = new JTextField();
 		}
@@ -77,14 +77,14 @@ final class GeneralOptionPanel extends OptionPanel {
 		jbDefaultDirBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Default Directory:", new File(configurationManager.getDefaultDirectory()), jtfDefautlDir, false);
-				configurationManager.setDefaultDirectory(jtfDefautlDir.getText());
+				browse("Default Directory:", new File(projectConfiguration.getDefaultDirectory()), jtfDefautlDir, false);
+				projectConfiguration.setDefaultDirectory(jtfDefautlDir.getText());
 			}
 		});
 
 		jlLogFile = new JLabel("Log file: ");
 
-		jtfLogFile = new JTextField(new File(configurationManager.getLogFile()).getAbsolutePath());
+		jtfLogFile = new JTextField(new File(projectConfiguration.getLogFile()).getAbsolutePath());
 		jtfLogFile.setColumns(30);
 		jtfLogFile.setEditable(false);
 
@@ -92,8 +92,8 @@ final class GeneralOptionPanel extends OptionPanel {
 		jbLogBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Log File:",	new File(configurationManager.getLogFile()), jtfLogFile, true);
-				configurationManager.setLogFile(jtfLogFile.getText());
+				browse("Log File:",	new File(projectConfiguration.getLogFile()), jtfLogFile, true);
+				projectConfiguration.setLogFile(jtfLogFile.getText());
 			}
 		});
 
@@ -108,14 +108,14 @@ final class GeneralOptionPanel extends OptionPanel {
 		jcbLookAndFeel = new JComboBox(installedAndFeelClassNames);
 		// Select the look and feel of the configuration
 		for (int i = 0; i < lafi.length; i++) {
-			if (lafi[i].getClassName().equals(configurationManager.getLookAndFeel())) {
+			if (lafi[i].getClassName().equals(projectConfiguration.getLookAndFeel())) {
 				jcbLookAndFeel.setSelectedIndex(i);
 			}
 		}
 		jcbLookAndFeel.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				configurationManager.setLookAndFeel(UIManager.getInstalledLookAndFeels()[jcbLookAndFeel.getSelectedIndex()].getClassName());
+				projectConfiguration.setLookAndFeel(UIManager.getInstalledLookAndFeels()[jcbLookAndFeel.getSelectedIndex()].getClassName());
 			}
 		});
 

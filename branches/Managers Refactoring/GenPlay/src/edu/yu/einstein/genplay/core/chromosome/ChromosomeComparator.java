@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.chromosomeChooser;
+package edu.yu.einstein.genplay.core.chromosome;
 
 import java.util.Comparator;
 import java.util.HashMap;

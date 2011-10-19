@@ -169,7 +169,7 @@ final class DASOptionPanel extends OptionPanel {
 	 */
 	DASOptionPanel() {
 		super("DAS Server");
-		file = new File(configurationManager.getDASServerListFile());
+		file = new File(projectConfiguration.getDASServerListFile());
 		try {
 			DASServerList dasServerList;
 			if (file.exists()) {
@@ -177,10 +177,10 @@ final class DASOptionPanel extends OptionPanel {
 					dasServerList = new DASServerList(file.toURI().toURL());
 				} catch (SAXParseException e) {
 					ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "DAS Server File Corrupted...loading default file");
-					dasServerList = new DASServerList(new URL(configurationManager.getDefaultDasServerListFile()));
+					dasServerList = new DASServerList(new URL(projectConfiguration.getDefaultDasServerListFile()));
 				}
 			} else {
-				dasServerList = new DASServerList(new URL(configurationManager.getDefaultDasServerListFile()));
+				dasServerList = new DASServerList(new URL(projectConfiguration.getDefaultDasServerListFile()));
 			}
 			tableData = new Object[dasServerList.size()][2];
 			for (int i = 0; i < dasServerList.size(); i++) {

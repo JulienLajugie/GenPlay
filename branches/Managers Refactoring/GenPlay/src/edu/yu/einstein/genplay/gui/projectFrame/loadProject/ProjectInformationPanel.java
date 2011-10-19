@@ -32,7 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager.ProjectInformations;
+import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager.ProjectInformation;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -178,7 +178,7 @@ class ProjectInformationPanel extends JPanel {
 	 * @param path	path of the project
 	 */
 	protected void showProjectInformation (String path) {
-		ProjectInformations info = getInformation(path);
+		ProjectInformation info = getInformation(path);
 		if (info == null) {
 			projectName.setText("...");
 			projectGenome.setText("...");
@@ -201,8 +201,8 @@ class ProjectInformationPanel extends JPanel {
 	 * @param path	path of the project record
 	 * @return	a list of String (information)
 	 */
-	private ProjectInformations getInformation (String path) {
-		ProjectInformations info = null;
+	private ProjectInformation getInformation (String path) {
+		ProjectInformation info = null;
 		if (path != null) {
 			File file = new File(path);
 			try {

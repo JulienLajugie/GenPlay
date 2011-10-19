@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.awt.Color;
 import java.io.File;
@@ -28,14 +28,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.enums.VCFType;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
@@ -48,6 +47,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -56,7 +56,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenomeManager implements Serializable {
+public class GenomeSynchronizer implements Serializable {
 
 	private static final long serialVersionUID = 5101409095108321375L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -101,14 +101,14 @@ public class MultiGenomeManager implements Serializable {
 	public static final 	Color 						SV_DEFAULT_COLOR 			= Color.magenta;
 
 
-	private static 			MultiGenomeManager 			instance = null;		// unique instance of the singleton
-	private 				Map<File, VCFReader> 		fileReaders;			// Mapping between files and their readers.
-	private					MGMultiGenome				genomesInformation;		// Genomes information
-	private					MetaGenomeManager			metaGenomeManager;		// Meta genome manager instance
-	private					ReferenceGenomeManager		referenceGenomeManager;	// Reference genome manager instance
-	private					CoordinateSystemType 		cst;
-	private					boolean						hasBeenInitialized;		// Uses when multi genome manager has been initialized
-	private					boolean						dataComputed = false;	// Uses after every multi genome process
+	private 	Map<File, VCFReader> 			fileReaders;					// Mapping between files and their readers.
+	private		MGMultiGenome					genomesInformation;				// Genomes information
+	private		MetaGenomeSynchroniser			metaGenomeSynchroniser;			// Instance of the Meta Genome Synchroniser
+	private		ReferenceGenomeSynchroniser		referenceGenomeSynchroniser;	// Instance of the Reference Genome Synchroniser
+	private		SNPSynchroniser					snpSynchroniser;				// Instance of the SNP Synchroniser
+	private		CoordinateSystemType 			cst;
+	//private		boolean							hasBeenInitialized;				// Uses when multi genome manager has been initialized
+	private		boolean							dataComputed = false;			// Uses after every multi genome process
 
 	
 	
@@ -121,10 +121,11 @@ public class MultiGenomeManager implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(fileReaders);
 		out.writeObject(genomesInformation);
-		out.writeObject(metaGenomeManager);
-		out.writeObject(referenceGenomeManager);
+		out.writeObject(metaGenomeSynchroniser);
+		out.writeObject(referenceGenomeSynchroniser);
+		out.writeObject(snpSynchroniser);
 		out.writeObject(cst);
-		out.writeBoolean(hasBeenInitialized);
+		//out.writeBoolean(hasBeenInitialized);
 		out.writeBoolean(dataComputed);
 	}
 
@@ -140,43 +141,27 @@ public class MultiGenomeManager implements Serializable {
 		in.readInt();
 		fileReaders = (Map<File, VCFReader>) in.readObject();
 		genomesInformation = (MGMultiGenome) in.readObject();
-		metaGenomeManager = (MetaGenomeManager) in.readObject();
-		referenceGenomeManager = (ReferenceGenomeManager) in.readObject();
+		metaGenomeSynchroniser = (MetaGenomeSynchroniser) in.readObject();
+		referenceGenomeSynchroniser = (ReferenceGenomeSynchroniser) in.readObject();
+		snpSynchroniser = (SNPSynchroniser) in.readObject();
 		cst = (CoordinateSystemType) in.readObject();
-		hasBeenInitialized = in.readBoolean();
+		//hasBeenInitialized = in.readBoolean();
 		dataComputed = in.readBoolean();
-		instance = this;
-	}
-	
-
-	/**
-	 * @return an instance of a {@link MultiGenomeManager}. 
-	 * Makes sure that there is only one unique instance as specified in the singleton pattern
-	 */
-	public static MultiGenomeManager getInstance() {
-		if (instance == null) {
-			synchronized(MultiGenomeManager.class) {
-				if (instance == null) {
-					instance = new MultiGenomeManager();
-				}
-			}
-		}
-		return instance;
 	}
 
 
 	/**
-	 * Constructor of {@link MultiGenomeManager}
+	 * Constructor of {@link GenomeSynchronizer}
 	 */
-	private MultiGenomeManager () {
+	protected GenomeSynchronizer (List<Chromosome> chromosomeList) {
 		this.genomesInformation = new MGMultiGenome();
-		this.metaGenomeManager = MetaGenomeManager.getInstance();
-		this.referenceGenomeManager = ReferenceGenomeManager.getInstance();
-		this.metaGenomeManager.initChromosomeList();
-		ProjectManager.getInstance().setMultiGenomeProject(true);
-		this.metaGenomeManager.initializeChromosomeLength();
+		this.referenceGenomeSynchroniser = new ReferenceGenomeSynchroniser();
+		this.metaGenomeSynchroniser = new MetaGenomeSynchroniser(chromosomeList);
+		System.out.println("GenomeSynchronizer");
+		Utils.showChromosomeList(chromosomeList);
+		this.snpSynchroniser = new SNPSynchroniser();
 		cst = CoordinateSystemType.METAGENOME;
-		hasBeenInitialized = false;
+		//hasBeenInitialized = false;
 		dataComputed = false;
 	}
 
@@ -184,32 +169,62 @@ public class MultiGenomeManager implements Serializable {
 	/**
 	 * Initializes the multi genome manager
 	 * @param fileReaders				mapping between files and their readers.
-	 * @param genomeFileAssociation		mapping between genome names and their files
+	 * @param genomeFileAssociation		mapping between genome names and their files.
 	 */
-	public void init (Map<File, VCFReader> fileReaders, Map<String, List<File>> genomeFileAssociation) {
+	/*public void init (Map<File, VCFReader> fileReaders, Map<String, List<File>> genomeFileAssociation) {
 		this.fileReaders = fileReaders;
 		genomesInformation.init(genomeFileAssociation);
-	}
+	}*/
 
 
 	/**
 	 * Initializes genomes information.
 	 */
-	public void initMultiGenomeInformation () {
+	/*public void initMultiGenomeInformation () {
 		genomesInformation.initMultiGenomeInformation();
+	}*/
+	
+
+	/**
+	 * Sets the file readers.
+	 * @param fileReaders mapping between files and their readers.
+	 */
+	public void setFileReaders(Map<File, VCFReader> fileReaders) {
+		this.fileReaders = fileReaders;
+	}
+	
+	
+	/**
+	 * Sets the mapping table between vcf file and their related genomes.
+	 * Initializes genomes information hierarchy (genomes > chromosomes).
+	 * Initializes genomes for SNP management.
+	 * @param genomeFileAssociation mapping between genome names and their files.
+	 */
+	public void setGenomeFileAssociation(Map<String, List<File>> genomeFileAssociation) {
+		genomesInformation.setGenomeFileAssociation(genomeFileAssociation);
+		genomesInformation.initMultiGenomeInformation();
+		
+		List<String> genomeNameList = new ArrayList<String>(genomeFileAssociation.keySet());
+		Collections.sort(genomeNameList);
+		snpSynchroniser.initializesGenomeList(genomeNameList);
 	}
 
 
 	/**
 	 * Computes all operations in order to synchronize positions.
+	 * @param referenceGenomeName the genome reference name (display name)
+	 * @param chromosomeList the current chromosome list for multi genome project
 	 * @throws IOException
 	 */
-	public void compute () throws IOException {
+	public void compute (String referenceGenomeName, List<Chromosome> chromosomeList) throws IOException {
 		dataComputed = false;
-		if (initialyzeData()) {
-			compileData();
-			MetaGenomeManager.getInstance().computeGenomeSize();
-			MetaGenomeManager.getInstance().updateChromosomeList();
+		System.out.println("compute");
+		Utils.showChromosomeList(chromosomeList);
+		if (initialyzeData(chromosomeList)) {
+			compileData(referenceGenomeName, chromosomeList);
+			//snpSynchroniser.compute(chromosomeList);
+			metaGenomeSynchroniser.computeGenomeSize();
+			metaGenomeSynchroniser.updateChromosomeList();
 			//showData();
 		}
 	}
@@ -229,17 +244,16 @@ public class MultiGenomeManager implements Serializable {
 	 * The offset position is unknown and is sets to 0 at this point.
 	 * @throws IOException
 	 */
-	private boolean initialyzeData () throws IOException {
+	private boolean initialyzeData (List<Chromosome> chromosomeList) throws IOException {
 		boolean valid = false;
-		Map<String, Chromosome> chromosomeList = ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList();
 		for (VCFReader reader: fileReaders.values()) {
 
 			VCFType vcfType = reader.getVcfType();
 			if (vcfType != VCFType.SNPS) {
 				valid = true;
-				for (final Chromosome chromosome: chromosomeList.values()) {
+				for (final Chromosome chromosome: chromosomeList) {
 					//Adds the chromosome to the reference genome chromosome list
-					referenceGenomeManager.addChromosome(chromosome.getName());
+					referenceGenomeSynchroniser.addChromosome(chromosome.getName());
 
 					//Performs query on the current VCF to get all data regarding the chromosome
 					List<Map<String, Object>> result = reader.query(chromosome.getName(),
@@ -248,7 +262,7 @@ public class MultiGenomeManager implements Serializable {
 
 					final List<String> genomeNames = getRequiredGenomeNamesInVCFFile(reader);
 
-					//Analyse query results
+					//Analyze query results
 					createPositions(chromosome, genomeNames, result, vcfType, reader);
 					result = null;
 				}
@@ -290,7 +304,7 @@ public class MultiGenomeManager implements Serializable {
 	private void createPositions (Chromosome chromosome, List<String> genomeNames, List<Map<String, Object>> result, VCFType vcfType, VCFReader reader) {
 		if (result != null) {
 			for (Map<String, Object> info: result) {	// Scans every result lines
-				referenceGenomeManager.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString().trim()));
+				referenceGenomeSynchroniser.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString().trim()));
 				MGPosition positionInformation = new MGPosition(chromosome, info, reader);
 
 				for (String genomeName: genomeNames) {
@@ -317,20 +331,19 @@ public class MultiGenomeManager implements Serializable {
 	 * Deletion does not involve modification in other tracks.
 	 * Insertion involves modification in other tracks creating "Blank" positions.
 	 */
-	private void compileData () {
-		Map<String, Chromosome> chromosomeList = ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList();
-		for (Chromosome chromosome: chromosomeList.values()) {														// Scan by chromosome
+	private void compileData (String referenceGenomeName, List<Chromosome> chromosomeList) {
+		for (Chromosome chromosome: chromosomeList) {														// Scan by chromosome
 			List<MGChromosome> currentChromosomeList =
 				genomesInformation.getChromosomeInformationList(chromosome);										// List of all existing chromosome in VCF files
-			referenceGenomeManager.setList(chromosome.getName());
+			referenceGenomeSynchroniser.setList(chromosome.getName());
 
 			for (MGChromosome chromosomeInformation: currentChromosomeList) {							// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 
-			while (referenceGenomeManager.isValidIndex()) {															// Scan by position
+			while (referenceGenomeSynchroniser.isValidIndex()) {															// Scan by position
 				List<Integer> insertPositions = new ArrayList<Integer>();											// List of all length insertion position. Used at the end to update all tracks.
-				int currentRefPosition = referenceGenomeManager.getCurrentPosition();								// Current position of the reference genome
+				int currentRefPosition = referenceGenomeSynchroniser.getCurrentPosition();								// Current position of the reference genome
 				for (MGChromosome chromosomeInformation: currentChromosomeList) {						// Scan VCF content by chromosome
 					chromosomeInformation.setCurrentPosition(currentRefPosition);
 					Variant currentInformation =
@@ -358,16 +371,16 @@ public class MultiGenomeManager implements Serializable {
 				if (insertPositions.size() > 0 ) {
 					int maxLength = getLongestLength(insertPositions);												// Maximum length of every insertion positions
 					updateInsert(currentChromosomeList, currentRefPosition, maxLength);								// The other tracks must be updated
-					updateReferenceGenome(chromosome, currentRefPosition, maxLength);
+					updateReferenceGenome(referenceGenomeName, chromosome, currentRefPosition, maxLength);
 					updateMetaGenome(chromosome, maxLength);														// Update the meta genome length
 				}
 				updatePreviousPosition (currentChromosomeList, currentRefPosition);									// The previous position is set with the current position
-				referenceGenomeManager.nextIndex();																	// Increases the current index
+				referenceGenomeSynchroniser.nextIndex();																	// Increases the current index
 			}
 			for (MGChromosome chromosomeInformation: currentChromosomeList) {							// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
-			genomesInformation.getChromosomeInformation(ReferenceGenomeManager.getInstance().getReferenceName(), chromosome).resetIndexList();
+			genomesInformation.getChromosomeInformation(referenceGenomeName, chromosome).resetIndexList();
 		}
 		dataComputed = true;
 	}
@@ -418,8 +431,8 @@ public class MultiGenomeManager implements Serializable {
 	 * @param refPosition		reference genome position
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
-	private void updateReferenceGenome (Chromosome chromosome, int refPosition, int maxLength) {
-		MGChromosome chromosomeInformation = genomesInformation.getChromosomeInformation(ReferenceGenomeManager.getInstance().getReferenceName(), chromosome);
+	private void updateReferenceGenome (String referenceGenomeName, Chromosome chromosome, int refPosition, int maxLength) {
+		MGChromosome chromosomeInformation = genomesInformation.getChromosomeInformation(referenceGenomeName, chromosome);
 		String genomeName = chromosomeInformation.getGenomeInformation().getGenomeName();
 		Variant variant = new VCFBlank(genomeName, chromosome, maxLength);
 		genomesInformation.addBlank(genomeName, chromosome, refPosition, variant);
@@ -460,7 +473,7 @@ public class MultiGenomeManager implements Serializable {
 	 */
 	private void updateMetaGenome (Chromosome chromosome, int length) {
 		if (length > 0) {
-			metaGenomeManager.updateChromosomeLength(chromosome, length);
+			metaGenomeSynchroniser.updateChromosomeLength(chromosome, length);
 		}
 	}
 
@@ -534,17 +547,17 @@ public class MultiGenomeManager implements Serializable {
 	/**
 	 * @return the hasBeenInitialized
 	 */
-	public boolean hasBeenInitialized() {
+	/*public boolean hasBeenInitialized() {
 		return hasBeenInitialized;
-	}
+	}*/
 
 
 	/**
 	 * set the hasBeenInitialized to true
 	 */
-	public void setHasBeenInitialized() {
+	/*public void setHasBeenInitialized() {
 		this.hasBeenInitialized = true;
-	}
+	}*/
 
 
 	/**
@@ -553,7 +566,15 @@ public class MultiGenomeManager implements Serializable {
 	public Map<File, VCFReader> getFileReaders() {
 		return fileReaders;
 	}
+
 	
+	/**
+	 * @return the genomeFileAssociation
+	 */
+	public Map<String, List<File>> getGenomeFileAssociation() {
+		return genomesInformation.getGenomeFileAssociation();
+	}
+
 	
 	/**
 	 * @param genomeName 	a name of a genome
@@ -571,8 +592,32 @@ public class MultiGenomeManager implements Serializable {
 	}
 
 
-	//////////////////////////////Show methods
+	/**
+	 * @return the metaGenomeSynchroniser
+	 */
+	public MetaGenomeSynchroniser getMetaGenomeSynchroniser() {
+		return metaGenomeSynchroniser;
+	}
 
+
+	/**
+	 * @return the referenceGenomeSynchroniser
+	 */
+	public ReferenceGenomeSynchroniser getReferenceGenomeSynchroniser() {
+		return referenceGenomeSynchroniser;
+	}
+
+
+	/**
+	 * @return the snpSynchroniser
+	 */
+	public SNPSynchroniser getSnpSynchroniser() {
+		return snpSynchroniser;
+	}
+
+
+	//////////////////////////////Show methods
+	
 	/**
 	 * Shows genomes information.
 	 */

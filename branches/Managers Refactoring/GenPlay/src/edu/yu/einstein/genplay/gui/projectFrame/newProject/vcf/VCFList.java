@@ -30,6 +30,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.util.List;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -39,7 +40,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 
 /**
@@ -155,7 +157,7 @@ class VCFList {
 				String inputValue = "";
 				if (isFile) {
 					JFileChooser chooser = new JFileChooser();
-					chooser.setCurrentDirectory(new File(ConfigurationManager.getInstance().getDefaultDirectory()));
+					chooser.setCurrentDirectory(new File(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory()));
 					chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 					chooser.setFileFilter(new VCFFilter());
 					int returnVal = chooser.showOpenDialog(dialog);

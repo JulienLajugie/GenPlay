@@ -26,12 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
@@ -48,7 +49,7 @@ public class OverLappingManagement implements Serializable {
 	
 	private static final long serialVersionUID = 419831643761204027L;
 	
-	protected final ChromosomeManager 			chromosomeManager;		// TChromosomeManager
+	protected final ProjectChromosome 			projectChromosome;		// TChromosomeManager
 	private 		SCWLOptions 				sortSCW;				// use the sort option for chromosome list
 	private 		List<OverLappingEngine> 	overLappingEngineList;	// overlapping engine for chromosome list
 	
@@ -64,7 +65,7 @@ public class OverLappingManagement implements Serializable {
 	public OverLappingManagement (	ChromosomeListOfLists<Integer> startList,
 								ChromosomeListOfLists<Integer> stopList,
 								ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
-		this.chromosomeManager = ChromosomeManager.getInstance();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.sortSCW = new SCWLOptions(startList, stopList, scoreList);
 		this.sortSCW.sortAll();
 	}
@@ -80,7 +81,7 @@ public class OverLappingManagement implements Serializable {
 	 * @throws ExecutionException 
 	 */
 	public void run (Chromosome chromosome) throws InterruptedException, ExecutionException {
-		this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).init(this.sortSCW.getList().get(chromosome));	//the overlapengine is ran for the chromosome list
+		this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).init(this.sortSCW.getList().get(chromosome));	//the overlapengine is ran for the chromosome list
 		this.sortSCW.setNewList(chromosome, getNewStartList(chromosome), getNewStopList(chromosome), getNewScoreList(chromosome));	//the old chromosome list is replaced by the new one
 	}
 	
@@ -96,15 +97,15 @@ public class OverLappingManagement implements Serializable {
 	}
 	
 	private IntArrayAsIntegerList getNewStartList(Chromosome chromosome) {
-		return this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).getNewStartList();
+		return this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).getNewStartList();
 	}
 	
 	private IntArrayAsIntegerList getNewStopList(Chromosome chromosome) {
-		return this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).getNewStopList();
+		return this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).getNewStopList();
 	}
 	
 	private List<Double> getNewScoreList(Chromosome chromosome) {
-		return this.overLappingEngineList.get(chromosomeManager.getIndex(chromosome)).getNewScoreList();
+		return this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).getNewScoreList();
 	}
 	
 	/**
@@ -113,7 +114,7 @@ public class OverLappingManagement implements Serializable {
 	 */
 	public void setScoreCalculationMethod (ScoreCalculationMethod scm) {
 		this.overLappingEngineList = new ArrayList<OverLappingEngine>();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			this.overLappingEngineList.add(new OverLappingEngine(scm));
 		}
 	}

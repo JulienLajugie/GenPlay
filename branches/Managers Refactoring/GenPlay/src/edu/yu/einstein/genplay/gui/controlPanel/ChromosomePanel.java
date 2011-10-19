@@ -28,15 +28,15 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import edu.yu.einstein.genplay.core.Chromosome;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeComparator;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -54,6 +54,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	private final JLabel 							jlChromosome;		// label chromosome
 	private final JComboBox 						jcbChromosome;		// combo box chromosome
 	private final ArrayList<GenomeWindowListener> 	listenerList;		// list of GenomeWindowListener
+	private final ProjectChromosome 				projectChromosome; 	// Instance of the Chromosome Manager
 	private GenomeWindow 							currentGenomeWindow;// current GenomeWindow
 	
 	
@@ -64,9 +65,10 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	ChromosomePanel(GenomeWindow genomeWindow) {
 		this.currentGenomeWindow = genomeWindow;
 		this.listenerList = new ArrayList<GenomeWindowListener>();
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		jlChromosome = new JLabel(" Chromosome ");
 		// Create ComboBox for the chromosome selection
-		jcbChromosome = new JComboBox(ChromosomeManager.getInstance().toArray());
+		jcbChromosome = new JComboBox(projectChromosome.toArray());
 		// select the first item case currentChromosome is not in the list
 		jcbChromosome.setSelectedIndex(0);
 		jcbChromosome.setSelectedItem(currentGenomeWindow.getChromosome());
@@ -130,15 +132,12 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	 * This method updates the chromosome panel when a project is loaded. 
 	 */
 	public void updateChromosomePanel () {
-		Chromosome chromosome = ChromosomeManager.getInstance().get(0);
+		Chromosome chromosome = projectChromosome.get(0);
 		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 		setGenomeWindow(genomeWindow);
 		jcbChromosome.removeAllItems();
-		ChromosomeManager instance = ChromosomeManager.getInstance();
-		List<String> chromosomeNames = new ArrayList<String>(instance.getChromosomeList().keySet());
-		Collections.sort(chromosomeNames, new ChromosomeComparator());
-		for (String s: chromosomeNames) {
-			jcbChromosome.addItem(instance.get(s));
+		for (Chromosome currentChromosome: projectChromosome) {
+			jcbChromosome.addItem(currentChromosome);
 		}
 	}
 

@@ -43,15 +43,14 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.ZoomManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.SNPManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
@@ -241,7 +240,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeStripes != null) {
-			if (MultiGenomeManager.getInstance().dataHasBeenComputed()) {
+			if (ProjectManager.getInstance().getGenomeSynchronizer().dataHasBeenComputed()) {
 				displayableVariantListCreator.setGenomeNames(multiGenomeStripes.getRequiredGenomes());
 				displayableVariantListCreator.setQuality((double) multiGenomeStripes.getQuality());
 				displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
@@ -599,11 +598,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		boolean isZoomIn = e.getWheelRotation() > 0;
 		for (int i = 0; i < weelRotation; i++) {
 			// retrieve the only instance of the singleton ZoomManager
-			ZoomManager zoomManager = ZoomManager.getInstance();
+			ProjectZoom projectZoom = ProjectManager.getInstance().getProjectZoom();
 			if (isZoomIn) {
-				newZoom = zoomManager.getZoomIn(genomeWindow.getSize());
+				newZoom = projectZoom.getZoomIn(genomeWindow.getSize());
 			} else {
-				newZoom = zoomManager.getZoomOut(genomeWindow.getSize());
+				newZoom = projectZoom.getZoomOut(genomeWindow.getSize());
 			}
 			newZoom = Math.min(genomeWindow.getChromosome().getLength() * 2, newZoom);
 		}
@@ -719,7 +718,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param multiGenomeStripes the stripeInformation to set
 	 */
 	protected void setMultiGenomeStripes(MultiGenomeStripes multiGenomeStripes) {
-		SNPManager.getInstance().updateSNP(this.multiGenomeStripes, multiGenomeStripes);
+		ProjectManager.getInstance().getGenomeSynchronizer().getSnpSynchroniser().updateEnabledSNPList(ProjectManager.getInstance().getCurrentMultiGenomeChromosomeList(), this.multiGenomeStripes, multiGenomeStripes);
 		this.multiGenomeStripes = multiGenomeStripes;
 		repaint();
 	}

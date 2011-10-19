@@ -36,14 +36,14 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 
@@ -56,6 +56,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectManager;
 public class DASConnector {
 
 	private final String serverAddress;	// address of a DAS Server
+	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
 	private String genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
 	
 
@@ -71,6 +72,7 @@ public class DASConnector {
 			serverAddress += "/";
 		}
 		this.serverAddress = serverAddress;
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
 
 
@@ -153,7 +155,7 @@ public class DASConnector {
 //		}
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<List<Gene>> resultList = new ArrayList<List<Gene>>();
-		for (Chromosome currentChromo: ChromosomeManager.getInstance()) {
+		for (Chromosome currentChromo: projectChromosome) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
 			// we create a genelist for this chromosome
@@ -336,7 +338,7 @@ public class DASConnector {
 	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
-		for (Chromosome currentChromo: ChromosomeManager.getInstance()) {
+		for (Chromosome currentChromo: projectChromosome) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
 			// if we found a chromosome retrieve the data and 
 			// we create a genelist for this chromosome

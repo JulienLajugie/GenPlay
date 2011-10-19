@@ -26,13 +26,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.SCWLTwoTracksManagement;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -70,10 +71,10 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		
 		
-		for(final Chromosome currentChromosome : chromosomeManager) {
+		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {

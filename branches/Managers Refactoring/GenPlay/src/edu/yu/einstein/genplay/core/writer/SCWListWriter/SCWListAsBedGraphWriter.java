@@ -27,8 +27,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -65,7 +65,7 @@ public class SCWListAsBedGraphWriter extends SCWListWriter implements Stoppable 
 			writer.write("track type=bedGraph name=" + name);
 			writer.newLine();
 			// print the data
-			for(Chromosome currentChromosome: chromosomeManager) {
+			for(Chromosome currentChromosome: projectChromosome) {
 				List<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
 				if (currentList != null) {
 					for (ScoredChromosomeWindow currentWindow: currentList){

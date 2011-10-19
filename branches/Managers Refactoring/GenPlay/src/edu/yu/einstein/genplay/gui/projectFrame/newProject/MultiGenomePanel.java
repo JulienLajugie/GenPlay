@@ -43,7 +43,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.fileFilter.XMLFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
@@ -76,7 +76,7 @@ class MultiGenomePanel extends JPanel {
 
 		//Create a file chooser
 		fc = new JFileChooser();
-		fc.setCurrentDirectory(new File(ConfigurationManager.getInstance().getDefaultDirectory()));
+		fc.setCurrentDirectory(new File(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory()));
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setFileFilter(new XMLFilter());
 

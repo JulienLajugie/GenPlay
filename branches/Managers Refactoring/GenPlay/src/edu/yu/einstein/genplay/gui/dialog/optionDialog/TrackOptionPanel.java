@@ -64,11 +64,11 @@ final class TrackOptionPanel extends OptionPanel {
 		((NumberFormatter) jftfTrackCount.getFormatter()).setMinimum(MIN_TRACK_COUNT);
 		((NumberFormatter) jftfTrackCount.getFormatter()).setMaximum(MAX_TRACK_COUNT);
 		jftfTrackCount.setColumns(5);
-		jftfTrackCount.setValue(configurationManager.getTrackCount());
+		jftfTrackCount.setValue(projectConfiguration.getTrackCount());
 		jftfTrackCount.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				configurationManager.setTrackCount(((Number) jftfTrackCount.getValue()).intValue());
+				projectConfiguration.setTrackCount(((Number) jftfTrackCount.getValue()).intValue());
 			}
 		});
 
@@ -78,11 +78,11 @@ final class TrackOptionPanel extends OptionPanel {
 		((NumberFormatter) jftfTrackHeight.getFormatter()).setMinimum(MIN_TRACK_HEIGHT);
 		((NumberFormatter) jftfTrackHeight.getFormatter()).setMaximum(MAX_TRACK_HEIGHT);
 		jftfTrackHeight.setColumns(5);
-		jftfTrackHeight.setValue(configurationManager.getTrackHeight());
+		jftfTrackHeight.setValue(projectConfiguration.getTrackHeight());
 		jftfTrackHeight.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				configurationManager.setTrackHeight(((Number) jftfTrackHeight
+				projectConfiguration.setTrackHeight(((Number) jftfTrackHeight
 						.getValue()).intValue());
 			}
 		});
@@ -92,11 +92,11 @@ final class TrackOptionPanel extends OptionPanel {
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMinimum(0);
 		((NumberFormatter) jftfUndoCount.getFormatter()).setMaximum(Integer.MAX_VALUE);
 		jftfUndoCount.setColumns(5);
-		jftfUndoCount.setValue(configurationManager.getUndoCount());
+		jftfUndoCount.setValue(projectConfiguration.getUndoCount());
 		jftfUndoCount.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				configurationManager.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
+				projectConfiguration.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
 			}
 		});
 

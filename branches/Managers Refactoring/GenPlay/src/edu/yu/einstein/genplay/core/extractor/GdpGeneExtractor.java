@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
@@ -74,7 +74,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
 		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -103,7 +103,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 				throw new InvalidDataLineException(extractedLine);
 			}
 			try {
-				Chromosome chromosome = chromosomeManager.get(splitedLine[1]) ;
+				Chromosome chromosome = projectChromosome.get(splitedLine[1]) ;
 				// checks if we need to extract the data on the chromosome
 				int chromosomeStatus = checkChromosomeStatus(chromosome);
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {

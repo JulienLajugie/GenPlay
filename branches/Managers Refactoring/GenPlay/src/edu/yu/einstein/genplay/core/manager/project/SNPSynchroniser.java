@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,10 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
@@ -43,7 +42,6 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 
 /**
  * SNPs can be enabled or disabled according to a genome.
@@ -55,12 +53,11 @@ import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SNPManager implements Serializable {
+public class SNPSynchroniser implements Serializable {
 
 	private static final long serialVersionUID = -4204806185089675978L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static 	SNPManager 				instance;			// The instance of the class
-	private 		MultiGenomeManager 		multiGenome;		// Instance of the Multi Genome Manager
+	private 		GenomeSynchronizer 		multiGenome;		// Instance of the Multi Genome Manager
 	private 	 	MGMultiGenome 			genomes;			// Instance of the MGMultiGenome
 	private			Map<String, Boolean> 	activeGenome; 		// Mapping list of enable/disable genomes
 	private			Map<String, Integer> 	genomeCounter; 		// Mapping list of enable/disable genomes
@@ -89,32 +86,20 @@ public class SNPManager implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		multiGenome = (MultiGenomeManager) in.readObject();
+		multiGenome = (GenomeSynchronizer) in.readObject();
 		genomes = (MGMultiGenome) in.readObject();
 		activeGenome = (Map<String, Boolean>) in.readObject();
 		genomeCounter = (Map<String, Integer>) in.readObject();
-		instance = this;
 	}
 
 
 	/**
-	 * Constructor of {@link SNPManager}
+	 * Constructor of {@link SNPSynchroniser}
 	 */
-	private SNPManager () {
-		multiGenome = MultiGenomeManager.getInstance();
+	protected SNPSynchroniser () {
+		/*multiGenome = GenomeSynchronizer.getInstance();
 		genomes = multiGenome.getGenomesInformation();
-		initializesGenomeList();
-	}
-
-
-	/**
-	 * @return the instance of the singleton {@link SNPManager}.
-	 */
-	public static SNPManager getInstance () {
-		if (instance == null) {
-			instance = new SNPManager();
-		}
-		return instance;
+		initializesGenomeList();*/
 	}
 
 
@@ -122,10 +107,10 @@ public class SNPManager implements Serializable {
 	 * Initializes the list of enabled/disabled genome.
 	 * By default, all genome are set to false.
 	 */
-	private void initializesGenomeList () {
+	protected void initializesGenomeList (List<String> genomeNameList) {
 		activeGenome = new HashMap<String, Boolean>();
 		genomeCounter = new HashMap<String, Integer>();
-		for (String genomeName: multiGenome.getGenomesInformation().getGenomeNameList()) {
+		for (String genomeName: genomeNameList) {
 			activeGenome.put(genomeName, false);
 			genomeCounter.put(genomeName, 0);
 		}
@@ -134,21 +119,33 @@ public class SNPManager implements Serializable {
 
 	/**
 	 * Reinitializes SNP after each {@link PAMultiGenome} action.
+	 * @param chromosomeList the chromosome list for multi genome project
 	 */
-	public void reinit () {
+	/*public void compute (Map<String, Chromosome> chromosomeList) {
 		for (String name: activeGenome.keySet()) {
-			if (activeGenome.get(name)) {
-				addSNP(name);
+			
+			if (activeGenome.get(name) && genomeCounter.get(name) == 0) {
+				addSNP(chromosomeList, name);
+			} else if (!activeGenome.get(name) && genomeCounter.get(name) == 0) {
+				removeSNP(chromosomeList, name);
 			}
 		}
-	}
+
+		/*for (String name: genomeCounter.keySet()) {
+			if (genomeCounter.get(name) == 1) {
+				addSNP(chromosomeList, name);
+			} else if (genomeCounter.get(name) == 0) {
+				removeSNP(chromosomeList, name);
+			}
+		}*/
+	//}
 
 
 	/**
 	 * Adds SNPs information to a genome.
 	 * @param genomeName a genome name
 	 */
-	private void addSNP (String genomeName) {
+	private void addSNP (List<Chromosome> chromosomeList, String genomeName) {
 
 		// Gets the reader
 		VCFReader reader = multiGenome.getReader(genomeName, VCFType.SNPS);
@@ -156,13 +153,13 @@ public class SNPManager implements Serializable {
 		if (reader != null) {
 
 			// Gets the multi genome chromosome list
-			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values());
+			List<Chromosome> chromosomes = new ArrayList<Chromosome>(chromosomeList);
 
 			// Gets other genome names present in the same VCF file (in order to get the MGPosition if already created)
 			List<String> otherGenomeNames = getOtherGenomeNames(genomeName);
 
 			// For each chromosome of the multi genome object
-			for (Chromosome chromosome: chromosomeList) {
+			for (Chromosome chromosome: chromosomes) {
 				List<Map<String, Object>> result = null;
 				try {
 					result = reader.query(chromosome.getName(), 0, chromosome.getLength());
@@ -190,7 +187,7 @@ public class SNPManager implements Serializable {
 						genomes.addVariant(genomeName, chromosome, variant);								// Adds the variant
 					}
 
-					// Updates of all SNPs,
+					// Updates all SNPs,
 					// it consists to initializes the reference and meta genome offset.
 					MGChromosome chromosomeInformation = genomes.getChromosomeInformation(genomeName, chromosome);
 					chromosomeInformation.resetIndexList();													// Many position have just been added, the list has to be reinitialized
@@ -209,7 +206,7 @@ public class SNPManager implements Serializable {
 				}
 			}
 
-			activeGenome.put(genomeName, true);																// The SNPs for that genome are now enabled
+			//activeGenome.put(genomeName, true);																// The SNPs for that genome are now enabled
 
 			performGC();
 		}
@@ -220,16 +217,16 @@ public class SNPManager implements Serializable {
 	 * Removes SNPs information from a genome.
 	 * @param genomeName a genome name
 	 */
-	private void removeSNP (String genomeName) {
+	private void removeSNP (List<Chromosome> chromosomeList, String genomeName) {
 
 		// Gets the multi genome chromosome list
-		List<Chromosome> chromosomeList = new ArrayList<Chromosome>(ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values());
+		List<Chromosome> chromosomes = new ArrayList<Chromosome>(chromosomeList);
 
 		// Gets the genome information
 		MGGenome genome = genomes.getGenomeInformation(genomeName);
 
 		// For each chromosome of the multi genome object
-		for (Chromosome chromosome: chromosomeList) {
+		for (Chromosome chromosome: chromosomes) {
 
 			// Gets the variant list
 			Map<Integer, Variant> variantList = genome.getGenomeInformation().get(chromosome).getPositionInformationList();
@@ -245,7 +242,7 @@ public class SNPManager implements Serializable {
 			}
 		}
 
-		activeGenome.put(genomeName, false);																// The SNPs for that genome are now disabled
+		//activeGenome.put(genomeName, false);		// The SNPs for that genome are now disabled
 
 		performGC();
 	}
@@ -255,13 +252,14 @@ public class SNPManager implements Serializable {
 	 * Enables SNPs information for a genome.
 	 * @param genomeName a genome name
 	 */
-	public void enableGenome (String genomeName) {
+	private void enableGenome (List<Chromosome> chromosomeList, String genomeName) {
 		int counter = genomeCounter.get(genomeName);
 		if (counter == 0) {
-			addSNP(genomeName);
+			addSNP(chromosomeList, genomeName);
 		}
 		counter++;
 		genomeCounter.put(genomeName, counter);
+		activeGenome.put(genomeName, true);
 	}
 
 
@@ -269,42 +267,52 @@ public class SNPManager implements Serializable {
 	 * Disables SNPs information for a genome.
 	 * @param genomeName a genome name
 	 */
-	public void disableGenome (String genomeName) {
+	private void disableGenome (List<Chromosome> chromosomeList, String genomeName) {
 		int counter = genomeCounter.get(genomeName);
 		if (counter > 0) {
 			counter--;
 			if (counter == 0) {
-				removeSNP(genomeName);
+				removeSNP(chromosomeList, genomeName);
 			}
 			genomeCounter.put(genomeName, counter);
 		}
+		activeGenome.put(genomeName, false);
 	}
 
 
 	/**
-	 * Compares previous and new multi genome stripe and updates lists.
-	 * @param previous 	the previous {@link MultiGenomeStripes} object
-	 * @param next		the new {@link MultiGenomeStripes} object
+	 * Compares previous and new multi genome stripe in order to update lists of enabled genome SNPs.
+	 * Enable a genome for SNP will load its SNP information.
+	 * Disable a gnome for SNP will delete its SNP information.
+	 * @param chromosomeList the chromosome list for multi genome project
+	 * @param previousSettings 	the previous {@link MultiGenomeStripes} object
+	 * @param newSettings		the new {@link MultiGenomeStripes} object
 	 */
-	public void updateSNP (MultiGenomeStripes previous, MultiGenomeStripes next) {
-		List<String> nextGenomes = getGenomeNamesForSNP(next.getRequiredGenomes());
-		if (previous != null) {
-			List<String> previousGenomes = getGenomeNamesForSNP(previous.getRequiredGenomes());
+	public void updateEnabledSNPList (List<Chromosome> chromosomeList, MultiGenomeStripes previousSettings, MultiGenomeStripes newSettings) {
+		List<String> nextGenomes = getGenomeNamesForSNP(newSettings.getRequiredGenomes());
+		if (previousSettings != null) {
+			List<String> previousGenomes = getGenomeNamesForSNP(previousSettings.getRequiredGenomes());
 
+			// If genomes were present in the last multi genome stripe settings but not in the new one,
+			// they have to be disabled.
 			for (String name: previousGenomes) {
 				if (!nextGenomes.contains(name)) {
-					disableGenome(name);
+					disableGenome(chromosomeList, name);
 				}
 			}
 
+			// If genomes are present in the new mutli genome stripe settings but not in the previous one,
+			// they have to be enable.
 			for (String name: nextGenomes) {
 				if (!previousGenomes.contains(name)) {
-					enableGenome(name);
+					enableGenome(chromosomeList, name);
 				}
 			}
 		} else {
+			// If there is no previous multi genome stripe settings,
+			// every genome of the new one have to be enabled.
 			for (String name: nextGenomes) {
-				enableGenome(name);
+				enableGenome(chromosomeList, name);
 			}
 		}
 	}
@@ -339,7 +347,8 @@ public class SNPManager implements Serializable {
 		final List<String> vcfGenomeNames = reader.getRawGenomesNames();
 		List<String> genomeNames = new ArrayList<String>();
 		for (String fullName: projectGenomeNames) {
-			if (activeGenome.get(fullName) && vcfGenomeNames.contains(FormattedMultiGenomeName.getRawName(fullName))) {
+			if (activeGenome.get(fullName) &&
+					vcfGenomeNames.contains(FormattedMultiGenomeName.getRawName(fullName))) {
 				if (!fullName.equals(genomeName)) {
 					genomeNames.add(fullName);
 				}

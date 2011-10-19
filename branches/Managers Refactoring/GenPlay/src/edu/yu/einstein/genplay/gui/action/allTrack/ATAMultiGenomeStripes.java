@@ -23,9 +23,10 @@ package edu.yu.einstein.genplay.gui.action.allTrack;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -71,7 +72,7 @@ public final class ATAMultiGenomeStripes extends TrackListAction {
 	public void actionPerformed(ActionEvent arg0) {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			MultiGenomeStripeSelectionDialog stripeDialog = new MultiGenomeStripeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			MultiGenomeStripeSelectionDialog stripeDialog = new MultiGenomeStripeSelectionDialog(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
 			stripeDialog.setTrackName(selectedTrack.getName());
 			stripeDialog.setTrackGenomeGroupName(selectedTrack.getGenomeName());
 			stripeDialog.initColors(selectedTrack.getMultiGenomeStripes().getColorAssociation());

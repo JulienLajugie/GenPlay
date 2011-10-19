@@ -32,12 +32,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.RepeatFamily;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -92,8 +93,8 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<RepeatFamily>>> threadList = new ArrayList<Callable<List<RepeatFamily>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {			
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		for(final Chromosome currentChromosome : projectChromosome) {			
 
 			Callable<List<RepeatFamily>> currentThread = new Callable<List<RepeatFamily>>() {	
 				@Override

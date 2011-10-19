@@ -33,15 +33,16 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.CompressibleList;
 import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.CompressionException;
 
@@ -57,7 +58,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	private static final long serialVersionUID = -6114967730638134020L; // generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; 			// saved format version 
-
+	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
 	private int 				binSize;		// size of the bins
 	private DataPrecision 		precision;		// precision of the data
 	private int 				fittedBinSize;	// size of the bins of the fitted data
@@ -127,8 +128,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();	
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager)  {
+		for(final Chromosome currentChromosome : projectChromosome)  {
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
@@ -184,8 +184,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager)  {
+		for(final Chromosome currentChromosome : projectChromosome)  {
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
@@ -261,8 +260,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager)  {
+		for(final Chromosome currentChromosome : projectChromosome)  {
 			final List<Double> currentList = binList.get(currentChromosome);
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
@@ -330,10 +328,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();		
-
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager)  {
+		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		for(final Chromosome currentChromosome : projectChromosome)  {
 			final List<Double> currentScores = scores.get(currentChromosome);
 			final List<Integer> currentPositions = positions.get(currentChromosome);
 
@@ -397,9 +393,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// for each chromosome
-		for(final Chromosome currentChromosome : chromosomeManager)  {
+		for(final Chromosome currentChromosome : projectChromosome)  {
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
 				@Override
 				public List<Double> call() throws Exception {
@@ -459,8 +454,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager)  {
+		for(final Chromosome currentChromosome : projectChromosome)  {
 			final List<ScoredChromosomeWindow> currentList = list.get(currentChromosome);
 
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
@@ -732,8 +726,6 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws InterruptedException 
 	 */
 	private void generateStatistics() throws InterruptedException, ExecutionException {
-		// retrieve the chromosome manager
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// retrieve the instance of the OperationPool singleton
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
@@ -748,11 +740,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		binCount = 0l;
 
 		// create arrays so each statics variable can be calculated for each chromosome
-		final double[] mins = new double[chromosomeManager.size()];
-		final double[] maxs = new double[chromosomeManager.size()];
-		final double[] stDevs = new double[chromosomeManager.size()];
-		final double[] sumScores = new double[chromosomeManager.size()];
-		final int[] binCounts = new int[chromosomeManager.size()];
+		final double[] mins = new double[projectChromosome.size()];
+		final double[] maxs = new double[projectChromosome.size()];
+		final double[] stDevs = new double[projectChromosome.size()];
+		final double[] sumScores = new double[projectChromosome.size()];
+		final int[] binCounts = new int[projectChromosome.size()];
 
 		// computes min / max / total score / non null bin count for each chromosome
 		for(short i = 0; i < size(); i++)  {
@@ -786,7 +778,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		op.startPool(threadList);
 
 		// compute the genome wide result from the chromosomes results
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			min = Math.min(min, mins[i]);
 			max = Math.max(max, maxs[i]);
 			sumScore += sumScores[i];
@@ -825,7 +817,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			op.startPool(threadList);
 
 			// compute the genome wide standard deviation
-			for (int i = 0; i < chromosomeManager.size(); i++) {
+			for (int i = 0; i < projectChromosome.size(); i++) {
 				stDev += stDevs[i];
 			}
 			stDev = Math.sqrt(stDev / (double) binCount);
@@ -934,11 +926,10 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * Prints the {@link BinList} on the standard output
 	 */
 	public void print() {
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		for(short i = 0; i < size(); i++) {
 			if(get(i) != null) {
 				for (int j = 0; j < size(i); j++) {
-					System.out.println(chromosomeManager.get(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
+					System.out.println(projectChromosome.get(i).getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + get(i, j));
 				}
 			}
 		}
@@ -952,8 +943,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER); // save the version of the saved format number
+		out.writeObject(projectChromosome);
 		out.writeInt(binSize);
-		out.writeObject(precision);				
+		out.writeObject(precision);
 		out.writeInt(fittedBinSize);
 		out.writeDouble(min);
 		out.writeDouble(max);
@@ -973,6 +965,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt(); // read the saved format number (useful if there is different loading method depending on the saved format number) 
+		projectChromosome = (ProjectChromosome) in.readObject();
 		binSize = in.readInt();
 		precision = (DataPrecision) in.readObject();
 		fittedBinSize = in.readInt();

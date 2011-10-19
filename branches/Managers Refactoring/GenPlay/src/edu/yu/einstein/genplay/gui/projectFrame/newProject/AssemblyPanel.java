@@ -40,7 +40,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
@@ -364,11 +364,11 @@ class AssemblyPanel extends JPanel implements ActionListener {
 	/**
 	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
 	 */
-	protected Map<String, Chromosome> getSelectedChromosomes() {
-		Map<String, Chromosome> chromosomeList = new HashMap<String, Chromosome>();
+	protected List<Chromosome> getSelectedChromosomes() {
+		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
 		for (Chromosome chromosome: selectedChromosomes) {
 			// the chromosomes are index by their names in lower case to avoid the case sensitivity problems
-			chromosomeList.put(chromosome.getName().toLowerCase(), chromosome);
+			chromosomeList.add(chromosome);
 		}
 		return chromosomeList;
 	}

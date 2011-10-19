@@ -31,8 +31,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -77,12 +77,12 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		super(dataFile, logFile);
 		positionList = new ChromosomeArrayListOfLists<Integer>();
 		strandList = new ChromosomeArrayListOfLists<Strand>();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 			strandList.add(new ArrayList<Strand>());
 		}
-		matchTypeCount = new int[chromosomeManager.size()][3];		
-		for(short i = 0; i < chromosomeManager.size(); i++) {
+		matchTypeCount = new int[projectChromosome.size()][3];		
+		for(short i = 0; i < projectChromosome.size(); i++) {
 			for(short j = 0; j < 3; j++)
 				matchTypeCount[i][j] = 0;
 		}
@@ -113,8 +113,8 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				writer.newLine();
 				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
 				writer.newLine();
-				for(short i = 0; i < chromosomeManager.size(); i++) {
-					writer.write(chromosomeManager.get(i) + 
+				for(short i = 0; i < projectChromosome.size(); i++) {
+					writer.write(projectChromosome.get(i) + 
 							"\t\t" + df.format((double)matchTypeCount[i][0] / lineCount*100) + 
 							"%\t" + df.format((double)matchTypeCount[i][1] / lineCount*100) + 
 							"%\t" + df.format((double)matchTypeCount[i][2] / lineCount*100) + 
@@ -214,7 +214,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			throw new InvalidDataLineException(extractedLine);
 		}
 		try {
-			chromo = chromosomeManager.get(new String(chromoChar, 0, j).trim());
+			chromo = projectChromosome.get(new String(chromoChar, 0, j).trim());
 		} catch (InvalidChromosomeException e) {
 			return false;
 		}
@@ -225,7 +225,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 			return false;
 		} else {
-			chromoNumber = chromosomeManager.getIndex(chromo);
+			chromoNumber = projectChromosome.getIndex(chromo);
 
 
 			// try to extract the position number
@@ -330,7 +330,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			// if a read length is specified we need to have a stop position list
 			stopPositionList = new ChromosomeArrayListOfLists<Integer>();
 			scoreList = new ChromosomeArrayListOfLists<Double>();
-			for (int i = 0; i < chromosomeManager.size(); i++) {
+			for (int i = 0; i < projectChromosome.size(); i++) {
 				stopPositionList.add(new IntArrayAsIntegerList());
 				scoreList.add(new DoubleArrayAsDoubleList());
 			}

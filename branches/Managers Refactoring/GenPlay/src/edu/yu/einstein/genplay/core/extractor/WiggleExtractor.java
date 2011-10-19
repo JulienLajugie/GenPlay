@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
@@ -78,7 +78,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		startList = new ChromosomeArrayListOfLists<Integer>();
 		stopList = new ChromosomeArrayListOfLists<Integer>();
 		scoreList = new ChromosomeArrayListOfLists<Double>();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
@@ -115,7 +115,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				// retrieve chromosome
 				String chromStr = splittedLine[i].trim().substring(6);
 				try {
-					currentChromo = chromosomeManager.get(chromStr.trim());
+					currentChromo = projectChromosome.get(chromStr.trim());
 				} catch (InvalidChromosomeException e) {
 					currentChromo = null;
 					throw new InvalidDataLineException(line);

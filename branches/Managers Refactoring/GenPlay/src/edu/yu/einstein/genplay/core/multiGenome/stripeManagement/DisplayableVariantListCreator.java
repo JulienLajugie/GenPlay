@@ -35,7 +35,7 @@ import java.util.Set;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.DisplayableDataList;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
@@ -146,7 +146,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		for (String genomeFullName: genomes.keySet()) {
 			
 			// Gets parameters
-			MGChromosome chromosomeInformation = MultiGenomeManager.getInstance().getChromosomeInformation(genomeFullName, currentGenomeWindow.getChromosome());
+			MGChromosome chromosomeInformation = ProjectManager.getInstance().getGenomeSynchronizer().getChromosomeInformation(genomeFullName, currentGenomeWindow.getChromosome());
 			Map<Integer, Variant> variants = chromosomeInformation.getPositionInformationList();
 			chromosomeInformation.resetIndexList();
 			int[] indexes = chromosomeInformation.getPositionIndex();

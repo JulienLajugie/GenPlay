@@ -30,13 +30,11 @@ import javax.swing.SwingUtilities;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
-import edu.yu.einstein.genplay.core.manager.ZoomManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
@@ -62,7 +60,7 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {			
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project
@@ -121,9 +119,9 @@ public class Launcher {
 	private static void startProjectFrame() {
 		//Welcome screen initialization
 		ProjectFrame projectFrame = ProjectFrame.getInstance();
-		ConfigurationManager.getInstance();
+		/*ProjectManager.getInstance().getProjectConfiguration();
 		ProjectManager.getInstance();
-		ZoomManager.getInstance();
+		ProjectManager.getInstance().getProjectZoom();*/
 		// load the managers from the configuration files
 		loadManagers();
 		//Create a new thread to display the welcome screen
@@ -146,17 +144,26 @@ public class Launcher {
 		projectManager.setCladeName(clade.getName());
 		projectManager.setGenomeName(genome.getName());
 		projectManager.setAssembly(assembly);
+		projectManager.updateChromosomeList();
 		projectFrame.setVisible(false);
-		// generate the multi-genome manager if the user starts a multi-genome project
-		if (!projectFrame.isSimpleProject()) {
-			MultiGenomeManager multiGenomeManager = null;
-			multiGenomeManager = MultiGenomeManager.getInstance();
-			multiGenomeManager.init(projectFrame.getFileReadersAssociation(), projectFrame.getGenomeFileAssociation());
-		}
+		
 		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
 		MainFrame.reinit();
+		
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);
+		
+		// generate the multi-genome manager if the user starts a multi-genome project
+		if (!projectFrame.isSimpleProject()) {
+			ProjectManager.getInstance().setMultiGenomeProject(true);
+			System.out.println("initiateNewProject");
+			PAMultiGenome multiGenome = new PAMultiGenome();
+			multiGenome.setFileReaders(projectFrame.getFileReadersAssociation());
+			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
+			multiGenome.actionPerformed(null);
+		} else {
+			projectManager.setMultiGenomeProject(false);
+		}
 	}
 
 
@@ -164,16 +171,18 @@ public class Launcher {
 	 * Loads the managers with the configuration files
 	 */
 	private static void loadManagers() {
+		
+		
 		// load configuration manager
 		try {
-			ConfigurationManager.getInstance().loadConfigurationFile();
+			ProjectManager.getInstance().getProjectConfiguration().loadConfigurationFile();
 		} catch (Exception e) {
 			// do nothing if the configuration file is not found
 		}
 		// load the zoom manager
 		try {
-			if (ConfigurationManager.getInstance().getZoomFile() != "") {
-				ZoomManager.getInstance().loadConfigurationFile(new File(ConfigurationManager.getInstance().getZoomFile()));
+			if (ProjectManager.getInstance().getProjectConfiguration().getZoomFile() != "") {
+				ProjectManager.getInstance().getProjectZoom().loadConfigurationFile(new File(ProjectManager.getInstance().getProjectConfiguration().getZoomFile()));
 			}
 		} catch (IOException e) {
 			ExceptionManager.handleException(ProjectFrame.getInstance().getRootPane(), e, "Zoom file not found.");

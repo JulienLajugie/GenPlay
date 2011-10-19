@@ -32,11 +32,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -88,8 +89,8 @@ public final class ChromosomeWindowList extends DisplayableListOfLists<Chromosom
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ChromosomeWindow>>> threadList = new ArrayList<Callable<List<ChromosomeWindow>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {			
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		for(final Chromosome currentChromosome : projectChromosome) {			
 			Callable<List<ChromosomeWindow>> currentThread = new Callable<List<ChromosomeWindow>>() {	
 				@Override
 				public List<ChromosomeWindow> call() throws Exception {

@@ -27,8 +27,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -89,7 +89,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
 		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -112,7 +112,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		}
 
 		try {
-			Chromosome chromosome = chromosomeManager.get(splitedLine[13]) ;
+			Chromosome chromosome = projectChromosome.get(splitedLine[13]) ;
 			// checks if we need to extract the data on the chromosome
 			int chromosomeStatus = checkChromosomeStatus(chromosome);
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {

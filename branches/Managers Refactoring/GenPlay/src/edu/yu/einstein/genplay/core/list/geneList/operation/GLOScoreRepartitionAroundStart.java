@@ -26,13 +26,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -92,7 +92,7 @@ public class GLOScoreRepartitionAroundStart implements Operation<double[][]> {
 		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
 
 		for (int i = 0; i < geneList.size() && !stopped; i++) {
-			final Chromosome currentChromo = ChromosomeManager.getInstance().get(i); 
+			final Chromosome currentChromo = ProjectManager.getInstance().getProjectChromosome().get(i); 
 			if (((selectedChromosomes == null) || ((i < selectedChromosomes.length) && (selectedChromosomes[i]))) && (geneList.get(i) != null) && (binList.get(i) != null)) {
 				final List<Gene> currentGeneList = geneList.get(i);
 				Callable<double[]> currentThread = new Callable<double[]>() {	

@@ -23,13 +23,13 @@ package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
@@ -85,7 +85,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		final JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+		final JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Project");
 		jfc.addChoosableFileFilter(new GenPlayProjectFilter());

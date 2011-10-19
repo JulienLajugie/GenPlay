@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
-
 
 /**
  * This class symbolizes the reference genome in a multi genome project.
@@ -41,13 +39,11 @@ import edu.yu.einstein.genplay.core.manager.ProjectManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ReferenceGenomeManager implements Serializable {
+public class ReferenceGenomeSynchroniser implements Serializable {
 	
 	private static final long serialVersionUID = -3079733967278577422L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static 	ReferenceGenomeManager 			instance;			// The instance of the class
 	private 		Map<String, List<Integer>> 		modifiedPosition;	// List of all position related to an indel
-	private			String							referenceName;		// The name of the reference genome
 	private 		String 							currentChromosome;	// The current chromosome (for scanning uses)
 	private 		int 							currentIndex;		// The current index (for variation position list scanning uses)
 	private 		int 							previousIndex;		// The previous index (for variation position list scanning uses)
@@ -61,9 +57,7 @@ public class ReferenceGenomeManager implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(instance);
 		out.writeObject(modifiedPosition);
-		out.writeObject(referenceName);
 		out.writeObject(currentChromosome);
 		out.writeInt(currentIndex);
 		out.writeInt(previousIndex);
@@ -80,9 +74,7 @@ public class ReferenceGenomeManager implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		instance = (ReferenceGenomeManager) in.readObject();
 		modifiedPosition = (Map<String, List<Integer>>) in.readObject();
-		referenceName = (String) in.readObject();
 		currentChromosome = (String) in.readObject();
 		currentIndex = in.readInt();
 		previousIndex = in.readInt();
@@ -91,25 +83,13 @@ public class ReferenceGenomeManager implements Serializable {
 	
 	
 	/**
-	 * Constructor of {@link ReferenceGenomeManager}
+	 * Constructor of {@link ReferenceGenomeSynchroniser}
 	 */
-	private ReferenceGenomeManager () {
+	protected ReferenceGenomeSynchroniser () {
 		modifiedPosition = new TreeMap<String, List<Integer>>();
-		referenceName = ProjectManager.getInstance().getAssembly().getDisplayName();
 		currentIndex = 0;
 		previousIndex = 0;
 		validIndex = false;
-	}
-
-
-	/**
-	 * @return the instance of the singleton {@link ReferenceGenomeManager}.
-	 */
-	public static ReferenceGenomeManager getInstance () {
-		if (instance == null) {
-			instance = new ReferenceGenomeManager();
-		}
-		return instance;
 	}
 
 
@@ -258,14 +238,6 @@ public class ReferenceGenomeManager implements Serializable {
 	 */
 	protected Set<String> getChromosomeList () {
 		return modifiedPosition.keySet();
-	}
-
-
-	/**
-	 * @return the referenceName
-	 */
-	public String getReferenceName() {
-		return referenceName;
 	}
 
 }

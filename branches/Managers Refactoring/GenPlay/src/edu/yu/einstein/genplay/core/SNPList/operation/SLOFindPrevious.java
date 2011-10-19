@@ -23,9 +23,9 @@ package edu.yu.einstein.genplay.core.SNPList.operation;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.SNP;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.operation.Operation;
 
 

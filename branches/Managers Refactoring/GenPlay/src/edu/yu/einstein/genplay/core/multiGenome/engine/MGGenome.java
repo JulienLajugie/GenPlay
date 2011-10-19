@@ -25,13 +25,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.GenomeSynchronizer;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -87,7 +90,7 @@ public class MGGenome implements Serializable {
 	protected MGGenome (String genomeName) {
 		this.genomeName = genomeName;
 		genomeInformation = new HashMap<Chromosome, MGChromosome>();
-		for (Chromosome chromosome: ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values()) {
+		for (Chromosome chromosome: ProjectManager.getInstance().getCurrentMultiGenomeChromosomeList()) {
 			genomeInformation.put(chromosome, new MGChromosome(this, chromosome));
 		}
 	}
@@ -99,7 +102,15 @@ public class MGGenome implements Serializable {
 	 * @param variant 		the variant
 	 */
 	protected void addVariant (Chromosome chromosome, Variant variant) {
-		getChromosomeInformation(chromosome).addVariant(variant);
+		
+		try {
+			getChromosomeInformation(chromosome).addVariant(variant);
+		} catch (Exception e) {
+			//System.out.println("error on: " + chromosome.getName() + " : " + chromosome.getLength());
+			//List<Chromosome> chromosomeList = new ArrayList<Chromosome>(genomeInformation.keySet());
+			//Utils.showChromosomeList(chromosomeList);
+		}
+		
 	}
 	
 	
@@ -120,10 +131,22 @@ public class MGGenome implements Serializable {
 	 */
 	protected MGChromosome getChromosomeInformation (Chromosome chromosome) {
 		if (genomeInformation.get(chromosome) == null &&
-				MultiGenomeManager.CHROMOSOME_LOADING_OPTION == MultiGenomeManager.SEQUENTIAL) {
+				GenomeSynchronizer.CHROMOSOME_LOADING_OPTION == GenomeSynchronizer.SEQUENTIAL) {
 			System.err.println("A null pointer exception can appear because of the CHROMOSOME_LOADING_OPTION set to SEQUENTIAL");
 		}
 		return genomeInformation.get(chromosome);
+	}
+	
+	
+	protected void refreshChromosomeMap (List<Chromosome> chromosomeList) {
+		for (Chromosome newChromosome: chromosomeList) {
+			for (Chromosome previousChromosome: genomeInformation.keySet()) {
+				if (newChromosome.getName().equals(previousChromosome.getName())) {
+					MGChromosome mgChromosome = genomeInformation.get(previousChromosome);
+					//genomeInformation.
+				}
+			}
+		}
 	}
 
 

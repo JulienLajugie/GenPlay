@@ -27,9 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -69,7 +67,7 @@ public final class ATALoadStripes extends TrackListActionExtractorWorker<Chromos
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
 			} else {
@@ -83,7 +81,7 @@ public final class ATALoadStripes extends TrackListActionExtractorWorker<Chromos
 	protected File retrieveFileToExtract() {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getReadableStripeFileFilters());
 			if (selectedFile != null) {
 				return selectedFile;

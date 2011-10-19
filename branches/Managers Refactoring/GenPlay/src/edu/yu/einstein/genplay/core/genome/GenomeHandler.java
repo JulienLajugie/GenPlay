@@ -21,12 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.genome;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-import edu.yu.einstein.genplay.core.Chromosome;
+
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 
 /**
  * This class picks up genome information from xml files.
@@ -37,7 +39,7 @@ public class GenomeHandler extends DefaultHandler {
 	private Clade 					clade;			// The clade
 	private Genome 					genome;			// The genome
 	private Assembly 				assembly;		// The assembly
-	private Map<String, Chromosome> chromosomeList;	// The chromosome list
+	private List<Chromosome> 		chromosomeList;	// The chromosome list
 	
 	
 	/**
@@ -45,7 +47,7 @@ public class GenomeHandler extends DefaultHandler {
 	 */
 	protected GenomeHandler() {
 		super();
-		chromosomeList = new HashMap<String, Chromosome>();
+		chromosomeList = new ArrayList<Chromosome>();
 	}
 	
 	
@@ -56,7 +58,7 @@ public class GenomeHandler extends DefaultHandler {
 			genome = new Genome(attributes.getValue("genome"));
 			assembly = new Assembly(attributes.getValue("name"), attributes.getValue("date"));
 		} else if (qName.equalsIgnoreCase("chromosome")) {
-			chromosomeList.put(attributes.getValue("name"), new Chromosome(attributes.getValue("name"), (int)Integer.parseInt(attributes.getValue("length").trim())));
+			chromosomeList.add(new Chromosome(attributes.getValue("name"), (int)Integer.parseInt(attributes.getValue("length").trim())));
 		}
 	}
 	

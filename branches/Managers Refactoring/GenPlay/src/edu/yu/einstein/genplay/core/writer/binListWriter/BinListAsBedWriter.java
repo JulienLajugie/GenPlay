@@ -27,7 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -65,7 +65,7 @@ public final class BinListAsBedWriter extends BinListWriter implements Stoppable
 			writer.newLine();
 			int binSize = data.getBinSize();
 			// print the data
-			for(Chromosome currentChromosome: chromosomeManager) {
+			for(Chromosome currentChromosome: projectChromosome) {
 				if(data.get(currentChromosome) != null) {
 					List<Double> currentList = data.get(currentChromosome);
 					for (int j = 0; j < currentList.size(); j++) {

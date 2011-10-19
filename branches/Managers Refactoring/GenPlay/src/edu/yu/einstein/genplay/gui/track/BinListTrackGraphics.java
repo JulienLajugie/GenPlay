@@ -30,8 +30,8 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMinScoreToDisplay;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.drawer.BinListDrawer;
 import edu.yu.einstein.genplay.gui.track.drawer.CurveDrawer;
 
@@ -88,7 +88,7 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	@Override
 	protected void drawScore(Graphics g) {
 		try {
-			short currentChromosome = ChromosomeManager.getInstance().getIndex(genomeWindow.getChromosome());
+			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(genomeWindow.getChromosome());
 			g.setColor(getScoreColor());
 			int xMid = (int) genomeWindow.getMiddlePosition();
 			double yMid = 0;

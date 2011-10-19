@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOTwoTracks;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
@@ -104,7 +104,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 			newTrack.getHistory().add("Operation: " + this.scm.toString(), Color.GRAY);
 			newTrack.getHistory().add("First track: " + this.selectedTrack.getName(), Color.GRAY);
 			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Color.GRAY);
-			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null);
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null);
 		}
 	}
 }

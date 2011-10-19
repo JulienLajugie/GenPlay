@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,7 +28,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 /**
@@ -38,10 +37,9 @@ import java.io.Serializable;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class ConfigurationManager implements Serializable {
+public final class ProjectConfiguration implements Serializable {
 
 	private static final long serialVersionUID = 5632320102259442205L; 		// generated ID
-	private static ConfigurationManager instance = null; 					// unique instance of the singleton
 	private static String TEMP_DIR = System.getProperty("java.io.tmpdir"); 	// java directory for temporary files
 	private static String CONFIG_FILE = "GenPlay_config.cfg"; 				// path of the config file
 	private static final String DEFAULT_ZOOM_FILE = ""; 					// path of the default zoom config file
@@ -70,29 +68,12 @@ public final class ConfigurationManager implements Serializable {
 	private int undoCount = DEFAULT_UNDO_COUNT; 							// number of undo in memory
 	private String[] projects;												// list of the recent project paths
 	private String currentProjectPath;										// path to the current project
-	
-	
-	/**
-	 * @return an instance of a {@link ConfigurationManager}. Makes sure that
-	 * there is only one unique instance as specified in the singleton pattern
-	 */
-	public static ConfigurationManager getInstance() {
-		if (instance == null) {
-			synchronized (ConfigurationManager.class) {
-				if (instance == null) {
-					instance = new ConfigurationManager();
-				}
-			}
-		}
-		return instance;
-	}
 
 	
 	/**
-	 * Private constructor of the singleton. Creates an instance of a
-	 * {@link ConfigurationManager}.
+	 * Constructor of {@link ProjectConfiguration}.
 	 */
-	private ConfigurationManager() {
+	protected ProjectConfiguration() {
 		super();
 		projects = new String[PROJECT_NUMBER];
 	}
@@ -242,19 +223,6 @@ public final class ConfigurationManager implements Serializable {
 				undoCount = DEFAULT_UNDO_COUNT;
 			}
 		}
-	}
-
-	
-	/**
-	 * Methods used for the serialization of the singleton object. The
-	 * readResolve method is called when ObjectInputStream has read an object
-	 * from the stream and is preparing to return it to the caller. See javadocs
-	 * for more information
-	 * @return the unique instance of the singleton
-	 * @throws ObjectStreamException
-	 */
-	private Object readResolve() throws ObjectStreamException {
-		return getInstance();
 	}
 
 	

@@ -36,7 +36,7 @@ import java.util.zip.GZIPOutputStream;
 
 import javax.swing.UIManager;
 
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
@@ -60,7 +60,7 @@ public class ProjectRecordingManager {
 	 * This class contains information about a project
 	 * @author Julien Lajugie
 	 */
-	public class ProjectInformations implements Serializable {
+	public class ProjectInformation implements Serializable {
 
 		private static final long serialVersionUID = 5252641489962010266L; // generated ID
 		private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -221,12 +221,12 @@ public class ProjectRecordingManager {
 			// there is bug during the serialization with the nimbus LAF if the track list is visible 
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackList.setViewportView(null);
-			}			
-			oos.writeObject(retrieveProjectInformations());
+			}
+			oos.writeObject(retrieveProjectInformation());
 			oos.writeObject(ProjectManager.getInstance());
-			oos.writeObject(ChromosomeManager.getInstance());
+			oos.writeObject(ProjectManager.getInstance().getProjectChromosome());
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				oos.writeObject(MultiGenomeManager.getInstance());
+				oos.writeObject(ProjectManager.getInstance().getGenomeSynchronizer());
 			}
 			oos.writeObject(trackList.getTrackList());
 
@@ -245,8 +245,8 @@ public class ProjectRecordingManager {
 				currentTrack.addPropertyChangeListener(trackList);
 				currentTrack.addGenomeWindowListener(trackList);
 			}
-			ConfigurationManager.getInstance().setCurrentProjectPath(outputFile.getPath());
-			ConfigurationManager.getInstance().writeConfigurationFile();
+			ProjectManager.getInstance().getProjectConfiguration().setCurrentProjectPath(outputFile.getPath());
+			ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();
 		} catch (IOException e) {
 			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
 			return false;
@@ -256,24 +256,24 @@ public class ProjectRecordingManager {
 
 
 	/**
-	 * @return a {@link ProjectInformations} object containing informations about the project
+	 * @return a {@link ProjectInformation} object containing informations about the project
 	 */
-	private ProjectInformations retrieveProjectInformations() {
-		ProjectInformations projectInformations = new ProjectInformations();
+	private ProjectInformation retrieveProjectInformation() {
+		ProjectInformation projectInformation = new ProjectInformation();
 		ProjectManager projectManager = ProjectManager.getInstance();
-		projectInformations.setProjectName(projectManager.getProjectName());
-		projectInformations.setProjectGenome(projectManager.getGenomeName());
+		projectInformation.setProjectName(projectManager.getProjectName());
+		projectInformation.setProjectGenome(projectManager.getGenomeName());
 		if (projectManager.isMultiGenomeProject()) {
-			projectInformations.setProjectType("Multi Genome Project");
+			projectInformation.setProjectType("Multi Genome Project");
 		} else {
-			projectInformations.setProjectType("Simple Genome Project");
+			projectInformation.setProjectType("Simple Genome Project");
 		}
 
 		GregorianCalendar calendar = new GregorianCalendar();
 		String currentDate = (calendar.get(Calendar.MONTH) + 1) + "/" +
 		calendar.get(Calendar.DATE) + "/" +
 		calendar.get(Calendar.YEAR);
-		projectInformations.setProjectDate(currentDate);
+		projectInformation.setProjectDate(currentDate);
 
 		// we count the number of non-empty tracks in the track list
 		TrackList trackList = MainFrame.getInstance().getTrackList();
@@ -283,8 +283,8 @@ public class ProjectRecordingManager {
 				trackCount++;
 			}
 		}		
-		projectInformations.setProjectTrackNumber(Integer.toString(trackCount));
-		return projectInformations;
+		projectInformation.setProjectTrackNumber(Integer.toString(trackCount));
+		return projectInformation;
 	}
 
 
@@ -356,16 +356,16 @@ public class ProjectRecordingManager {
 	/**
 	 * Retrieve the project informations from an input file
 	 * @param inputFile
-	 * @return the {@link ProjectInformations} of the specified input file
+	 * @return the {@link ProjectInformation} of the specified input file
 	 * @throws Exception
 	 */
-	public ProjectInformations getProjectInformation(File inputFile) throws Exception {
+	public ProjectInformation getProjectInformation(File inputFile) throws Exception {
 		try {
 			FileInputStream fis = new FileInputStream(inputFile);
 			GZIPInputStream gz = new GZIPInputStream(fis);
 			ObjectInputStream ois = new ObjectInputStream(gz);
-			ProjectInformations projectInformations = (ProjectInformations) ois.readObject();
-			return projectInformations;
+			ProjectInformation projectInformation = (ProjectInformation) ois.readObject();
+			return projectInformation;
 		} catch (IOException e) {
 			// a IOException is likely to be caused by a invalid file type 
 			throw new InvalidFileTypeException();

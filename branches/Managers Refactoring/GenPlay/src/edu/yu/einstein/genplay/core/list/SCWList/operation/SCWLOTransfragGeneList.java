@@ -26,14 +26,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.util.SCWLists;
@@ -49,10 +50,12 @@ import edu.yu.einstein.genplay.util.SCWLists;
  */
 public class SCWLOTransfragGeneList implements Operation<GeneList> {
 
+	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
 	private ScoredChromosomeWindowList 	scwList;		// input list
 	private int 						zeroSCWGap;		// minimum size of the gap separating two intervals
 	private ScoreCalculationMethod 		operation;		// operation to use to compute the score of the intervals
 	private boolean						stopped = false;// true if the operation must be stopped
+	
 
 
 	/**
@@ -62,6 +65,7 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 	 * @param operation operation to use to compute the score of the intervals
 	 */
 	public SCWLOTransfragGeneList(ScoredChromosomeWindowList scwList, int zeroSCWGap, ScoreCalculationMethod operation) {
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.scwList = scwList;
 		this.zeroSCWGap = zeroSCWGap;
 		this.operation = operation;
@@ -75,8 +79,8 @@ public class SCWLOTransfragGeneList implements Operation<GeneList> {
 
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);	
-			final String chromosomeName = ChromosomeManager.getInstance().get(i).getName();
-			final int chromosomeLength = ChromosomeManager.getInstance().get(i).getLength();
+			final String chromosomeName = projectChromosome.get(i).getName();
+			final int chromosomeLength = projectChromosome.get(i).getLength();
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
 				@Override
 				public List<Gene> call() throws Exception {

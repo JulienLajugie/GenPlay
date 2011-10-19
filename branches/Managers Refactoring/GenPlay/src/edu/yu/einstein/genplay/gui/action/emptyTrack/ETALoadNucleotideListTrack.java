@@ -27,9 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
@@ -72,11 +70,11 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 
 	@Override
 	protected TwoBitSequenceList processAction() throws Exception {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 		if (selectedFile != null) {
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
 				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 					genomeName = genomeDialog.getGenomeName();
 				} else {
@@ -106,7 +104,7 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);
 			}
-			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedFile.getName(), stripes, multiGenomeStripes);
+			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedFile.getName(), stripes, multiGenomeStripes);
 		}
 	}
 

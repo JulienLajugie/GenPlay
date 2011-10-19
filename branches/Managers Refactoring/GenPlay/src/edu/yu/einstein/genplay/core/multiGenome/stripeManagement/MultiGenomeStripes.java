@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
@@ -126,7 +126,7 @@ public class MultiGenomeStripes implements Serializable {
 	public Map<String, List<VariantType>> getRequiredGenomes () {
 		Map<String, List<VariantType>> genomes = new HashMap<String, List<VariantType>>();
 		for (String fullGenomeName: colorAssociation.keySet()) {
-			if (!fullGenomeName.equals(ReferenceGenomeManager.getInstance().getReferenceName())) {
+			if (!fullGenomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
 				if (hasBeenRequired(fullGenomeName)) {
 					List<VariantType> types = new ArrayList<VariantType>();
 					for (VariantType type: colorAssociation.get(fullGenomeName).keySet()) {

@@ -52,10 +52,10 @@ final class ConfigFileOptionPanel extends OptionPanel {
 	ConfigFileOptionPanel() {
 		super("Configuration Files");
 		jlZoomFile = new JLabel("Zoom configuration file: ");
-		if ((configurationManager.getZoomFile() == null) || (configurationManager.getZoomFile().equals(""))) {
+		if ((projectConfiguration.getZoomFile() == null) || (projectConfiguration.getZoomFile().equals(""))) {
 			jtfZoomFile = new JTextField();
 		} else {
-			jtfZoomFile = new JTextField(new File(configurationManager.getZoomFile()).getAbsolutePath());
+			jtfZoomFile = new JTextField(new File(projectConfiguration.getZoomFile()).getAbsolutePath());
 		}
 		jtfZoomFile.setColumns(30);
 		jtfZoomFile.setEditable(false);
@@ -64,8 +64,8 @@ final class ConfigFileOptionPanel extends OptionPanel {
 		jbZoomBrowse.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				browse("Zoom File:", new File(configurationManager.getZoomFile()), jtfZoomFile, true);
-				configurationManager.setZoomFile(jtfZoomFile.getText());
+				browse("Zoom File:", new File(projectConfiguration.getZoomFile()), jtfZoomFile, true);
+				projectConfiguration.setZoomFile(jtfZoomFile.getText());
 			}
 		});
 

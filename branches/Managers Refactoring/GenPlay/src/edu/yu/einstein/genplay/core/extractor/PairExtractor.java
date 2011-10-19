@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
@@ -64,7 +64,7 @@ implements Serializable, BinListGenerator {
 		positionList = new ChromosomeArrayListOfLists<Integer>();
 		scoreList = new ChromosomeArrayListOfLists<Double>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
 		}
@@ -99,7 +99,7 @@ implements Serializable, BinListGenerator {
 			throw new InvalidDataLineException(extractedLine);
 		}
 		try {
-			Chromosome chromosome = chromosomeManager.get(chromosomeField[0]);
+			Chromosome chromosome = projectChromosome.get(chromosomeField[0]);
 			// checks if we need to extract the data on the chromosome
 			int chromosomeStatus = checkChromosomeStatus(chromosome);
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {

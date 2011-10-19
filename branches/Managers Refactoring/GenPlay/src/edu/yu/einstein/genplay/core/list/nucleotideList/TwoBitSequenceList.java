@@ -32,7 +32,8 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -50,6 +51,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	private static final long serialVersionUID = -2253030492143151302L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private final static String 		TWOBIT_SIGNATURE = "1A412743";	// signature of a 2bit file
+	private ProjectChromosome 			projectChromosome;	 			// Instance of the Chromosome Manager
 	private boolean 					reverseBytes = false;			// true if the bytes of a multi-byte entity need to be reversed when read
 	private int 						version;						// version of the 2bit file
 	private String						filePath;						// path of the 2bit file  (used for the serialization)
@@ -68,6 +70,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
 		out.writeBoolean(reverseBytes);
 		out.writeInt(version);
 		out.writeObject(filePath);
@@ -84,6 +87,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
 		reverseBytes = in.readBoolean();
 		version = in.readInt();
 		filePath = (String) in.readObject();
@@ -100,9 +104,9 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	public TwoBitSequenceList(String genomeName) {
 		super();
 		this.genomeName = genomeName;
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		// initializes the lists
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			add(null);
 		}
 	}
@@ -168,15 +172,14 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 		for (int i = 0; i < sequenceCount; i++) {
 			short k = 0;
 			boolean found = false;
-			ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-			while ((k < chromosomeManager.size()) && (!found)) {
-				if (chromosomeManager.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
+			while ((k < projectChromosome.size()) && (!found)) {
+				if (projectChromosome.get(k).getName().equalsIgnoreCase(sequenceNames[i])) {
 					// if the execution need to be stopped we generate an InterruptedException
 					if (needToBeStopped) {
 						throw new InterruptedException();
 					}
 					long currentPosition = twoBitFile.getFilePointer();
-					sequence = new TwoBitSequence(genomeName, chromosomeManager.get(k));
+					sequence = new TwoBitSequence(genomeName, projectChromosome.get(k));
 					sequence.extract(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
 					set(k, sequence);
 					twoBitFile.seek(currentPosition);

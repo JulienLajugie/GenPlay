@@ -24,7 +24,8 @@ package edu.yu.einstein.genplay.gui.dialog.chromosomeChooser;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import edu.yu.einstein.genplay.core.Chromosome;
+
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.projectFrame.newProject.vcf.VCFLoader;
 
 
