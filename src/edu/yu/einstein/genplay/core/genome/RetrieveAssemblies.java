@@ -136,6 +136,7 @@ public class RetrieveAssemblies {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("other_s. cerevisiae_2003_10_SGD_sacCer1.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("other_s. cerevisiae_2008_07_SGD_sacCer2.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("other_sea hare_2008_09_Broad_2.0_aplCal1.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("S. pombe.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_chicken_2004_02_WUGSC_1.0_galGal2.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_chicken_2006_05_WUGSC_2.1_galGal3.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_fugu_2002_08_JGI_3.0_fr1.xml"));
