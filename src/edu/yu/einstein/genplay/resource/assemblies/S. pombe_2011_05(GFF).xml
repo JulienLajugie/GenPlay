@@ -1,5 +1,5 @@
 <assembly clade="other" genome="s. pombe" name="GFF" date="05 2011">
-	<chromosome name="chr1" length="5579133"/>
-	<chromosome name="chr2" length="4539804"/>
-	<chromosome name="chr3" length="2512700"/>
+	<chromosome name="chromosome1" length="5579133"/>
+	<chromosome name="chromosome2" length="4539804"/>
+	<chromosome name="chromosome3" length="2512700"/>
 </assembly>
