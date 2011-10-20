@@ -156,7 +156,7 @@ public class Launcher {
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSimpleProject()) {
 			ProjectManager.getInstance().setMultiGenomeProject(true);
-			System.out.println("initiateNewProject");
+			//System.out.println("initiateNewProject");
 			PAMultiGenome multiGenome = new PAMultiGenome();
 			multiGenome.setFileReaders(projectFrame.getFileReadersAssociation());
 			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());

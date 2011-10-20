@@ -154,6 +154,17 @@ public class MGMultiGenome implements Serializable {
 		return info;
 	}
 
+	
+	/**
+	 * Refreshes chromosome references from a chromosome list information.
+	 * @param chromosomeList the chromosome list
+	 */
+	public void refreshChromosomeReferences (List<Chromosome> chromosomeList) {
+		for (MGGenome genome: multiGenomeInformation.values()) {
+			genome.refreshChromosomeReferences(chromosomeList);
+		}
+	}
+	
 
 	/**
 	 * @param genome		a genome name

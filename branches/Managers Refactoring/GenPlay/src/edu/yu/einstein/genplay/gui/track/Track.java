@@ -189,6 +189,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			currentListener.genomeWindowChanged(evt);
 		}		
 	}
+	
+	
+	/**
+	 * Initializes attributes used for multi genome project.
+	 */
+	public void multiGenomeInitializing () {
+		trackGraphics.multiGenomeInitializing();
+	}
 
 
 	/**
@@ -356,7 +364,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public void setGenomeName(String genomeName) {
 		this.genomeName = genomeName;
-		//getStripeInformation().setGenomeName(genomeName);
 	}
 
 

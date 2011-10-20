@@ -110,31 +110,31 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
-	private static final long serialVersionUID = -1930069442535000515L; // Generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final int	 		VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
-	private static final Color			LINE_COLOR = Color.lightGray;	// color of the lines
-	private static final Color			MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
-	private static final Color			STRIPES_COLOR = Color.GRAY;		// color of the stripes
-	private static final int			STRIPES_TRANSPARENCY = 150;		// transparency of the stripes
-	protected static final String 		FONT_NAME = "ARIAL";			// name of the font
-	protected static final int 			FONT_SIZE = 10;					// size of the font
+	private static final long serialVersionUID = -1930069442535000515L; 	// Generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
+	private static final int	 			VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
+	private static final Color				LINE_COLOR = Color.lightGray;	// color of the lines
+	private static final Color				MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
+	private static final Color				STRIPES_COLOR = Color.GRAY;		// color of the stripes
+	private static final int				STRIPES_TRANSPARENCY = 150;		// transparency of the stripes
+	protected static final String 			FONT_NAME = "ARIAL";			// name of the font
+	protected static final int 				FONT_SIZE = 10;					// size of the font
 	protected FontMetrics 		fm = 
-		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 	// FontMetrics to get the size of a string
-	private List<GenomeWindowListener> 	gwListenerList;					// list of GenomeWindowListener
-	private int 						verticalLineCount;				// number of vertical lines to print
-	transient private int				mouseStartDragX = -1;			// position of the mouse when start dragging
-	protected double					xFactor;						// factor between the genomic width and the screen width
-	protected GenomeWindow				genomeWindow;					// the genome window displayed by the track
-	transient private boolean			isScrollMode = false;			// true if the scroll mode is on
-	transient private int				scrollModeIntensity = 0;		// Intensity of the scroll.
-	transient private ScrollModeThread 	scrollModeThread; 				// Thread executed when the scroll mode is on
-	private ChromosomeWindowList		stripeList = null;				// stripes to display on the track
-	protected T 						data;							// data showed in the track
-	private MultiGenomeStripes 			multiGenomeStripes;				// stripes showing multi genome information (for MG project)
+		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 		// FontMetrics to get the size of a string
+	private List<GenomeWindowListener> 		gwListenerList;					// list of GenomeWindowListener
+	private int 							verticalLineCount;				// number of vertical lines to print
+	transient private int					mouseStartDragX = -1;			// position of the mouse when start dragging
+	protected double						xFactor;						// factor between the genomic width and the screen width
+	protected GenomeWindow					genomeWindow;					// the genome window displayed by the track
+	transient private boolean				isScrollMode = false;			// true if the scroll mode is on
+	transient private int					scrollModeIntensity = 0;		// Intensity of the scroll.
+	transient private ScrollModeThread 		scrollModeThread; 				// Thread executed when the scroll mode is on
+	private ChromosomeWindowList			stripeList = null;				// stripes to display on the track
+	protected T 							data;							// data showed in the track
+	private MultiGenomeStripes 				multiGenomeStripes;				// stripes showing multi genome information (for MG project)
 	private DisplayableVariantListCreator	displayableVariantListCreator;	// displayable variants list creator (for MG project)
-	private String 						genomeName;						// genome on which the track is based (ie aligned on)
-	private List<DisplayableVariant> 	displayableVariantList;			// list of variant for multi genome project
+	private String 							genomeName;						// genome on which the track is based (ie aligned on)
+	private List<DisplayableVariant> 		displayableVariantList;			// list of variant for multi genome project
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
@@ -147,10 +147,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.data = data;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			multiGenomeStripes = new MultiGenomeStripes();
-			displayableVariantListCreator = new DisplayableVariantListCreator();
-		}
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
 		addMouseListener(this);
@@ -718,9 +714,20 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param multiGenomeStripes the stripeInformation to set
 	 */
 	protected void setMultiGenomeStripes(MultiGenomeStripes multiGenomeStripes) {
-		ProjectManager.getInstance().getGenomeSynchronizer().getSnpSynchroniser().updateEnabledSNPList(ProjectManager.getInstance().getCurrentMultiGenomeChromosomeList(), this.multiGenomeStripes, multiGenomeStripes);
+		ProjectManager.getInstance().getGenomeSynchronizer().getSnpSynchroniser().updateEnabledSNPList(ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList(), this.multiGenomeStripes, multiGenomeStripes);
 		this.multiGenomeStripes = multiGenomeStripes;
 		repaint();
+	}
+	
+	
+	/**
+	 * Initializes attributes used for multi genome project.
+	 */
+	public void multiGenomeInitializing () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			multiGenomeStripes = new MultiGenomeStripes();
+			displayableVariantListCreator = new DisplayableVariantListCreator();
+		}
 	}
 
 

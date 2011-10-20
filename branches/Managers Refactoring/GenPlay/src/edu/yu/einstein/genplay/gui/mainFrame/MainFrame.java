@@ -241,10 +241,13 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		if ((projectChromosome.getCurrentChromosome() == null) ||
 				(!projectChromosome.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
 			projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				System.out.println("genomeWindowChanged");
-				PAMultiGenome multiGenome = new PAMultiGenome();
-				multiGenome.actionPerformed(null);
+			ProjectManager projectManager = ProjectManager.getInstance();
+			if (projectManager.isMultiGenomeProject()) {
+				if (ProjectChromosome.CHROMOSOME_LOADING_OPTION == ProjectChromosome.SEQUENTIAL) {
+					System.out.println("genomeWindowChanged");
+					PAMultiGenome multiGenome = new PAMultiGenome();
+					multiGenome.actionPerformed(null);
+				}
 			}
 		}
 

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
@@ -121,7 +120,6 @@ public class ProjectManager implements Serializable {
 		projectConfiguration = new ProjectConfiguration();
 		projectZoom = new ProjectZoom();
 		projectChromosome = new ProjectChromosome();
-		//updateChromosomeList();
 	}
 
 
@@ -132,31 +130,10 @@ public class ProjectManager implements Serializable {
 		List<Chromosome> chromosomeList;
 		if (multiGenomeProject) {
 			chromosomeList = genomeSynchronizer.getMetaGenomeSynchroniser().getChromosomeList();
-			if (chromosomeList == null) {
-				chromosomeList = getAssembly().getChromosomeList();
-			} else {
-				System.err.println("is multi project but meta genome does not have chromosomes list");
-			}
 		} else {
 			chromosomeList = getAssembly().getChromosomeList();
 		}
 		projectChromosome.setChromosomeList(chromosomeList);
-	}
-
-
-	/**
-	 * In a multi genome project, the list of chromosome can be different as usual.
-	 * See the CHROMOSOME_LOADING_OPTION in {@link GenomeSynchronizer}.
-	 * @return the chromosomeList for multi genome scan algorithm
-	 */
-	public List<Chromosome> getCurrentMultiGenomeChromosomeList() {
-		if (GenomeSynchronizer.CHROMOSOME_LOADING_OPTION == GenomeSynchronizer.FULL) {
-			return projectChromosome.getChromosomeList();
-		} else {
-			List<Chromosome> newList = new ArrayList<Chromosome>();
-			newList.add(projectChromosome.getCurrentChromosome());
-			return newList;
-		}
 	}
 	
 
@@ -276,6 +253,5 @@ public class ProjectManager implements Serializable {
 	public void setAssembly(Assembly assembly) {
 		this.assembly = assembly;
 	}
-
 	
 }

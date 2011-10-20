@@ -83,7 +83,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		genomeSynchroniser = ProjectManager.getInstance().getGenomeSynchronizer();
-		chromosomeList = ProjectManager.getInstance().getCurrentMultiGenomeChromosomeList();
+		chromosomeList = ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList();
 	}
 
 
@@ -120,6 +120,10 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		ProjectManager.getInstance().updateChromosomeList();
 		
+		genomeSynchroniser.refreshChromosomeReferences(ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList());
+		
+		MainFrame.getInstance().getTrackList();
+		initializesTrackListForMultiGenomeProject();
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 	}	
 	
@@ -177,6 +181,19 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	 */
 	public void setChromosomeList(List<Chromosome> chromosomeList) {
 		this.chromosomeList = chromosomeList;
+	}
+	
+	
+	/**
+	 * Initializes attributes used for multi genome project.
+	 */
+	private void initializesTrackListForMultiGenomeProject () {
+		Track<?>[] tracks = MainFrame.getInstance().getTrackList().getTrackList();
+		for (Track<?> track: tracks) {
+			if (track.getMultiGenomeStripes() == null) {
+				track.multiGenomeInitializing();
+			}
+		}
 	}
 	
 }

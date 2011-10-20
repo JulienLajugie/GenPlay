@@ -92,13 +92,10 @@ public class MetaGenomeSynchroniser implements Serializable {
 	private void initializeMetaGenomeSynchronizer (List<Chromosome> chromosomeListTmp) {
 		chromosomeList = new ArrayList<Chromosome>();
 		chromosomeLength = new HashMap<Chromosome, Integer>();
-		System.out.println("-------------------------------");
 		for (Chromosome chromosome: chromosomeListTmp) {
-			System.out.println(chromosome.getName() + ": " + chromosome.getLength());
 			chromosomeList.add(new Chromosome(chromosome.getName(), chromosome.getLength()));
 			chromosomeLength.put(chromosome, chromosome.getLength());
 		}
-		System.out.println("-------------------------------");
 	}
 
 
@@ -125,24 +122,28 @@ public class MetaGenomeSynchroniser implements Serializable {
 
 
 	/**
-	 * Updates the chromosome list.
-	 * It consists on set new chromosome lengths.
+	 * Refreshes chromosome references re-creating list with right chromosomes with right lengths.
 	 */
-	protected void updateChromosomeList () {
+	protected void refreshChromosomeReferences () {
+		
+		// Initializes temporary lists
 		List<Chromosome> chromosomeListTmp = new ArrayList<Chromosome>();
-		for (Chromosome chromosome: chromosomeLength.keySet()) {
-			Chromosome newChromosome = new Chromosome(chromosome.getName(), chromosomeLength.get(chromosome));
-			chromosomeListTmp.add(newChromosome);
+		Map<Chromosome, Integer> chromosomeLengthTmp = new HashMap<Chromosome, Integer>();
+		
+		// For every chromosome of the project
+		for (Chromosome chromosome: chromosomeList) {
 			
-			/*try {
-				chromosomeList.get(chromosome.getName().toLowerCase()).setLength(chromosomeLength.get(chromosome));
-			} catch (Exception e) {
-				System.out.println(chromosome.getName() + ", " + chromosomeList.get(chromosome.getName()) + ", " + chromosomeLength.get(chromosome));
-				System.err.println(e);
-			}*/
-			//chromosomeList.get(chromosome.getName()).setLength(chromosomeLength.get(chromosome));
+			// Creates a new chromosome with the right length
+			Chromosome newChromosome = new Chromosome(chromosome.getName(), chromosomeLength.get(chromosome));
+			
+			// Adds it to the temporary lists
+			chromosomeListTmp.add(newChromosome);
+			chromosomeLengthTmp.put(newChromosome, chromosomeLength.get(chromosome));
 		}
+		
+		// Replaces previous list using the new ones
 		chromosomeList = chromosomeListTmp;
+		chromosomeLength = chromosomeLengthTmp;
 	}
 
 

@@ -47,7 +47,6 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -60,24 +59,6 @@ public class GenomeSynchronizer implements Serializable {
 
 	private static final long serialVersionUID = 5101409095108321375L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	/**
-	 * FULL value for CHROMOSOME_LOADING_OPTION option involves the loading of every chromosomes when multi genome project starts
-	 */
-	public 	static final 	int 						FULL					 	= 1;
-
-	/**
-	 * SEQUENTIAL value for CHROMOSOME_LOADING_OPTION option involves the sequential loading (one by one) of chromosomes during a multi genome project (low memory cost)
-	 */
-	public static final 	int 						SEQUENTIAL 					= 0;
-
-	/**
-	 * CHROMOSOME_LOADING_OPTION to choose the chromosome loading mode
-	 * It must be used only for development, some functionalities cannot work in a SEQUENTIAL mode.
-	 * The loading of some type of file requires to perform operation on every chromosome,
-	 * the SEQUENTIAL mode loading only one chromosome, it can lead to a null pointer exception error. 
-	 */
-	public static 			int							CHROMOSOME_LOADING_OPTION 	= FULL;
 
 	/**
 	 * The default color for a stripe
@@ -107,7 +88,6 @@ public class GenomeSynchronizer implements Serializable {
 	private		ReferenceGenomeSynchroniser		referenceGenomeSynchroniser;	// Instance of the Reference Genome Synchroniser
 	private		SNPSynchroniser					snpSynchroniser;				// Instance of the SNP Synchroniser
 	private		CoordinateSystemType 			cst;
-	//private		boolean							hasBeenInitialized;				// Uses when multi genome manager has been initialized
 	private		boolean							dataComputed = false;			// Uses after every multi genome process
 
 	
@@ -125,7 +105,6 @@ public class GenomeSynchronizer implements Serializable {
 		out.writeObject(referenceGenomeSynchroniser);
 		out.writeObject(snpSynchroniser);
 		out.writeObject(cst);
-		//out.writeBoolean(hasBeenInitialized);
 		out.writeBoolean(dataComputed);
 	}
 
@@ -145,7 +124,6 @@ public class GenomeSynchronizer implements Serializable {
 		referenceGenomeSynchroniser = (ReferenceGenomeSynchroniser) in.readObject();
 		snpSynchroniser = (SNPSynchroniser) in.readObject();
 		cst = (CoordinateSystemType) in.readObject();
-		//hasBeenInitialized = in.readBoolean();
 		dataComputed = in.readBoolean();
 	}
 
@@ -157,32 +135,10 @@ public class GenomeSynchronizer implements Serializable {
 		this.genomesInformation = new MGMultiGenome();
 		this.referenceGenomeSynchroniser = new ReferenceGenomeSynchroniser();
 		this.metaGenomeSynchroniser = new MetaGenomeSynchroniser(chromosomeList);
-		System.out.println("GenomeSynchronizer");
-		Utils.showChromosomeList(chromosomeList);
 		this.snpSynchroniser = new SNPSynchroniser();
 		cst = CoordinateSystemType.METAGENOME;
-		//hasBeenInitialized = false;
 		dataComputed = false;
 	}
-
-
-	/**
-	 * Initializes the multi genome manager
-	 * @param fileReaders				mapping between files and their readers.
-	 * @param genomeFileAssociation		mapping between genome names and their files.
-	 */
-	/*public void init (Map<File, VCFReader> fileReaders, Map<String, List<File>> genomeFileAssociation) {
-		this.fileReaders = fileReaders;
-		genomesInformation.init(genomeFileAssociation);
-	}*/
-
-
-	/**
-	 * Initializes genomes information.
-	 */
-	/*public void initMultiGenomeInformation () {
-		genomesInformation.initMultiGenomeInformation();
-	}*/
 	
 
 	/**
@@ -218,15 +174,21 @@ public class GenomeSynchronizer implements Serializable {
 	 */
 	public void compute (String referenceGenomeName, List<Chromosome> chromosomeList) throws IOException {
 		dataComputed = false;
-		System.out.println("compute");
-		Utils.showChromosomeList(chromosomeList);
 		if (initialyzeData(chromosomeList)) {
 			compileData(referenceGenomeName, chromosomeList);
-			//snpSynchroniser.compute(chromosomeList);
 			metaGenomeSynchroniser.computeGenomeSize();
-			metaGenomeSynchroniser.updateChromosomeList();
+			metaGenomeSynchroniser.refreshChromosomeReferences();
 			//showData();
 		}
+	}
+	
+	
+	/**
+	 * Refreshes chromosome references from a chromosome list information.
+	 * @param chromosomeList the chromosome list
+	 */
+	public void refreshChromosomeReferences (List<Chromosome> chromosomeList) {
+		genomesInformation.refreshChromosomeReferences(chromosomeList);
 	}
 
 
@@ -289,9 +251,6 @@ public class GenomeSynchronizer implements Serializable {
 		}
 		return genomeNames;
 	}
-	
-	
-	
 
 
 	/**
@@ -542,22 +501,6 @@ public class GenomeSynchronizer implements Serializable {
 	public MGMultiGenome getGenomesInformation() {
 		return genomesInformation;
 	}
-
-
-	/**
-	 * @return the hasBeenInitialized
-	 */
-	/*public boolean hasBeenInitialized() {
-		return hasBeenInitialized;
-	}*/
-
-
-	/**
-	 * set the hasBeenInitialized to true
-	 */
-	/*public void setHasBeenInitialized() {
-		this.hasBeenInitialized = true;
-	}*/
 
 
 	/**
