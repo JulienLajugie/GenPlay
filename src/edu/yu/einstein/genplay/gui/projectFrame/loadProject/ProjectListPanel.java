@@ -29,12 +29,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -81,7 +82,7 @@ class ProjectListPanel extends JPanel {
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		//Radio buttons
-		buildProjectList(ConfigurationManager.getInstance().getProjects());
+		buildProjectList(ProjectManager.getInstance().getProjectConfiguration().getProjects());
 		buildButtonOther();
 
 		//Project chooser

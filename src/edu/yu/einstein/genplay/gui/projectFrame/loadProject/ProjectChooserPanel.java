@@ -26,12 +26,13 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 import edu.yu.einstein.genplay.util.Utils;
@@ -86,7 +87,7 @@ class ProjectChooserPanel extends JPanel {
 		chooseProject.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+				String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 				FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
 				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
 				if (selectedFile != null) {

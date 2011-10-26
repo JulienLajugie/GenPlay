@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
@@ -69,7 +69,7 @@ public final class ATASaveAsImage extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			JFileChooser saveFC = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+			JFileChooser saveFC = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
 			saveFC.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG file (*.PNG)", "png");
 			saveFC.setFileFilter(filter);

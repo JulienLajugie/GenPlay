@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -89,7 +89,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		strandList = new ChromosomeArrayListOfLists<Strand>();
 		scoreList = new ChromosomeArrayListOfLists<Double>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			nameList.add(new ArrayList<String>());
@@ -109,7 +109,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		if (splitedLine[2].trim().equalsIgnoreCase("exon")) {
 			// retrieve the chromosome
 			try {
-				Chromosome chromo = chromosomeManager.get(splitedLine[0].trim());
+				Chromosome chromo = projectChromosome.get(splitedLine[0].trim());
 				int chromosomeStatus = checkChromosomeStatus(chromo);
 				// check if we extracted all the selected chromosomes
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
@@ -294,7 +294,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						}
 						// now that the last gene has been added we start a new one
 						name = nameList.get(i, j);
-						chromo = chromosomeManager.get(i);
+						chromo = projectChromosome.get(i);
 						strand = strandList.get(i, j);
 						// we reset the exon list 
 						exons.clear();

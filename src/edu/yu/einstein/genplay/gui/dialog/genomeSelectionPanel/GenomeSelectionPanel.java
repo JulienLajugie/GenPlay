@@ -22,11 +22,12 @@
 package edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel;
 
 import java.awt.Dimension;
+
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
@@ -49,7 +50,7 @@ public class GenomeSelectionPanel extends JPanel {
 	 */
 	public GenomeSelectionPanel() {
 		super();
-		jcbGenome = new JComboBox(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+		jcbGenome = new JComboBox(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
 		jcbGenome.setSelectedIndex(defaultGenome);
 		add(jcbGenome);
 		setBorder(BorderFactory.createTitledBorder("Genome Selection"));

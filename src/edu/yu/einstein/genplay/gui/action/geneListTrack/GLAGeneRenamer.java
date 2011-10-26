@@ -28,7 +28,7 @@ import javax.swing.JFileChooser;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOGeneRenamer;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
@@ -70,7 +70,7 @@ public class GLAGeneRenamer extends TrackListActionOperationWorker<GeneList>{
 		selectedTrack = (GeneListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			GeneList geneList = selectedTrack.getData();
-			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			int retVal = jfc.showOpenDialog(getRootPane());

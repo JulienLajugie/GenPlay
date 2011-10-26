@@ -32,7 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.GenomeSynchronizer;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeStripe.MultiGenomeStripeSelectionDialog;
 
 
@@ -67,9 +67,9 @@ public class RowPanel extends JPanel {
 		
 		//Components
 		genomeGroup = new JLabel(genomeGroupName);
-		insertionBox = new CellSelectionPanel(MultiGenomeManager.INSERTION_DEFAULT_COLOR);
-		deletionBox = new CellSelectionPanel(MultiGenomeManager.DELETION_DEFAULT_COLOR);
-		snpsBox = new CellSelectionPanel(MultiGenomeManager.SNPS_DEFAULT_COLOR);
+		insertionBox = new CellSelectionPanel(GenomeSynchronizer.INSERTION_DEFAULT_COLOR);
+		deletionBox = new CellSelectionPanel(GenomeSynchronizer.DELETION_DEFAULT_COLOR);
+		snpsBox = new CellSelectionPanel(GenomeSynchronizer.SNPS_DEFAULT_COLOR);
 		//svBox = new CellSelectionPanel(MultiGenomeManager.SV_DEFAULT_COLOR);
 		
 		//snpsBox.betaLimit();

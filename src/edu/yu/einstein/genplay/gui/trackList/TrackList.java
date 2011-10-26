@@ -26,16 +26,19 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
@@ -156,7 +159,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
 	private final JPanel 		jpTrackList;					// panel with the tracks
-	private final ConfigurationManager configurationManager;	// ConfigurationManager
+	private final ProjectConfiguration projectConfiguration;	// ConfigurationManager
 	private final List<GenomeWindowListener> gwListenerList;	// list of GenomeWindowListener
 	private GenomeWindow 		displayedGenomeWindow;			// displayed GenomeWindow
 	private Track<?>[] 			trackList;						// array of tracks
@@ -172,15 +175,15 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public TrackList(GenomeWindow displayedGenomeWindow) {
 		super();
-		this.configurationManager = ConfigurationManager.getInstance();
+		this.projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
 		this.displayedGenomeWindow = displayedGenomeWindow;
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		getVerticalScrollBar().setUnitIncrement(15);
 		getVerticalScrollBar().setBlockIncrement(40);
 		jpTrackList = new JPanel();
 		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));		
-		int trackCount = configurationManager.getTrackCount();
-		int preferredHeight = configurationManager.getTrackHeight();
+		int trackCount = projectConfiguration.getTrackCount();
+		int preferredHeight = projectConfiguration.getTrackHeight();
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
 			trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
@@ -202,8 +205,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * Resets the {@link TrackList} by filling it with empty tracks 
 	 */
 	public void resetTrackList() {
-		int trackCount = configurationManager.getTrackCount();
-		int preferredHeight = configurationManager.getTrackHeight();
+		int trackCount = projectConfiguration.getTrackCount();
+		int preferredHeight = projectConfiguration.getTrackHeight();
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
 			trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
@@ -504,10 +507,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * Sets the height of each {@link Track} according to the value specified in the {@link ConfigurationManager}
+	 * Sets the height of each {@link Track} according to the value specified in the {@link ProjectConfiguration}
 	 */
 	public void trackHeightChanged() {
-		int preferredHeight = configurationManager.getTrackHeight();
+		int preferredHeight = projectConfiguration.getTrackHeight();
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setPreferredHeight(preferredHeight);
 			((Track<?>)jpTrackList.getComponent(i)).setPreferredHeight(preferredHeight);
@@ -518,11 +521,11 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	/**
 	 * Changes the number of {@link Track} in the {@link TrackList} according to 
-	 * the value specified in the {@link ConfigurationManager}
+	 * the value specified in the {@link ProjectConfiguration}
 	 */
 	public void trackCountChanged() {
-		int trackCount = configurationManager.getTrackCount();
-		int preferredHeight = configurationManager.getTrackHeight();
+		int trackCount = projectConfiguration.getTrackCount();
+		int preferredHeight = projectConfiguration.getTrackHeight();
 		Track<?>[] trackTmp = trackList;
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
@@ -744,7 +747,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				copiedTrack = selectedTrack;
 				int selectedTrackIndex = getSelectedTrackIndex();				
 				Track<?> emptyTrack = new EmptyTrack(displayedGenomeWindow, trackList.length);
-				setTrack(selectedTrackIndex, emptyTrack, configurationManager.getTrackHeight(), null, null, null);
+				setTrack(selectedTrackIndex, emptyTrack, projectConfiguration.getTrackHeight(), null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while copying the track");
@@ -878,7 +881,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * Changes the undo count of the undoable tracks
 	 */
 	public void undoCountChanged() {
-		int undoCount = ConfigurationManager.getInstance().getUndoCount();
+		int undoCount = ProjectManager.getInstance().getProjectConfiguration().getUndoCount();
 		if (getBinListTracks() != null) {
 			for (Track<?> currentTrack: getBinListTracks()) {
 				((BinListTrack) currentTrack).setUndoCount(undoCount);

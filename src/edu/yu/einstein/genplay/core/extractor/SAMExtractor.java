@@ -25,8 +25,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -66,7 +66,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 		startList = new ChromosomeArrayListOfLists<Integer>();
 		stopList = new ChromosomeArrayListOfLists<Integer>();
 		scoreList = new ChromosomeArrayListOfLists<Double>();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			startList.add(new IntArrayAsIntegerList());
 			stopList.add(new IntArrayAsIntegerList());
 			scoreList.add(new DoubleArrayAsDoubleList());
@@ -80,7 +80,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 		if (line.trim().charAt(0) != '@') {
 			String[] splitedLine = Utils.parseLineTabOnly(line);
 			try {
-				Chromosome chromosome = chromosomeManager.get(splitedLine[2]);
+				Chromosome chromosome = projectChromosome.get(splitedLine[2]);
 				// checks if we need to extract the data on the chromosome
 				int chromosomeStatus = checkChromosomeStatus(chromosome);
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {

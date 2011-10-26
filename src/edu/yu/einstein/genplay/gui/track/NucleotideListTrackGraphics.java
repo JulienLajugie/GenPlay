@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.util.ColorConverters;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -102,7 +102,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", 
 						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (dialogRes == JOptionPane.OK_OPTION) {
-					String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 					File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
 					if (selectedFile != null) {
 						try {

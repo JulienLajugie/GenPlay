@@ -27,7 +27,7 @@ import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
@@ -98,7 +98,7 @@ public class ETALoadGeneListTrackFromDAS extends TrackListActionWorker<GeneList>
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
 			MultiGenomeStripes multiGenomeStripes = getTrackList().getSelectedTrack().getMultiGenomeStripes();
 			GeneListTrack newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
-			getTrackList().setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), dasType.getID(), stripes, multiGenomeStripes);
+			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, multiGenomeStripes);
 		}								
 	}
 }

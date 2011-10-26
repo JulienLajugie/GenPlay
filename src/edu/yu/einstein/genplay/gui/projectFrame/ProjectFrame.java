@@ -35,7 +35,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
@@ -356,7 +356,7 @@ public class ProjectFrame extends JFrame {
 	/**
 	 * @return a {@link Map} containing the selected chromosomes.  Each chromosome is associated to its name in the map
 	 */
-	public Map<String, Chromosome> getSelectedChromosomes() {
+	public List<Chromosome> getSelectedChromosomes() {
 		return newProjectPanel.getSelectedChromosomes();
 	}
 

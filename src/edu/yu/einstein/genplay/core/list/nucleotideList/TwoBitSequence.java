@@ -31,9 +31,9 @@ import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 

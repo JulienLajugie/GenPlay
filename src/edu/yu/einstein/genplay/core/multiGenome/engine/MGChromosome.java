@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 
 

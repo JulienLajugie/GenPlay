@@ -26,13 +26,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.util.DoubleLists;
@@ -51,6 +52,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 	private final BinList 					binList;		// input binlist
 	private final int 						zeroBinGap; 	// number of zero value bins defining a gap between two islands
 	private final ScoreCalculationMethod 	operation;		//sum / average / max
+	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
 	private boolean							stopped = false;// true if the operation must be stopped
 	
 
@@ -67,6 +69,7 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 		this.binList = binList;
 		this.zeroBinGap = zeroBinGap;
 		this.operation = operation;
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 	}
 
 	
@@ -77,8 +80,8 @@ public class BLOTransfragGeneList implements Operation<GeneList> {
 
 		for (short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);			
-			final String chromosomeName = ChromosomeManager.getInstance().get(i).getName();
-			final int chromosomeLength = ChromosomeManager.getInstance().get(i).getLength();
+			final String chromosomeName = projectChromosome.get(i).getName();
+			final int chromosomeLength = projectChromosome.get(i).getLength();
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
 				@Override
 				public List<Gene> call() throws Exception {

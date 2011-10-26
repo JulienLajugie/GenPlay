@@ -25,6 +25,7 @@ import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,9 +33,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.ChromosomeComparator;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.FilterType;
 import edu.yu.einstein.genplay.core.enums.IslandResultType;
@@ -42,7 +44,6 @@ import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
-import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeComparator;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -619,16 +620,41 @@ public class Utils {
 	
 	/**
 	 * Sorts a list of chromosome and returned it
-	 * @param map	a list of chromosome indexed by their name
+	 * @param list	a list of chromosome indexed by their name
 	 * @return		a list of chromosome sorted according to the names
 	 */
-	public static List<Chromosome> getSortedChromosomeList(Map<String, Chromosome> map) {
+	public static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
+		
+		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>(); 
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
-		List<String> chromosomeNames = new ArrayList<String>(map.keySet());
-		Collections.sort(chromosomeNames, new ChromosomeComparator());
-		for (String chromosomeName: chromosomeNames) {
-			chromosomeList.add(map.get(chromosomeName));
+		List<String> chromosomeNames = new ArrayList<String>();
+		
+		for (Chromosome chromosome: list) {
+			chromosomeNames.add(chromosome.getName().toLowerCase());
+			chromosomeMap.put(chromosome.getName().toLowerCase(), chromosome);
 		}
+		
+		Collections.sort(chromosomeNames, new ChromosomeComparator());
+		
+		for (String chromosomeName: chromosomeNames) {
+			chromosomeList.add(chromosomeMap.get(chromosomeName));
+		}
+		
 		return chromosomeList;
 	}
+	
+	
+	/**
+	 * Shows the chromosome details of a list of chromosomes
+	 * @param chromosomeList the list of chromosomes
+	 */
+	public static void showChromosomeList (List<Chromosome> chromosomeList) {
+		String output = "---------- showChromosomeList\n";
+		for (Chromosome chromosome: chromosomeList) {
+			output += chromosome.getName() + " : " + chromosome.getLength() + "\n";
+		}
+		output += "----------";
+		System.out.println(output);
+	}
+	
 }

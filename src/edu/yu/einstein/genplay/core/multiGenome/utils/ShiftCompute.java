@@ -20,8 +20,8 @@
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
@@ -72,7 +72,7 @@ public class ShiftCompute {
 	private static void initParameters (String genome, Chromosome chromosome, int genomePosition) {
 		referencePosition = -1;
 		newPosition = genomePosition;
-		chromInfo = MultiGenomeManager.getInstance().getChromosomeInformation(genome, chromosome);
+		chromInfo = ProjectManager.getInstance().getGenomeSynchronizer().getChromosomeInformation(genome, chromosome);
 		indexes = chromInfo.getPositionIndex();
 		found = false;
 	}

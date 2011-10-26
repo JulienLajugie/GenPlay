@@ -29,14 +29,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Arrays;
-//import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.util.Utils;
@@ -80,7 +79,7 @@ public class SPASaveData extends ScatterPlotAction {
 			}
 		}
 		if (selectedIndex >= 0) {
-			String defaultDirectoryPath = ConfigurationManager.getInstance().getDefaultDirectory();		
+			String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();		
 			JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");

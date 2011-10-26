@@ -29,12 +29,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
@@ -47,7 +48,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 final class SCWLOptions implements Serializable {
 	
 	private static final long serialVersionUID = -2601316105498708787L;
-	protected final ChromosomeManager 									chromosomeManager;	//ChromosomeManager
+	protected final ProjectChromosome 									projectChromosome;	//ChromosomeManager
 	private 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
 	private 		ChromosomeListOfLists<Integer> 						startList;			//store the original start list position
 	private 		ChromosomeListOfLists<Integer> 						stopList;			//store the original stop list position
@@ -65,12 +66,12 @@ final class SCWLOptions implements Serializable {
 	protected SCWLOptions (	final ChromosomeListOfLists<Integer> startList, 
 							final ChromosomeListOfLists<Integer> stopList,
 							final ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
-		this.chromosomeManager = ChromosomeManager.getInstance();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.list = new ChromosomeArrayListOfLists<ScoredChromosomeWindow>();
 		this.startList = startList;
 		this.stopList = stopList;
 		this.scoreList = scoreList;
-		for (int i = 0; i < chromosomeManager.size(); i++) {	//initializes the list
+		for (int i = 0; i < projectChromosome.size(); i++) {	//initializes the list
 			this.list.add(new ArrayList<ScoredChromosomeWindow>());
 		}
 	}
@@ -100,7 +101,7 @@ final class SCWLOptions implements Serializable {
 	private void generateAllList () throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();	
-		for(final Chromosome currentChromosome : this.chromosomeManager) {
+		for(final Chromosome currentChromosome : this.projectChromosome) {
 			Callable<Void> currentThread = new Callable<Void>() {	
 				@Override
 				public Void call() throws Exception {
@@ -126,7 +127,7 @@ final class SCWLOptions implements Serializable {
 	private void sortAllList () throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();	
-		for(final Chromosome currentChromosome : this.chromosomeManager) {
+		for(final Chromosome currentChromosome : this.projectChromosome) {
 			Callable<Void> currentThread = new Callable<Void>() {	
 				@Override
 				public Void call() throws Exception {

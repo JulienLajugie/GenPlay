@@ -25,7 +25,8 @@ import java.io.File;
 
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.Writer;
 
 
@@ -37,7 +38,7 @@ import edu.yu.einstein.genplay.core.writer.Writer;
  */
 public abstract class GeneListWriter implements Writer {
 	
-	protected final ChromosomeManager	chromosomeManager;	// ChromosomeManager
+	protected final ProjectChromosome	projectChromosome;	// ChromosomeManager
 	protected final File 				outputFile;			// output file 
 	protected final GeneList			data;				// data to print
 	protected final String				name;				// name of the GeneList
@@ -50,7 +51,7 @@ public abstract class GeneListWriter implements Writer {
 	 * @param name a name for the {@link GeneList}
 	 */
 	public GeneListWriter(File outputFile, GeneList data, String name) {
-		this.chromosomeManager = ChromosomeManager.getInstance();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.outputFile = outputFile;
 		this.data = data;
 		this.name = name;

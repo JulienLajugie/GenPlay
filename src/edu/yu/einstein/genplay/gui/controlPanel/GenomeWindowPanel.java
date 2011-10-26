@@ -35,7 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -127,7 +127,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenera
 	 */
 	void genomeWindowChanged() {
 		try {
-			GenomeWindow newGenomeWindow = new GenomeWindow(jtfGenomeWindow.getText(), ChromosomeManager.getInstance());
+			GenomeWindow newGenomeWindow = new GenomeWindow(jtfGenomeWindow.getText(), ProjectManager.getInstance().getProjectChromosome());
 			if (!newGenomeWindow.equals(currentGenomeWindow)) {
 				int middlePosition = (int)newGenomeWindow.getMiddlePosition();
 				if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {

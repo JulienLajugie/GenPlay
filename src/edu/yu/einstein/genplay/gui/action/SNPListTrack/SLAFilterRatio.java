@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.SNPList.operation.SLOFilterRatio;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.TwoNumbersOptionPane;
@@ -90,7 +90,7 @@ public class SLAFilterRatio extends TrackListActionOperationWorker<SNPList> {
 		if (actionResult != null) {
 			int index = selectedTrack.getTrackNumber() - 1;
 			Track<?> newTrack = new SNPListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ConfigurationManager.getInstance().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
 		}		
 	}
 

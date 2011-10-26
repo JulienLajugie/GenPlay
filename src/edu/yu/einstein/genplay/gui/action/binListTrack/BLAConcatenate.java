@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.binListWriter.ConcatenateBinListWriter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.MultiTrackChooser;
@@ -77,7 +77,7 @@ public class BLAConcatenate extends TrackListActionWorker<Void> {
 		Track<?>[] selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getBinListTracks());
 		if (selectedTracks != null) {
 			// save dialog
-			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			jfc.setDialogTitle("Save As");

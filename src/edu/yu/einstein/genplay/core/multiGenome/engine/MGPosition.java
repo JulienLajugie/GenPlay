@@ -27,8 +27,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.ReferenceGenomeManager;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 
 /**
@@ -93,7 +93,7 @@ public class MGPosition implements Serializable {
 		if (chromosome != null) {
 			return chromosome.getName();
 		}
-		return ReferenceGenomeManager.getInstance().getReferenceName();
+		return ProjectManager.getInstance().getAssembly().getDisplayName();
 	}
 
 

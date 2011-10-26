@@ -45,7 +45,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 
@@ -259,7 +260,7 @@ public class CorrelationReportDialog extends JDialog {
 		super();
 		DecimalFormat df = new DecimalFormat("#.##");
 		Object[][] tableData = new Object[correlations.length][2];
-		ChromosomeManager cm = ChromosomeManager.getInstance();
+		ProjectChromosome cm = ProjectManager.getInstance().getProjectChromosome();
 		// we fill the correlation for each chromosome
 		for (int i = 0; i < cm.size(); i++) {
 			tableData[i][0] = cm.get(i);

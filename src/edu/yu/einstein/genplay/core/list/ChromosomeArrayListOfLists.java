@@ -27,8 +27,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
@@ -43,8 +44,18 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 	private static final long serialVersionUID = 3989560975472825193L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private ProjectChromosome projectChromosome; 						// Instance of the Chromosome Manager
 	
-	
+
+	/**
+	 * Constructor of {@link ChromosomeArrayListOfLists}.
+	 */
+	public ChromosomeArrayListOfLists() {
+		super();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+	}
+
+
 	/**
 	 * Saves the format version number during serialization
 	 * @param out
@@ -52,6 +63,7 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
 	}
 	
 	
@@ -63,18 +75,19 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
 	}
 	
 
 	@Override
 	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException {
-		get(ChromosomeManager.getInstance().getIndex(chromosome)).add(element);
+		get(projectChromosome.getIndex(chromosome)).add(element);
 	}
 
 
 	@Override
 	public List<T> get(Chromosome chromosome) throws InvalidChromosomeException {
-		return get(ChromosomeManager.getInstance().getIndex(chromosome));
+		return get(projectChromosome.getIndex(chromosome));
 	}
 
 
@@ -86,19 +99,19 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 	@Override
 	public T get(Chromosome chromosome, int index) throws InvalidChromosomeException {
-		return get(ChromosomeManager.getInstance().getIndex(chromosome)).get(index);
+		return get(projectChromosome.getIndex(chromosome)).get(index);
 	}
 
 
 	@Override
 	public void set(Chromosome chromosome, int index, T element) throws InvalidChromosomeException {
-		get(ChromosomeManager.getInstance().getIndex(chromosome)).set(index, element);
+		get(projectChromosome.getIndex(chromosome)).set(index, element);
 	}
 
 
 	@Override
 	public void set(Chromosome chromosome, List<T> list) throws InvalidChromosomeException {
-		set(ChromosomeManager.getInstance().getIndex(chromosome), list);
+		set(projectChromosome.getIndex(chromosome), list);
 	}
 
 
@@ -116,6 +129,6 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 
 	@Override
 	public int size(Chromosome chromosome) throws InvalidChromosomeException {
-		return get(ChromosomeManager.getInstance().getIndex(chromosome)).size();
+		return get(projectChromosome.getIndex(chromosome)).size();
 	}
 }

@@ -31,9 +31,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -53,7 +53,7 @@ public abstract class Extractor implements Serializable {
 	protected File 						logFile = null;			// log file
 	protected long 						startTime = 0;			// time at the beginning of the extraction
 	protected String					name = null;			// name
-	protected final ChromosomeManager 	chromosomeManager;		// ChromosomeManager
+	protected final ProjectChromosome 	projectChromosome;		// ChromosomeManager
 	private boolean[] 					selectedChromo = null;	// array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the ChromosomeManager
 	private boolean						isFileSorted = true;	// boolean indicating if the data file is sorted
 	private int		 					lastSelectedChromoIndex;// index of the last chromosome to extract
@@ -67,7 +67,7 @@ public abstract class Extractor implements Serializable {
 	public Extractor(File dataFile, File logFile) {
 		this.dataFile = dataFile;
 		this.logFile = logFile;
-		this.chromosomeManager = ChromosomeManager.getInstance();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.name = Utils.getFileNameWithoutExtension(dataFile);
 	}
 
@@ -80,7 +80,7 @@ public abstract class Extractor implements Serializable {
 		if (selectedChromo == null) {
 			return NEED_TO_BE_EXTRACTED;
 		} else {
-			int index = chromosomeManager.getIndex(chromosome);
+			int index = projectChromosome.getIndex(chromosome);
 			if ((index > lastSelectedChromoIndex) && isFileSorted) {
 				return AFTER_LAST_SELECTED;
 			} else {
@@ -174,16 +174,16 @@ public abstract class Extractor implements Serializable {
 
 	/**
 	 * Sets the chromosomes selected for the extraction
-	 * @param selectedChromosomes array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the {@link ChromosomeManager}	
+	 * @param selectedChromosomes array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the {@link ProjectChromosome}	
 	 */
 	public void setSelectedChromosomes(boolean[] selectedChromosomes) {
 		this.selectedChromo = selectedChromosomes;
 		// look for the index of the last selected chromosome
 		if (selectedChromo == null) {
-			lastSelectedChromoIndex = chromosomeManager.size() -1;
+			lastSelectedChromoIndex = projectChromosome.size() -1;
 		} else {
 			int lastIndex = 0;
-			for (int i = 0; i < chromosomeManager.size(); i++) {
+			for (int i = 0; i < projectChromosome.size(); i++) {
 				if (selectedChromo[i]) {
 					lastIndex = i;
 				}

@@ -19,13 +19,15 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 
 
@@ -43,7 +45,13 @@ public class ProjectManager implements Serializable {
 	private			String			genomeName;				// genome name
 	private  		Assembly 		assembly;				// assembly name
 	private			boolean			multiGenomeProject;		// True if it is a multi genome project, false if it is a simple genome project 
-	
+
+
+	private ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
+	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
+	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
+	private GenomeSynchronizer			genomeSynchronizer;			// Instance of the Genome Synchroniser
+
 
 	/**
 	 * Method used for serialization
@@ -57,6 +65,11 @@ public class ProjectManager implements Serializable {
 		out.writeObject(genomeName);
 		out.writeObject(assembly);
 		out.writeBoolean(multiGenomeProject);
+
+		out.writeObject(projectConfiguration);
+		out.writeObject(projectZoom);
+		out.writeObject(projectChromosome);
+		out.writeObject(genomeSynchronizer);
 	}
 
 
@@ -73,10 +86,16 @@ public class ProjectManager implements Serializable {
 		genomeName = (String) in.readObject();
 		assembly = (Assembly) in.readObject();
 		multiGenomeProject = in.readBoolean();
+
+		projectConfiguration = (ProjectConfiguration) in.readObject();
+		projectZoom = (ProjectZoom) in.readObject();
+		projectChromosome = (ProjectChromosome) in.readObject();
+		genomeSynchronizer = (GenomeSynchronizer) in.readObject();
+
 		instance = this;
 	}
-	
-	
+
+
 	/**
 	 * @return an instance of a {@link ProjectManager}. 
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
@@ -98,14 +117,77 @@ public class ProjectManager implements Serializable {
 	 */
 	private ProjectManager() {
 		multiGenomeProject = false;
+		projectConfiguration = new ProjectConfiguration();
+		projectZoom = new ProjectZoom();
+		projectChromosome = new ProjectChromosome();
 	}
 
+
+	/**
+	 * Updates the chromosome list
+	 */
+	public void updateChromosomeList () {
+		List<Chromosome> chromosomeList;
+		if (multiGenomeProject) {
+			chromosomeList = genomeSynchronizer.getMetaGenomeSynchroniser().getChromosomeList();
+		} else {
+			chromosomeList = getAssembly().getChromosomeList();
+		}
+		projectChromosome.setChromosomeList(chromosomeList);
+	}
+	
 
 	/**
 	 * @return the multiGenomeProject
 	 */
 	public boolean isMultiGenomeProject() {
 		return multiGenomeProject;
+	}
+
+
+	/**
+	 * @param multiGenomeProject the multiGenomeProject to set
+	 */
+	public void setMultiGenomeProject(boolean multiGenomeProject) {
+		this.multiGenomeProject = multiGenomeProject;
+		if (!multiGenomeProject) {
+			genomeSynchronizer = null;
+		}
+	}
+
+
+	/**
+	 * @return the Configuration Manager
+	 */
+	public ProjectConfiguration getProjectConfiguration () {
+		return projectConfiguration;
+	}
+
+
+	/**
+	 * @return the Zoom Manager
+	 */
+	public ProjectZoom getProjectZoom() {
+		return projectZoom;
+	}
+
+
+	/**
+	 * @return the chromosomeManager
+	 */
+	public ProjectChromosome getProjectChromosome() {
+		return projectChromosome;
+	}
+
+
+	/**
+	 * @return the genomeSynchroniser
+	 */
+	public GenomeSynchronizer getGenomeSynchronizer() {
+		if (multiGenomeProject && genomeSynchronizer == null) {
+			genomeSynchronizer = new GenomeSynchronizer(projectChromosome.getChromosomeList());
+		}
+		return genomeSynchronizer;
 	}
 
 
@@ -171,14 +253,5 @@ public class ProjectManager implements Serializable {
 	public void setAssembly(Assembly assembly) {
 		this.assembly = assembly;
 	}
-
-
-	/**
-	 * @param multiGenomeProject the multiGenomeProject to set
-	 */
-	public void setMultiGenomeProject(boolean multiGenomeProject) {
-		this.multiGenomeProject = multiGenomeProject;
-		ChromosomeManager.getInstance().setChromosomeList();
-	}
-
+	
 }

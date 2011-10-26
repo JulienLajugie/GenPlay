@@ -26,9 +26,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.Writer;
 import edu.yu.einstein.genplay.exception.BinListDifferentWindowSizeException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -100,7 +100,7 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 				}
 				writer.newLine();
 				
-				for (Chromosome currentChromo: ChromosomeManager.getInstance()) {					
+				for (Chromosome currentChromo: ProjectManager.getInstance().getProjectChromosome()) {					
 					int binCount = currentChromo.getLength() / binSize + 1; 
 					int j = 0;
 					while (j < binCount) {

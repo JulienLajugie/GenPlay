@@ -30,7 +30,7 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.Writer;
 import edu.yu.einstein.genplay.core.writer.WriterFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -83,7 +83,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 	@Override
 	protected Void processAction() throws Exception {
 		if (getTrackList().getSelectedTrack() != null) {
-			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			jfc.setDialogTitle("Save Track");

@@ -36,8 +36,7 @@ import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
@@ -114,7 +113,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			newTrack.getHistory().add(history, Color.GRAY);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
-			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes, multiGenomeStripes);
+			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, multiGenomeStripes);
 		}
 	}
 
@@ -178,7 +177,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters());
 		if (selectedFile != null) {			
 			return selectedFile;

@@ -26,8 +26,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
@@ -70,7 +70,7 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 		secondBaseCountList = new ChromosomeArrayListOfLists<Integer>();
 		isSecondBaseSignificantList = new ChromosomeArrayListOfLists<Boolean>();
 		// initialize the sublists
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			positionList.add(new IntArrayAsIntegerList());
 			firstBaseList.add(new ArrayList<Nucleotide>());
 			firstBaseCountList.add(new IntArrayAsIntegerList());
@@ -85,7 +85,7 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 	protected boolean extractLine(String line) throws InvalidDataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(line);
 		try {
-			Chromosome chromosome = chromosomeManager.get(splitedLine[0].trim()) ;
+			Chromosome chromosome = projectChromosome.get(splitedLine[0].trim()) ;
 			int chromosomeStatus = checkChromosomeStatus(chromosome);
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;

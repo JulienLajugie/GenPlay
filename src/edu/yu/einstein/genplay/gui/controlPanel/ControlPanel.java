@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.ZoomManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -181,7 +181,7 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	
 	/**
 	 * This method reinitializes the elements of the 
-	 * chromosome panel with the values of the {@link ChromosomeManager}. 
+	 * chromosome panel with the values of the {@link ProjectChromosome}. 
 	 * This method needs to be called when the chomosome manager changes.
 	 */
 	public void reinitChromosomePanel () {
@@ -193,7 +193,7 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	 * Zooms in
 	 */
 	public void zoomIn() {
-		int newZoom = ZoomManager.getInstance().getZoomIn(currentGenomeWindow.getSize());
+		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomIn(currentGenomeWindow.getSize());
 		zoomPanel.zoomChanged(newZoom);
 	}
 
@@ -202,7 +202,7 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	 * Zooms out
 	 */
 	public void zoomOut() {
-		int newZoom = ZoomManager.getInstance().getZoomOut(currentGenomeWindow.getSize());
+		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomOut(currentGenomeWindow.getSize());
 		zoomPanel.zoomChanged(newZoom);
 	}
 

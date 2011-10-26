@@ -31,7 +31,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.core.RNAPosToDNAPos.GeneRelativeToGenomePosition;
 import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.RNAPosToDNAPosOutputFileTypeDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
@@ -84,7 +84,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 		File fileOutput = null;
 
 
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		FileNameExtensionFilter textFileFilter = new FileNameExtensionFilter("Text file (*.txt)", "txt");
 		FileFilter[] fileFilters1 = {textFileFilter, new BedGraphFilter()};
 		fileData = Utils.chooseFileToLoad(parent, "Select Coverage File", defaultDirectory, fileFilters1);
@@ -99,7 +99,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 
 				if (rtddResult == RNAPosToDNAPosOutputFileTypeDialog.APPROVE_OPTION) {
 					if (outputFileType == RNAToDNAResultType.GDP) {
-						JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+						JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
 						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 						jfc.setDialogTitle("Select Output GDP File");
 						jfc.addChoosableFileFilter(new GdpGeneFilter());
@@ -109,7 +109,7 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 							fileOutput = Utils.addExtension(jfc.getSelectedFile(), "gdp");
 						}
 					} else {
-						JFileChooser jfc = new JFileChooser(ConfigurationManager.getInstance().getDefaultDirectory());
+						JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
 						jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 						jfc.setDialogTitle("Select Output BGR File");
 						jfc.addChoosableFileFilter(new BedGraphFilter());

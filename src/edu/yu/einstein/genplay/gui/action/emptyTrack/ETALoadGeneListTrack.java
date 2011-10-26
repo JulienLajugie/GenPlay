@@ -22,13 +22,13 @@
 package edu.yu.einstein.genplay.gui.action.emptyTrack;
 
 import java.io.File;
+
 import javax.swing.ActionMap;
+
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
@@ -70,7 +70,7 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(MultiGenomeManager.getInstance().getFormattedGenomeArray());
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
 			} else {
@@ -82,7 +82,7 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Gene Track", defaultDirectory, Utils.getReadableGeneFileFilters());
 		if (selectedFile != null) {
 			return selectedFile;
@@ -113,7 +113,7 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);
 			}
-			trackList.setTrack(selectedTrackIndex, newTrack, ConfigurationManager.getInstance().getTrackHeight(), name, stripes, multiGenomeStripes);
+			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, multiGenomeStripes);
 		}
 	}
 }

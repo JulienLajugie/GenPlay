@@ -25,7 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -89,13 +90,13 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 	/**
 	 * Creates an instance of {@link GenomeWindow} from a String. 
 	 * @param genomeWindowStr String following the format "chr:start-stop" (ex: "chr1:100-120")
-	 * @param chromosomeManager a {@link ChromosomeManager}
+	 * @param projectChromosome a {@link ProjectChromosome}
 	 * @throws ChromosomeWindowException
 	 * @throws InvalidChromosomeException
 	 */
-	public GenomeWindow(String genomeWindowStr, ChromosomeManager chromosomeManager) throws ChromosomeWindowException, InvalidChromosomeException {
+	public GenomeWindow(String genomeWindowStr, ProjectChromosome projectChromosome) throws ChromosomeWindowException, InvalidChromosomeException {
 		super(genomeWindowStr.split(":")[1].trim());
-		chromosome = chromosomeManager.get(genomeWindowStr.split(":")[0].trim());
+		chromosome = projectChromosome.get(genomeWindowStr.split(":")[0].trim());
 	}
 
 	

@@ -67,7 +67,7 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 		ObjectInputStream ois = new ObjectInputStream(gz);
 		extractedBinList = (BinList)ois.readObject();
 		for (int i = 0; i < extractedBinList.size(); i++) {
-			int chromoStatus = checkChromosomeStatus(chromosomeManager.get(i));
+			int chromoStatus = checkChromosomeStatus(projectChromosome.get(i));
 			if ((chromoStatus == AFTER_LAST_SELECTED) || (chromoStatus == NEED_TO_BE_SKIPPED)) {
 				extractedBinList.set(i, null);
 			}

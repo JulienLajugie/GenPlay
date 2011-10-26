@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.RNAPosToDNAPos;
 
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
@@ -59,7 +59,7 @@ public class FileDataLineForSorting implements Comparable<FileDataLineForSorting
 	 */
 	public int getChromosomeNumber() {
 		try {
-			return ChromosomeManager.getInstance().getIndex(getChromosomeName());
+			return ProjectManager.getInstance().getProjectChromosome().getIndex(getChromosomeName());
 		} catch (InvalidChromosomeException e) {
 			return 0;
 		}

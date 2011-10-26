@@ -29,8 +29,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.extractor.Extractor;
 import edu.yu.einstein.genplay.core.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.generator.Generator;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -117,7 +116,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	 * Retrieves the log file from the configuration manager and check if the file is valid / accessible
 	 */
 	private void retrieveLogFile() {
-		logFile = new File(ConfigurationManager.getInstance().getLogFile());
+		logFile = new File(ProjectManager.getInstance().getProjectConfiguration().getLogFile());
 		if (logFile != null) {
 			try {
 				logFile.createNewFile();

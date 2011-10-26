@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.SNP;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -81,7 +81,7 @@ public class SLORemoveSNPsNotInGenes implements Operation<SNPList> {
 		//final Map<SNP, Boolean> snpMap = createHashMap();
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<SNP>>> threadList = new ArrayList<Callable<List<SNP>>>();
-		for (final Chromosome currentChromosome: ChromosomeManager.getInstance()) {
+		for (final Chromosome currentChromosome: ProjectManager.getInstance().getProjectChromosome()) {
 			Callable<List<SNP>> currentThread = new Callable<List<SNP>>() {			
 				@Override
 				public List<SNP> call() throws Exception {

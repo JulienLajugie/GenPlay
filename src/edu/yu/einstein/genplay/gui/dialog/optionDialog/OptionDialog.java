@@ -48,7 +48,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.yu.einstein.genplay.core.DAS.DASServerListWriter;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
@@ -60,7 +61,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 
 	private static final long serialVersionUID = 4050757943368845382L; // Generated ID
 	private static final Dimension OPTION_DIALOG_DIMENSION = new Dimension(600, 400); // dimension of this window
-	private final ConfigurationManager 	cm; 				// A ConfigurationManager
+	private final ProjectConfiguration 	cm; 				// A ConfigurationManager
 	private final JTree 				jt; 				// Tree
 	private final JScrollPane 			jspTreeView; 		// Scroll pane containing the tree
 	private final JPanel 				jpOption; 			// Panel containing the different panel of configuration
@@ -95,7 +96,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	 */
 	public OptionDialog() {
 		super();
-		cm = ConfigurationManager.getInstance();
+		cm = ProjectManager.getInstance().getProjectConfiguration();
 		zoomFile = cm.getZoomFile();
 		logFile = cm.getLogFile();
 		dasServerListFile = cm.getDASServerListFile();

@@ -33,7 +33,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 
@@ -51,7 +52,7 @@ public final class ChromosomeChooser extends JDialog {
 	private static JCheckBox[] 				jcbChromos;					// Array of checkboxes, 1 per chromosome
 	private static JCheckBox 				jcbSelectAll;				// Checkbox used to check / unchecked all chromo
 	private static boolean 					validated;					// True if the button OK has been pressed
-	private static ChromosomeManager 		chromosomeManager;			// ChromosomeManager
+	private static ProjectChromosome 		projectChromosome;			// ChromosomeManager
 
 
 	/**
@@ -62,7 +63,7 @@ public final class ChromosomeChooser extends JDialog {
 		super();
 		setModal(true);
 		validated = false;
-		chromosomeManager = ChromosomeManager.getInstance();
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		initComponent();	
 		setTitle("Choose chromosomes");
 		getRootPane().setDefaultButton(jbOk);
@@ -77,7 +78,7 @@ public final class ChromosomeChooser extends JDialog {
 	 */
 	private void initComponent() {
 		jlChoose = new JLabel("Choose the chromosomes you want to study:");
-		jcbChromos = new JCheckBox[chromosomeManager.size()];
+		jcbChromos = new JCheckBox[projectChromosome.size()];
 
 		jcbSelectAll = new JCheckBox("Select All");
 		jcbSelectAll.addActionListener(new ActionListener() {
@@ -123,11 +124,11 @@ public final class ChromosomeChooser extends JDialog {
 		c.anchor = GridBagConstraints.LINE_START;
 		int y = 1;
 		short k = 0;
-		while(k < chromosomeManager.size()) {
+		while(k < projectChromosome.size()) {
 			int x = 0;
 			c.gridy = y;
-			while((k < chromosomeManager.size()) && (x < 4)) {
-				jcbChromos[k] = new JCheckBox(chromosomeManager.get(k).getName());
+			while((k < projectChromosome.size()) && (x < 4)) {
+				jcbChromos[k] = new JCheckBox(projectChromosome.get(k).getName());
 				jcbChromos[k].addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -162,7 +163,7 @@ public final class ChromosomeChooser extends JDialog {
 	 */
 	private void jcbSelectAllItemStateChanged() {
 		boolean selectAll = jcbSelectAll.isSelected();
-		for(int i = 0; i < chromosomeManager.size(); i++) {
+		for(int i = 0; i < projectChromosome.size(); i++) {
 			jcbChromos[i].setSelected(selectAll); 
 		}
 		jcbSelectAll.setEnabled(true);
@@ -226,12 +227,12 @@ public final class ChromosomeChooser extends JDialog {
 		
 		CCOP.setVisible(true);	
 		if(validated) {
-			boolean[] returnArray = new boolean[chromosomeManager.size()];
-			for(int i = 0; i < chromosomeManager.size(); i++) {
+			boolean[] returnArray = new boolean[projectChromosome.size()];
+			for(int i = 0; i < projectChromosome.size(); i++) {
 				returnArray[i] = false;
 
 			}
-			for(int i = 0; i < chromosomeManager.size(); i++) {
+			for(int i = 0; i < projectChromosome.size(); i++) {
 				returnArray[i] = jcbChromos[i].isSelected();
 			}			
 			return returnArray;
@@ -261,12 +262,12 @@ public final class ChromosomeChooser extends JDialog {
 		CCOP.setVisible(true);	
 
 		if(validated) {
-			boolean[] returnArray = new boolean[chromosomeManager.size()];
-			for(int i = 0; i < chromosomeManager.size(); i++) {
+			boolean[] returnArray = new boolean[projectChromosome.size()];
+			for(int i = 0; i < projectChromosome.size(); i++) {
 				returnArray[i] = false;
 
 			}
-			for(int i = 0; i < chromosomeManager.size(); i++) {
+			for(int i = 0; i < projectChromosome.size(); i++) {
 				returnArray[i] = jcbChromos[i].isSelected();
 			}			
 			return returnArray;

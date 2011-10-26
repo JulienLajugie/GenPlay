@@ -36,12 +36,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -55,7 +56,8 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 
 	private static final long serialVersionUID = 1068181566225377150L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final int 	MIN_DISTANCE_BETWEEN_2_GENES = 5;		// minimum distance in pixel between two genes 
+	private static final int 	MIN_DISTANCE_BETWEEN_2_GENES = 5;		// minimum distance in pixel between two genes
+	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
 	private FontMetrics			fontMetrics = null;						// dimension of the font used to print the name of the genes
 	private String				searchURL = null;						// URL of the gene database
 	private GeneSearcher		geneSearcher = null;					// object used to search genes
@@ -68,6 +70,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
 		out.writeObject(fontMetrics);
 		out.writeObject(searchURL);
 	}
@@ -81,6 +84,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
 		fontMetrics = (FontMetrics) in.readObject(); 
 		searchURL = (String) in.readObject();
 		geneSearcher = null;
@@ -99,10 +103,9 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	 */
 	public GeneList(Collection<? extends List<Gene>> data) {
 		addAll(data);
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// add the eventual missing chromosomes
-		if (size() < chromosomeManager.size()) {
-			for (int i = size(); i < chromosomeManager.size(); i++){
+		if (size() < projectChromosome.size()) {
+			for (int i = size(); i < projectChromosome.size(); i++){
 				add(null);
 			}
 		}
@@ -124,9 +127,8 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 	public GeneList(Collection<? extends List<Gene>> data, String searchURL) {
 		addAll(data);
 		// add the eventual missing chromosomes
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		if (size() < chromosomeManager.size()) {
-			for (int i = size(); i < chromosomeManager.size(); i++){
+		if (size() < projectChromosome.size()) {
+			for (int i = size(); i < projectChromosome.size(); i++){
 				add(null);
 			}
 		}
@@ -165,9 +167,8 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
-		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {			
+		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();
+		for(final Chromosome currentChromosome : projectChromosome) {			
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
 				@Override
 				public List<Gene> call() throws Exception {
@@ -246,8 +247,7 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<Gene>>> threadList = new ArrayList<Callable<List<Gene>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {			
+		for(final Chromosome currentChromosome : projectChromosome) {			
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {	
 				@Override
 				public List<Gene> call() throws Exception {

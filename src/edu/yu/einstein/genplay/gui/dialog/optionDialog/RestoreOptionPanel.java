@@ -52,7 +52,7 @@ final class RestoreOptionPanel extends OptionPanel {
 		jbRestore.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				configurationManager.restoreDefault();
+				projectConfiguration.restoreDefault();
 				firePropertyChange("reset", false, true);
 			}
 		});

@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.SNPList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -33,13 +34,14 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.SNP;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
@@ -53,18 +55,42 @@ import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements Serializable {
 
 	private static final long serialVersionUID = 5581991460611158113L;	// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
+
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(projectChromosome);
+	}
 
 
+	/**
+	 * Method used for unserialization.
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		projectChromosome = (ProjectChromosome) in.readObject();
+	}
+	
+	
 	/**
 	 * Creates an instance of {@link SNPList} containing the specified data.
 	 * @param data data of the list 
 	 */
 	public SNPList(Collection<? extends List<SNP>> data) {
 		addAll(data);
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
 		// add the eventual missing chromosomes
-		if (size() < chromosomeManager.size()) {
-			for (int i = size(); i < chromosomeManager.size(); i++){
+		if (size() < projectChromosome.size()) {
+			for (int i = size(); i < projectChromosome.size(); i++){
 				add(null);
 			}
 		}
@@ -98,8 +124,7 @@ public class SNPList extends DisplayableListOfLists<SNP, List<SNP>> implements S
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<SNP>>> threadList = new ArrayList<Callable<List<SNP>>>();		
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
-		for(final Chromosome currentChromosome : chromosomeManager) {			
+		for(final Chromosome currentChromosome : projectChromosome) {			
 			Callable<List<SNP>> currentThread = new Callable<List<SNP>>() {	
 				@Override
 				public List<SNP> call() throws Exception {

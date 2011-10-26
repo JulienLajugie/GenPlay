@@ -30,7 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
@@ -52,9 +53,9 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 
 	/**
 	 * Private constructor of the singleton class {@link OperationPool}
-	 * @param chromosomeManager a {@link ChromosomeManager}
+	 * @param projectChromosome a {@link ProjectChromosome}
 	 */
-	private OperationPool(ChromosomeManager chromosomeManager) {
+	private OperationPool(ProjectChromosome projectChromosome) {
 		super();
 		progressListeners = new ArrayList<OperationProgressListener>();
 	}
@@ -65,7 +66,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	 */
 	public static OperationPool getInstance() {
 		if (instance == null) {
-			instance = new OperationPool(ChromosomeManager.getInstance());
+			instance = new OperationPool(ProjectManager.getInstance().getProjectChromosome());
 		}
 		return instance;
 	}
@@ -100,7 +101,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	 * @throws ExecutionException
 	 */
 	public synchronized <T> List<T> startPool(Collection<? extends Callable<T>> threads) throws InterruptedException, ExecutionException {
-		ChromosomeManager chromosomeManager = ChromosomeManager.getInstance();
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		int nbProcessor = Runtime.getRuntime().availableProcessors();
 		executor = Executors.newFixedThreadPool(nbProcessor);
 		// notify the listeners that the operation starts
@@ -132,12 +133,12 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			// compute the completion and check if everything's done 
 			for (short i = 0; i < futures.size(); i++) {
 				if (futures.get(i).isDone() || futures.get(i).isCancelled()) {
-					done += chromosomeManager.get(i).getLength();					
+					done += projectChromosome.get(i).getLength();					
 				} else {
 					stillAlive = true;
 				}
 			}
-			long genomeLength = chromosomeManager.getGenomeLength();
+			long genomeLength = projectChromosome.getGenomeLength();
 			double completion = 0;
 			if (genomeLength != 0) {
 				completion = (done / (double) genomeLength) * 100d;

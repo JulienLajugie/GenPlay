@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -111,7 +111,7 @@ public class GLOExtractIntervals implements Operation<GeneList> {
 
 		for(short i = 0; i < geneList.size(); i++) {
 			final List<Gene> currentList = geneList.get(i);
-			final int chromoLength = ChromosomeManager.getInstance().get(i).getLength();
+			final int chromoLength = ProjectManager.getInstance().getProjectChromosome().get(i).getLength();
 
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override

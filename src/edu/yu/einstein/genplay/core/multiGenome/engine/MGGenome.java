@@ -26,12 +26,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.Chromosome;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.multiGenomeManager.MultiGenomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 
@@ -87,7 +88,7 @@ public class MGGenome implements Serializable {
 	protected MGGenome (String genomeName) {
 		this.genomeName = genomeName;
 		genomeInformation = new HashMap<Chromosome, MGChromosome>();
-		for (Chromosome chromosome: ChromosomeManager.getInstance().getCurrentMultiGenomeChromosomeList().values()) {
+		for (Chromosome chromosome: ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList()) {
 			genomeInformation.put(chromosome, new MGChromosome(this, chromosome));
 		}
 	}
@@ -120,10 +121,36 @@ public class MGGenome implements Serializable {
 	 */
 	protected MGChromosome getChromosomeInformation (Chromosome chromosome) {
 		if (genomeInformation.get(chromosome) == null &&
-				MultiGenomeManager.CHROMOSOME_LOADING_OPTION == MultiGenomeManager.SEQUENTIAL) {
+				ProjectChromosome.CHROMOSOME_LOADING_OPTION == ProjectChromosome.SEQUENTIAL) {
 			System.err.println("A null pointer exception can appear because of the CHROMOSOME_LOADING_OPTION set to SEQUENTIAL");
 		}
 		return genomeInformation.get(chromosome);
+	}
+	
+	
+	/**
+	 * Refreshes chromosome references from a chromosome list information.
+	 * @param chromosomeList the chromosome list
+	 */
+	protected void refreshChromosomeReferences (List<Chromosome> chromosomeList) {
+		//System.out.println("----- Genome name: " + genomeName);
+		Map<Chromosome, MGChromosome> newGenomeInformation = new HashMap<Chromosome, MGChromosome>();
+		
+		for (Chromosome newChromosome: chromosomeList) {
+			
+			for (Chromosome previousChromosome: genomeInformation.keySet()) {
+				
+				if (newChromosome.getName().equals(previousChromosome.getName())) {
+					MGChromosome mgChromosome = genomeInformation.get(previousChromosome);
+					newGenomeInformation.put(newChromosome, mgChromosome);
+					
+					//System.out.println(previousChromosome.getName() + " (" + previousChromosome.getLength() + ") -> " + 
+							//newChromosome.getName() + " (" + newChromosome.getLength() + ")");
+				}
+			}
+		}
+		
+		genomeInformation = newGenomeInformation;
 	}
 
 

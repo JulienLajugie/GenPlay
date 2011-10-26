@@ -34,7 +34,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 
@@ -66,7 +66,7 @@ public class SPALoadData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String defaultDirectoryPath = ConfigurationManager.getInstance().getDefaultDirectory();		
+		String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();		
 		JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");

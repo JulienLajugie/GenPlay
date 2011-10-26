@@ -29,8 +29,8 @@ import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -92,7 +92,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	@Override
 	protected Track<?>[] processAction() throws Exception {
 		if (!skipFileSelection) {
-			String defaultDirectory = ConfigurationManager.getInstance().getDefaultDirectory();
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
 			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
 			if (selectedFile == null) {

@@ -25,11 +25,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.Chromosome;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -46,7 +47,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	
 	private static final long serialVersionUID = -4066526880193456101L;
-	protected 	final 	ChromosomeManager 					chromosomeManager;	//ChromosomeManager
+	protected 	final 	ProjectChromosome 					projectChromosome;	//ChromosomeManager
 	private 	final 	List<ChromosomeListOfLists<?>> 		scwList;			//list containing originals lists
 	private 			List<SCWLTwoTracksEngine>			twoTracksEngineList;
 	
@@ -60,12 +61,12 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	public SCWLTwoTracksManagement (	ChromosomeListOfLists<?> list1,
 										ChromosomeListOfLists<?> list2,
 										ScoreCalculationTwoTrackMethod scm) {
-		this.chromosomeManager = ChromosomeManager.getInstance();
+		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.scwList = new ArrayList<ChromosomeListOfLists<?>>();
 		this.scwList.add(list1);
 		this.scwList.add(list2);
 		this.twoTracksEngineList = new ArrayList<SCWLTwoTracksEngine>();
-		for (int i = 0; i < chromosomeManager.size(); i++) {
+		for (int i = 0; i < projectChromosome.size(); i++) {
 			this.twoTracksEngineList.add(new SCWLTwoTracksEngine(scm));
 		}
 	}
@@ -75,7 +76,7 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	 * @param chromosome the chromosome
 	 */
 	public void run(Chromosome chromosome) {
-		this.twoTracksEngineList.get(chromosomeManager.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
+		this.twoTracksEngineList.get(projectChromosome.getIndex(chromosome)).init(scwList.get(0), scwList.get(1), chromosome);
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	 * @return the new list of scored chromosome window
 	 */
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
-		return this.twoTracksEngineList.get(chromosomeManager.getIndex(chromosome)).getList();
+		return this.twoTracksEngineList.get(projectChromosome.getIndex(chromosome)).getList();
 	}
 
 	@Override

@@ -111,17 +111,23 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		return null;
 	}
 
-	
+
 	/**
 	 * @param line line from the data file
 	 * @return true if the line contains actual data. False otherwise
 	 */
 	private boolean isDataLine(String line) {
+		// This first block is the latest isDataLine method implementation (version > 450)
+		// That version does not work with SAM files from Eric
+		// In order to make it working and in a temporary way, this method return true by default.
+
+		
 		// the following line is an optimization:
 		// if the line starts with chr it's a data line so we skip the other tests
 		if ((line.length() >= 3) && (line.substring(0, 3).equalsIgnoreCase("chr"))) {
 			return true;
 		}
+		// empty line
 		if (line.length() == 0) {
 			return false;
 		}
@@ -137,9 +143,43 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		if ((line.length() >= 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
 			return false;
 		}
-		return false;		
+		
+		//return false;
+		return true; // This is a modification compare to the original version
+		
+
+		// This second block is the isDataLine method implementation of the version 450
+		// It works with SAM files from Eric
+
+		/*
+		boolean isDataLine = true;
+		// the following line is an optimization:
+		// if the line starts with chr it's a data line so we skip the other tests
+		if ((line.length() <= 2) || (!line.substring(0, 3).equalsIgnoreCase("chr"))) {
+			// case when the line is empty
+			if (line.length() == 0) {
+				isDataLine = false;
+			} else if (line.charAt(0) == '#') {
+				// comment line
+				isDataLine = false;
+			} else if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
+				// browser line
+				isDataLine = false;
+			} else if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
+				// track line
+				isDataLine = false;
+				String[] splitedLine = line.split(" ");
+				for (String currentOption: splitedLine) {					
+					if ((currentOption.trim().length() > 4) && (currentOption.trim().substring(0, 4).equalsIgnoreCase("name"))) {
+						name = currentOption.substring(5).trim();
+					}
+				}
+			}
+		}
+		return isDataLine;
+		 */
 	}
-	
+
 
 	/**
 	 * @param line line from the data file
@@ -151,8 +191,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		}
 		return false;
 	}	
-	
-	
+
+
 	/**
 	 * Extracts the data from a line. 
 	 * @param line a line from the data file that is not a header line. 

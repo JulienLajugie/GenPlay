@@ -27,11 +27,12 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import edu.yu.einstein.genplay.core.Chromosome;
+
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 
 /**
  * This class contains assembly information
@@ -41,12 +42,12 @@ public class Assembly implements Serializable {
 
 	private static final long serialVersionUID = -1933285290898527392L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private Map<String, Chromosome>	chromosomeList;
+	private List<Chromosome>		chromosomeList;
 	private String 					name;
 	private Date 					date;
 	private String 					indexName;
 	private SimpleDateFormat 		sdf;
-	private long 					genomomeLength = 0;
+	private long 					genomeLength = 0;
 	
 	
 	/**
@@ -61,7 +62,7 @@ public class Assembly implements Serializable {
 		out.writeObject(date);
 		out.writeObject(indexName);
 		out.writeObject(sdf);
-		out.writeLong(genomomeLength);
+		out.writeLong(genomeLength);
 	}
 
 
@@ -74,12 +75,12 @@ public class Assembly implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		chromosomeList = (Map<String, Chromosome>) in.readObject();
+		chromosomeList = (List<Chromosome>) in.readObject();
 		name = (String) in.readObject();
 		date = (Date) in.readObject();
 		indexName = (String) in.readObject();
 		sdf = (SimpleDateFormat) in.readObject();
-		genomomeLength = in.readLong();
+		genomeLength = in.readLong();
 	}
 	
 	
@@ -89,7 +90,7 @@ public class Assembly implements Serializable {
 	 * @param date	date of build of the assembly
 	 */
 	public Assembly (String name, String date) {
-		chromosomeList = new HashMap<String, Chromosome>();
+		chromosomeList = new ArrayList<Chromosome>();
 		this.name = name;
 		sdf = new SimpleDateFormat("MM yyyy", Locale.US);
 		try {
@@ -107,7 +108,7 @@ public class Assembly implements Serializable {
 	/**
 	 * @return the list of chromosome
 	 */
-	public Map<String, Chromosome> getChromosomeList() {
+	public List<Chromosome> getChromosomeList() {
 		return chromosomeList;
 	}
 	
@@ -115,7 +116,7 @@ public class Assembly implements Serializable {
 	/**
 	 * @param chromosomeList the new chromosome list
 	 */
-	public void setChromosomeList(Map<String, Chromosome> chromosomeList) {
+	public void setChromosomeList(List<Chromosome> chromosomeList) {
 		this.chromosomeList = chromosomeList;
 		computeGenomeSize();
 	}
@@ -125,9 +126,9 @@ public class Assembly implements Serializable {
 	 * Compute the size of the genome
 	 */
 	private synchronized void computeGenomeSize() {
-		genomomeLength = 0;
-		for (Chromosome currenChromosome: chromosomeList.values()) {
-			genomomeLength += currenChromosome.getLength();
+		genomeLength = 0;
+		for (Chromosome currenChromosome: chromosomeList) {
+			genomeLength += currenChromosome.getLength();
 		}
 	}
 	
@@ -170,7 +171,7 @@ public class Assembly implements Serializable {
 	 * @return the length of the genome in bp
 	 */
 	public long getGenomeLength() {
-		return genomomeLength;
+		return genomeLength;
 	}
 	
 	

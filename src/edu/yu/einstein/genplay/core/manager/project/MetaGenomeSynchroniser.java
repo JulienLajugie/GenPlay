@@ -19,16 +19,18 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager.multiGenomeManager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import edu.yu.einstein.genplay.core.Chromosome;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
+
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 
 
 /**
@@ -37,13 +39,12 @@ import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MetaGenomeManager implements Serializable {
+public class MetaGenomeSynchroniser implements Serializable {
 
 	private static final long serialVersionUID = 8473172631163790164L; 	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static 	MetaGenomeManager 			instance;				// The instance of the class
 	private 		Map<Chromosome, Integer> 	chromosomeLength;		// The chromosome length list
-	private			Map<String, Chromosome> 	chromosomeList;			// The chromosome list for multi genome project
+	private			List<Chromosome> 			chromosomeList;			// The chromosome list for multi genome project
 	private 		long 						genomomeLength = 0;		// Genome length
 
 
@@ -70,59 +71,42 @@ public class MetaGenomeManager implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		chromosomeLength = (Map<Chromosome, Integer>) in.readObject();
-		chromosomeList = (Map<String, Chromosome>) in.readObject();
+		chromosomeList = (List<Chromosome>) in.readObject();
 		genomomeLength = in.readLong();
-		instance = this;
 	}
 	
 	
 	/**
-	 * Constructor of {@link MetaGenomeManager}
+	 * Constructor of {@link MetaGenomeSynchroniser}
 	 */
-	private MetaGenomeManager () {}
-
-
-	/**
-	 * @return the instance of the singleton {@link MetaGenomeManager}.
-	 */
-	public static MetaGenomeManager getInstance () {
-		if (instance == null) {
-			instance = new MetaGenomeManager();
-		}
-		return instance;
+	protected MetaGenomeSynchroniser (List<Chromosome> chromosomeList) {
+		initializeMetaGenomeSynchronizer(chromosomeList);
 	}
 
-
+	
 	/**
-	 * Initializes the chromosome length.
-	 * The minimum length for a meta genome chromosome is the length from the reference chromosome.
+	 * Initializes basic meta genome synchronizer parameters.
+	 * The list of chromosome and the list of their length to native value.
+	 * @param chromosomeListTmp
 	 */
-	public void initializeChromosomeLength () {
+	private void initializeMetaGenomeSynchronizer (List<Chromosome> chromosomeListTmp) {
+		chromosomeList = new ArrayList<Chromosome>();
 		chromosomeLength = new HashMap<Chromosome, Integer>();
-		for (Chromosome chromosome: ChromosomeManager.getInstance().getChromosomeList().values()) {
+		for (Chromosome chromosome: chromosomeListTmp) {
+			chromosomeList.add(new Chromosome(chromosome.getName(), chromosome.getLength()));
 			chromosomeLength.put(chromosome, chromosome.getLength());
 		}
-
 	}
 
 
 	/**
 	 * Compute the size of the genome
 	 */
-	public synchronized void computeGenomeSize() {
+	protected synchronized void computeGenomeSize() {
 		genomomeLength = 0;
 		for (Integer length: chromosomeLength.values()) {
 			genomomeLength += length;
 		}
-	}
-
-
-	/**
-	 * @param chromosome the chromosome
-	 * @return the chromosome length
-	 */
-	public Integer getChromosomeLength (Chromosome chromosome) {
-		return chromosomeLength.get(chromosome);
 	}
 
 
@@ -132,37 +116,41 @@ public class MetaGenomeManager implements Serializable {
 	 * @param chromosome the chromosome
 	 * @param length	the length to add
 	 */
-	public void updateChromosomeLength (Chromosome chromosome, int length) {
+	protected void updateChromosomeLength (Chromosome chromosome, int length) {
 		chromosomeLength.put(chromosome, chromosomeLength.get(chromosome) + length);
 	}
 
 
 	/**
-	 * Initializes the chromosome list
+	 * Refreshes chromosome references re-creating list with right chromosomes with right lengths.
 	 */
-	public void initChromosomeList () {
-		chromosomeList = new HashMap<String, Chromosome>();
-		for (Chromosome chromosome: ChromosomeManager.getInstance().getChromosomeList().values()) {
-			chromosomeList.put(chromosome.getName().toLowerCase(), new Chromosome(chromosome.getName(), chromosome.getLength()));
+	protected void refreshChromosomeReferences () {
+		
+		// Initializes temporary lists
+		List<Chromosome> chromosomeListTmp = new ArrayList<Chromosome>();
+		Map<Chromosome, Integer> chromosomeLengthTmp = new HashMap<Chromosome, Integer>();
+		
+		// For every chromosome of the project
+		for (Chromosome chromosome: chromosomeList) {
+			
+			// Creates a new chromosome with the right length
+			Chromosome newChromosome = new Chromosome(chromosome.getName(), chromosomeLength.get(chromosome));
+			
+			// Adds it to the temporary lists
+			chromosomeListTmp.add(newChromosome);
+			chromosomeLengthTmp.put(newChromosome, chromosomeLength.get(chromosome));
 		}
-	}
-
-
-	/**
-	 * Updates the chromosome list.
-	 * It consists on set new chromosome lengths.
-	 */
-	public void updateChromosomeList () {
-		for (Chromosome chromosome: chromosomeLength.keySet()) {
-			chromosomeList.get(chromosome.getName()).setLength(chromosomeLength.get(chromosome));
-		}
+		
+		// Replaces previous list using the new ones
+		chromosomeList = chromosomeListTmp;
+		chromosomeLength = chromosomeLengthTmp;
 	}
 
 
 	/**
 	 * @return the chromosome list
 	 */
-	public Map<String, Chromosome> getChromosomeList () {
+	protected List<Chromosome> getChromosomeList () {
 		return chromosomeList;
 	}
 
@@ -170,7 +158,7 @@ public class MetaGenomeManager implements Serializable {
 	/**
 	 * @return the length of the genome in bp
 	 */
-	public long getGenomeLength() {
+	protected long getGenomeLength() {
 		return genomomeLength;
 	}
 
@@ -184,8 +172,8 @@ public class MetaGenomeManager implements Serializable {
 			System.out.println(chromosome.getName() + ", " + chromosome.getLength() + ", " + chromosomeLength.get(chromosome));
 		}
 		System.out.println("========== chromosomeList");
-		for (String name: chromosomeList.keySet()) {
-			System.out.println(chromosomeList.get(name).getName() + ", " + chromosomeList.get(name).getLength());
+		for (Chromosome chromosome: chromosomeList) {
+			System.out.println(chromosome.getName() + ", " + chromosome.getLength());
 		}
 	}
 }

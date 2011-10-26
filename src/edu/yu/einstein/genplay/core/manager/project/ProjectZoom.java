@@ -19,13 +19,12 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager;
+package edu.yu.einstein.genplay.core.manager.project;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,10 +36,9 @@ import java.util.Arrays;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ZoomManager implements Serializable {
+public final class ProjectZoom implements Serializable {
 
 	private static final long serialVersionUID = -1885523812708037537L;	// generated ID
-	private static ZoomManager instance = null;		// unique instance of the singleton
 	
 	private static final int[] DEFAULT_ZOOM = 
 	{10, 20, 50, 
@@ -52,28 +50,12 @@ public final class ZoomManager implements Serializable {
 		10000000, 20000000,	50000000, 
 		100000000, 200000000, 500000000 };				// default zooms
 	private int[] 			zoomSizes = DEFAULT_ZOOM;	// the different zoom sizes available
-
-
-	/**
-	 * @return an instance of a {@link ZoomManager}. 
-	 * Makes sure that there is only one unique instance as specified in the singleton pattern
-	 */
-	public static ZoomManager getInstance() {
-		if (instance == null) {
-			synchronized(ZoomManager.class) {
-				if (instance == null) {
-					instance = new ZoomManager();
-				}
-			}
-		}
-		return instance;
-	}
-
+	
 	
 	/**
-	 * Private constructor of the singleton. Creates an instance of a {@link ZoomManager}.
+	 * Constructor of {@link ProjectZoom}.
 	 */
-	private ZoomManager() {
+	protected ProjectZoom() {
 		super();
 	}
 	
@@ -172,17 +154,4 @@ public final class ZoomManager implements Serializable {
 		}	
 	}
 
-
-	/**
-	 * Methods used for the serialization of the singleton object.
-	 * The readResolve method is called when ObjectInputStream has 
-	 * read an object from the stream and is preparing to return it 
-	 * to the caller.
-	 * See javadocs for more information
-	 * @return the unique instance of the singleton
-	 * @throws ObjectStreamException
-	 */
-	private Object readResolve() throws ObjectStreamException {
-		return getInstance();
-	}
 }

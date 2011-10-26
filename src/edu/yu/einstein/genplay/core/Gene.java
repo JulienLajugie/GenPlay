@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core;
 
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Strand;
 
 

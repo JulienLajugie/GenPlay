@@ -42,13 +42,13 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import edu.yu.einstein.genplay.core.Chromosome;
+
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.manager.ChromosomeManager;
-import edu.yu.einstein.genplay.core.manager.ConfigurationManager;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.manager.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
@@ -92,6 +92,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
 
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
+	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
 	private final 	Image 				iconImage; 			// icon of the application
 	private 		Ruler 				ruler; 				// Ruler component
 	private 		TrackList 			trackList; 			// TrackList component
@@ -124,12 +125,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		iconImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH));
 		setIconImage(iconImage);
 
-		ChromosomeManager instance = ChromosomeManager.getInstance();
+		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 
 		setTitle();
 
-		Chromosome chromosome = instance.get(0);
-		instance.setCurrentChromosome(chromosome);
+		Chromosome chromosome = projectChromosome.get(0);
+		projectChromosome.setCurrentChromosome(chromosome);
 		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
 		ruler = new Ruler(genomeWindow);
 		ruler.getOptionButton().addActionListener(this);
@@ -195,7 +196,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			loader.setSkipFileSelection(true);
 			loader.actionPerformed(null);
 		}
-		initMultiGenome();
 	}
 
 
@@ -237,14 +237,20 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		ChromosomeManager cm = ChromosomeManager.getInstance();
 		// if the chromosome changed we reinitialize the multigenome data
-		if ((cm.getCurrentChromosome() == null) ||
-				(!cm.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
-			cm.setCurrentChromosome(evt.getNewWindow().getChromosome());
-			initMultiGenome();
+		if ((projectChromosome.getCurrentChromosome() == null) ||
+				(!projectChromosome.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
+			projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
+			ProjectManager projectManager = ProjectManager.getInstance();
+			if (projectManager.isMultiGenomeProject()) {
+				if (ProjectChromosome.CHROMOSOME_LOADING_OPTION == ProjectChromosome.SEQUENTIAL) {
+					System.out.println("genomeWindowChanged");
+					PAMultiGenome multiGenome = new PAMultiGenome();
+					multiGenome.actionPerformed(null);
+				}
+			}
 		}
-		
+
 		if (evt.getSource() != ruler) {
 			ruler.setGenomeWindow(evt.getNewWindow());
 		}
@@ -253,14 +259,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		}
 		if (evt.getSource() != controlPanel) {
 			controlPanel.setGenomeWindow(evt.getNewWindow());
-		}
-	}
-
-
-	private void initMultiGenome () {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			PAMultiGenome process = new PAMultiGenome();
-			process.actionPerformed(null);
 		}
 	}
 
@@ -381,7 +379,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	private void setLookAndFeel() {
 		try {
-			UIManager.setLookAndFeel(ConfigurationManager.getInstance().getLookAndFeel());
+			UIManager.setLookAndFeel(ProjectManager.getInstance().getProjectConfiguration().getLookAndFeel());
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (Exception e) {
 			ExceptionManager.handleException(getRootPane(), e, "Error while loading the look and feel specified in the config file");
@@ -444,13 +442,13 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 
 	/**
-	 * Reinit the {@link ChromosomeManager} and the chromosome panel of the {@link ControlPanel} if needed 
+	 * Reinit the {@link ProjectChromosome} and the chromosome panel of the {@link ControlPanel} if needed 
 	 */
 	public static void reinit() {
 		// if instance is null the mainframe has never been initialized
 		// so there is no need to do a reinit
 		if (instance != null) {
-			ChromosomeManager.getInstance().setChromosomeList();
+			ProjectManager.getInstance().updateChromosomeList();
 			instance.getControlPanel().reinitChromosomePanel();
 			instance.getTrackList().resetTrackList();
 			instance.setTitle();
