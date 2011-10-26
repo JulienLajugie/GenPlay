@@ -37,10 +37,16 @@ public class ChromosomeComparator implements Comparator<String> {
 	
 	@Override
 	public int compare(String o1, String o2) {
+		// Initializes the character score map
 		initCharScore();
+		
+		// Checks first if the pattern "chr" starts at least one of the two strings
 		if (chrExists(o1, o2)){
+			// if yes, we compare the chromosome names
 			return chrComparator(o1, o2);
+			
 		} else {
+			// if not, we compare characters of both strings starting from 0 (the beginning)
 			return charComparator(o1, o2, 0);
 		}
 	}
@@ -62,10 +68,10 @@ public class ChromosomeComparator implements Comparator<String> {
 	
 	
 	/**
-	 * Looks for "chr" string qt the beginning of chromosome name
+	 * Looks for "chr" string at the beginning of the chromosome name
 	 * @param o1	first object to compare
 	 * @param o2	second object to compare
-	 * @return		true if "chr" string exists in one or both of the input object.
+	 * @return		true if "chr" string exists in at least one input object.
 	 */
 	private boolean chrExists (String o1, String o2) {
 		if (o1.substring(0, 3).equals("chr") || o2.substring(0, 3).equals("chr")){
@@ -82,22 +88,32 @@ public class ChromosomeComparator implements Comparator<String> {
 	 * @return		-1 if o1<o2 / 0 if o1=o2 / 1 if o1>o2
 	 */
 	private int chrComparator (String o1, String o2) {
+		
+		// If both strings start with "chr".
 		if (o1.substring(0, 3).equals("chr") && o2.substring(0, 3).equals("chr")){
-			Integer i1 = getIntegerPart(o1, 3);
-			Integer i2 = getIntegerPart(o2, 3);
-			if (i1 != -1 && i2 !=-1) {
-				return i1.compareTo(i2);
-			} else if (i1 != -1 && i2 == -1) {
-				return -1;
-			} else if (i1 == -1 && i2 != -1) {
-				return 1;
-			} else {
-				return charComparator(o1, o2, 3);
+			Integer i1 = getIntegerPart(o1, 3);		// gets the integer after "chr" in the first string
+			Integer i2 = getIntegerPart(o2, 3);		// gets the integer after "chr" in the second string
+			
+			if (i1 != null && i2 != null) {			// If both strings have an integer after "chr",
+				return i1.compareTo(i2);			// integers are compared.
+				
+			} else if (i1 != null && i2 == null) {	// If the first string has an integer but not the second string
+				return -1;							// the first string must be before in the list.
+				
+			} else if (i1 == null && i2 != null) {	// If the first string has not an integer but the second string has
+				return 1;							// the second string must be before in the list.
+				
+			} else {								// If both have no integer,
+				return charComparator(o1, o2, 3);	// we compare the character.
 			}
+			
+		// If only the first string starts with "chr".
 		} else if (o1.substring(0, 3).equals("chr") && !o2.substring(0, 3).equals("chr")){
-			return -1;
+			return -1;								// the first string must be before in the list.
+			
+		// If only the second string starts with "chr".
 		} else {
-			return 1;
+			return 1;								// the second string must be before in the list.
 		}
 	}
 	
@@ -108,14 +124,14 @@ public class ChromosomeComparator implements Comparator<String> {
 	 * @param pos	the start position
 	 * @return		true if it can be an integer
 	 */
-	private boolean isInteger (String o, int pos) {
+	/*private boolean isInteger (String o, int pos) {
 		try {
 			Integer.parseInt(o.substring(pos, o.length()));
 		} catch (Exception e) {
 			return false;
 		}
 		return true;
-	}
+	}*/
 	
 	
 	/**
@@ -125,10 +141,15 @@ public class ChromosomeComparator implements Comparator<String> {
 	 * @return		an integer or -1 if it is not successful
 	 */
 	private Integer getIntegerPart (String o, int pos) {
-		if (isInteger(o, pos)) {
-			return Integer.parseInt(o.substring(pos, o.length()));
+		Integer result;
+		
+		try {
+			result = Integer.parseInt(o.substring(pos, o.length()));
+		} catch (Exception e) {
+			result = null;
 		}
-		return -1;
+
+		return result;
 	}
 	
 	
