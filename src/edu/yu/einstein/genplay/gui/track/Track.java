@@ -197,6 +197,15 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void multiGenomeInitializing () {
 		trackGraphics.multiGenomeInitializing();
 	}
+	
+	
+	/**
+	 * Refreshes the list of displayable variant.
+	 * Mostly used for SNP synchronization.
+	 */
+	public void refreshDisplayableVariantList () {
+		trackGraphics.updateDisplayableVariantList(true);
+	}
 
 
 	/**

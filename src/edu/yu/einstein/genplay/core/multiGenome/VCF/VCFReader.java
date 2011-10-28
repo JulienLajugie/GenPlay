@@ -59,7 +59,7 @@ public class VCFReader implements Serializable {
 	private static final long serialVersionUID = 7316097355767936880L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
 	private transient	TabixReader 			vcfParser;		// Tabix object for the VCF file (Tabix Java API)
-	private File 								vcf;			// Path of the VCF file
+	private File 								file;			// Path of the VCF file
 	private VCFType								vcfType;		// The type of the VCF file
 	private Map<String, String> 				headerInfo;		// Header main information
 	private	List<String>						columnNames;	// All column header names
@@ -79,7 +79,7 @@ public class VCFReader implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(vcf);
+		out.writeObject(file);
 		out.writeObject(vcfType);
 		out.writeObject(headerInfo);
 		out.writeObject(columnNames);
@@ -102,7 +102,7 @@ public class VCFReader implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		vcf = (File) in.readObject();
+		file = (File) in.readObject();
 		vcfType = (VCFType) in.readObject();
 		headerInfo= (Map<String, String>) in.readObject();
 		columnNames = (List<String>) in.readObject();
@@ -119,12 +119,12 @@ public class VCFReader implements Serializable {
 	
 	/**
 	 * Constructor of {@link VCFReader}
-	 * @param vcf		the VCF file
+	 * @param file		the VCF file
 	 * @param vcfType  	the type of the VCF file
 	 * @throws IOException
 	 */
-	public VCFReader (File vcf, VCFType vcfType) throws IOException {
-		this.vcf = vcf;
+	public VCFReader (File file, VCFType vcfType) throws IOException {
+		this.file = file;
 		this.vcfType = vcfType;
 		initFixedColumnList();
 		initFieldType();
@@ -135,11 +135,11 @@ public class VCFReader implements Serializable {
 	
 	/**
 	 * Constructor of {@link VCFReader}
-	 * @param vcf		the VCF file
+	 * @param file		the VCF file
 	 * @throws IOException
 	 */
-	public VCFReader (File vcf) throws IOException {
-		this.vcf = vcf;
+	public VCFReader (File file) throws IOException {
+		this.file = file;
 		this.vcfType = null;
 		initFixedColumnList();
 		initFieldType();
@@ -192,7 +192,7 @@ public class VCFReader implements Serializable {
 	 */
 	private void indexVCFFile () throws IOException {
 		if (!isVCFIndexed ()) {
-			this.vcfParser = new TabixReader(vcf.getPath());
+			this.vcfParser = new TabixReader(file.getPath());
 		}
 	}
 
@@ -592,8 +592,8 @@ public class VCFReader implements Serializable {
 	/**
 	 * @return the vcf
 	 */
-	public File getVcf() {
-		return vcf;
+	public File getFile() {
+		return file;
 	}
 
 }

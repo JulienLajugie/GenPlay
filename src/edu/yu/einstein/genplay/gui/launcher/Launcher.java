@@ -158,7 +158,6 @@ public class Launcher {
 			ProjectManager.getInstance().setMultiGenomeProject(true);
 			//System.out.println("initiateNewProject");
 			PAMultiGenome multiGenome = new PAMultiGenome();
-			multiGenome.setFileReaders(projectFrame.getFileReadersAssociation());
 			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
 			multiGenome.actionPerformed(null);
 		} else {

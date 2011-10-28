@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -59,12 +58,11 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
 		"Performs the multi genome algorithm"; 									// tooltip
-	private static final int 			MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 		ACTION_NAME = "Multi-genome loading";	// action name
-	private GenomeSynchronizer 			genomeSynchroniser;
-	private Map<File, VCFReader> 		fileReaders;							// Mapping between files and their readers.
-	private Map<String, List<File>> 	genomeFileAssociation;					// Mapping between genome names and their files.
-	private	List<Chromosome> 			chromosomeList;							// List of chromosome
+	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
+	private static		 String 			ACTION_NAME = "Multi-genome loading";	// action name
+	private GenomeSynchronizer 				genomeSynchroniser;
+	private Map<String, List<VCFReader>> 	genomeFileAssociation;					// Mapping between genome names and their readers.
+	private	List<Chromosome> 				chromosomeList;							// List of chromosome
 
 
 	/**
@@ -100,6 +98,9 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 				// Notifies the action
 				notifyActionStart(ACTION_NAME, 1, false);
 				
+				// Initializes the genome synchronization
+				genomeSynchroniser.initializesGenomeSynchronizer(projectManager.getProjectChromosome().getCurrentChromosome());
+				
 				// Computes the synchronization
 				genomeSynchroniser.compute(projectManager.getAssembly().getDisplayName(), chromosomeList);
 				
@@ -120,11 +121,14 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		ProjectManager.getInstance().updateChromosomeList();
 		
-		genomeSynchroniser.refreshChromosomeReferences(ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList());
+		genomeSynchroniser.refreshChromosomeReferences(ProjectManager.getInstance().getProjectChromosome().getChromosomeList());
 		
-		MainFrame.getInstance().getTrackList();
+		//MainFrame.getInstance().getTrackList();
 		initializesTrackListForMultiGenomeProject();
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+		
+		/*System.out.println(VCFIndel.cptIns + ", " + VCFIndel.cptDel + ", " + VCFIndel.cptSNP);
+		System.out.println(VCFIndel.info);*/
 	}	
 	
 	
@@ -137,30 +141,18 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	private boolean hasBeenInitialized () {
 		boolean valid = false;
 		
-		// If parameters have been given,
+		// If parameter have been given,
 		// sets the genome synchronizer.
-		if (fileReaders != null &&
-				genomeFileAssociation != null) {
-			genomeSynchroniser.setFileReaders(fileReaders);
+		if (genomeFileAssociation != null) {
 			genomeSynchroniser.setGenomeFileAssociation(genomeFileAssociation);
 		}
 		
 		// Checks if genome synchronizer has been initialized
-		if (genomeSynchroniser.getFileReaders() != null &&
-				genomeSynchroniser.getGenomeFileAssociation() != null) {
+		if (genomeSynchroniser.getGenomeFileAssociation() != null) {
 			valid = true;
 		}
 		
 		return valid;
-	}
-	
-	
-	/**
-	 * This method must be used when multi-genome synchronization is performed for the first time in a project.
-	 * @param fileReaders the fileReaders to set
-	 */
-	public void setFileReaders(Map<File, VCFReader> fileReaders) {
-		this.fileReaders = fileReaders;
 	}
 
 
@@ -169,7 +161,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
 	public void setGenomeFileAssociation(
-			Map<String, List<File>> genomeFileAssociation) {
+			Map<String, List<VCFReader>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 	}
 

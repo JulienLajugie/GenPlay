@@ -50,6 +50,12 @@ public class VCFIndel implements Variant {
 	private int 			initialMetaGenomeOffset;	// The offset between the genome position and the meta genome position
 	private int 			extraOffset;				// Offset when multiple insertions happen at the same reference position
 	
+	/*public static int cptIns = 0;
+	public static int cptDel = 0;
+	public static int cptSNP = 0;
+	public static String info = "";
+	
+	private VariantType type;*/
 	
 	/**
 	 * Method used for serialization
@@ -131,6 +137,23 @@ public class VCFIndel implements Variant {
 
 	@Override
 	public VariantType getType() {
+		
+		/*if (type == null) {
+			int length = (getAlternative().length() - getReference().length());
+			if (length > 0) {
+				//VCFIndel.cptIns++;
+				type = VariantType.INSERTION;
+			} else if (length < 0) {
+				//VCFIndel.cptDel++;
+				type = VariantType.DELETION;
+			} else {
+				//VCFIndel.cptIns++;
+				//info += getReferenceGenomePosition() + "; ";
+				//type = VariantType.SNPS;
+				type = VariantType.INSERTION;
+			}
+		}*/
+		
 		VariantType type;
 		int length = (getAlternative().length() - getReference().length());
 		if (length > 0) {
@@ -138,7 +161,8 @@ public class VCFIndel implements Variant {
 		} else if (length < 0) {
 			type = VariantType.DELETION;
 		} else {
-			type = VariantType.SNPS;
+			//type = VariantType.SNPS;
+			type = VariantType.INSERTION;
 		}
 		return type;
 	}

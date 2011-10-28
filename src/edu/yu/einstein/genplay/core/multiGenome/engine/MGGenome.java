@@ -100,6 +100,13 @@ public class MGGenome implements Serializable {
 	 * @param variant 		the variant
 	 */
 	protected void addVariant (Chromosome chromosome, Variant variant) {
+		/*try {
+			getChromosomeInformation(chromosome).addVariant(variant);
+		} catch (Exception e) {
+			System.out.println(chromosome.getName() + " (" + chromosome.getLength() + ")");
+			showData();
+		}*/
+		
 		getChromosomeInformation(chromosome).addVariant(variant);
 	}
 	
@@ -195,8 +202,8 @@ public class MGGenome implements Serializable {
 	 */
 	protected void showData () {
 		for (Chromosome chromosome: genomeInformation.keySet()) {
-			System.out.println("= chromosome name: " + chromosome.getName());
-			getChromosomeInformation(chromosome).showData();
+			System.out.println("= chromosome name: " + chromosome.getName() + " (" + chromosome.getLength() + ")");
+			//getChromosomeInformation(chromosome).showData();
 		}
 	}
 }

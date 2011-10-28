@@ -21,13 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.engine;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +48,7 @@ public class MGMultiGenome implements Serializable {
 
 	private static final long serialVersionUID = -1420140357798946704L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private Map<String, MGGenome> 	multiGenomeInformation;	// Genomes information: key are genome raw names
-	private Map<String, List<File>> genomeFileAssociation;	// Mapping between genome names and their files.
+	private Map<String, MGGenome> 			multiGenomeInformation;	// Genomes information: key are genome raw names
 
 	
 	/**
@@ -62,7 +59,7 @@ public class MGMultiGenome implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(multiGenomeInformation);
-		out.writeObject(genomeFileAssociation);
+		
 	}
 
 
@@ -76,7 +73,6 @@ public class MGMultiGenome implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		multiGenomeInformation = (Map<String, MGGenome>) in.readObject();
-		genomeFileAssociation = (Map<String, List<File>>) in.readObject();
 	}
 
 	
@@ -89,27 +85,14 @@ public class MGMultiGenome implements Serializable {
 
 
 	/**
-	 * Initializes the multi genome information
-	 * -> can be run only one time
-	 * @param genomeFileAssociation mapping between genome names and their files
-	 */
-	public void setGenomeFileAssociation (Map<String, List<File>> genomeFileAssociation) {
-		this.genomeFileAssociation = genomeFileAssociation;
-	}
-
-
-	/**
 	 * Initializes the multi genome information at any runs of the action process
 	 * -> can be run several times
+	 * @param genomeNames list of genome names
 	 */
-	public void initMultiGenomeInformation () {
+	public void initMultiGenomeInformation (List<String> genomeNames) {
 		multiGenomeInformation = new HashMap<String, MGGenome>();
 		
-		if(genomeFileAssociation == null) {
-			System.out.println("MGMultiGenome.initMultiGenomeInformation()");
-		}
-		
-		for (String genomeName: genomeFileAssociation.keySet()) {
+		for (String genomeName: genomeNames) {
 			multiGenomeInformation.put(genomeName, new MGGenome(genomeName));
 		}
 		String referenceGenomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
@@ -190,59 +173,6 @@ public class MGMultiGenome implements Serializable {
 	 */
 	public Map<String, MGGenome> getMultiGenomeInformation() {
 		return multiGenomeInformation;
-	}
-
-
-	/**
-	 * @return the list of genome names
-	 */
-	public List<String> getGenomeNameList () {
-		List<String> list = new ArrayList<String>(genomeFileAssociation.keySet());
-		Collections.sort(list);
-		return list;
-	}
-	
-	
-	/**
-	 * @param genomeName 	name of a genome
-	 * @return				list of file related to the genome name
-	 */
-	public List<File> getFiles (String genomeName) {
-		return genomeFileAssociation.get(genomeName);
-	}
-
-
-	/**
-	 * @return the genomeFileAssociation
-	 */
-	public Map<String, List<File>> getGenomeFileAssociation() {
-		return genomeFileAssociation;
-	}
-
-
-	/**
-	 * @return the total number of genome
-	 */
-	private int getGenomeNumber () {
-		return genomeFileAssociation.size();
-	}
-
-
-	/**
-	 * Creates an array with all genome names association.
-	 * Used for display.
-	 * @return	genome names association array
-	 */
-	public Object[] getFormattedGenomeArray () {
-		String[] names = new String[getGenomeNumber() + 1];
-		names[0] = ProjectManager.getInstance().getAssembly().getDisplayName();
-		int index = 1;
-		List<String> namesList = getGenomeNameList();
-		for (String name: namesList) {
-			names[index] = name;
-			index++;
-		}
-		return names;
 	}
 	
 	

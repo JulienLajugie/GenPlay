@@ -49,7 +49,8 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 public class DisplayableVariantListCreator implements DisplayableDataList<List<DisplayableVariant>>, Serializable {
 
 	private static final long serialVersionUID = 7895054388386894571L;		// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version	
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
+
 	// Graphic variables
 	private GenomeWindow					currentGenomeWindow;			// Chromosome with the adapted data
 	private double							currentXRatio;					// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
@@ -58,8 +59,14 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	private Map<String, List<VariantType>>	genomes;						// Genome names list
 	private double							quality = 0d;					// Variant quality threshold (only equal and greater variants will be selected)
 
+	// Lists
+	private List<Variant> 					fittedVariantList;				// Complete list of variant (gains a lot of time and increase the fluidity)
 	private List<DisplayableVariant> 		fittedDisplayableVariantList;	// Complete list of the displayable variant
-	private boolean							hasBeenChanged;					// Is true is any information has been modified
+
+	// Changes indicators
+	private boolean							hasBeenChanged;					// Is true if any information has been modified
+	private boolean 						genomeWindowHasChanged;			// Is true if the current chromosome has changed
+	private boolean 						xRatioHasChanged;				// Is true if the xRatio has changed
 	
 	
 	/**
@@ -73,8 +80,11 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		out.writeDouble(currentXRatio);
 		out.writeObject(genomes);
 		out.writeDouble(quality);
+		out.writeObject(fittedVariantList);
 		out.writeObject(fittedDisplayableVariantList);
 		out.writeBoolean(hasBeenChanged);
+		out.writeBoolean(genomeWindowHasChanged);
+		out.writeBoolean(xRatioHasChanged);
 	}
 
 
@@ -91,10 +101,13 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		currentXRatio = in.readDouble();
 		genomes = (Map<String, List<VariantType>>) in.readObject();
 		quality = in.readDouble();
+		fittedVariantList = (List<Variant>) in.readObject();
 		fittedDisplayableVariantList = (List<DisplayableVariant>) in.readObject();
 		hasBeenChanged = in.readBoolean();
+		genomeWindowHasChanged = in.readBoolean();
+		xRatioHasChanged = in.readBoolean();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link DisplayableVariantListCreator}
@@ -103,8 +116,9 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		currentGenomeWindow = null;
 		currentXRatio = 0d;
 		genomes = new HashMap<String, List<VariantType>>();
-		//ratioThreshold = 0.05;
 		hasBeenChanged = false;
+		genomeWindowHasChanged = false;
+		xRatioHasChanged = false;
 	}
 
 
@@ -112,19 +126,31 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	public List<DisplayableVariant> getFittedData(GenomeWindow genomeWindow, double xRatio) {
 		if ((currentGenomeWindow == null) ||
 				(!currentGenomeWindow.getChromosome().equals(genomeWindow.getChromosome()))) {
-			hasBeenChanged = true;
+			genomeWindowHasChanged = true;
 		}
 		currentGenomeWindow = genomeWindow;
+
 		if (currentXRatio != xRatio) {
 			currentXRatio = xRatio;
-			hasBeenChanged = true;
+			xRatioHasChanged = true;
 		}
 
-		if (hasBeenChanged) {
-			List<Variant> fittedVariantList = getFittedVariantList();
-			createDisplayableVariantList(fittedVariantList);
-			hasBeenChanged = false;
+		// If filters or the current chromosome have changed
+		if (genomeWindowHasChanged || hasBeenChanged) {
+			fittedVariantList = getFittedVariantList();			// creates the list of variants
 		}
+
+		// If filters or the xRatio have changed
+		if (xRatioHasChanged || hasBeenChanged) {
+			createDisplayableVariantList(fittedVariantList);	// creates the list of displayable variants
+		}
+
+		// Changes indicators come back to false
+		genomeWindowHasChanged = false;
+		xRatioHasChanged = false;
+		hasBeenChanged = false;
+
+		// Return the list of fitted displayable variants
 		return getFittedDisplayableVariantList();
 	}
 
@@ -144,13 +170,13 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 		// Scan for every required genomes
 		for (String genomeFullName: genomes.keySet()) {
-			
+
 			// Gets parameters
 			MGChromosome chromosomeInformation = ProjectManager.getInstance().getGenomeSynchronizer().getChromosomeInformation(genomeFullName, currentGenomeWindow.getChromosome());
 			Map<Integer, Variant> variants = chromosomeInformation.getPositionInformationList();
 			chromosomeInformation.resetIndexList();
 			int[] indexes = chromosomeInformation.getPositionIndex();
-			
+
 			// Scan the full variant list with the right indexes
 			for (int i = 0; i < indexes.length; i++) {
 				Variant current = variants.get(indexes[i]);
@@ -250,7 +276,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 						}
 					}
 
-					// Add the displayable variant
+					// Adds the displayable variant
 					fittedDisplayableVariantList.add(displayableVariant);
 
 					// Goes to the next index if it is valid
@@ -262,7 +288,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 				}
 			}
 		}
-
 	}
 
 
@@ -325,7 +350,6 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 		return variantList;
 	}
-
 
 
 	/**
@@ -465,6 +489,14 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			hasBeenChanged = true;
 		}
 		this.quality = quality;
+	}
+
+
+	/**
+	 * When SNPs are added/removed, the list must be re-created.
+	 */
+	public void SNPUpdate () {
+		hasBeenChanged = true;
 	}
 
 

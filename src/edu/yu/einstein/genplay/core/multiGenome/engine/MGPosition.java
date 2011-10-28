@@ -98,7 +98,7 @@ public class MGPosition implements Serializable {
 
 
 	/**
-	 * @return the ID field
+	 * @return the POS field (position on the reference genome)
 	 */
 	public int getPos() {
 		return Integer.parseInt(getString(VCFLine.get("POS")));

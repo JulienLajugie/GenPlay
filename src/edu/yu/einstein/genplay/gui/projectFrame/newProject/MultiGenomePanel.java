@@ -247,18 +247,10 @@ class MultiGenomePanel extends JPanel {
 
 
 	/**
-	 * @return the mapping between genome full names and their files.
+	 * @return the mapping between genome full names and their readers.
 	 */
-	protected Map<String, List<File>> getGenomeFileAssociation ()  {
+	protected Map<String, List<VCFReader>> getGenomeFileAssociation ()  {
 		return vcfLoader.getGenomeFileAssociation();
-	}
-
-
-	/**
-	 * @return the mapping between files and their readers.
-	 */
-	protected Map<File, VCFReader> getFileReadersAssociation () {
-		return vcfLoader.getFileReadersAssociation();
 	}
 
 

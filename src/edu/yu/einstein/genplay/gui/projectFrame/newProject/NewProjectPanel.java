@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.projectFrame.newProject;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -184,18 +183,10 @@ public class NewProjectPanel extends JPanel {
 	
 	
 	/**
-	 * @return the mapping between genome full names and their files.
+	 * @return the mapping between genome full names and their readers.
 	 */
-	public Map<String, List<File>> getGenomeFileAssociation ()  {
+	public Map<String, List<VCFReader>> getGenomeFileAssociation ()  {
 		return multiGenomePanel.getGenomeFileAssociation();
-	}
-
-
-	/**
-	 * @return the mapping between files and their readers.
-	 */
-	public Map<File, VCFReader> getFileReadersAssociation () {
-		return multiGenomePanel.getFileReadersAssociation();
 	}
 	
 	

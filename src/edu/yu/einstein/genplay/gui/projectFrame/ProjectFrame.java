@@ -28,7 +28,6 @@ import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -394,18 +393,10 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * @return the mapping between genome full names and their files.
+	 * @return the mapping between genome full names and their readers.
 	 */
-	public Map<String, List<File>> getGenomeFileAssociation ()  {
+	public Map<String, List<VCFReader>> getGenomeFileAssociation ()  {
 		return newProjectPanel.getGenomeFileAssociation();
-	}
-
-
-	/**
-	 * @return the mapping between files and their readers.
-	 */
-	public Map<File, VCFReader> getFileReadersAssociation () {
-		return newProjectPanel.getFileReadersAssociation();
 	}
 
 

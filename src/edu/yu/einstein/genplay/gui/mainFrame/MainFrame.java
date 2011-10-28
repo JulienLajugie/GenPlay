@@ -56,7 +56,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
@@ -82,7 +82,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 463; 						// GenPlay version
+	private static final int VERSION_NUMBER = 467; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -241,14 +241,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		if ((projectChromosome.getCurrentChromosome() == null) ||
 				(!projectChromosome.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
 			projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
-			ProjectManager projectManager = ProjectManager.getInstance();
-			if (projectManager.isMultiGenomeProject()) {
-				if (ProjectChromosome.CHROMOSOME_LOADING_OPTION == ProjectChromosome.SEQUENTIAL) {
-					System.out.println("genomeWindowChanged");
-					PAMultiGenome multiGenome = new PAMultiGenome();
-					multiGenome.actionPerformed(null);
-				}
-			}
+			System.out.println("MainFrame: genomeWindowChanged");
+			PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
+			multiGenomeSNP.setNewChromosome(projectChromosome.getCurrentChromosome());
+			multiGenomeSNP.actionPerformed(null);
 		}
 
 		if (evt.getSource() != ruler) {

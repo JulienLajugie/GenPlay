@@ -441,38 +441,31 @@ public class VCFLoader extends JDialog {
 	
 	
 	/**
-	 * @return the mapping between genome full names and their files.
+	 * @return the mapping between genome full names and their readers.
 	 */
-	public Map<String, List<File>> getGenomeFileAssociation () {
-		Map<String, List<File>> list = new HashMap<String, List<File>>();
+	public Map<String, List<VCFReader>> getGenomeFileAssociation () {
+		Map<String, List<VCFReader>> list = new HashMap<String, List<VCFReader>>();
 		
 		for (List<Object> line: data.getData()) {
 			String fullGenomeName = FormattedMultiGenomeName.getFullFormattedGenomeName(line.get(0).toString(), line.get(1).toString(), line.get(4).toString());
-			File file = new File(line.get(3).toString());
 			
-			if (list.get(fullGenomeName) == null) {
-				list.put(fullGenomeName, new ArrayList<File>());
+			
+			if (!list.containsKey(fullGenomeName)) {
+				list.put(fullGenomeName, new ArrayList<VCFReader>());
 			}
 			
-			list.get(fullGenomeName).add(file);
-		}
-		
-		return list;
-	}
-	
-	
-	/**
-	 * @return the mapping between files and their readers.
-	 */
-	public Map<File, VCFReader> getFileReadersAssociation () {
-		Map<File, VCFReader> list = new HashMap<File, VCFReader>();
-		List<String> filePath = new ArrayList<String>();
-		
-		for (List<Object> line: data.getData()) {
+			List<VCFReader> readerList = list.get(fullGenomeName);
 			String path = line.get(3).toString();
-			if (!filePath.contains(path)) {
-				filePath.add(path);
-				
+			boolean newReader = true;
+			
+			for (VCFReader reader: readerList) {
+				if (reader.getFile().getPath().equals(path)) {
+					newReader = false;
+					break;
+				}
+			}
+			
+			if (newReader) {
 				// Gets the type
 				VCFType type = null;
 				String typeName = line.get(2).toString();
@@ -493,8 +486,9 @@ public class VCFLoader extends JDialog {
 					e.printStackTrace();
 				}
 				
-				list.put(file, reader);
+				readerList.add(reader);
 			}
+			
 		}
 		
 		return list;

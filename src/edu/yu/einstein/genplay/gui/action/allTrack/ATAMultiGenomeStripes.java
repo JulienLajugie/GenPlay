@@ -79,7 +79,8 @@ public final class ATAMultiGenomeStripes extends TrackListAction {
 			stripeDialog.initTransparency(selectedTrack.getMultiGenomeStripes().getTransparency());
 			stripeDialog.initQuality(selectedTrack.getMultiGenomeStripes().getQuality());
 			if (stripeDialog.showDialog(getRootPane()) == MultiGenomeStripeSelectionDialog.APPROVE_OPTION) {
-				selectedTrack.setMultiGenomeStripes(stripeDialog.getMultiGenomeStripes());			}			
+				selectedTrack.setMultiGenomeStripes(stripeDialog.getMultiGenomeStripes());
+			}			
 		}
 	}
 }
