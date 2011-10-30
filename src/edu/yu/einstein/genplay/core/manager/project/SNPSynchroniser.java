@@ -63,8 +63,6 @@ public class SNPSynchroniser implements Serializable {
 	private			Map<String, Integer> 	genomeCounter; 		// Mapping list of enable/disable genomes
 	private			Chromosome				currentChromosome;	// The current chromosome
 	private			boolean					hasChanged;			// Signal to reload list for 
-
-	public static int cptSNP = 0;
 	
 
 	/**
@@ -186,7 +184,6 @@ public class SNPSynchroniser implements Serializable {
 						}
 						Variant variant = new VCFSNP(genomeName, chromosome, positionInformation);			// Creates the SNP variant
 						genomes.addVariant(genomeName, chromosome, variant);								// Adds the variant
-						cptSNP++;
 					}
 
 					// This block updates all SNPs,
@@ -197,18 +194,20 @@ public class SNPSynchroniser implements Serializable {
 					int cptIndex = 0;
 					int cptInstance = 0;
 					
+					chromosomeInformation.setCurrentPosition(indexes[0]);
 					Variant current = chromosomeInformation.getCurrentVariant();
 					if (current instanceof VCFSNP) {
 						int refPosition = current.getPositionInformation().getPos();
 						current.setGenomePosition(refPosition);												// Sets the relative genome position
 						current.setInitialReferenceOffset(0);												// Sets the initial reference genome offset
 						current.setInitialMetaGenomeOffset(0);												// Sets the initial meta genome offset
+						System.out.println("refPosition: " + refPosition);
 					}
 					
 					for (int i = 1; i < indexes.length; i++) {
 						cptIndex++;
 						chromosomeInformation.setCurrentPosition(indexes[i]);								// Sets the current position
-						current = chromosomeInformation.getCurrentVariant();						// Gets the current variant
+						current = chromosomeInformation.getCurrentVariant();								// Gets the current variant
 						if (current instanceof VCFSNP) {													// If it is a SNP (it has just been added and has to be updated)
 							cptInstance++;
 							chromosomeInformation.updatePreviousPosition(indexes[i-1]);						// Sets the previous position: value of indexes[i-1]
@@ -216,13 +215,15 @@ public class SNPSynchroniser implements Serializable {
 							//current.setGenomePosition(10);
 							
 							int refPosition = current.getPositionInformation().getPos();
-							current.setGenomePosition(																	// Sets the relative genome position
+							current.setGenomePosition(														// Sets the relative genome position
 									refPosition -
 									previous.getNextReferencePositionOffset());
-							
-							
 							current.setInitialReferenceOffset(previous.getNextReferencePositionOffset());	// Sets the initial reference genome offset
 							current.setInitialMetaGenomeOffset(previous.getNextMetaGenomePositionOffset());	// Sets the initial meta genome offset
+							if (i <= 50) {
+							show(current);
+							}
+							
 						}
 					}
 					System.out.println("cptIndex: " + cptIndex + "; cptInstance: " + cptInstance);
@@ -232,6 +233,19 @@ public class SNPSynchroniser implements Serializable {
 			performGC();
 		}
 		hasChanged = true;	// data has changed
+	}
+	
+	private void show (Variant variant) {
+		String info = variant.getGenomePosition() + " Ref (";
+		info += variant.getInitialReferenceOffset() + ", ";
+		info += variant.getReferenceGenomePosition() + ", ";
+		info += variant.getNextReferencePositionOffset() + ", ";
+		info += variant.getNextReferenceGenomePosition() + ") MG (";
+		info += variant.getInitialMetaGenomeOffset() + ", ";
+		info += variant.getMetaGenomePosition() + ", ";
+		info += variant.getNextMetaGenomePositionOffset() + ", ";
+		info += variant.getNextMetaGenomePosition() + ")";
+		System.out.println(info);
 	}
 
 

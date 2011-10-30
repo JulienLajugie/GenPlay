@@ -120,7 +120,7 @@ public class GenomePositionCalculation {
 	 */
 	public static int getNextMetaGenomePosition(Variant variant, int position) {
 		int current = getMetaGenomePosition(variant) + (position - variant.getGenomePosition());
-		if (!isInsertion(variant)) {
+		if (!isInsertion(variant) && !isSNP(variant)) {
 			current += variant.getLength();
 		}
 		if (position > (variant.getGenomePosition() + variant.getLength())) {
