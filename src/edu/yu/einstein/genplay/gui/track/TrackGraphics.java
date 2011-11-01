@@ -153,6 +153,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
+		multiGenomeInitializing();
 	}
 
 
@@ -235,7 +236,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					}
 				}
 			}
-			System.out.println("mix: " + cptMix + ", blank: " + cptBlank + ", other: " + cptOther + "(" + cptIns + ", " + cptDel + ", " + cptSNP + ")");
+			//System.out.println("mix: " + cptMix + ", blank: " + cptBlank + ", other: " + cptOther + "(" + cptIns + ", " + cptDel + ", " + cptSNP + ")");
 		}
 	}
 
@@ -258,7 +259,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param g
 	 */
 	protected void drawMultiGenomeInformation(Graphics g) {
-		
 		if (multiGenomeStripes != null) {
 			if (ProjectManager.getInstance().getGenomeSynchronizer().dataHasBeenComputed()) {
 				updateDisplayableVariantList(false);
@@ -267,8 +267,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Updates the list of displayable variant.
 	 * According to the different parameters, the list creator determines if it has to recreate the list from zero or not.
@@ -282,7 +282,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			displayableVariantListCreator.SNPUpdate();
 		}
 		displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
-		
+
 	}
 
 
@@ -333,13 +333,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				width = 1;
 			}
 			int middle = getHeight() / 2;
-			int height = 0;
-			try {
-				height = (int) (displayableVariant.getQualityScore() * middle / 100);
-			} catch (Exception e) {
-				displayableVariant.show();
-			}
-			//int height = (int) (displayableVariant.getQualityScore() * middle / 100);
+			int height = (int) (displayableVariant.getQualityScore() * middle / 100);
 			int top = middle - height;
 
 			// Sets color
@@ -361,6 +355,39 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				g.setColor(noAlleleColor);
 			}
 			g.fillRect(x, middle, width, height);
+
+			// Displays nucleotide for SNP variant
+			if (displayableVariant.getType() == VariantType.SNPS) {
+				Font font = g.getFont();
+				
+				if (font.getSize() <= width) {
+					//Sets drawing parameters
+					//int widthOffset = (width - font.getSize()) / 4;
+					int widthOffset = (width / 2);
+					int heightOffset = (middle + font.getSize()) / 2;
+					String alternative = displayableVariant.getNativeVariant().getAlternative();
+					String reference = displayableVariant.getNativeVariant().getReference();
+					String nucleotide;
+					g.setColor(Color.BLACK);
+
+					// Draws nucleotide for the upper part
+					if (displayableVariant.isOnFirstAllele()) {
+						nucleotide = alternative;
+					} else {
+						nucleotide = reference;
+					}
+					g.drawString(nucleotide, x + widthOffset, heightOffset);
+
+					// Draws nucleotide for the lower part
+					if (displayableVariant.isOnSecondAllele()) {
+						nucleotide = alternative;
+					} else {
+						nucleotide = reference;
+					}
+					g.drawString(nucleotide, x + widthOffset, middle + heightOffset);
+				}
+			}
+
 		}
 	}
 

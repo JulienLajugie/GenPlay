@@ -122,13 +122,10 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		ProjectManager.getInstance().updateChromosomeList();
 		
 		genomeSynchroniser.refreshChromosomeReferences(ProjectManager.getInstance().getProjectChromosome().getChromosomeList());
+		genomeSynchroniser.getGenomesInformation().resetListIndexes();
 		
-		//MainFrame.getInstance().getTrackList();
 		initializesTrackListForMultiGenomeProject();
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
-		
-		/*System.out.println(VCFIndel.cptIns + ", " + VCFIndel.cptDel + ", " + VCFIndel.cptSNP);
-		System.out.println(VCFIndel.info);*/
 	}	
 	
 	

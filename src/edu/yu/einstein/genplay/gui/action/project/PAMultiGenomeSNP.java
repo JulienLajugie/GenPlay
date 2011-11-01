@@ -114,7 +114,18 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
+		
+		/*ProjectManager projectManager = ProjectManager.getInstance();
+		GenomeSynchronizer genomeSynchronizer = projectManager.getGenomeSynchronizer();
+		SNPSynchroniser snpSynchronizer = genomeSynchronizer.getSnpSynchroniser();
+		
+		Chromosome chromosomePerformed = snpSynchronizer.getCurrentChromosome();
+		genomeSynchronizer.getChromosomeInformation(projectManager.getAssembly().getDisplayName(), chromosomePerformed).resetIndexList();*/
+		
+		ProjectManager.getInstance().getGenomeSynchronizer().getGenomesInformation().resetListIndexes();
+		
 		refreshTracks();
+		
 	}
 
 

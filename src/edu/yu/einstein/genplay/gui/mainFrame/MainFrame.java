@@ -82,7 +82,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 467; 						// GenPlay version
+	private static final int VERSION_NUMBER = 469; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -241,7 +241,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		if ((projectChromosome.getCurrentChromosome() == null) ||
 				(!projectChromosome.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
 			projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
-			System.out.println("MainFrame: genomeWindowChanged");
 			PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
 			multiGenomeSNP.setNewChromosome(projectChromosome.getCurrentChromosome());
 			multiGenomeSNP.actionPerformed(null);

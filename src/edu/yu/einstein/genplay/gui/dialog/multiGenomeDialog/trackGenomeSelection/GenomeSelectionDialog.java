@@ -28,12 +28,11 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -219,16 +218,10 @@ public class GenomeSelectionDialog extends JDialog {
 
 
 	/**
-	 * @return the name of the selected genome
+	 * @return the full name of the selected genome
 	 */
 	public String getGenomeName () {
-		String name;
-		try {
-			name = FormattedMultiGenomeName.getRawName((String)jcbGenome.getSelectedItem());
-		} catch (Exception e) {
-			name = (String)jcbGenome.getSelectedItem();
-		}
-		return name;
+		return (String)jcbGenome.getSelectedItem();
 	}
 	
 }

@@ -319,22 +319,22 @@ public class GenomeSynchronizer implements Serializable {
 	 * Insertion involves modification in other tracks creating "Blank" positions.
 	 */
 	private void compileData (String referenceGenomeName, List<Chromosome> chromosomeList) {
-		for (Chromosome chromosome: chromosomeList) {														// Scan by chromosome
+		for (Chromosome chromosome: chromosomeList) {																// Scan by chromosome
 			List<MGChromosome> currentChromosomeList =
 				genomesInformation.getChromosomeInformationList(chromosome);										// List of all existing chromosome in VCF files
 			referenceGenomeSynchroniser.setList(chromosome.getName());
 
-			for (MGChromosome chromosomeInformation: currentChromosomeList) {							// Resets all index lists
+			for (MGChromosome chromosomeInformation: currentChromosomeList) {										// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 
-			while (referenceGenomeSynchroniser.isValidIndex()) {															// Scan by position
+			while (referenceGenomeSynchroniser.isValidIndex()) {													// Scan by position
 				List<Integer> insertPositions = new ArrayList<Integer>();											// List of all length insertion position. Used at the end to update all tracks.
 				int currentRefPosition = referenceGenomeSynchroniser.getCurrentPosition();								// Current position of the reference genome
-				for (MGChromosome chromosomeInformation: currentChromosomeList) {						// Scan VCF content by chromosome
+				for (MGChromosome chromosomeInformation: currentChromosomeList) {									// Scan VCF content by chromosome
 					chromosomeInformation.setCurrentPosition(currentRefPosition);
 					Variant currentInformation =
-						chromosomeInformation.getCurrentVariant();										// Current position information according to a specific VCF file
+						chromosomeInformation.getCurrentVariant();													// Current position information according to a specific VCF file
 					Variant previousInformation =
 						chromosomeInformation.getPreviousPosition();												// Previous position information according to a specific VCF file
 
@@ -348,7 +348,7 @@ public class GenomeSynchronizer implements Serializable {
 							currentInformation.setInitialMetaGenomeOffset(previousInformation.getNextMetaGenomePositionOffset());	// Initial meta genome offset must be set according to the previous position
 							currentInformation.setInitialReferenceOffset(previousInformation.getNextReferencePositionOffset());		// Initial reference genome offset must be set according to the previous position
 						}
-						if (GenomePositionCalculation.isInsertion(currentInformation)) {									// If the current position is an insertion
+						if (GenomePositionCalculation.isInsertion(currentInformation)) {							// If the current position is an insertion
 							insertPositions.add(currentInformation.getLength());									// It is necessary to store its length in order to update other tracks
 						}
 					}
@@ -362,9 +362,9 @@ public class GenomeSynchronizer implements Serializable {
 					updateMetaGenome(chromosome, maxLength);														// Update the meta genome length
 				}
 				updatePreviousPosition (currentChromosomeList, currentRefPosition);									// The previous position is set with the current position
-				referenceGenomeSynchroniser.nextIndex();																	// Increases the current index
+				referenceGenomeSynchroniser.nextIndex();															// Increases the current index
 			}
-			for (MGChromosome chromosomeInformation: currentChromosomeList) {							// Resets all index lists
+			for (MGChromosome chromosomeInformation: currentChromosomeList) {										// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 			genomesInformation.getChromosomeInformation(referenceGenomeName, chromosome).resetIndexList();
@@ -381,13 +381,13 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
 	private void updateInsert (List<MGChromosome> chromosomeList, int refPosition, int maxLength) {
-		for (MGChromosome chromosomeInformation: chromosomeList) {								// Scan VCF content by chromosome
-			Variant position = chromosomeInformation.getVariant(refPosition);							// Gets the current position in a new variable
-			if (position != null) {																			// If an information exists at this position
-				if (position.getLength() < maxLength) {														// If the current event length is smaller than the maximum length found
-					position.addExtraOffset(maxLength - position.getLength());								// The difference is added into the meta genome "extra" offset
+		for (MGChromosome chromosomeInformation: chromosomeList) {												// Scan VCF content by chromosome
+			Variant position = chromosomeInformation.getVariant(refPosition);									// Gets the current position in a new variable
+			if (position != null) {																				// If an information exists at this position
+				if (position.getLength() < maxLength) {															// If the current event length is smaller than the maximum length found
+					position.addExtraOffset(maxLength - position.getLength());									// The difference is added into the meta genome "extra" offset
 				}
-			} else { 																						// If there is no information, needs to add a "blank" position
+			} else { 																							// If there is no information, needs to add a "blank" position
 				Variant previousPosition = chromosomeInformation.getPreviousPosition();
 
 				String genomeName = chromosomeInformation.getGenomeInformation().getGenomeName();

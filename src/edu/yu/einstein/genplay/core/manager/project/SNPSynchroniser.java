@@ -56,14 +56,13 @@ public class SNPSynchroniser implements Serializable {
 
 	private static final long serialVersionUID = -4204806185089675978L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
 	private 	 	MGMultiGenome 			genomes;			// Instance of the MGMultiGenome
 	private 		Map<String, VCFReader> 	SNPReaders;			// Mapping between files and their readers.
 	private			Map<String, Boolean> 	activeGenome; 		// Mapping list of enable/disable genomes
 	private			Map<String, Integer> 	genomeCounter; 		// Mapping list of enable/disable genomes
 	private			Chromosome				currentChromosome;	// The current chromosome
-	private			boolean					hasChanged;			// Signal to reload list for 
-	
+
 
 	/**
 	 * Method used for serialization
@@ -100,9 +99,7 @@ public class SNPSynchroniser implements Serializable {
 	/**
 	 * Constructor of {@link SNPSynchroniser}
 	 */
-	protected SNPSynchroniser () {
-		hasChanged = false;
-	}
+	protected SNPSynchroniser () {}
 
 
 	/**
@@ -124,7 +121,7 @@ public class SNPSynchroniser implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Refreshes the current chromosome.
 	 * After synchronization, length of the current chromosome may has changed.
@@ -138,14 +135,14 @@ public class SNPSynchroniser implements Serializable {
 			}
 		}
 	}
-	
+
 
 	/**
 	 * Adds SNPs information to a genome.
 	 * @param genomeName a genome name
 	 */
 	private void addSNP (List<Chromosome> chromosomeList, String genomeName) {
-		
+
 		// Gets the reader
 		VCFReader reader = SNPReaders.get(genomeName);
 
@@ -166,7 +163,7 @@ public class SNPSynchroniser implements Serializable {
 
 				// If results exist
 				if (result != null) {
-					
+
 					// This block creates and adds the new variant
 					for (Map<String, Object> info: result) {												// Scans every result lines
 						int position = Integer.parseInt(info.get("POS").toString());						// Gets the reference genome position
@@ -193,7 +190,7 @@ public class SNPSynchroniser implements Serializable {
 					int[] indexes = chromosomeInformation.getPositionIndex();
 					int cptIndex = 0;
 					int cptInstance = 0;
-					
+
 					chromosomeInformation.setCurrentPosition(indexes[0]);
 					Variant current = chromosomeInformation.getCurrentVariant();
 					if (current instanceof VCFSNP) {
@@ -201,9 +198,9 @@ public class SNPSynchroniser implements Serializable {
 						current.setGenomePosition(refPosition);												// Sets the relative genome position
 						current.setInitialReferenceOffset(0);												// Sets the initial reference genome offset
 						current.setInitialMetaGenomeOffset(0);												// Sets the initial meta genome offset
-						System.out.println("refPosition: " + refPosition);
+						//System.out.println("refPosition: " + refPosition);
 					}
-					
+
 					for (int i = 1; i < indexes.length; i++) {
 						cptIndex++;
 						chromosomeInformation.setCurrentPosition(indexes[i]);								// Sets the current position
@@ -213,28 +210,28 @@ public class SNPSynchroniser implements Serializable {
 							chromosomeInformation.updatePreviousPosition(indexes[i-1]);						// Sets the previous position: value of indexes[i-1]
 							Variant previous = chromosomeInformation.getPreviousPosition();					// Gets the previous variant
 							//current.setGenomePosition(10);
-							
+
 							int refPosition = current.getPositionInformation().getPos();
 							current.setGenomePosition(														// Sets the relative genome position
 									refPosition -
 									previous.getNextReferencePositionOffset());
 							current.setInitialReferenceOffset(previous.getNextReferencePositionOffset());	// Sets the initial reference genome offset
 							current.setInitialMetaGenomeOffset(previous.getNextMetaGenomePositionOffset());	// Sets the initial meta genome offset
-							if (i <= 50) {
-							show(current);
-							}
-							
+							/*if (i <= 50) {
+								show(current);
+							}*/
+
 						}
 					}
-					System.out.println("cptIndex: " + cptIndex + "; cptInstance: " + cptInstance);
 				}
 			}
 
 			performGC();
 		}
-		hasChanged = true;	// data has changed
 	}
+
 	
+	@SuppressWarnings("unused") // use for development only
 	private void show (Variant variant) {
 		String info = variant.getGenomePosition() + " Ref (";
 		info += variant.getInitialReferenceOffset() + ", ";
@@ -279,10 +276,9 @@ public class SNPSynchroniser implements Serializable {
 		}
 
 		performGC();
-		hasChanged = true;	// data has changed
 	}
-	
-	
+
+
 	/**
 	 * Removes SNPs data from a chromosome of all activated genome.
 	 * Then, it deactivates them but does not modify counters.
@@ -293,9 +289,9 @@ public class SNPSynchroniser implements Serializable {
 		if (!currentChromosome.equals(chromosome)) {
 			List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
 			chromosomeList.add(currentChromosome);
-			
+
 			List<String> genomeToDeactivate = new ArrayList<String>();
-			
+
 			for (String genomeName: activeGenome.keySet()) {
 				boolean isActive = activeGenome.get(genomeName);
 				if (isActive) {
@@ -303,29 +299,29 @@ public class SNPSynchroniser implements Serializable {
 					genomeToDeactivate.add(genomeName);
 				}
 			}
-			
+
 			for (String genomeName: genomeToDeactivate) {
 				activeGenome.put(genomeName, false);
 			}
-			
+
 			currentChromosome = chromosome;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Compute the SNPs synchronization.
 	 * SNPs are loaded/released in/out of GenPlay according to settings. 
 	 */
 	public void compute () {
-		
+
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
 		chromosomeList.add(currentChromosome);
-		
+
 		for (String genomeName: activeGenome.keySet()) {
 			boolean isActive = activeGenome.get(genomeName);
 			int counter = genomeCounter.get(genomeName);
-			
+
 			// if the genome is not active but its counter is positive
 			if (!isActive && counter > 0) {
 				addSNP(chromosomeList, genomeName);			// its SNPs must be added
@@ -337,9 +333,9 @@ public class SNPSynchroniser implements Serializable {
 				activeGenome.put(genomeName, false);		// it must be marked as "deactivated"
 			}
 		}
-		
+
 	}
-	
+
 
 	/**
 	 * Increases SNPs counter for a genome.
@@ -440,8 +436,8 @@ public class SNPSynchroniser implements Serializable {
 		}
 		return genomeNames;
 	}
-	
-	
+
+
 	/**
 	 * @return true if SNPs synchronization has been requested, false otherwise.
 	 */
@@ -454,17 +450,12 @@ public class SNPSynchroniser implements Serializable {
 		return false;
 	}
 	
-	
-	public boolean dataHasChanged () {
-		return hasChanged;
-	}
-	
 
 	/**
-	 * @param hasChanged the hasChanged to set
+	 * @return the currentChromosome
 	 */
-	public void setHasChanged(boolean hasChanged) {
-		this.hasChanged = hasChanged;
+	public Chromosome getCurrentChromosome() {
+		return currentChromosome;
 	}
 
 

@@ -98,6 +98,18 @@ public class MGMultiGenome implements Serializable {
 		String referenceGenomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
 		multiGenomeInformation.put(referenceGenomeFullName, new MGGenome(referenceGenomeFullName));
 	}
+	
+	
+	/**
+	 * Reset all list of indexes
+	 */
+	public void resetListIndexes () {
+		for (MGGenome genome: multiGenomeInformation.values()) {
+			for (MGChromosome chromosome: genome.getGenomeInformation().values()) {
+				chromosome.resetIndexList();
+			}
+		}
+	}
 
 	
 	/**
