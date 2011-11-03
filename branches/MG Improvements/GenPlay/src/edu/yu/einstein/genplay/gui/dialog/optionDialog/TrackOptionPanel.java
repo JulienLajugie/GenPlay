@@ -24,13 +24,18 @@ package edu.yu.einstein.genplay.gui.dialog.optionDialog;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
+import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.text.NumberFormatter;
+
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 /**
  * Panel of the {@link OptionDialog} that allows to configure the tracks * 
@@ -50,6 +55,8 @@ final class TrackOptionPanel extends OptionPanel {
 	private final JFormattedTextField 	jftfTrackHeight;	// text field track count
 	private final JLabel 				jlUndoCount; 		// label undo count
 	private final JFormattedTextField 	jftfUndoCount; 		// label undo count
+	private final JLabel 				jlLegend;	 		// label legend (multi-genome)
+	private final JCheckBox				jcLegend;	 		// checkbox legend (multi-genome)
 
 	
 	/**
@@ -99,7 +106,18 @@ final class TrackOptionPanel extends OptionPanel {
 				projectConfiguration.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
 			}
 		});
-
+		
+		jlLegend = new JLabel("Show Legend:");
+		jcLegend = new JCheckBox();
+		jcLegend.setSelected(ProjectManager.getInstance().getProjectConfiguration().isLegend());
+		jcLegend.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				projectConfiguration.setLegend(jcLegend.isSelected());
+			}
+		});
+		
+		
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -138,5 +156,17 @@ final class TrackOptionPanel extends OptionPanel {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(10, 10, 10, 0);
 		add(jftfUndoCount, c);
+		
+		c.gridx = 0;
+		c.gridy = 3;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(10, 0, 10, 10);
+		add(jlLegend, c);
+
+		c.gridx = 1;
+		c.gridy = 3;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(10, 10, 10, 0);
+		add(jcLegend, c);
 	}
 }

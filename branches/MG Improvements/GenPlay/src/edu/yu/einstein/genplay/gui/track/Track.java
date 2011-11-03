@@ -475,6 +475,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void unlockHandle() {
 		trackHandle.unlock();
 	}
+	
+	
+	/**
+	 * Changes the legend display of the tracks
+	 */
+	public void legendChanged() {
+		trackGraphics.drawHeaderTrack(null);
+	}
 
 
 	/**

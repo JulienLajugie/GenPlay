@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -136,6 +137,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private DisplayableVariantListCreator	displayableVariantListCreator;	// displayable variants list creator (for MG project)
 	private String 							genomeName;						// genome on which the track is based (ie aligned on)
 	private List<DisplayableVariant> 		displayableVariantList;			// list of variant for multi genome project
+	private List<String>					stripeLegendText;				// stripes legend for multi genome track 
+	private List<Color>						stripeLegendColor;				// stripes legend for multi genome track
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
@@ -299,20 +302,242 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
+	 * Draws the header of the track.
+	 * The header of the track is composed of:
+	 * - the name
+	 * - the stripe legend (for multi-genome)
+	 * It allows a fine width distribution between these 2 texts.
+	 * @param g
+	 */
+	protected void drawHeaderTrack (Graphics g) {
+		if (g == null) {
+			g = getGraphics(); 
+		}
+		//System.out.println("TrackGraphics: drawHeaderTrack");
+		
+		// Initializes the modified text length for display
+		int trackTextDisplayWidth = 0;
+		int legendTextDisplayWidth = 0;
+
+		if (validTrackName() && initializeLegend()) {				// if both track name and legend have to be drawed
+			int widthOffset = 2;									// space between the border of the rectangle and the text.
+			int totalWidth = getWidth() - (widthOffset * 4);		// width of the track
+			int trackNameWidth = fm.stringWidth(getName());			// width of the track name
+			int legendWidth = fm.stringWidth(getLegend());			// width of the legend
+			
+			if ((trackNameWidth + legendWidth) > totalWidth) {		// if track name and legend are longer than the width available
+				int diff = (trackNameWidth + legendWidth) - totalWidth;	// we calculate the difference
+				trackTextDisplayWidth = (trackNameWidth - (diff / 2));	// we subtract its half to the track name length
+				legendTextDisplayWidth = (legendWidth - (diff / 2));	// we subtract its half to the legend length
+				
+				// Fix the bug of the negative length
+				// Value under 0 is considered as "no change" action further in the program
+				if (trackTextDisplayWidth < 1) {
+					trackTextDisplayWidth = 1;
+				}
+				if (legendTextDisplayWidth < 1) {
+					legendTextDisplayWidth = 1;
+				}
+			}
+		}
+
+		// Calls methods for drawing
+		drawName(g, trackTextDisplayWidth);
+		drawLegend(g, legendTextDisplayWidth);
+		
+		//repaint(); // if uncommented, the activation/deactivation of the "Show Legend" option in the option dialog takes effect immediately!
+	}
+
+
+	/**
+	 * @return true if the track name has to be draw, false otherwise.
+	 */
+	private boolean validTrackName () {
+		return ((getName() != null) && (getName().trim().length() != 0));
+	}
+
+
+	/**
+	 * @return true if the stripe legend has to be draw, false otherwise.
+	 */
+	private boolean validLegend () {
+		return (ProjectManager.getInstance().isMultiGenomeProject() && 
+				multiGenomeStripes != null &&
+				ProjectManager.getInstance().getProjectConfiguration().isLegend());
+	}
+
+
+	/**
 	 * Draws the name of the track
 	 * @param g
 	 */
-	protected void drawName(Graphics g) {
-		if ((getName() != null) && (getName().trim().length() != 0)) {
-			int x = getWidth() - fm.stringWidth(getName()) - 4;
-			int textWidth = fm.stringWidth(getName()) + 4;
-			int textHeight = fm.getHeight();
+	private void drawName(Graphics g, int displayTextWidth) {
+		if (validTrackName()) {
+			int widthOffset = 2;												// space between the border of the rectangle and the text.
+			int textWidth = fm.stringWidth(getName());							// text width on the screen
+
+			String name = getName();
+			if (displayTextWidth > 0 && textWidth > displayTextWidth) {			// if the display width of the full text is larger than the one given, the text has to be shorted.
+				String newText = "";
+				int charIndex = 0;
+				while (fm.stringWidth(newText + "...") <= displayTextWidth) {	// we add char one by one to the new text until reaching the length limit
+					newText += name.charAt(charIndex);
+					charIndex++;
+				}
+				name = newText + "...";											// the track name is the modified name + "..."
+				textWidth = displayTextWidth;									// the length of the text has changed too
+			}
+
+
+			int x = getWidth() - textWidth - (widthOffset * 2);					// starts the rectangle drawing (at the right border of the frame)
+			int width = textWidth + (widthOffset * 2);							// width of the rectangle drawing
+			int textHeight = fm.getHeight();									// height of the text
+
+			// Draws
 			g.setColor(getBackground());
-			g.fillRect(x, 1, textWidth, textHeight + 2);
+			g.fillRect(x, 1, width, textHeight + widthOffset);
 			g.setColor(Color.blue);
-			g.drawRect(x, 1, textWidth - 1, textHeight + 2);
-			g.drawString(getName(), x + 2, textHeight);
+			g.drawRect(x, 1, width - 1, textHeight + widthOffset);
+			g.drawString(name, x + widthOffset, textHeight);
 		}
+	}
+
+
+	/**
+	 * Draws the legend of the stripe in a multi genome project
+	 * @param g
+	 */
+	private void drawLegend (Graphics g, int displayTextWidth) {
+		if (initializeLegend()) {
+			if (stripeLegendText.size() > 0) {
+				int widthOffset = 2;												// space between the border of the rectangle and the text.
+				int x = 1;															// starts the rectangle drawing (at the left border of the frame)
+				int rectWidth = widthOffset * 2;									// width of the rectangle, initialized with the double offset (left and right)
+				if (displayTextWidth > 0) {											// if the text length has changed
+					rectWidth += displayTextWidth;									// we take it into account
+				} else {															// if not
+					rectWidth += fm.stringWidth(getLegend());						// it is the native one
+				}
+				int textHeight = fm.getHeight();									// height of the text
+				
+				// Draws
+				g.setColor(getBackground());
+				g.fillRect(x, 1, rectWidth, textHeight + widthOffset);
+				g.setColor(Color.green);
+				g.drawRect(x, 1, rectWidth - 1, textHeight + widthOffset);
+				
+				// Draws the legend (text containing various colors)
+				x++;			// shift the start x position of the text by +1 (do not touch the rectangle)
+				textHeight--;	// shift the start y position of the text by -1 (center of the rectangle)
+				for (int i = 0; i < stripeLegendText.size(); i++) {									// scans all text fragment of the legend
+					g.setColor(stripeLegendColor.get(i));											// set the Graphic with the right color (associated to the text fragment)
+					if (i > 0) {																	// if it is not the first text to write
+						x += fm.stringWidth(stripeLegendText.get(i - 1));							// we move the x position after the previous text
+					}
+					String text = stripeLegendText.get(i);											// here is the current fragment to draw
+					if (displayTextWidth > 0 && (x + fm.stringWidth(text)) > displayTextWidth) {	// if the length of the text (given by x and the current length of text) is larger than the limit length
+						String newText = "";
+						int charIndex = 0;
+						while ((x + fm.stringWidth(newText + "...")) <= displayTextWidth) {			// we add char one by one to the new text until reaching the length limit
+							newText += text.charAt(charIndex);
+							charIndex++;
+						}
+						text = newText + "...";														// the text to draw is the new one + "..."
+						g.drawString(text, x, textHeight);											// draws the text
+						break;																		// stops the scan (exit loop)
+					}
+					g.drawString(text, x, textHeight);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Initializes the list of text and the list of their associated color in order to draw the legend
+	 * @return true if it has been initialized, false otherwise. 
+	 */
+	private boolean initializeLegend () {
+		if (validLegend()) {
+			// Sets parameters
+			Map<String, Map<VariantType, Color>> colorMap = multiGenomeStripes.getColorAssociation();
+			stripeLegendText = new ArrayList<String>();
+			stripeLegendColor = new ArrayList<Color>();
+
+			// Gets the sorted genome names list
+			List <String> genomeNames = new ArrayList<String>(colorMap.keySet());
+			Collections.sort(genomeNames);
+
+			// Color for text
+			Color textColor = Color.black;
+
+			// Association text/color
+			int genomeCounter = 0;
+			for (String genomeName: genomeNames) {
+
+				// Gets variant type / color mapping
+				Map<VariantType, Color> colors = colorMap.get(genomeName);
+
+				// Gets the real size of the list
+				int colorsSize = colors.size();
+				if (colors.containsKey(VariantType.INS)) { colorsSize--;}	// Ins/Insertion types refer to the same main type: insertion 
+				if (colors.containsKey(VariantType.DEL)) { colorsSize--;}	// Del/Deletion types refer to the same main type: deletion
+
+				// If variant type/color exist
+				if (colorsSize > 0) {
+					genomeCounter++;									// add a genome
+					if (genomeCounter > 1) {
+						stripeLegendText.add(" " + genomeName + " (");	// add a white space, the name and " ("
+					} else {
+						stripeLegendText.add(genomeName + " (");		// add the name and " ("
+					}
+					stripeLegendColor.add(textColor);					// add the text color for the genome
+
+					// Association variant type/color
+					int colorCounter = 0;
+
+					for (VariantType type: colors.keySet()) {
+						if (type != VariantType.INS && type != VariantType.DEL) {	// these types are automatically added when user selects "insertion" or "deletion",
+							// it is useless to treat them and redundant.
+							colorCounter++;
+							// Add the variant type shortcut
+							if (type == VariantType.INSERTION) {
+								stripeLegendText.add("I");
+							} else if (type == VariantType.DELETION) {
+								stripeLegendText.add("D");
+							}
+							stripeLegendColor.add(colors.get(type));		// add the chosen color
+
+							if (colorCounter < colorsSize) {				// if there is other selected variation type
+								stripeLegendText.add(", ");					// add a ", "
+								stripeLegendColor.add(textColor);			// with the text color
+							}
+						}
+					}
+
+					stripeLegendText.add(")");							// add a ")" for closing
+					stripeLegendColor.add(textColor);
+				}
+			}
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+
+	/**
+	 * @return the legend text
+	 */
+	private String getLegend () {
+		String legend = "";
+		if (stripeLegendText != null) {
+			for (String text: stripeLegendText) {
+				legend += text;
+			}
+		}
+		return legend;
 	}
 
 
@@ -359,7 +584,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// Displays nucleotide for SNP variant
 			if (displayableVariant.getType() == VariantType.SNPS) {
 				Font font = g.getFont();
-				
+
 				if (font.getSize() <= width) {
 					//Sets drawing parameters
 					//int widthOffset = (width - font.getSize()) / 4;

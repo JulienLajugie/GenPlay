@@ -247,7 +247,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 		drawGenes(g);
 		drawStripes(g);
 		drawMultiGenomeInformation(g);
-		drawName(g);
+		drawHeaderTrack(g);
 		drawMiddleVerticalLine(g);
 	}
 
