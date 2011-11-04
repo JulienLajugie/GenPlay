@@ -26,6 +26,7 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -69,6 +70,8 @@ class ValidationPanel extends JPanel {
 				getMultiGenomeStripeSelectionDialog().validChoice();
 			}
 		});
+		// set confirm button as the default button of the dialog
+		multiGenomeStripeSelectionDialog.getRootPane().setDefaultButton(confirm);
 		
 		//Cancel button
 		JButton cancel = new JButton("Cancel");
