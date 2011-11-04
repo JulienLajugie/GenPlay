@@ -1,0 +1,3 @@
+<assembly clade="vertebrate" genome="fugu" name="JGI 3.0/fr1" date="08 2002">
+	<chromosome name="chrUn" length="349519338"/>
+</assembly>
