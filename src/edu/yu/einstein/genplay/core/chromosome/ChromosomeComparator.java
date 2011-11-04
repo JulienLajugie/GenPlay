@@ -26,234 +26,254 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class compare chromosome regarding their names.
+ * This class compares chromosome regarding their names.
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class ChromosomeComparator implements Comparator<String> {
 
 	private Map<Character, Integer> charScore;	// Array to set the importance of every special character
-	
-	
+
+
 	@Override
 	public int compare(String o1, String o2) {
 		initCharScore();
-		if (chrExists(o1, o2)){
-			return chrComparator(o1, o2);
-		} else {
-			return charComparator(o1, o2, 0);
+
+		if (startsWithCHR(o1) && startsWithCHR(o2)) {			// if both strings start with "chr" pattern
+			Integer i1 = getInteger(o1, 3);						// gets the integer after the "chr" for the first string
+			Integer i2 = getInteger(o2, 3);						// gets the integer after the "chr" for the second string
+
+			if (i1 != null && i2 != null) {						// if both have an integer
+				return i1.compareTo(i2);						// regular integer comparison
+
+			} else if (i1 != null && i2 == null) {				// if first string has an integer but second string
+				return -1;										// the first string is before
+
+			} else if (i1 == null && i2 != null) {				// if first string has not an integer but second string
+				return 1;										// the second string is before
+
+			} else {											// if both have no integer
+				Integer score1 = getSpecialCharCode(o1);		// get the special character code (X,Y,M) after the "chr" of the first string
+				Integer score2 = getSpecialCharCode(o2);		// get the special character code (X,Y,M) after the "chr" of the second string
+
+				if (score1 != null && score2 != null) {			// if they both have a special character
+					return score1.compareTo(score2);			// regular integer comparison (special characters are related to an integer according to their importance)
+
+				} else if (score1 != null && score2 == null) {	// if first string has a special character but second string 
+					return -1;									// the first string is before
+
+				} else if (score1 == null && score2 != null) {	// if second string has not a special character but second string
+					return 1;									// the second string is before
+				} else {
+					Integer index1 = getUnderScoreCharIndex(o1);	// gets the index of the underscore for the first string
+					Integer index2 = getUnderScoreCharIndex(o2);	// gets the index of the underscore for the second string
+
+					if (index1 != null && index2 != null) {			// if both strings contain an underscore
+						Integer i3 = getInteger(o1, 3, index1);		// gets the integer after the "chr" and before the "_" for the first string
+						Integer i4 = getInteger(o2, 3, index2);		// gets the integer after the "chr" and before the "_" for the second string
+
+						if (i3 != null && i4 != null) {				// if both have an integer
+							int result = i3.compareTo(i4);
+
+							if (result == 0) {
+								String newO1 = o1.substring(index1 + 1, o1.length());
+								String newO2 = o2.substring(index2 + 1, o2.length());
+								return compare(newO1, newO2);
+							}
+
+							return result;							// regular integer comparison
+
+						} else if (i3 != null && i4 == null) {		// if first string has an integer but second string
+							return -1;								// the first string is before
+
+						} else if (i3 == null && i4 != null) {		// if first string has not an integer but second string
+							return 1;								// the second string is before
+						}
+
+					} else if (index1 != null && index2 == null) {		// if first string has an integer but second string
+						return -1;										// the first string is before
+
+					} else if (index1 == null && index2 != null) {		// if first string has not an integer but second string
+						return 1;
+					}
+				}
+			}
+		} else if (startsWithCHR(o1) && !startsWithCHR(o2)) {	// if first string starts with "chr" but second string
+			return -1;											// the first string is before
+
+		} else if (!startsWithCHR(o1) && startsWithCHR(o2)) {	// if first string does not start with "chr" but second string
+			return 1;											// the second string is before
 		}
+		// if both do not start with "chr" pattern
+		//return o1.compareToIgnoreCase(o2);						// regular string comparison
+
+		return compareWords(o1, o2);
 	}
-	
-	
+
+
 	/**
 	 * Initializes the character score array
 	 */
 	private void initCharScore () {
 		charScore = new HashMap<Character, Integer>();
-		charScore.put('X', 0);
 		charScore.put('x', 0);
-		charScore.put('Y', 1);
 		charScore.put('y', 1);
-		charScore.put('M', 2);
 		charScore.put('m', 2);
 		charScore.put('_', 3);
 	}
-	
-	
+
+
 	/**
-	 * Looks for "chr" string qt the beginning of chromosome name
-	 * @param o1	first object to compare
-	 * @param o2	second object to compare
-	 * @return		true if "chr" string exists in one or both of the input object.
+	 * @param s the chromosome name
+	 * @return	true if it starts with "chr", false otherwise.
 	 */
-	private boolean chrExists (String o1, String o2) {
-		if (o1.substring(0, 3).equals("chr") || o2.substring(0, 3).equals("chr")){
-			return true;
-		}
-		return false;
+	private boolean startsWithCHR (String s) {
+		return isPatternPresent(s, "chr", 0, 3);
 	}
-	
-	
+
+
 	/**
-	 * Compares chromosome regarding their number.
-	 * @param o1	first object to compare
-	 * @param o2	second object to compare
-	 * @return		-1 if o1<o2 / 0 if o1=o2 / 1 if o1>o2
+	 * @param text			the string to look in
+	 * @param pattern		the pattern to look with
+	 * @param startIndex	the start position in the string
+	 * @param stopIndex		the stop position in the string
+	 * @return				true if the pattern is presents, false otherwise.
 	 */
-	private int chrComparator (String o1, String o2) {
-		if (o1.substring(0, 3).equals("chr") && o2.substring(0, 3).equals("chr")){
-			Integer i1 = getIntegerPart(o1, 3);
-			Integer i2 = getIntegerPart(o2, 3);
-			if (i1 != -1 && i2 !=-1) {
-				return i1.compareTo(i2);
-			} else if (i1 != -1 && i2 == -1) {
-				return -1;
-			} else if (i1 == -1 && i2 != -1) {
-				return 1;
-			} else {
-				return charComparator(o1, o2, 3);
-			}
-		} else if (o1.substring(0, 3).equals("chr") && !o2.substring(0, 3).equals("chr")){
-			return -1;
-		} else {
-			return 1;
-		}
+	private boolean isPatternPresent (String text, String pattern, int startIndex, int stopIndex) {
+		return text.substring(startIndex, stopIndex).toLowerCase().equals(pattern);
 	}
-	
-	
+
+
 	/**
-	 * Checks if the end of a string is an integer.
-	 * @param o		the string
-	 * @param pos	the start position
-	 * @return		true if it can be an integer
+	 * @param s				the string
+	 * @param startIndex	the start index
+	 * @param stopIndex		the stop index
+	 * @return				the integer part of the string, null otherwise
 	 */
-	private boolean isInteger (String o, int pos) {
+	private Integer getInteger (String s, int startIndex, int stopIndex) {
+		Integer result;
 		try {
-			Integer.parseInt(o.substring(pos, o.length()));
+			result = Integer.parseInt(s.substring(startIndex, stopIndex));
 		} catch (Exception e) {
-			return false;
+			result = null;
 		}
-		return true;
+		return result;
 	}
-	
-	
+
+
 	/**
-	 * Gets the integer part of a string
-	 * @param o		the string
-	 * @param pos	the start position
-	 * @return		an integer or -1 if it is not successful
+	 * @param s				the string
+	 * @param startIndex	the start index
+	 * @return				the integer part of the string, null otherwise
 	 */
-	private Integer getIntegerPart (String o, int pos) {
-		if (isInteger(o, pos)) {
-			return Integer.parseInt(o.substring(pos, o.length()));
+	private Integer getInteger (String s, int startIndex) {
+		return getInteger(s, startIndex, s.length());
+	}
+
+
+	/**
+	 * Looks for the score of the special character (if it exists) at the index 3 of a string.
+	 * This method is used for chromosome name like "chr..." (chrX, chrY, chrM...).
+	 * @param s	the string
+	 * @return	the score of the special character
+	 */
+	private Integer getSpecialCharCode (String s) {
+		char c = s.charAt(3);
+		Integer score = null;
+		if (charScore.containsKey(c)) {
+			score = charScore.get(c);
 		}
-		return -1;
+		return score;
 	}
-	
-	
+
+
 	/**
-	 * Checks if a char exists in a string for a specific position.
-	 * @param o		the string
-	 * @param pos	the position
-	 * @return		true if it exists
+	 * @param s the string
+	 * @return	the index of the first occurence of the underscore in the string, null it it does not exist
 	 */
-	private boolean validChar (String o, int pos) {
-		if (pos < o.length()) {
-			return true;
-		} else {
-			return false;
+	private Integer getUnderScoreCharIndex (String s) {
+		Integer index = s.indexOf("_");
+		if (index > -1) {
+			return index;
 		}
+		return null;
 	}
-	
-	
+
+
 	/**
-	 * Compares character
-	 * @param o1	first object to compare
-	 * @param o2	second object to compare
-	 * @param pos	character position
-	 * @return		-1 if o1<o2 / 0 if o1=o2 / 1 if o1>o2
+	 * Compares two string taking into account numbers than can be present at the end of each string.
+	 * @param s1 first string
+	 * @param s2 second string
+	 * @return		-1 if s1 is before, 1 if after, 0 if they are equal
 	 */
-	private int charComparator (String o1, String o2, int pos) {
-		int result = 0;
-		int validity;
-		boolean valid = true;
-		int index = pos;
-		while (valid) {
-			validity = checkLength(o1, o2, index);
-			switch (validity) {
-			case 0:
-				Character c1 = o1.charAt(index);
-				Character c2 = o2.charAt(index);
-				int res = charScoreComparator(c1, c2);
-				if (res == 0) {
-					index++;
+	public int compareWords(String s1, String s2) {
+		int index = 0;
+		while (index < s1.length() && index < s2.length()) {			// while the index is lower than the length of both string
+			String c1 = s1.substring(index, (index + 1));				// gets the character at the current index for the first string
+			String c2 = s2.substring(index, (index + 1));				// gets the character at the current index for the second string
+
+			Integer i1 = null;											// Tries to parse the current characters into integer value
+			Integer i2 = null;
+			try {
+				i1 = Integer.parseInt(c1);
+			} catch (Exception e) {}
+			try {
+				i2 = Integer.parseInt(c2);
+			} catch (Exception e) {}
+
+			if (i1 != null && i2 != null ) {							// If both current characters are integer
+				Integer i3 = getFullIntegerPart(s1, index);				// gets the full integer present in the string
+				Integer i4 = getFullIntegerPart(s2, index);
+				
+				int compare = i3.compareTo(i4);							// regular integer comparison
+
+				if (compare == 0) {										// if they are equal, string comparison must continue
+					index += i3.toString().length();					// the new index continues after the integer
 				} else {
-					if (res != -2){
-						result = res;
-					} else {
-						result = c1.compareTo(c2);
-					}
-					valid = false;
+					return compare;										// if they are not equal, we return the comparison result
 				}
-				break;
-			case 1:
-				result = 1;
-				break;
-			case -1:
-				result = -1;
-				break;
-			case -2:
-				result = 0;
-				break;
-			default:
-				break;
+
+			} else if (i1 != null && i2 == null ) {						// if there is an integer in the first string but in the second string
+				return -1;												// the first string is before
+			} else if (i1 == null && i2 != null ) {						// if there is an integer in the second string but in the first string
+				return 1;												// the first string is after
+			} else {													// if there is no integer, we continue the scan
+				index++;												// increase index by 1
 			}
-			if (validity != 0) {
-				valid = false;
+
+			if (index >= s1.length() && index < s2.length()) {			// if the first string is shorter than the second 
+				return -1;												// the first string is before
+			} else if (index < s1.length() && index >= s2.length()) {	// if the first string is longer than the second
+				return 1;												// the first string is after
+			}
+
+			int result = c1.compareToIgnoreCase(c2);					// compares characters
+			if (result != 0) {											// if they are not equal
+				return result;											// we return the result
 			}
 		}
-		return result;
+		return 0;														// if scan is here, both sting are equal.
 	}
-	
-	
+
+
 	/**
-	 * Checks validity of a specific position between 2 strings.
-	 * @param o1	first object to compare
-	 * @param o2	second object to compare
-	 * @param index	character position
-	 * @return		0 if both are valid
-	 * 				1 if o1 is valid but not o2
-	 * 				-1 if o2 is valid but not o1
-	 * 				-2 if both are not valid
+	 * This methods looks for the full integer part in a string from a start index.
+	 * @param s		the string
+	 * @param index	index of the first integer
+	 * @return		the full integer starting at the index
 	 */
-	private int checkLength (String o1, String o2, int index) {
-		int result = 0;
-		if (validChar(o1, index) && validChar(o2, index)) {
-			result = 0;
-		} else {
-			if (validChar(o1, index) && !validChar(o2, index)) {
-				result = 1;
-			} else if (!validChar(o1, index) && validChar(o2, index)) {
-				result = -1;
-			} else {
-				result = -2;
+	private Integer getFullIntegerPart (String s, int index) {
+		Integer result = null;									// Initialize the result to null
+		int nextIndex = index + 1;								// Next index is initialized with index + 1
+		while (nextIndex <= s.length()) {						// while the next index is shorter or equal to the string length
+			String text = s.substring(index, nextIndex);		// gets the sub string from the string (index to next index)
+			try {
+				result = Integer.parseInt(text);				// tries to get the integer part
+			} catch (Exception e) {								// if there is no integer part
+				return result;									// we return result (that contains the previous integer part or null)
 			}
+			nextIndex++;										// if it worked, we keep looking in the string increasing the next index
 		}
-		return result;
+		return result;											// return the result of the scan
 	}
-	
-	
-	/**
-	 * Compares character including special character
-	 * @param c1	first character to compare
-	 * @param c2	second character to compare
-	 * @return		-1 if c1<c2 / 0 if c1=c2 / 1 if c1>c2
-	 */
-	private int charScoreComparator (Character c1, Character c2) {
-		int result = c1.compareTo(c2);
-		if (result != 0) {
-			int specialResult1 = -1;
-			int specialResult2 = -1;
-			if (charScore.containsKey(c1) && charScore.containsKey(c2)) {
-				specialResult1 = charScore.get(c1);
-				specialResult2 = charScore.get(c2);
-				if (specialResult1 < specialResult2) {
-					result = -1;
-				} else if (specialResult1 == specialResult2) {
-					result = 0;
-				} else {
-					result = 1;
-				}
-			} else if (charScore.containsKey(c1) && !charScore.containsKey(c2)) {
-				result = -1;
-			} else if (!charScore.containsKey(c1) && charScore.containsKey(c2)) {
-				result = 1;
-			} else {
-				result = -2;
-			}
-		}
-		return result;
-	}
-	
 }

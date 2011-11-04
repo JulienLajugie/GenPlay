@@ -101,7 +101,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		}
 		drawStripes(g);
 		drawMultiGenomeInformation(g);
-		drawName(g);
+		drawHeaderTrack(g);
 	}
 
 

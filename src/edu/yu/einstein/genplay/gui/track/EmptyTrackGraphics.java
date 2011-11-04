@@ -76,7 +76,7 @@ public final class EmptyTrackGraphics extends TrackGraphics<Void> {
 		drawVerticalLines(g);
 		drawStripes(g);
 		drawMultiGenomeInformation(g);
-		drawName(g);
+		drawHeaderTrack(g);
 		drawMiddleVerticalLine(g);
 	}
 }

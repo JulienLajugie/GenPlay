@@ -888,6 +888,17 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}		
 		}
 	}
+	
+	
+	/**
+	 * Changes the legend display of the tracks
+	 */
+	public void legendChanged() {
+		for (Track<?> currentTrack: trackList) {
+			currentTrack.legendChanged();
+			currentTrack.repaint();
+		}
+	}
 
 
 	/**

@@ -66,6 +66,7 @@ public final class ProjectConfiguration implements Serializable {
 	private int trackCount = DEFAULT_TRACK_COUNT; 							// track count
 	private int trackHeight = DEFAULT_TRACK_HEIGHT; 						// track height
 	private int undoCount = DEFAULT_UNDO_COUNT; 							// number of undo in memory
+	private boolean legend = true;											// show legend for multi genome stripes
 	private String[] projects;												// list of the recent project paths
 	private String currentProjectPath;										// path to the current project
 
@@ -106,6 +107,8 @@ public final class ProjectConfiguration implements Serializable {
 					trackHeight = Integer.parseInt(value);
 				} else if (key.equalsIgnoreCase("undo count")) {
 					undoCount = Integer.parseInt(value);
+				} else if (key.equalsIgnoreCase("show legend")) {
+					legend = Boolean.parseBoolean(value);
 				} else {
 					extractProject(key, value);
 				}
@@ -187,6 +190,14 @@ public final class ProjectConfiguration implements Serializable {
 	
 
 	/**
+	 * @return the legend
+	 */
+	public boolean isLegend() {
+		return legend;
+	}
+
+
+	/**
 	 * @return the zoomFile
 	 */
 	public final String getZoomFile() {
@@ -239,6 +250,7 @@ public final class ProjectConfiguration implements Serializable {
 		trackCount = DEFAULT_TRACK_COUNT;
 		trackHeight = DEFAULT_TRACK_HEIGHT;
 		undoCount = DEFAULT_UNDO_COUNT;
+		legend = true;
 	}
 
 	
@@ -304,6 +316,14 @@ public final class ProjectConfiguration implements Serializable {
 	public void setUndoCount(int undoCount) {
 		this.undoCount = undoCount;
 	}
+	
+	
+	/**
+	 * @param legend the legend to set
+	 */
+	public void setLegend(boolean legend) {
+		this.legend = legend;
+	}
 
 	
 	/**
@@ -330,6 +350,8 @@ public final class ProjectConfiguration implements Serializable {
 			writer.write("track height: " + trackHeight);
 			writer.newLine();
 			writer.write("undo count: " + undoCount);
+			writer.newLine();
+			writer.write("show legend: " + legend);
 			writeProjects (writer);
 		} finally {
 			if (writer != null) {

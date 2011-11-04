@@ -82,7 +82,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 469; 						// GenPlay version
+	private static final int VERSION_NUMBER = 470; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -405,6 +405,9 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 			if (optionDialog.undoCountChanged()) {
 				trackList.undoCountChanged();
+			}
+			if (optionDialog.legendChanged()) {
+				trackList.legendChanged();
 			}
 		}
 		optionDialog.dispose();
