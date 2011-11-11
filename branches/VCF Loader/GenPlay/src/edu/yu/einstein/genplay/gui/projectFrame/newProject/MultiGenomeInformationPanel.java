@@ -46,6 +46,10 @@ public class MultiGenomeInformationPanel extends JPanel {
 	
 	private static final Dimension LABEL_DIM = new Dimension(100, 25);	// Label name dimension
 	private static final Dimension VALUE_DIM = new Dimension(20, 20);	// label value dimension
+	
+	protected static int GROUP_NUMBER = 0;
+	protected static int GENOME_NUMBER = 0;
+	protected static int FILE_NUMBER = 0;
 
 	private static 	JLabel groupValue;	// group value label
 	private static 	JLabel genomeValue;	// genome value label
@@ -136,14 +140,12 @@ public class MultiGenomeInformationPanel extends JPanel {
 	
 
 	/**
-	 * @param group  	group number
-	 * @param genome	genome number
-	 * @param vcf		VCF number
+	 * Updates the information.
 	 */
-	public static void setInformation (int group, int genome, int vcf) {
-		groupValue.setText("" + group);
-		genomeValue.setText("" + genome);
-		vcfValue.setText("" + vcf);
+	public static void refreshInformation () {
+		groupValue.setText("" + GROUP_NUMBER);
+		genomeValue.setText("" + GENOME_NUMBER);
+		vcfValue.setText("" + FILE_NUMBER);
 	}
 	
 }

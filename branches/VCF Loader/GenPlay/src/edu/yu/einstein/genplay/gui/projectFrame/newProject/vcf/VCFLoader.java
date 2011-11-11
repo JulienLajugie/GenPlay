@@ -186,7 +186,7 @@ public class VCFLoader extends JDialog {
 		int group = data.getNumberElementList(0);
 		int genome = data.getNumberElementList(1);
 		int vcf = data.getNumberElementList(3);
-		MultiGenomeInformationPanel.setInformation(group, genome, vcf);
+		//MultiGenomeInformationPanel.setInformation(group, genome, vcf);
 	}
 	
 	

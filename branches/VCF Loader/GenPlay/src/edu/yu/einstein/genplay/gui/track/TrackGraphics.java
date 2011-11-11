@@ -313,7 +313,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		if (g == null) {
 			g = getGraphics(); 
 		}
-		//System.out.println("TrackGraphics: drawHeaderTrack");
 		
 		// Initializes the modified text length for display
 		int trackTextDisplayWidth = 0;
