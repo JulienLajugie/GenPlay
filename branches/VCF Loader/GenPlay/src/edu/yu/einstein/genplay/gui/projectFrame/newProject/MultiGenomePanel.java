@@ -52,7 +52,6 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFLoaderDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.XMLFilter;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
-import edu.yu.einstein.genplay.gui.projectFrame.newProject.vcf.VCFLoader;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -115,13 +114,12 @@ class MultiGenomePanel extends JPanel {
 					vcfLoaderDialog = new VCFLoaderDialog();
 				}
 				vcfLoaderDialog.setData(getData());
-				if (vcfLoaderDialog.showDialog(ProjectFrame.getInstance().getRootPane()) == VCFLoader.APPROVE_OPTION) {
+				if (vcfLoaderDialog.showDialog(ProjectFrame.getInstance().getRootPane()) == VCFLoaderDialog.APPROVE_OPTION) {
 					setData(vcfLoaderDialog.getData());
 					initializesGenomeFileAssociation();
 					updatesStatistics();
 					vcfLoaderDialog.closeDialog();
 				}
-
 			}
 		});
 
@@ -277,7 +275,7 @@ class MultiGenomePanel extends JPanel {
 			}
 			VCFReader reader = null;
 			try {
-				reader = new VCFReader(new File(vcfData.getPath()), vcfData.getType());
+				reader = new VCFReader(vcfData.getFile(), vcfData.getType());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

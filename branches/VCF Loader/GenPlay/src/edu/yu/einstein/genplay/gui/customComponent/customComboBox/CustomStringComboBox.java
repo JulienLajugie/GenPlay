@@ -21,84 +21,35 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.customComponent.customComboBox;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
-import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
-import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxListener;
-
 
 /**
- * This class offers a custom combo box.
- * This new combo box is editable, user can add, edit and remove items of the list.
- * Each operations are available by clicking on icons displayed when an item is selected.
- * In order to do that, this class uses a custom renderer {@link CustomComboBoxRenderer}.
- * Developer cannot instantiate this class, he must uses:
- * - {@link CustomStringComboBox}
- * - {@link CustomFileComboBox}
+ * This class extends the {@link CustomComboBox} class.
+ * It is specific for String content.
  * 
  * @author Nicolas Fourel
  * @version 0.1
- * @param <T> 
  */
-public abstract class CustomComboBox<T> extends JComboBox implements CustomComboBoxListener {
+public class CustomStringComboBox extends CustomComboBox<String> {
 
 	/**
-	 * Generated serial version ID
+	 * Generated default serial version
 	 */
-	private static final long serialVersionUID = 6864223363370055711L;
-
-	/** Text to select for adding a value */
-	public static final String ADD_TEXT = "Add...";
-
-	protected List<T> elements;		// List of elements
-	private final CustomComboBoxRenderer renderer;
-
-
-	/**
-	 * Constructor of {@link CustomComboBox}
-	 */
-	public CustomComboBox () {
-		super();
-		elements = new ArrayList<T>();
-		resetCombo();
-		setSelectedItem(ADD_TEXT);
-		renderer = new CustomComboBoxRenderer();
-		renderer.addCustomComboBoxListener(this);
-		setRenderer(renderer);
-	}
-
-
-	/**
-	 * Adds an element to the combo box
-	 * @param e the element
-	 */
-	public void addElement (T e) {
-		if (e != null && !elements.contains(e)) {
-			elements.add(e);
-		}
-	}
-
-
-	/**
-	 * Set a default selected element of the combo box
-	 */
-	public void setDefaultSelectedElement () {
-		if (elements.size() > 0) {
-			this.setSelectedItem(ADD_TEXT);
-		}
-	}
-
-
+	private static final long serialVersionUID = -3013901769963683217L;
+	
+	
 	/**
 	 * Resets the combo list removing all items and adding the new ones.
 	 * It also adds the ADD_TEXT value.
 	 */
 	public void resetCombo () {
 		this.removeAllItems();
-		for (T element: elements) {
+		Collections.sort(elements);
+		for (String element: elements) {
 			if (!element.toString().equals("")) {
 				this.addItem(element);
 			}
@@ -106,24 +57,38 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 		this.addItem(ADD_TEXT);
 	}
 	
-
-	/**
-	 * @return the renderer
-	 */
-	public CustomComboBoxRenderer getRenderer() {
-		return renderer;
-	}
-
-
+	
 	@Override
-	public abstract void customComboBoxChanged(CustomComboBoxEvent evt);
-
+	public void customComboBoxChanged(CustomComboBoxEvent evt) {
+		if (evt.getAction() == CustomComboBoxEvent.SELECT_ACTION) {
+			setSelectedItem(evt.getElement());
+		} else if (evt.getAction() == CustomComboBoxEvent.ADD_ACTION) {
+			addAction();
+		} else if (evt.getAction() == CustomComboBoxEvent.REMOVE_ACTION) {
+			removeAction(evt.getElement().toString());
+		} else if (evt.getAction() == CustomComboBoxEvent.REPLACE_ACTION) {
+			replaceAction(evt.getElement().toString());
+		}
+	}
+	
 
 	/**
 	 * Adds a new element to the combo box.
 	 * Shows a popup in order to define the new entry.
 	 */
-	protected abstract void addAction ();
+	@Override
+	protected void addAction () {
+		String element = JOptionPane.showInputDialog(this,
+					"Please type a new entry.",
+					"Entry insertion",
+					JOptionPane.PLAIN_MESSAGE);
+		
+		if (element != null && !element.equals("")) {
+				addElement(element);
+				resetCombo();
+				setSelectedItem(element);
+		}
+	}
 
 
 	/**
@@ -131,7 +96,24 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 	 * Shows a popup in order to confirm the action.
 	 * @param element element to remove
 	 */
-	protected abstract void removeAction (T element);
+	@Override
+	protected void removeAction (String element) {
+		Object[] options = {"Yes", "No"};
+		int n = JOptionPane.showOptionDialog(this,
+				"Do you really want to erase '" + element + "' ?",
+				"Entry deletion",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE,
+				null,
+				options,
+				options[0]);
+
+		if (n == JOptionPane.YES_OPTION) {
+			elements.remove(element);
+			resetCombo();
+			setSelectedIndex(0);
+		}
+	}
 
 
 	/**
@@ -139,6 +121,23 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 	 * Shows a popup in order to define the new entry.
 	 * @param element the element to replace
 	 */
-	protected abstract void replaceAction (T element);
+	@Override
+	protected void replaceAction (String element) {
+		String newElement = (String) JOptionPane.showInputDialog(
+					this,
+					"The new entry will replace '" + element + "'.",
+					"Entry modification",
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					null,
+					element);
+
+		if (newElement != null && !element.equals("")) {
+			elements.remove(element);
+			addElement( newElement);
+			resetCombo();
+			setSelectedItem(element);
+		}
+	}
 
 }

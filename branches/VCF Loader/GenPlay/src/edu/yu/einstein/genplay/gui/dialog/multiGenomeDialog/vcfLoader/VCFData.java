@@ -1,6 +1,24 @@
-/**
- * 
- */
+/*******************************************************************************
+ *     GenPlay, Einstein Genome Analyzer
+ *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
+ *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.io.File;
@@ -9,6 +27,8 @@ import edu.yu.einstein.genplay.core.enums.VCFType;
 
 
 /**
+ * This class represents a line of the VCf loader table with all object that it must implements.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -41,7 +61,7 @@ public class VCFData {
 	private String 	group;	// name of the group
 	private String 	genome;	// simplified name of the genome
 	private String 	raw;	// raw name of the genome
-	private String 	path;	// path of the VCF file
+	private File 	file;	// path of the VCF file
 	private VCFType type;	// type of the VCF file
 
 
@@ -52,7 +72,7 @@ public class VCFData {
 		this.group = "";
 		this.genome = "";
 		this.raw = "";
-		this.path = "";
+		this.file = null;
 		this.type = null;
 	}
 
@@ -62,14 +82,14 @@ public class VCFData {
 	 * @param group		name of the group
 	 * @param genome	simplified name of the genome
 	 * @param raw		raw name of the genome
-	 * @param path		path of the VCF file
+	 * @param file		path of the VCF file
 	 * @param type		type of the VCF file
 	 */
-	public VCFData (String group, String genome, String raw, String path, VCFType type) {
+	public VCFData (String group, String genome, String raw, File file, VCFType type) {
 		this.group = group;
 		this.genome = genome;
 		this.raw = raw;
-		this.path = path;
+		this.file = file;
 		this.type = type;
 	}
 
@@ -90,16 +110,13 @@ public class VCFData {
 		if (this.raw.equals("")) {
 			error += RAW_NAME + "; ";
 		}
-
-		File file = new File(path);
 		if (!file.isFile()) {
 			error += FILE_NAME + "; ";
 		}
-
 		if (this.type == null) {
 			error += TYPE_NAME + "; ";
 		}
-
+		
 		if (error.length() > 0) {
 			return error;
 		} else {
@@ -157,18 +174,18 @@ public class VCFData {
 
 
 	/**
-	 * @return the path
+	 * @return the file
 	 */
-	public String getPath() {
-		return path;
+	public File getFile() {
+		return file;
 	}
 
 
 	/**
-	 * @param path the path to set
+	 * @param file the file to set
 	 */
-	public void setPath(String path) {
-		this.path = path;
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 
@@ -195,7 +212,7 @@ public class VCFData {
 		String info = getGroup();
 		info += ", " + getGenome();
 		info += ", " + getRaw();
-		info += ", " + getPath();
+		info += ", " + getFile();
 		info += ", " + getType();
 		System.out.println(info);
 	}

@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBo
 
 /**
  * Should be Implemented by objects generating {@link CustomComboBoxEvent}
+ * 
  * @author Nicolas Fourel
  * @author Julien Lajugie
  * @version 0.1

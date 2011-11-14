@@ -26,6 +26,7 @@ import java.util.EventObject;
 
 /**
  * The {@link CustomComboBoxEvent} event emitted by a {@link CustomComboBoxEventsGenerator} object.
+ * 
  * @author Nicolas Fourel
  * @author Julien Lajugie
  * @version 0.1

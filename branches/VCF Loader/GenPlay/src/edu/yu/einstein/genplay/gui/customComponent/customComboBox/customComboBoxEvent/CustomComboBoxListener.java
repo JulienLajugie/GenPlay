@@ -30,7 +30,8 @@ import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox
  * The listener interface for receiving {@link CustomComboBoxEvent}.
  * The class that is interested in processing a {@link CustomComboBoxEvent} implements this interface.
  * The listener object created from that class is then registered with a component using the component's addCustomComboBoxEventListener method. 
- * A {@link CustomComboBoxEvent} is generated when a {@link CustomComboBox} is modified.  
+ * A {@link CustomComboBoxEvent} is generated when a {@link CustomComboBox} is modified.
+ * 
  * @author Nicolas Fourel
  * @author Julien Lajugie
  * @version 0.1

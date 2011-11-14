@@ -34,8 +34,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import edu.yu.einstein.genplay.core.enums.VCFType;
 
 /**
- * This class manages the multi genome settings.
+ * This class manages the multi genome import/export settings.
  * It concerns all association maps loading/saving.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -69,7 +70,7 @@ public class SettingsHandler extends DefaultHandler {
 			} else if (type.equals(VCFType.SNPS.toString())) {
 				vcfType = VCFType.SNPS;
 			}
-			VCFData vcfData = new VCFData(group, genome, raw, path, vcfType);
+			VCFData vcfData = new VCFData(group, genome, raw, new File(path), vcfType);
 			data.add(vcfData);
 		}
 	}
@@ -107,7 +108,7 @@ public class SettingsHandler extends DefaultHandler {
 				out.write(getFormattedString(VCFData.GROUP_NAME) + "=\"" + vcfData.getGroup() + "\" ");
 				out.write(getFormattedString(VCFData.GENOME_NAME) + "=\"" + vcfData.getGenome() + "\" ");
 				out.write(getFormattedString(VCFData.RAW_NAME) + "=\"" + vcfData.getRaw() + "\" ");
-				out.write(getFormattedString(VCFData.FILE_NAME) + "=\"" + vcfData.getPath() + "\" ");
+				out.write(getFormattedString(VCFData.FILE_NAME) + "=\"" + vcfData.getFile() + "\" ");
 				out.write(getFormattedString(VCFData.TYPE_NAME) + "=\"" + vcfData.getType() + "\" ");
 				out.write("/>\n");
 			}

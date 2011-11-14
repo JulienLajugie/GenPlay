@@ -1,6 +1,24 @@
-/**
- * 
- */
+/*******************************************************************************
+ *     GenPlay, Einstein Genome Analyzer
+ *     Copyright (C) 2009, 2011 Albert Einstein College of Medicine
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *     
+ *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
+ *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
+ *     Website: <http://genplay.einstein.yu.edu>
+ *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.awt.BorderLayout;
@@ -8,7 +26,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -19,6 +38,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -28,10 +48,17 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
-import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
-
 
 /**
+ * This class is the VCF loader dialog.
+ * It displays a table for editing multi-genome VCF settings.
+ * Developer can:
+ * - show it
+ * - close it
+ * - set the data
+ * - get the data
+ * - check settings validity
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -48,20 +75,20 @@ public class VCFLoaderDialog extends JDialog {
 	public static final 	int 			CANCEL_OPTION 		= 1;
 
 	private static final	String 			ICON_PATH 			= "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
+	private final static 	String 			ADD_ICON_PATH 		= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 		// path of the add entry icon
+	private final static 	String 			REPLACE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/edit_entry_50x50.png"; 		// path of the edit entry icon
+	private final static 	String 			DELETE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/delete_entry_50x50.png"; 	// path of the delete entry icon
 	private static final 	String 			FONT_NAME			= "ARIAL";										// name of the font
-	private static final 	String 			EDITING_INFO 		= "   Right click for adding/deleting row(s)";	// part of "how to use" labels (used for width)
 	private static final 	int 			FONT_SIZE 			= 11;											// size of the font
 	private static final 	int 			DIALOG_WIDTH 		= 700;											// width of the dialog
 	private static final 	int 			VALIDATION_HEIGHT 	= 20;											// height of the validation panel
 	private static			Image 			iconImage; 															// icon of the application
 
 	private 				int				approved 			= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	
+
 	private 				Font 			font 				= new Font(FONT_NAME, Font.ITALIC, FONT_SIZE);	// Font used in the dialog (How to use)
 	private 				FontMetrics 	fm					= getFontMetrics(font); 						// FontMetrics to get the size of a string
-	
-	private 				VCFLoaderTable 	table;				// the table
-	private 				JPanel 			southPanel;
+	private 				VCFLoaderTable 	table;																// the table
 
 
 	/**
@@ -82,7 +109,7 @@ public class VCFLoaderDialog extends JDialog {
 		table.setFillsViewportHeight(true);
 
 		// South
-		initializesSouthPanel(validationDim);
+		JPanel southPanel = getSouthPanel(validationDim);
 
 		// Dialog
 		setTitle("VCF Loader");
@@ -118,62 +145,70 @@ public class VCFLoaderDialog extends JDialog {
 	public void closeDialog () {
 		setVisible(false);
 	}
-	
-	
+
+
 	/**
 	 * Initializes the south panel.
 	 * South panel contains "how to use" panel and Ok/Cancel button panel.
 	 * @param validationDimension
 	 */
-	private void initializesSouthPanel (Dimension validationDimension) {
-		southPanel = new JPanel();
+	private JPanel getSouthPanel (Dimension validationDimension) {
+		JPanel southPanel = new JPanel();
 		southPanel.setLayout(new BorderLayout());
 		southPanel.add(getInformationPanel(), BorderLayout.CENTER);
 		southPanel.add(getValidationPanel(validationDimension), BorderLayout.SOUTH);
+		return southPanel;
 	}
-	
-	
+
+
 	/**
 	 * Information panel contains label about how to use the table
 	 * @return the information panel
 	 */
 	private JPanel getInformationPanel () {
 		JPanel informationPanel = new JPanel();
-		informationPanel.setLayout(new GridLayout(5, 1));
+		GridBagLayout layout = new GridBagLayout();
+		informationPanel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
 
-		Dimension dimension = new Dimension(getMinimumWidth(), fm.getHeight());
-		
-		JLabel label = new JLabel("   Editing cell:");
+		JLabel label = new JLabel("Caption:");
 		label.setFont(font);
-		label.setSize(dimension);
-		informationPanel.add(label);
-		
-		label = new JLabel("     - Adding: select '" + CustomComboBox.ADD_TEXT + "' option first and type over it");
+		label.setOpaque(true);
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1;
+		gbc.insets = new Insets(0, 20, 0, 0);
+		informationPanel.add(label, gbc);
+
+		label = new JLabel("Add a new element to the list");
+		label.setIcon(getIcon(ADD_ICON_PATH, fm.getHeight()));
 		label.setFont(font);
-		label.setSize(dimension);
-		informationPanel.add(label);
-		
-		label = new JLabel("     - Replacing: select desired entry and type over it");
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.insets = new Insets(0, 40, 0, 0);
+		informationPanel.add(label, gbc);
+
+		label = new JLabel("Edit the selected element");
+		label.setIcon(getIcon(REPLACE_ICON_PATH, fm.getHeight()));
 		label.setFont(font);
-		label.setSize(dimension);
-		informationPanel.add(label);
-		
-		label = new JLabel("     - Removing: select desired entry and empty the cell");
+		gbc.gridx = 0;
+		gbc.gridy = 2;
+		informationPanel.add(label, gbc);
+
+		label = new JLabel("Delete the selected element");
+		label.setIcon(getIcon(DELETE_ICON_PATH, fm.getHeight()));
 		label.setFont(font);
-		label.setSize(dimension);
-		informationPanel.add(label);
-		
-		label = new JLabel(VCFLoaderDialog.EDITING_INFO);
-		label.setFont(font);
-		label.setSize(dimension);
-		informationPanel.add(label);
-		
+		gbc.gridx = 0;
+		gbc.gridy = 3;
+		informationPanel.add(label, gbc);
+
 		return informationPanel;
 	}
-	
+
 
 	/**
-	 * The validation panel contain ok and cancel buttons
+	 * The validation panel contains ok and cancel buttons
 	 * @param dimension dimension of the panel
 	 * @return			the panel
 	 */
@@ -273,23 +308,38 @@ public class VCFLoaderDialog extends JDialog {
 		table.addMouseListener(popupListener);
 	}
 
-	
+
+	/**
+	 * Creates a square icon using the given path 
+	 * @param path	icon path
+	 * @param side	size of the side
+	 * @return		the icon
+	 */
+	private ImageIcon getIcon (String path, int side) {
+		ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
+		Image img = icon.getImage();
+		Image newImg = img.getScaledInstance(side, side, Image.SCALE_SMOOTH);
+		icon = new ImageIcon(newImg);
+		return icon;
+	}
+
+
 	/**
 	 * The minimum width is according to the longest text label
 	 * @return the minimum width of the dialog
 	 */
 	private int getMinimumWidth () {
-		int width = fm.stringWidth(EDITING_INFO) * 2;
+		int width = 200;
 		return width;
 	}
-	
-	
+
+
 	/**
-	 * The minimum height is the height of both labels, the validation panel height plus 100
+	 * The minimum height is the height of the caption, the validation panel height plus 100
 	 * @return the minimum height of the dialog
 	 */
 	private int getMinimumHeight () {
-		int height = VALIDATION_HEIGHT + fm.getHeight() * 2 + 100;
+		int height = VALIDATION_HEIGHT + fm.getHeight() * 4 + 100;
 		return height;
 	}
 
