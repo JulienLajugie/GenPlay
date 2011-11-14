@@ -82,11 +82,12 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 					"Please type a new entry.",
 					"Entry insertion",
 					JOptionPane.PLAIN_MESSAGE);
-		
 		if (element != null && !element.equals("")) {
 				addElement(element);
 				resetCombo();
 				setSelectedItem(element);
+		} else {
+			setSelectedItem("");
 		}
 	}
 

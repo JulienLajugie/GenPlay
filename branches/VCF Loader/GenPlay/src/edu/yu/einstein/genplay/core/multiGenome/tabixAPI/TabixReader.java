@@ -217,6 +217,17 @@ public class TabixReader {
 		return ret;
 	}
 
+	
+	/**
+	 * @return the results of the first chromosome presents in the VCF 
+	 */
+	public Iterator shortQuery () {
+		int indexChr = 0;
+		int begin = 0;
+		int end = 1<<29;
+		return query(indexChr, begin, end);
+	}
+	
 
 	/**
 	 * Performs a query

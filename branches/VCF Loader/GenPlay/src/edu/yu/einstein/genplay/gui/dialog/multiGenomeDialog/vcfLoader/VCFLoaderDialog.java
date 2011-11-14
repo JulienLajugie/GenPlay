@@ -223,7 +223,6 @@ public class VCFLoaderDialog extends JDialog {
 		confirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("confirm");
 				if (areValidSettings()) {
 					approved = APPROVE_OPTION;
 					closeDialog();
@@ -329,7 +328,7 @@ public class VCFLoaderDialog extends JDialog {
 	 * @return the minimum width of the dialog
 	 */
 	private int getMinimumWidth () {
-		int width = 200;
+		int width = 250;
 		return width;
 	}
 

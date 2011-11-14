@@ -398,6 +398,34 @@ public class VCFReader implements Serializable {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * Performs a query on the first chromosome of the indexed VCF file and return the 10 first results.
+	 * @return query 	results list
+	 * @throws IOException
+	 */
+	public List<Map<String, Object>> shortQuery () throws IOException {
+		Iterator iter = vcfParser.shortQuery();
+		List<String> fields = new ArrayList<String>();
+		fields.add("REF");
+		fields.add("ALT");
+		String line;
+		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+		int cpt = 0;
+		while (iter != null && (line = iter.next()) != null && cpt < 10){
+			String info[] = line.split("[\t]");
+			Map<String, Object> row = new HashMap<String, Object>();
+			for (String columnName: columnNames) {
+				if (fields.indexOf(columnName) != -1) {
+					row.put(columnName, info[columnNames.indexOf(columnName)]);
+				}
+			}
+			result.add(row);
+			cpt++;
+		}
+		return result;
+	}
 
 
 	/**
@@ -472,8 +500,6 @@ public class VCFReader implements Serializable {
 		if (indexInList != -1) {
 			int indexInString = info.indexOf(field);
 			if (indexInString != -1) {
-				//System.out.println(info + "; " + indexInString + ", " + indexInList);
-				//showInfoHeader();
 				Class<?> type = infoHeader.get(indexInList).getType();
 				if (type == Boolean.class) {
 					result = true;
@@ -555,7 +581,55 @@ public class VCFReader implements Serializable {
 		}
 	}
 
-
+	
+	/**
+	 * Scans the first lines of the VCF file in order to determine its type.
+	 * (works with VCF 4.0)
+	 * @return the type of the VCF file or null if not found
+	 */
+	public VCFType getPresumeType () {
+		Map<VCFType, Integer> types = new HashMap<VCFType, Integer>();
+		types.put(VCFType.INDELS, 0);
+		types.put(VCFType.SV, 0);
+		types.put(VCFType.SNPS, 0);
+		VCFType type = null;
+		List<Map<String, Object>> result = null;
+		try {
+			result = shortQuery();
+			int index = 0;
+			for (Map<String, Object> line: result) {
+				
+				String ref = line.get("REF").toString();
+				String alt = line.get("ALT").toString();
+				if (alt.charAt(0) == '<') {
+					type = VCFType.SV;
+				} else if (ref.length() == alt.length() && ref.length() == 1) {
+					type = VCFType.SNPS;
+				} else {
+					type = VCFType.INDELS;
+				}
+				int cpt = types.get(type) + 1;
+				types.put(type, cpt);
+				index++;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		type = null;
+		if (result != null) {
+			int mean = result.size() / 2;
+			if (types.get(VCFType.INDELS) > mean) {
+				type = VCFType.INDELS;
+			} else if (types.get(VCFType.SV) > mean) {
+				type = VCFType.SV;
+			} else if (types.get(VCFType.SNPS) > mean) {
+				type = VCFType.SNPS;
+			}
+		}
+		return type;
+	}
+	
 
 	/**
 	 * @return the altHeader

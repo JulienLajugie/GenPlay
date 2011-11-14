@@ -110,7 +110,7 @@ public class VCFData {
 		if (this.raw.equals("")) {
 			error += RAW_NAME + "; ";
 		}
-		if (!file.isFile()) {
+		if (file == null || !file.isFile()) {
 			error += FILE_NAME + "; ";
 		}
 		if (this.type == null) {

@@ -21,7 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
+import java.awt.FontMetrics;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.DefaultCellEditor;
@@ -69,7 +72,14 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 	 */
 	public VCFLoaderTable (VCFLoaderModel model) {
 		super(model);
+		initializesBoxes();
+	}
 
+	
+	/**
+	 * initializes the different combo boxes used in the table
+	 */
+	private void initializesBoxes () {
 		TableColumn column;
 
 		// Group combo box
@@ -100,7 +110,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		column = this.getColumnModel().getColumn(VCFData.TYPE_INDEX);
 		column.setCellEditor(new DefaultCellEditor(SNPBox));
 	}
-
+	
 
 	@Override
 	public TableCellEditor getCellEditor(int row, int column) {
@@ -108,15 +118,14 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		lastCol = column;
 		switch (column) {
 		case VCFData.RAW_INDEX:
-			String path = (String) getValueAt(row, VCFData.FILE_INDEX);
 			try {
-				File file = new File(path);
+				File file = (File) getValueAt(row, VCFData.FILE_INDEX);
 				VCFReader reader = new VCFReader(file);
 				List<String> rawGenomeNames = reader.getRawGenomesNames();
 				JComboBox combo = new JComboBox(rawGenomeNames.toArray());
 				return new DefaultCellEditor(combo);
 			} catch (Exception e) {
-				System.out.println("not a valid file");
+				System.out.println("not a valid file : " + getValueAt(row, VCFData.FILE_INDEX));
 				return super.getCellEditor(row, column);
 			}
 		default:
@@ -181,7 +190,19 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 	 * @param data the data to set
 	 */
 	public void setData(List<VCFData> data) {
-		((VCFLoaderModel)getModel()).setData(data);
+		List<VCFData> newData = new ArrayList<VCFData>();
+		for (int i = 0; i < data.size(); i++) {
+			VCFData rowData = new VCFData();
+			rowData.setGroup(data.get(i).getGroup());
+			rowData.setGenome(data.get(i).getGenome());
+			rowData.setRaw(data.get(i).getRaw());
+			rowData.setFile(data.get(i).getFile());
+			rowData.setType(data.get(i).getType());
+			newData.add(rowData);
+		}	
+		((VCFLoaderModel)getModel()).setData(newData);
+		
+		initializesBoxes();
 		for (VCFData vcfData: data) {
 			groupBox.addElement(vcfData.getGroup());
 			genomeBox.addElement(vcfData.getGenome());
@@ -197,7 +218,39 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 
 	@Override
 	public void customComboBoxChanged(CustomComboBoxEvent evt) {
-		setValueAt(evt.getElement(), lastRow, lastCol);
+		Object value = evt.getElement();
+		setValueAt(value, lastRow, lastCol);
+		updateSize(value, lastCol);
+		
+		if (lastCol == VCFData.FILE_INDEX && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
+			File file = new File(value.toString());
+			try {
+				VCFReader reader = new VCFReader(file);
+				VCFType type = reader.getPresumeType();
+				if (type != null) {
+					setValueAt(type, lastRow, VCFData.TYPE_INDEX);
+				}
+				List<String> rawGenomeNames = reader.getRawGenomesNames();
+				setValueAt(rawGenomeNames.get(0), lastRow, VCFData.RAW_INDEX);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+	/**
+	 * Sets the width of a column according to the new value
+	 * @param value		new value
+	 * @param column	column index
+	 */
+	private void updateSize (Object value, int column) {
+		FontMetrics fm = getFontMetrics(getFont());
+		int width = fm.stringWidth(value.toString());
+		int colWidth = getColumnModel().getColumn(column).getWidth();
+		if (colWidth < width) {
+			getColumnModel().getColumn(column).setPreferredWidth(width);
+		}
 	}
 
 }

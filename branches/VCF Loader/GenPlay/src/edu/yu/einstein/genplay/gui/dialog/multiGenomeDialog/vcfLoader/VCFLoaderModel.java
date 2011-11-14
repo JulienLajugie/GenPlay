@@ -28,6 +28,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import edu.yu.einstein.genplay.core.enums.VCFType;
+import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 
 /**
  * This class is the table model for {@link VCFLoaderTable}
@@ -77,7 +78,10 @@ public class VCFLoaderModel extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int row, int col)	{
 		if (col == VCFData.RAW_INDEX) {
-			if (getValueAt(row, VCFData.FILE_INDEX).equals("")) {
+			Object value = getValueAt(row, VCFData.FILE_INDEX);
+			if (value == null) {
+				return false;
+			} else if (value.toString().equals("") || value.toString().equals(CustomComboBox.ADD_TEXT)) {
 				return false;
 			}
 		}
