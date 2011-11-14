@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.projectFrame.newProject.vcf;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,43 +31,47 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import edu.yu.einstein.genplay.core.enums.VCFType;
+
 /**
- * This class manages the multi genome settings.
+ * This class manages the multi genome import/export settings.
  * It concerns all association maps loading/saving.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class SettingsHandler extends DefaultHandler {
 
 
-	private List<List<Object>> 	data;	// the data
-	private String[] attributeNames;	// the attribute names
-
+	private List<VCFData> 	data;	// the data
 
 	/**
 	 * Constructor of {@link SettingsHandler}
 	 */
 	public SettingsHandler () {
 		super();
-		data = new ArrayList<List<Object>>();
-		this.attributeNames = new String[5];
-		this.attributeNames[0] = "group";
-		this.attributeNames[1] = "genome";
-		this.attributeNames[2] = "type";
-		this.attributeNames[3] = "file";
-		this.attributeNames[4] = "raw_name";
+		data = new ArrayList<VCFData>();
 	}
-
 
 
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equalsIgnoreCase("row")) {
-			List<Object> row = new ArrayList<Object>();
-			for (String attribute: attributeNames) {
-				row.add(attributes.getValue(attribute));
+			String group = attributes.getValue(getFormattedString(VCFData.GROUP_NAME));
+			String genome = attributes.getValue(getFormattedString(VCFData.GENOME_NAME));
+			String raw = attributes.getValue(getFormattedString(VCFData.RAW_NAME));
+			String path = attributes.getValue(getFormattedString(VCFData.FILE_NAME));
+			String type = attributes.getValue(getFormattedString(VCFData.TYPE_NAME));
+			VCFType vcfType = null;
+			if (type.equals(VCFType.INDELS.toString())) {
+				vcfType = VCFType.INDELS;
+			} else if (type.equals(VCFType.SV.toString())) {
+				vcfType = VCFType.SV;
+			} else if (type.equals(VCFType.SNPS.toString())) {
+				vcfType = VCFType.SNPS;
 			}
-			data.add(row);
+			VCFData vcfData = new VCFData(group, genome, raw, new File(path), vcfType);
+			data.add(vcfData);
 		}
 	}
 
@@ -76,19 +80,17 @@ public class SettingsHandler extends DefaultHandler {
 	/**
 	 * @return the data
 	 */
-	public List<List<Object>> getData() {
+	public List<VCFData> getData() {
 		return data;
 	}
-
 
 
 	/**
 	 * @param data the data to set
 	 */
-	public void setData(List<List<Object>> data) {
+	public void setData(List<VCFData> data) {
 		this.data = data;
 	}
-
 
 
 	/**
@@ -101,11 +103,13 @@ public class SettingsHandler extends DefaultHandler {
 			FileWriter fstream = new FileWriter(xml);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write("<settings>\n");
-			for (List<Object> list: data) {
+			for (VCFData vcfData: data) {
 				out.write("\t<row ");
-				for (int i = 0; i < list.size(); i++) {
-					out.write(attributeNames[i] + "=\"" + list.get(i).toString() + "\" ");
-				}
+				out.write(getFormattedString(VCFData.GROUP_NAME) + "=\"" + vcfData.getGroup() + "\" ");
+				out.write(getFormattedString(VCFData.GENOME_NAME) + "=\"" + vcfData.getGenome() + "\" ");
+				out.write(getFormattedString(VCFData.RAW_NAME) + "=\"" + vcfData.getRaw() + "\" ");
+				out.write(getFormattedString(VCFData.FILE_NAME) + "=\"" + vcfData.getFile() + "\" ");
+				out.write(getFormattedString(VCFData.TYPE_NAME) + "=\"" + vcfData.getType() + "\" ");
 				out.write("/>\n");
 			}
 			out.write("</settings>");
@@ -116,5 +120,9 @@ public class SettingsHandler extends DefaultHandler {
 		}
 	}
 
+	
+	private String getFormattedString (String s) {
+		return s.toLowerCase().replace(' ', '_');
+	}
 
 }

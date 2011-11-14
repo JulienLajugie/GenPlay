@@ -77,7 +77,7 @@ public class Utils {
 	 * @param extensions file extensions
 	 * @return a File with the specified extension
 	 */
-	public static File addExtension(File file, String... extensions) {		
+	public static File addExtension(File file, String... extensions) {
 		String currentExtension = getExtension(file);
 		boolean specifedExtensionsFound = false;
 		// if there is no extension specified we return the input file
