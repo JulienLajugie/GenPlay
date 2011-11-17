@@ -303,8 +303,8 @@ public class VCFBlank implements Variant {
 	}
 
 	@Override
-	public boolean getFilter() {
-		return true;
+	public String getFilter() {
+		return null;
 	}
 
 	@Override

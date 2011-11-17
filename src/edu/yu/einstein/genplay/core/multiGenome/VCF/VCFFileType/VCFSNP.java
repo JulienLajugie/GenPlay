@@ -269,7 +269,7 @@ public class VCFSNP implements Variant {
 	}
 
 	@Override
-	public boolean getFilter() {
+	public String getFilter() {
 		return positionInformation.getFilter();
 	}
 

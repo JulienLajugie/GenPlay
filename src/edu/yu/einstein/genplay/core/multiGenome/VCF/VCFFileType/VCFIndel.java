@@ -334,7 +334,7 @@ public class VCFIndel implements Variant {
 
 	
 	@Override
-	public boolean getFilter() {
+	public String getFilter() {
 		return positionInformation.getFilter();
 	}
 

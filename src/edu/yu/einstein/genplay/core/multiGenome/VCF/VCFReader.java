@@ -70,8 +70,8 @@ public class VCFReader implements Serializable {
 	private List<VCFHeaderType> 				filterHeader;	// Header for the FILTER field
 	private ArrayList<VCFHeaderAdvancedType> 	infoHeader;		// Header for the INFO field
 	private ArrayList<VCFHeaderAdvancedType> 	formatHeader;	// Header for the FORMAT field
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -116,7 +116,7 @@ public class VCFReader implements Serializable {
 		indexVCFFile(); // recreate the tabix reader
 	}
 
-	
+
 	/**
 	 * Constructor of {@link VCFReader}
 	 * @param file		the VCF file
@@ -131,8 +131,8 @@ public class VCFReader implements Serializable {
 		indexVCFFile();
 		processHeader();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link VCFReader}
 	 * @param file		the VCF file
@@ -176,7 +176,7 @@ public class VCFReader implements Serializable {
 		fieldType.put("Character", char.class);
 		fieldType.put("String", String.class);
 	}
-	
+
 
 	/**
 	 * @return the vcfType
@@ -398,8 +398,8 @@ public class VCFReader implements Serializable {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Performs a query on the first chromosome of the indexed VCF file and return the 10 first results.
 	 * @return query 	results list
@@ -487,13 +487,13 @@ public class VCFReader implements Serializable {
 		return genomeNames;
 	}
 
-	
-/**
- * Gets the value according to the INFO field and a specific field
- * @param info	the INFO string
- * @param field	the specific field
- * @return		the value of the specific field of the INFO field
- */
+
+	/**
+	 * Gets the value according to the INFO field and a specific field
+	 * @param info	the INFO string
+	 * @param field	the specific field
+	 * @return		the value of the specific field of the INFO field
+	 */
 	public Object getInfoValues (String info, String field) {
 		Object result = null;
 		int indexInList = getIndex(infoHeader, field);
@@ -543,7 +543,7 @@ public class VCFReader implements Serializable {
 				} catch (Exception e) {
 					result = value;
 				}
-				
+
 			} else if (type == Float.class) {
 				result = Float.parseFloat(value);
 			} else if (type == char.class) {
@@ -581,7 +581,7 @@ public class VCFReader implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Scans the first lines of the VCF file in order to determine its type.
 	 * (works with VCF 4.0)
@@ -598,7 +598,7 @@ public class VCFReader implements Serializable {
 			result = shortQuery();
 			int index = 0;
 			for (Map<String, Object> line: result) {
-				
+
 				String ref = line.get("REF").toString();
 				String alt = line.get("ALT").toString();
 				if (alt.charAt(0) == '<') {
@@ -615,7 +615,7 @@ public class VCFReader implements Serializable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		type = null;
 		if (result != null) {
 			int mean = result.size() / 2;
@@ -629,7 +629,7 @@ public class VCFReader implements Serializable {
 		}
 		return type;
 	}
-	
+
 
 	/**
 	 * @return the altHeader

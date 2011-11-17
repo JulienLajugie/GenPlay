@@ -25,11 +25,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 
 /**
  * This class gathers all common genome information contained in a line of a VCF file.
@@ -144,11 +147,8 @@ public class MGPosition implements Serializable {
 	/**
 	 * @return the FILTER field
 	 */
-	public boolean getFilter() {
-		if (getString(VCFLine.get("FILTER")).equals("PASS")) {
-			return true;
-		}
-		return false;
+	public String getFilter() {
+		return getString(VCFLine.get("FILTER"));
 	}
 
 
@@ -215,6 +215,61 @@ public class MGPosition implements Serializable {
 	 */
 	public String getVCFLine () {
 		return VCFLine.toString();
+	}
+	
+	
+	/**
+	 * Gets the INFO header related to an ID
+	 * @param id	the ID
+	 * @return		the Header
+	 */
+	public VCFHeaderAdvancedType getInfoHeader (String id) {
+		VCFHeaderAdvancedType header = null;
+		List<VCFHeaderAdvancedType> headers = reader.getInfoHeader();
+		for (VCFHeaderAdvancedType current: headers) {
+			if (current.getId().equals(id)) {
+				header = current;
+				break;
+			}
+		}
+		return header;
+	}
+	
+	
+	/**
+	 * Gets the FORMAT header related to an ID
+	 * @param id	the ID
+	 * @return		the Header
+	 */
+	public VCFHeaderAdvancedType getFormatHeader (String id) {
+		VCFHeaderAdvancedType header = null;
+		List<VCFHeaderAdvancedType> headers = reader.getFormatHeader();
+		for (VCFHeaderAdvancedType current: headers) {
+			if (current.getId().equals(id)) {
+				header = current;
+				break;
+			}
+		}
+		return header;
+	}
+	
+	
+	/**
+	 * Gets the ALT header related to an ID
+	 * @param id	the ID value (with <>, eg: <DEL> id value will be transformed into DEL to match the ID name)
+	 * @return		the Header
+	 */
+	public VCFHeaderType getAltHeader (String id) {
+		VCFHeaderType header = null;
+		List<VCFHeaderType> headers = reader.getAltHeader();
+		String idTmp = id.substring(1, id.length()-1);
+		for (VCFHeaderType current: headers) {
+			if (current.getId().equals(idTmp)) {
+				header = current;
+				break;
+			}
+		}
+		return header;
 	}
 
 

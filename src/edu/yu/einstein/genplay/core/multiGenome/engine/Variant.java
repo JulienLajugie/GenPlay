@@ -245,7 +245,7 @@ public interface Variant extends Serializable {
 	/**
 	 * @return the FILTER field
 	 */
-	public boolean getFilter ();
+	public String getFilter ();
 	
 
 	/**

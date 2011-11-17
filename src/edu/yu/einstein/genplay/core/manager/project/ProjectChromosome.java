@@ -336,6 +336,6 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		@Override
 		public void remove() throws UnsupportedOperationException {
 			throw new UnsupportedOperationException();				
-		}		
+		}
 	}
 }
