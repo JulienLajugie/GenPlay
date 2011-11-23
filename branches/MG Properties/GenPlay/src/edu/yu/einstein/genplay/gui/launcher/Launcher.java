@@ -109,6 +109,7 @@ public class Launcher {
 			load.actionPerformed(null);
 		} catch (Exception e) {
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
+			System.out.println(file.getPath());
 		}
 	}
 
@@ -119,9 +120,6 @@ public class Launcher {
 	private static void startProjectFrame() {
 		//Welcome screen initialization
 		ProjectFrame projectFrame = ProjectFrame.getInstance();
-		/*ProjectManager.getInstance().getProjectConfiguration();
-		ProjectManager.getInstance();
-		ProjectManager.getInstance().getProjectZoom();*/
 		// load the managers from the configuration files
 		loadManagers();
 		//Create a new thread to display the welcome screen

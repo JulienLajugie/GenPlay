@@ -629,6 +629,14 @@ public class VCFReader implements Serializable {
 		}
 		return type;
 	}
+	
+	
+	/**
+	 * @return the headerInfo
+	 */
+	public Map<String, String> getHeaderInfo() {
+		return headerInfo;
+	}
 
 
 	/**
@@ -669,5 +677,5 @@ public class VCFReader implements Serializable {
 	public File getFile() {
 		return file;
 	}
-
+	
 }

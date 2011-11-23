@@ -52,7 +52,7 @@ public class NavigationPanel extends JPanel{
 	private static final int WIDTH = 230;	// width of the panel
 	private static final int HEIGHT = 30;	// height of the panel
 	
-	private ToolTipStripe origin;			// tooltipstripe object to aware it of any changes.
+	private ToolTipStripeDialog origin;			// tooltipstripe object to aware it of any changes.
 	private JButton previous;				// the previous button (move backward)
 	private JButton next;					// the next button (move forward)
 	
@@ -60,7 +60,7 @@ public class NavigationPanel extends JPanel{
 	/**
 	 * Constructor of {@link NavigationPanel}
 	 */
-	protected NavigationPanel (ToolTipStripe origin) {
+	protected NavigationPanel (ToolTipStripeDialog origin) {
 		this.origin = origin;
 		
 		Dimension paneDim = new Dimension(WIDTH, HEIGHT);
@@ -105,9 +105,9 @@ public class NavigationPanel extends JPanel{
 
 	
 	/**
-	 * @return the {@link ToolTipStripe} object that requested the {@link NavigationPanel}
+	 * @return the {@link ToolTipStripeDialog} object that requested the {@link NavigationPanel}
 	 */
-	private ToolTipStripe getOrigin () {
+	private ToolTipStripeDialog getOrigin () {
 		return origin;
 	}
 	

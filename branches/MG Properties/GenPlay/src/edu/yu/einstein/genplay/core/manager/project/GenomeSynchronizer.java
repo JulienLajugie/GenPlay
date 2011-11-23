@@ -483,7 +483,7 @@ public class GenomeSynchronizer implements Serializable {
 	/**
 	 * @return the list of readers
 	 */
-	private List<VCFReader> getReaderList () {
+	public List<VCFReader> getReaderList () {
 		List<VCFReader> list = new ArrayList<VCFReader>();
 		for (List<VCFReader> readerList: genomeFileAssociation.values()) {
 			for (VCFReader reader: readerList) {
@@ -493,6 +493,22 @@ public class GenomeSynchronizer implements Serializable {
 			}
 		}
 		return list;
+	}
+	
+	
+	/**
+	 * Get a vcf reader object with a vcf file name.
+	 * @param fileName 	the name of the vcf file
+	 * @return			the reader
+	 */
+	public VCFReader getReaderFromName (String fileName) {
+		List<VCFReader> list = getReaderList();
+		for (VCFReader reader: list) {
+			if (reader.getFile().getName().equals(fileName)) {
+				return reader;
+			}
+		}
+		return null;
 	}
 	
 	

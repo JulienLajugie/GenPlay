@@ -56,7 +56,7 @@ import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVari
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripe;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -785,7 +785,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				double pos = screenPosToGenomePos(e.getX());
 				DisplayableVariant displayableVariant = getDisplayableVariant(pos);
 				if (displayableVariant != null) {
-					ToolTipStripe toolTip = new ToolTipStripe(displayableVariantListCreator.getFullDisplayableVariantList());
+					ToolTipStripeDialog toolTip = new ToolTipStripeDialog(displayableVariantListCreator.getFullDisplayableVariantList());
 					toolTip.show(displayableVariant, e.getXOnScreen(), e.getYOnScreen());
 				} else {
 					System.out.println(pos + ": no variant");

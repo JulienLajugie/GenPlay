@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ToolTipStripe extends JDialog {
+public class ToolTipStripeDialog extends JDialog {
 
 	private static final long serialVersionUID = -4932470485711131874L;
 
@@ -60,10 +60,10 @@ public class ToolTipStripe extends JDialog {
 
 
 	/**
-	 * Constructor of {@link ToolTipStripe}
+	 * Constructor of {@link ToolTipStripeDialog}
 	 * @param fittedDisplayableVariantList the full list of displayable variants
 	 */
-	public ToolTipStripe (List<DisplayableVariant> fittedDisplayableVariantList) {
+	public ToolTipStripeDialog (List<DisplayableVariant> fittedDisplayableVariantList) {
 		super(MainFrame.getInstance());
 		this.displayableVariantList = fittedDisplayableVariantList;
 		setResizable(false);
@@ -121,7 +121,7 @@ public class ToolTipStripe extends JDialog {
 		((PanelInformation)formatPanel).getPanelHeight() +
 		((NavigationPanel)navigationPanel).getPanelHeight() +
 		(V_GAP * 11);
-		Dimension dimension = new Dimension(ToolTipStripe.WIDTH, height);
+		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, height);
 		setSize(dimension);
 		
 		validate();

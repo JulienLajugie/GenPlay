@@ -72,6 +72,7 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadStripes;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATAMultiGenomeProperties;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAMultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveStripes;
@@ -237,6 +238,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATASetHeight.ACTION_KEY, new ATASetHeight());
 		getActionMap().put(ATASetVerticalLineCount.ACTION_KEY, new ATASetVerticalLineCount());
 		getActionMap().put(ATAMultiGenomeStripes.ACTION_KEY, new ATAMultiGenomeStripes());
+		getActionMap().put(ATAMultiGenomeProperties.ACTION_KEY, new ATAMultiGenomeProperties());
 		// add empty list actions
 		getActionMap().put(ETALoadBinListTrack.ACTION_KEY, new ETALoadBinListTrack());
 		getActionMap().put(ETALoadFromDAS.ACTION_KEY, new ETALoadFromDAS());
