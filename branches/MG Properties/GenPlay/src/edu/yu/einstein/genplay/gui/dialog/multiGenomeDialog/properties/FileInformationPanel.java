@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class FileInformationPanel extends JPanel {
+class FileInformationPanel extends JPanel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4602586057160516008L;
@@ -111,7 +111,7 @@ public class FileInformationPanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.TITLE_INSET;
-		add(Utils.getTitleLabel("FILTER fields"), gbc);
+		add(Utils.getTitleLabel("INFO fields"), gbc);
 
 		// INFO header values
 		gbc.gridx = 0;

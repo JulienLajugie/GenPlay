@@ -41,7 +41,7 @@ public class GenomeSelectionPanel extends JPanel {
 
 	private static final long serialVersionUID = -2863825210102188370L;	// generated ID
 	private static final int 				PANEL_WIDTH = 150;	// width of the panel
-	private final JComboBox 				jcbGenome; 	// combo box for the score calculation method
+	private final JComboBox 				jcbGenome; 			// combo box for the score calculation method
 	private static int 						defaultGenome = 0;	// default method of calculation
 	
 	

@@ -45,7 +45,7 @@ public class Utils {
 	 * @param title	text of the label
 	 * @return		the label
 	 */
-	protected static JLabel getTitleLabel (String title) {
+	public static JLabel getTitleLabel (String title) {
 		JLabel label = new JLabel();
 		label.setText("<html><u>" + title + "</u></html>");
 		return label;
@@ -102,9 +102,9 @@ public class Utils {
 	 * Creates a panel that contains table header
 	 * @param columnNames	column names for the table
 	 * @param widths		widths of the columns
-	 * @return
+	 * @return				the header panel
 	 */
-	private static JPanel getTableHeaderPanel (String[] columnNames, int[] widths) {
+	public static JPanel getTableHeaderPanel (String[] columnNames, int[] widths) {
 		// Initializes the panel and its layout
 		JPanel panel = new JPanel();
 		FlowLayout layout = new FlowLayout();

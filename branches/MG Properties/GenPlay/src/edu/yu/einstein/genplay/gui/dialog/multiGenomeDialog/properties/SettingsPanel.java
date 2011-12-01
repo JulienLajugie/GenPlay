@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SettingsPanel extends JPanel {
+class SettingsPanel extends JPanel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3353198770426567657L;

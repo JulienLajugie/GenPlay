@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ import javax.swing.tree.TreePath;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing.StripesGlobalPanel;
 
 /**
  * @author Nicolas Fourel
@@ -54,6 +56,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public static final 	int 			APPROVE_OPTION 		= 0;
 	/** Return value when Cancel has been clicked. */
 	public static final 	int 			CANCEL_OPTION 		= 1;
+	/** Height of the dialog */
+	public static final	int					DIALOG_HEIGHT 		= 400;
 	/** Text for GENERAL tree node */
 	public static final		String			GENERAL 		= "General";
 	/** Text for SETTINGS tree node */
@@ -69,24 +73,29 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	/** Text for STRIPES tree node */
 	public static final		String			STRIPES 		= "Stripes";
 	
+	
 	/** Insets for the first title in top of the content panel */
-	protected static final 	Insets			FIRST_TITLE_INSET 	= new Insets(10, 10, 5, 0);
+	public static final 	Insets			FIRST_TITLE_INSET 	= new Insets(10, 10, 5, 0);
 	/** Insets for titles of the content panel */
-	protected static final 	Insets			TITLE_INSET 		= new Insets(20, 10, 5, 0);
+	public static final 	Insets			TITLE_INSET 		= new Insets(20, 10, 5, 0);
 	/** Insets for panel of the content panel */
-	protected static final 	Insets			PANEL_INSET 		= new Insets(0, 20, 0, 0);
+	public static final 	Insets			PANEL_INSET 		= new Insets(0, 20, 0, 0);
 
 
 	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	private TreeContent treeContent;
-	private JTree 			tree;									// the tree of the dialog
-	private JScrollPane 	scrollPanel;							// the content panel (scrollable)
-	private JPanel		 	validationPanel;						// the validation panel (ok/cancel buttons)
-	private GeneralPanel 	generalPanel;							// the general information panel
-	private SettingsPanel 	settingsPanel;							// the settings panel
+	private final Dimension regularContentDimension = new Dimension(600, DIALOG_HEIGHT);
+	private final Dimension extraContentDimension = new Dimension(800, DIALOG_HEIGHT);
 	
-
+	private TreeContent 		treeContent;							// the tree manager
+	private JTree 				tree;									// the tree of the dialog
+	private JPanel 				contentPane;							// right part of the dialog
+	private JPanel		 		validationPanel;						// the validation panel (ok/cancel buttons)
+	private GeneralPanel 		generalPanel;							// the general information panel
+	private SettingsPanel 		settingsPanel;							// the settings panel
+	private StripesGlobalPanel 	stripesPanel;							// the stripes panel
+	
+	
 	/**
 	 * Constructor of {@link PropertiesDialog}
 	 */
@@ -100,33 +109,38 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		tree = treeContent.getTree();
 		tree.addTreeSelectionListener(this);
 		JScrollPane treeScroll = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		Dimension scrollDimension = new Dimension(200, 400);
+		Dimension scrollDimension = new Dimension(200, DIALOG_HEIGHT);
 		treeScroll.setPreferredSize(scrollDimension);
+		treeScroll.setMinimumSize(scrollDimension);
 		
-		// Scrollable content panel (right part of the dialog) 
-		scrollPanel = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		Dimension contentDimension = new Dimension(500, 400);
-		scrollPanel.setPreferredSize(contentDimension);		
+		// Content panel (right part of the dialog)
+		contentPane = new JPanel();
+		contentPane.setPreferredSize(regularContentDimension);
 		
 		// Validation panel
 		validationPanel = getValidationPanel();
 		
 		// Adds panels
 		add(treeScroll, BorderLayout.WEST);
-		add(scrollPanel, BorderLayout.CENTER);
+		add(contentPane, BorderLayout.CENTER);
 		add(validationPanel, BorderLayout.SOUTH);
+		
+		
+		// Creates the general panel
+		generalPanel = new GeneralPanel();
+		
+		// Creates the settings panel
+		settingsPanel = new SettingsPanel();
+		
+		// Creates the stripes panel
+		stripesPanel = new StripesGlobalPanel();
+		
 		
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
 		setResizable(false);
 		setVisible(false);
 		pack();
-		
-		// Creates the general panel
-		generalPanel = new GeneralPanel();
-		
-		// Creates the general panel
-		settingsPanel = new SettingsPanel();
 	}
 
 
@@ -149,13 +163,13 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public int showDialog(Component parent, String accessor) {
 		// Sets the content panel
 		if (accessor.equals(GENERAL)) {
-			setCenterPanel(generalPanel);
+			setScrollableCenterPanel(generalPanel);
 		} else if (accessor.equals(SETTINGS)) {
-			setCenterPanel(settingsPanel);
+			setScrollableCenterPanel(settingsPanel);
 		} else if (accessor.equals(FILTERS)) {
 			setCenterPanel(getEmptyPanel());
 		} else if (accessor.equals(STRIPES)) {
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(stripesPanel);
 		}
 		
 		// Gets the tree path if exists and select it
@@ -179,8 +193,53 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @param panel the panel to show at the center of the dialog
 	 */
 	protected void setCenterPanel (JPanel panel) {
-		scrollPanel.setViewportView(panel);
+		// Removes all content of the contentPane
+		contentPane.removeAll();
+		
+		// Set the extra dimension for the content panel
+		contentPane.setPreferredSize(extraContentDimension);
+		
+		// Set the panel gaps to zero
+		((FlowLayout)(contentPane.getLayout())).setHgap(0);
+		((FlowLayout)(contentPane.getLayout())).setVgap(0);
+		
+		// Add the panel to the content panel
+		contentPane.add(panel);
+		contentPane.repaint();
 		validate();
+		
+		pack();
+		
+	}
+	
+	
+	/**
+	 * Sets the panel at the center of the dialog with the one given as parameter
+	 * It first includes the panel in a scroll panel.
+	 * @param panel the panel to show at the center of the dialog
+	 */
+	protected void setScrollableCenterPanel (JPanel panel) {
+		// Set the panel to the right dimension
+		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setPreferredSize(regularContentDimension);
+		
+		// Removes all content of the contentPane
+		contentPane.removeAll();
+		
+		// Set the redular dimension for the content panel
+		contentPane.setPreferredSize(regularContentDimension);
+		
+		// Set the panel gaps to zero
+		((FlowLayout)(contentPane.getLayout())).setHgap(0);
+		((FlowLayout)(contentPane.getLayout())).setVgap(0);
+		
+		// Add the panel to the content panel
+		contentPane.add(scrollPane);
+		contentPane.repaint();
+		validate();
+		
+		pack();
+		
 	}
 
 
@@ -203,19 +262,19 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		}
 		Object nodeInfo = node.getUserObject();
 		if (nodeInfo.equals(GENERAL)) {
-			setCenterPanel(generalPanel);
+			setScrollableCenterPanel(generalPanel);
 		} else if (nodeInfo.equals(SETTINGS)) {
-			setCenterPanel(settingsPanel);
+			setScrollableCenterPanel(settingsPanel);
 		} else if (nodeInfo.equals(INFORMATION)) {
 			VCFReader reader = retrieveReader(node.getParent().toString());
-			setCenterPanel(new FileInformationPanel(reader));
+			setScrollableCenterPanel(new FileInformationPanel(reader));
 		} else if (nodeInfo.equals(STATISTICS)) {
 			//VCFReader reader = retrieveReader(node.getParent().toString());
-			setCenterPanel(getEmptyPanel());
+			setScrollableCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(FILTERS)) {
 			setCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(STRIPES)) {
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(stripesPanel);
 		}
 	}
 

@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFData;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class GeneralPanel extends JPanel {
+class GeneralPanel extends JPanel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 538823729476349982L;
