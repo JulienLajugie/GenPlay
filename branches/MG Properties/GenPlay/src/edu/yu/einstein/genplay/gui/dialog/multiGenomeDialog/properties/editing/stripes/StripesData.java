@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripeData {
+public class StripesData {
 
 	/** Index used for Genome column */
 	public static final int GENOME_INDEX 	= 0;
@@ -52,9 +52,9 @@ public class StripeData {
 
 
 	/**
-	 * Constructor of {@link StripeData}
+	 * Constructor of {@link StripesData}
 	 */
-	protected StripeData() {
+	protected StripesData() {
 		this.genome = null;
 		this.variantList = null;
 		this.colorList = null;
@@ -63,13 +63,13 @@ public class StripeData {
 
 
 	/**
-	 * Constructor of {@link StripeData}
+	 * Constructor of {@link StripesData}
 	 * @param genome		name of the genome
 	 * @param variantList	list of variation
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	protected StripeData(String genome, List<VariantType> variantList,
+	protected StripesData(String genome, List<VariantType> variantList,
 			List<Color> colorList, Track<?>[] trackList) {
 		this.genome = genome;
 		this.variantList = variantList;

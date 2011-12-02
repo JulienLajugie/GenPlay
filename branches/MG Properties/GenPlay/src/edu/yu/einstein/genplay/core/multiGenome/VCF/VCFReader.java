@@ -68,8 +68,8 @@ public class VCFReader implements Serializable {
 	private	Map<String, Class<?>>				fieldType;		// Association between field type and java class
 	private List<VCFHeaderType> 				altHeader;		// Header for the ALT field
 	private List<VCFHeaderType> 				filterHeader;	// Header for the FILTER field
-	private ArrayList<VCFHeaderAdvancedType> 	infoHeader;		// Header for the INFO field
-	private ArrayList<VCFHeaderAdvancedType> 	formatHeader;	// Header for the FORMAT field
+	private List<VCFHeaderAdvancedType> 		infoHeader;		// Header for the INFO field
+	private List<VCFHeaderAdvancedType> 		formatHeader;	// Header for the FORMAT field
 
 
 	/**
@@ -658,7 +658,7 @@ public class VCFReader implements Serializable {
 	/**
 	 * @return the infoHeader
 	 */
-	public ArrayList<VCFHeaderAdvancedType> getInfoHeader() {
+	public List<VCFHeaderAdvancedType> getInfoHeader() {
 		return infoHeader;
 	}
 
@@ -666,7 +666,7 @@ public class VCFReader implements Serializable {
 	/**
 	 * @return the formatHeader
 	 */
-	public ArrayList<VCFHeaderAdvancedType> getFormatHeader() {
+	public List<VCFHeaderAdvancedType> getFormatHeader() {
 		return formatHeader;
 	}
 
@@ -676,6 +676,12 @@ public class VCFReader implements Serializable {
 	 */
 	public File getFile() {
 		return file;
+	}
+	
+	
+	@Override
+	public String toString () {
+		return file.getName();
 	}
 	
 }

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -73,9 +73,6 @@ public class StripesTableRenderer extends DefaultTableCellRenderer {
 		} else {
 			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		}
-		
-		
 	}
 
-	
 }

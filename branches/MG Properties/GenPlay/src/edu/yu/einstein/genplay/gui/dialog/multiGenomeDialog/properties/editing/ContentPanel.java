@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -37,75 +37,63 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesTableModel;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
+ * @param <K>
  */
-class StripesContentPanel extends JPanel implements ActionListener {
+public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 159376731917929812L;
 
-	private 	JPanel 			tableHeader;	// the header panel of the table
-	private 	JPanel 			tablePanel;		// the panel that contains the table
-	private		JPanel 			buttonPanel;	// the button panel to handle the table
-	private 	StripesTable 	table;			// the table that summarize all stripes settings
-	private		JButton			jbDeleteRows;	// button to delete row(s)
-	private		JButton			jbMoveRowsUp;	// button to move row(s) to the top of the table
-	private		JButton			jbMoveRowsDown;	// button to move row(s) to the bottom of the table
+	// Insets
+	protected Insets firstInset = new Insets(10, 15, 0, 0);
+	protected Insets titleInset = new Insets(15, 5, 5, 0);
+	protected Insets panelInset = new Insets(0, 5, 0, 0);
+	
+	protected GridBagConstraints gbc;				// Layout constraints
+	
+	private 	JPanel 				tableHeader;	// the header panel of the table
+	private 	JPanel 				tablePanel;		// the panel that contains the table
+	private		JPanel 				buttonPanel;	// the button panel to handle the table
+	private 	ContentTable<K> 	table;			// the table that summarize all stripes settings
+	private		JButton				jbDeleteRows;	// button to delete row(s)
+	private		JButton				jbMoveRowsUp;	// button to move row(s) to the top of the table
+	private		JButton				jbMoveRowsDown;	// button to move row(s) to the bottom of the table
 
 
 	/**
-	 * Constructor of {@link StripesContentPanel}
+	 * Constructor of {@link ContentPanel}
 	 */
-	protected StripesContentPanel () {
-		// Insets
-		Insets firstInset = new Insets(10, 15, 0, 0);
-		Insets titleInset = new Insets(15, 5, 5, 0);
-		Insets panelInset = new Insets(0, 5, 0, 0);
-
+	protected ContentPanel () {
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
+		gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
-
-		// Panel title
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = firstInset;
-		add(Utils.getTitleLabel("Stripes settings"), gbc);
-
-		// Genome selection title
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = titleInset;
-		add(Utils.getTitleLabel("Table"), gbc);
-
-		// Genome selection box
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = panelInset;
-		gbc.weighty = 1;
-		add(getTablePanel(), gbc);
 	}
 
 
 	/**
 	 * Creates the table panel and its header
-	 * @return
+	 * @param table 		the table to add
+	 * @param columnNames 	column names of the table
+	 * @return				the panel containing the table
 	 */
-	private JPanel getTablePanel () {
+	protected JPanel getTablePanel (ContentTable<K> table, String[] columnNames) {
+		this.table = table;
+		
 		// Creates the panel
 		JPanel panel = new JPanel();
 		BorderLayout layout = new BorderLayout(0, 0);
 		panel.setLayout(layout);
 
 		// Create the table
-		table = new StripesTable();
 		table.updateColumnSize();
 
 		// Create the table panel
@@ -117,7 +105,6 @@ class StripesContentPanel extends JPanel implements ActionListener {
 		tableHeader = new JPanel();
 		((FlowLayout)(tableHeader.getLayout())).setHgap(0);
 		((FlowLayout)(tableHeader.getLayout())).setVgap(0);
-		String[] columnNames = ((StripesTableModel)table.getModel()).getColumnNames();
 		tableHeader.add(Utils.getTableHeaderPanel(columnNames, table.getColumnSize()));
 
 		// Create buttons
@@ -161,7 +148,7 @@ class StripesContentPanel extends JPanel implements ActionListener {
 	 * Set a list of data to the table
 	 * @param data list of data
 	 */
-	protected void setData (List<StripeData> data) {
+	protected void setData (List<K> data) {
 		// Set the data to the table
 		table.setData(data);
 		
@@ -189,7 +176,7 @@ class StripesContentPanel extends JPanel implements ActionListener {
 	 * Add a row in the table
 	 * @param data data to add
 	 */
-	protected void addRow (StripeData data) {
+	public void addRow (K data) {
 		if (table.getData().size() == 0) {
 			// Reset the table panel to zero
 			tablePanel.removeAll();
@@ -211,14 +198,15 @@ class StripesContentPanel extends JPanel implements ActionListener {
 		}
 		table.addRow(data);
 		updateTableSize();
+		updateEnableButtons();
 	}
 
 
 	/**
-	 * Remove a row from the table
-	 * @param row row index
+	 * Remove rows from the table
+	 * @param rows row indexes
 	 */
-	protected void removeRows (int[] rows) {
+	public void removeRows (int[] rows) {
 		table.removeRows(rows);
 		if (table.getData().size() == 0) {
 			// Reset the table panel to zero
@@ -246,7 +234,7 @@ class StripesContentPanel extends JPanel implements ActionListener {
 	/**
 	 * Updates the size of the table and its header according to longest elements.
 	 */
-	protected void updateTableSize () {
+	public void updateTableSize () {
 		// Update the column size of the table 
 		table.updateColumnSize();
 		
@@ -270,17 +258,18 @@ class StripesContentPanel extends JPanel implements ActionListener {
 	/**
 	 * @return the table
 	 */
-	protected StripesTable getTable() {
+	public ContentTable<K> getTable() {
 		return table;
 	}
 
 
 	/**
 	 * Add an action listener to the 'Add' and 'Apply' buttons
-	 * @param al the action listener
+	 * @param el the action listener
 	 */
-	protected void addListener (EventListener el) {
+	public void addListener (EventListener el) {
 		table.addMouseListener((MouseListener) el);
+		this.addMouseListener((MouseListener) el);
 		jbDeleteRows.addActionListener((ActionListener) el);
 	}
 
@@ -288,25 +277,44 @@ class StripesContentPanel extends JPanel implements ActionListener {
 	/**
 	 * This methods enables or disables buttons whether a row is selected
 	 */
-	protected void updateEnableButtons () {
-		boolean enable;
-		if (table.getSelectedRows().length > 0) {	// if at least one row is selected
-			enable = true;							// buttons must be enabled
-		} else {									// if no row is selected
-			enable = false;							// buttons must be disabled
+	public void updateEnableButtons () {
+		boolean enableDelete;
+		boolean enableUp;
+		boolean enableDown;
+		int[] selectedRows = table.getSelectedRows();
+		if (selectedRows.length > 0) {					// if at least one row is selected
+			enableDelete = true;						// delete button is enabled
+
+			if (selectedRows[0] == 0) {					// if the uppest selected row is the first one in the table
+				enableUp = false;						// move up button cannot be enable
+			} else {
+				enableUp = true;
+			}
+			
+			int dataSize = table.getData().size();
+			if (selectedRows[selectedRows.length - 1] == dataSize - 1) {	// if the lowest selected row is the last one in the table
+				enableDown = false;						// move down button cannot be enable
+			} else {
+				enableDown = true;
+			}
+			
+		} else {										// if no row is selected
+			enableDelete = false;						// buttons must be disabled
+			enableUp = false;
+			enableDown = false;
 		}
 		
 		// Enable/Disable buttons
-		jbDeleteRows.setEnabled(enable);
-		jbMoveRowsUp.setEnabled(enable);
-		jbMoveRowsDown.setEnabled(enable);
+		jbDeleteRows.setEnabled(enableDelete);
+		jbMoveRowsUp.setEnabled(enableUp);
+		jbMoveRowsDown.setEnabled(enableDown);
 	}
 	
 
 	/**
 	 * @return the jbDeleteRows
 	 */
-	protected JButton getDeleteRowsButton() {
+	public JButton getDeleteRowsButton() {
 		return jbDeleteRows;
 	}
 
@@ -335,5 +343,12 @@ class StripesContentPanel extends JPanel implements ActionListener {
 		// Update enable state of all buttons
 		updateEnableButtons();
 	}
+	
+	
+	/**
+	 * Reset the panel to an "empty" state
+	 */
+	//protected void clearSelection () {
+	//}
 
 }

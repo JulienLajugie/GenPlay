@@ -42,7 +42,8 @@ import javax.swing.tree.TreePath;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing.StripesGlobalPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesGlobalPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersGlobalPanel;
 
 /**
  * @author Nicolas Fourel
@@ -94,6 +95,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	private GeneralPanel 		generalPanel;							// the general information panel
 	private SettingsPanel 		settingsPanel;							// the settings panel
 	private StripesGlobalPanel 	stripesPanel;							// the stripes panel
+	private FiltersGlobalPanel 	filtersPanel;							// the stripes panel
 	
 	
 	/**
@@ -135,6 +137,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		// Creates the stripes panel
 		stripesPanel = new StripesGlobalPanel();
 		
+		// Creates the filters panel
+		filtersPanel = new FiltersGlobalPanel();
 		
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
@@ -167,7 +171,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (accessor.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
 		} else if (accessor.equals(FILTERS)) {
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(filtersPanel);
 		} else if (accessor.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}
@@ -272,7 +276,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			//VCFReader reader = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(FILTERS)) {
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(filtersPanel);
 		} else if (nodeInfo.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}

@@ -19,32 +19,34 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
 import javax.swing.table.AbstractTableModel;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
+ * @param <K> class of the data that are used in the table
  */
-public class StripesTableModel extends AbstractTableModel {
+public abstract class ContentTableModel<K> extends AbstractTableModel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
 
-	private final 	String[] 	columnNames = {"Genome", "Variation", "Track"};	// the table column names
-	private List<StripeData> 	data;		// list of data
+	protected final 	String[]	columnNames;	// the table column names
+	protected 			List<K>		data;			// list of data
 
 
 	/**
-	 * Constructor of {@link StripesTableModel}
+	 * Constructor of {@link ContentTableModel}
+	 * @param columnNames name of the columns
 	 */
-	public StripesTableModel () {
-		data = new ArrayList<StripeData>();
+	protected ContentTableModel (String[] columnNames) {
+		this.columnNames = columnNames;
+		data = new ArrayList<K>();
 	}
 
 
@@ -59,58 +61,33 @@ public class StripesTableModel extends AbstractTableModel {
 		return data.size();
 	}
 
-
 	@Override
 	public boolean isCellEditable(int row, int col)	{
 		return false;
 	}
-
-
-	@Override
-	public Object getValueAt(int row, int col) {
-		StripeData stripeData = data.get(row);
-		switch (col) {
-		case StripeData.GENOME_INDEX:
-			return stripeData.getGenomeForDisplay();
-		case StripeData.VARIANT_INDEX:
-			return stripeData.getVariantListForDisplay();
-		case StripeData.TRACK_INDEX:
-			return stripeData.getTrackListForDisplay();
-		default:
-			return new Object();
-		}
+	
+	
+	/**
+	 * @return the columnNames
+	 */
+	public String[] getColumnNames() {
+		return columnNames;
 	}
-
-
-	@Override
-	public Class<?> getColumnClass(int column) {
-		switch (column) {
-		case StripeData.GENOME_INDEX:
-			return String.class;
-		case StripeData.VARIANT_INDEX:
-			return JPanel.class;
-		case StripeData.TRACK_INDEX:
-			return String.class;
-		default:
-			return Object.class;
-		}
+	
+	
+	/**
+	 * @return the data
+	 */
+	protected List<K> getData() {
+		return data;
 	}
-
+	
 
 	/**
-	 * Add an empty row
+	 * Add a row
+	 * @param row row to insert
 	 */
-	protected void addEmptyRow () {
-		StripeData row = new StripeData();
-		data.add(row);
-		fireTableRowsInserted(data.size() - 1, data.size() - 1);
-	}
-
-
-	/**
-	 * Add an empty row
-	 */
-	protected void addRow (StripeData row) {
+	protected void addRow (K row) {
 		data.add(row);
 		fireTableRowsInserted(data.size() - 1, data.size() - 1);
 	}
@@ -124,36 +101,7 @@ public class StripesTableModel extends AbstractTableModel {
 		data.remove(row);
 		fireTableRowsDeleted(row, row);
 	}
-
-
-	/**
-	 * @return the data
-	 */
-	public List<StripeData> getData() {
-		return data;
-	}
-
-
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(List<StripeData> data) {
-		this.data = data;
-		for (int row = 0; row <data.size(); row++) {
-			fireTableCellUpdated(row, StripeData.GENOME_INDEX);
-			fireTableCellUpdated(row, StripeData.VARIANT_INDEX);
-			fireTableCellUpdated(row, StripeData.TRACK_INDEX);
-		}
-	}
-
-
-	/**
-	 * @return the columnNames
-	 */
-	protected String[] getColumnNames() {
-		return columnNames;
-	}
-
+	
 
 	/**
 	 * This method moves (up or down) a list of row.
@@ -180,16 +128,16 @@ public class StripesTableModel extends AbstractTableModel {
 	 */
 	private void moveStripeDataUp (int index) {
 		if (index > 0) {
-			StripeData stripeDataToMove = data.get(index);
-			StripeData stripeDataToReplace = data.get(index - 1);
-			List<StripeData> newDataList = new ArrayList<StripeData>();
+			K dataToMove = data.get(index);
+			K dataToReplace = data.get(index - 1);
+			List<K> newDataList = new ArrayList<K>();
 
 			int currentIndex = 0;
 			while (currentIndex < data.size()){
-				StripeData currentData = data.get(currentIndex);
-				if (currentData.equals(stripeDataToReplace)) {
-					newDataList.add(stripeDataToMove);
-					newDataList.add(stripeDataToReplace);
+				K currentData = data.get(currentIndex);
+				if (currentData.equals(dataToReplace)) {
+					newDataList.add(dataToMove);
+					newDataList.add(dataToReplace);
 					currentIndex++;
 				} else {
 					newDataList.add(currentData);
@@ -207,16 +155,16 @@ public class StripesTableModel extends AbstractTableModel {
 	 */
 	private void moveStripeDataDown (int index) {
 		if (index < (data.size() - 1)) {
-			StripeData stripeDataToMove = data.get(index);
-			StripeData stripeDataToReplace = data.get(index + 1);
-			List<StripeData> newDataList = new ArrayList<StripeData>();
+			K dataToMove = data.get(index);
+			K dataToReplace = data.get(index + 1);
+			List<K> newDataList = new ArrayList<K>();
 
 			int currentIndex = 0;
 			while (currentIndex < data.size()){
-				StripeData currentData = data.get(currentIndex);
-				if (currentData.equals(stripeDataToMove)) {
-					newDataList.add(stripeDataToReplace);
-					newDataList.add(stripeDataToMove);
+				K currentData = data.get(currentIndex);
+				if (currentData.equals(dataToMove)) {
+					newDataList.add(dataToReplace);
+					newDataList.add(dataToMove);
 					currentIndex++;
 				} else {
 					newDataList.add(currentData);
@@ -226,5 +174,19 @@ public class StripesTableModel extends AbstractTableModel {
 			data = newDataList;
 		}
 	}
+	
+
+	@Override
+	public abstract Object getValueAt(int row, int col);
+
+
+	@Override
+	public abstract Class<?> getColumnClass(int column);
+
+
+	/**
+	 * @param data the data to set
+	 */
+	protected abstract void setData(List<K> data);
 
 }

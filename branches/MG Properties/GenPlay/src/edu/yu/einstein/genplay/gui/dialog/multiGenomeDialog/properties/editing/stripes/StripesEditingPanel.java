@@ -19,10 +19,9 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.stripesEditing;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -38,65 +37,35 @@ import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.dialog.MultiTrackChooser;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-class StripesEditingPanel extends JPanel {
+class StripesEditingPanel extends EditingPanel<StripesData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 1002708176297238005L;
-	/** Text for the button 'Add' **/
-	protected static final String ADD_BUTTON_TEXT = "Add";
-	/** Text for the button 'Apply' **/
-	protected static final String APPLY_BUTTON_TEXT = "Apply";
 	
 	private final Color[]		defaultVariationColor = {Color.green, Color.red, Color.cyan};	// Array of default variation colors (Insertion, Deletion, SNPs)
 	private JComboBox 			jcbGenome;			// The combo box for the genome selection
 	private List<VariantType> 	variationName;		// Variation names list
 	private List<JCheckBox> 	selectedVariation;	// Variation check box selection list
 	private List<JButton> 		variationColor;		// Variation color list
-	private JList				selectedTracks;		// List of selected tracks
-	private JButton 			addButton;			// Button to add a new stripe setting
-	private JButton 			applyButton;		// Button to apply new settings to the current selected stripe
 
-	
 
 	/**
 	 * Constructor of {@link StripesEditingPanel}
 	 */
 	protected StripesEditingPanel () {
-		// Set the size of the panel
-		Dimension dimension = new Dimension(200, PropertiesDialog.DIALOG_HEIGHT);
-		setMinimumSize(dimension);
-		setPreferredSize(dimension);
-
-		// Insets
-		Insets firstInset = new Insets(10, 15, 0, 0);
-		Insets titleInset = new Insets(15, 5, 5, 0);
-		Insets panelInset = new Insets(0, 5, 0, 0);
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
+		super();
 
 		// Panel title
 		gbc.gridx = 0;
@@ -149,7 +118,19 @@ class StripesEditingPanel extends JPanel {
 		add(getValidationPanel(), gbc);
 	}
 
-
+	
+	@Override
+	public void clearSelection () {
+		jcbGenome.setSelectedIndex(0);
+		for (int i = 0; i < defaultVariationColor.length; i++) {
+			selectedVariation.get(i).setSelected(false);
+			variationColor.get(i).setBackground(defaultVariationColor[i]);
+		}
+		selectedTracks.setModel(new DefaultListModel());
+		getApplyButton().setEnabled(false);
+	}
+	
+	
 	/**
 	 * Creates a combo box containing all genomes
 	 * @return the combo box
@@ -159,6 +140,7 @@ class StripesEditingPanel extends JPanel {
 		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
 		Dimension dimension = new Dimension(180, height);
 		jcbGenome.setPreferredSize(dimension);
+		jcbGenome.setMinimumSize(dimension);
 		jcbGenome.setToolTipText("Select a genome to display its variation(s).");
 		return jcbGenome;
 	}
@@ -216,7 +198,11 @@ class StripesEditingPanel extends JPanel {
 
 		// Create the panel
 		JPanel panel = new JPanel();
-
+		int height = getFontMetrics(getFont()).getHeight() * 3;
+		Dimension dimension = new Dimension(120, height);
+		panel.setPreferredSize(dimension);
+		panel.setMinimumSize(dimension);
+		
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
@@ -254,156 +240,10 @@ class StripesEditingPanel extends JPanel {
 		// Return the panel
 		return panel;
 	}
-
-
-	/**
-	 * Creates the panel that contains the list of the selected tracks.
-	 * It also contains a button to select tracks.
-	 * @return the track selection panel
-	 */
-	private JPanel getTrackSelectionPanel () {
-		// Create the list to show selected tracks
-		selectedTracks = new JList();
-		selectedTracks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		selectedTracks.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		selectedTracks.setVisibleRowCount(-1);
-		selectedTracks.setToolTipText("Selected tracks.");
-		JScrollPane listScroller = new JScrollPane(selectedTracks);
-		Dimension dimension = new Dimension(180, 50);
-		listScroller.setPreferredSize(dimension);
-
-		// Create the button for selecting tracks
-		JButton selectTrackButton = new JButton("Select tracks");
-		selectTrackButton.setMargin(new Insets(0, 0, 0, 0));
-		selectTrackButton.setToolTipText("Select tracks");
-		selectTrackButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Track<?>[] tracks = MultiTrackChooser.getSelectedTracks(getCurrentInstance(), getAvailableTracks(), getSelectedTracks());
-				//if (tracks != null && tracks.length > 0) {
-				if (tracks != null) {
-					DefaultListModel listModel = new DefaultListModel();
-					for (Track<?> track: tracks) {
-						listModel.addElement(track);
-					}
-					selectedTracks.setModel(listModel);
-				} else {
-					System.out.println("null");
-				}
-			}
-		});
-
-
-		// Create the panel
-		JPanel panel = new JPanel();
-
-		// Layout settings
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 1;
-		gbc.weighty = 0;
-
-		// Selected track list
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		panel.add(listScroller, gbc);
-
-		// Track selection button
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		panel.add(selectTrackButton, gbc);
-
-		// Return the panel
-		return panel;
-	}
-
-
-	/**
-	 * @return an array of {@link Track} that are available
-	 */
-	private Track<?>[] getAvailableTracks () {
-		Track<?>[] allTracks = MainFrame.getInstance().getTrackList().getTrackList();
-		Track<?>[] selectedTracks = getSelectedTracks();
-		Track<?>[] availableTracks = null;
-
-		if (selectedTracks == null) {
-			availableTracks = allTracks;
-		} else {
-			availableTracks = new Track<?>[allTracks.length - selectedTracks.length];
-			int indexTrack = 0;
-			for (Track<?> track: allTracks) {
-				int index = 0;
-				boolean found = false;
-				while (!found && index < selectedTracks.length) {
-					if (track.equals(selectedTracks[index])) {
-						found = true;
-					} else {
-						index++;
-					}
-				}
-				if (!found) {
-					availableTracks[indexTrack] = track;
-					indexTrack++;
-				}
-			}
-		}
-
-		return availableTracks;
-	}
-
-
-	/**
-	 * @return an array of {@link Track} that are already selected
-	 */
-	private Track<?>[] getSelectedTracks () {
-		Track<?>[] tracks = null;
-		if (selectedTracks != null) {
-			ListModel model = selectedTracks.getModel();
-			int size = model.getSize(); 
-			if (size > 0) {
-				tracks = new Track<?>[size];
-				for (int i = 0; i < size; i++) {
-					tracks[i] = (Track<?>) model.getElementAt(i);
-				}
-			}
-		}
-		return tracks;
-	}
-
-
-	/**
-	 * Creates the validation panel containing the "Add" and "Apply" buttons
-	 * @return the validation panel
-	 */
-	private JPanel getValidationPanel () {
-		// Create the panel
-		JPanel panel = new JPanel();
-
-		// Set the size of the panel
-		Dimension dimension = new Dimension(200, 40);
-		panel.setPreferredSize(dimension);
-
-		// Create buttons
-		addButton = new JButton(ADD_BUTTON_TEXT);
-		applyButton = new JButton(APPLY_BUTTON_TEXT);
-		applyButton.setEnabled(false);
-
-		// Add buttons
-		panel.add(addButton);
-		panel.add(applyButton);
-
-		// Return the panel
-		return panel;
-	}
 	
 	
-	/**
-	 * Set the editing panel content with a stripe data object
-	 * @param data stripe data
-	 */
-	protected void setEditingPanel (StripeData data) {
+	@Override
+	protected void setEditingPanel (StripesData data) {
 		// Set the genome
 		jcbGenome.setSelectedItem(data.getGenome());
 		
@@ -428,11 +268,8 @@ class StripesEditingPanel extends JPanel {
 	}
 	
 	
-	/**
-	 * Retrieves information from the panel to create and return a stripe data object
-	 * @return a stripe data object
-	 */
-	protected StripeData getStripeData () {
+	@Override
+	protected StripesData getElement () {
 		// Retrieve the genome name
 		String genome = jcbGenome.getSelectedItem().toString();
 		
@@ -450,35 +287,10 @@ class StripesEditingPanel extends JPanel {
 		Track<?>[] trackList = getSelectedTracks();
 		
 		// Create the stripe data object
-		StripeData data = new StripeData(genome, variantList, colorList, trackList);
+		StripesData data = new StripesData(genome, variantList, colorList, trackList);
 		
 		// Return the stripe data object
 		return data;
 	}
-	
 
-	/**
-	 * @return the applyButton
-	 */
-	protected JButton getApplyButton() {
-		return applyButton;
-	}
-
-
-	/**
-	 * Add an action listener to the 'Add' and 'Apply' buttons
-	 * @param al the action listener
-	 */
-	protected void addListener (ActionListener al) {
-		addButton.addActionListener(al);
-		applyButton.addActionListener(al);
-	}
-
-
-	/**
-	 * @return the stripes editing panel instance
-	 */
-	private Component getCurrentInstance() {
-		return this;
-	}
 }
