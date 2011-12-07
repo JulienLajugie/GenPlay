@@ -29,7 +29,6 @@ import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.track.SNPListTrack;
@@ -90,12 +89,11 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			MultiGenomeStripes multiGenomeStripes = getTrackList().getSelectedTrack().getMultiGenomeStripes();
 			SNPListTrack newTrack = new SNPListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);
 			}
-			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, multiGenomeStripes);
+			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
 	}
 	

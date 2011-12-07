@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
@@ -73,7 +73,6 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAMultiGenomeProperties;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAMultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
@@ -137,6 +136,8 @@ import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -237,7 +238,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
 		getActionMap().put(ATASetHeight.ACTION_KEY, new ATASetHeight());
 		getActionMap().put(ATASetVerticalLineCount.ACTION_KEY, new ATASetVerticalLineCount());
-		getActionMap().put(ATAMultiGenomeStripes.ACTION_KEY, new ATAMultiGenomeStripes());
 		getActionMap().put(ATAMultiGenomeProperties.ACTION_KEY, new ATAMultiGenomeProperties());
 		// add empty list actions
 		getActionMap().put(ETALoadBinListTrack.ACTION_KEY, new ETALoadBinListTrack());
@@ -397,9 +397,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param preferredHeight preferred height of the track
 	 * @param name name of the track (can be null)
 	 * @param stripes {@link ChromosomeWindowList} (can be null)
-	 * @param multiGenomeStripes {@link MultiGenomeStripes} (can be null)
+	 * @param stripesList {@link StripesData} (can be null)
+	 * @param filtersList {@link FiltersData} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, MultiGenomeStripes multiGenomeStripes) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<IDFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);
@@ -407,8 +408,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (stripes != null) {
 			track.setStripes(stripes);
 		}
-		if (multiGenomeStripes != null) {
-			track.setMultiGenomeStripes(multiGenomeStripes);
+		if (stripesList != null && filtersList != null) {
+			track.updateMultiGenomeInfomration(stripesList, filtersList);
 		}
 		trackList[index] = track;
 		trackList[index].setTrackNumber(index + 1);
@@ -749,7 +750,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				copiedTrack = selectedTrack;
 				int selectedTrackIndex = getSelectedTrackIndex();				
 				Track<?> emptyTrack = new EmptyTrack(displayedGenomeWindow, trackList.length);
-				setTrack(selectedTrackIndex, emptyTrack, projectConfiguration.getTrackHeight(), null, null, null);
+				setTrack(selectedTrackIndex, emptyTrack, projectConfiguration.getTrackHeight(), null, null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while copying the track");
@@ -784,7 +785,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				Track<?> newTrack = copiedTrack.deepClone();
 				GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
 				newTrack.setGenomeWindow(currentGenomeWindow);
-				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null);
+				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while pasting the track");

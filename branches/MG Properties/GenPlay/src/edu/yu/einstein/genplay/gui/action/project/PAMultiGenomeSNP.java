@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.ActionMap;
 
@@ -29,7 +30,6 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.GenomeSynchronizer;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.SNPSynchroniser;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -50,9 +50,9 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 		// mnemonic key
 	private static		 String 			ACTION_NAME = "SNPs loading";	// action name
 	
-	private Chromosome						newChromosome;
-	private MultiGenomeStripes				previousSetting;
-	private MultiGenomeStripes				newSetting;
+	private Chromosome			newChromosome;
+	private List<String>		previousRequiredGenomes;
+	private List<String>		newRequiredGenomes;
 	
 
 	/**
@@ -91,9 +91,9 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			if (newChromosome != null) {
 				readyToCompute = true;
 				snpSynchronizer.removeChromosomeSNPs(newChromosome);
-			} else if (newSetting != null) {
+			} else if (newRequiredGenomes != null) {
 				readyToCompute = true;
-				snpSynchronizer.updateCounters(previousSetting, newSetting);
+				snpSynchronizer.updateCounters(previousRequiredGenomes, newRequiredGenomes);
 			}
 			
 			if (readyToCompute) {
@@ -138,18 +138,18 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 
 
 	/**
-	 * @param previousSetting the previousSetting to set
+	 * @param requiredGenomes the previous list of required genomes
 	 */
-	public void setPreviousSetting(MultiGenomeStripes previousSetting) {
-		this.previousSetting = previousSetting;
+	public void setPreviousSetting(List<String> requiredGenomes) {
+		this.previousRequiredGenomes = requiredGenomes;
 	}
 
 
 	/**
-	 * @param newSetting the newSetting to set
+	 * @param requiredGenomes the new list of required genomes
 	 */
-	public void setNewSetting(MultiGenomeStripes newSetting) {
-		this.newSetting = newSetting;
+	public void setNewSetting(List<String> requiredGenomes) {
+		this.newRequiredGenomes = requiredGenomes;
 	}	
 
 	

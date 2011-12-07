@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -65,7 +66,24 @@ public class StripesGlobalPanel extends GlobalPanel<StripesEditingPanel, Stripes
 		getEditingPanel().addListener(this);
 		getContentPanel().addListener(this);
 	}
-
+	
+	
+	/**
+	 * Set the stripe panel with specific values
+	 * @param list list of data
+	 */
+	public void setSettings (List<StripesData> list) {
+		((StripesContentPanel) contentPanel).setSettings(list);
+	}
+	
+	
+	/**
+	 * @return the filters list
+	 */
+	public List<StripesData> getStripesData () {
+		return ((StripesContentPanel) contentPanel).getStripesData();
+	}
+	
 
 	/**
 	 * Controls if a stripe data object is valid.
@@ -83,7 +101,7 @@ public class StripesGlobalPanel extends GlobalPanel<StripesEditingPanel, Stripes
 		}
 
 		// Controls the variation list (a valid variation list involves a valid correct list)
-		if (data.getVariantList() == null || data.getVariantList().size() == 0) {
+		if (data.getVariationTypeList() == null || data.getVariationTypeList().size() == 0) {
 			errors += "Invalid variation selection\n";
 		}
 
@@ -121,7 +139,7 @@ public class StripesGlobalPanel extends GlobalPanel<StripesEditingPanel, Stripes
 			StripesData data = getEditingPanel().getElement();							// get the stripe data object
 			if (controlStripesData(data)) {												// control if the stripe data object is valid
 				currentData.setGenome(data.getGenome());								// set the stripe data object
-				currentData.setVariantList(data.getVariantList());
+				currentData.setVariationTypeList(data.getVariationTypeList());
 				currentData.setColorList(data.getColorList());
 				currentData.setTrackList(data.getTrackList());
 				getContentPanel().updateTableSize();									// update the size of the table

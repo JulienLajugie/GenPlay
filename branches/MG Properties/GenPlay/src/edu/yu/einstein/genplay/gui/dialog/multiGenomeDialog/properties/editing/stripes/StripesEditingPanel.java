@@ -122,6 +122,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	@Override
 	public void clearSelection () {
 		jcbGenome.setSelectedIndex(0);
+		jcbGenome.setToolTipText(jcbGenome.getSelectedItem().toString());
 		for (int i = 0; i < defaultVariationColor.length; i++) {
 			selectedVariation.get(i).setSelected(false);
 			variationColor.get(i).setBackground(defaultVariationColor[i]);
@@ -141,6 +142,14 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		Dimension dimension = new Dimension(180, height);
 		jcbGenome.setPreferredSize(dimension);
 		jcbGenome.setMinimumSize(dimension);
+		jcbGenome.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JComboBox box = (JComboBox)e.getSource();
+				String element = box.getSelectedItem().toString();
+				box.setToolTipText(element);
+			}
+		});
 		jcbGenome.setToolTipText("Select a genome to display its variation(s).");
 		return jcbGenome;
 	}
@@ -249,7 +258,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		
 		// Set selected variation and color
 		for (int i = 0; i < variationName.size(); i++) {
-			int variationIndex = data.getVariantList().indexOf(variationName.get(i));
+			int variationIndex = data.getVariationTypeList().indexOf(variationName.get(i));
 			if (variationIndex == -1) {
 				selectedVariation.get(i).setSelected(false);
 				variationColor.get(i).setBackground(defaultVariationColor[i]);
@@ -278,8 +287,24 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		List<Color> colorList = new ArrayList<Color>();
 		for (int i = 0; i < variationName.size(); i++) {
 			if (selectedVariation.get(i).isSelected()) {
-				variantList.add(variationName.get(i));
-				colorList.add(variationColor.get(i).getBackground());
+				VariantType type = variationName.get(i);
+				Color color = variationColor.get(i).getBackground();
+				if (type == VariantType.INSERTION || type == VariantType.INS) {
+					variantList.add(VariantType.INSERTION);
+					variantList.add(VariantType.INS);
+					colorList.add(color);
+					colorList.add(color);
+				} else if (type == VariantType.DELETION || type == VariantType.DEL) {
+					variantList.add(VariantType.DELETION);
+					variantList.add(VariantType.DEL);
+					colorList.add(color);
+					colorList.add(color);
+				} else if (type == VariantType.SNPS || type == VariantType.SVSNPS) {
+					variantList.add(VariantType.SNPS);
+					variantList.add(VariantType.SVSNPS);
+					colorList.add(color);
+					colorList.add(color);
+				}
 			}
 		}
 		

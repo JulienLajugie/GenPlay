@@ -50,9 +50,12 @@ class SettingsPanel extends JPanel {
 	private static final int TRANSPARENCY_MAX = 100;
 	private static final int TRANSPARENCY_INIT = 50;
 	private JLabel sliderValue;
+	private JSlider slider;
 
 	// Legend option
 	private boolean showLegend = true;
+	private JRadioButton yesButton;
+	private JRadioButton noButton;
 
 
 	/**
@@ -112,7 +115,7 @@ class SettingsPanel extends JPanel {
 		sliderValue = new JLabel(TRANSPARENCY_INIT + " %", SwingConstants.CENTER);
 
 		// Initializes the slider
-		JSlider slider = new JSlider(JSlider.HORIZONTAL, TRANSPARENCY_MIN, TRANSPARENCY_MAX, TRANSPARENCY_INIT);
+		slider = new JSlider(JSlider.HORIZONTAL, TRANSPARENCY_MIN, TRANSPARENCY_MAX, TRANSPARENCY_INIT);
 		slider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
@@ -144,8 +147,8 @@ class SettingsPanel extends JPanel {
 		JPanel panel = new JPanel();
 
 		// Initializes the radio buttons
-		JRadioButton yesButton = new JRadioButton("yes");
-		JRadioButton noButton = new JRadioButton("no");
+		yesButton = new JRadioButton("yes");
+		noButton = new JRadioButton("no");
 		if (showLegend) {
 			yesButton.setSelected(true);
 		} else {
@@ -185,6 +188,40 @@ class SettingsPanel extends JPanel {
 	 */
 	private void setShowLegend(boolean showLegend) {
 		this.showLegend = showLegend;
+	}
+	
+	
+	/**
+	 * Set the settings panel with specific values
+	 * @param transparency	transparency value
+	 * @param showLegend		legend value
+	 */
+	public void setSettings (int transparency, boolean showLegend) {
+		sliderValue.setText(transparency + " %");
+		slider.setValue(transparency);
+		
+		this.showLegend = showLegend;
+		if (showLegend) {
+			yesButton.setSelected(true);
+		} else {
+			yesButton.setSelected(false);
+		}
+	}
+
+
+	/**
+	 * @return the transparency value
+	 */
+	public int getTransparency() {
+		return slider.getValue();
+	}
+
+
+	/**
+	 * @return the showLegend
+	 */
+	public boolean isShowLegend() {
+		return showLegend;
 	}
 
 }

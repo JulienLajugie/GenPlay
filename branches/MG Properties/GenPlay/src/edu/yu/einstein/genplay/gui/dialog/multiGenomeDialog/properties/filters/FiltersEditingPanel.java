@@ -21,26 +21,22 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.JComboBox;
-import javax.swing.JList;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
@@ -48,6 +44,11 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvan
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ListDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors.IDEditor;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors.IDFlagEditor;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors.IDNumberEditor;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors.IDStringEditor;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
@@ -58,14 +59,25 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 1002708176297238005L;
-	
-	private JComboBox 			jcbVCFReader;			// The combo box for the vcf file selection
-	private JList				jlIDList;				// List of ID
-	
-	private VCFReader 			currentVCFReader;		// the current VCF reader
-	private VCFHeaderType 		currentID;				// the current header ID
-	private Map<VCFHeaderType, String> idMap;			// map between ID and their full description (as shown in the jlist)
-	
+
+	// File panel components
+	private JLabel					jlFile;				// Label to display the file name
+	private ListDialog<VCFReader> 	fileListDialog;		// The file list dialog
+	private JButton 				showFileListButton;	// The button to show the file list dialog
+
+	// ID panel components
+	private JLabel					jlID;				// Label to display the ID
+	private ListDialog<String> 		IDListDialog;		// The ID list dialog
+	private JButton 				showIDListButton;	// The button to show the ID list dialog
+
+	// Filter panel components
+	private JPanel					filterPanel;		// Panel that contains all necessary elements for selecting a filter
+	private IDEditor				filterEditor;		// The filter editor (creates panel for the filter and return the filter)
+
+	// Others
+	private VCFReader 					currentVCFReader;		// the current VCF reader
+	private VCFHeaderType 				currentID;				// the current header ID
+	private Map<VCFHeaderType, String> 	idMap;					// map between ID and their full description (as shown in the jlist)
 
 
 	/**
@@ -84,13 +96,17 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = titleInset;
-		add(Utils.getTitleLabel("VCF File"), gbc);
+		JLabel label = Utils.getTitleLabel("VCF File");
+		Dimension dimension = new Dimension(100, label.getFontMetrics(label.getFont()).getHeight());
+		label.setPreferredSize(dimension);
+		label.setMinimumSize(dimension);
+		add(label, gbc);
 
 		// File selection box
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = panelInset;
-		add(getFileBox(), gbc);
+		add(getFilePanel(), gbc);
 
 		// ID selection title
 		gbc.gridx = 0;
@@ -102,8 +118,8 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = panelInset;
-		add(getListID(), gbc);
-		
+		add(getIDPanel(), gbc);
+
 		// Filter selection title
 		gbc.gridx = 0;
 		gbc.gridy++;
@@ -114,7 +130,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = panelInset;
-		add(getFilterPanel(), gbc);
+		add(resetFilterPanel(), gbc);
 
 		// Track selection title
 		gbc.gridx = 0;
@@ -137,109 +153,164 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		add(getValidationPanel(), gbc);
 	}
 
-	
+
 	@Override
 	public void clearSelection () {
-		jcbVCFReader.setSelectedIndex(0);
-		DefaultListModel model = new DefaultListModel();
-		jlIDList = new JList(model);
-		//TODO
+		jlFile.setText("<html><i>select</i></html>");
+		jlFile.setForeground(Color.gray);
+
+		jlID.setText("<html><i>select</i></html>");
+		jlID.setForeground(Color.gray);
+		showIDListButton.setEnabled(false);
+
+		resetFilterPanel();
+		filterPanel.repaint();
+		validate();
+		
 		selectedTracks.setModel(new DefaultListModel());
 		getApplyButton().setEnabled(false);
 	}
-	
-	
-	/**
-	 * Creates the vcf file box
-	 * @return the vcf file box
-	 */
-	private JComboBox getFileBox () {
-		// Creates the model for the combo box
-		List<VCFReader> readerList = ProjectManager.getInstance().getGenomeSynchronizer().getReaderList();
-		DefaultComboBoxModel model = new DefaultComboBoxModel();
-		for (VCFReader reader: readerList) {
-			model.addElement(reader);
-		}
-		
-		// Creates the combo box
-		jcbVCFReader = new JComboBox(model);
-		
-		// Initializes combo box size
-		int height = jcbVCFReader.getFontMetrics(jcbVCFReader.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(180, height);
-		jcbVCFReader.setPreferredSize(dimension);
-		jcbVCFReader.setMinimumSize(dimension);
-		jcbVCFReader.setToolTipText("Select a file to display its IDs.");
-		
-		// Initializes the listener
-		jcbVCFReader.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JComboBox box = (JComboBox) e.getSource();
-				VCFReader newVCFReader = (VCFReader) box.getSelectedItem();
-				if (currentVCFReader == null) {
-					setCurrentReader(newVCFReader);
-					updateListContent();
-				}
-				if (!currentVCFReader.getFile().equals(newVCFReader.getFile())) {
-					setCurrentReader(newVCFReader);
-					updateListContent();
-				}
-				
-			}
-		});
-		
-		// return the combo box
-		return jcbVCFReader;
-	}
 
 
 	/**
-	 * Creates the list of IDs
-	 * @return a scrollable panel containing the list of IDs
+	 * Creates a panel containing the vcf file name and a button to select one
+	 * @return the file panel
 	 */
-	private JScrollPane getListID () {
-		// Creates an empty list model
-		DefaultListModel model = new DefaultListModel();
-		
-		// Creates the list
-		jlIDList = new JList(model);
-		
-		// Creates the scrollable panel that contains the list
-		JScrollPane panel = new JScrollPane(jlIDList);
-		Dimension dimension = new Dimension(180, 40);
-		panel.setPreferredSize(dimension);
-		panel.setMinimumSize(dimension);
-		
-		// Defines the listener for the list
-		jlIDList.addListSelectionListener(new ListSelectionListener() {
-			
+	private JPanel getFilePanel () {
+		// Creates the selection ID dialog
+		fileListDialog = new ListDialog<VCFReader>("Select a file");
+
+		// Instantiates the label
+		jlFile = getDefaultLabel("select ->");
+
+		// Instantiates the button
+		showFileListButton = new JButton("+");
+
+		// Gets the panel
+		JPanel panel = createPanelSelection(jlFile, showFileListButton);
+
+		// Initializes the button for the selection ID dialog
+		showFileListButton.addActionListener(new ActionListener() {
 			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (e.getValueIsAdjusting() == false) {								// if the selection is stable
-					String fullDetail = jlIDList.getSelectedValue().toString();		// get the value
-					VCFHeaderType newID = null;										// instanciate the ID
-					for (VCFHeaderType id: idMap.keySet()) {						// scan all full detail ID to find the right ID object
-						if (fullDetail.equals(idMap.get(id))) {
-							newID = id;
-						}
+			public void actionPerformed(ActionEvent arg0) {
+				List<VCFReader> readerList = ProjectManager.getInstance().getGenomeSynchronizer().getReaderList();
+				List<VCFReader> list = new ArrayList<VCFReader>();
+				for (VCFReader reader: readerList) {
+					list.add(reader);
+				}
+				if (fileListDialog.showDialog(getRootPane(), list) == ListDialog.APPROVE_OPTION){
+					VCFReader newVCFReader = fileListDialog.getSelectedElement();
+					if (currentVCFReader == null) {
+						setCurrentReader(newVCFReader);
 					}
-					if (currentID == null) {										// if the current id does not exist yet
-						setCurrentID(newID);										// we set it
-					}
-					if (!currentID.getId().equals(newID.getId())) {					// if the new id is different than the current one
-						setCurrentID(newID);										// we set it
+					if (!currentVCFReader.getFile().equals(newVCFReader.getFile())) {
+						setCurrentReader(newVCFReader);
 					}
 				}
 			}
 		});
-		
+
 		// Return the panel
 		return panel;
 	}
-	
-	
+
+
+	/**
+	 * Creates a panel containing the ID value and a button to select an ID
+	 * @return the ID panel
+	 */
+	private JPanel getIDPanel () {
+		// Creates the selection ID dialog
+		IDListDialog = new ListDialog<String>("Select an ID");
+
+		// Instantiates the label
+		jlID = getDefaultLabel("select ->");
+
+		// Instantiates the button
+		showIDListButton = new JButton("+");
+
+		// Gets the panel
+		JPanel panel = createPanelSelection(jlID, showIDListButton);
+
+		// Initializes the button for the selection ID dialog
+		showIDListButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (idMap != null) {
+					List<String> list = new ArrayList<String>();
+					for (String s: idMap.values()) {
+						list.add(s);
+					}
+					Collections.sort(list);
+					if (IDListDialog.showDialog(getRootPane(), list) == ListDialog.APPROVE_OPTION){
+						String fullDetail = IDListDialog.getSelectedElement();		// get the value
+						jlID.setText(fullDetail);
+						jlID.setToolTipText(fullDetail);
+						jlID.setForeground(getForeground());
+						String category = fullDetail.substring(0, fullDetail.indexOf(":"));
+						VCFHeaderType newID = null;										// instanciate the ID
+						for (VCFHeaderType id: idMap.keySet()) {						// scan all full detail ID to find the right ID object
+							if (fullDetail.equals(idMap.get(id))) {
+								newID = id;
+							}
+						}
+						if (currentID == null) {										// if the current id does not exist yet
+							setCurrentID(newID, category);								// we set it
+						} else if (!currentID.getId().equals(newID.getId())) {			// if the new id is different than the current one
+							setCurrentID(newID, category);								// we set it
+						}
+					}
+				}
+			}
+		});
+
+		// Return the panel
+		return panel;
+	}
+
+
+	/**
+	 * Creates a label/button panel (label on the left, button to set the label on the right)
+	 * @param label		the label
+	 * @param button	the button
+	 * @return			the panel
+	 */
+	private JPanel createPanelSelection (JLabel label, JButton button) {
+		// Creates the panel
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		int height = panel.getFontMetrics(panel.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(180, height);
+		panel.setPreferredSize(dimension);
+		panel.setMinimumSize(dimension);
+
+		// Set the button for the selection dialog
+		button.setMargin(new Insets(0, 0, 0, 0));
+		Dimension buttonDimension = new Dimension(height, height);
+		button.setPreferredSize(buttonDimension);
+		button.setMinimumSize(buttonDimension);
+
+		// Add label and button to the panel
+		panel.add(label, BorderLayout.CENTER);
+		panel.add(button, BorderLayout.EAST);
+
+		// Return the panel
+		return panel;
+	}
+
+
+	/**
+	 * Creates a label with a gray italic text
+	 * @param text	text of the label
+	 * @return		the label
+	 */
+	private JLabel getDefaultLabel (String text) {
+		JLabel label = new JLabel("<html><i>" + text + "</i></html>");
+		label.setForeground(Color.gray);
+		return label;
+	}
+
+
 	/**
 	 * Sets the current vcf file reader.
 	 * Creates a map between ID and their description for the ID list.
@@ -247,84 +318,122 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 */
 	private void setCurrentReader (VCFReader reader) {
 		currentVCFReader = reader;
+		jlFile.setText(reader.toString());
+		jlFile.setForeground(getForeground());
+		jlFile.setToolTipText(reader.toString());
+		showIDListButton.setEnabled(true);
 		idMap = new HashMap<VCFHeaderType, String>();
-		
+
 		// Store the ALT fields
 		for (VCFHeaderType header: reader.getAltHeader()) {
 			idMap.put(header, "ALT: " + header.getId() + " (" + header.getDescription() + ")");
 		}
-		
+
 		// Store the FILTER fields
 		for (VCFHeaderType header: reader.getFilterHeader()) {
 			idMap.put(header, "FILTER: " + header.getId() + " (" + header.getDescription() + ")");
 		}
-		
+
 		// Store the FORMAT fields
 		for (VCFHeaderAdvancedType header: reader.getFormatHeader()) {
 			idMap.put(header, "FORMAT: " + header.getId() + " (" + header.getDescription() + ")");
 		}
-		
+
 		// Store the INFO fields
 		for (VCFHeaderAdvancedType header: reader.getInfoHeader()) {
 			idMap.put(header, "INFO: " + header.getId() + " (" + header.getDescription() + ")");
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets the new selected ID
 	 * @param id the new ID
 	 */
-	private void setCurrentID (VCFHeaderType id) {
+	private void setCurrentID (VCFHeaderType id, String category) {
 		currentID = id;
-		if (currentID instanceof VCFHeaderAdvancedType) {
-			VCFHeaderAdvancedType adCurrentID = (VCFHeaderAdvancedType) currentID;
-			System.out.println(adCurrentID.getId() + ": " + adCurrentID.getDescription() + "(" + adCurrentID.getType() + ", " + adCurrentID.getNumber() + ")");
-		} else {
-			System.out.println(currentID.getId() + ": " + currentID.getDescription());
-		}
+		setFilterPanel(id, category);
 	}
-	
-	
+
+
 	/**
-	 * Update the content to the list according to the map of IDs
+	 * Set the filter panel according to the ID.
+	 * @param id the header ID
 	 */
-	private void updateListContent () {
-		DefaultListModel model = new DefaultListModel();
-		Collection<String> collection = idMap.values();
-		List<String> values = new ArrayList<String>();
-		for (String s: collection) {
-			values.add(s);
+	private void setFilterPanel (VCFHeaderType id, String category) {
+		filterEditor = null;
+
+		if (category.equals("ALT")) {
+			System.out.println("ALT field not supported yet");
+		} else if (category.equals("QUAL")) {
+			System.out.println("QUAL field not supported yet");
+		} else if (category.equals("FILTER")) {
+			System.out.println("FILTER field not supported yet");
+		} else {
+			if (currentID instanceof VCFHeaderAdvancedType) {
+				VCFHeaderAdvancedType adCurrentID = (VCFHeaderAdvancedType) currentID;
+				if (adCurrentID.getType().isInstance(new Boolean(true))) {
+					filterEditor = new IDFlagEditor();
+					filterEditor.setID(adCurrentID);
+					filterEditor.setCategory(category);
+				} else if (adCurrentID.getType().isInstance(new Integer(0)) || adCurrentID.getType().isInstance(new Float(0))) {
+					filterEditor = new IDNumberEditor();
+					filterEditor.setID(adCurrentID);
+					filterEditor.setCategory(category);
+				} else if (adCurrentID.getType().isInstance(new String())) {
+					filterEditor = new IDStringEditor();
+					filterEditor.setID(adCurrentID);
+					filterEditor.setCategory(category);
+				} else {
+					System.out.println("not supported: " + adCurrentID.getId());
+				}
+			}
 		}
-		Collections.sort(values);
-		for (String value: values) {
-			model.addElement(value);
+
+		if (filterEditor != null) {
+			filterEditor.updatePanel(filterPanel);
+			filterPanel.repaint();
+			validate();
+		} else {
+			resetFilterPanel();
+			filterPanel.repaint();
+			validate();
 		}
-		jlIDList.setModel(model);
 	}
-	
-	
+
+
 	/**
 	 * Creates a panel to select the filter
 	 * @return the filter panel
 	 */
-	private JPanel getFilterPanel () {
-		JPanel panel = new JPanel();
-		Dimension dimension = new Dimension(180, 40);
-		panel.setPreferredSize(dimension);
-		panel.setMinimumSize(dimension);
-		panel.setBackground(Color.lightGray);
-		return panel;
+	private JPanel resetFilterPanel () {
+		if (filterPanel != null) {
+			filterPanel.removeAll();
+		} else {
+			filterPanel = new JPanel();
+		}
+		Dimension dimension = new Dimension(180, 50);
+		filterPanel.setPreferredSize(dimension);
+		filterPanel.setMinimumSize(dimension);
+		filterPanel.add(getDefaultLabel("no filter available"));
+		return filterPanel;
 	}
-	
-	
+
+
 	@Override
 	protected void setEditingPanel (FiltersData data) {
 		// Set the vcf reader
-		jcbVCFReader.setSelectedItem(data.getReader());
-		
-		// TODO
-		
+		setCurrentReader(data.getReader());
+
+		// Set the ID
+		String fullDetail = idMap.get(data.getId());
+		String category = fullDetail.substring(0, fullDetail.indexOf(":"));
+		setCurrentID(data.getId(), category);
+		jlID.setText(fullDetail);
+
+		// Set the panel with the current filter
+		filterEditor.initializesPanel(data.getFilter());
+
 		// Set the selected track list
 		DefaultListModel listModel = new DefaultListModel();
 		for (Track<?> track: data.getTrackList()) {
@@ -332,18 +441,21 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		}
 		selectedTracks.setModel(listModel);
 	}
-	
-	
+
+
 	@Override
 	protected FiltersData getElement () {
-		// TODO
-		
 		// Retrieve selected tracks
 		Track<?>[] trackList = getSelectedTracks();
-		
+
 		// Create the stripe data object
-		FiltersData data = new FiltersData(currentVCFReader, currentID, null, trackList);
-		
+		FiltersData data;
+		if (filterEditor == null) {
+			data = new FiltersData(currentVCFReader, currentID, null, trackList);
+		} else {
+			data = new FiltersData(currentVCFReader, currentID, filterEditor.getFilter(), trackList);
+		}
+
 		// Return the stripe data object
 		return data;
 	}

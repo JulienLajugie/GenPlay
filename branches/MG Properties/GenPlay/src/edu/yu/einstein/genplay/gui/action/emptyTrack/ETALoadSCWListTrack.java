@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
@@ -158,7 +157,6 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			MultiGenomeStripes multiGenomeStripes = getTrackList().getSelectedTrack().getMultiGenomeStripes();
 			SCWListTrack newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			String history = new String(); 
@@ -183,7 +181,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 				newTrack.getHistory().add(history, Color.GRAY);
 			}
 			newTrack.setTrackColor(TrackColor.getTrackColor());
-			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, multiGenomeStripes);
+			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
 	}
 }

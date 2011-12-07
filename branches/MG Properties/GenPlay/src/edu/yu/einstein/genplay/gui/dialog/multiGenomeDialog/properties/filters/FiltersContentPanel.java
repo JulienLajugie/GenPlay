@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 
+import java.util.List;
+
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentPanel;
 
@@ -33,6 +35,8 @@ class FiltersContentPanel extends ContentPanel<FiltersData> {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 159376731917929812L;
 
+	private FiltersTable table; // Table of data
+	
 
 	/**
 	 * Constructor of {@link FiltersContentPanel}
@@ -53,7 +57,7 @@ class FiltersContentPanel extends ContentPanel<FiltersData> {
 		add(Utils.getTitleLabel("Table"), gbc);
 
 		// Table
-		FiltersTable table = new FiltersTable();
+		table = new FiltersTable();
 		String[] columnNames = ((FiltersTableModel)table.getModel()).getColumnNames();
 		gbc.gridx = 0;
 		gbc.gridy++;
@@ -62,4 +66,20 @@ class FiltersContentPanel extends ContentPanel<FiltersData> {
 		add(getTablePanel(table, columnNames), gbc);
 	}
 
+	
+	/**
+	 * Set the content panel with specific values
+	 * @param list list of data
+	 */
+	public void setSettings (List<FiltersData> list) {
+		table.setData(list);
+	}
+	
+	
+	/**
+	 * @return the filters list
+	 */
+	public List<FiltersData> getFiltersData () {
+		return table.getData();
+	}
 }

@@ -76,7 +76,7 @@ public abstract class GlobalPanel<K, L> extends JPanel implements ActionListener
 	/**
 	 * Reset the panel to an "empty" state
 	 */
-	protected void clearSelection () {
+	public void clearSelection () {
 		((EditingPanel<?>) editingPanel).clearSelection();
 	}
 	

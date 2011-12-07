@@ -44,7 +44,6 @@ public class FiltersTable extends ContentTable<FiltersData> {
 	protected FiltersTable () {
 		FiltersTableModel model = new FiltersTableModel();
 		setModel(model);
-		//getColumnModel().getColumn(FiltersData.VARIANT_INDEX).setCellRenderer(new StripesTableRenderer());
 	}
 
 

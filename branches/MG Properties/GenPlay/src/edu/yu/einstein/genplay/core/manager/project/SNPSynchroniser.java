@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
@@ -39,7 +38,6 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
@@ -365,13 +363,11 @@ public class SNPSynchroniser implements Serializable {
 	 * Compares previous and new multi genome stripe in order to update lists of enabled genome SNPs.
 	 * Enable a genome for SNP will load its SNP information.
 	 * Disable a gnome for SNP will delete its SNP information.
-	 * @param previousSettings 	the previous {@link MultiGenomeStripes} object
-	 * @param newSettings		the new {@link MultiGenomeStripes} object
+	 * @param previousGenomes 	the previous required genomes list
+	 * @param nextGenomes		the new required genomes list
 	 */
-	public void updateCounters (MultiGenomeStripes previousSettings, MultiGenomeStripes newSettings) {
-		List<String> nextGenomes = getGenomeNamesForSNP(newSettings.getRequiredGenomes());
-		if (previousSettings != null) {
-			List<String> previousGenomes = getGenomeNamesForSNP(previousSettings.getRequiredGenomes());
+	public void updateCounters (List<String> previousGenomes, List<String> nextGenomes) {
+		if (previousGenomes != null) {
 
 			// If genomes were present in the last multi genome stripe settings but not in the new one,
 			// they have to be disabled.
@@ -396,24 +392,7 @@ public class SNPSynchroniser implements Serializable {
 			}
 		}
 	}
-
-
-	/**
-	 * Gathers genome names require for a SNP display
-	 * @param list association of genome name/variant type list
-	 * @return the list of genome names
-	 */
-	private List<String> getGenomeNamesForSNP (Map<String, List<VariantType>> list) {
-		List<String> names = new ArrayList<String>();
-		for (String name: list.keySet()) {
-			List<VariantType> variantList = list.get(name);
-			if (variantList.contains(VariantType.SNPS)) {
-				names.add(name);
-			}
-		}
-		return names;
-	}
-
+	
 
 	/**
 	 * Gathers genome names required in the project and present in the VCF file.

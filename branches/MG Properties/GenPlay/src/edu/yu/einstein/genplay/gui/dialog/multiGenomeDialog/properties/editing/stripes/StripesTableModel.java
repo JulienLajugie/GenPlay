@@ -52,7 +52,7 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 		case StripesData.GENOME_INDEX:
 			return stripesData.getGenomeForDisplay();
 		case StripesData.VARIANT_INDEX:
-			return stripesData.getVariantListForDisplay();
+			return stripesData.getVariationTypeListForDisplay();
 		case StripesData.TRACK_INDEX:
 			return stripesData.getTrackListForDisplay();
 		default:

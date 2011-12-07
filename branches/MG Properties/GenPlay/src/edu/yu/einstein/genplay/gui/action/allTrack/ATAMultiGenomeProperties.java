@@ -23,12 +23,17 @@ package edu.yu.einstein.genplay.gui.action.allTrack;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
@@ -44,7 +49,7 @@ public final class ATAMultiGenomeProperties extends TrackListAction {
 	private static final 	String DESCRIPTION = "Shows the project properties"; 	// tooltip
 	private static final 	int 	MNEMONIC = KeyEvent.VK_M; 						// mnemonic key
 	private 				PropertiesDialog 	dialog;								// the dialog properties
-
+	private					MGDisplaySettings 	settings;
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -61,6 +66,7 @@ public final class ATAMultiGenomeProperties extends TrackListAction {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		settings = MGDisplaySettings.getInstance();
 	}
 
 
@@ -73,10 +79,9 @@ public final class ATAMultiGenomeProperties extends TrackListAction {
 			if (dialog == null){
 				dialog = new PropertiesDialog();
 			}
+			dialog.setSettings(settings);
 			if (dialog.showDialog(getRootPane(), PropertiesDialog.GENERAL) == PropertiesDialog.APPROVE_OPTION) {
 				approve();
-			} else {
-				cancel();
 			}
 		}
 	}
@@ -86,15 +91,22 @@ public final class ATAMultiGenomeProperties extends TrackListAction {
 	 * Called if the dialog has been approved.
 	 */
 	private void approve () {
-		System.out.println("PropertiesDialog.APPROVE_OPTION");
+		// Set the various settings
+		settings.getVariousSettings().setVariousSettings(dialog.getTransparency(), dialog.isShowLegend());
+		
+		// Set the filters
+		settings.getFilterSettings().setFiltersSettings(dialog.getFiltersData());
+		
+		// Set the stripes
+		settings.getStripeSettings().setStripesSettings(dialog.getStripesData());
+		
+		Track<?>[] tracks = getTrackList().getTrackList();
+		for (Track<?> track: tracks) {
+			List<IDFilter> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
+			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
+			track.updateMultiGenomeInfomration(stripesList, filtersList);
+		}
 	}
 
-
-	/**
-	 * Called if the dialog has been canceled.
-	 */
-	private void cancel () {
-		System.out.println("PropertiesDialog.CANCEL_OPTION");
-	}
 
 }

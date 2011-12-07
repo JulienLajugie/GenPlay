@@ -35,6 +35,7 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.enums.VCFType;
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
@@ -46,7 +47,6 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
 
 /**
@@ -348,7 +348,7 @@ public class GenomeSynchronizer implements Serializable {
 							currentInformation.setInitialMetaGenomeOffset(previousInformation.getNextMetaGenomePositionOffset());	// Initial meta genome offset must be set according to the previous position
 							currentInformation.setInitialReferenceOffset(previousInformation.getNextReferencePositionOffset());		// Initial reference genome offset must be set according to the previous position
 						}
-						if (GenomePositionCalculation.isInsertion(currentInformation)) {							// If the current position is an insertion
+						if (VariantType.isInsertion(currentInformation.getType())){									// If the current position is an insertion
 							insertPositions.add(currentInformation.getLength());									// It is necessary to store its length in order to update other tracks
 						}
 					}

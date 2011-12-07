@@ -117,7 +117,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 					BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult[i]);
 					newTrack.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Color.GRAY);
 					newTrack.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Color.GRAY);
-					getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName() + ", " + bloFindIslands.getResultTypes()[i].toString(),	selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
+					getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName() + ", " + bloFindIslands.getResultTypes()[i].toString(),	selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 				}
 			}
 		}
@@ -135,7 +135,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 			BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
 			newTrack.getHistory().add(operation.getDescription(), Color.GRAY);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}
 	}
 }

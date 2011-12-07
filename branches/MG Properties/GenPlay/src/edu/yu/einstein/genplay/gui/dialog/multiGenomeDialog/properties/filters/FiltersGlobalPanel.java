@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -65,7 +66,24 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 		getEditingPanel().addListener(this);
 		getContentPanel().addListener(this);
 	}
+	
+	
+	/**
+	 * Set the filter panel with specific values
+	 * @param list list of data
+	 */
+	public void setSettings (List<FiltersData> list) {
+		((FiltersContentPanel) contentPanel).setSettings(list);
+	}
 
+	
+	/**
+	 * @return the filters list
+	 */
+	public List<FiltersData> getFiltersData () {
+		return ((FiltersContentPanel) contentPanel).getFiltersData();
+	}
+	
 
 	/**
 	 * Controls if a stripe data object is valid.
@@ -90,6 +108,12 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 		// Controls the filter
 		if (data.getFilter() == null) {
 			errors += "Invalid filter selection\n";
+		} else {
+			String filterError = data.getFilter().getErrors();
+			if (filterError != null) {
+				errors = filterError;
+				errors += "\n";
+			}
 		}
 
 		// Controls the track selection
@@ -159,10 +183,10 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 
 		if (isIn) {
 			if (table.getSelectedRows().length == 1) {
-				FiltersData data = table.getData().get(row);						// get the stripe data object	
-				currentData = data;												// set the current data stripe object
-				getEditingPanel().setEditingPanel(currentData);					// set the editing panel with the new strip data object
-				getEditingPanel().getApplyButton().setEnabled(true);			// APPLY button must be activated
+				FiltersData data = table.getData().get(row);				// get the stripe data object	
+				currentData = data;											// set the current data stripe object
+				getEditingPanel().setEditingPanel(currentData);				// set the editing panel with the new strip data object
+				getEditingPanel().getApplyButton().setEnabled(true);		// APPLY button must be activated
 			} else if (table.getSelectedRows().length > 1) {
 				// clear edit panel
 				currentData = null;

@@ -89,7 +89,7 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			SCWListTrack newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}
 	}	
 }

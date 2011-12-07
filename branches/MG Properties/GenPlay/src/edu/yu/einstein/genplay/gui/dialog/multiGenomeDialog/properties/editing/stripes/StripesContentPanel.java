@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
 
+import java.util.List;
+
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentPanel;
 
@@ -33,6 +35,8 @@ class StripesContentPanel extends ContentPanel<StripesData> {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 159376731917929812L;
 
+	private StripesTable table;	// Table of data
+	
 
 	/**
 	 * Constructor of {@link StripesContentPanel}
@@ -53,13 +57,30 @@ class StripesContentPanel extends ContentPanel<StripesData> {
 		add(Utils.getTitleLabel("Table"), gbc);
 
 		// Table
-		StripesTable table = new StripesTable();
+		table = new StripesTable();
 		String[] columnNames = ((StripesTableModel)table.getModel()).getColumnNames();
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = panelInset;
 		gbc.weighty = 1;
 		add(getTablePanel(table, columnNames), gbc);
+	}
+	
+	
+	/**
+	 * Set the content panel with specific values
+	 * @param list list of data
+	 */
+	public void setSettings (List<StripesData> list) {
+		table.setData(list);
+	}
+	
+	
+	/**
+	 * @return the stripes list
+	 */
+	public List<StripesData> getStripesData () {
+		return table.getData();
 	}
 
 }

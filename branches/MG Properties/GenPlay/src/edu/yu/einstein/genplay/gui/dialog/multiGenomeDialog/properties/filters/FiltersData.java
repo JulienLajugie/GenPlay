@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
@@ -42,7 +43,7 @@ public class FiltersData {
 
 	private VCFReader			reader;			// vcf reader
 	private VCFHeaderType 		id;				// vcf header id
-	private Object				filter;			// filter value
+	private IDFilter			filter;			// filter value
 	private Track<?>[] 			trackList;		// list of track
 
 
@@ -65,7 +66,7 @@ public class FiltersData {
 	 * @param trackList		list of track
 	 */
 	protected FiltersData(VCFReader reader, VCFHeaderType id,
-			Object filter, Track<?>[] trackList) {
+			IDFilter filter, Track<?>[] trackList) {
 		this.reader = reader;
 		this.id = id;
 		this.filter = filter;
@@ -92,7 +93,7 @@ public class FiltersData {
 	/**
 	 * @param filter the filter to set
 	 */
-	protected void setFilter(Object filter) {
+	protected void setFilter(IDFilter filter) {
 		this.filter = filter;
 	}
 
@@ -109,28 +110,28 @@ public class FiltersData {
 	/**
 	 * @return the reader
 	 */
-	protected VCFReader getReader() {
+	public VCFReader getReader() {
 		return reader;
 	}
 
 	/**
 	 * @return the id
 	 */
-	protected VCFHeaderType getId() {
+	public VCFHeaderType getId() {
 		return id;
 	}
 
 	/**
 	 * @return the filter
 	 */
-	protected Object getFilter() {
+	public IDFilter getFilter() {
 		return filter;
 	}
 
 	/**
 	 * @return the trackList
 	 */
-	protected Track<?>[] getTrackList() {
+	public Track<?>[] getTrackList() {
 		return trackList;
 	}
 
@@ -140,28 +141,28 @@ public class FiltersData {
 	/**
 	 * @return the genome
 	 */
-	protected String getReaderForDisplay() {
+	public String getReaderForDisplay() {
 		return reader.getFile().getName();
 	}
 	
 	/**
 	 * @return the variantList
 	 */
-	protected String getIDForDisplay() {
+	public String getIDForDisplay() {
 		return id.getId();
 	}
 
 	/**
 	 * @return the filter
 	 */
-	protected String getFilterForDisplay() {
-		return filter.toString();
+	public String getFilterForDisplay() {
+		return filter.toStringForDisplay();
 	}
 	
 	/**
 	 * @return the trackList
 	 */
-	protected String getTrackListForDisplay() {
+	public String getTrackListForDisplay() {
 		String text = "";
 		for (int i = 0; i < trackList.length; i++) {
 			text += trackList[i];

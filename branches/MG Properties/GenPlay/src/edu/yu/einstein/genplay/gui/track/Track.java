@@ -42,7 +42,8 @@ import javax.swing.border.Border;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -192,6 +193,19 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	
 	
 	/**
+	 * Updates information for multi genome project.
+	 * These information are about:
+	 * - stripes
+	 * - filters
+	 * @param stripesList list of stripes
+	 * @param filtersList list of filters
+	 */
+	public void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilter> filtersList) {
+		trackGraphics.updateMultiGenomeInfomration(stripesList, filtersList);
+	}
+	
+	
+	/**
 	 * Initializes attributes used for multi genome project.
 	 */
 	public void multiGenomeInitializing () {
@@ -236,14 +250,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public GenomeWindowListener[] getGenomeWindowListeners() {
 		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
 		return listenerList.toArray(genomeWindowListeners);
-	}
-
-
-	/**
-	 * @return the stripeInformation
-	 */
-	public MultiGenomeStripes getMultiGenomeStripes() {
-		return trackGraphics.getMultiGenomeStripes();
 	}
 
 
@@ -300,6 +306,22 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public int getVerticalLineCount() {
 		return trackGraphics.getVerticalLineCount();
+	}
+	
+	
+	/**
+	 * @return the stripesList
+	 */
+	public List<StripesData> getStripesList() {
+		return trackGraphics.getStripesList();
+	}
+
+
+	/**
+	 * @return the filtersList
+	 */
+	public List<IDFilter> getFiltersList() {
+		return trackGraphics.getFiltersList();
 	}
 	
 
@@ -382,15 +404,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
 		trackGraphics.setGenomeWindow(newGenomeWindow);
-	}
-
-
-	/**
-	 * @param multiGenomeStripes the stripeInformation to set
-	 */
-	public void setMultiGenomeStripes(MultiGenomeStripes multiGenomeStripes) {
-		trackGraphics.setMultiGenomeStripes(multiGenomeStripes);
-		repaint();
 	}
 
 

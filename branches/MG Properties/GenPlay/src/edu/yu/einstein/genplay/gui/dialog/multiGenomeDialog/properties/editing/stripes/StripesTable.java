@@ -54,7 +54,7 @@ public class StripesTable extends ContentTable<StripesData> {
 		for (int i = 0; i < data.size(); i++) {
 			StripesData rowData = new StripesData();
 			rowData.setGenome(data.get(i).getGenome());
-			rowData.setVariantList(data.get(i).getVariantList());
+			rowData.setVariationTypeList(data.get(i).getVariationTypeList());
 			rowData.setColorList(data.get(i).getColorList());
 			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
@@ -80,7 +80,7 @@ public class StripesTable extends ContentTable<StripesData> {
 					width = fm.stringWidth(stripesData.getGenomeForDisplay()) + 10;
 					break;
 				case StripesData.VARIANT_INDEX:
-					width = fm.stringWidth(stripesData.getVariantList().toString()) + 10;
+					width = fm.stringWidth(stripesData.getVariationTypeList().toString()) + 10;
 					break;
 				case StripesData.TRACK_INDEX:
 					width = fm.stringWidth(stripesData.getTrackListForDisplay().toString()) + 10;

@@ -48,7 +48,7 @@ public class FiltersTableModel extends ContentTableModel<FiltersData> {
 		FiltersData filtersData = data.get(row);
 		switch (col) {
 		case FiltersData.VCF_FILE_INDEX:
-			return filtersData.getFilterForDisplay();
+			return filtersData.getReaderForDisplay();
 		case FiltersData.ID_INDEX:
 			return filtersData.getIDForDisplay();
 		case FiltersData.FILTER_INDEX:

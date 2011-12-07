@@ -253,6 +253,9 @@ public abstract class EditingPanel<K> extends JPanel {
 		// Add buttons
 		panel.add(addButton);
 		panel.add(applyButton);
+		
+		// Set the 'add' button as default
+		//getRootPane().setDefaultButton(addButton);
 
 		// Return the panel
 		return panel;

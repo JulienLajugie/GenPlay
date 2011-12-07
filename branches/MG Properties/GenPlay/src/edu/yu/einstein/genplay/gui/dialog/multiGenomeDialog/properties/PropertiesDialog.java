@@ -28,6 +28,7 @@ import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -42,7 +43,10 @@ import javax.swing.tree.TreePath;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesGlobalPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersGlobalPanel;
 
 /**
@@ -312,6 +316,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		jbCancel.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				approved = CANCEL_OPTION;
 				setVisible(false);				
 			}
 		});
@@ -334,4 +339,53 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		setVisible(false);
 	}
 	
+	
+	/**
+	 * Set the settings panel with specific values
+	 * @param settings
+	 */
+	public void setSettings (MGDisplaySettings settings) {
+		// Settings panel
+		settingsPanel.setSettings(settings.getVariousSettings().getTransparency(), settings.getVariousSettings().isShowLegend());
+		
+		// Filter settings panel
+		filtersPanel.setSettings(settings.getFilterSettings().getFiltersList());
+		filtersPanel.clearSelection();
+		
+		// Stripes settings panel
+		stripesPanel.setSettings(settings.getStripeSettings().getStripesList());
+		stripesPanel.clearSelection();
+	}
+	
+	
+	/**
+	 * @return the transparency value
+	 */
+	public int getTransparency() {
+		return settingsPanel.getTransparency();
+	}
+
+
+	/**
+	 * @return the showLegend
+	 */
+	public boolean isShowLegend() {
+		return settingsPanel.isShowLegend();
+	}
+	
+	
+	/**
+	 * @return the filters list
+	 */
+	public List<FiltersData> getFiltersData () {
+		return filtersPanel.getFiltersData();
+	}
+	
+	
+	/**
+	 * @return the filters list
+	 */
+	public List<StripesData> getStripesData () {
+		return stripesPanel.getStripesData();
+	}
 }

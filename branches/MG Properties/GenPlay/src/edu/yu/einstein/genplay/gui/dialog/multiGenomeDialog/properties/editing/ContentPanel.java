@@ -37,7 +37,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesTableModel;
 
 /**
  * @author Nicolas Fourel
@@ -246,7 +245,8 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 		((FlowLayout)(tableHeader.getLayout())).setVgap(0);
 		
 		// Gets the header panel
-		String[] columnNames = ((StripesTableModel)table.getModel()).getColumnNames();
+		@SuppressWarnings("unchecked")
+		String[] columnNames = ((ContentTableModel<K>)table.getModel()).getColumnNames();
 		tableHeader.add(Utils.getTableHeaderPanel(columnNames, table.getColumnSize()));
 		
 		// Graphical validation

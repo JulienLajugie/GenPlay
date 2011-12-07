@@ -45,10 +45,10 @@ public class StripesData {
 	public static final int TRACK_INDEX 	= 2;
 
 
-	private String 				genome;			// name of the genome
-	private List<VariantType> 	variantList;	// list of variation
-	private List<Color> 		colorList;		// list of color
-	private Track<?>[] 			trackList;		// list of track
+	private String 				genome;				// name of the genome
+	private List<VariantType> 	variationTypeList;	// list of variation
+	private List<Color> 		colorList;			// list of color
+	private Track<?>[] 			trackList;			// list of track
 
 
 	/**
@@ -56,7 +56,7 @@ public class StripesData {
 	 */
 	protected StripesData() {
 		this.genome = null;
-		this.variantList = null;
+		this.variationTypeList = null;
 		this.colorList = null;
 		this.trackList = null;
 	}
@@ -72,7 +72,7 @@ public class StripesData {
 	protected StripesData(String genome, List<VariantType> variantList,
 			List<Color> colorList, Track<?>[] trackList) {
 		this.genome = genome;
-		this.variantList = variantList;
+		this.variationTypeList = variantList;
 		this.colorList = colorList;
 		this.trackList = trackList;
 	}
@@ -89,8 +89,8 @@ public class StripesData {
 	/**
 	 * @param variantList the variantList to set
 	 */
-	protected void setVariantList(List<VariantType> variantList) {
-		this.variantList = variantList;
+	protected void setVariationTypeList(List<VariantType> variantList) {
+		this.variationTypeList = variantList;
 	}
 
 	/**
@@ -112,28 +112,28 @@ public class StripesData {
 	/**
 	 * @return the genome
 	 */
-	protected String getGenome() {
+	public String getGenome() {
 		return genome;
 	}
 
 	/**
 	 * @return the variantList
 	 */
-	protected List<VariantType> getVariantList() {
-		return variantList;
+	public List<VariantType> getVariationTypeList() {
+		return variationTypeList;
 	}
 
 	/**
 	 * @return the colorList
 	 */
-	protected List<Color> getColorList() {
+	public List<Color> getColorList() {
 		return colorList;
 	}
 
 	/**
 	 * @return the trackList
 	 */
-	protected Track<?>[] getTrackList() {
+	public Track<?>[] getTrackList() {
 		return trackList;
 	}
 
@@ -142,22 +142,22 @@ public class StripesData {
 	/**
 	 * @return the genome
 	 */
-	protected String getGenomeForDisplay() {
+	public String getGenomeForDisplay() {
 		return genome;
 	}
 
 	/**
 	 * @return the variantList
 	 */
-	protected JPanel getVariantListForDisplay() {
+	public JPanel getVariationTypeListForDisplay() {
 		JPanel panel = new JPanel();
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
 		panel.setLayout(layout);
-		for (int i = 0; i < variantList.size(); i++) {
-			JLabel label = new JLabel(variantList.get(i).toString());
+		for (int i = 0; i < variationTypeList.size(); i++) {
+			JLabel label = new JLabel(variationTypeList.get(i).toString());
 			label.setForeground(colorList.get(i));
 			panel.add(label);
-			if (i < (variantList.size() - 1)) {
+			if (i < (variationTypeList.size() - 1)) {
 				panel.add(new JLabel(", "));
 			}
 		}
@@ -167,7 +167,7 @@ public class StripesData {
 	/**
 	 * @return the trackList
 	 */
-	protected String getTrackListForDisplay() {
+	public String getTrackListForDisplay() {
 		String text = "";
 		for (int i = 0; i < trackList.length; i++) {
 			text += trackList[i];
@@ -176,6 +176,22 @@ public class StripesData {
 			}
 		}
 		return text;
+	}
+
+
+	public String toString () {
+		String info = "";
+		info += genome;
+		for (int i = 0; i < variationTypeList.size(); i++) {
+			info += " [" + variationTypeList.get(i) + ", ";
+			info += colorList.get(i) + "]";
+		}
+		info += " [";
+		for (Track<?> track: trackList) {
+			info += track + ", ";
+		}
+		info += "]";
+		return info;
 	}
 
 }
