@@ -120,7 +120,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 
 	
 	@Override
-	public void clearSelection () {
+	public void refresh () {
 		jcbGenome.setSelectedIndex(0);
 		jcbGenome.setToolTipText(jcbGenome.getSelectedItem().toString());
 		for (int i = 0; i < defaultVariationColor.length; i++) {
@@ -137,7 +137,19 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	 * @return the combo box
 	 */
 	private JComboBox getGenomeBox () {
-		jcbGenome = new JComboBox(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
+		// Get the genome array without the reference genome
+		Object[] allGenomes = ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray();
+		Object[] genomes = new Object[allGenomes.length - 1];
+		int index = 0;
+		for (Object o: allGenomes) {
+			if (!o.toString().equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
+				genomes[index] = o;
+				index++;
+			}
+		}
+		
+		// Creates the box
+		jcbGenome = new JComboBox(genomes);
 		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
 		Dimension dimension = new Dimension(180, height);
 		jcbGenome.setPreferredSize(dimension);

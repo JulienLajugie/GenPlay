@@ -56,6 +56,7 @@ import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeProperties;
 import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
@@ -331,6 +332,9 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			getRootPane().getActionMap().put(PAMultiGenomeProperties.ACTION_KEY, new PAMultiGenomeProperties());
+		}
 	}
 
 
@@ -366,6 +370,9 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveRight.ACCELERATOR, PAMoveRight.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, PAZoomIn.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMultiGenomeProperties.ACCELERATOR, PAMultiGenomeProperties.ACTION_KEY);
+		}
 	}
 
 

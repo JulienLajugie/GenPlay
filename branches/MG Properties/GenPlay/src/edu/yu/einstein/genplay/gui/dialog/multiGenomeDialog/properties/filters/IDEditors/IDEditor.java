@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 
 /**
  * @author Nicolas Fourel
@@ -48,6 +48,12 @@ public interface IDEditor {
 	
 	
 	/**
+	 * @return the ID
+	 */
+	public VCFHeaderType getID ();
+	
+	
+	/**
 	 * Sets the category of the filter:
 	 * - ALT
 	 * - QUAL
@@ -60,15 +66,21 @@ public interface IDEditor {
 	
 	
 	/**
+	 * @return the category of the editor
+	 */
+	public String getCategory ();
+	
+	
+	/**
 	 * @return the filter
 	 */
-	public IDFilter getFilter ();
+	public IDFilterInterface getFilter ();
 	
 	
 	/**
 	 * Initializes the panel using an existing filter
 	 * @param filter the filter
 	 */
-	public void initializesPanel (IDFilter filter);
+	public void initializesPanel (IDFilterInterface filter);
 	
 }

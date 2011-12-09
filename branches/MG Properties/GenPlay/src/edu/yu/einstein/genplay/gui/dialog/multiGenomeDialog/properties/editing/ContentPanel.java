@@ -52,9 +52,9 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	protected Insets firstInset = new Insets(10, 15, 0, 0);
 	protected Insets titleInset = new Insets(15, 5, 5, 0);
 	protected Insets panelInset = new Insets(0, 5, 0, 0);
-	
+
 	protected GridBagConstraints gbc;				// Layout constraints
-	
+
 	private 	JPanel 				tableHeader;	// the header panel of the table
 	private 	JPanel 				tablePanel;		// the panel that contains the table
 	private		JPanel 				buttonPanel;	// the button panel to handle the table
@@ -86,7 +86,7 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	 */
 	protected JPanel getTablePanel (ContentTable<K> table, String[] columnNames) {
 		this.table = table;
-		
+
 		// Creates the panel
 		JPanel panel = new JPanel();
 		BorderLayout layout = new BorderLayout(0, 0);
@@ -113,7 +113,7 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 		jbMoveRowsUp.addActionListener(this);
 		jbMoveRowsDown = new JButton("Move down");
 		jbMoveRowsDown.addActionListener(this);
-		
+
 		// Create the button panel
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
@@ -137,7 +137,7 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 
 		// Update enable state of all buttons
 		updateEnableButtons();
-		
+
 		// Return the panel
 		return panel;
 	}
@@ -150,21 +150,21 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	protected void setData (List<K> data) {
 		// Set the data to the table
 		table.setData(data);
-		
+
 		// Reset the table panel to zero
 		tablePanel.removeAll();
-		
+
 		// Set layout gaps
 		((FlowLayout)(tablePanel.getLayout())).setHgap(0);
 		((FlowLayout)(tablePanel.getLayout())).setVgap(0);
-		
+
 		// Add the table to the panel
 		tablePanel.add(table);
-		
+
 		// Table is visible so other panel must be visible too
 		tableHeader.setVisible(true);
 		buttonPanel.setVisible(true);
-		
+
 		// Graphical validation
 		tablePanel.repaint();
 		validate();
@@ -177,23 +177,7 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	 */
 	public void addRow (K data) {
 		if (table.getData().size() == 0) {
-			// Reset the table panel to zero
-			tablePanel.removeAll();
-			
-			// Set layout gaps
-			((FlowLayout)(tablePanel.getLayout())).setHgap(0);
-			((FlowLayout)(tablePanel.getLayout())).setVgap(0);
-			
-			// Add the table to the panel
-			tablePanel.add(table);
-			
-			// Table is visible so other panel must be visible too
-			tableHeader.setVisible(true);
-			buttonPanel.setVisible(true);
-			
-			// Graphical validation
-			tablePanel.repaint();
-			validate();
+			refreshTable(false);
 		}
 		table.addRow(data);
 		updateTableSize();
@@ -208,23 +192,7 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	public void removeRows (int[] rows) {
 		table.removeRows(rows);
 		if (table.getData().size() == 0) {
-			// Reset the table panel to zero
-			tablePanel.removeAll();
-			
-			// Set layout gaps
-			((FlowLayout)(tablePanel.getLayout())).setHgap(0);
-			((FlowLayout)(tablePanel.getLayout())).setVgap(0);
-			
-			// No information label
-			tablePanel.add(new JLabel("No information available"));
-			
-			// Table is not visible so other panel must not be visible
-			tableHeader.setVisible(false);
-			buttonPanel.setVisible(false);
-			
-			// Graphical validation
-			tablePanel.repaint();
-			validate();
+			refreshTable(true);
 		}
 		updateTableSize();
 	}
@@ -236,19 +204,19 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	public void updateTableSize () {
 		// Update the column size of the table 
 		table.updateColumnSize();
-		
+
 		// Reset the table header panel to zero
 		tableHeader.removeAll();
-		
+
 		// Set layout gaps
 		((FlowLayout)(tableHeader.getLayout())).setHgap(0);
 		((FlowLayout)(tableHeader.getLayout())).setVgap(0);
-		
+
 		// Gets the header panel
 		@SuppressWarnings("unchecked")
 		String[] columnNames = ((ContentTableModel<K>)table.getModel()).getColumnNames();
 		tableHeader.add(Utils.getTableHeaderPanel(columnNames, table.getColumnSize()));
-		
+
 		// Graphical validation
 		tableHeader.repaint();
 		validate();
@@ -273,7 +241,56 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 		jbDeleteRows.addActionListener((ActionListener) el);
 	}
 
-	
+
+	/**
+	 * Refresh the panel:
+	 * - set to an "unselected" state the editing panel (empty)
+	 * - refresh the content pane (table, headers, buttons)
+	 */
+	public void refresh () {
+		if (table.getData().size() == 0) {
+			refreshTable(true);
+		} else {
+			refreshTable(false);
+		}
+	}
+
+
+	/**
+	 * Refreshes the table panel adding the table or a label wether the table is empty
+	 * If the table is signaled as empty, a label is shown, if not, the table is shown.
+	 * @param isEmpty signal for showing the table
+	 */
+	private void refreshTable (boolean isEmpty) {
+
+		// Reset the table panel to zero
+		tablePanel.removeAll();
+
+		// Set layout gaps
+		((FlowLayout)(tablePanel.getLayout())).setHgap(0);
+		((FlowLayout)(tablePanel.getLayout())).setVgap(0);
+
+		if (isEmpty) {
+			// No information label
+			tablePanel.add(new JLabel("No information available"));
+		} else {
+			// Add the table to the panel
+			tablePanel.add(table);
+		}
+
+		// Table is not visible so other panel must not be visible
+		tableHeader.setVisible(!isEmpty);
+		buttonPanel.setVisible(!isEmpty);
+
+		// Graphical validation
+		tablePanel.repaint();
+		
+		updateTableSize();
+		
+		validate();
+	}
+
+
 	/**
 	 * This methods enables or disables buttons whether a row is selected
 	 */
@@ -290,26 +307,26 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 			} else {
 				enableUp = true;
 			}
-			
+
 			int dataSize = table.getData().size();
 			if (selectedRows[selectedRows.length - 1] == dataSize - 1) {	// if the lowest selected row is the last one in the table
 				enableDown = false;						// move down button cannot be enable
 			} else {
 				enableDown = true;
 			}
-			
+
 		} else {										// if no row is selected
 			enableDelete = false;						// buttons must be disabled
 			enableUp = false;
 			enableDown = false;
 		}
-		
+
 		// Enable/Disable buttons
 		jbDeleteRows.setEnabled(enableDelete);
 		jbMoveRowsUp.setEnabled(enableUp);
 		jbMoveRowsDown.setEnabled(enableDown);
 	}
-	
+
 
 	/**
 	 * @return the jbDeleteRows
@@ -327,24 +344,24 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 		} else if (button.equals(jbMoveRowsUp)) {
 			// Move row(s) to the top of the table
 			table.moveRowsUp();
-			
+
 			// Graphical validation
 			tablePanel.repaint();
 			validate();
 		} else if (button.equals(jbMoveRowsDown)) {
 			// Move row(s) to the bottom of the table
 			table.moveRowsDown();
-			
+
 			// Graphical validation
 			tablePanel.repaint();
 			validate();
 		}
-		
+
 		// Update enable state of all buttons
 		updateEnableButtons();
 	}
-	
-	
+
+
 	/**
 	 * Reset the panel to an "empty" state
 	 */

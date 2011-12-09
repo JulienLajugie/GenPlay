@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
@@ -72,7 +72,6 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadStripes;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAMultiGenomeProperties;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
@@ -238,7 +237,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
 		getActionMap().put(ATASetHeight.ACTION_KEY, new ATASetHeight());
 		getActionMap().put(ATASetVerticalLineCount.ACTION_KEY, new ATASetVerticalLineCount());
-		getActionMap().put(ATAMultiGenomeProperties.ACTION_KEY, new ATAMultiGenomeProperties());
 		// add empty list actions
 		getActionMap().put(ETALoadBinListTrack.ACTION_KEY, new ETALoadBinListTrack());
 		getActionMap().put(ETALoadFromDAS.ACTION_KEY, new ETALoadFromDAS());
@@ -400,7 +398,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param stripesList {@link StripesData} (can be null)
 	 * @param filtersList {@link FiltersData} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<IDFilter> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);

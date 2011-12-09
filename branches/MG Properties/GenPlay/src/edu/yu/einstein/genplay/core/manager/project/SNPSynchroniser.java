@@ -228,7 +228,7 @@ public class SNPSynchroniser implements Serializable {
 		}
 	}
 
-	
+
 	@SuppressWarnings("unused") // use for development only
 	private void show (Variant variant) {
 		String info = variant.getGenomePosition() + " Ref (";
@@ -305,6 +305,27 @@ public class SNPSynchroniser implements Serializable {
 			currentChromosome = chromosome;
 		}
 	}
+	
+	
+	/**
+	 * Checks if SNPs has to be removed from the list or not.
+	 * @param chromosome	the chromosome
+	 * @return 				true if SNPs must be removed, false otherwise
+	 */
+	public boolean hasToRemoveSNPs (Chromosome chromosome) {
+		if (!currentChromosome.equals(chromosome)) {
+			List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
+			chromosomeList.add(currentChromosome);
+
+			for (String genomeName: activeGenome.keySet()) {
+				boolean isActive = activeGenome.get(genomeName);
+				if (isActive) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 
 	/**
@@ -365,8 +386,9 @@ public class SNPSynchroniser implements Serializable {
 	 * Disable a gnome for SNP will delete its SNP information.
 	 * @param previousGenomes 	the previous required genomes list
 	 * @param nextGenomes		the new required genomes list
+	 * @return true if the counters update involve to compute the SNP synchroniser
 	 */
-	public void updateCounters (List<String> previousGenomes, List<String> nextGenomes) {
+	public boolean updateCounters (List<String> previousGenomes, List<String> nextGenomes) {
 		if (previousGenomes != null) {
 
 			// If genomes were present in the last multi genome stripe settings but not in the new one,
@@ -391,8 +413,35 @@ public class SNPSynchroniser implements Serializable {
 				increaseCounter(name);
 			}
 		}
+		return mustBeCompute();
 	}
-	
+
+
+	/**
+	 * Checks if the SNP Synchronizer has to be compute.
+	 * It is the same method as the compute method but perform any changes.
+	 * @return true if the the synchronizer has to be compute.
+	 */
+	private boolean mustBeCompute () {
+		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
+		chromosomeList.add(currentChromosome);
+
+		for (String genomeName: activeGenome.keySet()) {
+			boolean isActive = activeGenome.get(genomeName);
+			int counter = genomeCounter.get(genomeName);
+
+			// if the genome is not active but its counter is positive
+			if (!isActive && counter > 0) {
+				return true;
+			}
+			// if the genome is active but its counter is null
+			else if (isActive && counter == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	/**
 	 * Gathers genome names required in the project and present in the VCF file.
@@ -428,7 +477,7 @@ public class SNPSynchroniser implements Serializable {
 		}
 		return false;
 	}
-	
+
 
 	/**
 	 * @return the currentChromosome

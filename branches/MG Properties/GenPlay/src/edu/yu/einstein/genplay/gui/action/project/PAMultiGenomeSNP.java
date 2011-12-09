@@ -49,11 +49,11 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		"Performs the multi genome algorithm for SNPs"; 					// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 		// mnemonic key
 	private static		 String 			ACTION_NAME = "SNPs loading";	// action name
-	
+
 	private Chromosome			newChromosome;
 	private List<String>		previousRequiredGenomes;
 	private List<String>		newRequiredGenomes;
-	
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -75,57 +75,50 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected Track<?>[] processAction() throws Exception {
-		
 		ProjectManager projectManager = ProjectManager.getInstance();
-		GenomeSynchronizer genomeSynchronizer = projectManager.getGenomeSynchronizer();
-		SNPSynchroniser snpSynchronizer = genomeSynchronizer.getSnpSynchroniser();
-		
+
 		// Checks if the project is multi-genome and if SNPs have been requested
 		if (projectManager.isMultiGenomeProject()) {
-			
-			// Notifies the action
-			notifyActionStart(ACTION_NAME, 1, false);
-			
+
+			GenomeSynchronizer genomeSynchronizer = projectManager.getGenomeSynchronizer();
+			SNPSynchroniser snpSynchronizer = genomeSynchronizer.getSnpSynchroniser();
+
 			boolean readyToCompute = false;
-			
+			boolean hasToRemoveSNP = false;
+
 			if (newChromosome != null) {
-				readyToCompute = true;
-				snpSynchronizer.removeChromosomeSNPs(newChromosome);
+				hasToRemoveSNP = snpSynchronizer.hasToRemoveSNPs(newChromosome);
+				if (hasToRemoveSNP) {
+					readyToCompute = true;
+				}
 			} else if (newRequiredGenomes != null) {
-				readyToCompute = true;
-				snpSynchronizer.updateCounters(previousRequiredGenomes, newRequiredGenomes);
+				readyToCompute = snpSynchronizer.updateCounters(previousRequiredGenomes, newRequiredGenomes);
 			}
-			
+
 			if (readyToCompute) {
+				// Notifies the action
+				notifyActionStart(ACTION_NAME, 1, false);
+
+				if (hasToRemoveSNP) {
+					snpSynchronizer.removeChromosomeSNPs(newChromosome);
+				}
+
 				snpSynchronizer.compute();
 				genomeSynchronizer.SNPhaveBeenComputed();
-			} else {
-				System.err.println("SNPs synchronization cannot be performed because parameters have not been set.");
 			}
-			
-		} else {
-			// Generates error if the project is not multi-genome
-			System.err.println("SNPs synchronization cannot be performed because the project does not seem to be multi-genome.");
+
 		}
-		
+
 		return null;
 	}
 
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
-		
-		/*ProjectManager projectManager = ProjectManager.getInstance();
-		GenomeSynchronizer genomeSynchronizer = projectManager.getGenomeSynchronizer();
-		SNPSynchroniser snpSynchronizer = genomeSynchronizer.getSnpSynchroniser();
-		
-		Chromosome chromosomePerformed = snpSynchronizer.getCurrentChromosome();
-		genomeSynchronizer.getChromosomeInformation(projectManager.getAssembly().getDisplayName(), chromosomePerformed).resetIndexList();*/
-		
-		ProjectManager.getInstance().getGenomeSynchronizer().getGenomesInformation().resetListIndexes();
-		
-		refreshTracks();
-		
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			ProjectManager.getInstance().getGenomeSynchronizer().getGenomesInformation().resetListIndexes();
+			refreshTracks();
+		}
 	}
 
 
@@ -152,7 +145,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		this.newRequiredGenomes = requiredGenomes;
 	}	
 
-	
+
 	/**
 	 * Initializes attributes used for multi genome project.
 	 */
@@ -162,5 +155,5 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			track.refreshDisplayableVariantList();
 		}
 	}
-	
+
 }

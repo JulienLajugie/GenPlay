@@ -57,6 +57,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3713110227164397033L;
+	
 	/** Return value when OK has been clicked. */
 	public static final 	int 			APPROVE_OPTION 		= 0;
 	/** Return value when Cancel has been clicked. */
@@ -307,7 +308,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		jbOk.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbOkClicked();
+				approved = APPROVE_OPTION;
+				setVisible(false);
 			}
 		});
 		
@@ -332,15 +334,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	
 	
 	/**
-	 * Method called when the button ok is clicked
-	 */
-	protected void jbOkClicked() {
-		approved = APPROVE_OPTION;
-		setVisible(false);
-	}
-	
-	
-	/**
 	 * Set the settings panel with specific values
 	 * @param settings
 	 */
@@ -350,11 +343,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		
 		// Filter settings panel
 		filtersPanel.setSettings(settings.getFilterSettings().getFiltersList());
-		filtersPanel.clearSelection();
+		filtersPanel.refresh();
 		
 		// Stripes settings panel
 		stripesPanel.setSettings(settings.getStripeSettings().getStripesList());
-		stripesPanel.clearSelection();
+		stripesPanel.refresh();
 	}
 	
 	

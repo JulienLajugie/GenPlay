@@ -157,6 +157,8 @@ public class ListDialog<K> extends JDialog {
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				scrollDimension = scrollPane.getSize();
+				approved = CANCEL_OPTION;
 				setVisible(false);				
 			}
 		});

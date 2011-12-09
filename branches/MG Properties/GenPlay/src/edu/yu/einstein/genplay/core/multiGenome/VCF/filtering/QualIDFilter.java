@@ -28,26 +28,23 @@ import java.io.ObjectOutputStream;
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class NumberIDFilter implements NumberIDFilterInterface {
+public class QualIDFilter implements NumberIDFilterInterface {
 
 	/** Generated default serial ID*/
-	private static final long serialVersionUID = 6939178664986604958L;
+	private static final long serialVersionUID = 3099777763400649421L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-
-	private VCFHeaderType 			ID;				// ID of the filter
-	private String					category;		// category of the filter (ALT QUAL FILTER INFO FORMAT)
+	
 	private InequalityOperators		inequation01;
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
 	private Float 					value02;
 
-
+	
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -55,8 +52,6 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(ID);
-		out.writeObject(category);
 		out.writeObject(inequation01);
 		if (inequation02 != null) {
 			out.writeObject(inequation02);
@@ -76,8 +71,6 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		ID = (VCFHeaderType) in.readObject();
-		category = (String) in.readObject();
 		inequation01 = (InequalityOperators) in.readObject();
 		try {
 			inequation02 = (InequalityOperators) in.readObject();
@@ -91,22 +84,22 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 			value02 = null;
 		}
 	}
-
+	
 
 	@Override
 	public boolean passFilter(String genomeFullName, Variant variant) {
-		Float value = getValue(genomeFullName, variant);
+		Float value = variant.getQuality().floatValue();
 		boolean result01 = false;
 		boolean result02 = false;
-
+		
 		if (value01 != null) {
 			result01 = isValid(inequation01, value01, value);
 		}
-
+		
 		if (value02 != null) {
 			result02 = isValid(inequation02, value02, value);
 		}
-
+		
 		// non cumulative treatment
 		if (result01 || result02) {
 			return true;
@@ -118,14 +111,12 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 
 	@Override
 	public VCFHeaderType getID() {
-		return ID;
+		return null;
 	}
 
 
 	@Override
-	public void setID(VCFHeaderType id) {
-		this.ID = id;
-	}
+	public void setID(VCFHeaderType id) {}
 
 
 	@Override
@@ -185,7 +176,7 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 			text += " and ";
 			text += "x " + inequation02 + " " + value02;
 		}
-
+		
 		return text;
 	}
 
@@ -193,10 +184,6 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	@Override
 	public String getErrors() {
 		String error = "";
-
-		if (ID == null) {
-			error += "ID missing;";
-		}
 
 		if (inequation01 == null || inequation01.equals(" ")) {
 			error += "First inequation invalid;";
@@ -221,40 +208,7 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 		}
 	}
 
-
-	/**
-	 * Get the value associated to the ID in the variant information.
-	 * @param genomeFullName full genome name
-	 * @param variant			variant for retrieving information
-	 * @return					the value of the ID for specific variant and genome (if apply) or null if not found
-	 */
-	private Float getValue (String genomeFullName, Variant variant) {
-		Object result = null;
-		if (category.equals("ALT")) {
-			System.out.println("NumberIDFilter getValue ALT not supported");
-
-		} else if (category.equals("QUAL")) {
-			result = variant.getPositionInformation().getQuality();
-
-		} else if (category.equals("FILTER")) {
-			System.out.println("NumberIDFilter getValue FILTER not supported");
-
-		} else if (category.equals("INFO")) {
-			result = variant.getPositionInformation().getInfoValue(ID.getId());
-
-		} else if (category.equals("FORMAT")) {
-			String rawName = FormattedMultiGenomeName.getRawName(genomeFullName);
-			result = variant.getPositionInformation().getFormatValue(rawName, ID.getId());
-		}
-
-		if (result != null) {
-			return Float.parseFloat(result.toString());
-		}
-
-		return null;
-	}
-
-
+	
 	/**
 	 * Compare to float in order to define if they correlate the inequation.
 	 * @param inequation		an inequation
@@ -264,13 +218,13 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	 */
 	private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
 		boolean valid = false;
-
+		
 		if (valueToCompare < 0) {
 			valueToCompare = valueToCompare * -1;
 		}
-
+		
 		int result = valueToCompare.compareTo(referenceValue);
-
+		
 		if (inequation == InequalityOperators.EQUAL) {
 			if (result == 0) {
 				valid = true;
@@ -292,21 +246,18 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 				valid = true;
 			}
 		}
-
+		
 		return valid;
 	}
-
-
-
+	
+	
 	@Override
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
-
+	public void setCategory(String category) {}
+	
+	
 	@Override
 	public String getCategory () {
-		return category;
+		return null;
 	}
 
 }

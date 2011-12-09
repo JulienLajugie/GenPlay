@@ -19,16 +19,17 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.allTrack;
+package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.ActionMap;
+import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
@@ -42,31 +43,40 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class ATAMultiGenomeProperties extends TrackListAction {
+public final class PAMultiGenomeProperties extends TrackListAction {
 
 	private static final 	long serialVersionUID = -6475180772964541278L; 			// generated ID
-	private static final 	String ACTION_NAME = "Multi Genome Properties"; 		// action name
+	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name
 	private static final 	String DESCRIPTION = "Shows the project properties"; 	// tooltip
-	private static final 	int 	MNEMONIC = KeyEvent.VK_M; 						// mnemonic key
+	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
+	
 	private 				PropertiesDialog 	dialog;								// the dialog properties
-	private					MGDisplaySettings 	settings;
+	private					MGDisplaySettings 	settings;							// the multi genome settings object shortcut
 
+	
+	/**
+	 * action accelerator {@link KeyStroke}
+	 */
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK); 
+	
+	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "ATAMultiGenomeProperties";
+	public static final String ACTION_KEY = "PAMultiGenomeProperties";
 
 
 	/**
-	 * Creates an instance of {@link ATAMultiGenomeProperties}
+	 * Creates an instance of {@link PAMultiGenomeProperties}
 	 */
-	public ATAMultiGenomeProperties() {
+	public PAMultiGenomeProperties() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		settings = MGDisplaySettings.getInstance();
+		System.out.println("lalalala");
 	}
 
 
@@ -102,7 +112,7 @@ public final class ATAMultiGenomeProperties extends TrackListAction {
 		
 		Track<?>[] tracks = getTrackList().getTrackList();
 		for (Track<?> track: tracks) {
-			List<IDFilter> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
+			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
 			track.updateMultiGenomeInfomration(stripesList, filtersList);
 		}

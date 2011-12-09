@@ -19,62 +19,62 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
+package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
-import java.util.Map;
+import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 
 /**
- * This class declares methods required for advanced VCF type field:
- * - INFO
- * - FORMAT
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VCFHeaderAdvancedType extends VCFHeaderType {
-	
-	
-	/**
-	 * @return the number
-	 */
-	public String getNumber();
+public interface NumberIDFilterInterface extends IDFilterInterface {
 
 	
 	/**
-	 * @param number the number to set
+	 * @return the inequation01
 	 */
-	public void setNumber(String number);
+	public InequalityOperators getInequation01();
 
-	
-	/**
-	 * @return the type
-	 */
-	public Class<?> getType();
 
-	
 	/**
-	 * @param type the type to set
+	 * @param inequation01 the inequation01 to set
 	 */
-	public void setType(Class<?> type);
-	
-	
+	public void setInequation01(InequalityOperators inequation01);
+
+
 	/**
-	 * Checks if the header ID accepts more elements
-	 * @return true if it can have more elements, false otherwise.
+	 * @return the inequation02
 	 */
-	public boolean acceptMoreElements ();
-	
-	
+	public InequalityOperators getInequation02();
+
+
 	/**
-	 * Add an element to the list of element of the header ID
-	 * @param element the element
+	 * @param inequation02 the inequation02 to set
 	 */
-	public void addElement (Object element);
-	
-	
+	public void setInequation02(InequalityOperators inequation02);
+
+
 	/**
-	 * @return the values found for this header ID
+	 * @return the value01
 	 */
-	public Map<Object, Integer> getElements ();
-	
-	
+	public Float getValue01();
+
+
+	/**
+	 * @param value01 the value01 to set
+	 */
+	public void setValue01(Float value01);
+
+
+	/**
+	 * @return the value02
+	 */
+	public Float getValue02();
+
+
+	/**
+	 * @param value02 the value02 to set
+	 */
+	public void setValue02(Float value02);
+
 }

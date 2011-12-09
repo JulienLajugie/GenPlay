@@ -130,7 +130,7 @@ public class NavigationPanel extends JPanel{
 	/**
 	 * @return the height of the panel
 	 */
-	protected int getPanelHeight () {
+	protected static int getPanelHeight () {
 		return NavigationPanel.HEIGHT;
 	}
 

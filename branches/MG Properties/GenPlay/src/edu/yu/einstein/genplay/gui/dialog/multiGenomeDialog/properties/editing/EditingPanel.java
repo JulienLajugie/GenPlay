@@ -95,9 +95,11 @@ public abstract class EditingPanel<K> extends JPanel {
 	
 	
 	/**
-	 * Reset the panel to an "empty" state
+	 * Refresh the panel:
+	 * - set to an "unselected" state the editing panel (empty)
+	 * - refresh the content pane (table, headers, buttons)
 	 */
-	public abstract void clearSelection ();
+	public abstract void refresh ();
 	
 	
 	/**
@@ -146,8 +148,6 @@ public abstract class EditingPanel<K> extends JPanel {
 						listModel.addElement(track);
 					}
 					selectedTracks.setModel(listModel);
-				} else {
-					System.out.println("null");
 				}
 			}
 		});
@@ -286,4 +286,5 @@ public abstract class EditingPanel<K> extends JPanel {
 	protected Component getCurrentInstance() {
 		return this;
 	}
+
 }

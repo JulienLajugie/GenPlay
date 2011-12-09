@@ -71,15 +71,7 @@ public abstract class GlobalPanel<K, L> extends JPanel implements ActionListener
 		add(editingPanel, BorderLayout.WEST);
 		add(scrollContentPane, BorderLayout.CENTER);
 	}
-	
-	
-	/**
-	 * Reset the panel to an "empty" state
-	 */
-	public void clearSelection () {
-		((EditingPanel<?>) editingPanel).clearSelection();
-	}
-	
+
 	
 	/**
 	 * @return the editing panel
@@ -96,6 +88,18 @@ public abstract class GlobalPanel<K, L> extends JPanel implements ActionListener
 	@SuppressWarnings("unchecked")
 	protected L getContentPanel () {
 		return (L)contentPanel;
+	}
+	
+
+	/**
+	 * Refresh the panel:
+	 * - set to an "unselected" state the editing panel (empty)
+	 * - refresh the content pane (table, headers, buttons)
+	 */
+	@SuppressWarnings("unchecked") // Unchecked? This is checked with K and L parameters!
+	public void refresh () {
+		((EditingPanel<K>) editingPanel).refresh();
+		((ContentPanel<L>) contentPanel).refresh();
 	}
 	
 	

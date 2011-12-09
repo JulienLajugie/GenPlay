@@ -23,6 +23,10 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -35,8 +39,12 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesData {
+public class StripesData implements Serializable {
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 2604583442089053519L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
 	/** Index used for Genome column */
 	public static final int GENOME_INDEX 	= 0;
 	/** Index used for variant column */
@@ -50,6 +58,36 @@ public class StripesData {
 	private List<Color> 		colorList;			// list of color
 	private Track<?>[] 			trackList;			// list of track
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genome);
+		out.writeObject(variationTypeList);
+		out.writeObject(colorList);
+		out.writeObject(trackList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genome = (String) in.readObject();
+		variationTypeList = (List<VariantType>) in.readObject();
+		colorList = (List<Color>) in.readObject();
+		trackList = (Track[]) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link StripesData}
@@ -179,6 +217,7 @@ public class StripesData {
 	}
 
 
+	@Override
 	public String toString () {
 		String info = "";
 		info += genome;

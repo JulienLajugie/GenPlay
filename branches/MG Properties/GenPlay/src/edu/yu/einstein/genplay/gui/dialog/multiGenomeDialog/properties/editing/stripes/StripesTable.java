@@ -60,6 +60,7 @@ public class StripesTable extends ContentTable<StripesData> {
 			newData.add(rowData);
 		}
 		((StripesTableModel)getModel()).setData(newData);
+		updateColumnSize();
 	}
 
 
@@ -69,7 +70,7 @@ public class StripesTable extends ContentTable<StripesData> {
 		FontMetrics fm = MainFrame.getInstance().getFontMetrics(MainFrame.getInstance().getFont());
 		String[] columnNames = ((StripesTableModel)getModel()).getColumnNames();
 
-		// Sets column width
+		// Scan all columns
 		for (int i = 0; i < columnNumber; i++) {
 			int currentWidth = fm.stringWidth(columnNames[i].toString()) + 10;
 
@@ -95,6 +96,7 @@ public class StripesTable extends ContentTable<StripesData> {
 				}
 			}
 
+			// Sets column width
 			getColumnModel().getColumn(i).setPreferredWidth(currentWidth);
 		}
 	}

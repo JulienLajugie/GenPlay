@@ -381,7 +381,7 @@ public class MultiTrackChooser extends JDialog {
 			for (Track<?> currentTrack: selectedTracks) {
 				dlmAvailableTracks.addElement(currentTrack);
 				dlmSelectedTracks.removeElement(currentTrack);
-			}			
+			}
 		}		
 	}
 

@@ -108,6 +108,7 @@ public class Launcher {
 			load.setSkipFileSelection(true);
 			load.actionPerformed(null);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
 			System.out.println(file.getPath());
 		}

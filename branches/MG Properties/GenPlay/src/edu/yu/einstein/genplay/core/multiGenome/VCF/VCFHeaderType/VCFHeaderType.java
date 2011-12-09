@@ -34,6 +34,10 @@ import java.io.Serializable;
 public interface VCFHeaderType extends Serializable {
 
 	
+	/** Number maximum of elements an ID can have */
+	public static final int ELEMENT_LIMIT = 10;
+	
+	
 	/**
 	 * @return the id
 	 */

@@ -21,10 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.MGDisplaySettings;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -32,11 +36,38 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGFilterSettings {
-
+public class MGFilterSettings implements Serializable {
+	
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -4120007365169339324L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
 	private List<FiltersData> filtersList;	// List of filters
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(filtersList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		filtersList = (List<FiltersData>) in.readObject();
+	}
+	
 	
 	/**
 	 * Constructor of {@link MGFilterSettings}
@@ -66,8 +97,8 @@ public class MGFilterSettings {
 	 * @param track the track
 	 * @return		its list of filters
 	 */
-	public List<IDFilter> getFiltersForTrack (Track<?> track) {
-		List<IDFilter> list = new ArrayList<IDFilter>();
+	public List<IDFilterInterface> getFiltersForTrack (Track<?> track) {
+		List<IDFilterInterface> list = new ArrayList<IDFilterInterface>();
 		
 		for (FiltersData data: filtersList) {
 			Track<?>[] trackList = data.getTrackList();

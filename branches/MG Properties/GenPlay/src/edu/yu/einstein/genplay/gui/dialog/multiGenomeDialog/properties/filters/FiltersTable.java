@@ -53,7 +53,11 @@ public class FiltersTable extends ContentTable<FiltersData> {
 		for (int i = 0; i < data.size(); i++) {
 			FiltersData rowData = new FiltersData();
 			rowData.setReader(data.get(i).getReader());
-			rowData.setId(data.get(i).getId());
+			if (data.get(i).getId() != null) {
+				rowData.setId(data.get(i).getId());
+			} else {
+				rowData.setNonIdName(data.get(i).getNonIdName());
+			}
 			rowData.setFilter(data.get(i).getFilter());
 			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
@@ -68,7 +72,7 @@ public class FiltersTable extends ContentTable<FiltersData> {
 		FontMetrics fm = MainFrame.getInstance().getFontMetrics(MainFrame.getInstance().getFont());
 		String[] columnNames = ((FiltersTableModel)getModel()).getColumnNames();
 
-		// Sets column width
+		// Scan columns
 		for (int i = 0; i < columnNumber; i++) {
 			int currentWidth = fm.stringWidth(columnNames[i].toString()) + 10;
 
@@ -92,6 +96,7 @@ public class FiltersTable extends ContentTable<FiltersData> {
 					break;
 				}
 
+				// Sets column width
 				if (width > currentWidth) {
 					currentWidth = width;
 				}

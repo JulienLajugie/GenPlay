@@ -150,7 +150,7 @@ public class PanelInformation extends JPanel {
 	/**
 	 * @return the height of the panel
 	 */
-	protected int getPanelHeight () {
+	protected static int getPanelHeight () {
 		return HEADER_HEIGHT + SCROLL_HEIGHT;
 	}
 

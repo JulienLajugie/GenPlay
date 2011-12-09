@@ -31,8 +31,11 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.AltFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.FilterFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.StringIDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.StringIDFilterInterface;
 
 /**
  * @author Nicolas Fourel
@@ -42,12 +45,21 @@ public class IDStringEditor implements IDEditor {
 
 	private final static String PRESENT 	= "must contains";
 	private final static String ABSENT 		= "must not contains";
-	
-	
-	private VCFHeaderType 	id;				// Header ID
-	private String			category;	// category of the filter
-	private JComboBox		jcOption;		// Combo box for selecting wether the value must be present or not
-	private JComboBox		jcValue;		// Editable combo box for selecting the value
+
+
+	private VCFHeaderType 	id;					// Header ID
+	private String			category;			// category of the filter
+	private List<String>	defaultElements;
+	private JComboBox		jcOption;			// Combo box for selecting wether the value must be present or not
+	private JComboBox		jcValue;			// Editable combo box for selecting the value
+
+
+	/**
+	 * Constructor of {@link IDStringEditor}
+	 */
+	public IDStringEditor () {
+		defaultElements = new ArrayList<String>();
+	}
 
 
 	@Override
@@ -82,16 +94,26 @@ public class IDStringEditor implements IDEditor {
 
 
 	@Override
-	public IDFilter getFilter() {
-		StringIDFilter filter = new StringIDFilter();
-		filter.setID(id);
-		filter.setCategory(category);
+	public IDFilterInterface getFilter() {
+		StringIDFilterInterface filter = null;
+		
+		if (category.equals("ALT") && id == null) {
+			filter = new AltFilter();
+		} else if (category.equals("FILTER") && id == null) {
+			filter = new FilterFilter();
+		} else {
+			filter = new StringIDFilter();
+			filter.setID(id);
+			filter.setCategory(category);
+		}
+		
 		filter.setValue(jcValue.getSelectedItem().toString());
 		if (jcOption.getSelectedItem().toString().equals(PRESENT)) {
 			filter.setRequired(true);
 		} else {
 			filter.setRequired(false);
 		}
+		
 		return filter;
 	}
 
@@ -99,6 +121,12 @@ public class IDStringEditor implements IDEditor {
 	@Override
 	public void setID(VCFHeaderType id) {
 		this.id = id;
+	}
+	
+	
+	@Override
+	public VCFHeaderType getID () {
+		return id;
 	}
 
 
@@ -122,7 +150,7 @@ public class IDStringEditor implements IDEditor {
 	private JComboBox getValueBox () {
 		JComboBox box = new JComboBox();
 		DefaultComboBoxModel model = (DefaultComboBoxModel) box.getModel();
-		for (String s: getTemporaryValues()) {
+		for (String s: defaultElements) {
 			model.addElement(s);
 		}
 		box.setEditable(true);
@@ -130,35 +158,53 @@ public class IDStringEditor implements IDEditor {
 	}
 
 
-	/**
-	 * FOR DEVELOPMENT
-	 * @return a temporary list of values
-	 */
-	private List<String> getTemporaryValues () {
-		List<String> list = new ArrayList<String>();
-		for (int i = 1; i <= 10; i++) {
-			list.add("Temporary value " + i);
-		}
-		return list;
-	}
-
-
 	@Override
-	public void initializesPanel(IDFilter filter) {
-		StringIDFilter stringFilter = (StringIDFilter) filter;
-		if (stringFilter.isRequired()) {
+	public void initializesPanel(IDFilterInterface filter) {
+		boolean isRequired = false;
+		String value = null;
+		if (filter instanceof StringIDFilter) {
+			StringIDFilter castFilter = (StringIDFilter) filter;
+			isRequired = castFilter.isRequired();
+			value= castFilter.getValue();
+		} else if (filter instanceof AltFilter) {
+			AltFilter castFilter = (AltFilter) filter;
+			isRequired = castFilter.isRequired();
+			value= castFilter.getValue();
+		} else if (filter instanceof FilterFilter) {
+			FilterFilter castFilter = (FilterFilter) filter;
+			isRequired = castFilter.isRequired();
+			value= castFilter.getValue();
+		} else {
+			System.err.println("initializesPanel");
+		}
+		
+		if (isRequired) {
 			jcOption.setSelectedItem(PRESENT);
 		} else {
 			jcOption.setSelectedItem(ABSENT);
 		}
-		((DefaultComboBoxModel)jcValue.getModel()).addElement(stringFilter.getValue());
-		jcValue.setSelectedItem(stringFilter.getValue());
+		((DefaultComboBoxModel)jcValue.getModel()).addElement(value);
+		jcValue.setSelectedItem(value);
+	}
+
+
+	@Override
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	
 	@Override
-	public void setCategory(String category) {
-		this.category = category;
+	public String getCategory() {
+		return category;
+	}
+
+
+	/**
+	 * @param defaultElements the defaultElements to set
+	 */
+	public void setDefaultElements(List<String> defaultElements) {
+		this.defaultElements = defaultElements;
 	}
 
 }

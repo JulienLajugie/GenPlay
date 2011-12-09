@@ -57,6 +57,7 @@ public class ToolTipStripeDialog extends JDialog {
 	private JPanel infoPanel;			// panel containing the INFO field information of the VCF
 	private JPanel formatPanel;			// panel containing the FORMAT field information of the VCF
 	private JPanel navigationPanel;		// panel to move forward/backward
+	private boolean first;
 
 
 	/**
@@ -70,6 +71,7 @@ public class ToolTipStripeDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 		setTitle("Variant properties");
+		first = true;
 	}
 
 
@@ -85,7 +87,7 @@ public class ToolTipStripeDialog extends JDialog {
 		setLocation(X, Y);
 		setVisible(true);
 	}
-	
+
 
 	/**
 	 * Initializes the content of the dialog box according to a variant
@@ -103,28 +105,46 @@ public class ToolTipStripeDialog extends JDialog {
 			variantFormat = new VariantFormat(displayableVariant.getNativeVariant());
 		}
 
-		headerPanel = new GlobalInformationPanel(displayableVariant);
-		infoPanel = variantInfo.getPane();
-		formatPanel = variantFormat.getPane();
-		navigationPanel = new NavigationPanel(this);
-
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP);
 		setLayout(layout);
 
-		add(headerPanel, 0);
-		add(infoPanel, 1);
-		add(formatPanel, 2);
-		add(navigationPanel, 3);
+		if (first) {
+			headerPanel = new JPanel();
+			infoPanel = new JPanel();
+			formatPanel = new JPanel();
+			navigationPanel = new JPanel();
 
-		int height = ((GlobalInformationPanel)headerPanel).getPanelHeight() +
-		((PanelInformation)infoPanel).getPanelHeight() +
-		((PanelInformation)formatPanel).getPanelHeight() +
-		((NavigationPanel)navigationPanel).getPanelHeight() +
-		(V_GAP * 11);
+			add(headerPanel);
+			add(infoPanel);
+			add(formatPanel);
+			add(navigationPanel);
+			first = false;
+		}
+		updatePanel(headerPanel, new GlobalInformationPanel(displayableVariant));
+		updatePanel(infoPanel, variantInfo.getPane());
+		updatePanel(formatPanel, variantFormat.getPane());
+		updatePanel(navigationPanel, new NavigationPanel(this));
+
+		int height = GlobalInformationPanel.getPanelHeight() +
+		PanelInformation.getPanelHeight() +
+		PanelInformation.getPanelHeight() +
+		NavigationPanel.getPanelHeight() +
+		(V_GAP * 11) + 40;
 		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, height);
 		setSize(dimension);
-		
+
 		validate();
+	}
+
+
+	/**
+	 * Updates a panel with another one
+	 * @param previousPanel	panel to update
+	 * @param newPanel		new panel
+	 */
+	private void updatePanel (JPanel previousPanel, JPanel newPanel) {
+		previousPanel.removeAll();
+		previousPanel.add(newPanel);
 	}
 
 

@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.GlobalPanel;
 
 /**
@@ -69,6 +70,18 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 	
 	
 	/**
+	 * Refresh the panel:
+	 * - set to an "unselected" state the editing panel (empty)
+	 * - refresh the content pane (table, headers, buttons)
+	 */
+	public void refresh () {
+		((EditingPanel<?>) editingPanel).refresh();
+		((FiltersContentPanel) contentPanel).refresh();
+		currentData = null;
+	}
+	
+	
+	/**
 	 * Set the filter panel with specific values
 	 * @param list list of data
 	 */
@@ -101,7 +114,7 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 		}
 
 		// Controls the vcf header id
-		if (data.getId() == null) {
+		if (data.getId() == null && data.getNonIdName() == null) {
 			errors += "Invalid ID selection\n";
 		}
 		
@@ -190,7 +203,7 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 			} else if (table.getSelectedRows().length > 1) {
 				// clear edit panel
 				currentData = null;
-				clearSelection();
+				refresh();
 			}
 		} else {															// if the click is not in the table
 			table.clearSelection();											// unselect all rows and columns

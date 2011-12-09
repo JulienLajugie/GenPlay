@@ -21,15 +21,48 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.MGDisplaySettings;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGVariousSettings {
-
+public class MGVariousSettings implements Serializable {
+	
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 8278562587807182382L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
 	private int 		transparency;	// Transparency of stripes
 	private boolean 	showLegend;		// Boolean that determines wether the legend must be shown or not
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(transparency);
+		out.writeBoolean(showLegend);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		transparency = in.readInt();
+		showLegend = in.readBoolean();
+	}
 	
 	
 	/**

@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -29,22 +33,59 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StringIDFilter implements IDFilter {
+public class StringIDFilter implements StringIDFilterInterface {
 
+	/** Generated default serial ID*/
+	private static final long serialVersionUID = -4601435986037527188L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
 	private VCFHeaderType 	ID;			// ID of the filter
 	private String			category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private String 			value;		// value of the filter
 	private boolean 		required;	// true if the value is required to pass the the filter
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		if (ID != null) {
+			out.writeObject(ID);
+		}
+		out.writeObject(category);
+		out.writeObject(value);
+		out.writeBoolean(required);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		try {
+			ID = (VCFHeaderType) in.readObject();
+		} catch (Exception e) {
+			ID = null;
+		}
+		category = (String) in.readObject();
+		value = (String) in.readObject();
+		required = in.readBoolean();
+	}
+	
+	
 	@Override
 	public boolean passFilter(String genomeFullName, Variant variant) {
 		String result = getValue(genomeFullName, variant);
-		
-		if (required && result != null) {
+		if (required && result != null || !required && result == null) {
 			return true;
 		}
-		
 		return false;
 	}
 
@@ -61,33 +102,25 @@ public class StringIDFilter implements IDFilter {
 	}
 
 
-	/**
-	 * @return the value
-	 */
+	@Override
 	public String getValue() {
 		return value;
 	}
 	
 
-	/**
-	 * @param value the value to set
-	 */
+	@Override
 	public void setValue(String value) {
 		this.value = value;
 	}
 
 	
-	/**
-	 * @return the required
-	 */
+	@Override
 	public boolean isRequired() {
 		return required;
 	}
 
 	
-	/**
-	 * @param required the required to set
-	 */
+	@Override
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
@@ -134,12 +167,6 @@ public class StringIDFilter implements IDFilter {
 			return error;
 		}
 	}
-
-
-	@Override
-	public void setCategory(String category) {
-		this.category = category;
-	}
 	
 	
 	/**
@@ -150,16 +177,7 @@ public class StringIDFilter implements IDFilter {
 	 */
 	private String getValue (String genomeFullName, Variant variant) {
 		String result = null;
-		if (category.equals("ALT")) {
-			System.out.println("StringIDFilter getValue ALT not supported");
-			
-		} else if (category.equals("QUAL")) {
-			System.out.println("StringIDFilter getValue QUAL not supported");
-			
-		} else if (category.equals("FILTER")) {
-			System.out.println("StringIDFilter getValue FILTER not supported");
-			
-		} else if (category.equals("INFO")) {
+		if (category.equals("INFO")) {
 			result = variant.getPositionInformation().getInfoValue(ID.getId()).toString();
 			
 		} else if (category.equals("FORMAT")) {
@@ -177,4 +195,17 @@ public class StringIDFilter implements IDFilter {
 		return result;
 	}
 
+	
+
+	@Override
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	
+	@Override
+	public String getCategory() {
+		return category;
+	}
+	
 }

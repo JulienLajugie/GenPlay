@@ -21,17 +21,26 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class FiltersData {
+public class FiltersData implements Serializable {
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 2767629722281248634L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
 	/** Index used for vcf file column */
 	public static final int VCF_FILE_INDEX 	= 0;
 	/** Index used for the vcf header id column */
@@ -41,11 +50,44 @@ public class FiltersData {
 	/** Index used for track column */
 	public static final int TRACK_INDEX 	= 3;
 
+
 	private VCFReader			reader;			// vcf reader
 	private VCFHeaderType 		id;				// vcf header id
-	private IDFilter			filter;			// filter value
+	private String				nonIDName;		// 
+	private IDFilterInterface	filter;			// filter value
 	private Track<?>[] 			trackList;		// list of track
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(reader);
+		out.writeObject(id);
+		out.writeObject(nonIDName);
+		out.writeObject(filter);
+		out.writeObject(trackList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		reader = (VCFReader) in.readObject();
+		id = (VCFHeaderType) in.readObject();
+		nonIDName = (String) in.readObject();
+		filter = (IDFilterInterface) in.readObject();
+		trackList = (Track[]) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link FiltersData}
@@ -53,6 +95,7 @@ public class FiltersData {
 	protected FiltersData() {
 		this.reader = null;
 		this.id = null;
+		this.nonIDName = null;
 		this.filter = null;
 		this.trackList = null;
 	}
@@ -66,22 +109,49 @@ public class FiltersData {
 	 * @param trackList		list of track
 	 */
 	protected FiltersData(VCFReader reader, VCFHeaderType id,
-			IDFilter filter, Track<?>[] trackList) {
+			IDFilterInterface filter, Track<?>[] trackList) {
 		this.reader = reader;
 		this.id = id;
+		this.nonIDName = null;
+		this.filter = filter;
+		this.trackList = trackList;
+	}
+
+
+	/**
+	 * Constructor of {@link FiltersData}
+	 * @param genome		name of the genome
+	 * @param variantList	list of variation
+	 * @param colorList		list of color
+	 * @param trackList		list of track
+	 */
+	protected FiltersData(VCFReader reader, String nonIDName,
+			IDFilterInterface filter, Track<?>[] trackList) {
+		this.reader = reader;
+		this.id = null;
+		this.nonIDName = nonIDName;
 		this.filter = filter;
 		this.trackList = trackList;
 	}
 
 
 	//////////////////// Setters
-	
+
 	/**
 	 * @param reader the reader to set
 	 */
 	protected void setReader(VCFReader reader) {
 		this.reader = reader;
 	}
+
+
+	/**
+	 * @param id the id to set
+	 */
+	protected void setNonIdName (String nonIDName) {
+		this.nonIDName = nonIDName;
+	}
+
 
 	/**
 	 * @param id the id to set
@@ -93,7 +163,7 @@ public class FiltersData {
 	/**
 	 * @param filter the filter to set
 	 */
-	protected void setFilter(IDFilter filter) {
+	protected void setFilter(IDFilterInterface filter) {
 		this.filter = filter;
 	}
 
@@ -114,6 +184,15 @@ public class FiltersData {
 		return reader;
 	}
 
+
+	/**
+	 * @return the id
+	 */
+	public String getNonIdName() {
+		return nonIDName;
+	}
+
+
 	/**
 	 * @return the id
 	 */
@@ -124,7 +203,7 @@ public class FiltersData {
 	/**
 	 * @return the filter
 	 */
-	public IDFilter getFilter() {
+	public IDFilterInterface getFilter() {
 		return filter;
 	}
 
@@ -137,19 +216,23 @@ public class FiltersData {
 
 
 	//////////////////// Getters for display
-	
+
 	/**
 	 * @return the genome
 	 */
 	public String getReaderForDisplay() {
 		return reader.getFile().getName();
 	}
-	
+
 	/**
 	 * @return the variantList
 	 */
 	public String getIDForDisplay() {
-		return id.getId();
+		if (id != null) {
+			return id.getId();
+		} else {
+			return nonIDName;
+		}
 	}
 
 	/**
@@ -158,7 +241,7 @@ public class FiltersData {
 	public String getFilterForDisplay() {
 		return filter.toStringForDisplay();
 	}
-	
+
 	/**
 	 * @return the trackList
 	 */

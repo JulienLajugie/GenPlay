@@ -27,20 +27,18 @@ import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class FlagIDFilter implements IDFilterInterface {
+public class FilterFilter implements StringIDFilterInterface {
 
 	/** Generated default serial ID*/
-	private static final long serialVersionUID = -2692600453534744380L;
+	private static final long serialVersionUID = -2473654708635102953L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
-	private VCFHeaderType 	ID;			// ID of the filter
-	private String			category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
+	private String			value;		// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private boolean 		required;	// true if the value is required to pass the the filter
 
 	
@@ -51,8 +49,7 @@ public class FlagIDFilter implements IDFilterInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(ID);
-		out.writeObject(category);
+		out.writeObject(value);
 		out.writeBoolean(required);
 	}
 
@@ -65,16 +62,21 @@ public class FlagIDFilter implements IDFilterInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		ID = (VCFHeaderType) in.readObject();
-		category = (String) in.readObject();
+		value = (String) in.readObject();
 		required = in.readBoolean();
 	}
 	
 
 	@Override
 	public boolean passFilter(String genomeFullName, Variant variant) {
-		Object value = getValue(genomeFullName, variant);
-		if (required && value != null) {
+		String result = variant.getFilter();
+		if (result != null) {
+			if (result.indexOf(value) == -1) {
+				result = null;
+			}
+		}
+		
+		if (required && result != null || !required && result == null) {
 			return true;
 		}
 		return false;
@@ -83,27 +85,33 @@ public class FlagIDFilter implements IDFilterInterface {
 
 	@Override
 	public VCFHeaderType getID() {
-		return ID;
+		return null;
 	}
 
 
 	@Override
-	public void setID(VCFHeaderType id) {
-		this.ID = id;
+	public void setID(VCFHeaderType id) {}
+	
+	
+	@Override
+	public String getValue() {
+		return value;
+	}
+	
+
+	@Override
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 
-	/**
-	 * @param required the required to set
-	 */
+	@Override
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
 
 
-	/**
-	 * @return the required
-	 */
+	@Override
 	public boolean isRequired() {
 		return required;
 	}
@@ -111,12 +119,13 @@ public class FlagIDFilter implements IDFilterInterface {
 
 	@Override
 	public String toStringForDisplay() {
-		String text = "must be ";
+		String text = "must ";
 		if (required) {
-			text += "present";
+			text += "contains ";
 		} else {
-			text += "absent";
+			text += "not contains ";
 		}
+		text += value;
 		return text;
 	}
 
@@ -125,8 +134,8 @@ public class FlagIDFilter implements IDFilterInterface {
 	public String getErrors() {
 		String error = "";
 		
-		if (ID == null) {
-			error += "ID missing;";
+		if (value == null) {
+			error += "Value missing;";
 		}
 		
 		try {
@@ -143,56 +152,15 @@ public class FlagIDFilter implements IDFilterInterface {
 			return error;
 		}
 	}
-	
-	
-	/**
-	 * Get the value associated to the ID in the variant information.
-	 * @param genomeFullName full genome name
-	 * @param variant			variant for retrieving information
-	 * @return					the value of the ID for specific variant and genome (if apply) or null if not found
-	 */
-	private Object getValue (String genomeFullName, Variant variant) {
-		Object result = null;
-		if (category.equals("ALT")) {
-			result = variant.getPositionInformation().getAlternative();
-			if (result != null) {
-				if (!result.toString().equals("<" + ID.getId() + ">")) {
-					result = null;
-				}
-			}
-			
-		} else if (category.equals("QUAL")) {
-			System.out.println("FlagIDFilter getValue QUAL not supported");
-			
-		} else if (category.equals("FILTER")) {
-			result = variant.getPositionInformation().getFilter();
-			if (result != null) {
-				if (!result.toString().equals(ID.getId())) {
-					result = null;
-				}
-			}
-			
-		} else if (category.equals("INFO")) {
-			result = variant.getPositionInformation().getInfoValue(ID.getId());
-			
-		} else if (category.equals("FORMAT")) {
-			String rawName = FormattedMultiGenomeName.getRawName(genomeFullName);
-			result = variant.getPositionInformation().getFormatValue(rawName, ID.getId());
-		}
-		
-		return result;
-	}
 
 
 	@Override
-	public void setCategory(String category) {
-		this.category = category;
-	}
+	public void setCategory(String category) {}
 	
 	
 	@Override
 	public String getCategory() {
-		return category;
+		return null;
 	}
 
 }

@@ -42,7 +42,7 @@ import javax.swing.border.Border;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
@@ -200,7 +200,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilter> filtersList) {
+	public void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
 		trackGraphics.updateMultiGenomeInfomration(stripesList, filtersList);
 	}
 	
@@ -320,7 +320,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * @return the filtersList
 	 */
-	public List<IDFilter> getFiltersList() {
+	public List<IDFilterInterface> getFiltersList() {
 		return trackGraphics.getFiltersList();
 	}
 	

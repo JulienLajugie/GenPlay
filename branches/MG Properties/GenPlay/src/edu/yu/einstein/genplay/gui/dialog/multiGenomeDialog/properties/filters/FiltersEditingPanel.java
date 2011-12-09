@@ -78,6 +78,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	private VCFReader 					currentVCFReader;		// the current VCF reader
 	private VCFHeaderType 				currentID;				// the current header ID
 	private Map<VCFHeaderType, String> 	idMap;					// map between ID and their full description (as shown in the jlist)
+	private Map<String, String>			nonIdMap;				// map between the non ID (some ALT/FILTER and QUAL) and their full description
 
 
 	/**
@@ -85,6 +86,12 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 */
 	protected FiltersEditingPanel () {
 		super();
+
+		nonIdMap = new HashMap<String, String>();
+		nonIdMap.put("ALT", "ALT: Alternative value");
+		nonIdMap.put("QUAL", "QUAL: Quality value");
+		nonIdMap.put("FILTER", "FILTER: Filter value");
+
 
 		// Panel title
 		gbc.gridx = 0;
@@ -155,7 +162,11 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 
 
 	@Override
-	public void clearSelection () {
+	public void refresh () {
+		currentVCFReader = null;
+		currentID = null;
+		idMap = null;
+
 		jlFile.setText("<html><i>select</i></html>");
 		jlFile.setForeground(Color.gray);
 
@@ -166,7 +177,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		resetFilterPanel();
 		filterPanel.repaint();
 		validate();
-		
+
 		selectedTracks.setModel(new DefaultListModel());
 		getApplyButton().setEnabled(false);
 	}
@@ -238,6 +249,9 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 			public void actionPerformed(ActionEvent arg0) {
 				if (idMap != null) {
 					List<String> list = new ArrayList<String>();
+					list.add(nonIdMap.get("ALT"));
+					list.add(nonIdMap.get("QUAL"));
+					list.add(nonIdMap.get("FILTER"));
 					for (String s: idMap.values()) {
 						list.add(s);
 					}
@@ -256,6 +270,8 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 						}
 						if (currentID == null) {										// if the current id does not exist yet
 							setCurrentID(newID, category);								// we set it
+						} else if (newID == null) {
+							setCurrentID(null, category);								// we set it
 						} else if (!currentID.getId().equals(newID.getId())) {			// if the new id is different than the current one
 							setCurrentID(newID, category);								// we set it
 						}
@@ -352,7 +368,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 */
 	private void setCurrentID (VCFHeaderType id, String category) {
 		currentID = id;
-		setFilterPanel(id, category);
+		setFilterPanel(currentID, category);
 	}
 
 
@@ -364,11 +380,22 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		filterEditor = null;
 
 		if (category.equals("ALT")) {
-			System.out.println("ALT field not supported yet");
+			if (id != null) {
+				filterEditor = new IDFlagEditor();
+				filterEditor.setID(id);
+			} else {
+				filterEditor = new IDStringEditor();
+				filterEditor.setID(null);
+			}
+			filterEditor.setCategory(category);
 		} else if (category.equals("QUAL")) {
-			System.out.println("QUAL field not supported yet");
+			filterEditor = new IDNumberEditor();
+			filterEditor.setID(null);
+			filterEditor.setCategory(category);
 		} else if (category.equals("FILTER")) {
-			System.out.println("FILTER field not supported yet");
+			filterEditor = new IDStringEditor();
+			filterEditor.setID(null);
+			filterEditor.setCategory(category);
 		} else {
 			if (currentID instanceof VCFHeaderAdvancedType) {
 				VCFHeaderAdvancedType adCurrentID = (VCFHeaderAdvancedType) currentID;
@@ -384,6 +411,12 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 					filterEditor = new IDStringEditor();
 					filterEditor.setID(adCurrentID);
 					filterEditor.setCategory(category);
+					List<String> elements = new ArrayList<String>();
+					Map<Object, Integer> elementsMap = adCurrentID.getElements();
+					for (Object o: elementsMap.keySet()) {
+						elements.add(o.toString());
+					}
+					((IDStringEditor)filterEditor).setDefaultElements(elements);
 				} else {
 					System.out.println("not supported: " + adCurrentID.getId());
 				}
@@ -426,10 +459,19 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		setCurrentReader(data.getReader());
 
 		// Set the ID
-		String fullDetail = idMap.get(data.getId());
-		String category = fullDetail.substring(0, fullDetail.indexOf(":"));
+		String fullDetail;
+		String category;
+		if (data.getId() != null) {
+			fullDetail = idMap.get(data.getId());
+			category = fullDetail.substring(0, fullDetail.indexOf(":"));
+		} else {
+			category = data.getNonIdName();
+			fullDetail = nonIdMap.get(category);
+		}
+		
 		setCurrentID(data.getId(), category);
 		jlID.setText(fullDetail);
+		jlID.setForeground(getForeground());
 
 		// Set the panel with the current filter
 		filterEditor.initializesPanel(data.getFilter());
@@ -452,6 +494,8 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		FiltersData data;
 		if (filterEditor == null) {
 			data = new FiltersData(currentVCFReader, currentID, null, trackList);
+		} else if (filterEditor.getID() == null) { 
+			data = new FiltersData(currentVCFReader, filterEditor.getCategory(), filterEditor.getFilter(), trackList);
 		} else {
 			data = new FiltersData(currentVCFReader, currentID, filterEditor.getFilter(), trackList);
 		}

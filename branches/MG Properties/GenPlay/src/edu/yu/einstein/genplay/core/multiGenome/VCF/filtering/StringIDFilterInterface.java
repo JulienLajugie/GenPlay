@@ -19,62 +19,37 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
+package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
-import java.util.Map;
 
 /**
- * This class declares methods required for advanced VCF type field:
- * - INFO
- * - FORMAT
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VCFHeaderAdvancedType extends VCFHeaderType {
-	
-	
-	/**
-	 * @return the number
-	 */
-	public String getNumber();
+public interface StringIDFilterInterface extends IDFilterInterface {
 
 	
 	/**
-	 * @param number the number to set
+	 * @return the value
 	 */
-	public void setNumber(String number);
+	public String getValue();
+	
 
-	
 	/**
-	 * @return the type
+	 * @param value the value to set
 	 */
-	public Class<?> getType();
+	public void setValue(String value);
 
-	
+
 	/**
-	 * @param type the type to set
+	 * @param required the required to set
 	 */
-	public void setType(Class<?> type);
-	
-	
+	public void setRequired(boolean required);
+
+
 	/**
-	 * Checks if the header ID accepts more elements
-	 * @return true if it can have more elements, false otherwise.
+	 * @return the required
 	 */
-	public boolean acceptMoreElements ();
-	
-	
-	/**
-	 * Add an element to the list of element of the header ID
-	 * @param element the element
-	 */
-	public void addElement (Object element);
-	
-	
-	/**
-	 * @return the values found for this header ID
-	 */
-	public Map<Object, Integer> getElements ();
-	
+	public boolean isRequired();
 	
 }

@@ -38,6 +38,7 @@ import javax.swing.UIManager;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -227,6 +228,7 @@ public class ProjectRecordingManager {
 			oos.writeObject(ProjectManager.getInstance().getProjectChromosome());
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				oos.writeObject(ProjectManager.getInstance().getGenomeSynchronizer());
+				oos.writeObject(MGDisplaySettings.getInstance());
 			}
 			oos.writeObject(trackList.getTrackList());
 
@@ -324,6 +326,7 @@ public class ProjectRecordingManager {
 			ois.readObject(); // init the chromosome manager
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				ois.readObject(); // multi-genome manager
+				ois.readObject(); // multi-genome display settings
 			}
 			trackListReadyToLoad = true;
 		} catch (IOException e) {

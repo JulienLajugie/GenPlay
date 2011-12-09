@@ -53,7 +53,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
@@ -144,8 +144,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private List<Color>						stripeLegendColor;				// stripes legend for multi genome track (for MG project)
 
 	private List<StripesData>				stripesList;					// list of stripes to apply to this track (for MG project)
-	private List<IDFilter>					filtersList;					// list of filter to apply to this track (for MG project)
-	private int								stripesTransparency;			// Transparency of the stripes
+	private List<IDFilterInterface>			filtersList;					// list of filter to apply to this track (for MG project)
+	private int								stripesOpacity;					// Transparency of the stripes
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
@@ -229,7 +229,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	protected void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilter> filtersList) {
+	protected void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
 		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
 		multiGenomeSNP.setPreviousSetting(getGenomeNamesForSNP(this.stripesList));
 		multiGenomeSNP.setNewSetting(getGenomeNamesForSNP(stripesList));
@@ -237,10 +237,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.stripesList = stripesList;
 		this.filtersList = filtersList;
 
-		//stripesTransparency = MGDisplaySettings.getInstance().getVariousSettings().getTransparency();
-		//multiGenomeSNP.actionPerformed(null);
-
-		//revalidate();
 		repaint();
 	}
 
@@ -271,7 +267,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (stripesList != null) {
 			if (ProjectManager.getInstance().getGenomeSynchronizer().dataHasBeenComputed() && stripesList.size() > 0) {
-				stripesTransparency = MGDisplaySettings.getInstance().getVariousSettings().getTransparency();
+				stripesOpacity = 100 - MGDisplaySettings.getInstance().getVariousSettings().getTransparency();
 				updateDisplayableVariantList(false);
 				drawGenome(g);
 				drawMultiGenomeLine(g);
@@ -302,7 +298,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param g	graphics object
 	 */
 	private void drawMultiGenomeLine (Graphics g) {
-		Color color = new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), stripesTransparency);
+		Color color = new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), stripesOpacity);
 		g.setColor(color);
 		int y = getHeight() / 2;
 		g.drawLine(0, y, getWidth(), y);
@@ -325,15 +321,15 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		if (displayableVariantList.size() > 0) {
 
 			// Set color for unused position and dead area
-			Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesTransparency);
-			Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), stripesTransparency);
+			Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
+			Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), stripesOpacity);
 
 			// Start variant list scan
 			for (DisplayableVariant displayableVariant: displayableVariantList) {
 				if (displayableVariant.getType().equals(VariantType.MIX)) {
 					cptMix++;
 
-					Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), stripesTransparency);
+					Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), stripesOpacity);
 					drawRect(g, displayableVariant, mixColor, mixColor);
 				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
 					cptBlank++;
@@ -388,7 +384,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			int top = middle - height;
 
 			// Sets color
-			Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesTransparency);
+			Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);
 			g.setColor(newColor);
 
 			// Draws the top half part of the track
@@ -523,7 +519,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	/**
 	 * @return the filtersList
 	 */
-	public List<IDFilter> getFiltersList() {
+	public List<IDFilterInterface> getFiltersList() {
 		return filtersList;
 	}
 
@@ -1063,28 +1059,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		gwListenerList = (List<GenomeWindowListener>) in.readObject();
-		verticalLineCount = in.readInt();
-		xFactor = in.readDouble();
-		genomeWindow = (GenomeWindow) in.readObject();
-		stripeList = (ChromosomeWindowList) in.readObject();
-		data = (T) in.readObject();
-		displayableVariantListCreator = (DisplayableVariantListCreator) in.readObject();
-		genomeName = (String) in.readObject();
-		displayableVariantList = (List<DisplayableVariant>) in.readObject();
-		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
-	}
-
-
 	@Override
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		gwListenerList.remove(genomeWindowListener);		
@@ -1212,9 +1186,42 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		out.writeObject(genomeWindow);
 		out.writeObject(stripeList);
 		out.writeObject(data);
-		out.writeObject(displayableVariantListCreator);
 		out.writeObject(genomeName);
 		out.writeObject(displayableVariantList);
+		out.writeObject(displayableVariantListCreator);
+		out.writeObject(stripeLegendText);
+		out.writeObject(stripeLegendColor);
+		out.writeObject(stripesList);
+		out.writeObject(filtersList);
+		out.writeInt(stripesOpacity);
+	}
+	
+	
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		gwListenerList = (List<GenomeWindowListener>) in.readObject();
+		verticalLineCount = in.readInt();
+		xFactor = in.readDouble();
+		genomeWindow = (GenomeWindow) in.readObject();
+		stripeList = (ChromosomeWindowList) in.readObject();
+		data = (T) in.readObject();
+		genomeName = (String) in.readObject();
+		displayableVariantList = (List<DisplayableVariant>) in.readObject();
+		displayableVariantListCreator = (DisplayableVariantListCreator) in.readObject();
+		stripeLegendText = (List<String>) in.readObject();
+		stripeLegendColor = (List<Color>) in.readObject();
+		stripesList = (List<StripesData>) in.readObject();
+		filtersList = (List<IDFilterInterface>) in.readObject();
+		stripesOpacity = in.readInt();
+		
+		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
 	}
 
 

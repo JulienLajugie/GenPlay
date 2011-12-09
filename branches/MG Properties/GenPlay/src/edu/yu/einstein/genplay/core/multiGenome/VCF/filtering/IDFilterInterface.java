@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
@@ -28,7 +30,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface IDFilter {
+public interface IDFilterInterface extends Serializable {
 
 	
 	/**
@@ -66,6 +68,12 @@ public interface IDFilter {
 	
 	
 	/**
+	 * @return the category of the filter
+	 */
+	public String getCategory ();
+	
+	
+	/**
 	 * Gives a string for display use of the filter
 	 * @return a string
 	 */
@@ -77,4 +85,5 @@ public interface IDFilter {
 	 * @return the string of errors if exists or null otherwise
 	 */
 	public String getErrors ();
+
 }

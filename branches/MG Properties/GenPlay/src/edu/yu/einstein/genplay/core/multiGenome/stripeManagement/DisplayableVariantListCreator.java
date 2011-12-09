@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.DisplayableDataList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
@@ -58,7 +58,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 	// Filter variables
 	private Map<String, List<VariantType>>	genomes;						// Genome names list
-	private List<IDFilter>					filters;						// List of filters
+	private List<IDFilterInterface>					filters;						// List of filters
 
 	// Lists
 	private List<Variant> 					fittedVariantList;				// Complete list of variant (gains a lot of time and increase the fluidity)
@@ -416,7 +416,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		boolean result = true;
 		
 		
-		for (IDFilter data: filters) {
+		for (IDFilterInterface data: filters) {
 			if (!data.passFilter(genomeFullName, variant)) {
 				result = false;
 				break;
@@ -511,7 +511,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	/**
 	 * @param filters the filters to set
 	 */
-	public void setFilters(List<IDFilter> filters) {
+	public void setFilters(List<IDFilterInterface> filters) {
 		this.filters = filters;
 		hasBeenChanged = true;
 	}

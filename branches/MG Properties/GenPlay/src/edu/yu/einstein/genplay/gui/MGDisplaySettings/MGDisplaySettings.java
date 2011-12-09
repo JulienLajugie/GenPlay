@@ -21,12 +21,21 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.MGDisplaySettings;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGDisplaySettings {
+public class MGDisplaySettings implements Serializable {
+
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 1442202260363430870L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private static MGDisplaySettings 	instance;			// Instance of the class
 
@@ -34,6 +43,36 @@ public class MGDisplaySettings {
 	private MGStripeSettings 	stripeSettings; 	// All settings about the stripes
 	private MGVariousSettings 	variousSettings;	// All settings about various settings
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(instance);
+		out.writeObject(filterSettings);
+		out.writeObject(stripeSettings);
+		out.writeObject(variousSettings);
+		showSettings();
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		instance = (MGDisplaySettings) in.readObject();
+		filterSettings = (MGFilterSettings) in.readObject();
+		stripeSettings = (MGStripeSettings) in.readObject();
+		variousSettings = (MGVariousSettings) in.readObject();
+	}
+	
 
 	/**
 	 * @return an instance of a {@link MGDisplaySettings}. 

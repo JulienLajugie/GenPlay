@@ -83,10 +83,14 @@ public class GlobalInformationPanel extends JPanel {
 			gbc = addObjectRow("Filter: ", null, gbc);
 		} else {
 			variant = displayableVariant.getNativeVariant();
+			int stopPosition = variant.getNextMetaGenomePosition();
+			if (stopPosition > 1) {
+				stopPosition--;
+			}
 			gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(variant.getFullGenomeName()) + " (" + FormattedMultiGenomeName.getRawName(variant.getFullGenomeName()) + ")", gbc);
 			gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(variant.getFullGenomeName()), gbc);
-			gbc = addObjectRow("Position: ", displayableVariant.getStart() + " to " + displayableVariant.getStop(), gbc);
-			gbc = addObjectRow("Length: ", "" + (displayableVariant.getStop() - displayableVariant.getStart()), gbc);
+			gbc = addObjectRow("Position: ", variant.getMetaGenomePosition() + " to " + stopPosition, gbc);
+			gbc = addObjectRow("Length: ", "" + (stopPosition - variant.getMetaGenomePosition()), gbc);
 			gbc = addObjectRow("Type: ", displayableVariant.getType().toString(), gbc);
 			if ((displayableVariant.getType() == VariantType.SNPS | displayableVariant.getType() == VariantType.SVSNPS) && !variant.getId().equals(".")) {
 				gbc = addLabelRow("ID: ", getIDLabel(variant.getId()), gbc);
@@ -203,7 +207,7 @@ public class GlobalInformationPanel extends JPanel {
 	/**
 	 * @return the height of the panel
 	 */
-	protected int getPanelHeight () {
+	protected static int getPanelHeight () {
 		return LABEL_HEIGHT * 9;
 	}
 

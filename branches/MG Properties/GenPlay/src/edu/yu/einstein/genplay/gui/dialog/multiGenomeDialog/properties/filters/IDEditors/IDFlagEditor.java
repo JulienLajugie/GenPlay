@@ -33,7 +33,7 @@ import javax.swing.JRadioButton;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.FlagIDFilter;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 
 /**
  * @author Nicolas Fourel
@@ -43,8 +43,8 @@ public class IDFlagEditor implements IDEditor {
 
 	private VCFHeaderType 	id;			// Header ID
 	private String			category;	// category of the filter
-	private JRadioButton present;
-	private JRadioButton absent;
+	private JRadioButton 	present;
+	private JRadioButton 	absent;
 
 	@Override
 	public void updatePanel(JPanel panel) {
@@ -106,7 +106,7 @@ public class IDFlagEditor implements IDEditor {
 	}
 
 	@Override
-	public IDFilter getFilter() {
+	public IDFilterInterface getFilter() {
 		FlagIDFilter filter = new FlagIDFilter();
 		filter.setID(id);
 		filter.setCategory(category);
@@ -122,9 +122,16 @@ public class IDFlagEditor implements IDEditor {
 	public void setID(VCFHeaderType id) {
 		this.id = id;
 	}
+	
+	
+	@Override
+	public VCFHeaderType getID () {
+		return id;
+	}
+	
 
 	@Override
-	public void initializesPanel(IDFilter filter) {
+	public void initializesPanel(IDFilterInterface filter) {
 		FlagIDFilter flagFilter = (FlagIDFilter) filter;
 		if (flagFilter.isRequired()) {
 			present.setSelected(true);
@@ -137,6 +144,12 @@ public class IDFlagEditor implements IDEditor {
 	@Override
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	
+	@Override
+	public String getCategory() {
+		return category;
 	}
 
 }

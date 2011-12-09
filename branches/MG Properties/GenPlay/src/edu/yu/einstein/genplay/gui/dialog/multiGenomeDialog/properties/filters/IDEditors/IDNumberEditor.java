@@ -36,8 +36,10 @@ import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.NumberIDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.NumberIDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.QualIDFilter;
 
 /**
  * @author Nicolas Fourel
@@ -158,7 +160,7 @@ public class IDNumberEditor implements IDEditor {
 		model.addElement(InequalityOperators.EQUAL);
 		model.addElement(InequalityOperators.SUPERIOR);
 		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
-		
+
 		box = new JComboBox(model);
 		Dimension dimension = new Dimension(40, box.getFontMetrics(box.getFont()).getHeight() + 2);
 		box.setMinimumSize(dimension);
@@ -200,7 +202,7 @@ public class IDNumberEditor implements IDEditor {
 		String value = currentBox.getSelectedItem().toString();
 		DefaultComboBoxModel model = null;
 		boolean enable = true;
-		
+
 		if (value.equals(" ")) {
 			model = new DefaultComboBoxModel();
 			model.addElement(" ");
@@ -241,14 +243,19 @@ public class IDNumberEditor implements IDEditor {
 
 
 	@Override
-	public IDFilter getFilter() {
-		NumberIDFilter filter = new NumberIDFilter();
+	public IDFilterInterface getFilter() {
+		NumberIDFilterInterface filter = null;
+		if (category.equals("QUAL") && id == null) {
+			filter = new QualIDFilter();
+		} else {
+			filter = new NumberIDFilter();
+		}
+
 		filter.setID(id);
 		filter.setCategory(category);
-		filter.setInequation01((InequalityOperators)inequationBox01.getSelectedItem());
-		if (valueField01.getText().isEmpty()) {
-			filter.setValue01(null);
-		} else {
+
+		if (inequationBox01.isEnabled() && !inequationBox01.getSelectedItem().equals(" ")){
+			filter.setInequation01((InequalityOperators)inequationBox01.getSelectedItem());
 			try {
 				filter.setValue01(Float.parseFloat(valueField01.getText()));
 			} catch (Exception e) {
@@ -256,16 +263,12 @@ public class IDNumberEditor implements IDEditor {
 			}
 		}
 
-		if (inequationBox02.isEnabled()) {
+		if (inequationBox02.isEnabled() && !inequationBox02.getSelectedItem().toString().equals(" ")) {
 			filter.setInequation02((InequalityOperators)inequationBox02.getSelectedItem());
-			if (valueField02.getText().isEmpty()) {
+			try {
+				filter.setValue02(Float.parseFloat(valueField02.getText()));
+			} catch (Exception e) {
 				filter.setValue02(null);
-			} else {
-				try {
-					filter.setValue02(Float.parseFloat(valueField02.getText()));
-				} catch (Exception e) {
-					filter.setValue02(null);
-				}
 			}
 		} else {
 			filter.setInequation02(null);
@@ -283,23 +286,53 @@ public class IDNumberEditor implements IDEditor {
 
 
 	@Override
-	public void initializesPanel(IDFilter filter) {
-		NumberIDFilter numberFilter = (NumberIDFilter) filter;
-		inequationBox01.setSelectedItem(numberFilter.getInequation01());
-		valueField01.setText(numberFilter.getValue01().toString());
-		if (numberFilter.getInequation02() != null && numberFilter.getValue02() != null) {
-			inequationBox02.setSelectedItem(numberFilter.getInequation02());
-			valueField02.setText(numberFilter.getValue02().toString());
+	public VCFHeaderType getID () {
+		return id;
+	}
+
+
+	@Override
+	public void initializesPanel(IDFilterInterface filter) {
+		InequalityOperators inequation01 = null;
+		InequalityOperators inequation02 = null;
+		Float value01 = null;
+		Float value02 = null;
+
+		if (filter instanceof QualIDFilter) {
+			QualIDFilter castFilter = (QualIDFilter) filter;
+			inequation01 = castFilter.getInequation01();
+			inequation02 = castFilter.getInequation02();
+			value01 = castFilter.getValue01();
+			value02 = castFilter.getValue02();
+		} else if (filter instanceof NumberIDFilter) {
+			NumberIDFilter castFilter = (NumberIDFilter) filter;
+			inequation01 = castFilter.getInequation01();
+			inequation02 = castFilter.getInequation02();
+			value01 = castFilter.getValue01();
+			value02 = castFilter.getValue02();
+		}
+
+		inequationBox01.setSelectedItem(inequation01);
+		valueField01.setText(value01.toString());
+		if (inequation02 != null && value02 != null) {
+			inequationBox02.setSelectedItem(inequation02);
+			valueField02.setText(value02.toString());
 		} else {
 			inequationBox02.setSelectedIndex(0);
 			valueField02.setText("");
 		}
 	}
-	
-	
+
+
 	@Override
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+
+	@Override
+	public String getCategory() {
+		return category;
 	}
 
 }

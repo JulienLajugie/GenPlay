@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
 
@@ -406,7 +407,7 @@ public class VCFReader implements Serializable {
 	 * @throws IOException
 	 */
 	public List<Map<String, Object>> shortQuery () throws IOException {
-		Iterator iter = vcfParser.shortQuery();
+		Iterator iter = vcfParser.shortQuery(0);
 		List<String> fields = new ArrayList<String>();
 		fields.add("REF");
 		fields.add("ALT");
@@ -629,8 +630,8 @@ public class VCFReader implements Serializable {
 		}
 		return type;
 	}
-	
-	
+
+
 	/**
 	 * @return the headerInfo
 	 */
@@ -677,11 +678,73 @@ public class VCFReader implements Serializable {
 	public File getFile() {
 		return file;
 	}
-	
-	
+
+
 	@Override
 	public String toString () {
 		return file.getName();
 	}
-	
+
+
+	/////////////////////////////////////////////////
+
+	/**
+	 * Analyze a a VCF position line to update the IDs elements lists.
+	 * @param positionInformation the position information object
+	 */
+	public void retrievePositionInformation (MGPosition positionInformation) {
+		retrieveINFOValues(positionInformation.getInfo());
+		retrieveFORMATValues(positionInformation);
+	}
+
+
+	/**
+	 * Analyze a a VCF INFO line to update the IDs elements lists.
+	 * @param line a INFO line of a VCF
+	 */
+	private void retrieveFORMATValues (MGPosition positionInformation) {
+		if (formatHeader.size() > 0) {
+			for (String genomeRawName: genomeNames) {
+				for (VCFHeaderAdvancedType header: formatHeader) {
+					if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
+						Object value = positionInformation.getFormatValue(genomeRawName, header.getId());
+						header.addElement(value);
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Analyze a a VCF INFO line to update the IDs elements lists.
+	 * @param line a INFO line of a VCF
+	 */
+	private void retrieveINFOValues (String line) {
+		if (infoHeader.size() > 0) {
+			for (VCFHeaderAdvancedType header: infoHeader) {
+				if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
+					Object value = getIDValue(line, header.getId());
+					header.addElement(value);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Looks in a line for an ID in order to return its value
+	 * @param line	part of a VCF line
+	 * @param ID	ID name
+	 * @return		the value of the ID
+	 */
+	private Object getIDValue (String line, String ID) {
+		int indexID = line.indexOf(ID);
+		int indexValue = indexID + ID.length() + 1;
+		int indexEnd = line.indexOf(";", indexValue);
+		if (indexEnd == -1) {
+			indexEnd = line.length();
+		}
+		return line.substring(indexValue, indexEnd);
+	}
 }
