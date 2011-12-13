@@ -1,0 +1,24 @@
+<assembly clade="mammal" genome="rhesus" name="MGSC Merged 1.0/rheMac2" date="01 2006">
+	<chromosome name="chr1" length="228252215"/>
+	<chromosome name="chr2" length="189746636"/>
+	<chromosome name="chr3" length="196418989"/>
+	<chromosome name="chr4" length="167655696"/>
+	<chromosome name="chr5" length="182086969"/>
+	<chromosome name="chr6" length="178205221"/>
+	<chromosome name="chr7" length="169801366"/>
+	<chromosome name="chr8" length="147794981"/>
+	<chromosome name="chr9" length="133323859"/>
+	<chromosome name="chr10" length="94855758"/>
+	<chromosome name="chr11" length="134511895"/>
+	<chromosome name="chr12" length="106505843"/>
+	<chromosome name="chr13" length="138028943"/>
+	<chromosome name="chr14" length="133002572"/>
+	<chromosome name="chr15" length="110119387"/>
+	<chromosome name="chr16" length="78773432"/>
+	<chromosome name="chr17" length="94452569"/>
+	<chromosome name="chr18" length="73567989"/>
+	<chromosome name="chr19" length="64391591"/>
+	<chromosome name="chr20" length="88221753"/>
+	<chromosome name="chrX" length="153947521"/>
+	<chromosome name="chrUr" length="440886"/>
+</assembly>

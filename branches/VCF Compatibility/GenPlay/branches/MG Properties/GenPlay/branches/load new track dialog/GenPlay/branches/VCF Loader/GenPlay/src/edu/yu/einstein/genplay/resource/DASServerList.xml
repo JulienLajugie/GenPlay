@@ -1,0 +1,5 @@
+<DASLIST>
+	<SERVER href="http://genome.ucsc.edu/cgi-bin/das/" name="UCSC"/>
+	<SERVER href="http://www.ensembl.org/das/" name="Ensembl"/>
+	<SERVER href="http://netaffxdas.affymetrix.com/das/" name="Affymetrix"/>
+</DASLIST>

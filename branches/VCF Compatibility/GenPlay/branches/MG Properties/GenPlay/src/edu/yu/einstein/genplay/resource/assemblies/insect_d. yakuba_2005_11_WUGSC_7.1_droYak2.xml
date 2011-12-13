@@ -1,0 +1,23 @@
+<assembly clade="insect" genome="d. yakuba" name="WUGSC 7.1/droYak2" date="11 2005">
+	<chromosome name="chr4" length="1374474"/>
+	<chromosome name="chr4_random" length="31700"/>
+	<chromosome name="chrM" length="16019"/>
+	<chromosome name="chrU" length="28119190"/>
+	<chromosome name="chrX" length="21770863"/>
+	<chromosome name="chrX_random" length="1802292"/>
+	<chromosome name="chr2h" length="894407"/>
+	<chromosome name="chr2h_random" length="3774259"/>
+	<chromosome name="chr2L" length="22324452"/>
+	<chromosome name="chr2L_random" length="4064425"/>
+	<chromosome name="chr2R" length="21139217"/>
+	<chromosome name="chr2R_random" length="67238"/>
+	<chromosome name="chr3h" length="261230"/>
+	<chromosome name="chr3h_random" length="911842"/>
+	<chromosome name="chr3L" length="24197627"/>
+	<chromosome name="chr3L_random" length="4797643"/>
+	<chromosome name="chr3R" length="28832112"/>
+	<chromosome name="chr3R_random" length="3277457"/>
+	<chromosome name="chrUh" length="720513"/>
+	<chromosome name="chrXh" length="172766"/>
+	<chromosome name="chrYh" length="114151"/>
+</assembly>
