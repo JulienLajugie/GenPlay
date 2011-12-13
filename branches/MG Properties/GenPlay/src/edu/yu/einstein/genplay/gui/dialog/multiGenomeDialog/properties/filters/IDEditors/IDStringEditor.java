@@ -107,7 +107,11 @@ public class IDStringEditor implements IDEditor {
 			filter.setCategory(category);
 		}
 		
-		filter.setValue(jcValue.getSelectedItem().toString());
+		if (jcValue.getSelectedItem() != null) {
+			filter.setValue(jcValue.getSelectedItem().toString());
+		} else {
+			filter.setValue(null);
+		}
 		if (jcOption.getSelectedItem().toString().equals(PRESENT)) {
 			filter.setRequired(true);
 		} else {

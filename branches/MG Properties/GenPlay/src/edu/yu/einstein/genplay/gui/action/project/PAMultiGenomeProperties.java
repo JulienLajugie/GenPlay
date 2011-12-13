@@ -23,11 +23,13 @@ package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
@@ -76,7 +78,6 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		settings = MGDisplaySettings.getInstance();
-		System.out.println("lalalala");
 	}
 
 
@@ -101,6 +102,9 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 * Called if the dialog has been approved.
 	 */
 	private void approve () {
+		// Update the SNPs
+		updateSNP();
+		
 		// Set the various settings
 		settings.getVariousSettings().setVariousSettings(dialog.getTransparency(), dialog.isShowLegend());
 		
@@ -116,6 +120,46 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
 			track.updateMultiGenomeInfomration(stripesList, filtersList);
 		}
+	}
+	
+	
+	/**
+	 * This method aims to update the SNPs synchroniser in order to run its process if needed.
+	 * When the user closes the dialog, he may has changed stripes settings regarding the SNPs.
+	 */
+	private void updateSNP () {
+		// Gets the list of stripes data
+		List<StripesData> previousStripesData = settings.getStripeSettings().getStripesList();
+		List<StripesData> newStripesData = dialog.getStripesData();
+		
+		// Gets the genome names involved for SNPs synchronization
+		List<String> previousNames = getGenomeNamesForSNP(previousStripesData);
+		List<String> newNames = getGenomeNamesForSNP(newStripesData);
+		
+		// Set the SNP synchronization action and run it (the action will decide itself how to manage the SNPs)
+		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
+		multiGenomeSNP.setPreviousSetting(previousNames);
+		multiGenomeSNP.setNewSetting(newNames);
+		multiGenomeSNP.actionPerformed(null);
+	}
+	
+	
+	/**
+	 * Gathers genome names require for a SNP display
+	 * @param list association of genome name/variant type list
+	 * @return the list of genome names
+	 */
+	private List<String> getGenomeNamesForSNP (List<StripesData> list) {
+		List<String> names = new ArrayList<String>();
+		if (list != null) {
+			for (StripesData data: list) {
+				List<VariantType> variantList = data.getVariationTypeList();
+				if (variantList.contains(VariantType.SNPS)) {
+					names.add(data.getGenome());
+				}
+			}
+		}
+		return names;
 	}
 
 

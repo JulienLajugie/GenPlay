@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -167,10 +168,10 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		currentID = null;
 		idMap = null;
 
-		jlFile.setText("<html><i>select</i></html>");
+		jlFile.setText("<html><i>select -></i></html>");
 		jlFile.setForeground(Color.gray);
 
-		jlID.setText("<html><i>select</i></html>");
+		jlID.setText("<html><i>select -></i></html>");
 		jlID.setForeground(Color.gray);
 		showIDListButton.setEnabled(false);
 
@@ -337,7 +338,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		jlFile.setText(reader.toString());
 		jlFile.setForeground(getForeground());
 		jlFile.setToolTipText(reader.toString());
-		showIDListButton.setEnabled(true);
+		
 		idMap = new HashMap<VCFHeaderType, String>();
 
 		// Store the ALT fields
@@ -359,6 +360,17 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		for (VCFHeaderAdvancedType header: reader.getInfoHeader()) {
 			idMap.put(header, "INFO: " + header.getId() + " (" + header.getDescription() + ")");
 		}
+		
+		// Updates the ID area to empty
+		showIDListButton.setEnabled(true);
+		jlID.setText("<html><i>select -></i></html>");
+		jlID.setForeground(Color.gray);
+		
+		// Updates the filter area to empty
+		resetFilterPanel();
+		filterPanel.repaint();
+		validate();
+		
 	}
 
 
@@ -445,10 +457,16 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		} else {
 			filterPanel = new JPanel();
 		}
+		
+		FlowLayout layout = new FlowLayout();
+		filterPanel.setLayout(layout);
+		
 		Dimension dimension = new Dimension(180, 50);
 		filterPanel.setPreferredSize(dimension);
 		filterPanel.setMinimumSize(dimension);
+		
 		filterPanel.add(getDefaultLabel("no filter available"));
+		
 		return filterPanel;
 	}
 

@@ -57,7 +57,6 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
 import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariantListCreator;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -230,33 +229,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param filtersList list of filters
 	 */
 	protected void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
-		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
-		multiGenomeSNP.setPreviousSetting(getGenomeNamesForSNP(this.stripesList));
-		multiGenomeSNP.setNewSetting(getGenomeNamesForSNP(stripesList));
-
 		this.stripesList = stripesList;
 		this.filtersList = filtersList;
-
 		repaint();
-	}
-
-
-	/**
-	 * Gathers genome names require for a SNP display
-	 * @param list association of genome name/variant type list
-	 * @return the list of genome names
-	 */
-	private List<String> getGenomeNamesForSNP (List<StripesData> list) {
-		List<String> names = new ArrayList<String>();
-		if (list != null) {
-			for (StripesData data: list) {
-				List<VariantType> variantList = data.getVariationTypeList();
-				if (variantList.contains(VariantType.SNPS)) {
-					names.add(data.getGenome());
-				}
-			}
-		}
-		return names;
 	}
 
 
@@ -290,6 +265,22 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			displayableVariantListCreator.SNPUpdate();
 		}
 		displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
+		
+		
+		int[] stats = {0, 0, 0};
+		for (DisplayableVariant variant: displayableVariantList) {
+			VariantType type = variant.getType();
+			if (type != VariantType.MIX && type != VariantType.BLANK) {
+				if (type == VariantType.INSERTION || type == VariantType.INS) {
+					stats[0]++;
+				} else if (type == VariantType.DELETION || type == VariantType.DEL) {
+					stats[1]++;
+				} else if (type == VariantType.SNPS  || type == VariantType.SVSNPS) {
+					stats[2]++;
+				}
+			}
+		}
+		//System.out.println(displayableVariantList.size() + "; " + stats[0] + ", " + stats[1] + ", " + stats[2]);
 	}
 
 
@@ -326,23 +317,24 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 			// Start variant list scan
 			for (DisplayableVariant displayableVariant: displayableVariantList) {
-				if (displayableVariant.getType().equals(VariantType.MIX)) {
+				VariantType type = displayableVariant.getType();
+				if (type.equals(VariantType.MIX)) {
 					cptMix++;
 
 					Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), stripesOpacity);
 					drawRect(g, displayableVariant, mixColor, mixColor);
-				} else if (displayableVariant.getType().equals(VariantType.BLANK)) {
+				} else if (type.equals(VariantType.BLANK)) {
 					cptBlank++;
 
 					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
 				} else {
 					cptOther++;
-
-					if (displayableVariant.getType().equals(VariantType.DELETION)) {
-						cptDel++;
-					} else if (displayableVariant.getType().equals(VariantType.INSERTION)) {
+					
+					if (type.equals(VariantType.INSERTION) || type.equals(VariantType.INS)) {
 						cptIns++;
-					} else if (displayableVariant.getType().equals(VariantType.SNPS)) {
+					} else if (type.equals(VariantType.DELETION) || type.equals(VariantType.DEL)) {
+						cptDel++;
+					} else if (type.equals(VariantType.SNPS)  || type.equals(VariantType.SVSNPS)) {
 						cptSNP++;
 					}
 
@@ -720,7 +712,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					int colorCounter = 0;
 
 					for (VariantType type: colors.keySet()) {
-						if (type != VariantType.INS && type != VariantType.DEL) {	// these types are automatically added when user selects "insertion" or "deletion",
+						if (type != VariantType.INS && type != VariantType.DEL && type != VariantType.SVSNPS) {	// these types are automatically added when user selects "insertion" or "deletion",
 							// it is useless to treat them and redundant.
 							colorCounter++;
 							// Add the variant type shortcut
@@ -728,6 +720,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 								stripeLegendText.add("I");
 							} else if (type == VariantType.DELETION) {
 								stripeLegendText.add("D");
+							} else if (type == VariantType.SNPS) {
+								stripeLegendText.add("SNPs");
 							}
 							stripeLegendColor.add(colors.get(type));		// add the chosen color
 
@@ -1195,8 +1189,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		out.writeObject(filtersList);
 		out.writeInt(stripesOpacity);
 	}
-	
-	
+
+
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -1220,7 +1214,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		stripesList = (List<StripesData>) in.readObject();
 		filtersList = (List<IDFilterInterface>) in.readObject();
 		stripesOpacity = in.readInt();
-		
+
 		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
 	}
 

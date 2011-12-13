@@ -305,8 +305,8 @@ public class SNPSynchroniser implements Serializable {
 			currentChromosome = chromosome;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Checks if SNPs has to be removed from the list or not.
 	 * @param chromosome	the chromosome
@@ -361,9 +361,11 @@ public class SNPSynchroniser implements Serializable {
 	 * @param genomeName a genome name
 	 */
 	private void increaseCounter (String genomeName) {
-		int counter = genomeCounter.get(genomeName);
-		counter++;
-		genomeCounter.put(genomeName, counter);
+		if (genomeCounter.containsKey(genomeName)) {
+			int counter = genomeCounter.get(genomeName);
+			counter++;
+			genomeCounter.put(genomeName, counter);
+		}
 	}
 
 
@@ -372,10 +374,12 @@ public class SNPSynchroniser implements Serializable {
 	 * @param genomeName a genome name
 	 */
 	private void decreaseCounter (String genomeName) {
-		int counter = genomeCounter.get(genomeName);
-		if (counter > 0) {
-			counter--;
-			genomeCounter.put(genomeName, counter);
+		if (genomeCounter.containsKey(genomeName)) {
+			int counter = genomeCounter.get(genomeName);
+			if (counter > 0) {
+				counter--;
+				genomeCounter.put(genomeName, counter);
+			}
 		}
 	}
 
@@ -399,7 +403,7 @@ public class SNPSynchroniser implements Serializable {
 				}
 			}
 
-			// If genomes are present in the new mutli genome stripe settings but not in the previous one,
+			// If genomes are present in the new multi genome stripe settings but not in the previous one,
 			// they have to be enable.
 			for (String name: nextGenomes) {
 				if (!previousGenomes.contains(name)) {

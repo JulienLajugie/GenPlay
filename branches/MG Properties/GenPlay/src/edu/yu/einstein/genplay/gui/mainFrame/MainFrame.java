@@ -312,6 +312,19 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 		}
 	}
+	
+	
+	/**
+	 * Maps are initialized before creating the multi genome project.
+	 * Action and Input map values must be inserted at the creation.
+	 * That is why this method will insert everything the MG project needs at its creation. 
+	 */
+	public void setMapsForMultiGenome () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			getRootPane().getActionMap().put(PAMultiGenomeProperties.ACTION_KEY, new PAMultiGenomeProperties());
+			getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMultiGenomeProperties.ACCELERATOR, PAMultiGenomeProperties.ACTION_KEY);
+		}
+	}
 
 
 	/**
@@ -332,9 +345,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			getRootPane().getActionMap().put(PAMultiGenomeProperties.ACTION_KEY, new PAMultiGenomeProperties());
-		}
 	}
 
 
@@ -370,9 +380,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveRight.ACCELERATOR, PAMoveRight.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, PAZoomIn.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMultiGenomeProperties.ACCELERATOR, PAMultiGenomeProperties.ACTION_KEY);
-		}
 	}
 
 

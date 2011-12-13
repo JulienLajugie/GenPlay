@@ -50,10 +50,10 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 		// mnemonic key
 	private static		 String 			ACTION_NAME = "SNPs loading";	// action name
 
-	private Chromosome			newChromosome;
-	private List<String>		previousRequiredGenomes;
-	private List<String>		newRequiredGenomes;
-
+	private Chromosome			newChromosome;					// current chromosome (to apply changes)
+	private List<String>		previousRequiredGenomes;		// the list of previous requested genomes (SNPs for these genomes can be either kept or released)
+	private List<String>		newRequiredGenomes;				// the list of the new requested genomes (SNPs for these genomes can be either already in memory or have to be loaded)
+	private boolean 			hasBeenPerformed = false;		// control whether the process has been performed or not (in order to execute the doAtTheEnd method only when the process went until the end)
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -105,8 +105,8 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 
 				snpSynchronizer.compute();
 				genomeSynchronizer.SNPhaveBeenComputed();
+				hasBeenPerformed = true;
 			}
-
 		}
 
 		return null;
@@ -115,7 +115,8 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && hasBeenPerformed) {
+			hasBeenPerformed = false;
 			ProjectManager.getInstance().getGenomeSynchronizer().getGenomesInformation().resetListIndexes();
 			refreshTracks();
 		}

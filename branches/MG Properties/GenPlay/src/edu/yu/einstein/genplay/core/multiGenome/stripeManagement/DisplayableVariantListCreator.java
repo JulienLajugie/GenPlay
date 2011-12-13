@@ -68,10 +68,10 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	private boolean							hasBeenChanged;					// Is true if any information has been modified
 	private boolean 						genomeWindowHasChanged;			// Is true if the current chromosome has changed
 	private boolean 						xRatioHasChanged;				// Is true if the xRatio has changed
-	
+
 	private int passFilter = 0;
 	private int notPassFilter = 0;
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -140,14 +140,14 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 		if (genomeWindowHasChanged || hasBeenChanged) {
 			fittedVariantList = getFittedVariantList();			// creates the list of variants
 		}
-		
+
 		//System.out.println("fittedVariantList: " + fittedVariantList.size());
 
 		// If filters or the xRatio have changed
 		if (xRatioHasChanged || hasBeenChanged) {
 			createDisplayableVariantList(fittedVariantList);	// creates the list of displayable variants
 		}
-		
+
 		//System.out.println("fittedDisplayableVariantList: " + fittedDisplayableVariantList.size());
 
 		// Changes indicators come back to false
@@ -174,7 +174,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 		passFilter = 0;
 		notPassFilter = 0;
-		
+
 		// Scan for every required genomes
 		for (String genomeFullName: genomes.keySet()) {
 
@@ -183,7 +183,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 			Map<Integer, Variant> variants = chromosomeInformation.getPositionInformationList();
 			chromosomeInformation.resetIndexList();
 			int[] indexes = chromosomeInformation.getPositionIndex();
-			
+
 			// Scan the full variant list with the right indexes
 			for (int i = 0; i < indexes.length; i++) {
 				Variant current = variants.get(indexes[i]);
@@ -194,9 +194,9 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 				}
 			}
 		}
-		
+
 		//System.out.println(passFilter + " : " + notPassFilter);
-		
+
 		// Sorts the list using the start position on the meta genome coordinates
 		Collections.sort(fittedVariantList, new VariantMGPositionComparator());
 
@@ -414,15 +414,20 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 */
 	private boolean passFilter (String genomeFullName, Variant variant) {
 		boolean result = true;
-		
-		
-		for (IDFilterInterface data: filters) {
-			if (!data.passFilter(genomeFullName, variant)) {
-				result = false;
-				break;
+
+		if (!genomes.get(genomeFullName).contains(variant.getType())) {
+			result = false;
+		}
+
+		if (result) {
+			for (IDFilterInterface data: filters) {
+				if (!data.passFilter(genomeFullName, variant)) {
+					result = false;
+					break;
+				}
 			}
 		}
-		
+
 		if (result) {
 			passFilter++;
 		} else {
@@ -438,6 +443,16 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 	 * @param genomes the full genome names to set
 	 */
 	public void setGenomeNames(Map<String, List<VariantType>> genomes) {
+		/*String info = "";
+		for (String name: genomes.keySet()) {
+			info += name + ":";
+			for (VariantType type: genomes.get(name)) {
+				info += " " + type;
+			}
+			info += "\n";
+		}
+		System.out.println(info);*/
+
 		if (setsAreDifferents(this.genomes.keySet(), genomes.keySet())) {
 			hasBeenChanged = true;
 		} else {
