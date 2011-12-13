@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -55,10 +56,10 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class MultiTrackChooser extends JDialog {
 
 	private static final long serialVersionUID = -4678243279540123148L; // generated ID
-	
+
 	private static final Dimension WINDOW_SIZE = new Dimension(680, 400); // size of the dialog box
 	private static final int LIST_WIDTH = 200; // preferred width of the 2 JList
-	
+
 	private static JLabel 			jlaAvailableTracks;	// label for the list of available tracks
 	private static JLabel 			jlaSelectedTracks;	// label for the list of selected tracks
 	private static JList 			jliAvailableTracks;	// list of available tracks
@@ -82,7 +83,6 @@ public class MultiTrackChooser extends JDialog {
 		initComponents(availableTracks);
 		addComponents();
 		this.pack();
-		//this.setResizable(false);
 		setModal(true);
 		validated = false;
 		setTitle("Select Tracks");
@@ -90,7 +90,7 @@ public class MultiTrackChooser extends JDialog {
 		setLocationRelativeTo(parent);
 		setSize(WINDOW_SIZE);
 	}
-	
+
 
 	/**
 	 * Initializes the subcomponents of the dialog box
@@ -101,14 +101,11 @@ public class MultiTrackChooser extends JDialog {
 		for (Track<?> currentTrack: availableTracks) {
 			dlmAvailableTracks.addElement(currentTrack);
 		}
-		
-		dlmSelectedTracks = new DefaultListModel();
-		
+
 		jlaAvailableTracks = new JLabel("Available Tracks");
 		jlaSelectedTracks = new JLabel("Selected Tracks");
-		
+
 		jliAvailableTracks = new JList(dlmAvailableTracks);
-		jliAvailableTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
 		jliAvailableTracks.setBorder(BorderFactory.createLineBorder(Color.black));
 		jliAvailableTracks.setBackground(Color.white);
 		jliAvailableTracks.addListSelectionListener(new ListSelectionListener() {			
@@ -139,9 +136,9 @@ public class MultiTrackChooser extends JDialog {
 				}
 			}
 		});
-		
+
 		jliSelectedTracks = new JList(dlmSelectedTracks);
-		jliSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
+		//jliSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
 		jliSelectedTracks.setBorder(BorderFactory.createLineBorder(Color.black));
 		jliSelectedTracks.setBackground(Color.white);
 		jliSelectedTracks.addListSelectionListener(new ListSelectionListener() {			
@@ -189,7 +186,7 @@ public class MultiTrackChooser extends JDialog {
 				}
 			}
 		});
-		
+
 		jbLeft = new JButton("<");
 		jbLeft.addActionListener(new ActionListener() {			
 			@Override
@@ -198,7 +195,7 @@ public class MultiTrackChooser extends JDialog {
 			}
 		});		
 		jbLeft.setEnabled(false);
-		
+
 		jbRight = new JButton(">");
 		jbRight.addActionListener(new ActionListener() {			
 			@Override
@@ -207,7 +204,7 @@ public class MultiTrackChooser extends JDialog {
 			}
 		});		
 		jbRight.setEnabled(false);
-		
+
 		jbUp = new JButton("Up");
 		jbUp.addActionListener(new ActionListener() {
 			@Override
@@ -216,7 +213,7 @@ public class MultiTrackChooser extends JDialog {
 			}
 		});
 		jbUp.setEnabled(false);
-		
+
 		jbDown = new JButton("Down");
 		jbDown.addActionListener(new ActionListener() {			
 			@Override
@@ -225,7 +222,7 @@ public class MultiTrackChooser extends JDialog {
 			}
 		});
 		jbDown.setEnabled(false);
-		
+
 		jbOk = new JButton("OK");
 		jbOk.addActionListener(new ActionListener() {			
 			@Override
@@ -233,7 +230,7 @@ public class MultiTrackChooser extends JDialog {
 				jbOkClicked();				
 			}
 		});
-		
+
 		jbCancel = new JButton("Cancel");
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
@@ -242,8 +239,8 @@ public class MultiTrackChooser extends JDialog {
 			}
 		});
 	}
-	
-	
+
+
 	/**
 	 * Adds the subcomponents
 	 */
@@ -275,7 +272,9 @@ public class MultiTrackChooser extends JDialog {
 		c.weighty = 1;
 		c.insets = new Insets(0, 10, 0, 0);
 		c.fill = GridBagConstraints.BOTH;
-		add(jliAvailableTracks, c);
+		JScrollPane scrollAvailableTracks = new JScrollPane(jliAvailableTracks);
+		scrollAvailableTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
+		add(scrollAvailableTracks, c);
 
 		c = new GridBagConstraints();
 		c.gridx = 1;
@@ -294,7 +293,7 @@ public class MultiTrackChooser extends JDialog {
 		c.anchor = GridBagConstraints.PAGE_START;
 		c.insets = new Insets(0, 10, 0, 10);
 		add(jbLeft, c);
-		
+
 		c = new GridBagConstraints();
 		c.gridx = 2;
 		c.gridy = 1;
@@ -302,7 +301,9 @@ public class MultiTrackChooser extends JDialog {
 		c.weightx = 1;
 		c.weighty = 1;
 		c.fill = GridBagConstraints.BOTH;
-		add(jliSelectedTracks, c);
+		JScrollPane scrollSelectedTracks = new JScrollPane(jliSelectedTracks);
+		scrollSelectedTracks.setPreferredSize(new Dimension(LIST_WIDTH, getPreferredSize().height));
+		add(scrollSelectedTracks, c);
 
 		c = new GridBagConstraints();
 		c.gridx = 3;
@@ -323,7 +324,7 @@ public class MultiTrackChooser extends JDialog {
 		c.anchor = GridBagConstraints.PAGE_START;
 		c.insets = new Insets(0, 10, 0, 10);
 		add(jbDown, c);
-		
+
 		c = new GridBagConstraints();
 		c.gridx = 2;
 		c.gridy = 3;
@@ -342,8 +343,8 @@ public class MultiTrackChooser extends JDialog {
 		c.insets = new Insets(10, 0, 10, 10);
 		add(jbCancel, c);
 	}
-	
-	
+
+
 	/**
 	 * Moves the selected {@link Track} down in the list of selected tracks
 	 */
@@ -380,7 +381,7 @@ public class MultiTrackChooser extends JDialog {
 			for (Track<?> currentTrack: selectedTracks) {
 				dlmAvailableTracks.addElement(currentTrack);
 				dlmSelectedTracks.removeElement(currentTrack);
-			}			
+			}
 		}		
 	}
 
@@ -400,8 +401,8 @@ public class MultiTrackChooser extends JDialog {
 			}			
 		}
 	}
-	
-	
+
+
 	/**
 	 * Closes the dialog. No action are performed.
 	 */
@@ -410,7 +411,7 @@ public class MultiTrackChooser extends JDialog {
 
 	}
 
-	
+
 	/**
 	 * Closes the dialog. Sets validated to true so the main function can return the two selected curves.
 	 */
@@ -419,7 +420,7 @@ public class MultiTrackChooser extends JDialog {
 		this.dispose();		
 	}
 
-	
+
 	/**
 	 * Displays a dialog box allowing the user to select tracks
 	 * @param parent the parent {@link Component} from which the dialog is displayed
@@ -427,6 +428,45 @@ public class MultiTrackChooser extends JDialog {
 	 * @return an array containing the track selected. Null if cancel was pressed
 	 */
 	public static Track<?>[] getSelectedTracks(Component parent, Track<?>[] availableTracks) {
+		// the list model for selected tracks must be empty
+		dlmSelectedTracks = new DefaultListModel();
+		
+		// show the dialog and return selected tracks
+		return getTracks(parent, availableTracks);
+	}
+
+
+	/**
+	 * Displays a dialog box allowing the user to select tracks.
+	 * This method allows user to define a list of track that are already selected 
+	 * @param parent the parent {@link Component} from which the dialog is displayed
+	 * @param availableTracks 	array of {@link Track} to select
+	 * @param selectedTracks 	array of {@link Track} already selected
+	 * @return an array containing the track selected. Null if cancel was pressed
+	 */
+	public static Track<?>[] getSelectedTracks(Component parent, Track<?>[] availableTracks, Track<?>[] selectedTracks) {
+		// the list model for selected tracks is set to empty
+		dlmSelectedTracks = new DefaultListModel();
+		
+		// we will try to add tracks in the list model for selected tracks
+		if (selectedTracks != null) {
+			for (Track<?> currentTrack: selectedTracks) {
+				dlmSelectedTracks.addElement(currentTrack);
+			}
+		}
+		
+		// show the dialog and return selected tracks
+		return getTracks(parent, availableTracks);
+	}
+	
+	
+	/**
+	 * Displays a dialog box allowing the user to select tracks.
+	 * @param parent the parent {@link Component} from which the dialog is displayed
+	 * @param availableTracks 	array of {@link Track} to select
+	 * @return an array containing the track selected. Null if cancel was pressed
+	 */
+	private static Track<?>[] getTracks (Component parent, Track<?>[] availableTracks) {
 		MultiTrackChooser mtc = new MultiTrackChooser(parent, availableTracks);
 		mtc.setVisible(true);
 		if(validated) {
@@ -439,4 +479,5 @@ public class MultiTrackChooser extends JDialog {
 			return null;
 		}
 	}
+
 }

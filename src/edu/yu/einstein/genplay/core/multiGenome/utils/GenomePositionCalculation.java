@@ -42,7 +42,7 @@ public class GenomePositionCalculation {
 	 */
 	public static int getNextGenomePosition(Variant variant) {
 		int nextGenomePosition = variant.getGenomePosition() + 1;
-		if (isInsertion(variant)) {
+		if (VariantType.isInsertion(variant.getType())){
 			nextGenomePosition += variant.getLength();
 		}
 		return nextGenomePosition;
@@ -77,7 +77,7 @@ public class GenomePositionCalculation {
 	public static int getNextReferenceGenomePosition(Variant variant, int position) {
 		int current = getReferenceGenomePosition(variant);
 		int difference = position - variant.getGenomePosition();
-		if (isInsertion(variant)) {
+		if (VariantType.isInsertion(variant.getType())){
 			if (difference > variant.getLength()) {
 				current += difference - variant.getLength();
 			} else {
@@ -85,7 +85,7 @@ public class GenomePositionCalculation {
 			}
 		} else {
 			current += difference;
-			if (isDeletion(variant)) {
+			if (VariantType.isDeletion(variant.getType())){
 				current += variant.getLength();
 			}
 		}
@@ -120,7 +120,7 @@ public class GenomePositionCalculation {
 	 */
 	public static int getNextMetaGenomePosition(Variant variant, int position) {
 		int current = getMetaGenomePosition(variant) + (position - variant.getGenomePosition());
-		if (!isInsertion(variant) && !isSNP(variant)) {
+		if (!VariantType.isInsertion(variant.getType()) && !VariantType.isSNP(variant.getType())) {
 			current += variant.getLength();
 		}
 		if (position > (variant.getGenomePosition() + variant.getLength())) {
@@ -149,45 +149,6 @@ public class GenomePositionCalculation {
 		int nextGenomePosition = getNextGenomePosition(variant);
 		int nextMetaGenomePosition = getNextMetaGenomePosition(variant, nextGenomePosition);
 		return nextMetaGenomePosition - nextGenomePosition;
-	}
-	
-	
-	/**
-	 * @param variant	a variant
-	 * @return			true if the variant is an insertion
-	 */
-	public static boolean isInsertion (Variant variant) {
-		if (variant.getType() == VariantType.INSERTION ||
-				variant.getType() == VariantType.INS) {
-			return true;
-		}
-		return false;
-	}
-	
-	
-	/**
-	 * @param variant	a variant
-	 * @return			true if the variant is a deletion
-	 */
-	public static boolean isDeletion (Variant variant) {
-		if (variant.getType() == VariantType.DELETION ||
-				variant.getType() == VariantType.DEL) {
-			return true;
-		}
-		return false;
-	}
-	
-	
-	/**
-	 * @param variant	a variant
-	 * @return			true if the variant is a SNP
-	 */
-	public static boolean isSNP (Variant variant) {
-		if (variant.getType() == VariantType.SNPS ||
-				variant.getType() == VariantType.SVSNPS) {
-			return true;
-		}
-		return false;
 	}
 	
 	

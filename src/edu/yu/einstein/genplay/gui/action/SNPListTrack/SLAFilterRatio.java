@@ -90,7 +90,7 @@ public class SLAFilterRatio extends TrackListActionOperationWorker<SNPList> {
 		if (actionResult != null) {
 			int index = selectedTrack.getTrackNumber() - 1;
 			Track<?> newTrack = new SNPListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getStripes(), selectedTrack.getMultiGenomeStripes());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}		
 	}
 

@@ -48,8 +48,6 @@ public class MultiGenomeStripes implements Serializable {
 	private static final long serialVersionUID = -4999509228556102365L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Map<String, Map<VariantType, Color>> 	colorAssociation;	// Association between variant type and color
-	private int 									transparency;		// Transparency (0 -> 100)
-	private int										quality;			// Quality threshold (0 -> 100)
 
 
 	/**
@@ -60,8 +58,6 @@ public class MultiGenomeStripes implements Serializable {
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(colorAssociation);
-		out.writeInt(transparency);
-		out.writeInt(quality);
 	}
 
 
@@ -75,8 +71,6 @@ public class MultiGenomeStripes implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		colorAssociation = (Map<String, Map<VariantType, Color>>) in.readObject(); 
-		transparency = in.readInt();
-		quality = in.readInt();
 	}
 	
 	
@@ -85,7 +79,6 @@ public class MultiGenomeStripes implements Serializable {
 	 */
 	public MultiGenomeStripes () {
 		colorAssociation = new HashMap<String, Map<VariantType,Color>>();
-		transparency = 50;
 	}
 
 
@@ -137,38 +130,6 @@ public class MultiGenomeStripes implements Serializable {
 			}
 		}
 		return genomes;
-	}
-
-
-	/**
-	 * @return the transparency
-	 */
-	public int getTransparency() {
-		return transparency;
-	}
-
-
-	/**
-	 * @param alpha the transparency to set
-	 */
-	public void setTransparency(int alpha) {
-		this.transparency = alpha * 100 / 255;
-	}
-
-
-	/**
-	 * @return the quality
-	 */
-	public int getQuality() {
-		return quality;
-	}
-
-
-	/**
-	 * @param quality the quality to set
-	 */
-	public void setQuality(int quality) {
-		this.quality = quality;
 	}
 
 

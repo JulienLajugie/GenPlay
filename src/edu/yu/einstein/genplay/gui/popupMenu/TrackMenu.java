@@ -29,13 +29,11 @@ import javax.swing.event.PopupMenuListener;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadStripes;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAMultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
@@ -55,21 +53,20 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 
 	private static final long serialVersionUID = -2376957246826289131L;	// generated ID
 
-	private final JMenuItem 	jmiCopy;				// menu copy track
-	private final JMenuItem 	jmiCut;					// menu cut track
-	private final JMenuItem 	jmiInsert;				// menu insert blank track
-	private final JMenuItem		jmiPaste;				// menu paste track
-	private final JMenuItem 	jmiDelete;				// menu delete track
-	private final JMenuItem 	jmiRename;				// menu rename track
-	private final JMenuItem 	jmiSetHeight;			// menu set height 
-	private final JMenuItem 	jmiSetVerticalLineCount;// menu set vertical line count
-	private final JMenuItem 	jmiSaveAsImage;			// menu save track as image
-	private final JMenuItem 	jmiLoadStripes;			// menu load stripes
-	private final JMenuItem 	jmiRemoveStripes;		// menu remove stripe
-	private final JMenuItem 	jmiMultiGenomeStripes;	// menu multi genome stripes
+	private final JMenuItem 	jmiCopy;					// menu copy track
+	private final JMenuItem 	jmiCut;						// menu cut track
+	private final JMenuItem 	jmiInsert;					// menu insert blank track
+	private final JMenuItem		jmiPaste;					// menu paste track
+	private final JMenuItem 	jmiDelete;					// menu delete track
+	private final JMenuItem 	jmiRename;					// menu rename track
+	private final JMenuItem 	jmiSetHeight;				// menu set height 
+	private final JMenuItem 	jmiSetVerticalLineCount;	// menu set vertical line count
+	private final JMenuItem 	jmiSaveAsImage;				// menu save track as image
+	private final JMenuItem 	jmiLoadStripes;				// menu load stripes
+	private final JMenuItem 	jmiRemoveStripes;			// menu remove stripe
 
-	protected final TrackList 	trackList;				// track list where the menu popped up
-	protected final ActionMap	actionMap;				// map containing the actions for this menu
+	protected final TrackList 	trackList;					// track list where the menu popped up
+	protected final ActionMap	actionMap;					// map containing the actions for this menu
 	
 	
 	/**
@@ -92,7 +89,6 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
 		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
 		jmiSetVerticalLineCount = new JMenuItem(actionMap.get(ATASetVerticalLineCount.ACTION_KEY));
-		jmiMultiGenomeStripes = new JMenuItem(actionMap.get(ATAMultiGenomeStripes.ACTION_KEY));
 		
 		add(jmiCopy);
 		add(jmiCut);
@@ -110,10 +106,6 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		addSeparator();
 		add(jmiLoadStripes);
 		add(jmiRemoveStripes);
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			addSeparator();
-			add(jmiMultiGenomeStripes);
-		}
 		
 		jmiPaste.setEnabled(trackList.isPasteEnable());
 		jmiRemoveStripes.setEnabled(trackList.isRemoveStripesEnable());

@@ -26,11 +26,13 @@ import javax.swing.ActionMap;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeProperties;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
@@ -47,24 +49,25 @@ public final class MainMenu extends JPopupMenu {
 
 	private static final long serialVersionUID = -8543113416095307670L; // generated ID
 
-	private final JMenuItem jmiNewProject;	// menu new project
-	private final JMenuItem jmiSaveProject;	// menu save project
-	private final JMenuItem jmiLoadProject;	// menu load project
-	private final JMenuItem jmiFullScreen;	// full screen
-	private final JMenuItem jmiOption;		// option
-	private final JMenuItem jmiRNAToDNAPos;	// option
-	private final JMenuItem jmiHelp;		// help
-	private final JMenuItem jmiAbout;		// about
-	private final JMenuItem jmiExit;		// exit
-	
-	
+	private final JMenuItem jmiNewProject;		// menu new project
+	private final JMenuItem jmiSaveProject;		// menu save project
+	private final JMenuItem jmiLoadProject;		// menu load project
+	private final JMenuItem jmiFullScreen;		// full screen
+	private final JMenuItem jmiOption;			// option
+	private final JMenuItem jmiMGProperties;	// multi genome project properties
+	private final JMenuItem jmiRNAToDNAPos;		// option
+	private final JMenuItem jmiHelp;			// help
+	private final JMenuItem jmiAbout;			// about
+	private final JMenuItem jmiExit;			// exit
+
+
 	/**
 	 * Creates an instance of {@link MainMenu}
 	 * @param actionMap {@link ActionMap} containing the {@link Action} of this menu
 	 */
 	public MainMenu(ActionMap actionMap) {
 		super("Main Menu");		
-		
+
 		jmiNewProject = new JMenuItem(actionMap.get(PANewProject.ACTION_KEY));
 		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
@@ -74,13 +77,22 @@ public final class MainMenu extends JPopupMenu {
 		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
 		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
-		
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			jmiMGProperties = new JMenuItem(actionMap.get(PAMultiGenomeProperties.ACTION_KEY));
+		} else {
+			jmiMGProperties = null;
+		}
+
 		add(jmiNewProject);
 		add(jmiLoadProject);
 		add(jmiSaveProject);
 		addSeparator();
 		add(jmiFullScreen);
 		add(jmiOption);
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			addSeparator();
+			add(jmiMGProperties);
+		}
 		addSeparator();
 		add(jmiRNAToDNAPos);
 		addSeparator();

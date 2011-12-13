@@ -100,4 +100,47 @@ public enum VariantType {
 	public String toString() {
 		return name;
 	}
+	
+	
+	/**
+	 * Checks if the given variant type is an insertion or not.
+	 * @param variantType 	the variant type
+	 * @return				true if it is an insertion, false otherwise
+	 */
+	public static boolean isInsertion (VariantType variantType) {
+		if (variantType == INSERTION || variantType == INS) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Checks if the given variant type is a deletion or not.
+	 * @param variantType 	the variant type
+	 * @return				true if it is a deletion, false otherwise
+	 */
+	public static boolean isDeletion (VariantType variantType) {
+		if (variantType == DELETION || variantType == DEL) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	/**
+	 * Checks if the given variant type is a SNP or not.
+	 * @param variantType 	the variant type
+	 * @return				true if it is a SNP, false otherwise
+	 */
+	public static boolean isSNP (VariantType variantType) {
+		if (variantType == SNPS || variantType == SVSNPS) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 }

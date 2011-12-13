@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.MultiTrackChooser;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
@@ -85,9 +84,8 @@ public class ETAGenerateMultiCurvesTrack extends TrackListAction {
 				}
 				int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
 				ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-				MultiGenomeStripes multiGenomeStripes = getTrackList().getSelectedTrack().getMultiGenomeStripes();
 				MultiCurvesTrack newTrack = new MultiCurvesTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
-				getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), trackName, stripes, multiGenomeStripes);	
+				getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), trackName, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());	
 			} else {
 				JOptionPane.showMessageDialog(getRootPane(), "You must select at least two tracks", "Warning", JOptionPane.WARNING_MESSAGE);
 			}

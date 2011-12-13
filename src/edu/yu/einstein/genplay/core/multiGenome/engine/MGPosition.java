@@ -86,6 +86,7 @@ public class MGPosition implements Serializable {
 		this.chromosome = chromosome;
 		this.reader = reader;
 		VCFLine = line;
+		this.reader.retrievePositionInformation(this);
 	}
 
 

@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
@@ -39,7 +38,6 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
@@ -230,7 +228,7 @@ public class SNPSynchroniser implements Serializable {
 		}
 	}
 
-	
+
 	@SuppressWarnings("unused") // use for development only
 	private void show (Variant variant) {
 		String info = variant.getGenomePosition() + " Ref (";
@@ -310,6 +308,27 @@ public class SNPSynchroniser implements Serializable {
 
 
 	/**
+	 * Checks if SNPs has to be removed from the list or not.
+	 * @param chromosome	the chromosome
+	 * @return 				true if SNPs must be removed, false otherwise
+	 */
+	public boolean hasToRemoveSNPs (Chromosome chromosome) {
+		if (!currentChromosome.equals(chromosome)) {
+			List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
+			chromosomeList.add(currentChromosome);
+
+			for (String genomeName: activeGenome.keySet()) {
+				boolean isActive = activeGenome.get(genomeName);
+				if (isActive) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * Compute the SNPs synchronization.
 	 * SNPs are loaded/released in/out of GenPlay according to settings. 
 	 */
@@ -342,9 +361,11 @@ public class SNPSynchroniser implements Serializable {
 	 * @param genomeName a genome name
 	 */
 	private void increaseCounter (String genomeName) {
-		int counter = genomeCounter.get(genomeName);
-		counter++;
-		genomeCounter.put(genomeName, counter);
+		if (genomeCounter.containsKey(genomeName)) {
+			int counter = genomeCounter.get(genomeName);
+			counter++;
+			genomeCounter.put(genomeName, counter);
+		}
 	}
 
 
@@ -353,10 +374,12 @@ public class SNPSynchroniser implements Serializable {
 	 * @param genomeName a genome name
 	 */
 	private void decreaseCounter (String genomeName) {
-		int counter = genomeCounter.get(genomeName);
-		if (counter > 0) {
-			counter--;
-			genomeCounter.put(genomeName, counter);
+		if (genomeCounter.containsKey(genomeName)) {
+			int counter = genomeCounter.get(genomeName);
+			if (counter > 0) {
+				counter--;
+				genomeCounter.put(genomeName, counter);
+			}
 		}
 	}
 
@@ -365,13 +388,12 @@ public class SNPSynchroniser implements Serializable {
 	 * Compares previous and new multi genome stripe in order to update lists of enabled genome SNPs.
 	 * Enable a genome for SNP will load its SNP information.
 	 * Disable a gnome for SNP will delete its SNP information.
-	 * @param previousSettings 	the previous {@link MultiGenomeStripes} object
-	 * @param newSettings		the new {@link MultiGenomeStripes} object
+	 * @param previousGenomes 	the previous required genomes list
+	 * @param nextGenomes		the new required genomes list
+	 * @return true if the counters update involve to compute the SNP synchroniser
 	 */
-	public void updateCounters (MultiGenomeStripes previousSettings, MultiGenomeStripes newSettings) {
-		List<String> nextGenomes = getGenomeNamesForSNP(newSettings.getRequiredGenomes());
-		if (previousSettings != null) {
-			List<String> previousGenomes = getGenomeNamesForSNP(previousSettings.getRequiredGenomes());
+	public boolean updateCounters (List<String> previousGenomes, List<String> nextGenomes) {
+		if (previousGenomes != null) {
 
 			// If genomes were present in the last multi genome stripe settings but not in the new one,
 			// they have to be disabled.
@@ -381,7 +403,7 @@ public class SNPSynchroniser implements Serializable {
 				}
 			}
 
-			// If genomes are present in the new mutli genome stripe settings but not in the previous one,
+			// If genomes are present in the new multi genome stripe settings but not in the previous one,
 			// they have to be enable.
 			for (String name: nextGenomes) {
 				if (!previousGenomes.contains(name)) {
@@ -395,23 +417,33 @@ public class SNPSynchroniser implements Serializable {
 				increaseCounter(name);
 			}
 		}
+		return mustBeCompute();
 	}
 
 
 	/**
-	 * Gathers genome names require for a SNP display
-	 * @param list association of genome name/variant type list
-	 * @return the list of genome names
+	 * Checks if the SNP Synchronizer has to be compute.
+	 * It is the same method as the compute method but perform any changes.
+	 * @return true if the the synchronizer has to be compute.
 	 */
-	private List<String> getGenomeNamesForSNP (Map<String, List<VariantType>> list) {
-		List<String> names = new ArrayList<String>();
-		for (String name: list.keySet()) {
-			List<VariantType> variantList = list.get(name);
-			if (variantList.contains(VariantType.SNPS)) {
-				names.add(name);
+	private boolean mustBeCompute () {
+		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
+		chromosomeList.add(currentChromosome);
+
+		for (String genomeName: activeGenome.keySet()) {
+			boolean isActive = activeGenome.get(genomeName);
+			int counter = genomeCounter.get(genomeName);
+
+			// if the genome is not active but its counter is positive
+			if (!isActive && counter > 0) {
+				return true;
+			}
+			// if the genome is active but its counter is null
+			else if (isActive && counter == 0) {
+				return true;
 			}
 		}
-		return names;
+		return false;
 	}
 
 
@@ -449,7 +481,7 @@ public class SNPSynchroniser implements Serializable {
 		}
 		return false;
 	}
-	
+
 
 	/**
 	 * @return the currentChromosome

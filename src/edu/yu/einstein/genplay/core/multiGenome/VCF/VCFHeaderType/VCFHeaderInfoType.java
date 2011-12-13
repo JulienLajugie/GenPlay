@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class manages the INFO VCF field type information.
@@ -38,7 +40,7 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 	private String description; 	// field description
 	private String number;			// the number of values that can be included
 	private Class<?> type;			// type of the value. Can be Integer, Float, Character, and String (and Flag for INFO field)
-
+	private Map<Object, Integer> values;
 	
 	
 	/**
@@ -52,6 +54,7 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 		out.writeObject(description);
 		out.writeObject(number);
 		out.writeObject(type);
+		out.writeObject(values);
 	}
 
 
@@ -61,6 +64,7 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked") // Check for "values" object reading.
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		int savedVersion = in.readInt();
 		id = (String) in.readObject();
@@ -70,10 +74,17 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 		} else {
 			number = (String) in.readObject();
 		}
-		type = (Class<?>) in.readObject();	
+		type = (Class<?>) in.readObject();
+		values = (Map<Object, Integer>) in.readObject();	
 	}
 	
 	
+	/**
+	 * Constructor of {@link VCFHeaderInfoType}
+	 */
+	public VCFHeaderInfoType () {
+		values = new HashMap<Object, Integer>();
+	}
 	
 	
 	@Override
@@ -123,5 +134,32 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 		this.type = type;
 	}
 
+	
+	@Override
+	public void addElement(Object element) {
+		//System.out.println(id + ": " + element.toString());
+		int cpt = 0;
+		if (values.containsKey(element)) {
+			cpt = values.get(element) + 1;
+		}
+		values.put(element, cpt);
+	}
+	
+	
+	/**
+	 * @return the values found for this header ID
+	 */
+	public Map<Object, Integer> getElements () {
+		return values;
+	}
+
+
+	@Override
+	public boolean acceptMoreElements() {
+		if (values.size() <= VCFHeaderType.ELEMENT_LIMIT) {
+			return true;
+		}
+		return false;
+	}
 	
 }

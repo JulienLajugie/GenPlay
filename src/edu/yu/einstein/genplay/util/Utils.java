@@ -657,4 +657,26 @@ public class Utils {
 		System.out.println(output);
 	}
 	
+	
+	/**
+	 * This methods reverse an array of int
+	 * @param b the int array
+	 * @return	the reversed array
+	 */
+	public static int[] reverse(int[] b) {
+		int left  = 0;          // index of leftmost element
+		int right = b.length-1; // index of rightmost element
+
+		while (left < right) {
+			// exchange the left and right elements
+			int temp = b[left];
+			b[left]  = b[right];
+			b[right] = temp;
+			// move the bounds toward the center
+			left++;
+			right--;
+		}
+		return b;
+	}
+	
 }

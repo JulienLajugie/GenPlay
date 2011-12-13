@@ -201,7 +201,7 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 				}
 			}
 		} else {
-			list = reverse(list);
+			list = edu.yu.einstein.genplay.util.Utils.reverse(list);
 			for (int i: list) {
 				if (i<(getRowCount()-1)){
 					objChromosome = data.get(i+1).get(1);
@@ -218,28 +218,6 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 			}
 		}
 		fireTableDataChanged();
-	}
-
-
-	/**
-	 * This methods reverse an array of int
-	 * @param b the int array
-	 * @return	the reversed array
-	 */
-	private int[] reverse(int[] b) {
-		int left  = 0;          // index of leftmost element
-		int right = b.length-1; // index of rightmost element
-
-		while (left < right) {
-			// exchange the left and right elements
-			int temp = b[left];
-			b[left]  = b[right];
-			b[right] = temp;
-			// move the bounds toward the center
-			left++;
-			right--;
-		}
-		return b;
 	}
 
 

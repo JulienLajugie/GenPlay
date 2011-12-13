@@ -108,7 +108,9 @@ public class Launcher {
 			load.setSkipFileSelection(true);
 			load.actionPerformed(null);
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
+			System.out.println(file.getPath());
 		}
 	}
 
@@ -119,9 +121,6 @@ public class Launcher {
 	private static void startProjectFrame() {
 		//Welcome screen initialization
 		ProjectFrame projectFrame = ProjectFrame.getInstance();
-		/*ProjectManager.getInstance().getProjectConfiguration();
-		ProjectManager.getInstance();
-		ProjectManager.getInstance().getProjectZoom();*/
 		// load the managers from the configuration files
 		loadManagers();
 		//Create a new thread to display the welcome screen
@@ -156,7 +155,7 @@ public class Launcher {
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSimpleProject()) {
 			ProjectManager.getInstance().setMultiGenomeProject(true);
-			//System.out.println("initiateNewProject");
+			MainFrame.getInstance().setMapsForMultiGenome();
 			PAMultiGenome multiGenome = new PAMultiGenome();
 			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
 			multiGenome.actionPerformed(null);

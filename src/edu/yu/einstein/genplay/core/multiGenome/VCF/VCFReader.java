@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
 
@@ -68,8 +69,8 @@ public class VCFReader implements Serializable {
 	private	Map<String, Class<?>>				fieldType;		// Association between field type and java class
 	private List<VCFHeaderType> 				altHeader;		// Header for the ALT field
 	private List<VCFHeaderType> 				filterHeader;	// Header for the FILTER field
-	private ArrayList<VCFHeaderAdvancedType> 	infoHeader;		// Header for the INFO field
-	private ArrayList<VCFHeaderAdvancedType> 	formatHeader;	// Header for the FORMAT field
+	private List<VCFHeaderAdvancedType> 		infoHeader;		// Header for the INFO field
+	private List<VCFHeaderAdvancedType> 		formatHeader;	// Header for the FORMAT field
 
 
 	/**
@@ -281,11 +282,23 @@ public class VCFReader implements Serializable {
 		String detail[];
 		for (String s: details) {
 			detail = s.split("=");
-			if (detail.length == 2) {
+			if (detail.length > 1) {
 				if (detail[0].equals("Description")) {
-					int start = line.indexOf("\"") + 1;
-					int stop = line.indexOf("\"", start);
-					String element = line.substring(start, stop);
+					String element;
+					if (detail.length == 2) {
+						element = detail[1].substring(1, detail[1].length() - 1);
+					} else {
+						element = "";
+						for (int i = 1; i < detail.length; i++) {
+							if (i == 1) {
+								element += detail[i].substring(1) + "=";
+							} else if (i == (detail.length - 1)) {
+								element += detail[i].substring(0, detail[i].length() - 1);
+							} else {
+								element += detail[i] + "=";
+							}
+						}
+					}
 					info.put(detail[0], element);
 				} else {
 					info.put(detail[0], detail[1]);
@@ -406,7 +419,7 @@ public class VCFReader implements Serializable {
 	 * @throws IOException
 	 */
 	public List<Map<String, Object>> shortQuery () throws IOException {
-		Iterator iter = vcfParser.shortQuery();
+		Iterator iter = vcfParser.shortQuery(0);
 		List<String> fields = new ArrayList<String>();
 		fields.add("REF");
 		fields.add("ALT");
@@ -632,6 +645,14 @@ public class VCFReader implements Serializable {
 
 
 	/**
+	 * @return the headerInfo
+	 */
+	public Map<String, String> getHeaderInfo() {
+		return headerInfo;
+	}
+
+
+	/**
 	 * @return the altHeader
 	 */
 	public List<VCFHeaderType> getAltHeader() {
@@ -650,7 +671,7 @@ public class VCFReader implements Serializable {
 	/**
 	 * @return the infoHeader
 	 */
-	public ArrayList<VCFHeaderAdvancedType> getInfoHeader() {
+	public List<VCFHeaderAdvancedType> getInfoHeader() {
 		return infoHeader;
 	}
 
@@ -658,7 +679,7 @@ public class VCFReader implements Serializable {
 	/**
 	 * @return the formatHeader
 	 */
-	public ArrayList<VCFHeaderAdvancedType> getFormatHeader() {
+	public List<VCFHeaderAdvancedType> getFormatHeader() {
 		return formatHeader;
 	}
 
@@ -670,4 +691,72 @@ public class VCFReader implements Serializable {
 		return file;
 	}
 
+
+	@Override
+	public String toString () {
+		return file.getName();
+	}
+
+
+	/////////////////////////////////////////////////
+
+	/**
+	 * Analyze a a VCF position line to update the IDs elements lists.
+	 * @param positionInformation the position information object
+	 */
+	public void retrievePositionInformation (MGPosition positionInformation) {
+		retrieveINFOValues(positionInformation.getInfo());
+		retrieveFORMATValues(positionInformation);
+	}
+
+
+	/**
+	 * Analyze a a VCF INFO line to update the IDs elements lists.
+	 * @param line a INFO line of a VCF
+	 */
+	private void retrieveFORMATValues (MGPosition positionInformation) {
+		if (formatHeader.size() > 0) {
+			for (String genomeRawName: genomeNames) {
+				for (VCFHeaderAdvancedType header: formatHeader) {
+					if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
+						Object value = positionInformation.getFormatValue(genomeRawName, header.getId());
+						header.addElement(value);
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Analyze a a VCF INFO line to update the IDs elements lists.
+	 * @param line a INFO line of a VCF
+	 */
+	private void retrieveINFOValues (String line) {
+		if (infoHeader.size() > 0) {
+			for (VCFHeaderAdvancedType header: infoHeader) {
+				if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
+					Object value = getIDValue(line, header.getId());
+					header.addElement(value);
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Looks in a line for an ID in order to return its value
+	 * @param line	part of a VCF line
+	 * @param ID	ID name
+	 * @return		the value of the ID
+	 */
+	private Object getIDValue (String line, String ID) {
+		int indexID = line.indexOf(ID);
+		int indexValue = indexID + ID.length() + 1;
+		int indexEnd = line.indexOf(";", indexValue);
+		if (indexEnd == -1) {
+			indexEnd = line.length();
+		}
+		return line.substring(indexValue, indexEnd);
+	}
 }

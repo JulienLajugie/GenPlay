@@ -3,12 +3,15 @@ package edu.yu.einstein.genplay.core.multiGenome.tabixAPI;
 /* Contact: Heng Li <hengli@broadinstitute.org> */
 
 
-import net.sf.samtools.util.BlockCompressedInputStream;
-import java.io.*;
-import java.nio.*;
-import java.util.HashMap;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
-import java.lang.StringBuffer;
+import java.util.HashMap;
+
+import net.sf.samtools.util.BlockCompressedInputStream;
 
 
 /**
@@ -219,10 +222,10 @@ public class TabixReader {
 
 	
 	/**
+	 * @param indexChr index of the chromosome (e.g.: 0)
 	 * @return the results of the first chromosome presents in the VCF 
 	 */
-	public Iterator shortQuery () {
-		int indexChr = 0;
+	public Iterator shortQuery (int indexChr) {
 		int begin = 0;
 		int end = 1<<29;
 		return query(indexChr, begin, end);

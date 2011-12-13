@@ -78,6 +78,7 @@ public class VCFLoaderDialog extends JDialog {
 	private final static 	String 			ADD_ICON_PATH 		= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 		// path of the add entry icon
 	private final static 	String 			REPLACE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/edit_entry_50x50.png"; 		// path of the edit entry icon
 	private final static 	String 			DELETE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/delete_entry_50x50.png"; 	// path of the delete entry icon
+	private final static 	String 			MOUSE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/mouse_right_click_50x50.png"; 	// path of the mouse icon
 	private static final 	String 			FONT_NAME			= "ARIAL";										// name of the font
 	private static final 	int 			FONT_SIZE 			= 11;											// size of the font
 	private static final 	int 			DIALOG_WIDTH 		= 700;											// width of the dialog
@@ -201,6 +202,13 @@ public class VCFLoaderDialog extends JDialog {
 		label.setFont(font);
 		gbc.gridx = 0;
 		gbc.gridy = 3;
+		informationPanel.add(label, gbc);
+		
+		label = new JLabel("Add/Delete row(s)");
+		label.setIcon(getIcon(MOUSE_ICON_PATH, fm.getHeight()));
+		label.setFont(font);
+		gbc.gridx = 0;
+		gbc.gridy = 4;
 		informationPanel.add(label, gbc);
 
 		return informationPanel;

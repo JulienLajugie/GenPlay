@@ -30,7 +30,6 @@ import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.MultiGenomeStripes;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
@@ -100,11 +99,10 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-			MultiGenomeStripes multiGenomeStripes = getTrackList().getSelectedTrack().getMultiGenomeStripes();
 			SCWListTrack newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load From DAS Server", Color.GRAY);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
-			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, multiGenomeStripes);
+			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}							
 	}
 }

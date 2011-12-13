@@ -179,7 +179,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	private void initializesTrackListForMultiGenomeProject () {
 		Track<?>[] tracks = MainFrame.getInstance().getTrackList().getTrackList();
 		for (Track<?> track: tracks) {
-			if (track.getMultiGenomeStripes() == null) {
+			if (track.getStripesList() == null) {
 				track.multiGenomeInitializing();
 			}
 		}
