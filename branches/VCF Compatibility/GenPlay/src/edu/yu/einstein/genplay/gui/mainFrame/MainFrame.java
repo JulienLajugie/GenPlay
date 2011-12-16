@@ -243,8 +243,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 				(!projectChromosome.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
 			projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
 			PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
-			multiGenomeSNP.setNewChromosome(projectChromosome.getCurrentChromosome());
-			multiGenomeSNP.actionPerformed(null);
+			/*multiGenomeSNP.setNewChromosome(projectChromosome.getCurrentChromosome());
+			multiGenomeSNP.actionPerformed(null);*/
 		}
 
 		if (evt.getSource() != ruler) {

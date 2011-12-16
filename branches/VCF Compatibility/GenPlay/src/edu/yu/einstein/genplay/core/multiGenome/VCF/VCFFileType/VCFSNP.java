@@ -298,7 +298,4 @@ public class VCFSNP implements Variant {
 		return positionInformation.getFormatValue(getRawGenomeName(), field);
 	}
 	
-	
-	
-	
 }

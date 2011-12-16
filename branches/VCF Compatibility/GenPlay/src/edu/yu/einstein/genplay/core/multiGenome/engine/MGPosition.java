@@ -198,6 +198,14 @@ public class MGPosition implements Serializable {
 		String[] formatValues;
 		if (formatHeader.length == 1) {
 			formatValues = new String[1];
+			/*try {
+				formatValues[0] = getString(VCFLine.get(genomeRawName));
+			} catch (Exception e) {
+				for (String key: VCFLine.keySet()) {
+					System.out.println(key + ": " + VCFLine.get(key));
+				}
+				//System.out.println(genomeRawName + ": " + VCFLine.get(genomeRawName));
+			}*/
 			formatValues[0] = getString(VCFLine.get(genomeRawName));
 		} else {
 			formatValues = getString(VCFLine.get(genomeRawName)).split(":");
@@ -282,4 +290,14 @@ public class MGPosition implements Serializable {
 	private String getString (Object o) {
 		return o.toString().trim();
 	}
+
+
+	/**
+	 * @return the reader
+	 */
+	public VCFReader getReader() {
+		return reader;
+	}
+	
+	
 }

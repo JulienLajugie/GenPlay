@@ -28,18 +28,15 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSV;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
 import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
@@ -87,11 +84,14 @@ public class GenomeSynchronizer implements Serializable {
 	private		ReferenceGenomeSynchroniser		referenceGenomeSynchroniser;	// Instance of the Reference Genome Synchroniser
 	private		SNPSynchroniser					snpSynchroniser;				// Instance of the SNP Synchroniser
 	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;			// Mapping between genome names and their reader.
+	private		List<String>					genomeNames;					//
 	private		CoordinateSystemType 			cst;
 	private		boolean							dataComputed = false;			// Uses after every multi genome process
 
+
+	private int[] stats = {0, 0, 0, 0, 0, 0, 0, 0};
 	
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -139,8 +139,8 @@ public class GenomeSynchronizer implements Serializable {
 		cst = CoordinateSystemType.METAGENOME;
 		dataComputed = false;
 	}
-	
-	
+
+
 	/**
 	 * Initializes the multi genome objects:
 	 * - genome information
@@ -148,11 +148,11 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param chromosome 
 	 */
 	public void initializesGenomeSynchronizer (Chromosome chromosome) {
-		genomesInformation.initMultiGenomeInformation(getGenomeNameList());
-		snpSynchroniser.initializesSNPSynchroniser(chromosome, genomesInformation, getSNPReaders());
+		genomesInformation.initMultiGenomeInformation(genomeNames);
+		//snpSynchroniser.initializesSNPSynchroniser(chromosome, genomesInformation, null);
 	}
-	
-	
+
+
 	/**
 	 * Sets the mapping table between vcf file and their related genomes.
 	 * Initializes genomes information hierarchy (genomes > chromosomes).
@@ -161,25 +161,8 @@ public class GenomeSynchronizer implements Serializable {
 	 */
 	public void setGenomeFileAssociation(Map<String, List<VCFReader>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
-	}
-	
-	
-	/**
-	 * @return the list of SNPs readers
-	 */
-	private Map<String, VCFReader> getSNPReaders () {
-		Map<String, VCFReader> SNPReaders = new HashMap<String, VCFReader>();
-		
-		for (String genomeName: genomeFileAssociation.keySet()) {
-			for (VCFReader reader: genomeFileAssociation.get(genomeName)) {
-				if (reader.getVcfType().equals(VCFType.SNPS)) {
-					SNPReaders.put(genomeName, reader);
-					break;
-				}
-			}
-		}
-		
-		return SNPReaders;
+		genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
+		Collections.sort(genomeNames);
 	}
 
 
@@ -195,12 +178,22 @@ public class GenomeSynchronizer implements Serializable {
 			compileData(referenceGenomeName, chromosomeList);
 			metaGenomeSynchroniser.computeGenomeSize();
 			metaGenomeSynchroniser.refreshChromosomeReferences();
-			snpSynchroniser.refreshCurrentChromosome(metaGenomeSynchroniser.getChromosomeList());
+			//snpSynchroniser.refreshCurrentChromosome(metaGenomeSynchroniser.getChromosomeList());
 			//showData();
+			String info = "";
+			info += "Indel:     " + stats[0] + "\n";
+			info += "SV:        " + stats[1] + "\n";
+			info += "SNPs:      " + stats[2] + "\n";
+			info += "Breakends: " + stats[3] + "\n";
+			info += "Valid alternative:      " + stats[7] + "\n";
+			info += "Allele error (1/2):     " + stats[4] + "\n";
+			info += "No variation (0/0):     " + stats[5] + "\n";
+			info += "Reference error (-1/0): " + stats[6] + "\n";
+			//System.out.println(info);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Refreshes chromosome references from a chromosome list information.
 	 * @param chromosomeList the chromosome list
@@ -236,25 +229,21 @@ public class GenomeSynchronizer implements Serializable {
 		boolean valid = false;
 		List<VCFReader> fileReaders = getReaderList();
 		for (VCFReader reader: fileReaders) {
+			valid = true;
+			for (final Chromosome chromosome: chromosomeList) {
+				//Adds the chromosome to the reference genome chromosome list
+				referenceGenomeSynchroniser.addChromosome(chromosome.getName());
 
-			VCFType vcfType = reader.getVcfType();
-			if (vcfType != VCFType.SNPS) {
-				valid = true;
-				for (final Chromosome chromosome: chromosomeList) {
-					//Adds the chromosome to the reference genome chromosome list
-					referenceGenomeSynchroniser.addChromosome(chromosome.getName());
+				//Performs query on the current VCF to get all data regarding the chromosome
+				List<Map<String, Object>> result = reader.query(chromosome.getName(),
+						0,
+						chromosome.getLength());
+				
+				final List<String> genomeNames = getRequiredGenomeNamesInVCFFile(reader);
 
-					//Performs query on the current VCF to get all data regarding the chromosome
-					List<Map<String, Object>> result = reader.query(chromosome.getName(),
-							0,
-							chromosome.getLength());
-
-					final List<String> genomeNames = getRequiredGenomeNamesInVCFFile(reader);
-
-					//Analyze query results
-					createPositions(chromosome, genomeNames, result, vcfType, reader);
-					result = null;
-				}
+				//Analyze query results
+				createPositions(chromosome, genomeNames, result, reader);
+				result = null;
 			}
 		}
 		return valid;
@@ -268,15 +257,14 @@ public class GenomeSynchronizer implements Serializable {
 	 * @return 			the list of genome names
 	 */
 	private List<String> getRequiredGenomeNamesInVCFFile (VCFReader reader) {
-		final List<String> projectGenomeNames = getGenomeNameList();
 		final List<String> vcfGenomeNames = reader.getRawGenomesNames();
-		List<String> genomeNames = new ArrayList<String>();
-		for (String fullName: projectGenomeNames) {
+		List<String> requiredGenomeNames = new ArrayList<String>();
+		for (String fullName: genomeNames) {
 			if (vcfGenomeNames.contains(FormattedMultiGenomeName.getRawName(fullName))) {
-				genomeNames.add(fullName);
+				requiredGenomeNames.add(fullName);
 			}
 		}
-		return genomeNames;
+		return requiredGenomeNames;
 	}
 
 
@@ -287,26 +275,73 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param result		query result
 	 * @param reader 
 	 */
-	private void createPositions (Chromosome chromosome, List<String> genomeNames, List<Map<String, Object>> result, VCFType vcfType, VCFReader reader) {
+	private void createPositions (Chromosome chromosome, List<String> genomeNames, List<Map<String, Object>> result, VCFReader reader) {
 		if (result != null) {
 			for (Map<String, Object> info: result) {	// Scans every result lines
 				referenceGenomeSynchroniser.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString().trim()));
 				MGPosition positionInformation = new MGPosition(chromosome, info, reader);
-
+				
 				for (String genomeName: genomeNames) {
-
-					Variant variant = null;
-					if (vcfType == VCFType.INDELS) {
-						variant = new VCFIndel(genomeName, chromosome, positionInformation);
-					} else if (vcfType == VCFType.SV) {
-						variant = new VCFSV(genomeName, chromosome, positionInformation);
-					} else if (vcfType == VCFType.SNPS) {
-						// would probably never happen
-						System.out.println("it happens");
-						variant = new VCFSNP(genomeName, chromosome, positionInformation);
+					String alternative = null;
+					String gt = positionInformation.getFormatValue(FormattedMultiGenomeName.getRawName(genomeName), "GT").toString();
+					int alleleA = Integer.parseInt("" + gt.charAt(0));
+					int alleleB;
+					if (gt.length() == 3) {
+						alleleB = Integer.parseInt("" + gt.charAt(2));
+					} else {
+						alleleB = alleleA;
 					}
 
-					genomesInformation.addVariant(genomeName, chromosome, variant);
+					if (alleleA != alleleB && alleleA != 0 && alleleB != 0) {
+						//System.err.println("allele erreur");
+						stats[4]++;
+					} else {
+						int pos = alleleA;
+						if (pos == 0) {
+							pos = alleleB;
+						}
+						pos--;
+						if (pos >= 0) {
+							String alt[] = positionInformation.getAlternative().split(",");
+							if (pos < alt.length) {
+								alternative = alt[pos];
+								stats[7]++;
+							} else {
+								//System.out.println("the line contains an error: refer to an alternative index that does not exist");
+								stats[6]++;
+							}
+						} else {
+							//System.out.println("no variation for this genome");
+							stats[5]++;
+						}
+					}
+
+					if (alternative != null) {
+						Variant variant = null;
+						if (alternative.charAt(0) == '<') {
+							variant = new VCFSV(genomeName, chromosome, positionInformation);
+							stats[1]++;
+						} else if (alternative.contains("[") || alternative.contains("]")) {
+							//System.out.println("GenPlay does not support: Complex Rearrangements with Breakends");
+							stats[3]++;
+						} else {
+							int refLength = positionInformation.getReference().length();
+							int altLength = alternative.length();
+							if (refLength == altLength && refLength == 1) {
+								// SNP
+								//variant = new VCFSNP(genomeName, chromosome, positionInformation);
+								stats[2]++;
+							} else {
+								variant = new VCFIndel(genomeName, chromosome, positionInformation);
+								stats[0]++;
+							}
+
+						}
+
+						if (variant != null) {
+							genomesInformation.addVariant(genomeName, chromosome, variant);
+						}
+					}
 				}
 			}
 		}
@@ -348,7 +383,7 @@ public class GenomeSynchronizer implements Serializable {
 							currentInformation.setInitialMetaGenomeOffset(previousInformation.getNextMetaGenomePositionOffset());	// Initial meta genome offset must be set according to the previous position
 							currentInformation.setInitialReferenceOffset(previousInformation.getNextReferencePositionOffset());		// Initial reference genome offset must be set according to the previous position
 						}
-						if (VariantType.isInsertion(currentInformation.getType())){									// If the current position is an insertion
+						if (currentInformation.getType() == VariantType.INSERTION){									// If the current position is an insertion
 							insertPositions.add(currentInformation.getLength());									// It is necessary to store its length in order to update other tracks
 						}
 					}
@@ -479,7 +514,7 @@ public class GenomeSynchronizer implements Serializable {
 		return max;
 	}
 
-	
+
 	/**
 	 * @return the list of readers
 	 */
@@ -494,8 +529,8 @@ public class GenomeSynchronizer implements Serializable {
 		}
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * Get a vcf reader object with a vcf file name.
 	 * @param fileName 	the name of the vcf file
@@ -510,17 +545,15 @@ public class GenomeSynchronizer implements Serializable {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @return the list of genome names
 	 */
 	public List<String> getGenomeNameList () {
-		List<String> list = new ArrayList<String>(genomeFileAssociation.keySet());
-		Collections.sort(list);
-		return list;
+		return genomeNames;
 	}
-	
+
 	/**
 	 * @return the total number of genome
 	 */
@@ -538,8 +571,7 @@ public class GenomeSynchronizer implements Serializable {
 		String[] names = new String[getGenomeNumber() + 1];
 		names[0] = ProjectManager.getInstance().getAssembly().getDisplayName();
 		int index = 1;
-		List<String> namesList = getGenomeNameList();
-		for (String name: namesList) {
+		for (String name: genomeNames) {
 			names[index] = name;
 			index++;
 		}
@@ -571,8 +603,8 @@ public class GenomeSynchronizer implements Serializable {
 	public MGChromosome getChromosomeInformation(String genome, Chromosome chromosome) {
 		return genomesInformation.getChromosomeInformation(genome, chromosome);
 	}
-	
-	
+
+
 	/**
 	 * @param genome 		the raw genome name
 	 * @return 				the genome information
@@ -580,8 +612,8 @@ public class GenomeSynchronizer implements Serializable {
 	public MGGenome getGenomeInformation(String genome) {
 		return genomesInformation.getGenomeInformation(genome);
 	}
-	
-	
+
+
 	/**
 	 * @return the genomesInformation
 	 */
@@ -589,7 +621,7 @@ public class GenomeSynchronizer implements Serializable {
 		return genomesInformation;
 	}
 
-	
+
 	/**
 	 * @return the genomeFileAssociation
 	 */
@@ -623,15 +655,15 @@ public class GenomeSynchronizer implements Serializable {
 
 
 	//////////////////////////////Show methods
-	
+
 	/**
 	 * Shows genomes information.
 	 */
 	public void showData () {
 		genomesInformation.showData();
 	}
-	
-	
+
+
 	/**
 	 * Shows the genome associations.
 	 */
@@ -640,7 +672,7 @@ public class GenomeSynchronizer implements Serializable {
 		for (String genomeName: genomeFileAssociation.keySet()) {
 			result += genomeName + ":\n";
 			for (VCFReader reader: genomeFileAssociation.get(genomeName)) {
-				result += "\t" + reader.getFile().getPath() + " (" + reader.getVcfType().toString() + ")\n";
+				result += "\t" + reader.getFile().getPath() + "\n";
 			}
 		}
 		System.out.println(result);

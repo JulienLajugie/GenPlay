@@ -92,7 +92,7 @@ public class GlobalInformationPanel extends JPanel {
 			gbc = addObjectRow("Position: ", variant.getMetaGenomePosition() + " to " + stopPosition, gbc);
 			gbc = addObjectRow("Length: ", "" + (stopPosition - variant.getMetaGenomePosition()), gbc);
 			gbc = addObjectRow("Type: ", displayableVariant.getType().toString(), gbc);
-			if ((displayableVariant.getType() == VariantType.SNPS | displayableVariant.getType() == VariantType.SVSNPS) && !variant.getId().equals(".")) {
+			if (displayableVariant.getType() == VariantType.SNPS && !variant.getId().equals(".")) {
 				gbc = addLabelRow("ID: ", getIDLabel(variant.getId()), gbc);
 			} else {
 				gbc = addObjectRow("ID: ", variant.getId(), gbc);

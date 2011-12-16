@@ -42,7 +42,7 @@ public class GenomePositionCalculation {
 	 */
 	public static int getNextGenomePosition(Variant variant) {
 		int nextGenomePosition = variant.getGenomePosition() + 1;
-		if (VariantType.isInsertion(variant.getType())){
+		if (variant.getType() == VariantType.INSERTION){
 			nextGenomePosition += variant.getLength();
 		}
 		return nextGenomePosition;
@@ -77,7 +77,7 @@ public class GenomePositionCalculation {
 	public static int getNextReferenceGenomePosition(Variant variant, int position) {
 		int current = getReferenceGenomePosition(variant);
 		int difference = position - variant.getGenomePosition();
-		if (VariantType.isInsertion(variant.getType())){
+		if (variant.getType() == VariantType.INSERTION){
 			if (difference > variant.getLength()) {
 				current += difference - variant.getLength();
 			} else {
@@ -85,7 +85,7 @@ public class GenomePositionCalculation {
 			}
 		} else {
 			current += difference;
-			if (VariantType.isDeletion(variant.getType())){
+			if (variant.getType() == VariantType.DELETION){
 				current += variant.getLength();
 			}
 		}
@@ -120,7 +120,7 @@ public class GenomePositionCalculation {
 	 */
 	public static int getNextMetaGenomePosition(Variant variant, int position) {
 		int current = getMetaGenomePosition(variant) + (position - variant.getGenomePosition());
-		if (!VariantType.isInsertion(variant.getType()) && !VariantType.isSNP(variant.getType())) {
+		if (variant.getType() != VariantType.INSERTION && variant.getType() != VariantType.SNPS) {
 			current += variant.getLength();
 		}
 		if (position > (variant.getGenomePosition() + variant.getLength())) {

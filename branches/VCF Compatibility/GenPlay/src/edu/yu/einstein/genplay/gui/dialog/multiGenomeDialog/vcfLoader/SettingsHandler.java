@@ -31,8 +31,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edu.yu.einstein.genplay.core.enums.VCFType;
-
 /**
  * This class manages the multi genome import/export settings.
  * It concerns all association maps loading/saving.
@@ -61,16 +59,7 @@ public class SettingsHandler extends DefaultHandler {
 			String genome = attributes.getValue(getFormattedString(VCFData.GENOME_NAME));
 			String raw = attributes.getValue(getFormattedString(VCFData.RAW_NAME));
 			String path = attributes.getValue(getFormattedString(VCFData.FILE_NAME));
-			String type = attributes.getValue(getFormattedString(VCFData.TYPE_NAME));
-			VCFType vcfType = null;
-			if (type.equals(VCFType.INDELS.toString())) {
-				vcfType = VCFType.INDELS;
-			} else if (type.equals(VCFType.SV.toString())) {
-				vcfType = VCFType.SV;
-			} else if (type.equals(VCFType.SNPS.toString())) {
-				vcfType = VCFType.SNPS;
-			}
-			VCFData vcfData = new VCFData(group, genome, raw, new File(path), vcfType);
+			VCFData vcfData = new VCFData(group, genome, raw, new File(path));
 			data.add(vcfData);
 		}
 	}
@@ -109,7 +98,6 @@ public class SettingsHandler extends DefaultHandler {
 				out.write(getFormattedString(VCFData.GENOME_NAME) + "=\"" + vcfData.getGenome() + "\" ");
 				out.write(getFormattedString(VCFData.RAW_NAME) + "=\"" + vcfData.getRaw() + "\" ");
 				out.write(getFormattedString(VCFData.FILE_NAME) + "=\"" + vcfData.getFile() + "\" ");
-				out.write(getFormattedString(VCFData.TYPE_NAME) + "=\"" + vcfData.getType() + "\" ");
 				out.write("/>\n");
 			}
 			out.write("</settings>");

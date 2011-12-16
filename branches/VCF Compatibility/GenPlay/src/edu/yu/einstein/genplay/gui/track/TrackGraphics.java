@@ -265,17 +265,17 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			displayableVariantListCreator.SNPUpdate();
 		}
 		displayableVariantList = displayableVariantListCreator.getFittedData(genomeWindow, xFactor);
-		
-		
+
+
 		int[] stats = {0, 0, 0};
 		for (DisplayableVariant variant: displayableVariantList) {
 			VariantType type = variant.getType();
 			if (type != VariantType.MIX && type != VariantType.BLANK) {
-				if (type == VariantType.INSERTION || type == VariantType.INS) {
+				if (type == VariantType.INSERTION) {
 					stats[0]++;
-				} else if (type == VariantType.DELETION || type == VariantType.DEL) {
+				} else if (type == VariantType.DELETION) {
 					stats[1]++;
-				} else if (type == VariantType.SNPS  || type == VariantType.SVSNPS) {
+				} else if (type == VariantType.SNPS) {
 					stats[2]++;
 				}
 			}
@@ -329,12 +329,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					drawRect(g, displayableVariant, blankZoneColor, noAlleleColor);
 				} else {
 					cptOther++;
-					
-					if (type.equals(VariantType.INSERTION) || type.equals(VariantType.INS)) {
+
+					if (type.equals(VariantType.INSERTION)) {
 						cptIns++;
-					} else if (type.equals(VariantType.DELETION) || type.equals(VariantType.DEL)) {
+					} else if (type.equals(VariantType.DELETION)) {
 						cptDel++;
-					} else if (type.equals(VariantType.SNPS)  || type.equals(VariantType.SVSNPS)) {
+					} else if (type.equals(VariantType.SNPS)) {
 						cptSNP++;
 					}
 
@@ -695,8 +695,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 				// Gets the real size of the list
 				int colorsSize = colors.size();
-				if (colors.containsKey(VariantType.INS)) { colorsSize--;}	// Ins/Insertion types refer to the same main type: insertion 
-				if (colors.containsKey(VariantType.DEL)) { colorsSize--;}	// Del/Deletion types refer to the same main type: deletion
 
 				// If variant type/color exist
 				if (colorsSize > 0) {
@@ -712,23 +710,20 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					int colorCounter = 0;
 
 					for (VariantType type: colors.keySet()) {
-						if (type != VariantType.INS && type != VariantType.DEL && type != VariantType.SVSNPS) {	// these types are automatically added when user selects "insertion" or "deletion",
-							// it is useless to treat them and redundant.
-							colorCounter++;
-							// Add the variant type shortcut
-							if (type == VariantType.INSERTION) {
-								stripeLegendText.add("I");
-							} else if (type == VariantType.DELETION) {
-								stripeLegendText.add("D");
-							} else if (type == VariantType.SNPS) {
-								stripeLegendText.add("SNPs");
-							}
-							stripeLegendColor.add(colors.get(type));		// add the chosen color
+						colorCounter++;
+						// Add the variant type shortcut
+						if (type == VariantType.INSERTION) {
+							stripeLegendText.add("I");
+						} else if (type == VariantType.DELETION) {
+							stripeLegendText.add("D");
+						} else if (type == VariantType.SNPS) {
+							stripeLegendText.add("SNPs");
+						}
+						stripeLegendColor.add(colors.get(type));		// add the chosen color
 
-							if (colorCounter < colorsSize) {				// if there is other selected variation type
-								stripeLegendText.add(", ");					// add a ", "
-								stripeLegendColor.add(textColor);			// with the text color
-							}
+						if (colorCounter < colorsSize) {				// if there is other selected variation type
+							stripeLegendText.add(", ");					// add a ", "
+							stripeLegendColor.add(textColor);			// with the text color
 						}
 					}
 

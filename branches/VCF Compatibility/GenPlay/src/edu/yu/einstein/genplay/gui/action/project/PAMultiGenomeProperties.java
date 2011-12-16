@@ -103,7 +103,7 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 */
 	private void approve () {
 		// Update the SNPs
-		updateSNP();
+		//updateSNP();
 		
 		// Set the various settings
 		settings.getVariousSettings().setVariousSettings(dialog.getTransparency(), dialog.isShowLegend());

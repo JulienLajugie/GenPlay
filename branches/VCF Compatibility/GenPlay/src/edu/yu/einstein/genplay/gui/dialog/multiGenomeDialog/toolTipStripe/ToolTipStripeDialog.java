@@ -23,7 +23,9 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -162,6 +164,20 @@ public class ToolTipStripeDialog extends JDialog {
 	 */
 	protected boolean goToNextVariant () {
 		DisplayableVariant newDisplayableVariant = getNextDisplayableVariant();
+		int referencePosition = newDisplayableVariant.getNativeVariant().getReferenceGenomePosition();
+		int startPos = referencePosition - 1;
+		int stopPos = referencePosition + 1;
+		if (startPos < 0) {
+			startPos = 0;
+		}
+		try {
+			long start = System.currentTimeMillis();
+			List<Map<String, Object>> map = newDisplayableVariant.getNativeVariant().getPositionInformation().getReader().query(newDisplayableVariant.getNativeVariant().getChromosomeName(), startPos, stopPos);
+			System.out.println(System.currentTimeMillis() - start);
+			System.out.println(map.size());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return initVariant(newDisplayableVariant);
 	}
 

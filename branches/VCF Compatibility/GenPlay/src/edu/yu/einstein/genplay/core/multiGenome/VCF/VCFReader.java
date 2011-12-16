@@ -61,7 +61,6 @@ public class VCFReader implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
 	private transient	TabixReader 			vcfParser;		// Tabix object for the VCF file (Tabix Java API)
 	private File 								file;			// Path of the VCF file
-	private VCFType								vcfType;		// The type of the VCF file
 	private Map<String, String> 				headerInfo;		// Header main information
 	private	List<String>						columnNames;	// All column header names
 	private	List<String>						fixedColumn;	// Fixed header names included in the VCF file
@@ -81,7 +80,6 @@ public class VCFReader implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(file);
-		out.writeObject(vcfType);
 		out.writeObject(headerInfo);
 		out.writeObject(columnNames);
 		out.writeObject(fixedColumn);
@@ -104,7 +102,6 @@ public class VCFReader implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		file = (File) in.readObject();
-		vcfType = (VCFType) in.readObject();
 		headerInfo= (Map<String, String>) in.readObject();
 		columnNames = (List<String>) in.readObject();
 		fixedColumn = (List<String>) in.readObject();
@@ -121,27 +118,10 @@ public class VCFReader implements Serializable {
 	/**
 	 * Constructor of {@link VCFReader}
 	 * @param file		the VCF file
-	 * @param vcfType  	the type of the VCF file
-	 * @throws IOException
-	 */
-	public VCFReader (File file, VCFType vcfType) throws IOException {
-		this.file = file;
-		this.vcfType = vcfType;
-		initFixedColumnList();
-		initFieldType();
-		indexVCFFile();
-		processHeader();
-	}
-
-
-	/**
-	 * Constructor of {@link VCFReader}
-	 * @param file		the VCF file
 	 * @throws IOException
 	 */
 	public VCFReader (File file) throws IOException {
 		this.file = file;
-		this.vcfType = null;
 		initFixedColumnList();
 		initFieldType();
 		indexVCFFile();
@@ -176,14 +156,6 @@ public class VCFReader implements Serializable {
 		fieldType.put("Flag", Boolean.class);
 		fieldType.put("Character", char.class);
 		fieldType.put("String", String.class);
-	}
-
-
-	/**
-	 * @return the vcfType
-	 */
-	public VCFType getVcfType() {
-		return vcfType;
 	}
 
 

@@ -27,7 +27,6 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 
 /**
@@ -101,8 +100,6 @@ public class VCFLoaderModel extends AbstractTableModel {
 			return vCFData.getRaw();
 		case VCFData.FILE_INDEX:
 			return vCFData.getFile();
-		case VCFData.TYPE_INDEX:
-			return vCFData.getType();
 		default:
 			return new Object();
 		}
@@ -126,9 +123,6 @@ public class VCFLoaderModel extends AbstractTableModel {
 			case VCFData.FILE_INDEX:
 				vCFData.setFile(new File(value.toString()));
 				break;
-			case VCFData.TYPE_INDEX:
-				vCFData.setType((VCFType)value);
-				break;
 			default:
 				System.out.println("Invalid column index");
 			}
@@ -150,8 +144,6 @@ public class VCFLoaderModel extends AbstractTableModel {
 			return String.class;
 		case VCFData.FILE_INDEX:
 			return File.class;
-		case VCFData.TYPE_INDEX:
-			return VCFType.class;
 		default:
 			return Object.class;
 		}
@@ -198,7 +190,6 @@ public class VCFLoaderModel extends AbstractTableModel {
 			fireTableCellUpdated(row, VCFData.GENOME_INDEX);
 			fireTableCellUpdated(row, VCFData.RAW_INDEX);
 			fireTableCellUpdated(row, VCFData.FILE_INDEX);
-			fireTableCellUpdated(row, VCFData.TYPE_INDEX);
 		}
 	}
 
@@ -207,12 +198,11 @@ public class VCFLoaderModel extends AbstractTableModel {
 	 * Initializes the column names
 	 */
 	private void initializeColumnNames () {
-		columnNames = new String[5];
+		columnNames = new String[4];
 		columnNames[0] = VCFData.GROUP_NAME;
 		columnNames[1] = VCFData.GENOME_NAME;
 		columnNames[2] = VCFData.RAW_NAME;
 		columnNames[3] = VCFData.FILE_NAME;
-		columnNames[4] = VCFData.TYPE_NAME;
 	}
 
 }

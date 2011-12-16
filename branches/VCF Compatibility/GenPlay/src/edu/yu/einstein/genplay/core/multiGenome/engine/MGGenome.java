@@ -196,7 +196,7 @@ public class MGGenome implements Serializable {
 	protected void showData () {
 		for (Chromosome chromosome: genomeInformation.keySet()) {
 			System.out.println("= chromosome name: " + chromosome.getName() + " (" + chromosome.getLength() + ")");
-			//getChromosomeInformation(chromosome).showData();
+			getChromosomeInformation(chromosome).showData();
 		}
 	}
 }

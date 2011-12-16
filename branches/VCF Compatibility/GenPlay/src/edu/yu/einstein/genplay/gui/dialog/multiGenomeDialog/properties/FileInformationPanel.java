@@ -147,12 +147,10 @@ class FileInformationPanel extends JPanel {
 		// Key labels
 		JLabel jlKeyFileName = new JLabel("File name: ");
 		JLabel jlKeyFolder = new JLabel("Folder: ");
-		JLabel jlKeyType = new JLabel("VCF file type: ");
 
 		// Value labels
 		JLabel jlValFileName = new JLabel(reader.getFile().getName());
 		JLabel jlValFolder = new JLabel(reader.getFile().getParent());
-		JLabel jlValType = new JLabel(reader.getVcfType().toString());
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
@@ -185,18 +183,6 @@ class FileInformationPanel extends JPanel {
 		gbc.gridy = 1;
 		gbc.insets = valueInset;
 		panel.add(jlValFolder, gbc);
-
-		// jlKeyType
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.insets = keyInset;
-		panel.add(jlKeyType, gbc);
-
-		// jlValType
-		gbc.gridx = 1;
-		gbc.gridy = 2;
-		gbc.insets = valueInset;
-		panel.add(jlValType, gbc);
 
 		return panel;
 	}

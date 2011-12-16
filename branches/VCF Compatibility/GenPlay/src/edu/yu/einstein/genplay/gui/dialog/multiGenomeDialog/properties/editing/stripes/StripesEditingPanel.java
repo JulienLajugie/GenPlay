@@ -301,20 +301,14 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			if (selectedVariation.get(i).isSelected()) {
 				VariantType type = variationName.get(i);
 				Color color = variationColor.get(i).getBackground();
-				if (type == VariantType.INSERTION || type == VariantType.INS) {
+				if (type == VariantType.INSERTION) {
 					variantList.add(VariantType.INSERTION);
-					variantList.add(VariantType.INS);
 					colorList.add(color);
-					colorList.add(color);
-				} else if (type == VariantType.DELETION || type == VariantType.DEL) {
+				} else if (type == VariantType.DELETION) {
 					variantList.add(VariantType.DELETION);
-					variantList.add(VariantType.DEL);
 					colorList.add(color);
-					colorList.add(color);
-				} else if (type == VariantType.SNPS || type == VariantType.SVSNPS) {
+				} else if (type == VariantType.SNPS) {
 					variantList.add(VariantType.SNPS);
-					variantList.add(VariantType.SVSNPS);
-					colorList.add(color);
 					colorList.add(color);
 				}
 			}

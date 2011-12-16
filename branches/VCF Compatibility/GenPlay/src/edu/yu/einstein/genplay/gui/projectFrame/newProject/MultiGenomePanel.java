@@ -275,7 +275,7 @@ class MultiGenomePanel extends JPanel {
 			}
 			VCFReader reader = null;
 			try {
-				reader = new VCFReader(vcfData.getFile(), vcfData.getType());
+				reader = new VCFReader(vcfData.getFile());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

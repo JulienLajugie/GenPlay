@@ -135,9 +135,9 @@ public class VCFSV implements Variant {
 		try {
 			String svtype = getInfoValue("SVTYPE").toString();
 			if (svtype.equals("DEL")) {
-				type = VariantType.DEL;
+				type = VariantType.DELETION;
 			} else if (svtype.equals("INS")) {
-				type = VariantType.INS;
+				type = VariantType.INSERTION;
 			} else if (svtype.equals("DUP")) {
 				type = VariantType.DUP;
 			} else if (svtype.equals("INV")) {
@@ -150,9 +150,9 @@ public class VCFSV implements Variant {
 			if (alt.charAt(0) == '<') {
 				alt = alt.substring(1, 3);
 				if (alt.equals("DEL")) {
-					type = VariantType.DEL;
+					type = VariantType.DELETION;
 				} else if (alt.equals("INS")) {
-					type = VariantType.INS;
+					type = VariantType.INSERTION;
 				} else if (alt.equals("DUP")) {
 					type = VariantType.DUP;
 				} else if (alt.equals("INV")) {
@@ -163,11 +163,11 @@ public class VCFSV implements Variant {
 			} else {
 				int length = (getAlternative().length() - getReference().length());
 				if (length > 0) {
-					type = VariantType.DEL;
+					type = VariantType.DELETION;
 				} else if (length < 0) {
-					type = VariantType.INS;
+					type = VariantType.INSERTION;
 				} else {
-					type = VariantType.SVSNPS;
+					type = VariantType.SNPS;
 				}
 			}
 		}

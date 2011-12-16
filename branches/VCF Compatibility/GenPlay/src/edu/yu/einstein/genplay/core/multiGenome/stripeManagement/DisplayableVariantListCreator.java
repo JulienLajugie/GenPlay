@@ -58,7 +58,7 @@ public class DisplayableVariantListCreator implements DisplayableDataList<List<D
 
 	// Filter variables
 	private Map<String, List<VariantType>>	genomes;						// Genome names list
-	private List<IDFilterInterface>					filters;						// List of filters
+	private List<IDFilterInterface>			filters;						// List of filters
 
 	// Lists
 	private List<Variant> 					fittedVariantList;				// Complete list of variant (gains a lot of time and increase the fluidity)
