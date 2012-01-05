@@ -227,7 +227,7 @@ public class ProjectRecordingManager {
 			oos.writeObject(ProjectManager.getInstance());
 			oos.writeObject(ProjectManager.getInstance().getProjectChromosome());
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				oos.writeObject(ProjectManager.getInstance().getGenomeSynchronizer());
+				oos.writeObject(ProjectManager.getInstance().getMultiGenome());
 				oos.writeObject(MGDisplaySettings.getInstance());
 			}
 			oos.writeObject(trackList.getTrackList());

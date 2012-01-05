@@ -28,7 +28,7 @@ import java.io.ObjectOutputStream;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionOld;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
@@ -278,7 +278,7 @@ public class VCFBlank implements Variant {
 	}
 	
 	@Override
-	public MGPosition getPositionInformation() {
+	public MGPositionOld getPositionInformation() {
 		return null;
 	}
 

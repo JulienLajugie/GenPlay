@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionOld;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
 
@@ -302,46 +302,6 @@ public class VCFReader implements Serializable {
 			line = line + name + "\t";
 		}
 		System.out.println(line);
-	}
-
-
-	/**
-	 * This method performs queries from a file to the indexed VCF file.
-	 * @param queriesFile	file containing queries information.
-	 * @return a list of query results
-	 * @throws IOException
-	 */
-	public List<List<Map<String,Object>>> queriesFromFile (String queriesFile) throws IOException {
-		return queriesFromFile(queriesFile, columnNames);
-	}
-
-
-	/**
-	 * This method performs queries from a file to the indexed VCF file.
-	 * @param queriesFile	file containing queries information.
-	 * @param fields		filter to select specific fields
-	 * @return a list of query results
-	 * @throws IOException
-	 */
-	public List<List<Map<String,Object>>> queriesFromFile (String queriesFile, List<String> fields) throws IOException {
-		BufferedReader in = 	new BufferedReader(
-				new InputStreamReader(
-						new FileInputStream (
-								new File(queriesFile)
-						)
-				)
-		);
-		String line;
-		List<List<Map<String, Object>>> result = new ArrayList<List<Map<String,Object>>>();
-		while( (line = in.readLine()) != null){
-			String infoString[] = line.split("[\t]");
-			int infoInt[] = new int[infoString.length];
-			for (int i = 0; i < infoInt.length; i++) {
-				infoInt[i] = Integer.parseInt(infoString[i]);
-			}
-			result.add(query(infoString[0], infoInt[1], infoInt[2], fields));
-		}
-		return result;
 	}
 
 
@@ -676,7 +636,7 @@ public class VCFReader implements Serializable {
 	 * Analyze a a VCF position line to update the IDs elements lists.
 	 * @param positionInformation the position information object
 	 */
-	public void retrievePositionInformation (MGPosition positionInformation) {
+	public void retrievePositionInformation (MGPositionOld positionInformation) {
 		retrieveINFOValues(positionInformation.getInfo());
 		retrieveFORMATValues(positionInformation);
 	}
@@ -686,7 +646,7 @@ public class VCFReader implements Serializable {
 	 * Analyze a a VCF INFO line to update the IDs elements lists.
 	 * @param line a INFO line of a VCF
 	 */
-	private void retrieveFORMATValues (MGPosition positionInformation) {
+	private void retrieveFORMATValues (MGPositionOld positionInformation) {
 		if (formatHeader.size() > 0) {
 			for (String genomeRawName: genomeNames) {
 				for (VCFHeaderAdvancedType header: formatHeader) {

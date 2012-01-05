@@ -138,7 +138,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	 */
 	private JComboBox getGenomeBox () {
 		// Get the genome array without the reference genome
-		Object[] allGenomes = ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray();
+		Object[] allGenomes = ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray();
 		Object[] genomes = new Object[allGenomes.length - 1];
 		int index = 0;
 		for (Object o: allGenomes) {

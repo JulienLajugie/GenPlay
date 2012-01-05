@@ -33,18 +33,18 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSNP;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeOld;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenomeOld;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeOld;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionOld;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * SNPs can be enabled or disabled according to a genome.
- * When SNPs are enabled for a genome, SNP variants are added to {@link MGMultiGenome} lists.
- * When SNPs are disabled for a genome, SNP variants are deleted from {@link MGMultiGenome} lists.
- * Those modifications are made according to the chromosomes present in {@link MGMultiGenome}.
+ * When SNPs are enabled for a genome, SNP variants are added to {@link MGMultiGenomeOld} lists.
+ * When SNPs are disabled for a genome, SNP variants are deleted from {@link MGMultiGenomeOld} lists.
+ * Those modifications are made according to the chromosomes present in {@link MGMultiGenomeOld}.
  * It means it is sensitive to the CHROMOSOME_LOADING_OPTION.
  * 
  * @author Nicolas Fourel
@@ -55,7 +55,7 @@ public class SNPSynchroniser implements Serializable {
 	private static final long serialVersionUID = -4204806185089675978L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private 	 	MGMultiGenome 			genomes;			// Instance of the MGMultiGenome
+	private 	 	MGMultiGenomeOld 			genomes;			// Instance of the MGMultiGenome
 	private 		Map<String, VCFReader> 	SNPReaders;			// Mapping between files and their readers.
 	private			Map<String, Boolean> 	activeGenome; 		// Mapping list of enable/disable genomes
 	private			Map<String, Integer> 	genomeCounter; 		// Mapping list of enable/disable genomes
@@ -86,7 +86,7 @@ public class SNPSynchroniser implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		genomes = (MGMultiGenome) in.readObject();
+		genomes = (MGMultiGenomeOld) in.readObject();
 		SNPReaders = (Map<String, VCFReader>) in.readObject();
 		activeGenome = (Map<String, Boolean>) in.readObject();
 		genomeCounter = (Map<String, Integer>) in.readObject();
@@ -107,7 +107,7 @@ public class SNPSynchroniser implements Serializable {
 	 * @param genomesInformation 	the genome information
 	 * @param SNPReaders			the list of reader indexed by genome name required for SNPs synchronization
 	 */
-	protected void initializesSNPSynchroniser (Chromosome chromosome, MGMultiGenome genomesInformation, Map<String, VCFReader> SNPReaders) {
+	protected void initializesSNPSynchroniser (Chromosome chromosome, MGMultiGenomeOld genomesInformation, Map<String, VCFReader> SNPReaders) {
 		this.currentChromosome = chromosome;
 		this.genomes = genomesInformation;
 		this.SNPReaders = SNPReaders;
@@ -165,17 +165,17 @@ public class SNPSynchroniser implements Serializable {
 					// This block creates and adds the new variant
 					for (Map<String, Object> info: result) {												// Scans every result lines
 						int position = Integer.parseInt(info.get("POS").toString());						// Gets the reference genome position
-						MGPosition positionInformation = null;												// Declares the MGPosition,
+						MGPositionOld positionInformation = null;												// Declares the MGPosition,
 						// It is the VCF line information who can already exist for other genomes from the same VCF file,
 						// if they have been required in the project and already processed
 						for (String name: otherGenomeNames) {												// Scan for the other genomes
-							positionInformation = genomes.getMGPosition(name, chromosome, position);		// Tries to get the MGPosition
+							positionInformation = genomes.getMGPositionOld(name, chromosome, position);		// Tries to get the MGPosition
 							if (positionInformation != null) {												// If it is not null it exists
 								break;																		// and the loop can be quit to do not scan the other genome (obviously same MGPosition object)
 							}
 						}
 						if (positionInformation == null) {													// If no MGPosition has been got, it means it does not exist 
-							positionInformation = new MGPosition(chromosome, info, reader);					// and it has to be instanced
+							positionInformation = new MGPositionOld(chromosome, info, reader);					// and it has to be instanced
 						}
 						Variant variant = new VCFSNP(genomeName, chromosome, positionInformation);			// Creates the SNP variant
 						genomes.addVariant(genomeName, chromosome, variant);								// Adds the variant
@@ -183,7 +183,7 @@ public class SNPSynchroniser implements Serializable {
 
 					// This block updates all SNPs,
 					// it consists to initializes the reference and meta genome offset.
-					MGChromosome chromosomeInformation = genomes.getChromosomeInformation(genomeName, chromosome);
+					MGChromosomeOld chromosomeInformation = genomes.getChromosomeInformation(genomeName, chromosome);
 					chromosomeInformation.resetIndexList();													// Many position have just been added, the list has to be reinitialized
 					int[] indexes = chromosomeInformation.getPositionIndex();
 					int cptIndex = 0;
@@ -254,7 +254,7 @@ public class SNPSynchroniser implements Serializable {
 		List<Chromosome> chromosomes = new ArrayList<Chromosome>(chromosomeList);
 
 		// Gets the genome information
-		MGGenome genome = genomes.getGenomeInformation(genomeName);
+		MGGenomeOld genome = genomes.getGenomeInformation(genomeName);
 
 		// For each chromosome of the multi genome object
 		for (Chromosome chromosome: chromosomes) {

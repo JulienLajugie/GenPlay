@@ -38,10 +38,10 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFBlank;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFIndel;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileType.VCFSV;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenome;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeOld;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGGenomeOld;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGMultiGenomeOld;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionOld;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
@@ -79,7 +79,7 @@ public class GenomeSynchronizer implements Serializable {
 	public static final 	Color 						SV_DEFAULT_COLOR 			= Color.magenta;
 
 
-	private		MGMultiGenome					genomesInformation;				// Genomes information
+	private		MGMultiGenomeOld					genomesInformation;				// Genomes information
 	private		MetaGenomeSynchroniser			metaGenomeSynchroniser;			// Instance of the Meta Genome Synchroniser
 	private		ReferenceGenomeSynchroniser		referenceGenomeSynchroniser;	// Instance of the Reference Genome Synchroniser
 	private		SNPSynchroniser					snpSynchroniser;				// Instance of the SNP Synchroniser
@@ -118,7 +118,7 @@ public class GenomeSynchronizer implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		genomesInformation = (MGMultiGenome) in.readObject();
+		genomesInformation = (MGMultiGenomeOld) in.readObject();
 		metaGenomeSynchroniser = (MetaGenomeSynchroniser) in.readObject();
 		referenceGenomeSynchroniser = (ReferenceGenomeSynchroniser) in.readObject();
 		snpSynchroniser = (SNPSynchroniser) in.readObject();
@@ -132,7 +132,7 @@ public class GenomeSynchronizer implements Serializable {
 	 * Constructor of {@link GenomeSynchronizer}
 	 */
 	protected GenomeSynchronizer (List<Chromosome> chromosomeList) {
-		this.genomesInformation = new MGMultiGenome();
+		this.genomesInformation = new MGMultiGenomeOld();
 		this.referenceGenomeSynchroniser = new ReferenceGenomeSynchroniser();
 		this.metaGenomeSynchroniser = new MetaGenomeSynchroniser(chromosomeList);
 		this.snpSynchroniser = new SNPSynchroniser();
@@ -279,7 +279,7 @@ public class GenomeSynchronizer implements Serializable {
 		if (result != null) {
 			for (Map<String, Object> info: result) {	// Scans every result lines
 				referenceGenomeSynchroniser.addPosition(chromosome.getName(), Integer.parseInt(info.get("POS").toString().trim()));
-				MGPosition positionInformation = new MGPosition(chromosome, info, reader);
+				MGPositionOld positionInformation = new MGPositionOld(chromosome, info, reader);
 				
 				for (String genomeName: genomeNames) {
 					String alternative = null;
@@ -355,18 +355,18 @@ public class GenomeSynchronizer implements Serializable {
 	 */
 	private void compileData (String referenceGenomeName, List<Chromosome> chromosomeList) {
 		for (Chromosome chromosome: chromosomeList) {																// Scan by chromosome
-			List<MGChromosome> currentChromosomeList =
+			List<MGChromosomeOld> currentChromosomeList =
 				genomesInformation.getChromosomeInformationList(chromosome);										// List of all existing chromosome in VCF files
 			referenceGenomeSynchroniser.setList(chromosome.getName());
 
-			for (MGChromosome chromosomeInformation: currentChromosomeList) {										// Resets all index lists
+			for (MGChromosomeOld chromosomeInformation: currentChromosomeList) {										// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 
 			while (referenceGenomeSynchroniser.isValidIndex()) {													// Scan by position
 				List<Integer> insertPositions = new ArrayList<Integer>();											// List of all length insertion position. Used at the end to update all tracks.
-				int currentRefPosition = referenceGenomeSynchroniser.getCurrentPosition();								// Current position of the reference genome
-				for (MGChromosome chromosomeInformation: currentChromosomeList) {									// Scan VCF content by chromosome
+				int currentRefPosition = referenceGenomeSynchroniser.getCurrentPosition();							// Current position of the reference genome
+				for (MGChromosomeOld chromosomeInformation: currentChromosomeList) {									// Scan VCF content by chromosome
 					chromosomeInformation.setCurrentPosition(currentRefPosition);
 					Variant currentInformation =
 						chromosomeInformation.getCurrentVariant();													// Current position information according to a specific VCF file
@@ -387,7 +387,6 @@ public class GenomeSynchronizer implements Serializable {
 							insertPositions.add(currentInformation.getLength());									// It is necessary to store its length in order to update other tracks
 						}
 					}
-
 				}
 
 				if (insertPositions.size() > 0 ) {
@@ -399,7 +398,7 @@ public class GenomeSynchronizer implements Serializable {
 				updatePreviousPosition (currentChromosomeList, currentRefPosition);									// The previous position is set with the current position
 				referenceGenomeSynchroniser.nextIndex();															// Increases the current index
 			}
-			for (MGChromosome chromosomeInformation: currentChromosomeList) {										// Resets all index lists
+			for (MGChromosomeOld chromosomeInformation: currentChromosomeList) {										// Resets all index lists
 				chromosomeInformation.resetIndexList();
 			}
 			genomesInformation.getChromosomeInformation(referenceGenomeName, chromosome).resetIndexList();
@@ -415,8 +414,8 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param refPosition		reference genome position
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
-	private void updateInsert (List<MGChromosome> chromosomeList, int refPosition, int maxLength) {
-		for (MGChromosome chromosomeInformation: chromosomeList) {												// Scan VCF content by chromosome
+	private void updateInsert (List<MGChromosomeOld> chromosomeList, int refPosition, int maxLength) {
+		for (MGChromosomeOld chromosomeInformation: chromosomeList) {												// Scan VCF content by chromosome
 			Variant position = chromosomeInformation.getVariant(refPosition);									// Gets the current position in a new variable
 			if (position != null) {																				// If an information exists at this position
 				if (position.getLength() < maxLength) {															// If the current event length is smaller than the maximum length found
@@ -454,7 +453,7 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param maxLength			maximum length found in all insertion positions
 	 */
 	private void updateReferenceGenome (String referenceGenomeName, Chromosome chromosome, int refPosition, int maxLength) {
-		MGChromosome chromosomeInformation = genomesInformation.getChromosomeInformation(referenceGenomeName, chromosome);
+		MGChromosomeOld chromosomeInformation = genomesInformation.getChromosomeInformation(referenceGenomeName, chromosome);
 		String genomeName = chromosomeInformation.getGenomeInformation().getGenomeName();
 		Variant variant = new VCFBlank(genomeName, chromosome, maxLength);
 		genomesInformation.addBlank(genomeName, chromosome, refPosition, variant);
@@ -481,8 +480,8 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param currentChromosomeList	list of concerned chromosome
 	 * @param currentRefPosition	current position (from the reference chromosome)
 	 */
-	private void updatePreviousPosition (List<MGChromosome> currentChromosomeList, int currentRefPosition) {
-		for (MGChromosome chromosomeInformation: currentChromosomeList) {			// Scan by chromosome
+	private void updatePreviousPosition (List<MGChromosomeOld> currentChromosomeList, int currentRefPosition) {
+		for (MGChromosomeOld chromosomeInformation: currentChromosomeList) {			// Scan by chromosome
 			chromosomeInformation.updatePreviousPosition(currentRefPosition);		// Update the last index of the current chromosome information list
 		}
 	}
@@ -600,7 +599,7 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param chromosome 	the chromosome
 	 * @return 				the chromosome information object
 	 */
-	public MGChromosome getChromosomeInformation(String genome, Chromosome chromosome) {
+	public MGChromosomeOld getChromosomeInformation(String genome, Chromosome chromosome) {
 		return genomesInformation.getChromosomeInformation(genome, chromosome);
 	}
 
@@ -609,7 +608,7 @@ public class GenomeSynchronizer implements Serializable {
 	 * @param genome 		the raw genome name
 	 * @return 				the genome information
 	 */
-	public MGGenome getGenomeInformation(String genome) {
+	public MGGenomeOld getGenomeInformation(String genome) {
 		return genomesInformation.getGenomeInformation(genome);
 	}
 
@@ -617,7 +616,7 @@ public class GenomeSynchronizer implements Serializable {
 	/**
 	 * @return the genomesInformation
 	 */
-	public MGMultiGenome getGenomesInformation() {
+	public MGMultiGenomeOld getGenomesInformation() {
 		return genomesInformation;
 	}
 

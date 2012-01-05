@@ -240,14 +240,14 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param g
 	 */
 	protected void drawMultiGenomeInformation(Graphics g) {
-		if (stripesList != null) {
+		/*if (stripesList != null) {
 			if (ProjectManager.getInstance().getGenomeSynchronizer().dataHasBeenComputed() && stripesList.size() > 0) {
 				stripesOpacity = 100 - MGDisplaySettings.getInstance().getVariousSettings().getTransparency();
 				updateDisplayableVariantList(false);
 				drawGenome(g);
 				drawMultiGenomeLine(g);
 			}
-		}
+		}*/
 	}
 
 

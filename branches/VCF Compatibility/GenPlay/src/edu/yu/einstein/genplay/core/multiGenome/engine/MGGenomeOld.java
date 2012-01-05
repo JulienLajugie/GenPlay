@@ -31,7 +31,6 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
@@ -40,19 +39,19 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 /**
  * This class manages the genome information in a multi genome project.
  * The genome information is all variation information for a specific genome.
- * Those information are mainly the list of {@link MGChromosome} object.
+ * Those information are mainly the list of {@link MGChromosomeOld} object.
  * 
- * This class can be considered as a "sub-class" of {@link MGMultiGenome}.
+ * This class can be considered as a "sub-class" of {@link MGMultiGenomeOld}.
  * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGGenome implements Serializable {
+public class MGGenomeOld implements Serializable {
 
 	private static final long serialVersionUID = -8473586977950413283L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private		String							genomeName;				// The full genome information
-	private 	Map<Chromosome, MGChromosome> 	genomeInformation;		// Chromosomes information of the genome
+	private 	Map<Chromosome, MGChromosomeOld> 	genomeInformation;		// Chromosomes information of the genome
 		
 	
 	/**
@@ -77,19 +76,19 @@ public class MGGenome implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		genomeName = (String) in.readObject();
-		genomeInformation = (Map<Chromosome, MGChromosome>) in.readObject();
+		genomeInformation = (Map<Chromosome, MGChromosomeOld>) in.readObject();
 	}
 	
 
 	/**
-	 * Constructor of {@link MGGenome}
+	 * Constructor of {@link MGGenomeOld}
 	 * @param genomeName the name of the genome
 	 */
-	protected MGGenome (String genomeName) {
+	protected MGGenomeOld (String genomeName) {
 		this.genomeName = genomeName;
-		genomeInformation = new HashMap<Chromosome, MGChromosome>();
-		for (Chromosome chromosome: ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList()) {
-			genomeInformation.put(chromosome, new MGChromosome(this, chromosome));
+		genomeInformation = new HashMap<Chromosome, MGChromosomeOld>();
+		for (Chromosome chromosome: ProjectManager.getInstance().getProjectChromosome().getChromosomeList()) {
+			genomeInformation.put(chromosome, new MGChromosomeOld(this, chromosome));
 		}
 	}
 
@@ -119,11 +118,11 @@ public class MGGenome implements Serializable {
 	 * @param chromosome 	the related chromosome
 	 * @return				valid chromosome containing position information
 	 */
-	protected MGChromosome getChromosomeInformation (Chromosome chromosome) {
-		if (genomeInformation.get(chromosome) == null &&
+	protected MGChromosomeOld getChromosomeInformation (Chromosome chromosome) {
+		/*if (genomeInformation.get(chromosome) == null &&
 				ProjectChromosome.CHROMOSOME_LOADING_OPTION == ProjectChromosome.SEQUENTIAL) {
 			System.err.println("A null pointer exception can appear because of the CHROMOSOME_LOADING_OPTION set to SEQUENTIAL");
-		}
+		}*/
 		return genomeInformation.get(chromosome);
 	}
 	
@@ -134,14 +133,14 @@ public class MGGenome implements Serializable {
 	 */
 	protected void refreshChromosomeReferences (List<Chromosome> chromosomeList) {
 		//System.out.println("----- Genome name: " + genomeName);
-		Map<Chromosome, MGChromosome> newGenomeInformation = new HashMap<Chromosome, MGChromosome>();
+		Map<Chromosome, MGChromosomeOld> newGenomeInformation = new HashMap<Chromosome, MGChromosomeOld>();
 		
 		for (Chromosome newChromosome: chromosomeList) {
 			
 			for (Chromosome previousChromosome: genomeInformation.keySet()) {
 				
 				if (newChromosome.getName().equals(previousChromosome.getName())) {
-					MGChromosome mgChromosome = genomeInformation.get(previousChromosome);
+					MGChromosomeOld mgChromosome = genomeInformation.get(previousChromosome);
 					newGenomeInformation.put(newChromosome, mgChromosome);
 					
 					//System.out.println(previousChromosome.getName() + " (" + previousChromosome.getLength() + ") -> " + 
@@ -167,7 +166,7 @@ public class MGGenome implements Serializable {
 	/**
 	 * @return the genomeInformation
 	 */
-	public Map<Chromosome, MGChromosome> getGenomeInformation() {
+	public Map<Chromosome, MGChromosomeOld> getGenomeInformation() {
 		return genomeInformation;
 	}
 
@@ -185,8 +184,8 @@ public class MGGenome implements Serializable {
 	 * @param position 		reference genome position
 	 * @return				the position information according to the chromosome and the position
 	 */
-	protected MGPosition getMGPosition (Chromosome chromosome, int position) {
-		return genomeInformation.get(chromosome).getMGPosition(position);
+	protected MGPositionOld getMGPositionOld (Chromosome chromosome, int position) {
+		return genomeInformation.get(chromosome).getMGPositionOld(position);
 	}
 	
 	

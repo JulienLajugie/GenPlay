@@ -50,7 +50,7 @@ public class GenomeSelectionPanel extends JPanel {
 	 */
 	public GenomeSelectionPanel() {
 		super();
-		jcbGenome = new JComboBox(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
+		jcbGenome = new JComboBox(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
 		jcbGenome.setSelectedIndex(defaultGenome);
 		add(jcbGenome);
 		setBorder(BorderFactory.createTitledBorder("Genome Selection"));

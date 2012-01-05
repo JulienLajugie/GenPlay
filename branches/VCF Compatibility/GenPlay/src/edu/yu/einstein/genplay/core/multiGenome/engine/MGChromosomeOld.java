@@ -39,17 +39,17 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
  * This class manages the chromosome information in a multi genome project.
  * Those information are mainly the list of variant for a specific chromosome.
  * 
- * This class can be considered as a "sub-class" of {@link MGGenome}.
+ * This class can be considered as a "sub-class" of {@link MGGenomeOld}.
  * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGChromosome implements Serializable {
+public class MGChromosomeOld implements Serializable {
 
 	private static final long serialVersionUID = -6878208329536733167L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
-	private MGGenome 					genomeInformation;		// The genome
+	private MGGenomeOld 					genomeInformation;		// The genome
 	private Chromosome 					chromosome;				// The chromosome
 	private Map<Integer, Variant>		variantList;			// Variant list, keys are reference genome position and values are variants
 	private int[]						positionIndex;			// Mapping table for reference genome position
@@ -82,7 +82,7 @@ public class MGChromosome implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		genomeInformation = (MGGenome) in.readObject();
+		genomeInformation = (MGGenomeOld) in.readObject();
 		chromosome = (Chromosome) in.readObject();
 		variantList = (Map<Integer, Variant>) in.readObject();
 		positionIndex = (int[]) in.readObject();
@@ -92,11 +92,11 @@ public class MGChromosome implements Serializable {
 	
 
 	/**
-	 * Constructor of {@link MGChromosome}
+	 * Constructor of {@link MGChromosomeOld}
 	 * @param genomeInformation the genome 
 	 * @param chromosome 		the chromosome
 	 */
-	protected MGChromosome (MGGenome genomeInformation, Chromosome chromosome) {
+	protected MGChromosomeOld (MGGenomeOld genomeInformation, Chromosome chromosome) {
 		this.chromosome = chromosome;
 		this.genomeInformation = genomeInformation;
 		this.variantList = new TreeMap<Integer, Variant>();
@@ -272,7 +272,7 @@ public class MGChromosome implements Serializable {
 	/**
 	 * @return the genomeInformation
 	 */
-	public MGGenome getGenomeInformation() {
+	public MGGenomeOld getGenomeInformation() {
 		return genomeInformation;
 	}
 
@@ -281,7 +281,7 @@ public class MGChromosome implements Serializable {
 	 * @param position 	reference genome position
 	 * @return			the position information according to the position
 	 */
-	protected MGPosition getMGPosition (int position) {
+	protected MGPositionOld getMGPositionOld (int position) {
 		Variant current = variantList.get(position);
 		if (current != null) {
 			return current.getPositionInformation();

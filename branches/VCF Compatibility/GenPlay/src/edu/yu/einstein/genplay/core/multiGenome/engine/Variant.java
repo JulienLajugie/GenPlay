@@ -215,7 +215,7 @@ public interface Variant extends Serializable {
 	/**
 	 * @return the position information object
 	 */
-	public MGPosition getPositionInformation ();
+	public MGPositionOld getPositionInformation ();
 	
 
 	/**

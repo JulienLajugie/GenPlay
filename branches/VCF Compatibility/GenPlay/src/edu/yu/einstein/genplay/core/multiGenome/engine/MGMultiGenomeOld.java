@@ -38,17 +38,17 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 /**
  * This class manages the multi genome information in a multi genome project.
  * It gathers all genome information of the project.
- * The main information is the list of {@link MGGenome}.
+ * The main information is the list of {@link MGGenomeOld}.
  * The second one is the mapping between the full genome name (see description of {@link FormattedMultiGenomeName}) and their associated VCF file.
  * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGMultiGenome implements Serializable {
+public class MGMultiGenomeOld implements Serializable {
 
 	private static final long serialVersionUID = -1420140357798946704L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private Map<String, MGGenome> 			multiGenomeInformation;	// Genomes information: key are genome raw names
+	private Map<String, MGGenomeOld> 			multiGenomeInformation;	// Genomes information: key are genome raw names
 
 	
 	/**
@@ -72,15 +72,15 @@ public class MGMultiGenome implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		multiGenomeInformation = (Map<String, MGGenome>) in.readObject();
+		multiGenomeInformation = (Map<String, MGGenomeOld>) in.readObject();
 	}
 
 	
 	/**
-	 * Constructor of {@link MGMultiGenome}
+	 * Constructor of {@link MGMultiGenomeOld}
 	 */
-	public MGMultiGenome () {
-		multiGenomeInformation = new HashMap<String, MGGenome>();
+	public MGMultiGenomeOld () {
+		multiGenomeInformation = new HashMap<String, MGGenomeOld>();
 	}
 
 
@@ -90,13 +90,13 @@ public class MGMultiGenome implements Serializable {
 	 * @param genomeNames list of genome names
 	 */
 	public void initMultiGenomeInformation (List<String> genomeNames) {
-		multiGenomeInformation = new HashMap<String, MGGenome>();
+		multiGenomeInformation = new HashMap<String, MGGenomeOld>();
 		
 		for (String genomeName: genomeNames) {
-			multiGenomeInformation.put(genomeName, new MGGenome(genomeName));
+			multiGenomeInformation.put(genomeName, new MGGenomeOld(genomeName));
 		}
 		String referenceGenomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
-		multiGenomeInformation.put(referenceGenomeFullName, new MGGenome(referenceGenomeFullName));
+		multiGenomeInformation.put(referenceGenomeFullName, new MGGenomeOld(referenceGenomeFullName));
 	}
 	
 	
@@ -104,8 +104,8 @@ public class MGMultiGenome implements Serializable {
 	 * Reset all list of indexes
 	 */
 	public void resetListIndexes () {
-		for (MGGenome genome: multiGenomeInformation.values()) {
-			for (MGChromosome chromosome: genome.getGenomeInformation().values()) {
+		for (MGGenomeOld genome: multiGenomeInformation.values()) {
+			for (MGChromosomeOld chromosome: genome.getGenomeInformation().values()) {
 				chromosome.resetIndexList();
 			}
 		}
@@ -139,8 +139,8 @@ public class MGMultiGenome implements Serializable {
 	 * @param chromosome 	a chromosome
 	 * @return 				list of chromosome information for every genomes according to the given chromosome
 	 */
-	public List<MGChromosome> getChromosomeInformationList (Chromosome chromosome) {
-		List<MGChromosome> info = new ArrayList<MGChromosome>();
+	public List<MGChromosomeOld> getChromosomeInformationList (Chromosome chromosome) {
+		List<MGChromosomeOld> info = new ArrayList<MGChromosomeOld>();
 		for (String genomeName: multiGenomeInformation.keySet()) {
 			if (!genomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
 				info.add(multiGenomeInformation.get(genomeName).getChromosomeInformation(chromosome));
@@ -155,7 +155,7 @@ public class MGMultiGenome implements Serializable {
 	 * @param chromosomeList the chromosome list
 	 */
 	public void refreshChromosomeReferences (List<Chromosome> chromosomeList) {
-		for (MGGenome genome: multiGenomeInformation.values()) {
+		for (MGGenomeOld genome: multiGenomeInformation.values()) {
 			genome.refreshChromosomeReferences(chromosomeList);
 		}
 	}
@@ -166,7 +166,7 @@ public class MGMultiGenome implements Serializable {
 	 * @param chromosome	a chromosome
 	 * @return				the chromosome information object according to a genome and a chromosome.
 	 */
-	public MGChromosome getChromosomeInformation (String genome, Chromosome chromosome) {
+	public MGChromosomeOld getChromosomeInformation (String genome, Chromosome chromosome) {
 		return multiGenomeInformation.get(genome).getChromosomeInformation(chromosome);
 	}
 	
@@ -175,7 +175,7 @@ public class MGMultiGenome implements Serializable {
 	 * @param genome		a genome name
 	 * @return				the genome information object according to a genome.
 	 */
-	public MGGenome getGenomeInformation (String genome) {
+	public MGGenomeOld getGenomeInformation (String genome) {
 		return multiGenomeInformation.get(genome);
 	}
 
@@ -183,7 +183,7 @@ public class MGMultiGenome implements Serializable {
 	/**
 	 * @return the multiGenomeInformation
 	 */
-	public Map<String, MGGenome> getMultiGenomeInformation() {
+	public Map<String, MGGenomeOld> getMultiGenomeInformation() {
 		return multiGenomeInformation;
 	}
 	
@@ -194,8 +194,8 @@ public class MGMultiGenome implements Serializable {
 	 * @param position 		reference genome position
 	 * @return				the position information according to the genome name, the chromosome and the position
 	 */
-	public MGPosition getMGPosition (String genomeName, Chromosome chromosome, int position) {
-		return multiGenomeInformation.get(genomeName).getMGPosition(chromosome, position);
+	public MGPositionOld getMGPositionOld (String genomeName, Chromosome chromosome, int position) {
+		return multiGenomeInformation.get(genomeName).getMGPositionOld(chromosome, position);
 	}
 
 

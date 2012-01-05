@@ -294,7 +294,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @return			the reader
 	 */
 	private VCFReader retrieveReader (String fileName) {
-		return ProjectManager.getInstance().getGenomeSynchronizer().getReaderFromName(fileName);
+		return ProjectManager.getInstance().getMultiGenome().getReaderFromName(fileName);
 	}
 	
 	

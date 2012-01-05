@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGPosition implements Serializable {
+public class MGPositionOld implements Serializable {
 
 	private static final long serialVersionUID = 3254401647936434675L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -77,12 +77,12 @@ public class MGPosition implements Serializable {
 
 
 	/**
-	 * Constructor of {@link MGPosition}
+	 * Constructor of {@link MGPositionOld}
 	 * @param chromosome 	the chromosome
 	 * @param line 			the line information from the VCF file
 	 * @param reader 		the VCF reader associated to the the VCF file
 	 */
-	public MGPosition (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
+	public MGPositionOld (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
 		this.chromosome = chromosome;
 		this.reader = reader;
 		VCFLine = line;

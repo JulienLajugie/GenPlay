@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosome;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGChromosomeOld;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 
@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
  */
 public class ShiftCompute {
 
-	private static MGChromosome chromInfo;		// Chromosome information which contains position list
+	private static MGChromosomeOld chromInfo;		// Chromosome information which contains position list
 	private static boolean 	found;							// Determines is the new position has been found
 	private static int[] 	indexes;						// List of indexed reference position
 	private static int 		referencePosition;				// The closest inferior reference position according to the given genome position
@@ -72,7 +72,7 @@ public class ShiftCompute {
 	private static void initParameters (String genome, Chromosome chromosome, int genomePosition) {
 		referencePosition = -1;
 		newPosition = genomePosition;
-		chromInfo = ProjectManager.getInstance().getGenomeSynchronizer().getChromosomeInformation(genome, chromosome);
+		chromInfo = null; //ProjectManager.getInstance().getGenomeSynchronizer().getChromosomeInformation(genome, chromosome);
 		indexes = chromInfo.getPositionIndex();
 		found = false;
 	}

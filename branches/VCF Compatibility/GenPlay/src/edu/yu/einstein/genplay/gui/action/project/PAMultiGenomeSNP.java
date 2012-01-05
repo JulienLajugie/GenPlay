@@ -80,7 +80,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		// Checks if the project is multi-genome and if SNPs have been requested
 		if (projectManager.isMultiGenomeProject()) {
 
-			GenomeSynchronizer genomeSynchronizer = projectManager.getGenomeSynchronizer();
+			GenomeSynchronizer genomeSynchronizer = projectManager.getMultiGenome();
 			SNPSynchroniser snpSynchronizer = genomeSynchronizer.getSnpSynchroniser();
 
 			boolean readyToCompute = false;
@@ -117,7 +117,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		if (ProjectManager.getInstance().isMultiGenomeProject() && hasBeenPerformed) {
 			hasBeenPerformed = false;
-			ProjectManager.getInstance().getGenomeSynchronizer().getGenomesInformation().resetListIndexes();
+			ProjectManager.getInstance().getMultiGenome().getGenomesInformation().resetListIndexes();
 			refreshTracks();
 		}
 	}

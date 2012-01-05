@@ -50,7 +50,7 @@ public class ProjectManager implements Serializable {
 	private ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
 	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
 	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
-	private GenomeSynchronizer			genomeSynchronizer;			// Instance of the Genome Synchroniser
+	private MultiGenome					multiGenome;				// Instance of the Multi Genome
 
 
 	/**
@@ -69,7 +69,7 @@ public class ProjectManager implements Serializable {
 		out.writeObject(projectConfiguration);
 		out.writeObject(projectZoom);
 		out.writeObject(projectChromosome);
-		out.writeObject(genomeSynchronizer);
+		out.writeObject(multiGenome);
 	}
 
 
@@ -90,7 +90,7 @@ public class ProjectManager implements Serializable {
 		projectConfiguration = (ProjectConfiguration) in.readObject();
 		projectZoom = (ProjectZoom) in.readObject();
 		projectChromosome = (ProjectChromosome) in.readObject();
-		genomeSynchronizer = (GenomeSynchronizer) in.readObject();
+		multiGenome = (MultiGenome) in.readObject();
 
 		instance = this;
 	}
@@ -128,11 +128,11 @@ public class ProjectManager implements Serializable {
 	 */
 	public void updateChromosomeList () {
 		List<Chromosome> chromosomeList;
-		if (multiGenomeProject) {
+		/*if (multiGenomeProject) {
 			chromosomeList = genomeSynchronizer.getMetaGenomeSynchroniser().getChromosomeList();
-		} else {
+		} else {*/
 			chromosomeList = getAssembly().getChromosomeList();
-		}
+		//}
 		projectChromosome.setChromosomeList(chromosomeList);
 	}
 	
@@ -151,7 +151,7 @@ public class ProjectManager implements Serializable {
 	public void setMultiGenomeProject(boolean multiGenomeProject) {
 		this.multiGenomeProject = multiGenomeProject;
 		if (!multiGenomeProject) {
-			genomeSynchronizer = null;
+			multiGenome = null;
 		}
 	}
 
@@ -183,11 +183,11 @@ public class ProjectManager implements Serializable {
 	/**
 	 * @return the genomeSynchroniser
 	 */
-	public GenomeSynchronizer getGenomeSynchronizer() {
-		if (multiGenomeProject && genomeSynchronizer == null) {
-			genomeSynchronizer = new GenomeSynchronizer(projectChromosome.getChromosomeList());
+	public MultiGenome getMultiGenome() {
+		if (multiGenomeProject && multiGenome == null) {
+			multiGenome = new MultiGenome();
 		}
-		return genomeSynchronizer;
+		return multiGenome;
 	}
 
 

@@ -47,24 +47,7 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 
 	private static final long serialVersionUID = 8781043776370540275L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	/**
-	 * FULL value for CHROMOSOME_LOADING_OPTION option involves the loading of every chromosomes when multi genome project starts
-	 */
-	public 	static final 	int 						FULL					 	= 1;
 
-	/**
-	 * SEQUENTIAL value for CHROMOSOME_LOADING_OPTION option involves the sequential loading (one by one) of chromosomes during a multi genome project (low memory cost)
-	 */
-	public static final 	int 						SEQUENTIAL 					= 0;
-
-	/**
-	 * CHROMOSOME_LOADING_OPTION to choose the chromosome loading mode
-	 * It must be used only for development, some functionalities cannot work in a SEQUENTIAL mode.
-	 * The loading of some type of file requires to perform operation on every chromosome,
-	 * the SEQUENTIAL mode loading only one chromosome, it can lead to a null pointer exception error. 
-	 */
-	public static 			int							CHROMOSOME_LOADING_OPTION 	= FULL;
 	
 	private		 	Map<String, Integer> 		chromosomeHash;			// Hashtable indexed by chromosome name
 	private			List<Chromosome> 			chromosomeList;			// List of chromosome
@@ -254,22 +237,6 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 	 */
 	public List<Chromosome> getChromosomeList() {
 		return chromosomeList;
-	}
-
-	
-	/**
-	 * In a multi genome project, the list of chromosome can be different as usual.
-	 * See the CHROMOSOME_LOADING_OPTION in {@link GenomeSynchronizer}.
-	 * @return the chromosomeList for multi genome scan algorithm
-	 */
-	public List<Chromosome> getCurrentMultiGenomeChromosomeList() {
-		if (ProjectChromosome.CHROMOSOME_LOADING_OPTION == ProjectChromosome.FULL) {
-			return chromosomeList;
-		} else {
-			List<Chromosome> newList = new ArrayList<Chromosome>();
-			newList.add(getCurrentChromosome());
-			return newList;
-		}
 	}
 	
 

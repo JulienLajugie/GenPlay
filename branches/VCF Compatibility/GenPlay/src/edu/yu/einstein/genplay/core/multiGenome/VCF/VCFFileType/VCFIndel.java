@@ -29,7 +29,7 @@ import java.io.ObjectOutputStream;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionOld;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.GenomePositionCalculation;
 
@@ -43,7 +43,7 @@ public class VCFIndel implements Variant {
 	private static final long serialVersionUID = -4289692413957821349L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
-	private	MGPosition 		positionInformation;		// The common genome position information
+	private	MGPositionOld 		positionInformation;		// The common genome position information
 	private String 			fullGenomeName;				// The genome name
 	private int 			genomePosition;				// The genome position
 	private int 			initialReferenceOffset;		// The offset between the genome position and the reference genome position
@@ -75,7 +75,7 @@ public class VCFIndel implements Variant {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		positionInformation = (MGPosition) in.readObject();
+		positionInformation = (MGPositionOld) in.readObject();
 		fullGenomeName = (String) in.readObject();
 		genomePosition = in.readInt();
 		initialReferenceOffset = in.readInt();
@@ -90,7 +90,7 @@ public class VCFIndel implements Variant {
 	 * @param chromosome 			the chromosome
 	 * @param positionInformation 	the position information object
 	 */
-	public VCFIndel (String fullGenomeName, Chromosome chromosome, MGPosition positionInformation) {
+	public VCFIndel (String fullGenomeName, Chromosome chromosome, MGPositionOld positionInformation) {
 		this.fullGenomeName = fullGenomeName;
 		initialReferenceOffset = 0;
 		initialMetaGenomeOffset = 0;
@@ -280,7 +280,7 @@ public class VCFIndel implements Variant {
 	
 	
 	@Override
-	public MGPosition getPositionInformation() {
+	public MGPositionOld getPositionInformation() {
 		return positionInformation;
 	}
 
