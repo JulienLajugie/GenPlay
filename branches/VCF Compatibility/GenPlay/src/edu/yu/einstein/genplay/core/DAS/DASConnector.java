@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
@@ -55,9 +56,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  */
 public class DASConnector {
 
-	private final String serverAddress;	// address of a DAS Server
-	private final ProjectChromosome projectChromosome; // Instance of the Chromosome Manager
-	private String genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
+	private final String 			serverAddress;		// address of a DAS Server
+	private final ProjectChromosome projectChromosome; 	// Instance of the Chromosome Manager
+	private String 					genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
+	private AlleleType 				alleleType;			// for multi-genome project only.  Type of allele for synchronization
 	
 
 	/**
@@ -171,6 +173,7 @@ public class DASConnector {
 				// name of the genome that was used for the mapping of the data
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					gh.setGenomeName(genomeName);
+					gh.setAlleleType(alleleType);
 				}
 				parser.parse(connection.getInputStream(), gh);
 				List<Gene> currentGeneList = gh.getGeneList();
@@ -242,6 +245,7 @@ public class DASConnector {
 			// name of the genome that was used for the mapping of the data
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				gh.setGenomeName(genomeName);
+				gh.setAlleleType(alleleType);
 			}
 			parser.parse(connection.getInputStream(), gh);
 			List<Gene> currentGeneList = gh.getGeneList();
@@ -356,6 +360,7 @@ public class DASConnector {
 				// name of the genome that was used for the mapping of the data
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					scwh.setGenomeName(genomeName);
+					scwh.setAlleleType(alleleType);
 				}
 				parser.parse(connection.getInputStream(), scwh);
 				List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
@@ -425,6 +430,7 @@ public class DASConnector {
 			// name of the genome that was used for the mapping of the data
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				scwh.setGenomeName(genomeName);
+				scwh.setAlleleType(alleleType);
 			}
 			parser.parse(connection.getInputStream(), scwh);
 			List<ScoredChromosomeWindow> currentSCWList = scwh.getScoreChromosomeWindowList();
@@ -554,6 +560,22 @@ public class DASConnector {
 	 */
 	public String getGenomeName() {
 		return genomeName;
+	}
+	
+	
+	/**
+	 * @return the alleleType
+	 */
+	public AlleleType getAlleleType() {
+		return alleleType;
+	}
+
+
+	/**
+	 * @param alleleType the alleleType to set
+	 */
+	public void setAlleleType(AlleleType alleleType) {
+		this.alleleType = alleleType;
 	}
 
 	

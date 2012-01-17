@@ -30,6 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
@@ -48,6 +49,7 @@ public class SCWHandler extends DefaultHandler {
 	private String 								currentMarkup = null;	// current XML markup
 	private	ScoredChromosomeWindow				currentSCW = null;		// current SCW
 	private String 								genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
+	private AlleleType 							alleleType;				// for multi-genome project only.  Type of allele for synchronization
 	
 
 	/**
@@ -122,7 +124,7 @@ public class SCWHandler extends DefaultHandler {
 	 */
 	private int getMultiGenomePosition (int position) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.computeShift(genomeName, chromosome, position);
+			return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
 		} else {
 			return position;
 		}
@@ -142,5 +144,21 @@ public class SCWHandler extends DefaultHandler {
 	 */
 	public String getGenomeName() {
 		return genomeName;
+	}
+	
+	
+	/**
+	 * @return the alleleType
+	 */
+	public AlleleType getAlleleType() {
+		return alleleType;
+	}
+
+
+	/**
+	 * @param alleleType the alleleType to set
+	 */
+	public void setAlleleType(AlleleType alleleType) {
+		this.alleleType = alleleType;
 	}
 }
