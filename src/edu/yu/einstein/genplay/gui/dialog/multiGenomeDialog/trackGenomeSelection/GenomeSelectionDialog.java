@@ -21,18 +21,21 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+
+import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 
 
 /**
@@ -53,8 +56,8 @@ public class GenomeSelectionDialog extends JDialog {
 	public static final int 	CANCEL_OPTION = 1;
 	
 	private static final 	long 		serialVersionUID = -2863825210102188370L;	// generated ID
-	private static final 	int 		defaultGenome = 0;							// default genome
-	private 				JComboBox 	jcbGenome; 									// combo box to choose the genome
+	private static final 	int 		dialogWidth 		= 180;					// dialog width
+	private					GenomeSelectionPanel panel;
 	private 				int			approved = CANCEL_OPTION;					// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 	
 	
@@ -66,62 +69,38 @@ public class GenomeSelectionDialog extends JDialog {
 		super();
 		
 		// Init
-		setTitle("Genome Selection");
+		setTitle("Synchronization parameters");
 		setResizable(false);
 		setVisible(false);
 		
 		//Layout
-		BorderLayout layout = new BorderLayout();
+		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
 		
+		panel = new GenomeSelectionPanel();
 		
-		//Dimension
-		int width = getDynamicWidth(genomeNames) + 30;
-		Dimension dialogDim = new Dimension(width, 120);
-		setSize(dialogDim);
-		setPreferredSize(dialogDim);
-		setMinimumSize(dialogDim);
-		setMaximumSize(dialogDim);
-	
+		// Insert the genome label
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		add(panel, gbc);
 		
-		JPanel combo = getComboPanel(width, genomeNames); 
-		JPanel buttons = getButtonPanel(width);
+		// Insert the buttons panel
+		gbc.gridy = 1;
+		add(getButtonPanel(), gbc);
 		
-		
-		add(combo, BorderLayout.CENTER);
-		add(buttons, BorderLayout.SOUTH);
-		
-	}
-	
-	private JPanel getComboPanel (int width, Object[] genomeNames) {
-		JPanel panel = new JPanel();
-		
-		//Dimension
-		Dimension panelDim = new Dimension(width, 50);
-		panel.setSize(panelDim);
-		panel.setPreferredSize(panelDim);
-		panel.setMinimumSize(panelDim);
-		panel.setMaximumSize(panelDim);
-		
-		jcbGenome = new JComboBox(genomeNames);
-		jcbGenome.setSelectedIndex(defaultGenome);
-		
-		FlowLayout layout = new FlowLayout();
-		layout.setHgap(20);
-		layout.setVgap(20);
-		panel.setLayout(layout);
-		
-		panel.add(jcbGenome);
-		
-		return panel;
+		pack();
 	}
 	
 	
-	private JPanel getButtonPanel (int width) {
+	private JPanel getButtonPanel () {
 		JPanel panel = new JPanel();
 		
 		//Dimension
-		Dimension panelDim = new Dimension(width, 40);
+		Dimension panelDim = new Dimension(dialogWidth, 40);
 		panel.setSize(panelDim);
 		panel.setPreferredSize(panelDim);
 		panel.setMinimumSize(panelDim);
@@ -174,25 +153,6 @@ public class GenomeSelectionDialog extends JDialog {
 	}
 	
 	
-	private int getDynamicWidth (Object[] genomeNames) {
-		int genomeNumber = genomeNames.length;
-		int maxLength = 0;
-		int width;
-		for (int i = 0; i < genomeNumber; i++) {
-			int length = ((String)genomeNames[i]).length();
-			if (length > maxLength) {
-				maxLength = length;
-			}
-		}
-		width = maxLength * 7;
-		if (width > 150) {
-			return width;
-		} else {
-			return 150;
-		}
-	}
-	
-	
 	private void cancelChoice() {
 		setVisible(false);
 	}
@@ -221,7 +181,15 @@ public class GenomeSelectionDialog extends JDialog {
 	 * @return the full name of the selected genome
 	 */
 	public String getGenomeName () {
-		return (String)jcbGenome.getSelectedItem();
+		return panel.getGenomeName();
+	}
+	
+	
+	/**
+	 * @return the selected allele type
+	 */
+	public AlleleType getAlleleType () {
+		return panel.getAlleleType();
 	}
 	
 }

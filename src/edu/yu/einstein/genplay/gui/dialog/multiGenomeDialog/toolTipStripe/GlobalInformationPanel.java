@@ -36,8 +36,8 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.stripeManagement.DisplayableVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
@@ -56,14 +56,16 @@ public class GlobalInformationPanel extends JPanel {
 	private static final int LABEL_HEIGHT = 15;		// height of a label
 	private static final int KEY_WIDTH = 40;		// width of a label used to display a key
 	private static final int VALUE_WIDTH = 60;		// width of a label used to display a value
-	private Variant variant;						// the variant to display the information of
+	private MGPosition variantInformation;			// the variant to display the information of
 
 
 	/**
 	 * Constructor of {@link GlobalInformationPanel}
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
-	protected GlobalInformationPanel (DisplayableVariant displayableVariant) {
+	protected GlobalInformationPanel (MGPosition variantInformation) {
+		this.variantInformation = variantInformation;
+		VariantInterface variant = variantInformation.getVariant();
 		
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -71,35 +73,41 @@ public class GlobalInformationPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridy = 0;
 
-		if (displayableVariant.getType() == VariantType.MIX) {
+		if (variant.getType() == VariantType.MIX) {
 			gbc = addObjectRow("Genome: ", null, gbc);
 			gbc = addObjectRow("Group: ", null, gbc);
-			gbc = addObjectRow("Position: ", displayableVariant.getStart() + " to " + displayableVariant.getStop(), gbc);
-			gbc = addObjectRow("Length: ", "" + (displayableVariant.getStop() - displayableVariant.getStart()), gbc);
+			gbc = addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop(), gbc);
+			gbc = addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart()), gbc);
 			gbc = addObjectRow("Type: ", VariantType.MIX.toString(), gbc);
 			gbc = addObjectRow("ID: ", null, gbc);
+			gbc = addObjectRow("REF: ", null, gbc);
 			gbc = addObjectRow("ALT: ", null, gbc);
 			gbc = addObjectRow("Quality: ", null, gbc);
 			gbc = addObjectRow("Filter: ", null, gbc);
 		} else {
-			variant = displayableVariant.getNativeVariant();
-			int stopPosition = variant.getNextMetaGenomePosition();
-			if (stopPosition > 1) {
-				stopPosition--;
-			}
-			gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(variant.getFullGenomeName()) + " (" + FormattedMultiGenomeName.getRawName(variant.getFullGenomeName()) + ")", gbc);
-			gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(variant.getFullGenomeName()), gbc);
-			gbc = addObjectRow("Position: ", variant.getMetaGenomePosition() + " to " + stopPosition, gbc);
-			gbc = addObjectRow("Length: ", "" + (stopPosition - variant.getMetaGenomePosition()), gbc);
-			gbc = addObjectRow("Type: ", displayableVariant.getType().toString(), gbc);
-			if ((displayableVariant.getType() == VariantType.SNPS | displayableVariant.getType() == VariantType.SVSNPS) && !variant.getId().equals(".")) {
-				gbc = addLabelRow("ID: ", getIDLabel(variant.getId()), gbc);
+			VariantType type = variant.getType();
+			int startPosition = variant.getStart();
+			int stopPosition;
+			if (type == VariantType.SNPS) {
+				stopPosition = startPosition + 1;
 			} else {
-				gbc = addObjectRow("ID: ", variant.getId(), gbc);
+				stopPosition = variant.getStop();
 			}
-			gbc = addObjectRow("ALT: ", variant.getAlternative(), gbc);
-			gbc = addObjectRow("Quality: ", "" + displayableVariant.getQualityScore(), gbc);
-			gbc = addObjectRow("Filter: ", variant.getFilter(), gbc);
+			String genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
+			gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")", gbc);
+			gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName), gbc);
+			gbc = addObjectRow("Position: ", startPosition + " to " + stopPosition, gbc);
+			gbc = addObjectRow("Length: ", "" + (stopPosition - startPosition), gbc);
+			gbc = addObjectRow("Type: ", variant.getType().toString(), gbc);
+			if (type == VariantType.SNPS && !this.variantInformation.getId().equals(".")) {
+				gbc = addLabelRow("ID: ", getIDLabel(this.variantInformation.getId()), gbc);
+			} else {
+				gbc = addObjectRow("ID: ", this.variantInformation.getId(), gbc);
+			}
+			gbc = addObjectRow("REF: ", this.variantInformation.getReference(), gbc);
+			gbc = addObjectRow("ALT: ", this.variantInformation.getAlternative(), gbc);
+			gbc = addObjectRow("Quality: ", "" + variant.getScore(), gbc);
+			gbc = addObjectRow("Filter: ", this.variantInformation.getFilter(), gbc);
 		}
 	}
 
@@ -184,9 +192,9 @@ public class GlobalInformationPanel extends JPanel {
 		JLabel keyLabel = new JLabel(key);
 		keyLabel.setSize(keyDimension);
 		valueLabel.setSize(valueDimension);
-		if (variant != null && key.equals("ALT: ")) {
+		if (variantInformation.getVariant() != null && key.equals("ALT: ") && valueLabel.getText().charAt(0) == '<') {
 			String toolTip = valueLabel.getText() + " (";
-			toolTip += variant.getPositionInformation().getAltHeader(valueLabel.getText()).getDescription();
+			toolTip += variantInformation.getAltHeader(valueLabel.getText()).getDescription();
 			toolTip += ")";
 			valueLabel.setToolTipText(toolTip);
 		} else {
@@ -208,7 +216,7 @@ public class GlobalInformationPanel extends JPanel {
 	 * @return the height of the panel
 	 */
 	protected static int getPanelHeight () {
-		return LABEL_HEIGHT * 9;
+		return LABEL_HEIGHT * 10;
 	}
 
 }

@@ -41,7 +41,7 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 	 * Constructor of {@link StripesTableModel}
 	 */
 	protected StripesTableModel () {
-		super(new String[]{"Genome", "Variation", "Track"});
+		super(new String[]{"Genome", "Allele", "Variation", "Track"});
 	}
 
 
@@ -51,6 +51,8 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 		switch (col) {
 		case StripesData.GENOME_INDEX:
 			return stripesData.getGenomeForDisplay();
+		case StripesData.ALLELE_INDEX:
+			return stripesData.getAlleleTypeForDisplay();
 		case StripesData.VARIANT_INDEX:
 			return stripesData.getVariationTypeListForDisplay();
 		case StripesData.TRACK_INDEX:
@@ -65,6 +67,8 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 	public Class<?> getColumnClass(int column) {
 		switch (column) {
 		case StripesData.GENOME_INDEX:
+			return String.class;
+		case StripesData.ALLELE_INDEX:
 			return String.class;
 		case StripesData.VARIANT_INDEX:
 			return JPanel.class;
@@ -91,6 +95,7 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 		this.data = data;
 		for (int row = 0; row <data.size(); row++) {
 			fireTableCellUpdated(row, StripesData.GENOME_INDEX);
+			fireTableCellUpdated(row, StripesData.ALLELE_INDEX);
 			fireTableCellUpdated(row, StripesData.VARIANT_INDEX);
 			fireTableCellUpdated(row, StripesData.TRACK_INDEX);
 		}

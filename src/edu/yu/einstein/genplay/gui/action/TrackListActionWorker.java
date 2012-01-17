@@ -27,6 +27,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 import javax.swing.SwingWorker;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
@@ -50,6 +51,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	private int currentStep = 1;			// current step of the action
 	protected SwingWorker<T, Void> worker;	// worker that will process the action
 	protected String							genomeName = null;		// genome name for a multi genome project
+	protected AlleleType						alleleType = null;		// allele type for a multi genome project
 	
 	
 	/**

@@ -26,7 +26,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 
 /**
  * @author Nicolas Fourel
@@ -46,18 +46,18 @@ public class VariantFormat {
 	 * @param formatHeader string containing header information about the FORMAT field of the variant information
 	 * @param formatValues string containing values information about the FORMAT field of the variant information according to a specific genome
 	 */
-	protected VariantFormat (Variant variant) {
+	protected VariantFormat (MGPosition variantInformation) {
 		title = "Format";
 
-		if (variant == null) {
+		if (variantInformation == null) {
 			pane = new PanelInformation(title, null, null, null);
 		} else {
 			keys = new ArrayList<String>();
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
 			
-			String[] headerElements = variant.getFormat().split(":");
-			String[] valueElements = variant.getFormatValues().split(":");
+			String[] headerElements = variantInformation.getFormat().split(":");
+			String[] valueElements = variantInformation.getFormatValues().split(":");
 
 			for (int i = 0; i < headerElements.length; i++) {
 				keys.add(headerElements[i]);
@@ -65,7 +65,7 @@ public class VariantFormat {
 			}
 			
 			for (String key: keys) {
-				description.add(variant.getPositionInformation().getFormatHeader(key).getDescription());
+				description.add(variantInformation.getFormatHeader(key).getDescription());
 			}
 
 			pane = new PanelInformation(title, keys, values, description);

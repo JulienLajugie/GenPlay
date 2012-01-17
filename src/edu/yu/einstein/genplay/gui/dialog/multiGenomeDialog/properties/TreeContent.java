@@ -97,7 +97,7 @@ class TreeContent {
 		
 		// FILES nodes
 		DefaultMutableTreeNode vcfFiles = new DefaultMutableTreeNode(PropertiesDialog.FILES);
-		List<VCFReader> readerList = ProjectManager.getInstance().getGenomeSynchronizer().getReaderList();
+		List<VCFReader> readerList = ProjectManager.getInstance().getMultiGenome().getAllReaders();
 		for (VCFReader reader: readerList) {
 			DefaultMutableTreeNode readerNode = new DefaultMutableTreeNode(reader.getFile().getName());
 			readerNode.add(new DefaultMutableTreeNode("Information"));

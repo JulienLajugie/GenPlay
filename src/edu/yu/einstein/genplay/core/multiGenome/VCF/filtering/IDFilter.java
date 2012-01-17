@@ -22,22 +22,12 @@
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
 public interface IDFilter {
-
-	
-	/**
-	 * The method controls if the variant is valid according to the filter
-	 * @param genomeFullName 	the full genome name
-	 * @param variant			the variant to control
-	 * @return					true if the variant passes the test, false otherwise
-	 */
-	public boolean passFilter (String genomeFullName, Variant variant);
 	
 	
 	/**

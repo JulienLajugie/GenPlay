@@ -23,8 +23,6 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.io.File;
 
-import edu.yu.einstein.genplay.core.enums.VCFType;
-
 
 /**
  * This class represents a line of the VCf loader table with all object that it must implements.
@@ -39,30 +37,27 @@ public class VCFData {
 	public static final int GROUP_INDEX		= 0;
 	/** Index used for Genome column */
 	public static final int GENOME_INDEX 	= 1;
-	/** Index used for Raw name column */
-	public static final int RAW_INDEX 		= 2;
 	/** Index used for VCF file column */
-	public static final int FILE_INDEX 		= 3;
-	/** Index used for VCF type column */
-	public static final int TYPE_INDEX 		= 4;
+	public static final int FILE_INDEX 		= 2;
+	/** Index used for Raw name column */
+	public static final int RAW_INDEX 		= 3;
+	
 
 	/** Name used for Group column */
 	public static final String GROUP_NAME	= "Group";
 	/** Name used for Genome column */
 	public static final String GENOME_NAME 	= "Genome";
-	/** Name used for Raw name column */
-	public static final String RAW_NAME 	= "Raw name";
 	/** Name used for VCF file column */
 	public static final String FILE_NAME 	= "File";
-	/** Name used for VCF type column */
-	public static final String TYPE_NAME 	= "VCF Type";
+	/** Name used for Raw name column */
+	public static final String RAW_NAME 	= "Raw name";
+	
 
 
 	private String 	group;	// name of the group
 	private String 	genome;	// simplified name of the genome
 	private String 	raw;	// raw name of the genome
 	private File 	file;	// path of the VCF file
-	private VCFType type;	// type of the VCF file
 
 
 	/**
@@ -71,9 +66,8 @@ public class VCFData {
 	public VCFData () {
 		this.group = "";
 		this.genome = "";
-		this.raw = "";
 		this.file = null;
-		this.type = null;
+		this.raw = "";
 	}
 
 
@@ -81,16 +75,14 @@ public class VCFData {
 	 * Constructor of {@link VCFData}
 	 * @param group		name of the group
 	 * @param genome	simplified name of the genome
-	 * @param raw		raw name of the genome
 	 * @param file		path of the VCF file
-	 * @param type		type of the VCF file
+	 * @param raw		raw name of the genome
 	 */
-	public VCFData (String group, String genome, String raw, File file, VCFType type) {
+	public VCFData (String group, String genome, File file, String raw) {
 		this.group = group;
 		this.genome = genome;
-		this.raw = raw;
 		this.file = file;
-		this.type = type;
+		this.raw = raw;
 	}
 
 
@@ -107,14 +99,11 @@ public class VCFData {
 		if (this.genome.equals("")) {
 			error += GENOME_NAME + "; ";
 		}
-		if (this.raw.equals("")) {
-			error += RAW_NAME + "; ";
-		}
 		if (file == null || !file.isFile()) {
 			error += FILE_NAME + "; ";
 		}
-		if (this.type == null) {
-			error += TYPE_NAME + "; ";
+		if (this.raw.equals("")) {
+			error += RAW_NAME + "; ";
 		}
 		
 		if (error.length() > 0) {
@@ -190,22 +179,6 @@ public class VCFData {
 
 
 	/**
-	 * @return the type
-	 */
-	public VCFType getType() {
-		return type;
-	}
-
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(VCFType type) {
-		this.type = type;
-	}
-
-
-	/**
 	 * Prints the content
 	 */
 	public void show () {
@@ -213,7 +186,6 @@ public class VCFData {
 		info += ", " + getGenome();
 		info += ", " + getRaw();
 		info += ", " + getFile();
-		info += ", " + getType();
 		System.out.println(info);
 	}
 

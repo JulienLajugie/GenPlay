@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.engine;
+package edu.yu.einstein.genplay.core.multiGenome.display.variant;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -28,11 +28,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * This class gathers all common genome information contained in a line of a VCF file.
@@ -43,9 +42,10 @@ public class MGPosition implements Serializable {
 
 	private static final long serialVersionUID = 3254401647936434675L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private Chromosome 				chromosome;	// The chromosome
+	private VariantInterface		variant;	// The variant
 	private Map<String, Object> 	VCFLine;	// The line from the VCF file
 	private VCFReader 				reader;		// The reader object of the VCF file
+	private String genomeRawName;
 
 
 	/**
@@ -55,9 +55,9 @@ public class MGPosition implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(chromosome);
+		out.writeObject(variant);
 		out.writeObject(VCFLine);
-		out.writeObject(reader);		
+		out.writeObject(reader);
 	}
 
 
@@ -70,7 +70,7 @@ public class MGPosition implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		chromosome = (Chromosome) in.readObject();
+		variant = (VariantInterface) in.readObject();
 		VCFLine = (Map<String, Object>) in.readObject();
 		reader = (VCFReader) in.readObject();
 	}
@@ -78,15 +78,24 @@ public class MGPosition implements Serializable {
 
 	/**
 	 * Constructor of {@link MGPosition}
-	 * @param chromosome 	the chromosome
+	 * @param variant 		the native variant
 	 * @param line 			the line information from the VCF file
 	 * @param reader 		the VCF reader associated to the the VCF file
 	 */
-	public MGPosition (Chromosome chromosome, Map<String, Object> line, VCFReader reader) {
-		this.chromosome = chromosome;
+	public MGPosition (VariantInterface variant, Map<String, Object> line, VCFReader reader) {
+		this.variant = variant;
 		this.reader = reader;
 		VCFLine = line;
+		this.genomeRawName = FormattedMultiGenomeName.getRawName(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName());
 		this.reader.retrievePositionInformation(this);
+	}
+
+
+	/**
+	 * @return the variant
+	 */
+	public VariantInterface getVariant() {
+		return variant;
 	}
 
 
@@ -94,10 +103,7 @@ public class MGPosition implements Serializable {
 	 * @return the chromosome name
 	 */
 	public String getChromosomeName() {
-		if (chromosome != null) {
-			return chromosome.getName();
-		}
-		return ProjectManager.getInstance().getAssembly().getDisplayName();
+		return variant.getVariantListForDisplay().getChromosome().getName();
 	}
 
 
@@ -179,20 +185,18 @@ public class MGPosition implements Serializable {
 
 
 	/**
-	 * @param genomeRawName the genome raw name
 	 * @return the format value for the given genome name
 	 */
-	public String getFormatValues(String genomeRawName) {
+	public String getFormatValues() {
 		return getString(VCFLine.get(genomeRawName));
 	}
 
 
 	/**
-	 * @param genomeRawName the genome raw name
-	 * @param field			an ID from the FORMAT field
-	 * @return				the value associated to the ID
+	 * @param field	an ID from the FORMAT field
+	 * @return		the value associated to the ID
 	 */
-	public Object getFormatValue(String genomeRawName, String field) {
+	public Object getFormatValue(String field) {
 		Object result = null;
 		String[] formatHeader = getString(VCFLine.get("FORMAT")).split(":");
 		String[] formatValues;
@@ -281,5 +285,16 @@ public class MGPosition implements Serializable {
 	 */
 	private String getString (Object o) {
 		return o.toString().trim();
+	}
+	
+	
+	/**
+	 * Show the position information
+	 */
+	public void show () {
+		System.out.println("Position information:");
+		for (String key: VCFLine.keySet()) {
+			System.out.println(key + ": " + VCFLine.get(key));
+		}
 	}
 }

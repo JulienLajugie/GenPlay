@@ -27,8 +27,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
@@ -69,16 +67,6 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 		ID = (VCFHeaderType) in.readObject();
 		category = (String) in.readObject();
 		required = in.readBoolean();
-	}
-	
-
-	@Override
-	public boolean passFilter(String genomeFullName, Variant variant) {
-		Object value = getValue(genomeFullName, variant);
-		if (required && value != null) {
-			return true;
-		}
-		return false;
 	}
 
 
@@ -143,45 +131,6 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 		} else {
 			return error;
 		}
-	}
-	
-	
-	/**
-	 * Get the value associated to the ID in the variant information.
-	 * @param genomeFullName full genome name
-	 * @param variant			variant for retrieving information
-	 * @return					the value of the ID for specific variant and genome (if apply) or null if not found
-	 */
-	private Object getValue (String genomeFullName, Variant variant) {
-		Object result = null;
-		if (category.equals("ALT")) {
-			result = variant.getPositionInformation().getAlternative();
-			if (result != null) {
-				if (!result.toString().equals("<" + ID.getId() + ">")) {
-					result = null;
-				}
-			}
-			
-		} else if (category.equals("QUAL")) {
-			System.out.println("FlagIDFilter getValue QUAL not supported");
-			
-		} else if (category.equals("FILTER")) {
-			result = variant.getPositionInformation().getFilter();
-			if (result != null) {
-				if (!result.toString().equals(ID.getId())) {
-					result = null;
-				}
-			}
-			
-		} else if (category.equals("INFO")) {
-			result = variant.getPositionInformation().getInfoValue(ID.getId());
-			
-		} else if (category.equals("FORMAT")) {
-			String rawName = FormattedMultiGenomeName.getRawName(genomeFullName);
-			result = variant.getPositionInformation().getFormatValue(rawName, ID.getId());
-		}
-		
-		return result;
 	}
 
 

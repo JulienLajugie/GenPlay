@@ -50,7 +50,6 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	protected String							name;					// a name 
 	protected Extractor							extractor;				// an extractor
 	protected boolean[]							selectedChromo = null;	// selected chromo
-	protected String							genomeName = null;		// genome name for a multi genome project
 
 	
 	/**
@@ -89,6 +88,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 				doBeforeExtraction();
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					extractor.setGenomeName(genomeName);
+					extractor.setAlleleType(alleleType);
 				}
 				notifyActionStart("Loading File", 1, extractor instanceof Stoppable);
 				extractor.extract();

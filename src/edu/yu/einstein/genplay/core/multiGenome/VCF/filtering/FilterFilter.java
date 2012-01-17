@@ -27,7 +27,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 /**
  * @author Nicolas Fourel
@@ -65,22 +64,6 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 		in.readInt();
 		value = (String) in.readObject();
 		required = in.readBoolean();
-	}
-	
-
-	@Override
-	public boolean passFilter(String genomeFullName, Variant variant) {
-		String result = variant.getFilter();
-		if (result != null) {
-			if (result.indexOf(value) == -1) {
-				result = null;
-			}
-		}
-		
-		if (required && result != null || !required && result == null) {
-			return true;
-		}
-		return false;
 	}
 
 

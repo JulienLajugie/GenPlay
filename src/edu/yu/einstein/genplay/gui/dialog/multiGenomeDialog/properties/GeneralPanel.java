@@ -139,14 +139,13 @@ class GeneralPanel extends JPanel {
 	 */
 	private JPanel getVCFMappingPanel () {
 		// Association between full genome names and their readers
-		Map<String, List<VCFReader>> map = ProjectManager.getInstance().getGenomeSynchronizer().getGenomeFileAssociation();
+		Map<String, List<VCFReader>> map = ProjectManager.getInstance().getMultiGenome().getGenomeFileAssociation();
 		
 		// Column names
 		String[] columnNames = {VCFData.GROUP_NAME,
 				VCFData.GENOME_NAME,
 				VCFData.RAW_NAME,
-				VCFData.FILE_NAME,
-				VCFData.TYPE_NAME};
+				VCFData.FILE_NAME};
 		
 		// Counts the number of row
 		int rowNumber = 0;
@@ -165,7 +164,6 @@ class GeneralPanel extends JPanel {
 				data[rowIndex][1] = FormattedMultiGenomeName.getUsualName(fullGenomeName);
 				data[rowIndex][2] = FormattedMultiGenomeName.getRawName(fullGenomeName);
 				data[rowIndex][3] = reader.getFile().getName();
-				data[rowIndex][4] = reader.getVcfType();
 				rowIndex++;
 			}
 		}

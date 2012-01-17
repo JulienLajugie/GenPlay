@@ -22,13 +22,16 @@
 package edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel;
 
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -39,9 +42,10 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  */
 public class GenomeSelectionPanel extends JPanel {
 
-	private static final long serialVersionUID = -2863825210102188370L;	// generated ID
-	private static final int 				PANEL_WIDTH = 150;	// width of the panel
-	private final JComboBox 				jcbGenome; 			// combo box for the score calculation method
+	private static final long 	serialVersionUID = -2863825210102188370L;	// generated ID
+	private static final int 	PANEL_WIDTH = 180;	// width of the panel
+	private 					JComboBox 	jcbGenome; 									// combo box to choose the genome
+	private						JComboBox	jcbAllele;									// combo box to choose the allele type
 	private static int 						defaultGenome = 0;	// default method of calculation
 	
 	
@@ -50,11 +54,73 @@ public class GenomeSelectionPanel extends JPanel {
 	 */
 	public GenomeSelectionPanel() {
 		super();
-		jcbGenome = new JComboBox(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
+		
+		//Layout
+		GridBagLayout layout = new GridBagLayout();
+		setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+	
+		// Insert the genome label
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = new Insets(7, 10, 0, 10);
+		add(new JLabel("Select a genome:"), gbc);
+		
+		// Insert the genome combo box
+		gbc.gridy = 1;
+		gbc.insets = new Insets(2, 10, 0, 10);
+		add(getGenomeComboBox(), gbc);
+		
+		// Insert the allele type label
+		gbc.gridy = 2;
+		gbc.insets = new Insets(7, 10, 0, 10);
+		add(new JLabel("Select an allele:"), gbc);
+		
+		// Insert the allele type combo box
+		gbc.gridy = 3;
+		gbc.insets = new Insets(2, 10, 0, 10);
+		add(getAlleleTypeComboBox(), gbc);
+		
+	}
+	
+	
+	private JComboBox getGenomeComboBox () {
+		// Creates the combo box
+		jcbGenome = new JComboBox(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
 		jcbGenome.setSelectedIndex(defaultGenome);
-		add(jcbGenome);
-		setBorder(BorderFactory.createTitledBorder("Genome Selection"));
-		setPreferredSize(new Dimension(PANEL_WIDTH, getPreferredSize().height));
+		
+		//Dimension
+		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(PANEL_WIDTH, height);
+		jcbGenome.setPreferredSize(dimension);
+		jcbGenome.setMinimumSize(dimension);
+		
+		// Tool tip text
+		jcbGenome.setToolTipText("Select a genome");
+		
+		return jcbGenome;
+	}
+	
+	
+	private JComboBox getAlleleTypeComboBox () {
+		// Creates the combo box
+		Object[] alleles = new Object[]{AlleleType.PATERNAL, AlleleType.MATERNAL};
+		jcbAllele = new JComboBox(alleles);
+		jcbAllele.setSelectedIndex(defaultGenome);
+		
+		//Dimension
+		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(PANEL_WIDTH, height);
+		jcbAllele.setPreferredSize(dimension);
+		jcbAllele.setMinimumSize(dimension);
+		
+		// Tool tip text
+		jcbAllele.setToolTipText("Select an allele to synchronize with");
+		
+		return jcbAllele;
 	}
 	
 	
@@ -67,16 +133,18 @@ public class GenomeSelectionPanel extends JPanel {
 	
 
 	/**
-	 * @return the name of the selected genome
+	 * @return the full name of the selected genome
 	 */
 	public String getGenomeName () {
-		String name;
-		try {
-			name = FormattedMultiGenomeName.getRawName((String)jcbGenome.getSelectedItem());
-		} catch (Exception e) {
-			name = (String)jcbGenome.getSelectedItem();
-		}
-		return name;
+		return (String)jcbGenome.getSelectedItem();
+	}
+	
+	
+	/**
+	 * @return the selected allele type
+	 */
+	public AlleleType getAlleleType () {
+		return (AlleleType)jcbAllele.getSelectedItem();
 	}
 	
 	

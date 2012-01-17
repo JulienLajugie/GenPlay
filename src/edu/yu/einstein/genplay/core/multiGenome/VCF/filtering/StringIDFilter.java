@@ -26,8 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
@@ -80,17 +78,6 @@ public class StringIDFilter implements StringIDFilterInterface {
 	}
 	
 	
-	@Override
-	public boolean passFilter(String genomeFullName, Variant variant) {
-		String result = getValue(genomeFullName, variant);
-		if (required && result != null || !required && result == null) {
-			return true;
-		}
-		
-		return false;
-	}
-
-
 	@Override
 	public VCFHeaderType getID() {
 		return ID;
@@ -168,34 +155,6 @@ public class StringIDFilter implements StringIDFilterInterface {
 			return error;
 		}
 	}
-	
-	
-	/**
-	 * Get the value associated to the ID in the variant information.
-	 * @param genomeFullName full genome name
-	 * @param variant			variant for retrieving information
-	 * @return					the value of the ID for specific variant and genome (if apply) or null if not found
-	 */
-	private String getValue (String genomeFullName, Variant variant) {
-		String result = null;
-		if (category.equals("INFO")) {
-			result = variant.getPositionInformation().getInfoValue(ID.getId()).toString();
-			
-		} else if (category.equals("FORMAT")) {
-			String rawName = FormattedMultiGenomeName.getRawName(genomeFullName);
-			result = variant.getPositionInformation().getFormatValue(rawName, ID.getId()).toString();
-			
-		}
-		
-		if (result != null) {
-			if (result.indexOf(value) == -1) {
-				result = null;
-			}
-		}
-		
-		return result;
-	}
-
 	
 
 	@Override

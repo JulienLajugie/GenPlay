@@ -69,9 +69,10 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray());
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
+				alleleType = genomeDialog.getAlleleType();
 			} else {
 				throw new InterruptedException();
 			}

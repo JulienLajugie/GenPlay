@@ -22,13 +22,13 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.manager.project.GenomeSynchronizer;
+import edu.yu.einstein.genplay.core.manager.project.MultiGenome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -57,13 +57,15 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
-		"Performs the multi genome algorithm"; 									// tooltip
+		"Performs the multi genome algorithm"; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
 	private static		 String 			ACTION_NAME = "Multi-genome loading";	// action name
-	private GenomeSynchronizer 				genomeSynchroniser;
+	private MultiGenome 					multiGenome;							// instance of the multi genome
 	private Map<String, List<VCFReader>> 	genomeFileAssociation;					// Mapping between genome names and their readers.
-	private	List<Chromosome> 				chromosomeList;							// List of chromosome
 
+	
+	private List<Long> times = new ArrayList<Long>();
+	
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -80,8 +82,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		genomeSynchroniser = ProjectManager.getInstance().getGenomeSynchronizer();
-		chromosomeList = ProjectManager.getInstance().getProjectChromosome().getCurrentMultiGenomeChromosomeList();
+		multiGenome = ProjectManager.getInstance().getMultiGenome();
 	}
 
 
@@ -99,11 +100,37 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 				notifyActionStart(ACTION_NAME, 1, false);
 				
 				// Initializes the genome synchronization
-				genomeSynchroniser.initializesGenomeSynchronizer(projectManager.getProjectChromosome().getCurrentChromosome());
+				times.add(System.currentTimeMillis());
+				multiGenome.initializeSynchronization (genomeFileAssociation);
 				
-				// Computes the synchronization
-				genomeSynchroniser.compute(projectManager.getAssembly().getDisplayName(), chromosomeList);
+				// Insert the variation into the data structure
+				times.add(System.currentTimeMillis());
+				multiGenome.getMultiGenomeSynchronizer().insertVariantposition();
 				
+				// Sort lists of position for every chromosome of every genome
+				times.add(System.currentTimeMillis());
+				multiGenome.getMultiGenome().sort();
+				
+				//genomeSynchronizer.getMultiGenome().show();
+				
+				// Remove the duplicate from the reference genome lists of position
+				times.add(System.currentTimeMillis());
+				multiGenome.getMultiGenome().getReferenceGenome().removeDuplicate();
+				
+				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
+				times.add(System.currentTimeMillis());
+				multiGenome.getMultiGenomeSynchronizer().performPositionSynchronization();
+				
+				// Sort lists of position for every chromosome of every genome
+				//times.add(System.currentTimeMillis());
+				//genomeSynchronizer.getMultiGenome().sort();
+				
+				// Compacts the offset lists in order to optimize the memory usage
+				times.add(System.currentTimeMillis());
+				multiGenome.getMultiGenome().compactLists();
+				
+				// End
+				times.add(System.currentTimeMillis());
 			} else {
 				// Generates error when parameters have not been set
 				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
@@ -119,14 +146,16 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
-		ProjectManager.getInstance().updateChromosomeList();
-		
-		genomeSynchroniser.refreshChromosomeReferences(ProjectManager.getInstance().getProjectChromosome().getChromosomeList());
-		genomeSynchroniser.getGenomesInformation().resetListIndexes();
+	
+		//multiGenome.show();
 		
 		initializesTrackListForMultiGenomeProject();
-		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
-	}	
+		
+		/*for (int i = 1; i < times.size(); i++) {
+			System.out.println("[" + i + "]: " + (times.get(i) - times.get(i - 1)));
+		}
+		System.out.println("[total]: " + (times.get(times.size() - 1) - times.get(0)));*/
+	}
 	
 	
 	/**
@@ -141,11 +170,11 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		// If parameter have been given,
 		// sets the genome synchronizer.
 		if (genomeFileAssociation != null) {
-			genomeSynchroniser.setGenomeFileAssociation(genomeFileAssociation);
+			multiGenome.setGenomeFileAssociation(genomeFileAssociation);
 		}
 		
 		// Checks if genome synchronizer has been initialized
-		if (genomeSynchroniser.getGenomeFileAssociation() != null) {
+		if (multiGenome.getGenomeFileAssociation() != null) {
 			valid = true;
 		}
 		
@@ -160,16 +189,6 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	public void setGenomeFileAssociation(
 			Map<String, List<VCFReader>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
-	}
-
-
-	/**
-	 * The action will be performed on that list of chromosomes.
-	 * By default, that chromosome list is set according to the low memory mode option (full list or current chromosome only).
-	 * @param chromosomeList the chromosomeList to set
-	 */
-	public void setChromosomeList(List<Chromosome> chromosomeList) {
-		this.chromosomeList = chromosomeList;
 	}
 	
 	

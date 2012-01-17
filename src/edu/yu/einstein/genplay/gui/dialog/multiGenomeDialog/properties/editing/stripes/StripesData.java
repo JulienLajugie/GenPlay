@@ -27,12 +27,19 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
@@ -47,13 +54,16 @@ public class StripesData implements Serializable {
 	
 	/** Index used for Genome column */
 	public static final int GENOME_INDEX 	= 0;
+	/** Index used for Allele column */
+	public static final int ALLELE_INDEX 	= 1;
 	/** Index used for variant column */
-	public static final int VARIANT_INDEX 	= 1;
+	public static final int VARIANT_INDEX 	= 2;
 	/** Index used for track column */
-	public static final int TRACK_INDEX 	= 2;
+	public static final int TRACK_INDEX 	= 3;
 
 
 	private String 				genome;				// name of the genome
+	private AlleleType			alleleType;			// type of allele (paternal, maternal or both)
 	private List<VariantType> 	variationTypeList;	// list of variation
 	private List<Color> 		colorList;			// list of color
 	private Track<?>[] 			trackList;			// list of track
@@ -67,6 +77,7 @@ public class StripesData implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(genome);
+		out.writeObject(alleleType);
 		out.writeObject(variationTypeList);
 		out.writeObject(colorList);
 		out.writeObject(trackList);
@@ -83,6 +94,7 @@ public class StripesData implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		genome = (String) in.readObject();
+		alleleType = (AlleleType) in.readObject();
 		variationTypeList = (List<VariantType>) in.readObject();
 		colorList = (List<Color>) in.readObject();
 		trackList = (Track[]) in.readObject();
@@ -94,6 +106,7 @@ public class StripesData implements Serializable {
 	 */
 	protected StripesData() {
 		this.genome = null;
+		this.alleleType = null;
 		this.variationTypeList = null;
 		this.colorList = null;
 		this.trackList = null;
@@ -107,9 +120,10 @@ public class StripesData implements Serializable {
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	protected StripesData(String genome, List<VariantType> variantList,
+	protected StripesData(String genome, AlleleType alleleType, List<VariantType> variantList,
 			List<Color> colorList, Track<?>[] trackList) {
 		this.genome = genome;
+		this.alleleType = alleleType;
 		this.variationTypeList = variantList;
 		this.colorList = colorList;
 		this.trackList = trackList;
@@ -122,6 +136,13 @@ public class StripesData implements Serializable {
 	 */
 	protected void setGenome(String genome) {
 		this.genome = genome;
+	}
+
+	/**
+	 * @param alleleType the alleleType to set
+	 */
+	protected void setAlleleType(AlleleType alleleType) {
+		this.alleleType = alleleType;
 	}
 
 	/**
@@ -153,6 +174,13 @@ public class StripesData implements Serializable {
 	public String getGenome() {
 		return genome;
 	}
+	
+	/**
+	 * @return the alleleType
+	 */
+	public AlleleType getAlleleType() {
+		return alleleType;
+	}
 
 	/**
 	 * @return the variantList
@@ -182,6 +210,13 @@ public class StripesData implements Serializable {
 	 */
 	public String getGenomeForDisplay() {
 		return genome;
+	}
+	
+	/**
+	 * @return the allele type
+	 */
+	public String getAlleleTypeForDisplay() {
+		return alleleType.toString();
 	}
 
 	/**
@@ -233,4 +268,28 @@ public class StripesData implements Serializable {
 		return info;
 	}
 
+	
+	/**
+	 * @param alleleType 
+	 * @return the list of variant list for display
+	 */
+	public List<MGVariantListForDisplay> getListOfVariantList (AlleleType alleleType) {
+		List<MGVariantListForDisplay> listOfVariantList = new ArrayList<MGVariantListForDisplay>();
+		
+		MGGenomeForDisplay genomeForDisplay = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay().getGenomeInformation(genome);
+		MGAlleleForDisplay alleleForDisplay = null;
+		if (alleleType == AlleleType.PATERNAL) {
+			alleleForDisplay = genomeForDisplay.getAlleleA();
+		} else if (alleleType == AlleleType.MATERNAL) {
+			alleleForDisplay = genomeForDisplay.getAlleleB();
+		}
+		
+		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+		for (VariantType variantType: variationTypeList) {
+			MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, variantType);
+			listOfVariantList.add(variantListForDisplay);
+		}
+		
+		return listOfVariantList;
+	}
 }

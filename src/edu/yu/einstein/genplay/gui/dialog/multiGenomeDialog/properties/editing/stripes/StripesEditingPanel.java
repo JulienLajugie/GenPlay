@@ -39,6 +39,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
@@ -56,6 +57,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	
 	private final Color[]		defaultVariationColor = {Color.green, Color.red, Color.cyan};	// Array of default variation colors (Insertion, Deletion, SNPs)
 	private JComboBox 			jcbGenome;			// The combo box for the genome selection
+	private JComboBox 			jcbAllele;			// The combo box for the allele selection
 	private List<VariantType> 	variationName;		// Variation names list
 	private List<JCheckBox> 	selectedVariation;	// Variation check box selection list
 	private List<JButton> 		variationColor;		// Variation color list
@@ -84,6 +86,18 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		gbc.gridy++;
 		gbc.insets = panelInset;
 		add(getGenomeBox(), gbc);
+		
+		// Allele selection title
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.insets = titleInset;
+		add(Utils.getTitleLabel("Allele"), gbc);
+
+		// Allele selection box
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.insets = panelInset;
+		add(getAlleleBox(), gbc);
 
 		// Variation selection title
 		gbc.gridx = 0;
@@ -123,6 +137,8 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	public void refresh () {
 		jcbGenome.setSelectedIndex(0);
 		jcbGenome.setToolTipText(jcbGenome.getSelectedItem().toString());
+		jcbAllele.setSelectedIndex(0);
+		jcbAllele.setToolTipText(jcbAllele.getSelectedItem().toString());
 		for (int i = 0; i < defaultVariationColor.length; i++) {
 			selectedVariation.get(i).setSelected(false);
 			variationColor.get(i).setBackground(defaultVariationColor[i]);
@@ -138,7 +154,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	 */
 	private JComboBox getGenomeBox () {
 		// Get the genome array without the reference genome
-		Object[] allGenomes = ProjectManager.getInstance().getGenomeSynchronizer().getFormattedGenomeArray();
+		Object[] allGenomes = ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray();
 		Object[] genomes = new Object[allGenomes.length - 1];
 		int index = 0;
 		for (Object o: allGenomes) {
@@ -164,6 +180,33 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		});
 		jcbGenome.setToolTipText("Select a genome to display its variation(s).");
 		return jcbGenome;
+	}
+	
+	
+	/**
+	 * Creates a combo box containing in order to choose the allele
+	 * @return the combo box
+	 */
+	private JComboBox getAlleleBox () {
+		// Creates the array containing the different alleles
+		Object[] alleles = new Object[]{AlleleType.PATERNAL, AlleleType.MATERNAL, AlleleType.BOTH};
+		
+		// Creates the box
+		jcbAllele = new JComboBox(alleles);
+		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
+		Dimension dimension = new Dimension(180, height);
+		jcbAllele.setPreferredSize(dimension);
+		jcbAllele.setMinimumSize(dimension);
+		jcbAllele.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JComboBox box = (JComboBox)e.getSource();
+				String element = box.getSelectedItem().toString();
+				box.setToolTipText(element);
+			}
+		});
+		jcbAllele.setToolTipText("Select an allele.");
+		return jcbAllele;
 	}
 
 
@@ -268,6 +311,9 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		// Set the genome
 		jcbGenome.setSelectedItem(data.getGenome());
 		
+		// Set the allele
+		jcbAllele.setSelectedItem(data.getAlleleType());
+		
 		// Set selected variation and color
 		for (int i = 0; i < variationName.size(); i++) {
 			int variationIndex = data.getVariationTypeList().indexOf(variationName.get(i));
@@ -294,6 +340,8 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		// Retrieve the genome name
 		String genome = jcbGenome.getSelectedItem().toString();
 		
+		AlleleType alleleType = (AlleleType) jcbAllele.getSelectedItem();
+		
 		// Retrieve the variant and color lists
 		List<VariantType> variantList = new ArrayList<VariantType>();
 		List<Color> colorList = new ArrayList<Color>();
@@ -301,20 +349,14 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			if (selectedVariation.get(i).isSelected()) {
 				VariantType type = variationName.get(i);
 				Color color = variationColor.get(i).getBackground();
-				if (type == VariantType.INSERTION || type == VariantType.INS) {
+				if (type == VariantType.INSERTION) {
 					variantList.add(VariantType.INSERTION);
-					variantList.add(VariantType.INS);
 					colorList.add(color);
-					colorList.add(color);
-				} else if (type == VariantType.DELETION || type == VariantType.DEL) {
+				} else if (type == VariantType.DELETION) {
 					variantList.add(VariantType.DELETION);
-					variantList.add(VariantType.DEL);
 					colorList.add(color);
-					colorList.add(color);
-				} else if (type == VariantType.SNPS || type == VariantType.SVSNPS) {
+				} else if (type == VariantType.SNPS) {
 					variantList.add(VariantType.SNPS);
-					variantList.add(VariantType.SVSNPS);
-					colorList.add(color);
 					colorList.add(color);
 				}
 			}
@@ -324,7 +366,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		Track<?>[] trackList = getSelectedTracks();
 		
 		// Create the stripe data object
-		StripesData data = new StripesData(genome, variantList, colorList, trackList);
+		StripesData data = new StripesData(genome, alleleType, variantList, colorList, trackList);
 		
 		// Return the stripe data object
 		return data;

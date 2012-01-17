@@ -26,7 +26,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 /**
  * @author Nicolas Fourel
@@ -64,23 +63,6 @@ public class AltFilter implements StringIDFilterInterface {
 		in.readInt();
 		value = (String) in.readObject();
 		required = in.readBoolean();
-	}
-	
-
-	@Override
-	public boolean passFilter(String genomeFullName, Variant variant) {
-		String result = variant.getAlternative();
-		if (result != null) {
-			if (result.indexOf(value) == -1) {
-				result = null;
-			} else {
-			}
-		}
-		
-		if (required && result != null || !required && result == null) {
-			return true;
-		}
-		return false;
 	}
 
 

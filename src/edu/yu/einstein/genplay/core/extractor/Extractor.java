@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -58,6 +59,7 @@ public abstract class Extractor implements Serializable {
 	private boolean						isFileSorted = true;	// boolean indicating if the data file is sorted
 	private int		 					lastSelectedChromoIndex;// index of the last chromosome to extract
 	private	String						genomeName;				// name of the genome used for the mapping of the data
+	private AlleleType					alleleType;				// type of allele to load the data (multi genome)
 	
 	/**
 	 * Constructor
@@ -218,13 +220,21 @@ public abstract class Extractor implements Serializable {
 	
 	
 	/**
+	 * @param alleleType the alleleType to set
+	 */
+	public void setAlleleType(AlleleType alleleType) {
+		this.alleleType = alleleType;
+	}
+
+
+	/**
 	 * @param chromosome	current chromosome
 	 * @param position		current position
 	 * @return				the associated associated meta genome position
 	 */
 	protected int getMultiGenomePosition (Chromosome chromosome, int position) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.computeShift(genomeName, chromosome, position);
+			return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
 		} else {
 			return position;
 		}

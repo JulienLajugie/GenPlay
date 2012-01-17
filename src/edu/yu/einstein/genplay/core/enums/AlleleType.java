@@ -19,32 +19,46 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
+package edu.yu.einstein.genplay.core.enums;
 
-import java.util.Comparator;
-
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 /**
- * This class is a comparator for variant.
- * The comparison is made according to the meta genome position.
- * 
+ * A type of indel for vcf
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantMGPositionComparator implements Comparator<Variant> {
-
-	@Override
-	public int compare(Variant o1, Variant o2) {
-		int position1 = o1.getMetaGenomePosition();
-		int position2 = o2.getMetaGenomePosition();
-		if (position1 < position2) {
-			return -1;
-		} else if (position1 == position2) {
-			return 0;
-		} else {
-			return 1;
-		}
+public enum AlleleType {
+	
+	/**
+	 * For a paternal allele
+	 */
+	PATERNAL ("Paternal"),
+	
+	/**
+	 * For a maternal allele
+	 */
+	MATERNAL ("Maternal"),
+	
+	/**
+	 * To mention both allele, paternal and maternal
+	 */
+	BOTH ("Both");
+	
+	
+	private final String name; // String representing the indel 
+	
+	
+	/**
+	 * Private constructor. Creates an instance of {@link AlleleType}
+	 * @param name
+	 */
+	private AlleleType(String name) {
+		this.name = name;
 	}
-
+	
+	@Override
+	public String toString() {
+		return name;
+	}
+	
 }

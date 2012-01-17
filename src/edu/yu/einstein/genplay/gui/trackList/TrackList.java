@@ -407,7 +407,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			track.setStripes(stripes);
 		}
 		if (stripesList != null && filtersList != null) {
-			track.updateMultiGenomeInfomration(stripesList, filtersList);
+			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
 		trackList[index] = track;
 		trackList[index].setTrackNumber(index + 1);
