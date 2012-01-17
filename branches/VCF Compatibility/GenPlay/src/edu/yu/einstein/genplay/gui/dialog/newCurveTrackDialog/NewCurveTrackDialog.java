@@ -28,10 +28,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -105,6 +107,8 @@ public class NewCurveTrackDialog extends JDialog {
 		readDefinitionPanel = new ReadDefinitionPanel();
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			genomeSelectionPanel = new GenomeSelectionPanel();
+			genomeSelectionPanel.setBorder(BorderFactory.createTitledBorder("Genome Selection"));
+			//genomeSelectionPanel.setPreferredSize(new Dimension(150, getPreferredSize().height));
 		} else {
 			genomeSelectionPanel = null;
 		}
@@ -347,6 +351,14 @@ public class NewCurveTrackDialog extends JDialog {
 	 */
 	public String getGenomeName () {
 		return genomeSelectionPanel.getGenomeName();
+	}
+	
+	
+	/**
+	 * @return the selected allele type
+	 */
+	public AlleleType getAlleleType () {
+		return genomeSelectionPanel.getAlleleType();
 	}
 	
 	

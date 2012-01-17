@@ -26,7 +26,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 
 /**
  * @author Nicolas Fourel
@@ -45,17 +45,17 @@ public class VariantInfo {
 	 * Constructor of {@link VariantInfo}
 	 * @param info string containing information about the INFO field of the variant information
 	 */
-	protected VariantInfo (Variant variant) {
+	protected VariantInfo (MGPosition variantInformation) {
 		title = "Information";
 		
-		if (variant == null) {
+		if (variantInformation == null) {
 			pane = new PanelInformation(title, null, null, null);
 		} else {
 			keys = new ArrayList<String>();
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
 
-			String[] elements = variant.getInfo().split(";");
+			String[] elements = variantInformation.getInfo().split(";");
 
 			for (String element: elements) {
 				String[] map = element.split("=");
@@ -69,7 +69,7 @@ public class VariantInfo {
 			}
 			
 			for (String key: keys) {
-				description.add(variant.getPositionInformation().getInfoHeader(key).getDescription());
+				description.add(variantInformation.getInfoHeader(key).getDescription());
 			}
 
 			pane = new PanelInformation(title, keys, values, description);

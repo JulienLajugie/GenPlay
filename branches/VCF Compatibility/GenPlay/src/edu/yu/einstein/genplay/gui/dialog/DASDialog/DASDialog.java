@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPanel;
 
@@ -250,6 +251,18 @@ public class DASDialog extends JDialog {
 	public final String getSelectedGenome() {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			return genomeSelectionPanel.getGenomeName();
+		} else {
+			return null;
+		}
+	}
+	
+	
+	/**
+	 * @return the type of allele to load the DAS data
+	 */
+	public final AlleleType getAlleleType() {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			return genomeSelectionPanel.getAlleleType();
 		} else {
 			return null;
 		}

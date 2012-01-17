@@ -152,6 +152,7 @@ public class StripesGlobalPanel extends GlobalPanel<StripesEditingPanel, Stripes
 			StripesData data = getEditingPanel().getElement();							// get the stripe data object
 			if (controlStripesData(data)) {												// control if the stripe data object is valid
 				currentData.setGenome(data.getGenome());								// set the stripe data object
+				currentData.setAlleleType(data.getAlleleType());
 				currentData.setVariationTypeList(data.getVariationTypeList());
 				currentData.setColorList(data.getColorList());
 				currentData.setTrackList(data.getTrackList());

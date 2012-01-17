@@ -107,6 +107,30 @@ public class MGReference {
 	public void compact () {
 		allele.compact();
 	}
+	
+	
+	/**
+	 * Synchronizes the position of the reference genome.
+	 */
+	public void synchronizePosition () {
+		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();		// get the number of chromosome
+		for (int i = 0; i < chromosomeListSize; i++) {																	// loop from 0 to the number of chromosome (loop on the chromosomes)
+			List<MGOffset> offsetList = allele.getOffsetList().get(i);
+			int value = 0;
+			for (int j = 0; j < offsetList.size(); j++) {
+				MGOffset currentOffset = offsetList.get(j);
+				int position = currentOffset.getPosition() + 1;
+				value += currentOffset.getValue();
+				MGOffset newOffset;
+				if (j == 0) {
+					newOffset = new MGOffset(position, value);
+				} else {
+					newOffset = new MGOffset(position, value);
+				}
+				offsetList.set(j, newOffset);
+			}
+		}
+	}
 
 
 	/**

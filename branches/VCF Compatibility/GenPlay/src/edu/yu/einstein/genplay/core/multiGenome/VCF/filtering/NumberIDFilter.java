@@ -23,8 +23,6 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
@@ -38,29 +36,6 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
 	private Float 					value02;
-
-
-	@Override
-	public boolean passFilter(String genomeFullName, Variant variant) {
-		Float value = getValue(genomeFullName, variant);
-		boolean result01 = false;
-		boolean result02 = false;
-		
-		if (value01 != null) {
-			result01 = isValid(inequation01, value01, value);
-		}
-		
-		if (value02 != null) {
-			result02 = isValid(inequation02, value02, value);
-		}
-		
-		// non cumulative treatment
-		if (result01 || result02) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 
 	@Override
@@ -191,47 +166,14 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	}
 	
 	
-	/**
-	 * Get the value associated to the ID in the variant information.
-	 * @param genomeFullName full genome name
-	 * @param variant			variant for retrieving information
-	 * @return					the value of the ID for specific variant and genome (if apply) or null if not found
-	 */
-	private Float getValue (String genomeFullName, Variant variant) {
-		Object result = null;
-		if (category.equals("ALT")) {
-			System.out.println("NumberIDFilter getValue ALT not supported");
-			
-		} else if (category.equals("QUAL")) {
-			result = variant.getPositionInformation().getQuality();
-			
-		} else if (category.equals("FILTER")) {
-			System.out.println("NumberIDFilter getValue FILTER not supported");
-			
-		} else if (category.equals("INFO")) {
-			result = variant.getPositionInformation().getInfoValue(ID.getId());
-			
-		} else if (category.equals("FORMAT")) {
-			String rawName = FormattedMultiGenomeName.getRawName(genomeFullName);
-			result = variant.getPositionInformation().getFormatValue(rawName, ID.getId());
-		}
-		
-		if (result != null) {
-			return Float.parseFloat(result.toString());
-		}
-		
-		return null;
-	}
-	
-	
-	/**
+	/*/**
 	 * Compare to float in order to define if they correlate the inequation.
 	 * @param inequation		an inequation
 	 * @param referenceValue	a first value
 	 * @param valueToCompare	a second value
 	 * @return					true if both values correlate the inequation, false otherwise.
 	 */
-	private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
+	/*private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
 		boolean valid = false;
 		
 		if (valueToCompare < 0) {
@@ -263,7 +205,7 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 		}
 		
 		return valid;
-	}
+	}*/
 
 
 	@Override

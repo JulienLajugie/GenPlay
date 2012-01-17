@@ -48,7 +48,7 @@ public class MGMultiGenomeForDisplay {
 	
 	
 	/**
-	 * @param genomeName genome full name
+	 * @param genomeName genome name
 	 * @return	the genome information object
 	 */
 	public MGGenomeForDisplay getGenomeInformation (String genomeName) {
@@ -57,9 +57,9 @@ public class MGMultiGenomeForDisplay {
 	
 	
 	/**
-	 * Gets the index 
-	 * @param genomeName
-	 * @return
+	 * Gets the index of a genome in the genome information list
+	 * @param genomeName	the name of the genome
+	 * @return				its index in the list
 	 */
 	private int getGenomeIndex (String genomeName) {
 		int index = 0;
@@ -70,26 +70,6 @@ public class MGMultiGenomeForDisplay {
 			index++;
 		}
 		return -1;
-	}
-	
-	
-	/**
-	 * Sorts the alleles of every genomes according to the position of the variation 
-	 */
-	public void sort() {
-		for (MGGenomeForDisplay genome: genomesInformation) {
-			genome.sort();
-		}
-	}
-	
-	
-	/**
-	 * Compacts the lists of position of the alleles of every genomes and chromosomes
-	 */
-	public void compactLists() {
-		for (MGGenomeForDisplay genome: genomesInformation) {
-			genome.compact();
-		}
 	}
 	
 	

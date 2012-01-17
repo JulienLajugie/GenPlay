@@ -72,6 +72,7 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
+				alleleType = genomeDialog.getAlleleType();
 			} else {
 				throw new InterruptedException();
 			}

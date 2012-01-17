@@ -201,8 +201,8 @@ public class VCFLoaderModel extends AbstractTableModel {
 		columnNames = new String[4];
 		columnNames[0] = VCFData.GROUP_NAME;
 		columnNames[1] = VCFData.GENOME_NAME;
-		columnNames[2] = VCFData.RAW_NAME;
-		columnNames[3] = VCFData.FILE_NAME;
+		columnNames[2] = VCFData.FILE_NAME;
+		columnNames[3] = VCFData.RAW_NAME;
 	}
 
 }

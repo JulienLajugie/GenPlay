@@ -27,7 +27,6 @@ import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
 
 /**
  * @author Nicolas Fourel
@@ -71,29 +70,6 @@ public class QualIDFilter implements NumberIDFilterInterface {
 		inequation02 = (InequalityOperators) in.readObject();
 		value01 = in.readFloat();
 		value02 = in.readFloat();
-	}
-	
-
-	@Override
-	public boolean passFilter(String genomeFullName, Variant variant) {
-		Float value = variant.getQuality().floatValue();
-		boolean result01 = false;
-		boolean result02 = false;
-		
-		if (value01 != null) {
-			result01 = isValid(inequation01, value01, value);
-		}
-		
-		if (value02 != null) {
-			result02 = isValid(inequation02, value02, value);
-		}
-		
-		// non cumulative treatment
-		if (result01 || result02) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 
@@ -197,14 +173,14 @@ public class QualIDFilter implements NumberIDFilterInterface {
 	}
 
 	
-	/**
+	/*/**
 	 * Compare to float in order to define if they correlate the inequation.
 	 * @param inequation		an inequation
 	 * @param referenceValue	a first value
 	 * @param valueToCompare	a second value
 	 * @return					true if both values correlate the inequation, false otherwise.
 	 */
-	private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
+	/*private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
 		boolean valid = false;
 		
 		if (valueToCompare < 0) {
@@ -236,7 +212,7 @@ public class QualIDFilter implements NumberIDFilterInterface {
 		}
 		
 		return valid;
-	}
+	}*/
 	
 	
 	@Override

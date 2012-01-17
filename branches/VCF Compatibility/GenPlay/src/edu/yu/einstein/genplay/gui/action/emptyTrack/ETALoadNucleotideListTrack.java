@@ -76,12 +76,13 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
 				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 					genomeName = genomeDialog.getGenomeName();
+					alleleType = genomeDialog.getAlleleType();
 				} else {
 					throw new InterruptedException();
 				}
 			}
 			notifyActionStart("Loading Sequence File", 1, true);
-			tbsl = new TwoBitSequenceList(genomeName);
+			tbsl = new TwoBitSequenceList(genomeName, alleleType);
 			tbsl.extract(selectedFile);
 			return tbsl;
 		}

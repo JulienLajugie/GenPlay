@@ -19,88 +19,74 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.stripeManagement;
+package edu.yu.einstein.genplay.core.multiGenome.display.variant;
 
-import java.io.Serializable;
-
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface DisplayableVariant extends Serializable {
-
-
-	/**
-	 * @return the variantPosition
-	 */
-	public Variant getNativeVariant();
-
-
-	/**
-	 * @return the type
-	 */
-	public VariantType getType();
-
-
-	/**
-	 * @return the start position
-	 */
-	public int getStart();
-
-
-	/**
-	 * @return the stop position
-	 */
-	public int getStop();
-
-
-	/**
-	 * @return the deadZone
-	 */
-	public ChromosomeWindow getDeadZone();
-
-
-	/**
-	 * @return true if a dead zone exist
-	 */
-	public boolean deadZoneExists ();
-
-
-	/**
-	 * @return the isOnFirstAllele
-	 */
-	public boolean isOnFirstAllele();
-
-
-	/**
-	 * @return the isOnSecondAllele
-	 */
-	public boolean isOnSecondAllele();
-
-
-	/**
-	 * @return the qualityScore
-	 */
-	public Double getQualityScore();
+public interface VariantInterface {
 
 	
 	/**
-	 * 
-	 * @param displayableVariant variant object to compare
-	 * @return	-1 	if the current variant starts before the one to compare
-	 * 			 0 	if they start at the same position
-	 * 			 1 	if the current variant starts after the one to compare
+	 * @return the associated variant list for display object
 	 */
-	public int compareTo (DisplayableVariant displayableVariant);
-
-
+	public MGVariantListForDisplay getVariantListForDisplay ();
+	
+	
 	/**
-	 * Shows variant information
+	 * @return the position of the variation on the reference genome
+	 */
+	public int getReferenceGenomePosition ();
+	
+	
+	/**
+	 * @return the length of the variation
+	 */
+	public int getLength ();
+	
+	
+	/**
+	 * @return the score of the variation
+	 */
+	public float getScore ();
+	
+	
+	/**
+	 * @return the position on the reference genome of the variation where the current variation is phased with
+	 */
+	public int phasedWithPos ();
+	
+	
+	/**
+	 * @return the type of the variation
+	 */
+	public VariantType getType ();
+	
+	
+	/**
+	 * @return the start position of the variation on the meta genome
+	 */
+	public int getStart ();
+	
+	
+	/**
+	 * @return the start position of the variation on the meta genome
+	 */
+	public int getStop ();
+	
+	
+	/**
+	 * @return all information of the variant (from the vcf)
+	 */
+	public MGPosition getFullVariantInformation ();
+	
+	
+	/**
+	 * Show the information of the variant
 	 */
 	public void show ();
-	
 }

@@ -24,11 +24,14 @@ package edu.yu.einstein.genplay.gui.action.project;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
@@ -103,7 +106,7 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 */
 	private void approve () {
 		// Update the SNPs
-		//updateSNP();
+		updateSNP();
 		
 		// Set the various settings
 		settings.getVariousSettings().setVariousSettings(dialog.getTransparency(), dialog.isShowLegend());
@@ -118,7 +121,7 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		for (Track<?> track: tracks) {
 			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
-			track.updateMultiGenomeInfomration(stripesList, filtersList);
+			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
 	}
 	
@@ -129,17 +132,14 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 */
 	private void updateSNP () {
 		// Gets the list of stripes data
-		List<StripesData> previousStripesData = settings.getStripeSettings().getStripesList();
 		List<StripesData> newStripesData = dialog.getStripesData();
 		
 		// Gets the genome names involved for SNPs synchronization
-		List<String> previousNames = getGenomeNamesForSNP(previousStripesData);
-		List<String> newNames = getGenomeNamesForSNP(newStripesData);
+		Map<String, List<AlleleType>> genomeNames = getGenomeNamesForSNP(newStripesData);
 		
 		// Set the SNP synchronization action and run it (the action will decide itself how to manage the SNPs)
 		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
-		multiGenomeSNP.setPreviousSetting(previousNames);
-		multiGenomeSNP.setNewSetting(newNames);
+		multiGenomeSNP.setGenomeNames(genomeNames);
 		multiGenomeSNP.actionPerformed(null);
 	}
 	
@@ -149,13 +149,38 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 * @param list association of genome name/variant type list
 	 * @return the list of genome names
 	 */
-	private List<String> getGenomeNamesForSNP (List<StripesData> list) {
-		List<String> names = new ArrayList<String>();
+	private Map<String, List<AlleleType>> getGenomeNamesForSNP (List<StripesData> list) {
+		Map<String, List<AlleleType>> names = new HashMap<String, List<AlleleType>>();
 		if (list != null) {
 			for (StripesData data: list) {
-				List<VariantType> variantList = data.getVariationTypeList();
-				if (variantList.contains(VariantType.SNPS)) {
-					names.add(data.getGenome());
+				List<VariantType> variantTypes = data.getVariationTypeList();
+				if (variantTypes.contains(VariantType.SNPS)) {
+					String genomeName = data.getGenome();
+					if (!names.containsKey(genomeName)) {
+						names.put(genomeName, new ArrayList<AlleleType>());
+					}
+					boolean paternal = false;
+					boolean maternal = false;
+					AlleleType alleleType = data.getAlleleType();
+					if (alleleType == AlleleType.BOTH) {
+						paternal = true;
+						maternal = true;
+					} else if (alleleType == AlleleType.PATERNAL) {
+						paternal = true;
+					} else if (alleleType == AlleleType.MATERNAL) {
+						maternal = true;
+					}
+					
+					if (paternal) {
+						if (!names.get(genomeName).contains(AlleleType.PATERNAL)) {
+							names.get(genomeName).add(AlleleType.PATERNAL);
+						}
+					}
+					if (maternal) {
+						if (!names.get(genomeName).contains(AlleleType.MATERNAL)) {
+							names.get(genomeName).add(AlleleType.MATERNAL);
+						}
+					}
 				}
 			}
 		}

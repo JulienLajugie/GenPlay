@@ -161,5 +161,61 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 		position = positionTmp;
 		value = valueTmp;
 	}
+	
+	
+	/**
+	 * @param genomePosition the position on the genome
+	 * @return the meta genome position associated to the given genome position
+	 */
+	public int getMetaGenomePosition (int genomePosition) {
+		if (size == 0) {
+			return genomePosition;
+		}
+		int genomePositionIndex = findPosition(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
+			if (genomePositionIndex == 0) {										// if the index found is the first one in the list
+				return genomePosition;											// there is no offset yet therefore genome position and meta genome position are similar
+			} else {															// if there is at least one index before
+				genomePositionIndex--;											// it is the one we are looking for
+			}
+		}
+		int difference  = genomePosition - position[genomePositionIndex];
+		int metaGenomePosition = position[genomePositionIndex] + value[genomePositionIndex] + difference; // the meta genome position is the genome position plus its offset
+		
+		return metaGenomePosition;												// we return the meta genome position
+	}
 
+	
+	/**
+	 * Recursive function. Returns the index where the genome position is found
+	 * or the index right after if the exact value is not found.
+	 * @param value
+	 * @param indexStart
+	 * @param indexStop
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
+	 */
+	private int findPosition (int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == position[indexStart + middle]) {
+			return indexStart + middle;
+		} else if (value > position[indexStart + middle]) {
+			return findPosition(value, indexStart + middle + 1, indexStop);
+		} else {
+			return findPosition(value, indexStart, indexStart + middle);
+		}
+	}
+
+	
+	/**
+	 * Shows the content of this object
+	 */
+	public void show () {
+		String info = "size = " + size + " -> ";
+		for (int i = 0; i < position.length; i++) {
+			info += "[" + position[i] + "; " + value[i] + "] ";
+		}
+		System.out.println(info);
+	}
 }

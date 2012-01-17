@@ -200,8 +200,16 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInfomration (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
-		trackGraphics.updateMultiGenomeInfomration(stripesList, filtersList);
+	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
+		trackGraphics.updateMultiGenomeInformation(stripesList, filtersList);
+	}
+	
+	
+	/**
+	 * Reset the list of the variant list makers
+	 */
+	public void resetVariantListMaker () {
+		trackGraphics.resetVariantListMaker();
 	}
 	
 	
@@ -210,15 +218,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public void multiGenomeInitializing () {
 		trackGraphics.multiGenomeInitializing();
-	}
-	
-	
-	/**
-	 * Refreshes the list of displayable variant.
-	 * Mostly used for SNP synchronization.
-	 */
-	public void refreshDisplayableVariantList () {
-		trackGraphics.updateDisplayableVariantList(true);
 	}
 
 

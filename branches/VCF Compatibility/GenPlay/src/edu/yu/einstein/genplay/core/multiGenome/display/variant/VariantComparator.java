@@ -19,12 +19,30 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.display;
+package edu.yu.einstein.genplay.core.multiGenome.display.variant;
+
+import java.util.Comparator;
 
 /**
+ * This class is a comparator for variant.
+ * The comparison is made according to the meta genome position.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VariantInterface {
+public class VariantComparator implements Comparator<VariantInterface> {
+
+	@Override
+	public int compare(VariantInterface o1, VariantInterface o2) {
+		int position1 = o1.getReferenceGenomePosition();
+		int position2 = o2.getReferenceGenomePosition();
+		if (position1 < position2) {
+			return -1;
+		} else if (position1 == position2) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
 
 }

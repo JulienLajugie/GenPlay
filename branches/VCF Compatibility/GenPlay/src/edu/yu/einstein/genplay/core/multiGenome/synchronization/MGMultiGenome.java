@@ -57,11 +57,19 @@ public class MGMultiGenome {
 	
 	
 	/**
+	 * @return	the list of genome information
+	 */
+	public List<MGGenome> getGenomeInformation () {
+		return genomesInformation;
+	}
+	
+	
+	/**
 	 * Gets the index 
 	 * @param genomeName
-	 * @return
+	 * @return the index of the genome name
 	 */
-	private int getGenomeIndex (String genomeName) {
+	public int getGenomeIndex (String genomeName) {
 		int index = 0;
 		for (MGGenome genome: genomesInformation) {
 			if (genome.getName().indexOf(genomeName) != -1) {

@@ -30,6 +30,7 @@ import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
@@ -59,7 +60,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	private TwoBitSequence 				sequence = null;				// sequence being extracted
 	private boolean						needToBeStopped = false;		// true if the execution need to be stopped
 	protected String					genomeName = null;				// genome name for a multi genome project
-	
+	protected AlleleType 				alleleType = null;				// allele type for a multi genome project
 	
 
 	
@@ -100,10 +101,12 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	/**
 	 * Creates an instance of {@link TwoBitSequenceList}
 	 * @param genomeName name of the genome the {@link TwoBitSequenceList} represents
+	 * @param alleleType 	allele type for a multi genome project
 	 */
-	public TwoBitSequenceList(String genomeName) {
+	public TwoBitSequenceList(String genomeName, AlleleType alleleType) {
 		super();
 		this.genomeName = genomeName;
+		this.alleleType = alleleType;
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		// initializes the lists
 		for (int i = 0; i < projectChromosome.size(); i++) {
@@ -179,7 +182,7 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 						throw new InterruptedException();
 					}
 					long currentPosition = twoBitFile.getFilePointer();
-					sequence = new TwoBitSequence(genomeName, projectChromosome.get(k));
+					sequence = new TwoBitSequence(genomeName, projectChromosome.get(k), alleleType);
 					sequence.extract(filePath, twoBitFile, offsets[i], sequenceNames[i], reverseBytes);
 					set(k, sequence);
 					twoBitFile.seek(currentPosition);

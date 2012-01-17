@@ -42,8 +42,8 @@ public class MGGenomeForDisplay {
 	 */
 	protected MGGenomeForDisplay (MGGenome genome) {
 		this.genome = genome;
-		alleleA = new MGAlleleForDisplay();
-		alleleB = new MGAlleleForDisplay();
+		alleleA = new MGAlleleForDisplay(genome);
+		alleleB = new MGAlleleForDisplay(genome);
 	}
 
 	
@@ -70,24 +70,6 @@ public class MGGenomeForDisplay {
 		return alleleB;
 	}
 
-	
-	/**
-	 * Sorts the alleles according to the position of the variation 
-	 */
-	public void sort() {
-		alleleA.sort();
-		alleleB.sort();
-	}
-	
-	
-	/**
-	 * Compacts the list of {@link MGOffset}
-	 */
-	public void compact () {
-		alleleA.compact();
-		alleleB.compact();
-	}
-	
 	
 	/**
 	 * Show the information of the {@link MGGenomeForDisplay}

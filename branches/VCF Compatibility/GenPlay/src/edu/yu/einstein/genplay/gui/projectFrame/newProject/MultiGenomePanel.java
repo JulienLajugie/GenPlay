@@ -286,6 +286,7 @@ class MultiGenomePanel extends JPanel {
 				}
 			}
 			genomeFileAssociation.get(fullName).add(reader);
+			readerList.add(reader);
 		}
 		//showsAssociation();
 	}
@@ -296,7 +297,7 @@ class MultiGenomePanel extends JPanel {
 		for (String genome: genomeFileAssociation.keySet()) {
 			info += genome + ": ";
 			for (VCFReader reader: genomeFileAssociation.get(genome)) {
-				info += reader.getVcfType() + " " + reader.getFile().getName() + ";";
+				info += reader.hashCode() + " " + reader.getFile().getName() + ";";
 			}
 			info += "\n";
 		}

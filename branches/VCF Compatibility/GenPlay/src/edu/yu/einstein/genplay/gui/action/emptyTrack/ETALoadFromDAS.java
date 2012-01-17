@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
@@ -81,7 +82,9 @@ public class ETALoadFromDAS extends TrackListAction {
 					// specify on which genome the data were mapped
 					if (ProjectManager.getInstance().isMultiGenomeProject()) {
 						String selectedGenome = dasDialog.getSelectedGenome();
+						AlleleType alleleType = dasDialog.getAlleleType();
 						dasConnector.setGenomeName(selectedGenome);
+						dasConnector.setAlleleType(alleleType);
 					}
 					DASType dasType = dasDialog.getSelectedDasType();
 					int resType = dasDialog.getGenerateType();

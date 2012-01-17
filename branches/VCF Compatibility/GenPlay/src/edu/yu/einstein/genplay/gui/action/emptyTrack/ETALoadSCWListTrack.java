@@ -120,7 +120,9 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			}
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				genomeName = nctd.getGenomeName();
+				alleleType = nctd.getAlleleType();
 				extractor.setGenomeName(genomeName);
+				extractor.setAlleleType(alleleType);
 			}
 		} else {
 			throw new InterruptedException();

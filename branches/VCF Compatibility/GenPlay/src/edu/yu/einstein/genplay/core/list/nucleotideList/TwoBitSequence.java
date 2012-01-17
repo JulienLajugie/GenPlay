@@ -32,6 +32,7 @@ import java.util.AbstractList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -60,6 +61,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	private int[] 	maskBlockSizes;				// the length of each masked block
 	private boolean	needToBeStopped = false; 	// true if the execution need to be stopped
 	protected String	genomeName = null;		// genome name for a multi genome project
+	protected AlleleType alleleType = null;		// allele type for a multi genome project
 	private Chromosome chromosome;				// chromosome of the current list
 	
 	
@@ -111,11 +113,13 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 * Default constructor. Creates an instance of {@link TwoBitSequence}
 	 * @param chromosome	chromosome of the current list
 	 * @param genomeName	genome name for a multi genome project
+	 * @param alleleType 	allele type for a multi genome project
 	 */
-	public TwoBitSequence(String genomeName, Chromosome chromosome) {
+	public TwoBitSequence(String genomeName, Chromosome chromosome, AlleleType alleleType) {
 		super();
 		this.genomeName = genomeName;
 		this.chromosome = chromosome;
+		this.alleleType = alleleType;
 	}
 	
 	
@@ -278,7 +282,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			return null;
 		}
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			position = ShiftCompute.computeReversedShift(genomeName, chromosome, position);
+			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
 			if (position < 0) {
 				return Nucleotide.ANY;
 			}

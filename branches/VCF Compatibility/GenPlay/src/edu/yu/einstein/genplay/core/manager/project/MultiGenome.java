@@ -21,15 +21,17 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager.project;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
@@ -46,6 +48,7 @@ public class MultiGenome {
 	private 	MGMultiGenomeForDisplay 		multiGenomeForDisplay;
 
 	private		MGSynchronizer					multiGenomeSynchronizer;
+	private		MGSNPSynchronizer				multiGenomeSynchronizerForSNP;
 
 
 	/**
@@ -66,6 +69,8 @@ public class MultiGenome {
 		Collections.sort(genomeNames);
 		this.multiGenome = new MGMultiGenome(genomeNames);
 		this.multiGenomeSynchronizer = new MGSynchronizer(this);
+		this.multiGenomeSynchronizerForSNP = new MGSNPSynchronizer();
+		initializesDisplayInformation();
 	}
 
 
@@ -112,6 +117,15 @@ public class MultiGenome {
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Others
 
+	
+	/**
+	 * Initializes the genome information for display purpose
+	 */
+	private void initializesDisplayInformation () {
+		List<MGGenome> genomeList = multiGenome.getGenomeInformation();
+		multiGenomeForDisplay = new MGMultiGenomeForDisplay(genomeList);
+	}
+	
 
 	/**
 	 * Retrieves all the VCF readers
@@ -119,18 +133,53 @@ public class MultiGenome {
 	 */
 	public List<VCFReader> getAllReaders () {
 		List<VCFReader> readerList = new ArrayList<VCFReader>();
-		List<File> readerPath = new ArrayList<File>();
 
 		for (List<VCFReader> currentReaderList: genomeFileAssociation.values()) {
 			for (VCFReader currentReader: currentReaderList) {
-				if (!readerPath.contains(currentReader.getFile())) {
+				if (!readerList.contains(currentReader)) {
 					readerList.add(currentReader);
-					readerPath.add(currentReader.getFile());
 				}
 			}
 		}
 
 		return readerList;
+	}
+	
+	
+	/**
+	 * Retrieves the VCF reader according to a genome name and a variant type
+	 * @param genomeName	the full genome name
+	 * @param type			the variant type
+	 * @return				the list of VCF reader for the given genome and variant type
+	 */
+	public List<VCFReader> getReaders (String genomeName, VariantType type) {
+		List<VCFReader> readerList = new ArrayList<VCFReader>();
+		List<VCFReader> currentList = genomeFileAssociation.get(genomeName);
+		
+		for (VCFReader currentReader: currentList) {
+			List<VariantType> typeList = currentReader.getVariantTypes(genomeName);
+			if (typeList != null && typeList.contains(type)) {
+				readerList.add(currentReader);
+			}
+		}
+		
+		return readerList;
+	}
+	
+	
+	/**
+	 * Get a vcf reader object with a vcf file name.
+	 * @param fileName 	the name of the vcf file
+	 * @return			the reader
+	 */
+	public VCFReader getReadersFromName (String fileName) {
+		List<VCFReader> list = getAllReaders();
+		for (VCFReader reader: list) {
+			if (reader.getFile().getName().equals(fileName)) {
+				return reader;
+			}
+		}
+		return null;
 	}
 
 
@@ -143,13 +192,29 @@ public class MultiGenome {
 	public MGSynchronizer getMultiGenomeSynchronizer() {
 		return multiGenomeSynchronizer;
 	}
+
 	
-	
+	/**
+	 * @return the multiGenomeSynchronizerForSNP
+	 */
+	public MGSNPSynchronizer getMultiGenomeSynchronizerForSNP() {
+		return multiGenomeSynchronizerForSNP;
+	}
+
+
 	/**
 	 * @return the multiGenome
 	 */
 	public MGMultiGenome getMultiGenome() {
 		return multiGenome;
+	}
+
+
+	/**
+	 * @return the multiGenomeForDisplay
+	 */
+	public MGMultiGenomeForDisplay getMultiGenomeForDisplay() {
+		return multiGenomeForDisplay;
 	}
 
 
@@ -167,6 +232,15 @@ public class MultiGenome {
 	public void setGenomeFileAssociation(
 			Map<String, List<VCFReader>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
+	}
+	
+	
+	/**
+	 * Show the information of the {@link MultiGenome}
+	 */
+	public void show () {
+		multiGenome.show();
+		multiGenomeForDisplay.show();
 	}
 	
 }

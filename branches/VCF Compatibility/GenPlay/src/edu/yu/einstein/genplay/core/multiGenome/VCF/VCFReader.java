@@ -21,12 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -37,15 +34,17 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFType;
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.engine.MGPositionOld;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -59,17 +58,22 @@ public class VCFReader implements Serializable {
 
 	private static final long serialVersionUID = 7316097355767936880L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
+	
 	private transient	TabixReader 			vcfParser;		// Tabix object for the VCF file (Tabix Java API)
 	private File 								file;			// Path of the VCF file
-	private Map<String, String> 				headerInfo;		// Header main information
-	private	List<String>						columnNames;	// All column header names
-	private	List<String>						fixedColumn;	// Fixed header names included in the VCF file
-	private	List<String>						genomeNames;	// Dynamic header names included in the VCF file (raw genome names)
-	private	Map<String, Class<?>>				fieldType;		// Association between field type and java class
-	private List<VCFHeaderType> 				altHeader;		// Header for the ALT field
-	private List<VCFHeaderType> 				filterHeader;	// Header for the FILTER field
-	private List<VCFHeaderAdvancedType> 		infoHeader;		// Header for the INFO field
-	private List<VCFHeaderAdvancedType> 		formatHeader;	// Header for the FORMAT field
+	
+	private Map<String, String> 				headerInfo;			// Header main information
+	private	Map<String, Class<?>>				fieldType;			// Association between field type and java class
+	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome raw name
+	
+	private	List<String>						columnNames;		// All column header names
+	private	List<String>						fixedColumn;		// Fixed header names included in the VCF file
+	private	List<String>						genomeNames;		// Dynamic header names included in the VCF file (raw genome names)
+	
+	private List<VCFHeaderType> 				altHeader;			// Header for the ALT field
+	private List<VCFHeaderType> 				filterHeader;		// Header for the FILTER field
+	private List<VCFHeaderAdvancedType> 		infoHeader;			// Header for the INFO field
+	private List<VCFHeaderAdvancedType> 		formatHeader;		// Header for the FORMAT field
 
 
 	/**
@@ -122,6 +126,7 @@ public class VCFReader implements Serializable {
 	 */
 	public VCFReader (File file) throws IOException {
 		this.file = file;
+		variantTypeList = new HashMap<String, List<VariantType>>();
 		initFixedColumnList();
 		initFieldType();
 		indexVCFFile();
@@ -574,6 +579,15 @@ public class VCFReader implements Serializable {
 		}
 		return type;
 	}
+	
+
+	/**
+	 * @return the fixedColumn
+	 */
+	public List<String> getFixedColumn() {
+		List<String> list = new ArrayList<String>(fixedColumn);
+		return list;
+	}
 
 
 	/**
@@ -636,7 +650,7 @@ public class VCFReader implements Serializable {
 	 * Analyze a a VCF position line to update the IDs elements lists.
 	 * @param positionInformation the position information object
 	 */
-	public void retrievePositionInformation (MGPositionOld positionInformation) {
+	public void retrievePositionInformation (MGPosition positionInformation) {
 		retrieveINFOValues(positionInformation.getInfo());
 		retrieveFORMATValues(positionInformation);
 	}
@@ -646,16 +660,16 @@ public class VCFReader implements Serializable {
 	 * Analyze a a VCF INFO line to update the IDs elements lists.
 	 * @param line a INFO line of a VCF
 	 */
-	private void retrieveFORMATValues (MGPositionOld positionInformation) {
+	private void retrieveFORMATValues (MGPosition positionInformation) {
 		if (formatHeader.size() > 0) {
-			for (String genomeRawName: genomeNames) {
+			//for (String genomeRawName: genomeNames) {
 				for (VCFHeaderAdvancedType header: formatHeader) {
 					if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
-						Object value = positionInformation.getFormatValue(genomeRawName, header.getId());
+						Object value = positionInformation.getFormatValue(header.getId());
 						header.addElement(value);
 					}
 				}
-			}
+			//}
 		}
 	}
 
@@ -691,4 +705,47 @@ public class VCFReader implements Serializable {
 		}
 		return line.substring(indexValue, indexEnd);
 	}
+	
+	
+	/**
+	 * Add a type of variant if it is not already present in the list.
+	 * @param genomeRawName name of the genome
+	 * @param type	variant type to add
+	 */
+	public void addVariantType (String genomeRawName, VariantType type) {
+		if (!variantTypeList.containsKey(genomeRawName)) {
+			variantTypeList.put(genomeRawName, new ArrayList<VariantType>());
+		}
+		if (!variantTypeList.get(genomeRawName).contains(type)) {
+			variantTypeList.get(genomeRawName).add(type);
+		}
+	}
+	
+	
+	/**
+	 * @param genomeName genome name
+	 * @return the list of variant type present in this vcf for this genome
+	 */
+	public List<VariantType> getVariantTypes (String genomeName) {
+		String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
+		if (variantTypeList.containsKey(genomeRawName)) {
+			return variantTypeList.get(genomeRawName);
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Checks if this VCF contains the information for the given genome and a variation type
+	 * @param genomeName	the name of the genome
+	 * @param variantType	the type of the variation
+	 * @return	true if this VCF can manage the request
+	 */
+	public boolean canManage (String genomeName, VariantType variantType) {
+		if (getVariantTypes(genomeName).contains(variantType)) {
+			return true;
+		}
+		return false;
+	}
+	
 }

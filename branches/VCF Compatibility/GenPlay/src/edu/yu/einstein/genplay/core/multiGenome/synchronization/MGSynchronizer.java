@@ -27,12 +27,17 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.MultiGenome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 
 /**
@@ -42,8 +47,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 public class MGSynchronizer {
 
 	private MultiGenome multiGenome;
-	
-	
+
+
 	/**
 	 * Constructor of {@link MGSynchronizer}
 	 * @param multiGenome the multi genome instance
@@ -63,51 +68,73 @@ public class MGSynchronizer {
 	 */
 	public void insertVariantposition () throws IOException {
 		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();	// get the chromosome list
+		List<VCFReader> readerList = multiGenome.getAllReaders();													// get all vcf readers
 
-		List<VCFReader> readerList = multiGenome.getAllReaders();																// get all vcf readers
-
-		/*for (VCFReader reader: readerList) {
-			System.out.println(reader.getFile().getPath());
-		}*/
+		List<AlleleType> alleleTypeList = new ArrayList<AlleleType>();
+		alleleTypeList.add(AlleleType.PATERNAL);
+		alleleTypeList.add(AlleleType.MATERNAL);
 
 		for (Chromosome chromosome: chromosomeList) {																// loop on every chromosome
-
 			for (VCFReader reader: readerList) {																	// loop on every vcf reader
 				List<String> genomeRawNames = getRequiredGenomeNamesFromAReader(reader);							// get the genome raw names list
 				List<String> columnNames = getColumnNamesForQuery(genomeRawNames);									// get the list of column to perform the query on the current vcf
-
+				
 				List<Map<String, Object>> result = reader.query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
-
+				
 				for (Map<String, Object> VCFLine: result) {															// loop on every line of the result of the query
 
 					int referencePosition = Integer.parseInt(VCFLine.get("POS").toString());						// get the reference genome position (POS field)
 					String reference = VCFLine.get("REF").toString();												// get the reference value (REF field)
 					String[] alternatives = VCFLine.get("ALT").toString().split(",");								// get the alternative values and split them into an array (comma separated)
 					String info = VCFLine.get("INFO").toString();													// get the information of the variation (INFO field). Needs it if the variation is SV coded.
+					float score;
+					try {
+						score = Float.parseFloat(VCFLine.get("QUAL").toString());
+					} catch (Exception e) {
+						score = 0;
+					}
 
 					for (String genomeRawName: genomeRawNames) {													// loop on every genome raw name
+
 						String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype 
 						if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
-							char alleleAChar = VCFLine.get(genomeRawName).toString().charAt(0);						// get the alternative code of the first allele
-							char alleleBChar = VCFLine.get(genomeRawName).toString().charAt(2);						// get the alternative code of the second allele
 
-							int alleleALength = retrieveVariantLength(reference, alternatives, info, alleleAChar);	// retrieve the length of the variation within the first allele
-							int alleleBLength = retrieveVariantLength(reference, alternatives, info, alleleBChar);	// retrieve the length of the variation within the second allele
-
-							if (alleleALength != 0) {																// if the variation length is not 0 (0 means either no variation nor SNP)
-								multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleA().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleALength));	// we insert it
-								if (alleleALength > 0) {															// if the variation is positive, it is an insertion
-									multiGenome.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleALength));				// we insert it into the reference genome allele
+							for (AlleleType alleleType: alleleTypeList) {
+								char alleleChar;
+								if (alleleType == AlleleType.PATERNAL) {													// if we are processing the paternal allele
+									alleleChar = VCFLine.get(genomeRawName).toString().charAt(0);							// we look at the first character
+								} else {																					// if not, it means we are looking to the maternal allele
+									alleleChar = VCFLine.get(genomeRawName).toString().charAt(2);							// and we look at the third character
 								}
-							}
-							if (alleleBLength != 0) {																// if the variation length is not 0 (0 means either no variation nor SNP)
-								multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleB().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleBLength));	// we insert it
-								if (alleleBLength > 0) {															// if the variation is positive, it is an insertion
-									multiGenome.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleBLength));				// we insert it into the reference genome allele
+
+								if (alleleChar != '.' && alleleChar != '0') {												// if we have a variation
+									int alleleLength = retrieveVariantLength(reference, alternatives, info, alleleChar);	// we retrieve its length
+									VariantType variantType = getVariantType(alleleLength);									// get the type of variant according to the length of the variation
+									reader.addVariantType(genomeRawName, variantType);										// notice the reader of the variant type
+									if (variantType != VariantType.SNPS) {													// if it is not a SNP
+										List<MGOffset> offsetList;
+										if (alleleType == AlleleType.PATERNAL) {											// if we are processing the paternal allele
+											offsetList = multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleA().getOffsetList().get(chromosome);	// we get the list of offset of the allele A
+										} else {																			// if not, it means we are looking to the maternal allele
+											offsetList = multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleB().getOffsetList().get(chromosome);	// we get the list of offset of the allele B
+										}
+										offsetList.add(new MGOffset(referencePosition, alleleLength));						// we insert the new offset
+
+										if (variantType == VariantType.INSERTION) {											// if we are processing an insertion
+											multiGenome.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// we insert it into the reference genome allele
+											MGVariantListForDisplay variantListForDisplay = multiGenome.getMultiGenomeForDisplay().getGenomeInformation(genomeRawName).getAlleleA().getVariantList(chromosome, VariantType.INSERTION); // we also insert it to the display data structure
+											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
+											variantListForDisplay.getVariantList().add(variant);
+										} else {																			// if it is not an insertion it is a deletion
+											MGVariantListForDisplay variantListForDisplay = multiGenome.getMultiGenomeForDisplay().getGenomeInformation(genomeRawName).getAlleleA().getVariantList(chromosome, VariantType.DELETION); // we only insert it to the display data structure
+											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
+											variantListForDisplay.getVariantList().add(variant);
+										}
+									}
 								}
 							}
 						} else {
-							System.err.println("FORMAT field for the genome " + genomeRawName + " at the position " + referencePosition + " of the reference is invalid: " + genotype + " (" + genotype.length() + ")");
+							System.err.println("FORMAT field for the genome " + genomeRawName + " (" + chromosome.getName() + ") at the position " + referencePosition + " of the reference is invalid: GT = " + genotype + " (length: " + genotype.length() + ")");
 						}
 					}
 				}
@@ -128,6 +155,7 @@ public class MGSynchronizer {
 		columnNames.add("POS");
 		columnNames.add("REF");
 		columnNames.add("ALT");
+		columnNames.add("QUAL");
 		columnNames.add("INFO");
 		for (String genomeRawName: genomeRawNames) {
 			columnNames.add(genomeRawName);
@@ -191,6 +219,19 @@ public class MGSynchronizer {
 	}
 
 
+	private VariantType getVariantType (int variationLength) {
+		if (variationLength < 0) {
+			return VariantType.DELETION;
+		} else if (variationLength > 0) {
+			return VariantType.INSERTION;
+		} else if (variationLength == 0) {
+			return VariantType.SNPS;
+		} else {
+			return null;
+		}
+	}
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Synchronization section
 
 
@@ -199,6 +240,7 @@ public class MGSynchronizer {
 	 */
 	public void performPositionSynchronization () {
 		synchronizeToGenomesLevel();
+		multiGenome.getMultiGenome().getReferenceGenome().synchronizePosition();
 	}
 
 

@@ -21,14 +21,16 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 
 
 /**
@@ -36,78 +38,74 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  * @version 0.1
  */
 public class MGAlleleForDisplay {
-
-	private ChromosomeListOfLists<VariantInterface> variantList;	// List of offset organized by chromosome
+	
+	private static final int INSERTION_INDEX = 0;
+	private static final int DELETION_INDEX = 1;
+	private static final int SNPS_INDEX = 2;
+	
+	private MGGenome genomeInformation;
+	private ChromosomeListOfLists<MGVariantListForDisplay> chromosomeListOfVariantList;
+	
 
 
 	/**
 	 * Constructor of {@link MGAlleleForDisplay}
 	 */
-	public MGAlleleForDisplay () {
-		variantList = new ChromosomeArrayListOfLists<VariantInterface>();
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
-		for (int i = 0; i < chromosomeListSize; i++) {
-			variantList.add(new IntArrayAsOffsetList());
+	protected MGAlleleForDisplay (MGGenome genome) {
+		this.genomeInformation = genome;
+		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<MGVariantListForDisplay>();
+		ProjectChromosome projectChromosome =ProjectManager.getInstance().getProjectChromosome(); 
+		int chromosomeNumber = projectChromosome.size();
+		for (int i = 0; i < chromosomeNumber; i++) {
+			Chromosome chromosome = projectChromosome.get(i);
+			List<MGVariantListForDisplay> elements = new ArrayList<MGVariantListForDisplay>();
+			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.INSERTION));
+			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.DELETION));
+			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.SNPS));
+			chromosomeListOfVariantList.add(i, elements);
 		}
 	}
-
+	
 
 	/**
-	 * @param offsetList the offsetList to set
+	 * @return the genomeInformation
 	 */
-	public void setOffsetList(ChromosomeListOfLists<VariantInterface> offsetList) {
-		this.variantList = offsetList;
+	public MGGenome getGenomeInformation() {
+		return genomeInformation;
 	}
 
 
 	/**
-	 * @return the offsetList
+	 * 
+	 * @param chromosome chromosome
+	 * @param type 		type of variation
+	 * @return			the variant list object for the given chromosome and variation type
 	 */
-	public ChromosomeListOfLists<VariantInterface> getOffsetList() {
-		return variantList;
-	}
-
-
-	/**
-	 * Sorts the list of offset for every chromosome.
-	 * The sorting is done with the {@link MGOffsetComparator} comparator.
-	 */
-	public void sort () {
-		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();
-		MGOffsetComparator comparator = new MGOffsetComparator();
-		for (int i = 0; i < chromosomeListSize; i++) {
-			Collections.sort(variantList.get(i), comparator);
+	public MGVariantListForDisplay getVariantList (Chromosome chromosome, VariantType type) {
+		List<MGVariantListForDisplay> listOfVariantList = chromosomeListOfVariantList.get(chromosome);
+		if (type == VariantType.INSERTION) {
+			return listOfVariantList.get(INSERTION_INDEX);
+		} else if (type == VariantType.DELETION) {
+			return listOfVariantList.get(DELETION_INDEX);
+		} else if (type == VariantType.SNPS) {
+			return listOfVariantList.get(SNPS_INDEX);
+		} else {
+			return null;
 		}
 	}
-
-
-	/**
-	 * Compacts the list of {@link VariantInterface}
-	 */
-	public void compact () {
-		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
-		for (Chromosome chromosome: chromosomeList) {
-			((IntArrayAsOffsetList)variantList.get(chromosome)).compact();
-		}
-	}
-
-
+	
+	
 	/**
 	 * Show the information of the {@link MGAlleleForDisplay}
 	 */
 	public void show () {
-		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
-		for (Chromosome chromosome: chromosomeList) {
-			if (variantList.get(chromosome).size() > 0) {
-				System.out.println("Chromosome: " + chromosome.getName());
-				for (VariantInterface offset: variantList.get(chromosome)) {
-					offset.show();
-				}
-			}
+		for (int i = 0; i < chromosomeListOfVariantList.size(); i++) {
+			System.out.println("Chromosome: " + ProjectManager.getInstance().getProjectChromosome().get(i).getName());
+			List<MGVariantListForDisplay> listOfVariantList = chromosomeListOfVariantList.get(i);
+			listOfVariantList.get(INSERTION_INDEX).show();
+			listOfVariantList.get(DELETION_INDEX).show();
+			listOfVariantList.get(SNPS_INDEX).show();
 		}
-		/*System.out.println("Chromosome: " + chromosomeList.get(0).getName());
-		for (MGOffset offset: offsetList.get(chromosomeList.get(0))) {
-			offset.show();
-		}*/
 	}
+	
 }

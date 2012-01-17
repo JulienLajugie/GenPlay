@@ -57,9 +57,9 @@ public class SettingsHandler extends DefaultHandler {
 		if (qName.equalsIgnoreCase("row")) {
 			String group = attributes.getValue(getFormattedString(VCFData.GROUP_NAME));
 			String genome = attributes.getValue(getFormattedString(VCFData.GENOME_NAME));
-			String raw = attributes.getValue(getFormattedString(VCFData.RAW_NAME));
 			String path = attributes.getValue(getFormattedString(VCFData.FILE_NAME));
-			VCFData vcfData = new VCFData(group, genome, raw, new File(path));
+			String raw = attributes.getValue(getFormattedString(VCFData.RAW_NAME));
+			VCFData vcfData = new VCFData(group, genome, new File(path), raw);
 			data.add(vcfData);
 		}
 	}
@@ -96,8 +96,8 @@ public class SettingsHandler extends DefaultHandler {
 				out.write("\t<row ");
 				out.write(getFormattedString(VCFData.GROUP_NAME) + "=\"" + vcfData.getGroup() + "\" ");
 				out.write(getFormattedString(VCFData.GENOME_NAME) + "=\"" + vcfData.getGenome() + "\" ");
-				out.write(getFormattedString(VCFData.RAW_NAME) + "=\"" + vcfData.getRaw() + "\" ");
 				out.write(getFormattedString(VCFData.FILE_NAME) + "=\"" + vcfData.getFile() + "\" ");
+				out.write(getFormattedString(VCFData.RAW_NAME) + "=\"" + vcfData.getRaw() + "\" ");
 				out.write("/>\n");
 			}
 			out.write("</settings>");
