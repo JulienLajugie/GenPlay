@@ -59,7 +59,7 @@ public class MGSynchronizer {
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	Variant insertion section
-
+	
 
 	/**
 	 * Reads the VCF files in order to store the position where a variation happen.

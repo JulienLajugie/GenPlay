@@ -140,7 +140,11 @@ public class ChromosomeComparator implements Comparator<String> {
 	 * @return				true if the pattern is presents, false otherwise.
 	 */
 	private boolean isPatternPresent (String text, String pattern, int startIndex, int stopIndex) {
-		return text.substring(startIndex, stopIndex).toLowerCase().equals(pattern);
+		if (stopIndex < text.length()) {
+			return text.substring(startIndex, stopIndex).toLowerCase().equals(pattern);
+		} else {
+			return false;
+		}
 	}
 
 
@@ -224,7 +228,7 @@ public class ChromosomeComparator implements Comparator<String> {
 			if (i1 != null && i2 != null ) {							// If both current characters are integer
 				Integer i3 = getFullIntegerPart(s1, index);				// gets the full integer present in the string
 				Integer i4 = getFullIntegerPart(s2, index);
-				
+
 				int compare = i3.compareTo(i4);							// regular integer comparison
 
 				if (compare == 0) {										// if they are equal, string comparison must continue

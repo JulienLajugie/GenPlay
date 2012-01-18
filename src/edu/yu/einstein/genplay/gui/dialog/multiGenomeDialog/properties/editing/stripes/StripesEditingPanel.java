@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -143,6 +144,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			selectedVariation.get(i).setSelected(false);
 			variationColor.get(i).setBackground(defaultVariationColor[i]);
 		}
+		refreshVariationSelection();
 		selectedTracks.setModel(new DefaultListModel());
 		getApplyButton().setEnabled(false);
 	}
@@ -176,6 +178,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 				JComboBox box = (JComboBox)e.getSource();
 				String element = box.getSelectedItem().toString();
 				box.setToolTipText(element);
+				refreshVariationSelection();
 			}
 		});
 		jcbGenome.setToolTipText("Select a genome to display its variation(s).");
@@ -301,8 +304,26 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			panel.add(variationColor.get(i), gbc);
 		}
 
+		refreshVariationSelection();
+		
 		// Return the panel
 		return panel;
+	}
+	
+	
+	private void refreshVariationSelection () {
+		if (variationName != null) {
+			String genomeName = jcbGenome.getSelectedItem().toString();
+			for (int i = 0; i < variationName.size(); i++) {
+				VariantType type = variationName.get(i);
+				List<VCFReader> readers = ProjectManager.getInstance().getMultiGenome().getReaders(genomeName, type);
+				if (readers.size() > 0) {
+					selectedVariation.get(i).setEnabled(true);
+				} else {
+					selectedVariation.get(i).setEnabled(false);
+				}
+			}
+		}
 	}
 	
 	

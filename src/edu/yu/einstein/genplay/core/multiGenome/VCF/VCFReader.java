@@ -284,7 +284,7 @@ public class VCFReader implements Serializable {
 		}
 		return info;
 	}
-
+	
 
 	/**
 	 * Shows the main header information

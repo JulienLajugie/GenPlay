@@ -210,11 +210,7 @@ public class TabixReader {
 		int[] ret = new int[3];
 		colon = reg.indexOf(':');
 		hyphen = reg.indexOf('-');
-		if (reg.substring(0, 3).equals("chr")) {
-			ret[0] = chr2tid(reg.substring(3, colon));
-		} else {
-			ret[0] = chr2tid(reg.substring(0, colon));
-		}
+		ret[0] = chr2tid(reg.substring(0, colon));
 		ret[1] = Integer.parseInt(reg.substring(colon+1, hyphen));
 		ret[2] = Integer.parseInt(reg.substring(hyphen+1, reg.length()));
 		return ret;
