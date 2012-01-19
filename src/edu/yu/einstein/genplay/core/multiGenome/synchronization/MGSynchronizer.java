@@ -35,6 +35,8 @@ import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.MultiGenome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
@@ -113,20 +115,24 @@ public class MGSynchronizer {
 									reader.addVariantType(genomeRawName, variantType);										// notice the reader of the variant type
 									if (variantType != VariantType.SNPS) {													// if it is not a SNP
 										List<MGOffset> offsetList;
+										MGGenomeForDisplay genomeForDisplay = multiGenome.getMultiGenomeForDisplay().getGenomeInformation(genomeRawName);
+										MGAlleleForDisplay alleleForDisplay;
 										if (alleleType == AlleleType.PATERNAL) {											// if we are processing the paternal allele
 											offsetList = multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleA().getOffsetList().get(chromosome);	// we get the list of offset of the allele A
+											alleleForDisplay = genomeForDisplay.getAlleleA();
 										} else {																			// if not, it means we are looking to the maternal allele
 											offsetList = multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleB().getOffsetList().get(chromosome);	// we get the list of offset of the allele B
+											alleleForDisplay = genomeForDisplay.getAlleleB();
 										}
 										offsetList.add(new MGOffset(referencePosition, alleleLength));						// we insert the new offset
 
 										if (variantType == VariantType.INSERTION) {											// if we are processing an insertion
 											multiGenome.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// we insert it into the reference genome allele
-											MGVariantListForDisplay variantListForDisplay = multiGenome.getMultiGenomeForDisplay().getGenomeInformation(genomeRawName).getAlleleA().getVariantList(chromosome, VariantType.INSERTION); // we also insert it to the display data structure
+											MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, VariantType.INSERTION); // we also insert it to the display data structure
 											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
 										} else {																			// if it is not an insertion it is a deletion
-											MGVariantListForDisplay variantListForDisplay = multiGenome.getMultiGenomeForDisplay().getGenomeInformation(genomeRawName).getAlleleA().getVariantList(chromosome, VariantType.DELETION); // we only insert it to the display data structure
+											MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, VariantType.DELETION); // we only insert it to the display data structure
 											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
 										}

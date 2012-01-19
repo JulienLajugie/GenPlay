@@ -239,7 +239,9 @@ public class MultiGenome {
 	 * Show the information of the {@link MultiGenome}
 	 */
 	public void show () {
+		System.out.println("POSITION");
 		multiGenome.show();
+		System.out.println("DISPLAY");
 		multiGenomeForDisplay.show();
 	}
 	

@@ -251,17 +251,19 @@ class ChromosomeChooserTableModel extends AbstractTableModel {
 		Boolean select;
 		for (List<Object> row: this.data){
 			name = row.get(1).toString();
-			if (name.substring(0, 3).equals("chr")) {
-				select = true;
-				end = name.substring(3, name.length());
-				try {
-					Integer.parseInt(end);
-				} catch (Exception e) {
-					if (!end.equals("X") && !end.equals("Y") && !end.equals("M")) {
-						select = false;
+			if (name.length() >= 3) {
+				if (name.substring(0, 3).equals("chr")) {
+					select = true;
+					end = name.substring(3, name.length());
+					try {
+						Integer.parseInt(end);
+					} catch (Exception e) {
+						if (!end.equals("X") && !end.equals("Y") && !end.equals("M")) {
+							select = false;
+						}
 					}
+					setValueAt(select, Integer.parseInt(row.get(0).toString())-1, 3);
 				}
-				setValueAt(select, Integer.parseInt(row.get(0).toString())-1, 3);
 			}
 		}
 	}

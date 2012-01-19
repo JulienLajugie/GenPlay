@@ -256,6 +256,7 @@ public class StripesData implements Serializable {
 	public String toString () {
 		String info = "";
 		info += genome;
+		info += " " + alleleType.toString();
 		for (int i = 0; i < variationTypeList.size(); i++) {
 			info += " [" + variationTypeList.get(i) + ", ";
 			info += colorList.get(i) + "]";
@@ -292,4 +293,5 @@ public class StripesData implements Serializable {
 		
 		return listOfVariantList;
 	}
+
 }

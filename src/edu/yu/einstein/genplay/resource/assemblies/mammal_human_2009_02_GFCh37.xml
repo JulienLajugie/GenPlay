@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="GFCh37/hg19 (chr free)" date="02 2009">
+<assembly clade="mammal" genome="human" name="GFCh37" date="02 2009">
 	<chromosome name="1" length="249250621"/>
 	<chromosome name="2" length="243199373"/>
 	<chromosome name="3" length="198022430"/>
@@ -89,7 +89,7 @@
 	<chromosome name="21_gl000210_random" length="27682"/>
 	<chromosome name="Un_gl000231" length="27386"/>
 	<chromosome name="Un_gl000229" length="19913"/>
-	<chromosome name="M" length="16571"/>
+	<chromosome name="MT" length="16571"/>
 	<chromosome name="Un_gl000226" length="15008"/>
 	<chromosome name="18_gl000207_random" length="4262"/>
 </assembly>

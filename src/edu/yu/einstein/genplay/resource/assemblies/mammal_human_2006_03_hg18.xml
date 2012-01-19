@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="NCBI36/hg18" date="03 2006">
+<assembly clade="mammal" genome="human" name="hg18" date="03 2006">
 	<chromosome name="chr1" length="247249719"/>
 	<chromosome name="chr1_random" length="1663265"/>
 	<chromosome name="chr10" length="135374737"/>

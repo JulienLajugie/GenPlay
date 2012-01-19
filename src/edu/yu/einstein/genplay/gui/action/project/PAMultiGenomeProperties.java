@@ -121,7 +121,13 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		for (Track<?> track: tracks) {
 			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
-			track.updateMultiGenomeInformation(stripesList, filtersList);
+			if (stripesList.size() > 0 || filtersList.size() > 0) {
+				System.out.println("Update track: " + track.getName());
+				for (StripesData data: stripesList) {
+					System.out.println(data.getTrackList()[0].getName() + " (" + data.getTrackList().length + ") " + data.getAlleleType().toString());
+				}
+				track.updateMultiGenomeInformation(stripesList, filtersList);
+			}
 		}
 	}
 	

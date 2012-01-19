@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="GFCh37/hg19" date="02 2009">
+<assembly clade="mammal" genome="human" name="hg19" date="02 2009">
 	<chromosome name="chr1" length="249250621"/>
 	<chromosome name="chr2" length="243199373"/>
 	<chromosome name="chr3" length="198022430"/>

@@ -192,7 +192,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	 */
 	private JComboBox getAlleleBox () {
 		// Creates the array containing the different alleles
-		Object[] alleles = new Object[]{AlleleType.PATERNAL, AlleleType.MATERNAL, AlleleType.BOTH};
+		Object[] alleles = new Object[]{AlleleType.BOTH, AlleleType.PATERNAL, AlleleType.MATERNAL};
 		
 		// Creates the box
 		jcbAllele = new JComboBox(alleles);

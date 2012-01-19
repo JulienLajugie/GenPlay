@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="NCBI35/hg17" date="05 2004">
+<assembly clade="mammal" genome="human" name="hg17" date="05 2004">
 	<chromosome name="chr10" length="135413628"/>
 	<chromosome name="chr10_random" length="113275"/>
 	<chromosome name="chr11" length="134452384"/>

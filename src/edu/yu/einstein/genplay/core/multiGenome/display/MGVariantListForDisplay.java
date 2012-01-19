@@ -168,6 +168,7 @@ public class MGVariantListForDisplay {
 			readerInfo += " " + reader.getFile().getName();
 		}
 		System.out.println(readerInfo);
+		System.out.println("Variant list size: " + variantList.size());
 		for (VariantInterface variant: variantList) {
 			variant.show();
 		}

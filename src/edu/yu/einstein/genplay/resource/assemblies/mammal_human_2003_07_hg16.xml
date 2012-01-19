@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="NCBI34/hg16" date="07 2003">
+<assembly clade="mammal" genome="human" name="hg16" date="07 2003">
 	<chromosome name="chr1" length="246127941"/>
 	<chromosome name="chr2" length="243615958"/>
 	<chromosome name="chr3" length="199344050"/>

@@ -78,6 +78,7 @@ public class DisplayableVariantListMaker {
 	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList) {
 		if (listOfVariantList == null) {
 			variantList = null;
+			this.listOfVariantList = null;
 		} else {
 			if (hasChanged(listOfVariantList)) {
 				this.listOfVariantList = listOfVariantList;

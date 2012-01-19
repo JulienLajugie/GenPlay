@@ -525,20 +525,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * @return the map between genome names and the variation type required for display
-	 */
-	/*private Map<String, List<VariantType>> getGenomeVariantMap () {
-		Map<String, List<VariantType>> map = new HashMap<String, List<VariantType>>();
-		if (stripesList != null) {
-			for (StripesData data: stripesList) {
-				map.put(data.getGenome(), data.getVariationTypeList());
-			}
-		}
-		return map;
-	}*/
-
-
-	/**
 	 * @return the stripesList
 	 */
 	public List<StripesData> getStripesList() {

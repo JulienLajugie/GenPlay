@@ -107,6 +107,8 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 				times.add(System.currentTimeMillis());
 				multiGenome.getMultiGenomeSynchronizer().insertVariantposition();
 				
+				//multiGenome.show();
+				
 				// Sort lists of position for every chromosome of every genome
 				times.add(System.currentTimeMillis());
 				multiGenome.getMultiGenome().sort();
@@ -147,14 +149,14 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 	
-		//multiGenome.show();
+		multiGenome.show();
 		
 		initializesTrackListForMultiGenomeProject();
 		
-		/*for (int i = 1; i < times.size(); i++) {
+		for (int i = 1; i < times.size(); i++) {
 			System.out.println("[" + i + "]: " + (times.get(i) - times.get(i - 1)));
 		}
-		System.out.println("[total]: " + (times.get(times.size() - 1) - times.get(0)));*/
+		System.out.println("[total]: " + (times.get(times.size() - 1) - times.get(0)));
 	}
 	
 	

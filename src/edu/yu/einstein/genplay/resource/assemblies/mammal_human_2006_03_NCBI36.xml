@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="NCBI36/hg18 (chr free)" date="03 2006">
+<assembly clade="mammal" genome="human" name="NCBI36" date="03 2006">
 	<chromosome name="1" length="247249719"/>
 	<chromosome name="1_random" length="1663265"/>
 	<chromosome name="10" length="135374737"/>
@@ -44,7 +44,7 @@
 	<chromosome name="8_random" length="943810"/>
 	<chromosome name="9" length="140273252"/>
 	<chromosome name="9_random" length="1146434"/>
-	<chromosome name="M" length="16571"/>
+	<chromosome name="MT" length="16571"/>
 	<chromosome name="X" length="154913754"/>
 	<chromosome name="X_random" length="1719168"/>
 	<chromosome name="Y" length="57772954"/>
