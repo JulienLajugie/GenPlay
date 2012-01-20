@@ -40,14 +40,16 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SettingsHandler extends DefaultHandler {
 
-
+	private final File		file;	// the file
 	private List<VCFData> 	data;	// the data
 
 	/**
 	 * Constructor of {@link SettingsHandler}
+	 * @param file the file
 	 */
-	public SettingsHandler () {
+	public SettingsHandler (File file) {
 		super();
+		this.file = file;
 		data = new ArrayList<VCFData>();
 	}
 
@@ -59,6 +61,9 @@ public class SettingsHandler extends DefaultHandler {
 			String genome = attributes.getValue(getFormattedString(VCFData.GENOME_NAME));
 			String path = attributes.getValue(getFormattedString(VCFData.FILE_NAME));
 			String raw = attributes.getValue(getFormattedString(VCFData.RAW_NAME));
+			if (path.length() > 2 && path.startsWith(".\\")) {
+				path = file.getParent() + path.substring(1);
+			}
 			VCFData vcfData = new VCFData(group, genome, new File(path), raw);
 			data.add(vcfData);
 		}
@@ -84,12 +89,11 @@ public class SettingsHandler extends DefaultHandler {
 
 	/**
 	 * Writes the multi genome setting in a XML file
-	 * @param xml a XML file
 	 */
-	public void write (File xml) {
+	public void write () {
 		try{
 			// Create file 
-			FileWriter fstream = new FileWriter(xml);
+			FileWriter fstream = new FileWriter(file);
 			BufferedWriter out = new BufferedWriter(fstream);
 			out.write("<settings>\n");
 			for (VCFData vcfData: data) {

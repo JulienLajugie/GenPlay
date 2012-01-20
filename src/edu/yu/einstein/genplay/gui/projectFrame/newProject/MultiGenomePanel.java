@@ -171,7 +171,7 @@ class MultiGenomePanel extends JPanel {
 			SAXParser parser;
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			parserFactory.setValidating(true);
-			SettingsHandler xmlParser = new SettingsHandler();
+			SettingsHandler xmlParser = new SettingsHandler(xmlFile);
 			try {
 				xml = new FileInputStream(xmlFile);
 				parser = parserFactory.newSAXParser();
@@ -204,9 +204,9 @@ class MultiGenomePanel extends JPanel {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File file = fc.getSelectedFile();
 				file = Utils.addExtension(file, XMLFilter.EXTENSIONS[0]);
-				SettingsHandler xmlParser = new SettingsHandler();
+				SettingsHandler xmlParser = new SettingsHandler(file);
 				xmlParser.setData(data);
-				xmlParser.write(file);
+				xmlParser.write();
 			} else if (returnVal == JFileChooser.ERROR_OPTION) {
 				JOptionPane.showMessageDialog(getRootPane(), "Please select a valid XML file", "Invalid XML selection", JOptionPane.WARNING_MESSAGE);
 			}
