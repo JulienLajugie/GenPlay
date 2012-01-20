@@ -874,7 +874,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		} else if (trackAlleleType == AlleleType.PATERNAL) {
 			variantList = paternalVariantListMaker.getFittedData(genomeWindow, xFactor);
-		} else if (trackAlleleType == AlleleType.PATERNAL) {
+		} else if (trackAlleleType == AlleleType.MATERNAL) {
 			variantList = maternalVariantListMaker.getFittedData(genomeWindow, xFactor);
 		}
 		VariantInterface variant = null;
@@ -963,15 +963,15 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					AlleleType trackAlleleType = getTrackAlleleType();
 					List<VariantInterface> variantList = null;
 					if (trackAlleleType == AlleleType.BOTH) {
-						variantList = paternalVariantListMaker.getVariantList();
+						variantList = getCopyOfVariantList(paternalVariantListMaker.getVariantList());
 						for (VariantInterface currentVariant: maternalVariantListMaker.getVariantList()) {
 							variantList.add(currentVariant);
 						}
 						Collections.sort(variantList, new VariantComparator());
 					} else if (trackAlleleType == AlleleType.PATERNAL) {
-						variantList = paternalVariantListMaker.getVariantList();
+						variantList = getCopyOfVariantList(paternalVariantListMaker.getVariantList());
 					} else if (trackAlleleType == AlleleType.PATERNAL) {
-						variantList = maternalVariantListMaker.getVariantList();
+						variantList = getCopyOfVariantList(maternalVariantListMaker.getVariantList());
 					}
 					ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);
 					toolTip.show(positionInformation, e.getXOnScreen(), e.getYOnScreen());
@@ -980,6 +980,20 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				}
 			}
 		}
+	}
+	
+	
+	/**
+	 * Creates a copy of a variant list
+	 * @param variantList variant list to copy
+	 * @return copy of the variant list given in parameter
+	 */
+	private List<VariantInterface> getCopyOfVariantList (List<VariantInterface> variantList) {
+		List<VariantInterface> copy = new ArrayList<VariantInterface>();
+		for (VariantInterface currentVariant: variantList) {
+			copy.add(currentVariant);
+		}
+		return copy;
 	}
 
 

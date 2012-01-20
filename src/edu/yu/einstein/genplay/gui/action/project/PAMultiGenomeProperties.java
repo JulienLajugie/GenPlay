@@ -122,10 +122,10 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
 			if (stripesList.size() > 0 || filtersList.size() > 0) {
-				System.out.println("Update track: " + track.getName());
+				/*System.out.println("Update track: " + track.getName());
 				for (StripesData data: stripesList) {
 					System.out.println(data.getTrackList()[0].getName() + " (" + data.getTrackList().length + ") " + data.getAlleleType().toString());
-				}
+				}*/
 				track.updateMultiGenomeInformation(stripesList, filtersList);
 			}
 		}
@@ -133,7 +133,7 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	
 	
 	/**
-	 * This method aims to update the SNPs synchroniser in order to run its process if needed.
+	 * This method aims to update the SNPs synchronizer in order to run its process if needed.
 	 * When the user closes the dialog, he may has changed stripes settings regarding the SNPs.
 	 */
 	private void updateSNP () {

@@ -163,13 +163,13 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						} else {
 							g.setColor(ColorConverters.nucleotideToColor(nucleotide));							
 						}
-						g.fillRect(x, 0, nucleoWith, height);	
+						g.fillRect(x, 0, nucleoWith, height);
 						if (nucleoWith >= 5) {
 							g.setColor(Color.WHITE);
-							g.drawRect(x, 0, nucleoWith, height - 1);	
+							g.drawRect(x, 0, nucleoWith, height - 1);
 						}
 					}
-				}		
+				}
 			} else {
 				// if we can't print all the bases we just print a message for the user
 				g.setColor(Color.LIGHT_GRAY);

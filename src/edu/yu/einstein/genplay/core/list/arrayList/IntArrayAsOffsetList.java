@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequence;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 
 
@@ -146,8 +147,8 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 	public int size() {
 		return size;
 	}
-	
-	
+
+
 	/**
 	 * Recreates the arrays with the right size in order to optimize the memory usage.
 	 */
@@ -161,8 +162,8 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 		position = positionTmp;
 		value = valueTmp;
 	}
-	
-	
+
+
 	/**
 	 * @param genomePosition the position on the genome
 	 * @return the meta genome position associated to the given genome position
@@ -171,7 +172,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 		if (size == 0) {
 			return genomePosition;
 		}
-		int genomePositionIndex = findPosition(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		int genomePositionIndex = findGenomeIndex(genomePosition, 0, size - 1);	// get the index of the position (or the one right after)
 		if (genomePosition < position[genomePositionIndex]) {					// if the position is lower than the one found (ie we want the index right before)
 			if (genomePositionIndex == 0) {										// if the index found is the first one in the list
 				return genomePosition;											// there is no offset yet therefore genome position and meta genome position are similar
@@ -181,33 +182,92 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 		}
 		int difference  = genomePosition - position[genomePositionIndex];
 		int metaGenomePosition = position[genomePositionIndex] + value[genomePositionIndex] + difference; // the meta genome position is the genome position plus its offset
-		
+
 		return metaGenomePosition;												// we return the meta genome position
 	}
 
-	
+
 	/**
 	 * Recursive function. Returns the index where the genome position is found
 	 * or the index right after if the exact value is not found.
-	 * @param value
+	 * @param value			value of a genome position
 	 * @param indexStart
 	 * @param indexStop
 	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
 	 */
-	private int findPosition (int value, int indexStart, int indexStop) {
+	private int findGenomeIndex (int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
 		} else if (value == position[indexStart + middle]) {
 			return indexStart + middle;
 		} else if (value > position[indexStart + middle]) {
-			return findPosition(value, indexStart + middle + 1, indexStop);
+			return findGenomeIndex(value, indexStart + middle + 1, indexStop);
 		} else {
-			return findPosition(value, indexStart, indexStart + middle);
+			return findGenomeIndex(value, indexStart, indexStart + middle);
 		}
 	}
 
-	
+
+	/**
+	 * @param metaGenomePosition the position on the meta genome
+	 * @return the genome position associated to the given meta genome position
+	 */
+	public int getGenomePosition (int metaGenomePosition) {
+		if (size == 0) {
+			return metaGenomePosition;
+		}
+		int genomePositionIndex = findMetaGenomeIndex(metaGenomePosition, 0, size - 1);	// get the index of the position (or the one right after)
+		
+		int metaGenomePositionFound = position[genomePositionIndex] + value[genomePositionIndex];	// get the meta genome position found (genome position + its meta genome offset) 
+		
+		if (metaGenomePosition == metaGenomePositionFound) {					// if both position are equal
+			return position[genomePositionIndex];								// the genome position is the one found
+		} else if (metaGenomePosition > metaGenomePositionFound) {				// if the meta genome position is higher than the one found
+			int difference = metaGenomePosition - metaGenomePositionFound;		// calculation of the difference of both position: meta genome seek and meta genome found
+			return (position[genomePositionIndex] + difference);				// the new meta genome position must be the one found plus the calculated difference
+		} else {																// if the meta genome position is lower than the one found
+			int difference = metaGenomePositionFound - metaGenomePosition;		// we want to know the difference between both position in order to compare with the variation length 
+			int variationLength = value[genomePositionIndex];					// by default the variation length is the current offset (with the MG) of the index found
+			
+			if (genomePositionIndex > 0) {										// if the current index is not the first one, the variation length just instantiated is the sum of all offset of the previous variations
+				variationLength -= value[genomePositionIndex - 1];				// in order to have the current variation length, we subtract with the offset of the previous index.
+			}
+			
+			if (difference <= variationLength) {								// if the seek meta genome position is included in the variation length,
+				return TwoBitSequence.MISSING_POSITION;							// this meta genome position does not match with a position of the genome
+			} else {															// if the seek meta genome position is not included in the variation length,
+				difference -= variationLength;									// we calculate the difference between the current genome position and the one we are looking for
+				return position[genomePositionIndex] - difference;				// we subtract this difference to the genome position found.
+			}
+		}
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the meta genome position is found
+	 * or the index right after if the exact value is not found.
+	 * @param value			value of a meta genome position
+	 * @param indexStart
+	 * @param indexStop
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
+	 */
+	private int findMetaGenomeIndex (int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int currentMetaGenomePosition = position[indexStart + middle] + this.value[indexStart + middle];
+			if (value == currentMetaGenomePosition) {
+				return indexStart + middle;
+			} else if (value > currentMetaGenomePosition) {
+				return findMetaGenomeIndex(value, indexStart + middle + 1, indexStop);
+			}
+			return findMetaGenomeIndex(value, indexStart, indexStart + middle);
+		}
+	}
+
+
 	/**
 	 * Shows the content of this object
 	 */

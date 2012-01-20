@@ -1,4 +1,4 @@
-<assembly clade="mammal" genome="human" name="GFCh37" date="02 2009">
+<assembly clade="mammal" genome="human" name="GRCh37" date="02 2009">
 	<chromosome name="1" length="249250621"/>
 	<chromosome name="2" length="243199373"/>
 	<chromosome name="3" length="198022430"/>

@@ -53,6 +53,8 @@ public class ColorConverters {
 			return new Color(0, 200, 0);
 		case ANY:
 			return Color.black;
+		case BLANK:
+			return Color.gray;
 		default:
 			return null;
 		}

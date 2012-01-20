@@ -94,8 +94,8 @@ public class MGVariantListForDisplay {
 	public List<VariantInterface> getVariantList() {
 		return variantList;
 	}
-	
-	
+
+
 	/**
 	 * Empty the variant list
 	 */
@@ -103,15 +103,15 @@ public class MGVariantListForDisplay {
 		this.variantList = new ArrayList<VariantInterface>();
 	}
 
-	
+
 	/**
 	 * Sorts the variant list
 	 */
 	public void sort () {
 		Collections.sort(this.variantList, new VariantComparator());
 	}
-	
-	
+
+
 	/**
 	 * @param variant a variant
 	 * @return all information about the variant (from the vcf)
@@ -136,7 +136,7 @@ public class MGVariantListForDisplay {
 					requiredReader = reader;
 				}
 			}
-			
+
 			int size = results.size();
 			switch (size) {
 			case 1:
@@ -155,7 +155,7 @@ public class MGVariantListForDisplay {
 		}
 		return null;
 	}
-	
+
 
 	/**
 	 * Show the information of the {@link MGAlleleForDisplay}
@@ -169,8 +169,12 @@ public class MGVariantListForDisplay {
 		}
 		System.out.println(readerInfo);
 		System.out.println("Variant list size: " + variantList.size());
+		int cpt = 0;
 		for (VariantInterface variant: variantList) {
-			variant.show();
+			if (cpt < 10) {
+				variant.show();
+				cpt++;
+			}
 		}
 	}
 

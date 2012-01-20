@@ -113,7 +113,7 @@ public class RetrieveAssemblies {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2004_05_NCBI35.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2006_03_hg18.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2006_03_NCBI36.xml"));
-		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2009_02_GFCh37.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2009_02_GRCh37.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_human_2009_02_hg19.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2005_08_NCBI35_mm7.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2006_02_NCBI36_mm8.xml"));

@@ -100,7 +100,11 @@ public enum Nucleotide {
 	/**
 	 * Gap (Gap of indeterminate length)
 	 */
-	GAP 		((byte)15, 	'-', "Gap", 				"Gap of indeterminate length");
+	GAP 		((byte)15, 	'-', "Gap", 				"Gap of indeterminate length"),
+	/**
+	 * Blank of synchronization (only when insertions show up in multi genome project)
+	 */
+	BLANK 		((byte)16, 	'X', "Blank", 				"Blank of synchronization");
 
 	
 	private final byte 								value;			// byte value of a nucleotide

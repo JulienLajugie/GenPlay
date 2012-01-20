@@ -47,6 +47,8 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializable, List<Nucleotide>, Stoppable {
 
+	/** int code for a missing genome position (a billion) in multi genome project. */
+	public static final int MISSING_POSITION = -1000000000;
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private transient RandomAccessFile 	raf;			// 2bit random access file  
@@ -63,8 +65,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	protected String	genomeName = null;		// genome name for a multi genome project
 	protected AlleleType alleleType = null;		// allele type for a multi genome project
 	private Chromosome chromosome;				// chromosome of the current list
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -84,8 +86,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		out.writeObject(genomeName);
 		out.writeObject(chromosome);
 	}
-	
-	
+
+
 	/**
 	 * Method used for unserialization
 	 * @param in
@@ -107,8 +109,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		chromosome = (Chromosome) in.readObject();
 		needToBeStopped = false;
 	}
-	
-	
+
+
 	/**
 	 * Default constructor. Creates an instance of {@link TwoBitSequence}
 	 * @param chromosome	chromosome of the current list
@@ -121,8 +123,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		this.chromosome = chromosome;
 		this.alleleType = alleleType;
 	}
-	
-	
+
+
 	/**
 	 * Extract the information about a sequence from a {@link TwoBitSequence}
 	 * @param filePath path to the file containing the sequence
@@ -174,7 +176,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 				nBlockSizes[i] = raf.readInt();
 			}			
 		}
-		
+
 		int maskBlockCount = 0;
 		if (reverseBytes) {
 			maskBlockCount = Integer.reverseBytes(raf.readInt());
@@ -271,8 +273,9 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	public final int[] getMaskBlockSizes() {
 		return maskBlockSizes;
 	}
-	
-	
+
+
+	//private static int cpt = 0;
 	/**
 	 * Returns the {@link Nucleotide} at the specified position
 	 */
@@ -283,11 +286,14 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		}
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
+			if (position == MISSING_POSITION) {
+				return Nucleotide.BLANK;
+			}
 			if (position < 0) {
 				return Nucleotide.ANY;
 			}
 		}
-		
+
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
 			if (position < nBlockStarts[i] + nBlockSizes[i]) {
@@ -318,8 +324,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	public int size() {
 		return dnaSize;
 	}
-	
-	
+
+
 	/**
 	 * Stops the extraction of the data
 	 */
@@ -336,8 +342,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	private void reinitDataFile() throws FileNotFoundException {
 		raf = new RandomAccessFile(new File(filePath), "r");
 	}
-	
-	
+
+
 	/**
 	 * Sets the file path to the random access file containing the sequences
 	 * @param filePath path to the 

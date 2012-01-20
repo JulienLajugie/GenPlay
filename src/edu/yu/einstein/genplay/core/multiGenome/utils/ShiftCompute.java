@@ -40,7 +40,7 @@ public class ShiftCompute {
 
 
 	/**
-	 * Calculates the meta genome position according to the given genome position
+	 * Calculates the meta genome position according to the given genome position.
 	 * @param genome			the raw genome name (containing the genome position)
 	 * @param chromosome		the chromosome (containing the genome position)
 	 * @param alleleType 		the allele (paternal or maternal)
@@ -51,20 +51,8 @@ public class ShiftCompute {
 		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
 			return computeShiftForReferenceGenome(chromosome, genomePosition);
 		}
-		MGGenome genomeInformation = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getGenomeInformation(genome);
 
-		MGAllele alleleInformation = null;
-		if (alleleType == AlleleType.PATERNAL) {
-			alleleInformation = genomeInformation.getAlleleA();
-		} else if (alleleType == AlleleType.MATERNAL) {
-			alleleInformation = genomeInformation.getAlleleB();
-		} else {
-			System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType);
-			return -1;
-		}
-
-		ChromosomeListOfLists<MGOffset> offsetList = alleleInformation.getOffsetList();
-
+		ChromosomeListOfLists<MGOffset> offsetList = getOffsetList(genome, alleleType);
 
 		int metaGenomePosition = ((IntArrayAsOffsetList)offsetList.get(chromosome)).getMetaGenomePosition(genomePosition);
 
@@ -74,7 +62,7 @@ public class ShiftCompute {
 
 
 	/**
-	 * Calculates the meta genome position according to the given genome position
+	 * Calculates the genome position according to the given meta genome position
 	 * @param genome				the raw genome name (containing the genome position)
 	 * @param chromosome			the chromosome (containing the genome position)
 	 * @param alleleType 		the allele (paternal or maternal)
@@ -82,9 +70,12 @@ public class ShiftCompute {
 	 * @return						the corresponding genome position
 	 */
 	public static int computeReversedShift (String genome, Chromosome chromosome, AlleleType alleleType, int metaGenomePosition) {
+		ChromosomeListOfLists<MGOffset> offsetList = getOffsetList(genome, alleleType);
+
+		int genomePosition = ((IntArrayAsOffsetList)offsetList.get(chromosome)).getGenomePosition(metaGenomePosition);
+
 		// Return the final shifted position
-		System.err.println("The method \"ShiftCompute.computeReversedShift\" is not instanciated yet");
-		return 0;
+		return genomePosition;
 	}
 
 
@@ -99,6 +90,30 @@ public class ShiftCompute {
 		int metaGenomePosition = ((IntArrayAsOffsetList)offsetList.get(chromosome)).getMetaGenomePosition(referenceGenomePosition);
 		// Return the final shifted position
 		return metaGenomePosition;
+	}
+
+
+
+	private static ChromosomeListOfLists<MGOffset> getOffsetList (String genome, AlleleType alleleType) {
+		MGAllele alleleInformation = null;
+
+		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
+			alleleInformation = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getReferenceGenome().getAllele();
+		} else {
+			MGGenome genomeInformation = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getGenomeInformation(genome);
+			if (alleleType == AlleleType.PATERNAL) {
+				alleleInformation = genomeInformation.getAlleleA();
+			} else if (alleleType == AlleleType.MATERNAL) {
+				alleleInformation = genomeInformation.getAlleleB();
+			} else {
+				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType);
+				return null;
+			}
+		}
+
+		ChromosomeListOfLists<MGOffset> offsetList = alleleInformation.getOffsetList();
+
+		return offsetList;
 	}
 
 }

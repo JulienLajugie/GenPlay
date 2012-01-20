@@ -100,8 +100,12 @@ public class MGAllele {
 		for (Chromosome chromosome: chromosomeList) {
 			if (offsetList.get(chromosome).size() > 0) {
 				System.out.println("Chromosome: " + chromosome.getName());
+				int cpt = 0;
 				for (MGOffset offset: offsetList.get(chromosome)) {
-					offset.show();
+					if (cpt < 10) {
+						offset.show();
+						cpt++;
+					}
 				}
 			}
 		}
