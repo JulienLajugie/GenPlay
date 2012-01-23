@@ -226,8 +226,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		stripesList = null;
 		filtersList = null;
 	}
-	
-	
+
+
 	/**
 	 * Reset the list of the variant list makers
 	 */
@@ -378,10 +378,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			stop = variant.getStop() + 1;
 		}
 
-		if (start < genomeWindow.getStart()) {
+		if (start < genomeWindow.getStart() && stop > genomeWindow.getStart()) {
 			start = genomeWindow.getStart();
 		}
-		if (stop > genomeWindow.getStop()) {
+		if (start < genomeWindow.getStop() && stop > genomeWindow.getStop()) {
 			stop = genomeWindow.getStop();
 		}
 		int x = genomePosToScreenPos(start);
@@ -389,83 +389,34 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		if (width == 0) {
 			width = 1;
 		}
-		int height = (int) ((variant.getScore() * getHeight()) / 100);
+		int clipHeight = g.getClipBounds().height;
+		int height = (int) ((variant.getScore() * clipHeight) / 100);
+		
+		if (height > clipHeight) {
+			height = clipHeight;
+		}
 
 		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);
 		g.setColor(newColor);
 
-		g.fillRect(x, g.getClipBounds().height - height, width, height);
-	}
+		g.fillRect(x, clipHeight - height, width, height);
 
-
-
-	/*private void drawRect (Graphics g, DisplayableVariant displayableVariant, Color color, Color noAlleleColor) {
-		// Sets position and length
-		if (displayableVariant.getStart() >= genomeWindow.getStart() && displayableVariant.getStop() <= genomeWindow.getStop()) {
-
-			int x = genomePosToScreenPos(displayableVariant.getStart());
-			int width = twoGenomePosToScreenWidth(displayableVariant.getStart(), displayableVariant.getStop());
-			// trick for stripe with too small width 
-			if (width == 0) {
-				width = 1;
-			}
-			int middle = getHeight() / 2;
-			int height = (int) (displayableVariant.getQualityScore() * middle / 100);
-			int top = middle - height;
-
-			// Sets color
-			Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);
-			g.setColor(newColor);
-
-			// Draws the top half part of the track
-			if (displayableVariant.isOnFirstAllele()) {
-				g.setColor(newColor);
-			} else {
-				g.setColor(noAlleleColor);
-			}
-			g.fillRect(x, top, width, height);
-
-			// Draws the bottom half part of the track
-			if (displayableVariant.isOnSecondAllele()) {
-				g.setColor(newColor);
-			} else {
-				g.setColor(noAlleleColor);
-			}
-			g.fillRect(x, middle, width, height);
-
-			// Displays nucleotide for SNP variant
-			if (displayableVariant.getType() == VariantType.SNPS) {
-				Font font = g.getFont();
-
-				if (font.getSize() <= width) {
-					//Sets drawing parameters
-					//int widthOffset = (width - font.getSize()) / 4;
-					int widthOffset = (width / 2);
-					int heightOffset = (middle + font.getSize()) / 2;
-					String alternative = displayableVariant.getNativeVariant().getAlternative();
-					String reference = displayableVariant.getNativeVariant().getReference();
-					String nucleotide;
-					g.setColor(Color.BLACK);
-
-					// Draws nucleotide for the upper part
-					if (displayableVariant.isOnFirstAllele()) {
-						nucleotide = alternative;
-					} else {
-						nucleotide = reference;
-					}
-					g.drawString(nucleotide, x + widthOffset, heightOffset);
-
-					// Draws nucleotide for the lower part
-					if (displayableVariant.isOnSecondAllele()) {
-						nucleotide = alternative;
-					} else {
-						nucleotide = reference;
-					}
-					g.drawString(nucleotide, x + widthOffset, middle + heightOffset);
+		if (variant.getType() == VariantType.SNPS) {
+			Font font = g.getFont();
+			if (font.getSize() <= width && font.getSize() <= (height - 10)) {
+				String alternative = variant.getFullVariantInformation().getAlternative();
+				g.setColor(Color.black);
+				if (getTrackAlleleType() == AlleleType.BOTH && maternalVariantListMaker.getVariantList().contains(variant)) {
+					Graphics2D newG = (Graphics2D) g.create();
+					newG.scale(1, -1);
+					newG.translate(0, -clipHeight - 1);
+					newG.drawString(alternative, x, height - 10);
+				} else {
+					g.drawString(alternative, x, height - 10);
 				}
 			}
 		}
-	}*/
+	}
 
 
 	/**
@@ -538,8 +489,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	public List<IDFilterInterface> getFiltersList() {
 		return filtersList;
 	}
-	
-	
+
+
 	/**
 	 * @return the allele type defined for the track
 	 */
@@ -981,8 +932,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Creates a copy of a variant list
 	 * @param variantList variant list to copy
@@ -1250,6 +1201,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		out.writeObject(data);
 		out.writeObject(genomeName);
 		out.writeObject(paternalVariantListMaker);
+		out.writeObject(maternalVariantListMaker);
 		out.writeObject(stripeLegendText);
 		out.writeObject(stripeLegendColor);
 		out.writeObject(stripesList);
@@ -1275,6 +1227,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		data = (T) in.readObject();
 		genomeName = (String) in.readObject();
 		paternalVariantListMaker = (DisplayableVariantListMaker) in.readObject();
+		maternalVariantListMaker = (DisplayableVariantListMaker) in.readObject();
 		stripeLegendText = (List<String>) in.readObject();
 		stripeLegendColor = (List<Color>) in.readObject();
 		stripesList = (List<StripesData>) in.readObject();

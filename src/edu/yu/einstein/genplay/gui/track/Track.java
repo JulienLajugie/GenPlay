@@ -42,7 +42,9 @@ import javax.swing.border.Border;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
@@ -88,8 +90,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	private TrackHandle				trackHandle;						// handle of the track
 	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
 	protected String 				genomeName;							// genome on which the track is based (ie aligned on)
-	
-	
+
+
 	/**
 	 * Constructor
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
@@ -133,15 +135,15 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.add(genomeWindowListener);
 	}
-	
-	
+
+
 	/**
 	 * Creates the {@link TrackGraphics}
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data data displayed in the track
 	 */
 	abstract protected TrackGraphics<T> createsTrackGraphics(GenomeWindow displayedGenomeWindow, T data);
-	
+
 
 	/**
 	 * Copies the track
@@ -188,10 +190,18 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		// we notify the listeners
 		for (GenomeWindowListener currentListener: listenerList) {
 			currentListener.genomeWindowChanged(evt);
-		}		
+		}
+		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
+			MGDisplaySettings settings = MGDisplaySettings.getInstance();
+			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(this);
+			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(this);
+			if (stripesList.size() > 0 || filtersList.size() > 0) {
+				trackGraphics.updateMultiGenomeInformation(stripesList, filtersList);
+			}
+		}
 	}
-	
-	
+
+
 	/**
 	 * Updates information for multi genome project.
 	 * These information are about:
@@ -203,16 +213,16 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
 		trackGraphics.updateMultiGenomeInformation(stripesList, filtersList);
 	}
-	
-	
+
+
 	/**
 	 * Reset the list of the variant list makers
 	 */
 	public void resetVariantListMaker () {
 		trackGraphics.resetVariantListMaker();
 	}
-	
-	
+
+
 	/**
 	 * Initializes attributes used for multi genome project.
 	 */
@@ -306,8 +316,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public int getVerticalLineCount() {
 		return trackGraphics.getVerticalLineCount();
 	}
-	
-	
+
+
 	/**
 	 * @return the stripesList
 	 */
@@ -322,7 +332,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public List<IDFilterInterface> getFiltersList() {
 		return trackGraphics.getFiltersList();
 	}
-	
+
 
 	/**
 	 * @return true if the track is selected
@@ -435,14 +445,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics.setScrollMode(scrollMode);
 	}
 
-	
+
 	/**
 	 * @param selected the value to set
 	 */
 	public void setSelected(boolean selected) {
 		trackHandle.setSelected(selected);
 	}
-	
+
 
 	/**
 	 * shows stripes on the track
@@ -487,8 +497,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void unlockHandle() {
 		trackHandle.unlock();
 	}
-	
-	
+
+
 	/**
 	 * Changes the legend display of the tracks
 	 */

@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +39,11 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class DisplayableVariantListMaker {
+public class DisplayableVariantListMaker implements Serializable {
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -5236981711624610822L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	protected Chromosome				fittedChromosome = null;		// Chromosome with the adapted data
 	protected Double					fittedXRatio = null;			// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
@@ -44,6 +51,38 @@ public class DisplayableVariantListMaker {
 	private List<VariantInterface> 			variantList;
 	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(fittedChromosome);
+		out.writeDouble(fittedXRatio);
+		out.writeObject(listOfVariantList);
+		out.writeObject(variantList);
+		out.writeObject(fittedDataList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		fittedChromosome = (Chromosome) in.readObject();
+		fittedXRatio = in.readDouble();
+		listOfVariantList = (List<MGVariantListForDisplay>) in.readObject();
+		variantList = (List<VariantInterface>) in.readObject();
+		fittedDataList = (List<VariantInterface>) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link DisplayableVariantListMaker}

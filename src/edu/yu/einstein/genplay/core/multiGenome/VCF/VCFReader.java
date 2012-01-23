@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.enums.VCFType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
@@ -529,55 +528,6 @@ public class VCFReader implements Serializable {
 		} else {
 			return -1;
 		}
-	}
-
-
-	/**
-	 * Scans the first lines of the VCF file in order to determine its type.
-	 * (works with VCF 4.0)
-	 * @return the type of the VCF file or null if not found
-	 */
-	public VCFType getPresumeType () {
-		Map<VCFType, Integer> types = new HashMap<VCFType, Integer>();
-		types.put(VCFType.INDELS, 0);
-		types.put(VCFType.SV, 0);
-		types.put(VCFType.SNPS, 0);
-		VCFType type = null;
-		List<Map<String, Object>> result = null;
-		try {
-			result = shortQuery();
-			int index = 0;
-			for (Map<String, Object> line: result) {
-
-				String ref = line.get("REF").toString();
-				String alt = line.get("ALT").toString();
-				if (alt.charAt(0) == '<') {
-					type = VCFType.SV;
-				} else if (ref.length() == alt.length() && ref.length() == 1) {
-					type = VCFType.SNPS;
-				} else {
-					type = VCFType.INDELS;
-				}
-				int cpt = types.get(type) + 1;
-				types.put(type, cpt);
-				index++;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		type = null;
-		if (result != null) {
-			int mean = result.size() / 2;
-			if (types.get(VCFType.INDELS) > mean) {
-				type = VCFType.INDELS;
-			} else if (types.get(VCFType.SV) > mean) {
-				type = VCFType.SV;
-			} else if (types.get(VCFType.SNPS) > mean) {
-				type = VCFType.SNPS;
-			}
-		}
-		return type;
 	}
 	
 

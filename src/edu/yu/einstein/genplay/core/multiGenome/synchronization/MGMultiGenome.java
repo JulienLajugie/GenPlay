@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.synchronization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +32,39 @@ import java.util.List;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGMultiGenome {
+public class MGMultiGenome implements Serializable {
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -1740129652588956286L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private MGReference 	referenceGenome;		// instance of the reference genome
 	private List<MGGenome> 	genomesInformation;		// list of the genomes information
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(referenceGenome);
+		out.writeObject(genomesInformation);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		referenceGenome = (MGReference) in.readObject();
+		genomesInformation = (List<MGGenome>) in.readObject();
+	}
 	
 	
 	/**

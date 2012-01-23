@@ -82,7 +82,7 @@ public final class GenomeWindowEvent extends EventObject {
 	/**
 	 * @return true if the size of the {@link GenomeWindow} changed
 	 */
-	public boolean didZoomChanged() {
+	public boolean zoomChanged() {
 		return oldWindow.getSize() != newWindow.getSize();
 	}
 	
@@ -90,7 +90,7 @@ public final class GenomeWindowEvent extends EventObject {
 	/**
 	 * @return true if the {@link Chromosome} of the {@link GenomeWindow} changed
 	 */
-	public boolean didChromosomeChanged() {
+	public boolean chromosomeChanged() {
 		return !oldWindow.getChromosome().equals(newWindow.getChromosome());
 	}
 	
@@ -98,7 +98,7 @@ public final class GenomeWindowEvent extends EventObject {
 	/**
 	 * @return true if the {@link ChromosomeWindow} of the {@link GenomeWindow} changed
 	 */
-	public boolean didChromosomeWindowChanged() {
+	public boolean chromosomeWindowChanged() {
 		return !((ChromosomeWindow)oldWindow).equals((ChromosomeWindow)newWindow);
 	}
 	

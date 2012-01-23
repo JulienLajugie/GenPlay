@@ -121,10 +121,6 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 				times.add(System.currentTimeMillis());
 				multiGenome.getMultiGenomeSynchronizer().performPositionSynchronization();
 				
-				// Sort lists of position for every chromosome of every genome
-				//times.add(System.currentTimeMillis());
-				//genomeSynchronizer.getMultiGenome().sort();
-				
 				// Compacts the offset lists in order to optimize the memory usage
 				times.add(System.currentTimeMillis());
 				multiGenome.getMultiGenome().compactLists();

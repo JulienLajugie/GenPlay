@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 
 
@@ -28,12 +33,42 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGGenomeForDisplay {
+public class MGGenomeForDisplay implements Serializable {
 	
 	
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 322995634084485127L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private MGGenome	 		genome;			// genome synchronizer
 	private MGAlleleForDisplay 	alleleA;		// first allele of the genome
 	private MGAlleleForDisplay 	alleleB;		// second allele of the genome
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genome);
+		out.writeObject(alleleA);
+		out.writeObject(alleleB);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genome = (MGGenome) in.readObject();
+		alleleA = (MGAlleleForDisplay) in.readObject();
+		alleleB = (MGAlleleForDisplay) in.readObject();
+	}
 	
 	
 	/**

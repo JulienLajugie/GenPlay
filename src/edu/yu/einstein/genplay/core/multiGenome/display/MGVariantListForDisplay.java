@@ -22,6 +22,9 @@
 package edu.yu.einstein.genplay.core.multiGenome.display;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,14 +44,47 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGVariantListForDisplay {
+public class MGVariantListForDisplay implements Serializable {
 
-	private final MGAlleleForDisplay 	alleleForDisplay;
-	private final Chromosome			chromosome;
-	private final VariantType 			type;
-	private List<VariantInterface> 		variantList;
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 3317488112661108128L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private MGAlleleForDisplay 		alleleForDisplay;
+	private Chromosome				chromosome;
+	private VariantType 			type;
+	private List<VariantInterface> 	variantList;
 
 
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(alleleForDisplay);
+		out.writeObject(chromosome);
+		out.writeObject(type);
+		out.writeObject(variantList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		alleleForDisplay = (MGAlleleForDisplay) in.readObject();
+		chromosome = (Chromosome) in.readObject();
+		type = (VariantType) in.readObject();
+		variantList = (List<VariantInterface>) in.readObject();
+	}
+	
+	
 	/**
 	 * Constructor of {@link MGVariantListForDisplay}
 	 * @param alleleForDisplay 	the allele for display object

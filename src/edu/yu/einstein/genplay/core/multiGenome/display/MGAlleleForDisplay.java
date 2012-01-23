@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +41,11 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGAlleleForDisplay {
+public class MGAlleleForDisplay implements Serializable {
 	
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -2820418368770648809L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int INSERTION_INDEX = 0;
 	private static final int DELETION_INDEX = 1;
 	private static final int SNPS_INDEX = 2;
@@ -47,6 +54,31 @@ public class MGAlleleForDisplay {
 	private ChromosomeListOfLists<MGVariantListForDisplay> chromosomeListOfVariantList;
 	
 
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeInformation);
+		out.writeObject(chromosomeListOfVariantList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeInformation = (MGGenome) in.readObject();
+		chromosomeListOfVariantList = (ChromosomeListOfLists<MGVariantListForDisplay>) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link MGAlleleForDisplay}

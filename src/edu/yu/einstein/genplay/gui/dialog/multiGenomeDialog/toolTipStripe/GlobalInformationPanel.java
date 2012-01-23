@@ -130,11 +130,10 @@ public class GlobalInformationPanel extends JPanel {
 		idLabel.addMouseListener( new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				System.out.println("mouseReleased");
 				if (Desktop.isDesktopSupported()) {
 					try {
 						// we open a browser showing information on the SNP
-						String link = "http://www.ncbi.nlm.nih.gov/snp/?term=" + "rs11804171" + "&SITE=NcbiHome&submit=Go";
+						String link = "http://www.ncbi.nlm.nih.gov/snp/?term=" + id + "&SITE=NcbiHome&submit=Go";
 						Desktop.getDesktop().browse(new URI(link));
 					} catch (Exception e1) {
 						ExceptionManager.handleException(getRootPane(), e1, "Error while opening the web browser");

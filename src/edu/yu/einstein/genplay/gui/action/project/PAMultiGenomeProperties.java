@@ -23,16 +23,11 @@ package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
@@ -105,9 +100,6 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 * Called if the dialog has been approved.
 	 */
 	private void approve () {
-		// Update the SNPs
-		updateSNP();
-		
 		// Set the various settings
 		settings.getVariousSettings().setVariousSettings(dialog.getTransparency(), dialog.isShowLegend());
 		
@@ -117,6 +109,14 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		// Set the stripes
 		settings.getStripeSettings().setStripesSettings(dialog.getStripesData());
 		
+		
+		// Update the SNPs
+		// Set the SNP synchronization action and run it (the action will decide itself how to manage the SNPs)
+		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
+		multiGenomeSNP.actionPerformed(null);
+		
+		
+		// Update tracks
 		Track<?>[] tracks = getTrackList().getTrackList();
 		for (Track<?> track: tracks) {
 			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
@@ -131,67 +131,4 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		}
 	}
 	
-	
-	/**
-	 * This method aims to update the SNPs synchronizer in order to run its process if needed.
-	 * When the user closes the dialog, he may has changed stripes settings regarding the SNPs.
-	 */
-	private void updateSNP () {
-		// Gets the list of stripes data
-		List<StripesData> newStripesData = dialog.getStripesData();
-		
-		// Gets the genome names involved for SNPs synchronization
-		Map<String, List<AlleleType>> genomeNames = getGenomeNamesForSNP(newStripesData);
-		
-		// Set the SNP synchronization action and run it (the action will decide itself how to manage the SNPs)
-		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
-		multiGenomeSNP.setGenomeNames(genomeNames);
-		multiGenomeSNP.actionPerformed(null);
-	}
-	
-	
-	/**
-	 * Gathers genome names require for a SNP display
-	 * @param list association of genome name/variant type list
-	 * @return the list of genome names
-	 */
-	private Map<String, List<AlleleType>> getGenomeNamesForSNP (List<StripesData> list) {
-		Map<String, List<AlleleType>> names = new HashMap<String, List<AlleleType>>();
-		if (list != null) {
-			for (StripesData data: list) {
-				List<VariantType> variantTypes = data.getVariationTypeList();
-				if (variantTypes.contains(VariantType.SNPS)) {
-					String genomeName = data.getGenome();
-					if (!names.containsKey(genomeName)) {
-						names.put(genomeName, new ArrayList<AlleleType>());
-					}
-					boolean paternal = false;
-					boolean maternal = false;
-					AlleleType alleleType = data.getAlleleType();
-					if (alleleType == AlleleType.BOTH) {
-						paternal = true;
-						maternal = true;
-					} else if (alleleType == AlleleType.PATERNAL) {
-						paternal = true;
-					} else if (alleleType == AlleleType.MATERNAL) {
-						maternal = true;
-					}
-					
-					if (paternal) {
-						if (!names.get(genomeName).contains(AlleleType.PATERNAL)) {
-							names.get(genomeName).add(AlleleType.PATERNAL);
-						}
-					}
-					if (maternal) {
-						if (!names.get(genomeName).contains(AlleleType.MATERNAL)) {
-							names.get(genomeName).add(AlleleType.MATERNAL);
-						}
-					}
-				}
-			}
-		}
-		return names;
-	}
-
-
 }

@@ -215,8 +215,8 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 	 */
 	@Override
 	protected void fitToScreen() {}
-
-
+	
+	
 	@Override
 	protected Nucleotide[] getFittedData(int start, int stop) {
 		Nucleotide[] result = new Nucleotide[stop - start + 1];
@@ -231,12 +231,12 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 
 		int j = 0;
 		for (int i = start; i <= stop; i++) {
+			//result[j] = currentList.get(i-1);
 			result[j] = currentList.get(i);
 			j++;
-		}		
+		}
 		return result;
 	}
-
 	
 	
 	/**

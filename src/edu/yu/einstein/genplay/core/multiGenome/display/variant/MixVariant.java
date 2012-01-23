@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display.variant;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 
@@ -28,10 +33,38 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MixVariant implements VariantInterface {
+public class MixVariant implements Serializable, VariantInterface {
 	
-	private final int 	start;
-	private final int 	stop;
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 4873498320038629297L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private int 	start;
+	private int 	stop;
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeInt(start);
+		out.writeInt(stop);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		start = in.readInt();
+		stop = in.readInt();
+	}
 	
 	
 	/**

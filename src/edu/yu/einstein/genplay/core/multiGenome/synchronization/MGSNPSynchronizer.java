@@ -22,6 +22,9 @@
 package edu.yu.einstein.genplay.core.multiGenome.synchronization;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,11 +46,40 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGSNPSynchronizer {
+public class MGSNPSynchronizer implements Serializable {
 
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 2617311727908279221L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Map<String, List<AlleleType>> genomeNames;		// List of genome required for SNP display
 	private Chromosome chromosome;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeNames);
+		out.writeObject(chromosome);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeNames = (Map<String, List<AlleleType>>) in.readObject();
+		chromosome = (Chromosome) in.readObject();
+	}
 
 
 	/**
@@ -76,24 +108,28 @@ public class MGSNPSynchronizer {
 		} else {
 			List<AlleleType> alleleList = getAlleleTypeList();
 
-			for (String genomeName: genomeNames.keySet()) {
-				if (!this.genomeNames.containsKey(genomeName)) {
-					genomesToAdd.put(genomeName, genomeNames.get(genomeName));
-				} else {
-					List<AlleleType> existingList = this.genomeNames.get(genomeName);
-					List<AlleleType> currentList = genomeNames.get(genomeName);
+			if (genomeNames.size() == 0) {
+				genomesToDelete = this.genomeNames;
+			} else {
+				for (String genomeName: genomeNames.keySet()) {
+					if (!this.genomeNames.containsKey(genomeName)) {
+						genomesToAdd.put(genomeName, genomeNames.get(genomeName));
+					} else {
+						List<AlleleType> existingList = this.genomeNames.get(genomeName);
+						List<AlleleType> currentList = genomeNames.get(genomeName);
 
-					for (AlleleType alleleType: alleleList) {
-						if (existingList.contains(alleleType) && !currentList.contains(alleleType)) {
-							if (!genomesToDelete.containsKey(genomeName)) {
-								genomesToDelete.put(genomeName, new ArrayList<AlleleType>());
+						for (AlleleType alleleType: alleleList) {
+							if (existingList.contains(alleleType) && !currentList.contains(alleleType)) {
+								if (!genomesToDelete.containsKey(genomeName)) {
+									genomesToDelete.put(genomeName, new ArrayList<AlleleType>());
+								}
+								genomesToDelete.get(genomeName).add(alleleType);
+							} else if (!existingList.contains(alleleType) && currentList.contains(alleleType)) {
+								if (!genomesToAdd.containsKey(genomeName)) {
+									genomesToAdd.put(genomeName, new ArrayList<AlleleType>());
+								}
+								genomesToAdd.get(genomeName).add(alleleType);
 							}
-							genomesToDelete.get(genomeName).add(alleleType);
-						} else if (!existingList.contains(alleleType) && currentList.contains(alleleType)) {
-							if (!genomesToAdd.containsKey(genomeName)) {
-								genomesToAdd.put(genomeName, new ArrayList<AlleleType>());
-							}
-							genomesToAdd.get(genomeName).add(alleleType);
 						}
 					}
 				}
@@ -114,45 +150,47 @@ public class MGSNPSynchronizer {
 
 
 	private void addSNP (Map<String, List<AlleleType>> genomes) {
-		Map<VCFReader, List<String>> readers = getSNPReaders(genomes);
-		MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay();
+		if (genomes != null && genomes.size() > 0) {
+			Map<VCFReader, List<String>> readers = getSNPReaders(genomes);
+			MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay();
 
-		for (VCFReader reader: readers.keySet()) {
-			List<String> genomeNames = transformList(readers.get(reader));
-			List<String> fields = getColumnNamesForQuery(genomeNames);
-			List<Map<String, Object>> results = null;
-			try {
-				results = reader.query(chromosome.getName(), 0, chromosome.getLength(), fields);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (results != null) {
-				for (Map<String, Object> result: results) {
-					if (hasSNP(result.get("REF").toString(), result.get("ALT").toString())) {
-						String[] alternatives = result.get("ALT").toString().split(",");
-						for (String genomeName: readers.get(reader)) {
-							String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-							String genoType = result.get(genomeRawName).toString().split(":")[0];
-							for (AlleleType alleleType: genomes.get(genomeName)) {
-								int pos = getAlternativePosition(genoType, alleleType);
-								if (pos > 0) {
-									String alternative = alternatives[pos - 1];
-									if (alternative.length() == 1) {
-										MGVariantListForDisplay variantListForDisplay = null;
-										if (alleleType == AlleleType.PATERNAL) {
-											variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleA().getVariantList(chromosome, VariantType.SNPS);
-										} else if (alleleType == AlleleType.MATERNAL) {
-											variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
-										}
-										if (variantListForDisplay != null) {
-											int referenceGenomePosition = getIntFromString(result.get("POS").toString());
-											float score = getFloatFromString(result.get("QUAL").toString());
-											if (score == -1) {
-												score = 50;	// default value...
+			for (VCFReader reader: readers.keySet()) {
+				List<String> genomeNames = transformList(readers.get(reader));
+				List<String> fields = getColumnNamesForQuery(genomeNames);
+				List<Map<String, Object>> results = null;
+				try {
+					results = reader.query(chromosome.getName(), 0, chromosome.getLength(), fields);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (results != null) {
+					for (Map<String, Object> result: results) {
+						if (hasSNP(result.get("REF").toString(), result.get("ALT").toString())) {
+							String[] alternatives = result.get("ALT").toString().split(",");
+							for (String genomeName: readers.get(reader)) {
+								String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
+								String genoType = result.get(genomeRawName).toString().split(":")[0];
+								for (AlleleType alleleType: genomes.get(genomeName)) {
+									int pos = getAlternativePosition(genoType, alleleType);
+									if (pos > 0) {
+										String alternative = alternatives[pos - 1];
+										if (alternative.length() == 1) {
+											MGVariantListForDisplay variantListForDisplay = null;
+											if (alleleType == AlleleType.PATERNAL) {
+												variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleA().getVariantList(chromosome, VariantType.SNPS);
+											} else if (alleleType == AlleleType.MATERNAL) {
+												variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
 											}
-											if (referenceGenomePosition != -1) {
-												VariantInterface variant = new SNPVariant(variantListForDisplay, referenceGenomePosition, score, 0);
-												variantListForDisplay.getVariantList().add(variant);
+											if (variantListForDisplay != null) {
+												int referenceGenomePosition = getIntFromString(result.get("POS").toString());
+												float score = getFloatFromString(result.get("QUAL").toString());
+												if (score == -1) {
+													score = 50;	// default value...
+												}
+												if (referenceGenomePosition != -1) {
+													VariantInterface variant = new SNPVariant(variantListForDisplay, referenceGenomePosition, score, 0);
+													variantListForDisplay.getVariantList().add(variant);
+												}
 											}
 										}
 									}
@@ -162,22 +200,21 @@ public class MGSNPSynchronizer {
 					}
 				}
 			}
-		}
 
-		for (String genomeName: genomes.keySet()) {
-			for (AlleleType alleleType: genomes.get(genomeName)) {
-				MGVariantListForDisplay variantListForDisplay = null;
-				if (alleleType == AlleleType.PATERNAL) {
-					variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleA().getVariantList(chromosome, VariantType.SNPS);
-				} else if (alleleType == AlleleType.MATERNAL) {
-					variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
-				}
-				if (variantListForDisplay != null) {
-					variantListForDisplay.sort();
+			for (String genomeName: genomes.keySet()) {
+				for (AlleleType alleleType: genomes.get(genomeName)) {
+					MGVariantListForDisplay variantListForDisplay = null;
+					if (alleleType == AlleleType.PATERNAL) {
+						variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleA().getVariantList(chromosome, VariantType.SNPS);
+					} else if (alleleType == AlleleType.MATERNAL) {
+						variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
+					}
+					if (variantListForDisplay != null) {
+						variantListForDisplay.sort();
+					}
 				}
 			}
 		}
-
 
 	}
 
@@ -241,7 +278,7 @@ public class MGSNPSynchronizer {
 		return false;
 	}
 
-	
+
 	private int getAlternativePosition (String format, AlleleType alleleType) {
 		if (format.length() == 3) {
 			String result = "";
@@ -282,23 +319,24 @@ public class MGSNPSynchronizer {
 
 
 	private void deleteSNP (Map<String, List<AlleleType>> genomes) {
-		MGMultiGenomeForDisplay multiGenome = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay();
+		if (genomes != null && genomes.size() > 0) {
+			MGMultiGenomeForDisplay multiGenome = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay();
 
-		List<AlleleType> alleleList = getAlleleTypeList();
-		for (String genomeName: genomes.keySet()) {
-			for (AlleleType alleleType: alleleList) {
-				MGAlleleForDisplay allele = null;
-				if (alleleType == AlleleType.PATERNAL) {
-					allele = multiGenome.getGenomeInformation(genomeName).getAlleleA();
-				} else if (alleleType == AlleleType.MATERNAL) {
-					allele = multiGenome.getGenomeInformation(genomeName).getAlleleB();
-				}
-				if (allele != null) {
-					allele.getVariantList(chromosome, VariantType.SNPS).clearVariantList();
+			List<AlleleType> alleleList = getAlleleTypeList();
+			for (String genomeName: genomes.keySet()) {
+				for (AlleleType alleleType: alleleList) {
+					MGAlleleForDisplay allele = null;
+					if (alleleType == AlleleType.PATERNAL) {
+						allele = multiGenome.getGenomeInformation(genomeName).getAlleleA();
+					} else if (alleleType == AlleleType.MATERNAL) {
+						allele = multiGenome.getGenomeInformation(genomeName).getAlleleB();
+					}
+					if (allele != null) {
+						allele.getVariantList(chromosome, VariantType.SNPS).clearVariantList();
+					}
 				}
 			}
 		}
-
 	}
 
 

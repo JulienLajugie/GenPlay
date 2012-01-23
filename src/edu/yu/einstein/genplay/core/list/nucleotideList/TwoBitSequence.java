@@ -275,17 +275,18 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	}
 
 
-	//private static int cpt = 0;
 	/**
 	 * Returns the {@link Nucleotide} at the specified position
 	 */
 	@Override
 	public Nucleotide get(int position) {
-		if ((position < 0) || (position > dnaSize)) { 
+		int metaGenomePosition = position;
+		position--;
+		if ((position < 0) || (position > dnaSize)) {
 			return null;
 		}
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
+			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, metaGenomePosition);
 			if (position == MISSING_POSITION) {
 				return Nucleotide.BLANK;
 			}

@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.synchronization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
@@ -33,10 +37,36 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGReference {
+public class MGReference implements Serializable {
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 8585507826483644699L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private MGAllele allele;	// single allele of the reference genome
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(allele);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		allele = (MGAllele) in.readObject();
+	}
+	
 
 	/**
 	 * Constructor of {@link MGReference}

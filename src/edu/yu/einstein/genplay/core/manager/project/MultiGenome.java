@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.manager.project;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,8 +43,11 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenome {
+public class MultiGenome implements Serializable {
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -6096336417566795182L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 	private		List<String>					genomeNames;				// genome names list
 	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;		// mapping between genome names and their reader.
 
@@ -52,11 +59,43 @@ public class MultiGenome {
 
 
 	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeNames);
+		out.writeObject(genomeFileAssociation);
+		out.writeObject(multiGenome);
+		out.writeObject(multiGenomeForDisplay);
+		out.writeObject(multiGenomeSynchronizer);
+		out.writeObject(multiGenomeSynchronizerForSNP);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeNames = (List<String>) in.readObject();
+		genomeFileAssociation = (Map<String, List<VCFReader>>) in.readObject();
+		multiGenome = (MGMultiGenome) in.readObject();
+		multiGenomeForDisplay = (MGMultiGenomeForDisplay) in.readObject();
+		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
+		multiGenomeSynchronizerForSNP = (MGSNPSynchronizer) in.readObject();
+	}
+	
+	
+	/**
 	 * Constructor of {@link MultiGenome}
 	 */
-	public MultiGenome () {
-		
-	}
+	public MultiGenome () {}
 
 
 	/**

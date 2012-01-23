@@ -22,6 +22,8 @@
 package edu.yu.einstein.genplay.gui.action.project;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +54,6 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 		// mnemonic key
 	private static		 String 			ACTION_NAME = "SNPs loading";	// action name
 
-	private Map<String, List<AlleleType>> genomeNames;
 	
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -69,7 +70,6 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		genomeNames = null;
 	}
 
 
@@ -85,6 +85,13 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			// Notifies the action
 			notifyActionStart(ACTION_NAME, 1, false);
 
+			// Gets the list of stripes data
+			List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
+			
+			// Gets the genome names involved for SNPs synchronization
+			Map<String, List<AlleleType>> genomeNames = getGenomeNamesForSNP(newStripesData);			
+			
+			
 			snpSynchronizer.compute(genomeNames);
 		}
 
@@ -109,13 +116,49 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			}
 		}
 	}
-
-
+	
+	
 	/**
-	 * @param genomeNames the genomeNames to set
+	 * Gathers genome names require for a SNP display
+	 * @param list association of genome name/variant type list
+	 * @return the list of genome names
 	 */
-	protected void setGenomeNames(Map<String, List<AlleleType>> genomeNames) {
-		this.genomeNames = genomeNames;
+	private Map<String, List<AlleleType>> getGenomeNamesForSNP (List<StripesData> list) {
+		Map<String, List<AlleleType>> names = new HashMap<String, List<AlleleType>>();
+		if (list != null) {
+			for (StripesData data: list) {
+				List<VariantType> variantTypes = data.getVariationTypeList();
+				if (variantTypes.contains(VariantType.SNPS)) {
+					String genomeName = data.getGenome();
+					if (!names.containsKey(genomeName)) {
+						names.put(genomeName, new ArrayList<AlleleType>());
+					}
+					boolean paternal = false;
+					boolean maternal = false;
+					AlleleType alleleType = data.getAlleleType();
+					if (alleleType == AlleleType.BOTH) {
+						paternal = true;
+						maternal = true;
+					} else if (alleleType == AlleleType.PATERNAL) {
+						paternal = true;
+					} else if (alleleType == AlleleType.MATERNAL) {
+						maternal = true;
+					}
+					
+					if (paternal) {
+						if (!names.get(genomeName).contains(AlleleType.PATERNAL)) {
+							names.get(genomeName).add(AlleleType.PATERNAL);
+						}
+					}
+					if (maternal) {
+						if (!names.get(genomeName).contains(AlleleType.MATERNAL)) {
+							names.get(genomeName).add(AlleleType.MATERNAL);
+						}
+					}
+				}
+			}
+		}
+		return names;
 	}
 
 }

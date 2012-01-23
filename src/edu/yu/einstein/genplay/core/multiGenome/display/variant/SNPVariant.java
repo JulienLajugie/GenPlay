@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display.variant;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -29,12 +34,44 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SNPVariant implements VariantInterface {
+public class SNPVariant implements Serializable, VariantInterface {
 	
-	private final MGVariantListForDisplay 	variantListForDisplay;
-	private final int 						referenceGenomePosition;
-	private final float 					score;
-	private final int 						phasedWithPos;
+	/** Generated serial version ID */
+	private static final long serialVersionUID = -9017009720555361231L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private MGVariantListForDisplay 	variantListForDisplay;
+	private int 						referenceGenomePosition;
+	private float 						score;
+	private int 						phasedWithPos;
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variantListForDisplay);
+		out.writeInt(referenceGenomePosition);
+		out.writeFloat(score);
+		out.writeInt(phasedWithPos);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variantListForDisplay = (MGVariantListForDisplay) in.readObject();
+		referenceGenomePosition = in.readInt();
+		score = in.readFloat();
+		phasedWithPos = in.readInt();
+	}
 	
 	
 	/**
