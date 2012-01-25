@@ -39,6 +39,7 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 7460760950740721596L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private MGReferenceForDisplay		referenceGenome;			// reference genome for display
 	private List<MGGenomeForDisplay> 	genomesInformation;			// list of the genomes information
 	
 	
@@ -49,6 +50,7 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(referenceGenome);
 		out.writeObject(genomesInformation);
 	}
 
@@ -63,6 +65,7 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		genomesInformation = (List<MGGenomeForDisplay>) in.readObject();
+		referenceGenome = (MGReferenceForDisplay) in.readObject();
 	}
 	
 	
@@ -71,6 +74,7 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	 * @param genomes genomes synchronizer
 	 */
 	public MGMultiGenomeForDisplay (List<MGGenome> genomes) {
+		referenceGenome = new MGReferenceForDisplay();
 		genomesInformation = new ArrayList<MGGenomeForDisplay>();
 		for (MGGenome genome: genomes) {
 			genomesInformation.add(new MGGenomeForDisplay(genome));
@@ -78,6 +82,14 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	}
 	
 	
+	/**
+	 * @return the referenceGenome
+	 */
+	public MGReferenceForDisplay getReferenceGenome() {
+		return referenceGenome;
+	}
+
+
 	/**
 	 * @param genomeName genome name
 	 * @return	the genome information object
@@ -108,6 +120,7 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	 * Show the information of the {@link MGMultiGenomeForDisplay}
 	 */
 	public void show () {
+		referenceGenome.show();
 		for (MGGenomeForDisplay genome: genomesInformation) {
 			genome.show();
 		}

@@ -37,6 +37,31 @@ public class MGDisplaySettings implements Serializable {
 	private static final long serialVersionUID = 1442202260363430870L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
+	/** Enable a MG option */
+	public static final int YES_MG_OPTION = 1;
+	
+	/** Disable a MG option */
+	public static final int NO_MG_OPTION = 0;
+	
+	/** Blank of synchronization are involved by insertion in genomes on the reference genome */
+	public static int INCLUDE_BLANK_OPTION = YES_MG_OPTION;
+	
+	/** Insertion stripes can be drawn with an edge line */
+	public static int DRAW_INSERTION_EDGE = YES_MG_OPTION;
+	
+	/** Deletion stripes can be drawn with an edge line */
+	public static int DRAW_DELETION_EDGE = YES_MG_OPTION;
+	
+	/** Draw the inserted nucleotides over an insertion stripe */
+	public static int DRAW_INSERTION_LETTERS = YES_MG_OPTION;
+	
+	/** Draw the deleted nucleotides over a deletion stripe */
+	public static int DRAW_DELETION_LETTERS = YES_MG_OPTION;
+	
+	/** Draw the replaced nucleotide over a SNP stripe */
+	public static int DRAW_SNP_LETTERS = YES_MG_OPTION;
+	
+	
 	private static MGDisplaySettings 	instance;			// Instance of the class
 
 	private MGFilterSettings 	filterSettings; 	// All settings about the filters

@@ -109,6 +109,13 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		// Set the stripes
 		settings.getStripeSettings().setStripesSettings(dialog.getStripesData());
 		
+		// Set the static options
+		MGDisplaySettings.DRAW_INSERTION_EDGE = dialog.getOptionValueList().get(0);
+		MGDisplaySettings.DRAW_DELETION_EDGE = dialog.getOptionValueList().get(1);
+		MGDisplaySettings.DRAW_INSERTION_LETTERS = dialog.getOptionValueList().get(2);
+		MGDisplaySettings.DRAW_DELETION_LETTERS = dialog.getOptionValueList().get(3);
+		MGDisplaySettings.DRAW_SNP_LETTERS = dialog.getOptionValueList().get(4);
+		
 		
 		// Update the SNPs
 		// Set the SNP synchronization action and run it (the action will decide itself how to manage the SNPs)

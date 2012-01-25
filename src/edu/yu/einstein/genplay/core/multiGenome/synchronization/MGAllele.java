@@ -135,7 +135,7 @@ public class MGAllele implements Serializable {
 				for (MGOffset offset: offsetList.get(chromosome)) {
 					if (cpt < 10) {
 						offset.show();
-						cpt++;
+						//cpt++;
 					}
 				}
 			}

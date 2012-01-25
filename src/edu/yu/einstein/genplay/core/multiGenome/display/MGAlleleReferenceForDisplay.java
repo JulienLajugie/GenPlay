@@ -29,29 +29,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGReference;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGAlleleForDisplay implements Serializable {
+public class MGAlleleReferenceForDisplay implements Serializable {
 	
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2820418368770648809L;
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final int INSERTION_INDEX = 0;
-	private static final int DELETION_INDEX = 1;
-	private static final int SNPS_INDEX = 2;
 	
-	private MGGenome genomeInformation;
-	private ChromosomeListOfLists<MGVariantListForDisplay> chromosomeListOfVariantList;
+	private MGReference	 								genome;		// reference genome
+	private ChromosomeListOfLists<VariantInterface> 	chromosomeListOfVariantList;
 	
 
 	/**
@@ -61,7 +60,7 @@ public class MGAlleleForDisplay implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(genomeInformation);
+		out.writeObject(genome);
 		out.writeObject(chromosomeListOfVariantList);
 	}
 
@@ -75,68 +74,68 @@ public class MGAlleleForDisplay implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		genomeInformation = (MGGenome) in.readObject();
-		chromosomeListOfVariantList = (ChromosomeListOfLists<MGVariantListForDisplay>) in.readObject();
+		genome = (MGReference) in.readObject();
+		chromosomeListOfVariantList = (ChromosomeListOfLists<VariantInterface>) in.readObject();
 	}
 	
 
 	/**
-	 * Constructor of {@link MGAlleleForDisplay}
+	 * Constructor of {@link MGAlleleReferenceForDisplay}
 	 */
-	protected MGAlleleForDisplay (MGGenome genome) {
-		this.genomeInformation = genome;
-		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<MGVariantListForDisplay>();
-		ProjectChromosome projectChromosome =ProjectManager.getInstance().getProjectChromosome(); 
-		int chromosomeNumber = projectChromosome.size();
+	protected MGAlleleReferenceForDisplay (MGReference genome) {
+		this.genome = genome;
+		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<VariantInterface>();
+		int chromosomeNumber = ProjectManager.getInstance().getProjectChromosome().size();
 		for (int i = 0; i < chromosomeNumber; i++) {
-			Chromosome chromosome = projectChromosome.get(i);
-			List<MGVariantListForDisplay> elements = new ArrayList<MGVariantListForDisplay>();
-			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.INSERTION));
-			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.DELETION));
-			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.SNPS));
-			chromosomeListOfVariantList.add(i, elements);
+			chromosomeListOfVariantList.add(i, new ArrayList<VariantInterface>());
+		}
+	}
+	
+	
+	/**
+	 * Initializes the list list of variation of the allele.
+	 * Must be called only once and in the {@link PAMultiGenome}.
+	 */
+	public void initialize () {
+		int chromosomeNumber = chromosomeListOfVariantList.size();
+		for (int i = 0; i < chromosomeNumber; i++) {
+			List<VariantInterface> variantList = chromosomeListOfVariantList.get(i);
+			List<MGOffset> offsetList = genome.getAllele().getOffsetList().get(i);
+			for (MGOffset offset: offsetList) {
+				VariantInterface variant =  new ReferenceVariant(offset.getPosition(), offset.getValue(), i);
+				variantList.add(variant);
+			}
 		}
 	}
 	
 
 	/**
-	 * @return the genomeInformation
+	 * @return the reference genome
 	 */
-	public MGGenome getGenomeInformation() {
-		return genomeInformation;
+	public MGReference getGenomeInformation() {
+		return genome;
 	}
 
 
 	/**
-	 * 
 	 * @param chromosome chromosome
-	 * @param type 		type of variation
-	 * @return			the variant list object for the given chromosome and variation type
+	 * @return			the variant list for the given chromosome
 	 */
-	public MGVariantListForDisplay getVariantList (Chromosome chromosome, VariantType type) {
-		List<MGVariantListForDisplay> listOfVariantList = chromosomeListOfVariantList.get(chromosome);
-		if (type == VariantType.INSERTION) {
-			return listOfVariantList.get(INSERTION_INDEX);
-		} else if (type == VariantType.DELETION) {
-			return listOfVariantList.get(DELETION_INDEX);
-		} else if (type == VariantType.SNPS) {
-			return listOfVariantList.get(SNPS_INDEX);
-		} else {
-			return null;
-		}
+	public List<VariantInterface> getVariantList (Chromosome chromosome) {
+		return chromosomeListOfVariantList.get(chromosome);
 	}
 	
 	
 	/**
-	 * Show the information of the {@link MGAlleleForDisplay}
+	 * Show the information of the {@link MGAlleleReferenceForDisplay}
 	 */
 	public void show () {
 		for (int i = 0; i < chromosomeListOfVariantList.size(); i++) {
 			System.out.println("Chromosome: " + ProjectManager.getInstance().getProjectChromosome().get(i).getName());
-			List<MGVariantListForDisplay> listOfVariantList = chromosomeListOfVariantList.get(i);
-			listOfVariantList.get(INSERTION_INDEX).show();
-			listOfVariantList.get(DELETION_INDEX).show();
-			listOfVariantList.get(SNPS_INDEX).show();
+			List<VariantInterface> listOfVariantList = chromosomeListOfVariantList.get(i);
+			for (VariantInterface variant: listOfVariantList) {
+				variant.show();
+			}
 		}
 	}
 	

@@ -25,7 +25,7 @@ import java.util.Comparator;
 
 /**
  * This class is a comparator for variant.
- * The comparison is made according to the meta genome position.
+ * The comparison is made according to the reference genome position.
  * 
  * @author Nicolas Fourel
  * @version 0.1

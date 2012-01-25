@@ -19,27 +19,29 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.display.variant;
+package edu.yu.einstein.genplay.core.multiGenome.display;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGReference;
+
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MixVariant implements Serializable, VariantInterface {
+public class MGReferenceForDisplay implements Serializable {
+	
 	
 	/** Generated serial version ID */
-	private static final long serialVersionUID = 4873498320038629297L;
+	private static final long serialVersionUID = 322995634084485127L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private int 	start;
-	private int 	stop;
+	private MGReference	 				genome;		// reference genome
+	private MGAlleleReferenceForDisplay allele;
 	
 	
 	/**
@@ -49,8 +51,8 @@ public class MixVariant implements Serializable, VariantInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
+		out.writeObject(genome);
+		out.writeObject(allele);
 	}
 
 
@@ -62,81 +64,43 @@ public class MixVariant implements Serializable, VariantInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
+		genome = (MGReference) in.readObject();
+		allele = (MGAlleleReferenceForDisplay) in.readObject();
 	}
 	
 	
 	/**
-	 * Constructor of {@link MixVariant}
-	 * @param start 
-	 * @param stop
+	 * Constructor of {@link MGReferenceForDisplay}
 	 */
-	public MixVariant(int start, int stop) {
-		this.start = start;
-		this.stop = stop;
+	protected MGReferenceForDisplay () {
+		this.genome = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getReferenceGenome();
+		allele = new MGAlleleReferenceForDisplay(genome);
 	}
 
 	
-	@Override
-	public MGVariantListForDisplay getVariantListForDisplay() {
-		return null;
+	/**
+	 * @return the genome synchronizer
+	 */
+	public MGReference getGenome() {
+		return genome;
 	}
 	
 	
-	@Override
-	public int getReferenceGenomePosition() {
-		return -1;
+	/**
+	 * @return the allele A of the genome
+	 */
+	public MGAlleleReferenceForDisplay getAllele() {
+		return allele;
 	}
 
-
-	@Override
-	public int getLength() {
-		return stop - start;
-	}
-
-
-	@Override
-	public float getScore() {
-		return 1000;
-	}
-
-
-	@Override
-	public int phasedWithPos() {
-		return -1;
-	}
-
-
-	@Override
-	public VariantType getType() {
-		return VariantType.MIX;
-	}
 	
-	
-	@Override
-	public void show() {
-		String info = "T: " + getType() + "; ";
-		info += "St: " + start + "; ";
-		info += "Sp': " + stop + "]";
-		System.out.println(info);
+	/**
+	 * Show the information of the {@link MGReferenceForDisplay}
+	 */
+	public void show () {
+		System.out.println("Reference genome: " + genome.getName());
+		System.out.println("Allele");
+		allele.show();
 	}
 
-
-	@Override
-	public int getStart() {
-		return start;
-	}
-
-
-	@Override
-	public int getStop() {
-		return stop;
-	}
-	
-	
-	@Override
-	public MGPosition getFullVariantInformation() {
-		return null;
-	}
 }

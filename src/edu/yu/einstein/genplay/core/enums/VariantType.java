@@ -48,11 +48,11 @@ public enum VariantType {
 	
 	
 	// From SV type VCF file
-	/**
+	/*
 	 * For a SV deletion
 	 */
 	//DEL ("Deletion (SV)"),
-	/**
+	/*
 	 * For a SV insertion
 	 */
 	//INS ("Insertion (SV)"),
@@ -68,10 +68,6 @@ public enum VariantType {
 	 * For a SV copy number variation
 	 */
 	CNV ("Copy Number Variation (SV)"),
-	/**
-	 * For SV SNPs (would not exist)
-	 */
-	//SVSNPS ("SNPs (SV)"),
 	
 	
 	// For display

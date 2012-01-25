@@ -21,11 +21,15 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
@@ -35,6 +39,8 @@ import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
  * @author Nicolas Fourel
@@ -57,11 +63,21 @@ class SettingsPanel extends JPanel {
 	private JRadioButton yesButton;
 	private JRadioButton noButton;
 
+	// Static in option
+	private List<String> optionNameList;
+	private List<Integer> optionValueList;
+	private List<JRadioButton> yesOptionRadioList;
+	private List<JRadioButton> noOptionRadioList;
+
 
 	/**
 	 * Constructor of {@link SettingsPanel}
 	 */
 	protected SettingsPanel () {
+		initializesStaticOptionLists();
+		yesOptionRadioList = new ArrayList<JRadioButton>();
+		noOptionRadioList = new ArrayList<JRadioButton>();
+		
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -78,26 +94,75 @@ class SettingsPanel extends JPanel {
 		add(Utils.getTitleLabel("Stripes transparency"), gbc);
 
 		// Slider for stripes transparency option
-		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
 		add(getSliderPanel(), gbc);
 
 		// Stripes legend option title
-		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.TITLE_INSET;
-		add(Utils.getTitleLabel("Show stripes legend"), gbc);
+		add(Utils.getTitleLabel("Stripes display settings"), gbc);
 
 		// Radios for stripes legend option
-		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
-		gbc.weighty = 1;
 		add(getStripeLegendPanel(), gbc);
+
+		// Adds the static options
+		for (int i = 0; i < (optionNameList.size() - 1); i++) {
+			gbc.gridy++;
+			add(getStaticOptionPanel(i), gbc);
+		}
+		gbc.gridy++;
+		gbc.weighty = 1;
+		add(getStaticOptionPanel(optionNameList.size() - 1), gbc);
 
 	}
 
+	
+	/**
+	 * Initializes the lists for the static options
+	 */
+	private void initializesStaticOptionLists () {
+		optionNameList = new ArrayList<String>();
+		optionNameList.add("Show border of insertion");
+		optionNameList.add("Show border of deletion");
+		optionNameList.add("Show nucleotides of insertion stripes");
+		optionNameList.add("Show nucleotides of deletion stripes");
+		optionNameList.add("Show nucleotide of SNP stripes");
+		
+		optionValueList = new ArrayList<Integer>();
+		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_INSERTION_EDGE));
+		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_DELETION_EDGE));
+		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_INSERTION_LETTERS));
+		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_DELETION_LETTERS));
+		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_SNP_LETTERS));
+	}
+	
+
+	private int getOptionValue (int option) {
+		if (option == MGDisplaySettings.YES_MG_OPTION) {
+			return MGDisplaySettings.YES_MG_OPTION;
+		} else {
+			return MGDisplaySettings.NO_MG_OPTION;
+		}
+	}
+	
+	
+	/**
+	 * Refreshes the static option radios according to the list
+	 */
+	private void refreshStaticOptionBoxes () {
+		for (int i = 0; i < optionValueList.size(); i++) {
+			if (optionValueList.get(i) == MGDisplaySettings.YES_MG_OPTION) {
+				yesOptionRadioList.get(i).setSelected(true);
+				noOptionRadioList.get(i).setSelected(false);
+			} else {
+				yesOptionRadioList.get(i).setSelected(false);
+				noOptionRadioList.get(i).setSelected(true);
+			}
+		}
+	}
 
 	/////////////////////////////////////////// Stripes transparency option
 
@@ -143,8 +208,11 @@ class SettingsPanel extends JPanel {
 	 * @return the panel
 	 */
 	private JPanel getStripeLegendPanel () {
-		// Initializes the panel and the layout
 		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		JLabel jlTitle = new JLabel("Show legend");
+		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
 
 		// Initializes the radio buttons
 		yesButton = new JRadioButton("yes");
@@ -152,9 +220,9 @@ class SettingsPanel extends JPanel {
 		if (showLegend) {
 			yesButton.setSelected(true);
 		} else {
-			noButton.setSelected(true);
+			yesButton.setSelected(false);	
 		}
-
+		
 		// Group the radio buttons
 		ButtonGroup group = new ButtonGroup();
 		group.add(yesButton);
@@ -163,24 +231,72 @@ class SettingsPanel extends JPanel {
 		//Register a listener for the radio buttons
 		yesButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				setShowLegend(true);
-			}
-		});
+			public void actionPerformed(ActionEvent e) {setShowLegend(true);}});
 		noButton.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				setShowLegend(false);
-			}
-		});
+			public void actionPerformed(ActionEvent e) {setShowLegend(false);}});
 
-		// Adds label and slider to the panel
+		// Adds label and buttons to the panel
+		panel.add(jlTitle);
+		panel.add(yesButton);
+		panel.add(noButton);
+		
+		return panel;
+	}
+
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////// MGDisplaySettings Panels
+
+	/**
+	 * Creates a panel to define MGDisplaySettings.DRAW_INSERTION_EDGE option.
+	 * @return the panel
+	 */
+	private JPanel getStaticOptionPanel (final int option) {
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		JLabel jlTitle = new JLabel(optionNameList.get(option));
+		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
+
+		// Initializes the radio buttons
+		JRadioButton yesButton = new JRadioButton("yes");
+		JRadioButton noButton = new JRadioButton("no");
+		yesOptionRadioList.add(yesButton);
+		noOptionRadioList.add(noButton);
+
+		//Register a listener for the radio buttons
+		yesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {setOption(option, MGDisplaySettings.YES_MG_OPTION);}});
+		noButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {setOption(option, MGDisplaySettings.NO_MG_OPTION);}});
+
+		// Group the radio buttons
+		ButtonGroup group = new ButtonGroup();
+		group.add(yesButton);
+		group.add(noButton);
+
+
+		// Adds label and buttons to the panel
+		panel.add(jlTitle);
 		panel.add(yesButton);
 		panel.add(noButton);
 
-		// Returns the panel
 		return panel;
 	}
+
+	
+	/**
+	 * Set the option value list
+	 * @param option	index (symbolizes the index of the static option)
+	 * @param value		value (symbolizes the YES or NO)
+	 */
+	private void setOption (int option, int value) {
+		optionValueList.set(option, value);
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	/**
@@ -189,8 +305,8 @@ class SettingsPanel extends JPanel {
 	private void setShowLegend(boolean showLegend) {
 		this.showLegend = showLegend;
 	}
-	
-	
+
+
 	/**
 	 * Set the settings panel with specific values
 	 * @param transparency	transparency value
@@ -199,15 +315,20 @@ class SettingsPanel extends JPanel {
 	public void setSettings (int transparency, boolean showLegend) {
 		sliderValue.setText(transparency + " %");
 		slider.setValue(transparency);
-		
+
 		this.showLegend = showLegend;
 		if (showLegend) {
 			yesButton.setSelected(true);
+			noButton.setSelected(false);
 		} else {
 			yesButton.setSelected(false);
+			noButton.setSelected(true);
 		}
+		
+		initializesStaticOptionLists();
+		refreshStaticOptionBoxes();
 	}
-
+	
 
 	/**
 	 * @return the transparency value
@@ -222,6 +343,14 @@ class SettingsPanel extends JPanel {
 	 */
 	public boolean isShowLegend() {
 		return showLegend;
+	}
+
+
+	/**
+	 * @return the optionValueList
+	 */
+	public List<Integer> getOptionValueList() {
+		return optionValueList;
 	}
 
 }

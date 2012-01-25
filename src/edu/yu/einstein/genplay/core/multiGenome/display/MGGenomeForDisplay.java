@@ -39,7 +39,7 @@ public class MGGenomeForDisplay implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 322995634084485127L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private MGGenome	 		genome;			// genome synchronizer
+	private MGGenome	 		genome;			// genome
 	private MGAlleleForDisplay 	alleleA;		// first allele of the genome
 	private MGAlleleForDisplay 	alleleB;		// second allele of the genome
 	

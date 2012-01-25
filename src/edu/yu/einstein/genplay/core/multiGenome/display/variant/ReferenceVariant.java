@@ -26,20 +26,24 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MixVariant implements Serializable, VariantInterface {
+public class ReferenceVariant implements Serializable, VariantInterface {
 	
 	/** Generated serial version ID */
-	private static final long serialVersionUID = 4873498320038629297L;
+	private static final long serialVersionUID = -2068590198125427396L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private int 	start;
-	private int 	stop;
+	private int 						referenceGenomePosition;
+	private int 						length;
+	private int							chromosomeCode;
 	
 	
 	/**
@@ -49,8 +53,8 @@ public class MixVariant implements Serializable, VariantInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeInt(start);
-		out.writeInt(stop);
+		out.writeInt(referenceGenomePosition);
+		out.writeInt(length);
 	}
 
 
@@ -62,19 +66,21 @@ public class MixVariant implements Serializable, VariantInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		start = in.readInt();
-		stop = in.readInt();
+		referenceGenomePosition = in.readInt();
+		length = in.readInt();
 	}
 	
 	
 	/**
-	 * Constructor of {@link MixVariant}
-	 * @param start 
-	 * @param stop
+	 * Constructor of {@link ReferenceVariant}
+	 * @param referenceGenomePosition
+	 * @param length
+	 * @param chromosomeCode code of the chromosome (eg: 1 -> chr1)
 	 */
-	public MixVariant(int start, int stop) {
-		this.start = start;
-		this.stop = stop;
+	public ReferenceVariant(int referenceGenomePosition, int length, int chromosomeCode) {
+		this.referenceGenomePosition = referenceGenomePosition;
+		this.length = length;
+		this.chromosomeCode = chromosomeCode;
 	}
 
 	
@@ -86,19 +92,19 @@ public class MixVariant implements Serializable, VariantInterface {
 	
 	@Override
 	public int getReferenceGenomePosition() {
-		return -1;
+		return referenceGenomePosition;
 	}
 
 
 	@Override
 	public int getLength() {
-		return stop - start;
+		return length;
 	}
 
 
 	@Override
 	public float getScore() {
-		return 1000;
+		return -1;
 	}
 
 
@@ -110,33 +116,42 @@ public class MixVariant implements Serializable, VariantInterface {
 
 	@Override
 	public VariantType getType() {
-		return VariantType.MIX;
+		return VariantType.BLANK;
 	}
 	
 	
 	@Override
 	public void show() {
-		String info = "T: " + getType() + "; ";
-		info += "St: " + start + "; ";
-		info += "Sp': " + stop + "]";
+		String info = "[P:" + referenceGenomePosition + "; ";
+		info += "T: " + getType() + "; ";
+		info += "L: " + length + "; ";
+		info += "St: " + getStart() + "; ";
+		info += "Sp: " + getStop() + "; ";
+		info += "P': " + phasedWithPos() + "]";
 		System.out.println(info);
 	}
 
+	
+	private Chromosome getChromosome () {
+		return ProjectManager.getInstance().getProjectChromosome().get(chromosomeCode);
+	}
+	
 
 	@Override
 	public int getStart() {
-		return start;
+		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition) + 1;
 	}
 
-
-	@Override
-	public int getStop() {
-		return stop;
-	}
-	
 	
 	@Override
 	public MGPosition getFullVariantInformation() {
 		return null;
 	}
+	
+
+	@Override
+	public int getStop() {
+		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
+	}
+
 }

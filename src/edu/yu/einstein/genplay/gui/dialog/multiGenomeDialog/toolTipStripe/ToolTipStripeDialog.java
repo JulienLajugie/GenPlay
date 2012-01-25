@@ -85,7 +85,11 @@ public class ToolTipStripeDialog extends JDialog {
 	 */
 	public void show (MGPosition variantInformation, int X, int Y) {
 		this.variantInformation = variantInformation;
-		this.variant = variantInformation.getVariant();
+		if (variantInformation != null) {
+			this.variant = variantInformation.getVariant();
+		} else {
+			this.variant = null;
+		}
 		initContent();
 		setLocation(X, Y);
 		setVisible(true);
@@ -99,7 +103,7 @@ public class ToolTipStripeDialog extends JDialog {
 		VariantInfo variantInfo;
 		VariantFormat variantFormat;
 
-		if (variant.getType() == VariantType.MIX) {
+		if (variant == null || variant.getType() == VariantType.MIX) {
 			variantInfo = new VariantInfo(null);
 			variantFormat = new VariantFormat(null);
 		} else {

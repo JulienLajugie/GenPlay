@@ -31,9 +31,11 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantComparator;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
  * @author Nicolas Fourel
@@ -51,7 +53,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	private List<VariantInterface> 			variantList;
 	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -82,7 +84,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		variantList = (List<VariantInterface>) in.readObject();
 		fittedDataList = (List<VariantInterface>) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link DisplayableVariantListMaker}
@@ -108,6 +110,47 @@ public class DisplayableVariantListMaker implements Serializable {
 			}
 		}
 		Collections.sort(variantList, new VariantComparator());
+		synchronizationBlank();
+	}
+
+	
+	private void synchronizationBlank () {
+		if (MGDisplaySettings.INCLUDE_BLANK_OPTION == MGDisplaySettings.YES_MG_OPTION) {
+			if (fittedChromosome != null) {
+				List<VariantInterface> referenceVariantList = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(fittedChromosome);
+				List<VariantInterface> newVariantList = new ArrayList<VariantInterface>();
+				int currentListIndex = 0;
+				int referenceListIndex = 0;
+				while (currentListIndex < variantList.size() && referenceListIndex < referenceVariantList.size()) {
+					VariantInterface currentVariant = variantList.get(currentListIndex);
+					VariantInterface referenceVariant = referenceVariantList.get(referenceListIndex);
+
+					if (currentVariant.getStart() < referenceVariant.getStart()) {
+						newVariantList.add(currentVariant);
+						currentListIndex++;
+					} else if (referenceVariant.getStart() < currentVariant.getStart()) {
+						newVariantList.add(referenceVariant);
+						referenceListIndex++;
+					} else {
+						newVariantList.add(currentVariant);
+						currentListIndex++;
+						referenceListIndex++;
+					}
+
+				}
+				fillRestOfList(newVariantList, variantList, currentListIndex);
+				fillRestOfList(newVariantList, referenceVariantList, referenceListIndex);
+				variantList = newVariantList;
+			}
+		}
+	}
+
+
+	private List<VariantInterface> fillRestOfList (List<VariantInterface> fullList, List<VariantInterface> tmpList, int startIndex) {
+		for (int i = startIndex; i < tmpList.size(); i++) {
+			fullList.add(tmpList.get(i));
+		}
+		return fullList;
 	}
 
 

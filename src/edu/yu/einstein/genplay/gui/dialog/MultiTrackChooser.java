@@ -84,6 +84,7 @@ public class MultiTrackChooser extends JDialog {
 		addComponents();
 		this.pack();
 		setModal(true);
+		setAlwaysOnTop(true);
 		validated = false;
 		setTitle("Select Tracks");
 		getRootPane().setDefaultButton(jbOk);

@@ -117,6 +117,11 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 				times.add(System.currentTimeMillis());
 				multiGenome.getMultiGenome().getReferenceGenome().removeDuplicate();
 				
+				// Creates the variation for the reference genome.
+				// This is the only place where this method must be called!! After removing duplicates and before position synchronization.
+				times.add(System.currentTimeMillis());
+				multiGenome.getMultiGenomeForDisplay().getReferenceGenome().getAllele().initialize();
+				
 				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
 				times.add(System.currentTimeMillis());
 				multiGenome.getMultiGenomeSynchronizer().performPositionSynchronization();

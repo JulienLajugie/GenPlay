@@ -147,6 +147,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
+		setAlwaysOnTop(true);
 		setResizable(false);
 		setVisible(false);
 		pack();
@@ -176,7 +177,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (accessor.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
 		} else if (accessor.equals(FILTERS)) {
-			setCenterPanel(filtersPanel);
+			//setCenterPanel(filtersPanel);
+			setCenterPanel(getEmptyPanel());
 		} else if (accessor.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}
@@ -189,8 +191,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		}
 		
 		// Sets dialog display options
-		setModal(true);
 		setLocationRelativeTo(parent);
+		setModal(true);
 		setVisible(true);
 		
 		return approved;
@@ -281,7 +283,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			//VCFReader reader = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(FILTERS)) {
-			setCenterPanel(filtersPanel);
+			//setCenterPanel(filtersPanel);
+			setCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}
@@ -364,6 +367,14 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 */
 	public boolean isShowLegend() {
 		return settingsPanel.isShowLegend();
+	}
+	
+	
+	/**
+	 * @return the optionValueList
+	 */
+	public List<Integer> getOptionValueList() {
+		return settingsPanel.getOptionValueList();
 	}
 	
 	

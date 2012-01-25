@@ -160,8 +160,6 @@ public class Utils {
 	}
 	
 	
-
-
 	/**
 	 * Creates a "no information available" panel.
 	 * @return	the panel

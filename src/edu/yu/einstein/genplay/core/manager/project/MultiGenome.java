@@ -48,6 +48,7 @@ public class MultiGenome implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -6096336417566795182L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
+	
 	private		List<String>					genomeNames;				// genome names list
 	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;		// mapping between genome names and their reader.
 

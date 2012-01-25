@@ -74,6 +74,14 @@ public class MGReference implements Serializable {
 	protected MGReference () {
 		allele = new MGAllele();
 	}
+	
+	
+	/**
+	 * @return the name of the reference genome
+	 */
+	public String getName () {
+		return ProjectManager.getInstance().getAssembly().getDisplayName();
+	}
 
 
 	/**
@@ -85,7 +93,7 @@ public class MGReference implements Serializable {
 
 
 	/**
-	 * Sorts the allele according to the position of the variation 
+	 * Sorts the allele according to the position of the variation
 	 */
 	public void sort() {
 		allele.sort();
@@ -167,7 +175,7 @@ public class MGReference implements Serializable {
 	 * Show the information of the {@link MGGenome}
 	 */
 	public void show () {
-		System.out.println("Reference genome: " + ProjectManager.getInstance().getAssembly().getDisplayName());
+		System.out.println("Reference genome: " + getName());
 		System.out.println("Allele");
 		allele.show();
 	}

@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -341,19 +342,26 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	}
 
 
+	/**
+	 * Draws the list of variation for a genome
+	 * @param g				Graphics object
+	 * @param variantList	list of variants
+	 */
 	private void drawGenome (Graphics g, List<VariantInterface> variantList) {
 		if (variantList!= null && variantList.size() > 0) {
 			// Set color for unused position, dead area and mixed variant
 			//Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
-			//Color blankZoneColor = new Color(Color.white.getRed(), Color.white.getGreen(), Color.white.getBlue(), stripesOpacity);
+			Color blankZoneColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
 			Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), stripesOpacity);
 
 			for (VariantInterface variant: variantList) {
 				VariantType type = variant.getType();
 				Color color;
-				if (type == VariantType.MIX) {
+				if (type == VariantType.BLANK) {
+					color = blankZoneColor;
+				} else if (type == VariantType.MIX) {
 					color = mixColor;
-				} else {
+				} else  {
 					String genomeName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
 					color = getStripeColor(genomeName, type);
 				}
@@ -370,6 +378,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param color		the color of the stripe
 	 */
 	private void drawVariant (Graphics g, VariantInterface variant, Color color) {
+		// Get start and stop position
 		int start = variant.getStart();
 		int stop;
 		if (variant.getType() == VariantType.SNPS) {
@@ -377,45 +386,151 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		} else {
 			stop = variant.getStop() + 1;
 		}
-
+		// Fit the start and stop position to the screen
 		if (start < genomeWindow.getStart() && stop > genomeWindow.getStart()) {
 			start = genomeWindow.getStart();
 		}
 		if (start < genomeWindow.getStop() && stop > genomeWindow.getStop()) {
 			stop = genomeWindow.getStop();
 		}
+
+		// Transform the start and stop position to screen coordinates
 		int x = genomePosToScreenPos(start);
 		int width = twoGenomePosToScreenWidth(start, stop);
 		if (width == 0) {
 			width = 1;
 		}
+
+		// Get the height of the clip and of the stripe
 		int clipHeight = g.getClipBounds().height;
-		int height = (int) ((variant.getScore() * clipHeight) / 100);
-		
-		if (height > clipHeight) {
+		int score = (int) variant.getScore();
+		int height;
+		if (score > 100) {
 			height = clipHeight;
+		} else {
+			height = (score * clipHeight) / 100;
 		}
 
+		// Sets the stripe color
 		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);
 		g.setColor(newColor);
 
-		g.fillRect(x, clipHeight - height, width, height);
+		// Draws the variant
+		if (variant.getType() == VariantType.BLANK) {
+			drawBlank(g, x, width);
+		} else {
+			int y = clipHeight - height;
 
-		if (variant.getType() == VariantType.SNPS) {
-			Font font = g.getFont();
-			if (font.getSize() <= width && font.getSize() <= (height - 10)) {
-				String alternative = variant.getFullVariantInformation().getAlternative();
-				g.setColor(Color.black);
-				if (getTrackAlleleType() == AlleleType.BOTH && maternalVariantListMaker.getVariantList().contains(variant)) {
-					Graphics2D newG = (Graphics2D) g.create();
-					newG.scale(1, -1);
-					newG.translate(0, -clipHeight - 1);
-					newG.drawString(alternative, x, height - 10);
-				} else {
-					g.drawString(alternative, x, height - 10);
+			// Draws the edge line of stripes
+			if (variant.getType() == VariantType.INSERTION) {
+				drawInsertion(g, x, y, width, height);
+			} else if (variant.getType() == VariantType.DELETION) {
+				drawDeletion(g, x, y, width, height);
+			}
+
+			// Draws the stripe
+			g.fillRect(x, clipHeight - height, width, height);
+
+			// Draw the variant letters
+			drawLetters(g, x, width, height, variant, stop - start);
+		}
+	}
+
+
+	/**
+	 * Draw a blank of synchronization
+	 * @param g		graphics object
+	 * @param x		x coordinate
+	 * @param width	width of the stripe
+	 */
+	private void drawBlank (Graphics g, int x, int width) {
+		g.fillRect(x, 0, width, g.getClipBounds().height);
+	}
+
+
+	/**
+	 * Draws the edge of an insertion stripe
+	 * @param g			graphics object
+	 * @param x			x coordinate
+	 * @param y			y coordinate
+	 * @param width		width of the stripe
+	 * @param height	height of the stripe
+	 */
+	private void drawInsertion (Graphics g, int x, int y, int width, int height) {
+		if (MGDisplaySettings.DRAW_INSERTION_EDGE == MGDisplaySettings.YES_MG_OPTION) {
+			Graphics gTmp = g.create();
+			gTmp.setColor(Color.black);
+			gTmp.drawRect(x, y, width, height);
+		}
+	}
+
+
+	/**
+	 * Draws the edge of a deletion stripe
+	 * @param g			graphics object
+	 * @param x			x coordinate
+	 * @param y			y coordinate
+	 * @param width		width of the stripe
+	 * @param height	height of the stripe
+	 */
+	private void drawDeletion (Graphics g, int x, int y, int width, int height) {
+		if (MGDisplaySettings.DRAW_DELETION_EDGE == MGDisplaySettings.YES_MG_OPTION) {
+			float dash1[] = {5.0f};
+			BasicStroke line = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash1, 0.0f);
+			Graphics2D g2d = (Graphics2D) g.create(); 
+			g2d.setStroke(line);
+			g2d.setColor(Color.black);
+			g2d.drawRect(x, y, width - 1, height);
+		}
+	}
+
+
+	/**
+	 * Draws the edge of a deletion stripe
+	 * @param g					graphics object
+	 * @param x					x coordinate
+	 * @param width				width of the stripe
+	 * @param height			height of the stripe
+	 * @param variant			variant
+	 * @param nucleotideNumber	number of nucleotide to display
+	 * @author Nicolas Fourel
+	 */
+	private void drawLetters (Graphics g, int x, int width, int height, VariantInterface variant, int nucleotideNumber) {
+		boolean draw = false;
+		VariantType variantType = variant.getType();
+		if (	variantType == VariantType.INSERTION 	&& 		MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION ||
+				variantType == VariantType.DELETION 	&& 		MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION ||
+				variantType == VariantType.SNPS 		&& 		MGDisplaySettings.DRAW_SNP_LETTERS 			== MGDisplaySettings.YES_MG_OPTION) {
+			draw = true;
+		}
+
+		if (draw) {
+			double windowWidth = width / nucleotideNumber;
+
+			if (g.getFontMetrics().stringWidth("A") < windowWidth) {
+				MGPosition fullInformation = variant.getFullVariantInformation();
+				if (fullInformation != null) {
+					String letters = fullInformation.getAlternative();
+					if (letters.charAt(0) == '<') {
+						letters = "?";
+					} else if (variantType == VariantType.DELETION) {
+						letters = fullInformation.getReference().substring(1);
+					} else if (variantType == VariantType.INSERTION) {
+						letters = letters.substring(1);
+					}
+					g.setColor(Color.black);
+					for (int i = 0; i < nucleotideNumber; i++) {
+						int xC = (int) Math.round(x + i * windowWidth);
+						if (letters == "?") {
+							g.drawString("?", xC + 1, height - 3);
+						} else {
+							g.drawString(letters.charAt(i) + "", xC + 1, height - 3);
+						}
+					}
 				}
 			}
 		}
+
 	}
 
 

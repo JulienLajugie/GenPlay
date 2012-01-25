@@ -115,12 +115,6 @@ class TreeContent {
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.STRIPES);
 		root.add(currentNode);
 		nodes.add(currentNode);
-
-		/*int number = root.getChildCount();
-		for (int i=0; i < number; i++) {
-			System.out.println(root.getChildAt(i));
-		}*/
-
 	}
 
 

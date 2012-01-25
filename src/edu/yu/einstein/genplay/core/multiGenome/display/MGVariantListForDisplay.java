@@ -209,7 +209,7 @@ public class MGVariantListForDisplay implements Serializable {
 		for (VariantInterface variant: variantList) {
 			if (cpt < 10) {
 				variant.show();
-				cpt++;
+				//cpt++;
 			}
 		}
 	}
