@@ -290,7 +290,10 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				}
 			}
 			if (baseUnderMouseIndex != null) {
-				setToolTipText(data.getFittedData(genomeWindow, xFactor)[baseUnderMouseIndex].name());
+				Nucleotide nucleotide = data.getFittedData(genomeWindow, xFactor)[baseUnderMouseIndex];
+				if (nucleotide != null) {
+					setToolTipText(nucleotide.name());
+				}
 			}
 		}
 	}

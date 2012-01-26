@@ -65,49 +65,63 @@ public class GlobalInformationPanel extends JPanel {
 	 */
 	protected GlobalInformationPanel (MGPosition variantInformation) {
 		this.variantInformation = variantInformation;
-		VariantInterface variant = variantInformation.getVariant();
 		
+
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridy = 0;
 
-		if (variant.getType() == VariantType.MIX) {
+		if (variantInformation == null) {
 			gbc = addObjectRow("Genome: ", null, gbc);
 			gbc = addObjectRow("Group: ", null, gbc);
-			gbc = addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop(), gbc);
-			gbc = addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart()), gbc);
-			gbc = addObjectRow("Type: ", VariantType.MIX.toString(), gbc);
+			gbc = addObjectRow("Position: ", " -", gbc);
+			gbc = addObjectRow("Length: ", " -", gbc);
+			gbc = addObjectRow("Type: ", " -", gbc);
 			gbc = addObjectRow("ID: ", null, gbc);
 			gbc = addObjectRow("REF: ", null, gbc);
 			gbc = addObjectRow("ALT: ", null, gbc);
 			gbc = addObjectRow("Quality: ", null, gbc);
 			gbc = addObjectRow("Filter: ", null, gbc);
 		} else {
-			VariantType type = variant.getType();
-			int startPosition = variant.getStart();
-			int stopPosition;
-			if (type == VariantType.SNPS) {
-				stopPosition = startPosition + 1;
+			VariantInterface variant = variantInformation.getVariant();
+			if (variant.getType() == VariantType.MIX) {
+				gbc = addObjectRow("Genome: ", null, gbc);
+				gbc = addObjectRow("Group: ", null, gbc);
+				gbc = addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop(), gbc);
+				gbc = addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart()), gbc);
+				gbc = addObjectRow("Type: ", VariantType.MIX.toString(), gbc);
+				gbc = addObjectRow("ID: ", null, gbc);
+				gbc = addObjectRow("REF: ", null, gbc);
+				gbc = addObjectRow("ALT: ", null, gbc);
+				gbc = addObjectRow("Quality: ", null, gbc);
+				gbc = addObjectRow("Filter: ", null, gbc);
 			} else {
-				stopPosition = variant.getStop();
+				VariantType type = variant.getType();
+				int startPosition = variant.getStart();
+				int stopPosition;
+				if (type == VariantType.SNPS) {
+					stopPosition = startPosition + 1;
+				} else {
+					stopPosition = variant.getStop();
+				}
+				String genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
+				gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")", gbc);
+				gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName), gbc);
+				gbc = addObjectRow("Position: ", startPosition + " to " + stopPosition, gbc);
+				gbc = addObjectRow("Length: ", "" + (stopPosition - startPosition), gbc);
+				gbc = addObjectRow("Type: ", variant.getType().toString(), gbc);
+				if (type == VariantType.SNPS && !this.variantInformation.getId().equals(".")) {
+					gbc = addLabelRow("ID: ", getIDLabel(this.variantInformation.getId()), gbc);
+				} else {
+					gbc = addObjectRow("ID: ", this.variantInformation.getId(), gbc);
+				}
+				gbc = addObjectRow("REF: ", this.variantInformation.getReference(), gbc);
+				gbc = addObjectRow("ALT: ", this.variantInformation.getAlternative(), gbc);
+				gbc = addObjectRow("Quality: ", "" + variant.getScore(), gbc);
+				gbc = addObjectRow("Filter: ", this.variantInformation.getFilter(), gbc);
 			}
-			String genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
-			gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")", gbc);
-			gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName), gbc);
-			gbc = addObjectRow("Position: ", startPosition + " to " + stopPosition, gbc);
-			gbc = addObjectRow("Length: ", "" + (stopPosition - startPosition), gbc);
-			gbc = addObjectRow("Type: ", variant.getType().toString(), gbc);
-			if (type == VariantType.SNPS && !this.variantInformation.getId().equals(".")) {
-				gbc = addLabelRow("ID: ", getIDLabel(this.variantInformation.getId()), gbc);
-			} else {
-				gbc = addObjectRow("ID: ", this.variantInformation.getId(), gbc);
-			}
-			gbc = addObjectRow("REF: ", this.variantInformation.getReference(), gbc);
-			gbc = addObjectRow("ALT: ", this.variantInformation.getAlternative(), gbc);
-			gbc = addObjectRow("Quality: ", "" + variant.getScore(), gbc);
-			gbc = addObjectRow("Filter: ", this.variantInformation.getFilter(), gbc);
 		}
 	}
 

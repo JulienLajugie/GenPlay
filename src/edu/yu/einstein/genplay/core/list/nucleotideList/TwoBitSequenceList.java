@@ -231,10 +231,10 @@ public class TwoBitSequenceList extends DisplayableListOfLists<Nucleotide, Nucle
 
 		int j = 0;
 		for (int i = start; i <= stop; i++) {
-			//result[j] = currentList.get(i-1);
 			result[j] = currentList.get(i);
 			j++;
 		}
+		
 		return result;
 	}
 	

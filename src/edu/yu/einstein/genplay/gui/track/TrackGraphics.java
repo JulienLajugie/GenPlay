@@ -521,7 +521,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 					g.setColor(Color.black);
 					for (int i = 0; i < nucleotideNumber; i++) {
 						int xC = (int) Math.round(x + i * windowWidth);
-						if (letters == "?") {
+						if (letters == "?" || i >= letters.length()) {
 							g.drawString("?", xC + 1, height - 3);
 						} else {
 							g.drawString(letters.charAt(i) + "", xC + 1, height - 3);

@@ -280,13 +280,11 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 */
 	@Override
 	public Nucleotide get(int position) {
-		int metaGenomePosition = position;
-		position--;
-		if ((position < 0) || (position > dnaSize)) {
+		if ((position <= 0) || (position > dnaSize)) {
 			return null;
 		}
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, metaGenomePosition);
+			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
 			if (position == MISSING_POSITION) {
 				return Nucleotide.BLANK;
 			}
@@ -295,6 +293,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			}
 		}
 
+		position--;
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
 			if (position < nBlockStarts[i] + nBlockSizes[i]) {
@@ -316,8 +315,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			return null;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Returns the number of nucleotides
 	 */
