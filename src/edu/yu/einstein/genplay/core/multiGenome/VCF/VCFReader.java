@@ -262,14 +262,14 @@ public class VCFReader implements Serializable {
 				if (detail[0].equals("Description")) {
 					String element;
 					if (detail.length == 2) {
-						element = detail[1].substring(1, detail[1].length() - 1);
+						element = detail[1].substring(1, detail[1].length() - 2);
 					} else {
 						element = "";
 						for (int i = 1; i < detail.length; i++) {
 							if (i == 1) {
 								element += detail[i].substring(1) + "=";
 							} else if (i == (detail.length - 1)) {
-								element += detail[i].substring(0, detail[i].length() - 1);
+								element += detail[i].substring(0, detail[i].length() - 2);
 							} else {
 								element += detail[i] + "=";
 							}

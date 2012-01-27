@@ -90,7 +90,7 @@ public class GlobalInformationPanel extends JPanel {
 				gbc = addObjectRow("Genome: ", null, gbc);
 				gbc = addObjectRow("Group: ", null, gbc);
 				gbc = addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop(), gbc);
-				gbc = addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart()), gbc);
+				gbc = addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart() + 1), gbc);
 				gbc = addObjectRow("Type: ", VariantType.MIX.toString(), gbc);
 				gbc = addObjectRow("ID: ", null, gbc);
 				gbc = addObjectRow("REF: ", null, gbc);
@@ -110,7 +110,7 @@ public class GlobalInformationPanel extends JPanel {
 				gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")", gbc);
 				gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName), gbc);
 				gbc = addObjectRow("Position: ", startPosition + " to " + stopPosition, gbc);
-				gbc = addObjectRow("Length: ", "" + (stopPosition - startPosition), gbc);
+				gbc = addObjectRow("Length: ", "" + (stopPosition - startPosition + 1), gbc);
 				gbc = addObjectRow("Type: ", variant.getType().toString(), gbc);
 				if (type == VariantType.SNPS && !this.variantInformation.getId().equals(".")) {
 					gbc = addLabelRow("ID: ", getIDLabel(this.variantInformation.getId()), gbc);
