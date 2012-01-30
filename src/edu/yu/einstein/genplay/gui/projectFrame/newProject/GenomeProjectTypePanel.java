@@ -42,7 +42,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	
 	private static final long serialVersionUID = -5329054202308798840L;
 	
-	private JRadioButton 	simpleRadio;	// Radio button for a simple genomic project
+	private JRadioButton 	singleRadio;	// Radio button for a simple genomic project
 	private JRadioButton 	multiRadio;		// Radio button for a multi genomic project
 	private ButtonGroup 	genomeRadio;	// Radio group
 	
@@ -58,22 +58,22 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		setMaximumSize(getSize());
 		
 		//Radio buttons
-		simpleRadio = new JRadioButton("Simple Genome Project");
-		simpleRadio.setSelected(true);
+		singleRadio = new JRadioButton("Single Genome Project");
+		singleRadio.setSelected(true);
 		multiRadio = new JRadioButton("Multi Genome Project");
 		
 		//Color
 		setBackground(ProjectFrame.GENOME_COLOR);
-		simpleRadio.setBackground(ProjectFrame.GENOME_COLOR);
+		singleRadio.setBackground(ProjectFrame.GENOME_COLOR);
 		multiRadio.setBackground(ProjectFrame.GENOME_COLOR);
 		
 		//Listener
-		simpleRadio.addActionListener(this);
+		singleRadio.addActionListener(this);
 		multiRadio.addActionListener(this);
 		
 		//Radio group
 		genomeRadio = new ButtonGroup();
-		genomeRadio.add(simpleRadio);
+		genomeRadio.add(singleRadio);
 		genomeRadio.add(multiRadio);
 		
 		//Layout
@@ -88,7 +88,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 		gbc.insets = gbcInsets;
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.weightx = 1;
-		add(simpleRadio, gbc);
+		add(singleRadio, gbc);
 		
 		//loadRadio
 		gbc.gridy = 1;
@@ -103,7 +103,7 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		ProjectFrame.getInstance().setVarTableVisible(!(arg0.getSource() == simpleRadio));
+		ProjectFrame.getInstance().setVarTableVisible(!(arg0.getSource() == singleRadio));
 	}
 	
 	
@@ -111,8 +111,8 @@ class GenomeProjectTypePanel extends JPanel implements ActionListener {
 	 * This method determines if user chose a simple or a multi genome project. 
 	 * @return true if user chose a simple genome project.
 	 */
-	protected boolean isSimpleProject () {
-		if (simpleRadio.isSelected()) {
+	protected boolean isSingleProject () {
+		if (singleRadio.isSelected()) {
 			return true;
 		} else {
 			return false;

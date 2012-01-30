@@ -632,7 +632,21 @@ public class VCFReader implements Serializable {
 		if (infoHeader.size() > 0) {
 			for (VCFHeaderAdvancedType header: infoHeader) {
 				if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
-					Object value = getIDValue(line, header.getId());
+					if (header.getId() == null) {
+						
+					}
+					Object value;
+					try {
+						value = getIDValue(line, header.getId());
+					} catch (Exception e) {
+						String info = "ID: " + header.getId() + "; ";
+						info += "DESCRIPTION: " + header.getDescription() + "; ";
+						info += "NUMBER: " + header.getNumber() + "; ";
+						info += "CLASS: " + header.getClass() + "; ";
+						System.out.println(info);
+					}
+					value = getIDValue(line, header.getId());
+					//Object value = getIDValue(line, header.getId());
 					header.addElement(value);
 				}
 			}
@@ -647,7 +661,14 @@ public class VCFReader implements Serializable {
 	 * @return		the value of the ID
 	 */
 	private Object getIDValue (String line, String ID) {
-		int indexID = line.indexOf(ID);
+		int indexID;
+		try {
+			indexID = line.indexOf(ID);
+		} catch (Exception e) {
+			System.out.println("line: " + line + "; ID: " + ID);
+		}
+		indexID = line.indexOf(ID);
+		//int indexID = line.indexOf(ID);
 		int indexValue = indexID + ID.length() + 1;
 		int indexEnd = line.indexOf(";", indexValue);
 		if (indexEnd == -1) {

@@ -156,4 +156,25 @@ public class SNPVariant implements Serializable, VariantInterface {
 		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition + 1);
 	}
 	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		if (this.hashCode() != obj.hashCode()) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		SNPVariant test = (SNPVariant)obj;
+		return referenceGenomePosition == test.getReferenceGenomePosition() &&
+		score == test.getScore() &&
+		phasedWithPos == test.getScore();
+	}
+	
 }

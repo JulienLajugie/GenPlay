@@ -25,7 +25,9 @@ import java.awt.FontMetrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -62,7 +64,9 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 
 	private int lastRow = 0;		// saves the row index of the last event on getCellEditor
 	private int lastCol = 0;		// saves the column index of the last event on getCellEditor
-	
+
+	private Map<String, List<String>> temporaryFileMap; 
+
 
 	/**
 	 * Constructor of {@link VCFLoaderTable}
@@ -70,10 +74,11 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 	 */
 	public VCFLoaderTable (VCFLoaderModel model) {
 		super(model);
+		temporaryFileMap = new HashMap<String, List<String>>();
 		initializesBoxes();
 	}
 
-	
+
 	/**
 	 * initializes the different combo boxes used in the table
 	 */
@@ -99,9 +104,8 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		fileBox.setFilters(filter);
 		column = this.getColumnModel().getColumn(VCFData.FILE_INDEX);
 		column.setCellEditor(new DefaultCellEditor(fileBox));
-
 	}
-	
+
 
 	@Override
 	public TableCellEditor getCellEditor(int row, int column) {
@@ -123,8 +127,8 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 			return super.getCellEditor(row, column);
 		}
 	}
-	
-	
+
+
 	@Override
 	public Object getValueAt(int row, int col) {
 		Object value = getModel().getValueAt(row, col);
@@ -154,15 +158,15 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		}
 		return value;
 	}
-	
-	
+
+
 	/**
 	 * Adds an empty row
 	 */
 	public void addEmptyRow() {
 		((VCFLoaderModel) getModel()).addEmptyRow();
 	}
-	
+
 
 	/**
 	 * @return the data
@@ -186,7 +190,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 			newData.add(rowData);
 		}	
 		((VCFLoaderModel)getModel()).setData(newData);
-		
+
 		initializesBoxes();
 		for (VCFData vcfData: data) {
 			groupBox.addElement(vcfData.getGroup());
@@ -206,20 +210,29 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		Object value = evt.getElement();
 		setValueAt(value, lastRow, lastCol);
 		updateSize(value, lastCol);
-		
+
 		if (lastCol == VCFData.FILE_INDEX && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
-			File file = new File(value.toString());
-			try {
-				VCFReader reader = new VCFReader(file);
-				List<String> rawGenomeNames = reader.getRawGenomesNames();
+			String filePath = value.toString();
+			List<String> rawGenomeNames = null;
+			if (temporaryFileMap.containsKey(filePath)) {
+				rawGenomeNames = temporaryFileMap.get(filePath);
+			} else {
+				File file = new File(value.toString());
+				try {
+					VCFReader reader = new VCFReader(file);
+					rawGenomeNames = reader.getRawGenomesNames();
+					temporaryFileMap.put(filePath, rawGenomeNames);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (rawGenomeNames != null) {
 				setValueAt(rawGenomeNames.get(0), lastRow, VCFData.RAW_INDEX);
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets the width of a column according to the new value
 	 * @param value		new value

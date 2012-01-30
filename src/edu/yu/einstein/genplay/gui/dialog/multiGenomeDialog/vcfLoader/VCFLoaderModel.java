@@ -92,14 +92,14 @@ public class VCFLoaderModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		VCFData vCFData = data.get(row);
 		switch (col) {
-		case VCFData.GROUP_INDEX:
-			return vCFData.getGroup();
-		case VCFData.GENOME_INDEX:
-			return vCFData.getGenome();
-		case VCFData.RAW_INDEX:
-			return vCFData.getRaw();
 		case VCFData.FILE_INDEX:
 			return vCFData.getFile();
+		case VCFData.RAW_INDEX:
+			return vCFData.getRaw();	
+		case VCFData.GENOME_INDEX:
+			return vCFData.getGenome();
+		case VCFData.GROUP_INDEX:
+			return vCFData.getGroup();
 		default:
 			return new Object();
 		}
@@ -111,17 +111,17 @@ public class VCFLoaderModel extends AbstractTableModel {
 		if (row < getRowCount()) {
 			VCFData vCFData = data.get(row);
 			switch (col) {
-			case VCFData.GROUP_INDEX:
-				vCFData.setGroup(value.toString());
-				break;
-			case VCFData.GENOME_INDEX:
-				vCFData.setGenome(value.toString());
+			case VCFData.FILE_INDEX:
+				vCFData.setFile(new File(value.toString()));
 				break;
 			case VCFData.RAW_INDEX:
 				vCFData.setRaw(value.toString());
 				break;
-			case VCFData.FILE_INDEX:
-				vCFData.setFile(new File(value.toString()));
+			case VCFData.GENOME_INDEX:
+				vCFData.setGenome(value.toString());
+				break;
+			case VCFData.GROUP_INDEX:
+				vCFData.setGroup(value.toString());
 				break;
 			default:
 				System.out.println("Invalid column index");
@@ -136,14 +136,14 @@ public class VCFLoaderModel extends AbstractTableModel {
 	@Override
 	public Class<?> getColumnClass(int column) {
 		switch (column) {
-		case VCFData.GROUP_INDEX:
+		case VCFData.FILE_INDEX:
+			return File.class;
+		case VCFData.RAW_INDEX:
 			return String.class;
 		case VCFData.GENOME_INDEX:
 			return String.class;
-		case VCFData.RAW_INDEX:
+		case VCFData.GROUP_INDEX:
 			return String.class;
-		case VCFData.FILE_INDEX:
-			return File.class;
 		default:
 			return Object.class;
 		}
@@ -160,8 +160,8 @@ public class VCFLoaderModel extends AbstractTableModel {
 				data.size() - 1);
 		fireTableRowsUpdated(data.size() - 1, data.size() - 1);
 	}
-	
-	
+
+
 	/**
 	 * Deletes a row
 	 * @param row the row number
@@ -186,10 +186,10 @@ public class VCFLoaderModel extends AbstractTableModel {
 	public void setData(List<VCFData> data) {
 		this.data = data;
 		for (int row = 0; row <data.size(); row++) {
-			fireTableCellUpdated(row, VCFData.GROUP_INDEX);
-			fireTableCellUpdated(row, VCFData.GENOME_INDEX);
-			fireTableCellUpdated(row, VCFData.RAW_INDEX);
 			fireTableCellUpdated(row, VCFData.FILE_INDEX);
+			fireTableCellUpdated(row, VCFData.RAW_INDEX);
+			fireTableCellUpdated(row, VCFData.GENOME_INDEX);
+			fireTableCellUpdated(row, VCFData.GROUP_INDEX);
 		}
 	}
 
@@ -199,10 +199,10 @@ public class VCFLoaderModel extends AbstractTableModel {
 	 */
 	private void initializeColumnNames () {
 		columnNames = new String[4];
-		columnNames[0] = VCFData.GROUP_NAME;
-		columnNames[1] = VCFData.GENOME_NAME;
-		columnNames[2] = VCFData.FILE_NAME;
-		columnNames[3] = VCFData.RAW_NAME;
+		columnNames[0] = VCFData.FILE_NAME;
+		columnNames[1] = VCFData.RAW_NAME;
+		columnNames[2] = VCFData.GENOME_NAME;
+		columnNames[3] = VCFData.GROUP_NAME;
 	}
 
 }

@@ -164,7 +164,7 @@ public class Utils {
 				JOptionPane.showMessageDialog(parentComponent, 
 						"You don't have the permission to read the selected file.", "File Incorrect", JOptionPane.ERROR_MESSAGE, null);
 				return null;
-			} else {				
+			} else {
 				return jfc.getSelectedFile();
 			}
 		} else {

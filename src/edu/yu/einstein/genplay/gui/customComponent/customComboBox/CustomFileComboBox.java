@@ -23,7 +23,9 @@ package edu.yu.einstein.genplay.gui.customComponent.customComboBox;
 
 import java.io.File;
 
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
@@ -44,18 +46,24 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 * Generated default serial version
 	 */
 	private static final long serialVersionUID = -872347430907803557L;
-	
+
+	private JFileChooser fc;
 	private ExtendedFileFilter[] filters;			// filters for adding files to the combo box
-	
-	
+
+
 	/**
 	 * Constructor of {@link CustomFileComboBox}
 	 */
 	public CustomFileComboBox () {
+		//Create a file chooser
+		fc = new JFileChooser();
+		fc.setCurrentDirectory(new File(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory()));
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setDialogTitle("Select a file");
 		filters = null;
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link CustomFileComboBox}
 	 * @param filters filters for file
@@ -63,8 +71,8 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	public CustomFileComboBox (ExtendedFileFilter[] filters) {
 		this.filters = filters;
 	}
-	
-	
+
+
 	/**
 	 * @return the filters
 	 */
@@ -78,6 +86,9 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	public void setFilters(ExtendedFileFilter[] filters) {
 		this.filters = filters;
+		for (FileFilter filter: filters) {
+			fc.addChoosableFileFilter(filter);
+		}
 	}
 
 
@@ -93,20 +104,25 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 			replaceAction((File)evt.getElement());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Adds a new element to the combo box.
 	 * Shows a popup in order to define the new entry.
 	 */
 	@Override
 	protected void addAction () {
-		File element = Utils.chooseFileToLoad(getRootPane(), "Select a file", ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory(), filters);
-		if (element != null) {
-			addElement(element);
-			resetCombo();
-			setSelectedItem(element);
+		int returnVal = fc.showOpenDialog(getRootPane());
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			String path = fc.getSelectedFile().getPath();
+			File element = new File(path); //Utils.chooseFileToLoad(getRootPane(), "Select a file", ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory(), filters);
+			if (element != null) {
+				addElement(element);
+				resetCombo();
+				setSelectedItem(element);
+			}
 		}
+
 	}
 
 

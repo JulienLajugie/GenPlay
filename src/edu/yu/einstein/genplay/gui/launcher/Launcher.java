@@ -153,7 +153,7 @@ public class Launcher {
 		MainFrame.getInstance().setVisible(true);
 		
 		// generate the multi-genome manager if the user starts a multi-genome project
-		if (!projectFrame.isSimpleProject()) {
+		if (!projectFrame.isSingleProject()) {
 			ProjectManager.getInstance().setMultiGenomeProject(true);
 			MainFrame.getInstance().setMapsForMultiGenome();
 			PAMultiGenome multiGenome = new PAMultiGenome();

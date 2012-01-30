@@ -139,4 +139,24 @@ public class MixVariant implements Serializable, VariantInterface {
 	public MGPosition getFullVariantInformation() {
 		return null;
 	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		if (this.hashCode() != obj.hashCode()) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		MixVariant test = (MixVariant)obj;
+		return start == test.getStart() &&
+		stop == test.getStop();
+	}
 }

@@ -154,4 +154,23 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
 	}
 
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		if (this.hashCode() != obj.hashCode()) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		ReferenceVariant test = (ReferenceVariant)obj;
+		return referenceGenomePosition == test.getReferenceGenomePosition() &&
+		length == test.getLength();
+	}
 }

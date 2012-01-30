@@ -231,10 +231,10 @@ public class VCFLoaderDialog extends JDialog {
 		confirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (areValidSettings()) {
+				//if (areValidSettings()) {
 					approved = APPROVE_OPTION;
 					closeDialog();
-				}
+				//}
 			}
 		});
 

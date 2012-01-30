@@ -32,27 +32,24 @@ import java.io.File;
  */
 public class VCFData {
 
-
-	/** Index used for Group column */
-	public static final int GROUP_INDEX		= 0;
-	/** Index used for Genome column */
-	public static final int GENOME_INDEX 	= 1;
 	/** Index used for VCF file column */
-	public static final int FILE_INDEX 		= 2;
+	public static final int FILE_INDEX 		= 0;
 	/** Index used for Raw name column */
-	public static final int RAW_INDEX 		= 3;
+	public static final int RAW_INDEX 		= 1;
+	/** Index used for Genome column */
+	public static final int GENOME_INDEX 	= 2;
+	/** Index used for Group column */
+	public static final int GROUP_INDEX		= 3;
 	
-
-	/** Name used for Group column */
-	public static final String GROUP_NAME	= "Group";
-	/** Name used for Genome column */
-	public static final String GENOME_NAME 	= "Genome";
 	/** Name used for VCF file column */
 	public static final String FILE_NAME 	= "File";
 	/** Name used for Raw name column */
 	public static final String RAW_NAME 	= "Raw name";
+	/** Name used for Genome column */
+	public static final String GENOME_NAME 	= "Genome";
+	/** Name used for Group column */
+	public static final String GROUP_NAME	= "Group";
 	
-
 
 	private String 	group;	// name of the group
 	private String 	genome;	// simplified name of the genome

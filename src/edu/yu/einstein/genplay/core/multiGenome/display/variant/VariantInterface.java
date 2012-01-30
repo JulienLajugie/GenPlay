@@ -89,4 +89,12 @@ public interface VariantInterface {
 	 * Show the information of the variant
 	 */
 	public void show ();
+	
+	
+	/**
+	 * Equals method
+	 * @param obj
+	 * @return true if the parameter is equal to the instance
+	 */
+	public boolean equals(Object obj);
 }

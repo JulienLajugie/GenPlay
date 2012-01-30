@@ -67,6 +67,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTi
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.util.ColorConverters;
 
 
 /**
@@ -150,6 +151,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private List<StripesData>				stripesList;					// list of stripes to apply to this track (for MG project)
 	private List<IDFilterInterface>			filtersList;					// list of filter to apply to this track (for MG project)
 	private int								stripesOpacity;					// Transparency of the stripes
+	private VariantInterface 				variantUnderMouse = null;		// Special display when the mouse is over a variant stripe 
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
@@ -309,7 +311,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void drawMultiGenomeInformation(Graphics g) {
 		if (stripesList != null) {
 			if (stripesList.size() > 0) {
-				stripesOpacity = 100 - MGDisplaySettings.getInstance().getVariousSettings().getTransparency();
+				stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();
 				AlleleType trackAlleleType = getTrackAlleleType();
 				if (trackAlleleType == AlleleType.BOTH) {
 					int halfHeight = getHeight() / 2;
@@ -412,7 +414,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 
 		// Sets the stripe color
-		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);
+		Color newColor;
+		if (variantUnderMouse != null && variantUnderMouse.equals(variant)) {
+			newColor = ColorConverters.stripeFilter(color);
+		} else {
+			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);
+		}
 		g.setColor(newColor);
 
 		// Draws the variant
@@ -493,7 +500,6 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param height			height of the stripe
 	 * @param variant			variant
 	 * @param nucleotideNumber	number of nucleotide to display
-	 * @author Nicolas Fourel
 	 */
 	private void drawLetters (Graphics g, int x, int width, int height, VariantInterface variant, int nucleotideNumber) {
 		boolean draw = false;
@@ -506,8 +512,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 		if (draw) {
 			double windowWidth = width / nucleotideNumber;
-
-			if (g.getFontMetrics().stringWidth("A") < windowWidth) {
+			FontMetrics fm = g.getFontMetrics();
+			if (fm.getHeight() < height && fm.stringWidth("A") < windowWidth) {
 				MGPosition fullInformation = variant.getFullVariantInformation();
 				if (fullInformation != null) {
 					String letters = fullInformation.getAlternative();
@@ -519,12 +525,20 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 						letters = letters.substring(1);
 					}
 					g.setColor(Color.black);
+					int letterHeight = (height + fm.getHeight()) / 2;
 					for (int i = 0; i < nucleotideNumber; i++) {
-						int xC = (int) Math.round(x + i * windowWidth);
-						if (letters == "?" || i >= letters.length()) {
-							g.drawString("?", xC + 1, height - 3);
+						String letter = "?";
+						if (letters != "?" && i < letters.length()) {
+							letter = letters.charAt(i) + "";
+						}
+						int xC = (int) Math.round(x + i * windowWidth + (windowWidth - fm.stringWidth(letter)) * 0.5);
+						if (getTrackAlleleType() == AlleleType.BOTH && maternalVariantListMaker.getVariantList().contains(variant)) {
+							Graphics2D g2d = (Graphics2D) g.create();
+							g2d.scale(1, -1);
+							g2d.translate(0, -g2d.getClipBounds().height - 1);
+							g2d.drawString(letter, xC, letterHeight);
 						} else {
-							g.drawString(letters.charAt(i) + "", xC + 1, height - 3);
+							g.drawString(letter, xC, letterHeight);
 						}
 					}
 				}
@@ -1107,10 +1121,26 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 	}
 
+
 	@Override
 	public void mouseMoved(final MouseEvent e) {
 		if ((isScrollMode) && (getMousePosition() != null)) {
 			scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
+		} else {
+			if (ProjectManager.getInstance().isMultiGenomeProject() && paternalVariantListMaker != null && maternalVariantListMaker != null) {
+				double pos = screenPosToGenomePos(e.getX());
+				VariantInterface variant = getDisplayableVariant(pos, e.getY());
+				if (variant != null) {
+					variantUnderMouse = variant;
+					//mousePoint = e.getPoint();
+					//overStripe = true;
+					repaint();
+				} else if (variantUnderMouse != null) {
+					//overStripe = false;
+					variantUnderMouse = null;
+					repaint();
+				}
+			}
 		}
 	}
 

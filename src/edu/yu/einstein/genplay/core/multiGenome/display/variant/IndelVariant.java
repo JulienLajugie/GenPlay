@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
  * @version 0.1
  */
 public class IndelVariant implements Serializable, VariantInterface {
-	
+
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2068590198125427396L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -44,8 +44,8 @@ public class IndelVariant implements Serializable, VariantInterface {
 	private int 						length;
 	private float 						score;
 	private int 						phasedWithPos;
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -75,8 +75,8 @@ public class IndelVariant implements Serializable, VariantInterface {
 		score = in.readFloat();
 		phasedWithPos = in.readInt();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link IndelVariant}
 	 * @param variantListForDisplay 
@@ -93,13 +93,13 @@ public class IndelVariant implements Serializable, VariantInterface {
 		this.phasedWithPos = phasedWithPos;
 	}
 
-	
+
 	@Override
 	public MGVariantListForDisplay getVariantListForDisplay() {
 		return variantListForDisplay;
 	}
-	
-	
+
+
 	@Override
 	public int getReferenceGenomePosition() {
 		return referenceGenomePosition;
@@ -133,8 +133,8 @@ public class IndelVariant implements Serializable, VariantInterface {
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public void show() {
 		String info = "[P:" + referenceGenomePosition + "; ";
@@ -152,12 +152,12 @@ public class IndelVariant implements Serializable, VariantInterface {
 		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition) + 1;
 	}
 
-	
+
 	@Override
 	public MGPosition getFullVariantInformation() {
 		return variantListForDisplay.getFullVariantInformation(this);
 	}
-	
+
 
 	@Override
 	public int getStop() {
@@ -166,6 +166,28 @@ public class IndelVariant implements Serializable, VariantInterface {
 		} else {
 			return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition - length);
 		}
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		if (this.hashCode() != obj.hashCode()) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		IndelVariant test = (IndelVariant)obj;
+		return referenceGenomePosition == test.getReferenceGenomePosition() &&
+		length == test.getLength() &&
+		score == test.getScore() &&
+		phasedWithPos == test.getScore();
 	}
 
 }

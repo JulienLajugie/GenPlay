@@ -25,6 +25,7 @@ import java.awt.Color;
 
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 
 
@@ -122,5 +123,19 @@ public class ColorConverters {
 			b = 0;			
 		}		
 		return new Color(r, v, b);
+	}
+	
+	
+	/**
+	 * Transforms a color used to display a variant stripe.
+	 * Must be called when the mouse is over the stripe!
+	 * @param color	the native color
+	 * @return		a new color
+	 */
+	public static Color stripeFilter (Color color) {
+		int stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();
+		int invert = 255 - stripesOpacity;
+		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), invert);
+		return newColor;
 	}
 }

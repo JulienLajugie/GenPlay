@@ -316,7 +316,7 @@ public class ProjectFrame extends JFrame {
 			valid = false;
 		}
 		// in the case of the multi-genome project, check that the multi-genome information is correct
-		if (!newProjectPanel.isSimpleProject()) {
+		if (!newProjectPanel.isSingleProject()) {
 			if (!newProjectPanel.isValidMultigenomeProject()) {
 				valid = false;
 			}
@@ -336,8 +336,8 @@ public class ProjectFrame extends JFrame {
 	 * This method determines if user chose a simple or a multi genome project. 
 	 * @return true if user chose a simple genome project.
 	 */
-	public boolean isSimpleProject () {
-		return newProjectPanel.isSimpleProject();
+	public boolean isSingleProject () {
+		return newProjectPanel.isSingleProject();
 	}
 
 

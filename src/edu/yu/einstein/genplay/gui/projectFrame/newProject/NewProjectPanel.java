@@ -177,8 +177,8 @@ public class NewProjectPanel extends JPanel {
 	 * This method determines if user chose a simple or a multi genome project. 
 	 * @return true if user chose a simple genome project.
 	 */
-	public boolean isSimpleProject () {
-		return genomePanel.isSimpleProject();
+	public boolean isSingleProject () {
+		return genomePanel.isSingleProject();
 	}
 	
 	

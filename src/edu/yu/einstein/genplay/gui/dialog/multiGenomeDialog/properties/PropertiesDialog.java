@@ -342,7 +342,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 */
 	public void setSettings (MGDisplaySettings settings) {
 		// Settings panel
-		settingsPanel.setSettings(settings.getVariousSettings().getTransparency(), settings.getVariousSettings().isShowLegend());
+		settingsPanel.setSettings(settings.getVariousSettings().getTransparencyPercentage(), settings.getVariousSettings().isShowLegend());
 		
 		// Filter settings panel
 		filtersPanel.setSettings(settings.getFilterSettings().getFiltersList());

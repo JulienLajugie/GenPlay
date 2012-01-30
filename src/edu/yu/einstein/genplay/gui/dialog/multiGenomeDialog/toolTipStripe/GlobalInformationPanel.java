@@ -65,7 +65,7 @@ public class GlobalInformationPanel extends JPanel {
 	 */
 	protected GlobalInformationPanel (MGPosition variantInformation) {
 		this.variantInformation = variantInformation;
-		
+
 
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -205,14 +205,15 @@ public class GlobalInformationPanel extends JPanel {
 		JLabel keyLabel = new JLabel(key);
 		keyLabel.setSize(keyDimension);
 		valueLabel.setSize(valueDimension);
-		if (variantInformation.getVariant() != null && key.equals("ALT: ") && valueLabel.getText().charAt(0) == '<') {
-			String toolTip = valueLabel.getText() + " (";
+		String toolTip;
+		if (variantInformation != null && variantInformation.getVariant() != null && key.equals("ALT: ") && valueLabel.getText().charAt(0) == '<') {
+			toolTip = valueLabel.getText() + " (";
 			toolTip += variantInformation.getAltHeader(valueLabel.getText()).getDescription();
 			toolTip += ")";
-			valueLabel.setToolTipText(toolTip);
 		} else {
-			valueLabel.setToolTipText(valueLabel.getText());
+			toolTip = valueLabel.getText();
 		}
+		valueLabel.setToolTipText(toolTip);
 		gbc.gridx = 0;
 		gbc.weightx = 0.1;
 		add(keyLabel, gbc);

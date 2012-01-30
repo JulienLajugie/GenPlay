@@ -94,28 +94,28 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 			public void mouseReleased(MouseEvent e) {
 				Object element = list.getSelectedValue();					// gets the selected value of the jlist
 
-				int width = list.getWidth();								// gets the width of the jlist
+				//int width = list.getWidth();								// gets the width of the jlist
 				int side = getSide(list);									// button side calculation (dependent of the jlist height)
 
 				int action;													// action involved by the position of the mouse
 
 				if (element.toString().equals(CustomComboBox.ADD_TEXT)) {	// if the item corresponds to the adding action.
-					if (x > (width - side)) {
+					if (x < side) {
 						action = CustomComboBoxEvent.ADD_ACTION;
 					} else {
 						action = CustomComboBoxEvent.SELECT_ACTION;
 					}
-				} else {													// if not,
-					if (x > (width - side)) {								// user clicked on the right button (delete)
-						action = CustomComboBoxEvent.REMOVE_ACTION;			// the item must be deleted
-					} else if (x > (width - (side * 2))) {					// user clicked on the left button (edit)
+				} else {													// if not,	
+					if (x < side) {											// user clicked on the left button (edit)
 						action = CustomComboBoxEvent.REPLACE_ACTION;		// the item must be replaced
+					} else if ( x < (side * 2)) {							// user clicked on the right button (delete)
+						action = CustomComboBoxEvent.REMOVE_ACTION;			// the item must be deleted
 					} else {												// user clicked on the item
 						action = CustomComboBoxEvent.SELECT_ACTION;			// the item must be simply selected
 					}
 				}
 
-				x = 0;														// mouse position set to 0
+				x = list.getWidth();														// mouse position set to 0
 
 				CustomComboBoxEvent event = new CustomComboBoxEvent(instance, list.getSelectedValue(), action);	// creates the custom combo box event
 				for (CustomComboBoxListener currentListener: listenerList) {	// warns the listener
@@ -143,21 +143,27 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 				Font font = new Font(label.getFont().getName(), Font.BOLD | Font.ITALIC, label.getFont().getSize());	// creates a different Font
 				label.setFont(font);									// sets the font to the label
 				JPanel buttonPanel = new JPanel();						// creates a new panel for buttons
-				buttonPanel.setLayout(new GridLayout(1, 2));			// with one line and two columns
 				int side = getSide(list);								// gets the side of a button (button is square)
-				Dimension buttonDim = new Dimension(side * 2, side);	// creates a dimension for the panel (contains two buttons max)
-				buttonPanel.setPreferredSize(buttonDim);				// sets the dimension to the panel size
 				Insets buttonInset = new Insets(0, 0, 0, 0);			// button insets are set to 0 
 
 				if (text.equals(CustomComboBox.ADD_TEXT)) {				// if the value is the one related to the adding action
+					// Sets the panel
+					buttonPanel.setLayout(new GridLayout(1, 1));		// with one line and two columns
+					Dimension buttonDim = new Dimension(side , side);	// creates a dimension for the panel (contains two buttons max)
+					buttonPanel.setPreferredSize(buttonDim);			// sets the dimension to the panel size
+					
 					ImageIcon addIcon = getIcon(ADD_ICON_PATH, side);	// get the add icon
 					JButton addButton = new JButton(addIcon);			// creates the button containing the icon
 					addButton.setContentAreaFilled(false);				// set the button background to transparent
 					addButton.setBorder(null);							// disable any border
 					addButton.setMargin(buttonInset);					// sets the insets
-					buttonPanel.add(new JLabel());						// add an empty panel into the first cell of the panel (we want the button on the second cell)
 					buttonPanel.add(addButton);							// add the button on the second cell of the panel
 				} else {
+					// Sets the panel
+					buttonPanel.setLayout(new GridLayout(1, 2));			// with one line and two columns
+					Dimension buttonDim = new Dimension(side * 2, side);	// creates a dimension for the panel (contains two buttons max)
+					buttonPanel.setPreferredSize(buttonDim);				// sets the dimension to the panel size
+					
 					// Creates the edit button (same principle as the add button above)
 					ImageIcon editIcon = getIcon(REPLACE_ICON_PATH, side);
 					JButton replaceButton = new JButton(editIcon);
@@ -178,7 +184,7 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 				}
 				
 				// add the button panel to the global panel
-				panel.add(buttonPanel, BorderLayout.EAST);
+				panel.add(buttonPanel, BorderLayout.WEST);
 			}
 			
 		}

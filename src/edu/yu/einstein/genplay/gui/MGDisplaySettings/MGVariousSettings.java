@@ -87,8 +87,18 @@ public class MGVariousSettings implements Serializable {
 	/**
 	 * @return the transparency
 	 */
-	public int getTransparency() {
+	public int getTransparencyPercentage() {
 		return transparency;
+	}
+	
+	
+	/**
+	 * @return the opacity according to the transparency percentage
+	 */
+	public int getColorOpacity () {
+		int opacityPercentage = 100 - transparency;
+		int opacity = opacityPercentage * 255 / 100;
+		return opacity;
 	}
 	
 	
