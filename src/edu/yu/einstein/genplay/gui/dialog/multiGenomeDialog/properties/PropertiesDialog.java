@@ -177,8 +177,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (accessor.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
 		} else if (accessor.equals(FILTERS)) {
-			//setCenterPanel(filtersPanel);
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(filtersPanel);
+			//setCenterPanel(getEmptyPanel());
 		} else if (accessor.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}
@@ -283,8 +283,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			//VCFReader reader = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(FILTERS)) {
-			//setCenterPanel(filtersPanel);
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(filtersPanel);
+			//setCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}
@@ -297,7 +297,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @return			the reader
 	 */
 	private VCFReader retrieveReader (String fileName) {
-		return ProjectManager.getInstance().getMultiGenome().getReadersFromName(fileName);
+		return ProjectManager.getInstance().getMultiGenomeProject().getReadersFromName(fileName);
 	}
 	
 	

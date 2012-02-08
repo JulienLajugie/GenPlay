@@ -168,4 +168,20 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.remove(genomeWindowListener);		
 	}
+	
+	
+	/**
+	 * Locks the ruler (the button)
+	 */
+	public void lock() {
+		rulerButton.setEnabled(false);		
+	}
+	
+	
+	/**
+	 * Unlocks the ruler (the button)
+	 */
+	public void unlock() {
+		rulerButton.setEnabled(true);
+	}
 }

@@ -29,8 +29,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;
 
 /**
+ * This class is the entry point of the data structure about the variations display.
+ * It has quiet the same structure as the {@link MGMultiGenome}.
+ * In this whole structure, everything is focused on the display of the variation and cannot be used for synchronization position calculation.
+ * 1 - the {@link MGMultiGenomeForDisplay}: it gathers all data of the genomes in a list of {@link MGGenomeForDisplay}
+ * 2 - the {@link MGGenomeForDisplay}: it gathers data for a specific genome in two {@link MGAlleleForDisplay}
+ * 3 - the {@link MGAlleleForDisplay}: it gathers lists of variations ({@link MGVariantListForDisplay} for every chromosome
+ * 4 - the {@link MGVariantListForDisplay}: contains the list of variations and methods to handle them
+ * 
+ * This class also contains the display data for the reference genome: {@link MGReferenceForDisplay}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -71,7 +82,7 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	
 	/**
 	 * Constructor of {@link MGMultiGenomeForDisplay}
-	 * @param genomes genomes synchronizer
+	 * @param genomes
 	 */
 	public MGMultiGenomeForDisplay (List<MGGenome> genomes) {
 		referenceGenome = new MGReferenceForDisplay();
@@ -106,8 +117,9 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	 */
 	private int getGenomeIndex (String genomeName) {
 		int index = 0;
+		
 		for (MGGenomeForDisplay genome: genomesInformation) {
-			if (genome.getGenome().getName().indexOf(genomeName) != -1) {
+			if (genome.getGenome().getName().equals(genomeName)) {
 				return index;
 			}
 			index++;

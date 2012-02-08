@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
@@ -136,7 +136,6 @@ import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
@@ -396,9 +395,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param name name of the track (can be null)
 	 * @param stripes {@link ChromosomeWindowList} (can be null)
 	 * @param stripesList {@link StripesData} (can be null)
-	 * @param filtersList {@link FiltersData} (can be null)
+	 * @param filtersList {@link VCFFilter} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<VCFFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);

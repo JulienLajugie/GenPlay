@@ -26,10 +26,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 
 
 /**
+ * This class represents a genome, it has a name and two alleles ({@link MGAlleleForDisplay}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -77,8 +80,8 @@ public class MGGenomeForDisplay implements Serializable {
 	 */
 	protected MGGenomeForDisplay (MGGenome genome) {
 		this.genome = genome;
-		alleleA = new MGAlleleForDisplay(genome);
-		alleleB = new MGAlleleForDisplay(genome);
+		alleleA = new MGAlleleForDisplay(genome, AlleleType.ALLELE01);
+		alleleB = new MGAlleleForDisplay(genome, AlleleType.ALLELE02);
 	}
 
 	

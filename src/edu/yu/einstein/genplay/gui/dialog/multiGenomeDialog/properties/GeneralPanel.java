@@ -139,7 +139,7 @@ class GeneralPanel extends JPanel {
 	 */
 	private JPanel getVCFMappingPanel () {
 		// Association between full genome names and their readers
-		Map<String, List<VCFReader>> map = ProjectManager.getInstance().getMultiGenome().getGenomeFileAssociation();
+		Map<String, List<VCFReader>> map = ProjectManager.getInstance().getMultiGenomeProject().getGenomeFileAssociation();
 		
 		// Column names
 		String[] columnNames = {VCFData.GROUP_NAME,

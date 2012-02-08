@@ -89,7 +89,7 @@ public class GenomeSelectionPanel extends JPanel {
 	
 	private JComboBox getGenomeComboBox () {
 		// Creates the combo box
-		jcbGenome = new JComboBox(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
+		jcbGenome = new JComboBox(ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray());
 		jcbGenome.setSelectedIndex(defaultGenome);
 		
 		//Dimension
@@ -107,7 +107,7 @@ public class GenomeSelectionPanel extends JPanel {
 	
 	private JComboBox getAlleleTypeComboBox () {
 		// Creates the combo box
-		Object[] alleles = new Object[]{AlleleType.PATERNAL, AlleleType.MATERNAL};
+		Object[] alleles = new Object[]{AlleleType.ALLELE01, AlleleType.ALLELE02};
 		jcbAllele = new JComboBox(alleles);
 		jcbAllele.setSelectedIndex(defaultGenome);
 		

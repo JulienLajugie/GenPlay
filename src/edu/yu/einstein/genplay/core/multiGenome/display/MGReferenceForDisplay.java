@@ -73,7 +73,7 @@ public class MGReferenceForDisplay implements Serializable {
 	 * Constructor of {@link MGReferenceForDisplay}
 	 */
 	protected MGReferenceForDisplay () {
-		this.genome = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getReferenceGenome();
+		this.genome = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome();
 		allele = new MGAlleleReferenceForDisplay(genome);
 	}
 

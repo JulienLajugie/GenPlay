@@ -27,13 +27,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 
-
 /**
+ * This class represents a genome, it has a name and two alleles ({@link MGAllele}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class MGGenome implements Serializable {
-	
 	
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 5586375868869637887L;
@@ -106,7 +106,7 @@ public class MGGenome implements Serializable {
 
 	
 	/**
-	 * Sorts the alleles according to the position of the variation 
+	 * Sorts the alleles according to the position of the variation and their length (longer first when position is equal)
 	 */
 	public void sort() {
 		alleleA.sort();
@@ -116,6 +116,8 @@ public class MGGenome implements Serializable {
 	
 	/**
 	 * Compacts the list of {@link MGOffset}
+	 * The lists are optimized for memory usage, however some parts of it can be empty.
+	 * Calling this method will compact lists for both alleles.
 	 */
 	public void compact () {
 		alleleA.compact();

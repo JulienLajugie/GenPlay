@@ -68,7 +68,7 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray());
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray());
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
 				alleleType = genomeDialog.getAlleleType();

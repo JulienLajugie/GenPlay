@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.display.variant;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 
@@ -47,6 +48,12 @@ public interface VariantInterface {
 	 * @return the length of the variation
 	 */
 	public int getLength ();
+	
+	
+	/**
+	 * @return the allele type of the variant
+	 */
+	public AlleleType getAlleleType ();
 	
 	
 	/**

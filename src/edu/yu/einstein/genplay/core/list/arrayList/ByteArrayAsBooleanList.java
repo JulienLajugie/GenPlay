@@ -26,27 +26,27 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.AbstractList;
-import java.util.Arrays;
 import java.util.List;
 
 
 /**
- * This class implements the List of Integer interface but internally 
- * it contains an array of int that is dynamically resized in order to 
+ * This class implements the List of Boolean interface but internally 
+ * it contains an array of byte that is dynamically resized in order to 
  * be more memory efficient. 
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  */
-public class IntArrayAsIntegerList extends AbstractList<Integer> implements Serializable, List<Integer> {
+public class ByteArrayAsBooleanList extends AbstractList<Boolean> implements Serializable, List<Boolean> {
 
 	private static final long serialVersionUID = -8787392051503707843L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int 	RESIZE_MIN = 1000;		// minimum length added every time the array is resized
 	private static final int 	RESIZE_MAX = 10000000;	// maximum length added every time the array is resized
 	private static final int 	RESIZE_FACTOR = 2;		// multiplication factor of the length of the array every time it's resized
-	private int[] 				data;					// int data array
+	private byte[] 				value;					// int value array
 	private int 				size;					// size of the list
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -54,7 +54,7 @@ public class IntArrayAsIntegerList extends AbstractList<Integer> implements Seri
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(data);
+		out.writeObject(value);
 		out.writeInt(size);
 	}
 
@@ -67,116 +67,105 @@ public class IntArrayAsIntegerList extends AbstractList<Integer> implements Seri
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		data = (int[]) in.readObject();
+		value = (byte[]) in.readObject();
 		size = in.readInt();		
 	}
-	
-	
+
+
 	/**
-	 * Creates an instance of {@link IntArrayAsIntegerList}
+	 * Creates an instance of {@link ByteArrayAsBooleanList}
 	 */
-	public IntArrayAsIntegerList() {
-		this.data = new int[0];
+	public ByteArrayAsBooleanList() {
+		this.value = new byte[0];
 		this.size = 0;
 	}
-	
-	
+
+
 	/**
-	 * Creates an instance of {@link IntArrayAsIntegerList}
+	 * Creates an instance of {@link ByteArrayAsBooleanList}
 	 * @param size size of the array
 	 */
-	public IntArrayAsIntegerList(int size) {
-		this.data = new int[size];
+	public ByteArrayAsBooleanList(int size) {
+		this.value = new byte[size];
 		this.size = size;
 	}
-	
 
-	/**
-	 * Sorts the list
-	 */
-	public void sort() {
-		Arrays.sort(data);
-	};
 
-	
 	@Override
-	public boolean add(Integer e) {
+	public boolean add(Boolean b) {
 		// if the array is to small we resize it before adding the data
-		if (size >= data.length) {
+		if (size >= value.length) {
 			// we multiply the current size by the resize multiplication factor
-			int newLength = data.length * RESIZE_FACTOR;
+			int newLength = value.length * RESIZE_FACTOR;
 			// we make sure we don't add less than RESIZE_MIN elements
-			newLength = Math.max(newLength, data.length + RESIZE_MIN);
+			newLength = Math.max(newLength, value.length + RESIZE_MIN);
 			// we make sure we don't add more than RESIZE_MAX elements
-			newLength = Math.min(newLength, data.length + RESIZE_MAX);
-			int[] newData = new int[newLength];			
-			for (int i = 0; i < data.length; i++) {
-				newData[i] = data[i];
+			newLength = Math.min(newLength, value.length + RESIZE_MAX);
+			byte[] newValue = new byte[newLength];
+			for (int i = 0; i < value.length; i++) {
+				newValue[i] = value[i];
 			}
-			data = newData;			
+			value = newValue;
 		}
-		// true if e is not zero
-		data[size] = e;
+		if (b) {
+			value[size] = 1;
+		} else {
+			value[size] = 0;
+		}
 		size++;
 		return true;
 	}
-	
-	
+
+
 	@Override
-	public Integer get(int index) {
-		return data[index];
+	public Boolean get(int index) {
+		if (value[index] == 1) {
+			return true;
+		}
+		return false;
 	}
 
-	
+
 	/**
- 	 * @return null in order to accelerate the operation
+	 * @return null in order to accelerate the operation
 	 */
 	@Override
-	public Integer set(int index, Integer element) {
-		data[index] = element;
+	public Boolean set(int index, Boolean b) {
+		if (b) {
+			value[index] = 1;
+		} else {
+			value[index] = 0;
+		}
 		return null;
 	}
 
-	
+
 	@Override
 	public int size() {
 		return size;
 	}
-	
-	
+
+
 	/**
-	 * Recursive function. Returns the index where the value is found
-	 * or the index right after if the exact value is not found.
-	 * @param value			value
-	 * @return the index where the start value of the window is found or -1 if the value is not found
+	 * Recreates the arrays with the right size in order to optimize the memory usage.
 	 */
-	public int getIndex (int value) {
-		int index = getIndex(value, 0, size - 1);
-		if (data[index] == value) {
-			return index;
+	public void compact() {
+		byte[] valueTmp = new byte[size];
+		for (int i = 0; i < size; i++) {
+			valueTmp[i] = value[i];
 		}
-		return -1;
+		value = valueTmp;
 	}
-	
-	
+
+
 	/**
-	 * Recursive function. Returns the index where the value is found
-	 * or the index right after if the exact value is not found.
-	 * @param value			value
-	 * @param indexStart	start index (in the data array)
-	 * @param indexStop		stop index (in the data array)
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
+	 * Shows the content of this object
 	 */
-	private int getIndex (int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == data[indexStart + middle]) {
-			return indexStart + middle;
-		} else if (value > data[indexStart + middle]) {
-			return getIndex(value, indexStart + middle + 1, indexStop);
-		} else {
-			return getIndex(value, indexStart, indexStart + middle);
+	public void show () {
+		String info = "size = " + size + " -> ";
+		for (int i = 0; i < value.length; i++) {
+			info += value[i] + "; ";
 		}
+		System.out.println(info);
 	}
 }

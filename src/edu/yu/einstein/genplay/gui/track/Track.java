@@ -43,7 +43,7 @@ import javax.swing.border.Border;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -193,11 +193,11 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		}
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			MGDisplaySettings settings = MGDisplaySettings.getInstance();
-			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(this);
+			List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(this);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(this);
-			if (stripesList.size() > 0 || filtersList.size() > 0) {
-				trackGraphics.updateMultiGenomeInformation(stripesList, filtersList);
-			}
+			//if (stripesList.size() > 0 || filtersList.size() > 0) {
+				trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
+			//}
 		}
 	}
 
@@ -210,8 +210,10 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<IDFilterInterface> filtersList) {
-		trackGraphics.updateMultiGenomeInformation(stripesList, filtersList);
+	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<VCFFilter> filtersList) {
+		if (trackGraphics.getMultiGenomeDrawer() != null) {
+			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
+		}
 	}
 
 
@@ -219,7 +221,9 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * Reset the list of the variant list makers
 	 */
 	public void resetVariantListMaker () {
-		trackGraphics.resetVariantListMaker();
+		if (trackGraphics.getMultiGenomeDrawer() != null) {
+			trackGraphics.getMultiGenomeDrawer().resetVariantListMaker();
+		}
 	}
 
 
@@ -322,15 +326,21 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @return the stripesList
 	 */
 	public List<StripesData> getStripesList() {
-		return trackGraphics.getStripesList();
+		if (trackGraphics.getMultiGenomeDrawer() != null) {
+			return trackGraphics.getMultiGenomeDrawer().getStripesList();
+		}
+		return null;
 	}
 
 
 	/**
 	 * @return the filtersList
 	 */
-	public List<IDFilterInterface> getFiltersList() {
-		return trackGraphics.getFiltersList();
+	public List<VCFFilter> getFiltersList() {
+		if (trackGraphics.getMultiGenomeDrawer() != null) {
+			return trackGraphics.getMultiGenomeDrawer().getFiltersList();
+		}
+		return null;
 	}
 
 

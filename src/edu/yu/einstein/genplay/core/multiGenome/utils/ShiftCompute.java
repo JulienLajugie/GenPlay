@@ -86,7 +86,7 @@ public class ShiftCompute {
 	 * @return							the corresponding meta genome position
 	 */
 	public static int computeShiftForReferenceGenome (Chromosome chromosome, int referenceGenomePosition) {
-		ChromosomeListOfLists<MGOffset> offsetList = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getReferenceGenome().getAllele().getOffsetList();
+		ChromosomeListOfLists<MGOffset> offsetList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele().getOffsetList();
 		int metaGenomePosition = ((IntArrayAsOffsetList)offsetList.get(chromosome)).getMetaGenomePosition(referenceGenomePosition);
 		// Return the final shifted position
 		return metaGenomePosition;
@@ -98,12 +98,12 @@ public class ShiftCompute {
 		MGAllele alleleInformation = null;
 
 		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
-			alleleInformation = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getReferenceGenome().getAllele();
+			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele();
 		} else {
-			MGGenome genomeInformation = ProjectManager.getInstance().getMultiGenome().getMultiGenome().getGenomeInformation(genome);
-			if (alleleType == AlleleType.PATERNAL) {
+			MGGenome genomeInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getGenomeInformation(genome);
+			if (alleleType == AlleleType.ALLELE01) {
 				alleleInformation = genomeInformation.getAlleleA();
-			} else if (alleleType == AlleleType.MATERNAL) {
+			} else if (alleleType == AlleleType.ALLELE02) {
 				alleleInformation = genomeInformation.getAlleleB();
 			} else {
 				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType);

@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
@@ -212,5 +213,37 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	public String getCategory() {
 		return category;
 	}
+	
+	
+	@Override
+	public boolean isValid(VariantInterface variant) {
+		return false;
+	}
 
+
+	@Override
+	public boolean isValid(Object value) {
+		return false;
+	}
+
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		NumberIDFilter test = (NumberIDFilter)obj;
+		return ID.getId().equals(test.getID().getId()) && 
+		category.equals(test.getCategory()) &&
+		inequation01.toString().equals(test.getInequation01().toString()) &&
+		inequation02.toString().equals(test.getInequation02().toString()) &&
+		value01 == test.getValue01() &&
+		value02 == test.getValue02();
+	}
+	
 }

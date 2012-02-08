@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -188,6 +189,12 @@ public class IndelVariant implements Serializable, VariantInterface {
 		length == test.getLength() &&
 		score == test.getScore() &&
 		phasedWithPos == test.getScore();
+	}
+
+
+	@Override
+	public AlleleType getAlleleType() {
+		return variantListForDisplay.getAlleleForDisplay().getAlleleType();
 	}
 
 }

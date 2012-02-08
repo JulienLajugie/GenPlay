@@ -230,4 +230,22 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.remove(genomeWindowListener);		
 	}
+	
+	
+	/**
+	 * Locks the control panel
+	 */
+	public void lock() {
+		chromosomePanel.lock();
+		genomeWindowPanel.lock();
+	}
+	
+	
+	/**
+	 * Unlocks the control panel
+	 */
+	public void unlock() {
+		chromosomePanel.unlock();
+		genomeWindowPanel.unlock();
+	}
 }

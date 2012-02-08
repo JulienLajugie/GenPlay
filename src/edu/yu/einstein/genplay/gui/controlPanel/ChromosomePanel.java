@@ -169,4 +169,21 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.remove(genomeWindowListener);		
 	}
+	
+	
+	/**
+	 * Locks the chromosome panel
+	 */
+	public void lock() {
+		jcbChromosome.setEnabled(false);
+	}
+	
+	
+	/**
+	 * Unlocks the chromosome panel
+	 */
+	public void unlock() {
+		jcbChromosome.setEnabled(true);
+	}
+	
 }

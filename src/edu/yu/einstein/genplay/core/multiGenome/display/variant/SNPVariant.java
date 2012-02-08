@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -175,6 +176,12 @@ public class SNPVariant implements Serializable, VariantInterface {
 		return referenceGenomePosition == test.getReferenceGenomePosition() &&
 		score == test.getScore() &&
 		phasedWithPos == test.getScore();
+	}
+	
+	
+	@Override
+	public AlleleType getAlleleType() {
+		return variantListForDisplay.getAlleleForDisplay().getAlleleType();
 	}
 	
 }

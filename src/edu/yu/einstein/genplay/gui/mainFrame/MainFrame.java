@@ -83,7 +83,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 527; 						// GenPlay version
+	private static final int VERSION_NUMBER = 529; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -466,4 +466,29 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			instance.getStatusBar().reinit();
 		}
 	}
+	
+	
+	/**
+	 * Locks the main frame:
+	 * - the action button (top left button)
+	 * - the track handles
+	 * - the chromosome selection box
+	 * - the chromosome position text field
+	 */
+	public void lock() {
+		ruler.lock();
+		trackList.lockTrackHandles();
+		controlPanel.lock();
+	}
+	
+	
+	/**
+	 * Unlocks the main frame
+	 */
+	public void unlock() {
+		ruler.unlock();
+		trackList.unlockTracksHandles();
+		controlPanel.unlock();
+	}
+
 }

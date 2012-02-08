@@ -28,7 +28,7 @@ import java.util.Map;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.manager.project.MultiGenome;
+import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -60,7 +60,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		"Performs the multi genome algorithm"; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
 	private static		 String 			ACTION_NAME = "Multi-genome loading";	// action name
-	private MultiGenome 					multiGenome;							// instance of the multi genome
+	private MultiGenomeProject 					multiGenomeProject;							// instance of the multi genome
 	private Map<String, List<VCFReader>> 	genomeFileAssociation;					// Mapping between genome names and their readers.
 
 	
@@ -82,7 +82,7 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		multiGenome = ProjectManager.getInstance().getMultiGenome();
+		multiGenomeProject = ProjectManager.getInstance().getMultiGenomeProject();
 	}
 
 
@@ -99,36 +99,39 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 				// Notifies the action
 				notifyActionStart(ACTION_NAME, 1, false);
 				
+				// Locks the main frame
+				MainFrame.getInstance().lock();
+				
 				// Initializes the genome synchronization
 				times.add(System.currentTimeMillis());
-				multiGenome.initializeSynchronization (genomeFileAssociation);
+				multiGenomeProject.initializeSynchronization (genomeFileAssociation);
 				
 				// Insert the variation into the data structure
 				times.add(System.currentTimeMillis());
-				multiGenome.getMultiGenomeSynchronizer().insertVariantposition();
+				multiGenomeProject.getMultiGenomeSynchronizer().insertVariantposition();
 				
 				// Sort lists of position for every chromosome of every genome
 				times.add(System.currentTimeMillis());
-				multiGenome.getMultiGenome().sort();
+				multiGenomeProject.getMultiGenome().sort();
 				
 				//genomeSynchronizer.getMultiGenome().show();
 				
 				// Remove the duplicate from the reference genome lists of position
 				times.add(System.currentTimeMillis());
-				multiGenome.getMultiGenome().getReferenceGenome().removeDuplicate();
+				multiGenomeProject.getMultiGenome().getReferenceGenome().removeDuplicate();
 				
 				// Creates the variation for the reference genome.
 				// This is the only place where this method must be called!! After removing duplicates and before position synchronization.
 				times.add(System.currentTimeMillis());
-				multiGenome.getMultiGenomeForDisplay().getReferenceGenome().getAllele().initialize();
+				multiGenomeProject.getMultiGenomeForDisplay().getReferenceGenome().getAllele().initialize();
 				
 				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
 				times.add(System.currentTimeMillis());
-				multiGenome.getMultiGenomeSynchronizer().performPositionSynchronization();
+				multiGenomeProject.getMultiGenomeSynchronizer().performPositionSynchronization();
 				
 				// Compacts the offset lists in order to optimize the memory usage
 				times.add(System.currentTimeMillis());
-				multiGenome.getMultiGenome().compactLists();
+				multiGenomeProject.getMultiGenome().compactLists();
 				
 				// End
 				times.add(System.currentTimeMillis());
@@ -148,9 +151,12 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 	
-		//multiGenome.show();
+		//multiGenomeProject.show();
 		
 		initializesTrackListForMultiGenomeProject();
+		
+		// Unlocks the main frame
+		MainFrame.getInstance().unlock();
 		
 		/*for (int i = 1; i < times.size(); i++) {
 			System.out.println("[" + i + "]: " + (times.get(i) - times.get(i - 1)));
@@ -171,11 +177,11 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 		// If parameter have been given,
 		// sets the genome synchronizer.
 		if (genomeFileAssociation != null) {
-			multiGenome.setGenomeFileAssociation(genomeFileAssociation);
+			multiGenomeProject.setGenomeFileAssociation(genomeFileAssociation);
 		}
 		
 		// Checks if genome synchronizer has been initialized
-		if (multiGenome.getGenomeFileAssociation() != null) {
+		if (multiGenomeProject.getGenomeFileAssociation() != null) {
 			valid = true;
 		}
 		
@@ -204,5 +210,5 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 			}
 		}
 	}
-	
+
 }

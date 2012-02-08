@@ -277,11 +277,11 @@ public class StripesData implements Serializable {
 	public List<MGVariantListForDisplay> getListOfVariantList (AlleleType alleleType) {
 		List<MGVariantListForDisplay> listOfVariantList = new ArrayList<MGVariantListForDisplay>();
 		
-		MGGenomeForDisplay genomeForDisplay = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay().getGenomeInformation(genome);
+		MGGenomeForDisplay genomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getGenomeInformation(genome);
 		MGAlleleForDisplay alleleForDisplay = null;
-		if (alleleType == AlleleType.PATERNAL) {
+		if (alleleType == AlleleType.ALLELE01) {
 			alleleForDisplay = genomeForDisplay.getAlleleA();
-		} else if (alleleType == AlleleType.MATERNAL) {
+		} else if (alleleType == AlleleType.ALLELE02) {
 			alleleForDisplay = genomeForDisplay.getAlleleB();
 		}
 		

@@ -41,6 +41,13 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
+ * This class manages a list of variants.
+ * It knows its allele and for which chromosome the variants are about.
+ * It also knows the type of variant it contains (insertions, deletions, SNPs).
+ * 
+ * This method contains methods for handling the variants.
+ * The method getFullVariantInformation retrieves all the information about a variant from the related VCF file.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -49,10 +56,10 @@ public class MGVariantListForDisplay implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3317488112661108128L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private MGAlleleForDisplay 		alleleForDisplay;
-	private Chromosome				chromosome;
-	private VariantType 			type;
-	private List<VariantInterface> 	variantList;
+	private MGAlleleForDisplay 		alleleForDisplay;					// its allele
+	private Chromosome				chromosome;							// its chromosome
+	private VariantType 			type;								// type of the variants
+	private List<VariantInterface> 	variantList;						// list of variants
 
 
 	/**
@@ -83,8 +90,8 @@ public class MGVariantListForDisplay implements Serializable {
 		type = (VariantType) in.readObject();
 		variantList = (List<VariantInterface>) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link MGVariantListForDisplay}
 	 * @param alleleForDisplay 	the allele for display object
@@ -95,7 +102,6 @@ public class MGVariantListForDisplay implements Serializable {
 		this.alleleForDisplay = alleleForDisplay;
 		this.chromosome = chromosome;
 		this.type = type;
-		//this.vcfReaderList = ProjectManager.getInstance().getMultiGenome().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
 		this.variantList = new ArrayList<VariantInterface>();
 	}
 
@@ -154,42 +160,81 @@ public class MGVariantListForDisplay implements Serializable {
 	 */
 	public MGPosition getFullVariantInformation (VariantInterface variant) {
 		if (!(variant instanceof MixVariant)) {
-			List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenome().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
+			List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenomeProject().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
 			List<String> columns = vcfReaderList.get(0).getFixedColumn();
 			columns.add(FormattedMultiGenomeName.getRawName(alleleForDisplay.getGenomeInformation().getName()));
 			int start = variant.getReferenceGenomePosition();
 			List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
-			VCFReader requiredReader = null;
+			List<VCFReader> requiredReader = new ArrayList<VCFReader>();
 			for (VCFReader reader: vcfReaderList) {
 				List<Map<String, Object>> resultsTmp = null;
 				try {
-					resultsTmp = reader.query(chromosome.getName(), start - 1, start + 1, columns);
+					resultsTmp = reader.query(chromosome.getName(), start - 1, start, columns);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				if (resultsTmp.size() > 0) {
-					results.add(resultsTmp.get(0));
-					requiredReader = reader;
+					for (Map<String, Object> resultTmp: resultsTmp) {
+						results.add(resultTmp);
+						requiredReader.add(reader);
+					}
 				}
 			}
 
+			MGPosition position = null;
 			int size = results.size();
 			switch (size) {
 			case 1:
-				MGPosition position = new MGPosition(variant, results.get(0), requiredReader);
-				return position;
+				position = new MGPosition(variant, results.get(0), requiredReader.get(0));
 			case 0:
-				System.err.println("MGVariantListForDisplay.getFullVariantInformation: No variant found");
+				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: No variant found");
 				break;
 			default:
-				System.err.println("MGVariantListForDisplay.getFullVariantInformation: Many variant found: " + size);
+				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: Many variant found: " + size);
+				position = getRightInformation(variant, results, requiredReader);
 				break;
 			}
+			return position;
 		} else {
 			MGPosition position = new MGPosition(variant, null, null);
 			return position;
 		}
+	}
+
+
+	/**
+	 * Browses a list of results to find out the right one comparing to the given variant
+	 * @param variant	the variant
+	 * @param results	the list of results
+	 * @param readers	the list of readers
+	 * @return			the {@link MGPosition} object containing all information about the variant.
+	 */
+	private MGPosition getRightInformation (VariantInterface variant, List<Map<String, Object>> results, List<VCFReader> readers) {
+		if (results.size() > 0) {
+			float variantScore = variant.getScore();
+			for (int i = 0; i < results.size(); i++) {
+				Map<String, Object> result = results.get(i);
+				float currentScore = getQUALFromResult(result);
+				if (variantScore == currentScore) {
+					return new MGPosition(variant, results.get(i), readers.get(i));
+				}
+			}
+		}
 		return null;
+	}
+	
+	
+	/**
+	 * Retrieves the QUAL field from a result line
+	 * @param result	the result
+	 * @return			the quality as a float or 0 is the QUAL field is not valid (eg: '.')
+	 */
+	private float getQUALFromResult (Map<String, Object> result) {
+		float qual = 0;
+		try {
+			qual = Float.parseFloat(result.get("QUAL").toString());
+		} catch (Exception e) {}
+		return qual;
 	}
 
 
@@ -199,7 +244,7 @@ public class MGVariantListForDisplay implements Serializable {
 	public void show () {
 		System.out.println("Variant type: " + type);
 		String readerInfo = "Readers:";
-		List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenome().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
+		List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenomeProject().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
 		for (VCFReader reader: vcfReaderList) {
 			readerInfo += " " + reader.getFile().getName();
 		}
@@ -209,7 +254,7 @@ public class MGVariantListForDisplay implements Serializable {
 		for (VariantInterface variant: variantList) {
 			if (cpt < 10) {
 				variant.show();
-				//cpt++;
+				cpt++;
 			}
 		}
 	}

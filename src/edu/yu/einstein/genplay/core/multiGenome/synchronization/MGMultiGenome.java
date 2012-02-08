@@ -28,7 +28,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
+ * The main idea of the data structure for storing multi genome positions and offsets is to follow the real genetic structure.
+ * Here is the followed hierarchy:
+ * 1 - the {@link MGMultiGenome}: it gathers all genomes data of the project (the {@link MGGenome} objects)
+ * 2 - the  {@link MGGenome}: it is composed of a name and of two alleles (the {@link MGAllele}
+ * 3 - the {@link MGAllele}: it is composed of a list of chromosomes that each contains a list of {@link MGOffset}
+ * 4 - the {@link MGOffset}: an offset refers to a position and a value. An offset object says at which position of the actual genome the value must be added to have the meta genome position.
+ * 
+ * That way, data can be browsed more easily and makes its handling easier.
+ * This structure only aims to store information about the synchronization, it means: to be able to go from a genome position to its meta genome position (vice and versa from a meta genome position to a genome position).
+ * 
+ * This class also contains the synchronization information for the reference genome: {@link MGReference}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -105,7 +118,7 @@ public class MGMultiGenome implements Serializable {
 	public int getGenomeIndex (String genomeName) {
 		int index = 0;
 		for (MGGenome genome: genomesInformation) {
-			if (genome.getName().indexOf(genomeName) != -1) {
+			if (genome.getName().equals(genomeName)) {
 				return index;
 			}
 			index++;

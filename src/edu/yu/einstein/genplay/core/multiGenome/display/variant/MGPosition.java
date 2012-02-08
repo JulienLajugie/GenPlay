@@ -140,7 +140,7 @@ public class MGPosition implements Serializable {
 
 
 	/**
-	 * @return the QUAL field or 50.0 if it is unknown (defined as a '.')
+	 * @return the QUAL field or 100.0 if it is unknown (defined as a '.')
 	 */
 	public Double getQuality() {
 		try {
@@ -275,6 +275,14 @@ public class MGPosition implements Serializable {
 			}
 		}
 		return header;
+	}
+	
+
+	/**
+	 * @return the reader
+	 */
+	public VCFReader getReader() {
+		return reader;
 	}
 
 

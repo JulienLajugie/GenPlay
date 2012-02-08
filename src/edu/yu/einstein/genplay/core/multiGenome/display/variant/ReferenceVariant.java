@@ -27,6 +27,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
@@ -172,5 +173,11 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		ReferenceVariant test = (ReferenceVariant)obj;
 		return referenceGenomePosition == test.getReferenceGenomePosition() &&
 		length == test.getLength();
+	}
+	
+	
+	@Override
+	public AlleleType getAlleleType() {
+		return null;
 	}
 }

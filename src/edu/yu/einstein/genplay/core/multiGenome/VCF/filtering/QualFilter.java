@@ -27,12 +27,13 @@ import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class QualIDFilter implements NumberIDFilterInterface {
+public class QualFilter implements NumberIDFilterInterface {
 
 	/** Generated default serial ID*/
 	private static final long serialVersionUID = 3099777763400649421L;
@@ -224,4 +225,34 @@ public class QualIDFilter implements NumberIDFilterInterface {
 		return null;
 	}
 
+	
+	@Override
+	public boolean isValid(VariantInterface variant) {
+		return false;
+	}
+
+
+	@Override
+	public boolean isValid(Object value) {
+		return false;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		QualFilter test = (QualFilter)obj;
+		return
+		inequation01.toString().equals(test.getInequation01().toString()) &&
+		inequation02.toString().equals(test.getInequation02().toString()) &&
+		value01 == test.getValue01() &&
+		value02 == test.getValue02();
+	}
 }

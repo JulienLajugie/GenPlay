@@ -40,16 +40,16 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
  * This class handles VCF files.
  * It indexes information to perform fast queries.
- * It also get VCF header information.
+ * It also gets VCF header information.
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -63,16 +63,19 @@ public class VCFReader implements Serializable {
 	
 	private Map<String, String> 				headerInfo;			// Header main information
 	private	Map<String, Class<?>>				fieldType;			// Association between field type and java class
-	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome raw name
+	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
 	
 	private	List<String>						columnNames;		// All column header names
 	private	List<String>						fixedColumn;		// Fixed header names included in the VCF file
+	private	List<String>						genomeRawNames;		// Dynamic header names included in the VCF file (raw genome names)
 	private	List<String>						genomeNames;		// Dynamic header names included in the VCF file (raw genome names)
 	
 	private List<VCFHeaderType> 				altHeader;			// Header for the ALT field
 	private List<VCFHeaderType> 				filterHeader;		// Header for the FILTER field
 	private List<VCFHeaderAdvancedType> 		infoHeader;			// Header for the INFO field
 	private List<VCFHeaderAdvancedType> 		formatHeader;		// Header for the FORMAT field
+	
+	private List<VCFFilter>						vcfFiltersList;		// list of filters that will apply rules of filtering
 
 
 	/**
@@ -86,7 +89,7 @@ public class VCFReader implements Serializable {
 		out.writeObject(headerInfo);
 		out.writeObject(columnNames);
 		out.writeObject(fixedColumn);
-		out.writeObject(genomeNames);
+		out.writeObject(genomeRawNames);
 		out.writeObject(fieldType);
 		out.writeObject(altHeader);
 		out.writeObject(filterHeader);
@@ -108,7 +111,7 @@ public class VCFReader implements Serializable {
 		headerInfo= (Map<String, String>) in.readObject();
 		columnNames = (List<String>) in.readObject();
 		fixedColumn = (List<String>) in.readObject();
-		genomeNames = (List<String>) in.readObject();
+		genomeRawNames = (List<String>) in.readObject();
 		fieldType = (Map<String, Class<?>>) in.readObject();
 		altHeader = (List<VCFHeaderType>) in.readObject();
 		filterHeader = (List<VCFHeaderType>) in.readObject();
@@ -130,6 +133,8 @@ public class VCFReader implements Serializable {
 		initFieldType();
 		indexVCFFile();
 		processHeader();
+		vcfFiltersList = new ArrayList<VCFFilter>();
+		genomeNames = new ArrayList<String>();
 	}
 
 
@@ -423,7 +428,7 @@ public class VCFReader implements Serializable {
 	 * @return the columnNames
 	 */
 	public List<String> getRawGenomesNames() {
-		if (genomeNames == null) {
+		if (genomeRawNames == null) {
 			List<String> list = new ArrayList<String>();
 			for (String s: columnNames) {
 				if (!fixedColumn.contains(s)) {
@@ -431,8 +436,27 @@ public class VCFReader implements Serializable {
 				}
 			}
 			Collections.sort(list);
-			genomeNames = list;
+			genomeRawNames = list;
 		}
+		return genomeRawNames;
+	}
+	
+	
+	/**
+	 * Add a genome name to the list of genome name
+	 * @param genomeName a full genome name
+	 */
+	public void addGenomeName (String genomeName) {
+		if (!genomeNames.contains(genomeName)) {
+			genomeNames.add(genomeName);
+		}
+	}
+
+
+	/**
+	 * @return the genomeNames
+	 */
+	public List<String> getGenomeNames() {
 		return genomeNames;
 	}
 
@@ -680,15 +704,15 @@ public class VCFReader implements Serializable {
 	
 	/**
 	 * Add a type of variant if it is not already present in the list.
-	 * @param genomeRawName name of the genome
+	 * @param genomeName name of the genome
 	 * @param type	variant type to add
 	 */
-	public void addVariantType (String genomeRawName, VariantType type) {
-		if (!variantTypeList.containsKey(genomeRawName)) {
-			variantTypeList.put(genomeRawName, new ArrayList<VariantType>());
+	public void addVariantType (String genomeName, VariantType type) {
+		if (!variantTypeList.containsKey(genomeName)) {
+			variantTypeList.put(genomeName, new ArrayList<VariantType>());
 		}
-		if (!variantTypeList.get(genomeRawName).contains(type)) {
-			variantTypeList.get(genomeRawName).add(type);
+		if (!variantTypeList.get(genomeName).contains(type)) {
+			variantTypeList.get(genomeName).add(type);
 		}
 	}
 	
@@ -698,9 +722,8 @@ public class VCFReader implements Serializable {
 	 * @return the list of variant type present in this vcf for this genome
 	 */
 	public List<VariantType> getVariantTypes (String genomeName) {
-		String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-		if (variantTypeList.containsKey(genomeRawName)) {
-			return variantTypeList.get(genomeRawName);
+		if (variantTypeList.containsKey(genomeName)) {
+			return variantTypeList.get(genomeName);
 		}
 		return null;
 	}
@@ -713,10 +736,60 @@ public class VCFReader implements Serializable {
 	 * @return	true if this VCF can manage the request
 	 */
 	public boolean canManage (String genomeName, VariantType variantType) {
-		if (getVariantTypes(genomeName).contains(variantType)) {
+		if (getVariantTypes(genomeName) != null && getVariantTypes(genomeName).contains(variantType)) {
 			return true;
 		}
 		return false;
 	}
 	
+	
+	/**
+	 * @param filterID
+	 * @return the vcf filter related to the filter id, or null if it does not exist.
+	 */
+	public VCFFilter getFilter (IDFilterInterface filterID) {
+		for (VCFFilter filter: vcfFiltersList) {
+			if (filter.getFilter().equals(filterID)) {
+				return filter;
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Add a list of filter to the filter list
+	 * @param filters list of filter
+	 */
+	public void addFilters (List<VCFFilter> filters) {
+		for (VCFFilter filter: filters) {
+			addFilter(filter);
+		}
+	}
+	
+	
+	/**
+	 * Add a filter to the filter list
+	 * @param filter the filter
+	 */
+	public void addFilter (VCFFilter filter) {
+		if (!vcfFiltersList.contains(filter)) {
+			vcfFiltersList.add(filter);
+		}
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		VCFReader test = (VCFReader)obj;
+		return file.getAbsolutePath().equals(test.getFile().getAbsoluteFile());
+	}
 }

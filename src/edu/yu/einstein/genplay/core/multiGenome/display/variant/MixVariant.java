@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 
@@ -158,5 +159,11 @@ public class MixVariant implements Serializable, VariantInterface {
 		MixVariant test = (MixVariant)obj;
 		return start == test.getStart() &&
 		stop == test.getStop();
+	}
+	
+	
+	@Override
+	public AlleleType getAlleleType() {
+		return null;
 	}
 }

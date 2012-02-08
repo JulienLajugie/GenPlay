@@ -205,7 +205,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		showFileListButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				List<VCFReader> readerList = ProjectManager.getInstance().getMultiGenome().getAllReaders();
+				List<VCFReader> readerList = ProjectManager.getInstance().getMultiGenomeProject().getAllReaders();
 				List<VCFReader> list = new ArrayList<VCFReader>();
 				for (VCFReader reader: readerList) {
 					list.add(reader);

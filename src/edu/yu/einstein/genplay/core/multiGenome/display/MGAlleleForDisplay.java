@@ -29,15 +29,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 
 
 /**
+ * This class represents an allele of a genome.
+ * It contains a pointer to its genome ({@link MGGenome}) and knows what kind of allele it is ({@link AlleleType}).
+ * The lists of variations are stored for every chromosome in a chromosome list of list (like the {@link MGAllele}.
+ * Actually, three lists of variations are stored for each chromosome. They are created according to the type of variant they store:
+ * - insertions
+ * - deletions
+ * - SNPs 
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -46,12 +56,13 @@ public class MGAlleleForDisplay implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2820418368770648809L;
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final int INSERTION_INDEX = 0;
-	private static final int DELETION_INDEX = 1;
-	private static final int SNPS_INDEX = 2;
+	private static final int INSERTION_INDEX 	= 0;					// index for insertions
+	private static final int DELETION_INDEX 	= 1;					// index for deletions
+	private static final int SNPS_INDEX 		= 2;					// index for SNPs
 	
-	private MGGenome genomeInformation;
-	private ChromosomeListOfLists<MGVariantListForDisplay> chromosomeListOfVariantList;
+	private MGGenome genomeInformation;													// the genome information object
+	private AlleleType allele;															// the allele type of this allele
+	private ChromosomeListOfLists<MGVariantListForDisplay> chromosomeListOfVariantList;	// the lists of variation stored for each chromosome
 	
 
 	/**
@@ -62,6 +73,7 @@ public class MGAlleleForDisplay implements Serializable {
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(genomeInformation);
+		out.writeObject(allele);
 		out.writeObject(chromosomeListOfVariantList);
 	}
 
@@ -76,6 +88,7 @@ public class MGAlleleForDisplay implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		genomeInformation = (MGGenome) in.readObject();
+		allele = (AlleleType) in.readObject();
 		chromosomeListOfVariantList = (ChromosomeListOfLists<MGVariantListForDisplay>) in.readObject();
 	}
 	
@@ -83,8 +96,9 @@ public class MGAlleleForDisplay implements Serializable {
 	/**
 	 * Constructor of {@link MGAlleleForDisplay}
 	 */
-	protected MGAlleleForDisplay (MGGenome genome) {
+	protected MGAlleleForDisplay (MGGenome genome, AlleleType allele) {
 		this.genomeInformation = genome;
+		this.allele = allele;
 		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<MGVariantListForDisplay>();
 		ProjectChromosome projectChromosome =ProjectManager.getInstance().getProjectChromosome(); 
 		int chromosomeNumber = projectChromosome.size();
@@ -104,6 +118,14 @@ public class MGAlleleForDisplay implements Serializable {
 	 */
 	public MGGenome getGenomeInformation() {
 		return genomeInformation;
+	}
+
+
+	/**
+	 * @return the allele
+	 */
+	public AlleleType getAlleleType() {
+		return allele;
 	}
 
 

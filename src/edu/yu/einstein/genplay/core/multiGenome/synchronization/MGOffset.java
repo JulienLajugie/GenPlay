@@ -22,8 +22,16 @@
 package edu.yu.einstein.genplay.core.multiGenome.synchronization;
 
 
-
 /**
+ * The {@link MGOffset} class represents a variation in a genome.
+ * It is composed of two ints:
+ * - a position: that says at which position of the actual genome the value must be taken into account
+ * - a value: that says how many base pairs must be added/removed to this position in order to have it in the meta genome coordinate system
+ * 
+ * Every deletion for the actual genome (and insertion from the other genomes) will involve a gap in its coordinate system.
+ * eg: A deletion of 2 nucleotides at the position 10 of the actual genome means that every position above 10 (therefore from 11)
+ * of its genome must be increased of 2 in order to know the related position on the meta genome.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */

@@ -161,4 +161,20 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenera
 	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
 		listenerList.remove(genomeWindowListener);		
 	}
+	
+	
+	/**
+	 * Locks the genome window panel
+	 */
+	public void lock() {
+		jtfGenomeWindow.setEnabled(false);
+	}
+	
+	
+	/**
+	 * Unlocks the genome window panel
+	 */
+	public void unlock() {
+		jtfGenomeWindow.setEnabled(true);
+	}
 }

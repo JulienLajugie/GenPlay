@@ -32,12 +32,21 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantComparator;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
+ * This class creates the list of variant for a track (or half a track) and its filters.
+ * It is set with a list of variant list for display.
+ * Creating a list consist of:
+ * - gathering all lists of variants from each variant list for display
+ * - adding and testing the variants to the main list according to the filters
+ * - sorting the list
+ * - adding all the blank of synchronization
+ * The full list of variant is stored as well as the fitted list.
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -49,8 +58,8 @@ public class DisplayableVariantListMaker implements Serializable {
 	protected Chromosome				fittedChromosome = null;		// Chromosome with the adapted data
 	protected Double					fittedXRatio = null;			// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
-	private List<MGVariantListForDisplay> 	listOfVariantList;
-	private List<VariantInterface> 			variantList;
+	private List<MGVariantListForDisplay> 	listOfVariantList;			// The list of list of variant for display
+	private List<VariantInterface> 			variantList;				// The full list of variant
 	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
 
 
@@ -92,7 +101,8 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param xRatio the x ratio
 	 */
 	public DisplayableVariantListMaker (GenomeWindow window, double xRatio) {
-		listOfVariantList = null;
+		listOfVariantList = new ArrayList<MGVariantListForDisplay>();
+		variantList = new ArrayList<VariantInterface>();
 		this.fittedChromosome = window.getChromosome();
 		this.fittedXRatio = xRatio;
 	}
@@ -101,23 +111,48 @@ public class DisplayableVariantListMaker implements Serializable {
 	/**
 	 * Creates the full list of variant and sort it.
 	 */
-	private void computeVariantList () {
+	private void computeVariantList (List<VCFFilter> filtersList) {
 		variantList = new ArrayList<VariantInterface>();
-		for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {
-			List<VariantInterface> varianListTmp = variantListForDisplay.getVariantList();
-			for (VariantInterface variant: varianListTmp) {
-				variantList.add(variant);
+		if (listOfVariantList.size() > 0) {
+			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {			// loop on every variant list for display
+				List<VariantInterface> varianListTmp = variantListForDisplay.getVariantList();	// get the actual variant list
+				for (VariantInterface variant: varianListTmp) {									// for every variant of the current list
+					//if (isValid(variant, filtersList)) {										// it must passes all filters to be added
+					variantList.add(variant);
+					//}
+				}
 			}
+			Collections.sort(variantList, new VariantComparator());								// sorts the list
+			synchronizationBlank();																// adds the blank of synchronization
 		}
-		Collections.sort(variantList, new VariantComparator());
-		synchronizationBlank();
 	}
 
-	
+
+	/**
+	 * @param variant		a variant
+	 * @param filtersList	a list of filters
+	 * @return				true is the variant passes all filters
+	 */
+	@SuppressWarnings("unused")	// under development
+	private boolean isValid (VariantInterface variant, List<VCFFilter> filtersList) {
+		for (VCFFilter filter: filtersList) {		// loop on all filters
+			if (!filter.isValid(variant)) {			// test the variant for the current filter
+				return false;						// if one is tested false, the variant does not pass
+			}
+		}
+		return true;								// if all tests are correct, the variant passes
+	}
+
+
+	/**
+	 * This method scans the full variant list and the variant list from the reference genome (that contains all insertions).
+	 * It adds one by one variant from both list according to their position.
+	 * Insertions present in the reference genome allow the creation of the blank of synchronization.
+	 */
 	private void synchronizationBlank () {
 		if (MGDisplaySettings.INCLUDE_BLANK_OPTION == MGDisplaySettings.YES_MG_OPTION) {
 			if (fittedChromosome != null) {
-				List<VariantInterface> referenceVariantList = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(fittedChromosome);
+				List<VariantInterface> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(fittedChromosome);
 				List<VariantInterface> newVariantList = new ArrayList<VariantInterface>();
 				int currentListIndex = 0;
 				int referenceListIndex = 0;
@@ -136,7 +171,6 @@ public class DisplayableVariantListMaker implements Serializable {
 						currentListIndex++;
 						referenceListIndex++;
 					}
-
 				}
 				fillRestOfList(newVariantList, variantList, currentListIndex);
 				fillRestOfList(newVariantList, referenceVariantList, referenceListIndex);
@@ -146,6 +180,14 @@ public class DisplayableVariantListMaker implements Serializable {
 	}
 
 
+	/**
+	 * This method adds all the variant from a temporary list into a "full" list.
+	 * This process start from a specific index given in parameter to the end of the temporary list.
+	 * @param fullList		the full list
+	 * @param tmpList		the temporary list
+	 * @param startIndex	the index to start the filling
+	 * @return				the full list containing the new variants
+	 */
 	private List<VariantInterface> fillRestOfList (List<VariantInterface> fullList, List<VariantInterface> tmpList, int startIndex) {
 		for (int i = startIndex; i < tmpList.size(); i++) {
 			fullList.add(tmpList.get(i));
@@ -156,28 +198,24 @@ public class DisplayableVariantListMaker implements Serializable {
 
 	/**
 	 * @param listOfVariantList the listOfVariantList to set
+	 * @param filtersList list of filter to apply
 	 */
-	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList) {
-		if (listOfVariantList == null) {
-			variantList = null;
-			this.listOfVariantList = null;
-		} else {
-			if (hasChanged(listOfVariantList)) {
-				this.listOfVariantList = listOfVariantList;
-				resetList();
-			}
+	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList, List<VCFFilter> filtersList) {
+		if (hasChanged(listOfVariantList)) {
+			this.listOfVariantList = listOfVariantList;
+			computeVariantList(filtersList);
+			fitToScreen();
 		}
 	}
 
 
 	/**
 	 * Reset the variant list.
+	 * @param filtersList list of filter to apply
 	 */
-	public void resetList () {
-		if (listOfVariantList != null) {
-			computeVariantList();
-			fitToScreen();
-		}
+	public void resetList (List<VCFFilter> filtersList) {
+		computeVariantList(filtersList);
+		fitToScreen();
 	}
 
 

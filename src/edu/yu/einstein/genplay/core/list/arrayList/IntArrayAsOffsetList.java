@@ -193,7 +193,7 @@ public class IntArrayAsOffsetList extends AbstractList<MGOffset> implements Seri
 	 * @param value			value of a genome position
 	 * @param indexStart
 	 * @param indexStop
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
 	 */
 	private int findGenomeIndex (int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;

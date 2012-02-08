@@ -44,13 +44,13 @@ public class ProjectManager implements Serializable {
 	private			String			cladeName;				// clade name
 	private			String			genomeName;				// genome name
 	private  		Assembly 		assembly;				// assembly name
-	private			boolean			multiGenomeProject;		// True if it is a multi genome project, false if it is a simple genome project 
+	private			boolean			multiGenome;			// True if it is a multi genome project, false if it is a simple genome project 
 
 
 	private ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
 	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
 	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
-	private MultiGenome					multiGenome;				// Instance of the Multi Genome
+	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
 
 
 	/**
@@ -64,12 +64,12 @@ public class ProjectManager implements Serializable {
 		out.writeObject(cladeName);
 		out.writeObject(genomeName);
 		out.writeObject(assembly);
-		out.writeBoolean(multiGenomeProject);
+		out.writeBoolean(multiGenome);
 
 		out.writeObject(projectConfiguration);
 		out.writeObject(projectZoom);
 		out.writeObject(projectChromosome);
-		out.writeObject(multiGenome);
+		out.writeObject(multiGenomeProject);
 	}
 
 
@@ -85,12 +85,12 @@ public class ProjectManager implements Serializable {
 		cladeName = (String) in.readObject();
 		genomeName = (String) in.readObject();
 		assembly = (Assembly) in.readObject();
-		multiGenomeProject = in.readBoolean();
+		multiGenome = in.readBoolean();
 
 		projectConfiguration = (ProjectConfiguration) in.readObject();
 		projectZoom = (ProjectZoom) in.readObject();
 		projectChromosome = (ProjectChromosome) in.readObject();
-		multiGenome = (MultiGenome) in.readObject();
+		multiGenomeProject = (MultiGenomeProject) in.readObject();
 
 		instance = this;
 	}
@@ -116,7 +116,7 @@ public class ProjectManager implements Serializable {
 	 * Private constructor of the singleton. Creates an instance of a {@link ProjectManager}.
 	 */
 	private ProjectManager() {
-		multiGenomeProject = false;
+		multiGenome = false;
 		projectConfiguration = new ProjectConfiguration();
 		projectZoom = new ProjectZoom();
 		projectChromosome = new ProjectChromosome();
@@ -141,17 +141,17 @@ public class ProjectManager implements Serializable {
 	 * @return the multiGenomeProject
 	 */
 	public boolean isMultiGenomeProject() {
-		return multiGenomeProject;
+		return multiGenome;
 	}
 
 
 	/**
-	 * @param multiGenomeProject the multiGenomeProject to set
+	 * @param multiGenome the multiGenomeProject to set
 	 */
-	public void setMultiGenomeProject(boolean multiGenomeProject) {
-		this.multiGenomeProject = multiGenomeProject;
-		if (!multiGenomeProject) {
-			multiGenome = null;
+	public void setMultiGenomeProject(boolean multiGenome) {
+		this.multiGenome = multiGenome;
+		if (!multiGenome) {
+			multiGenomeProject = null;
 		}
 	}
 
@@ -183,11 +183,11 @@ public class ProjectManager implements Serializable {
 	/**
 	 * @return the genomeSynchroniser
 	 */
-	public MultiGenome getMultiGenome() {
-		if (multiGenomeProject && multiGenome == null) {
-			multiGenome = new MultiGenome();
+	public MultiGenomeProject getMultiGenomeProject() {
+		if (multiGenome && multiGenomeProject == null) {
+			multiGenomeProject = new MultiGenomeProject();
 		}
-		return multiGenome;
+		return multiGenomeProject;
 	}
 
 

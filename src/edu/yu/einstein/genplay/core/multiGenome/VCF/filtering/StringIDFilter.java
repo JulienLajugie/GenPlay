@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
@@ -168,4 +169,33 @@ public class StringIDFilter implements StringIDFilterInterface {
 		return category;
 	}
 	
+	
+	@Override
+	public boolean isValid(VariantInterface variant) {
+		return false;
+	}
+
+
+	@Override
+	public boolean isValid(Object value) {
+		return false;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		StringIDFilter test = (StringIDFilter)obj;
+		return ID.getId().equals(test.getID().getId()) && 
+		category.equals(test.getCategory()) &&
+		value.equals(test.getValue()) &&
+		required == test.isRequired();
+	}
 }

@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.NumberIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.NumberIDFilterInterface;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.QualIDFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.QualFilter;
 
 /**
  * @author Nicolas Fourel
@@ -246,7 +246,7 @@ public class IDNumberEditor implements IDEditor {
 	public IDFilterInterface getFilter() {
 		NumberIDFilterInterface filter = null;
 		if (category.equals("QUAL") && id == null) {
-			filter = new QualIDFilter();
+			filter = new QualFilter();
 		} else {
 			filter = new NumberIDFilter();
 		}
@@ -298,8 +298,8 @@ public class IDNumberEditor implements IDEditor {
 		Float value01 = null;
 		Float value02 = null;
 
-		if (filter instanceof QualIDFilter) {
-			QualIDFilter castFilter = (QualIDFilter) filter;
+		if (filter instanceof QualFilter) {
+			QualFilter castFilter = (QualFilter) filter;
 			inequation01 = castFilter.getInequation01();
 			inequation02 = castFilter.getInequation02();
 			value01 = castFilter.getValue01();

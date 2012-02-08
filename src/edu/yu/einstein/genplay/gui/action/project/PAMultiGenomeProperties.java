@@ -29,7 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
@@ -122,19 +122,12 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 		PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
 		multiGenomeSNP.actionPerformed(null);
 		
-		
 		// Update tracks
 		Track<?>[] tracks = getTrackList().getTrackList();
 		for (Track<?> track: tracks) {
-			List<IDFilterInterface> filtersList = settings.getFilterSettings().getFiltersForTrack(track);
+			List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(track);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
-			if (stripesList.size() > 0 || filtersList.size() > 0) {
-				/*System.out.println("Update track: " + track.getName());
-				for (StripesData data: stripesList) {
-					System.out.println(data.getTrackList()[0].getName() + " (" + data.getTrackList().length + ") " + data.getAlleleType().toString());
-				}*/
-				track.updateMultiGenomeInformation(stripesList, filtersList);
-			}
+			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
 	}
 	

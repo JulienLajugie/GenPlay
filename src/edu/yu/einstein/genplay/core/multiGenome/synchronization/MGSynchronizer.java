@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
-import edu.yu.einstein.genplay.core.manager.project.MultiGenome;
+import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
@@ -43,9 +43,22 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 
 
 /**
+ * This class manages the whole synchronization processes for indels and structural variants.
+ * There are two main method (all the others are private):
+ * - insertVariantposition: add all concerned variants from the VCF files to the data structure.
+ * - performPositionSynchronization: perform the synchronization properly speaking.
+ * 
+ * This class is totally managed in the full synchronization process by the class {@link PAMultiGenome}.
+ * 
+ * A synchronization process means updating genome(s) offset according to the variation.
+ * A deletion involves a synchronization process on the genome it occurs.
+ * An insertion involves a synchronization process on all genomes but the one it occurs.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -54,7 +67,7 @@ public class MGSynchronizer implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 7123540095215677101L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private MultiGenome multiGenome;
+	private MultiGenomeProject multiGenomeProject;
 
 	
 	/**
@@ -64,7 +77,7 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(multiGenome);
+		out.writeObject(multiGenomeProject);
 	}
 
 
@@ -76,16 +89,16 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		multiGenome = (MultiGenome) in.readObject();
+		multiGenomeProject = (MultiGenomeProject) in.readObject();
 	}
 	
 
 	/**
 	 * Constructor of {@link MGSynchronizer}
-	 * @param multiGenome the multi genome instance
+	 * @param multiGenomeProject the multi genome instance
 	 */
-	public MGSynchronizer (MultiGenome multiGenome) {
-		this.multiGenome = multiGenome;
+	public MGSynchronizer (MultiGenomeProject multiGenomeProject) {
+		this.multiGenomeProject = multiGenomeProject;
 	}
 
 
@@ -93,22 +106,22 @@ public class MGSynchronizer implements Serializable {
 	
 
 	/**
-	 * Reads the VCF files in order to store the position where a variation happen.
+	 * Reads the VCF files in order to store the position where a variation happens.
 	 * Does not take into account SNP and variation equal to the reference (0/0)
 	 * @throws IOException
 	 */
 	public void insertVariantposition () throws IOException {
 		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();	// get the chromosome list
-		List<VCFReader> readerList = multiGenome.getAllReaders();													// get all vcf readers
+		List<VCFReader> readerList = multiGenomeProject.getAllReaders();													// get all vcf readers
 
 		List<AlleleType> alleleTypeList = new ArrayList<AlleleType>();
-		alleleTypeList.add(AlleleType.PATERNAL);
-		alleleTypeList.add(AlleleType.MATERNAL);
+		alleleTypeList.add(AlleleType.ALLELE01);
+		alleleTypeList.add(AlleleType.ALLELE02);
 
 		for (Chromosome chromosome: chromosomeList) {																// loop on every chromosome
 			for (VCFReader reader: readerList) {																	// loop on every vcf reader
-				List<String> genomeRawNames = getRequiredGenomeNamesFromAReader(reader);							// get the genome raw names list
-				List<String> columnNames = getColumnNamesForQuery(genomeRawNames);									// get the list of column to perform the query on the current vcf
+				List<String> genomeNames = getRequiredGenomeNamesFromAReader(reader);								// get the genome names list
+				List<String> columnNames = getColumnNamesForQuery(genomeNames);										// get the list of column to perform the query on the current vcf
 				
 				List<Map<String, Object>> result = reader.query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
 				
@@ -125,14 +138,15 @@ public class MGSynchronizer implements Serializable {
 						score = 0;
 					}
 
-					for (String genomeRawName: genomeRawNames) {													// loop on every genome raw name
-
+					for (String genomeName: genomeNames) {													// loop on every genome raw name
+						String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
+						
 						String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype 
 						if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
 
 							for (AlleleType alleleType: alleleTypeList) {
 								char alleleChar;
-								if (alleleType == AlleleType.PATERNAL) {													// if we are processing the paternal allele
+								if (alleleType == AlleleType.ALLELE01) {													// if we are processing the paternal allele
 									alleleChar = VCFLine.get(genomeRawName).toString().charAt(0);							// we look at the first character
 								} else {																					// if not, it means we are looking to the maternal allele
 									alleleChar = VCFLine.get(genomeRawName).toString().charAt(2);							// and we look at the third character
@@ -141,22 +155,22 @@ public class MGSynchronizer implements Serializable {
 								if (alleleChar != '.' && alleleChar != '0') {												// if we have a variation
 									int alleleLength = retrieveVariantLength(reference, alternatives, info, alleleChar);	// we retrieve its length
 									VariantType variantType = getVariantType(alleleLength);									// get the type of variant according to the length of the variation
-									reader.addVariantType(genomeRawName, variantType);										// notice the reader of the variant type
+									reader.addVariantType(genomeName, variantType);											// notice the reader of the variant type
 									if (variantType != VariantType.SNPS) {													// if it is not a SNP
 										List<MGOffset> offsetList;
-										MGGenomeForDisplay genomeForDisplay = multiGenome.getMultiGenomeForDisplay().getGenomeInformation(genomeRawName);
+										MGGenomeForDisplay genomeForDisplay = multiGenomeProject.getMultiGenomeForDisplay().getGenomeInformation(genomeName);
 										MGAlleleForDisplay alleleForDisplay;
-										if (alleleType == AlleleType.PATERNAL) {											// if we are processing the paternal allele
-											offsetList = multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleA().getOffsetList().get(chromosome);	// we get the list of offset of the allele A
+										if (alleleType == AlleleType.ALLELE01) {											// if we are processing the paternal allele
+											offsetList = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName).getAlleleA().getOffsetList().get(chromosome);	// we get the list of offset of the allele A
 											alleleForDisplay = genomeForDisplay.getAlleleA();
 										} else {																			// if not, it means we are looking to the maternal allele
-											offsetList = multiGenome.getMultiGenome().getGenomeInformation(genomeRawName).getAlleleB().getOffsetList().get(chromosome);	// we get the list of offset of the allele B
+											offsetList = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName).getAlleleB().getOffsetList().get(chromosome);	// we get the list of offset of the allele B
 											alleleForDisplay = genomeForDisplay.getAlleleB();
 										}
 										offsetList.add(new MGOffset(referencePosition, alleleLength));						// we insert the new offset
 
 										if (variantType == VariantType.INSERTION) {											// if we are processing an insertion
-											multiGenome.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// we insert it into the reference genome allele
+											multiGenomeProject.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// we insert it into the reference genome allele
 											MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, VariantType.INSERTION); // we also insert it to the display data structure
 											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
@@ -182,18 +196,18 @@ public class MGSynchronizer implements Serializable {
 	 * Creates the list of the column names necessary for a query.
 	 * Four fields are static: POS, REF, ALT and INFO for the position synchronization.
 	 * Name of the genomes (raw name) must be added dynamically according to the content of the VCF file and the project requirements.
-	 * @param genomeRawNames list of genome raw names to add to the static list
+	 * @param genomeNames list of genome names to add to the static list
 	 * @return the list of column names necessary for a query
 	 */
-	private List<String> getColumnNamesForQuery (List<String> genomeRawNames) {
+	private List<String> getColumnNamesForQuery (List<String> genomeNames) {
 		List<String> columnNames = new ArrayList<String>();
 		columnNames.add("POS");
 		columnNames.add("REF");
 		columnNames.add("ALT");
 		columnNames.add("QUAL");
 		columnNames.add("INFO");
-		for (String genomeRawName: genomeRawNames) {
-			columnNames.add(genomeRawName);
+		for (String genomeName: genomeNames) {
+			columnNames.add(FormattedMultiGenomeName.getRawName(genomeName));
 		}
 		return columnNames;
 	}
@@ -207,12 +221,12 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private List<String> getRequiredGenomeNamesFromAReader (VCFReader reader) {
 		List<String> requiredGenomeNames = new ArrayList<String>();
-		List<String> allGenomeRawNames = multiGenome.getAllGenomeRawNames(); 
-		List<String> readerGenomeRawNames = reader.getRawGenomesNames();
-
-		for (String readerGenomeRawName: readerGenomeRawNames) {
-			if (allGenomeRawNames.contains(readerGenomeRawName)) {
-				requiredGenomeNames.add(readerGenomeRawName);
+		List<String> allGenomeNames = multiGenomeProject.getGenomeNames();
+		List<String> readerGenomeNames = reader.getGenomeNames();
+		
+		for (String readerGenomeName: readerGenomeNames) {
+			if (allGenomeNames.contains(readerGenomeName)) {
+				requiredGenomeNames.add(readerGenomeName);
 			}
 		}
 
@@ -254,6 +268,11 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
+	/**
+	 * Tests the length of a variation to find its type out.
+	 * @param variationLength 	length of the variation
+	 * @return					the variation type {@link VariantType}
+	 */
 	private VariantType getVariantType (int variationLength) {
 		if (variationLength < 0) {
 			return VariantType.DELETION;
@@ -272,10 +291,15 @@ public class MGSynchronizer implements Serializable {
 
 	/**
 	 * Performs the synchronization for every genome of the project.
+	 * The process is separated on 3 levels:
+	 * - genomes
+	 * - alleles
+	 * - chromosomes
+	 * (Makes the reading easier)
 	 */
 	public void performPositionSynchronization () {
 		synchronizeToGenomesLevel();
-		multiGenome.getMultiGenome().getReferenceGenome().synchronizePosition();
+		multiGenomeProject.getMultiGenome().getReferenceGenome().synchronizePosition();
 	}
 
 
@@ -284,8 +308,8 @@ public class MGSynchronizer implements Serializable {
 	 * It handles the genomes loop in order to process the synchronization for both alleles of each of them.
 	 */
 	private void synchronizeToGenomesLevel () {
-		for (String genomeName: multiGenome.getGenomeNames()) {																// scan on every genome
-			MGGenome genomeInformation = multiGenome.getMultiGenome().getGenomeInformation(genomeName);						// current genome information 
+		for (String genomeName: multiGenomeProject.getGenomeNames()) {																// scan on every genome
+			MGGenome genomeInformation = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName);						// current genome information 
 
 			ChromosomeListOfLists<MGOffset> chromosomeAlleleAOffsetList = synchronizeToAlleleLevel(genomeInformation.getAlleleA().getOffsetList());		// get the synchronized chromosome list of list for the allele A
 			ChromosomeListOfLists<MGOffset> chromosomeAlleleBOffsetList = synchronizeToAlleleLevel(genomeInformation.getAlleleB().getOffsetList());		// get the synchronized chromosome list of list for the allele B
@@ -305,7 +329,7 @@ public class MGSynchronizer implements Serializable {
 	private ChromosomeListOfLists<MGOffset> synchronizeToAlleleLevel (ChromosomeListOfLists<MGOffset> chromosomeAlleleOffsetList) {
 		int chromosomeListSize = ProjectManager.getInstance().getProjectChromosome().getChromosomeList().size();						// get the number of chromosome
 
-		ChromosomeListOfLists<MGOffset> chromosomeReferenceListOfList = multiGenome.getMultiGenome().getReferenceGenome().getAllele().getOffsetList();	// get the chromosome list of list of the reference genome
+		ChromosomeListOfLists<MGOffset> chromosomeReferenceListOfList = multiGenomeProject.getMultiGenome().getReferenceGenome().getAllele().getOffsetList();	// get the chromosome list of list of the reference genome
 		ChromosomeListOfLists<MGOffset> list = new ChromosomeArrayListOfLists<MGOffset>();												// instantiate a new chromosome list of list (to insert the synchronized list of offset)
 
 		for (int i = 0; i < chromosomeListSize; i++) {																					// scan on the number of chromosome (loop on ever chromosome)
@@ -399,6 +423,15 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
+	/**
+	 * Creates an offset
+	 * @param offsetList		the full list of offsets
+	 * @param currentOffset		the offset being processed
+	 * @param lastRefPosition	the last reference genome position
+	 * @param additionalLength	the total length of all insertion between two deletion
+	 * @param additionalValue	only in the case where two or more insertion happen at the same position and the one of the actual offset is not the longest one
+	 * @return					a new offset corresponding to the current process
+	 */
 	private MGOffset getNewOffset (List<MGOffset> offsetList, MGOffset currentOffset, int lastRefPosition, int additionalLength, int additionalValue) {
 		MGOffset offset = null;
 		int newGenomePosition = 0;

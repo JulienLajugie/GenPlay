@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
@@ -74,4 +75,27 @@ public interface IDFilterInterface {
 	 */
 	public String getErrors ();
 
+	
+	/**
+	 * Checks if the given variant is valid according to the filter
+	 * @param variant the variant
+	 * @return true if it is valid, false otherwise;
+	 */
+	public boolean isValid (VariantInterface variant);
+	
+	
+	/**
+	 * Checks if the object (purpose of the filter) is valid according to the filter
+	 * @param value the object, value from the variant information
+	 * @return true if it is valid, false otherwise;
+	 */
+	public boolean isValid (Object value);
+	
+	
+	/**
+	 * Equals method
+	 * @param obj
+	 * @return true if the parameter is equal to the instance
+	 */
+	public boolean equals(Object obj);
 }

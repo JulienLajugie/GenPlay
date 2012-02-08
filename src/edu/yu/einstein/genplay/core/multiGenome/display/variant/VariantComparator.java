@@ -39,6 +39,13 @@ public class VariantComparator implements Comparator<VariantInterface> {
 		if (position1 < position2) {
 			return -1;
 		} else if (position1 == position2) {
+			int length1 = o1.getLength();
+			int length2 = o2.getLength();
+			if (length1 > length2) {
+				return -1;				// the longest variant is first
+			} else if (length1 < length2) {
+				return 1;
+			}
 			return 0;
 		} else {
 			return 1;

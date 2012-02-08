@@ -135,7 +135,7 @@ public class MGSNPSynchronizer implements Serializable {
 				}
 			}
 		}
-
+		
 		deleteSNP(genomesToDelete);
 
 		this.chromosome = currentChromosome;
@@ -152,8 +152,8 @@ public class MGSNPSynchronizer implements Serializable {
 	private void addSNP (Map<String, List<AlleleType>> genomes) {
 		if (genomes != null && genomes.size() > 0) {
 			Map<VCFReader, List<String>> readers = getSNPReaders(genomes);
-			MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay();
-
+			MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay();
+			
 			for (VCFReader reader: readers.keySet()) {
 				List<String> genomeNames = transformList(readers.get(reader));
 				List<String> fields = getColumnNamesForQuery(genomeNames);
@@ -176,9 +176,9 @@ public class MGSNPSynchronizer implements Serializable {
 										String alternative = alternatives[pos - 1];
 										if (alternative.length() == 1) {
 											MGVariantListForDisplay variantListForDisplay = null;
-											if (alleleType == AlleleType.PATERNAL) {
+											if (alleleType == AlleleType.ALLELE01) {
 												variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleA().getVariantList(chromosome, VariantType.SNPS);
-											} else if (alleleType == AlleleType.MATERNAL) {
+											} else if (alleleType == AlleleType.ALLELE02) {
 												variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
 											}
 											if (variantListForDisplay != null) {
@@ -204,9 +204,9 @@ public class MGSNPSynchronizer implements Serializable {
 			for (String genomeName: genomes.keySet()) {
 				for (AlleleType alleleType: genomes.get(genomeName)) {
 					MGVariantListForDisplay variantListForDisplay = null;
-					if (alleleType == AlleleType.PATERNAL) {
+					if (alleleType == AlleleType.ALLELE01) {
 						variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleA().getVariantList(chromosome, VariantType.SNPS);
-					} else if (alleleType == AlleleType.MATERNAL) {
+					} else if (alleleType == AlleleType.ALLELE02) {
 						variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
 					}
 					if (variantListForDisplay != null) {
@@ -220,7 +220,7 @@ public class MGSNPSynchronizer implements Serializable {
 
 
 	private Map<VCFReader, List<String>> getSNPReaders (Map<String, List<AlleleType>> genomes) {
-		List<VCFReader> allReaders = ProjectManager.getInstance().getMultiGenome().getAllReaders();
+		List<VCFReader> allReaders = ProjectManager.getInstance().getMultiGenomeProject().getAllReaders();
 		Map<VCFReader, List<String>> readers = new HashMap<VCFReader, List<String>>(); 
 
 		for (VCFReader reader: allReaders) {
@@ -282,9 +282,9 @@ public class MGSNPSynchronizer implements Serializable {
 	private int getAlternativePosition (String format, AlleleType alleleType) {
 		if (format.length() == 3) {
 			String result = "";
-			if (alleleType == AlleleType.PATERNAL) {
+			if (alleleType == AlleleType.ALLELE01) {
 				result = format.substring(0, 1);
-			} else if (alleleType == AlleleType.MATERNAL) {
+			} else if (alleleType == AlleleType.ALLELE02) {
 				result = format.substring(2);
 			}
 			try {
@@ -320,15 +320,15 @@ public class MGSNPSynchronizer implements Serializable {
 
 	private void deleteSNP (Map<String, List<AlleleType>> genomes) {
 		if (genomes != null && genomes.size() > 0) {
-			MGMultiGenomeForDisplay multiGenome = ProjectManager.getInstance().getMultiGenome().getMultiGenomeForDisplay();
+			MGMultiGenomeForDisplay multiGenome = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay();
 
 			List<AlleleType> alleleList = getAlleleTypeList();
 			for (String genomeName: genomes.keySet()) {
 				for (AlleleType alleleType: alleleList) {
 					MGAlleleForDisplay allele = null;
-					if (alleleType == AlleleType.PATERNAL) {
+					if (alleleType == AlleleType.ALLELE01) {
 						allele = multiGenome.getGenomeInformation(genomeName).getAlleleA();
-					} else if (alleleType == AlleleType.MATERNAL) {
+					} else if (alleleType == AlleleType.ALLELE02) {
 						allele = multiGenome.getGenomeInformation(genomeName).getAlleleB();
 					}
 					if (allele != null) {
@@ -342,9 +342,22 @@ public class MGSNPSynchronizer implements Serializable {
 
 	private List<AlleleType> getAlleleTypeList () {
 		List<AlleleType> alleleList = new ArrayList<AlleleType>();
-		alleleList.add(AlleleType.PATERNAL);
-		alleleList.add(AlleleType.MATERNAL);
+		alleleList.add(AlleleType.ALLELE01);
+		alleleList.add(AlleleType.ALLELE02);
 		return alleleList;
 	}
+	
+	
+	/*private void printList (Map<String, List<AlleleType>> genomes) {
+		String info = "";
+		for (String genomeName: genomes.keySet()) {
+			info += "genome: " + genomeName + " -> ";
+			List<AlleleType> alleleList = genomes.get(genomeName);
+			for (AlleleType alleleType: alleleList) {
+				info += alleleType + "; ";
+			}
+		}
+		System.out.println(info);
+	}*/
 
 }

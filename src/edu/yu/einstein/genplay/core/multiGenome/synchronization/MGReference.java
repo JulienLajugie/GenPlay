@@ -34,6 +34,17 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
+ * This class represents the reference genome.
+ * It uses only one instance of the {@link MGAllele} data structure.
+ * All VCF files contain variations between a genome compared to the reference genome.
+ * The reference genome does not have a variation strictly speaking, it is the reference. So no deletion, no insertion.
+ * Deletions on genomes mean that nucleotides from the reference genome do not exist one those genomes. Here, the reference genome does not report any synchronization process.
+ * However, insertions on genomes mean that nucleotides exist on these genomes but on the reference genome.
+ * Like all genomes that do not have those nucleotides, they must be synchronized according to the position where the insertion show up and its length.
+ * Synchronization processes involved by insertions from other genomes are called, on the current genome, "blank of synchronization".
+ * As I said above, the reference genome obviously not have deletion or insertion with itself.
+ * It means that all synchronization processes on the reference genome are blank of synchronization (ie: caused by insertions from the other genomes).
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */

@@ -80,7 +80,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		// Checks if the project is multi-genome and if SNPs have been requested
 		if (projectManager.isMultiGenomeProject()) {
 			
-			MGSNPSynchronizer snpSynchronizer = projectManager.getMultiGenome().getMultiGenomeSynchronizerForSNP();
+			MGSNPSynchronizer snpSynchronizer = projectManager.getMultiGenomeProject().getMultiGenomeSynchronizerForSNP();
 
 			// Notifies the action
 			notifyActionStart(ACTION_NAME, 1, false);
@@ -93,6 +93,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			
 			
 			snpSynchronizer.compute(genomeNames);
+
 		}
 
 		return null;
@@ -139,20 +140,20 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 					if (alleleType == AlleleType.BOTH) {
 						paternal = true;
 						maternal = true;
-					} else if (alleleType == AlleleType.PATERNAL) {
+					} else if (alleleType == AlleleType.ALLELE01) {
 						paternal = true;
-					} else if (alleleType == AlleleType.MATERNAL) {
+					} else if (alleleType == AlleleType.ALLELE02) {
 						maternal = true;
 					}
 					
 					if (paternal) {
-						if (!names.get(genomeName).contains(AlleleType.PATERNAL)) {
-							names.get(genomeName).add(AlleleType.PATERNAL);
+						if (!names.get(genomeName).contains(AlleleType.ALLELE01)) {
+							names.get(genomeName).add(AlleleType.ALLELE01);
 						}
 					}
 					if (maternal) {
-						if (!names.get(genomeName).contains(AlleleType.MATERNAL)) {
-							names.get(genomeName).add(AlleleType.MATERNAL);
+						if (!names.get(genomeName).contains(AlleleType.ALLELE02)) {
+							names.get(genomeName).add(AlleleType.ALLELE02);
 						}
 					}
 				}

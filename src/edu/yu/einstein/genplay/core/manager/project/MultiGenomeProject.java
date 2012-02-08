@@ -38,25 +38,45 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
+
 
 /**
+ * The multi genome data structure can be seen in 3 main parts:
+ * - {@link MGMultiGenome} : Manages offsets between genomes and the meta genome. It is all about the synchronization of the positions.
+ * - {@link MGMultiGenomeForDisplay} : Manages the variant information for their display.
+ * - {@link MGSynchronizer} & {@link MGSNPSynchronizer}: the synchronizers, they perform the synchronization operations.
+ * 
+ * This class also contains the map between the genome names and their VCF file readers.
+ * Information about a genome can be stored in one or several VCF files, no matter the type (Indels, SV, SNPs).
+ * Genomes separated in different files MUST HAVE THE SAME NAME IN EVERY FILE!
+ * 
+ * The genomes names list is required quiet often. That list is made from the map between the genome names and their reader.
+ * Once created, the list is stored in order to be use later without creating it again and again.
+ * 
+ * ALL GENOME NAMES ARE STORED IN THIS DATA STRUCTURE AS "FULL GENOME NAME" (with group/genome/raw name).
+ * See {@link FormattedMultiGenomeName} for more details.
+ * 
+ * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link PAMultiGenome} AND {@link PAMultiGenomeSNP}.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MultiGenome implements Serializable {
+public class MultiGenomeProject implements Serializable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -6096336417566795182L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;					// saved format version
 	
-	private		List<String>					genomeNames;				// genome names list
-	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;		// mapping between genome names and their reader.
+	private		List<String>					genomeNames;					// The genome names list.
+	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;			// The map between genome names and their readers.
 
-	private 	MGMultiGenome 					multiGenome;
-	private 	MGMultiGenomeForDisplay 		multiGenomeForDisplay;
+	private 	MGMultiGenome 					multiGenome;					// The genome synchronization data structure.
+	private 	MGMultiGenomeForDisplay 		multiGenomeForDisplay;			// The genome display data structure.
 
-	private		MGSynchronizer					multiGenomeSynchronizer;
-	private		MGSNPSynchronizer				multiGenomeSynchronizerForSNP;
+	private		MGSynchronizer					multiGenomeSynchronizer;		// The synchronizer for Indels and Structural Variant variations.
+	private		MGSNPSynchronizer				multiGenomeSynchronizerForSNP; 	// The synchronizer for SNPs variations.
 
 
 	/**
@@ -94,9 +114,9 @@ public class MultiGenome implements Serializable {
 	
 	
 	/**
-	 * Constructor of {@link MultiGenome}
+	 * Constructor of {@link MultiGenomeProject}
 	 */
-	public MultiGenome () {}
+	public MultiGenomeProject () {}
 
 
 	/**
@@ -107,10 +127,26 @@ public class MultiGenome implements Serializable {
 		this.genomeFileAssociation = genomeFileAssociation;
 		this.genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
 		Collections.sort(genomeNames);
+		
+		for (String genomeName: genomeNames) {
+			List<VCFReader> readers = genomeFileAssociation.get(genomeName);
+			for (VCFReader reader: readers) {
+				reader.addGenomeName(genomeName);
+			}
+		}
+		
 		this.multiGenome = new MGMultiGenome(genomeNames);
 		this.multiGenomeSynchronizer = new MGSynchronizer(this);
 		this.multiGenomeSynchronizerForSNP = new MGSNPSynchronizer();
 		initializesDisplayInformation();
+	}
+	
+	
+	/**
+	 * @param genomeFileAssociation the genomeFileAssociation to set
+	 */
+	public void setGenomeFileAssociation(Map<String, List<VCFReader>> genomeFileAssociation) {
+		this.genomeFileAssociation = genomeFileAssociation;
 	}
 
 
@@ -264,19 +300,10 @@ public class MultiGenome implements Serializable {
 	public Map<String, List<VCFReader>> getGenomeFileAssociation() {
 		return genomeFileAssociation;
 	}
-
-
-	/**
-	 * @param genomeFileAssociation the genomeFileAssociation to set
-	 */
-	public void setGenomeFileAssociation(
-			Map<String, List<VCFReader>> genomeFileAssociation) {
-		this.genomeFileAssociation = genomeFileAssociation;
-	}
 	
 	
 	/**
-	 * Show the information of the {@link MultiGenome}
+	 * Show the information of the {@link MultiGenomeProject}
 	 */
 	public void show () {
 		System.out.println("POSITION");

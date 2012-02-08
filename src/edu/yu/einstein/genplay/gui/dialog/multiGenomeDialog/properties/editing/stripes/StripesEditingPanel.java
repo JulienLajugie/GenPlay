@@ -156,7 +156,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	 */
 	private JComboBox getGenomeBox () {
 		// Get the genome array without the reference genome
-		Object[] allGenomes = ProjectManager.getInstance().getMultiGenome().getFormattedGenomeArray();
+		Object[] allGenomes = ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray();
 		Object[] genomes = new Object[allGenomes.length - 1];
 		int index = 0;
 		for (Object o: allGenomes) {
@@ -192,7 +192,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	 */
 	private JComboBox getAlleleBox () {
 		// Creates the array containing the different alleles
-		Object[] alleles = new Object[]{AlleleType.BOTH, AlleleType.PATERNAL, AlleleType.MATERNAL};
+		Object[] alleles = new Object[]{AlleleType.BOTH, AlleleType.ALLELE01, AlleleType.ALLELE02};
 		
 		// Creates the box
 		jcbAllele = new JComboBox(alleles);
@@ -316,7 +316,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			String genomeName = jcbGenome.getSelectedItem().toString();
 			for (int i = 0; i < variationName.size(); i++) {
 				VariantType type = variationName.get(i);
-				List<VCFReader> readers = ProjectManager.getInstance().getMultiGenome().getReaders(genomeName, type);
+				List<VCFReader> readers = ProjectManager.getInstance().getMultiGenomeProject().getReaders(genomeName, type);
 				if (readers.size() > 0) {
 					selectedVariation.get(i).setEnabled(true);
 				} else {

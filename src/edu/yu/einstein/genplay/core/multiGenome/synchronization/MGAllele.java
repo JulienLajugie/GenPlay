@@ -36,6 +36,15 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
+ * This class represents an allele, it is composed of a chromosome list of list of offset ({@link MGOffset}.
+ * It is a list that can be handle as map indexed with chromosome ({@link Chromosome}.
+ * The value would be the list of offsets.
+ * For memory usage, it is an elaborated list of list and not a map.
+ * 
+ * The list of offsets is technically not a list of offsets but a {@link IntArrayAsOffsetList}.
+ * It is an object that contains two arrays of int (one for the positions and one for the values).
+ * It is an important memory usage improvement but acts as a list (eg: get and add methods with {@link MGOffset} as input and returned parameter).
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -44,7 +53,8 @@ public class MGAllele implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -171745864537442112L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private ChromosomeListOfLists<MGOffset> offsetList;	// List of offset organized by chromosome
+	
+	private ChromosomeListOfLists<MGOffset> offsetList;					// List of offset organized by chromosome
 
 
 	/**
@@ -135,7 +145,7 @@ public class MGAllele implements Serializable {
 				for (MGOffset offset: offsetList.get(chromosome)) {
 					if (cpt < 10) {
 						offset.show();
-						//cpt++;
+						cpt++;
 					}
 				}
 			}
