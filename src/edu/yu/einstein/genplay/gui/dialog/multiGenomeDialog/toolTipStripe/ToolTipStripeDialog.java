@@ -229,6 +229,10 @@ public class ToolTipStripeDialog extends JDialog {
 		int previousIndex = currentIndex - 1;
 		if (previousIndex >= 0) {
 			result = variantList.get(previousIndex);
+			if (variant.getType() == VariantType.BLANK) {
+				previousIndex = getPreviousValidIndex(previousIndex);
+				result = variantList.get(previousIndex);
+			}
 		} else {
 			result = variant;
 		}
@@ -244,12 +248,71 @@ public class ToolTipStripeDialog extends JDialog {
 		VariantInterface result;
 		int currentIndex = getVariantIndex(variant);
 		int nextIndex = currentIndex + 1;
+
 		if (nextIndex >= 0 && nextIndex < variantList.size()) {
 			result = variantList.get(nextIndex);
+			if (variant.getType() == VariantType.BLANK) {
+				nextIndex = getNextValidIndex(nextIndex);
+				result = variantList.get(nextIndex);
+			}
 		} else {
 			result = variant;
 		}
 		return result;
+	}
+
+	
+	/**
+	 * Gets the the next valid index.
+	 * A valid index is not an index related to a blank variant where the scan is already on.
+	 * The dialog can be on blank, the next button must go to the next variant (that can be a blank but furhter!)
+	 * @param index the index after the current index
+	 * @return	the valid next index
+	 */
+	private int getNextValidIndex (int index) {
+		boolean found = false;
+		int i = index;
+		while (!found && i < variantList.size()) {
+			if (variantList.get(i).getType() == VariantType.BLANK) {
+				if (	(i + 1) < variantList.size() &&
+						variantList.get(i + 1).getStart() > variantList.get(i).getStop()) {
+					found = true;
+				}
+				i++;
+			} else {
+				found = true;
+			}
+		}
+		if (i >= variantList.size()) {
+			return index;
+		}
+		return i;
+	}
+
+
+	/**
+	 * See getNextValidIndex description
+	 * @param index the index before the current index
+	 * @return the previous valid index
+	 */
+	private int getPreviousValidIndex (int index) {
+		boolean found = false;
+		int i = index;
+		while (!found && i >= 0) {
+			if (variantList.get(i).getType() == VariantType.BLANK) {
+				if (	(i - 1) >= 0 &&
+						variantList.get(i - 1).getStop() < variantList.get(i).getStart()) {
+					found = true;
+				}
+				i--;
+			} else {
+				found = true;
+			}
+		}
+		if (i < 0) {
+			return index;
+		}
+		return i;
 	}
 
 }

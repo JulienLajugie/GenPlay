@@ -34,8 +34,10 @@ public class VariantComparator implements Comparator<VariantInterface> {
 
 	@Override
 	public int compare(VariantInterface o1, VariantInterface o2) {
-		int position1 = o1.getReferenceGenomePosition();
-		int position2 = o2.getReferenceGenomePosition();
+		//int position1 = o1.getReferenceGenomePosition();
+		//int position2 = o2.getReferenceGenomePosition();
+		int position1 = o1.getStart();
+		int position2 = o2.getStart();
 		if (position1 < position2) {
 			return -1;
 		} else if (position1 == position2) {

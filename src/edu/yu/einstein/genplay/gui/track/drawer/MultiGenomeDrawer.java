@@ -468,7 +468,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 					Collections.sort(variantList, new VariantComparator());								// we sort the global list
 				} else if (trackAlleleType == AlleleType.ALLELE01) {									// if the first allele only is displayed
 					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());		// we get the copy of its list
-				} else if (trackAlleleType == AlleleType.ALLELE01) {									// if the second allele only is displayed
+				} else if (trackAlleleType == AlleleType.ALLELE02) {									// if the second allele only is displayed
 					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());		// we get the copy of its list
 				}
 				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);						// we create the information dialog
@@ -602,8 +602,14 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		VariantInterface variant = null;
 		if (variantList != null) {									// if a variant list has been found
 			for (VariantInterface current: variantList) {			// we scan all of its variant
-				if (x >= current.getStart() && x <= current.getStop()) {	// if X is included in a variant,
-					return current;									// we have found it!
+				if (current.getType() == VariantType.SNPS) {		// special case for SNP
+					if (x == current.getStart()) {					// a SNP is defined for a start but return the stop as start + 1. However, is present on the start position only, it does not include the stop!
+						return current;
+					}
+				} else {
+					if (x >= current.getStart() && x <= current.getStop()) {	// if X is included in a variant,
+						return current;											// we have found it!
+					}
 				}
 			}
 		}

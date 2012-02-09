@@ -101,16 +101,19 @@ public class GlobalInformationPanel extends JPanel {
 				VariantType type = variant.getType();
 				int startPosition = variant.getStart();
 				int stopPosition;
+				int length;
 				if (type == VariantType.SNPS) {
 					stopPosition = startPosition + 1;
+					length = 1;
 				} else {
 					stopPosition = variant.getStop();
+					length = stopPosition - startPosition + 1;
 				}
 				String genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
 				gbc = addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")", gbc);
 				gbc = addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName), gbc);
 				gbc = addObjectRow("Position: ", startPosition + " to " + stopPosition, gbc);
-				gbc = addObjectRow("Length: ", "" + (stopPosition - startPosition + 1), gbc);
+				gbc = addObjectRow("Length: ", "" + length, gbc);
 				gbc = addObjectRow("Type: ", variant.getType().toString(), gbc);
 				if (type == VariantType.SNPS && !this.variantInformation.getId().equals(".")) {
 					gbc = addLabelRow("ID: ", getIDLabel(this.variantInformation.getId()), gbc);

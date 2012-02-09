@@ -56,16 +56,15 @@ import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBox
  */
 public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxEventsGenerator {
 
-	
+
 	private final static 	String 		ADD_ICON_PATH 		= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 		// path of the add entry icon
 	private final static 	String 		REPLACE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/edit_entry_50x50.png"; 		// path of the edit entry icon
 	private final static 	String 		DELETE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/delete_entry_50x50.png"; 	// path of the delete entry icon
-	
-	
+
+
 	private final 	List<CustomComboBoxListener> 	listenerList;		// list of GenomeWindowListener
 	private 		CustomComboBoxRenderer 			instance;			// instance of the class, needed for the CustomComboBoxEventsGenerator.
 	private 		int 							x;					// x position of the mouse
-
 
 	/**
 	 * Constructor of {@link CustomComboBoxRenderer}
@@ -87,23 +86,20 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 		});
 
 		list.addMouseListener(new MouseAdapter() {
-			
+
 			// The principle is to save the x position of the mouse on the jlist,
 			// when the user clicks we know where it was on the list and it is possible to know which button was activated.
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				Object element = list.getSelectedValue();					// gets the selected value of the jlist
 
-				//int width = list.getWidth();								// gets the width of the jlist
 				int side = getSide(list);									// button side calculation (dependent of the jlist height)
 
-				int action;													// action involved by the position of the mouse
+				int action = CustomComboBoxEvent.NO_ACTION;					// action involved by the position of the mouse
 
 				if (element.toString().equals(CustomComboBox.ADD_TEXT)) {	// if the item corresponds to the adding action.
-					if (x < side) {
+					if (x < list.getWidth()) {
 						action = CustomComboBoxEvent.ADD_ACTION;
-					} else {
-						action = CustomComboBoxEvent.SELECT_ACTION;
 					}
 				} else {													// if not,	
 					if (x < side) {											// user clicked on the left button (edit)
@@ -115,11 +111,13 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 					}
 				}
 
-				x = list.getWidth();														// mouse position set to 0
+				x = list.getWidth() + 50;														// mouse position set to 0
 
-				CustomComboBoxEvent event = new CustomComboBoxEvent(instance, list.getSelectedValue(), action);	// creates the custom combo box event
-				for (CustomComboBoxListener currentListener: listenerList) {	// warns the listener
-					currentListener.customComboBoxChanged(event);
+				if (action != CustomComboBoxEvent.NO_ACTION) {
+					CustomComboBoxEvent event = new CustomComboBoxEvent(instance, list.getSelectedValue(), action);	// creates the custom combo box event
+					for (CustomComboBoxListener currentListener: listenerList) {	// warns the listener
+						currentListener.customComboBoxChanged(event);
+					}
 				}
 			}
 		});
@@ -128,11 +126,11 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 		panel.setLayout(new BorderLayout());
 		JLabel label = new JLabel("");				// label displaying the item
 		panel.add(label, BorderLayout.CENTER);
-		
+
 		if (value != null) {						// if there is a value
 			String text = value.toString();			// we get it into a string
 			label.setText(text);					// and set it into the label
-			
+
 			// index '-1' means a simple click on the combo box (not its JList), there is no need to return a full panel.
 			// if the full panel is returned, button(s) will be displayed in the combo box and it will look like a bug.
 			if (index == -1) {
@@ -151,7 +149,7 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 					buttonPanel.setLayout(new GridLayout(1, 1));		// with one line and two columns
 					Dimension buttonDim = new Dimension(side , side);	// creates a dimension for the panel (contains two buttons max)
 					buttonPanel.setPreferredSize(buttonDim);			// sets the dimension to the panel size
-					
+
 					ImageIcon addIcon = getIcon(ADD_ICON_PATH, side);	// get the add icon
 					JButton addButton = new JButton(addIcon);			// creates the button containing the icon
 					addButton.setContentAreaFilled(false);				// set the button background to transparent
@@ -163,36 +161,36 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 					buttonPanel.setLayout(new GridLayout(1, 2));			// with one line and two columns
 					Dimension buttonDim = new Dimension(side * 2, side);	// creates a dimension for the panel (contains two buttons max)
 					buttonPanel.setPreferredSize(buttonDim);				// sets the dimension to the panel size
-					
+
 					// Creates the edit button (same principle as the add button above)
 					ImageIcon editIcon = getIcon(REPLACE_ICON_PATH, side);
 					JButton replaceButton = new JButton(editIcon);
 					replaceButton.setContentAreaFilled(false);
 					replaceButton.setBorder(null);
 					replaceButton.setMargin(buttonInset);
-					
+
 					// Creates the delete button (same principle as the add button above)
 					ImageIcon deleteIcon = getIcon(DELETE_ICON_PATH, side);
 					JButton deleteButton = new JButton(deleteIcon);
 					deleteButton.setContentAreaFilled(false);
 					deleteButton.setBorder(null);
 					deleteButton.setMargin(buttonInset);
-					
+
 					// Adds buttons to the panel
 					buttonPanel.add(replaceButton);
 					buttonPanel.add(deleteButton);
 				}
-				
+
 				// add the button panel to the global panel
 				panel.add(buttonPanel, BorderLayout.WEST);
 			}
-			
+
 		}
 
 		return panel;
 	}
-	
-	
+
+
 	/**
 	 * Creates a square icon using the given path 
 	 * @param path	icon path
@@ -223,16 +221,17 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 	public void addCustomComboBoxListener(
 			CustomComboBoxListener customComboBoxListener) {
 		listenerList.add(customComboBoxListener);
+		//System.out.println(customComboBoxListener.toString());
 	}
 
-	
+
 	@Override
 	public CustomComboBoxListener[] getCustomComboBoxListeners() {
 		CustomComboBoxListener[] customComboBoxListeners = new CustomComboBoxListener[listenerList.size()];
 		return listenerList.toArray(customComboBoxListeners);
 	}
 
-	
+
 	@Override
 	public void removeCustomComboBoxListener(
 			CustomComboBoxListener customComboBoxListener) {

@@ -35,6 +35,8 @@ public final class CustomComboBoxEvent extends EventObject {
 	
 	private static final long serialVersionUID = -5909384700520572038L;	// generated ID
 	
+	/** Nothing must happen */
+	public static final int NO_ACTION = -1;
 	/** The element will be selected */
 	public static final int SELECT_ACTION = 0;
 	/** The element will be selected */

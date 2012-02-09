@@ -69,7 +69,7 @@ public class MGVariousSettings implements Serializable {
 	 * Constructor of {@link MGVariousSettings}
 	 */
 	protected MGVariousSettings () {
-		transparency = 50;
+		transparency = 70;
 		showLegend = true;
 	}
 	

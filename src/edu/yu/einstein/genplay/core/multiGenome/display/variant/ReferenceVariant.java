@@ -165,10 +165,6 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 			return false;
 		}
 		
-		if (this.hashCode() != obj.hashCode()) {
-			return false;
-		}
-		
 		// object must be Test at this point
 		ReferenceVariant test = (ReferenceVariant)obj;
 		return referenceGenomePosition == test.getReferenceGenomePosition() &&
