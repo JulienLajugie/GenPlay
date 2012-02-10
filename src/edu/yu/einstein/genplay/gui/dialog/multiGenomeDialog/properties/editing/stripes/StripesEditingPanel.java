@@ -321,6 +321,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 					selectedVariation.get(i).setEnabled(true);
 				} else {
 					selectedVariation.get(i).setEnabled(false);
+					selectedVariation.get(i).setSelected(false);
 				}
 			}
 		}

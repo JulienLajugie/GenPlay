@@ -116,9 +116,12 @@ class MultiGenomePanel extends JPanel {
 				vcfLoaderDialog.setData(getData());
 				if (vcfLoaderDialog.showDialog(ProjectFrame.getInstance().getRootPane()) == VCFLoaderDialog.APPROVE_OPTION) {
 					setData(vcfLoaderDialog.getData());
-					initializesGenomeFileAssociation();
-					updatesStatistics();
-					vcfLoaderDialog.closeDialog();
+					if (vcfLoaderDialog.areValidSettings()) {
+						
+						initializesGenomeFileAssociation();
+						updatesStatistics();
+						//vcfLoaderDialog.closeDialog();
+					}
 				}
 			}
 		});
@@ -269,7 +272,7 @@ class MultiGenomePanel extends JPanel {
 		List<VCFReader> readerList = new ArrayList<VCFReader>();
 
 		for (VCFData vcfData: data) {
-			String fullName = FormattedMultiGenomeName.getFullFormattedGenomeName(vcfData.getGroup(), vcfData.getGenome(), vcfData.getRaw());
+			String fullName = FormattedMultiGenomeName.getFullFormattedGenomeName(vcfData.getGroup(), vcfData.getNickname(), vcfData.getRaw());
 			if (!genomeFileAssociation.containsKey(fullName)) {
 				genomeFileAssociation.put(fullName, new ArrayList<VCFReader>());
 			}
@@ -291,7 +294,7 @@ class MultiGenomePanel extends JPanel {
 		//showsAssociation();
 	}
 
-	
+
 	/*private void showsAssociation () {
 		String info = "-----------------\n";
 		for (String genome: genomeFileAssociation.keySet()) {
@@ -303,7 +306,7 @@ class MultiGenomePanel extends JPanel {
 		}
 		System.out.println(info);
 	}*/
-	
+
 
 	/**
 	 * Generates statistics about:

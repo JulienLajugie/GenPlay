@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -50,6 +51,9 @@ class SettingsPanel extends JPanel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3353198770426567657L;
+
+	// VCF Loader options
+	private JTextField jtfDefaultGroupText;
 
 	// Transparency option
 	private static final int TRANSPARENCY_MIN = 0;
@@ -77,7 +81,7 @@ class SettingsPanel extends JPanel {
 		initializesStaticOptionLists();
 		yesOptionRadioList = new ArrayList<JRadioButton>();
 		noOptionRadioList = new ArrayList<JRadioButton>();
-		
+
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -86,6 +90,16 @@ class SettingsPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 
+		/*// Stripes transparency option title
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.insets = PropertiesDialog.FIRST_TITLE_INSET;
+		add(Utils.getTitleLabel("VCF Loader"), gbc);
+
+		// Slider for stripes transparency option
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.PANEL_INSET;
+		add(getDefaultGroupTextPanel(), gbc);*/
 
 		// Stripes transparency option title
 		gbc.gridx = 0;
@@ -119,7 +133,7 @@ class SettingsPanel extends JPanel {
 
 	}
 
-	
+
 	/**
 	 * Initializes the lists for the static options
 	 */
@@ -130,7 +144,7 @@ class SettingsPanel extends JPanel {
 		optionNameList.add("Show nucleotides of insertion stripes");
 		optionNameList.add("Show nucleotides of deletion stripes");
 		optionNameList.add("Show nucleotide of SNP stripes");
-		
+
 		optionValueList = new ArrayList<Integer>();
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_INSERTION_EDGE));
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_DELETION_EDGE));
@@ -138,7 +152,7 @@ class SettingsPanel extends JPanel {
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_DELETION_LETTERS));
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_SNP_LETTERS));
 	}
-	
+
 
 	private int getOptionValue (int option) {
 		if (option == MGDisplaySettings.YES_MG_OPTION) {
@@ -147,8 +161,8 @@ class SettingsPanel extends JPanel {
 			return MGDisplaySettings.NO_MG_OPTION;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Refreshes the static option radios according to the list
 	 */
@@ -163,6 +177,30 @@ class SettingsPanel extends JPanel {
 			}
 		}
 	}
+
+	/////////////////////////////////////////// VCF Loader option
+
+	/**
+	 * Creates the panel that displays the default group text for the VCF Loader.
+	 */
+	@SuppressWarnings("unused") // use it if you want to let the user choose the default group text
+	private JPanel getDefaultGroupTextPanel () {
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		JLabel jlTitle = new JLabel("Default group text");
+		jlTitle.setPreferredSize(new Dimension(100, jlTitle.getPreferredSize().height));
+
+		jtfDefaultGroupText = new JTextField();
+		//jtfDefaultGroupText.setText(MGDisplaySettings.getInstance().getVariousSettings().getDefaultGroupText());
+		jtfDefaultGroupText.setPreferredSize(new Dimension(100, jtfDefaultGroupText.getPreferredSize().height));
+
+		panel.add(jlTitle);
+		panel.add(jtfDefaultGroupText);
+
+		return panel;
+	}
+
 
 	/////////////////////////////////////////// Stripes transparency option
 
@@ -222,7 +260,7 @@ class SettingsPanel extends JPanel {
 		} else {
 			yesButton.setSelected(false);	
 		}
-		
+
 		// Group the radio buttons
 		ButtonGroup group = new ButtonGroup();
 		group.add(yesButton);
@@ -240,7 +278,7 @@ class SettingsPanel extends JPanel {
 		panel.add(jlTitle);
 		panel.add(yesButton);
 		panel.add(noButton);
-		
+
 		return panel;
 	}
 
@@ -286,7 +324,7 @@ class SettingsPanel extends JPanel {
 		return panel;
 	}
 
-	
+
 	/**
 	 * Set the option value list
 	 * @param option	index (symbolizes the index of the static option)
@@ -312,7 +350,11 @@ class SettingsPanel extends JPanel {
 	 * @param transparency	transparency value
 	 * @param showLegend		legend value
 	 */
+	// @param defaultGroupText the default text for the group field
+	//public void setSettings (String defaultGroupText, int transparency, boolean showLegend) {
 	public void setSettings (int transparency, boolean showLegend) {
+		//jtfDefaultGroupText.setText(defaultGroupText);
+		
 		sliderValue.setText(transparency + " %");
 		slider.setValue(transparency);
 
@@ -324,11 +366,11 @@ class SettingsPanel extends JPanel {
 			yesButton.setSelected(false);
 			noButton.setSelected(true);
 		}
-		
+
 		initializesStaticOptionLists();
 		refreshStaticOptionBoxes();
 	}
-	
+
 
 	/**
 	 * @return the transparency value

@@ -40,6 +40,11 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SettingsHandler extends DefaultHandler {
 
+	private final static String GROUP_FIELD = "group";
+	private final static String NICKNAME_FIELD = "genome";
+	private final static String FILE_FIELD = "file";
+	private final static String RAW_FIELD = "raw_name";
+	
 	private final File		file;	// the file
 	private List<VCFData> 	data;	// the data
 
@@ -57,10 +62,10 @@ public class SettingsHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equalsIgnoreCase("row")) {
-			String group = attributes.getValue(getFormattedString(VCFData.GROUP_NAME));
-			String genome = attributes.getValue(getFormattedString(VCFData.GENOME_NAME));
-			String path = attributes.getValue(getFormattedString(VCFData.FILE_NAME));
-			String raw = attributes.getValue(getFormattedString(VCFData.RAW_NAME));
+			String group = attributes.getValue(GROUP_FIELD);
+			String genome = attributes.getValue(NICKNAME_FIELD);
+			String path = attributes.getValue(FILE_FIELD);
+			String raw = attributes.getValue(RAW_FIELD);
 			if (path.length() > 2 && path.startsWith(".\\")) {
 				path = file.getParent() + path.substring(1);
 			}
@@ -98,10 +103,10 @@ public class SettingsHandler extends DefaultHandler {
 			out.write("<settings>\n");
 			for (VCFData vcfData: data) {
 				out.write("\t<row ");
-				out.write(getFormattedString(VCFData.GROUP_NAME) + "=\"" + vcfData.getGroup() + "\" ");
-				out.write(getFormattedString(VCFData.GENOME_NAME) + "=\"" + vcfData.getGenome() + "\" ");
-				out.write(getFormattedString(VCFData.FILE_NAME) + "=\"" + vcfData.getFile() + "\" ");
-				out.write(getFormattedString(VCFData.RAW_NAME) + "=\"" + vcfData.getRaw() + "\" ");
+				out.write(GROUP_FIELD + "=\"" + vcfData.getGroup() + "\" ");
+				out.write(NICKNAME_FIELD + "=\"" + vcfData.getNickname() + "\" ");
+				out.write(FILE_FIELD + "=\"" + vcfData.getFile() + "\" ");
+				out.write(RAW_FIELD + "=\"" + vcfData.getRaw() + "\" ");
 				out.write("/>\n");
 			}
 			out.write("</settings>");
@@ -113,8 +118,8 @@ public class SettingsHandler extends DefaultHandler {
 	}
 
 	
-	private String getFormattedString (String s) {
+	/*private String getFormattedString (String s) {
 		return s.toLowerCase().replace(' ', '_');
-	}
+	}*/
 
 }

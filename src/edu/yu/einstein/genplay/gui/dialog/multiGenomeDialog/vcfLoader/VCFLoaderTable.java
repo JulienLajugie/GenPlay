@@ -36,6 +36,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomStringComboBox;
@@ -94,7 +95,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		// Genome combo box
 		genomeBox = new CustomStringComboBox();
 		genomeBox.getRenderer().addCustomComboBoxListener(this);
-		column = this.getColumnModel().getColumn(VCFData.GENOME_INDEX);
+		column = this.getColumnModel().getColumn(VCFData.NICKNAME_INDEX);
 		column.setCellEditor(new DefaultCellEditor(genomeBox));
 
 		// File combo box
@@ -138,7 +139,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 				value = CustomComboBox.ADD_TEXT;
 			}
 			break;
-		case VCFData.GENOME_INDEX:
+		case VCFData.NICKNAME_INDEX:
 			if (value.toString().equals("")) {
 				value = CustomComboBox.ADD_TEXT;
 			}
@@ -164,7 +165,14 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 	 * Adds an empty row
 	 */
 	public void addEmptyRow() {
-		((VCFLoaderModel) getModel()).addEmptyRow();
+		VCFLoaderModel model = (VCFLoaderModel) getModel();
+		model.addEmptyRow();
+		String defaultGroupValue = MGDisplaySettings.getInstance().getVariousSettings().getDefaultGroupText();
+		if (model.getData().size() == 1) {
+			groupBox.addElement(defaultGroupValue);
+			groupBox.resetCombo();
+		}
+		model.setValueAt(defaultGroupValue, model.getData().size() - 1, VCFData.GROUP_INDEX);
 	}
 
 
@@ -184,7 +192,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		for (int i = 0; i < data.size(); i++) {
 			VCFData rowData = new VCFData();
 			rowData.setGroup(data.get(i).getGroup());
-			rowData.setGenome(data.get(i).getGenome());
+			rowData.setNickname(data.get(i).getNickname());
 			rowData.setRaw(data.get(i).getRaw());
 			rowData.setFile(data.get(i).getFile());
 			newData.add(rowData);
@@ -194,7 +202,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		initializesBoxes();
 		for (VCFData vcfData: data) {
 			groupBox.addElement(vcfData.getGroup());
-			genomeBox.addElement(vcfData.getGenome());
+			genomeBox.addElement(vcfData.getNickname());
 			fileBox.addElement(vcfData.getFile());
 		}
 		if (data.size() > 0) {

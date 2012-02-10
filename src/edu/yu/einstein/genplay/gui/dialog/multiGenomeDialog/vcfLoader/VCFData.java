@@ -37,7 +37,7 @@ public class VCFData {
 	/** Index used for Raw name column */
 	public static final int RAW_INDEX 		= 1;
 	/** Index used for Genome column */
-	public static final int GENOME_INDEX 	= 2;
+	public static final int NICKNAME_INDEX 	= 2;
 	/** Index used for Group column */
 	public static final int GROUP_INDEX		= 3;
 	
@@ -45,16 +45,16 @@ public class VCFData {
 	public static final String FILE_NAME 	= "File";
 	/** Name used for Raw name column */
 	public static final String RAW_NAME 	= "Raw name";
-	/** Name used for Genome column */
-	public static final String GENOME_NAME 	= "Genome";
+	/** Name used for Nickname column */
+	public static final String NICKNAME 	= "Nickname";
 	/** Name used for Group column */
 	public static final String GROUP_NAME	= "Group";
 	
 
-	private String 	group;	// name of the group
-	private String 	genome;	// simplified name of the genome
-	private String 	raw;	// raw name of the genome
-	private File 	file;	// path of the VCF file
+	private String 	group;		// name of the group
+	private String 	nickname;	// simplified name of the genome
+	private String 	raw;		// raw name of the genome
+	private File 	file;		// path of the VCF file
 
 
 	/**
@@ -62,7 +62,7 @@ public class VCFData {
 	 */
 	public VCFData () {
 		this.group = "";
-		this.genome = "";
+		this.nickname = "";
 		this.file = null;
 		this.raw = "";
 	}
@@ -71,13 +71,13 @@ public class VCFData {
 	/**
 	 * Constructor of {@link VCFData}
 	 * @param group		name of the group
-	 * @param genome	simplified name of the genome
+	 * @param nickname	simplified name of the genome
 	 * @param file		path of the VCF file
 	 * @param raw		raw name of the genome
 	 */
-	public VCFData (String group, String genome, File file, String raw) {
+	public VCFData (String group, String nickname, File file, String raw) {
 		this.group = group;
-		this.genome = genome;
+		this.nickname = nickname;
 		this.file = file;
 		this.raw = raw;
 	}
@@ -93,8 +93,8 @@ public class VCFData {
 		if (this.group.equals("")) {
 			error += GROUP_NAME + "; ";
 		}
-		if (this.genome.equals("")) {
-			error += GENOME_NAME + "; ";
+		if (this.nickname.equals("")) {
+			error += NICKNAME + "; ";
 		}
 		if (file == null || !file.isFile()) {
 			error += FILE_NAME + "; ";
@@ -128,18 +128,18 @@ public class VCFData {
 
 
 	/**
-	 * @return the genome
+	 * @return the nickname
 	 */
-	public String getGenome() {
-		return genome;
+	public String getNickname() {
+		return nickname;
 	}
 
 
 	/**
-	 * @param genome the genome to set
+	 * @param nickname the nickname to set
 	 */
-	public void setGenome(String genome) {
-		this.genome = genome;
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 
 
@@ -180,7 +180,7 @@ public class VCFData {
 	 */
 	public void show () {
 		String info = getGroup();
-		info += ", " + getGenome();
+		info += ", " + getNickname();
 		info += ", " + getRaw();
 		info += ", " + getFile();
 		System.out.println(info);

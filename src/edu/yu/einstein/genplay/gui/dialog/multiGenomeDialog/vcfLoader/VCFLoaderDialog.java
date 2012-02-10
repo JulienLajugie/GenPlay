@@ -203,7 +203,7 @@ public class VCFLoaderDialog extends JDialog {
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		informationPanel.add(label, gbc);
-		
+
 		label = new JLabel("Add/Delete row(s)");
 		label.setIcon(getIcon(MOUSE_ICON_PATH, fm.getHeight()));
 		label.setFont(font);
@@ -231,10 +231,8 @@ public class VCFLoaderDialog extends JDialog {
 		confirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//if (areValidSettings()) {
-					approved = APPROVE_OPTION;
-					closeDialog();
-				//}
+				approved = APPROVE_OPTION;
+				closeDialog();
 			}
 		});
 
@@ -369,7 +367,7 @@ public class VCFLoaderDialog extends JDialog {
 			}
 		}
 		if (errors.length() > 0) {
-			System.err.println(errors);
+			//System.err.println(errors);
 			JOptionPane.showMessageDialog(this, errors, "Settings are not valid", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}

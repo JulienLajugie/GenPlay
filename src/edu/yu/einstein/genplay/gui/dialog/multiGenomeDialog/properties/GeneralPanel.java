@@ -143,7 +143,7 @@ class GeneralPanel extends JPanel {
 		
 		// Column names
 		String[] columnNames = {VCFData.GROUP_NAME,
-				VCFData.GENOME_NAME,
+				VCFData.NICKNAME,
 				VCFData.RAW_NAME,
 				VCFData.FILE_NAME};
 		

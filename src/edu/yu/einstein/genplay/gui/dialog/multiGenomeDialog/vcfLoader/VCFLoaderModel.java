@@ -96,8 +96,8 @@ public class VCFLoaderModel extends AbstractTableModel {
 			return vCFData.getFile();
 		case VCFData.RAW_INDEX:
 			return vCFData.getRaw();	
-		case VCFData.GENOME_INDEX:
-			return vCFData.getGenome();
+		case VCFData.NICKNAME_INDEX:
+			return vCFData.getNickname();
 		case VCFData.GROUP_INDEX:
 			return vCFData.getGroup();
 		default:
@@ -117,8 +117,8 @@ public class VCFLoaderModel extends AbstractTableModel {
 			case VCFData.RAW_INDEX:
 				vCFData.setRaw(value.toString());
 				break;
-			case VCFData.GENOME_INDEX:
-				vCFData.setGenome(value.toString());
+			case VCFData.NICKNAME_INDEX:
+				vCFData.setNickname(value.toString());
 				break;
 			case VCFData.GROUP_INDEX:
 				vCFData.setGroup(value.toString());
@@ -140,7 +140,7 @@ public class VCFLoaderModel extends AbstractTableModel {
 			return File.class;
 		case VCFData.RAW_INDEX:
 			return String.class;
-		case VCFData.GENOME_INDEX:
+		case VCFData.NICKNAME_INDEX:
 			return String.class;
 		case VCFData.GROUP_INDEX:
 			return String.class;
@@ -154,7 +154,12 @@ public class VCFLoaderModel extends AbstractTableModel {
 	 * Adds an empty row
 	 */
 	protected void addEmptyRow() {
-		data.add(new VCFData());
+		VCFData newData = new VCFData();
+		/*if (data.size() == 0) {
+			newData.setGroup("Group 1");
+		}*/
+		data.add(newData);
+		//data.add(new VCFData());
 		fireTableRowsInserted(
 				data.size() - 1,
 				data.size() - 1);
@@ -188,7 +193,7 @@ public class VCFLoaderModel extends AbstractTableModel {
 		for (int row = 0; row <data.size(); row++) {
 			fireTableCellUpdated(row, VCFData.FILE_INDEX);
 			fireTableCellUpdated(row, VCFData.RAW_INDEX);
-			fireTableCellUpdated(row, VCFData.GENOME_INDEX);
+			fireTableCellUpdated(row, VCFData.NICKNAME_INDEX);
 			fireTableCellUpdated(row, VCFData.GROUP_INDEX);
 		}
 	}
@@ -201,7 +206,7 @@ public class VCFLoaderModel extends AbstractTableModel {
 		columnNames = new String[4];
 		columnNames[0] = VCFData.FILE_NAME;
 		columnNames[1] = VCFData.RAW_NAME;
-		columnNames[2] = VCFData.GENOME_NAME;
+		columnNames[2] = VCFData.NICKNAME;
 		columnNames[3] = VCFData.GROUP_NAME;
 	}
 

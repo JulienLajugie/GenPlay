@@ -38,6 +38,7 @@ public class MGVariousSettings implements Serializable {
 	
 	private int 		transparency;	// Transparency of stripes
 	private boolean 	showLegend;		// Boolean that determines wether the legend must be shown or not
+	private String		defaultGroupText;
 	
 	
 	/**
@@ -49,6 +50,7 @@ public class MGVariousSettings implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeInt(transparency);
 		out.writeBoolean(showLegend);
+		out.writeObject(defaultGroupText);
 	}
 
 
@@ -62,6 +64,7 @@ public class MGVariousSettings implements Serializable {
 		in.readInt();
 		transparency = in.readInt();
 		showLegend = in.readBoolean();
+		defaultGroupText = (String) in.readObject();
 	}
 	
 	
@@ -71,6 +74,7 @@ public class MGVariousSettings implements Serializable {
 	protected MGVariousSettings () {
 		transparency = 70;
 		showLegend = true;
+		defaultGroupText = "Group 1";
 	}
 	
 	
@@ -110,6 +114,22 @@ public class MGVariousSettings implements Serializable {
 	}
 	
 	
+	/**
+	 * @return the defaultGroupText
+	 */
+	public String getDefaultGroupText() {
+		return defaultGroupText;
+	}
+
+
+	/**
+	 * @param defaultGroupText the defaultGroupText to set
+	 */
+	public void setDefaultGroupText(String defaultGroupText) {
+		this.defaultGroupText = defaultGroupText;
+	}
+
+
 	/**
 	 * Show the settings
 	 */
