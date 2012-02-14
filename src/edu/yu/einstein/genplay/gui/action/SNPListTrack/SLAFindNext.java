@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.SNP;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.SNPList.operation.SLOFindNext;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -79,7 +80,7 @@ public class SLAFindNext extends TrackListActionOperationWorker<SNP> {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if ((selectedTrack != null) && (selectedTrack.getData() instanceof SNPList)) {
 			SNPList inputList = (SNPList) selectedTrack.getData();
-			GenomeWindow currentWindow = selectedTrack.getGenomeWindow();
+			GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 			Operation<SNP> operation = new SLOFindNext(inputList, currentWindow.getChromosome(), (int) currentWindow.getMiddlePosition());
 			return operation;
 		}
@@ -90,13 +91,13 @@ public class SLAFindNext extends TrackListActionOperationWorker<SNP> {
 	@Override
 	protected void doAtTheEnd(SNP actionResult) {
 		if (actionResult != null) {
-			GenomeWindow currentWindow = getTrackList().getGenomeWindow();
+			GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 			Chromosome currentChromosome = currentWindow.getChromosome();
 			int currentLength = currentWindow.getSize();
 			int newStart = actionResult.getPosition() - currentLength / 2;
 			int newStop = newStart + currentLength;
 			GenomeWindow newGenomeWindow = new GenomeWindow(currentChromosome, newStart, newStop);
-			getTrackList().setGenomeWindow(newGenomeWindow);			
+			ProjectManager.getInstance().getProjectWindow().setGenomeWindow(newGenomeWindow);
 		}		
 	}
 }

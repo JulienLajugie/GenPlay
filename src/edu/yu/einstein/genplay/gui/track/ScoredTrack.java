@@ -67,8 +67,8 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	 * @param trackNumber number of the track
 	 * @param data data displayed in the track
 	 */
-	protected ScoredTrack(GenomeWindow displayedGenomeWindow, int trackNumber, T data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	protected ScoredTrack(int trackNumber, T data) {
+		super(trackNumber, data);
 	}
 	
 	

@@ -33,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -47,7 +46,6 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 
@@ -58,7 +56,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class Track<T> extends JPanel implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator {
+public abstract class Track<T> extends JPanel implements PropertyChangeListener, GenomeWindowListener {
 
 	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -84,8 +82,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public static final Border 	DRAG_DOWN_BORDER = 
 		BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black);		// alternative border when a track is dragged down
-	private List<GenomeWindowListener> listenerList = 
-		new ArrayList<GenomeWindowListener>();							// list of GenomeWindowListener
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private TrackHandle				trackHandle;						// handle of the track
 	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
@@ -98,15 +94,17 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @param trackNumber number of the track
 	 * @param data data displayed in the track
 	 */
-	protected Track(GenomeWindow displayedGenomeWindow, int trackNumber, T data) {
+	protected Track(int trackNumber, T data) {
 		// create handle
 		trackHandle = new TrackHandle(trackNumber);
 		trackHandle.addPropertyChangeListener(this);
 
 		// create graphics
-		trackGraphics = createsTrackGraphics(displayedGenomeWindow, data);
+		trackGraphics = createsTrackGraphics(data);
 		trackGraphics.addPropertyChangeListener(this);
-		trackGraphics.addGenomeWindowListener(this);
+		
+		// registered the listener to the genome window manager
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 
 		// Add the components
 		setLayout(new GridBagLayout());
@@ -131,18 +129,11 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	}
 
 
-	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);
-	}
-
-
 	/**
 	 * Creates the {@link TrackGraphics}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data data displayed in the track
 	 */
-	abstract protected TrackGraphics<T> createsTrackGraphics(GenomeWindow displayedGenomeWindow, T data);
+	abstract protected TrackGraphics<T> createsTrackGraphics(T data);
 
 
 	/**
@@ -158,8 +149,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: pclSaver)	{
 			removePropertyChangeListener(curList);
 		}
-		GenomeWindowListener[] gwlSaver = getGenomeWindowListeners();
-		listenerList.clear();		
 		// we remove the listeners of the track graphics as well
 		PropertyChangeListener[] trackGraphicsPclSaver = trackGraphics.getPropertyChangeListeners();
 		for (PropertyChangeListener curList: trackGraphicsPclSaver)	{
@@ -175,9 +164,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: pclSaver)	{
 			addPropertyChangeListener(curList);
 		}
-		for (GenomeWindowListener curList: gwlSaver) {
-			addGenomeWindowListener(curList);
-		}
 		for (PropertyChangeListener curList: trackGraphicsPclSaver) {
 			trackGraphics.addPropertyChangeListener(curList);
 		}		
@@ -187,17 +173,11 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		// we notify the listeners
-		for (GenomeWindowListener currentListener: listenerList) {
-			currentListener.genomeWindowChanged(evt);
-		}
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			MGDisplaySettings settings = MGDisplaySettings.getInstance();
 			List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(this);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(this);
-			//if (stripesList.size() > 0 || filtersList.size() > 0) {
-				trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
-			//}
+			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
 	}
 
@@ -252,21 +232,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
-	 * @return the displayed {@link GenomeWindow}
-	 */
-	public GenomeWindow getGenomeWindow() {
-		return trackGraphics.getGenomeWindow();
-	}
-
-
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
-		return listenerList.toArray(genomeWindowListeners);
-	}
-
-
-	/**
 	 * @return the name of the track
 	 */
 	@Override
@@ -313,6 +278,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		return trackHandle.getTrackNumber();
 	}
 
+	
+	/**
+	 * @return the width of a track (every track has the same width)
+	 */
+	public int getTrackWidth () {
+		return trackGraphics.getWidth();
+	}
+	
 
 	/**
 	 * @return the verticalLineCount
@@ -387,18 +360,11 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		defaultHeight = TRACK_HEIGHT;
 		in.readInt();
-		listenerList = (List<GenomeWindowListener>) in.readObject();
 		trackHandle = (TrackHandle) in.readObject();
 		trackGraphics = (TrackGraphics<T>) in.readObject();
 		genomeName = (String) in.readObject();
 	}
-
-
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.remove(genomeWindowListener);		
-	}
-
+	
 
 	/**
 	 * Save the {@link TrackGraphics} as an image
@@ -414,15 +380,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public void setGenomeName(String genomeName) {
 		this.genomeName = genomeName;
-	}
-
-
-	/**
-	 * Sets the {@link GenomeWindow} displayed by the track
-	 * @param newGenomeWindow new {@link GenomeWindow}
-	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		trackGraphics.setGenomeWindow(newGenomeWindow);
 	}
 
 
@@ -540,6 +497,5 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
 			removePropertyChangeListener(curList);
 		}
-		listenerList.clear();		
 	}	
 }

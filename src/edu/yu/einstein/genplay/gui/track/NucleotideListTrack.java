@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 
@@ -63,18 +62,17 @@ public class NucleotideListTrack extends Track<DisplayableListOfLists<Nucleotide
 	
 	/**
 	 * Creates an instance of {@link NucleotideListTrack}
-	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
 	 * @param data list of {@link Nucleotide} to display in the track
 	 */
-	public NucleotideListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public NucleotideListTrack(int trackNumber, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
+		super(trackNumber, data);
 	}
 
 
 	@Override
 	protected TrackGraphics<DisplayableListOfLists<Nucleotide, Nucleotide[]>> 
-	createsTrackGraphics(GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
-		return new NucleotideListTrackGraphics(displayedGenomeWindow, data);
+	createsTrackGraphics(DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
+		return new NucleotideListTrackGraphics(data);
 	}
 }

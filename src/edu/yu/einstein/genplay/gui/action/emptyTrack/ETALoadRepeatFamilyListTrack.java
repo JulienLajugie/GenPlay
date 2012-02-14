@@ -106,7 +106,7 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			RepeatFamilyListTrack newTrack = new RepeatFamilyListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			RepeatFamilyListTrack newTrack = new RepeatFamilyListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);
 			}

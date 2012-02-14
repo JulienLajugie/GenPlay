@@ -32,7 +32,6 @@ import java.io.ObjectOutputStream;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.SNP;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
@@ -84,8 +83,8 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param displayedGenomeWindow
 	 * @param data
 	 */
-	protected SNPListTrackGraphics(GenomeWindow displayedGenomeWindow, SNPList data) {
-		super(displayedGenomeWindow, data);
+	protected SNPListTrackGraphics(SNPList data) {
+		super(data);
 	}
 
 
@@ -107,9 +106,9 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 
 	private void drawSNPUnderMouse(Graphics g) {
 		// x position of the stripe
-		int xPos = genomePosToScreenPos(snpUnderMouse.getPosition());
+		int xPos = projectWindow.genomePosToScreenXPos(snpUnderMouse.getPosition());
 		// width of the stripe
-		int width = twoGenomePosToScreenWidth(snpUnderMouse.getPosition(), snpUnderMouse.getPosition() + 1);
+		int width = projectWindow.twoGenomePosToScreenWidth(snpUnderMouse.getPosition(), snpUnderMouse.getPosition() + 1);
 		Color color = new Color(150, 150, 150, 100);
 		g.setColor(color);
 		g.fillRect(xPos, 0, width, getHeight());		
@@ -157,7 +156,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param g {@link Graphics}
 	 */
 	private void drawSNP(Graphics g) {
-		List<SNP> snpList = data.getFittedData(genomeWindow, xFactor);
+		List<SNP> snpList = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		if ((snpList != null) && (snpList.size() > 0)) {
 			// loop for each SNPs
 			for (int i = 0; i < snpList.size(); i++) {
@@ -172,7 +171,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 				int widthSNP = Math.max(firstBaseWidth, secondBaseWidth);
 				// check if there is enough space to print the values for the current SNP
 				drawDenseSNP(g, currentSNP);
-				if (xFactor / widthSNP > 1) {
+				if (projectWindow.getXFactor() / widthSNP > 1) {
 					drawDetailedSNP(g, currentSNP);
 				} 
 			}	
@@ -187,9 +186,9 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 */
 	private void drawDenseSNP(Graphics g, SNP currentSNP) {
 		// x position of the stripe
-		int xPos = genomePosToScreenPos(currentSNP.getPosition());
+		int xPos = projectWindow.genomePosToScreenXPos(currentSNP.getPosition());
 		// width of the stripe
-		int width = twoGenomePosToScreenWidth(currentSNP.getPosition(), currentSNP.getPosition() + 1);
+		int width = projectWindow.twoGenomePosToScreenWidth(currentSNP.getPosition(), currentSNP.getPosition() + 1);
 		// height of the stripe
 		double lineHeight = getHeight() / 4d;
 		// we search for the y position of the stripe for the first base
@@ -262,7 +261,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		// height of a line 
 		int lineHeight = getHeight() / 4;		
 		int halfLineHeight = getHeight() / 8;
-		int xPos = genomePosToScreenPos(currentSNP.getPosition());
+		int xPos = projectWindow.genomePosToScreenXPos(currentSNP.getPosition());
 		int yPos = 0;
 		// draw first base
 		switch (currentSNP.getFirstBase()) {
@@ -331,14 +330,14 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 				// retrieve the position of the mouse
 				Point mousePosition = e.getPoint();
 				// retrieve the list of the printed nucleotides
-				List<SNP> printedSNPs = data.getFittedData(genomeWindow, xFactor);
+				List<SNP> printedSNPs = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 				// do nothing if there is no genes
 				if (printedSNPs != null) {
 					int i = 0;
 					while ((i < printedSNPs.size()) && (snpUnderMouse == null)) {
 						SNP currentSNP = printedSNPs.get(i);
-						if ((mousePosition.x >= genomePosToScreenPos(currentSNP.getPosition())) &&
-								(mousePosition.x <= genomePosToScreenPos(currentSNP.getPosition() + 1))) {
+						if ((mousePosition.x >= projectWindow.genomePosToScreenXPos(currentSNP.getPosition())) &&
+								(mousePosition.x <= projectWindow.genomePosToScreenXPos(currentSNP.getPosition() + 1))) {
 							// we found a gene under the mouse
 							snpUnderMouse = currentSNP;
 						}
@@ -370,4 +369,5 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			}
 		}
 	}
+
 }

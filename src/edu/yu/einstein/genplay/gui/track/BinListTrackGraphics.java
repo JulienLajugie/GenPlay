@@ -73,14 +73,14 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param binList {@link BinList}
 	 */
-	protected BinListTrackGraphics(GenomeWindow displayedGenomeWindow, BinList binList) {
-		super(displayedGenomeWindow, binList, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
+	protected BinListTrackGraphics(BinList binList) {
+		super(binList, new BLOMinScoreToDisplay(binList).compute(), new BLOMaxScoreToDisplay(binList).compute());
 	}
 
 
 	@Override
 	protected void drawData(Graphics g) {
-		CurveDrawer cd = new BinListDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax, trackColor, typeOfGraph, data);
+		CurveDrawer cd = new BinListDrawer(g, getWidth(), getHeight(), yMin, yMax, trackColor, typeOfGraph, data);
 		cd.draw();
 	}
 
@@ -88,9 +88,9 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	@Override
 	protected void drawScore(Graphics g) {
 		try {
-			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(genomeWindow.getChromosome());
+			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(projectWindow.getGenomeWindow().getChromosome());
 			g.setColor(getScoreColor());
-			int xMid = (int) genomeWindow.getMiddlePosition();
+			int xMid = (int) projectWindow.getGenomeWindow().getMiddlePosition();
 			double yMid = 0;
 			int scoreYPosition = 0;
 			if (getScorePosition() == BOTTOM_SCORE_POSITION) {
@@ -109,8 +109,8 @@ public final class BinListTrackGraphics extends CurveTrackGraphics<BinList> {
 	
 
 	@Override
-	public CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax) {
-		return new BinListDrawer(g, trackWidth, trackHeight, genomeWindow, scoreMin, scoreMax, trackColor, typeOfGraph, data);
+	public CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, double scoreMin, double scoreMax) {
+		return new BinListDrawer(g, trackWidth, trackHeight, scoreMin, scoreMax, trackColor, typeOfGraph, data);
 	}
 	
 

@@ -95,7 +95,7 @@ public class ETALoadGeneListTrackFromDAS extends TrackListActionWorker<GeneList>
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-			GeneListTrack newTrack = new GeneListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			GeneListTrack newTrack = new GeneListTrack(selectedTrackIndex + 1, actionResult);
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}								
 	}

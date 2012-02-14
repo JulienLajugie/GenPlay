@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 
 /**
@@ -62,17 +61,16 @@ public final class BinListTrack extends CurveTrack<BinList> {
 	
 	/**
 	 * Creates an instance of {@link BinListTrack}
-	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
 	 * @param data the {@link BinList} showed in the track
 	 */
-	public BinListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, BinList data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public BinListTrack(int trackNumber, BinList data) {
+		super(trackNumber, data);
 	}
 
 
 	@Override
-	protected TrackGraphics<BinList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, BinList data) {
-		return new BinListTrackGraphics(displayedGenomeWindow, data);
+	protected TrackGraphics<BinList> createsTrackGraphics(BinList data) {
+		return new BinListTrackGraphics(data);
 	}
 }

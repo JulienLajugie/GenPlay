@@ -93,7 +93,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
+			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
 			// add info to the history
 			newTrack.getHistory().add("Result of the density calculation of " + selectedTrack.getName() + ", Half Width = " + halfWidth);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);

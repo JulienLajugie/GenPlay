@@ -108,7 +108,7 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			GeneListTrack newTrack;
-			newTrack = new GeneListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			newTrack = new GeneListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);
 			}

@@ -48,6 +48,7 @@ public class ProjectManager implements Serializable {
 
 
 	private ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
+	private ProjectWindow				projectWindow;				// Instance of the Genome Window Manager
 	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
 	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
@@ -67,6 +68,7 @@ public class ProjectManager implements Serializable {
 		out.writeBoolean(multiGenome);
 
 		out.writeObject(projectConfiguration);
+		out.writeObject(projectWindow);
 		out.writeObject(projectZoom);
 		out.writeObject(projectChromosome);
 		out.writeObject(multiGenomeProject);
@@ -88,6 +90,7 @@ public class ProjectManager implements Serializable {
 		multiGenome = in.readBoolean();
 
 		projectConfiguration = (ProjectConfiguration) in.readObject();
+		projectWindow = (ProjectWindow) in.readObject();
 		projectZoom = (ProjectZoom) in.readObject();
 		projectChromosome = (ProjectChromosome) in.readObject();
 		multiGenomeProject = (MultiGenomeProject) in.readObject();
@@ -120,6 +123,7 @@ public class ProjectManager implements Serializable {
 		projectConfiguration = new ProjectConfiguration();
 		projectZoom = new ProjectZoom();
 		projectChromosome = new ProjectChromosome();
+		projectWindow = new ProjectWindow();
 	}
 
 
@@ -128,11 +132,7 @@ public class ProjectManager implements Serializable {
 	 */
 	public void updateChromosomeList () {
 		List<Chromosome> chromosomeList;
-		/*if (multiGenomeProject) {
-			chromosomeList = genomeSynchronizer.getMetaGenomeSynchroniser().getChromosomeList();
-		} else {*/
-			chromosomeList = getAssembly().getChromosomeList();
-		//}
+		chromosomeList = getAssembly().getChromosomeList();
 		projectChromosome.setChromosomeList(chromosomeList);
 	}
 	
@@ -153,6 +153,14 @@ public class ProjectManager implements Serializable {
 		if (!multiGenome) {
 			multiGenomeProject = null;
 		}
+	}
+	
+
+	/**
+	 * @return the Genome Window Manager
+	 */
+	public ProjectWindow getProjectWindow() {
+		return projectWindow;
 	}
 
 

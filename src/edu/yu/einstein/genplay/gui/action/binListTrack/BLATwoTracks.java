@@ -116,9 +116,9 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 			int index = resultTrack.getTrackNumber() - 1;
 			CurveTrack<?> newTrack;
 			if (isSCWList()) {
-				newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), index + 1, (ScoredChromosomeWindowList)actionResult);
+				newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
 			} else {
-				newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, (BinList)actionResult);
+				newTrack = new BinListTrack(index + 1, (BinList)actionResult);
 			}
 			// add info to the history
 			newTrack.getHistory().add("Operation on two tracks", Color.GRAY);

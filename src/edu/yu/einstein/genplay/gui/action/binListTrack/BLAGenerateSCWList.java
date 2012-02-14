@@ -88,7 +88,7 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			SCWListTrack newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
+			SCWListTrack newTrack = new SCWListTrack(index + 1, actionResult);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}
 	}	

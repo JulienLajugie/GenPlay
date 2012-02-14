@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -195,12 +196,13 @@ public class ToolTipStripeDialog extends JDialog {
 		this.variantInformation = variant.getFullVariantInformation();
 		initContent();
 		int variantStart = variant.getStart();
-		int width = MainFrame.getInstance().getControlPanel().getGenomeWindow().getSize();
+		GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+		int width = currentGenomeWindow.getSize();
 		int startWindow = variantStart - (width / 2);
 		int stopWindow = startWindow + width;
-		Chromosome chromosome = MainFrame.getInstance().getControlPanel().getGenomeWindow().getChromosome();
+		Chromosome chromosome = currentGenomeWindow.getChromosome();
 		GenomeWindow genomeWindow = new GenomeWindow(chromosome, startWindow, stopWindow);
-		MainFrame.getInstance().getControlPanel().setGenomeWindow(genomeWindow);
+		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 		return true;
 	}
 

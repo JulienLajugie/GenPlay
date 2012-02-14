@@ -109,7 +109,7 @@ public class BLAIntervalsSummarization extends TrackListActionOperationWorker<Bi
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			BinListTrack newTrack = new BinListTrack(getTrackList().getGenomeWindow(), index + 1, actionResult);
+			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
 			// add info to the history
 			newTrack.getHistory().add("Result of the " + method + " of " + selectedTrack.getName() + " calculated on the intervals defined by " + intervalTrack.getName() + " on the " + percentage + "% greatest values", Color.GRAY);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);

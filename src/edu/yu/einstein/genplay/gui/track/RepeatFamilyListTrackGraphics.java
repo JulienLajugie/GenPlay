@@ -32,7 +32,6 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 
@@ -81,11 +80,10 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrackGraphics}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data list of repeats to display
 	 */
-	protected RepeatFamilyListTrackGraphics(GenomeWindow displayedGenomeWindow, RepeatFamilyList data) {
-		super(displayedGenomeWindow, data);
+	protected RepeatFamilyListTrackGraphics(RepeatFamilyList data) {
+		super(data);
 	}
 
 
@@ -103,7 +101,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	private void drawRepeat(Graphics g) {
 		int currentHeight = SPACE_HEIGHT;
 		int width = getWidth();
-		List<RepeatFamily> repeatFamilyList = data.getFittedData(genomeWindow, xFactor);
+		List<RepeatFamily> repeatFamilyList = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
 			// calculate how many lines are displayable
 			int displayedLineCount = (getHeight() - SPACE_HEIGHT) / (REPEAT_HEIGHT + 2 * SPACE_HEIGHT) + 1;
@@ -126,8 +124,8 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 					// loop for each repeat of the current family
 					for(ChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
 						if (currentRepeat != null) {
-							int x = genomePosToScreenPos(currentRepeat.getStart());
-							int repeatWidth = genomePosToScreenPos(currentRepeat.getStop()) - x;
+							int x = projectWindow.genomePosToScreenXPos(currentRepeat.getStart());
+							int repeatWidth = projectWindow.genomePosToScreenXPos(currentRepeat.getStop()) - x;
 							if (repeatWidth < 1) {
 								repeatWidth = 1;
 							}

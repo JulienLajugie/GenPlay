@@ -43,7 +43,7 @@ import javax.swing.JTextField;
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneSearcher;
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 
@@ -192,7 +192,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			// we don't want the stop to be greater than the maximum displayable position
 			windowStop = Math.min(windowStop, maximumDisplayableStop);
 			GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromo(), windowStart, windowStop);
-			MainFrame.getInstance().getControlPanel().setGenomeWindow(genomeWindow);
+			ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 			setEditorColor(true);
 		} else {
 			setEditorColor(false);

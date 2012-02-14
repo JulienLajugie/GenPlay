@@ -29,8 +29,6 @@ import java.math.RoundingMode;
 import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
-
 
 /**
  * An abstract class providing tools to draw a scored {@link TrackGraphics}
@@ -100,13 +98,12 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	/**
 	 * Creates an instance of {@link ScoredTrackGraphics}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data data displayed in the track
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
-	protected ScoredTrackGraphics(GenomeWindow displayedGenomeWindow, T data, double yMin, double yMax) {
-		super(displayedGenomeWindow, data);
+	protected ScoredTrackGraphics(T data, double yMin, double yMax) {
+		super(data);
 		this.yMin = yMin;
 		this.yMax = yMax;
 		this.showHorizontalGrid = SHOW_HORIZONTAL_GRID;

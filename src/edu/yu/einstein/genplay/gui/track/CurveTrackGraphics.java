@@ -32,7 +32,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.URRManager;
@@ -93,13 +92,12 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	
 	/**
 	 * Creates an instance of {@link CurveTrackGraphics}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data data displayed in the track
 	 * @param yMin minimum score
 	 * @param yMax maximum score
 	 */
-	protected CurveTrackGraphics(GenomeWindow displayedGenomeWindow, T data, double yMin, double yMax) {
-		super(displayedGenomeWindow, data, yMin, yMax);
+	protected CurveTrackGraphics(T data, double yMin, double yMax) {
+		super(data, yMin, yMax);
 		this.trackColor = TRACK_COLOR;
 		this.typeOfGraph = TYPE_OF_GRAPH;
 		this.data = data;
@@ -124,12 +122,11 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @param g {@link Graphics} of a track
 	 * @param trackWidth width of a track 
 	 * @param trackHeight height of a track
-	 * @param genomeWindow {@link GenomeWindow} of a track
 	 * @param scoreMin score minimum 
 	 * @param scoreMax score maximum
 	 * @return the drawer used to paint the data of this track
 	 */
-	public abstract CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax);
+	public abstract CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, double scoreMin, double scoreMax);
 
 
 	/**

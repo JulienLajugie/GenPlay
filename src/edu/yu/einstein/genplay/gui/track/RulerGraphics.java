@@ -25,8 +25,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.text.DecimalFormat;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
-
 
 /**
  * The graphics part of the ruler
@@ -47,10 +45,9 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 
 	/**
 	 * Creates an instance of {@link RulerGraphics}
-	 * @param genomeWindow displayed {@link GenomeWindow}
 	 */
-	public RulerGraphics(GenomeWindow genomeWindow) {
-		super(genomeWindow, null);
+	public RulerGraphics() {
+		super(null);
 		setVisible(true);
 	}
 
@@ -70,8 +67,8 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 		int width = getWidth();
 		int halfWidth = (int)Math.round(width / 2d);
 		int height = getHeight();
-		int positionStart = genomeWindow.getStart();
-		int positionStop = genomeWindow.getStop();
+		int positionStart = projectWindow.getGenomeWindow().getStart();
+		int positionStop = projectWindow.getGenomeWindow().getStop();
 
 		g.setColor(MIDDLE_LINE_COLOR);
 		int yText = height - MAJOR_TEXT_HEIGHT;
@@ -90,8 +87,8 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 	 */
 	private void drawRelativeUnits(Graphics g) {
 		int height = getHeight();
-		int positionStart = genomeWindow.getStart();
-		int positionStop = genomeWindow.getStop();
+		int positionStart = projectWindow.getGenomeWindow().getStart();
+		int positionStop = projectWindow.getGenomeWindow().getStop();
 		int y = height - MINOR_TEXT_HEIGHT;
 		int lastTextStopPos = 0;
 		double gap = getWidth() / (double)LINE_COUNT;

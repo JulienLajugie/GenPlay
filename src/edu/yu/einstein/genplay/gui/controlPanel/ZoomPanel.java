@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -41,9 +40,9 @@ import javax.swing.event.ChangeListener;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 
@@ -53,7 +52,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowEventsGenerator {
+final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindowListener {
 
 	private static final long serialVersionUID = -8481919273684304592L; // generated ID
 	private static final DecimalFormat SIZE_FORMAT = new DecimalFormat("###,###,###");	// Format of the zoom string
@@ -62,26 +61,24 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	private final JButton 							jbMinus;			// button '-'
 	private final JSlider 							jsZoom;				// zoom slider
 	private final ProjectZoom						projectZoom;		// ZoomManager 
-	private final ArrayList<GenomeWindowListener> 	listenerList;		// list of GenomeWindowListener
-	private GenomeWindow 							currentGenomeWindow;// current GenomeWindow
+	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
 	
 	
 	/**
 	 * Creates an instance of {@link ZoomPanel}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	ZoomPanel(GenomeWindow genomeWindow) {
+	ZoomPanel() {
 		this.projectZoom = ProjectManager.getInstance().getProjectZoom();
-		this.currentGenomeWindow = genomeWindow;
-		this.listenerList = new ArrayList<GenomeWindowListener>();
-		jlZoom = new JLabel("Size: " + SIZE_FORMAT.format(currentGenomeWindow.getSize()));
+		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
+		jlZoom = new JLabel("Size: " + SIZE_FORMAT.format(projectWindow.getGenomeWindow().getSize()));
 		jbMinus = new JButton("-");
 		jbMinus.setMargin(new Insets(0, 3, 0, 3));
 		jbMinus.setFocusPainted(false);
 		jbMinus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				zoomChanged(projectZoom.getZoomIn(currentGenomeWindow.getSize()));
+				zoomChanged(projectZoom.getZoomIn(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
 
@@ -91,18 +88,18 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		jbPlus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				zoomChanged(projectZoom.getZoomOut(currentGenomeWindow.getSize()));
+				zoomChanged(projectZoom.getZoomOut(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
 		
-		int	maximumZoom = currentGenomeWindow.getChromosome().getLength() * 2;
-		jsZoom = new JSlider(JSlider.HORIZONTAL, 0, projectZoom.getZoomIndex(maximumZoom), projectZoom.getZoomIndex(currentGenomeWindow.getSize()));
+		int	maximumZoom = projectWindow.getGenomeWindow().getChromosome().getLength() * 2;
+		jsZoom = new JSlider(JSlider.HORIZONTAL, 0, projectZoom.getZoomIndex(maximumZoom), projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()));
 		jsZoom.setMinorTickSpacing(1);
 		jsZoom.setPaintTicks(true);
 		jsZoom.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				if (projectZoom.getZoomIndex(currentGenomeWindow.getSize()) != jsZoom.getValue())
+				if (projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()) != jsZoom.getValue())
 					zoomChanged(projectZoom.getZoom(jsZoom.getValue()));
 			}
 		});
@@ -144,70 +141,34 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		add(jbPlus, gbc);
 
 		addMouseWheelListener(this);
+		projectWindow.addGenomeWindowListener(this);
 	}
 
 	
-	/**
-	 * Sets the current {@link GenomeWindow}
-	 * @param newGenomeWindow new {@link GenomeWindow}
-	 */
-	void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		if (!newGenomeWindow.equals(currentGenomeWindow)) {
-			GenomeWindow oldGenomeWindow = currentGenomeWindow;
-			currentGenomeWindow = newGenomeWindow;
-			// we notify the gui
-			int currentZoom = currentGenomeWindow.getSize();
-			jlZoom.setText("Size: " + SIZE_FORMAT.format(currentZoom));			
-			// if the chromosome changes we change the maximum zoom
-			if (currentGenomeWindow.getChromosome() != oldGenomeWindow.getChromosome()) {
-				int	oldMaximumZoom = oldGenomeWindow.getChromosome().getLength() * 2;
-				int newMaximumZoom = currentGenomeWindow.getChromosome().getLength() * 2;
-				// if the new zoom value is greatter than the old max zoom we change the max first 
-				if (currentZoom > oldMaximumZoom) {
-					jsZoom.setMaximum(projectZoom.getZoomIndex(newMaximumZoom));
-					jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
-					
-				} else {
-					// else we change the value first because the new max could be smaller than the old value
-					jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
-					jsZoom.setMaximum(projectZoom.getZoomIndex(newMaximumZoom));
-				}	
-			} else {
-				jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
-			}
-			// we notify the listeners
-			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, currentGenomeWindow);
-			for (GenomeWindowListener currentListener: listenerList) {
-				currentListener.genomeWindowChanged(evt);
-			}
-		}
-	}
-	
-		
 	/**
 	 * Called when the zoom changes
 	 * @param newZoom new zoom value
 	 */
 	void zoomChanged(int newZoom) {
-		int currentZoom = currentGenomeWindow.getSize();
-		int	maximumZoom = currentGenomeWindow.getChromosome().getLength() * 2;
+		int currentZoom = projectWindow.getGenomeWindow().getSize();
+		int	maximumZoom = projectWindow.getGenomeWindow().getChromosome().getLength() * 2;
 		if (newZoom > maximumZoom) {
 			newZoom = maximumZoom;
 		}
 		if (newZoom != currentZoom) {
 			double halfZoom = newZoom / (double)2;
-			Chromosome chromosome = currentGenomeWindow.getChromosome();
-			int start = (int)(currentGenomeWindow.getMiddlePosition() - halfZoom);
+			Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
+			int start = (int)(projectWindow.getGenomeWindow().getMiddlePosition() - halfZoom);
 			int stop = start + newZoom;
 			GenomeWindow newGenomeWindow = new GenomeWindow(chromosome, start, stop);
-			setGenomeWindow(newGenomeWindow);
+			projectWindow.setGenomeWindow(newGenomeWindow);
 		}
 	}
 
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent mwe) {
-		int currentZoom = currentGenomeWindow.getSize();
+		int currentZoom = projectWindow.getGenomeWindow().getSize();
 		for (int i = 0; i < Math.abs(mwe.getWheelRotation()); i++) {
 			if (mwe.getWheelRotation() > 0) {
 				zoomChanged(projectZoom.getZoomIn(currentZoom));
@@ -219,20 +180,27 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 
 
 	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);		
+	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		// we notify the gui
+		int currentZoom = evt.getNewWindow().getSize();
+		jlZoom.setText("Size: " + SIZE_FORMAT.format(currentZoom));			
+		// if the chromosome changes we change the maximum zoom
+		if (evt.getNewWindow().getChromosome() != evt.getOldWindow().getChromosome()) {
+			int	oldMaximumZoom = evt.getOldWindow().getChromosome().getLength() * 2;
+			int newMaximumZoom = evt.getNewWindow().getChromosome().getLength() * 2;
+			// if the new zoom value is greatter than the old max zoom we change the max first 
+			if (currentZoom > oldMaximumZoom) {
+				jsZoom.setMaximum(projectZoom.getZoomIndex(newMaximumZoom));
+				jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
+				
+			} else {
+				// else we change the value first because the new max could be smaller than the old value
+				jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
+				jsZoom.setMaximum(projectZoom.getZoomIndex(newMaximumZoom));
+			}	
+		} else {
+			jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
+		}
 	}
-	
-	
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
-		return listenerList.toArray(genomeWindowListeners);
-	}
-	
-	
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.remove(genomeWindowListener);		
-	}
+
 }

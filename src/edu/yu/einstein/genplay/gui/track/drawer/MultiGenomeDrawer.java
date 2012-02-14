@@ -40,6 +40,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.display.DisplayableVariantListMaker;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
@@ -71,6 +72,8 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	private static final long serialVersionUID = 2329957235585775255L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 
+	private ProjectWindow					projectWindow;					// instance of the genome window manager
+	
 	private DisplayableVariantListMaker		allele01VariantListMaker;		// displayable variants list creator (for MG project)
 	private DisplayableVariantListMaker		allele02VariantListMaker;		// displayable variants list creator (for MG project)
 
@@ -112,13 +115,12 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 	/**
 	 * Constructor of {@link MultiGenomeDrawer}
-	 * @param genomeWindow 	the genome window
-	 * @param xFactor 		the x factor
 	 */
-	public MultiGenomeDrawer (GenomeWindow genomeWindow, double xFactor) {
+	public MultiGenomeDrawer () {
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			allele01VariantListMaker = new DisplayableVariantListMaker(genomeWindow, xFactor);
-			allele02VariantListMaker = new DisplayableVariantListMaker(genomeWindow, xFactor);
+			allele01VariantListMaker = new DisplayableVariantListMaker(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			allele02VariantListMaker = new DisplayableVariantListMaker(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		} else {
 			allele01VariantListMaker = null;
 			allele02VariantListMaker = null;
@@ -294,8 +296,8 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		}
 
 		// Transform the start and stop position to screen coordinates
-		int x = trackGraphics.genomePosToScreenPos(start);							// get the position where the variant starts
-		int width = trackGraphics.twoGenomePosToScreenWidth(start, stop);			// get the width of the variant on the screen
+		int x = projectWindow.genomePosToScreenXPos(start);							// get the position where the variant starts
+		int width = projectWindow.twoGenomePosToScreenWidth(start, stop);			// get the width of the variant on the screen
 		if (width == 0) {															// if the width is 0 pixel,
 			width = 1;																// we set it to 1 in order to be seen
 		}
@@ -449,13 +451,13 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 	/**
 	 * Display the content of a variant in the tool tip stripe dialog
-	 * @param trackGraphics 
+	 * @param trackHeight 
 	 * @param e mouse event
 	 */
-	public void toolTipStripe (TrackGraphics<T> trackGraphics, MouseEvent e) {
+	public void toolTipStripe (int trackHeight, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {										// we must be in a multi genome project
-			double pos = trackGraphics.screenPosToGenomePos(e.getX());									// we translate the position on the screen into a position on the genome
-			VariantInterface variant = getDisplayableVariant(trackGraphics, pos, e.getY());				// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			double pos = projectWindow.screenXPosToGenomePos(e.getX());									// we translate the position on the screen into a position on the genome
+			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());				// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
 			if (variant != null) {																		// if a variant has been found
 				MGPosition positionInformation = variant.getFullVariantInformation();					// we get its information
 				AlleleType trackAlleleType = getTrackAlleleType();										// we get the allele type of the track
@@ -482,14 +484,14 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 	/**
 	 * Checks if the mouse is over a variant and says whether the track graphics must repaint or not 
-	 * @param trackGraphics 
+	 * @param trackHeight 
 	 * @param e the mouse event
 	 * @return	true if the track must be repainted, false otherwise
 	 */
-	public boolean isOverVariant (TrackGraphics<T> trackGraphics, MouseEvent e) {
+	public boolean isOverVariant (int trackHeight, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject() && allele01VariantListMaker != null && allele02VariantListMaker != null) {	// if we are in multi genome project
-			double pos = trackGraphics.screenPosToGenomePos(e.getX());							// we translate the position on the screen into a position on the genome
-			VariantInterface variant = getDisplayableVariant(trackGraphics, pos, e.getY());		// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			double pos = projectWindow.screenXPosToGenomePos(e.getX());							// we translate the position on the screen into a position on the genome
+			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());		// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
 			if (variant != null) {																// if a variant has been found
 				variantUnderMouse = variant;													// the mouse is on this variant (we save it)
 				return true;																	// we return true
@@ -577,25 +579,25 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 
 	/**
-	 * @param trackGraphics the track graphics
+	 * @param trackHeight the track graphics height
 	 * @param x position on the meta genome
 	 * @param y y position on the track
 	 * @return	the variant associated to the position if exists, null otherwise.
 	 */
-	public VariantInterface getDisplayableVariant(TrackGraphics<T> trackGraphics, double x, double y) {
+	public VariantInterface getDisplayableVariant(int trackHeight, double x, double y) {
 		List<VariantInterface> variantList = null;					// instantiate a list that will lead to the right variant list
 		AlleleType trackAlleleType = getTrackAlleleType();			// we get the allele type of the track
 		if (trackAlleleType != null) {
 			if (trackAlleleType == AlleleType.BOTH) {					// if both allele are displayed, we must distinguish on which allele the variant is
-				if (y <= trackGraphics.getHeight() / 2) {				// if Y is less than the half of the track height
-					variantList = allele01VariantListMaker.getFittedData(trackGraphics.getGenomeWindow(), trackGraphics.getxFactor());	// we have to look on the first allele list
+				if (y <= trackHeight / 2) {				// if Y is less than the half of the track height
+					variantList = allele01VariantListMaker.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());	// we have to look on the first allele list
 				} else {												// if Y is more than the half of the track height
-					variantList = allele02VariantListMaker.getFittedData(trackGraphics.getGenomeWindow(), trackGraphics.getxFactor());	// we have to look on the second allele list
+					variantList = allele02VariantListMaker.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());	// we have to look on the second allele list
 				}
 			} else if (trackAlleleType == AlleleType.ALLELE01) {		// if the first allele only is displayed
-				variantList = allele01VariantListMaker.getFittedData(trackGraphics.getGenomeWindow(), trackGraphics.getxFactor());	// we look on the first allele list
+				variantList = allele01VariantListMaker.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());	// we look on the first allele list
 			} else if (trackAlleleType == AlleleType.ALLELE02) {		// if the second allele only is displayed
-				variantList = allele02VariantListMaker.getFittedData(trackGraphics.getGenomeWindow(), trackGraphics.getxFactor());	// we look on the second allele list
+				variantList = allele02VariantListMaker.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());	// we look on the second allele list
 			}
 		}
 

@@ -214,7 +214,6 @@ public class ProjectRecordingManager {
 			// remove all the references to the listener so we don't save them
 			for (Track<?> currentTrack: trackList.getTrackList()) {
 				currentTrack.removePropertyChangeListener(trackList);
-				currentTrack.removeGenomeWindowListener(trackList);
 			}
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			GZIPOutputStream gz = new GZIPOutputStream(fos);
@@ -245,7 +244,6 @@ public class ProjectRecordingManager {
 			// rebuild the references to the listener
 			for (Track<?> currentTrack: trackList.getTrackList()) {
 				currentTrack.addPropertyChangeListener(trackList);
-				currentTrack.addGenomeWindowListener(trackList);
 			}
 			ProjectManager.getInstance().getProjectConfiguration().setCurrentProjectPath(outputFile.getPath());
 			ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();

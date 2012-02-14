@@ -24,16 +24,13 @@ package edu.yu.einstein.genplay.gui.controlPanel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 
 
 
@@ -42,7 +39,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ControlPanel extends JPanel implements GenomeWindowListener, GenomeWindowEventsGenerator {
+public final class ControlPanel extends JPanel {
 
 	private static final long serialVersionUID = -8254420324898563978L; // generated ID
 	private static final int INCREMENT_FACTOR = 10; 					// the length of a left or right move is the length of the   
@@ -51,30 +48,20 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	private final ZoomPanel 						zoomPanel;			// ZoomPanel part
 	private final ChromosomePanel 					chromosomePanel;	// ChromosomePanel part
 	private final GenomeWindowPanel 				genomeWindowPanel;	// GenomeWindowPanel part
-	private final ArrayList<GenomeWindowListener> 	listenerList;		// list of GenomeWindowListener
-	private GenomeWindow 							currentGenomeWindow;// current GenomeWindow
+	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
 
 
 	/**
 	 * Creates an instance of {@link ControlPanel}
-	 * @param currentGenomeWindow current {@link GenomeWindow}
 	 */
-	public ControlPanel(GenomeWindow currentGenomeWindow) { 
-		this.currentGenomeWindow = currentGenomeWindow;
-		this.listenerList = new ArrayList<GenomeWindowListener>();
+	public ControlPanel() { 
+		positionScrollPanel = new PositionScrollPanel();
+		zoomPanel = new ZoomPanel();
+		chromosomePanel = new ChromosomePanel();
+		genomeWindowPanel = new GenomeWindowPanel();
 
-		positionScrollPanel = new PositionScrollPanel(currentGenomeWindow);
-		positionScrollPanel.addGenomeWindowListener(this);
-
-		zoomPanel = new ZoomPanel(currentGenomeWindow);
-		zoomPanel.addGenomeWindowListener(this);
-
-		chromosomePanel = new ChromosomePanel(currentGenomeWindow);
-		chromosomePanel.addGenomeWindowListener(this);
-
-		genomeWindowPanel = new GenomeWindowPanel(currentGenomeWindow);
-		genomeWindowPanel.addGenomeWindowListener(this);
-
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
+		
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -116,49 +103,19 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 
 
 	/**
-	 * Sets the current {@link GenomeWindow}
-	 * @param newGenomeWindow new {@link GenomeWindow}
-	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		if (!newGenomeWindow.equals(currentGenomeWindow)) {			
-			GenomeWindow oldGenomeWindow = currentGenomeWindow;
-			currentGenomeWindow = newGenomeWindow;
-			// we notify the gui
-			positionScrollPanel.setGenomeWindow(newGenomeWindow);
-			zoomPanel.setGenomeWindow(newGenomeWindow);
-			chromosomePanel.setGenomeWindow(newGenomeWindow);
-			genomeWindowPanel.setGenomeWindow(newGenomeWindow);
-			// we notify the listeners
-			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, currentGenomeWindow);
-			for (GenomeWindowListener currentListener: listenerList) {
-				currentListener.genomeWindowChanged(evt);
-			}
-		}
-	}
-	
-	
-	/**
-	 * @return the genome window
-	 */
-	public GenomeWindow getGenomeWindow() {
-		return currentGenomeWindow;
-	}
-
-
-	/**
 	 * Decrements the start and the stop positions of the {@link GenomeWindow} 
 	 */
 	public void moveLeft() {
-		int moveGap = (int) (currentGenomeWindow.getSize() / (double) INCREMENT_FACTOR);
+		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
 		// we want to move from at least 1 nucleotide
 		moveGap = Math.max(moveGap, 1);
-		GenomeWindow newGenomeWindow = new GenomeWindow(currentGenomeWindow.getChromosome(), currentGenomeWindow.getStart() - moveGap, currentGenomeWindow.getStop() - moveGap);
+		GenomeWindow newGenomeWindow = new GenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() - moveGap, projectWindow.getGenomeWindow().getStop() - moveGap);
 		if (newGenomeWindow.getMiddlePosition() < 0) {
 			int size = newGenomeWindow.getSize();
 			newGenomeWindow.setStart(-size / 2);
 			newGenomeWindow.setStop(newGenomeWindow.getStart() + size);
 		}
-		setGenomeWindow(newGenomeWindow);		
+		projectWindow.setGenomeWindow(newGenomeWindow);
 	}
 
 
@@ -166,16 +123,16 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	 * Increments the start and the stop positions of the {@link GenomeWindow}
 	 */
 	public void moveRight() {
-		int moveGap = (int) (currentGenomeWindow.getSize() / (double) INCREMENT_FACTOR);
+		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
 		// we want to move from at least 1 nucleotide
 		moveGap = Math.max(moveGap, 1);
-		GenomeWindow newGenomeWindow = new GenomeWindow(currentGenomeWindow.getChromosome(), currentGenomeWindow.getStart() + moveGap, currentGenomeWindow.getStop() + moveGap);
-		if (newGenomeWindow.getMiddlePosition() > currentGenomeWindow.getChromosome().getLength()) {
+		GenomeWindow newGenomeWindow = new GenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() + moveGap, projectWindow.getGenomeWindow().getStop() + moveGap);
+		if (newGenomeWindow.getMiddlePosition() > projectWindow.getGenomeWindow().getChromosome().getLength()) {
 			int size = newGenomeWindow.getSize();
-			newGenomeWindow.setStart(currentGenomeWindow.getChromosome().getLength() - size / 2);
+			newGenomeWindow.setStart(projectWindow.getGenomeWindow().getChromosome().getLength() - size / 2);
 			newGenomeWindow.setStop(newGenomeWindow.getStart() + size);
 		}
-		setGenomeWindow(newGenomeWindow);		
+		projectWindow.setGenomeWindow(newGenomeWindow);	
 	}		
 
 	
@@ -193,7 +150,7 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	 * Zooms in
 	 */
 	public void zoomIn() {
-		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomIn(currentGenomeWindow.getSize());
+		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomIn(projectWindow.getGenomeWindow().getSize());
 		zoomPanel.zoomChanged(newZoom);
 	}
 
@@ -202,33 +159,8 @@ public final class ControlPanel extends JPanel implements GenomeWindowListener, 
 	 * Zooms out
 	 */
 	public void zoomOut() {
-		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomOut(currentGenomeWindow.getSize());
+		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomOut(projectWindow.getGenomeWindow().getSize());
 		zoomPanel.zoomChanged(newZoom);
-	}
-
-
-	@Override
-	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		setGenomeWindow(evt.getNewWindow());
-	}
-
-
-	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);			
-	}
-
-
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
-		return listenerList.toArray(genomeWindowListeners);
-	}
-
-
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.remove(genomeWindowListener);		
 	}
 	
 	

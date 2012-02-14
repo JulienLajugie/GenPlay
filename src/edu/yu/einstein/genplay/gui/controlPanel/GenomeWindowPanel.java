@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -36,8 +35,8 @@ import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 
@@ -46,29 +45,28 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenerator {
+final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 	private static final long serialVersionUID = 8279801687428218652L;  // generated ID
 	private final JTextField 						jtfGenomeWindow;	// text field for the GenomeWindow
 	private final JButton 							jbJump;				// button jump to position
-	private final ArrayList<GenomeWindowListener> 	listenerList;		// list of GenomeWindowListener
-	private GenomeWindow 							currentGenomeWindow;// current GenomeWindow
+	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
 	
 
 	/**
 	 * Creates an instance of {@link GenomeWindowPanel}
 	 * @param genomeWindow a {@link GenomeWindow}
 	 */
-	GenomeWindowPanel(GenomeWindow genomeWindow) {
-		this.currentGenomeWindow = genomeWindow;
-		this.listenerList = new ArrayList<GenomeWindowListener>();
+	GenomeWindowPanel() {
+		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
 		jtfGenomeWindow = new JTextField(20);
-		jtfGenomeWindow.setText(genomeWindow.toString());
+		jtfGenomeWindow.setText(projectWindow.getGenomeWindow().toString());
 		jtfGenomeWindow.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					genomeWindowChanged();
+					updateGenomeWindow();
 				}
 			}
 		});
@@ -77,7 +75,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenera
 		jbJump.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				genomeWindowChanged();				
+				updateGenomeWindow();				
 			}
 		});
 
@@ -103,63 +101,25 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenera
 
 
 	/**
-	 * Sets the current {@link GenomeWindow}
-	 * @param newGenomeWindow new {@link GenomeWindow}
-	 */
-	void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		if (!newGenomeWindow.equals(currentGenomeWindow)) {
-			GenomeWindow oldGenomeWindow = currentGenomeWindow;
-			currentGenomeWindow = newGenomeWindow;
-			// we notify the gui
-			jtfGenomeWindow.setText(currentGenomeWindow.toString());
-			genomeWindowChanged();
-			// we notify the listeners
-			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, currentGenomeWindow);
-			for (GenomeWindowListener currentListener: listenerList) {
-				currentListener.genomeWindowChanged(evt);
-			}
-		}
-	}
-
-
-	/**
 	 * Called when the current {@link GenomeWindow} changes
 	 */
-	void genomeWindowChanged() {
+	void updateGenomeWindow() {
 		try {
 			GenomeWindow newGenomeWindow = new GenomeWindow(jtfGenomeWindow.getText(), ProjectManager.getInstance().getProjectChromosome());
-			if (!newGenomeWindow.equals(currentGenomeWindow)) {
+			if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
 				int middlePosition = (int)newGenomeWindow.getMiddlePosition();
 				if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
 					JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
 				} else {
-					setGenomeWindow(newGenomeWindow);
+					//setGenomeWindow(newGenomeWindow);
+					projectWindow.setGenomeWindow(newGenomeWindow);
 				}
 			}			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
-			jtfGenomeWindow.setText(currentGenomeWindow.toString());
+			jtfGenomeWindow.setText(projectWindow.getGenomeWindow().toString());
 			e.printStackTrace();
 		}		
-	}
-
-
-	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);
-	}
-	
-	
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
-		return listenerList.toArray(genomeWindowListeners);
-	}
-	
-	
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.remove(genomeWindowListener);		
 	}
 	
 	
@@ -177,4 +137,11 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowEventsGenera
 	public void unlock() {
 		jtfGenomeWindow.setEnabled(true);
 	}
+
+
+	@Override
+	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		jtfGenomeWindow.setText(evt.getNewWindow().toString());
+	}
+	
 }

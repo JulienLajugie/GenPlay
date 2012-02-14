@@ -28,16 +28,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 
@@ -46,7 +44,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class Ruler extends JPanel implements GenomeWindowListener, GenomeWindowEventsGenerator {
+public final class Ruler extends JPanel implements GenomeWindowListener {
 
 	private static final long serialVersionUID = -5243446035761988387L; // Generated ID
 	private static final int 	HANDLE_WIDTH = 50;				// Width of the track handle
@@ -56,17 +54,13 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		"edu/yu/einstein/genplay/resource/tools.png";			// name of the menu icon 
 	private final RulerGraphics	rulerGraphics;					// Graphics part
 	private final JButton 		rulerButton;					// button of the ruler				 
-	private final ArrayList<GenomeWindowListener> listenerList;	// list of GenomeWindowListener
 
 
 	/**
 	 * Creates an instance of {@link Ruler}
-	 * @param genomeWindow displayed {@link GenomeWindow}
 	 */
-	public Ruler(GenomeWindow genomeWindow) {
-		listenerList = new ArrayList<GenomeWindowListener>();
-		rulerGraphics = new RulerGraphics(genomeWindow);
-		rulerGraphics.addGenomeWindowListener(this);
+	public Ruler() {
+		rulerGraphics = new RulerGraphics();
 		rulerButton = new JButton();
 		initButton();		
 		setLayout(new GridBagLayout());
@@ -87,6 +81,9 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 		gbc.weighty = 1;
 		add(rulerGraphics, gbc);
 		setMinimumSize(new Dimension(getPreferredSize().width, RULER_HEIGHT));
+		
+		// registered the listener to the genome window manager
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 	}
 
 
@@ -117,15 +114,6 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 
 
 	/**
-	 * Sets the {@link GenomeWindow} displayed by the ruler
-	 * @param newGenomeWindow {@link GenomeWindow}
-	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		rulerGraphics.setGenomeWindow(newGenomeWindow);
-	}
-
-
-	/**
 	 * Turns the scroll mode on / off
 	 * @param scrollMode
 	 */
@@ -143,30 +131,8 @@ public final class Ruler extends JPanel implements GenomeWindowListener, GenomeW
 	
 
 	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.add(genomeWindowListener);		
-	}
-
-
-	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		// we notify the listeners
-		for (GenomeWindowListener currentListener: listenerList) {
-			currentListener.genomeWindowChanged(evt);
-		}		
-	}	
-	
-	
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[listenerList.size()];
-		return listenerList.toArray(genomeWindowListeners);
-	}
-	
-	
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		listenerList.remove(genomeWindowListener);		
+			
 	}
 	
 	

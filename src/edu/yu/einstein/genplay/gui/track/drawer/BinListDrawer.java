@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.track.drawer;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.util.ColorConverters;
@@ -46,22 +45,21 @@ public final class BinListDrawer extends CurveDrawer {
 	 * @param graphics {@link Graphics} of a track
 	 * @param trackWidth width of a track 
 	 * @param trackHeight height of a track
-	 * @param genomeWindow {@link GenomeWindow} of a track
 	 * @param scoreMin score minimum to display
 	 * @param scoreMax score maximum to display
 	 * @param trackColor color of the curve
 	 * @param typeOfGraph type of graph
 	 * @param binList data to draw
 	 */
-	public BinListDrawer(Graphics graphics, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph, BinList binList) {
-		super(graphics, trackWidth, trackHeight, genomeWindow, scoreMin, scoreMax, trackColor, typeOfGraph);
+	public BinListDrawer(Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph, BinList binList) {
+		super(graphics, trackWidth, trackHeight, scoreMin, scoreMax, trackColor, typeOfGraph);
 		this.binList = binList;
 	}
 
 	
 	@Override
 	protected void drawBarGraphics() {
-		double[] data = binList.getFittedData(genomeWindow, xRatio);
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
 			// Compute the reverse color
@@ -69,20 +67,20 @@ public final class BinListDrawer extends CurveDrawer {
 			if (!trackColor.equals(Color.black)) {
 				reverseCurveColor = new Color(trackColor.getRGB() ^ 0xffffff);
 			}
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
+			int currentMinX = projectWindow.getGenomeWindow().getStart();
+			int currentMaxX = projectWindow.getGenomeWindow().getStop();
 			// Compute the Y = 0 position 
 			int screenY0 = scoreToScreenPos(0);
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;		
 			int i = 0;
-			int screenWindowWidth = (int)Math.ceil(windowData * xRatio);
+			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
-					int screenXPosition = genomePosToScreenPos(currentGenomePosition);
+					int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
 					int screenYPosition = scoreToScreenPos(currentIntensity);
 					int rectHeight = screenYPosition - screenY0;
 					if (currentIntensity > 0) {
@@ -102,17 +100,17 @@ public final class BinListDrawer extends CurveDrawer {
 	
 	@Override
 	protected void drawCurveGraphics() {
-		double[] data = binList.getFittedData(genomeWindow, xRatio);
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
+			int currentMinX = projectWindow.getGenomeWindow().getStart();
+			int currentMaxX = projectWindow.getGenomeWindow().getStop();
 			graphics.setColor(trackColor);
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;		
 			int i = 0;
-			int screenWindowWidth = (int)Math.round(windowData * xRatio);
+			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				int nextIndex = (currentGenomePosition + windowData) / windowData;
@@ -120,7 +118,7 @@ public final class BinListDrawer extends CurveDrawer {
 					double currentIntensity = data[currentIndex];
 					double nextIntensity = data[nextIndex];
 					//int screenX1Position = genomePosToScreenPos(currentGenomePosition);
-					int screenX1Position = (int)Math.round((double)(currentGenomePosition - genomeWindow.getStart()) * xRatio);
+					int screenX1Position = (int)Math.round((double)(currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());
 					int screenX2Position = screenX1Position + screenWindowWidth;
 					int screenY1Position = scoreToScreenPos(currentIntensity);
 					int screenY2Position = scoreToScreenPos(nextIntensity);
@@ -142,21 +140,21 @@ public final class BinListDrawer extends CurveDrawer {
 	
 	@Override
 	protected void drawDenseGraphics() {
-		double[] data = binList.getFittedData(genomeWindow, xRatio);
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
+			int currentMinX = projectWindow.getGenomeWindow().getStart();
+			int currentMaxX = projectWindow.getGenomeWindow().getStop();
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;		
 			int i = 0;
-			int screenWindowWidth = (int)Math.ceil(windowData * xRatio);
+			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
-					int screenXPosition = genomePosToScreenPos(currentGenomePosition);
+					int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
 					graphics.setColor(ColorConverters.scoreToColor(currentIntensity, scoreMin, scoreMax));
 					graphics.fillRect(screenXPosition, 0, screenWindowWidth, trackHeight);
 				}
@@ -169,22 +167,22 @@ public final class BinListDrawer extends CurveDrawer {
 	
 	@Override
 	protected void drawPointGraphics() {
-		double[] data = binList.getFittedData(genomeWindow, xRatio);
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
-			int currentMinX = genomeWindow.getStart();
-			int currentMaxX = genomeWindow.getStop();
+			int currentMinX = projectWindow.getGenomeWindow().getStart();
+			int currentMaxX = projectWindow.getGenomeWindow().getStop();
 			graphics.setColor(trackColor);
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;		
 			int i = 0;
-			int screenWindowWidth = (int)Math.round(windowData * xRatio);
+			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
-					int screenX1Position = genomePosToScreenPos(currentGenomePosition);
+					int screenX1Position = projectWindow.genomePosToScreenXPos(currentGenomePosition);
 					int screenX2Position = screenX1Position + screenWindowWidth;
 					int screenYPosition = scoreToScreenPos(currentIntensity);				
 					graphics.drawLine(screenX1Position, screenYPosition, screenX2Position, screenYPosition);

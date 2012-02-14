@@ -90,7 +90,7 @@ public class ETALoadFromDAS extends TrackListAction {
 					int resType = dasDialog.getGenerateType();
 					int dataRange = dasDialog.getDataRange();
 					GenomeWindow genomeWindow = dasDialog.getUserSpecifiedGenomeWindow();
-					GenomeWindow currentWindow = getTrackList().getGenomeWindow();					
+					GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();					
 					if (resType == DASDialog.GENERATE_GENE_LIST) {
 						// case where the result type is a GeneList
 						new ETALoadGeneListTrackFromDAS(dataSource, dasConnector, dasType, dataRange, genomeWindow, currentWindow, selectedTrackIndex).actionPerformed(arg0);

@@ -99,7 +99,7 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-			SCWListTrack newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			SCWListTrack newTrack = new SCWListTrack(selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load From DAS Server", Color.GRAY);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());

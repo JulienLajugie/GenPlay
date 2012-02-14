@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.util.History;
 
@@ -64,18 +63,17 @@ public class GeneListTrack extends Track<GeneList> implements VersionedTrack {
 	
 	/**
 	 * Creates an instance of {@link GeneListTrack}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 * @param data {@link GeneList} showed in the track
 	 */
-	public GeneListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,  GeneList data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public GeneListTrack(int trackNumber,  GeneList data) {
+		super(trackNumber, data);
 	}
 
 
 	@Override
-	protected TrackGraphics<GeneList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, GeneList data) {
-		return new GeneListTrackGraphics(displayedGenomeWindow, data);
+	protected TrackGraphics<GeneList> createsTrackGraphics(GeneList data) {
+		return new GeneListTrackGraphics(data);
 	}
 	
 	

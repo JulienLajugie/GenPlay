@@ -26,8 +26,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 
 
@@ -43,12 +44,11 @@ public abstract class CurveDrawer {
 	protected final Graphics 		graphics;		// Graphics of a track
 	protected final int 			trackWidth;		// width of a track
 	protected final int 			trackHeight;	// height of a track
-	protected final GenomeWindow 	genomeWindow;	// GenomeWindow of a track
 	protected final double 			scoreMin;		// score minimum to display
 	protected final double 			scoreMax;		// score maximum to display
 	protected final Color 			trackColor;		// color of the curve
 	protected final GraphicsType 	typeOfGraph;	// type of graph
-	protected final double 			xRatio;			// ratio between the width of a track and the number of base pair to display
+	protected final ProjectWindow 	projectWindow;	// instance of the genome window manager
 	protected final double 			yRatio;			// ratio between the height of a track and the distance from yMin to yMax
 	
 	
@@ -81,25 +81,23 @@ public abstract class CurveDrawer {
 	 * @param graphics {@link Graphics} of a track
 	 * @param trackWidth width of a track 
 	 * @param trackHeight height of a track
-	 * @param genomeWindow {@link GenomeWindow} of a track
 	 * @param scoreMin score minimum to display
 	 * @param scoreMax score maximum to display
 	 * @param trackColor color of the curve
 	 * @param typeOfGraph type of graph
 	 */
-	public CurveDrawer (Graphics graphics, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph) {
+	public CurveDrawer (Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph) {
 		this.graphics = graphics;
 		this.trackWidth = trackWidth;
 		this.trackHeight = trackHeight;
-		this.genomeWindow = genomeWindow;
 		this.scoreMin = scoreMin;
 		this.scoreMax = scoreMax;
 		this.trackColor = trackColor;
 		this.typeOfGraph = typeOfGraph;
-		this.xRatio = (double)trackWidth / (double)(genomeWindow.getStop() - genomeWindow.getStart());
+		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
 		this.yRatio = (double)trackHeight / (double)(scoreMax - scoreMin);
 	}
-		
+	
 
 	/**
 	 * @param score a double value
@@ -113,15 +111,6 @@ public abstract class CurveDrawer {
 		} else {
 			return (trackHeight - (int)Math.round((double)(score - scoreMin) * yRatio));
 		}
-	}
-	
-	
-	/**
-	 * @param genomePosition a position on the genome
-	 * @return the absolute position on the screen (can be > than the screen width)
-	 */
-	protected int genomePosToScreenPos(int genomePosition) {
-		return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xRatio);
 	}
 	
 	

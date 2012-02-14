@@ -84,7 +84,7 @@ public class ETAGenerateMultiCurvesTrack extends TrackListAction {
 				}
 				int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
 				ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
-				MultiCurvesTrack newTrack = new MultiCurvesTrack(getTrackList().getGenomeWindow(), selectedTrackIndex + 1, curveTracks);
+				MultiCurvesTrack newTrack = new MultiCurvesTrack(selectedTrackIndex + 1, curveTracks);
 				getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), trackName, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());	
 			} else {
 				JOptionPane.showMessageDialog(getRootPane(), "You must select at least two tracks", "Warning", JOptionPane.WARNING_MESSAGE);

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 
 
@@ -63,18 +62,17 @@ public class SNPListTrack extends Track<SNPList> {
 	
 	/**
 	 * Creates an instance of {@link SNPListTrack}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 * @param data {@link SNPList} showed in the track
 	 */
-	public SNPListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, SNPList data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public SNPListTrack(int trackNumber, SNPList data) {
+		super(trackNumber, data);
 	}
 	
 	
 	@Override
-	public TrackGraphics<SNPList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, SNPList data) {
-		return new SNPListTrackGraphics(displayedGenomeWindow, data);
+	public TrackGraphics<SNPList> createsTrackGraphics(SNPList data) {
+		return new SNPListTrackGraphics(data);
 	}
 
 }

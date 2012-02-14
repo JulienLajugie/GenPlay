@@ -99,7 +99,7 @@ public class BLATransfrag extends TrackListAction {
 								protected void doAtTheEnd(GeneList actionResult) {
 									if (actionResult != null) {
 										int selectedIndex = getTrackList().getSelectedTrackIndex();
-										GeneListTrack glt = new GeneListTrack(getTrackList().getGenomeWindow(), selectedIndex + 1, actionResult);
+										GeneListTrack glt = new GeneListTrack(selectedIndex + 1, actionResult);
 										getTrackList().setTrack(selectedIndex, glt, selectedTrack.getPreferredHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 									}
 								}

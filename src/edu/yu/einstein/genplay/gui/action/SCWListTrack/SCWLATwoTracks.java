@@ -98,7 +98,7 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
-			SCWListTrack newTrack = new SCWListTrack(getTrackList().getGenomeWindow(), index + 1, (ScoredChromosomeWindowList)actionResult);
+			SCWListTrack newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
 			// add info to the history
 			newTrack.getHistory().add("Operation on two tracks", Color.GRAY);
 			newTrack.getHistory().add("Operation: " + this.scm.toString(), Color.GRAY);

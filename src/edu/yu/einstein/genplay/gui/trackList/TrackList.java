@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.trackList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ActionMap;
@@ -34,7 +33,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
@@ -136,9 +134,6 @@ import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
-import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenuFactory;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
@@ -155,13 +150,11 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackList extends JScrollPane implements PropertyChangeListener, GenomeWindowListener, GenomeWindowEventsGenerator, Serializable {
+public final class TrackList extends JScrollPane implements PropertyChangeListener, Serializable {
 
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
 	private final JPanel 		jpTrackList;					// panel with the tracks
 	private final ProjectConfiguration projectConfiguration;	// ConfigurationManager
-	private final List<GenomeWindowListener> gwListenerList;	// list of GenomeWindowListener
-	private GenomeWindow 		displayedGenomeWindow;			// displayed GenomeWindow
 	private Track<?>[] 			trackList;						// array of tracks
 	private Track<?>			selectedTrack = null;			// track selected
 	private Track<?>			copiedTrack = null; 			// list of the tracks in the clipboard
@@ -171,13 +164,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 	/**
 	 * Creates an instance of {@link TrackList}
-	 * @param displayedGenomeWindow the displayed genome window
 	 */
-	public TrackList(GenomeWindow displayedGenomeWindow) {
+	public TrackList() {
 		super();
 		this.projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-		this.displayedGenomeWindow = displayedGenomeWindow;
-		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 		getVerticalScrollBar().setUnitIncrement(15);
 		getVerticalScrollBar().setBlockIncrement(40);
 		jpTrackList = new JPanel();
@@ -186,10 +176,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int preferredHeight = projectConfiguration.getTrackHeight();
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
-			trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
+			trackList[i] = new EmptyTrack(i + 1);
 			trackList[i].setPreferredHeight(preferredHeight);
 			trackList[i].addPropertyChangeListener(this);
-			trackList[i].addGenomeWindowListener(this);
 			jpTrackList.add(trackList[i]);
 		}		
 		for (int i = 0; i < trackCount; i++) {
@@ -209,10 +198,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int preferredHeight = projectConfiguration.getTrackHeight();
 		trackList = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
-			trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
+			trackList[i] = new EmptyTrack(i + 1);
 			trackList[i].setPreferredHeight(preferredHeight);
 			trackList[i].addPropertyChangeListener(this);
-			trackList[i].addGenomeWindowListener(this);
 		}		
 		System.gc();
 		rebuildPanel();
@@ -411,7 +399,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		trackList[index] = track;
 		trackList[index].setTrackNumber(index + 1);
 		trackList[index].addPropertyChangeListener(this);
-		trackList[index].addGenomeWindowListener(this);
 		jpTrackList.remove(index);
 		jpTrackList.add(trackList[index], index);
 		jpTrackList.revalidate();
@@ -497,9 +484,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			if (trackList[i].getPropertyChangeListeners().length == 0) {				
 				trackList[i].addPropertyChangeListener(this);
 			}
-			if (trackList[i].getGenomeWindowListeners().length == 0) {
-				trackList[i].addGenomeWindowListener(this);
-			}
 		}		
 		jpTrackList.revalidate();
 		setViewportView(jpTrackList);
@@ -532,41 +516,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			if (i < trackTmp.length) {
 				trackList[i] = trackTmp[i];
 			} else {
-				trackList[i] = new EmptyTrack(displayedGenomeWindow, i + 1);
+				trackList[i] = new EmptyTrack(i + 1);
 				trackList[i].setPreferredHeight(preferredHeight);
 			}
 		}
 		rebuildPanel();
 	}
-
-
-	/**
-	 * Sets the {@link GenomeWindow} displayed by the track
-	 * @param newGenomeWindow new {@link GenomeWindow}
-	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		if (!newGenomeWindow.equals(displayedGenomeWindow)) {
-			GenomeWindow oldGenomeWindow = displayedGenomeWindow;
-			displayedGenomeWindow = newGenomeWindow;
-			for (Track<?> track : trackList) {
-				track.setGenomeWindow(displayedGenomeWindow);
-			}
-			// we notify the listeners
-			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, displayedGenomeWindow);
-			for (GenomeWindowListener currentListener: gwListenerList) {
-				currentListener.genomeWindowChanged(evt);
-			}
-		}
-	}
-
-
-	/**
-	 * @return the displayed {@link GenomeWindow}
-	 */
-	public GenomeWindow getGenomeWindow() {
-		return displayedGenomeWindow;
-	}
-
 
 
 	/**
@@ -746,7 +701,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			try {
 				copiedTrack = selectedTrack;
 				int selectedTrackIndex = getSelectedTrackIndex();				
-				Track<?> emptyTrack = new EmptyTrack(displayedGenomeWindow, trackList.length);
+				Track<?> emptyTrack = new EmptyTrack(trackList.length);
 				setTrack(selectedTrackIndex, emptyTrack, projectConfiguration.getTrackHeight(), null, null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
@@ -780,8 +735,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			try {
 				int selectedTrackIndex = getSelectedTrackIndex();
 				Track<?> newTrack = copiedTrack.deepClone();
-				GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
-				newTrack.setGenomeWindow(currentGenomeWindow);
+				/*GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
+				newTrack.setGenomeWindow(currentGenomeWindow);*/
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
@@ -801,9 +756,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			for (int i = selectedTrackIndex + 1; i < trackList.length; i++) {
 				trackList[i - 1] = trackList[i];
 			}
-			trackList[trackList.length - 1] = new EmptyTrack(displayedGenomeWindow, trackList.length);
+			trackList[trackList.length - 1] = new EmptyTrack(trackList.length);
 			trackList[trackList.length - 1].addPropertyChangeListener(this);
-			trackList[trackList.length - 1].addGenomeWindowListener(this);
 			selectedTrack = null;
 			rebuildPanel();
 		}
@@ -828,32 +782,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			currentTrack.unlockHandle();
 		}
 	}
-
-
-	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		gwListenerList.add(genomeWindowListener);		
-	}
-
-
-	@Override
-	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		setGenomeWindow(evt.getNewWindow());	
-	}
-
-
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
-		return gwListenerList.toArray(genomeWindowListeners);
-	}
-
-
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		gwListenerList.remove(genomeWindowListener);		
-	}
-
+	
 
 	/**
 	 * Unlocks the track handles when an action ends
@@ -909,9 +838,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for (int i = trackList.length - 2; i >= trackIndex; i--) {
 			trackList[i + 1] = trackList[i];
 		}
-		trackList[trackIndex] = new EmptyTrack(displayedGenomeWindow, trackList.length);
+		trackList[trackIndex] = new EmptyTrack(trackList.length);
 		trackList[trackIndex].addPropertyChangeListener(this);
-		trackList[trackIndex].addGenomeWindowListener(this);
 		selectedTrack = null;
 		rebuildPanel();
 	}

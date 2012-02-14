@@ -90,7 +90,7 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			SNPListTrack newTrack = new SNPListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			SNPListTrack newTrack = new SNPListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);
 			}

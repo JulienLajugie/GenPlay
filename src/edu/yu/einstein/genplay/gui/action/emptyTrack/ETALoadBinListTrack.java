@@ -87,7 +87,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			BinListTrack newTrack = new BinListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			BinListTrack newTrack = new BinListTrack(selectedTrackIndex + 1, actionResult);
 			// write in the history
 			DecimalFormat dF = new DecimalFormat("###,###,###,###,###,###.##");
 			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision() + ", Score Count = " + dF.format(actionResult.getSumScore());

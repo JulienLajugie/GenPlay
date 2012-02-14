@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 
 /**
@@ -62,17 +61,16 @@ public final class SCWListTrack extends CurveTrack<ScoredChromosomeWindowList> {
 	
 	/**
 	 * Creates an instance of {@link SCWListTrack}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 * @param data {@link ScoredChromosomeWindowList} showed in the track
 	 */
-	public SCWListTrack(GenomeWindow displayedGenomeWindow, int trackNumber,  ScoredChromosomeWindowList data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public SCWListTrack(int trackNumber,  ScoredChromosomeWindowList data) {
+		super(trackNumber, data);
 	}
 
 
 	@Override
-	protected TrackGraphics<ScoredChromosomeWindowList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
-		return new SCWListTrackGraphics(displayedGenomeWindow, data);
+	protected TrackGraphics<ScoredChromosomeWindowList> createsTrackGraphics(ScoredChromosomeWindowList data) {
+		return new SCWListTrackGraphics(data);
 	}
 }

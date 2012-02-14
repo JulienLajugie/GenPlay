@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOMinScoreToDisplay;
@@ -68,17 +67,16 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 
 	/**
 	 * Creates an instance of a {@link SCWListTrackGraphics}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param data displayed {@link ScoredChromosomeWindowList} 
 	 */
-	protected SCWListTrackGraphics(GenomeWindow displayedGenomeWindow, ScoredChromosomeWindowList data) {
-		super(displayedGenomeWindow, data, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
+	protected SCWListTrackGraphics(ScoredChromosomeWindowList data) {
+		super(data, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
 	}
 	
 	
 	@Override
 	protected void drawData(Graphics g) {
-		CurveDrawer cd = new SCWListDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax, trackColor, typeOfGraph, data);
+		CurveDrawer cd = new SCWListDrawer(g, getWidth(), getHeight(), yMin, yMax, trackColor, typeOfGraph, data);
 		cd.draw();		
 	}
 
@@ -86,7 +84,7 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 	@Override
 	protected void drawScore(Graphics g) {
 		g.setColor(getScoreColor());
-		double middlePosition = genomeWindow.getMiddlePosition();
+		double middlePosition = projectWindow.getGenomeWindow().getMiddlePosition();
 		double middleScore = data.getScore((int) middlePosition);
 		int scoreYPosition = 0;
 		if (getScorePosition() == BOTTOM_SCORE_POSITION) {
@@ -99,8 +97,8 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 
 
 	@Override
-	public CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, GenomeWindow genomeWindow, double scoreMin, double scoreMax) {
-		return new SCWListDrawer(g, trackWidth, trackHeight, genomeWindow, scoreMin, scoreMax, trackColor, typeOfGraph, data);
+	public CurveDrawer getDrawer(Graphics g, int trackWidth, int trackHeight, double scoreMin, double scoreMax) {
+		return new SCWListDrawer(g, trackWidth, trackHeight, scoreMin, scoreMax, trackColor, typeOfGraph, data);
 	}
 
 

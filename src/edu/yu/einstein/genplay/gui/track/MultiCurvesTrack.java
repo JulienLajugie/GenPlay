@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
-
 /**
  * A track showing multiples {@link CurveTrack}
  * @author Julien Lajugie
@@ -61,18 +59,17 @@ public class MultiCurvesTrack extends ScoredTrack<CurveTrack<?>[]> {
 	
 	/**
 	 * Creates an instance of {@link MultiCurvesTrack}
-	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
 	 * @param data array of {@link CurveTrack}
 	 */
-	public MultiCurvesTrack(GenomeWindow displayedGenomeWindow, int trackNumber, CurveTrack<?>[] data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public MultiCurvesTrack(int trackNumber, CurveTrack<?>[] data) {
+		super(trackNumber, data);
 	}
 
 
 	@Override
-	protected TrackGraphics<CurveTrack<?>[]> createsTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack<?>[] data) {
-		return new MultiCurvesTrackGraphics(displayedGenomeWindow, data);
+	protected TrackGraphics<CurveTrack<?>[]> createsTrackGraphics(CurveTrack<?>[] data) {
+		return new MultiCurvesTrackGraphics(data);
 	}
 	
 	
@@ -83,6 +80,6 @@ public class MultiCurvesTrack extends ScoredTrack<CurveTrack<?>[]> {
 	 */
 	@Override
 	public Track<?> deepClone() throws IOException, ClassNotFoundException {
-		return new MultiCurvesTrack(getGenomeWindow(), getTrackNumber(), getData());
+		return new MultiCurvesTrack(getTrackNumber(), getData());
 	}
 }

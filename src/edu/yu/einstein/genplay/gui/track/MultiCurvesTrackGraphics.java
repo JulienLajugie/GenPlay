@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
-
 
 /**
  * A {@link TrackGraphics} part of a {@link MultiCurvesTrack}
@@ -65,11 +63,10 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 	
 	/**
 	 * Creates an instance of {@link MultiCurvesTrackGraphics}
-	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param data array of {@link CurveTrack}
 	 */
-	public MultiCurvesTrackGraphics(GenomeWindow displayedGenomeWindow, CurveTrack<?>[] data) {
-		super(displayedGenomeWindow, data, 0, 1);
+	public MultiCurvesTrackGraphics(CurveTrack<?>[] data) {
+		super(data, 0, 1);
 		// add repaint listeners so the multicurves track is repainted when on of the curves track is repainted
 		for (Track<?> currentTrack: data) {
 			currentTrack.trackGraphics.addPropertyChangeListener(this);
@@ -96,7 +93,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 	protected void drawData(Graphics g) {
 		for (int i = data.length; i > 0; i--) {
 			CurveTrackGraphics<?> ctg = (CurveTrackGraphics<?>) data[i - 1].trackGraphics;
-			ctg.getDrawer(g, getWidth(), getHeight(), genomeWindow, yMin, yMax).draw();
+			ctg.getDrawer(g, getWidth(), getHeight(), yMin, yMax).draw();
 		}
 	}
 

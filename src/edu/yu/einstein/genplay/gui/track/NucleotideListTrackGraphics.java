@@ -33,7 +33,6 @@ import java.io.ObjectOutputStream;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
@@ -125,11 +124,10 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 
 	/**
 	 * Creates an instance of {@link NucleotideListTrackGraphics}
-	 * @param displayedGenomeWindow a {@link GenomeWindow} to display
 	 * @param data a sequence of {@link Nucleotide} to display
 	 */
-	public NucleotideListTrackGraphics(GenomeWindow displayedGenomeWindow, DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
-		super(displayedGenomeWindow, data);
+	public NucleotideListTrackGraphics(DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
+		super(data);
 		// compute the length in pixels of the widest base to display
 		String[] bases = {"N", "A", "C", "G", "T"};
 		for (String currBase: bases) {
@@ -146,17 +144,17 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 		if (data != null) {
 			int width = getWidth();
 			int height = getHeight();
-			long baseToPrintCount = genomeWindow.getSize();
+			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 			// if there is enough room to print something
 			if (baseToPrintCount <= getWidth()) {
-				Nucleotide[] nucleotides = data.getFittedData(genomeWindow, xFactor);
-				for (int position = genomeWindow.getStart(); position <= genomeWindow.getStop(); position++) {
-					int index = position - genomeWindow.getStart();
+				Nucleotide[] nucleotides = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
+					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
 						Nucleotide nucleotide = nucleotides[index];
 						// compute the position on the screen
-						int x = genomePosToScreenPos(position);
-						int nucleoWith = twoGenomePosToScreenWidth(position, position + 1);
+						int x = projectWindow.genomePosToScreenXPos(position);
+						int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
 						// select a different color for each type of base
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 							g.setColor(Color.WHITE);
@@ -190,17 +188,17 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	 */
 	private void drawNucleotideLetters(Graphics g) {
 		if (data != null) {
-			long baseToPrintCount = genomeWindow.getSize();
+			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 			// if there is enough room to print something
 			if (baseToPrintCount <= getWidth()) {
-				Nucleotide[] nucleotides = data.getFittedData(genomeWindow, xFactor);
-				for (int position = genomeWindow.getStart(); position <= genomeWindow.getStop(); position++) {
-					int index = position - genomeWindow.getStart();
+				Nucleotide[] nucleotides = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
+					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
 						Nucleotide nucleotide = nucleotides[index];
 						if (maxBaseWidth * baseToPrintCount <= getWidth()) {
 							// compute the position on the screen
-							int x = genomePosToScreenPos(position);
+							int x = projectWindow.genomePosToScreenXPos(position);
 							// select a different color for each type of base
 							if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 								g.setColor(Color.BLACK);
@@ -267,7 +265,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	public void mouseMoved(MouseEvent e) {
 		super.mouseMoved(e);
 		setToolTipText("");
-		long baseToPrintCount = genomeWindow.getSize();
+		long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 		Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
 		baseUnderMouseIndex = null;		
 		if (!getScrollMode()) {
@@ -276,10 +274,10 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				// retrieve the position of the mouse
 				Point mousePosition = e.getPoint();
 				// retrieve the list of the printed nucleotides
-				Nucleotide[] printedBases = data.getFittedData(genomeWindow, xFactor);
+				Nucleotide[] printedBases = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 				// do nothing if there is no genes
 				if (printedBases != null) {
-					double distance = twoScreenPosToGenomeWidth(0, mousePosition.x);
+					double distance = projectWindow.twoScreenPosToGenomeWidth(0, mousePosition.x);
 					distance = Math.floor(distance);
 					baseUnderMouseIndex = (int) distance;
 					// we repaint the track only if the gene under the mouse changed
@@ -290,7 +288,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				}
 			}
 			if (baseUnderMouseIndex != null) {
-				Nucleotide nucleotide = data.getFittedData(genomeWindow, xFactor)[baseUnderMouseIndex];
+				Nucleotide nucleotide = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor())[baseUnderMouseIndex];
 				if (nucleotide != null) {
 					setToolTipText(nucleotide.name());
 				}

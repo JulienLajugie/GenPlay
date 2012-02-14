@@ -28,7 +28,6 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -114,8 +113,11 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
 			// we retrieve the value of the genome window of the first track and we set the project window with this value
-			GenomeWindow savedWindow = MainFrame.getInstance().getTrackList().getTrackList()[0].getGenomeWindow();
-			MainFrame.getInstance().getControlPanel().setGenomeWindow(savedWindow);
+			
+			//GenomeWindow savedWindow = MainFrame.getInstance().getTrackList().getTrackList()[0].getGenomeWindow();
+			//MainFrame.getInstance().getControlPanel().setGenomeWindow(savedWindow);
+			
+			//ProjectManager.getInstance().getProjectWindow().setGenomeWindow(savedWindow);
 		}
 	}	
 }

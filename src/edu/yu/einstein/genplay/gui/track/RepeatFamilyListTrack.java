@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 
 /**
@@ -62,17 +61,16 @@ public final class RepeatFamilyListTrack extends Track<RepeatFamilyList> {
 	
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrack}
-	 * @param displayedGenomeWindow the displayed {@link GenomeWindow}
 	 * @param trackNumber the number of the track
 	 * @param data the {@link RepeatFamilyList} to display
 	 */
-	public RepeatFamilyListTrack(GenomeWindow displayedGenomeWindow, int trackNumber, RepeatFamilyList data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	public RepeatFamilyListTrack(int trackNumber, RepeatFamilyList data) {
+		super(trackNumber, data);
 	}
 
 
 	@Override
-	protected TrackGraphics<RepeatFamilyList> createsTrackGraphics(GenomeWindow displayedGenomeWindow, RepeatFamilyList data) {
-		return new RepeatFamilyListTrackGraphics(displayedGenomeWindow, data);
+	protected TrackGraphics<RepeatFamilyList> createsTrackGraphics(RepeatFamilyList data) {
+		return new RepeatFamilyListTrackGraphics(data);
 	}
 }

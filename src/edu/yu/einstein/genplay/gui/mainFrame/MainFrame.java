@@ -43,7 +43,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
@@ -83,7 +82,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 531; 						// GenPlay version
+	private static final int VERSION_NUMBER = 533; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -127,22 +126,21 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		setIconImage(iconImage);
 
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		
+		// registered the listener to the genome window manager
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 
 		setTitle();
 
 		Chromosome chromosome = projectChromosome.get(0);
 		projectChromosome.setCurrentChromosome(chromosome);
-		GenomeWindow genomeWindow = new GenomeWindow(chromosome, 0, chromosome.getLength());
-		ruler = new Ruler(genomeWindow);
+		ruler = new Ruler();
 		ruler.getOptionButton().addActionListener(this);
-		ruler.addGenomeWindowListener(this);
 
-		trackList = new TrackList(genomeWindow);
+		trackList = new TrackList();
 		trackList.addPropertyChangeListener(this);
-		trackList.addGenomeWindowListener(this);
 
-		controlPanel = new ControlPanel(genomeWindow);
-		controlPanel.addGenomeWindowListener(this);
+		controlPanel = new ControlPanel();
 
 		statusBar = new StatusBar();
 
@@ -239,21 +237,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// if the chromosome changed we reinitialize the multigenome data
-		if ((projectChromosome.getCurrentChromosome() == null) ||
-				(!projectChromosome.getCurrentChromosome().equals(evt.getNewWindow().getChromosome()))) {
-			projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
+		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
+			//projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
 			PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
 			multiGenomeSNP.actionPerformed(null);
-		}
-
-		if (evt.getSource() != ruler) {
-			ruler.setGenomeWindow(evt.getNewWindow());
-		}
-		if (evt.getSource() != trackList) {
-			trackList.setGenomeWindow(evt.getNewWindow());
-		}
-		if (evt.getSource() != controlPanel) {
-			controlPanel.setGenomeWindow(evt.getNewWindow());
 		}
 	}
 

@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
-
 /**
  * An empty track
  * @author Julien Lajugie
@@ -60,16 +58,15 @@ public final class EmptyTrack extends Track<Void> {
 	
 	/**
 	 * Creates an instance of {@link EmptyTrack}
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
 	 */
-	public EmptyTrack(GenomeWindow displayedGenomeWindow, int trackNumber) {
-		super(displayedGenomeWindow, trackNumber, null);
+	public EmptyTrack(int trackNumber) {
+		super(trackNumber, null);
 	}
 
 
 	@Override
-	protected TrackGraphics<Void> createsTrackGraphics(GenomeWindow displayedGenomeWindow, Void data) {
-		return new EmptyTrackGraphics(displayedGenomeWindow);
+	protected TrackGraphics<Void> createsTrackGraphics(Void data) {
+		return new EmptyTrackGraphics();
 	}
 }

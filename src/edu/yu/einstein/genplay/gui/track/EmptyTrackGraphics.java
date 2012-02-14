@@ -66,8 +66,8 @@ public final class EmptyTrackGraphics extends TrackGraphics<Void> {
 	 * Creates an instance of {@link EmptyTrackGraphics}
 	 * @param displayedGenomeWindow {@link GenomeWindow} currently displayed
 	 */
-	protected EmptyTrackGraphics(GenomeWindow displayedGenomeWindow) {
-		super(displayedGenomeWindow, null);
+	protected EmptyTrackGraphics() {
+		super(null);
 	}
 
 

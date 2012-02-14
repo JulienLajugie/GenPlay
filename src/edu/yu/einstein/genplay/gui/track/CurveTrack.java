@@ -71,8 +71,8 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 	 * @param trackNumber number of the track
 	 * @param data data displayed in the track
 	 */
-	protected CurveTrack(GenomeWindow displayedGenomeWindow, int trackNumber, T data) {
-		super(displayedGenomeWindow, trackNumber, data);
+	protected CurveTrack(int trackNumber, T data) {
+		super(trackNumber, data);
 	}
 	
 

@@ -159,7 +159,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			SCWListTrack newTrack = new SCWListTrack(trackList.getGenomeWindow(), selectedTrackIndex + 1, actionResult);
+			SCWListTrack newTrack = new SCWListTrack(selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
 			String history = new String(); 
 			if (scoreCalculation != null) {

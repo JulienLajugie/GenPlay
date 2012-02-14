@@ -146,6 +146,9 @@ public class Launcher {
 		projectManager.updateChromosomeList();
 		projectFrame.setVisible(false);
 		
+		// Initializes the genome window manager
+		projectManager.getProjectWindow().initialize();
+		
 		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
 		MainFrame.reinit();
 		
