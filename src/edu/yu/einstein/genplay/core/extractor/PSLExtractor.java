@@ -247,4 +247,5 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
+	
 }

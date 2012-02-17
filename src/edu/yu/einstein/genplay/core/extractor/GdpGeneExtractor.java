@@ -155,4 +155,5 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
+	
 }

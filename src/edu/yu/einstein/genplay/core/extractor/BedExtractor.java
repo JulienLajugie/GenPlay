@@ -26,11 +26,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
@@ -74,7 +76,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	private String									searchURL;		// url of the gene database for the search
 	private Strand 									selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
-	
+
 
 	/**
 	 * Creates an instance of {@link BedExtractor}
@@ -133,76 +135,82 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 						strand = Strand.get(splitedLine[5].trim().charAt(0));
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
-						strandList.add(chromosome, strand);						
+						strandList.add(chromosome, strand);
 						int start = Integer.parseInt(splitedLine[1].trim());
 						int stop = Integer.parseInt(splitedLine[2].trim());
-						// compute the read position with specified strand shift and read length
-						if (readHandler != null) {
-							ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
-							start = resultStartStop.getStart();
-							stop = resultStartStop.getStop();							
-						}
-						// if we are in a multi-genome project, we compute the position on the meta genome 
-						start = getMultiGenomePosition(chromosome, start);
-						stop = getMultiGenomePosition(chromosome, stop);
-						startList.add(chromosome, start);
-						stopList.add(chromosome, stop);
-						if (splitedLine.length > 3) {
-							String name = splitedLine[3].trim();
-							if (!name.trim().equals("-")) {
-								nameList.add(chromosome, name);
+
+						String errors = DataLineValidator.getErrors(chromosome, start, stop);
+						if (errors.length() == 0) {
+							// compute the read position with specified strand shift and read length
+							if (readHandler != null) {
+								ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+								start = resultStartStop.getStart();
+								stop = resultStartStop.getStop();							
 							}
-							if (splitedLine.length > 4) {
-								if (!splitedLine[4].trim().equals("-")) {
-									double score = Double.parseDouble(splitedLine[4].trim());
-									scoreList.add(chromosome, score);
+							// if we are in a multi-genome project, we compute the position on the meta genome 
+							start = getMultiGenomePosition(chromosome, start);
+							stop = getMultiGenomePosition(chromosome, stop);
+							startList.add(chromosome, start);
+							stopList.add(chromosome, stop);
+							if (splitedLine.length > 3) {
+								String name = splitedLine[3].trim();
+								if (!name.trim().equals("-")) {
+									nameList.add(chromosome, name);
 								}
-								if (splitedLine.length > 7) {
-									int UTR5Bound;
-									int UTR3Bound;
-									try { 
-										// UTR bounds are for genes only so we don't need to 
-										// worry about the strand shift and the read length
-										// since these operations are not available for genes
-										UTR5Bound = Integer.parseInt(splitedLine[6].trim());
-										UTR3Bound = Integer.parseInt(splitedLine[7].trim());
-										// but we need to compute the position on the meta-genome
-										UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
-										UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
-									} catch (NumberFormatException e) {
-										UTR5Bound = start;
-										UTR3Bound = stop;
+								if (splitedLine.length > 4) {
+									if (!splitedLine[4].trim().equals("-")) {
+										double score = Double.parseDouble(splitedLine[4].trim());
+										scoreList.add(chromosome, score);
 									}
-									UTR5BoundList.add(chromosome, UTR5Bound);
-									UTR3BoundList.add(chromosome, UTR3Bound);
-									if (splitedLine.length > 11) {
-										if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
-											String[] exonStartsStr = splitedLine[11].split(",");
-											String[] exonLengthsStr = splitedLine[10].split(",");
-											int[] exonStarts = new int[exonLengthsStr.length];
-											int[] exonStops = new int[exonLengthsStr.length];
-											for (int i = 0; i < exonLengthsStr.length; i++) {
-												exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
-												exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
-											}
-											exonStartsList.add(chromosome, exonStarts);
-											exonStopsList.add(chromosome, exonStops);
-											if (splitedLine.length > 12) {
-												String[] exonScoresStr = splitedLine[12].split(",");
-												double[] exonScores = new double[exonScoresStr.length];
-												for (int i = 0; i < exonScoresStr.length; i++) {
-													exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+									if (splitedLine.length > 7) {
+										int UTR5Bound;
+										int UTR3Bound;
+										try { 
+											// UTR bounds are for genes only so we don't need to 
+											// worry about the strand shift and the read length
+											// since these operations are not available for genes
+											UTR5Bound = Integer.parseInt(splitedLine[6].trim());
+											UTR3Bound = Integer.parseInt(splitedLine[7].trim());
+											// but we need to compute the position on the meta-genome
+											UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
+											UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
+										} catch (NumberFormatException e) {
+											UTR5Bound = start;
+											UTR3Bound = stop;
+										}
+										UTR5BoundList.add(chromosome, UTR5Bound);
+										UTR3BoundList.add(chromosome, UTR3Bound);
+										if (splitedLine.length > 11) {
+											if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
+												String[] exonStartsStr = splitedLine[11].split(",");
+												String[] exonLengthsStr = splitedLine[10].split(",");
+												int[] exonStarts = new int[exonLengthsStr.length];
+												int[] exonStops = new int[exonLengthsStr.length];
+												for (int i = 0; i < exonLengthsStr.length; i++) {
+													exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
+													exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
 												}
-												exonScoresList.add(chromosome, exonScores);
+												exonStartsList.add(chromosome, exonStarts);
+												exonStopsList.add(chromosome, exonStops);
+												if (splitedLine.length > 12) {
+													String[] exonScoresStr = splitedLine[12].split(",");
+													double[] exonScores = new double[exonScoresStr.length];
+													for (int i = 0; i < exonScoresStr.length; i++) {
+														exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+													}
+													exonScoresList.add(chromosome, exonScores);
+												}
 											}
 										}
+									} else {
+										// if the file contains no infomation about the UTR sites
+										UTR5BoundList.add(chromosome, start);
+										UTR3BoundList.add(chromosome, stop);
 									}
-								} else {
-									// if the file contains no infomation about the UTR sites
-									UTR5BoundList.add(chromosome, start);
-									UTR3BoundList.add(chromosome, stop);
 								}
 							}
+						} else {
+							throw new InvalidDataLineException(errors);
 						}
 					}
 					lineCount++;
@@ -323,4 +331,5 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
+
 }

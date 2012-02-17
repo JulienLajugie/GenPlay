@@ -30,7 +30,9 @@ import edu.yu.einstein.genplay.core.extractor.Extractor;
 import edu.yu.einstein.genplay.core.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.generator.Generator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.InvalidDataLineException;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -41,7 +43,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @version 0.1
  * @param <T> typed of the value returned by the action
  */
-public abstract class TrackListActionExtractorWorker<T> extends TrackListActionWorker<T> {
+public abstract class TrackListActionExtractorWorker<T> extends TrackListActionWorker<T> implements InvalidDataListener {
 
 	private static final long serialVersionUID = -1626148358656459751L; // generated ID
 	private final Class<? extends Generator>	extractorClass;			// desired class of extractor
@@ -85,6 +87,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 			extractor = ExtractorFactory.getExtractor(fileToExtract, logFile);
 			if ((extractor != null) && (extractorClass.isAssignableFrom(extractor.getClass()))) {
 				name = extractor.getName();
+				extractor.addInvalidDataListener(this);
 				doBeforeExtraction();
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					extractor.setGenomeName(genomeName);
@@ -142,5 +145,11 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 			((Stoppable) extractor).stop();
 		}
 		super.stop();
+	}
+	
+
+	@Override
+	public void handleDataError(InvalidDataLineException e) {
+		handleError(e);
 	}
 }

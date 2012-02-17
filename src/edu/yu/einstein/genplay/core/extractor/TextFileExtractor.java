@@ -33,6 +33,7 @@ import java.util.Random;
 import java.util.TreeSet;
 
 import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -144,40 +145,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			return false;
 		}
 		
-		//return false;
 		return true; // This is a modification compare to the original version
-		
-
-		// This second block is the isDataLine method implementation of the version 450
-		// It works with SAM files from Eric
-
-		/*
-		boolean isDataLine = true;
-		// the following line is an optimization:
-		// if the line starts with chr it's a data line so we skip the other tests
-		if ((line.length() <= 2) || (!line.substring(0, 3).equalsIgnoreCase("chr"))) {
-			// case when the line is empty
-			if (line.length() == 0) {
-				isDataLine = false;
-			} else if (line.charAt(0) == '#') {
-				// comment line
-				isDataLine = false;
-			} else if ((line.length() > 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
-				// browser line
-				isDataLine = false;
-			} else if ((line.length() > 5) && (line.substring(0, 5).equalsIgnoreCase("track"))) {
-				// track line
-				isDataLine = false;
-				String[] splitedLine = line.split(" ");
-				for (String currentOption: splitedLine) {					
-					if ((currentOption.trim().length() > 4) && (currentOption.trim().substring(0, 4).equalsIgnoreCase("name"))) {
-						name = currentOption.substring(5).trim();
-					}
-				}
-			}
-		}
-		return isDataLine;
-		 */
 	}
 
 
@@ -204,7 +172,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 
 	@Override
-	public void extract() throws FileNotFoundException, IOException, InterruptedException {
+	public void extract() throws FileNotFoundException, IOException, InterruptedException, InvalidDataLineException {
 		BufferedReader reader = null;
 		try {
 			// if the randomLineCount variable is not null we generate a tree set of random line numbers to extract
@@ -220,7 +188,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			startTime = System.currentTimeMillis();
 			// extract data
 			String line = null;
-			int currentLineNumber = 1; // current line number 
+			int currentLineNumber = 1; 		// current line number
+			int currentValidLineNumber = 1; // current valid line number 
 			boolean isExtractionDone = false; // true when the last selected chromosome has been extracted
 			// we stop at the end of the file or when the last selected chromosome has been extracted
 			while(((line = reader.readLine()) != null) && (!isExtractionDone)){
@@ -238,15 +207,22 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 						// 1. the whole file needs to be extracted (ie: the randomLineNumbers variable is not set)
 						// 2. we extract a random part of the file and the current line was selected as one of the random line to extract 
 						// (ie the current line number is present in the randomLineNumbers set) 
-						if ((randomLineNumbers == null) || (randomLineNumbers.contains(currentLineNumber))) {
+						if ((randomLineNumbers == null) || (randomLineNumbers.contains(currentValidLineNumber))) {
 							isExtractionDone = extractLine(line);
 						}
-						currentLineNumber++;
+						currentValidLineNumber++;
 					} catch (InvalidDataLineException e) {
 						//logMessage("The following line can't be extracted: \"" + line + "\"");
 						//e.printStackTrace();
+						e.setFile(dataFile);
+						e.setLineNumber(currentLineNumber);
+						e.setLine(line);
+						for (InvalidDataListener listeners: invalidDataListenersList) {
+							listeners.handleDataError(e);
+						}
 					}
 				}
+				currentLineNumber++;
 			}
 			reader.close();
 			logExecutionInfo();

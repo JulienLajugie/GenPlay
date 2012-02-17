@@ -422,6 +422,11 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	
 	private int getStop (int track) {
 		if (this.isSCWList[track]) {
+			try {
+				return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStop();
+			} catch (Exception e) {
+				System.out.println(chromosome);
+			}
 			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStop();
 		} else {
 			return (this.currentIndex[track] + 1) * ((BinList)this.list.get(track)).getBinSize();

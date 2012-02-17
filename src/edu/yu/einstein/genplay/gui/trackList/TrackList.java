@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.trackList;
 
+import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
@@ -188,8 +189,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		addActionsToActionMap();
 		addKeyToInputMap();
 	}
-	
-	
+
+
 	/**
 	 * Resets the {@link TrackList} by filling it with empty tracks 
 	 */
@@ -205,7 +206,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		System.gc();
 		rebuildPanel();
 	}
-	
+
 
 	/**
 	 * Adds the action to the {@link ActionMap}
@@ -350,7 +351,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			setScrollMode(false);
 			selectedTrack = (Track<?>)arg0.getSource();
 			TrackMenu tm = TrackMenuFactory.getTrackMenu(this);
-			tm.show(this, getMousePosition().x, getMousePosition().y);
+			Point mousePoint = getMousePosition();
+			if (mousePoint != null) {
+				tm.show(this, mousePoint.x, mousePoint.y);
+			}
 		} else if (arg0.getPropertyName() == "trackDragged") {
 			if (draggedTrackIndex == -1) {
 				draggedTrackIndex = ((Track<?>)arg0.getSource()).getTrackNumber() - 1;
@@ -399,6 +403,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		trackList[index] = track;
 		trackList[index].setTrackNumber(index + 1);
 		trackList[index].addPropertyChangeListener(this);
+
+		trackList[index].addListeners();
+
 		jpTrackList.remove(index);
 		jpTrackList.add(trackList[index], index);
 		jpTrackList.revalidate();
@@ -682,7 +689,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void copyTrack() {
 		if (selectedTrack != null) {
 			try {
-				copiedTrack = selectedTrack.deepClone(); 
+				copiedTrack = selectedTrack.deepClone();
 				// we need to clone the selected track because the user may copy the
 				// then modify the track and finally paste the track.  If we don't do the deep clone
 				// all the modification made after the cloning will be copied (and we don't want that)
@@ -735,8 +742,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			try {
 				int selectedTrackIndex = getSelectedTrackIndex();
 				Track<?> newTrack = copiedTrack.deepClone();
-				/*GenomeWindow currentGenomeWindow = trackList[selectedTrackIndex].getGenomeWindow();
-				newTrack.setGenomeWindow(currentGenomeWindow);*/
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
@@ -782,7 +787,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			currentTrack.unlockHandle();
 		}
 	}
-	
+
 
 	/**
 	 * Unlocks the track handles when an action ends
@@ -817,8 +822,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}		
 		}
 	}
-	
-	
+
+
 	/**
 	 * Changes the legend display of the tracks
 	 */
@@ -852,8 +857,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		this.trackList = trackList;
 		rebuildPanel();
 	}
-	
-	
+
+
 	/**
 	 * @return the trackList
 	 */

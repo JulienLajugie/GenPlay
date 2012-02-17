@@ -40,12 +40,44 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @author Julien Lajugie
  * @version 0.1
  */
+//public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator {
 public class ProjectWindow implements GenomeWindowEventsGenerator {
 
+	/** Generated serial version ID */
+	//private static final long serialVersionUID = -9014173267531950797L;
+	//private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;	// saved format version
 	private GenomeWindow				genomeWindow;			// the genome window displayed by the track
 	private double						xFactor;				// factor between the genomic width and the screen width
 	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
 
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	/*private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(genomeWindow);
+		out.writeDouble(xFactor);
+		//out.writeObject(gwListenerList);
+	}*/
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	//@SuppressWarnings("unchecked")
+	/*private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		genomeWindow = (GenomeWindow) in.readObject();
+		xFactor = in.readDouble();
+		//gwListenerList = (List<GenomeWindowListener>) in.readObject();
+	}*/
+	
 
 	/**
 	 * Constructor of {@link ProjectWindow}
@@ -55,6 +87,7 @@ public class ProjectWindow implements GenomeWindowEventsGenerator {
 		genomeWindow = null;
 	}
 
+	
 	/**
 	 * @return the genomeWindow
 	 */
@@ -139,11 +172,21 @@ public class ProjectWindow implements GenomeWindowEventsGenerator {
 
 
 	@Override
-	public void removeGenomeWindowListener(
-			GenomeWindowListener genomeWindowListener) {
-		gwListenerList.remove(genomeWindowListener);
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		if (!gwListenerList.contains(genomeWindowListener)) {
+			gwListenerList.remove(genomeWindowListener);
+		}
 	}
 
+	
+	/*public void showListeners () {
+		System.out.println("----- ALL registered listeners");
+		for (GenomeWindowListener listener: gwListenerList) {
+			System.out.println(listener.hashCode() + " - " + listener.toString());
+		}
+		System.out.println("---------------------------");
+	}*/
+	
 
 	/**
 	 * @param genomePosition a position on the genome

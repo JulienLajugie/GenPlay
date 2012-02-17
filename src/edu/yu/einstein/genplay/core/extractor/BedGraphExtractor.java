@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
@@ -84,6 +85,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	 * @param extractedLine line read from the data file 
 	 * @return true when the extraction is done
 	 * @throws InvalidDataLineException 
+	 * @throws FileErrorException 
 	 */
 	@Override
 	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
@@ -104,11 +106,17 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				int stop = Integer.parseInt(splitedLine[2].trim());
 				stop = getMultiGenomePosition(chromosome, stop);
 				double score = Double.parseDouble(splitedLine[3].trim());
-				if (score != 0) {
-					startList.add(chromosome, start);
-					stopList.add(chromosome, stop);
-					scoreList.add(chromosome, score);
-					lineCount++;
+				
+				String errors = DataLineValidator.getErrors(chromosome, start, stop, score);
+				if (errors.length() == 0) {
+					if (score != 0) {
+						startList.add(chromosome, start);
+						stopList.add(chromosome, stop);
+						scoreList.add(chromosome, score);
+						lineCount++;
+					}
+				} else {
+					throw new InvalidDataLineException(errors);
 				}
 				return false;
 			}
@@ -153,9 +161,10 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		return true;
 	}
 
-	
+
 	@Override
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
+
 }

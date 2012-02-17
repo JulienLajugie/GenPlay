@@ -269,4 +269,5 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	public void setRandomLineCount(Integer randomLineCount) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Wiggle files need to be entirely extracted");		
 	}
+	
 }

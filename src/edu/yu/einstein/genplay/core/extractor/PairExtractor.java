@@ -142,4 +142,5 @@ implements Serializable, BinListGenerator {
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, method, positionList, scoreList);
 	}
+	
 }

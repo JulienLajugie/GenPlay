@@ -30,6 +30,8 @@ import javax.swing.SwingWorker;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
+import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -209,4 +211,10 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * @param actionResult result returned by the action method
 	 */
 	protected void doAtTheEnd(T actionResult) {};
+	
+	
+	protected void handleError (InvalidDataLineException e) {
+		ExceptionReportDialog.getInstance().addMessage(e.getMessage());
+		ExceptionReportDialog.getInstance().showDialog(getRootPane());
+	}
 }

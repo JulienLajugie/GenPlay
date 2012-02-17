@@ -72,6 +72,4 @@ public class dbSNPExtractor extends TextFileExtractor implements Serializable, S
 		return null;
 	}
 
-	
-	
 }

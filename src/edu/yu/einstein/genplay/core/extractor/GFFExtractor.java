@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
@@ -214,4 +215,5 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
+	
 }

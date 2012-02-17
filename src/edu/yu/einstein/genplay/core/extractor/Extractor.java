@@ -29,13 +29,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -44,22 +48,24 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class Extractor implements Serializable {
+public abstract class Extractor implements Serializable, InvalidDataEventsGenerator {
 
 	private static final long serialVersionUID = 374481155831573347L;	// generated ID
-	protected static final int NEED_TO_BE_EXTRACTED = 0;		// the chromsome needs to be extracted
-	protected static final int NEED_TO_BE_SKIPPED = 1;			// the chromosome needs to be skipped
-	protected static final int AFTER_LAST_SELECTED = 2;			// the chromosome is after the last selected chromosome 
-	protected File 						dataFile = null;		// file containing the data
-	protected File 						logFile = null;			// log file
-	protected long 						startTime = 0;			// time at the beginning of the extraction
-	protected String					name = null;			// name
-	protected final ProjectChromosome 	projectChromosome;		// ChromosomeManager
-	private boolean[] 					selectedChromo = null;	// array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the ChromosomeManager
-	private boolean						isFileSorted = true;	// boolean indicating if the data file is sorted
-	private int		 					lastSelectedChromoIndex;// index of the last chromosome to extract
-	private	String						genomeName;				// name of the genome used for the mapping of the data
-	private AlleleType					alleleType;				// type of allele to load the data (multi genome)
+	protected static final int NEED_TO_BE_EXTRACTED = 0;			// the chromsome needs to be extracted
+	protected static final int NEED_TO_BE_SKIPPED = 1;				// the chromosome needs to be skipped
+	protected static final int AFTER_LAST_SELECTED = 2;				// the chromosome is after the last selected chromosome 
+	protected File 						dataFile = null;			// file containing the data
+	protected File 						logFile = null;				// log file
+	protected long 						startTime = 0;				// time at the beginning of the extraction
+	protected String					name = null;				// name
+	protected final ProjectChromosome 	projectChromosome;			// ChromosomeManager
+	protected List<InvalidDataListener> invalidDataListenersList;	// List of invalid data listeners
+	private boolean[] 					selectedChromo = null;		// array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the ChromosomeManager
+	private boolean						isFileSorted = true;		// boolean indicating if the data file is sorted
+	private int		 					lastSelectedChromoIndex;	// index of the last chromosome to extract
+	private	String						genomeName;					// name of the genome used for the mapping of the data
+	private AlleleType					alleleType;					// type of allele to load the data (multi genome)
+	
 	
 	/**
 	 * Constructor
@@ -71,6 +77,7 @@ public abstract class Extractor implements Serializable {
 		this.logFile = logFile;
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.name = Utils.getFileNameWithoutExtension(dataFile);
+		invalidDataListenersList = new ArrayList<InvalidDataListener>();
 	}
 
 
@@ -238,5 +245,25 @@ public abstract class Extractor implements Serializable {
 		} else {
 			return position;
 		}
-	}	
+	}
+	
+	
+	@Override
+	public void addInvalidDataListener(InvalidDataListener invalidDataListener) {
+		if (!invalidDataListenersList.contains(invalidDataListener)) {
+			invalidDataListenersList.add(invalidDataListener);
+		}
+	}
+
+
+	@Override
+	public InvalidDataListener[] getInvalidDataListeners() {
+		return (InvalidDataListener[]) invalidDataListenersList.toArray();
+	}
+
+
+	@Override
+	public void removeInvalidDataListener(InvalidDataListener invalidDataListener) {
+		invalidDataListenersList.remove(invalidDataListener);
+	}
 }

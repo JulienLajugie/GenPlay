@@ -104,4 +104,5 @@ public final class ATALoadStripes extends TrackListActionExtractorWorker<Chromos
 			getTrackList().getSelectedTrack().setStripes(actionResult);
 		}
 	}
+
 }

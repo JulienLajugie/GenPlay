@@ -38,6 +38,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.event.EventListenerList;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
@@ -97,14 +98,15 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	protected Track(int trackNumber, T data) {
 		// create handle
 		trackHandle = new TrackHandle(trackNumber);
-		trackHandle.addPropertyChangeListener(this);
+		//trackHandle.addPropertyChangeListener(this);
 
 		// create graphics
 		trackGraphics = createsTrackGraphics(data);
-		trackGraphics.addPropertyChangeListener(this);
+		//trackGraphics.addPropertyChangeListener(this);
 		
 		// registered the listener to the genome window manager
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
+		//ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
+		addListeners();
 
 		// Add the components
 		setLayout(new GridBagLayout());
@@ -128,6 +130,17 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		setPreferredHeight(defaultHeight);
 	}
 
+	
+	/**
+	 * Adds the relative listeners.
+	 */
+	public void addListeners () {
+		trackHandle.addPropertyChangeListener(this);
+		trackGraphics.addPropertyChangeListener(this);
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(trackGraphics);
+	}
+	
 
 	/**
 	 * Creates the {@link TrackGraphics}
@@ -153,21 +166,70 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		PropertyChangeListener[] trackGraphicsPclSaver = trackGraphics.getPropertyChangeListeners();
 		for (PropertyChangeListener curList: trackGraphicsPclSaver)	{
 			trackGraphics.removePropertyChangeListener(curList);
-		}		
+		}
+		// we remove the listeners of the track handle as well
+		PropertyChangeListener[] trackHandlePclSaver = trackHandle.getPropertyChangeListeners();
+		for (PropertyChangeListener curList: trackHandlePclSaver)	{
+			trackHandle.removePropertyChangeListener(curList);
+		}
+		// we remove listeners from the genome window manager
+		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(this);
+		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(trackGraphics);
+		
+		
 		// we clone the object
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(this);
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		ObjectInputStream ois = new ObjectInputStream(bais);
+		
+		
 		// we restore the listeners
 		for (PropertyChangeListener curList: pclSaver)	{
 			addPropertyChangeListener(curList);
 		}
 		for (PropertyChangeListener curList: trackGraphicsPclSaver) {
 			trackGraphics.addPropertyChangeListener(curList);
-		}		
+		}
+		for (PropertyChangeListener curList: trackHandlePclSaver) {
+			trackHandle.addPropertyChangeListener(curList);
+		}
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
+		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(trackGraphics);
+		
 		return (Track<?>) ois.readObject();
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		defaultHeight = TRACK_HEIGHT;
+		in.readInt();
+		listenerList = (EventListenerList) in.readObject();
+		trackHandle = (TrackHandle) in.readObject();
+		trackGraphics = (TrackGraphics<T>) in.readObject();
+		genomeName = (String) in.readObject();
+	}
+	
+	
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(listenerList);
+		out.writeObject(trackHandle);
+		out.writeObject(trackGraphics);
+		out.writeObject(genomeName);	
 	}
 
 
@@ -348,22 +410,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
 		}
 	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		defaultHeight = TRACK_HEIGHT;
-		in.readInt();
-		trackHandle = (TrackHandle) in.readObject();
-		trackGraphics = (TrackGraphics<T>) in.readObject();
-		genomeName = (String) in.readObject();
-	}
 	
 
 	/**
@@ -473,21 +519,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics.drawHeaderTrack(null);
 	}
 
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(listenerList);
-		out.writeObject(trackHandle);
-		out.writeObject(trackGraphics);
-		out.writeObject(genomeName);	
-	}
-
-
+	
 	/**
 	 * This function is called when the track is deleted.
 	 * Removes all the listeners.  Can be overridden.

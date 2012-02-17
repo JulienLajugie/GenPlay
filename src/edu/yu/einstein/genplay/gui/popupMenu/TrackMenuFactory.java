@@ -63,6 +63,7 @@ public final class TrackMenuFactory {
 		} else if (tl.getSelectedTrack() instanceof SNPListTrack) {
 			return new SNPListTrackMenu(tl);
 		} else {
+			System.out.println("getTrackMenu: " + tl.getSelectedTrack());
 			return null;
 		}
 	}

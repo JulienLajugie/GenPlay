@@ -49,7 +49,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 	private static OperationPool 	instance = null;	// unique instance of this singleton class
 	private ExecutorService 		executor = null;	// thread executor 
 	private final List<OperationProgressListener> progressListeners; // list of progress listeners
-	
+
 
 	/**
 	 * Private constructor of the singleton class {@link OperationPool}
@@ -60,7 +60,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		progressListeners = new ArrayList<OperationProgressListener>();
 	}
 
-	
+
 	/**
 	 * @return an instance of the singleton class {@link OperationPool}
 	 */
@@ -70,16 +70,16 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 		}
 		return instance;
 	}
-	
-	
+
+
 	/**
 	 * Notifies the executor that a thread is done
 	 */
 	public synchronized void notifyDone() {
 		notifyAll();
 	}
-	
-	
+
+
 	/**
 	 * Interrupts all the running thread and cancel the execution 
 	 */
@@ -89,8 +89,8 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			notifyAll();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Starts the pool of thread. Waits until the end of the execution and returns the result in a list.
 	 * An InterruptedException is thrown if the execution is stopped before the end.
@@ -146,10 +146,12 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			int progressState = OperationProgressEvent.IN_PROGRESS;
 			notifyProgressListeners(progressState, completion);
 		}
+
 		// generate the result list from the future list
 		for (int j = 0; j < futures.size(); j++) {
 			results.add(futures.get(j).get());
 		}
+
 		// notify the listeners that the operation is complete
 		notifyProgressListeners(OperationProgressEvent.COMPLETE, 100d);		
 		return results;

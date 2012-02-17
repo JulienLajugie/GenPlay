@@ -73,7 +73,6 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 		
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		
-		
 		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override

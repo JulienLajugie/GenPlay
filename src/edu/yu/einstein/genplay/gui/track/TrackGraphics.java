@@ -144,7 +144,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
 		// registered the listener to the genome window manager
-		this.projectWindow.addGenomeWindowListener(this);
+		//this.projectWindow.addGenomeWindowListener(this);
 		setBackground(Color.white);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
 		addMouseListener(this);
@@ -768,11 +768,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		stripeLegendText = (List<String>) in.readObject();
 		stripeLegendColor = (List<Color>) in.readObject();
 		multiGenomeDrawer = (MultiGenomeDrawer<T>) in.readObject();
-
+		
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
 	}
 
-
+	
 	/**
 	 * This method is executed when the xFactor changes 
 	 */

@@ -178,4 +178,5 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
+	
 }

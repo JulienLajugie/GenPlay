@@ -49,6 +49,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PAErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -331,6 +332,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
+		getRootPane().getActionMap().put(PAErrorReport.ACTION_KEY, new PAErrorReport(this));
 	}
 
 
