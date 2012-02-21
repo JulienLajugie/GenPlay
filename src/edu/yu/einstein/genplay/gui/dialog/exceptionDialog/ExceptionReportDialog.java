@@ -203,7 +203,7 @@ public class ExceptionReportDialog extends JDialog {
 		// Return the scroll pane
 		return contentPane;
 	}
-
+	
 
 	/**
 	 * Creates the button panel. Two buttons are present:

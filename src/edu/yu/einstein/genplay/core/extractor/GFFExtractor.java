@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
@@ -67,8 +68,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link GFFExtractor}
 	 * @param dataFile file containing the data
@@ -103,11 +104,12 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 7) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 
 		try {
-			Chromosome chromosome = projectChromosome.get(splitedLine[0]) ;
+			Chromosome chromosome = projectChromosome.get(splitedLine[0]);
 			int chromosomeStatus = checkChromosomeStatus(chromosome);
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
@@ -116,28 +118,38 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 			} else {
 				Strand strand = Strand.get(splitedLine[6].charAt(0));
 				if (isStrandSelected(strand)) {
-					nameList.add(chromosome, splitedLine[2]);
+					String name = splitedLine[2];
 					int start = Integer.parseInt(splitedLine[3]);
 					int stop = Integer.parseInt(splitedLine[4]);
+					double score = Double.parseDouble(splitedLine[5]);
 					// compute the read position with specified strand shift and read length
 					if (readHandler != null) {
 						ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
 						start = resultStartStop.getStart();
 						stop = resultStartStop.getStop();							
 					}
-					// if we are in a multi-genome project, we compute the position on the meta genome 
-					start = getMultiGenomePosition(chromosome, start);
-					stop = getMultiGenomePosition(chromosome, stop);
-					startList.add(chromosome, start);
-					stopList.add(chromosome, stop);
-					scoreList.add(chromosome, Double.parseDouble(splitedLine[5]));
-					strandList.add(chromosome, strand);
-					lineCount++;
+					
+					// Checks errors
+					String errors = DataLineValidator.getErrors(chromosome, start, stop, score, name, strand);
+					if (errors.length() == 0) {
+						nameList.add(chromosome, name);
+						// if we are in a multi-genome project, we compute the position on the meta genome
+						start = getMultiGenomePosition(chromosome, start);
+						stop = getMultiGenomePosition(chromosome, stop);
+						startList.add(chromosome, start);
+						stopList.add(chromosome, stop);
+						scoreList.add(chromosome, score);
+						strandList.add(chromosome, strand);
+						lineCount++;
+					} else {
+						throw new InvalidDataLineException(errors);
+					}
 				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 
@@ -215,5 +227,5 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
-	
+
 }

@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.extractor.utils;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.Strand;
 
 /**
  * This class contains methods that verifies the content of a line in order to determine if the line is correct or not.
@@ -38,9 +39,9 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
  */
 public class DataLineValidator {
 
-	
-	///////////////////////////////////////////////////// Methods for multiple controls
 
+	///////////////////////////////////////////////////// Methods for multiple controls
+	
 	/**
 	 * @param chromosome	the chromosome
 	 * @param start			the start position
@@ -51,9 +52,7 @@ public class DataLineValidator {
 		String errors = "";
 
 		errors = addError(errors, getErrors(chromosome, start));
-
 		errors = addError(errors, getErrors(chromosome, stop));
-
 		errors = addError(errors, getErrors(start, stop));
 
 		return errors;
@@ -67,12 +66,71 @@ public class DataLineValidator {
 	 * @param score			the score
 	 * @return				the errors
 	 */
-	public static String getErrors (Chromosome chromosome, int start, int stop, double score) {
+	public static String getErrors (Chromosome chromosome, int start, int stop, Double score) {
 		String errors = "";
 
 		errors = addError(errors, getErrors(chromosome, start, stop));
-
 		errors = addError(errors, getErrors(score));
+
+		return errors;
+	}
+
+
+	/**
+	 * @param chromosome	the chromosome
+	 * @param start			the start position
+	 * @param stop			the stop position
+	 * @param score			the score
+	 * @param name 			the name
+	 * @param strand 		the strand
+	 * @return				the errors
+	 */
+	public static String getErrors (Chromosome chromosome, int start, int stop, Double score, String name, Strand strand) {
+		String errors = "";
+
+		errors = addError(errors, getErrors(chromosome, start, stop, score));
+		errors = addError(errors, getErrors(name));
+		errors = addError(errors, getErrors(strand));
+
+		return errors;
+	}
+
+
+	/**
+	 * @param chromosome	the chromosome
+	 * @param start			the start position
+	 * @param stop			the stop position
+	 * @param exonStart 	list of the start position of exons
+	 * @param exonStop 		list of the stop position of exons
+	 * @return				the errors
+	 */
+	public static String getErrors (Chromosome chromosome, int start, int stop, int[] exonStart, int[] exonStop){
+		String errors = "";
+
+		errors = addError(errors, getErrors(chromosome, start, stop));
+		errors = addError(errors, getErrors(chromosome, exonStart));
+		errors = addError(errors, getErrors(chromosome, exonStop));
+
+		return errors;
+	}
+	
+	
+	/**
+	 * @param chromosome	the chromosome
+	 * @param start			the start position
+	 * @param stop			the stop position
+	 * @param exonStart 	list of the start position of exons
+	 * @param exonStop 		list of the stop position of exons
+	 * @param name 			the name
+	 * @param strand 		the strand
+	 * @return				the errors
+	 */
+	public static String getErrors (Chromosome chromosome, int start, int stop, int[] exonStart, int[] exonStop, String name, Strand strand){
+		String errors = "";
+
+		errors = addError(errors, getErrors(chromosome, start, stop, exonStart, exonStop));
+		errors = addError(errors, getErrors(name));
+		errors = addError(errors, getErrors(strand));
 
 		return errors;
 	}
@@ -84,20 +142,56 @@ public class DataLineValidator {
 	///////////////////////////////////////////////////// Methods for single control
 
 	/**
-	 * @param score
+	 * @param name
 	 * @return the error
 	 */
-	private static String getErrors (double score) {
+	private static String getErrors (String name) {
 		String errors = "";
 
-		if (score < 0) {
-			errors += "Score (" + score + ") is equal to zero";
+		if (name == null ) {
+			errors += "The name is invalid (null value found)";
+		} else if (name.isEmpty()) {
+			errors += "The name is empty";
 		}
 
 		return errors;
 	}
 
-	
+
+	/**
+	 * @param score
+	 * @return the error
+	 */
+	private static String getErrors (Double score) {
+		String errors = "";
+
+		if (score == null) {
+			errors += "The score is invalid (null value found)";
+		} else {
+			if (score < 0) {
+				errors += "Score (" + score + ") is equal to zero";
+			}
+		}
+
+		return errors;
+	}
+
+
+	/**
+	 * @param strand
+	 * @return the error
+	 */
+	private static String getErrors (Strand strand) {
+		String errors = "";
+
+		if (strand == null ) {
+			errors += "The strand is invalid (null value found)";
+		}
+
+		return errors;
+	}
+
+
 	/**
 	 * @param start
 	 * @param stop
@@ -113,13 +207,13 @@ public class DataLineValidator {
 		return errors;
 	}
 
-	
+
 	/**
 	 * @param chromosome
 	 * @param position
 	 * @return the error
 	 */
-	private static String getErrors (Chromosome chromosome, int position){
+	public static String getErrors (Chromosome chromosome, int position){
 		String errors = "";
 
 		if (position < 0) {
@@ -130,6 +224,23 @@ public class DataLineValidator {
 
 		return errors;
 	}
+
+
+	/**
+	 * @param chromosome
+	 * @param positions
+	 * @return the error
+	 */
+	private static String getErrors (Chromosome chromosome, int[] positions){
+		String errors = "";
+
+		for (int i = 0; i < positions.length; i++) {
+			errors = addError(errors, getErrors(chromosome, positions[i]));
+		}
+
+		return errors;
+	}
+
 	/////////////////////////////////////////////////////
 
 

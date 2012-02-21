@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
@@ -96,7 +97,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			if (currentField.equalsIgnoreCase("variableStep")) {
 				// a variableStep must at least contain 2 elements
 				if (splittedLine.length < 2) {
-					throw new InvalidDataLineException(line);
+					//throw new InvalidDataLineException(line);
+					throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 				} else {
 					isFixedStep = false;
 					currentSpan = 1;
@@ -105,7 +107,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} else if (currentField.equalsIgnoreCase("fixedStep")) {
 				// a fixedStep must at least contain 4 elements
 				if (splittedLine.length < 4) {
-					throw new InvalidDataLineException(line);
+					//throw new InvalidDataLineException(line);
+					throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 				} else {
 					isFixedStep = true;
 					currentSpan = 1;
@@ -118,7 +121,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 					currentChromo = projectChromosome.get(chromStr.trim());
 				} catch (InvalidChromosomeException e) {
 					currentChromo = null;
-					throw new InvalidDataLineException(line);
+					throw new InvalidDataLineException("The chromosome could not be retrieved");
 				}
 				// check if the extraction is done
 				if (checkChromosomeStatus(currentChromo) == AFTER_LAST_SELECTED) {
@@ -142,31 +145,48 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 						double score = Double.parseDouble(splittedLine[i]); 
 						try {
 							if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-								startList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition));
-								stopList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition + currentSpan));
-								scoreList.add(currentChromo, score);
+								int start = getMultiGenomePosition(currentChromo, currentPosition);
+								int stop = getMultiGenomePosition(currentChromo, currentPosition + currentSpan);
+								// Checks errors
+								String errors = DataLineValidator.getErrors(currentChromo, start, stop);
+								if (errors.length() == 0) {
+									startList.add(currentChromo, start);
+									stopList.add(currentChromo, stop);
+									scoreList.add(currentChromo, score);
+								} else {
+									throw new InvalidDataLineException(errors);
+								}
 							}
 							lineCount++;
 							currentPosition += currentStep;
 						} catch (Exception e) {
-							throw new InvalidDataLineException(line);
+							throw new InvalidDataLineException(e.getMessage());
 						}					
 					} else {
 						if (splittedLine.length < 2) {
-							throw new InvalidDataLineException(line);
+							//throw new InvalidDataLineException(line);
+							throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 						} else {
 							currentPosition = Integer.parseInt(splittedLine[i].trim());
 							double score = Double.parseDouble(splittedLine[i + 1]);
 							i++;
 							try {
 								if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
-									startList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition));
-									stopList.add(currentChromo, getMultiGenomePosition(currentChromo, currentPosition + currentSpan));
-									scoreList.add(currentChromo, score);
+									int start = getMultiGenomePosition(currentChromo, currentPosition);
+									int stop = getMultiGenomePosition(currentChromo, currentPosition + currentSpan);
+									// Checks errors
+									String errors = DataLineValidator.getErrors(currentChromo, start, stop);
+									if (errors.length() == 0) {
+										startList.add(currentChromo, start);
+										stopList.add(currentChromo, stop);
+										scoreList.add(currentChromo, score);
+									} else {
+										throw new InvalidDataLineException(errors);
+									}
 								}
 								lineCount++;
 							} catch (Exception e) {
-								throw new InvalidDataLineException(line);
+								throw new InvalidDataLineException(e.getMessage());
 							}		
 						}
 					}			
@@ -259,8 +279,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	public boolean overlapped() {
 		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
-	
-	
+
+
 	/**
 	 * We raise a new UnsupportedOperationException because it's not possible to load
 	 * a random fraction of a wiggle file
@@ -269,5 +289,5 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	public void setRandomLineCount(Integer randomLineCount) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Wiggle files need to be entirely extracted");		
 	}
-	
+
 }

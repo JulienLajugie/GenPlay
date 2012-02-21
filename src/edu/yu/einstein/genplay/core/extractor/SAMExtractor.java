@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -54,7 +55,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 	private final ChromosomeListOfLists<Double>		scoreList;		// list of scores
 	private Strand 									selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
-	
+
 
 	/**
 	 * Creates an instance of {@link SAMExtractor}
@@ -108,20 +109,28 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 							start = resultStartStop.getStart();
 							stop = resultStartStop.getStop();							
 						}
-						// if we are in a multi-genome project, we compute the position on the meta genome 
-						start = getMultiGenomePosition(chromosome, start);
-						stop = getMultiGenomePosition(chromosome, stop);
-						startList.add(chromosome, start);
-						stopList.add(chromosome, stop);
-						// TODO: add a BinList constructor that doesn't need 
-						// as score list so we don't need the useless next line
-						scoreList.add(chromosome, 1.0);
-						lineCount++;
+
+						// Checks errors
+						String errors = DataLineValidator.getErrors(chromosome, start, stop);
+						if (errors.length() == 0) {
+							// if we are in a multi-genome project, we compute the position on the meta genome 
+							start = getMultiGenomePosition(chromosome, start);
+							stop = getMultiGenomePosition(chromosome, stop);
+							startList.add(chromosome, start);
+							stopList.add(chromosome, stop);
+							// TODO: add a BinList constructor that doesn't need 
+							// as score list so we don't need the useless next line
+							scoreList.add(chromosome, 1.0);
+							lineCount++;
+						} else {
+							throw new InvalidDataLineException(errors);
+						}
 					}
 					return false;
 				}
 			} catch (InvalidChromosomeException e) {
-				return false;
+				//return false;
+				throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}
 		return false;
@@ -178,5 +187,5 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
-	
+
 }

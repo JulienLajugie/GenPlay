@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
@@ -71,8 +72,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private String							searchURL;		// url of the gene database for the search
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link PSLExtractor}
 	 * @param dataFile file containing the data
@@ -108,7 +109,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		}
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 21) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 
 		try {
@@ -122,7 +124,6 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			} else {
 				Strand strand = Strand.get(splitedLine[8].charAt(0));
 				if (isStrandSelected(strand)) {
-					nameList.add(chromosome, splitedLine[9]);
 					int start = Integer.parseInt(splitedLine[15]);
 					int stop = Integer.parseInt(splitedLine[16]);
 					// compute the read position with specified strand shift and read length
@@ -131,13 +132,6 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						start = resultStartStop.getStart();
 						stop = resultStartStop.getStop();							
 					}
-					// if we are in a multi-genome project, we compute the position on the meta genome					
-					start = getMultiGenomePosition(chromosome, start);
-					stop = getMultiGenomePosition(chromosome, stop);
-					startList.add(chromosome, start);
-					stopList.add(chromosome, stop);
-					scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
-					strandList.add(chromosome, strand);
 					// add exons
 					String[] exonStartsStr = splitedLine[20].split(",");
 					String[] exonLengthsStr = splitedLine[18].split(",");
@@ -155,14 +149,30 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						exonStop = getMultiGenomePosition(chromosome, exonStop);
 						exonStops[i] = exonStop;
 					}
-					exonStartsList.add(chromosome, exonStarts);
-					exonStopsList.add(chromosome, exonStops);
-					lineCount++;
+
+					// Checks errors
+					String errors = DataLineValidator.getErrors(chromosome, start, stop, exonStarts, exonStops, name, strand);
+					if (errors.length() == 0) {
+						// if we are in a multi-genome project, we compute the position on the meta genome					
+						start = getMultiGenomePosition(chromosome, start);
+						stop = getMultiGenomePosition(chromosome, stop);
+						nameList.add(chromosome, splitedLine[9]);
+						startList.add(chromosome, start);
+						stopList.add(chromosome, stop);
+						scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
+						strandList.add(chromosome, strand);
+						exonStartsList.add(chromosome, exonStarts);
+						exonStopsList.add(chromosome, exonStops);
+						lineCount++;
+					} else {
+						throw new InvalidDataLineException(errors);
+					}
 				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 
@@ -247,5 +257,5 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
-	
+
 }

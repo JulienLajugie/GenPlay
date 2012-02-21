@@ -39,6 +39,11 @@ public final class InvalidDataLineException extends Exception {
 
 	private static final long serialVersionUID = 7000180996789501289L;	// generated ID
 	
+	/** Comment for an invalid number of parameters in a line */
+	public static final String INVALID_PARAMETER_NUMBER 	= "Invalid number of parameters.";
+	/** Comment for an invalid format number in a line */
+	public static final String INVALID_FORMAT_NUMBER 		= "The error may occured because of an invalid format number.";
+	
 	private final 	String 	description;	// Description of the error
 	private 		File 	file;			// File where the error happened
 	private			String	line;			// Original line where the error happened

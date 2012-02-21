@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -100,10 +101,11 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 		} else {
 			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 			if (splitedLine.length < 3) {
-				throw new InvalidDataLineException(extractedLine);
+				//throw new InvalidDataLineException(extractedLine);
+				throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 			}
 			try {
-				Chromosome chromosome = projectChromosome.get(splitedLine[1]) ;
+				Chromosome chromosome = projectChromosome.get(splitedLine[1]);
 				// checks if we need to extract the data on the chromosome
 				int chromosomeStatus = checkChromosomeStatus(chromosome);
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
@@ -111,16 +113,13 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 					return false;
 				} else {
+					// Gets the values
 					String name = splitedLine[0].trim();
-					nameList.add(chromosome, name);
 					Strand strand = Strand.get(splitedLine[2].trim().charAt(0));
-					strandList.add(chromosome, strand);
 					int start = Integer.parseInt(splitedLine[3].trim());
 					start = getMultiGenomePosition(chromosome, start);
-					startList.add(chromosome, start);
 					int stop = Integer.parseInt(splitedLine[4].trim());
 					stop = getMultiGenomePosition(chromosome, stop);
-					stopList.add(chromosome, stop);
 					String[] exonStartsStr = splitedLine[5].split(",");
 					String[] exonStopsStr = splitedLine[6].split(",");
 					int[] exonStarts = new int[exonStartsStr.length];
@@ -131,21 +130,36 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 						exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
 						exonStops[i] = getMultiGenomePosition(chromosome, exonStops[i]);
 					}
-					exonStartsList.add(chromosome, exonStarts);
-					exonStopsList.add(chromosome, exonStops);
-					if (splitedLine.length > 7) {
-						String[] exonScoresStr = splitedLine[7].split(",");
-						double[] exonScores = new double[exonScoresStr.length];
-						for (int i = 0; i < exonScoresStr.length; i++) {
-							exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+
+					// Checks errors
+					String errors = DataLineValidator.getErrors(chromosome, start, stop, exonStarts, exonStops, name, strand);
+					if (errors.length() == 0) {
+						// Adds the values
+						nameList.add(chromosome, name);
+						strandList.add(chromosome, strand);
+						startList.add(chromosome, start);
+						stopList.add(chromosome, stop);
+						exonStartsList.add(chromosome, exonStarts);
+						exonStopsList.add(chromosome, exonStops);
+
+						// Gets the scores
+						if (splitedLine.length > 7) {
+							String[] exonScoresStr = splitedLine[7].split(",");
+							double[] exonScores = new double[exonScoresStr.length];
+							for (int i = 0; i < exonScoresStr.length; i++) {
+								exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+							}
+							exonScoresList.add(chromosome, exonScores);
 						}
-						exonScoresList.add(chromosome, exonScores);
+						lineCount++;
+					} else {
+						throw new InvalidDataLineException(errors);
 					}
-					lineCount++;
 					return false;
 				}
 			} catch (InvalidChromosomeException e) {
-				throw new InvalidDataLineException(extractedLine);
+				//throw new InvalidDataLineException(extractedLine);
+				throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}
 	}
@@ -155,5 +169,5 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 	public GeneList toGeneList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new GeneList(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
 	}
-	
+
 }

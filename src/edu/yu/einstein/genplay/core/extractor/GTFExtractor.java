@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.generator.ChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
@@ -73,7 +74,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	private final ChromosomeArrayListOfLists<Double>scoreList;		// list of scores
 	private Strand 									selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler				readHandler;	// handler that computes the position of read by applying the shift
-	
+
 
 	/**
 	 * Creates an instance of {@link GTFExtractor}
@@ -103,7 +104,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	protected boolean extractLine(String line) throws InvalidDataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(line);
 		if (splitedLine.length < 8) {
-			throw new InvalidDataLineException(line);
+			//throw new InvalidDataLineException(line);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		// we're just interested in exon lines
 		if (splitedLine[2].trim().equalsIgnoreCase("exon")) {
@@ -137,8 +139,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							start = resultStartStop.getStart();
 							stop = resultStartStop.getStop();							
 						}
-						// if we are in a multi-genome project, we compute the position on the meta genome start = getMultiGenomePosition(chromo, start);						
-						stop = getMultiGenomePosition(chromo, stop);
+
 						// retrieve the score
 						Double score = null;
 						String scoreStr = splitedLine[5].trim();
@@ -153,8 +154,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							if (attributes.containsKey("gene_id")) {
 								name = attributes.get("gene_id");
 							} else {
-								// this is a mandatory attrubute for genplay
-								throw new InvalidDataLineException(line);
+								// this is a mandatory attribute for genplay
+								//throw new InvalidDataLineException(line);
+								throw new InvalidDataLineException("The attribute 'gene_id' is missing.");
 							}
 							// if there is a FPKM attribute we replace the score by the FPKM 
 							if (attributes.containsKey("FPKM")) {
@@ -164,21 +166,26 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 								score = Double.parseDouble(attributes.get("RPKM"));
 							}
 						}
-						startList.add(chromo, start);
-						stopList.add(chromo, stop);
-						if (score != null) {
+
+						// Checks errors
+						String errors = DataLineValidator.getErrors(chromo, start, stop, score, name, strand);
+						if (errors.length() == 0) {
+							// if we are in a multi-genome project, we compute the position on the meta genome
+							start = getMultiGenomePosition(chromo, start);
+							stop = getMultiGenomePosition(chromo, stop);
+							startList.add(chromo, start);
+							stopList.add(chromo, stop);
 							scoreList.add(chromo, score);
-						}
-						if (strand != null) {
 							strandList.add(chromo, strand);
-						}
-						if (name != null) {
 							nameList.add(chromo, name);
+						} else {
+							throw new InvalidDataLineException(errors);
 						}
 					}
 				}
 			} catch (InvalidChromosomeException e) {
-				throw new InvalidDataLineException(line);
+				//throw new InvalidDataLineException(line);
+				throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}
 		return false;
@@ -359,8 +366,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		}
 		return gene;
 	}
-	
-	
+
+
 	@Override
 	public ReadLengthAndShiftHandler getReadLengthAndShiftHandler() {
 		return readHandler;
@@ -371,5 +378,5 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	public void setReadLengthAndShiftHandler(ReadLengthAndShiftHandler handler) {
 		this.readHandler = handler;
 	}
-	
+
 }

@@ -91,7 +91,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 4) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		try {
 			Chromosome chromosome = projectChromosome.get(splitedLine[0]) ;
@@ -121,7 +122,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 

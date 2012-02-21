@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -93,24 +94,33 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 				return false;
 			} else {
 				int position = Integer.parseInt(splitedLine[1].trim()) - 1;
-				position = getMultiGenomePosition(chromosome, position);
+
 				Nucleotide consensusGenotype = Nucleotide.get(splitedLine[3].trim().charAt(0));
 				Nucleotide firstBase = Nucleotide.get(splitedLine[5].trim().charAt(0));
 				int firstBaseCount = Integer.parseInt(splitedLine[7].trim());
 				Nucleotide secondBase = Nucleotide.get(splitedLine[9].trim().charAt(0));
 				int secondBaseCount = Integer.parseInt(splitedLine[11].trim());				
 				boolean isSecondBaseSignificant = !consensusGenotype.equals(firstBase);
-				positionList.add(chromosome, position);
-				firstBaseList.add(chromosome, firstBase);
-				firstBaseCountList.add(chromosome, firstBaseCount);
-				secondBaseList.add(chromosome, secondBase);
-				secondBaseCountList.add(chromosome, secondBaseCount);
-				isSecondBaseSignificantList.add(chromosome, isSecondBaseSignificant);				
-				lineCount++;
+
+				// Checks errors
+				String errors = DataLineValidator.getErrors(chromosome, position);
+				if (errors.length() == 0) {
+					position = getMultiGenomePosition(chromosome, position);
+					positionList.add(chromosome, position);
+					firstBaseList.add(chromosome, firstBase);
+					firstBaseCountList.add(chromosome, firstBaseCount);
+					secondBaseList.add(chromosome, secondBase);
+					secondBaseCountList.add(chromosome, secondBaseCount);
+					isSecondBaseSignificantList.add(chromosome, isSecondBaseSignificant);				
+					lineCount++;
+				} else {
+					throw new InvalidDataLineException(errors);
+				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
-			throw new InvalidDataLineException(line);
+			//throw new InvalidDataLineException(line);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 
@@ -119,5 +129,5 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 	public SNPList toSNPList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new SNPList(null, positionList, firstBaseList, firstBaseCountList, secondBaseList, secondBaseCountList, isSecondBaseSignificantList);
 	}
-	
+
 }

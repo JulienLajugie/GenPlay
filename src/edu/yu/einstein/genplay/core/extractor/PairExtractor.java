@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.extractor.utils.DataLineValidator;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -92,11 +93,13 @@ implements Serializable, BinListGenerator {
 
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 10) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		String chromosomeField[] = splitedLine[2].split(":");
 		if (chromosomeField.length != 2) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		try {
 			Chromosome chromosome = projectChromosome.get(chromosomeField[0]);
@@ -108,14 +111,23 @@ implements Serializable, BinListGenerator {
 				return false;
 			} else {
 				int position = Integer.parseInt(splitedLine[4]);
-				position = getMultiGenomePosition(chromosome, position);
-				positionList.add(chromosome, position);
-				scoreList.add(chromosome, Double.parseDouble(splitedLine[9]));
-				lineCount++;
-				return false;
+				Double score = Double.parseDouble(splitedLine[9]);
+				
+				// Checks errors
+				String errors = DataLineValidator.getErrors(chromosome, position, position, score);
+				if (errors.length() == 0) {
+					position = getMultiGenomePosition(chromosome, position);
+					positionList.add(chromosome, position);
+					scoreList.add(chromosome, score);
+					lineCount++;
+					return false;
+				} else {
+					throw new InvalidDataLineException(errors);
+				}
 			}
 		} catch (InvalidChromosomeException e) {
-			throw new InvalidDataLineException(extractedLine);
+			//throw new InvalidDataLineException(extractedLine);
+			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 
@@ -142,5 +154,5 @@ implements Serializable, BinListGenerator {
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, method, positionList, scoreList);
 	}
-	
+
 }

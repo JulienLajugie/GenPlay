@@ -120,7 +120,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 		} else {
 			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 			if (splitedLine.length < 3) {
-				throw new InvalidDataLineException(extractedLine);
+				//throw new InvalidDataLineException(extractedLine);
+				throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 			}
 			try {
 				Chromosome chromosome = projectChromosome.get(splitedLine[0]) ;
@@ -217,7 +218,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 					return false;
 				}
 			} catch (InvalidChromosomeException e) {
-				throw new InvalidDataLineException(extractedLine);
+				//throw new InvalidDataLineException(extractedLine);
+				throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}
 	}
