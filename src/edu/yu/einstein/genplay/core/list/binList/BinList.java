@@ -232,10 +232,17 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 */
 	public BinList(int binSize, DataPrecision precision, List<List<Double>> data) throws InterruptedException, ExecutionException {
 		super();
+		System.out.println("BinList.BinList()");
 		this.binSize = binSize;
 		this.precision = precision;
+		System.out.println("# of lists: " + data.size());
 		for (List<Double> currentList: data) {
 			add(currentList);
+			if (currentList == null) {
+				System.out.println("# of Double: NULL");
+			} else {
+				System.out.println("# of Double: " + currentList.size());
+			}
 		}
 		finalizeConstruction();
 	}
@@ -1001,5 +1008,21 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			// if there is no more accelerator BinList we call the garbage collector
 			System.gc();
 		}
+	}
+	
+	
+	public void show () {
+		String info = "";
+		
+		info += "binSize: " + binSize + "\n";
+		info += "fittedBinSize: " + fittedBinSize + "\n";
+		info += "min: " + min + "\n";
+		info += "max: " + max + "\n";
+		info += "average: " + average + "\n";
+		info += "stDev: " + stDev + "\n";
+		info += "sumScore: " + sumScore + "\n";
+		info += "binCount: " + binCount + "\n";
+		
+		System.out.println(info);
 	}
 }

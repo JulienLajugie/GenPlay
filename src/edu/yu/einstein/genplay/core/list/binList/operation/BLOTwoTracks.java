@@ -80,7 +80,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 			final List<Double> currentList1 = binList1.get(i);
 			final List<Double> currentList2 = binList2.get(i);
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
@@ -106,6 +106,8 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
 			BinList resultList = new BinList(binList1.getBinSize(), precision, result);
+			System.out.println("BLOTwoTracks.compute()");
+			resultList.show();
 			return resultList;
 		} else {
 			return null;
