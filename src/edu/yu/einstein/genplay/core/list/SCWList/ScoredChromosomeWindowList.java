@@ -654,15 +654,4 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		this.scoreSum = scoreSum;
 	}
 	
-	
-	public void show () {
-		String info = "";
-		info += "max = " + max + "\n";
-		info += "average = " + average + "\n";
-		info += "stDev = " + stDev + "\n";
-		info += "scoreSum = " + scoreSum + "\n";
-		info += "nonNullLength = " + nonNullLength;
-		System.out.println(info);
-	}
-	
 }

@@ -34,7 +34,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
@@ -81,9 +80,6 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 		gbc.weighty = 1;
 		add(rulerGraphics, gbc);
 		setMinimumSize(new Dimension(getPreferredSize().width, RULER_HEIGHT));
-		
-		// registered the listener to the genome window manager
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 	}
 
 
@@ -132,7 +128,7 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-			
+			rulerGraphics.repaint();
 	}
 	
 	

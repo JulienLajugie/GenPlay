@@ -51,7 +51,7 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 	private ScoreCalculationTwoTrackMethod 	scm;			// method of calculation for the score 
 	private boolean							stopped = false;// true if the operation must be stopped
 
-	
+
 	/**
 	 * Adds the scores of the bins of the two specified BinLists
 	 * @param binList1
@@ -80,11 +80,25 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 			final List<Double> currentList1 = binList1.get(i);
 			final List<Double> currentList2 = binList2.get(i);
 
+			final boolean firstTrackIsEmpty;
+			final boolean secondTrackIsEmpty;
+			if ((currentList1 != null) && (currentList1.size() != 0)) {
+				firstTrackIsEmpty = false;
+			} else {
+				firstTrackIsEmpty = true;
+			}
+			if ((currentList2 != null) && (currentList2.size() != 0)) {
+				secondTrackIsEmpty = false;
+			} else {
+				secondTrackIsEmpty = true;
+			}
+
 			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
-					if ((currentList1 != null) && (currentList1.size() != 0) && (currentList2 != null) && (currentList2.size() != 0)) {
+
+					if (!firstTrackIsEmpty && !secondTrackIsEmpty) {
 						resultList = ListFactory.createList(precision, currentList1.size());
 						for (int j = 0; j < currentList1.size() && !stopped; j++) {
 							if (j < currentList2.size()) {
@@ -94,7 +108,40 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 								resultList.set(j, 0d);
 							}
 						}
+					} else {
+						List<Double> currentList = null;
+						if (!firstTrackIsEmpty & secondTrackIsEmpty) {
+							currentList = currentList1;
+						} else if (firstTrackIsEmpty & !secondTrackIsEmpty) {
+							currentList = currentList2;
+						}
+						
+						if (currentList != null) {
+							resultList = ListFactory.createList(precision, currentList.size());
+							if (scm == ScoreCalculationTwoTrackMethod.ADDITION || scm == ScoreCalculationTwoTrackMethod.MAXIMUM) {
+								for (int j = 0; j < currentList.size() && !stopped; j++) {
+									resultList.set(j, currentList.get(j));
+								}
+							} else if (scm == ScoreCalculationTwoTrackMethod.SUBTRACTION) {
+								int factor = 1;
+								if (firstTrackIsEmpty) {
+									factor = -1;
+								}
+								for (int j = 0; j < currentList.size() && !stopped; j++) {
+									resultList.set(j, factor*currentList.get(j));
+								}
+							} else if (scm == ScoreCalculationTwoTrackMethod.MULTIPLICATION || scm == ScoreCalculationTwoTrackMethod.DIVISION || scm == ScoreCalculationTwoTrackMethod.MINIMUM) {
+								for (int j = 0; j < currentList.size() && !stopped; j++) {
+									resultList.set(j, 0d);
+								}
+							} else if (scm == ScoreCalculationTwoTrackMethod.AVERAGE) {
+								for (int j = 0; j < currentList.size() && !stopped; j++) {
+									resultList.set(j, currentList.get(j) / 2);
+								}
+							}
+						}
 					}
+					
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -106,14 +153,12 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 		List<List<Double>> result = op.startPool(threadList);
 		if (result != null) {
 			BinList resultList = new BinList(binList1.getBinSize(), precision, result);
-			System.out.println("BLOTwoTracks.compute()");
-			resultList.show();
 			return resultList;
 		} else {
 			return null;
 		}
 	}
-	
+
 
 	@Override
 	public String getDescription() {
@@ -131,8 +176,8 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 	public String getProcessingDescription() {
 		return "Two Tracks Operation";
 	}
-	
-	
+
+
 	/**
 	 * getScore method
 	 * This method manages the calculation of the score according to the score calculation method.
@@ -159,25 +204,25 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 			return -1.0;
 		}
 	}
-	
-	
+
+
 	///////////////////////////	Calculation methods
-	
+
 	private double sum(double a, double b) {
 		return (a + b);
 	}
-	
-	
+
+
 	private double subtraction(double a, double b) {
 		return (a - b);
 	}
-	
-	
+
+
 	private double multiplication(double a, double b) {
 		return (a * b);
 	}
-	
-	
+
+
 	private double division(double a, double b) {
 		if (a != 0.0 && b != 0.0) {
 			return a / b;
@@ -185,18 +230,18 @@ public class BLOTwoTracks implements Operation<ChromosomeListOfLists<?>> {
 			return 0.0;
 		}
 	}
-	
-	
+
+
 	private double average(double a, double b) {
 		return sum(a, b) / 2;
 	}
-	
-	
+
+
 	private double maximum(double a, double b) {
 		return Math.max(a, b);
 	}
-	
-	
+
+
 	private double minimum(double a, double b) {
 		return Math.min(a, b);
 	}

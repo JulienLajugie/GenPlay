@@ -67,9 +67,7 @@ public class ProjectManager implements Serializable {
 		out.writeObject(assembly);
 		out.writeBoolean(multiGenome);
 
-		out.writeObject(projectConfiguration);
 		out.writeObject(projectWindow);
-		out.writeObject(projectZoom);
 		out.writeObject(projectChromosome);
 		out.writeObject(multiGenomeProject);
 	}
@@ -82,22 +80,19 @@ public class ProjectManager implements Serializable {
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		getInstance();
 		in.readInt();
-		projectName = (String) in.readObject();
-		cladeName = (String) in.readObject();
-		genomeName = (String) in.readObject();
-		assembly = (Assembly) in.readObject();
-		multiGenome = in.readBoolean();
+		instance.setProjectName((String) in.readObject());
+		instance.setCladeName((String) in.readObject());
+		instance.setGenomeName((String) in.readObject());
+		instance.setAssembly((Assembly) in.readObject());
+		instance.setMultiGenomeProject(in.readBoolean());
 
-		projectConfiguration = (ProjectConfiguration) in.readObject();
-		projectWindow = (ProjectWindow) in.readObject();
-		projectZoom = (ProjectZoom) in.readObject();
-		projectChromosome = (ProjectChromosome) in.readObject();
-		multiGenomeProject = (MultiGenomeProject) in.readObject();
-
-		instance = this;
+		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());	
+		instance.getProjectChromosome().setProjectChromosome((ProjectChromosome) in.readObject());
+		instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
 	}
-
+	
 
 	/**
 	 * @return an instance of a {@link ProjectManager}. 
@@ -261,5 +256,12 @@ public class ProjectManager implements Serializable {
 	public void setAssembly(Assembly assembly) {
 		this.assembly = assembly;
 	}
+
+
+	/*public void setLoadedPrjectManager(ProjectManager pmtmp) {
+		ProjectWindow pjtmp = pmtmp.getProjectWindow();
+		projectWindow.setXFactor(pjtmp.getXFactor());
+		projectWindow.setGenomeWindow(pjtmp.getGenomeWindow());
+	}*/
 	
 }

@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
@@ -71,6 +72,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.track.Ruler;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
 
@@ -83,7 +85,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 533; 						// GenPlay version
+	private static final int VERSION_NUMBER = 537; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -129,7 +131,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		
 		// registered the listener to the genome window manager
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
+		//ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 
 		setTitle();
 
@@ -174,6 +176,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		gbc.weighty = 0;
 		add(statusBar, gbc);
 
+		// register to the genome window manager
+		registerToGenomeWindow();
 		// create actions
 		setActionMap();
 		// add shortcuts
@@ -242,6 +246,20 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			//projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
 			PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
 			multiGenomeSNP.actionPerformed(null);
+		}
+	}
+	
+	
+	/**
+	 * Registers every control panel components to the genome window manager.
+	 */
+	public void registerToGenomeWindow () {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
+		projectWindow.addGenomeWindowListener(ruler);
+		controlPanel.registerToGenomeWindow();
+		for (Track<?> track: getTrackList().getTrackList()) {
+			track.registerToGenomeWindow();
 		}
 	}
 

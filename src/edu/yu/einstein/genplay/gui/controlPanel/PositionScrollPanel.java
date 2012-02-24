@@ -80,7 +80,6 @@ final class PositionScrollPanel extends JPanel implements AdjustmentListener, Mo
 		add(jsbPosition, gbc);
 
 		addMouseWheelListener(this);
-		projectWindow.addGenomeWindowListener(this);
 	}
 
 

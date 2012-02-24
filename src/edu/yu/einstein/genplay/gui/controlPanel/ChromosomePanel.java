@@ -91,7 +91,6 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 		add(jcbChromosome, gbc);
 
 		addMouseWheelListener(this);
-		projectWindow.addGenomeWindowListener(this);
 	}
 
 	

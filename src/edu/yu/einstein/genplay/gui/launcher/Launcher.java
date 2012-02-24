@@ -172,8 +172,6 @@ public class Launcher {
 	 * Loads the managers with the configuration files
 	 */
 	private static void loadManagers() {
-		
-		
 		// load configuration manager
 		try {
 			ProjectManager.getInstance().getProjectConfiguration().loadConfigurationFile();

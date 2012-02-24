@@ -73,7 +73,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 
 	private ProjectWindow					projectWindow;					// instance of the genome window manager
-	
+
 	private DisplayableVariantListMaker		allele01VariantListMaker;		// displayable variants list creator (for MG project)
 	private DisplayableVariantListMaker		allele02VariantListMaker;		// displayable variants list creator (for MG project)
 
@@ -110,6 +110,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		allele02VariantListMaker = (DisplayableVariantListMaker) in.readObject();
 		stripesList = (List<StripesData>) in.readObject();
 		stripesOpacity = in.readInt();
+		projectWindow = ProjectManager.getInstance().getProjectWindow();
 	}
 
 
@@ -455,26 +456,26 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	 * @param e mouse event
 	 */
 	public void toolTipStripe (int trackHeight, MouseEvent e) {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {										// we must be in a multi genome project
-			double pos = projectWindow.screenXPosToGenomePos(e.getX());									// we translate the position on the screen into a position on the genome
-			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());				// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
-			if (variant != null) {																		// if a variant has been found
-				MGPosition positionInformation = variant.getFullVariantInformation();					// we get its information
-				AlleleType trackAlleleType = getTrackAlleleType();										// we get the allele type of the track
-				List<VariantInterface> variantList = null;												// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
-				if (trackAlleleType == AlleleType.BOTH) {												// if both allele are displayed,
-					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());		// create a copy of the variant list of the first allele
-					for (VariantInterface currentVariant: allele02VariantListMaker.getVariantList()) {	// we add all variant from the variant list of the second allele
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {												// we must be in a multi genome project
+			double pos = projectWindow.screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), e.getX());	// we translate the position on the screen into a position on the genome
+			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());						// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			if (variant != null) {																				// if a variant has been found
+				MGPosition positionInformation = variant.getFullVariantInformation();							// we get its information
+				AlleleType trackAlleleType = getTrackAlleleType();												// we get the allele type of the track
+				List<VariantInterface> variantList = null;														// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
+				if (trackAlleleType == AlleleType.BOTH) {														// if both allele are displayed,
+					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// create a copy of the variant list of the first allele
+					for (VariantInterface currentVariant: allele02VariantListMaker.getVariantList()) {			// we add all variant from the variant list of the second allele
 						variantList.add(currentVariant);
 					}
-					Collections.sort(variantList, new VariantComparator());								// we sort the global list
-				} else if (trackAlleleType == AlleleType.ALLELE01) {									// if the first allele only is displayed
-					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());		// we get the copy of its list
-				} else if (trackAlleleType == AlleleType.ALLELE02) {									// if the second allele only is displayed
-					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());		// we get the copy of its list
+					Collections.sort(variantList, new VariantComparator());										// we sort the global list
+				} else if (trackAlleleType == AlleleType.ALLELE01) {											// if the first allele only is displayed
+					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// we get the copy of its list
+				} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
+					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
 				}
-				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);						// we create the information dialog
-				toolTip.show(positionInformation, e.getXOnScreen(), e.getYOnScreen());					// we show it
+				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);								// we create the information dialog
+				toolTip.show(positionInformation, e.getXOnScreen(), e.getYOnScreen());							// we show it
 			} else {
 				System.out.println(pos + ": no variant");
 			}
@@ -490,15 +491,29 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	 */
 	public boolean isOverVariant (int trackHeight, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject() && allele01VariantListMaker != null && allele02VariantListMaker != null) {	// if we are in multi genome project
-			double pos = projectWindow.screenXPosToGenomePos(e.getX());							// we translate the position on the screen into a position on the genome
-			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());		// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
-			if (variant != null) {																// if a variant has been found
-				variantUnderMouse = variant;													// the mouse is on this variant (we save it)
-				return true;																	// we return true
-			} else if (variantUnderMouse != null) {												// no variant has been found but one was already defined (the mouse is just getting out of the stripe)
-				variantUnderMouse = null;														// there is no variant under the mouse anymore
+			double pos = projectWindow.screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), e.getX());	// we translate the position on the screen into a position on the genome
+			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());						// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			if (variant != null) {																				// if a variant has been found
+				variantUnderMouse = variant;																	// the mouse is on this variant (we save it)
+				return true;																					// we return true
+			} else if (variantUnderMouse != null) {																// no variant has been found but one was already defined (the mouse is just getting out of the stripe)
+				variantUnderMouse = null;																		// there is no variant under the mouse anymore
 				return true;
 			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Checks if the track has to be repaint when the mouse exit from it.
+	 * Basically, it has to be repaint if a variant was under the mouse in order to not highlight it.
+	 * @return true if the track has to be repaint, false otherwise
+	 */
+	public boolean hasToBeRepaintAfterExit () {
+		if (variantUnderMouse != null) {
+			variantUnderMouse = null;
+			return true;
 		}
 		return false;
 	}
@@ -603,6 +618,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 		VariantInterface variant = null;
 		if (variantList != null) {									// if a variant list has been found
+			//System.out.println("Look for: " + x + "; " + y);
 			for (VariantInterface current: variantList) {			// we scan all of its variant
 				if (current.getType() == VariantType.SNPS) {		// special case for SNP
 					if (x == current.getStart()) {					// a SNP is defined for a start but return the stop as start + 1. However, is present on the start position only, it does not include the stop!

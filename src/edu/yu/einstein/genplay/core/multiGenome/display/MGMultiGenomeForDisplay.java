@@ -75,8 +75,8 @@ public class MGMultiGenomeForDisplay implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		genomesInformation = (List<MGGenomeForDisplay>) in.readObject();
 		referenceGenome = (MGReferenceForDisplay) in.readObject();
+		genomesInformation = (List<MGGenomeForDisplay>) in.readObject();
 	}
 	
 	

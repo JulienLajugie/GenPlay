@@ -125,9 +125,11 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 				logFile.createNewFile();
 			} catch (IOException e) {
 				logFile = null;
+			} catch (SecurityException e) {
+				logFile = null;
 			}
 			// check if the user has the permission to write the log
-			if (!logFile.canWrite()) {
+			if ((logFile == null) || (!logFile.canWrite())) {
 				logFile = null;
 				JOptionPane.showMessageDialog(getTrackList(), "Impossible to access or create the log file \"" + 
 						logFile + "\"", "Invalid Log File", JOptionPane.WARNING_MESSAGE, null);

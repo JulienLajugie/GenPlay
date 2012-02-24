@@ -91,6 +91,9 @@ public final class GenomeWindowEvent extends EventObject {
 	 * @return true if the {@link Chromosome} of the {@link GenomeWindow} changed
 	 */
 	public boolean chromosomeChanged() {
+		if (oldWindow == null && newWindow != null) {
+			return true;
+		}
 		return !oldWindow.getChromosome().equals(newWindow.getChromosome());
 	}
 	

@@ -68,7 +68,7 @@ public class VCFReader implements Serializable {
 	private	List<String>						columnNames;		// All column header names
 	private	List<String>						fixedColumn;		// Fixed header names included in the VCF file
 	private	List<String>						genomeRawNames;		// Dynamic header names included in the VCF file (raw genome names)
-	private	List<String>						genomeNames;		// Dynamic header names included in the VCF file (raw genome names)
+	private	List<String>						genomeNames;		// Full genome names list
 	
 	private List<VCFHeaderType> 				altHeader;			// Header for the ALT field
 	private List<VCFHeaderType> 				filterHeader;		// Header for the FILTER field
@@ -85,12 +85,17 @@ public class VCFReader implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		
 		out.writeObject(file);
 		out.writeObject(headerInfo);
+		out.writeObject(fieldType);
+		out.writeObject(variantTypeList);
+		
 		out.writeObject(columnNames);
 		out.writeObject(fixedColumn);
 		out.writeObject(genomeRawNames);
-		out.writeObject(fieldType);
+		out.writeObject(genomeNames);
+		
 		out.writeObject(altHeader);
 		out.writeObject(filterHeader);
 		out.writeObject(infoHeader);
@@ -109,10 +114,14 @@ public class VCFReader implements Serializable {
 		in.readInt();
 		file = (File) in.readObject();
 		headerInfo= (Map<String, String>) in.readObject();
+		fieldType = (Map<String, Class<?>>) in.readObject();
+		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
+		
 		columnNames = (List<String>) in.readObject();
 		fixedColumn = (List<String>) in.readObject();
 		genomeRawNames = (List<String>) in.readObject();
-		fieldType = (Map<String, Class<?>>) in.readObject();
+		genomeNames = (List<String>) in.readObject();
+		
 		altHeader = (List<VCFHeaderType>) in.readObject();
 		filterHeader = (List<VCFHeaderType>) in.readObject();
 		infoHeader = (ArrayList<VCFHeaderAdvancedType>) in.readObject();

@@ -107,7 +107,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		}
 	}
 
-
+	
 	private static final long serialVersionUID = -1930069442535000515L; 	// Generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 	private static final int	 			VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
@@ -117,6 +117,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private static final int				STRIPES_TRANSPARENCY = 150;		// transparency of the stripes
 	protected static final String 			FONT_NAME = "ARIAL";			// name of the font
 	protected static final int 				FONT_SIZE = 10;					// size of the font
+	private static int						trackGraphicsWidth = 0;			// width of the track graphics
 	protected FontMetrics 		fm = 
 		getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 		// FontMetrics to get the size of a string
 	private int 							verticalLineCount;				// number of vertical lines to print
@@ -143,6 +144,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		this.data = data;
 		this.verticalLineCount = VERTICAL_LINE_COUNT;
 		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
+		TrackGraphics.trackGraphicsWidth = getWidth();
 		// registered the listener to the genome window manager
 		//this.projectWindow.addGenomeWindowListener(this);
 		setBackground(Color.white);
@@ -159,7 +161,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @return the scroll intensity
 	 */
 	public int computeScrollIntensity(int mouseXPosition) {
-		double res = projectWindow.twoScreenPosToGenomeWidth(mouseXPosition, getWidth() / 2);
+		double res = projectWindow.twoScreenPosToGenomeWidth(trackGraphicsWidth, mouseXPosition, getWidth() / 2);
 		if (res > 0) {
 			return (int) (res / 10d) + 1;	
 		} else {
@@ -540,7 +542,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		// double left click
 		if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2) && (!isScrollMode)) {
 			// Compute the distance from the cursor to the center of the screen
-			double distance = projectWindow.twoScreenPosToGenomeWidth(getWidth() / 2, e.getX());
+			double distance = projectWindow.twoScreenPosToGenomeWidth(trackGraphicsWidth, getWidth() / 2, e.getX());
 			distance = Math.floor(distance);
 			GenomeWindow newWindow = new GenomeWindow();
 			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
@@ -562,7 +564,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (e.getModifiers() == MouseEvent.BUTTON1_MASK) {
-			double distance = projectWindow.twoScreenPosToGenomeWidth(e.getX(), mouseStartDragX);
+			double distance = projectWindow.twoScreenPosToGenomeWidth(trackGraphicsWidth, e.getX(), mouseStartDragX);
 			if ((distance > 1) || (distance < -1)) {
 				GenomeWindow newWindow = new GenomeWindow();
 				newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
@@ -597,6 +599,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	public void mouseExited(MouseEvent e) {
 		if (isScrollMode) {
 			scrollModeThread = null;
+		} else if (multiGenomeDrawer != null && multiGenomeDrawer.hasToBeRepaintAfterExit()) {
+			repaint();
 		}
 	}
 
@@ -674,6 +678,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		TrackGraphics.trackGraphicsWidth = getWidth();
 		double newXFactor = projectWindow.getXFactor(getWidth());
 		if (newXFactor != projectWindow.getXFactor()) {
 			projectWindow.setXFactor(newXFactor);
@@ -818,4 +823,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * This method is executed when the chromosome changes 
 	 */
 	protected void chromosomeChanged() {}
+
+
+	/**
+	 * @return the trackGraphicsWidth
+	 */
+	public static int getTrackGraphicsWidth() {
+		return trackGraphicsWidth;
+	}
 }

@@ -43,6 +43,7 @@ import javax.swing.event.EventListenerList;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
@@ -137,8 +138,17 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void addListeners () {
 		trackHandle.addPropertyChangeListener(this);
 		trackGraphics.addPropertyChangeListener(this);
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(trackGraphics);
+		registerToGenomeWindow();
+	}
+	
+	
+	/**
+	 * Registers every control panel components to the genome window manager.
+	 */
+	public void registerToGenomeWindow () {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
+		projectWindow.addGenomeWindowListener(trackGraphics);
 	}
 	
 
@@ -195,8 +205,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: trackHandlePclSaver) {
 			trackHandle.addPropertyChangeListener(curList);
 		}
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
-		ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(trackGraphics);
+		registerToGenomeWindow();
 		
 		return (Track<?>) ois.readObject();
 	}

@@ -141,7 +141,6 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		add(jbPlus, gbc);
 
 		addMouseWheelListener(this);
-		projectWindow.addGenomeWindowListener(this);
 	}
 
 	

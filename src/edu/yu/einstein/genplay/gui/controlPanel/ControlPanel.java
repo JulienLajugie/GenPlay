@@ -147,6 +147,17 @@ public final class ControlPanel extends JPanel {
 	
 	
 	/**
+	 * Registers every control panel components to the genome window manager.
+	 */
+	public void registerToGenomeWindow () {
+		projectWindow.addGenomeWindowListener(chromosomePanel);
+		projectWindow.addGenomeWindowListener(genomeWindowPanel);
+		projectWindow.addGenomeWindowListener(positionScrollPanel);
+		projectWindow.addGenomeWindowListener(zoomPanel);
+	}
+	
+	
+	/**
 	 * Zooms in
 	 */
 	public void zoomIn() {

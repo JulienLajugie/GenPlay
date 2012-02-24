@@ -277,7 +277,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				Nucleotide[] printedBases = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 				// do nothing if there is no genes
 				if (printedBases != null) {
-					double distance = projectWindow.twoScreenPosToGenomeWidth(0, mousePosition.x);
+					double distance = projectWindow.twoScreenPosToGenomeWidth(TrackGraphics.getTrackGraphicsWidth(), 0, mousePosition.x);
 					distance = Math.floor(distance);
 					baseUnderMouseIndex = (int) distance;
 					// we repaint the track only if the gene under the mouse changed

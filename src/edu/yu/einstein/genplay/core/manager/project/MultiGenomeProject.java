@@ -114,6 +114,21 @@ public class MultiGenomeProject implements Serializable {
 	
 	
 	/**
+	 * Set the current {@link MultiGenomeProject} using another instance of {@link MultiGenomeProject}
+	 * Used for the unserialization.
+	 * @param project the instance of {@link MultiGenomeProject} to use
+	 */
+	protected void setMultiGenomeProject (MultiGenomeProject project) {
+			this.genomeNames = project.getGenomeNames();
+			this.genomeFileAssociation = project.getGenomeFileAssociation();
+			this.multiGenome = project.getMultiGenome();
+			this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
+			this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+			this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
+	}
+	
+	
+	/**
 	 * Constructor of {@link MultiGenomeProject}
 	 */
 	public MultiGenomeProject () {}

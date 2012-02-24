@@ -84,6 +84,17 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		genomeLength = (long) in.readLong();
 	}
 
+	
+	/**
+	 * Set the current {@link ProjectChromosome} using another instance of {@link ProjectChromosome}
+	 * Used for the unserialization.
+	 * @param project the instance of {@link ProjectChromosome} to use
+	 */
+	protected void setProjectChromosome (ProjectChromosome project) {
+		setChromosomeList(project.getChromosomeList());
+		setCurrentChromosome(project.getCurrentChromosome());
+	}
+	
 
 	/**
 	 * Constructor of {@link ProjectChromosome}.

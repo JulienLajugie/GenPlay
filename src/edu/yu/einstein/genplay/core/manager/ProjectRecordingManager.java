@@ -38,7 +38,6 @@ import javax.swing.UIManager;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -224,11 +223,6 @@ public class ProjectRecordingManager {
 			}
 			oos.writeObject(retrieveProjectInformation());
 			oos.writeObject(ProjectManager.getInstance());
-			oos.writeObject(ProjectManager.getInstance().getProjectChromosome());
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				oos.writeObject(ProjectManager.getInstance().getMultiGenomeProject());
-				oos.writeObject(MGDisplaySettings.getInstance());
-			}
 			oos.writeObject(trackList.getTrackList());
 
 			// there is bug during the serialization with the nimbus LAF if the track list is visible
@@ -321,11 +315,6 @@ public class ProjectRecordingManager {
 			ois = new ObjectInputStream(gz);
 			ois.readObject();
 			ois.readObject(); // init the project manager
-			ois.readObject(); // init the chromosome manager
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				ois.readObject(); // multi-genome manager
-				ois.readObject(); // multi-genome display settings
-			}
 			trackListReadyToLoad = true;
 		} catch (IOException e) {
 			// a IOException is likely to be caused by a invalid file type 

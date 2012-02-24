@@ -52,7 +52,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	private static final int 		MNEMONIC = KeyEvent.VK_L; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Load Project";	// action name
 	private boolean					skipFileSelection = false;		// true if the file selection need to be skipped. Default is false
-
+	
 	
 	/**
 	 * action accelerator {@link KeyStroke}
@@ -86,13 +86,13 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	public void setSkipFileSelection(boolean skipFileSelection) {
 		this.skipFileSelection = skipFileSelection;
 	}
-	
+
 
 	@Override
 	protected Track<?>[] processAction() throws Exception {
 		if (!skipFileSelection) {
 			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-			FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
+			FileFilter[] fileFilters = {new GenPlayProjectFilter()};
 			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
 			if (selectedFile == null) {
 				return null;
@@ -109,15 +109,14 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		if (actionResult != null) {
 			skipFileSelection = false;
+			
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+			MainFrame.getInstance().setVisible(true);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
-			// we retrieve the value of the genome window of the first track and we set the project window with this value
-			
-			//GenomeWindow savedWindow = MainFrame.getInstance().getTrackList().getTrackList()[0].getGenomeWindow();
-			//MainFrame.getInstance().getControlPanel().setGenomeWindow(savedWindow);
-			
-			//ProjectManager.getInstance().getProjectWindow().setGenomeWindow(savedWindow);
+			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
+			MainFrame.getInstance().registerToGenomeWindow();
+			//ProjectManager.getInstance().getProjectWindow().showListeners();
 		}
 	}	
 }

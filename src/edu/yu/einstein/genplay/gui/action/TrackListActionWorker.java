@@ -136,8 +136,6 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		return MainFrame.getInstance().getStatusBar();
 	}
 
-
-
 	
 	@Override
 	public final void actionPerformed(ActionEvent arg0) {

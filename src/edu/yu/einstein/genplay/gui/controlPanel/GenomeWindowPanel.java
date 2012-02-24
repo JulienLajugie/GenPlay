@@ -59,7 +59,6 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	GenomeWindowPanel() {
 		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
 		jtfGenomeWindow = new JTextField(20);
 		jtfGenomeWindow.setText(projectWindow.getGenomeWindow().toString());
 		jtfGenomeWindow.addKeyListener(new KeyAdapter() {
