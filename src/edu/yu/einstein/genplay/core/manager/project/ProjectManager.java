@@ -90,9 +90,12 @@ public class ProjectManager implements Serializable {
 
 		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());	
 		instance.getProjectChromosome().setProjectChromosome((ProjectChromosome) in.readObject());
-		instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
+		//MultiGenomeProject mgProject = 
+		if (instance.isMultiGenomeProject()) {
+			instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
+		}
 	}
-	
+
 
 	/**
 	 * @return an instance of a {@link ProjectManager}. 
@@ -130,7 +133,7 @@ public class ProjectManager implements Serializable {
 		chromosomeList = getAssembly().getChromosomeList();
 		projectChromosome.setChromosomeList(chromosomeList);
 	}
-	
+
 
 	/**
 	 * @return the multiGenomeProject
@@ -149,7 +152,7 @@ public class ProjectManager implements Serializable {
 			multiGenomeProject = null;
 		}
 	}
-	
+
 
 	/**
 	 * @return the Genome Window Manager
@@ -263,5 +266,5 @@ public class ProjectManager implements Serializable {
 		projectWindow.setXFactor(pjtmp.getXFactor());
 		projectWindow.setGenomeWindow(pjtmp.getGenomeWindow());
 	}*/
-	
+
 }

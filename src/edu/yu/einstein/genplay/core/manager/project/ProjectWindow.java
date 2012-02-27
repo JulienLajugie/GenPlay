@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 /**
  * This class manages the genome window and the X factor.
@@ -45,11 +44,11 @@ import edu.yu.einstein.genplay.gui.track.TrackGraphics;
  * @version 0.1
  */
 public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator {
-	//public class ProjectWindow implements GenomeWindowEventsGenerator {
 
 	/** Generated serial version ID */
-	private static final long serialVersionUID = -9014173267531950797L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;	// saved format version
+	private static final long 	serialVersionUID 				= -9014173267531950797L;
+	private static final int  	SAVED_FORMAT_VERSION_NUMBER 	= 0;						// saved format version
+	private static final int	MAX_INT 						= 2147483647;				// limit max of an int
 	private GenomeWindow				genomeWindow;			// the genome window displayed by the track
 	private double						xFactor;				// factor between the genomic width and the screen width
 	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
@@ -80,7 +79,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
 	}
 
-	
+
 	/**
 	 * Set the current {@link ProjectWindow} using another instance of {@link ProjectWindow}
 	 * Used for the unserialization.
@@ -90,7 +89,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		setXFactor(project.getXFactor());
 		setGenomeWindow(project.getGenomeWindow());
 	}
-	
+
 
 	/**
 	 * Constructor of {@link ProjectWindow}
@@ -216,7 +215,19 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * @return the absolute position on the screen (can be > than the screen width)
 	 */
 	public int genomePosToScreenXPos(int genomePosition) {
-		return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);
+		int result;
+		if (genomePosition <= genomeWindow.getStart()) {		// if the position is inferior to the start, an error can occur about a negative sign result
+			result = 0;											// in this case, the position on the genome will start on the pixel 0 of the track.
+		} else {												// if not, we apply the regular calculation
+			float roundedXScreen = Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);
+			if (roundedXScreen >= MAX_INT) {					// checks if the result is above the int limit (an error will occur when casting a float into an int when the float is higher than the int limit)
+				result =  MAX_INT;								// if yes, the int result is as high as it can
+			} else {											// if not,
+				result = (int) roundedXScreen;					// the float is simply casted into an int
+			}
+		}
+		return result;
+		//return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);	// former method
 	}
 
 
@@ -226,10 +237,14 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * @return the width on the screen between this two positions
 	 */
 	public int twoGenomePosToScreenWidth(int genomePositionStart, int genomePositionStop) {
-		double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
+		int start = genomePosToScreenXPos(genomePositionStart);
+		int stop = genomePosToScreenXPos(genomePositionStop);
+		return stop - start;
+		
+		/*double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
 		double x2 = ((double)(genomePositionStop - genomeWindow.getStart())) * xFactor;
 		double distance = Math.abs(x1 - x2);
-		return (int) Math.ceil(distance);
+		return (int) Math.ceil(distance);*/
 	}
 
 
@@ -241,7 +256,6 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	public double screenXPosToGenomePos(int trackGraphicsWidth, int x) {
 		double distance = twoScreenPosToGenomeWidth(trackGraphicsWidth, 0, x);
 		double genomePosition = genomeWindow.getStart() + Math.floor(distance);
-		//double genomePosition = genomeWindow.getStart() + distance;
 		return genomePosition;
 	}
 
@@ -253,8 +267,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * @return the distance in base pair between the screen position x1 and x2 
 	 */
 	public double twoScreenPosToGenomeWidth(int trackGraphicsWidth, int x1, int x2) {
-		int width = TrackGraphics.getTrackGraphicsWidth();
-		double distance = ((double)(x2 - x1) / (double)width * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
+		double distance = ((double)(x2 - x1) / (double)trackGraphicsWidth * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
 		return distance;
 	}
 }

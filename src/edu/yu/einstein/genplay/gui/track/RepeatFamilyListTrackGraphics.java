@@ -126,6 +126,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 						if (currentRepeat != null) {
 							int x = projectWindow.genomePosToScreenXPos(currentRepeat.getStart());
 							int repeatWidth = projectWindow.genomePosToScreenXPos(currentRepeat.getStop()) - x;
+							//int repeatWidth = projectWindow.twoGenomePosToScreenWidth(currentRepeat.getStart(), currentRepeat.getStop());
 							if (repeatWidth < 1) {
 								repeatWidth = 1;
 							}

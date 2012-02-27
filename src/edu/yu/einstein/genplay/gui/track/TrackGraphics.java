@@ -459,7 +459,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			if (chromoStripeList != null) {
 				for (ChromosomeWindow currentStripe: chromoStripeList) {
 					int x = projectWindow.genomePosToScreenXPos(currentStripe.getStart()); 
-					int widthWindow = projectWindow.genomePosToScreenXPos(currentStripe.getStop()) - x;
+					//int widthWindow = projectWindow.genomePosToScreenXPos(currentStripe.getStop()) - x;
+					int widthWindow = projectWindow.twoGenomePosToScreenWidth(currentStripe.getStart(), currentStripe.getStop());
 					if (widthWindow < 1) {
 						widthWindow = 1;
 					}

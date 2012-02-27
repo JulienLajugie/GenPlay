@@ -618,7 +618,6 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 		VariantInterface variant = null;
 		if (variantList != null) {									// if a variant list has been found
-			//System.out.println("Look for: " + x + "; " + y);
 			for (VariantInterface current: variantList) {			// we scan all of its variant
 				if (current.getType() == VariantType.SNPS) {		// special case for SNP
 					if (x == current.getStart()) {					// a SNP is defined for a start but return the stop as start + 1. However, is present on the start position only, it does not include the stop!

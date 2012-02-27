@@ -154,7 +154,8 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						Nucleotide nucleotide = nucleotides[index];
 						// compute the position on the screen
 						int x = projectWindow.genomePosToScreenXPos(position);
-						int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
+						//int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
+						int nucleoWith = projectWindow.genomePosToScreenXPos(position + 1) - x;
 						// select a different color for each type of base
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 							g.setColor(Color.WHITE);

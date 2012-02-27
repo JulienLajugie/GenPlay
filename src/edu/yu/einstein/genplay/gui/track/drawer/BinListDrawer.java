@@ -38,8 +38,8 @@ import edu.yu.einstein.genplay.util.ColorConverters;
 public final class BinListDrawer extends CurveDrawer {
 
 	private final BinList binList; // data to draw
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link BinListDrawer}
 	 * @param graphics {@link Graphics} of a track
@@ -56,7 +56,7 @@ public final class BinListDrawer extends CurveDrawer {
 		this.binList = binList;
 	}
 
-	
+
 	@Override
 	protected void drawBarGraphics() {
 		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
@@ -83,12 +83,26 @@ public final class BinListDrawer extends CurveDrawer {
 					int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
 					int screenYPosition = scoreToScreenPos(currentIntensity);
 					int rectHeight = screenYPosition - screenY0;
-					if (currentIntensity > 0) {
+
+					/*if (currentIntensity > 0) {
 						graphics.setColor(trackColor);
 						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidth, -rectHeight);
 					} else {
 						graphics.setColor(reverseCurveColor);
 						graphics.fillRect(screenXPosition, screenY0, screenWindowWidth, rectHeight);
+					}*/
+					if (currentIntensity > 0) {
+						graphics.setColor(trackColor);
+						rectHeight *= -1;
+					} else {
+						graphics.setColor(reverseCurveColor);
+						screenYPosition = screenY0;
+					}
+					if (currentGenomePosition <= currentMinX) {
+						int screenWindowWidthTmp = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
+						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidthTmp, rectHeight);
+					} else {
+						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidth, rectHeight);
 					}
 				}
 				i++;
@@ -97,7 +111,7 @@ public final class BinListDrawer extends CurveDrawer {
 		}
 	}
 
-	
+
 	@Override
 	protected void drawCurveGraphics() {
 		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
@@ -137,7 +151,7 @@ public final class BinListDrawer extends CurveDrawer {
 		}
 	}
 
-	
+
 	@Override
 	protected void drawDenseGraphics() {
 		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
@@ -164,7 +178,7 @@ public final class BinListDrawer extends CurveDrawer {
 		}
 	}
 
-	
+
 	@Override
 	protected void drawPointGraphics() {
 		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
@@ -183,8 +197,15 @@ public final class BinListDrawer extends CurveDrawer {
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
 					int screenX1Position = projectWindow.genomePosToScreenXPos(currentGenomePosition);
-					int screenX2Position = screenX1Position + screenWindowWidth;
-					int screenYPosition = scoreToScreenPos(currentIntensity);				
+					//int screenX2Position = screenX1Position + screenWindowWidth;
+					int screenYPosition = scoreToScreenPos(currentIntensity);
+					int screenX2Position;
+					if (currentGenomePosition <= currentMinX) {
+						screenX2Position = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
+					} else {
+						screenX2Position = screenX1Position + screenWindowWidth;
+					}
+					
 					graphics.drawLine(screenX1Position, screenYPosition, screenX2Position, screenYPosition);
 				}
 				i++;

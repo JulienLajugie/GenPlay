@@ -129,9 +129,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		setIconImage(iconImage);
 
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		
-		// registered the listener to the genome window manager
-		//ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 
 		setTitle();
 
