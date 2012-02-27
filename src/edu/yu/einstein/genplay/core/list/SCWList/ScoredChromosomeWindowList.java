@@ -60,7 +60,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	private static final long serialVersionUID = 6268393967488568174L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
-	
+
 	/*
 	 * The following values are statistic values of the list
 	 * They are transient because they depend on the chromosome manager that is also transient
@@ -75,7 +75,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 	private OverLappingManagement overLapManagement;
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -103,7 +103,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 	}
 
-	
+
 	/**
 	 * @return the number of steps needed to create a {@link ScoredChromosomeWindowList}
 	 */
@@ -136,7 +136,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 		return false;
 	}
-	
+
 
 	/**
 	 * searchOverLappingPositionsForIndex method
@@ -150,10 +150,10 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @return						 true if the current index is involved on an overlapping region
 	 */
 	private static boolean searchOverLappingPositionsForIndex (	ProjectChromosome projectChromosomeTmp,
-																ChromosomeListOfLists<Integer> startList,
-																ChromosomeListOfLists<Integer> stopList,
-																Chromosome currentChromosome,
-																int index) {
+			ChromosomeListOfLists<Integer> startList,
+			ChromosomeListOfLists<Integer> stopList,
+			Chromosome currentChromosome,
+			int index) {
 		int size = startList.get(projectChromosomeTmp.getIndex(currentChromosome)).size();
 		int nextIndex = index + 1;
 		if (nextIndex < size) {
@@ -171,7 +171,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 		return false;
 	}
-	
+
 
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindow} from a specified {@link BinList}
@@ -193,8 +193,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 					for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
 						if (binList.get(currentChromosome, i) != 0.0) {
 							resultList.add(new ScoredChromosomeWindow( 	(i * binList.getBinSize()),
-																		((i + 1) * binList.getBinSize()),
-																		binList.get(currentChromosome, i)));
+									((i + 1) * binList.getBinSize()),
+									binList.get(currentChromosome, i)));
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -216,8 +216,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 		generateStatistics();
 	}
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindowList}
 	 * @param startList list of start positions
@@ -229,16 +229,16 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @throws InterruptedException 
 	 */
 	public ScoredChromosomeWindowList(	final ChromosomeListOfLists<Integer> startList, 
-										final ChromosomeListOfLists<Integer> stopList,
-										final ChromosomeListOfLists<Double> scoreList,
-										final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+			final ChromosomeListOfLists<Integer> stopList,
+			final ChromosomeListOfLists<Double> scoreList,
+			final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();		
-		
-		
+
+
 		final boolean runOverLapEngine;
 		this.overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
 		if (scm != null) {
@@ -260,13 +260,13 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 					}
 					List<ScoredChromosomeWindow> list = overLapManagement.getList(currentChromosome);
 					for(int j = 0; j < list.size(); j++) {
-							double score = list.get(j).getScore();
-							if (score != 0) {
-								resultList.add(new ScoredChromosomeWindow(	list.get(j).getStart(), 
-																			list.get(j).getStop(), 
-																			score));
-							}
+						double score = list.get(j).getScore();
+						if (score != 0) {
+							resultList.add(new ScoredChromosomeWindow(	list.get(j).getStart(), 
+									list.get(j).getStop(), 
+									score));
 						}
+					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
 					return resultList;
@@ -289,7 +289,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	}
 
 
-	
+
 	/**
 	 * Creates an instance of {@link ScoredChromosomeWindow} from a list of {@link ScoredChromosomeWindow}
 	 * @param data list of {@link ScoredChromosomeWindow} with the data of the {@link ScoredChromosomeWindow} to create
@@ -313,8 +313,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 		generateStatistics();
 	}
-	
-	
+
+
 	/**
 	 * Performs a deep clone of the current {@link ScoredChromosomeWindowList}
 	 * @return a new ScoredChromosomeWindowList
@@ -436,8 +436,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			}
 		}		
 	}
-	
-	
+
+
 	/**
 	 * Computes some statistic values for this list
 	 * @throws ExecutionException 
@@ -448,7 +448,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
-		
+
 		// set the default value
 		min = Double.POSITIVE_INFINITY;
 		max = Double.NEGATIVE_INFINITY;
@@ -541,8 +541,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			stDev = Math.sqrt(stDev / (double) nonNullLength);
 		}
 	}
-	
-		
+
+
 	/**
 	 * @return the average of the BinList
 	 */
@@ -608,8 +608,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	public Long getNonNullLength() {
 		return nonNullLength;
 	}
-	
-	
+
+
 	/**
 	 * @param position a position on the fitted chromosome
 	 * @return the score of the window on the fitted chromosome containing the specified position
@@ -621,37 +621,42 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		}
 		// we search a window containing the position in parameter
 		int indexStart = findStop(get(fittedChromosome), position, 0, size(fittedChromosome) - 1);
-		if ((position >= get(fittedChromosome, indexStart).getStart()) && (position <= get(fittedChromosome, indexStart).getStop())) {
+		if (position == get(fittedChromosome, indexStart).getStop()) {
+			if ((indexStart + 1) < get(fittedChromosome).size()) {
+				indexStart++;
+			} else {
+				return 0;
+			}
+		} 
+		if ((position >= get(fittedChromosome, indexStart).getStart()) && (position < get(fittedChromosome, indexStart).getStop())) {
 			return get(fittedChromosome, indexStart).getScore();
-		} else {
-			// if no window containing the position in parameter has been found we return 0
-			return 0;
 		}
-
+		// if no window containing the position in parameter has been found we return 0
+		return 0;
 	}
-	
-	
+
+
 	/**
 	 * @return the sum of the scores
 	 */
 	public final Double getScoreSum() {
 		return scoreSum;
 	}
-	
-	
+
+
 	/**
 	 * @return the standard deviation of the BinList
 	 */
 	public Double getStDev() {
 		return stDev;
 	}
-	
-	
+
+
 	/**
 	 * @param scoreSum the scoreSum to set
 	 */
 	public final void setScoreSum(Double scoreSum) {
 		this.scoreSum = scoreSum;
 	}
-	
+
 }
