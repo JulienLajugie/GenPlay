@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -51,6 +50,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.I
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors.IDNumberEditor;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors.IDStringEditor;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * @author Nicolas Fourel
@@ -169,10 +169,10 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		idMap = null;
 
 		jlFile.setText("<html><i>select -></i></html>");
-		jlFile.setForeground(Color.gray);
+		jlFile.setForeground(Colors.GREY);
 
 		jlID.setText("<html><i>select -></i></html>");
-		jlID.setForeground(Color.gray);
+		jlID.setForeground(Colors.GREY);
 		showIDListButton.setEnabled(false);
 
 		resetFilterPanel();
@@ -323,7 +323,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 */
 	private JLabel getDefaultLabel (String text) {
 		JLabel label = new JLabel("<html><i>" + text + "</i></html>");
-		label.setForeground(Color.gray);
+		label.setForeground(Colors.GREY);
 		return label;
 	}
 
@@ -364,7 +364,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		// Updates the ID area to empty
 		showIDListButton.setEnabled(true);
 		jlID.setText("<html><i>select -></i></html>");
-		jlID.setForeground(Color.gray);
+		jlID.setForeground(Colors.GREY);
 		
 		// Updates the filter area to empty
 		resetFilterPanel();

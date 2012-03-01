@@ -26,7 +26,8 @@ import java.awt.Graphics;
 
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.util.ColorConverters;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 
@@ -63,7 +64,7 @@ public final class BinListDrawer extends CurveDrawer {
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
 			// Compute the reverse color
-			Color reverseCurveColor = Color.gray;
+			Color reverseCurveColor = Colors.GREY;
 			if (!trackColor.equals(Color.black)) {
 				reverseCurveColor = new Color(trackColor.getRGB() ^ 0xffffff);
 			}
@@ -169,7 +170,7 @@ public final class BinListDrawer extends CurveDrawer {
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
 					int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
-					graphics.setColor(ColorConverters.scoreToColor(currentIntensity, scoreMin, scoreMax));
+					graphics.setColor(GenPlayColor.scoreToColor(currentIntensity, scoreMin, scoreMax));
 					graphics.fillRect(screenXPosition, 0, screenWindowWidth, trackHeight);
 				}
 				i++;

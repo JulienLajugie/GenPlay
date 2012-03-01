@@ -35,7 +35,8 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.SNP;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
-import edu.yu.einstein.genplay.util.ColorConverters;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 
@@ -50,7 +51,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final DecimalFormat 	COUNT_FORMAT = new DecimalFormat("###,###,###");// format for the count
 	private static final Color 			BACKGROUND_COLOR = new Color(255, 200, 165);	// color of the stripes in the background
-	private static final Color			NOT_SIGNIFICANT_COLOR = Color.GRAY;				// color of a not significant base
+	private static final Color			NOT_SIGNIFICANT_COLOR = Colors.GREY;			// color of a not significant base
 	private static final Nucleotide[] 	LINE_BASES = 
 	{Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};	// bases ordered the way they are printed on the track
 	private SNP 						snpUnderMouse = null;							// snp under the mouse cursor, null if none 
@@ -128,7 +129,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		for (int i = 0; i < 4; i++) {
 			int yPos = (int) (lineHeight * i + halfLineHeight + halfFontHeight);
 			Nucleotide nucleotideToPrint = LINE_BASES[i];
-			g.setColor(ColorConverters.nucleotideToColor(nucleotideToPrint));
+			g.setColor(GenPlayColor.nucleotideToColor(nucleotideToPrint));
 			g.drawString(nucleotideToPrint.toString(), leftXPos, yPos);
 			g.drawString(nucleotideToPrint.toString(), rightXPos, yPos);			
 		}
@@ -208,7 +209,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			break;
 		}
 		// we set the color of the SNP depending on the type of the first base
-		Color snpColor = ColorConverters.nucleotideToColor(currentSNP.getFirstBase()); 
+		Color snpColor = GenPlayColor.nucleotideToColor(currentSNP.getFirstBase()); 
 		g.setColor(snpColor);
 		// we draw the first base
 		g.fillRect(xPos, yPos, width, (int) Math.ceil(lineHeight));
@@ -235,7 +236,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		}
 		// we set the color and draw the second base
 		if (currentSNP.isSecondBaseSignificant()) {
-			snpColor = ColorConverters.nucleotideToColor(currentSNP.getSecondBase()); 
+			snpColor = GenPlayColor.nucleotideToColor(currentSNP.getSecondBase()); 
 		} else {
 			// if the second base is not significant we draw it in gray
 			snpColor = NOT_SIGNIFICANT_COLOR; 
@@ -255,7 +256,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param currentSNP {@link SNP} to draw
 	 */
 	private void drawDetailedSNP(Graphics g, SNP currentSNP) {		
-		g.setColor(Color.WHITE);
+		g.setColor(Colors.WHITE);
 		// half height of the font
 		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
 		// height of a line 

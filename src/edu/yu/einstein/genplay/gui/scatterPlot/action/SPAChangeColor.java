@@ -25,10 +25,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.Arrays;
 
-import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 
 
@@ -70,7 +70,8 @@ public class SPAChangeColor extends ScatterPlotAction {
 		}
 		if (selectedIndex >= 0) {
 			Color currentColor = getScatterPlotPane().getData().get(selectedIndex).getColor();
-			Color chosenColor = JColorChooser.showDialog(getScatterPlotPane(), "Select Chart Color", currentColor);
+			//Color chosenColor = JColorChooser.showDialog(getScatterPlotPane(), "Select Chart Color", currentColor);
+			Color chosenColor = GenPlayColorChooser.showDialog(getScatterPlotPane(), "Select Chart Color", currentColor);
 			if (chosenColor != null) {
 				getScatterPlotPane().getData().get(selectedIndex).setColor(chosenColor);
 				getScatterPlotPane().repaint();

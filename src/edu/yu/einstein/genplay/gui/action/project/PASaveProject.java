@@ -99,7 +99,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
 				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-				ProjectManager.getInstance().setProjectName(projectName);				
+				ProjectManager.getInstance().setProjectName(projectName);	
 				return ProjectRecordingManager.getInstance().saveProject(selectedFile);
 			}
 		}

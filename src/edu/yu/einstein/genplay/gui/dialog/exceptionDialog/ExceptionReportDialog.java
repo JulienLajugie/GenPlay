@@ -98,9 +98,11 @@ public class ExceptionReportDialog extends JDialog {
 		// Update the text area before showing the dialog
 		updateTextArea();
 
-		// Sets dialog display options
-		setLocationRelativeTo(parent);
-		setVisible(true);
+		if (!isVisible()) {
+			// Sets dialog display options
+			setLocationRelativeTo(parent);
+			setVisible(true);
+		}
 	}
 
 
@@ -133,8 +135,8 @@ public class ExceptionReportDialog extends JDialog {
 		}
 		textArea.setText(text);
 	}
-	
-	
+
+
 	/**
 	 * Formats a message when adding.
 	 * A message can contain \n character in order to give multiple message at once.
@@ -148,7 +150,7 @@ public class ExceptionReportDialog extends JDialog {
 		String text = "";
 		String prefix = messageNumber + ": ";
 		String indent = getIndent(prefix);
-		
+
 		String[] array = message.split("\n");
 		for (int i = 0; i < array.length; i++) {
 			switch (i) {
@@ -161,11 +163,11 @@ public class ExceptionReportDialog extends JDialog {
 			}
 			text += array[i] + "\n";
 		}
-		
+
 		return text;
 	}
 
-	
+
 	/**
 	 * Creates an indent depending on the prefix of the first line of the message.
 	 * An indent is only a white space adjusted according to the first line.
@@ -203,7 +205,7 @@ public class ExceptionReportDialog extends JDialog {
 		// Return the scroll pane
 		return contentPane;
 	}
-	
+
 
 	/**
 	 * Creates the button panel. Two buttons are present:

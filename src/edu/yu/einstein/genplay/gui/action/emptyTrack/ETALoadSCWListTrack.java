@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.emptyTrack;
 
-import java.awt.Color;
 import java.io.File;
 
 import javax.swing.ActionMap;
@@ -39,8 +38,9 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
-import edu.yu.einstein.genplay.util.TrackColor;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 
@@ -80,7 +80,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Track", defaultDirectory, Utils.getReadableSCWFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Variable Window Track", defaultDirectory, Utils.getReadableSCWFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}
@@ -160,7 +160,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			SCWListTrack newTrack = new SCWListTrack(selectedTrackIndex + 1, actionResult);
-			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
+			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			String history = new String(); 
 			if (scoreCalculation != null) {
 				history += "Method of Calculation = " + scoreCalculation;
@@ -180,7 +180,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 				history += ", Read Length = " + readLength +"bp";
 			}
 			if (!history.isEmpty()) {
-				newTrack.getHistory().add(history, Color.GRAY);
+				newTrack.getHistory().add(history, Colors.GREY);
 			}
 			newTrack.setTrackColor(TrackColor.getTrackColor());
 			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());

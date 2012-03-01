@@ -45,6 +45,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -107,8 +108,8 @@ public class MultiTrackChooser extends JDialog {
 		jlaSelectedTracks = new JLabel("Selected Tracks");
 
 		jliAvailableTracks = new JList(dlmAvailableTracks);
-		jliAvailableTracks.setBorder(BorderFactory.createLineBorder(Color.black));
-		jliAvailableTracks.setBackground(Color.white);
+		jliAvailableTracks.setBorder(BorderFactory.createLineBorder(Colors.BLACK));
+		jliAvailableTracks.setBackground(Colors.WHITE);
 		jliAvailableTracks.addListSelectionListener(new ListSelectionListener() {			
 			@Override
 			public void valueChanged(ListSelectionEvent arg0) {

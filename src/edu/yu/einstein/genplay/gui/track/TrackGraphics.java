@@ -56,6 +56,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -111,9 +112,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private static final long serialVersionUID = -1930069442535000515L; 	// Generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 	private static final int	 			VERTICAL_LINE_COUNT = 10;		// number of vertical lines to print
-	private static final Color				LINE_COLOR = Color.lightGray;	// color of the lines
-	private static final Color				MIDDLE_LINE_COLOR = Color.red;	// color of the line in the middle
-	private static final Color				STRIPES_COLOR = Color.GRAY;		// color of the stripes
+	private static final Color				LINE_COLOR = Colors.LIGHT_GREY;	// color of the lines
+	private static final Color				MIDDLE_LINE_COLOR = Colors.RED;	// color of the line in the middle
+	private static final Color				STRIPES_COLOR = Colors.GREY;	// color of the stripes
 	private static final int				STRIPES_TRANSPARENCY = 150;		// transparency of the stripes
 	protected static final String 			FONT_NAME = "ARIAL";			// name of the font
 	protected static final int 				FONT_SIZE = 10;					// size of the font
@@ -147,7 +148,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		TrackGraphics.trackGraphicsWidth = getWidth();
 		// registered the listener to the genome window manager
 		//this.projectWindow.addGenomeWindowListener(this);
-		setBackground(Color.white);
+		setBackground(Colors.WHITE);
 		setFont(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -304,7 +305,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// Draws
 			g.setColor(getBackground());
 			g.fillRect(x, 1, width, textHeight + widthOffset);
-			g.setColor(Color.blue);
+			g.setColor(Colors.BLUE);
 			g.drawRect(x, 1, width - 1, textHeight + widthOffset);
 			g.drawString(name, x + widthOffset, textHeight);
 		}
@@ -331,7 +332,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				// Draws
 				g.setColor(getBackground());
 				g.fillRect(x, 1, rectWidth, textHeight + widthOffset);
-				g.setColor(Color.green);
+				g.setColor(Colors.GREEN);
 				g.drawRect(x, 1, rectWidth - 1, textHeight + widthOffset);
 
 				// Draws the legend (text containing various colors)
@@ -376,7 +377,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			Collections.sort(genomeNames);
 
 			// Color for text
-			Color textColor = Color.black;
+			Color textColor = Colors.BLACK;
 
 			// Association text/color
 			int genomeCounter = 0;

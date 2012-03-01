@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.emptyTrack;
 
-import java.awt.Color;
 import java.io.File;
 import java.text.DecimalFormat;
 
@@ -41,8 +40,9 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
-import edu.yu.einstein.genplay.util.TrackColor;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 
@@ -108,8 +108,8 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 			if (readLength != 0) {
 				history += ", Read Length = " + readLength +"bp";
 			}
-			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Color.GRAY);
-			newTrack.getHistory().add(history, Color.GRAY);
+			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			newTrack.getHistory().add(history, Colors.GREY);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
 			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
@@ -176,7 +176,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters(), true);
 		if (selectedFile != null) {			
 			return selectedFile;
 		} else {

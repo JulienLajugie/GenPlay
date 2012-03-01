@@ -34,6 +34,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.yu.einstein.genplay.util.colors.Colors;
+
 /**
  * The history class provides tools to manage an history of the action performed
  * on a BinList.
@@ -152,7 +154,7 @@ public final class History implements Serializable {
 	 * Resets the history.
 	 */
 	public void reset() {
-		add("RESET", Color.red);
+		add("RESET", Colors.RED);
 	}
 
 	

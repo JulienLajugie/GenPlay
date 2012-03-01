@@ -34,6 +34,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -115,7 +116,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 					RepeatFamily currentFamily = repeatFamilyList.get(i + firstLineToDisplay);
 					// calculate if the background is white or gray
 					if (currentColor % 2 == 1) {
-						g.setColor(Color.LIGHT_GRAY);
+						g.setColor(Colors.LIGHT_GREY);
 						g.fillRect(0, currentHeight, width, REPEAT_HEIGHT + 2 * SPACE_HEIGHT);
 					}
 					// calculate the color of the line
@@ -171,7 +172,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	 * @return a {@link Color}
 	 */
 	private Color intToColor(int i) {
-		Color[] colorArray = {Color.BLACK, Color.GREEN, Color.BLUE, Color.PINK, Color.RED, Color.CYAN, Color.MAGENTA, Color.ORANGE};
+		Color[] colorArray = {Colors.BLACK, Colors.GREEN, Colors.BLUE, Color.PINK, Colors.RED, Color.CYAN, Color.MAGENTA, Colors.ORANGE};
 		i = i % colorArray.length;
 		return colorArray[i];
 	}	

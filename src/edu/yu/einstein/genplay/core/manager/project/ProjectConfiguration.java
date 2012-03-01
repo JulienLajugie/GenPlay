@@ -40,16 +40,15 @@ import java.io.Serializable;
 public final class ProjectConfiguration implements Serializable {
 
 	private static final long serialVersionUID = 5632320102259442205L; 		// generated ID
-	private static String TEMP_DIR = System.getProperty("java.io.tmpdir"); 	// java directory for temporary files
-	private static String CONFIG_FILE = "GenPlay_config.cfg"; 				// path of the config file
-	private static final String DEFAULT_ZOOM_FILE = ""; 					// path of the default zoom config file
-	private static final String DEFAULT_LOG_FILE = 
-		new File(TEMP_DIR, "GenPlayLog.txt").getAbsolutePath(); 			// path of the default log file
+	
+	private static final String DEFAULT_LOG_FILE_NAME 			= "GenPlayLog.txt"; 	// the default log file name
+	private static final String DEFAULT_DAS_SERVER_FILE_NAME 	= "DASServerList.xml"; 	// the default log file name
 	private final static String DEFAULT_DAS_SERVER_PATH = 
-		"edu/yu/einstein/genplay/resource/DASServerList.xml"; 						// DAS Server List file path
+		"edu/yu/einstein/genplay/resource/DASServerList.xml"; 				// DAS Server List file path
 	private static final String DEFAULT_DEFAULT_DIRECTORY = ""; 			// default directory
 	private static final String DEFAULT_LOOK_AND_FEEL = 
 		"javax.swing.plaf.metal.MetalLookAndFeel";							// default look and feel
+	
 	private static final int DEFAULT_TRACK_COUNT = 50; 						// default number of track
 	private static final int DEFAULT_TRACK_HEIGHT = 100; 					// default track height
 	private static final int MIN_TRACK_COUNT = 1; 							// minimum number of tracks
@@ -58,11 +57,13 @@ public final class ProjectConfiguration implements Serializable {
 	private static final int MAX_TRACK_HEIGHT = 2000; 						// maximum height of the tracks
 	private static final int DEFAULT_UNDO_COUNT = 1; 						// default number of undo in memory
 	private static final int PROJECT_NUMBER = 5;							// number of recent project path to save
-	private String zoomFile = DEFAULT_ZOOM_FILE; 							// zoom config file
-	private String logFile = DEFAULT_LOG_FILE; 								// log file
-	private String defaultDirectory = DEFAULT_DEFAULT_DIRECTORY; 			// default directory
+	
+	private static String CONFIG_FILE_NAME = "GenPlay_config.cfg"; 			// the config file
+	
+	private String logFilePath; 											// log file
+	private String defaultDirectory; 										// default directory
 	private String lookAndFeel = DEFAULT_LOOK_AND_FEEL; 					// look and feel
-	private String dasServerListFile = getTempDir() + "DASServerList.xml"; 	// DAS Server list
+	private String dasServerListFile;									 	// DAS Server list
 	private int trackCount = DEFAULT_TRACK_COUNT; 							// track count
 	private int trackHeight = DEFAULT_TRACK_HEIGHT; 						// track height
 	private int undoCount = DEFAULT_UNDO_COUNT; 							// number of undo in memory
@@ -77,8 +78,60 @@ public final class ProjectConfiguration implements Serializable {
 	protected ProjectConfiguration() {
 		super();
 		projects = new String[PROJECT_NUMBER];
+		restoreDefault();
 	}
 
+	
+	/**
+	 * Restores the default configuration
+	 */
+	public void restoreDefault() {
+		logFilePath = getDefaultLogFileAbsolutePath();
+		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
+		dasServerListFile = getDefaultDASServerFileAbsolutePath();
+		new File(dasServerListFile).delete();
+		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
+		trackCount = DEFAULT_TRACK_COUNT;
+		trackHeight = DEFAULT_TRACK_HEIGHT;
+		undoCount = DEFAULT_UNDO_COUNT;
+		legend = true;
+	}
+	
+	
+	/**
+	 * Reads the configuration from a file.
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	public void loadConfigurationFile() throws IOException, FileNotFoundException {
+		BufferedReader reader = null;
+		try {
+			File dir = new File(getTemporaryDirectory());
+			dir.mkdirs();
+			File configFile = new File(getConfigFileAbsolutePath());
+			//File configFile = new File(WINDOW_TEMP_DIR, CONFIG_FILE);
+			reader = new BufferedReader(new FileReader(configFile));
+			// extract data
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				extractLine(line);
+			}
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+			if ((trackCount < MIN_TRACK_COUNT) || (trackCount > MAX_TRACK_COUNT)) {
+				trackCount = DEFAULT_TRACK_COUNT;
+			}
+			if ((trackHeight < MIN_TRACK_HEIGHT) || (trackHeight > MAX_TRACK_HEIGHT)) {
+				trackHeight = DEFAULT_TRACK_HEIGHT;
+			}
+			if (undoCount < 0) {
+				undoCount = DEFAULT_UNDO_COUNT;
+			}
+		}
+	}
+	
 	
 	/**
 	 * Reads a line from the configuration file and extracts the data
@@ -91,10 +144,8 @@ public final class ProjectConfiguration implements Serializable {
 			String key = line.substring(0, index).trim();
 			String value = line.substring(index + 1).trim();
 			if ((key != null) && (key.length() > 0) && (value != null) && (value.length() > 0)) {
-				if (key.equalsIgnoreCase("zoom file")) {
-					zoomFile = value;
-				} else if (key.equalsIgnoreCase("log file")) {
-					logFile = value;
+				if (key.equalsIgnoreCase("log file")) {
+					logFilePath = value;
 				} else if (key.equalsIgnoreCase("DAS Server List file")) {
 					dasServerListFile = value;
 				} else if (key.equalsIgnoreCase("default directory")) {
@@ -118,226 +169,18 @@ public final class ProjectConfiguration implements Serializable {
 	
 	
 	/**
-	 * @return the defaultDirectory
-	 */
-	public final String getDefaultDirectory() {
-		return defaultDirectory;
-	}
-
-	
-	/**
-	 * @return the tempDirectory
-	 */
-	public final String getTempDir() {
-		return TEMP_DIR;
-	}
-
-	
-	/**
-	 * @return the dasServerListFile
-	 */
-	public final String getDASServerListFile() {
-		return dasServerListFile;
-	}
-
-	
-	/**
-	 * @return the default das server file
-	 */
-	public final String getDefaultDasServerListFile() {
-		return this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString();
-	}
-
-	
-	/**
-	 * @return the logFile
-	 */
-	public final String getLogFile() {
-		return logFile;
-	}
-
-	
-	/**
-	 * @return the lookAndFeel
-	 */
-	public final String getLookAndFeel() {
-		return lookAndFeel;
-	}
-
-	
-	/**
-	 * @return the trackCount
-	 */
-	public final int getTrackCount() {
-		return trackCount;
-	}
-
-	
-	/**
-	 * @return the trackHeight
-	 */
-	public final int getTrackHeight() {
-		return trackHeight;
-	}
-
-	
-	/**
-	 * @return the undoCount
-	 */
-	public int getUndoCount() {
-		return undoCount;
-	}
-	
-
-	/**
-	 * @return the legend
-	 */
-	public boolean isLegend() {
-		return legend;
-	}
-
-
-	/**
-	 * @return the zoomFile
-	 */
-	public final String getZoomFile() {
-		return zoomFile;
-	}
-
-	
-	/**
-	 * Reads the configuration from a file.
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
-	public void loadConfigurationFile() throws IOException, FileNotFoundException {
-		BufferedReader reader = null;
-		try {
-			File configFile = new File(TEMP_DIR, CONFIG_FILE);
-			reader = new BufferedReader(new FileReader(configFile));
-			// extract data
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				extractLine(line);
-			}
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-			if ((trackCount < MIN_TRACK_COUNT) || (trackCount > MAX_TRACK_COUNT)) {
-				trackCount = DEFAULT_TRACK_COUNT;
-			}
-			if ((trackHeight < MIN_TRACK_HEIGHT) || (trackHeight > MAX_TRACK_HEIGHT)) {
-				trackHeight = DEFAULT_TRACK_HEIGHT;
-			}
-			if (undoCount < 0) {
-				undoCount = DEFAULT_UNDO_COUNT;
-			}
-		}
-	}
-
-	
-	/**
-	 * Restores the default configuration
-	 */
-	public void restoreDefault() {
-		zoomFile = DEFAULT_ZOOM_FILE;
-		logFile = DEFAULT_LOG_FILE;
-		defaultDirectory = DEFAULT_DEFAULT_DIRECTORY;
-		new File(dasServerListFile).delete();
-		dasServerListFile = getTempDir() + "DASServerList.xml";
-		lookAndFeel = DEFAULT_LOOK_AND_FEEL;
-		trackCount = DEFAULT_TRACK_COUNT;
-		trackHeight = DEFAULT_TRACK_HEIGHT;
-		undoCount = DEFAULT_UNDO_COUNT;
-		legend = true;
-	}
-
-	
-	/**
-	 * @param dasServerListFile the dasServerListFile to set
-	 */
-	public final void setDASServerListFile(String dasServerListFile) {
-		this.dasServerListFile = dasServerListFile;
-	}
-
-	
-	/**
-	 * @param defaultDirectory the defaultDirectory to set
-	 */
-	public final void setDefaultDirectory(String defaultDirectory) {
-		this.defaultDirectory = defaultDirectory;
-	}
-	
-
-	/**
-	 * @param logFile the logFile to set
-	 */
-	public final void setLogFile(String logFile) {
-		this.logFile = logFile;
-	}
-
-	
-	/**
-	 * @param lookAndFeel the lookAndFeel to set
-	 */
-	public final void setLookAndFeel(String lookAndFeel) {
-		this.lookAndFeel = lookAndFeel;
-	}
-
-	
-	/**
-	 * @param trackCount the trackCount to set
-	 */
-	public final void setTrackCount(int trackCount) {
-		this.trackCount = trackCount;
-	}
-
-	
-	/**
-	 * @param trackHeight the trackHeight to set
-	 */
-	public final void setTrackHeight(int trackHeight) {
-		this.trackHeight = trackHeight;
-	}
-
-	
-	/**
-	 * @param zoomFile the zoomFile to set
-	 */
-	public final void setZoomFile(String zoomFile) {
-		this.zoomFile = zoomFile;
-	}
-
-	
-	/**
-	 * @param undoCount the undoCount to set
-	 */
-	public void setUndoCount(int undoCount) {
-		this.undoCount = undoCount;
-	}
-	
-	
-	/**
-	 * @param legend the legend to set
-	 */
-	public void setLegend(boolean legend) {
-		this.legend = legend;
-	}
-
-	
-	/**
 	 * Writes the configuration in a file
 	 * @throws IOException
 	 */
 	public void writeConfigurationFile() throws IOException {
 		BufferedWriter writer = null;
 		try {
-			File configFile = new File(TEMP_DIR, CONFIG_FILE);
+			//File configFile = new File(WINDOW_TEMP_DIR, CONFIG_FILE);
+			File dir = new File(getTemporaryDirectory());
+			dir.mkdirs();
+			File configFile = new File(getConfigFileAbsolutePath());
 			writer = new BufferedWriter(new FileWriter(configFile));
-			writer.write("zoom file: " + zoomFile);
-			writer.newLine();
-			writer.write("log file: " + logFile);
+			writer.write("log file: " + logFilePath);
 			writer.newLine();
 			writer.write("DAS Server List file: " + dasServerListFile);
 			writer.newLine();
@@ -430,7 +273,193 @@ public final class ProjectConfiguration implements Serializable {
 		projects[0] = this.currentProjectPath;
 	}
 
+	
+	/**
+	 * @return the defaultDirectory
+	 */
+	public final String getDefaultDirectory() {
+		return defaultDirectory;
+	}
 
+	
+	/**
+	 * @return the absolute path of the configuration file
+	 */
+	private String getConfigFileAbsolutePath () {
+		return getTemporaryDirectory() + CONFIG_FILE_NAME;
+	}
+	
+	
+	/**
+	 * @return the absolute path of the log file
+	 */
+	private String getDefaultLogFileAbsolutePath () {
+		return getTemporaryDirectory() + DEFAULT_LOG_FILE_NAME;
+	}
+	
+	
+	/**
+	 * @return the absolute path of the log file
+	 */
+	private String getDefaultDASServerFileAbsolutePath () {
+		return getTemporaryDirectory() + DEFAULT_DAS_SERVER_FILE_NAME;
+	}
+	
+	
+	/**
+	 * Checks if the user is working under Windows or not (-> Unix).
+	 * If the user is using Windows, the temporary directory is the default one (eg: C:\Users\USER\AppData\Local\Temp)
+	 * If the user is using Unix platform, the temporary directory is its working directory 
+	 * @return the temporary directory path
+	 */
+	private String getTemporaryDirectory () {
+		if (isWindowsPlatform()) {
+			return System.getProperty("java.io.tmpdir");
+		}
+		return System.getProperty("user.home") + "/.genplay/";
+	}
+
+	
+	/**
+	 * @return true if the user is working under Windows, false otherwise (-> Unix)
+	 */
+	private boolean isWindowsPlatform () {
+		String osName = System.getProperty("os.name");
+		if (osName.length() > 7 && osName.substring(0, 7).toUpperCase().equals("WINDOWS")) {
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * @return the dasServerListFile
+	 */
+	public final String getDASServerListFile() {
+		return dasServerListFile;
+	}
+
+	
+	/**
+	 * @return the default das server file
+	 */
+	public final String getDefaultDasServerListFile() {
+		return this.getClass().getClassLoader().getResource(DEFAULT_DAS_SERVER_PATH).toString();
+	}
+
+	
+	/**
+	 * @return the logFile
+	 */
+	public final String getLogFile() {
+		return logFilePath;
+	}
+
+	
+	/**
+	 * @return the lookAndFeel
+	 */
+	public final String getLookAndFeel() {
+		return lookAndFeel;
+	}
+
+	
+	/**
+	 * @return the trackCount
+	 */
+	public final int getTrackCount() {
+		return trackCount;
+	}
+
+	
+	/**
+	 * @return the trackHeight
+	 */
+	public final int getTrackHeight() {
+		return trackHeight;
+	}
+
+	
+	/**
+	 * @return the undoCount
+	 */
+	public int getUndoCount() {
+		return undoCount;
+	}
+	
+
+	/**
+	 * @return the legend
+	 */
+	public boolean isLegend() {
+		return legend;
+	}
+
+	
+	/**
+	 * @param dasServerListFile the dasServerListFile to set
+	 */
+	public final void setDASServerListFile(String dasServerListFile) {
+		this.dasServerListFile = dasServerListFile;
+	}
+
+	
+	/**
+	 * @param defaultDirectory the defaultDirectory to set
+	 */
+	public final void setDefaultDirectory(String defaultDirectory) {
+		this.defaultDirectory = defaultDirectory;
+	}
+	
+
+	/**
+	 * @param logFile the logFile to set
+	 */
+	public final void setLogFile(String logFile) {
+		this.logFilePath = logFile;
+	}
+
+	
+	/**
+	 * @param lookAndFeel the lookAndFeel to set
+	 */
+	public final void setLookAndFeel(String lookAndFeel) {
+		this.lookAndFeel = lookAndFeel;
+	}
+
+	
+	/**
+	 * @param trackCount the trackCount to set
+	 */
+	public final void setTrackCount(int trackCount) {
+		this.trackCount = trackCount;
+	}
+
+	
+	/**
+	 * @param trackHeight the trackHeight to set
+	 */
+	public final void setTrackHeight(int trackHeight) {
+		this.trackHeight = trackHeight;
+	}
+	
+	
+	/**
+	 * @param undoCount the undoCount to set
+	 */
+	public void setUndoCount(int undoCount) {
+		this.undoCount = undoCount;
+	}
+	
+	
+	/**
+	 * @param legend the legend to set
+	 */
+	public void setLegend(boolean legend) {
+		this.legend = legend;
+	}
+	
+	
 	/**
 	 * @param currentProjectPath the currentProjectPath to set
 	 */

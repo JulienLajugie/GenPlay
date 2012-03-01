@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.launcher;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.SwingUtilities;
@@ -30,7 +29,6 @@ import javax.swing.SwingUtilities;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
@@ -154,6 +152,7 @@ public class Launcher {
 		
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);
+		MainFrame.getInstance().initStatusBarForFirstUse();
 		
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSingleProject()) {
@@ -177,16 +176,6 @@ public class Launcher {
 			ProjectManager.getInstance().getProjectConfiguration().loadConfigurationFile();
 		} catch (Exception e) {
 			// do nothing if the configuration file is not found
-		}
-		// load the zoom manager
-		try {
-			if (ProjectManager.getInstance().getProjectConfiguration().getZoomFile() != "") {
-				ProjectManager.getInstance().getProjectZoom().loadConfigurationFile(new File(ProjectManager.getInstance().getProjectConfiguration().getZoomFile()));
-			}
-		} catch (IOException e) {
-			ExceptionManager.handleException(ProjectFrame.getInstance().getRootPane(), e, "Zoom file not found.");
-		} catch (Exception e) {
-			ExceptionManager.handleException(ProjectFrame.getInstance().getRootPane(), e, "Zoom file corrupted");
 		}
 	}
 }

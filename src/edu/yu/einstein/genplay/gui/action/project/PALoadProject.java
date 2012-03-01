@@ -93,7 +93,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 		if (!skipFileSelection) {
 			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			FileFilter[] fileFilters = {new GenPlayProjectFilter()};
-			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
+			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters, true);
 			if (selectedFile == null) {
 				return null;
 			}
@@ -116,7 +116,6 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
 			MainFrame.getInstance().registerToGenomeWindow();
-			//ProjectManager.getInstance().getProjectWindow().showListeners();
 		}
 	}	
 }

@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.scatterPlot.action;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +36,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -97,7 +97,7 @@ public class SPALoadData extends ScatterPlotAction {
 				if (splittedLine.length != 2) {
 					JOptionPane.showMessageDialog(getRootPane(), "The input file needs to contain two fields", "Invalid File", JDialog.ERROR);
 				} else {
-					extractedData = new ScatterPlotData(splittedLine[1].trim(), Color.BLACK);
+					extractedData = new ScatterPlotData(splittedLine[1].trim(), Colors.BLACK);
 					List<Double> xData= new ArrayList<Double>();
 					List<Double> yData= new ArrayList<Double>();
 					while ((line = reader.readLine()) != null) {

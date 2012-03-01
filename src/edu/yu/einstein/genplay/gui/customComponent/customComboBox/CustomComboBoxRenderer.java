@@ -28,7 +28,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -45,6 +44,7 @@ import javax.swing.ListCellRenderer;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEventsGenerator;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxListener;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * This class is the custom renderer for {@link CustomComboBox}.
@@ -55,12 +55,6 @@ import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBox
  * @version 0.1
  */
 public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxEventsGenerator {
-
-
-	private final static 	String 		ADD_ICON_PATH 		= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 		// path of the add entry icon
-	private final static 	String 		REPLACE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/edit_entry_50x50.png"; 		// path of the edit entry icon
-	private final static 	String 		DELETE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/delete_entry_50x50.png"; 	// path of the delete entry icon
-
 
 	private final 	List<CustomComboBoxListener> 	listenerList;		// list of GenomeWindowListener
 	private 		CustomComboBoxRenderer 			instance;			// instance of the class, needed for the CustomComboBoxEventsGenerator.
@@ -150,7 +144,7 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 					Dimension buttonDim = new Dimension(side , side);	// creates a dimension for the panel (contains two buttons max)
 					buttonPanel.setPreferredSize(buttonDim);			// sets the dimension to the panel size
 
-					ImageIcon addIcon = getIcon(ADD_ICON_PATH, side);	// get the add icon
+					ImageIcon addIcon = getIcon(Images.getAddImage(), side);	// get the add icon
 					JButton addButton = new JButton(addIcon);			// creates the button containing the icon
 					addButton.setContentAreaFilled(false);				// set the button background to transparent
 					addButton.setBorder(null);							// disable any border
@@ -163,14 +157,14 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 					buttonPanel.setPreferredSize(buttonDim);				// sets the dimension to the panel size
 
 					// Creates the edit button (same principle as the add button above)
-					ImageIcon editIcon = getIcon(REPLACE_ICON_PATH, side);
+					ImageIcon editIcon = getIcon(Images.getEditImage(), side);
 					JButton replaceButton = new JButton(editIcon);
 					replaceButton.setContentAreaFilled(false);
 					replaceButton.setBorder(null);
 					replaceButton.setMargin(buttonInset);
 
 					// Creates the delete button (same principle as the add button above)
-					ImageIcon deleteIcon = getIcon(DELETE_ICON_PATH, side);
+					ImageIcon deleteIcon = getIcon(Images.getDeleteImage(), side);
 					JButton deleteButton = new JButton(deleteIcon);
 					deleteButton.setContentAreaFilled(false);
 					deleteButton.setBorder(null);
@@ -197,11 +191,11 @@ public class CustomComboBoxRenderer implements ListCellRenderer, CustomComboBoxE
 	 * @param side	size of the side
 	 * @return		the icon
 	 */
-	private ImageIcon getIcon (String path, int side) {
-		ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
-		Image img = icon.getImage();
-		Image newImg = img.getScaledInstance(side, side, Image.SCALE_SMOOTH);
-		icon = new ImageIcon(newImg);
+	private ImageIcon getIcon (Image image, int side) {
+		//ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
+		//Image img = icon.getImage();
+		Image newImg = image.getScaledInstance(side, side, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(newImg);
 		return icon;
 	}
 

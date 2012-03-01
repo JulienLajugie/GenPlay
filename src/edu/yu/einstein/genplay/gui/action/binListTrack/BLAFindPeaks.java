@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.dialog.peakFinderDialog.PeakFinderDialog;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -115,8 +116,8 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 				if (resultTrack != null) {
 					int index = resultTrack.getTrackNumber() - 1;
 					BinListTrack newTrack = new BinListTrack(index + 1, actionResult[i]);
-					newTrack.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Color.GRAY);
-					newTrack.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Color.GRAY);
+					newTrack.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Colors.GREY);
+					newTrack.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Colors.GREY);
 					getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName() + ", " + bloFindIslands.getResultTypes()[i].toString(),	selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 				}
 			}
@@ -133,7 +134,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 		if (resultTrack != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
-			newTrack.getHistory().add(operation.getDescription(), Color.GRAY);
+			newTrack.getHistory().add(operation.getDescription(), Colors.GREY);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}

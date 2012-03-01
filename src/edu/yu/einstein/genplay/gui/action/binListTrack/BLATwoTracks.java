@@ -22,8 +22,6 @@
 package edu.yu.einstein.genplay.gui.action.binListTrack;
 
 
-import java.awt.Color;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
@@ -42,6 +40,7 @@ import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -121,10 +120,10 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 				newTrack = new BinListTrack(index + 1, (BinList)actionResult);
 			}
 			// add info to the history
-			newTrack.getHistory().add("Operation on two tracks", Color.GRAY);
-			newTrack.getHistory().add("Operation: " + this.scm.toString(), Color.GRAY);
-			newTrack.getHistory().add("First track: " + this.selectedTrack.getName(), Color.GRAY);
-			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Color.GRAY);
+			newTrack.getHistory().add("Operation on two tracks", Colors.GREY);
+			newTrack.getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
+			newTrack.getHistory().add("First track: " + this.selectedTrack.getName(), Colors.GREY);
+			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Colors.GREY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null, null);
 		}
 	}

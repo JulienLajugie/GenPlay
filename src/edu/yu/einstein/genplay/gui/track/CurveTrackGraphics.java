@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.drawer.CurveDrawer;
 import edu.yu.einstein.genplay.util.History;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -51,7 +52,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 
 	private static final long 				serialVersionUID = -9200672145021160494L;	// generated ID
 	private static final int 				SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final Color				TRACK_COLOR = Color.black;					// default color
+	private static final Color				TRACK_COLOR = Colors.BLACK;					// default color
 	private static final GraphicsType 		TYPE_OF_GRAPH = GraphicsType.BAR;			// type of graph
 	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.###");	// decimal format for the score
 	protected Color							trackColor;									// color of the graphics

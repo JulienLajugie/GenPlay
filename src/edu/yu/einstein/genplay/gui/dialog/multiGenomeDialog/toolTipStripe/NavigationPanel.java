@@ -25,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -33,6 +32,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * @author Nicolas Fourel
@@ -45,9 +46,6 @@ public class NavigationPanel extends JPanel{
 	 * Generated serial version ID
 	 */
 	private static final long serialVersionUID = 793779650948801264L;
-	
-	private static final	String 			NEXT_ICON_PATH 			= "edu/yu/einstein/genplay/resource/next_icon_256x256.png"; 	// path of the icon of the application
-	private static final	String 			PREVIOUS_ICON_PATH 		= "edu/yu/einstein/genplay/resource/previous_icon_256x256.png"; // path of the icon of the application
 	
 	private static final int WIDTH = 230;	// width of the panel
 	private static final int HEIGHT = 30;	// height of the panel
@@ -72,7 +70,7 @@ public class NavigationPanel extends JPanel{
 		setLayout(new GridLayout(1, 2, 0, 0));
 		Insets inset = new Insets(0, 0, 0, 0);
 
-		next = new JButton(getIcon(NEXT_ICON_PATH));
+		next = new JButton(getIcon(Images.getNextImage()));
 		next.setContentAreaFilled(false);
 		next.setToolTipText("Next variant on the track");
 		next.setMargin(inset);
@@ -84,7 +82,7 @@ public class NavigationPanel extends JPanel{
 			}
 		});
 
-		previous = new JButton(getIcon(PREVIOUS_ICON_PATH));
+		previous = new JButton(getIcon(Images.getPreviousImage()));
 		previous.setContentAreaFilled(false);
 		previous.setToolTipText("Previous variant on the track");
 		previous.setMargin(inset);
@@ -118,11 +116,9 @@ public class NavigationPanel extends JPanel{
 	 * @param side	size of the side
 	 * @return		the icon
 	 */
-	private ImageIcon getIcon (String path) {
-		ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
-		Image img = icon.getImage();
-		Image newImg = img.getScaledInstance(WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
-		icon = new ImageIcon(newImg);
+	private ImageIcon getIcon (Image image) {
+		Image newImg = image.getScaledInstance(WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(newImg);
 		return icon;
 	}
 	

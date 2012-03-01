@@ -26,8 +26,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +41,7 @@ import edu.yu.einstein.genplay.gui.launcher.Launcher;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.loadProject.LoadProjectPanel;
 import edu.yu.einstein.genplay.gui.projectFrame.newProject.NewProjectPanel;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * This class manages all the screen project.
@@ -53,8 +52,7 @@ import edu.yu.einstein.genplay.gui.projectFrame.newProject.NewProjectPanel;
 public class ProjectFrame extends JFrame {
 
 	private static final long serialVersionUID = -5785973410951935317L; // generated ID
-	private final static 	String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
-	private static			Image 	iconImage; 													// icon of the application
+
 	//Ratio
 	/** TODO: Nico add comment */ 
 	public static final Double BANNER_RATIO 			= 0.15; 
@@ -238,8 +236,7 @@ public class ProjectFrame extends JFrame {
 	 */
 	public void initScreen () {
 		// set the icon of the frame
-		iconImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH));
-		setIconImage(iconImage);
+		setIconImage(Images.getApplicationImage());
 
 		//Init panels
 		bannerPanel = new BannerPanel();

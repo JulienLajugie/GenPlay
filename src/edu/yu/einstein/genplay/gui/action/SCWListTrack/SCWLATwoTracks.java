@@ -21,8 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.SCWListTrack;
 
-import java.awt.Color;
-
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
@@ -36,6 +34,7 @@ import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -100,10 +99,10 @@ public final class SCWLATwoTracks extends TrackListActionOperationWorker<Chromos
 			int index = resultTrack.getTrackNumber() - 1;
 			SCWListTrack newTrack = new SCWListTrack(index + 1, (ScoredChromosomeWindowList)actionResult);
 			// add info to the history
-			newTrack.getHistory().add("Operation on two tracks", Color.GRAY);
-			newTrack.getHistory().add("Operation: " + this.scm.toString(), Color.GRAY);
-			newTrack.getHistory().add("First track: " + this.selectedTrack.getName(), Color.GRAY);
-			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Color.GRAY);
+			newTrack.getHistory().add("Operation on two tracks", Colors.GREY);
+			newTrack.getHistory().add("Operation: " + this.scm.toString(), Colors.GREY);
+			newTrack.getHistory().add("First track: " + this.selectedTrack.getName(), Colors.GREY);
+			newTrack.getHistory().add("Second track: " + this.otherTrack.getName(), Colors.GREY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null, null);
 		}
 	}

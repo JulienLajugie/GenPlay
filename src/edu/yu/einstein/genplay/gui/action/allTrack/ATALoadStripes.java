@@ -83,7 +83,7 @@ public final class ATALoadStripes extends TrackListActionExtractorWorker<Chromos
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getReadableStripeFileFilters());
+			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Stripe File", defaultDirectory, Utils.getReadableStripeFileFilters(), true);
 			if (selectedFile != null) {
 				return selectedFile;
 			}

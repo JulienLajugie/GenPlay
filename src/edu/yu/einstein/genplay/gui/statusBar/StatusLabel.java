@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 final class StatusLabel extends JLabel {
 
 	private static final long serialVersionUID = 404304422248672368L; // generated ID
+	private static final String INIT_TEXT = "Right click on a track number to select actions.";	// welcome text when creating a new project
 	private TimeCounter 			timeCounterThread;	// thread showing the time elapsed in the progress bar
 	private String 					description;		// description of the current operation
 	private long 					timeElapsed = 0;	// time elapsed since the beginning of the operation
@@ -92,6 +93,14 @@ final class StatusLabel extends JLabel {
 		} else {
 			setText(description + "  (" + step + " / " + stepCount + ")  -  " + timeString);
 		}
+	}
+	
+	
+	/**
+	 * Set the description label when starting a new project 
+	 */
+	void initDescriptionForFirstUse () {
+		setText(INIT_TEXT);
 	}
 	
 	

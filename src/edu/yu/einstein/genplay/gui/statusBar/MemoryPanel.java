@@ -31,6 +31,8 @@ import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicProgressBarUI;
 
+import edu.yu.einstein.genplay.util.colors.Colors;
+
 
 /**
  * Panel showing the memory usage of the application
@@ -72,7 +74,7 @@ public final class MemoryPanel extends JProgressBar {
 	 */
 	MemoryPanel() {
 		super(0, 100);				
-		setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Color.LIGHT_GRAY));
+		setBorder(BorderFactory.createMatteBorder(0, 1, 0, 0, Colors.LIGHT_GREY));
 		setMinimumSize(new Dimension(getPreferredSize().width, HEIGHT));
 		setStringPainted(true);
 		new MemoryListener().start();

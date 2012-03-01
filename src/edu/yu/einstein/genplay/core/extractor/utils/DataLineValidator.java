@@ -167,11 +167,11 @@ public class DataLineValidator {
 
 		if (score == null) {
 			errors += "The score is invalid (null value found)";
-		} else {
-			if (score < 0) {
+		}/* else {
+			if (score == 0) {
 				errors += "Score (" + score + ") is equal to zero";
 			}
-		}
+		}*/
 
 		return errors;
 	}

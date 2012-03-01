@@ -68,7 +68,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final JButton 				jbOk; 				// Button OK
 	private final JButton 				jbCancel; 			// Button cancel
 	private final JSplitPane 			jspDivider; 		// Divider between the tree and the panel
-	private final String 				zoomFile; 			// zoom config file
 	private final String 				logFile; 			// log file
 	private final String 				defaultDirectory; 	// default directory
 	private final String 				lookAndFeel; 		// look and feel
@@ -98,7 +97,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	public OptionDialog() {
 		super();
 		cm = ProjectManager.getInstance().getProjectConfiguration();
-		zoomFile = cm.getZoomFile();
 		logFile = cm.getLogFile();
 		dasServerListFile = cm.getDASServerListFile();
 		defaultDirectory = cm.getDefaultDirectory();
@@ -195,7 +193,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				// if the modification had been canceled we restore
 				// the cm the way it was when the window was opened
 				if (approved == CANCEL_OPTION) {
-					cm.setZoomFile(zoomFile);
 					cm.setLogFile(logFile);
 					cm.setDASServerListFile(dasServerListFile);
 					cm.setDefaultDirectory(defaultDirectory);
@@ -226,8 +223,8 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		category = new DefaultMutableTreeNode(new GeneralOptionPanel());
 		top.add(category);
 
-		category = new DefaultMutableTreeNode(new ConfigFileOptionPanel());
-		top.add(category);
+		//category = new DefaultMutableTreeNode(new ConfigFileOptionPanel());
+		//top.add(category);
 
 		category = new DefaultMutableTreeNode(new TrackOptionPanel());
 		top.add(category);
@@ -284,14 +281,6 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 			jt.revalidate();
 			jt.setSelectionRow(0);
 		}
-	}
-
-	
-	/**
-	 * @return true if zoomFile changed
-	 */
-	public boolean zoomFileChanged() {
-		return !zoomFile.equals(cm.getZoomFile());
 	}
 
 	

@@ -51,7 +51,8 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
-import edu.yu.einstein.genplay.util.ColorConverters;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 /**
  * The multi genome drawer is in charge of drawing variation stripes for multi genome project.
@@ -236,7 +237,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	 * @param g	graphics object
 	 */
 	private void drawMultiGenomeLine (Graphics g) {
-		Color color = new Color(Color.GRAY.getRed(), Color.GRAY.getGreen(), Color.GRAY.getBlue(), stripesOpacity);
+		Color color = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue(), stripesOpacity);
 		g.setColor(color);
 		int y = g.getClipBounds().height / 2;
 		g.drawLine(0, y, g.getClipBounds().width, y);
@@ -252,8 +253,8 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		if (variantList != null && variantList.size() > 0) {													// if the variation list has at least one variant
 			// Set color for unused position, dead area and mixed variant
 			//Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
-			Color blankZoneColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);	// color for blank of synchronization
-			Color mixColor = new Color(Color.blue.getRed(), Color.blue.getGreen(), Color.blue.getBlue(), stripesOpacity);			// color for mixed variant
+			Color blankZoneColor = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue(), stripesOpacity);	// color for blank of synchronization
+			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue(), stripesOpacity);			// color for mixed variant
 
 			for (VariantInterface variant: variantList) {		// scans all variant
 				VariantType type = variant.getType();			// gets its type
@@ -316,7 +317,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		// Sets the stripe color
 		Color newColor;
 		if (variantUnderMouse != null && variantUnderMouse.equals(variant)) {		// if there is a variant under the mouse
-			newColor = ColorConverters.stripeFilter(color);							// we change the color of the variant
+			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
 		} else {																	// if not
 			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);	// we use the defined color taking into account the opacity
 		}
@@ -367,7 +368,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	private void drawInsertion (Graphics g, int x, int y, int width, int height) {
 		if (MGDisplaySettings.DRAW_INSERTION_EDGE == MGDisplaySettings.YES_MG_OPTION) {	// checks if the option is activated
 			Graphics gTmp = g.create();				// creates a temporary graphics
-			gTmp.setColor(Color.black);				// color of the edge (black)
+			gTmp.setColor(Colors.BLACK);				// color of the edge (black)
 			gTmp.drawRect(x, y, width, height);		// the edge here is a simple line all around the stripe
 		}
 	}
@@ -387,7 +388,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 			BasicStroke line = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1.0f, dash1, 0.0f); // creates a stroke line
 			Graphics2D g2d = (Graphics2D) g.create(); 	// create a temporary graphic
 			g2d.setStroke(line);						// give the stroke line to the graphic
-			g2d.setColor(Color.black);					// color of the edge (black)
+			g2d.setColor(Colors.BLACK);		// color of the edge (black)
 			g2d.drawRect(x, y, width - 1, height);		// draw the edge all around the stripe
 		}
 	}
@@ -425,7 +426,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 					} else if (variantType == VariantType.INSERTION) {						// if the variant is an insertion,
 						letters = letters.substring(1);										// we already have the right field but we don't ant the first letter
 					}
-					g.setColor(Color.black);												// set the color of the letters
+					g.setColor(Colors.BLACK);												// set the color of the letters
 					int letterHeight = (height + fm.getHeight()) / 2;						// define where the draw will start on the Y axis
 					for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
 						String letter = "?";												// the default letter is the question mark
@@ -476,8 +477,6 @@ public class MultiGenomeDrawer<T> implements Serializable {
 				}
 				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);								// we create the information dialog
 				toolTip.show(positionInformation, e.getXOnScreen(), e.getYOnScreen());							// we show it
-			} else {
-				System.out.println(pos + ": no variant");
 			}
 		}
 	}

@@ -29,7 +29,6 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -74,6 +73,7 @@ import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.track.Ruler;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -85,18 +85,18 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 537; 						// GenPlay version
+	private static final int VERSION_NUMBER = 540; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
-	private final static String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
+	//private final static String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
 	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
 	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
 
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
 	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
-	private final 	Image 				iconImage; 			// icon of the application
+	//private final 	Image 				iconImage; 			// icon of the application
 	private 		Ruler 				ruler; 				// Ruler component
 	private 		TrackList 			trackList; 			// TrackList component
 	private 		ControlPanel		controlPanel; 		// ControlPanel component
@@ -124,9 +124,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	private MainFrame() {
 		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
-		ClassLoader cl = this.getClass().getClassLoader();
-		iconImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(ICON_PATH));
-		setIconImage(iconImage);
+		setIconImage(Images.getApplicationImage());
 
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 
@@ -274,7 +272,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	@Override
 	public Image getIconImage() {
-		return iconImage;
+		return Images.getApplicationImage();
 	}
 
 
@@ -493,6 +491,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		ruler.unlock();
 		trackList.unlockTracksHandles();
 		controlPanel.unlock();
+	}
+	
+	
+	/**
+	 * Initializes the status bar when starting a new project
+	 */
+	public void initStatusBarForFirstUse () {
+		statusBar.initDescriptionForFirstUse();
 	}
 
 }

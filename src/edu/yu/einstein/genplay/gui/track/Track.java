@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -49,6 +48,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -68,22 +68,22 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * Default border of a track
 	 */
 	public static final Border 	REGULAR_BORDER =
-		BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black); 		// regular border of a track
+		BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK); 		// regular border of a track
 	/**
 	 * Border of a track when the track starts being dragged
 	 */
 	public static final Border 	DRAG_START_BORDER = 
-		BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black);		// alternative border when a track is dragged
+		BorderFactory.createMatteBorder(2, 2, 2, 2, Colors.BLACK);		// alternative border when a track is dragged
 	/**
 	 * Border of a track when the track is being dragged up
 	 */
 	public static final Border 	DRAG_UP_BORDER = 
-		BorderFactory.createMatteBorder(2, 0, 1, 0, Color.black);		// alternative border when a track is dragged up
+		BorderFactory.createMatteBorder(2, 0, 1, 0, Colors.BLACK);		// alternative border when a track is dragged up
 	/**
 	 * Border of a track when the track is being dragged down
 	 */
 	public static final Border 	DRAG_DOWN_BORDER = 
-		BorderFactory.createMatteBorder(0, 0, 2, 0, Color.black);		// alternative border when a track is dragged down
+		BorderFactory.createMatteBorder(0, 0, 2, 0, Colors.BLACK);		// alternative border when a track is dragged down
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private TrackHandle				trackHandle;						// handle of the track
 	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
@@ -127,7 +127,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		gbc.weighty = 1;
 		add(trackGraphics, gbc);
 
-		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.black));
+		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK));
 		setPreferredHeight(defaultHeight);
 	}
 

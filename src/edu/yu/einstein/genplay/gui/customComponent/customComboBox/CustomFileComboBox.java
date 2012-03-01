@@ -59,6 +59,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 		fc = new JFileChooser();
 		fc.setCurrentDirectory(new File(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory()));
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setAcceptAllFileFilterUsed(false);
 		fc.setDialogTitle("Select a file");
 		filters = null;
 	}
@@ -158,7 +159,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 	 */
 	@Override
 	protected void replaceAction (File element) {
-		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory(), filters);
+		File newElement = Utils.chooseFileToLoad(getRootPane(), "Select a file", ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory(), filters, false);
 
 		if (newElement != null) {
 			elements.remove(element);

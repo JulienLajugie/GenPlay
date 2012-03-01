@@ -19,54 +19,51 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.projectFrame;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JPanel;
+import javax.swing.JComboBox;
 
-import edu.yu.einstein.genplay.util.Images;
 
 /**
- * This class load the banner on the project screen top.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BannerPanel extends JPanel {
-	
-	private static final long serialVersionUID = 3269872506089576106L; //generated ID
-	
-	private 				Image 	banner = null;	// The banner
-	
-	
-	/**
-	 * Constructor of {@link BannerPanel}
-	 */
-	protected BannerPanel () {
-		//Size Panel
-		setSize(ProjectFrame.BANNER_DIM);
-		setPreferredSize(getSize());
-		setMinimumSize(getSize());
-		setMaximumSize(getSize());
+public class RawNameComboBox extends JComboBox {
 
-		//Background color
-		setBackground(ProjectFrame.BANNER_COLOR);
-		
-		//Load the image
-		banner = Images.getBannerImage();
-	}
+	/** Default serial version ID */
+	private static final long serialVersionUID = -8442026232464287441L;
+	
+	private int cpt = 0;
+
 	
 	/**
-	 * The picture loaded in the banner panel is automatically resize to fit well.
+	 * Constructor of {@link RawNameComboBox}
+	 * @param array
 	 */
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g); //paint background
-		if (banner != null) { //there is a picture: draw it
-			int height = this.getSize().height;
-			int width = this.getSize().width;
-			g.drawImage(banner, 0, 0, width, height, this); //resize automatically
-		}
+	public RawNameComboBox(Object[] array) {
+		super(array);
+		addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				cpt++;
+			}
+		});
 	}
+
 	
+	/**
+	 * @return true if the user clicked on an item of the box
+	 */
+	public boolean isClicked () {
+		if (cpt == 1) {
+			return true;
+		}
+		return false;
+	}
+
 }

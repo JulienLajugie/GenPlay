@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,6 +35,8 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -49,8 +50,6 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 	private static final int 	HANDLE_WIDTH = 50;				// Width of the track handle
 	private static final int 	TRACKS_SCROLL_WIDTH = 17;		// Width of the scroll bar
 	private static final int 	RULER_HEIGHT = 20;				// Height of the ruler 
-	private static final String ICON_PATH = 
-		"edu/yu/einstein/genplay/resource/tools.png";			// name of the menu icon 
 	private final RulerGraphics	rulerGraphics;					// Graphics part
 	private final JButton 		rulerButton;					// button of the ruler				 
 
@@ -87,22 +86,21 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 	 * Initializes the button of the ruler
 	 */
 	private void initButton() {
-		rulerButton.setBackground(Color.white);
+		rulerButton.setBackground(Colors.WHITE);
 		rulerButton.setMargin(new Insets(0, 0, 0, 0));
 		rulerButton.setFocusPainted(false);
-		ClassLoader cl = this.getClass().getClassLoader();
-		rulerButton.setIcon(new ImageIcon(cl.getResource(ICON_PATH)));
-		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Color.lightGray));	
+		rulerButton.setIcon(new ImageIcon(Images.getToolsImage()));
+		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Colors.LIGHT_GREY));	
 		rulerButton.setPreferredSize(new Dimension(HANDLE_WIDTH + 1, RULER_HEIGHT));
 		rulerButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				rulerButton.setBackground(Color.gray);
+				rulerButton.setBackground(Colors.GREY);
 				super.mouseEntered(e);
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
-				rulerButton.setBackground(Color.white);
+				rulerButton.setBackground(Colors.WHITE);
 				super.mouseExited(e);
 			}
 		});

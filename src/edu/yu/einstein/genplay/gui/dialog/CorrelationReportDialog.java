@@ -47,6 +47,7 @@ import javax.swing.text.StyledDocument;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -71,9 +72,9 @@ public class CorrelationReportDialog extends JDialog {
 			Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
 			if ((!isSelected) && (row % 2 == 1)) {
-				component.setBackground(Color.LIGHT_GRAY);
+				component.setBackground(Colors.LIGHT_GREY);
 			} else {
-				component.setBackground(Color.WHITE);
+				component.setBackground(Colors.WHITE);
 			}
 			if (column == 0) {
 				((JLabel) component).setHorizontalAlignment(JLabel.LEFT);
@@ -299,7 +300,7 @@ public class CorrelationReportDialog extends JDialog {
 		// set the text of the document
 		jtaTrackNames.setText(text1 + name1 + text2 + name2);
 		// change the style of the track names
-		StyleConstants.setForeground(attributes, Color.BLUE);
+		StyleConstants.setForeground(attributes, Colors.BLUE);
 		document.setCharacterAttributes(text1.length(), name1.length(), attributes, false);
 		document.setCharacterAttributes(text1.length() + name1.length() + text2.length() , name2.length(), attributes, false);
 		// set the text area non editable and change the color of the background

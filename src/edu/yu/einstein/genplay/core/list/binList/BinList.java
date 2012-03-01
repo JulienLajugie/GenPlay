@@ -410,6 +410,19 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						resultList = ListFactory.createList(precision, currentSize);
 						// for each input windows
 						for  (int i = 0; i < starts.size(currentChromosome); i++) {
+							try {
+								ScoredChromosomeWindow scw = new ScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), scores.get(currentChromosome, i));
+								computeScore(method, scw, resultList, counts);
+							} catch (Exception e) {
+								System.out.println("i = " + i + "; size = " + starts.size(currentChromosome));
+								System.out.println(starts.get(currentChromosome, i));
+								System.out.println(stops.get(currentChromosome, i));
+								System.out.println(scores);
+								System.out.println(scores.size());
+								System.out.println(scores.get(currentChromosome).size());
+								System.out.println(scores.get(currentChromosome, i));
+								e.printStackTrace();
+							}
 							ScoredChromosomeWindow scw = new ScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), scores.get(currentChromosome, i));
 							computeScore(method, scw, resultList, counts);
 						}
@@ -1002,5 +1015,5 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			System.gc();
 		}
 	}
-	
+
 }

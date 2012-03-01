@@ -34,7 +34,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -48,6 +47,7 @@ import javax.swing.text.NumberFormatter;
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.gui.track.CurveTrackGraphics;
 import edu.yu.einstein.genplay.gui.track.ScoredTrackGraphics;
+import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 
 
@@ -369,7 +369,8 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	 * Asks the user to choose a color.
 	 */
 	private void chooseCurveColor() {		
-		Color newCurveColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected curves", curvesColor);
+		//Color newCurveColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected curves", curvesColor);
+		Color newCurveColor = GenPlayColorChooser.showDialog(getRootPane(), "Choose a color for the selected curves", curvesColor);
 		if (newCurveColor != null) {
 			curvesColor = newCurveColor;
 			jbCurvesColor.setBackground(curvesColor);
@@ -379,7 +380,8 @@ public final class TrackAppearanceOptionPane extends JDialog {
 
 
 	protected void chooseScoreColor() {
-		Color newScoreColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected track score", scoreColor);
+		Color newScoreColor = GenPlayColorChooser.showDialog(getRootPane(), "Choose a color for the selected track score", scoreColor);
+		//Color newScoreColor = JColorChooser.showDialog(getRootPane(), "Choose a color for the selected track score", scoreColor);
 		if (newScoreColor != null) {
 			scoreColor = newScoreColor;
 			jbScoreColor.setBackground(scoreColor);

@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * This class shows all global information about a variant.
@@ -139,8 +140,8 @@ public class GlobalInformationPanel extends JPanel {
 		final JLabel idLabel = new JLabel();
 		final Font inFont = new Font(getFont().getName(), Font.BOLD, getFont().getSize());
 		final Font outFont = new Font(getFont().getName(), Font.PLAIN, getFont().getSize());
-		final Color inColor = Color.blue;
-		final Color outColor = Color.blue;
+		final Color inColor = Colors.BLUE;
+		final Color outColor = Colors.BLUE;
 		idLabel.setText(id);
 		idLabel.setFont(outFont);
 		idLabel.setForeground(outColor);

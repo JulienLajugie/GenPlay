@@ -37,8 +37,9 @@ import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.util.ColorConverters;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 /**
@@ -102,7 +103,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (dialogRes == JOptionPane.OK_OPTION) {
 					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-					File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters());
+					File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
 					if (selectedFile != null) {
 						try {
 							twoBitData.setSequenceFilePath(selectedFile.getPath());
@@ -158,13 +159,13 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						int nucleoWith = projectWindow.genomePosToScreenXPos(position + 1) - x;
 						// select a different color for each type of base
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
-							g.setColor(Color.WHITE);
+							g.setColor(Colors.WHITE);
 						} else {
-							g.setColor(ColorConverters.nucleotideToColor(nucleotide));							
+							g.setColor(GenPlayColor.nucleotideToColor(nucleotide));							
 						}
 						g.fillRect(x, 0, nucleoWith, height);
 						if (nucleoWith >= 5) {
-							g.setColor(Color.WHITE);
+							g.setColor(Colors.WHITE);
 							g.drawRect(x, 0, nucleoWith, height - 1);
 						}
 					}
@@ -202,9 +203,9 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 							int x = projectWindow.genomePosToScreenXPos(position);
 							// select a different color for each type of base
 							if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
-								g.setColor(Color.BLACK);
+								g.setColor(Colors.BLACK);
 							} else {
-								g.setColor(Color.WHITE);
+								g.setColor(Colors.WHITE);
 							}
 							g.drawString(String.valueOf(nucleotide.getCode()), x, getHeight() - NUCLEOTIDE_HEIGHT);							
 						}

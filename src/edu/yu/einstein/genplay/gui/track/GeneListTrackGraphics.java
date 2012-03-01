@@ -43,8 +43,8 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.util.ColorConverters;
 import edu.yu.einstein.genplay.util.History;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 
@@ -175,13 +175,18 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 						if (x2 != 0) {
 							// Choose the color depending on if the gene is under the mouse and on the strand
 							boolean isHighlighted = ((geneUnderMouse != null) && (geneToPrint.equals(geneUnderMouse)));
-							g.setColor(ColorConverters.geneToColor(geneToPrint.getStrand(), isHighlighted));
+							g.setColor(GenPlayColor.geneToColor(geneToPrint.getStrand(), isHighlighted));
 							// Draw the gene
 							g.drawLine(x1, currentHeight, x2, currentHeight);
 							// Draw the name of the gene if the zoom is small enough
 							if (isGeneNamePrinted) {
 								String geneName = geneToPrint.getName();
-								g.drawString(geneName, x1, currentHeight - 1);
+								if (geneToPrint.getStart() < projectWindow.getGenomeWindow().getStart()) {
+									int newX = (int)Math.round((double)(geneToPrint.getStart() - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());	// former method
+									g.drawString(geneName, newX, currentHeight - 1);
+								} else {
+									g.drawString(geneName, x1, currentHeight - 1);
+								}
 							}
 							// For each exon of the current gene
 							if (geneToPrint.getExonStarts() != null) {
@@ -196,9 +201,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 										if (geneToPrint.getExonScores() != null) {
 											// if we have just one exon score
 											if (geneToPrint.getExonScores().length == 1) {
-												g.setColor(ColorConverters.scoreToColor(geneToPrint.getExonScores()[0], min, max));
+												g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[0], min, max));
 											} else { // if we have values for each exon
-												g.setColor(ColorConverters.scoreToColor(geneToPrint.getExonScores()[j], min, max));
+												g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[j], min, max));
 											}
 										}
 										// case where the exon is not at all in a UTR (untranslated region) 

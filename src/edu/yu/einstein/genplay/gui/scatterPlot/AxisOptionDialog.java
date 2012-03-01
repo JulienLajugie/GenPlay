@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.scatterPlot;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -45,6 +44,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.enums.LogBase;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -140,7 +140,7 @@ public class AxisOptionDialog extends JDialog {
 		});
 		// panel for min, max, major and minor units
 		topPanel = new JPanel();
-		topPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+		topPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.LIGHT_GREY));
 		
 		jcbShowGrid = new JCheckBox("Show Grid");
 		
@@ -148,7 +148,7 @@ public class AxisOptionDialog extends JDialog {
 		middlePanel = new JPanel();
 
 		jchbLog = new JCheckBox("Logarithnmic scale");		
-		jchbLog.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.LIGHT_GRAY));
+		jchbLog.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Colors.LIGHT_GREY));
 		// disable the combo box for the log base if the log scale is not selected
 		jchbLog.addChangeListener(new ChangeListener() {			
 			@Override
@@ -169,7 +169,7 @@ public class AxisOptionDialog extends JDialog {
 
 		// panel for the log option
 		bottomPanel = new JPanel();
-		bottomPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.LIGHT_GRAY));
+		bottomPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Colors.LIGHT_GREY));
 
 		jbCancel = new JButton("Cancel");
 		jbCancel.addActionListener(new ActionListener() {			

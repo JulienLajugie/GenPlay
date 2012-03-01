@@ -240,7 +240,7 @@ public class ProjectRecordingManager {
 				currentTrack.addPropertyChangeListener(trackList);
 			}
 			ProjectManager.getInstance().getProjectConfiguration().setCurrentProjectPath(outputFile.getPath());
-			ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile();
+			//ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile(); 	// deactivate the configuration file saving
 		} catch (IOException e) {
 			ExceptionManager.handleException(MainFrame.getInstance().getRootPane(), e, "An error occurred while saving the project");
 			return false;

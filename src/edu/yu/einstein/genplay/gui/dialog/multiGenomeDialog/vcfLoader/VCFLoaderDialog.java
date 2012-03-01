@@ -30,7 +30,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -47,6 +46,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -74,16 +75,10 @@ public class VCFLoaderDialog extends JDialog {
 	/** Return value when Cancel has been clicked. */
 	public static final 	int 			CANCEL_OPTION 		= 1;
 
-	private static final	String 			ICON_PATH 			= "edu/yu/einstein/genplay/resource/icon.png"; 	// path of the icon of the application
-	private final static 	String 			ADD_ICON_PATH 		= "edu/yu/einstein/genplay/resource/add_entry_50x50.png"; 		// path of the add entry icon
-	private final static 	String 			REPLACE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/edit_entry_50x50.png"; 		// path of the edit entry icon
-	private final static 	String 			DELETE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/delete_entry_50x50.png"; 	// path of the delete entry icon
-	private final static 	String 			MOUSE_ICON_PATH 	= "edu/yu/einstein/genplay/resource/mouse_right_click_50x50.png"; 	// path of the mouse icon
 	private static final 	String 			FONT_NAME			= "ARIAL";										// name of the font
 	private static final 	int 			FONT_SIZE 			= 11;											// size of the font
 	private static final 	int 			DIALOG_WIDTH 		= 700;											// width of the dialog
 	private static final 	int 			VALIDATION_HEIGHT 	= 20;											// height of the validation panel
-	private static			Image 			iconImage; 															// icon of the application
 
 	private 				int				approved 			= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
@@ -119,8 +114,7 @@ public class VCFLoaderDialog extends JDialog {
 		setLayout(new BorderLayout());
 		add(scrollPane, BorderLayout.CENTER);
 		add(southPanel, BorderLayout.SOUTH);
-		iconImage = Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH));
-		setIconImage(iconImage);
+		setIconImage(Images.getApplicationImage());
 	}
 
 
@@ -183,7 +177,7 @@ public class VCFLoaderDialog extends JDialog {
 		informationPanel.add(label, gbc);
 
 		label = new JLabel("Add a new element to the list");
-		label.setIcon(getIcon(ADD_ICON_PATH, fm.getHeight()));
+		label.setIcon(getIcon(Images.getAddImage()));
 		label.setFont(font);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -191,21 +185,21 @@ public class VCFLoaderDialog extends JDialog {
 		informationPanel.add(label, gbc);
 
 		label = new JLabel("Edit the selected element");
-		label.setIcon(getIcon(REPLACE_ICON_PATH, fm.getHeight()));
+		label.setIcon(getIcon(Images.getEditImage()));
 		label.setFont(font);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		informationPanel.add(label, gbc);
 
 		label = new JLabel("Delete the selected element");
-		label.setIcon(getIcon(DELETE_ICON_PATH, fm.getHeight()));
+		label.setIcon(getIcon(Images.getDeleteImage()));
 		label.setFont(font);
 		gbc.gridx = 0;
 		gbc.gridy = 3;
 		informationPanel.add(label, gbc);
 
 		label = new JLabel("Add/Delete row(s)");
-		label.setIcon(getIcon(MOUSE_ICON_PATH, fm.getHeight()));
+		label.setIcon(getIcon(Images.getMouseImage()));
 		label.setFont(font);
 		gbc.gridx = 0;
 		gbc.gridy = 4;
@@ -315,17 +309,13 @@ public class VCFLoaderDialog extends JDialog {
 
 
 	/**
-	 * Creates a square icon using the given path 
-	 * @param path	icon path
-	 * @param side	size of the side
+	 * Creates a square icon using the image
+	 * @param image the image
 	 * @return		the icon
 	 */
-	private ImageIcon getIcon (String path, int side) {
-		ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(path)));
-		Image img = icon.getImage();
-		Image newImg = img.getScaledInstance(side, side, Image.SCALE_SMOOTH);
-		icon = new ImageIcon(newImg);
-		return icon;
+	private ImageIcon getIcon (Image image) {
+		return new ImageIcon(Images.getSquareImage(image, fm.getHeight()));
+		
 	}
 
 
@@ -367,7 +357,6 @@ public class VCFLoaderDialog extends JDialog {
 			}
 		}
 		if (errors.length() > 0) {
-			//System.err.println(errors);
 			JOptionPane.showMessageDialog(this, errors, "Settings are not valid", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}

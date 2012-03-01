@@ -147,16 +147,19 @@ public class Utils {
 	 * @param title title of the open dialog
 	 * @param defaultDirectory default directory
 	 * @param choosableFileFilters {@link FileFilter} available
+	 * @param allFiles allow the selection of every kind of file if true, disable the all file selection if false
 	 * @return a file to load
 	 */
-	final public static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters) {
+	final public static File chooseFileToLoad(Component parentComponent, String title, String defaultDirectory, FileFilter[] choosableFileFilters, boolean allFiles) {
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle(title);
 		for (FileFilter currentFilter: choosableFileFilters) {
 			jfc.addChoosableFileFilter(currentFilter);
 		}
-		jfc.setFileFilter(jfc.getAcceptAllFileFilter());
+		if (allFiles) {
+			jfc.setFileFilter(jfc.getAcceptAllFileFilter());
+		}
 		int returnVal = jfc.showOpenDialog(parentComponent);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = jfc.getSelectedFile();
@@ -469,7 +472,7 @@ public class Utils {
 		return filters;
 	}
 
-	
+
 	/**
 	 * @return the {@link ExtendedFileFilter} associated to the files that can be saved as SCWList
 	 */
@@ -477,8 +480,8 @@ public class Utils {
 		ExtendedFileFilter[] filters = {new BedGraphFilter(), new BedFilter(), new GFFFilter()};
 		return filters;
 	}
-	
-	
+
+
 	/**
 	 * Returns the logarithm of a double value. The logarithm is computed in the specified base 
 	 * @param logBase
@@ -537,7 +540,7 @@ public class Utils {
 		}
 	}
 
-	
+
 	/**
 	 * This methods parse a line and returns an array of strings containing
 	 * all the fields from the input line that are separated by one or many 
@@ -594,7 +597,7 @@ public class Utils {
 		if ((list == null) || (list.size() == 0)) {
 			return null;
 		}
-		
+
 		ArrayList<T> resultList = new ArrayList<T>();
 
 		int indexStart = findStart(list, positionStart, 0, list.size() - 1);
@@ -616,34 +619,34 @@ public class Utils {
 		}
 		return resultList;
 	}
-	
-	
+
+
 	/**
 	 * Sorts a list of chromosome and returned it
 	 * @param list	a list of chromosome indexed by their name
 	 * @return		a list of chromosome sorted according to the names
 	 */
 	public static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
-		
+
 		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>(); 
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
 		List<String> chromosomeNames = new ArrayList<String>();
-		
+
 		for (Chromosome chromosome: list) {
 			chromosomeNames.add(chromosome.getName().toLowerCase());
 			chromosomeMap.put(chromosome.getName().toLowerCase(), chromosome);
 		}
-		
+
 		Collections.sort(chromosomeNames, new ChromosomeComparator());
-		
+
 		for (String chromosomeName: chromosomeNames) {
 			chromosomeList.add(chromosomeMap.get(chromosomeName));
 		}
-		
+
 		return chromosomeList;
 	}
-	
-	
+
+
 	/**
 	 * Shows the chromosome details of a list of chromosomes
 	 * @param chromosomeList the list of chromosomes
@@ -656,8 +659,8 @@ public class Utils {
 		output += "----------";
 		System.out.println(output);
 	}
-	
-	
+
+
 	/**
 	 * This methods reverse an array of int
 	 * @param b the int array
@@ -678,5 +681,5 @@ public class Utils {
 		}
 		return b;
 	}
-	
+
 }

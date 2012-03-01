@@ -28,6 +28,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import edu.yu.einstein.genplay.util.colors.Colors;
+
 
 /**
  * Stop button of the status bar. The button stops the current operation in the thread pool when clicked
@@ -37,7 +39,7 @@ import javax.swing.JButton;
 final class StopButton extends JButton implements ActionListener {
 	
 	private static final long serialVersionUID = 8260242568878040712L; 		// generated ID	
-	private static final Color ENABLED_COLOR = Color.red;					// color of the button when enabled
+	private static final Color ENABLED_COLOR = Colors.RED;		// color of the button when enabled
 	private static final Color DISABLED_COLOR = new Color(200, 175, 175);	// color of the button when disabled
 	private Stoppable stoppable = null;	// stoppable to stop when the button is clicked
 	
@@ -46,7 +48,7 @@ final class StopButton extends JButton implements ActionListener {
 	 * Creates an instance of a {@link StopButton}
 	 */
 	StopButton() {
-		setBackground(Color.red);
+		setBackground(Colors.RED);
 		setMargin(new Insets(4, 4, 4, 4));
 		setFocusPainted(false);
 		setEnabled(false);

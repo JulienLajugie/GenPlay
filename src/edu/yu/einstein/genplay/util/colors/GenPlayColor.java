@@ -19,9 +19,10 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.util;
+package edu.yu.einstein.genplay.util.colors;
 
 import java.awt.Color;
+import java.util.Random;
 
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -32,9 +33,10 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 /**
  * Class containing only static method that associate a color to specified parameters
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public class ColorConverters {
+public class GenPlayColor {
 
 	
 	/**
@@ -45,17 +47,17 @@ public class ColorConverters {
 	public static Color nucleotideToColor(Nucleotide nucleotide) {
 		switch (nucleotide) {
 		case ADENINE:
-			return new Color(200, 0, 0);
+			return Colors.ADENINE;
 		case CYTOSINE:
-			return new Color(0, 0, 200);
+			return Colors.CYTOSINE;
 		case GUANINE:
-			return new Color(255, 200, 0);
+			return Colors.GUANINE;
 		case THYMINE: 
-			return new Color(0, 200, 0);
+			return Colors.THYMINE;
 		case ANY:
-			return Color.black;
+			return Colors.ANY;
 		case BLANK:
-			return Color.gray;
+			return Colors.BLANK;
 		default:
 			return null;
 		}
@@ -116,7 +118,7 @@ public class ColorConverters {
 		} else if ((newScore > 2 * distanceQuarter) && (newScore <= 3 * distanceQuarter)) {
 			r = (int)((newScore - 2 * distanceQuarter) * 255 / distanceQuarter);
 			v = 255;
-			b = 0;			
+			b = 0;
 		} else if ((newScore > 3 * distanceQuarter) && (newScore <= distance)) {
 			r = 255;
 			v = (int)(255 - (newScore - 3 * distanceQuarter) * 255 / distanceQuarter);
@@ -137,5 +139,22 @@ public class ColorConverters {
 		int invert = 255 - stripesOpacity;
 		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), invert);
 		return newColor;
+	}
+	
+	
+	/**
+	 * @return a color randomly generated
+	 */
+	public static Color generateRandomColor() {
+		Random randomGen = new Random();
+		int red = randomGen.nextInt(255);
+		int green = randomGen.nextInt(255);
+		int blue = randomGen.nextInt(255);
+		if (red + green + blue > 510) {
+			// we want dark colors
+			return generateRandomColor();
+		} else {
+			return new Color(red, green, blue);
+		}
 	}
 }

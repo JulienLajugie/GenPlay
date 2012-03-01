@@ -25,6 +25,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.text.DecimalFormat;
 
+import edu.yu.einstein.genplay.util.colors.Colors;
+
 
 /**
  * The graphics part of the ruler
@@ -34,13 +36,13 @@ import java.text.DecimalFormat;
 public final class RulerGraphics extends TrackGraphics<Void> {
 
 	private static final long serialVersionUID = 1612257945809961448L; // Generated ID
-	private static final int 			LINE_COUNT = 10;						// Number of line to print (must be an even number)
-	private static final Color			LINE_COLOR = Color.lightGray;			// color of the lines
-	private static final Color			TEXT_COLOR = Color.black;				// color of the text
-	private static final Color			MIDDLE_LINE_COLOR = Color.red;			// color of the line in the middle
-	private static final int 			MAJOR_TEXT_HEIGHT = 11;					// height of the absolute position text
-	private static final int 			MINOR_TEXT_HEIGHT = 2;					// height of the relative position text
-	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###");	// decimal format
+	private static final int 			LINE_COUNT = 10;							// Number of line to print (must be an even number)
+	private static final Color			LINE_COLOR = Colors.LIGHT_GREY;				// color of the lines
+	private static final Color			TEXT_COLOR = Colors.BLACK;					// color of the text
+	private static final Color			MIDDLE_LINE_COLOR = Colors.RED;				// color of the line in the middle
+	private static final int 			MAJOR_TEXT_HEIGHT = 11;						// height of the absolute position text
+	private static final int 			MINOR_TEXT_HEIGHT = 2;						// height of the relative position text
+	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###");		// decimal format
 
 
 	/**

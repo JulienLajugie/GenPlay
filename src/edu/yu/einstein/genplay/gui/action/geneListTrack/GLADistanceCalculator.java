@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 /**
  * Computes the number of base pairs at a specific distance 
@@ -138,7 +139,7 @@ public class GLADistanceCalculator extends TrackListActionOperationWorker<long[]
 				plotData[i][1] = sortedCounter.get(key);
 				i++;
 			}
-			scatPlotData.add(new ScatterPlotData(plotData, graphName, ScatterPlotData.generateRandomColor()));
+			scatPlotData.add(new ScatterPlotData(plotData, graphName, GenPlayColor.generateRandomColor()));
 			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Count", scatPlotData);
 		}
 	}

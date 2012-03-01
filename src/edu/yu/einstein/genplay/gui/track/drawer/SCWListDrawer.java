@@ -29,7 +29,8 @@ import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.track.SCWListTrackGraphics;
-import edu.yu.einstein.genplay.util.ColorConverters;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 
 
@@ -64,8 +65,8 @@ public class SCWListDrawer extends CurveDrawer {
 	protected void drawBarGraphics() {
 		if (data != null) {
 			int screenY0 = scoreToScreenPos(0);
-			Color reverseCurveColor = Color.gray;
-			if (!trackColor.equals(Color.black)) {
+			Color reverseCurveColor = Colors.GREY;
+			if (!trackColor.equals(Colors.BLACK)) {
 				reverseCurveColor = new Color(trackColor.getRGB() ^ 0xffffff);
 			}		
 			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
@@ -148,7 +149,7 @@ public class SCWListDrawer extends CurveDrawer {
 					if (widthWindow < 1) {
 						widthWindow = 1;
 					}
-					graphics.setColor(ColorConverters.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
+					graphics.setColor(GenPlayColor.scoreToColor(currentWindow.getScore(), scoreMin, scoreMax));
 					graphics.fillRect(x, 0, widthWindow, trackHeight);
 				}
 			}		

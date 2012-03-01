@@ -108,7 +108,7 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load SNP Track", defaultDirectory, Utils.getReadableSNPFileFilters());
+		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load SNP Track", defaultDirectory, Utils.getReadableSNPFileFilters(), true);
 		if (selectedFile != null) {
 			return selectedFile;
 		}

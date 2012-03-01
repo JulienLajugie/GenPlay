@@ -89,7 +89,7 @@ class ProjectChooserPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 				FileFilter[] fileFilters = {new GenPlayProjectFilter()};		
-				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters);
+				File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Project", defaultDirectory, fileFilters, true);
 				if (selectedFile != null) {
 					path.setText(selectedFile.getPath());
 					getProjectListPanel().setButtonOther(selectedFile);

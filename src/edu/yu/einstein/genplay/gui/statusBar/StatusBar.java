@@ -21,13 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.statusBar;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -86,7 +87,7 @@ public final class StatusBar extends JPanel {
 		gbc.gridx = 3;	
 		//gbc.ipadx = 10;
 		add(memoryPanel, gbc);
-		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY));
+		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colors.LIGHT_GREY));
 	}
 	
 	
@@ -144,5 +145,13 @@ public final class StatusBar extends JPanel {
 	public void reinit() {
 		statusLabel.reinit();
 		progressBar.setProgress(0);		
+	}
+	
+	
+	/**
+	 * Set the description label when starting a new project 
+	 */
+	public void initDescriptionForFirstUse () {
+		statusLabel.initDescriptionForFirstUse();
 	}
 }

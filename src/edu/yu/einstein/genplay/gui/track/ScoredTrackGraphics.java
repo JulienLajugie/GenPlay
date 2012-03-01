@@ -29,6 +29,8 @@ import java.math.RoundingMode;
 import java.security.InvalidParameterException;
 import java.text.DecimalFormat;
 
+import edu.yu.einstein.genplay.util.colors.Colors;
+
 
 /**
  * An abstract class providing tools to draw a scored {@link TrackGraphics}
@@ -57,7 +59,7 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	protected int					horizontalLinesCount;					// number of horizontal lines
 	protected double 				yMax;									// maximum score	
 	protected double 				yMin;									// minimum score
-	protected Color					scoreColor = Color.RED;					// color of the score
+	protected Color					scoreColor = Colors.RED;				// color of the score
 	protected int 					scorePosition = BOTTOM_SCORE_POSITION; 	// position of the score (top or bottom)
 
 	
@@ -124,7 +126,7 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	 */
 	protected void drawHorizontalLines(Graphics g) {
 		if (showHorizontalGrid) {
-			g.setColor(Color.LIGHT_GRAY);
+			g.setColor(Colors.LIGHT_GREY);
 			double scoreGapBetweenLineY = (yMax - yMin) / (double)horizontalLinesCount;
 			double intensityFirstLineY = yMin - (yMin % scoreGapBetweenLineY);
 			for(int i = 0; i <= horizontalLinesCount; i++) {

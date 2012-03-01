@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.scatterPlot;
 
 import java.awt.Color;
-import java.util.Random;
 
 
 /**
@@ -59,23 +58,6 @@ public class ScatterPlotData {
 	public ScatterPlotData(String name, Color color) {
 		this.name = name;
 		this.color = color;
-	}
-
-
-	/**
-	 * @return a color randomly generated
-	 */
-	public static Color generateRandomColor() {
-		Random randomGen = new Random();
-		int red = randomGen.nextInt(255);
-		int green = randomGen.nextInt(255);
-		int blue = randomGen.nextInt(255);
-		if (red + green + blue > 510) {
-			// we want dark colors
-			return generateRandomColor();
-		} else {
-			return new Color(red, green, blue);
-		}
 	}
 
 

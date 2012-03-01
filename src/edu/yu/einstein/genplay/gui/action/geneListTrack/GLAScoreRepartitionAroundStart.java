@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.geneListTrack;
 
-import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +42,7 @@ import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -112,7 +112,7 @@ public class GLAScoreRepartitionAroundStart extends TrackListActionOperationWork
 	protected void doAtTheEnd(double[][] actionResult) {
 		if (actionResult != null) {
 			List<ScatterPlotData> scatPlotData = new ArrayList<ScatterPlotData>();
-			scatPlotData.add(new ScatterPlotData(actionResult, "Repartition around promoters of " + selectedTrack.toString(), Color.RED));
+			scatPlotData.add(new ScatterPlotData(actionResult, "Repartition around promoters of " + selectedTrack.toString(), Colors.RED));
 			ScatterPlotPane.showDialog(getRootPane(), "Distance", "Score", scatPlotData);
 		}
 	}

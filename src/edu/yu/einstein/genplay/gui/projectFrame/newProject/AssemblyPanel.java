@@ -25,7 +25,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -47,6 +46,7 @@ import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.genome.RetrieveAssemblies;
 import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
+import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -59,7 +59,6 @@ class AssemblyPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -5768796908632202321L; //generated ID
 
-	private final static 	String 		ICON_PATH = "edu/yu/einstein/genplay/resource/tools.png"; 	// path of the tools icon
 	private 	 			ImageIcon	icon; 
 
 	private static final int COMBO_WIDTH = 200;	// Combo box width value
@@ -117,7 +116,7 @@ class AssemblyPanel extends JPanel implements ActionListener {
 		jcAssembly.setBackground(ProjectFrame.ASSEMBLY_COLOR);
 
 		//Chromosome selection button
-		icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(this.getClass().getClassLoader().getResource(ICON_PATH)));
+		icon = new ImageIcon(Images.getToolsImage());
 		jbChromosome = new JButton(icon);
 		jbChromosome.setPreferredSize(new Dimension(20, 20));
 		jbChromosome.setMargin(new Insets(0, 0, 0, 0));

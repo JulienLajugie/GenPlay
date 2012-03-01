@@ -40,6 +40,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -210,7 +211,7 @@ public class ScatterPlotPane extends JPanel {
 	 * @param clip rectangle where to draw the chart
 	 */
 	private void drawChartBackground(Graphics g, Rectangle clip) {
-		g.setColor(Color.WHITE);
+		g.setColor(Colors.WHITE);
 		g.fillRect(clip.x, clip.y, clip.width, clip.height);			
 	}
 
@@ -273,7 +274,7 @@ public class ScatterPlotPane extends JPanel {
 		int lineHeight = g.getFontMetrics().getHeight() + 2; // height of a legend line
 		// draw the legend rectangle
 		g.fillRect(getWidth() - legendWidth - LENGEND_PAD - (LEGEND_INSET * 2), LENGEND_PAD, legendWidth + (LEGEND_INSET * 2), ((data.size() + 2 ) * lineHeight) + (LEGEND_INSET * 2));
-		g.setColor(Color.BLACK);
+		g.setColor(Colors.BLACK);
 		g.drawRect(getWidth() - legendWidth - LENGEND_PAD - (LEGEND_INSET * 2), LENGEND_PAD, legendWidth + (LEGEND_INSET * 2), ((data.size() + 2 ) * lineHeight) + (LEGEND_INSET * 2));
 		// search the position where to start the text of the legend
 		Point p = new Point(getWidth() - legendWidth - LENGEND_PAD - LEGEND_INSET, LENGEND_PAD + LEGEND_INSET + g.getFontMetrics().getHeight());
@@ -287,7 +288,7 @@ public class ScatterPlotPane extends JPanel {
 			g.setColor(graphColor);
 			int yLine = p.y + (i + 2) * lineHeight; // y position of the current line
 			g.drawLine(p.x, yLine - 5, p.x + 25, yLine - 5); // draw a line with the color of the graph
-			g.setColor(Color.BLACK);
+			g.setColor(Colors.BLACK);
 			g.drawString(graphName, p.x + 30, yLine); // draw the name of the graph
 		}
 	}

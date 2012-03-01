@@ -108,28 +108,30 @@ public class VCFLoaderModel extends AbstractTableModel {
 
 	@Override
 	public void setValueAt(Object value, int row, int col) {
-		if (row < getRowCount()) {
-			VCFData vCFData = data.get(row);
-			switch (col) {
-			case VCFData.FILE_INDEX:
-				vCFData.setFile(new File(value.toString()));
-				break;
-			case VCFData.RAW_INDEX:
-				vCFData.setRaw(value.toString());
-				break;
-			case VCFData.NICKNAME_INDEX:
-				vCFData.setNickname(value.toString());
-				break;
-			case VCFData.GROUP_INDEX:
-				vCFData.setGroup(value.toString());
-				break;
-			default:
-				System.out.println("Invalid column index");
+		if (value != null) {
+			if (row < getRowCount()) {
+				VCFData vCFData = data.get(row);
+				switch (col) {
+				case VCFData.FILE_INDEX:
+					vCFData.setFile(new File(value.toString()));
+					break;
+				case VCFData.RAW_INDEX:
+					vCFData.setRaw(value.toString());
+					break;
+				case VCFData.NICKNAME_INDEX:
+					vCFData.setNickname(value.toString());
+					break;
+				case VCFData.GROUP_INDEX:
+					vCFData.setGroup(value.toString());
+					break;
+				default:
+					System.out.println("Invalid column index");
+				}
+			} else {
+				System.out.println("Invalid row index");
 			}
-		} else {
-			System.out.println("Invalid row index");
+			fireTableCellUpdated(row, col);
 		}
-		fireTableCellUpdated(row, col);
 	}
 
 

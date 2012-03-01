@@ -22,6 +22,8 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader;
 
 import java.awt.FontMetrics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
+public class VCFLoaderTable extends JTable implements CustomComboBoxListener, ActionListener {
 
 	/**
 	 * Generated serial version ID
@@ -118,7 +120,15 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 				File file = (File) getValueAt(row, VCFData.FILE_INDEX);
 				VCFReader reader = new VCFReader(file);
 				List<String> rawGenomeNames = reader.getRawGenomesNames();
-				JComboBox combo = new JComboBox(rawGenomeNames.toArray());
+				JComboBox combo = new RawNameComboBox(rawGenomeNames.toArray());
+				combo.addActionListener(this);
+				/*JComboBox combo = new JComboBox(rawGenomeNames.toArray());
+				combo.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent arg0) {
+						updateNickNameBox();
+					}
+				});*/
 				return new DefaultCellEditor(combo);
 			} catch (Exception e) {
 				System.out.println("not a valid file : " + getValueAt(row, VCFData.FILE_INDEX));
@@ -252,6 +262,23 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener {
 		int colWidth = getColumnModel().getColumn(column).getWidth();
 		if (colWidth < width) {
 			getColumnModel().getColumn(column).setPreferredWidth(width);
+		}
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() instanceof RawNameComboBox) {
+			RawNameComboBox box = (RawNameComboBox) e.getSource();
+			if (box.isClicked()) {
+				String rawName = (String) getValueAt(lastRow, VCFData.RAW_INDEX);;
+				String selectedNickname = (String) getValueAt(lastRow, VCFData.NICKNAME_INDEX);
+				if (rawName != null && !rawName.isEmpty() && selectedNickname.equals(CustomComboBox.ADD_TEXT)) {
+					genomeBox.addElement(rawName);
+					genomeBox.resetCombo();
+					((VCFLoaderModel) getModel()).setValueAt(rawName, lastRow, VCFData.NICKNAME_INDEX);
+				}
+			}
 		}
 	}
 

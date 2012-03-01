@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.util;
+package edu.yu.einstein.genplay.util.colors;
 
 import java.awt.Color;
 
@@ -40,90 +40,129 @@ import java.awt.Color;
  */
 public class Colors {
 
+
+	//////////////////////////////////////////////// Regular colors
 	// Cyan / Magenta / Pink
-	
+
+
 	/** Blue color (Bleu de France) */
 	public static final Color BLUE = new Color(0x318ce8);
-	
+
 	/** Light blue color (100) */
 	public static final Color LIGHT_BLUE = new Color(0x369aff);
-	
+
 	/** Dark blue color (60) */
 	public static final Color DARK_BLUE = new Color(0x205d99);
-	
-	
-	
+
+
+
 	/** Purple color (Palatinate purple) (50) */
 	public static final Color PURPLE = new Color(0x803076);
-	
+
 	/** Light purple color (75) */
 	public static final Color LIGHT_PURPLE = new Color(0xbf49b1);
-	
+
 	/** Dark purple color (35) */
 	public static final Color DARK_PURPLE = new Color(0x592253);
-	
-	
-	
+
+
+
 	/** Red color (Cadmium red) */
 	public static final Color RED = new Color(0xe80023);
-	
+
 	/** Light red color (100) */
 	public static final Color LIGHT_RED = new Color(0xff0026);
-	
+
 	/** Dark red color (60) */
 	public static final Color DARK_RED = new Color(0x990017);
-	
-	
-	
+
+
+
 	/** Orange color (Tangerine) */
 	public static final Color ORANGE = new Color(0xF28500);
-	
+
 	/** Light orange color (Orange peel) */
 	public static final Color LIGHT_ORANGE = new Color(0xff9d00);
-	
+
 	/** Dark orange color (Tangerine) (80) */
 	public static final Color DARK_ORANGE = new Color(0xcc7000);
-	
-	
-	
+
+
+
 	/** Green color (Green (NCS)) */
 	public static final Color GREEN = new Color(0x009F6B);
-	
+
 	/** Light green color (Persian green) */
 	public static final Color LIGHT_GREEN = new Color(0x00A693);
-	
+
 	/** Dark green color (Cadmium green) (35) */
 	public static final Color DARK_GREEN = new Color(0x005933);
-	
-	
-	
+
+
+
 	/** Yellow color (Cadmium yellow) (95) */
 	public static final Color YELLOW = new Color(0xf2ea00);
-	
+
 	/** Light yellow color (Unmellow Yellow) */
 	public static final Color LIGHT_YELLOW = new Color(0xFFFF66);
-	
+
 	/** Dark yellow color (Golden yellow) (90) */
 	public static final Color DARK_YELLOW = new Color(0xe5c700);
-	
-	
-	
+
+
+
 	/** Grey color (Cadet grey) */
 	public static final Color GREY = new Color(0x91A3B0);
-	
+
 	/** Light grey color (Cadet grey) (80) */
 	public static final Color LIGHT_GREY = new Color(0xa7bdcc);
-	
+
 	/** Dark grey color (Davy's grey) */
 	public static final Color DARK_GREY = new Color(0x555555);
-	
-	
-	
+
+
+
 	/** Black color */
-	public static final Color BLACK = new Color(0x000000);
-	
+	public static final Color BLACK = Color.black;
+
 	/** White color */
-	public static final Color WHITE = new Color(0xFFFFFF);
+	public static final Color WHITE = Color.white;
+
+
+
+	//////////////////////////////////////////////// Nucleotide colors
+
+	/** Color of the Adenine */
+	public static final Color ADENINE = new Color(200, 0, 0);
+
+	/** Color of the Cytosine */
+	public static final Color CYTOSINE = new Color(0, 0, 200);
+
+	/** Color of the Guanine */
+	public static final Color GUANINE = new Color(255, 200, 0);
+
+	/** Color of the Thymine */
+	public static final Color THYMINE = new Color(0, 200, 0);
+
+	/** Color of the Any */
+	public static final Color ANY  = Colors.BLACK;
+
+	/** Color of the Blank */
+	public static final Color BLANK = Colors.GREY;
+
+	
+	
+	//////////////////////////////////////////////// Handle colors
+	
+	/** Background color for the track handles */
+	public static final Color 	TRACK_HANDLE_BACKGROUND_COLOR = new Color(228, 236, 247);
+	
+	/** Rollover color for the track handles */
+	public static final Color 	TRACK_HANDLE_ROLLOVER_COLOR = new Color(187, 196, 209);
+	
+	/** Selected color for the track handles */
+	public static final Color 	TRACK_HANDLE_SELECTED_COLOR = new Color(157, 193, 228);
+
 	
 	
 	/**
@@ -133,4 +172,5 @@ public class Colors {
 	public static Color getNewColorOf (Color color) {
 		return new Color(color.getRGB());
 	}
+	
 }

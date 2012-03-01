@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.binListTrack;
 
-import java.awt.Color;
 import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
@@ -35,6 +34,7 @@ import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 
@@ -96,7 +96,7 @@ public class BLADensity extends TrackListActionOperationWorker<BinList> {
 			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
 			// add info to the history
 			newTrack.getHistory().add("Result of the density calculation of " + selectedTrack.getName() + ", Half Width = " + halfWidth);
-			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
+			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Colors.GREY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "Density of " + selectedTrack.getName(), null, null, null);
 		}		
 	}

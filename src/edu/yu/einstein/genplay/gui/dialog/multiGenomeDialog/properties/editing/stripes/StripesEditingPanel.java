@@ -34,7 +34,6 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,6 +45,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 /**
  * @author Nicolas Fourel
@@ -56,7 +57,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 1002708176297238005L;
 	
-	private final Color[]		defaultVariationColor = {Color.green, Color.red, Color.cyan};	// Array of default variation colors (Insertion, Deletion, SNPs)
+	private final Color[]		defaultVariationColor = {Colors.GREEN, Colors.RED, Color.cyan};	// Array of default variation colors (Insertion, Deletion, SNPs)
 	private JComboBox 			jcbGenome;			// The combo box for the genome selection
 	private JComboBox 			jcbAllele;			// The combo box for the allele selection
 	private List<VariantType> 	variationName;		// Variation names list
@@ -249,7 +250,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					JButton button = (JButton) arg0.getSource();
-					Color newColor = JColorChooser.showDialog(getCurrentInstance(), "Choose color", button.getBackground());
+					Color newColor = GenPlayColorChooser.showDialog(getCurrentInstance(), button.getBackground());
 					if (newColor != null) {
 						button.setBackground(newColor);
 					}

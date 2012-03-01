@@ -26,6 +26,8 @@ import java.awt.Dimension;
 
 import javax.swing.JProgressBar;
 
+import edu.yu.einstein.genplay.util.colors.Colors;
+
 /**
  * Progress bar of the {@link StatusBar}
  * @author Julien Lajugie
@@ -33,9 +35,9 @@ import javax.swing.JProgressBar;
  */
 final class ProgressBar extends JProgressBar {
 
-	private static final long serialVersionUID = -3669001086333207235L; // generated ID
-	private static final Color 	BACKGROUND_COLOR = Color.white; // color of the background of the progressbar
-	private static final int 	HEIGHT = 15; 					// height of the progress bar
+	private static final long serialVersionUID = -3669001086333207235L; 	// generated ID
+	private static final Color 	BACKGROUND_COLOR = Colors.WHITE; // color of the background of the progressbar
+	private static final int 	HEIGHT = 15; 								// height of the progress bar
 	
 	
 	/**

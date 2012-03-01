@@ -87,10 +87,10 @@ public final class PARNAPosToDNAPos extends TrackListActionWorker<Void> {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		FileNameExtensionFilter textFileFilter = new FileNameExtensionFilter("Text file (*.txt)", "txt");
 		FileFilter[] fileFilters1 = {textFileFilter, new BedGraphFilter()};
-		fileData = Utils.chooseFileToLoad(parent, "Select Coverage File", defaultDirectory, fileFilters1);
+		fileData = Utils.chooseFileToLoad(parent, "Select Coverage File", defaultDirectory, fileFilters1, true);
 		if (fileData != null) {
 			FileFilter[] fileFilters2 = {textFileFilter, new BedFilter()};
-			fileRef = Utils.chooseFileToLoad(parent, "Select Reference File", defaultDirectory, fileFilters2);
+			fileRef = Utils.chooseFileToLoad(parent, "Select Reference File", defaultDirectory, fileFilters2, true);
 			if (fileRef != null) {
 
 				RNAPosToDNAPosOutputFileTypeDialog rnaToDnaDialog = new RNAPosToDNAPosOutputFileTypeDialog();
