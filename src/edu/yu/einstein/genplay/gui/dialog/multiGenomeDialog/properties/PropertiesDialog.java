@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.s
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesGlobalPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersGlobalPanel;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * @author Nicolas Fourel
@@ -147,6 +148,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
+		setIconImage(Images.getApplicationImage());
 		setAlwaysOnTop(true);
 		setResizable(false);
 		setVisible(false);

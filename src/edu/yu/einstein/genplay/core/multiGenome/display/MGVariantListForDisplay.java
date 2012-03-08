@@ -242,21 +242,28 @@ public class MGVariantListForDisplay implements Serializable {
 	 * Show the information of the {@link MGAlleleForDisplay}
 	 */
 	public void show () {
-		System.out.println("Variant type: " + type);
-		String readerInfo = "Readers:";
+		String info = "";
+		info += "Genome: " + alleleForDisplay.getGenomeInformation().getName() + "\n";
+		info += "Allele: " + alleleForDisplay.getAlleleType() + "\n";
+		info += "Chromosome: " + chromosome.getName() + " " + chromosome.getLength() +"\n";
+		info += "Variant type: " + type + "\n";
+		info += "Variant list size: " + variantList.size() + "\n";
+		info += "Readers: ";
 		List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenomeProject().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
 		for (VCFReader reader: vcfReaderList) {
-			readerInfo += " " + reader.getFile().getName();
+			info += " " + reader.getFile().getName();
 		}
-		System.out.println(readerInfo);
-		System.out.println("Variant list size: " + variantList.size());
-		int cpt = 0;
+		//info += "\n";
+		System.out.println("MGVariantListForDisplay.show()");
+		System.out.println(info);
+		
+		/*int cpt = 0;
 		for (VariantInterface variant: variantList) {
 			if (cpt < 10) {
 				variant.show();
 				cpt++;
 			}
-		}
+		}*/
 	}
 
 }

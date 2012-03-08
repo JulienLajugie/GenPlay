@@ -151,12 +151,19 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 	
+		multiGenomeProject.updateChromosomeList();
+		
 		//multiGenomeProject.show();
 		
 		initializesTrackListForMultiGenomeProject();
 		
+		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+		
+		
 		// Unlocks the main frame
 		MainFrame.getInstance().unlock();
+		
+		//ProjectManager.getInstance().getProjectChromosome().getChromosomeList().toString();
 		
 		/*for (int i = 1; i < times.size(); i++) {
 			System.out.println("[" + i + "]: " + (times.get(i) - times.get(i - 1)));

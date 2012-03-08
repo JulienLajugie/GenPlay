@@ -82,6 +82,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	private List<StripesData>				stripesList;					// list of stripes to apply to this track (for MG project)
 	private int								stripesOpacity;					// Transparency of the stripes
 	private VariantInterface 				variantUnderMouse = null;		// Special display when the mouse is over a variant stripe
+	private boolean 						serializeStripeList = true;		// enable the stripe lists serialization (see methods for further information)
 
 
 	/**
@@ -93,7 +94,10 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(allele01VariantListMaker);
 		out.writeObject(allele02VariantListMaker);
-		out.writeObject(stripesList);
+		out.writeBoolean(serializeStripeList);
+		if (serializeStripeList) {
+			out.writeObject(stripesList);
+		}
 		out.writeInt(stripesOpacity);
 	}
 
@@ -109,7 +113,10 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		in.readInt();
 		allele01VariantListMaker = (DisplayableVariantListMaker) in.readObject();
 		allele02VariantListMaker = (DisplayableVariantListMaker) in.readObject();
-		stripesList = (List<StripesData>) in.readObject();
+		serializeStripeList = in.readBoolean();
+		if (serializeStripeList) {
+			stripesList = (List<StripesData>) in.readObject();
+		}
 		stripesOpacity = in.readInt();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 	}
@@ -208,9 +215,8 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	 * @param g				graphics object
 	 * @param genomeWindow 	the genome window
 	 * @param xFactor 		the x factor
-	 * @param trackGraphics MUST BE REMOVED WHEN "genomePosToScreenPos" AND "trackGraphics.twoGenomePosToScreenWidth" methods will be static
 	 */
-	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor, TrackGraphics<T> trackGraphics) {
+	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
 		if (stripesList != null && stripesList.size() > 0) {																// if there are stripes
 			stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
 			AlleleType trackAlleleType = getTrackAlleleType();																// get the allele type of the track
@@ -220,13 +226,13 @@ public class MultiGenomeDrawer<T> implements Serializable {
 				Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, g.getClipBounds().width, halfHeight);		// create a 2D graphics for the second allele that correspond to the lower half of the track
 				allele02Graphic.scale(1, -1);																				// all Y axis (vertical) coordinates must be reversed for the second allele
 				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
-				drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow, trackGraphics); 	// draw the stripes for the first allele
-				drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow, trackGraphics);	// draw the stripes for the second allele
+				drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow); 	// draw the stripes for the first allele
+				drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
 				drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half. 
 			} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
-				drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow, trackGraphics);	// draw its stripes
+				drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw its stripes
 			} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
-				drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow, trackGraphics);	// draw its stripes
+				drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw its stripes
 			}
 		}
 	}
@@ -249,7 +255,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	 * @param g				Graphics object
 	 * @param variantList	list of variants
 	 */
-	private void drawGenome (Graphics g, List<VariantInterface> variantList, GenomeWindow genomeWindow, TrackGraphics<T> trackGraphics) {
+	private void drawGenome (Graphics g, List<VariantInterface> variantList, GenomeWindow genomeWindow) {
 		if (variantList != null && variantList.size() > 0) {													// if the variation list has at least one variant
 			// Set color for unused position, dead area and mixed variant
 			//Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
@@ -267,7 +273,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 					String genomeName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(); 	// gets the genome name of the variant
 					color = getStripeColor(genomeName, type);																		// in order to get which color has been defined
 				}
-				drawVariant(g, variant, color, genomeWindow, trackGraphics);	// draw the variant
+				drawVariant(g, variant, color, genomeWindow);	// draw the variant
 			}
 		}
 	}
@@ -279,7 +285,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	 * @param variant	the variant
 	 * @param color		the color of the stripe
 	 */
-	private void drawVariant (Graphics g, VariantInterface variant, Color color, GenomeWindow genomeWindow, TrackGraphics<T> trackGraphics) {
+	private void drawVariant (Graphics g, VariantInterface variant, Color color, GenomeWindow genomeWindow) {
 		// Get start and stop position
 		int start = variant.getStart();
 		int stop;
@@ -300,6 +306,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		// Transform the start and stop position to screen coordinates
 		int x = projectWindow.genomePosToScreenXPos(start);							// get the position where the variant starts
 		int width = projectWindow.twoGenomePosToScreenWidth(start, stop);			// get the width of the variant on the screen
+
 		if (width == 0) {															// if the width is 0 pixel,
 			width = 1;																// we set it to 1 in order to be seen
 		}
@@ -461,7 +468,6 @@ public class MultiGenomeDrawer<T> implements Serializable {
 			double pos = projectWindow.screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), e.getX());	// we translate the position on the screen into a position on the genome
 			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());						// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
 			if (variant != null) {																				// if a variant has been found
-				MGPosition positionInformation = variant.getFullVariantInformation();							// we get its information
 				AlleleType trackAlleleType = getTrackAlleleType();												// we get the allele type of the track
 				List<VariantInterface> variantList = null;														// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
 				if (trackAlleleType == AlleleType.BOTH) {														// if both allele are displayed,
@@ -476,7 +482,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
 				}
 				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);								// we create the information dialog
-				toolTip.show(positionInformation, e.getXOnScreen(), e.getYOnScreen());							// we show it
+				toolTip.show(variant, e.getXOnScreen(), e.getYOnScreen());							// we show it
 			}
 		}
 	}
@@ -675,6 +681,26 @@ public class MultiGenomeDrawer<T> implements Serializable {
 			copy.add(currentVariant);
 		}
 		return copy;
+	}
+	
+
+	/**
+	 * Enable the serialization of the stripes list for multi genome project.
+	 * The stripe list serialization generates serialization errors when lists refer to same tracks.
+	 * The lists are then not serialized and managed by the {@link MGDisplaySettings}.
+	 * This must be performed for copy/cut/paste actions, no issue in saving/loading a whole project.
+	 * This is a temporary fix while understanding more the serialization issue.
+	 */
+	public void enableStripeListSerialization () {
+		serializeStripeList = true;
+	}
+
+
+	/**
+	 * Disable the serialization of the stripes list for multi genome project.
+	 */
+	public void disableStripeListSerialization () {
+		serializeStripeList = false;
 	}
 
 }

@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -60,7 +61,6 @@ public class ToolTipStripeDialog extends JDialog {
 	private JPanel infoPanel;			// panel containing the INFO field information of the VCF
 	private JPanel formatPanel;			// panel containing the FORMAT field information of the VCF
 	private JPanel navigationPanel;		// panel to move forward/backward
-	private boolean first;
 
 
 	/**
@@ -70,27 +70,44 @@ public class ToolTipStripeDialog extends JDialog {
 	public ToolTipStripeDialog (List<VariantInterface> fittedVariantList) {
 		super(MainFrame.getInstance());
 		this.variantList = fittedVariantList;
+		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 		setTitle("Variant properties");
-		first = true;
+		
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP);
+		setLayout(layout);
+		
+		headerPanel = new JPanel();
+		infoPanel = new JPanel();
+		formatPanel = new JPanel();
+		navigationPanel = new JPanel();
+
+		add(headerPanel);
+		add(infoPanel);
+		add(formatPanel);
+		add(navigationPanel);
+		
+		int height = GlobalInformationPanel.getPanelHeight() +
+		PanelInformation.getPanelHeight() +
+		PanelInformation.getPanelHeight() +
+		NavigationPanel.getPanelHeight() +
+		(V_GAP * 11) + 30;
+		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, height);
+		setSize(dimension);
 	}
 
 
 	/**
 	 * Method for showing the dialog box.
-	 * @param variantInformation	variant to show information
-	 * @param X						X position on the screen
-	 * @param Y						Y position on the screen
+	 * @param variant	variant to show information
+	 * @param X			X position on the screen
+	 * @param Y			Y position on the screen
 	 */
-	public void show (MGPosition variantInformation, int X, int Y) {
-		this.variantInformation = variantInformation;
-		if (variantInformation != null) {
-			this.variant = variantInformation.getVariant();
-		} else {
-			this.variant = null;
-		}
+	public void show (VariantInterface variant, int X, int Y) {
+		this.variant = variant;
+		this.variantInformation = variant.getFullVariantInformation();
 		initContent();
 		setLocation(X, Y);
 		setVisible(true);
@@ -104,7 +121,7 @@ public class ToolTipStripeDialog extends JDialog {
 		VariantInfo variantInfo;
 		VariantFormat variantFormat;
 
-		if (variant == null || variant.getType() == VariantType.MIX) {
+		if (variantInformation == null) {
 			variantInfo = new VariantInfo(null);
 			variantFormat = new VariantFormat(null);
 		} else {
@@ -112,33 +129,10 @@ public class ToolTipStripeDialog extends JDialog {
 			variantFormat = new VariantFormat(variantInformation);
 		}
 
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP);
-		setLayout(layout);
-
-		if (first) {
-			headerPanel = new JPanel();
-			infoPanel = new JPanel();
-			formatPanel = new JPanel();
-			navigationPanel = new JPanel();
-
-			add(headerPanel);
-			add(infoPanel);
-			add(formatPanel);
-			add(navigationPanel);
-			first = false;
-		}
-		updatePanel(headerPanel, new GlobalInformationPanel(variantInformation));
+		updatePanel(headerPanel, new GlobalInformationPanel(variant, variantInformation));
 		updatePanel(infoPanel, variantInfo.getPane());
 		updatePanel(formatPanel, variantFormat.getPane());
 		updatePanel(navigationPanel, new NavigationPanel(this));
-
-		int height = GlobalInformationPanel.getPanelHeight() +
-		PanelInformation.getPanelHeight() +
-		PanelInformation.getPanelHeight() +
-		NavigationPanel.getPanelHeight() +
-		(V_GAP * 11) + 40;
-		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, height);
-		setSize(dimension);
 
 		validate();
 	}
@@ -236,7 +230,7 @@ public class ToolTipStripeDialog extends JDialog {
 				result = variantList.get(previousIndex);
 			}
 		} else {
-			result = variant;
+			result = null;
 		}
 		return result;
 	}
@@ -258,7 +252,7 @@ public class ToolTipStripeDialog extends JDialog {
 				result = variantList.get(nextIndex);
 			}
 		} else {
-			result = variant;
+			result = null;
 		}
 		return result;
 	}

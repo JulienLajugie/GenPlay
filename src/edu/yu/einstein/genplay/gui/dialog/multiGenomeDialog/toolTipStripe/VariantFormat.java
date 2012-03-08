@@ -55,15 +55,19 @@ public class VariantFormat {
 			keys = new ArrayList<String>();
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
-			
+
 			String[] headerElements = variantInformation.getFormat().split(":");
 			String[] valueElements = variantInformation.getFormatValues().split(":");
 
 			for (int i = 0; i < headerElements.length; i++) {
 				keys.add(headerElements[i]);
-				values.add(valueElements[i]);
+				if (i < valueElements.length) {
+					values.add(valueElements[i]);
+				} else {
+					values.add("-");	
+				}
 			}
-			
+
 			for (String key: keys) {
 				description.add(variantInformation.getFormatHeader(key).getDescription());
 			}

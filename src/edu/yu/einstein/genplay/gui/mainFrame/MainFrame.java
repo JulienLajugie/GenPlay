@@ -85,18 +85,16 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 540; 						// GenPlay version
+	private static final int VERSION_NUMBER = 541; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
 	public static final String 		APPLICATION_TITLE = "GenPlay, Einstein Genome Analyzer (v" + VERSION_NUMBER + ")";
-	//private final static String 	ICON_PATH = "edu/yu/einstein/genplay/resource/icon.png"; // path of the icon of the application
 	private final static Dimension 	WINDOW_DEFAULT_SIZE = new Dimension(800, 600);	// default size of the application
 	private final static Dimension 	WINDOW_MINIMUM_SIZE = new Dimension(200, 150); 	// minimum size of the application
 
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
 	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
-	//private final 	Image 				iconImage; 			// icon of the application
 	private 		Ruler 				ruler; 				// Ruler component
 	private 		TrackList 			trackList; 			// TrackList component
 	private 		ControlPanel		controlPanel; 		// ControlPanel component

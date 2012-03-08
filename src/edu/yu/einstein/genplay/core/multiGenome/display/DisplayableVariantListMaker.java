@@ -152,7 +152,8 @@ public class DisplayableVariantListMaker implements Serializable {
 	private void synchronizationBlank () {
 		if (MGDisplaySettings.INCLUDE_BLANK_OPTION == MGDisplaySettings.YES_MG_OPTION) {
 			if (fittedChromosome != null) {
-				List<VariantInterface> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(fittedChromosome);
+				Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+				List<VariantInterface> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(currentChromosome);
 				List<VariantInterface> newVariantList = new ArrayList<VariantInterface>();
 				int currentListIndex = 0;
 				int referenceListIndex = 0;
@@ -203,8 +204,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList, List<VCFFilter> filtersList) {
 		if (hasChanged(listOfVariantList)) {
 			this.listOfVariantList = listOfVariantList;
-			computeVariantList(filtersList);
-			fitToScreen();
+			resetList(filtersList);
 		}
 	}
 
@@ -267,6 +267,7 @@ public class DisplayableVariantListMaker implements Serializable {
 			fittedXRatio = xRatio;
 			fitToScreen();
 		}
+
 		return getFittedData(window.getStart(), window.getStop());
 	}
 
@@ -288,26 +289,31 @@ public class DisplayableVariantListMaker implements Serializable {
 				int currentIndex = 0;
 				int nextIndex = 1;
 
-				while (nextIndex < currentVariantList.size()) {
+				while (currentIndex < variantListSize) {
 					VariantInterface currentVariant = currentVariantList.get(currentIndex);
-					VariantInterface nextVariant = currentVariantList.get(nextIndex);
+					boolean hasToBeMerged = false;
+
 					int start = currentVariant.getStart();
 					int stop = currentVariant.getStop();
-					double distance = (nextVariant.getStart() - stop) * fittedXRatio;
+					if (nextIndex < variantListSize) {
+						VariantInterface nextVariant = currentVariantList.get(nextIndex);
+						double distance = (nextVariant.getStart() - stop) * fittedXRatio;
 
-					boolean hasToBeMerged = false;
-					while ((distance < 1) && (nextIndex < currentVariantList.size())) {
-						hasToBeMerged = true;
-						currentIndex++;
-						nextIndex++;
-						if (nextIndex < currentVariantList.size()) {
-							currentVariant = currentVariantList.get(currentIndex);
-							stop = currentVariant.getStop();
-							nextVariant = currentVariantList.get(nextIndex);
-							distance = (nextVariant.getStart() - stop) * fittedXRatio;
+						while ((distance < 1) && (nextIndex < variantListSize)) {
+							hasToBeMerged = true;
+							currentIndex++;
+							nextIndex++;
+							if (nextIndex < variantListSize) {
+								currentVariant = currentVariantList.get(currentIndex);
+								int stopTmp = currentVariant.getStop();
+								nextVariant = currentVariantList.get(nextIndex);
+								distance = (nextVariant.getStart() - stopTmp) * fittedXRatio;
+								if (distance < 1) {
+									stop = nextVariant.getStop();
+								}
+							}
 						}
 					}
-
 					VariantInterface newVariant;
 					if (hasToBeMerged) {
 						newVariant = new MixVariant(start, stop);
@@ -331,9 +337,9 @@ public class DisplayableVariantListMaker implements Serializable {
 		}
 
 		ArrayList<VariantInterface> resultList = new ArrayList<VariantInterface>();
-
 		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
 		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
+
 		if (indexStart > 0) {
 			VariantInterface variant = fittedDataList.get(indexStart - 1);
 			if (variant.getStop() >= start) {
@@ -341,7 +347,14 @@ public class DisplayableVariantListMaker implements Serializable {
 			}
 		}
 		for (int i = indexStart; i <= indexStop; i++) {
-			resultList.add(fittedDataList.get(i));
+			if (i == indexStop) {
+				VariantInterface variant = fittedDataList.get(indexStop );
+				if (variant.getStop() >= start) {
+					resultList.add(variant);
+				}
+			} else {
+				resultList.add(fittedDataList.get(i));
+			}
 		}
 		if (indexStop + 1 < fittedDataList.size()) {
 			VariantInterface variant = fittedDataList.get(indexStop + 1);

@@ -51,7 +51,7 @@ public class StripesData implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 2604583442089053519L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
 	/** Index used for Genome column */
 	public static final int GENOME_INDEX 	= 0;
 	/** Index used for Allele column */
@@ -68,7 +68,7 @@ public class StripesData implements Serializable {
 	private List<Color> 		colorList;			// list of color
 	private Track<?>[] 			trackList;			// list of track
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -97,9 +97,9 @@ public class StripesData implements Serializable {
 		alleleType = (AlleleType) in.readObject();
 		variationTypeList = (List<VariantType>) in.readObject();
 		colorList = (List<Color>) in.readObject();
-		trackList = (Track[]) in.readObject();
+		trackList = (Track<?>[]) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link StripesData}
@@ -116,11 +116,12 @@ public class StripesData implements Serializable {
 	/**
 	 * Constructor of {@link StripesData}
 	 * @param genome		name of the genome
+	 * @param alleleType 	type of the allele
 	 * @param variantList	list of variation
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	protected StripesData(String genome, AlleleType alleleType, List<VariantType> variantList,
+	public StripesData(String genome, AlleleType alleleType, List<VariantType> variantList,
 			List<Color> colorList, Track<?>[] trackList) {
 		this.genome = genome;
 		this.alleleType = alleleType;
@@ -162,7 +163,7 @@ public class StripesData implements Serializable {
 	/**
 	 * @param trackList the trackList to set
 	 */
-	protected void setTrackList(Track<?>[] trackList) {
+	public void setTrackList(Track<?>[] trackList) {
 		this.trackList = trackList;
 	}
 
@@ -174,7 +175,7 @@ public class StripesData implements Serializable {
 	public String getGenome() {
 		return genome;
 	}
-	
+
 	/**
 	 * @return the alleleType
 	 */
@@ -211,7 +212,7 @@ public class StripesData implements Serializable {
 	public String getGenomeForDisplay() {
 		return genome;
 	}
-	
+
 	/**
 	 * @return the allele type
 	 */
@@ -269,14 +270,14 @@ public class StripesData implements Serializable {
 		return info;
 	}
 
-	
+
 	/**
 	 * @param alleleType 
 	 * @return the list of variant list for display
 	 */
 	public List<MGVariantListForDisplay> getListOfVariantList (AlleleType alleleType) {
 		List<MGVariantListForDisplay> listOfVariantList = new ArrayList<MGVariantListForDisplay>();
-		
+
 		MGGenomeForDisplay genomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getGenomeInformation(genome);
 		MGAlleleForDisplay alleleForDisplay = null;
 		if (alleleType == AlleleType.ALLELE01) {
@@ -284,14 +285,120 @@ public class StripesData implements Serializable {
 		} else if (alleleType == AlleleType.ALLELE02) {
 			alleleForDisplay = genomeForDisplay.getAlleleB();
 		}
-		
+
 		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 		for (VariantType variantType: variationTypeList) {
 			MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, variantType);
 			listOfVariantList.add(variantListForDisplay);
 		}
-		
+
 		return listOfVariantList;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+
+		// object must be Test at this point
+		StripesData test = (StripesData)obj;
+		return genome.equals(test.getGenome()) &&
+		alleleType == test.getAlleleType() &&
+		hasSameVariationTypeList(test.getVariationTypeList()) &&
+		hasSameColorList(test.getColorList()) &&
+		hasSameTrackList(test.getTrackList());
+	}
+
+
+	/**
+	 * Compare a variation type list to the current one
+	 * @param variationTypeList	the variation list to compare
+	 * @return	true if both list contain same values, false otherwise
+	 */
+	private boolean hasSameVariationTypeList (List<VariantType> variationTypeList) {
+		if (this.variationTypeList == null && variationTypeList == null) {
+			return true;
+		} else if (this.variationTypeList != null && variationTypeList == null) {
+			return false;
+		} else if (this.variationTypeList == null && variationTypeList != null) {
+			return false;
+		} else {
+			if (this.variationTypeList.size() != variationTypeList.size()) {
+				return false;
+			} else {
+				for (VariantType variantType: variationTypeList) {
+					if (!this.variationTypeList.contains(variantType)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+	}
+	
+	
+	/**
+	 * Compare a list of color to the current one
+	 * @param colorList	the list of color to compare
+	 * @return	true if both list contain same values, false otherwise
+	 */
+	private boolean hasSameColorList (List<Color> colorList) {
+		if (this.colorList == null && colorList == null) {
+			return true;
+		} else if (this.colorList != null && colorList == null) {
+			return false;
+		} else if (this.colorList == null && colorList != null) {
+			return false;
+		} else {
+			if (this.colorList.size() != colorList.size()) {
+				return false;
+			} else {
+				for (Color color: colorList) {
+					if (!this.colorList.contains(color)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
+	}
+	
+	
+	/**
+	 * Compare a list of track to the current one
+	 * @param trackList	the list of track to compare
+	 * @return	true if both list contain same values, false otherwise
+	 */
+	private boolean hasSameTrackList (Track<?>[] trackList) {
+		if (this.trackList == null && trackList == null) {
+			return true;
+		} else if (this.trackList != null && trackList == null) {
+			return false;
+		} else if (this.trackList == null && trackList != null) {
+			return false;
+		} else {
+			if (this.trackList.length != trackList.length) {
+				return false;
+			} else {
+				for (Track<?> track: trackList) {
+					boolean contain = false;
+					for (Track<?> currentTrack: this.trackList) {
+						if (track.equals(currentTrack)) {
+							contain = true;
+						}
+					}
+					if (!contain) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
 	}
 
 }

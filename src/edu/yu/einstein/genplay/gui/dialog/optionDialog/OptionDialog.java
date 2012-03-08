@@ -50,6 +50,7 @@ import javax.swing.tree.TreeSelectionModel;
 import edu.yu.einstein.genplay.core.DAS.DASServerListWriter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.util.Images;
 
 
 /**
@@ -205,6 +206,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		});
 		setTitle("Option");
 		setSize(OPTION_DIALOG_DIMENSION);
+		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setModal(true);
 		setLocationRelativeTo(getRootPane());

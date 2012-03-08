@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
@@ -249,7 +250,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(VTAHistory.ACTION_KEY, new VTAHistory());
 		getActionMap().put(VTARedo.ACTION_KEY, new VTARedo());
 		getActionMap().put(VTAReset.ACTION_KEY, new VTAReset());
-		getActionMap().put(VTAUndo.ACTION_KEY, new VTAUndo());		
+		getActionMap().put(VTAUndo.ACTION_KEY, new VTAUndo());
 		// add scored track actions
 		getActionMap().put(STASetYAxis.ACTION_KEY, new STASetYAxis());
 		// add SCWList actions
@@ -491,7 +492,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			if (trackList[i].getPropertyChangeListeners().length == 0) {				
 				trackList[i].addPropertyChangeListener(this);
 			}
-		}		
+		}
 		jpTrackList.revalidate();
 		setViewportView(jpTrackList);
 	}
@@ -689,7 +690,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void copyTrack() {
 		if (selectedTrack != null) {
 			try {
+				selectedTrack.disableStripeListSerialization();
 				copiedTrack = selectedTrack.deepClone();
+				selectedTrack.enableStripeListSerialization();
 				// we need to clone the selected track because the user may copy the
 				// then modify the track and finally paste the track.  If we don't do the deep clone
 				// all the modification made after the cloning will be copied (and we don't want that)
@@ -741,8 +744,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if ((selectedTrack != null) && (copiedTrack != null)) {
 			try {
 				int selectedTrackIndex = getSelectedTrackIndex();
+				selectedTrack.disableStripeListSerialization();
 				Track<?> newTrack = copiedTrack.deepClone();
+				selectedTrack.enableStripeListSerialization();
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
+				MGDisplaySettings.getInstance().getStripeSettings().pasteData(copiedTrack, newTrack);
+				newTrack.updateMultiGenomeInformation(MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack), MGDisplaySettings.getInstance().getFilterSettings().getVCFFiltersForTrack(newTrack));
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while pasting the track");
@@ -763,6 +770,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}
 			trackList[trackList.length - 1] = new EmptyTrack(trackList.length);
 			trackList[trackList.length - 1].addPropertyChangeListener(this);
+			MGDisplaySettings.getInstance().getStripeSettings().deleteData(selectedTrack);
+
 			selectedTrack = null;
 			rebuildPanel();
 		}

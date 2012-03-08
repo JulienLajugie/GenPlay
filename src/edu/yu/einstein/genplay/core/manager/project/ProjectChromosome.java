@@ -110,6 +110,21 @@ public final class ProjectChromosome implements Serializable, Iterable<Chromosom
 		createChromosomeHash();
 		genomeLengthCalculation();
 	}
+	
+	
+	/**
+	 * @param chromosomeList the chromosomeList to set
+	 */
+	public void updateChromosomeLength (List<Chromosome> chromosomeList) {
+		
+		for (Chromosome current: chromosomeList) {
+			Chromosome existingChromosome = get(current.getName());
+			if (existingChromosome != null) {
+				existingChromosome.setLength(current.getLength());
+			}
+		}
+		genomeLengthCalculation();
+	}
 
 
 	/**

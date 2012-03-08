@@ -153,7 +153,7 @@ public final class Chromosome implements Cloneable, Serializable {
 	/**
 	 * Returns true if the name of the current chromosome is equal to the specified string.
 	 * Removes "chr" and "chromosome" before comparing if the string in parameter or if the 
-	 * chromosome name start this way (ex: "chr1" becomes "1")
+	 * chromosome name starts this way (ex: "chr1" becomes "1")
 	 * @param otherChromoName
 	 * @return true if equal, false otherwise
 	 */
@@ -173,5 +173,16 @@ public final class Chromosome implements Cloneable, Serializable {
 			otherChromoName = otherChromoName.substring(3);
 		}
 		return chromoName.equalsIgnoreCase(otherChromoName);
+	}
+	
+	
+	/**
+	 * Prints the chromosome information
+	 */
+	public void show () {
+		String info = "";
+		info += "Name: " + name + "; ";
+		info += "Length: " + length;
+		System.out.println(info);
 	}
 }

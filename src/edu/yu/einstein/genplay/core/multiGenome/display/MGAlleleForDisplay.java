@@ -149,6 +149,17 @@ public class MGAlleleForDisplay implements Serializable {
 	}
 	
 	
+	/*public void updateChromosomeListOfList () {
+		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
+		ChromosomeListOfLists<MGVariantListForDisplay> newChromosomeListOfVariantList = new ChromosomeArrayListOfLists<MGVariantListForDisplay>();
+		
+		for (int i = 0; i < chromosomeList.size(); i++) {
+			List<MGVariantListForDisplay> elements = chromosomeListOfVariantList.get(i);
+			newChromosomeListOfVariantList.set(index, element)
+		}
+	}*/
+	
+	
 	/**
 	 * Show the information of the {@link MGAlleleForDisplay}
 	 */

@@ -30,11 +30,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;
+import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -68,7 +71,7 @@ public class MultiGenomeProject implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -6096336417566795182L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;					// saved format version
-	
+
 	private		List<String>					genomeNames;					// The genome names list.
 	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;			// The map between genome names and their readers.
 
@@ -111,23 +114,23 @@ public class MultiGenomeProject implements Serializable {
 		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
 		multiGenomeSynchronizerForSNP = (MGSNPSynchronizer) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Set the current {@link MultiGenomeProject} using another instance of {@link MultiGenomeProject}
 	 * Used for the unserialization.
 	 * @param project the instance of {@link MultiGenomeProject} to use
 	 */
 	protected void setMultiGenomeProject (MultiGenomeProject project) {
-			this.genomeNames = project.getGenomeNames();
-			this.genomeFileAssociation = project.getGenomeFileAssociation();
-			this.multiGenome = project.getMultiGenome();
-			this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
-			this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
-			this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
+		this.genomeNames = project.getGenomeNames();
+		this.genomeFileAssociation = project.getGenomeFileAssociation();
+		this.multiGenome = project.getMultiGenome();
+		this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
+		this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+		this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link MultiGenomeProject}
 	 */
@@ -142,21 +145,21 @@ public class MultiGenomeProject implements Serializable {
 		this.genomeFileAssociation = genomeFileAssociation;
 		this.genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
 		Collections.sort(genomeNames);
-		
+
 		for (String genomeName: genomeNames) {
 			List<VCFReader> readers = genomeFileAssociation.get(genomeName);
 			for (VCFReader reader: readers) {
 				reader.addGenomeName(genomeName);
 			}
 		}
-		
+
 		this.multiGenome = new MGMultiGenome(genomeNames);
 		this.multiGenomeSynchronizer = new MGSynchronizer(this);
 		this.multiGenomeSynchronizerForSNP = new MGSNPSynchronizer();
 		initializesDisplayInformation();
 	}
-	
-	
+
+
 	/**
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
@@ -204,11 +207,34 @@ public class MultiGenomeProject implements Serializable {
 		}
 		return names;
 	}
-	
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Others
 
-	
+
+	/**
+	 * Update the chromosome list using the new chromosome length
+	 */
+	public void updateChromosomeList () {
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
+		List<Chromosome> currentChromosomeList = projectChromosome.getChromosomeList();
+		List<Chromosome> newChromosomeList = new ArrayList<Chromosome>();
+		ChromosomeListOfLists<MGOffset> offsetList = multiGenome.getReferenceGenome().getAllele().getOffsetList();
+
+		for (Chromosome current: currentChromosomeList) {
+			String name = current.getName();
+			int lastOffsetIndex = offsetList.get(current).size() - 1;
+			int length = current.getLength();
+			if (lastOffsetIndex > -1) {
+				length += offsetList.get(current, lastOffsetIndex).getValue();
+			}
+			newChromosomeList.add(new Chromosome(name, length));
+		}
+
+		projectChromosome.updateChromosomeLength(newChromosomeList);
+	}
+
+
 	/**
 	 * Initializes the genome information for display purpose
 	 */
@@ -216,7 +242,7 @@ public class MultiGenomeProject implements Serializable {
 		List<MGGenome> genomeList = multiGenome.getGenomeInformation();
 		multiGenomeForDisplay = new MGMultiGenomeForDisplay(genomeList);
 	}
-	
+
 
 	/**
 	 * Retrieves all the VCF readers
@@ -235,8 +261,8 @@ public class MultiGenomeProject implements Serializable {
 
 		return readerList;
 	}
-	
-	
+
+
 	/**
 	 * Retrieves the VCF reader according to a genome name and a variant type
 	 * @param genomeName	the full genome name
@@ -246,18 +272,18 @@ public class MultiGenomeProject implements Serializable {
 	public List<VCFReader> getReaders (String genomeName, VariantType type) {
 		List<VCFReader> readerList = new ArrayList<VCFReader>();
 		List<VCFReader> currentList = genomeFileAssociation.get(genomeName);
-		
+
 		for (VCFReader currentReader: currentList) {
 			List<VariantType> typeList = currentReader.getVariantTypes(genomeName);
 			if (typeList != null && typeList.contains(type)) {
 				readerList.add(currentReader);
 			}
 		}
-		
+
 		return readerList;
 	}
-	
-	
+
+
 	/**
 	 * Get a vcf reader object with a vcf file name.
 	 * @param fileName 	the name of the vcf file
@@ -275,8 +301,8 @@ public class MultiGenomeProject implements Serializable {
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Getters & Setters
-	
-	
+
+
 	/**
 	 * @return the multiGenomeSynchronizer
 	 */
@@ -284,7 +310,7 @@ public class MultiGenomeProject implements Serializable {
 		return multiGenomeSynchronizer;
 	}
 
-	
+
 	/**
 	 * @return the multiGenomeSynchronizerForSNP
 	 */
@@ -315,8 +341,8 @@ public class MultiGenomeProject implements Serializable {
 	public Map<String, List<VCFReader>> getGenomeFileAssociation() {
 		return genomeFileAssociation;
 	}
-	
-	
+
+
 	/**
 	 * Show the information of the {@link MultiGenomeProject}
 	 */
@@ -326,5 +352,5 @@ public class MultiGenomeProject implements Serializable {
 		System.out.println("DISPLAY");
 		multiGenomeForDisplay.show();
 	}
-	
+
 }

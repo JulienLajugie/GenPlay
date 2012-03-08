@@ -203,7 +203,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	public void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeDrawer != null) {
-			multiGenomeDrawer.drawMultiGenomeInformation(g, projectWindow.getGenomeWindow(), projectWindow.getXFactor(), this);
+			multiGenomeDrawer.drawMultiGenomeInformation(g, projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		}
 	}
 

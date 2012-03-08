@@ -104,7 +104,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		// create graphics
 		trackGraphics = createsTrackGraphics(data);
 		//trackGraphics.addPropertyChangeListener(this);
-		
+
 		// registered the listener to the genome window manager
 		//ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 		addListeners();
@@ -131,7 +131,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		setPreferredHeight(defaultHeight);
 	}
 
-	
+
 	/**
 	 * Adds the relative listeners.
 	 */
@@ -140,8 +140,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics.addPropertyChangeListener(this);
 		registerToGenomeWindow();
 	}
-	
-	
+
+
 	/**
 	 * Registers every control panel components to the genome window manager.
 	 */
@@ -150,7 +150,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		projectWindow.addGenomeWindowListener(this);
 		projectWindow.addGenomeWindowListener(trackGraphics);
 	}
-	
+
 
 	/**
 	 * Creates the {@link TrackGraphics}
@@ -185,16 +185,16 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		// we remove listeners from the genome window manager
 		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(this);
 		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(trackGraphics);
-		
-		
+
+
 		// we clone the object
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(this);
 		ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 		ObjectInputStream ois = new ObjectInputStream(bais);
-		
-		
+
+
 		// we restore the listeners
 		for (PropertyChangeListener curList: pclSaver)	{
 			addPropertyChangeListener(curList);
@@ -206,7 +206,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			trackHandle.addPropertyChangeListener(curList);
 		}
 		registerToGenomeWindow();
-		
+
 		return (Track<?>) ois.readObject();
 	}
 
@@ -226,8 +226,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics = (TrackGraphics<T>) in.readObject();
 		genomeName = (String) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -238,7 +238,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		out.writeObject(listenerList);
 		out.writeObject(trackHandle);
 		out.writeObject(trackGraphics);
-		out.writeObject(genomeName);	
+		out.writeObject(genomeName);
 	}
 
 
@@ -349,14 +349,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		return trackHandle.getTrackNumber();
 	}
 
-	
+
 	/**
 	 * @return the width of a track (every track has the same width)
 	 */
 	public int getTrackWidth () {
 		return trackGraphics.getWidth();
 	}
-	
+
 
 	/**
 	 * @return the verticalLineCount
@@ -374,6 +374,26 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			return trackGraphics.getMultiGenomeDrawer().getStripesList();
 		}
 		return null;
+	}
+
+
+	/**
+	 * Enable the serialization of the stripes list for multi genome project.
+	 */
+	public void enableStripeListSerialization () {
+		if (trackGraphics.getMultiGenomeDrawer() != null) {
+			trackGraphics.getMultiGenomeDrawer().enableStripeListSerialization();
+		}
+	}
+
+
+	/**
+	 * Disable the serialization of the stripes list for multi genome project.
+	 */
+	public void disableStripeListSerialization () {
+		if (trackGraphics.getMultiGenomeDrawer() != null) {
+			trackGraphics.getMultiGenomeDrawer().disableStripeListSerialization();
+		}
 	}
 
 
@@ -419,7 +439,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
 		}
 	}
-	
+
 
 	/**
 	 * Save the {@link TrackGraphics} as an image
@@ -528,7 +548,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics.drawHeaderTrack(null);
 	}
 
-	
+
 	/**
 	 * This function is called when the track is deleted.
 	 * Removes all the listeners.  Can be overridden.

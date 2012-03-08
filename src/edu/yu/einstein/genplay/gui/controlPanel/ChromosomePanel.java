@@ -122,7 +122,6 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 		Chromosome newChromosome = (Chromosome)jcbChromosome.getSelectedItem();
 		if (newChromosome != null && !newChromosome.equals(projectWindow.getGenomeWindow().getChromosome())) {
 			GenomeWindow newGenomeWindow = new GenomeWindow(newChromosome, 0, newChromosome.getLength());
-			//setGenomeWindow(newGenomeWindow);
 			projectWindow.setGenomeWindow(newGenomeWindow);
 		}
 	}

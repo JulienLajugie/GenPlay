@@ -115,6 +115,55 @@ public class MGStripeSettings implements Serializable {
 	
 	
 	/**
+	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
+	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
+	 * @param copiedTrack	the copied track
+	 * @param newTrack		the pasted track
+	 */
+	public void pasteData (Track<?> copiedTrack, Track<?> newTrack) {
+		List<StripesData> stripeList = getStripesForTrack(copiedTrack);
+		if (stripeList != null) {
+			for (StripesData data: stripeList) {
+				Track<?>[] track = {newTrack};
+				StripesData newData = new StripesData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), track);
+				if (!stripeList.contains(newData)) {
+					stripesList.add(newData);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * When deleting a track, all its settings must be deleted.
+	 * The setting of a track can be mixed with the ones of other tracks.
+	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
+	 * @param deleteTrack the deleted track
+	 */
+	public void deleteData (Track<?> deleteTrack) {
+		List<StripesData> stripeList = getStripesForTrack(deleteTrack);
+		if (stripeList != null) {
+			for (StripesData data: stripeList) {
+				Track<?>[] trackList = data.getTrackList();
+				if (trackList.length == 1) {
+					stripesList.remove(data);
+				} else {
+					Track<?>[] newTrackList = new Track<?>[trackList.length - 1];
+					int cpt = 0;
+					for (Track<?> track: trackList) {
+						if (!deleteTrack.toString().equals(track.toString())) {
+							newTrackList[cpt] = track;
+							cpt++;
+						}
+					}
+					data.setTrackList(newTrackList);
+				}
+			}
+		}
+	}
+	
+	
+	/**
 	 * Show the settings
 	 */
 	public void showSettings () {
