@@ -28,8 +28,9 @@ import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
+import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
@@ -99,8 +100,10 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 			if (!Utils.cancelBecauseFileExist(trackList.getRootPane(), selectedFile)) {
 				notifyActionStart("Saving Project", 1, false);
 				String projectName = Utils.getFileNameWithoutExtension(selectedFile);
-				ProjectManager.getInstance().setProjectName(projectName);	
-				return ProjectRecordingManager.getInstance().saveProject(selectedFile);
+				ProjectManager.getInstance().setProjectName(projectName);
+				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
+				projectRecording.setCurrentProjectPath(selectedFile.getPath());
+				return projectRecording.saveProject(selectedFile);
 			}
 		}
 		return false;
@@ -110,7 +113,9 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		if ((actionResult != null) && (actionResult)) {
+			RecordingManager.getInstance().getRecentProjectRecording().writeProjects();
 			MainFrame.getInstance().setTitle();
 		}
 	}
+	
 }

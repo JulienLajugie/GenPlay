@@ -19,34 +19,52 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.list.geneList;
+package edu.yu.einstein.genplay.gui.action.project;
 
-import java.util.Comparator;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
-import edu.yu.einstein.genplay.core.Gene;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+
 
 
 /**
- * A class to sort genes by their middle positions
- * @author Chirag
+ * Shows the about dialog window
+ * @author Julien Lajugie
  * @version 0.1
  */
-public class GeneListMiddlePositionComparator implements Comparator<Gene>{
+public final class PAInitManagers extends AbstractAction {
+	
+	private static final long serialVersionUID = 2102571378866219218L; // generated ID
+	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
+	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key
+	private static final String 	ACTION_NAME = "Initializes Managers";		// action name
+	
+	
+	/**
+	 * key of the action in the {@link ActionMap}
+	 */
+	public static final String ACTION_KEY = "PAInitManagers";
+	
+	
+	/**
+	 * Creates an instance of {@link PAInitManagers}
+	 */
+	public PAInitManagers() {
+		super();
+		putValue(NAME, ACTION_NAME);
+		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
+		putValue(SHORT_DESCRIPTION, DESCRIPTION);
+        putValue(MNEMONIC_KEY, MNEMONIC);
+	}
+	
 
+	/**
+	 * Shows the about dialog window
+	 */
 	@Override
-	public int compare(Gene first, Gene second) {
-		if (first.getStop() > second.getStop()) {
-			return 1;
-		} else if (first.getStop() < second.getStop()) {
-			return -1;
-		} else {
-			if (first.getStart() > second.getStart()) {
-				return 1;
-			} else if (first.getStart() < second.getStart()) {
-				return -1;
-			} else {
-				return 0;
-			}
-		}		
+	public void actionPerformed(ActionEvent evt) {
+		System.out.println("PAInitManagers.actionPerformed()");
 	}
 }

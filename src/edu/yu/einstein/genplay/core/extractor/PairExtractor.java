@@ -102,9 +102,15 @@ implements Serializable, BinListGenerator {
 			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		try {
-			Chromosome chromosome = projectChromosome.get(chromosomeField[0]);
-			// checks if we need to extract the data on the chromosome
-			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			int chromosomeStatus;
+			Chromosome chromosome = null;
+			try {
+				chromosome = projectChromosome.get(chromosomeField[0]) ;
+				chromosomeStatus = checkChromosomeStatus(chromosome);
+			} catch (InvalidChromosomeException e) {
+				chromosomeStatus = NEED_TO_BE_SKIPPED;
+			}
+			
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {

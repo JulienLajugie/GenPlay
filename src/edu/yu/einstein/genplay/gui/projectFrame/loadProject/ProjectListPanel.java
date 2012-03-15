@@ -35,7 +35,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
+import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -49,6 +50,7 @@ class ProjectListPanel extends JPanel {
 	private static final 	String 					OTHER_NAME = "Other";	// Name for the field uses to load an existing projects
 	private 				GridBagConstraints 		gbc;					// Constraints for GridBagLayout
 	private 				Map<JRadioButton, File> projectList;			// The list of existing project
+	private					ProjectInformation[] 	projects;				// The list of project information
 	private 				ButtonGroup 			group;					// The button group
 	private 				JRadioButton 			radioOther;				// The radio button for the field uses to load an existing projects
 	private 				ProjectChooserPanel 	projectChooserPanel;	// The chooser file to choose an other project
@@ -64,7 +66,7 @@ class ProjectListPanel extends JPanel {
 		this.loadProjectPanel = loadProjectPanel;
 	}
 
-	
+
 	/**
 	 * Initializes the components of the panel with the list of all the project to load.
 	 */
@@ -82,7 +84,7 @@ class ProjectListPanel extends JPanel {
 		gbc.insets = new Insets(0, 0, 0, 0);
 
 		//Radio buttons
-		buildProjectList(ProjectManager.getInstance().getProjectConfiguration().getProjects());
+		buildProjectList();
 		buildButtonOther();
 
 		//Project chooser
@@ -127,7 +129,7 @@ class ProjectListPanel extends JPanel {
 	 */
 	protected void setButtonOther (File file) {
 		projectList.put(radioOther, file);
-		loadProjectPanel.showProjectInformation(file.getPath());
+		loadProjectPanel.showProjectInformation(getProjectInformationOf(file.getPath()));
 	}
 
 
@@ -135,15 +137,18 @@ class ProjectListPanel extends JPanel {
 	 * This method generate automatically every radio button in order to choose one of the last 5 projects.
 	 * @param projectPath	list of the 5 last project paths
 	 */
-	private void buildProjectList (String[] projectPath) {
+	private void buildProjectList () {
+		RecordingManager.getInstance().getRecentProjectRecording().refresh();
+		projects = RecordingManager.getInstance().getRecentProjectRecording().getProjects();
+
 		projectList = new HashMap<JRadioButton, File>();
 		group = new ButtonGroup();
 		for (int i=0; i<5; i++) {
 			final JRadioButton radio = new JRadioButton();
 
 			//File
-			if (projectPath[i] != null) {
-				File file = new File(projectPath[i]);
+			if (projects[i] != null) {
+				File file = projects[i].getFile();
 				radio.setText(file.getName());
 				radio.setName(file.getPath());
 				radio.setToolTipText(file.getPath());
@@ -160,11 +165,7 @@ class ProjectListPanel extends JPanel {
 			radio.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if (radio.getText() != "...") {
-						loadProjectPanel.showProjectInformation(radio.getName());
-					} else {
-						loadProjectPanel.showProjectInformation(null);
-					}
+					loadProjectPanel.showProjectInformation(getProjectInformationOf(radio.getName()));
 					projectChooserPanel.setVisible(false);
 					fakeChooser.setVisible(true);
 				}
@@ -172,11 +173,7 @@ class ProjectListPanel extends JPanel {
 
 			if (i == 0) {
 				radio.setSelected(true);
-				if (radio.getText() != "...") {
-					loadProjectPanel.showProjectInformation(radio.getName());
-				} else {
-					loadProjectPanel.showProjectInformation(null);
-				}
+				loadProjectPanel.showProjectInformation(getProjectInformationOf(radio.getName()));
 			}
 
 			//Group
@@ -185,12 +182,38 @@ class ProjectListPanel extends JPanel {
 			addRadioToPanel(radio);
 
 			//List
-			if (projectPath[i] != null) {
-				projectList.put(radio, new File(projectPath[i]));
+			if (projects[i] != null) {
+				projectList.put(radio, projects[i].getFile());
 			} else {
 				projectList.put(radio, null);
 			}
 		}
+	}
+
+
+	/**
+	 * Retrieves the project information using the path of a file.
+	 * @param filePath path of the project
+	 * @return the project information or null if it does not exist (eg: invalid path)
+	 */
+	private ProjectInformation getProjectInformationOf (String filePath) {
+		ProjectInformation projectInformation = null;
+		if (filePath != null) {
+			File file = new File(filePath);
+			if (file.exists()) {
+				for (ProjectInformation currentProjectInformation: projects) {
+					if (currentProjectInformation != null && currentProjectInformation.getFile().getPath().equals(filePath)) {
+						projectInformation = currentProjectInformation;
+					}
+				}
+				try {
+					projectInformation = RecordingManager.getInstance().getRecentProjectRecording().getProjectInformation(file);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return projectInformation;
 	}
 
 
@@ -211,7 +234,8 @@ class ProjectListPanel extends JPanel {
 		radioOther.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				loadProjectPanel.showProjectInformation(null);
+				String selectedPath = projectChooserPanel.getSelectedPath();
+				loadProjectPanel.showProjectInformation(getProjectInformationOf(selectedPath));
 				fakeChooser.setVisible(false);
 				projectChooserPanel.setVisible(true);
 			}

@@ -44,7 +44,7 @@ public class ProjectManager implements Serializable {
 	private			String			cladeName;				// clade name
 	private			String			genomeName;				// genome name
 	private  		Assembly 		assembly;				// assembly name
-	private			boolean			multiGenome;			// True if it is a multi genome project, false if it is a simple genome project 
+	private			boolean			multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
 
 
 	private ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
@@ -52,6 +52,7 @@ public class ProjectManager implements Serializable {
 	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
 	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
+	private ProjectFiles				projectFiles;				// Instance of the Files Manager
 
 
 	/**
@@ -90,7 +91,6 @@ public class ProjectManager implements Serializable {
 
 		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());	
 		instance.getProjectChromosome().setProjectChromosome((ProjectChromosome) in.readObject());
-		//MultiGenomeProject mgProject = 
 		if (instance.isMultiGenomeProject()) {
 			instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
 		}
@@ -122,6 +122,7 @@ public class ProjectManager implements Serializable {
 		projectZoom = new ProjectZoom();
 		projectChromosome = new ProjectChromosome();
 		projectWindow = new ProjectWindow();
+		projectFiles = new ProjectFiles();
 	}
 
 
@@ -195,6 +196,14 @@ public class ProjectManager implements Serializable {
 		}
 		return multiGenomeProject;
 	}
+	
+	
+	/**
+	 * @return the projectFiles
+	 */
+	public ProjectFiles getProjectFiles() {
+		return projectFiles;
+	}
 
 
 	/**
@@ -259,12 +268,5 @@ public class ProjectManager implements Serializable {
 	public void setAssembly(Assembly assembly) {
 		this.assembly = assembly;
 	}
-
-
-	/*public void setLoadedPrjectManager(ProjectManager pmtmp) {
-		ProjectWindow pjtmp = pmtmp.getProjectWindow();
-		projectWindow.setXFactor(pjtmp.getXFactor());
-		projectWindow.setGenomeWindow(pjtmp.getGenomeWindow());
-	}*/
 
 }

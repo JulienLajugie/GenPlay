@@ -36,7 +36,7 @@ import javax.swing.filechooser.FileFilter;
 import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.chromosome.ChromosomeComparator;
+import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.FilterType;
 import edu.yu.einstein.genplay.core.enums.IslandResultType;

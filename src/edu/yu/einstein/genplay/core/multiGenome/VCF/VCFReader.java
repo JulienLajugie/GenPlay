@@ -175,8 +175,8 @@ public class VCFReader implements Serializable {
 		fieldType.put("Character", char.class);
 		fieldType.put("String", String.class);
 	}
-
-
+	
+	
 	/**
 	 * This method indexes the VCF file using the Tabix Java API.
 	 * @throws IOException

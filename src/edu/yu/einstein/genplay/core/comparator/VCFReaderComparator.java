@@ -19,9 +19,11 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCF;
+package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
+
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 
 /**
  * This class compares vcf file readers according to the path of the vcf files.

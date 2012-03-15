@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.list.geneList;
+package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 

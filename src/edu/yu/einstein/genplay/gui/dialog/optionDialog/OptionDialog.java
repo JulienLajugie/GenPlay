@@ -50,6 +50,7 @@ import javax.swing.tree.TreeSelectionModel;
 import edu.yu.einstein.genplay.core.DAS.DASServerListWriter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -142,7 +143,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 				approved = APPROVE_OPTION;
 				setVisible(false);
 				try {
-					cm.writeConfigurationFile();
+					RecordingManager.getInstance().getApplicationRecording().writeConfigurationFile();
 					if (DASOptionPanel.tableChangedFlag == true) {
 						cm.setDASServerListFile(cm.getDASServerListFile());
 						DASServerListWriter dasServerListWriter = new DASServerListWriter();

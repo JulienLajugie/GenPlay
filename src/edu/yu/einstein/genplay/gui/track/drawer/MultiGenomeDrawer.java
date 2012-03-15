@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -45,7 +46,6 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.display.DisplayableVariantListMaker;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantComparator;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
@@ -165,6 +165,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<VCFFilter> filtersList) {
 		this.stripesList = stripesList;
 		this.vcfFiltersList = filtersList;
+		
 		List<MGVariantListForDisplay> allele01VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the first allele
 		List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
 
@@ -549,7 +550,9 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		List<String> list = new ArrayList<String>();
 		if (stripesList != null) {
 			for (StripesData data: stripesList) {
-				list.add(data.getGenome());
+				if (!list.contains(data.getGenome())) {
+					list.add(data.getGenome());
+				}
 			}
 		}
 		return list;
@@ -590,7 +593,6 @@ public class MultiGenomeDrawer<T> implements Serializable {
 					for (int i = 0; i < data.getVariationTypeList().size(); i++) {
 						colors.put(data.getVariationTypeList().get(i), data.getColorList().get(i));
 					}
-					break;
 				}
 			}
 		}

@@ -19,36 +19,34 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track;
+package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.comparator.StringComparator;
+import edu.yu.einstein.genplay.core.Gene;
+
 
 /**
- * Comparator for {@link Track}.
- * 
- * @author Nicolas Fourel
+ * A class to sort genes by their middle positions
+ * @author Chirag
  * @version 0.1
  */
-public class TrackComparator implements Comparator<Track<?>> {
+public class GeneListMiddlePositionComparator implements Comparator<Gene>{
 
 	@Override
-	public int compare(Track<?> o1, Track<?> o2) {
-		if (o1 == null && o2 == null) {
-			return 0;
-		} else if (o1 != null && o2 == null) {
-			return -1;
-		} else if (o1 == null && o2 != null) {
+	public int compare(Gene first, Gene second) {
+		if (first.getStop() > second.getStop()) {
 			return 1;
+		} else if (first.getStop() < second.getStop()) {
+			return -1;
 		} else {
-			
-			String s1 = o1.getName();
-			String s2 = o2.getName();
-			
-			StringComparator stringComparator = new StringComparator();
-			return stringComparator.compare(s1, s2);
-		}
+			if (first.getStart() > second.getStart()) {
+				return 1;
+			} else if (first.getStart() < second.getStart()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}		
 	}
-
 }

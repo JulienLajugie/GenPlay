@@ -111,8 +111,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		if (splitedLine[2].trim().equalsIgnoreCase("exon")) {
 			// retrieve the chromosome
 			try {
-				Chromosome chromo = projectChromosome.get(splitedLine[0].trim());
-				int chromosomeStatus = checkChromosomeStatus(chromo);
+				int chromosomeStatus;
+				Chromosome chromo = null;
+				try {
+					chromo = projectChromosome.get(splitedLine[0]) ;
+					chromosomeStatus = checkChromosomeStatus(chromo);
+				} catch (InvalidChromosomeException e) {
+					chromosomeStatus = NEED_TO_BE_SKIPPED;
+				}
+				
 				// check if we extracted all the selected chromosomes
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					// case where we extracted all the selected chromosomes

@@ -32,9 +32,9 @@ import java.util.TreeMap;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.Gene;
+import edu.yu.einstein.genplay.core.comparator.GeneListMiddlePositionComparator;
+import edu.yu.einstein.genplay.core.comparator.GeneListStopPositionComparator;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.core.list.geneList.GeneListMiddlePositionComparator;
-import edu.yu.einstein.genplay.core.list.geneList.GeneListStopPositionComparator;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLODistanceCalculator;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;

@@ -86,8 +86,15 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 	protected boolean extractLine(String line) throws InvalidDataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(line);
 		try {
-			Chromosome chromosome = projectChromosome.get(splitedLine[0].trim()) ;
-			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			int chromosomeStatus;
+			Chromosome chromosome = null;
+			try {
+				chromosome = projectChromosome.get(splitedLine[0].trim()) ;
+				chromosomeStatus = checkChromosomeStatus(chromosome);
+			} catch (InvalidChromosomeException e) {
+				chromosomeStatus = NEED_TO_BE_SKIPPED;
+			}
+			
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {

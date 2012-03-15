@@ -117,14 +117,17 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("chrom="))) {
 				// retrieve chromosome
 				String chromStr = splittedLine[i].trim().substring(6);
+				int chromosomeStatus;
 				try {
-					currentChromo = projectChromosome.get(chromStr.trim());
+					currentChromo = projectChromosome.get(chromStr.trim()) ;
+					chromosomeStatus = checkChromosomeStatus(currentChromo);
 				} catch (InvalidChromosomeException e) {
 					currentChromo = null;
-					throw new InvalidDataLineException("The chromosome could not be retrieved");
+					chromosomeStatus = NEED_TO_BE_SKIPPED;
 				}
+				
 				// check if the extraction is done
-				if (checkChromosomeStatus(currentChromo) == AFTER_LAST_SELECTED) {
+				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					return true;
 				}
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("start="))) {

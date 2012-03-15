@@ -19,39 +19,82 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.display.variant;
+package edu.yu.einstein.genplay.core.manager.project;
 
-import java.util.Comparator;
 
 /**
- * This class is a comparator for variant.
- * The comparison is made according to the reference genome position.
- * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantComparator implements Comparator<VariantInterface> {
+public class ProjectFiles {
 
-	@Override
-	public int compare(VariantInterface o1, VariantInterface o2) {
-		//int position1 = o1.getReferenceGenomePosition();
-		//int position2 = o2.getReferenceGenomePosition();
-		int position1 = o1.getStart();
-		int position2 = o2.getStart();
-		if (position1 < position2) {
-			return -1;
-		} else if (position1 == position2) {
-			int length1 = o1.getLength();
-			int length2 = o2.getLength();
-			if (length1 > length2) {
-				return -1;				// the longest variant is first
-			} else if (length1 < length2) {
-				return 1;
-			}
-			return 0;
+	private String[] oldFiles;
+	private String[] newFiles;
+
+
+	/**
+	 * Constructor of {@link ProjectFiles}
+	 */
+	protected ProjectFiles () {
+		oldFiles = null;
+		newFiles = null;
+	}
+
+
+	public boolean isFileDependant () {
+		if (oldFiles == null) {
+			return false;
 		} else {
-			return 1;
+			return true;
 		}
 	}
+
+
+	public String getNewPathOf (String oldPath) {
+		int oldPathIndex = -1;
+		for (int i = 0; i < oldFiles.length; i++) {
+			if (oldFiles[i].equals(oldPath)) {
+				oldPathIndex = i;
+				break;
+			}
+		}
+		if (oldPathIndex >= 0) {
+			return newFiles[oldPathIndex];
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the oldFiles
+	 */
+	public String[] getOldFiles() {
+		return oldFiles;
+	}
+
+
+	/**
+	 * @param oldFiles the oldFiles to set
+	 */
+	public void setOldFiles(String[] oldFiles) {
+		this.oldFiles = oldFiles;
+	}
+
+
+	/**
+	 * @return the newFiles
+	 */
+	public String[] getNewFiles() {
+		return newFiles;
+	}
+
+
+	/**
+	 * @param newFiles the newFiles to set
+	 */
+	public void setNewFiles(String[] newFiles) {
+		this.newFiles = newFiles;
+	}
+
 
 }

@@ -28,6 +28,7 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -104,8 +105,8 @@ public class LoadProjectPanel extends JPanel {
 	 * project information from the given path.
 	 * @param path	path of the project
 	 */
-	protected void showProjectInformation (String path) {
-		projectInformationPanel.showProjectInformation(path);
+	protected void showProjectInformation (ProjectInformation projectInformation) {
+		projectInformationPanel.showProjectInformation(projectInformation);
 	}
 	
 	

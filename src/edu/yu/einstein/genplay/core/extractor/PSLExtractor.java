@@ -114,9 +114,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 		}
 
 		try {
-			Chromosome chromosome = projectChromosome.get(splitedLine[13]) ;
-			// checks if we need to extract the data on the chromosome
-			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			int chromosomeStatus;
+			Chromosome chromosome = null;
+			try {
+				chromosome = projectChromosome.get(splitedLine[13]) ;
+				chromosomeStatus = checkChromosomeStatus(chromosome);
+			} catch (InvalidChromosomeException e) {
+				chromosomeStatus = NEED_TO_BE_SKIPPED;
+			}
+
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {

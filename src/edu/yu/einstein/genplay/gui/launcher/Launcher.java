@@ -29,8 +29,9 @@ import javax.swing.SwingUtilities;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -83,14 +84,15 @@ public class Launcher {
 	private static void startDemoProject() {
 		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
 		try {
-			ProjectRecordingManager.getInstance().initManagers(is);
+			RecordingManager.getInstance().getProjectRecording().initManagers(is);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		MainFrame.getInstance().setVisible(true);
-		PALoadProject load = new PALoadProject();
+		loadFile();
+		/*PALoadProject load = new PALoadProject();
 		load.setSkipFileSelection(true);
-		load.actionPerformed(null);
+		load.actionPerformed(null);*/
 	}
 
 
@@ -100,16 +102,27 @@ public class Launcher {
 	 */
 	public static void startProjectFromFile(File file) {
 		try {
-			ProjectRecordingManager.getInstance().initManagers(file);
+			RecordingManager.getInstance().getProjectRecording().initManagers(file);
 			MainFrame.getInstance().setVisible(true);
-			PALoadProject load = new PALoadProject();
+			loadFile();
+			/*ALoadProject load = new PALoadProject();
 			load.setSkipFileSelection(true);
-			load.actionPerformed(null);
+			load.actionPerformed(null);*/
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
 			System.out.println(file.getPath());
 		}
+	}
+	
+	
+	private static void loadFile () {
+		PAInitManagers init = new PAInitManagers();
+		init.actionPerformed(null);
+		
+		PALoadProject load = new PALoadProject();
+		load.setSkipFileSelection(true);
+		load.actionPerformed(null);
 	}
 
 
@@ -173,7 +186,7 @@ public class Launcher {
 	private static void loadManagers() {
 		// load configuration manager
 		try {
-			ProjectManager.getInstance().getProjectConfiguration().loadConfigurationFile();
+			RecordingManager.getInstance().getApplicationRecording().loadConfigurationFile();
 		} catch (Exception e) {
 			// do nothing if the configuration file is not found
 		}

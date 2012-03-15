@@ -19,35 +19,40 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track;
+package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.comparator.StringComparator;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
- * Comparator for {@link Track}.
+ * This class is a comparator for variant.
+ * The comparison is made according to the reference genome position.
  * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class TrackComparator implements Comparator<Track<?>> {
+public class VariantComparator implements Comparator<VariantInterface> {
 
 	@Override
-	public int compare(Track<?> o1, Track<?> o2) {
-		if (o1 == null && o2 == null) {
-			return 0;
-		} else if (o1 != null && o2 == null) {
+	public int compare(VariantInterface o1, VariantInterface o2) {
+		//int position1 = o1.getReferenceGenomePosition();
+		//int position2 = o2.getReferenceGenomePosition();
+		int position1 = o1.getStart();
+		int position2 = o2.getStart();
+		if (position1 < position2) {
 			return -1;
-		} else if (o1 == null && o2 != null) {
-			return 1;
+		} else if (position1 == position2) {
+			int length1 = o1.getLength();
+			int length2 = o2.getLength();
+			if (length1 > length2) {
+				return -1;				// the longest variant is first
+			} else if (length1 < length2) {
+				return 1;
+			}
+			return 0;
 		} else {
-			
-			String s1 = o1.getName();
-			String s2 = o2.getName();
-			
-			StringComparator stringComparator = new StringComparator();
-			return stringComparator.compare(s1, s2);
+			return 1;
 		}
 	}
 

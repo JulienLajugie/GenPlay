@@ -71,7 +71,7 @@ public class MultiGenomeProject implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -6096336417566795182L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;					// saved format version
-
+	
 	private		List<String>					genomeNames;					// The genome names list.
 	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;			// The map between genome names and their readers.
 
@@ -96,7 +96,7 @@ public class MultiGenomeProject implements Serializable {
 		out.writeObject(multiGenomeSynchronizer);
 		out.writeObject(multiGenomeSynchronizerForSNP);
 	}
-
+	
 
 	/**
 	 * Method used for unserialization
@@ -122,12 +122,12 @@ public class MultiGenomeProject implements Serializable {
 	 * @param project the instance of {@link MultiGenomeProject} to use
 	 */
 	protected void setMultiGenomeProject (MultiGenomeProject project) {
-		this.genomeNames = project.getGenomeNames();
-		this.genomeFileAssociation = project.getGenomeFileAssociation();
-		this.multiGenome = project.getMultiGenome();
-		this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
-		this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
-		this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
+			this.genomeNames = project.getGenomeNames();
+			this.genomeFileAssociation = project.getGenomeFileAssociation();
+			this.multiGenome = project.getMultiGenome();
+			this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
+			this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+			this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
 	}
 
 

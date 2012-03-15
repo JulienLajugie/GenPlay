@@ -25,14 +25,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager.ProjectInformation;
+import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 /**
@@ -177,40 +175,20 @@ class ProjectInformationPanel extends JPanel {
 	 * This method sets labels information
 	 * @param path	path of the project
 	 */
-	protected void showProjectInformation (String path) {
-		ProjectInformation info = getInformation(path);
-		if (info == null) {
+	protected void showProjectInformation (ProjectInformation projectInformation) {
+		if (projectInformation == null) {
 			projectName.setText("...");
 			projectGenome.setText("...");
 			projectType.setText("...");
 			projectDate.setText("...");
 			projectTrackNumber.setText("...");
 		} else {
-			projectName.setText(info.getProjectName());
-			projectGenome.setText(info.getProjectGenome());
-			projectType.setText(info.getProjectType());
-			projectDate.setText(info.getProjectDate());
-			projectTrackNumber.setText(info.getProjectTrackNumber());
+			projectName.setText(projectInformation.getProjectName());
+			projectGenome.setText(projectInformation.getProjectGenome());
+			projectType.setText(projectInformation.getProjectType());
+			projectDate.setText(projectInformation.getProjectDate());
+			projectTrackNumber.setText(projectInformation.getProjectTrackNumber());
 		}
 	}
 
-
-	/**
-	 * This method create an information list to fill information labels.
-	 * It gets information from the project record if it exists.
-	 * @param path	path of the project record
-	 * @return	a list of String (information)
-	 */
-	private ProjectInformation getInformation (String path) {
-		ProjectInformation info = null;
-		if (path != null) {
-			File file = new File(path);
-			try {
-				info = ProjectRecordingManager.getInstance().getProjectInformation(file);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return info;
-	}
 }

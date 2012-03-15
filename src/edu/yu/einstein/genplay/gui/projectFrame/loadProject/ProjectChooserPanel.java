@@ -47,7 +47,7 @@ class ProjectChooserPanel extends JPanel {
 	private static final long serialVersionUID = 8028393644918726073L; //generated ID
 	
 	private ProjectListPanel 	projectListPanel;	// Panel containing the list of projects
-	private JTextField 		path;			// The path of the selected project
+	private JTextField 			path;				// The path of the selected project
 	
 	
 	/**
@@ -102,6 +102,11 @@ class ProjectChooserPanel extends JPanel {
 	    add(chooseProject, BorderLayout.EAST);
 	}
 
+	
+	public String getSelectedPath() {
+		return path.getText();
+	}
+	
 
 	/**
 	 * This method is used in the chooseProject button listener.

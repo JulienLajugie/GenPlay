@@ -44,10 +44,10 @@ import javax.swing.UIManager;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
@@ -85,7 +85,7 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 541; 						// GenPlay version
+	private static final int VERSION_NUMBER = 542; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -188,7 +188,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setLocationByPlatform(true);
 
-		if (ProjectRecordingManager.getInstance().isLoadingEvent()) {
+		if (RecordingManager.getInstance().getProjectRecording().isLoadingEvent()) {
 			PALoadProject loader = new PALoadProject();
 			loader.setSkipFileSelection(true);
 			loader.actionPerformed(null);

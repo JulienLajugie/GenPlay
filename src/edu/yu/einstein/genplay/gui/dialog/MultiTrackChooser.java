@@ -33,6 +33,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -45,6 +48,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.TrackComparator;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -378,27 +382,30 @@ public class MultiTrackChooser extends JDialog {
 	 */
 	protected void unSelectTracks() {
 		if (!jliSelectedTracks.isSelectionEmpty()) {
+			// Get the selected tracks from the selected list of track
 			Track<?>[] selectedTracks = new Track[jliSelectedTracks.getSelectedValues().length];
 			for (int i = 0; i < selectedTracks.length; i++) {
 				selectedTracks[i] = (Track<?>) jliSelectedTracks.getSelectedValues()[i];
 			}
 			
-			/*List<Track<?>> tracks = new ArrayList<Track<?>>();
+			// Get the current available tracks
+			List<Track<?>> tracks = new ArrayList<Track<?>>();
 			for (Object object: dlmAvailableTracks.toArray()) {
 				tracks.add((Track<?>) object);
-			}*/
-			
-			for (Track<?> currentTrack: selectedTracks) {
-				dlmAvailableTracks.addElement(currentTrack);
-				//tracks.add(currentTrack);
-				dlmSelectedTracks.removeElement(currentTrack);
 			}
 			
-			/*Collections.sort(tracks, new TrackComparator());
+			// For all selected tracks
+			for (Track<?> currentTrack: selectedTracks) {
+				tracks.add(currentTrack);							// we add them to the current available list of track
+				dlmSelectedTracks.removeElement(currentTrack);		// we delete them from the selected tracks
+			}
+			
+			// We sort the new list and update the model of the available list of track 
+			Collections.sort(tracks, new TrackComparator());
 			dlmAvailableTracks.removeAllElements();
 			for (Track<?> currentTrack: tracks) {
 				dlmAvailableTracks.addElement(currentTrack);
-			}*/
+			}
 		}
 	}
 

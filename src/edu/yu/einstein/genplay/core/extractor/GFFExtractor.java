@@ -109,8 +109,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 		}
 
 		try {
-			Chromosome chromosome = projectChromosome.get(splitedLine[0]);
-			int chromosomeStatus = checkChromosomeStatus(chromosome);
+			int chromosomeStatus;
+			Chromosome chromosome = null;
+			try {
+				chromosome = projectChromosome.get(splitedLine[0]) ;
+				chromosomeStatus = checkChromosomeStatus(chromosome);
+			} catch (InvalidChromosomeException e) {
+				chromosomeStatus = NEED_TO_BE_SKIPPED;
+			}
+			
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {

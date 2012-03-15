@@ -28,14 +28,13 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.manager.ProjectRecordingManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
-
 
 
 /**
@@ -52,14 +51,14 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	private static final int 		MNEMONIC = KeyEvent.VK_L; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Load Project";	// action name
 	private boolean					skipFileSelection = false;		// true if the file selection need to be skipped. Default is false
-	
-	
+
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
 	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK); 
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -75,10 +74,10 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-        putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
-	
+
 	/**
 	 * Sets the user selection of a file to load needs to be skipped 
 	 * @param skipFileSelection true if no files need to be selected by the user
@@ -97,11 +96,11 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			if (selectedFile == null) {
 				return null;
 			}
-			ProjectRecordingManager.getInstance().initManagers(selectedFile);
+			RecordingManager.getInstance().getProjectRecording().initManagers(selectedFile);
 		}
 		MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)
 		notifyActionStart("Loading Project", 1, false);
-		return ProjectRecordingManager.getInstance().getTrackList();
+		return RecordingManager.getInstance().getProjectRecording().getTrackList();
 	}
 
 
@@ -109,7 +108,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	protected void doAtTheEnd(Track<?>[] actionResult) {
 		if (actionResult != null) {
 			skipFileSelection = false;
-			
+
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 			MainFrame.getInstance().setVisible(true);
@@ -117,5 +116,6 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
 			MainFrame.getInstance().registerToGenomeWindow();
 		}
-	}	
+	}
+
 }

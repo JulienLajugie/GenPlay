@@ -81,9 +81,15 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 		if (line.trim().charAt(0) != '@') {
 			String[] splitedLine = Utils.parseLineTabOnly(line);
 			try {
-				Chromosome chromosome = projectChromosome.get(splitedLine[2]);
-				// checks if we need to extract the data on the chromosome
-				int chromosomeStatus = checkChromosomeStatus(chromosome);
+				int chromosomeStatus;
+				Chromosome chromosome = null;
+				try {
+					chromosome = projectChromosome.get(splitedLine[2]) ;
+					chromosomeStatus = checkChromosomeStatus(chromosome);
+				} catch (InvalidChromosomeException e) {
+					chromosomeStatus = NEED_TO_BE_SKIPPED;
+				}
+				
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					return true;
 				} else if (chromosomeStatus != NEED_TO_BE_SKIPPED) {
