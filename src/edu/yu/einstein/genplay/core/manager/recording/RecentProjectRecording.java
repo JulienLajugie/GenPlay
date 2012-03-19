@@ -78,7 +78,7 @@ public class RecentProjectRecording {
 	 */
 	private void updateProjectPaths () {
 		refresh();			// we first refresh the list of existing path (in order to be sure to have the last modification)
-		ProjectInformation currentProjectInformation = RecordingManager.getInstance().getProjectRecording().getCurrentProjectInformation();
+		ProjectInformation currentProjectInformation = RecordingManager.getInstance().getProjectRecording().getProjectInformation();
 		String currentProjectPath = currentProjectInformation.getFile().getPath();	// gets the path of the current project
 
 		// we look if the current path already exists in the current list

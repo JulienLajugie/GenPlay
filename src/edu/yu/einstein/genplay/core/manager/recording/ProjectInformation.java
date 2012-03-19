@@ -47,7 +47,7 @@ public class ProjectInformation implements Serializable {
 	private String 		projectTrackNumber;			// number of track in the project
 	private String[] 	projectFiles = null;		// files of the project
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -208,5 +208,26 @@ public class ProjectInformation implements Serializable {
 	public void setProjectFiles(String[] projectFiles) {
 		this.projectFiles = projectFiles;
 	}
-	
+
+
+	public void show () {
+		String info = "";
+		info += "---------- Project Information\n";
+		info += "Name: " + projectName + "\n";
+		info += "Genome: " + projectGenome + "\n";
+		info += "Date: " + projectDate.toString() + "\n";
+		info += "File: " + file.getPath() + "\n";
+		info += "Track #: " + projectTrackNumber + "\n";
+		info += "Type: " + projectType + "\n";
+		if (projectFiles != null) {
+			info += "Is file dependant:\n";
+			for (int i = 0; i < projectFiles.length; i++) {
+				info += (i + 1) + ": " + projectFiles[i] + "\n"; 
+			}
+		} else {
+			info += "Is not file dependant\n";
+		}
+		info += "----------";
+		System.out.println(info);
+	}
 }

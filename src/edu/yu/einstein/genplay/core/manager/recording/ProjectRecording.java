@@ -55,9 +55,19 @@ public class ProjectRecording {
 	private 		File 					fileToLoad;							// The project file to load
 	private 		Track<?>[]				trackList;							// The list of tracks to save
 	private 		ObjectInputStream 		ois;								// The input file stream
+	private 		ProjectInformation		projectInformation;					// The project information
 	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
 	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
 	private 		String 					currentProjectPath;					// path to the current project
+	
+	
+	protected ProjectRecording () {
+		ois = null;
+		projectInformation = null;
+		trackListReadyToLoad = false;
+		loadingEvent = false;
+	}
+	
 	
 	
 	/**
@@ -79,7 +89,8 @@ public class ProjectRecording {
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackList.setViewportView(null);
 			}
-			oos.writeObject(getCurrentProjectInformation());
+			updatesCurrentProjectInformation();
+			oos.writeObject(projectInformation);
 			oos.writeObject(ProjectManager.getInstance());
 			oos.writeObject(trackList.getTrackList());
 
@@ -104,45 +115,61 @@ public class ProjectRecording {
 		}
 		return true;
 	}
-	
-	
-	/**
-	 * Creates/sets chromosome manager object.
-	 * A project file has to be set before!
-	 * @throws Exception
-	 */
-	/*private void initManagers () throws Exception {
-		initManagers (fileToLoad);
-	}*/
 
-
+	
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param inputFile		project file
 	 * @throws Exception
 	 */
-	public void initManagers (File inputFile) throws Exception {
+	public void initObjectInputStream (File inputFile) throws Exception {
 		fileToLoad = inputFile;
 		FileInputStream fis = new FileInputStream(inputFile);
-		initManagers(fis);
+		initObjectInputStream(fis);
 	}
 
-
+	
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param is InputStream object
 	 * @throws Exception
 	 */
-	public void initManagers (InputStream is) throws Exception {
+	public void initObjectInputStream (InputStream is) throws Exception {
 		try {
 			GZIPInputStream gz = new GZIPInputStream(is);
 			ois = new ObjectInputStream(gz);
-			ois.readObject();	// read the project information
-			ois.readObject(); 	// init the project manager
-			trackListReadyToLoad = true;
 		} catch (IOException e) {
 			// a IOException is likely to be caused by a invalid file type 
 			throw new InvalidFileTypeException();
+		}
+	}
+	
+	
+	/**
+	 * Initializes the project information.
+	 * It unserializes the first object contained in the file that is the information about the project.
+	 * This method must be the first one to be called once the object input stream has been created.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void initProjectInformation () throws ClassNotFoundException, IOException {
+		if (ois != null) {
+			projectInformation = (ProjectInformation) ois.readObject();
+		}
+	}
+	
+	
+	/**
+	 * Initializes the project manager.
+	 * It unserializes the second object contained in the file that is the project manager.
+	 * This method must be the second one to be called once the object input stream has been created.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void initProjectManager () throws ClassNotFoundException, IOException {
+		if (ois != null) {
+			ois.readObject();
+			trackListReadyToLoad = true;
 		}
 	}
 	
@@ -168,10 +195,18 @@ public class ProjectRecording {
 	
 	
 	/**
-	 * @return a {@link ProjectInformation} object containing informations about the project
+	 * @return the projectInformation
 	 */
-	public ProjectInformation getCurrentProjectInformation() {
-		ProjectInformation projectInformation = new ProjectInformation();
+	public ProjectInformation getProjectInformation() {
+		return projectInformation;
+	}
+
+
+	/**
+	 * Updates the current information about the project
+	 */
+	public void updatesCurrentProjectInformation() {
+		projectInformation = new ProjectInformation();
 		projectInformation.setFile(new File(currentProjectPath));
 		ProjectManager projectManager = ProjectManager.getInstance();
 		projectInformation.setProjectName(projectManager.getProjectName());
@@ -201,8 +236,6 @@ public class ProjectRecording {
 		if (projectManager.getProjectFiles().isFileDependant()) {
 			projectInformation.setProjectFiles(projectManager.getProjectFiles().getNewFiles());
 		}
-		
-		return projectInformation;
 	}
 	
 	

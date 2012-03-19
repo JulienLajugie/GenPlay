@@ -83,16 +83,12 @@ public class Launcher {
 	 */
 	private static void startDemoProject() {
 		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
+
 		try {
-			RecordingManager.getInstance().getProjectRecording().initManagers(is);
+			loadFile(is);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		MainFrame.getInstance().setVisible(true);
-		loadFile();
-		/*PALoadProject load = new PALoadProject();
-		load.setSkipFileSelection(true);
-		load.actionPerformed(null);*/
 	}
 
 
@@ -102,28 +98,54 @@ public class Launcher {
 	 */
 	public static void startProjectFromFile(File file) {
 		try {
-			RecordingManager.getInstance().getProjectRecording().initManagers(file);
-			MainFrame.getInstance().setVisible(true);
-			loadFile();
-			/*ALoadProject load = new PALoadProject();
-			load.setSkipFileSelection(true);
-			load.actionPerformed(null);*/
+			loadFile(file);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Invalid Project File: The specifed file is not a valid project file");
 			System.out.println(file.getPath());
 		}
 	}
-	
-	
-	private static void loadFile () {
+
+
+	/**
+	 * Loads a file using a file object.
+	 * First initializes the managers and then load the file.
+	 * @param file the file
+	 */
+	private static void loadFile (File file) {
 		PAInitManagers init = new PAInitManagers();
+		init.setFile(file);
 		init.actionPerformed(null);
-		
+
+		loadProject();
+	}
+
+
+	/**
+	 * Loads a file using an input stream.
+	 * First initializes the managers and then load the file.
+	 * @param is the input strean
+	 */
+	private static void loadFile (InputStream is) {
+		PAInitManagers init = new PAInitManagers();
+		init.setInputStream(is);
+		init.actionPerformed(null);
+
+		loadProject();
+	}
+
+
+	/**
+	 * Loads a project.
+	 */
+	private static void loadProject () {
+		MainFrame.getInstance().setVisible(true);
+
 		PALoadProject load = new PALoadProject();
 		load.setSkipFileSelection(true);
 		load.actionPerformed(null);
 	}
+
 
 
 	/**
@@ -132,8 +154,12 @@ public class Launcher {
 	private static void startProjectFrame() {
 		//Welcome screen initialization
 		ProjectFrame projectFrame = ProjectFrame.getInstance();
-		// load the managers from the configuration files
-		loadManagers();
+		// load the application settings
+		try {
+			RecordingManager.getInstance().getApplicationRecording().loadConfigurationFile();
+		} catch (Exception e) {
+			// do nothing if the configuration file is not found
+		}
 		//Create a new thread to display the welcome screen
 		projectFrame.initScreen();
 	}
@@ -156,17 +182,17 @@ public class Launcher {
 		projectManager.setAssembly(assembly);
 		projectManager.updateChromosomeList();
 		projectFrame.setVisible(false);
-		
+
 		// Initializes the genome window manager
 		projectManager.getProjectWindow().initialize();
-		
+
 		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
 		MainFrame.reinit();
-		
+
 		// starts the main frame of the application
 		MainFrame.getInstance().setVisible(true);
 		MainFrame.getInstance().initStatusBarForFirstUse();
-		
+
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSingleProject()) {
 			ProjectManager.getInstance().setMultiGenomeProject(true);
@@ -179,16 +205,4 @@ public class Launcher {
 		}
 	}
 
-
-	/**
-	 * Loads the managers with the configuration files
-	 */
-	private static void loadManagers() {
-		// load configuration manager
-		try {
-			RecordingManager.getInstance().getApplicationRecording().loadConfigurationFile();
-		} catch (Exception e) {
-			// do nothing if the configuration file is not found
-		}
-	}
 }

@@ -96,7 +96,9 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			if (selectedFile == null) {
 				return null;
 			}
-			RecordingManager.getInstance().getProjectRecording().initManagers(selectedFile);
+			PAInitManagers init = new PAInitManagers();
+			init.setFile(selectedFile);
+			init.actionPerformed(null);
 		}
 		MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)
 		notifyActionStart("Loading Project", 1, false);
