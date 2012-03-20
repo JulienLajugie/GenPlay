@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.launcher;
 import java.io.File;
 import java.io.InputStream;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import edu.yu.einstein.genplay.core.genome.Assembly;
@@ -115,9 +116,9 @@ public class Launcher {
 	private static void loadFile (File file) {
 		PAInitManagers init = new PAInitManagers();
 		init.setFile(file);
-		init.actionPerformed(null);
+		//init.actionPerformed(null);
 
-		loadProject();
+		loadProject(init);
 	}
 
 
@@ -129,21 +130,27 @@ public class Launcher {
 	private static void loadFile (InputStream is) {
 		PAInitManagers init = new PAInitManagers();
 		init.setInputStream(is);
-		init.actionPerformed(null);
+		//init.actionPerformed(null);
 
-		loadProject();
+		loadProject(init);
 	}
 
 
 	/**
 	 * Loads a project.
 	 */
-	private static void loadProject () {
-		MainFrame.getInstance().setVisible(true);
+	private static void loadProject (PAInitManagers initAction) {
+		initAction.actionPerformed(null);
+		if (initAction.hasBeenInitialized()) {
+			MainFrame.getInstance().setVisible(true);
 
-		PALoadProject load = new PALoadProject();
-		load.setSkipFileSelection(true);
-		load.actionPerformed(null);
+			PALoadProject load = new PALoadProject();
+			load.setSkipFileSelection(true);
+			load.actionPerformed(null);
+		} else {
+			JOptionPane.showMessageDialog(null, initAction.getErrorMessage(), "The project has not been initialized", JOptionPane.WARNING_MESSAGE);
+			ProjectFrame.getInstance().setVisible(true);
+		}
 	}
 
 

@@ -33,6 +33,7 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
@@ -157,6 +158,20 @@ public class MultiGenomeProject implements Serializable {
 		this.multiGenomeSynchronizer = new MGSynchronizer(this);
 		this.multiGenomeSynchronizerForSNP = new MGSNPSynchronizer();
 		initializesDisplayInformation();
+		initializeFileDependancy();
+	}
+	
+	
+	/**
+	 * This method notice the file manager of the dependant files.
+	 */
+	private void initializeFileDependancy () {
+		List<VCFReader> readers = getAllReaders();
+		String[] paths = new String[readers.size()];
+		for (int i = 0; i < paths.length; i++) {
+			paths[i] = readers.get(i).getFile().getPath();
+		}
+		ProjectFiles.getInstance().setCurrentFiles(paths);
 	}
 
 

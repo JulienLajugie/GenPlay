@@ -25,21 +25,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.core.manager.ProjectFiles;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectInformation;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.dialog.invalidFileDialog.InvalidFileDialog;
 
 
-
 /**
- * Shows the about dialog window
+ * This action initializes a project just before loading it.
+ * The loading action {@link PALoadProject} gets the track list.
+ * A project files contains two elements before the track list, they are:
+ * - the project information {@link ProjectInformation}
+ * - the managers {@link ProjectManager}
+ * 
+ * This action first reads the project information in order to validate the files related to the project wether the project is file dependant.
+ * Then, this action reads the managers.
+ * 
+ * This action is set either with an input stream or with a file.
+ * The method hasBeenInitialized() must be used in order to validate the initialization.
+ * If any error happened, the method getErrorMessage() gives the error message.
+ * 
+ * @author Nicolas Fourel
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -49,11 +62,12 @@ public final class PAInitManagers extends AbstractAction {
 	private static final String 	DESCRIPTION = "Show About GenPlay"; // tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_A; 			// mnemonic key
 	private static final String 	ACTION_NAME = "Initializes Managers";		// action name
-	private File file;
-	private InputStream inputStream;
-	private String[] formerPaths;
-	private String[] invalidPaths;
-	private String[] newPaths;
+	private File 		file;			// the file of the project to load
+	private InputStream inputStream;	// the input stream of the project to load
+	private String[] 	formerPaths;	// array of the former paths
+	private String[] 	invalidPaths;	// array of the invalid paths
+	private String[] 	newPaths;		// array of the new paths
+	private String		error;			// the error message
 
 
 	/**
@@ -73,6 +87,7 @@ public final class PAInitManagers extends AbstractAction {
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		file = null;
 		inputStream = null;
+		error = null;
 	}
 
 
@@ -82,45 +97,87 @@ public final class PAInitManagers extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 		if (file != null || inputStream != null) {
+			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
+
+			
+			// Initializes the object input stream
 			try {
-				ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
-				
-				// Initializes the object input stream
 				if (file != null) {
 					projectRecording.initObjectInputStream(file);			// according to the given file
 				} else if (inputStream != null) {							// or
 					projectRecording.initObjectInputStream(inputStream);	// according to the given input stream
 				}
+			} catch (Exception e) {
+				error = "Could not open the project file.";
+				//e.printStackTrace();
+			}
 
-				// Reads the project information object
+
+			// Reads the project information object
+			try {
 				projectRecording.initProjectInformation();
-				
+			} catch (Exception e) {
+				error = "Could not read the project information.";
+				//e.printStackTrace();
+			}
+
+			
+			// Manages the missing files
+			try {
 				// Gets the project information object
 				ProjectInformation projectInformation = projectRecording.getProjectInformation();
-				projectInformation.show();
+				//projectInformation.show();
 				// Gets the files dependant to the project
 				formerPaths = projectInformation.getProjectFiles();
+
 				if (formerPaths != null) {									// if the project is file dependant
+					//System.out.println("- Is file dependant");
 					invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
 					if (getNumberOfInvalidFiles(invalidPaths) > 0) {		// if some invalid files exist,
+						/*System.out.println("-- Some files do not exist:");
+						for (int i = 0; i < invalidPaths.length; i++) {
+							System.out.println("--- " + i + ": " + invalidPaths[i]);
+						}*/
+						
+						// Warn the user about the .gz and .gz.tbi files
+						if (!projectInformation.isSingleProject()) {
+							JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
+									"The next window will allow you to define their new location.\n" +
+									"Please remind that .gz and .gz.tbi files must have the same name and location.");
+						}
+						
 						InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
 						if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
 							newPaths = invalidFileDialog.getCorrectedPaths();
-							
+							/*System.out.println("-- New files are:");
+							for (int i = 0; i < newPaths.length; i++) {
+								System.out.println("--- " + i + ": " + newPaths[i]);
+							}*/
+							ProjectFiles.getInstance().setCurrentFiles(formerPaths);
+							ProjectFiles.getInstance().setNewFiles(newPaths);
 						} else {
+							//System.out.println("-- Error");
 							throw new Exception();
 						}
-					}
-				}
+					}/* else {
+						System.out.println("-- They are all valid");
+					}*/
+				} /*else {
+					System.out.println("- Is not file dependant");
+				}*/
+			} catch (Exception e) {
+				error = "Invalid files path not corrected.";
+			}
 
-				// Reads the project manager
+
+			// Reads the project manager
+			try {
 				projectRecording.initProjectManager();
 			} catch (Exception e) {
-				e.printStackTrace();
+				error = "Could not read the managers.";
+				//e.printStackTrace();
 			}
-		} else {
-			System.out.println("PAInitManagers.actionPerformed()");
-			System.out.println("ERROR!!!!!!!!!!!!");
+
 		}
 	}
 
@@ -141,9 +198,14 @@ public final class PAInitManagers extends AbstractAction {
 	}
 
 
+	/**
+	 * Create an array of invalid paths.
+	 * @param paths the file paths
+	 * @return the array of invalid paths
+	 */
 	private String[] getInvalidPath (String[] paths) {
 		String[] invalidPaths = new String[paths.length];
-		
+
 		for (int i = 0; i < invalidPaths.length; i++) {
 			if (!isValidFile(paths[i])) {
 				invalidPaths[i] = paths[i];
@@ -154,8 +216,12 @@ public final class PAInitManagers extends AbstractAction {
 
 		return invalidPaths;
 	}
-	
-	
+
+
+	/**
+	 * @param paths the array of paths
+	 * @return the number of valid paths
+	 */
 	private int getNumberOfInvalidFiles (String[] paths) {
 		int cpt = 0;
 		for (int i = 0; i < paths.length; i++) {
@@ -166,10 +232,33 @@ public final class PAInitManagers extends AbstractAction {
 		return cpt;
 	}
 
-
+	
+	/**
+	 * @param path file path
+	 * @return true if the file is valid
+	 */
 	private boolean isValidFile (String path) {
 		File file = new File(path);
 		return file.exists();
+	}
+	
+	
+	/**
+	 * @return the error message
+	 */
+	public String getErrorMessage () {
+		return error;
+	}
+	
+	
+	/**
+	 * @return true if the managers have been initialized, false otherwise
+	 */
+	public boolean hasBeenInitialized () {
+		if (error == null) {
+			return true;
+		}
+		return false;
 	}
 
 }

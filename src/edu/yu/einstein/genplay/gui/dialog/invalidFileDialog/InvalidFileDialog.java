@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.gui.dialog.invalidFileDialog;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.FontMetrics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -34,9 +36,11 @@ import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBox;
+import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -61,43 +65,48 @@ public class InvalidFileDialog extends JDialog {
 	private static final long serialVersionUID = -6703399045694111551L;
 
 	/** Return value when OK has been clicked. */
-	public static final 	int 			APPROVE_OPTION 		= 0;
+	public static final 	int 			APPROVE_OPTION 			= 0;
 	/** Return value when Cancel has been clicked. */
-	public static final 	int 			CANCEL_OPTION 		= 1;
+	public static final 	int 			CANCEL_OPTION 			= 1;
 
-	private static final 	int 			DIALOG_WIDTH 		= 700;											// width of the dialog
-
-	private 				int				approved 			= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-
-	private String[] invalidFiles;
-	private CustomFileComboBox[] correctedFiles;
+	private 				int				approved 				= CANCEL_OPTION;								// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
+	private 				int				inset					= 10;				// unique inset used
+	private					int				dialogWidth;								// width of the dialog
+	private					int				dialogHeight;								// height of the dialog
+	private					int				titlePanelHeight		= 40;				// height of the title panel
+	private					int				filePanelHeight;							// height of the file selection panel
+	private					int				validationPanelHeight	= 40;				// height of the validation panel
+	private					int				lineHeight				= 20;				// height of a line in the file selection panel
 	
+	private JPanel 					filePanel;											// the file selection panel
+	private JPanel 					validationPanel;									// the validation panel
+	private String[] 				files;												// the input files
+	private CustomFileComboBox[] 	correctedFiles;										// the array of combo box containing the corrected files
+
 	
 	/**
 	 * Constructor of {@link InvalidFileDialog}
+	 * @param files the array of files
 	 */
-	public InvalidFileDialog (String[] invalidFiles) {
-		this.invalidFiles = invalidFiles;
+	public InvalidFileDialog (String[] files) {
+		this.files = files;
 		
 		// Dimensions
-		//Dimension dialogDim = new Dimension(DIALOG_WIDTH, 400);
-		//Dimension validationDim = new Dimension(DIALOG_WIDTH, VALIDATION_HEIGHT);
-
+		updateDimensions();
+		Dimension dialogDimension = new Dimension(dialogWidth, dialogHeight);
+		setSize(dialogDimension);
+		setMinimumSize(dialogDimension);
+		setPreferredSize(dialogDimension);
 		
-		
-		
-
-
 		// Dialog
 		setTitle("Invalid File(s) Correction");
-		//setSize(dialogDim);
-		//setMinimumSize(new Dimension(getMinimumWidth(), getMinimumHeight()));
+		setIconImage(Images.getApplicationImage());
+		setResizable(false);
+		setModal(true);
 		setLayout(new BorderLayout());
 		add(getTitlePanel(), BorderLayout.NORTH);
 		add(getFilesPanel(), BorderLayout.CENTER);
 		add(getValidationPanel(), BorderLayout.SOUTH);
-		setIconImage(Images.getApplicationImage());
-		pack();
 	}
 	
 
@@ -127,8 +136,13 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	private JPanel getTitlePanel () {
 		JPanel panel = new JPanel();
-		JLabel label = new JLabel("Please correct the files");
-		panel.add(label);
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, inset, 0);
+		panel.setLayout(layout);
+		JLabel titleLabel = new JLabel("<html>Some files have been moved,<br>please select the new paths.</html>");
+		Dimension titleLabelDimension = new Dimension(dialogWidth, titlePanelHeight);
+		titleLabel.setPreferredSize(titleLabelDimension);
+		titleLabel.setMinimumSize(titleLabelDimension);
+		panel.add(titleLabel);
 		return panel;
 	}
 	
@@ -138,34 +152,49 @@ public class InvalidFileDialog extends JDialog {
 	 * @return the information panel
 	 */
 	private JPanel getFilesPanel () {
-		JPanel panel = new JPanel();
+		filePanel = new JPanel();
+		Dimension filePanelDimension = new Dimension(dialogWidth, filePanelHeight);
+		filePanel.setPreferredSize(filePanelDimension);
+		filePanel.setMinimumSize(filePanelDimension);
 		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
+		filePanel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
 		
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
+		gbc.gridheight = 1;
+		gbc.gridwidth = 1;
 		gbc.weightx = 1;
+		gbc.weighty = 1;
 		
-		correctedFiles = new CustomFileComboBox[invalidFiles.length];
+		correctedFiles = new CustomFileComboBox[files.length];
+		Dimension comboDimension = new Dimension(dialogWidth - 2 * inset, lineHeight);
 		
-		for (int i = 0; i < invalidFiles.length; i++) {
-			String path = invalidFiles[i];
+		VCFFilter[] filter = {new VCFFilter()};
+
+		for (int i = 0; i < files.length; i++) {
+			String path = files[i];
 			if (path != null) {
 				JLabel label = new JLabel(path);
-				panel.add(label);
+				gbc.insets = new Insets(inset, inset, 0, inset);
+				filePanel.add(label, gbc);
 				gbc.gridy++;
 				
 				correctedFiles[i] = new CustomFileComboBox();
-				panel.add(correctedFiles[i]);
+				correctedFiles[i].setSize(comboDimension);
+				correctedFiles[i].setMinimumSize(comboDimension);
+				correctedFiles[i].setPreferredSize(comboDimension);
+				correctedFiles[i].setFilters(filter);
+				gbc.insets = new Insets(0, inset, inset, inset);
+				filePanel.add(correctedFiles[i], gbc);
 				gbc.gridy++;
 			} else {
 				correctedFiles[i] = null;
 			}
 		}
-
-		return panel;
+		
+		return filePanel;
 	}
 
 
@@ -174,7 +203,6 @@ public class InvalidFileDialog extends JDialog {
 	 * @param dimension dimension of the panel
 	 * @return			the panel
 	 */
-	//private JPanel getValidationPanel (Dimension dimension) {
 	private JPanel getValidationPanel () {
 		Dimension buttonDim = new Dimension(60, 30);
 		Insets inset = new Insets(0, 0, 0, 0);
@@ -198,15 +226,19 @@ public class InvalidFileDialog extends JDialog {
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				approved = CANCEL_OPTION;
-				closeDialog();
+				int n = JOptionPane.showConfirmDialog(null, "If you cancel, the project will not be load. Do you really want to cancel?", "Invalid File(s) Correction", JOptionPane.YES_NO_OPTION); 
+				if (n == JOptionPane.YES_OPTION) {
+					approved = CANCEL_OPTION;
+					closeDialog();
+				}
 			}
 		});
 
-		JPanel validationPanel = new JPanel();
+		validationPanel = new JPanel();
+		Dimension validationPanelDimension = new Dimension(dialogWidth, validationPanelHeight);
+		validationPanel.setPreferredSize(validationPanelDimension);
 		validationPanel.add(confirm);
 		validationPanel.add(cancel);
-		//validationPanel.setSize(dimension);
 
 		return validationPanel;
 	}
@@ -216,7 +248,7 @@ public class InvalidFileDialog extends JDialog {
 	 * @return the array of corrected paths
 	 */
 	public String[] getCorrectedPaths () {
-		String[] correctedPaths = new String[invalidFiles.length];
+		String[] correctedPaths = new String[files.length];
 		
 		for (int i = 0; i < correctedFiles.length; i++) {
 			if (correctedFiles != null) {
@@ -228,4 +260,33 @@ public class InvalidFileDialog extends JDialog {
 		
 		return correctedPaths;
 	}
+	
+	
+	/**
+	 * Updates the parameters used to calculate the dimensions
+	 */
+	private void updateDimensions () {
+		dialogWidth = (int) (getMaxLength() * 1.3 + inset * 2);
+		int numberOfLines = files.length * 2;
+		filePanelHeight = (lineHeight + 2 * inset) * numberOfLines;
+		dialogHeight = titlePanelHeight + filePanelHeight + validationPanelHeight;
+	}
+	
+	
+	/**
+	 * @return the longest path length
+	 */
+	private int getMaxLength () {
+		int result = 0;
+		JPanel p = new JPanel();
+		FontMetrics fm = getFontMetrics(p.getFont());
+		for (String path: files) {
+			int pathLength = fm.stringWidth(path);
+			if (pathLength > result) {
+				result = pathLength;
+			}
+		}
+		return result;
+	}
+
 }

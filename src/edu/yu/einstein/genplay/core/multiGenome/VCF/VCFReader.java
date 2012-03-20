@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAltType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
@@ -183,6 +184,7 @@ public class VCFReader implements Serializable {
 	 */
 	private void indexVCFFile () throws IOException {
 		if (!isVCFIndexed ()) {
+			file = ProjectFiles.getInstance().getValidFileOf(file);
 			this.vcfParser = new TabixReader(file.getPath());
 		}
 	}

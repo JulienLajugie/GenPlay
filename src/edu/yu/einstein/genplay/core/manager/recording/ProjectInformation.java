@@ -209,7 +209,21 @@ public class ProjectInformation implements Serializable {
 		this.projectFiles = projectFiles;
 	}
 
+	
+	/**
+	 * @return true if it is a single project, false otherwise
+	 */
+	public boolean isSingleProject () {
+		if (projectType.equals("Single Genome Project")) {
+			return true;
+		}
+		return false;
+	}
+	
 
+	/**
+	 * Shows the project information
+	 */
 	public void show () {
 		String info = "";
 		info += "---------- Project Information\n";

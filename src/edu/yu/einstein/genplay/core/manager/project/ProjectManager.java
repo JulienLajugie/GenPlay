@@ -52,7 +52,6 @@ public class ProjectManager implements Serializable {
 	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
 	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
-	private ProjectFiles				projectFiles;				// Instance of the Files Manager
 
 
 	/**
@@ -122,7 +121,6 @@ public class ProjectManager implements Serializable {
 		projectZoom = new ProjectZoom();
 		projectChromosome = new ProjectChromosome();
 		projectWindow = new ProjectWindow();
-		projectFiles = new ProjectFiles();
 	}
 
 
@@ -195,14 +193,6 @@ public class ProjectManager implements Serializable {
 			multiGenomeProject = new MultiGenomeProject();
 		}
 		return multiGenomeProject;
-	}
-	
-	
-	/**
-	 * @return the projectFiles
-	 */
-	public ProjectFiles getProjectFiles() {
-		return projectFiles;
 	}
 
 
