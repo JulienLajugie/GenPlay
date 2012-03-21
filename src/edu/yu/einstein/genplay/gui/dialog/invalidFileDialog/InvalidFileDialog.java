@@ -45,14 +45,14 @@ import edu.yu.einstein.genplay.util.Images;
 
 
 /**
- * This class is the VCF loader dialog.
- * It displays a table for editing multi-genome VCF settings.
- * Developer can:
- * - show it
- * - close it
- * - set the data
- * - get the data
- * - check settings validity
+ * This class allows the user to select new paths in order to replace incorrect paths.
+ * Paths to modify are given in an array, null values can be present and will not be taken into account.
+ * However, the array containing the corrected paths will be returned according to the index of the given paths.
+ * 
+ * eg: an array of 5 Strings but only the value on index 2 is not null.
+ * After correction, an array of 5 Strings will be returned. This array will contain the new String at the index 2 but null values at the other indexes.
+ * 
+ * That way, the developer never has to change the length of his array which makes it easier to match former and new paths.
  * 
  * @author Nicolas Fourel
  * @version 0.1

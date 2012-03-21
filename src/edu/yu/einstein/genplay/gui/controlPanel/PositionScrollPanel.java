@@ -49,7 +49,6 @@ final class PositionScrollPanel extends JPanel implements AdjustmentListener, Mo
 
 
 	private static final long serialVersionUID = 2266293237606451568L; 	// Generated ID
-	private static final int HANDLE_WIDTH = 50;							// Width of the track handle
 	private static final int TRACKS_SCROLL_WIDTH = 17;					// Width of the scroll bar
 	private final JScrollBar 		jsbPosition;		// scroll bar to modify the position
 	private final ProjectWindow		projectWindow;		// Instance of the Genome Window Manager
@@ -72,7 +71,7 @@ final class PositionScrollPanel extends JPanel implements AdjustmentListener, Mo
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.insets = new Insets(0, HANDLE_WIDTH, 0, TRACKS_SCROLL_WIDTH);
+		gbc.insets = new Insets(0, 0, 0, TRACKS_SCROLL_WIDTH);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1;

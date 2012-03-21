@@ -26,14 +26,12 @@ import javax.swing.ActionMap;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAErrorReport;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeProperties;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
@@ -56,7 +54,6 @@ public final class MainMenu extends JPopupMenu {
 	private final JMenuItem jmiFullScreen;		// full screen
 	private final JMenuItem jmiErrorReport;		// option
 	private final JMenuItem jmiOption;			// option
-	private final JMenuItem jmiMGProperties;	// multi genome project properties
 	private final JMenuItem jmiRNAToDNAPos;		// option
 	private final JMenuItem jmiHelp;			// help
 	private final JMenuItem jmiAbout;			// about
@@ -80,11 +77,6 @@ public final class MainMenu extends JPopupMenu {
 		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));
 		jmiAbout = new JMenuItem(actionMap.get(PAAbout.ACTION_KEY));
 		jmiExit = new JMenuItem(actionMap.get(PAExit.ACTION_KEY));
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			jmiMGProperties = new JMenuItem(actionMap.get(PAMultiGenomeProperties.ACTION_KEY));
-		} else {
-			jmiMGProperties = null;
-		}
 
 		add(jmiNewProject);
 		add(jmiLoadProject);
@@ -93,10 +85,6 @@ public final class MainMenu extends JPopupMenu {
 		add(jmiFullScreen);
 		add(jmiErrorReport);
 		add(jmiOption);
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			addSeparator();
-			add(jmiMGProperties);
-		}
 		addSeparator();
 		add(jmiRNAToDNAPos);
 		addSeparator();

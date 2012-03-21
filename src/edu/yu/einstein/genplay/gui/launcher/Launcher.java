@@ -192,6 +192,11 @@ public class Launcher {
 
 		// Initializes the genome window manager
 		projectManager.getProjectWindow().initialize();
+		
+		// Set the project as a multi genome project before any call of the MainFrame (some graphical elements check it out in order to be displayed)
+		if (!projectFrame.isSingleProject()) {
+			ProjectManager.getInstance().setMultiGenomeProject(true);
+		}
 
 		// reinit the MainFrame if needed (in the case where the user chose the new project option from the mainframe)
 		MainFrame.reinit();
@@ -202,8 +207,6 @@ public class Launcher {
 
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSingleProject()) {
-			ProjectManager.getInstance().setMultiGenomeProject(true);
-			MainFrame.getInstance().setMapsForMultiGenome();
 			PAMultiGenome multiGenome = new PAMultiGenome();
 			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
 			multiGenome.actionPerformed(null);

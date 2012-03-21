@@ -56,7 +56,6 @@ import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeProperties;
 import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
@@ -308,19 +307,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 					ruler.setScrollMode((Boolean) evt.getNewValue());
 				}
 			}
-		}
-	}
-	
-	
-	/**
-	 * Maps are initialized before creating the multi genome project.
-	 * Action and Input map values must be inserted at the creation.
-	 * That is why this method will insert everything the MG project needs at its creation. 
-	 */
-	public void setMapsForMultiGenome () {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			getRootPane().getActionMap().put(PAMultiGenomeProperties.ACTION_KEY, new PAMultiGenomeProperties());
-			getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMultiGenomeProperties.ACCELERATOR, PAMultiGenomeProperties.ACTION_KEY);
 		}
 	}
 

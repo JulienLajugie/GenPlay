@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 /**
  * A ControlPanel component
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class ControlPanel extends JPanel {
@@ -44,7 +45,7 @@ public final class ControlPanel extends JPanel {
 	private static final long serialVersionUID = -8254420324898563978L; // generated ID
 	private static final int INCREMENT_FACTOR = 10; 					// the length of a left or right move is the length of the   
 																		// displayed chromosome window divided by this constant 
-	private final PositionScrollPanel 				positionScrollPanel;// PositionScrollPanel part
+	private final TopPanel							topPanel;			// TopPanel part (multi genome button and position scroll bar)
 	private final ZoomPanel 						zoomPanel;			// ZoomPanel part
 	private final ChromosomePanel 					chromosomePanel;	// ChromosomePanel part
 	private final GenomeWindowPanel 				genomeWindowPanel;	// GenomeWindowPanel part
@@ -55,7 +56,7 @@ public final class ControlPanel extends JPanel {
 	 * Creates an instance of {@link ControlPanel}
 	 */
 	public ControlPanel() { 
-		positionScrollPanel = new PositionScrollPanel();
+		topPanel = new TopPanel();
 		zoomPanel = new ZoomPanel();
 		chromosomePanel = new ChromosomePanel();
 		genomeWindowPanel = new GenomeWindowPanel();
@@ -65,39 +66,32 @@ public final class ControlPanel extends JPanel {
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.BOTH;
+		
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.gridwidth = 3;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
-		add(positionScrollPanel, gbc);
+		gbc.gridwidth = 3;
+		add(topPanel, gbc);
 
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 10, 0, 10);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.gridwidth = 1;
 		add(zoomPanel, gbc);
 
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(0, 10, 0, 10);
 		gbc.gridx = 1;
 		gbc.gridy = 1;
 		gbc.weightx = 0;
-		gbc.weighty = 0;
+		gbc.gridwidth = 1;
 		add(chromosomePanel, gbc);
 
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(0, 10, 0, 10);
 		gbc.gridx = 2;
 		gbc.gridy = 1;
 		gbc.weightx = 1;
-		gbc.weighty = 0;
+		gbc.gridwidth = 1;
 		add(genomeWindowPanel, gbc);
 	}
 
@@ -152,7 +146,7 @@ public final class ControlPanel extends JPanel {
 	public void registerToGenomeWindow () {
 		projectWindow.addGenomeWindowListener(chromosomePanel);
 		projectWindow.addGenomeWindowListener(genomeWindowPanel);
-		projectWindow.addGenomeWindowListener(positionScrollPanel);
+		projectWindow.addGenomeWindowListener(topPanel.getPositionScrollPanel());
 		projectWindow.addGenomeWindowListener(zoomPanel);
 	}
 	

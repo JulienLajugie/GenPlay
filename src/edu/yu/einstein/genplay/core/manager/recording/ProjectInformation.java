@@ -30,6 +30,8 @@ import java.io.Serializable;
 
 /**
  * This class contains basic information about a project.
+ * This object is the first one to be written in a project saved file.
+ * Therefore, some information can be verified before the loading of the project.
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel

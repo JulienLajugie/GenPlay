@@ -149,7 +149,7 @@ final class IslandDialogInput extends IslandDialogFieldset{
 		
 		//Set inequality label
 		ImageIcon superior = new ImageIcon(Images.getSuperiorImage());
-		ImageIcon inferior = new ImageIcon(Images.getInferiorIcon());
+		ImageIcon inferior = new ImageIcon(Images.getInferiorImage());
 		this.jlSuperior01 = new JLabel(superior);
 		this.jlSuperior02 = new JLabel(superior);
 		this.jlSuperior03 = new JLabel(superior);

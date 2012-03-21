@@ -46,6 +46,7 @@ public class Images {
 	private static final String ACTUALIZE_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/actualize15x15.png";			// Path of the actualize image
 	private static final String SUPERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/superior8x6.png";				// Path of the superior sign
 	private static final String INFERIOR_IMAGE_PATH 	= "edu/yu/einstein/genplay/resource/inferior8x6.png";				// Path of the inferior sign
+	private static final String DNA_IMAGE_PATH 			= "edu/yu/einstein/genplay/resource/dna_25x17.png";					// Path of the DNA sign
 
 	
 	private static Image applicationImage 	= null;		// Application image
@@ -60,6 +61,7 @@ public class Images {
 	private static Image actualizeImage 	= null;		// Actualize image
 	private static Image superiorImage 		= null;		// Superior image
 	private static Image inferiorImage 		= null;		// Inferior image
+	private static Image dnaImage 			= null;		// DNA image
 
 	
 
@@ -218,10 +220,21 @@ public class Images {
 	/**
 	 * @return the image of the Inferior icon (8x6)
 	 */
-	public static Image getInferiorIcon () {
+	public static Image getInferiorImage () {
 		if (inferiorImage == null) {
 			inferiorImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(INFERIOR_IMAGE_PATH));
 		}
 		return inferiorImage;
+	}
+	
+	
+	/**
+	 * @return the image of the DNA icon (25x17)
+	 */
+	public static Image getDNAImage () {
+		if (dnaImage == null) {
+			dnaImage = Toolkit.getDefaultToolkit().getImage(cl.getResource(DNA_IMAGE_PATH));
+		}
+		return dnaImage;
 	}
 }

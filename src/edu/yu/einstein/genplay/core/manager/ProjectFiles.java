@@ -99,6 +99,9 @@ public class ProjectFiles {
 	 * @return		the valid path (if defined, the same otherwise)
 	 */
 	public String getValidPathOf (String path) {
+		if (currentFiles == null) {
+			return path;
+		}
 		int oldPathIndex = -1;
 		for (int i = 0; i < currentFiles.length; i++) {
 			if (currentFiles[i].equals(path)) {
