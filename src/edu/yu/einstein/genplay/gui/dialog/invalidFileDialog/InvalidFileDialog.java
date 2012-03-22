@@ -212,6 +212,7 @@ public class InvalidFileDialog extends JDialog {
 		confirm.setPreferredSize(buttonDim);
 		confirm.setToolTipText("Ok");
 		confirm.setMargin(inset);
+		getRootPane().setDefaultButton(confirm);
 		confirm.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
