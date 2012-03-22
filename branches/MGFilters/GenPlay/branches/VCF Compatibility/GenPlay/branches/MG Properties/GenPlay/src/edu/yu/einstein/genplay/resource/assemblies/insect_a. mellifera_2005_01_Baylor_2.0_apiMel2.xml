@@ -1,0 +1,19 @@
+<assembly clade="insect" genome="a. mellifera" name="Baylor 2.0/apiMel2" date="01 2005">
+	<chromosome name="Group1" length="25433307"/>
+	<chromosome name="Group2" length="14233499"/>
+	<chromosome name="Group3" length="11790680"/>
+	<chromosome name="Group4" length="10665743"/>
+	<chromosome name="Group5" length="13312070"/>
+	<chromosome name="Group6" length="14191905"/>
+	<chromosome name="Group7" length="9757938"/>
+	<chromosome name="Group8" length="9828392"/>
+	<chromosome name="Group9" length="9968276"/>
+	<chromosome name="Group10" length="10993160"/>
+	<chromosome name="Group11" length="12413357"/>
+	<chromosome name="Group12" length="8966624"/>
+	<chromosome name="Group13" length="8846036"/>
+	<chromosome name="Group14" length="8017760"/>
+	<chromosome name="Group15" length="7326077"/>
+	<chromosome name="Group16" length="5608962"/>
+	<chromosome name="GroupUn" length="321143811"/>
+</assembly>
