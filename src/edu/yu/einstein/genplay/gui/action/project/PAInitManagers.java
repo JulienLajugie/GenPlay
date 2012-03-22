@@ -87,6 +87,9 @@ public final class PAInitManagers extends AbstractAction {
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		file = null;
 		inputStream = null;
+		formerPaths = null;
+		invalidPaths = null;
+		newPaths = null;
 		error = null;
 	}
 
@@ -99,7 +102,7 @@ public final class PAInitManagers extends AbstractAction {
 		if (file != null || inputStream != null) {
 			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
 
-			
+
 			// Initializes the object input stream
 			try {
 				if (file != null) {
@@ -109,75 +112,64 @@ public final class PAInitManagers extends AbstractAction {
 				}
 			} catch (Exception e) {
 				error = "Could not open the project file.";
-				//e.printStackTrace();
 			}
 
+			if (error == null) {
+				// Reads the project information object
+				try {
+					projectRecording.initProjectInformation();
+				} catch (Exception e) {
+					error = "Could not read the project information.";
+				}
 
-			// Reads the project information object
-			try {
-				projectRecording.initProjectInformation();
-			} catch (Exception e) {
-				error = "Could not read the project information.";
-				//e.printStackTrace();
-			}
+				if (error == null) {
+					// Manages the missing files
+					try {
+						// Gets the project information object
+						ProjectInformation projectInformation = projectRecording.getProjectInformation();
 
-			
-			// Manages the missing files
-			try {
-				// Gets the project information object
-				ProjectInformation projectInformation = projectRecording.getProjectInformation();
-				//projectInformation.show();
-				// Gets the files dependant to the project
-				formerPaths = projectInformation.getProjectFiles();
+						// Gets the files dependant to the project
+						formerPaths = projectInformation.getProjectFiles();
 
-				if (formerPaths != null) {									// if the project is file dependant
-					//System.out.println("- Is file dependant");
-					invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
-					if (getNumberOfInvalidFiles(invalidPaths) > 0) {		// if some invalid files exist,
-						/*System.out.println("-- Some files do not exist:");
-						for (int i = 0; i < invalidPaths.length; i++) {
-							System.out.println("--- " + i + ": " + invalidPaths[i]);
-						}*/
-						
-						// Warn the user about the .gz and .gz.tbi files
-						if (!projectInformation.isSingleProject()) {
-							JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
-									"The next window will allow you to define their new location.\n" +
+						if (formerPaths != null) {									// if the project is file dependant
+							invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
+							if (getNumberOfInvalidFiles(invalidPaths) > 0) {		// if some invalid files exist,
+
+								// Warn the user about the .gz and .gz.tbi files
+								if (!projectInformation.isSingleProject()) {
+									JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
+											"The next window will allow you to define their new location.\n" +
 									"Please remind that .gz and .gz.tbi files must have the same name and location.");
+								}
+
+								InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
+								if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
+									newPaths = invalidFileDialog.getCorrectedPaths();
+									if (getNumberOfInvalidFiles(newPaths) == 0) {
+										ProjectFiles.getInstance().setCurrentFiles(formerPaths);
+										ProjectFiles.getInstance().setNewFiles(newPaths);
+									} else {						// the user can valid the dialog using invalid files
+										throw new Exception();
+									}
+								} else {							// the user canceled the dialog
+									throw new Exception();
+								}
+							}
 						}
-						
-						InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
-						if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
-							newPaths = invalidFileDialog.getCorrectedPaths();
-							/*System.out.println("-- New files are:");
-							for (int i = 0; i < newPaths.length; i++) {
-								System.out.println("--- " + i + ": " + newPaths[i]);
-							}*/
-							ProjectFiles.getInstance().setCurrentFiles(formerPaths);
-							ProjectFiles.getInstance().setNewFiles(newPaths);
-						} else {
-							//System.out.println("-- Error");
-							throw new Exception();
+					} catch (Exception e) {
+						error = "Invalid files path not corrected.";
+					}
+
+					if (error == null) {
+						// Reads the project manager
+						try {
+							projectRecording.initProjectManager();
+						} catch (Exception e) {
+							error = "Could not read the managers.";
 						}
-					}/* else {
-						System.out.println("-- They are all valid");
-					}*/
-				} /*else {
-					System.out.println("- Is not file dependant");
-				}*/
-			} catch (Exception e) {
-				error = "Invalid files path not corrected.";
+					}
+				}
 			}
-
-
-			// Reads the project manager
-			try {
-				projectRecording.initProjectManager();
-			} catch (Exception e) {
-				error = "Could not read the managers.";
-				//e.printStackTrace();
-			}
-
 		}
 	}
 
@@ -224,33 +216,42 @@ public final class PAInitManagers extends AbstractAction {
 	 */
 	private int getNumberOfInvalidFiles (String[] paths) {
 		int cpt = 0;
-		for (int i = 0; i < paths.length; i++) {
+		/*for (int i = 0; i < paths.length; i++) {
 			if (paths[i] != null) {
+				cpt++;
+			}
+		}
+		return cpt;*/
+		for (int i = 0; i < paths.length; i++) {
+			if (!isValidFile(paths[i])) {
 				cpt++;
 			}
 		}
 		return cpt;
 	}
 
-	
+
 	/**
 	 * @param path file path
 	 * @return true if the file is valid
 	 */
 	private boolean isValidFile (String path) {
-		File file = new File(path);
-		return file.exists();
+		if (path != null) {
+			File file = new File(path);
+			return file.exists();
+		}
+		return false;
 	}
-	
-	
+
+
 	/**
 	 * @return the error message
 	 */
 	public String getErrorMessage () {
 		return error;
 	}
-	
-	
+
+
 	/**
 	 * @return true if the managers have been initialized, false otherwise
 	 */

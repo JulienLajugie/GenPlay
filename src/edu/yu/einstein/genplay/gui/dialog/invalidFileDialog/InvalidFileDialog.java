@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBox;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 import edu.yu.einstein.genplay.util.Images;
@@ -77,27 +78,27 @@ public class InvalidFileDialog extends JDialog {
 	private					int				filePanelHeight;							// height of the file selection panel
 	private					int				validationPanelHeight	= 40;				// height of the validation panel
 	private					int				lineHeight				= 20;				// height of a line in the file selection panel
-	
+
 	private JPanel 					filePanel;											// the file selection panel
 	private JPanel 					validationPanel;									// the validation panel
 	private String[] 				files;												// the input files
 	private CustomFileComboBox[] 	correctedFiles;										// the array of combo box containing the corrected files
 
-	
+
 	/**
 	 * Constructor of {@link InvalidFileDialog}
 	 * @param files the array of files
 	 */
 	public InvalidFileDialog (String[] files) {
 		this.files = files;
-		
+
 		// Dimensions
 		updateDimensions();
 		Dimension dialogDimension = new Dimension(dialogWidth, dialogHeight);
 		setSize(dialogDimension);
 		setMinimumSize(dialogDimension);
 		setPreferredSize(dialogDimension);
-		
+
 		// Dialog
 		setTitle("Invalid File(s) Correction");
 		setIconImage(Images.getApplicationImage());
@@ -108,7 +109,7 @@ public class InvalidFileDialog extends JDialog {
 		add(getFilesPanel(), BorderLayout.CENTER);
 		add(getValidationPanel(), BorderLayout.SOUTH);
 	}
-	
+
 
 	/**
 	 * Shows the component.
@@ -130,7 +131,7 @@ public class InvalidFileDialog extends JDialog {
 		setVisible(false);
 	}
 
-	
+
 	/**
 	 * @return the upper panel with the description of the dialog
 	 */
@@ -145,7 +146,7 @@ public class InvalidFileDialog extends JDialog {
 		panel.add(titleLabel);
 		return panel;
 	}
-	
+
 
 	/**
 	 * Information panel contains label about how to use the table
@@ -159,7 +160,7 @@ public class InvalidFileDialog extends JDialog {
 		GridBagLayout layout = new GridBagLayout();
 		filePanel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -167,10 +168,10 @@ public class InvalidFileDialog extends JDialog {
 		gbc.gridwidth = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		
+
 		correctedFiles = new CustomFileComboBox[files.length];
 		Dimension comboDimension = new Dimension(dialogWidth - 2 * inset, lineHeight);
-		
+
 		VCFFilter[] filter = {new VCFFilter()};
 
 		for (int i = 0; i < files.length; i++) {
@@ -180,7 +181,7 @@ public class InvalidFileDialog extends JDialog {
 				gbc.insets = new Insets(inset, inset, 0, inset);
 				filePanel.add(label, gbc);
 				gbc.gridy++;
-				
+
 				correctedFiles[i] = new CustomFileComboBox();
 				correctedFiles[i].setSize(comboDimension);
 				correctedFiles[i].setMinimumSize(comboDimension);
@@ -193,7 +194,7 @@ public class InvalidFileDialog extends JDialog {
 				correctedFiles[i] = null;
 			}
 		}
-		
+
 		return filePanel;
 	}
 
@@ -249,19 +250,19 @@ public class InvalidFileDialog extends JDialog {
 	 */
 	public String[] getCorrectedPaths () {
 		String[] correctedPaths = new String[files.length];
-		
+
 		for (int i = 0; i < correctedFiles.length; i++) {
-			if (correctedFiles != null) {
+			if (correctedFiles != null && !correctedFiles[i].getSelectedItem().equals(CustomComboBox.ADD_TEXT)) {
 				correctedPaths[i] = ((File) correctedFiles[i].getSelectedItem()).getPath();
 			} else {
 				correctedPaths[i] = null;
 			}
 		}
-		
+
 		return correctedPaths;
 	}
-	
-	
+
+
 	/**
 	 * Updates the parameters used to calculate the dimensions
 	 */
@@ -271,8 +272,8 @@ public class InvalidFileDialog extends JDialog {
 		filePanelHeight = (lineHeight + 2 * inset) * numberOfLines;
 		dialogHeight = titlePanelHeight + filePanelHeight + validationPanelHeight;
 	}
-	
-	
+
+
 	/**
 	 * @return the longest path length
 	 */
