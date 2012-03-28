@@ -66,15 +66,19 @@ public final class ControlPanel extends JPanel {
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.weighty = 0;
+		gbc.weighty = 1;
 		gbc.fill = GridBagConstraints.BOTH;
 		
+		//gbc.weighty = 1;
+		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 1;
 		gbc.gridwidth = 3;
 		add(topPanel, gbc);
-
+		
+		//gbc.weighty = 0;
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.insets = new Insets(0, 10, 0, 10);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
@@ -146,7 +150,7 @@ public final class ControlPanel extends JPanel {
 	public void registerToGenomeWindow () {
 		projectWindow.addGenomeWindowListener(chromosomePanel);
 		projectWindow.addGenomeWindowListener(genomeWindowPanel);
-		projectWindow.addGenomeWindowListener(topPanel.getPositionScrollPanel());
+		projectWindow.addGenomeWindowListener(topPanel);
 		projectWindow.addGenomeWindowListener(zoomPanel);
 	}
 	

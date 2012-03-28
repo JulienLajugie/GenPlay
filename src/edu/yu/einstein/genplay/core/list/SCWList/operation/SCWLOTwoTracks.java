@@ -62,13 +62,11 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 							ScoreCalculationTwoTrackMethod scm) {
 		this.scm = scm;
 		twoTracks = new SCWLTwoTracksManagement(list1, list2, scm);
-		System.out.println("SCWLOTwoTracks.SCWLOTwoTracks()");
 	}
 	
 	
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		System.out.println("SCWLOTwoTracks.compute()");
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		

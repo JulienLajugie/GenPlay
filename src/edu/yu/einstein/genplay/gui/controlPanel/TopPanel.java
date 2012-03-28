@@ -21,11 +21,31 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.controlPanel;
 
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+
+import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeProperties;
+import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
+import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.util.Images;
 
 /**
  * This panel gathers two elements:
@@ -35,60 +55,172 @@ import javax.swing.JPanel;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class TopPanel extends JPanel {
+public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelListener, GenomeWindowListener {
 
 	/** Generated default version ID */
 	private static final long serialVersionUID = 2637751583693743095L;
 
-	private final MGPanel				multiGenomePanel;		// the multi genome panel
-	private final PositionScrollPanel 	positionScrollPanel;	// the scroll bar
-	
-	
+	private static final int HANDLE_WIDTH 			= 50;					// Width of the track handle
+	private static final int BUTTON_WIDTH 			= 25;					// Width of the button
+	private static final int TRACKS_SCROLL_WIDTH 	= 17;					// Width of the scroll bar
+	private final JScrollBar 		jsbPosition;		// scroll bar to modify the position
+	private final ProjectWindow		projectWindow;		// Instance of the Genome Window Manager
+	private JButton jbMultiGenome;											// button for the multi genome properties dialog
+
+
 	/**
 	 * Constructor of {@link TopPanel}
 	 */
 	TopPanel () {
-		multiGenomePanel = new MGPanel();
-		positionScrollPanel = new PositionScrollPanel();
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
+		setLayout(layout);
 		
+		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
+		int currentPosition = (int)projectWindow.getGenomeWindow().getMiddlePosition();
+		int currentSize = projectWindow.getGenomeWindow().getSize();
+		Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();		
+		jsbPosition = new JScrollBar(JScrollBar.HORIZONTAL, currentPosition, currentSize, 0, currentChromosome.getLength() + currentSize);
+		jsbPosition.setBlockIncrement(currentSize / 10);
+		jsbPosition.setUnitIncrement(currentSize / 10);
+		jsbPosition.addAdjustmentListener(this);
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
-		// adds the multi genome panel
 		gbc.fill = GridBagConstraints.BOTH;
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
+		gbc.weighty = 1.0;
 		gbc.gridwidth = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		add(multiGenomePanel, gbc);
-		
-		// add the scroll bar
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
+
+		// We add the button only if it is a multi genome project
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			// Initializes the button
+			initializesMultiGenomeButton();
+
+			// add the button
+			int padding = (HANDLE_WIDTH - jbMultiGenome.getSize().width) / 2;
+			gbc.insets = new Insets(0, padding, 0, padding);
+			add(jbMultiGenome, gbc);
+
+			// update constraints for the scroll bar
+			gbc.gridx++;
+			gbc.insets = new Insets(0, 0, 0, 0);
+		} else {
+			gbc.insets = new Insets(0, HANDLE_WIDTH, 0, 0);
+		}
+
 		gbc.weightx = 1;
-		gbc.weighty = 0.0;
-		gbc.gridwidth = 1;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		add(positionScrollPanel, gbc);
+		add(jsbPosition, gbc);
+
+		addMouseWheelListener(this);
 	}
 
 
 	/**
-	 * @return the multiGenomePanel
+	 * Initializes the multi genome button
 	 */
-	public MGPanel getMultiGenomePanel() {
-		return multiGenomePanel;
+	private void initializesMultiGenomeButton () {
+		// creates the button
+		jbMultiGenome = new JButton(new ImageIcon(Images.getDNAImage()));
+
+		// sets some attributes
+		Dimension buttonDimension = new Dimension(BUTTON_WIDTH, TRACKS_SCROLL_WIDTH);
+		jbMultiGenome.setSize(buttonDimension);
+		jbMultiGenome.setPreferredSize(buttonDimension);
+		jbMultiGenome.setMargin(new Insets(0, 0, 0, 0));
+		jbMultiGenome.setToolTipText("Show the Multi Genome Properties Dialog");
+
+		// defines the listener
+		jbMultiGenome.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PAMultiGenomeProperties action = new PAMultiGenomeProperties();
+				action.actionPerformed(null);
+			}
+		});
 	}
 
 
 	/**
-	 * @return the positionScrollPanel
+	 * Sets the greatest attainable position
 	 */
-	public PositionScrollPanel getPositionScrollPanel() {
-		return positionScrollPanel;
+	private void setMaximumPosition() {
+		int extent = projectWindow.getGenomeWindow().getSize();
+		int newMaximum = projectWindow.getGenomeWindow().getChromosome().getLength() + extent; 
+		jsbPosition.setMaximum(newMaximum);
 	}
-	
+
+
+	/**
+	 * Sets the value of the increment when the scroll bar is clicked
+	 */
+	private void setIncrement() {
+		int increment = projectWindow.getGenomeWindow().getSize() / 10;
+		jsbPosition.setBlockIncrement(increment);
+		jsbPosition.setUnitIncrement(increment);	
+	}
+
+
+	/**
+	 * Sets the extent parameter of the scroll bar.
+	 */
+	private void setExtent() {
+		int newExtent = projectWindow.getGenomeWindow().getSize();
+		int maximumPosition = projectWindow.getGenomeWindow().getChromosome().getLength(); 
+		jsbPosition.setValue((int)projectWindow.getGenomeWindow().getMiddlePosition());
+		if (newExtent > jsbPosition.getVisibleAmount()) {
+			jsbPosition.setMaximum(maximumPosition + newExtent);
+			jsbPosition.setVisibleAmount(newExtent);
+		} else {
+			jsbPosition.setVisibleAmount(newExtent);
+			jsbPosition.setMaximum(maximumPosition + newExtent);
+		}
+	}
+
+
+	@Override
+	public void adjustmentValueChanged(AdjustmentEvent arg0) {
+		int halfSize = projectWindow.getGenomeWindow().getSize() / 2;
+		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
+		int start = (jsbPosition.getValue() - halfSize);
+		int stop = start + projectWindow.getGenomeWindow().getSize();
+		GenomeWindow newGenomeWindow = new GenomeWindow(chromosome, start, stop);
+		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent mwe) {
+		double newPosition = (mwe.getWheelRotation() * jsbPosition.getBlockIncrement()) + jsbPosition.getValue();
+		// newPosition must be >= 0
+		newPosition = Math.max(0, newPosition);
+		// newPosition must be <= than the max position of jsbPosition
+		newPosition = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength(), newPosition);
+		int halfSize = projectWindow.getGenomeWindow().getSize() / 2;
+		Chromosome chromosome = projectWindow.getGenomeWindow().getChromosome();
+		int start = (int)(newPosition - halfSize);
+		int stop = start + projectWindow.getGenomeWindow().getSize();
+		GenomeWindow newGenomeWindow = new GenomeWindow(chromosome, start, stop);
+		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
+
+
+	@Override
+	public void genomeWindowChanged(GenomeWindowEvent evt) {
+		// we notify the gui
+		if (evt.getNewWindow().getSize() != evt.getOldWindow().getSize()) {
+			setIncrement();
+			setExtent();
+		}
+		if (evt.chromosomeChanged()) {
+			setMaximumPosition();
+		}
+		if ((int)evt.getNewWindow().getMiddlePosition() != (int)evt.getOldWindow().getMiddlePosition()) {
+			jsbPosition.setValue((int)evt.getNewWindow().getMiddlePosition());
+		}
+	}
+
 }

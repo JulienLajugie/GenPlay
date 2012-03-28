@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * @version 0.1
  */
 public class SCWLTwoTracksEngine implements Serializable, Stoppable {
-	
+
 	private static final long serialVersionUID = 2965349494486829320L;
 	private final 	List<ChromosomeListOfLists<?>> 		list;				//list containing originals lists
 	private 		List<ScoredChromosomeWindow> 		newScwList;			//new list
@@ -58,8 +58,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	private			Integer[]							currentPosition;	//stores the current positions
 	private			Integer[]							currentIndex;		//stores the current index
 	private 		boolean								stopped = false;	// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * SCWLTwoTracks constructor
 	 * 
@@ -70,8 +70,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		this.newScwList = new ArrayList<ScoredChromosomeWindow>();
 		this.scm = scm;
 	}
-	
-	
+
+
 	/**
 	 * init method
 	 * Initializes attributes to run the process.
@@ -121,8 +121,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		this.currentIndex[1] = 0;
 		run();
 	}
-	
-	
+
+
 	/**
 	 * run method
 	 * This method runs the algorithm to determine the new list.
@@ -175,7 +175,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 							manageStop(1);
 						}
 					}
-					
+
 				}
 				break;
 			case 1:		//the actual minimum is on the track 2
@@ -195,7 +195,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 						manageStop(1);
 						currentPosition[0] = stop;
 						if (!validPosition[1]) {
-							manageStop(1);
+							manageStop(0);
 						}
 					}
 				}
@@ -207,7 +207,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		//If the second track is still valid, these positions must be added
 		finishTrack(1);
 	}
-	
+
 	/**
 	 * isValid method
 	 * This method check if the current position on each list is valid.
@@ -221,7 +221,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * onStart method
 	 * This method says if the current position on a track is on the start or on the stop of the current position.
@@ -232,7 +232,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	private boolean onStart (int track) {
 		return onStart[track];
 	}
-	
+
 	/**
 	 * min method
 	 * This method returns the relative position of the current position on the first track with the second track. 
@@ -262,7 +262,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return 1;
 		}
 	}
-	
+
 	/**
 	 * addPosition method
 	 * This method adds the current position and score in the new list
@@ -270,11 +270,11 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	private void addPosition () {
 		if (getScore() != 0.0) {
 			newScwList.add(new ScoredChromosomeWindow(	currentPosition[0],
-														currentPosition[1],
-														getScore()));
+					currentPosition[1],
+					getScore()));
 		}
 	}
-	
+
 	/**
 	 * nextPosition method
 	 * This method increments the current position for the track and manage his validity.
@@ -298,7 +298,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		}
 		currentIndex[track] = index;
 	}
-	
+
 	/**
 	 * manageStart method
 	 * This method manages required operations for a start position on a track.
@@ -310,7 +310,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		currentScore[track] = getScore(track);
 		onStart[track] = false;
 	}
-	
+
 	/**
 	 * manageStop method
 	 * This method manages required operations for a start position on a track.
@@ -324,7 +324,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		nextPosition(track);
 		onStart[track] = true;
 	}
-	
+
 	/**
 	 * getScore method
 	 * This method manages the calculation of the score according to the score calculation method.
@@ -351,7 +351,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return -1.0;
 		}
 	}
-	
+
 	/**
 	 * finishTrack method
 	 * This method allows to finish the recording of the unfinished track.
@@ -362,27 +362,27 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		if (validPosition[track]) {
 			for (int i = currentIndex[track]; i < getTrackSize(track) && !stopped; i++) {
 				newScwList.add(new ScoredChromosomeWindow(	getStart(track),
-															getStop(track),
-															getScore(track)));
+						getStop(track),
+						getScore(track)));
 			}
 		}
 	}
-	
-	
+
+
 	///////////////////////////	Calculation methods
-	
+
 	private double sum() {
 		return (currentScore[0] + currentScore[1]);
 	}
-	
+
 	private double subtraction() {
 		return (currentScore[0] - currentScore[1]);
 	}
-	
+
 	private double multiplication() {
 		return (currentScore[0] * currentScore[1]);
 	}
-	
+
 	private double division() {
 		if (currentScore[0] != 0.0 && currentScore[1] != 0.0) {
 			return currentScore[0] / currentScore[1];
@@ -390,28 +390,28 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return 0.0;
 		}
 	}
-	
+
 	private double average() {
 		return sum() / 2;
 	}
-	
+
 	private double maximum() {
 		return Math.max(currentScore[0], currentScore[1]);
 	}
-	
+
 	private double minimum() {
 		return Math.min(currentScore[0], currentScore[1]);
 	}
-	
+
 	///////////////////////////	GETTERS
-	
+
 	/**
 	 * @return the new score chromosome window list
 	 */
 	public List<ScoredChromosomeWindow> getList() {
 		return newScwList;
 	}
-	
+
 	private int getStart (int track) {
 		if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStart();
@@ -419,20 +419,15 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return this.currentIndex[track] * ((BinList)this.list.get(track)).getBinSize();
 		}
 	}
-	
+
 	private int getStop (int track) {
 		if (this.isSCWList[track]) {
-			try {
-				return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStop();
-			} catch (Exception e) {
-				System.out.println(chromosome);
-			}
 			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getStop();
 		} else {
 			return (this.currentIndex[track] + 1) * ((BinList)this.list.get(track)).getBinSize();
 		}
 	}
-	
+
 	private Double getScore (int track) {
 		if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getScore();
@@ -440,7 +435,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return (Double) this.list.get(track).get(chromosome).get(this.currentIndex[track]);
 		}
 	}
-	
+
 	private Double getScore (int track, int index) {
 		if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(index)).getScore();
@@ -448,7 +443,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return (Double) this.list.get(track).get(chromosome).get(index);
 		}
 	}
-	
+
 	private int getTrackSize (int track) {
 		if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindowList) this.list.get(track)).get(chromosome).size();
@@ -456,10 +451,10 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			return ((BinList) this.list.get(track)).get(chromosome).size();
 		}
 	}
-	
-	
+
+
 	///////////////////////////	MISC
-	
+
 	/**
 	 * @return the string to display information
 	 */
