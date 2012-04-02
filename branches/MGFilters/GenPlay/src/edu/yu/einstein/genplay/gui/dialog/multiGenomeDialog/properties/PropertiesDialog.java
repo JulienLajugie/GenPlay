@@ -285,8 +285,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			//VCFReader reader = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(FILTERS)) {
-			//setCenterPanel(filtersPanel);
-			setCenterPanel(getEmptyPanel());
+			setCenterPanel(filtersPanel);
+			//setCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(STRIPES)) {
 			setCenterPanel(stripesPanel);
 		}

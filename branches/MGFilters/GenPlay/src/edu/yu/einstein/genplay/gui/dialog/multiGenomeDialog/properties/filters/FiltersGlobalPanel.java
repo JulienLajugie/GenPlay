@@ -162,9 +162,8 @@ public class FiltersGlobalPanel extends GlobalPanel<FiltersEditingPanel, Filters
 		} else if (button.getText().equals(FiltersEditingPanel.APPLY_BUTTON_TEXT)) {	// if the APPLY button has been clicked
 			FiltersData data = getEditingPanel().getElement();							// get the filter data object
 			if (controlFiltersData(data)) {												// control if the filter data object is valid
-				currentData.setReader(data.getReader());								// set the filter data object
-				currentData.setId(data.getId());
-				currentData.setFilter(data.getFilter());
+				currentData.setId(data.getId());										// set the filter data object
+				currentData.setVCFFilter(data.getVCFFilter());
 				currentData.setTrackList(data.getTrackList());
 				getContentPanel().updateTableSize();									// update the size of the table
 				getContentPanel().getTable().repaint();									// repaint the table

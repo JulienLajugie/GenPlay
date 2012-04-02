@@ -113,6 +113,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+			
 			MainFrame.getInstance().setVisible(true);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();

@@ -21,14 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsBooleanList;
-import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
@@ -39,11 +35,11 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
  */
 public class VCFFilter {
 
-	private final IDFilterInterface filter;				// the filter
-	private final VCFReader			reader;				// the file reader
-	private IntArrayAsIntegerList	positionList;		// reference genome position array (indexes match with the boolean list)
-	private ByteArrayAsBooleanList 	booleanList;		// list of boolean meaning whether variants pass the filter or not
+	private IDFilterInterface 		filter;				// the filter
+	private VCFReader				reader;				// the file reader
 	
+	private ByteArrayAsBooleanList 	booleanList;		// list of boolean meaning whether variants pass the filter or not
+
 	
 	/**
 	 * Constructor of {@link VCFFilter}
@@ -64,13 +60,31 @@ public class VCFFilter {
 		MGPosition information = variant.getFullVariantInformation();
 		if (information != null) {
 			if (reader.equals(information.getReader())) {
-				int index = positionList.getIndex(information.getPos());
+				int index = reader.getPositionList().getIndex(information.getPos());
 				if (index != -1) {
+					
 					return booleanList.get(index);
 				}
 			}
 		}
 		return false;
+	}
+	
+	
+	/**
+	 * Looks for the index of the variant in the array, call this method and use the index to look for this variant in other arrays!
+	 * @param variant 	the variant
+	 * @return			the index of the variant
+	 */
+	public int getVariantIndex (VariantInterface variant) {
+		int index = -1;
+		MGPosition information = variant.getFullVariantInformation();
+		if (information != null) {
+			if (reader.equals(information.getReader())) {
+				index = reader.getPositionList().getIndex(information.getPos());
+			}
+		}
+		return index;
 	}
 	
 
@@ -83,14 +97,6 @@ public class VCFFilter {
 
 
 	/**
-	 * @return the positionList
-	 */
-	public IntArrayAsIntegerList getPositionList() {
-		return positionList;
-	}
-
-
-	/**
 	 * @return the booleanList
 	 */
 	public ByteArrayAsBooleanList getBooleanList() {
@@ -99,18 +105,72 @@ public class VCFFilter {
 	
 	
 	/**
-	 * 
+	 * @return the reader
 	 */
-	public void generateFilter () {
-		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-		List<Map<String, Object>> results = null;
-		try {
-			results = reader.query(chromosome.getName(), 0, chromosome.getLength());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public VCFReader getReader() {
+		return reader;
+	}
+
+	
+	/**
+	 * @param filter the filter to set
+	 */
+	public void setFilter(IDFilterInterface filter) {
+		this.filter = filter;
+	}
+
+
+	/**
+	 * @param reader the reader to set
+	 */
+	public void setReader(VCFReader reader) {
+		this.reader = reader;
+	}
+
+
+	/**
+	 * Analyzes lines from VCF file in order to determine if variation pass the filter.
+	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
+	 */
+	public void generateFilter (List<Map<String, Object>> results) {
+		System.out.println("VCFFilter.generateFilter()");
+		reader.initializesPositionList();
+
 		if (results != null) {
-			
+			System.out.println("results.size(): " + results.size());
+			booleanList = new ByteArrayAsBooleanList(reader.getPositionList().size());
+			String columnName = filter.getColumnName().toString();
+			for (int i = 0; i < results.size(); i++) {
+				boolean valid = filter.isValid(results.get(i).get(columnName));
+				booleanList.set(i, valid);
+			}
 		}
+	}
+	
+	
+	/**
+	 * Shows information about the VCF filter
+	 */
+	public void show () {
+		String info = "";
+		info += "VCF File: " + reader.getFile().getName() + "\n";
+		info += "Filter display: " + filter.toStringForDisplay() + "\n";
+		System.out.println(info);
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+		
+		// object must be Test at this point
+		VCFFilter test = (VCFFilter)obj;
+		return reader.equals(test.getReader()) &&
+		filter.equals(test.getFilter());
 	}
 }

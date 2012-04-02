@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
@@ -37,11 +38,11 @@ public class AltFilter implements StringIDFilterInterface {
 	/** Generated default serial ID*/
 	private static final long serialVersionUID = 7496390269460579587L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	private String			value;		// category of the filter (ALT QUAL FILTER INFO FORMAT)
+
+	private String			value;		//
 	private boolean 		required;	// true if the value is required to pass the the filter
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -75,13 +76,13 @@ public class AltFilter implements StringIDFilterInterface {
 
 	@Override
 	public void setID(VCFHeaderType id) {}
-	
-	
+
+
 	@Override
 	public String getValue() {
 		return value;
 	}
-	
+
 
 	@Override
 	public void setValue(String value) {
@@ -117,11 +118,11 @@ public class AltFilter implements StringIDFilterInterface {
 	@Override
 	public String getErrors() {
 		String error = "";
-		
+
 		if (value == null) {
 			error += "Value missing;";
 		}
-		
+
 		try {
 			if (required) {
 				// instantiation control of the boolean
@@ -129,7 +130,7 @@ public class AltFilter implements StringIDFilterInterface {
 		} catch (Exception e) {
 			error += "Boolean missing;";
 		}
-		
+
 		if (error.equals("")) {
 			return null;
 		} else {
@@ -155,11 +156,13 @@ public class AltFilter implements StringIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object value) {
-		return false;
+	public boolean isValid(Object object) {
+		boolean found = FilterTester.isStringFound(object, value);
+		
+		return FilterTester.passTest(required, found);
 	}
 
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -168,10 +171,16 @@ public class AltFilter implements StringIDFilterInterface {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		AltFilter test = (AltFilter)obj;
 		return value.equals(test.getValue()) &&
 		required == test.isRequired();
+	}
+
+
+	@Override
+	public VCFColumnName getColumnName() {
+		return VCFColumnName.ALT;
 	}
 }

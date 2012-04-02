@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * @author Nicolas Fourel
  * @param <K> class used for the elements of the list of this dialog
@@ -54,6 +56,7 @@ public class ListDialog<K> extends JDialog {
 		setTitle("Multi-Genome Project Properties");
 		setResizable(true);
 		setVisible(false);
+		setIconImage(Images.getApplicationImage());
 
 		// Dialog layout
 		BorderLayout layout = new BorderLayout();

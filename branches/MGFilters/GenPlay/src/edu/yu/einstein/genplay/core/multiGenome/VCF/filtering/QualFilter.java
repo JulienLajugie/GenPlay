@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
@@ -38,13 +39,13 @@ public class QualFilter implements NumberIDFilterInterface {
 	/** Generated default serial ID*/
 	private static final long serialVersionUID = 3099777763400649421L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
 	private InequalityOperators		inequation01;
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
 	private Float 					value02;
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -141,7 +142,7 @@ public class QualFilter implements NumberIDFilterInterface {
 			text += " and ";
 			text += "x " + inequation02 + " " + value02;
 		}
-		
+
 		return text;
 	}
 
@@ -173,59 +174,17 @@ public class QualFilter implements NumberIDFilterInterface {
 		}
 	}
 
-	
-	/*/**
-	 * Compare to float in order to define if they correlate the inequation.
-	 * @param inequation		an inequation
-	 * @param referenceValue	a first value
-	 * @param valueToCompare	a second value
-	 * @return					true if both values correlate the inequation, false otherwise.
-	 */
-	/*private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
-		boolean valid = false;
-		
-		if (valueToCompare < 0) {
-			valueToCompare = valueToCompare * -1;
-		}
-		
-		int result = valueToCompare.compareTo(referenceValue);
-		
-		if (inequation == InequalityOperators.EQUAL) {
-			if (result == 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.SUPERIOR) {
-			if (result > 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.SUPERIOR_OR_EQUAL) {
-			if (result >= 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.INFERIOR) {
-			if (result < 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.INFERIOR_OR_EQUAL) {
-			if (result <= 0) {
-				valid = true;
-			}
-		}
-		
-		return valid;
-	}*/
-	
-	
+
 	@Override
 	public void setCategory(String category) {}
-	
-	
+
+
 	@Override
 	public String getCategory () {
 		return null;
 	}
 
-	
+
 	@Override
 	public boolean isValid(VariantInterface variant) {
 		return false;
@@ -233,26 +192,28 @@ public class QualFilter implements NumberIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(Object o) {
+		if (o != null) {
+			String fullLine = o.toString();
+			Float valueToCompare = FilterTester.getFloatValue(getColumnName(), fullLine, null);
+			boolean result01 = FilterTester.passInequation(inequation01, value01, valueToCompare);
+			boolean result02 = FilterTester.passInequation(inequation02, value02, valueToCompare);
+
+			// non cumulative treatment
+			if (result01 || result02) {
+				return true;
+			}
+		} else {
+			System.out.println("QualFilter.isValid()");
+			System.out.println("value == null");
+		}
+
 		return false;
 	}
-	
-	
+
+
 	@Override
-	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-		
-		// object must be Test at this point
-		QualFilter test = (QualFilter)obj;
-		return
-		inequation01.toString().equals(test.getInequation01().toString()) &&
-		inequation02.toString().equals(test.getInequation02().toString()) &&
-		value01 == test.getValue01() &&
-		value02 == test.getValue02();
+	public VCFColumnName getColumnName() {
+		return VCFColumnName.QUAL;
 	}
 }

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -90,29 +89,8 @@ public class MGFilterSettings implements Serializable {
 	 */
 	public void setFiltersSettings(List<FiltersData> filtersList) {
 		this.filtersList = filtersList;
+		
 	}
-
-
-	/**
-	 * Creates the list of filters according to a track
-	 * @param track the track
-	 * @return		its list of filters
-	 */
-	/*public List<FiltersData> getFiltersForTrack (Track<?> track) {
-		List<FiltersData> list = new ArrayList<FiltersData>();
-
-		for (FiltersData data: filtersList) {
-			Track<?>[] trackList = data.getTrackList();
-			for (Track<?> currentTrack: trackList) {
-				if (currentTrack.equals(track)) {
-					list.add(data);
-					break;
-				}
-			}
-		}
-
-		return list;
-	}*/
 
 
 	/**
@@ -127,15 +105,27 @@ public class MGFilterSettings implements Serializable {
 			Track<?>[] trackList = filterData.getTrackList();
 			for (Track<?> currentTrack: trackList) {
 				if (currentTrack.equals(track)) {
-					VCFReader currentReader = filterData.getReader();
-					VCFFilter currentFilter = currentReader.getFilter(filterData.getFilter());
-					if (currentFilter == null) {
-						currentFilter = new VCFFilter(filterData.getFilter(), filterData.getReader());
+					if (filterData.getVCFFilter() != null) {
+						vcfFiltersList.add(filterData.getVCFFilter());
 					}
-					vcfFiltersList.add(currentFilter);
 				}
 			}
 		}
+		
+		return vcfFiltersList;
+	}
+	
+	
+	/**
+	 * @return all VCF filters
+	 */
+	public List<VCFFilter> getAllVCFFilters () {
+		List<VCFFilter> vcfFiltersList = new ArrayList<VCFFilter>();
+		
+		for (FiltersData filterData: filtersList) {
+			vcfFiltersList.add(filterData.getVCFFilter());
+		}
+		
 		return vcfFiltersList;	
 	}
 

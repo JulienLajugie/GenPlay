@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
 
@@ -42,8 +43,8 @@ import edu.yu.einstein.genplay.gui.track.Track;
 /**
  * This class performs the multi-genome synchronization algorithm for SNPs.
  * 
- * @author Julien Lajugie
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  * @version 0.1
  */
 public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
@@ -95,7 +96,6 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			snpSynchronizer.compute(genomeNames);
 
 		}
-
 		return null;
 	}
 
@@ -116,9 +116,13 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 				track.resetVariantListMaker();
 			}
 		}
+		
+		if (latch != null) {
+			latch.countDown();
+		}
 	}
-	
-	
+
+
 	/**
 	 * Gathers genome names require for a SNP display
 	 * @param list association of genome name/variant type list
@@ -160,6 +164,14 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			}
 		}
 		return names;
+	}
+
+
+	/**
+	 * @param latch the latch to set
+	 */
+	public void setLatch(CountDownLatch latch) {
+		this.latch = latch;
 	}
 
 }

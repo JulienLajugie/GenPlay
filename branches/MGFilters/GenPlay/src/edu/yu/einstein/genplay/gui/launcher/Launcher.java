@@ -116,7 +116,6 @@ public class Launcher {
 	private static void loadFile (File file) {
 		PAInitManagers init = new PAInitManagers();
 		init.setFile(file);
-		//init.actionPerformed(null);
 
 		loadProject(init);
 	}
@@ -130,7 +129,6 @@ public class Launcher {
 	private static void loadFile (InputStream is) {
 		PAInitManagers init = new PAInitManagers();
 		init.setInputStream(is);
-		//init.actionPerformed(null);
 
 		loadProject(init);
 	}

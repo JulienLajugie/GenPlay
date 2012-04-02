@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
@@ -51,10 +52,9 @@ public class FiltersData implements Serializable {
 	public static final int TRACK_INDEX 	= 3;
 
 
-	private VCFReader			reader;			// vcf reader
 	private VCFHeaderType 		id;				// vcf header id
+	private VCFFilter			filter;
 	private String				nonIDName;		// 
-	private IDFilterInterface	filter;			// filter value
 	private Track<?>[] 			trackList;		// list of track
 
 	
@@ -65,10 +65,9 @@ public class FiltersData implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(reader);
 		out.writeObject(id);
-		out.writeObject(nonIDName);
 		out.writeObject(filter);
+		out.writeObject(nonIDName);
 		out.writeObject(trackList);
 	}
 
@@ -81,10 +80,9 @@ public class FiltersData implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		reader = (VCFReader) in.readObject();
 		id = (VCFHeaderType) in.readObject();
+		filter = (VCFFilter) in.readObject();
 		nonIDName = (String) in.readObject();
-		filter = (IDFilterInterface) in.readObject();
 		trackList = (Track[]) in.readObject();
 	}
 	
@@ -93,10 +91,9 @@ public class FiltersData implements Serializable {
 	 * Constructor of {@link FiltersData}
 	 */
 	protected FiltersData() {
-		this.reader = null;
 		this.id = null;
-		this.nonIDName = null;
 		this.filter = null;
+		this.nonIDName = null;
 		this.trackList = null;
 	}
 
@@ -110,10 +107,9 @@ public class FiltersData implements Serializable {
 	 */
 	protected FiltersData(VCFReader reader, VCFHeaderType id,
 			IDFilterInterface filter, Track<?>[] trackList) {
-		this.reader = reader;
 		this.id = id;
+		this.filter = new VCFFilter(filter, reader);
 		this.nonIDName = null;
-		this.filter = filter;
 		this.trackList = trackList;
 	}
 
@@ -127,23 +123,14 @@ public class FiltersData implements Serializable {
 	 */
 	protected FiltersData(VCFReader reader, String nonIDName,
 			IDFilterInterface filter, Track<?>[] trackList) {
-		this.reader = reader;
 		this.id = null;
+		this.filter = new VCFFilter(filter, reader);
 		this.nonIDName = nonIDName;
-		this.filter = filter;
 		this.trackList = trackList;
 	}
 
 
 	//////////////////// Setters
-
-	/**
-	 * @param reader the reader to set
-	 */
-	protected void setReader(VCFReader reader) {
-		this.reader = reader;
-	}
-
 
 	/**
 	 * @param id the id to set
@@ -160,12 +147,14 @@ public class FiltersData implements Serializable {
 		this.id = id;
 	}
 
+	
 	/**
-	 * @param filter the filter to set
+	 * @param filter the VCF filter to set
 	 */
-	protected void setFilter(IDFilterInterface filter) {
+	protected void setVCFFilter (VCFFilter filter) {
 		this.filter = filter;
 	}
+	
 
 	/**
 	 * @param trackList the trackList to set
@@ -178,12 +167,18 @@ public class FiltersData implements Serializable {
 	//////////////////// Getters
 
 	/**
+	 * @return the VCF filter
+	 */
+	public VCFFilter getVCFFilter () {
+		return filter;
+	}
+	
+	/**
 	 * @return the reader
 	 */
 	public VCFReader getReader() {
-		return reader;
+		return this.filter.getReader();
 	}
-
 
 	/**
 	 * @return the id
@@ -191,7 +186,6 @@ public class FiltersData implements Serializable {
 	public String getNonIdName() {
 		return nonIDName;
 	}
-
 
 	/**
 	 * @return the id
@@ -204,7 +198,7 @@ public class FiltersData implements Serializable {
 	 * @return the filter
 	 */
 	public IDFilterInterface getFilter() {
-		return filter;
+		return this.filter.getFilter();
 	}
 
 	/**
@@ -221,7 +215,7 @@ public class FiltersData implements Serializable {
 	 * @return the genome
 	 */
 	public String getReaderForDisplay() {
-		return reader.getFile().getName();
+		return getReader().getFile().getName();
 	}
 
 	/**
@@ -239,7 +233,7 @@ public class FiltersData implements Serializable {
 	 * @return the filter
 	 */
 	public String getFilterForDisplay() {
-		return filter.toStringForDisplay();
+		return getFilter().toStringForDisplay();
 	}
 
 	/**
