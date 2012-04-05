@@ -42,8 +42,8 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeSNP;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSNP;
 
 
 /**

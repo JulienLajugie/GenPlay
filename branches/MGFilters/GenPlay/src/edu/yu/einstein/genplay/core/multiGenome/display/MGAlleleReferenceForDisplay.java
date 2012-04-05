@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGReference;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
 
 
 /**

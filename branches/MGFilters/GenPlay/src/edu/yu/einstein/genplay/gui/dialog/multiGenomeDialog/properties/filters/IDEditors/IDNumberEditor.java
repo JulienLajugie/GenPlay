@@ -28,10 +28,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
@@ -53,6 +55,8 @@ public class IDNumberEditor implements IDEditor {
 	private JComboBox		inequationBox02;
 	private JTextField		valueField01;
 	private JTextField		valueField02;
+	private JRadioButton	andButton;
+	private JRadioButton	orButton;
 
 
 	@Override
@@ -70,7 +74,7 @@ public class IDNumberEditor implements IDEditor {
 		// Initializes text fields
 		valueField01 = getTextField(valueField01);
 		valueField02 = getTextField(valueField02);
-
+		
 		// Default setting
 		inequationBox02.setEnabled(false);
 		valueField02.setEnabled(false);
@@ -83,20 +87,26 @@ public class IDNumberEditor implements IDEditor {
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 
-		// "Present" button
+		// First inequation
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 5, 0, 0);
 		panel.add(getInequationPanel(inequationBox01, valueField01), gbc);
-
-		// "Absent" button
-		gbc.gridx = 0;
+		
+		// Operators
 		gbc.gridy++;
 		gbc.weighty = 1;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		panel.add(getOperatorPanel(), gbc);
+
+		// Second inequation
+		gbc.gridy++;
+		gbc.weighty = 0;
+		gbc.insets = new Insets(0, 5, 0, 0);
 		panel.add(getInequationPanel(inequationBox02, valueField02), gbc);
 
 		// Create a new dimension based on the previous one
-		Dimension dimension = new Dimension((int)previousDimension.getWidth(), 50);
+		Dimension dimension = new Dimension((int)previousDimension.getWidth(), 72);
 
 		// Restore size to former value
 		panel.setPreferredSize(dimension);
@@ -113,7 +123,7 @@ public class IDNumberEditor implements IDEditor {
 	private JPanel getInequationPanel (JComboBox box, JTextField field) {
 		JPanel panel = new JPanel();
 
-		Dimension dimension = new Dimension(180, 30);
+		Dimension dimension = new Dimension(180, 26);
 
 		// Restore size to former value
 		panel.setPreferredSize(dimension);
@@ -180,6 +190,70 @@ public class IDNumberEditor implements IDEditor {
 	}
 
 
+	private JPanel getOperatorPanel () {
+		JPanel panel = new JPanel();
+
+		Dimension dimension = new Dimension(180, 20);
+
+		// Restore size to former value
+		panel.setPreferredSize(dimension);
+		panel.setMinimumSize(dimension);
+		
+		// Initializes radio boxes
+		andButton = new JRadioButton("and");
+		andButton.setSelected(true);
+		andButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if (inequationBox01.getSelectedItem().equals(" ") || inequationBox01.getSelectedItem().equals(InequalityOperators.EQUAL)) {
+					inequationBox02.setEnabled(false);
+					valueField02.setEnabled(false);
+				} else {
+					inequationBox02.setEnabled(true);
+					valueField02.setEnabled(true);
+				}
+			}
+		});
+		orButton = new JRadioButton("or");
+		orButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				inequationBox01.setEnabled(true);
+				valueField01.setEnabled(true);
+				inequationBox02.setEnabled(true);
+				valueField02.setEnabled(true);
+			}
+		});
+		
+		//Group the radio buttons.
+	    ButtonGroup group = new ButtonGroup();
+	    group.add(andButton);
+	    group.add(orButton);
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridy = 0;
+
+		// AND radio button
+		gbc.gridx = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		panel.add(andButton, gbc);
+
+		// OR radio button
+		gbc.gridx = 1;
+		gbc.insets = new Insets(0, 15, 0, 0);
+		panel.add(orButton, gbc);
+
+		// Return the panel
+		return panel;
+	}
+	
+	
 	/**
 	 * Initializes a text field
 	 * @param box text field to initialize
@@ -209,6 +283,7 @@ public class IDNumberEditor implements IDEditor {
 			model.addElement(InequalityOperators.INFERIOR);
 			model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
 			model.addElement(InequalityOperators.EQUAL);
+			model.addElement(InequalityOperators.DIFFERENT);
 			model.addElement(InequalityOperators.SUPERIOR);
 			model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
 			currentField.setEnabled(false);
@@ -216,16 +291,29 @@ public class IDNumberEditor implements IDEditor {
 			InequalityOperators inequality = (InequalityOperators) currentBox.getSelectedItem();
 			currentField.setEnabled(true);
 			if (inequality == InequalityOperators.EQUAL) {
-				otherBox.setEnabled(false);
-				otherField.setEnabled(false);
+				if (andButton.isSelected()) {
+					otherBox.setEnabled(false);
+					otherField.setEnabled(false);
+				} else {
+					otherBox.setEnabled(true);
+					otherField.setEnabled(true);
+				}
 			} else if (inequality == InequalityOperators.INFERIOR || inequality == InequalityOperators.INFERIOR_OR_EQUAL) {
 				model = new DefaultComboBoxModel();
 				model.addElement(" ");
+				if (orButton.isSelected()) {
+					model.addElement(InequalityOperators.EQUAL);
+				}
+				model.addElement(InequalityOperators.DIFFERENT);
 				model.addElement(InequalityOperators.SUPERIOR);
 				model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
 			} else if (inequality == InequalityOperators.SUPERIOR || inequality == InequalityOperators.SUPERIOR_OR_EQUAL){
 				model = new DefaultComboBoxModel();
 				model.addElement(" ");
+				if (orButton.isSelected()) {
+					model.addElement(InequalityOperators.EQUAL);
+				}
+				model.addElement(InequalityOperators.DIFFERENT);
 				model.addElement(InequalityOperators.INFERIOR);
 				model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
 			}
@@ -274,6 +362,12 @@ public class IDNumberEditor implements IDEditor {
 			filter.setInequation02(null);
 			filter.setValue02(null);
 		}
+		
+		if (andButton.isSelected()) {
+			filter.setCumulative(true);
+		} else {
+			filter.setCumulative(false);
+		}
 
 		return filter;
 	}
@@ -298,19 +392,31 @@ public class IDNumberEditor implements IDEditor {
 		Float value01 = null;
 		Float value02 = null;
 
-		if (filter instanceof QualFilter) {
+		NumberIDFilterInterface castFilter = (NumberIDFilterInterface) filter;
+		inequation01 = castFilter.getInequation01();
+		inequation02 = castFilter.getInequation02();
+		value01 = castFilter.getValue01();
+		value02 = castFilter.getValue02();
+		if (castFilter.isCumulative()) {
+			andButton.setSelected(true);
+		} else {
+			orButton.setSelected(true);
+		}
+		
+		/*if (filter instanceof QualFilter) {
 			QualFilter castFilter = (QualFilter) filter;
 			inequation01 = castFilter.getInequation01();
 			inequation02 = castFilter.getInequation02();
 			value01 = castFilter.getValue01();
 			value02 = castFilter.getValue02();
+			//if (castFilter.isCumulative())
 		} else if (filter instanceof NumberIDFilter) {
 			NumberIDFilter castFilter = (NumberIDFilter) filter;
 			inequation01 = castFilter.getInequation01();
 			inequation02 = castFilter.getInequation02();
 			value01 = castFilter.getValue01();
 			value02 = castFilter.getValue02();
-		}
+		}*/
 
 		inequationBox01.setSelectedItem(inequation01);
 		valueField01.setText(value01.toString());
@@ -321,6 +427,7 @@ public class IDNumberEditor implements IDEditor {
 			inequationBox02.setSelectedIndex(0);
 			valueField02.setText("");
 		}
+		
 	}
 
 

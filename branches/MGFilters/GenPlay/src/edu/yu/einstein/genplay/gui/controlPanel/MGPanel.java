@@ -33,7 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenomeProperties;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeProperties;
 import edu.yu.einstein.genplay.util.Images;
 
 

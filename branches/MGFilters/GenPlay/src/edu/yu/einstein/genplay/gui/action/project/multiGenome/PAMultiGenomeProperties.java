@@ -19,9 +19,8 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.project;
+package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -32,10 +31,8 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
-import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -46,7 +43,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PAMultiGenomeProperties extends TrackListAction {
+public final class PAMultiGenomeProperties extends TrackListActionWorker<Boolean> {
 
 	private static final 	long serialVersionUID = -6475180772964541278L; 			// generated ID
 	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name
@@ -85,7 +82,7 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	/**
 	 * Shows the Multi Genome Project Properties dialog
 	 */
-	@Override
+	/*@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {		// if it is a multi genome project
 			if (dialog == null){										// and the dialog has not been created,
@@ -97,8 +94,35 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 				thread.start();											// we start the thread
 			}
 		}
-	}
+	}*/
 
+	
+	@Override
+	protected Boolean processAction() throws Exception {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {		// if it is a multi genome project
+			if (dialog == null){										// and the dialog has not been created,
+				dialog = new PropertiesDialog();						// we create it
+			}
+			dialog.setSettings(settings);								// and set it with the current settings
+			if (dialog.showDialog(getRootPane(), PropertiesDialog.GENERAL) == PropertiesDialog.APPROVE_OPTION) {	// we show it waiting to be approved
+				// Notifies the action
+				notifyActionStart("Checking for updates", 1, false);
+				CountDownLatch propertiesLatch = new CountDownLatch(1);	// one for the SNP action
+				
+				DoAtTheEndThread thread = new DoAtTheEndThread();		// if it is approved (OK button), we create the thread running the content of a DoAtTheEnd-like method
+				thread.setLatch(propertiesLatch);
+				thread.start();											// we start the thread
+				
+				// The current thread is waiting for the SNP thread to finish
+				try {
+					propertiesLatch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
 
 
 	/////////////////////////////////////////////////////////////////////// DoAtTheEndThread class
@@ -117,6 +141,15 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 	 */
 	private class DoAtTheEndThread extends Thread {
 
+		CountDownLatch latch = null;	// CountDownLatch object for synchronizing threads
+		
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			this.latch = latch;
+		}
+		
 		@Override
 		public void run() {
 
@@ -171,12 +204,26 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 
 
 			// Update tracks
-			Track<?>[] tracks = getTrackList().getTrackList();
+			/*Track<?>[] tracks = getTrackList().getTrackList();
 			for (Track<?> track: tracks) {
 				List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(track);
 				List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
 				track.updateMultiGenomeInformation(stripesList, filtersList);
+			}*/
+			
+			CountDownLatch trackLatch = new CountDownLatch(1);		// one for the track update action
+			TrackThread trackThread = new TrackThread();
+			trackThread.setLatch(trackLatch);
+			trackThread.start();
+			
+			// The current thread is waiting for the filter thread to finish
+			try {
+				trackLatch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
+			
+			latch.countDown();
 		}
 	}
 
@@ -247,6 +294,36 @@ public final class PAMultiGenomeProperties extends TrackListAction {
 			multigenomeFilters.setLatch(latch);
 			multigenomeFilters.actionPerformed(null);
 			previousFilterList = null;
+		}
+	}
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////// TrackThread class
+
+	/**
+	 * The track update thread class.
+	 * This class starts the Track Update action.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private class TrackThread extends Thread {
+
+		CountDownLatch latch = null;	// CountDownLatch object for synchronizing threads
+
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			this.latch = latch;
+		}
+
+		@Override
+		public void run() {
+			PAUpdateTrack updateTrackThread = new PAUpdateTrack();
+			updateTrackThread.setLatch(latch);
+			updateTrackThread.actionPerformed(null);
 		}
 	}
 

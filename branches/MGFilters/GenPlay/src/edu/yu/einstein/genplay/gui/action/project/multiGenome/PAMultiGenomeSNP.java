@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.project;
+package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -83,17 +83,18 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			
 			MGSNPSynchronizer snpSynchronizer = projectManager.getMultiGenomeProject().getMultiGenomeSynchronizerForSNP();
 
-			// Notifies the action
-			notifyActionStart(ACTION_NAME, 1, false);
-
 			// Gets the list of stripes data
 			List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
 			
 			// Gets the genome names involved for SNPs synchronization
 			Map<String, List<AlleleType>> genomeNames = getGenomeNamesForSNP(newStripesData);			
 			
-			
-			snpSynchronizer.compute(genomeNames);
+			if (genomeNames.size() > 0) {
+				// Notifies the action
+				notifyActionStart(ACTION_NAME, 1, false);
+				
+				snpSynchronizer.compute(genomeNames);
+			}
 
 		}
 		return null;

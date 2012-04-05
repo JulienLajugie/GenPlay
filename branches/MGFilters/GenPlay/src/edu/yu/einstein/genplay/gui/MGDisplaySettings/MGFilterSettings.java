@@ -121,11 +121,9 @@ public class MGFilterSettings implements Serializable {
 	 */
 	public List<VCFFilter> getAllVCFFilters () {
 		List<VCFFilter> vcfFiltersList = new ArrayList<VCFFilter>();
-		
 		for (FiltersData filterData: filtersList) {
 			vcfFiltersList.add(filterData.getVCFFilter());
 		}
-		
 		return vcfFiltersList;	
 	}
 

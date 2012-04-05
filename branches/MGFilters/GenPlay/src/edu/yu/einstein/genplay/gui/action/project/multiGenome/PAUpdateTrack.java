@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.project;
+package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -27,10 +27,11 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.manager.MGFiltersManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -41,16 +42,15 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
+public class PAUpdateTrack extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
 	private static final String 	DESCRIPTION = 
 		"Performs the multi genome algorithm for SNPs"; 						// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 			// mnemonic key
-	private static		 String 			ACTION_NAME = "Filters creation";	// action name
+	private static		 String 			ACTION_NAME = "Updating tracks";	// action name
 
-	private final MGFiltersManager filterManager;
-
+	private					MGDisplaySettings 	settings;						// the multi genome settings object shortcut
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -59,81 +59,55 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 
 
 	/**
-	 * Creates an instance of {@link PAMultiGenomeFilters}.
+	 * Creates an instance of {@link PAUpdateTrack}.
 	 */
-	public PAMultiGenomeFilters() {
+	public PAUpdateTrack() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		filterManager = MGFiltersManager.getInstance();
 	}
 
 
 	@Override
-	protected Track<?>[] processAction() throws Exception {
+	protected Boolean processAction() throws Exception {
 		ProjectManager projectManager = ProjectManager.getInstance();
 
 		// Checks if the project is multi-genome
 		if (projectManager.isMultiGenomeProject()) {
+			
 			// Notifies the action
-			
 			notifyActionStart(ACTION_NAME, 1, false);
-
-			filterManager.initializeFilterLists();
 			
-			filterManager.retrieveDataFromVCF();
+			settings = MGDisplaySettings.getInstance();
 			
-			List<VCFFilter> filterListToUpdate = filterManager.getFilterListToUpdate();
-			//printList("Filters to update", filterListToUpdate);
-
-			for (VCFFilter filter: filterListToUpdate) {
-				filter.generateFilter(filterManager.getResultOfFilter(filter));
+			// Update tracks
+			Track<?>[] tracks = getTrackList().getTrackList();
+			for (Track<?> track: tracks) {
+				List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(track);
+				List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
+				track.updateMultiGenomeInformation(stripesList, filtersList);
 			}
+			
+			return true;
 		}
 
-		return null;
+		return false;
 	}
 
 
 	@Override
-	protected void doAtTheEnd(Track<?>[] actionResult) {
-		filterManager.reset();
+	protected void doAtTheEnd(Boolean actionResult) {
+		if (actionResult) {
+			Track<?>[] tracks = getTrackList().getTrackList();
+			for (Track<?> track: tracks) {
+				track.repaint();
+			}
+		}
 		if (latch != null) {
 			latch.countDown();
 		}
-	}
-
-
-	
-	@SuppressWarnings("unused")
-	private void printList (String title, List<VCFFilter> list) {
-		System.out.println("===== " + title);
-		if (list.size() == 0) {
-			System.out.println("Empty list");
-		} else {
-			for (VCFFilter filter: list) {
-				filter.show();
-			}
-		}
-		System.out.println("=====");
-	}
-
-
-	/**
-	 * @param previousFilterList the previousFilterList to set
-	 */
-	public void setPreviousFilterList(List<VCFFilter> previousFilterList) {
-		filterManager.setPreviousFilterList(previousFilterList);
-	}
-
-
-	/**
-	 * @param chromosomeHasChanged the chromosomeHasChanged to set
-	 */
-	public void setChromosomeHasChanged(boolean chromosomeHasChanged) {
-		filterManager.setChromosomeHasChanged(chromosomeHasChanged);
 	}
 	
 	

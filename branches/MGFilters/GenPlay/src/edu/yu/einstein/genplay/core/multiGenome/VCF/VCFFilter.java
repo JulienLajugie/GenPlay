@@ -62,7 +62,6 @@ public class VCFFilter {
 			if (reader.equals(information.getReader())) {
 				int index = reader.getPositionList().getIndex(information.getPos());
 				if (index != -1) {
-					
 					return booleanList.get(index);
 				}
 			}
@@ -133,11 +132,9 @@ public class VCFFilter {
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
 	public void generateFilter (List<Map<String, Object>> results) {
-		System.out.println("VCFFilter.generateFilter()");
 		reader.initializesPositionList();
 
 		if (results != null) {
-			System.out.println("results.size(): " + results.size());
 			booleanList = new ByteArrayAsBooleanList(reader.getPositionList().size());
 			String columnName = filter.getColumnName().toString();
 			for (int i = 0; i < results.size(); i++) {

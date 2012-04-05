@@ -92,6 +92,8 @@ public class MGFiltersManager {
 	 * Initializes the list of filters to delete/create/update.
 	 */
 	public void initializeFilterLists () {
+		currentFilterList = MGDisplaySettings.getInstance().getFilterSettings().getAllVCFFilters();
+
 		// Create the list of filters to update
 		if (chromosomeHasChanged) {
 			filterListToUpdate = currentFilterList;
@@ -123,16 +125,6 @@ public class MGFiltersManager {
 			}
 			filterMap.get(filter.getReader()).add(filter);
 		}
-		
-		/*String info = "";
-		for (VCFReader reader: filterMap.keySet()) {
-			info += reader.getFile().getName() + ": ";
-			for (VCFFilter filter: filterMap.get(reader)) {
-				info += filter.getFilter().toStringForDisplay() + "; ";
-			}
-			info += "\n";
-		}
-		System.out.println(info);*/
 	}
 
 	
@@ -163,12 +155,18 @@ public class MGFiltersManager {
 			}
 		}
 		
-		String info = "";
-		for (VCFReader reader: resultMap.keySet()) {
-			info += reader.getFile().getName() + ": " + resultMap.get(reader).size();
-			info += "\n";
+		
+	}
+	
+	
+	/**
+	 * @return true if filters must be created, false otherwise
+	 */
+	public boolean hasToBeRun () {
+		if (resultMap != null && resultMap.size() > 0) {
+			return true;
 		}
-		System.out.println(info);
+		return false;
 	}
 	
 	
@@ -177,7 +175,7 @@ public class MGFiltersManager {
 	 * @return the result of the query on the VCF file related to the filter
 	 */
 	public List<Map<String, Object>> getResultOfFilter (VCFFilter filter) {
-		return resultMap.get(filter);
+		return resultMap.get(filter.getReader());
 	}
 
 
@@ -211,6 +209,5 @@ public class MGFiltersManager {
 	public List<VCFFilter> getFilterListToUpdate() {
 		return filterListToUpdate;
 	}
-	
 
 }

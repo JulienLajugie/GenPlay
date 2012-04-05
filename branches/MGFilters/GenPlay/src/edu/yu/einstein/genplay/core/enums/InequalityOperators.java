@@ -36,6 +36,11 @@ public enum InequalityOperators {
 	EQUAL ("="),
 	
 	/**
+	 * Symbol for the difference
+	 */
+	DIFFERENT ("!="),
+	
+	/**
 	 * Symbol for the superior or equal inequality
 	 */
 	SUPERIOR_OR_EQUAL (">="),

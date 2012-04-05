@@ -44,6 +44,7 @@ public class QualFilter implements NumberIDFilterInterface {
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
 	private Float 					value02;
+	private boolean					cumulative;
 
 
 	/**
@@ -196,12 +197,21 @@ public class QualFilter implements NumberIDFilterInterface {
 		if (o != null) {
 			String fullLine = o.toString();
 			Float valueToCompare = FilterTester.getFloatValue(getColumnName(), fullLine, null);
-			boolean result01 = FilterTester.passInequation(inequation01, value01, valueToCompare);
-			boolean result02 = FilterTester.passInequation(inequation02, value02, valueToCompare);
+			Boolean result01 = FilterTester.passInequation(inequation01, value01, valueToCompare);
+			Boolean result02 = null;
+			if (inequation02 != null) {
+				result02 = FilterTester.passInequation(inequation02, value02, valueToCompare);
+			}
 
-			// non cumulative treatment
-			if (result01 || result02) {
-				return true;
+			if (cumulative) {		// cumulative treatment
+				if (result02 != null) {
+					return (result01 & result02);
+				}
+				return result01;
+			} else {				// non cumulative treatment
+				if (result01 || result02) {
+					return true;
+				}
 			}
 		} else {
 			System.out.println("QualFilter.isValid()");
@@ -215,5 +225,17 @@ public class QualFilter implements NumberIDFilterInterface {
 	@Override
 	public VCFColumnName getColumnName() {
 		return VCFColumnName.QUAL;
+	}
+
+
+	@Override
+	public void setCumulative(boolean cumulative) {
+		this.cumulative = cumulative;
+	}
+
+
+	@Override
+	public boolean isCumulative() {
+		return cumulative;
 	}
 }
