@@ -123,7 +123,11 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 
 		text += "x " + inequation01 + " " + value01;
 		if (inequation02 != null && value02 != null) {
-			text += " and ";
+			if (cumulative) {
+				text += " AND ";
+			} else {
+				text += " OR ";
+			}
 			text += "x " + inequation02 + " " + value02;
 		}
 

@@ -168,6 +168,7 @@ public class IDNumberEditor implements IDEditor {
 		model.addElement(InequalityOperators.INFERIOR);
 		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
 		model.addElement(InequalityOperators.EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
 		model.addElement(InequalityOperators.SUPERIOR);
 		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
 
@@ -178,12 +179,13 @@ public class IDNumberEditor implements IDEditor {
 		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JComboBox box = (JComboBox) e.getSource();
-				if (box.equals(inequationBox01)) {
+				//JComboBox box = (JComboBox) e.getSource();
+				refreshBoxes();
+				/*if (box.equals(inequationBox01)) {
 					doAction(inequationBox01, inequationBox02, valueField01, valueField02);
 				} else {
 					doAction(inequationBox02, inequationBox01, valueField02, valueField01);
-				}
+				}*/
 			}
 		});
 		return box;
@@ -205,23 +207,25 @@ public class IDNumberEditor implements IDEditor {
 		andButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (inequationBox01.getSelectedItem().equals(" ") || inequationBox01.getSelectedItem().equals(InequalityOperators.EQUAL)) {
+				refreshBoxes();
+				/*if (inequationBox01.getSelectedItem().equals(" ") || inequationBox01.getSelectedItem().equals(InequalityOperators.EQUAL)) {
 					inequationBox02.setEnabled(false);
 					valueField02.setEnabled(false);
 				} else {
 					inequationBox02.setEnabled(true);
 					valueField02.setEnabled(true);
-				}
+				}*/
 			}
 		});
 		orButton = new JRadioButton("or");
 		orButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				inequationBox01.setEnabled(true);
+				refreshBoxes();
+				/*inequationBox01.setEnabled(true);
 				valueField01.setEnabled(true);
 				inequationBox02.setEnabled(true);
-				valueField02.setEnabled(true);
+				valueField02.setEnabled(true);*/
 			}
 		});
 		
@@ -265,71 +269,132 @@ public class IDNumberEditor implements IDEditor {
 		field.setPreferredSize(dimension);
 		return field;
 	}
-
-
+	
+	
 	/**
-	 * Updates model boxes according to the selected box value
-	 * @param currentBox	the current used by the user
-	 * @param otherBox		the other box
+	 * Refreshes the combo boxes according to their content and the "and" / "or" radio buttons.
+	 * A superior operator in a box will involve inferior operators in the second box.
+	 * The equal operator in the first box with the "and" box selected will disable the second box.
+	 * ...
 	 */
-	private void doAction (JComboBox currentBox, JComboBox otherBox, JTextField currentField, JTextField otherField) {
-		String value = currentBox.getSelectedItem().toString();
-		DefaultComboBoxModel model = null;
-		boolean enable = true;
-
-		if (value.equals(" ")) {
-			model = new DefaultComboBoxModel();
-			model.addElement(" ");
-			model.addElement(InequalityOperators.INFERIOR);
-			model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
-			model.addElement(InequalityOperators.EQUAL);
-			model.addElement(InequalityOperators.DIFFERENT);
-			model.addElement(InequalityOperators.SUPERIOR);
-			model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
-			currentField.setEnabled(false);
+	private void refreshBoxes () {
+		InequalityOperators operator01 = getInequalityOperator(inequationBox01);
+		InequalityOperators operator02 = getInequalityOperator(inequationBox02);
+		
+		if (operator01 == null){
+			inequationBox01.setModel(getFullModel());
+			inequationBox02.setEnabled(false);
+			valueField02.setEnabled(false);
 		} else {
-			InequalityOperators inequality = (InequalityOperators) currentBox.getSelectedItem();
-			currentField.setEnabled(true);
-			if (inequality == InequalityOperators.EQUAL) {
+			if (operator01.equals(InequalityOperators.EQUAL)) {
 				if (andButton.isSelected()) {
-					otherBox.setEnabled(false);
-					otherField.setEnabled(false);
+					inequationBox02.setEnabled(false);
+					valueField02.setEnabled(false);
 				} else {
-					otherBox.setEnabled(true);
-					otherField.setEnabled(true);
+					inequationBox02.setEnabled(true);
+					valueField02.setEnabled(true);
+					inequationBox02.setModel(getFullModel());
 				}
-			} else if (inequality == InequalityOperators.INFERIOR || inequality == InequalityOperators.INFERIOR_OR_EQUAL) {
-				model = new DefaultComboBoxModel();
-				model.addElement(" ");
+			} else {
+				inequationBox02.setEnabled(true);
+				valueField02.setEnabled(true);
+				if (operator01 == InequalityOperators.SUPERIOR || operator01 == InequalityOperators.SUPERIOR_OR_EQUAL) {
+					inequationBox02.setModel(getInferiorModel());
+				} else if (operator01 == InequalityOperators.INFERIOR || operator01 == InequalityOperators.INFERIOR_OR_EQUAL) {
+					inequationBox02.setModel(getSuperiorModel());
+				} else {
+					inequationBox02.setModel(getFullModel());
+				}
 				if (orButton.isSelected()) {
-					model.addElement(InequalityOperators.EQUAL);
+					((DefaultComboBoxModel)(inequationBox02.getModel())).addElement(InequalityOperators.EQUAL);
 				}
-				model.addElement(InequalityOperators.DIFFERENT);
-				model.addElement(InequalityOperators.SUPERIOR);
-				model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
-			} else if (inequality == InequalityOperators.SUPERIOR || inequality == InequalityOperators.SUPERIOR_OR_EQUAL){
-				model = new DefaultComboBoxModel();
-				model.addElement(" ");
-				if (orButton.isSelected()) {
-					model.addElement(InequalityOperators.EQUAL);
-				}
-				model.addElement(InequalityOperators.DIFFERENT);
-				model.addElement(InequalityOperators.INFERIOR);
-				model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
 			}
+			setSelectedItemInBox(inequationBox02, operator02);
 		}
-
-		if (model != null) {
-			Object otherSelectedItem = otherBox.getSelectedItem();
-			otherBox.setModel(model);
-			otherBox.setSelectedItem(otherSelectedItem);
-			otherBox.setEnabled(enable);
-			otherField.setEnabled(enable);
+	}
+	
+	
+	/**
+	 * Create and return a combo box model containing the full list of operators.
+	 * @return the full model of operator
+	 */
+	private DefaultComboBoxModel getFullModel () {
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(InequalityOperators.SUPERIOR);
+		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.INFERIOR);
+		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
+		model.addElement(InequalityOperators.EQUAL);
+		return model;
+	}
+	
+	
+	/**
+	 * Create and return a combo box model containing the list of superior operators and the different one.
+	 * @return the full model of operator
+	 */
+	private DefaultComboBoxModel getSuperiorModel () {
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(InequalityOperators.SUPERIOR);
+		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
+		return model;
+	}
+	
+	
+	/**
+	 * Create and return a combo box model containing the full list of inferior operators and the different one.
+	 * @return the full model of operator
+	 */
+	private DefaultComboBoxModel getInferiorModel () {
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(InequalityOperators.INFERIOR);
+		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
+		return model;
+	}
+	
+	
+	/**
+	 * Checks the validity and gets the selected operator of a combo box
+	 * @param comboBox the combo box
+	 * @return its operator, null if not valid (disabled box/empty selection
+	 */
+	private InequalityOperators getInequalityOperator (JComboBox comboBox) {
+		InequalityOperators operator = null;
+		
+		if (comboBox.isEnabled() && comboBox.getSelectedItem() != null && !comboBox.getSelectedItem().equals(" ")) {
+			operator = (InequalityOperators) comboBox.getSelectedItem();
 		}
-
+		
+		return operator;
 	}
 
+	
+	/**
+	 * Set an operator in a combo box, if the operator does not exist, the first value is selected.
+	 * @param comboBox the combo box
+	 * @param operator the operator
+	 */
+	private void setSelectedItemInBox (JComboBox comboBox, InequalityOperators operator) {
+		boolean found = false;
+		
+		if (operator != null) {
+			DefaultComboBoxModel model = ((DefaultComboBoxModel)(inequationBox02.getModel()));
+			if (model.getIndexOf(operator) >= 0) {
+				found = true;
+			}
+		}
+		
+		if (found) {
+			comboBox.setSelectedItem(operator);
+		} else {
+			comboBox.setSelectedIndex(0);
+		}
+	}
 
+	
 	@Override
 	public IDFilterInterface getFilter() {
 		NumberIDFilterInterface filter = null;
