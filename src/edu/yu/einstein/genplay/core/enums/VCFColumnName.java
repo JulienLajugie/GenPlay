@@ -23,53 +23,58 @@ package edu.yu.einstein.genplay.core.enums;
 
 
 /**
- * A type for inequalities
+ * A type of indel for vcf
  * @author Nicolas Fourel
  * @version 0.1
  */
-public enum InequalityOperators {
+public enum VCFColumnName {
 	
-
 	/**
-	 * Symbol for the equality
+	 * For the CHROM column name
 	 */
-	EQUAL ("="),
-	
+	CHROM ("CHROM"),
 	/**
-	 * Symbol for the difference
+	 * For the POS column name
 	 */
-	DIFFERENT ("!="),
-	
+	POS ("POS"),
 	/**
-	 * Symbol for the superior or equal inequality
+	 * For the ID column name
 	 */
-	SUPERIOR_OR_EQUAL (">="),
-	
+	ID ("ID"),
 	/**
-	 * Symbol for the superior inequality
+	 * For the REF column name
 	 */
-	SUPERIOR (">"),
-	
+	REF ("REF"),
 	/**
-	 * Symbol for the inferior or equal inequality
+	 * For the ALT column name
 	 */
-	INFERIOR_OR_EQUAL ("<="),
-	
+	ALT ("ALT"),
 	/**
-	 * Symbol for the inferior inequality
+	 * For the QUAL column name
 	 */
-	INFERIOR ("<");
+	QUAL ("QUAL"),
+	/**
+	 * For the FILTER column name
+	 */
+	FILTER ("FILTER"),
+	/**
+	 * For the INFO column name
+	 */
+	INFO ("INFO"),
+	/**
+	 * For the FORMAT column name
+	 */
+	FORMAT ("FORMAT");
 	
 	
-	
-	private final String name; // String representing the inequality 
+	private final String name; // String representing the indel 
 	
 	
 	/**
-	 * Private constructor. Creates an instance of {@link InequalityOperators}
+	 * Private constructor. Creates an instance of {@link VCFColumnName}
 	 * @param name
 	 */
-	private InequalityOperators(String name) {
+	private VCFColumnName(String name) {
 		this.name = name;
 	}
 	
@@ -78,4 +83,33 @@ public enum InequalityOperators {
 	public String toString() {
 		return name;
 	}
+	
+	
+	/**
+	 * @param s the string
+	 * @return the {@link VCFColumnName} associated to the string, null otherwise
+	 */
+	public static VCFColumnName getColumnNameFromString (String s) {
+		if (s.equals(CHROM)) {
+			return CHROM;
+		} else if (s.equals(POS)) {
+			return POS;
+		} else if (s.equals(ID)) {
+			return ID;
+		} else if (s.equals(REF)) {
+			return REF;
+		} else if (s.equals(ALT)) {
+			return ALT;
+		} else if (s.equals(QUAL)) {
+			return QUAL;
+		} else if (s.equals(FILTER)) {
+			return FILTER;
+		} else if (s.equals(INFO)) {
+			return INFO;
+		} else if (s.equals(FORMAT)) {
+			return FORMAT;
+		}
+		return null;
+	}
+	
 }

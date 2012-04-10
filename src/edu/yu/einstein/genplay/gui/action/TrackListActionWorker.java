@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action;
 
 import java.awt.event.ActionEvent;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
@@ -38,6 +39,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -54,7 +56,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	protected SwingWorker<T, Void> worker;	// worker that will process the action
 	protected String							genomeName = null;		// genome name for a multi genome project
 	protected AlleleType						alleleType = null;		// allele type for a multi genome project
-	
+	protected CountDownLatch latch = null;
 	
 	/**
 	 * @return the {@link JRootPane} of the {@link TrackList}
@@ -84,14 +86,14 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		@Override
 		final protected T doInBackground() throws Exception {
 			OperationPool.getInstance().addOperationProgressListener(TrackListActionWorker.this);
-			getTrackList().actionStarts();			
+			getTrackList().actionStarts();
 			return processAction();
 		}		
 		
 		@Override
 		final protected void done() {
 			try {
-				garbageCollect();
+				Utils.garbageCollect();
 				getStatusBar().actionStop("Operation Done");
 				doAtTheEnd(this.get());
 			} catch (Exception e) {
@@ -106,18 +108,6 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 				getTrackList().actionEnds();
 			}
 		}
-	}
-	
-	
-	/**
-	 * Tries to force the garbage collector to run
-	 */
-	private void garbageCollect() {
-		System.gc();/*System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();*/
 	}
 	
 	
@@ -190,7 +180,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	public void stop() {
 		worker.cancel(true);
 		OperationPool.getInstance().stopPool();	
-		garbageCollect();
+		Utils.garbageCollect();
 		getStatusBar().actionStop("Operation Aborted");
 	}
 

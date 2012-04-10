@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
@@ -37,6 +38,7 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
 	private Float 					value02;
+	private boolean					cumulative;
 
 
 	@Override
@@ -121,10 +123,14 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 
 		text += "x " + inequation01 + " " + value01;
 		if (inequation02 != null && value02 != null) {
-			text += " and ";
+			if (cumulative) {
+				text += " AND ";
+			} else {
+				text += " OR ";
+			}
 			text += "x " + inequation02 + " " + value02;
 		}
-		
+
 		return text;
 	}
 
@@ -165,56 +171,14 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
-	
-	/*/**
-	 * Compare to float in order to define if they correlate the inequation.
-	 * @param inequation		an inequation
-	 * @param referenceValue	a first value
-	 * @param valueToCompare	a second value
-	 * @return					true if both values correlate the inequation, false otherwise.
-	 */
-	/*private boolean isValid (InequalityOperators inequation, Float referenceValue, Float valueToCompare) {
-		boolean valid = false;
-		
-		if (valueToCompare < 0) {
-			valueToCompare = valueToCompare * -1;
-		}
-		
-		int result = valueToCompare.compareTo(referenceValue);
-		
-		if (inequation == InequalityOperators.EQUAL) {
-			if (result == 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.SUPERIOR) {
-			if (result > 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.SUPERIOR_OR_EQUAL) {
-			if (result >= 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.INFERIOR) {
-			if (result < 0) {
-				valid = true;
-			}
-		} else if (inequation == InequalityOperators.INFERIOR_OR_EQUAL) {
-			if (result <= 0) {
-				valid = true;
-			}
-		}
-		
-		return valid;
-	}*/
 
 
 	@Override
 	public String getCategory() {
 		return category;
 	}
-	
-	
+
+
 	@Override
 	public boolean isValid(VariantInterface variant) {
 		return false;
@@ -222,11 +186,35 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object value) {
+	public boolean isValid(Object o) {
+		if (o != null) {
+			String fullLine = o.toString();
+			Float valueToCompare = FilterTester.getFloatValue(getColumnName(), fullLine, ID.getId());
+			Boolean result01 = FilterTester.passInequation(inequation01, value01, valueToCompare);
+			Boolean result02 = null;
+			if (inequation02 != null) {
+				result02 = FilterTester.passInequation(inequation02, value02, valueToCompare);
+			}
+
+			if (cumulative) {		// cumulative treatment
+				if (result02 != null) {
+					return (result01 & result02);
+				}
+				return result01;
+			} else {				// non cumulative treatment
+				if (result01 || result02) {
+					return true;
+				}
+			}
+		} else {
+			System.out.println("NumberIDFilter.isValid()");
+			System.out.println("value == null");
+		}
+
 		return false;
 	}
 
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -235,7 +223,7 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		NumberIDFilter test = (NumberIDFilter)obj;
 		return ID.getId().equals(test.getID().getId()) && 
@@ -245,5 +233,23 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 		value01 == test.getValue01() &&
 		value02 == test.getValue02();
 	}
-	
+
+
+	@Override
+	public VCFColumnName getColumnName() {
+		return VCFColumnName.getColumnNameFromString(category);
+	}
+
+
+	@Override
+	public void setCumulative(boolean cumulative) {
+		this.cumulative = cumulative;
+	}
+
+
+	@Override
+	public boolean isCumulative() {
+		return cumulative;
+	}
+
 }

@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
-import edu.yu.einstein.genplay.gui.action.project.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
@@ -116,7 +116,6 @@ public class Launcher {
 	private static void loadFile (File file) {
 		PAInitManagers init = new PAInitManagers();
 		init.setFile(file);
-		//init.actionPerformed(null);
 
 		loadProject(init);
 	}
@@ -130,7 +129,6 @@ public class Launcher {
 	private static void loadFile (InputStream is) {
 		PAInitManagers init = new PAInitManagers();
 		init.setInputStream(is);
-		//init.actionPerformed(null);
 
 		loadProject(init);
 	}

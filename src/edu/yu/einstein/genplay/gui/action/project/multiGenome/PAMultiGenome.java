@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.project;
+package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -49,8 +49,8 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * In a project, before using the {@link PAMultiGenome} action for the first time,
  * please set the multi-genome project boolean presents in {@link ProjectManager} to true.
  * 
- * @author Julien Lajugie
  * @author Nicolas Fourel
+ * @author Julien Lajugie
  * @version 0.1
  */
 public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {

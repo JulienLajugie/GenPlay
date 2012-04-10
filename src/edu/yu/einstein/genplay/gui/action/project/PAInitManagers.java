@@ -133,7 +133,7 @@ public final class PAInitManagers extends AbstractAction {
 
 						if (formerPaths != null) {									// if the project is file dependant
 							invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
-							if (getNumberOfInvalidFiles(invalidPaths) > 0) {		// if some invalid files exist,
+							if (hasInvalidFiles()) {		// if some invalid files exist,
 
 								// Warn the user about the .gz and .gz.tbi files
 								if (!projectInformation.isSingleProject()) {
@@ -190,6 +190,16 @@ public final class PAInitManagers extends AbstractAction {
 	}
 
 
+	private boolean hasInvalidFiles () {
+		for (int i = 0; i < invalidPaths.length; i++) {
+			if (invalidPaths[i] != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Create an array of invalid paths.
 	 * @param paths the file paths
@@ -216,12 +226,6 @@ public final class PAInitManagers extends AbstractAction {
 	 */
 	private int getNumberOfInvalidFiles (String[] paths) {
 		int cpt = 0;
-		/*for (int i = 0; i < paths.length; i++) {
-			if (paths[i] != null) {
-				cpt++;
-			}
-		}
-		return cpt;*/
 		for (int i = 0; i < paths.length; i++) {
 			if (!isValidFile(paths[i])) {
 				cpt++;

@@ -52,13 +52,12 @@ public class FiltersTable extends ContentTable<FiltersData> {
 		List<FiltersData> newData = new ArrayList<FiltersData>();
 		for (int i = 0; i < data.size(); i++) {
 			FiltersData rowData = new FiltersData();
-			rowData.setReader(data.get(i).getReader());
+			rowData.setVCFFilter(data.get(i).getVCFFilter());
 			if (data.get(i).getId() != null) {
 				rowData.setId(data.get(i).getId());
 			} else {
 				rowData.setNonIdName(data.get(i).getNonIdName());
 			}
-			rowData.setFilter(data.get(i).getFilter());
 			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
 		}

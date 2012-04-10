@@ -117,9 +117,9 @@ public class DisplayableVariantListMaker implements Serializable {
 			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {			// loop on every variant list for display
 				List<VariantInterface> varianListTmp = variantListForDisplay.getVariantList();	// get the actual variant list
 				for (VariantInterface variant: varianListTmp) {									// for every variant of the current list
-					//if (isValid(variant, filtersList)) {										// it must passes all filters to be added
-					variantList.add(variant);
-					//}
+					if (isValid(variant, filtersList)) {										// it must passes all filters to be added
+						variantList.add(variant);
+					}
 				}
 			}
 			Collections.sort(variantList, new VariantComparator());								// sorts the list
@@ -133,7 +133,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param filtersList	a list of filters
 	 * @return				true is the variant passes all filters
 	 */
-	@SuppressWarnings("unused")	// under development
+	//@SuppressWarnings("unused")	// under development
 	private boolean isValid (VariantInterface variant, List<VCFFilter> filtersList) {
 		for (VCFFilter filter: filtersList) {		// loop on all filters
 			if (!filter.isValid(variant)) {			// test the variant for the current filter

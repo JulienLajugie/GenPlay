@@ -199,6 +199,10 @@ public class MultiGenomeDrawer<T> implements Serializable {
 				}
 			}
 		}
+		
+		if (allele01VariantLists.size() > 0 || allele02VariantLists.size() > 0) {
+			
+		}
 
 		// Sets the list maker with the new list of variant
 		allele01VariantListMaker.setListOfVariantList(allele01VariantLists, vcfFiltersList);	// we set the list maker with the temporary list
@@ -206,6 +210,9 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 		//repaint();
 	}
+	
+	
+	
 
 
 	///////////////////////////////////////////////////////////////// Stripes drawing

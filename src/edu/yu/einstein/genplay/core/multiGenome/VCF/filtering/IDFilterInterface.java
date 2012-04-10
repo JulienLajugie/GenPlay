@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
@@ -60,6 +61,12 @@ public interface IDFilterInterface {
 	 * @return the category of the filter
 	 */
 	public String getCategory ();
+	
+	
+	/**
+	 * @return the {@link VCFColumnName} enum
+	 */
+	public VCFColumnName getColumnName ();
 	
 	
 	/**

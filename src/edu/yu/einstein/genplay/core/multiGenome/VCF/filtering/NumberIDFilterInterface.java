@@ -76,5 +76,17 @@ public interface NumberIDFilterInterface extends IDFilterInterface {
 	 * @param value02 the value02 to set
 	 */
 	public void setValue02(Float value02);
+	
+	
+	/**
+	 * @param cumulative the boolean to set
+	 */
+	public void setCumulative (boolean cumulative);
+	
+	
+	/**
+	 * @return true if results of inequations must be cumulated, false otherwise (AND/OR operator)
+	 */
+	public boolean isCumulative();
 
 }

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
@@ -177,11 +178,14 @@ public class StringIDFilter implements StringIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object value) {
-		return false;
+	public boolean isValid(Object object) {
+		boolean found = FilterTester.isStringFound(object, ID.getId());
+
+		return FilterTester.passTest(required, found);
 	}
 	
 	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -197,5 +201,11 @@ public class StringIDFilter implements StringIDFilterInterface {
 		category.equals(test.getCategory()) &&
 		value.equals(test.getValue()) &&
 		required == test.isRequired();
+	}
+
+
+	@Override
+	public VCFColumnName getColumnName() {
+		return VCFColumnName.getColumnNameFromString(category);
 	}
 }

@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * @author Nicolas Fourel
  * @param <K> class used for the elements of the list of this dialog
@@ -36,7 +38,8 @@ public class ListDialog<K> extends JDialog {
 	public static final 	int 			CANCEL_OPTION 		= 1;
 
 	private int	approved 		= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	private int maximumWidth 	= 300;				// Maximum default width of the dialog 
+	private int minimumWidth 	= 250;				// Minimum default width of the dialog 
+	private int maximumWidth 	= 400;				// Maximum default width of the dialog 
 	private int maximumHeight 	= 500;				// Maximum default height of the dialog 
 	private int selectionMode	= ListSelectionModel.SINGLE_SELECTION;
 
@@ -54,6 +57,8 @@ public class ListDialog<K> extends JDialog {
 		setTitle("Multi-Genome Project Properties");
 		setResizable(true);
 		setVisible(false);
+		setAlwaysOnTop(true);
+		setIconImage(Images.getApplicationImage());
 
 		// Dialog layout
 		BorderLayout layout = new BorderLayout();
@@ -117,6 +122,11 @@ public class ListDialog<K> extends JDialog {
 				width = currentWidth;
 			}
 		}
+		
+		if (width < minimumWidth) {
+			width = minimumWidth;
+		}
+		
 		if (width > maximumWidth) {
 			width = maximumWidth;
 		}

@@ -28,10 +28,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
@@ -53,6 +55,8 @@ public class IDNumberEditor implements IDEditor {
 	private JComboBox		inequationBox02;
 	private JTextField		valueField01;
 	private JTextField		valueField02;
+	private JRadioButton	andButton;
+	private JRadioButton	orButton;
 
 
 	@Override
@@ -70,7 +74,7 @@ public class IDNumberEditor implements IDEditor {
 		// Initializes text fields
 		valueField01 = getTextField(valueField01);
 		valueField02 = getTextField(valueField02);
-
+		
 		// Default setting
 		inequationBox02.setEnabled(false);
 		valueField02.setEnabled(false);
@@ -83,20 +87,26 @@ public class IDNumberEditor implements IDEditor {
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 
-		// "Present" button
+		// First inequation
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 5, 0, 0);
 		panel.add(getInequationPanel(inequationBox01, valueField01), gbc);
-
-		// "Absent" button
-		gbc.gridx = 0;
+		
+		// Operators
 		gbc.gridy++;
 		gbc.weighty = 1;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		panel.add(getOperatorPanel(), gbc);
+
+		// Second inequation
+		gbc.gridy++;
+		gbc.weighty = 0;
+		gbc.insets = new Insets(0, 5, 0, 0);
 		panel.add(getInequationPanel(inequationBox02, valueField02), gbc);
 
 		// Create a new dimension based on the previous one
-		Dimension dimension = new Dimension((int)previousDimension.getWidth(), 50);
+		Dimension dimension = new Dimension((int)previousDimension.getWidth(), 72);
 
 		// Restore size to former value
 		panel.setPreferredSize(dimension);
@@ -113,7 +123,7 @@ public class IDNumberEditor implements IDEditor {
 	private JPanel getInequationPanel (JComboBox box, JTextField field) {
 		JPanel panel = new JPanel();
 
-		Dimension dimension = new Dimension(180, 30);
+		Dimension dimension = new Dimension(180, 26);
 
 		// Restore size to former value
 		panel.setPreferredSize(dimension);
@@ -158,6 +168,7 @@ public class IDNumberEditor implements IDEditor {
 		model.addElement(InequalityOperators.INFERIOR);
 		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
 		model.addElement(InequalityOperators.EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
 		model.addElement(InequalityOperators.SUPERIOR);
 		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
 
@@ -168,18 +179,85 @@ public class IDNumberEditor implements IDEditor {
 		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JComboBox box = (JComboBox) e.getSource();
-				if (box.equals(inequationBox01)) {
+				//JComboBox box = (JComboBox) e.getSource();
+				refreshBoxes();
+				/*if (box.equals(inequationBox01)) {
 					doAction(inequationBox01, inequationBox02, valueField01, valueField02);
 				} else {
 					doAction(inequationBox02, inequationBox01, valueField02, valueField01);
-				}
+				}*/
 			}
 		});
 		return box;
 	}
 
 
+	private JPanel getOperatorPanel () {
+		JPanel panel = new JPanel();
+
+		Dimension dimension = new Dimension(180, 20);
+
+		// Restore size to former value
+		panel.setPreferredSize(dimension);
+		panel.setMinimumSize(dimension);
+		
+		// Initializes radio boxes
+		andButton = new JRadioButton("and");
+		andButton.setSelected(true);
+		andButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				refreshBoxes();
+				/*if (inequationBox01.getSelectedItem().equals(" ") || inequationBox01.getSelectedItem().equals(InequalityOperators.EQUAL)) {
+					inequationBox02.setEnabled(false);
+					valueField02.setEnabled(false);
+				} else {
+					inequationBox02.setEnabled(true);
+					valueField02.setEnabled(true);
+				}*/
+			}
+		});
+		orButton = new JRadioButton("or");
+		orButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				refreshBoxes();
+				/*inequationBox01.setEnabled(true);
+				valueField01.setEnabled(true);
+				inequationBox02.setEnabled(true);
+				valueField02.setEnabled(true);*/
+			}
+		});
+		
+		//Group the radio buttons.
+	    ButtonGroup group = new ButtonGroup();
+	    group.add(andButton);
+	    group.add(orButton);
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridy = 0;
+
+		// AND radio button
+		gbc.gridx = 0;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		panel.add(andButton, gbc);
+
+		// OR radio button
+		gbc.gridx = 1;
+		gbc.insets = new Insets(0, 15, 0, 0);
+		panel.add(orButton, gbc);
+
+		// Return the panel
+		return panel;
+	}
+	
+	
 	/**
 	 * Initializes a text field
 	 * @param box text field to initialize
@@ -191,57 +269,132 @@ public class IDNumberEditor implements IDEditor {
 		field.setPreferredSize(dimension);
 		return field;
 	}
-
-
+	
+	
 	/**
-	 * Updates model boxes according to the selected box value
-	 * @param currentBox	the current used by the user
-	 * @param otherBox		the other box
+	 * Refreshes the combo boxes according to their content and the "and" / "or" radio buttons.
+	 * A superior operator in a box will involve inferior operators in the second box.
+	 * The equal operator in the first box with the "and" box selected will disable the second box.
+	 * ...
 	 */
-	private void doAction (JComboBox currentBox, JComboBox otherBox, JTextField currentField, JTextField otherField) {
-		String value = currentBox.getSelectedItem().toString();
-		DefaultComboBoxModel model = null;
-		boolean enable = true;
-
-		if (value.equals(" ")) {
-			model = new DefaultComboBoxModel();
-			model.addElement(" ");
-			model.addElement(InequalityOperators.INFERIOR);
-			model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
-			model.addElement(InequalityOperators.EQUAL);
-			model.addElement(InequalityOperators.SUPERIOR);
-			model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
-			currentField.setEnabled(false);
+	private void refreshBoxes () {
+		InequalityOperators operator01 = getInequalityOperator(inequationBox01);
+		InequalityOperators operator02 = getInequalityOperator(inequationBox02);
+		
+		if (operator01 == null){
+			inequationBox01.setModel(getFullModel());
+			inequationBox02.setEnabled(false);
+			valueField02.setEnabled(false);
 		} else {
-			InequalityOperators inequality = (InequalityOperators) currentBox.getSelectedItem();
-			currentField.setEnabled(true);
-			if (inequality == InequalityOperators.EQUAL) {
-				otherBox.setEnabled(false);
-				otherField.setEnabled(false);
-			} else if (inequality == InequalityOperators.INFERIOR || inequality == InequalityOperators.INFERIOR_OR_EQUAL) {
-				model = new DefaultComboBoxModel();
-				model.addElement(" ");
-				model.addElement(InequalityOperators.SUPERIOR);
-				model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
-			} else if (inequality == InequalityOperators.SUPERIOR || inequality == InequalityOperators.SUPERIOR_OR_EQUAL){
-				model = new DefaultComboBoxModel();
-				model.addElement(" ");
-				model.addElement(InequalityOperators.INFERIOR);
-				model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
+			if (operator01.equals(InequalityOperators.EQUAL)) {
+				if (andButton.isSelected()) {
+					inequationBox02.setEnabled(false);
+					valueField02.setEnabled(false);
+				} else {
+					inequationBox02.setEnabled(true);
+					valueField02.setEnabled(true);
+					inequationBox02.setModel(getFullModel());
+				}
+			} else {
+				inequationBox02.setEnabled(true);
+				valueField02.setEnabled(true);
+				if (operator01 == InequalityOperators.SUPERIOR || operator01 == InequalityOperators.SUPERIOR_OR_EQUAL) {
+					inequationBox02.setModel(getInferiorModel());
+				} else if (operator01 == InequalityOperators.INFERIOR || operator01 == InequalityOperators.INFERIOR_OR_EQUAL) {
+					inequationBox02.setModel(getSuperiorModel());
+				} else {
+					inequationBox02.setModel(getFullModel());
+				}
+				if (orButton.isSelected()) {
+					((DefaultComboBoxModel)(inequationBox02.getModel())).addElement(InequalityOperators.EQUAL);
+				}
 			}
+			setSelectedItemInBox(inequationBox02, operator02);
 		}
-
-		if (model != null) {
-			Object otherSelectedItem = otherBox.getSelectedItem();
-			otherBox.setModel(model);
-			otherBox.setSelectedItem(otherSelectedItem);
-			otherBox.setEnabled(enable);
-			otherField.setEnabled(enable);
+	}
+	
+	
+	/**
+	 * Create and return a combo box model containing the full list of operators.
+	 * @return the full model of operator
+	 */
+	private DefaultComboBoxModel getFullModel () {
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(InequalityOperators.SUPERIOR);
+		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.INFERIOR);
+		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
+		model.addElement(InequalityOperators.EQUAL);
+		return model;
+	}
+	
+	
+	/**
+	 * Create and return a combo box model containing the list of superior operators and the different one.
+	 * @return the full model of operator
+	 */
+	private DefaultComboBoxModel getSuperiorModel () {
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(InequalityOperators.SUPERIOR);
+		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
+		return model;
+	}
+	
+	
+	/**
+	 * Create and return a combo box model containing the full list of inferior operators and the different one.
+	 * @return the full model of operator
+	 */
+	private DefaultComboBoxModel getInferiorModel () {
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(InequalityOperators.INFERIOR);
+		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
+		model.addElement(InequalityOperators.DIFFERENT);
+		return model;
+	}
+	
+	
+	/**
+	 * Checks the validity and gets the selected operator of a combo box
+	 * @param comboBox the combo box
+	 * @return its operator, null if not valid (disabled box/empty selection
+	 */
+	private InequalityOperators getInequalityOperator (JComboBox comboBox) {
+		InequalityOperators operator = null;
+		
+		if (comboBox.isEnabled() && comboBox.getSelectedItem() != null && !comboBox.getSelectedItem().equals(" ")) {
+			operator = (InequalityOperators) comboBox.getSelectedItem();
 		}
-
+		
+		return operator;
 	}
 
+	
+	/**
+	 * Set an operator in a combo box, if the operator does not exist, the first value is selected.
+	 * @param comboBox the combo box
+	 * @param operator the operator
+	 */
+	private void setSelectedItemInBox (JComboBox comboBox, InequalityOperators operator) {
+		boolean found = false;
+		
+		if (operator != null) {
+			DefaultComboBoxModel model = ((DefaultComboBoxModel)(inequationBox02.getModel()));
+			if (model.getIndexOf(operator) >= 0) {
+				found = true;
+			}
+		}
+		
+		if (found) {
+			comboBox.setSelectedItem(operator);
+		} else {
+			comboBox.setSelectedIndex(0);
+		}
+	}
 
+	
 	@Override
 	public IDFilterInterface getFilter() {
 		NumberIDFilterInterface filter = null;
@@ -274,6 +427,12 @@ public class IDNumberEditor implements IDEditor {
 			filter.setInequation02(null);
 			filter.setValue02(null);
 		}
+		
+		if (andButton.isSelected()) {
+			filter.setCumulative(true);
+		} else {
+			filter.setCumulative(false);
+		}
 
 		return filter;
 	}
@@ -298,19 +457,31 @@ public class IDNumberEditor implements IDEditor {
 		Float value01 = null;
 		Float value02 = null;
 
-		if (filter instanceof QualFilter) {
+		NumberIDFilterInterface castFilter = (NumberIDFilterInterface) filter;
+		inequation01 = castFilter.getInequation01();
+		inequation02 = castFilter.getInequation02();
+		value01 = castFilter.getValue01();
+		value02 = castFilter.getValue02();
+		if (castFilter.isCumulative()) {
+			andButton.setSelected(true);
+		} else {
+			orButton.setSelected(true);
+		}
+		
+		/*if (filter instanceof QualFilter) {
 			QualFilter castFilter = (QualFilter) filter;
 			inequation01 = castFilter.getInequation01();
 			inequation02 = castFilter.getInequation02();
 			value01 = castFilter.getValue01();
 			value02 = castFilter.getValue02();
+			//if (castFilter.isCumulative())
 		} else if (filter instanceof NumberIDFilter) {
 			NumberIDFilter castFilter = (NumberIDFilter) filter;
 			inequation01 = castFilter.getInequation01();
 			inequation02 = castFilter.getInequation02();
 			value01 = castFilter.getValue01();
 			value02 = castFilter.getValue02();
-		}
+		}*/
 
 		inequationBox01.setSelectedItem(inequation01);
 		valueField01.setText(value01.toString());
@@ -321,6 +492,7 @@ public class IDNumberEditor implements IDEditor {
 			inequationBox02.setSelectedIndex(0);
 			valueField02.setText("");
 		}
+		
 	}
 
 

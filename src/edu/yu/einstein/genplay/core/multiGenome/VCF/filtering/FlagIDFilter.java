@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
@@ -38,12 +39,12 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	/** Generated default serial ID*/
 	private static final long serialVersionUID = -2692600453534744380L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
 	private VCFHeaderType 	ID;			// ID of the filter
 	private String			category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private boolean 		required;	// true if the value is required to pass the the filter
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -114,11 +115,11 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	@Override
 	public String getErrors() {
 		String error = "";
-		
+
 		if (ID == null) {
 			error += "ID missing;";
 		}
-		
+
 		try {
 			if (required) {
 				// instantiation control of the boolean
@@ -126,7 +127,7 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 		} catch (Exception e) {
 			error += "Boolean missing;";
 		}
-		
+
 		if (error.equals("")) {
 			return null;
 		} else {
@@ -139,14 +140,14 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
-	
+
+
 	@Override
 	public String getCategory() {
 		return category;
 	}
 
-	
+
 	@Override
 	public boolean isValid(VariantInterface variant) {
 		return false;
@@ -154,11 +155,13 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 
 
 	@Override
-	public boolean isValid(Object value) {
-		return false;
+	public boolean isValid(Object object) {
+		boolean found = FilterTester.isStringFound(object, ID.getId());
+
+		return FilterTester.passTest(required, found);
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -167,11 +170,17 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		FlagIDFilter test = (FlagIDFilter)obj;
 		return ID.getId().equals(test.getID().getId()) && 
 		category.equals(test.getCategory()) &&
 		required == test.isRequired();
+	}
+
+
+	@Override
+	public VCFColumnName getColumnName() {
+		return VCFColumnName.getColumnNameFromString(category);
 	}
 }
