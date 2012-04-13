@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
 
 
 /**
@@ -53,7 +53,7 @@ import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
  * - insertVariantposition: add all concerned variants from the VCF files to the data structure.
  * - performPositionSynchronization: perform the synchronization properly speaking.
  * 
- * This class is totally managed in the full synchronization process by the class {@link PAMultiGenome}.
+ * This class is totally managed in the full synchronization process by the class {@link PAMultiGenomeSynchronizing}.
  * 
  * A synchronization process means updating genome(s) offset according to the variation.
  * A deletion involves a synchronization process on the genome it occurs.

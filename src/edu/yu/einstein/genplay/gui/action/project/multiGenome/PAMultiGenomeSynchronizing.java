@@ -46,14 +46,14 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * - fileReaders
  * - genomeFileAssociation
  * 
- * In a project, before using the {@link PAMultiGenome} action for the first time,
+ * In a project, before using the {@link PAMultiGenomeSynchronizing} action for the first time,
  * please set the multi-genome project boolean presents in {@link ProjectManager} to true.
  * 
  * @author Nicolas Fourel
  * @author Julien Lajugie
  * @version 0.1
  */
-public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
+public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
@@ -74,9 +74,9 @@ public class PAMultiGenome extends TrackListActionWorker<Track<?>[]> {
 
 
 	/**
-	 * Creates an instance of {@link PAMultiGenome}.
+	 * Creates an instance of {@link PAMultiGenomeSynchronizing}.
 	 */
-	public PAMultiGenome() {
+	public PAMultiGenomeSynchronizing() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);

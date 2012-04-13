@@ -89,7 +89,6 @@ public class MGFilterSettings implements Serializable {
 	 */
 	public void setFiltersSettings(List<FiltersData> filtersList) {
 		this.filtersList = filtersList;
-		
 	}
 
 

@@ -37,6 +37,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.NumberIDFilter;
@@ -50,7 +51,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.QualFilter;
 public class IDNumberEditor implements IDEditor {
 
 	private VCFHeaderType 	id;			// Header ID
-	private String			category;	// category of the filter
+	private VCFColumnName	category;	// category of the filter
 	private JComboBox		inequationBox01;
 	private JComboBox		inequationBox02;
 	private JTextField		valueField01;
@@ -179,13 +180,7 @@ public class IDNumberEditor implements IDEditor {
 		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//JComboBox box = (JComboBox) e.getSource();
 				refreshBoxes();
-				/*if (box.equals(inequationBox01)) {
-					doAction(inequationBox01, inequationBox02, valueField01, valueField02);
-				} else {
-					doAction(inequationBox02, inequationBox01, valueField02, valueField01);
-				}*/
 			}
 		});
 		return box;
@@ -208,13 +203,6 @@ public class IDNumberEditor implements IDEditor {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				refreshBoxes();
-				/*if (inequationBox01.getSelectedItem().equals(" ") || inequationBox01.getSelectedItem().equals(InequalityOperators.EQUAL)) {
-					inequationBox02.setEnabled(false);
-					valueField02.setEnabled(false);
-				} else {
-					inequationBox02.setEnabled(true);
-					valueField02.setEnabled(true);
-				}*/
 			}
 		});
 		orButton = new JRadioButton("or");
@@ -222,10 +210,6 @@ public class IDNumberEditor implements IDEditor {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				refreshBoxes();
-				/*inequationBox01.setEnabled(true);
-				valueField01.setEnabled(true);
-				inequationBox02.setEnabled(true);
-				valueField02.setEnabled(true);*/
 			}
 		});
 		
@@ -320,6 +304,7 @@ public class IDNumberEditor implements IDEditor {
 	 */
 	private DefaultComboBoxModel getFullModel () {
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(" ");
 		model.addElement(InequalityOperators.SUPERIOR);
 		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
 		model.addElement(InequalityOperators.INFERIOR);
@@ -336,6 +321,7 @@ public class IDNumberEditor implements IDEditor {
 	 */
 	private DefaultComboBoxModel getSuperiorModel () {
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(" ");
 		model.addElement(InequalityOperators.SUPERIOR);
 		model.addElement(InequalityOperators.SUPERIOR_OR_EQUAL);
 		model.addElement(InequalityOperators.DIFFERENT);
@@ -349,6 +335,7 @@ public class IDNumberEditor implements IDEditor {
 	 */
 	private DefaultComboBoxModel getInferiorModel () {
 		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		model.addElement(" ");
 		model.addElement(InequalityOperators.INFERIOR);
 		model.addElement(InequalityOperators.INFERIOR_OR_EQUAL);
 		model.addElement(InequalityOperators.DIFFERENT);
@@ -398,7 +385,7 @@ public class IDNumberEditor implements IDEditor {
 	@Override
 	public IDFilterInterface getFilter() {
 		NumberIDFilterInterface filter = null;
-		if (category.equals("QUAL") && id == null) {
+		if (category == VCFColumnName.QUAL && id == null) {
 			filter = new QualFilter();
 		} else {
 			filter = new NumberIDFilter();
@@ -497,13 +484,13 @@ public class IDNumberEditor implements IDEditor {
 
 
 	@Override
-	public void setCategory(String category) {
+	public void setCategory(VCFColumnName category) {
 		this.category = category;
 	}
 
 
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return category;
 	}
 

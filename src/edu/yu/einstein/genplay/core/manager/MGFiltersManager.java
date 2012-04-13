@@ -54,7 +54,7 @@ public class MGFiltersManager {
 	/**
 	 * Constructor of {@link MGFiltersManager}
 	 */
-	protected MGFiltersManager () {
+	private MGFiltersManager () {
 		reset();
 	}
 
@@ -141,6 +141,7 @@ public class MGFiltersManager {
 				
 				List<String> columnNameList = new ArrayList<String>();
 				for (VCFFilter filter: filterMap.get(reader)) {
+					System.out.println("MGFiltersManager.retrieveDataFromVCF() " + filter.getFilter().getColumnName().toString());
 					columnNameList.add(filter.getFilter().getColumnName().toString());
 				}
 				
@@ -154,8 +155,6 @@ public class MGFiltersManager {
 				resultMap.put(reader, results);
 			}
 		}
-		
-		
 	}
 	
 	
@@ -163,7 +162,7 @@ public class MGFiltersManager {
 	 * @return true if filters must be created, false otherwise
 	 */
 	public boolean hasToBeRun () {
-		if (resultMap != null && resultMap.size() > 0) {
+		if (filterListToUpdate != null && filterListToUpdate.size() > 0) {
 			return true;
 		}
 		return false;

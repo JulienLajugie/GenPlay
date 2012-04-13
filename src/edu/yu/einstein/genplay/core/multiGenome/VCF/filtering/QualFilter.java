@@ -181,11 +181,11 @@ public class QualFilter implements NumberIDFilterInterface {
 
 
 	@Override
-	public void setCategory(String category) {}
+	public void setCategory(VCFColumnName category) {}
 
 
 	@Override
-	public String getCategory () {
+	public VCFColumnName getCategory () {
 		return null;
 	}
 

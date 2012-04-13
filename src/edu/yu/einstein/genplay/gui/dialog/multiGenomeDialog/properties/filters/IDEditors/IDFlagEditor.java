@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.FlagIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
@@ -42,7 +43,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 public class IDFlagEditor implements IDEditor {
 
 	private VCFHeaderType 	id;			// Header ID
-	private String			category;	// category of the filter
+	private VCFColumnName	category;	// category of the filter
 	private JRadioButton 	present;
 	private JRadioButton 	absent;
 
@@ -142,13 +143,13 @@ public class IDFlagEditor implements IDEditor {
 
 	
 	@Override
-	public void setCategory(String category) {
+	public void setCategory(VCFColumnName category) {
 		this.category = category;
 	}
 
 	
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return category;
 	}
 

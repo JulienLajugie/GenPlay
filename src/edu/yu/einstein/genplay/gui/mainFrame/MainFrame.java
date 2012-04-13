@@ -62,7 +62,7 @@ import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSNP;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeRefresh;
 import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -236,8 +236,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		// if the chromosome changed we reinitialize the multigenome data
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			//projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
-			PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
-			multiGenomeSNP.actionPerformed(null);
+			//PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
+			//multiGenomeSNP.actionPerformed(null);
+			PAMultiGenomeRefresh tracksUpdate = new PAMultiGenomeRefresh();
+			tracksUpdate.actionPerformed(null);
 		}
 	}
 	

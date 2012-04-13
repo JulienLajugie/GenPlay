@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.
 
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 
@@ -62,13 +63,13 @@ public interface IDEditor {
 	 * - FORMAT
 	 * @param category the ID category
 	 */
-	public void setCategory (String category);
+	public void setCategory (VCFColumnName category);
 	
 	
 	/**
 	 * @return the category of the editor
 	 */
-	public String getCategory ();
+	public VCFColumnName getCategory ();
 	
 	
 	/**

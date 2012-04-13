@@ -40,7 +40,7 @@ public class StringIDFilter implements StringIDFilterInterface {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
 	private VCFHeaderType 	ID;			// ID of the filter
-	private String			category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
+	private VCFColumnName	category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private String 			value;		// value of the filter
 	private boolean 		required;	// true if the value is required to pass the the filter
 
@@ -74,7 +74,7 @@ public class StringIDFilter implements StringIDFilterInterface {
 		} catch (Exception e) {
 			ID = null;
 		}
-		category = (String) in.readObject();
+		category = (VCFColumnName) in.readObject();
 		value = (String) in.readObject();
 		required = in.readBoolean();
 	}
@@ -160,13 +160,13 @@ public class StringIDFilter implements StringIDFilterInterface {
 	
 
 	@Override
-	public void setCategory(String category) {
+	public void setCategory(VCFColumnName category) {
 		this.category = category;
 	}
 	
 	
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return category;
 	}
 	
@@ -206,6 +206,6 @@ public class StringIDFilter implements StringIDFilterInterface {
 
 	@Override
 	public VCFColumnName getColumnName() {
-		return VCFColumnName.getColumnNameFromString(category);
+		return category;
 	}
 }

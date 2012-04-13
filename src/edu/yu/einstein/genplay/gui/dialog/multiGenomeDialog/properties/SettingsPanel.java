@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -52,6 +53,10 @@ class SettingsPanel extends JPanel {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3353198770426567657L;
 
+	
+	// Propeties dialog options
+	private JComboBox jcbDefaultItem;
+	
 	// VCF Loader options
 	private JTextField jtfDefaultGroupText;
 
@@ -90,21 +95,31 @@ class SettingsPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 
-		/*// Stripes transparency option title
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = PropertiesDialog.FIRST_TITLE_INSET;
-		add(Utils.getTitleLabel("VCF Loader"), gbc);
-
-		// Slider for stripes transparency option
-		gbc.gridy++;
-		gbc.insets = PropertiesDialog.PANEL_INSET;
-		add(getDefaultGroupTextPanel(), gbc);*/
-
+		
 		// Stripes transparency option title
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = PropertiesDialog.FIRST_TITLE_INSET;
+		add(Utils.getTitleLabel("Properties Dialog"), gbc);
+
+		// Slider for stripes transparency option
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.PANEL_INSET;
+		add(getDefaultDialogItemPanel(), gbc);
+		
+		// VCF Loader option title
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.TITLE_INSET;
+		add(Utils.getTitleLabel("VCF Loader"), gbc);
+
+		// Default group text option
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.PANEL_INSET;
+		add(getDefaultGroupTextPanel(), gbc);
+
+		// Stripes transparency option title
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.TITLE_INSET;
 		add(Utils.getTitleLabel("Stripes transparency"), gbc);
 
 		// Slider for stripes transparency option
@@ -178,18 +193,37 @@ class SettingsPanel extends JPanel {
 		}
 	}
 
+	
+	/////////////////////////////////////////// VCF Loader option
+	
+	private JPanel getDefaultDialogItemPanel () {
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		JLabel jlTitle = new JLabel("Default section to open");
+		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
+
+		jcbDefaultItem = new JComboBox(PropertiesDialog.getPropertiesDialogMainItems());
+		jcbDefaultItem.setPreferredSize(new Dimension(100, jcbDefaultItem.getPreferredSize().height));
+
+		panel.add(jlTitle);
+		panel.add(jcbDefaultItem);
+
+		return panel;
+	}
+	
+	
 	/////////////////////////////////////////// VCF Loader option
 
 	/**
 	 * Creates the panel that displays the default group text for the VCF Loader.
 	 */
-	@SuppressWarnings("unused") // use it if you want to let the user choose the default group text
 	private JPanel getDefaultGroupTextPanel () {
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
-		JLabel jlTitle = new JLabel("Default group text");
-		jlTitle.setPreferredSize(new Dimension(100, jlTitle.getPreferredSize().height));
+		JLabel jlTitle = new JLabel("Default group text name");
+		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
 
 		jtfDefaultGroupText = new JTextField();
 		//jtfDefaultGroupText.setText(MGDisplaySettings.getInstance().getVariousSettings().getDefaultGroupText());
@@ -347,13 +381,15 @@ class SettingsPanel extends JPanel {
 
 	/**
 	 * Set the settings panel with specific values
-	 * @param transparency	transparency value
+	 * @param defaultItemDialog the default item dialog to show
+	 * @param defaultGroupText 	the default group text for VCF Loader
+	 * @param transparency		transparency value
 	 * @param showLegend		legend value
 	 */
-	// @param defaultGroupText the default text for the group field
-	//public void setSettings (String defaultGroupText, int transparency, boolean showLegend) {
-	public void setSettings (int transparency, boolean showLegend) {
-		//jtfDefaultGroupText.setText(defaultGroupText);
+	public void setSettings (String defaultItemDialog, String defaultGroupText, int transparency, boolean showLegend) {
+		jcbDefaultItem.setSelectedItem(defaultItemDialog);
+		
+		jtfDefaultGroupText.setText(defaultGroupText);
 		
 		sliderValue.setText(transparency + " %");
 		slider.setValue(transparency);
@@ -371,7 +407,23 @@ class SettingsPanel extends JPanel {
 		refreshStaticOptionBoxes();
 	}
 
-
+	
+	/**
+	 * @return the default item dialog to show
+	 */
+	public String getDefaultItemDialog () {
+		return jcbDefaultItem.getSelectedItem().toString();
+	}
+	
+	
+	/**
+	 * @return the default group text
+	 */
+	public String getDefaultGroupText () {
+		return jtfDefaultGroupText.getText();
+	}
+	
+	
 	/**
 	 * @return the transparency value
 	 */
@@ -386,7 +438,7 @@ class SettingsPanel extends JPanel {
 	public boolean isShowLegend() {
 		return showLegend;
 	}
-
+	
 
 	/**
 	 * @return the optionValueList

@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
@@ -54,7 +55,7 @@ public class FiltersData implements Serializable {
 
 	private VCFHeaderType 		id;				// vcf header id
 	private VCFFilter			filter;
-	private String				nonIDName;		// 
+	private VCFColumnName		nonIDName;		// 
 	private Track<?>[] 			trackList;		// list of track
 
 	
@@ -82,7 +83,7 @@ public class FiltersData implements Serializable {
 		in.readInt();
 		id = (VCFHeaderType) in.readObject();
 		filter = (VCFFilter) in.readObject();
-		nonIDName = (String) in.readObject();
+		nonIDName = (VCFColumnName) in.readObject();
 		trackList = (Track[]) in.readObject();
 	}
 	
@@ -121,7 +122,7 @@ public class FiltersData implements Serializable {
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	protected FiltersData(VCFReader reader, String nonIDName,
+	protected FiltersData(VCFReader reader, VCFColumnName nonIDName,
 			IDFilterInterface filter, Track<?>[] trackList) {
 		this.id = null;
 		this.filter = new VCFFilter(filter, reader);
@@ -135,7 +136,7 @@ public class FiltersData implements Serializable {
 	/**
 	 * @param id the id to set
 	 */
-	protected void setNonIdName (String nonIDName) {
+	protected void setNonIdName (VCFColumnName nonIDName) {
 		this.nonIDName = nonIDName;
 	}
 
@@ -183,7 +184,7 @@ public class FiltersData implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public String getNonIdName() {
+	public VCFColumnName getNonIdName() {
 		return nonIDName;
 	}
 
@@ -225,7 +226,7 @@ public class FiltersData implements Serializable {
 		if (id != null) {
 			return id.getId();
 		} else {
-			return nonIDName;
+			return nonIDName.toString();
 		}
 	}
 

@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGReference;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
 
 
 /**
@@ -98,7 +98,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 
 	/**
 	 * Initializes the list list of variation of the allele.
-	 * Must be called only once and in the {@link PAMultiGenome}.
+	 * Must be called only once and in the {@link PAMultiGenomeSynchronizing}.
 	 */
 	public void initialize () {
 		int chromosomeNumber = chromosomeListOfVariantList.size();

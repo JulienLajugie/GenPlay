@@ -140,11 +140,11 @@ public class AltFilter implements StringIDFilterInterface {
 
 
 	@Override
-	public void setCategory(String category) {}
+	public void setCategory(VCFColumnName category) {}
 
 
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return null;
 	}
 

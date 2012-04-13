@@ -54,13 +54,13 @@ public interface IDFilterInterface {
 	 * - FORMAT
 	 * @param category the ID category
 	 */
-	public void setCategory (String category);
+	public void setCategory (VCFColumnName category);
 	
 	
 	/**
 	 * @return the category of the filter
 	 */
-	public String getCategory ();
+	public VCFColumnName getCategory ();
 	
 	
 	/**

@@ -36,13 +36,13 @@ import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
- * This class updates the filters in a multi genome project
+ * This class updates the tracks display in a multi genome project
  * 
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class PAUpdateTrack extends TrackListActionWorker<Boolean> {
+public class PAMultiGenomeTrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
 	private static final String 	DESCRIPTION = 
@@ -59,9 +59,9 @@ public class PAUpdateTrack extends TrackListActionWorker<Boolean> {
 
 
 	/**
-	 * Creates an instance of {@link PAUpdateTrack}.
+	 * Creates an instance of {@link PAMultiGenomeTrackDisplayRefresh}.
 	 */
-	public PAUpdateTrack() {
+	public PAMultiGenomeTrackDisplayRefresh() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);

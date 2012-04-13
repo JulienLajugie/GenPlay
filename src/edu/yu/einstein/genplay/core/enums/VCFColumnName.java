@@ -90,23 +90,23 @@ public enum VCFColumnName {
 	 * @return the {@link VCFColumnName} associated to the string, null otherwise
 	 */
 	public static VCFColumnName getColumnNameFromString (String s) {
-		if (s.equals(CHROM)) {
+		if (s.equals(CHROM.name)) {
 			return CHROM;
-		} else if (s.equals(POS)) {
+		} else if (s.equals(POS.name)) {
 			return POS;
-		} else if (s.equals(ID)) {
+		} else if (s.equals(ID.name)) {
 			return ID;
-		} else if (s.equals(REF)) {
+		} else if (s.equals(REF.name)) {
 			return REF;
-		} else if (s.equals(ALT)) {
+		} else if (s.equals(ALT.name)) {
 			return ALT;
-		} else if (s.equals(QUAL)) {
+		} else if (s.equals(QUAL.name)) {
 			return QUAL;
-		} else if (s.equals(FILTER)) {
+		} else if (s.equals(FILTER.name)) {
 			return FILTER;
-		} else if (s.equals(INFO)) {
+		} else if (s.equals(INFO.name)) {
 			return INFO;
-		} else if (s.equals(FORMAT)) {
+		} else if (s.equals(FORMAT.name)) {
 			return FORMAT;
 		}
 		return null;

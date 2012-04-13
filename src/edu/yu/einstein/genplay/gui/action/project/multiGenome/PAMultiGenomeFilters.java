@@ -50,6 +50,7 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 	private static		 String 			ACTION_NAME = "Updating filters";	// action name
 
 	private final MGFiltersManager filterManager;
+	private boolean hasBeenInitialized;
 
 
 	/**
@@ -68,6 +69,7 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		filterManager = MGFiltersManager.getInstance();
+		hasBeenInitialized = false;
 	}
 
 
@@ -77,21 +79,23 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 
 		// Checks if the project is multi-genome
 		if (projectManager.isMultiGenomeProject()) {
+			if (!hasBeenInitialized) {
+				filterManager.initializeFilterLists();
+			}
 
-			filterManager.initializeFilterLists();
-			
 			if (filterManager.hasToBeRun()) {
+
 				// Notifies the action
 				notifyActionStart(ACTION_NAME, 1, false);
-				
+
 				filterManager.retrieveDataFromVCF();
-				
+
 				List<VCFFilter> filterListToUpdate = filterManager.getFilterListToUpdate();
-				//printList("Filters to update", filterListToUpdate);
-	
+
 				for (VCFFilter filter: filterListToUpdate) {
 					filter.generateFilter(filterManager.getResultOfFilter(filter));
 				}
+
 			}
 		}
 
@@ -108,7 +112,19 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 	}
 
 
-	
+	/**
+	 * @return true if the operation has to be processed, false if no need
+	 */
+	public boolean hasToBeProcessed () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			filterManager.initializeFilterLists();
+			hasBeenInitialized = true;
+			return filterManager.hasToBeRun();
+		}
+		return false;
+	}
+
+
 	@SuppressWarnings("unused")
 	private void printList (String title, List<VCFFilter> list) {
 		System.out.println("===== " + title);
@@ -128,6 +144,7 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 	 */
 	public void setPreviousFilterList(List<VCFFilter> previousFilterList) {
 		filterManager.setPreviousFilterList(previousFilterList);
+		hasBeenInitialized = false;
 	}
 
 
@@ -136,9 +153,10 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 	 */
 	public void setChromosomeHasChanged(boolean chromosomeHasChanged) {
 		filterManager.setChromosomeHasChanged(chromosomeHasChanged);
+		hasBeenInitialized = false;
 	}
-	
-	
+
+
 	/**
 	 * @param latch the latch to set
 	 */

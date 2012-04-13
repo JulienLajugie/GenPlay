@@ -38,6 +38,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
@@ -79,7 +80,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	private VCFReader 					currentVCFReader;		// the current VCF reader
 	private VCFHeaderType 				currentID;				// the current header ID
 	private Map<VCFHeaderType, String> 	idMap;					// map between ID and their full description (as shown in the jlist)
-	private Map<String, String>			nonIdMap;				// map between the non ID (some ALT/FILTER and QUAL) and their full description
+	private Map<VCFColumnName, String>	nonIdMap;				// map between the non ID (some ALT/FILTER and QUAL) and their full description
 
 
 	/**
@@ -88,10 +89,10 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	protected FiltersEditingPanel () {
 		super();
 
-		nonIdMap = new HashMap<String, String>();
-		nonIdMap.put("ALT", "ALT: Alternative value");
-		nonIdMap.put("QUAL", "QUAL: Quality value");
-		nonIdMap.put("FILTER", "FILTER: Filter value");
+		nonIdMap = new HashMap<VCFColumnName, String>();
+		nonIdMap.put(VCFColumnName.ALT, VCFColumnName.ALT + ": Alternative value");
+		nonIdMap.put(VCFColumnName.QUAL, VCFColumnName.QUAL + ": Quality value");
+		nonIdMap.put(VCFColumnName.FILTER, VCFColumnName.FILTER + ": Filter value");
 
 
 		// Panel title
@@ -250,9 +251,9 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 			public void actionPerformed(ActionEvent arg0) {
 				if (idMap != null) {
 					List<String> list = new ArrayList<String>();
-					list.add(nonIdMap.get("ALT"));
-					list.add(nonIdMap.get("QUAL"));
-					list.add(nonIdMap.get("FILTER"));
+					list.add(nonIdMap.get(VCFColumnName.ALT));
+					list.add(nonIdMap.get(VCFColumnName.QUAL));
+					list.add(nonIdMap.get(VCFColumnName.FILTER));
 					for (String s: idMap.values()) {
 						list.add(s);
 					}
@@ -262,7 +263,8 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 						jlID.setText(fullDetail);
 						jlID.setToolTipText(fullDetail);
 						jlID.setForeground(getForeground());
-						String category = fullDetail.substring(0, fullDetail.indexOf(":"));
+						String text = fullDetail.substring(0, fullDetail.indexOf(":"));
+						VCFColumnName category = VCFColumnName.getColumnNameFromString(text);
 						VCFHeaderType newID = null;										// instanciate the ID
 						for (VCFHeaderType id: idMap.keySet()) {						// scan all full detail ID to find the right ID object
 							if (fullDetail.equals(idMap.get(id))) {
@@ -343,22 +345,22 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 
 		// Store the ALT fields
 		for (VCFHeaderType header: reader.getAltHeader()) {
-			idMap.put(header, "ALT: " + header.getId() + " (" + header.getDescription() + ")");
+			idMap.put(header, VCFColumnName.ALT + ": " + header.getId() + " (" + header.getDescription() + ")");
 		}
 
 		// Store the FILTER fields
 		for (VCFHeaderType header: reader.getFilterHeader()) {
-			idMap.put(header, "FILTER: " + header.getId() + " (" + header.getDescription() + ")");
+			idMap.put(header, VCFColumnName.FILTER + ": " + header.getId() + " (" + header.getDescription() + ")");
 		}
 
 		// Store the FORMAT fields
-		for (VCFHeaderAdvancedType header: reader.getFormatHeader()) {
-			idMap.put(header, "FORMAT: " + header.getId() + " (" + header.getDescription() + ")");
-		}
+		/*for (VCFHeaderAdvancedType header: reader.getFormatHeader()) {
+			idMap.put(header, VCFColumnName.FORMAT + ": " + header.getId() + " (" + header.getDescription() + ")");
+		}*/
 
 		// Store the INFO fields
 		for (VCFHeaderAdvancedType header: reader.getInfoHeader()) {
-			idMap.put(header, "INFO: " + header.getId() + " (" + header.getDescription() + ")");
+			idMap.put(header, VCFColumnName.INFO + ": " + header.getId() + " (" + header.getDescription() + ")");
 		}
 		
 		// Updates the ID area to empty
@@ -378,7 +380,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 * Sets the new selected ID
 	 * @param id the new ID
 	 */
-	private void setCurrentID (VCFHeaderType id, String category) {
+	private void setCurrentID (VCFHeaderType id, VCFColumnName category) {
 		currentID = id;
 		setFilterPanel(currentID, category);
 	}
@@ -388,10 +390,10 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 * Set the filter panel according to the ID.
 	 * @param id the header ID
 	 */
-	private void setFilterPanel (VCFHeaderType id, String category) {
+	private void setFilterPanel (VCFHeaderType id, VCFColumnName category) {
 		filterEditor = null;
 
-		if (category.equals("ALT")) {
+		if (category == VCFColumnName.ALT) {
 			if (id != null) {
 				filterEditor = new IDFlagEditor();
 				filterEditor.setID(id);
@@ -400,11 +402,11 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 				filterEditor.setID(null);
 			}
 			filterEditor.setCategory(category);
-		} else if (category.equals("QUAL")) {
+		} else if (category == VCFColumnName.QUAL) {
 			filterEditor = new IDNumberEditor();
 			filterEditor.setID(null);
 			filterEditor.setCategory(category);
-		} else if (category.equals("FILTER")) {
+		} else if (category == VCFColumnName.FILTER) {
 			filterEditor = new IDStringEditor();
 			filterEditor.setID(null);
 			filterEditor.setCategory(category);
@@ -478,11 +480,12 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 
 		// Set the ID
 		String fullDetail;
-		String category;
+		VCFColumnName category;
 		if (data.getId() != null) {
 			fullDetail = idMap.get(data.getId());
-			category = fullDetail.substring(0, fullDetail.indexOf(":"));
+			category = VCFColumnName.getColumnNameFromString(fullDetail.substring(0, fullDetail.indexOf(":")));
 		} else {
+			//category = VCFColumnName.getColumnNameFromString(data.getNonIdName());
 			category = data.getNonIdName();
 			fullDetail = nonIdMap.get(category);
 		}

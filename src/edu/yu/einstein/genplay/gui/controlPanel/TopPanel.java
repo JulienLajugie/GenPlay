@@ -30,12 +30,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
@@ -66,6 +69,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	private final JScrollBar 		jsbPosition;		// scroll bar to modify the position
 	private final ProjectWindow		projectWindow;		// Instance of the Genome Window Manager
 	private JButton jbMultiGenome;											// button for the multi genome properties dialog
+	private JPopupMenu popupMenu;
 
 
 	/**
@@ -125,6 +129,9 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	private void initializesMultiGenomeButton () {
 		// creates the button
 		jbMultiGenome = new JButton(new ImageIcon(Images.getDNAImage()));
+		
+		// creates the button popup menu
+		popupMenu = new MGButtonPopupMenu();
 
 		// sets some attributes
 		Dimension buttonDimension = new Dimension(BUTTON_WIDTH, TRACKS_SCROLL_WIDTH);
@@ -133,13 +140,29 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		jbMultiGenome.setMargin(new Insets(0, 0, 0, 0));
 		jbMultiGenome.setToolTipText("Show the Multi Genome Properties Dialog");
 
-		// defines the listener
+		// defines the action listener
 		jbMultiGenome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PAMultiGenomeProperties action = new PAMultiGenomeProperties();
 				action.actionPerformed(null);
 			}
+		});
+		
+		// defines the mouse listener
+		jbMultiGenome.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+		        maybeShowPopup(e);
+		    }
+		    public void mouseReleased(MouseEvent e) {
+		        maybeShowPopup(e);
+		    }
+		    private void maybeShowPopup(MouseEvent e) {
+		        if (e.isPopupTrigger()) {
+		        	popupMenu.show(e.getComponent(),
+		                       e.getX(), e.getY());
+		        }
+		    }
 		});
 	}
 

@@ -41,7 +41,7 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private VCFHeaderType 	ID;			// ID of the filter
-	private String			category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
+	private VCFColumnName	category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private boolean 		required;	// true if the value is required to pass the the filter
 
 
@@ -67,7 +67,7 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		ID = (VCFHeaderType) in.readObject();
-		category = (String) in.readObject();
+		category = (VCFColumnName) in.readObject();
 		required = in.readBoolean();
 	}
 
@@ -137,13 +137,13 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 
 
 	@Override
-	public void setCategory(String category) {
+	public void setCategory(VCFColumnName category) {
 		this.category = category;
 	}
 
 
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return category;
 	}
 
@@ -181,6 +181,6 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 
 	@Override
 	public VCFColumnName getColumnName() {
-		return VCFColumnName.getColumnNameFromString(category);
+		return category;
 	}
 }

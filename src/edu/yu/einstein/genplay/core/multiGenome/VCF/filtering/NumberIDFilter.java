@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
 public class NumberIDFilter implements NumberIDFilterInterface {
 
 	private VCFHeaderType 			ID;				// ID of the filter
-	private String					category;		// category of the filter (ALT QUAL FILTER INFO FORMAT)
+	private VCFColumnName			category;		// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private InequalityOperators		inequation01;
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
@@ -168,13 +168,13 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 
 
 	@Override
-	public void setCategory(String category) {
+	public void setCategory(VCFColumnName category) {
 		this.category = category;
 	}
 
 
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return category;
 	}
 
@@ -237,7 +237,7 @@ public class NumberIDFilter implements NumberIDFilterInterface {
 
 	@Override
 	public VCFColumnName getColumnName() {
-		return VCFColumnName.getColumnNameFromString(category);
+		return category;
 	}
 
 

@@ -141,11 +141,11 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 
 
 	@Override
-	public void setCategory(String category) {}
+	public void setCategory(VCFColumnName category) {}
 
 
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return null;
 	}
 

@@ -54,8 +54,8 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		"Performs the multi genome algorithm for SNPs"; 					// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 		// mnemonic key
 	private static		 String 			ACTION_NAME = "SNPs loading";	// action name
+	private Map<String, List<AlleleType>> genomeNames;
 
-	
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -71,6 +71,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		genomeNames = null;
 	}
 
 
@@ -80,23 +81,24 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 
 		// Checks if the project is multi-genome and if SNPs have been requested
 		if (projectManager.isMultiGenomeProject()) {
-			
 			MGSNPSynchronizer snpSynchronizer = projectManager.getMultiGenomeProject().getMultiGenomeSynchronizerForSNP();
+			if (genomeNames == null) {
+				// Gets the list of stripes data
+				List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
 
-			// Gets the list of stripes data
-			List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
-			
-			// Gets the genome names involved for SNPs synchronization
-			Map<String, List<AlleleType>> genomeNames = getGenomeNamesForSNP(newStripesData);			
-			
+				// Gets the genome names involved for SNPs synchronization
+				genomeNames = getGenomeNamesForSNP(newStripesData);			
+			}
+
 			if (genomeNames.size() > 0) {
 				// Notifies the action
 				notifyActionStart(ACTION_NAME, 1, false);
-				
+
 				snpSynchronizer.compute(genomeNames);
 			}
 
 		}
+
 		return null;
 	}
 
@@ -117,7 +119,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 				track.resetVariantListMaker();
 			}
 		}
-		
+
 		if (latch != null) {
 			latch.countDown();
 		}
@@ -150,7 +152,7 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 					} else if (alleleType == AlleleType.ALLELE02) {
 						maternal = true;
 					}
-					
+
 					if (paternal) {
 						if (!names.get(genomeName).contains(AlleleType.ALLELE01)) {
 							names.get(genomeName).add(AlleleType.ALLELE01);
@@ -165,6 +167,25 @@ public class PAMultiGenomeSNP extends TrackListActionWorker<Track<?>[]> {
 			}
 		}
 		return names;
+	}
+
+
+	/**
+	 * @return true if the operation has to be processed, false if no need
+	 */
+	public boolean hasToBeProcessed () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			// Gets the list of stripes data
+			List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
+
+			// Gets the genome names involved for SNPs synchronization
+			genomeNames = getGenomeNamesForSNP(newStripesData);
+			
+			if (genomeNames.size() > 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 

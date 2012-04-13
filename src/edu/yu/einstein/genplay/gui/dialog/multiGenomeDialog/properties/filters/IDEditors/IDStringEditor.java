@@ -30,6 +30,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.AltFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.FilterFilter;
@@ -48,7 +49,7 @@ public class IDStringEditor implements IDEditor {
 
 
 	private VCFHeaderType 	id;					// Header ID
-	private String			category;			// category of the filter
+	private VCFColumnName	category;			// category of the filter
 	private List<String>	defaultElements;
 	private JComboBox		jcOption;			// Combo box for selecting wether the value must be present or not
 	private JComboBox		jcValue;			// Editable combo box for selecting the value
@@ -97,9 +98,9 @@ public class IDStringEditor implements IDEditor {
 	public IDFilterInterface getFilter() {
 		StringIDFilterInterface filter = null;
 		
-		if (category.equals("ALT") && id == null) {
+		if (category == VCFColumnName.ALT && id == null) {
 			filter = new AltFilter();
-		} else if (category.equals("FILTER") && id == null) {
+		} else if (category == VCFColumnName.FILTER && id == null) {
 			filter = new FilterFilter();
 		} else {
 			filter = new StringIDFilter();
@@ -193,13 +194,13 @@ public class IDStringEditor implements IDEditor {
 
 
 	@Override
-	public void setCategory(String category) {
+	public void setCategory(VCFColumnName category) {
 		this.category = category;
 	}
 	
 	
 	@Override
-	public String getCategory() {
+	public VCFColumnName getCategory() {
 		return category;
 	}
 

@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenome;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSNP;
 
 
@@ -62,7 +62,7 @@ import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSNP;
  * ALL GENOME NAMES ARE STORED IN THIS DATA STRUCTURE AS "FULL GENOME NAME" (with group/genome/raw name).
  * See {@link FormattedMultiGenomeName} for more details.
  * 
- * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link PAMultiGenome} AND {@link PAMultiGenomeSNP}.
+ * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link PAMultiGenomeSynchronizing} AND {@link PAMultiGenomeSNP}.
  * 
  * @author Nicolas Fourel
  * @version 0.1

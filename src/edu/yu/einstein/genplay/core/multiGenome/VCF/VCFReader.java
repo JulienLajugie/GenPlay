@@ -235,7 +235,7 @@ public class VCFReader implements Serializable {
 							type.equals(VCFColumnName.ALT.toString()) ||
 							type.equals(VCFColumnName.FILTER.toString()) ||
 							type.equals(VCFColumnName.FORMAT.toString())) {
-						Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 1));
+						Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 2));
 
 						VCFHeaderType headerType = null;
 
@@ -274,8 +274,8 @@ public class VCFReader implements Serializable {
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * This method parses the content of attributes header information.
 	 * @param line
@@ -287,29 +287,15 @@ public class VCFReader implements Serializable {
 		String detail[];
 		for (String s: details) {
 			detail = s.split("=");
-			if (detail.length > 1) {
-				if (detail[0].equals("Description")) {
-					String element;
-					if (detail.length == 2) {
-						element = detail[1].substring(1, detail[1].length() - 2);
-					} else {
-						element = "";
-						for (int i = 1; i < detail.length; i++) {
-							if (i == 1) {
-								element += detail[i].substring(1) + "=";
-							} else if (i == (detail.length - 1)) {
-								element += detail[i].substring(0, detail[i].length() - 2);
-							} else {
-								element += detail[i] + "=";
-							}
-						}
-					}
-					info.put(detail[0], element);
-				} else {
-					info.put(detail[0], detail[1]);
-				}
+			if (detail.length > 1 && !detail[0].equals("Description")) {
+				info.put(detail[0], detail[1]);
 			}
 		}
+		String descriptionPattern = "Description=\"";
+		int descriptionStart = line.indexOf(descriptionPattern) + descriptionPattern.length();
+		int descriptionStop = line.indexOf("\"", descriptionStart);
+		String description = line.substring(descriptionStart, descriptionStop);
+		info.put("Description", description);
 		return info;
 	}
 
