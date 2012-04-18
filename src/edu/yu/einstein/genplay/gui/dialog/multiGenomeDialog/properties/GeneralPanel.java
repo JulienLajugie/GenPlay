@@ -31,7 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFData;
 
@@ -139,7 +139,7 @@ class GeneralPanel extends JPanel {
 	 */
 	private JPanel getVCFMappingPanel () {
 		// Association between full genome names and their readers
-		Map<String, List<VCFReader>> map = ProjectManager.getInstance().getMultiGenomeProject().getGenomeFileAssociation();
+		Map<String, List<VCFFile>> map = ProjectManager.getInstance().getMultiGenomeProject().getGenomeFileAssociation();
 		
 		// Column names
 		String[] columnNames = {VCFData.GROUP_NAME,
@@ -149,7 +149,7 @@ class GeneralPanel extends JPanel {
 		
 		// Counts the number of row
 		int rowNumber = 0;
-		for (List<VCFReader> readers: map.values()) {
+		for (List<VCFFile> readers: map.values()) {
 			rowNumber += readers.size();
 		}
 		
@@ -159,7 +159,7 @@ class GeneralPanel extends JPanel {
 		// Fills data
 		int rowIndex = 0;
 		for (String fullGenomeName: map.keySet()) {
-			for (VCFReader reader: map.get(fullGenomeName)) {
+			for (VCFFile reader: map.get(fullGenomeName)) {
 				data[rowIndex][0] = FormattedMultiGenomeName.getGroupName(fullGenomeName);
 				data[rowIndex][1] = FormattedMultiGenomeName.getUsualName(fullGenomeName);
 				data[rowIndex][2] = FormattedMultiGenomeName.getRawName(fullGenomeName);

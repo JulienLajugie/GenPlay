@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
 public class VCFFilter {
 
 	private IDFilterInterface 		filter;				// the filter
-	private VCFReader				reader;				// the file reader
+	private VCFFile				reader;				// the file reader
 	
 	private ByteArrayAsBooleanList 	booleanList;		// list of boolean meaning whether variants pass the filter or not
 
@@ -46,7 +46,7 @@ public class VCFFilter {
 	 * @param filter the filter
 	 * @param reader the reader
 	 */
-	public VCFFilter (IDFilterInterface filter, VCFReader reader) {
+	public VCFFilter (IDFilterInterface filter, VCFFile reader) {
 		this.filter = filter;
 		this.reader = reader;
 	}
@@ -106,7 +106,7 @@ public class VCFFilter {
 	/**
 	 * @return the reader
 	 */
-	public VCFReader getReader() {
+	public VCFFile getReader() {
 		return reader;
 	}
 
@@ -122,7 +122,7 @@ public class VCFFilter {
 	/**
 	 * @param reader the reader to set
 	 */
-	public void setReader(VCFReader reader) {
+	public void setReader(VCFFile reader) {
 		this.reader = reader;
 	}
 

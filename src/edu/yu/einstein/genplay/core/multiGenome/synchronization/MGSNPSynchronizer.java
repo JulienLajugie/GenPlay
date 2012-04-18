@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
@@ -151,15 +151,15 @@ public class MGSNPSynchronizer implements Serializable {
 
 	private void addSNP (Map<String, List<AlleleType>> genomes) {
 		if (genomes != null && genomes.size() > 0) {
-			Map<VCFReader, List<String>> readers = getSNPReaders(genomes);
+			Map<VCFFile, List<String>> readers = getSNPReaders(genomes);
 			MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay();
 			
-			for (VCFReader reader: readers.keySet()) {
+			for (VCFFile reader: readers.keySet()) {
 				List<String> genomeNames = transformList(readers.get(reader));
 				List<String> fields = getColumnNamesForQuery(genomeNames);
 				List<Map<String, Object>> results = null;
 				try {
-					results = reader.query(chromosome.getName(), 0, chromosome.getLength(), fields);
+					results = reader.getReader().query(chromosome.getName(), 0, chromosome.getLength(), fields);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -219,11 +219,11 @@ public class MGSNPSynchronizer implements Serializable {
 	}
 
 
-	private Map<VCFReader, List<String>> getSNPReaders (Map<String, List<AlleleType>> genomes) {
-		List<VCFReader> allReaders = ProjectManager.getInstance().getMultiGenomeProject().getAllReaders();
-		Map<VCFReader, List<String>> readers = new HashMap<VCFReader, List<String>>(); 
+	private Map<VCFFile, List<String>> getSNPReaders (Map<String, List<AlleleType>> genomes) {
+		List<VCFFile> allReaders = ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles();
+		Map<VCFFile, List<String>> readers = new HashMap<VCFFile, List<String>>(); 
 
-		for (VCFReader reader: allReaders) {
+		for (VCFFile reader: allReaders) {
 			for (String genomeName: genomes.keySet()) {
 				if (reader.canManage(genomeName, VariantType.SNPS)) {
 					if (!readers.containsKey(reader)) {

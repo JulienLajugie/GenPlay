@@ -30,7 +30,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -61,7 +61,7 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
 	private static		 String 			ACTION_NAME = "Multi-genome loading";	// action name
 	private MultiGenomeProject 					multiGenomeProject;							// instance of the multi genome
-	private Map<String, List<VCFReader>> 	genomeFileAssociation;					// Mapping between genome names and their readers.
+	private Map<String, List<VCFFile>> 	genomeFileAssociation;					// Mapping between genome names and their readers.
 
 	
 	private List<Long> times = new ArrayList<Long>();
@@ -201,7 +201,7 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
 	public void setGenomeFileAssociation(
-			Map<String, List<VCFReader>> genomeFileAssociation) {
+			Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 	}
 	

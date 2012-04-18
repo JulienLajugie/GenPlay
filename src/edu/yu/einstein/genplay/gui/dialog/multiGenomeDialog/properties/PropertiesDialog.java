@@ -32,7 +32,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -42,7 +41,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesGlobalPanel;
@@ -257,15 +256,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	}
 
 
-	/**
-	 * TEST
-	 * @return
-	 */
-	private JPanel getEmptyPanel () {
+	/*private JPanel getEmptyPanel () {
 		JPanel emptyPane = new JPanel();
 		emptyPane.add(new JLabel("Coming soon..."));
 		return emptyPane;
-	}
+	}*/
 
 
 	@Override
@@ -280,11 +275,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (nodeInfo.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
 		} else if (nodeInfo.equals(INFORMATION)) {
-			VCFReader reader = retrieveReader(node.getParent().toString());
-			setScrollableCenterPanel(new FileInformationPanel(reader));
+			VCFFile vcfFile = retrieveReader(node.getParent().toString());
+			setScrollableCenterPanel(new FileInformationPanel(vcfFile));
 		} else if (nodeInfo.equals(STATISTICS)) {
-			//VCFReader reader = retrieveReader(node.getParent().toString());
-			setScrollableCenterPanel(getEmptyPanel());
+			VCFFile vcfFile = retrieveReader(node.getParent().toString());
+			setScrollableCenterPanel(new StatisticPanel(vcfFile));
 		} else if (nodeInfo.equals(FILTERS)) {
 			setCenterPanel(filtersPanel);
 			//setCenterPanel(getEmptyPanel());
@@ -299,8 +294,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @param fileName 	the name of the vcf file
 	 * @return			the reader
 	 */
-	private VCFReader retrieveReader (String fileName) {
-		return ProjectManager.getInstance().getMultiGenomeProject().getReadersFromName(fileName);
+	private VCFFile retrieveReader (String fileName) {
+		return ProjectManager.getInstance().getMultiGenomeProject().getVCFFileFromName(fileName);
 	}
 
 

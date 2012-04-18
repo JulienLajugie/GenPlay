@@ -23,18 +23,18 @@ package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 
 /**
  * This class compares vcf file readers according to the path of the vcf files.
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFReaderComparator implements Comparator<VCFReader> {
+public class VCFReaderComparator implements Comparator<VCFFile> {
 
 	
 	@Override
-	public int compare(VCFReader reader1, VCFReader reader2) {
+	public int compare(VCFFile reader1, VCFFile reader2) {
 		String path1 = reader1.getFile().getPath();
 		String path2 = reader1.getFile().getPath();
 		return path1.compareToIgnoreCase(path2);

@@ -45,7 +45,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.SettingsHandler;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLoader.VCFData;
@@ -66,7 +66,7 @@ class MultiGenomePanel extends JPanel {
 	private MultiGenomeInformationPanel informationPanel;	// multi genome information panel 
 	private VCFLoaderDialog				vcfLoaderDialog;	// the VCF loader
 	private List<VCFData> 				data;				// data
-	private Map<String, List<VCFReader>> genomeFileAssociation;
+	private Map<String, List<VCFFile>> genomeFileAssociation;
 
 	private JFileChooser 				fc;					// file chooser
 
@@ -268,28 +268,17 @@ class MultiGenomePanel extends JPanel {
 	 * Updates also the statistical information and refreshes the panel.
 	 */
 	private void initializesGenomeFileAssociation () {
-		genomeFileAssociation = new HashMap<String, List<VCFReader>>();
-		List<VCFReader> readerList = new ArrayList<VCFReader>();
+		genomeFileAssociation = new HashMap<String, List<VCFFile>>();
+		List<VCFFile> readerList = new ArrayList<VCFFile>();
 
 		for (VCFData vcfData: data) {
 			String fullName = FormattedMultiGenomeName.getFullFormattedGenomeName(vcfData.getGroup(), vcfData.getNickname(), vcfData.getRaw());
 			if (!genomeFileAssociation.containsKey(fullName)) {
-				genomeFileAssociation.put(fullName, new ArrayList<VCFReader>());
+				genomeFileAssociation.put(fullName, new ArrayList<VCFFile>());
 			}
-			VCFReader reader = null;
-			try {
-				reader = new VCFReader(vcfData.getFile());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			for (VCFReader currentReader: readerList) {
-				if (currentReader.getFile().getPath().equals(reader.getFile().getPath())) {
-					reader = currentReader;
-					break;
-				}
-			}
-			genomeFileAssociation.get(fullName).add(reader);
-			readerList.add(reader);
+			VCFFile vcfFile = vcfLoaderDialog.getVCFFile(vcfData.getFile());
+			genomeFileAssociation.get(fullName).add(vcfFile);
+			readerList.add(vcfFile);
 		}
 		//showsAssociation();
 	}
@@ -299,7 +288,7 @@ class MultiGenomePanel extends JPanel {
 		String info = "-----------------\n";
 		for (String genome: genomeFileAssociation.keySet()) {
 			info += genome + ": ";
-			for (VCFReader reader: genomeFileAssociation.get(genome)) {
+			for (VCFFile reader: genomeFileAssociation.get(genome)) {
 				info += reader.hashCode() + " " + reader.getFile().getName() + ";";
 			}
 			info += "\n";
@@ -331,7 +320,7 @@ class MultiGenomePanel extends JPanel {
 				genomeList.add(rawName);
 			}
 
-			for (VCFReader reader: genomeFileAssociation.get(fullGenomeName)) {
+			for (VCFFile reader: genomeFileAssociation.get(fullGenomeName)) {
 				String path = reader.getFile().getPath();
 				if (!fileGenome.containsKey(path)) {
 					fileGenome.put(path, 0);
@@ -351,7 +340,7 @@ class MultiGenomePanel extends JPanel {
 	/**
 	 * @return the mapping between genome full names and their readers.
 	 */
-	protected Map<String, List<VCFReader>> getGenomeFileAssociation ()  {
+	protected Map<String, List<VCFFile>> getGenomeFileAssociation ()  {
 		return genomeFileAssociation;
 	}
 

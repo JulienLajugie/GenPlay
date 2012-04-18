@@ -41,7 +41,7 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -317,7 +317,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			String genomeName = jcbGenome.getSelectedItem().toString();
 			for (int i = 0; i < variationName.size(); i++) {
 				VariantType type = variationName.get(i);
-				List<VCFReader> readers = ProjectManager.getInstance().getMultiGenomeProject().getReaders(genomeName, type);
+				List<VCFFile> readers = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(genomeName, type);
 				if (readers.size() > 0) {
 					selectedVariation.get(i).setEnabled(true);
 				} else {

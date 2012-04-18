@@ -37,7 +37,9 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileStatistic;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFSampleStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
@@ -69,7 +71,7 @@ public class MGSynchronizer implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private MultiGenomeProject multiGenomeProject;
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -91,7 +93,7 @@ public class MGSynchronizer implements Serializable {
 		in.readInt();
 		multiGenomeProject = (MultiGenomeProject) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link MGSynchronizer}
@@ -103,7 +105,7 @@ public class MGSynchronizer implements Serializable {
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	Variant insertion section
-	
+
 
 	/**
 	 * Reads the VCF files in order to store the position where a variation happens.
@@ -112,24 +114,25 @@ public class MGSynchronizer implements Serializable {
 	 */
 	public void insertVariantposition () throws IOException {
 		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();	// get the chromosome list
-		List<VCFReader> readerList = multiGenomeProject.getAllReaders();													// get all vcf readers
+		List<VCFFile> VCFFileList = multiGenomeProject.getAllVCFFiles();													// get all vcf readers
 
 		List<AlleleType> alleleTypeList = new ArrayList<AlleleType>();
 		alleleTypeList.add(AlleleType.ALLELE01);
 		alleleTypeList.add(AlleleType.ALLELE02);
 
 		for (Chromosome chromosome: chromosomeList) {																// loop on every chromosome
-			for (VCFReader reader: readerList) {																	// loop on every vcf reader
-				List<String> genomeNames = getRequiredGenomeNamesFromAReader(reader);								// get the genome names list
+			for (VCFFile vcfFile: VCFFileList) {																	// loop on every vcf reader
+				VCFFileStatistic statistic = vcfFile.getStatistics();
+				List<String> genomeNames = getRequiredGenomeNamesFromAReader(vcfFile);								// get the genome names list
 				List<String> columnNames = getColumnNamesForQuery(genomeNames);										// get the list of column to perform the query on the current vcf
-				
-				List<Map<String, Object>> result = reader.query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
-				
-				for (Map<String, Object> VCFLine: result) {															// loop on every line of the result of the query
 
+				List<Map<String, Object>> result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
+
+				for (Map<String, Object> VCFLine: result) {															// loop on every line of the result of the query
 					int referencePosition = Integer.parseInt(VCFLine.get("POS").toString());						// get the reference genome position (POS field)
 					String reference = VCFLine.get("REF").toString();												// get the reference value (REF field)
-					String[] alternatives = VCFLine.get("ALT").toString().split(",");								// get the alternative values and split them into an array (comma separated)
+					String alternative = VCFLine.get("ALT").toString();												// get the alternative values and split them into an array (comma separated)
+					String[] alternatives = alternative.split(",");
 					String info = VCFLine.get("INFO").toString();													// get the information of the variation (INFO field). Needs it if the variation is SV coded.
 					float score;
 					try {
@@ -138,24 +141,32 @@ public class MGSynchronizer implements Serializable {
 						score = 0;
 					}
 
-					for (String genomeName: genomeNames) {													// loop on every genome raw name
+					int[] variantLengths = getVariantLengths(reference, alternatives, info);
+					VariantType[] variantTypes = getVariantTypes(variantLengths);
+
+					updateFileStatistics(statistic, variantTypes, alternatives);
+
+					for (String genomeName: genomeNames) {															// loop on every genome raw name
 						String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-						
+
 						String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype 
 						if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
-
+							int firstAlleleIndex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(0));
+							int secondAlleleindex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(2));
+							updateGenotypeSampleStatistics(statistic.getSampleStatistics(genomeName), variantTypes, firstAlleleIndex, secondAlleleindex);
 							for (AlleleType alleleType: alleleTypeList) {
-								char alleleChar;
+								int currentAlleleIndex = -1;
 								if (alleleType == AlleleType.ALLELE01) {													// if we are processing the paternal allele
-									alleleChar = VCFLine.get(genomeRawName).toString().charAt(0);							// we look at the first character
+									currentAlleleIndex = firstAlleleIndex;													// we look at the first character
 								} else {																					// if not, it means we are looking to the maternal allele
-									alleleChar = VCFLine.get(genomeRawName).toString().charAt(2);							// and we look at the third character
+									currentAlleleIndex = secondAlleleindex;													// and we look at the third character
 								}
 
-								if (alleleChar != '.' && alleleChar != '0') {												// if we have a variation
-									int alleleLength = retrieveVariantLength(reference, alternatives, info, alleleChar);	// we retrieve its length
-									VariantType variantType = getVariantType(alleleLength);									// get the type of variant according to the length of the variation
-									reader.addVariantType(genomeName, variantType);											// notice the reader of the variant type
+								if (currentAlleleIndex >= 0) {																// if we have a variation
+									int alleleLength = variantLengths[currentAlleleIndex];									// we retrieve its length
+									VariantType variantType = variantTypes[currentAlleleIndex];								// get the type of variant according to the length of the variation
+									vcfFile.addVariantType(genomeName, variantType);										// notice the reader of the variant type
+									updateVariationSampleStatistics(statistic.getSampleStatistics(genomeName), variantType, alternatives[currentAlleleIndex]);
 									if (variantType != VariantType.SNPS) {													// if it is not a SNP
 										List<MGOffset> offsetList;
 										MGGenomeForDisplay genomeForDisplay = multiGenomeProject.getMultiGenomeForDisplay().getGenomeInformation(genomeName);
@@ -189,6 +200,12 @@ public class MGSynchronizer implements Serializable {
 				}
 			}
 		}
+
+		for (VCFFile vcfFile: VCFFileList) {
+			vcfFile.getStatistics().processStatistics();
+			//System.out.println("Statistics for the VCF: " + vcfFile.getFile().getName());
+			//vcfFile.getStatistics().show();
+		}
 	}
 
 
@@ -216,14 +233,14 @@ public class MGSynchronizer implements Serializable {
 	/**
 	 * Retrieves the name of the genomes required in the project that are present in a VCF file.
 	 * A project does not necessary require all genomes present in a VCF file.
-	 * @param reader	VCF reader of the VCF file
+	 * @param vcfFile	VCF file
 	 * @return			the list of genome names required for the project and present in the VCF file
 	 */
-	private List<String> getRequiredGenomeNamesFromAReader (VCFReader reader) {
+	private List<String> getRequiredGenomeNamesFromAReader (VCFFile vcfFile) {
 		List<String> requiredGenomeNames = new ArrayList<String>();
 		List<String> allGenomeNames = multiGenomeProject.getGenomeNames();
-		List<String> readerGenomeNames = reader.getGenomeNames();
-		
+		List<String> readerGenomeNames = vcfFile.getHeader().getGenomeNames();
+
 		for (String readerGenomeName: readerGenomeNames) {
 			if (allGenomeNames.contains(readerGenomeName)) {
 				requiredGenomeNames.add(readerGenomeName);
@@ -234,34 +251,75 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
+	private int getAlleleIndex (char alleleChar) {
+		int alleleIndex = -1;
+		if (alleleChar != '.' && alleleChar != '0') {
+			try {
+				alleleIndex = Integer.parseInt(alleleChar + "") - 1;
+			} catch (Exception e) {}
+		}
+		return alleleIndex;
+	}
+
+
+
+	/**
+	 * Retrieves the length of all defined alternatives
+	 * If an alternative is SV coded, the info field is required
+	 * @param reference		the REF field
+	 * @param alternative	the ALT field
+	 * @param info			the INFO field
+	 * @return				an array of integer as lengths
+	 */
+	private int[] getVariantLengths(String reference, String[] alternatives, String info) {
+		int[] lengths = new int[alternatives.length];
+
+		for (int i = 0; i < alternatives.length; i++) {
+			lengths[i] = retrieveVariantLength(reference, alternatives[i], info);
+		}
+
+		return lengths;
+	}
+
+
+	/**
+	 * Defines the variant type according to several lengths
+	 * @param length 	array of length
+	 * @return			an array of variant types
+	 */
+	private VariantType[] getVariantTypes (int[] length) {
+		VariantType[] variantTypes = new VariantType[length.length];
+
+		for (int i = 0; i < length.length; i++) {
+			variantTypes[i] = getVariantType(length[i]);
+		}
+
+		return variantTypes;
+	}
+
+
 	/**
 	 * Retrieves the length of a variation using the reference and the alternative.
-	 * The index of the alternative is given by the FORMAT field of the genome.
 	 * If the alternative is a structural variant, the length is given by the SVLEN INFO attributes 
 	 * @param reference		REF field
-	 * @param alternatives	array of alternatives
+	 * @param alternative	ALT field
 	 * @param info			INFO field
-	 * @param indexChar		character from the FORMAT field of a genome
 	 * @return	the length of the variation
 	 */
-	private int retrieveVariantLength (String reference, String[] alternatives, String info, char indexChar) {
+	private int retrieveVariantLength (String reference, String alternative, String info) {
 		int length = 0;
 
-		if (indexChar != '.' && indexChar != '0') {
-			int index = Integer.parseInt(indexChar + "") - 1;
-			String value = alternatives[index];
-			if (value.charAt(0) == '<') {
-				String lengthPattern = "SVLEN=";
-				int lengthPatternIndex = info.indexOf(lengthPattern) + lengthPattern.length();
-				int nextCommaIndex = info.indexOf(";", lengthPatternIndex);
-				if (nextCommaIndex == -1) {
-					length = Integer.parseInt(info.substring(lengthPatternIndex));
-				} else {
-					length = Integer.parseInt(info.substring(lengthPatternIndex, nextCommaIndex));
-				}
+		if (isStructuralVariant(alternative)) {
+			String lengthPattern = "SVLEN=";
+			int lengthPatternIndex = info.indexOf(lengthPattern) + lengthPattern.length();
+			int nextCommaIndex = info.indexOf(";", lengthPatternIndex);
+			if (nextCommaIndex == -1) {
+				length = Integer.parseInt(info.substring(lengthPatternIndex));
 			} else {
-				length = value.length() - reference.length();
+				length = Integer.parseInt(info.substring(lengthPatternIndex, nextCommaIndex));
 			}
+		} else {
+			length = alternative.length() - reference.length();
 		}
 
 		return length;
@@ -283,6 +341,122 @@ public class MGSynchronizer implements Serializable {
 		} else {
 			return null;
 		}
+	}
+
+
+	/**
+	 * Updates statistics related to the file
+	 * @param statistic		file statistics
+	 * @param variantTypes	variant type array
+	 * @param alternatives	alternatives array
+	 */
+	private void updateFileStatistics (VCFFileStatistic statistic, VariantType[] variantTypes, String[] alternatives) {
+		statistic.incrementNumberOfLines();
+		for (int i = 0; i < variantTypes.length; i++) {
+			if (variantTypes[i] == VariantType.SNPS) {
+				statistic.incrementNumberOfSNPs();
+			} else if (variantTypes[i] == VariantType.INSERTION) {
+				if (isStructuralVariant(alternatives[i])) {
+					statistic.incrementNumberOfLongInsertions();
+				} else {
+					statistic.incrementNumberOfShortInsertions();
+				}
+			} else if (variantTypes[i] == VariantType.DELETION) {
+				if (isStructuralVariant(alternatives[i])) {
+					statistic.incrementNumberOfLongDeletions();
+				} else {
+					statistic.incrementNumberOfShortDeletions();
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * 
+	 * @param statistic				sample statistics
+	 * @param variantTypes			array of variant types
+	 * @param firstAlleleNumber		number of the first allele
+	 * @param secondAlleleNumber	number of the second allele
+	 */
+	private void updateGenotypeSampleStatistics (VCFSampleStatistic statistic, VariantType[] variantTypes, int firstAlleleIndex, int secondAlleleIndex) {
+		boolean homozygote = isVariantHomozygote(firstAlleleIndex, secondAlleleIndex);
+		boolean heterozygote = isVariantHeterozygote(firstAlleleIndex, secondAlleleIndex);
+
+		for (VariantType variantType: variantTypes) {
+			if (homozygote) {
+				if (variantType == VariantType.SNPS) {
+					statistic.incrementNumberOfHomozygoteSNPs();
+				} else if (variantType == VariantType.INSERTION) {
+					statistic.incrementNumberOfHomozygoteInsertions();
+				} else if (variantType == VariantType.DELETION) {
+					statistic.incrementNumberOfHomozygoteDeletions();
+				}
+			} else if (heterozygote) {
+				if (variantType == VariantType.SNPS) {
+					statistic.incrementNumberOfHeterozygoteSNPs();
+				} else if (variantType == VariantType.INSERTION) {
+					statistic.incrementNumberOfHeterozygoteInsertions();
+				} else if (variantType == VariantType.DELETION) {
+					statistic.incrementNumberOfHeterozygoteDeletions();
+				}
+			}
+		}
+	}
+
+
+	private boolean isVariantHomozygote (int firstAlleleNumber, int secondAlleleNumber) {
+		if (firstAlleleNumber == secondAlleleNumber && firstAlleleNumber >= 0) {
+			return true;
+		}
+		return false;
+	}
+
+
+	private boolean isVariantHeterozygote (int firstAlleleNumber, int secondAlleleNumber) {
+		if (firstAlleleNumber != secondAlleleNumber) {
+			if (firstAlleleNumber >= 0 || secondAlleleNumber >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Updates statistics related to the sample
+	 * @param statistic		sample statistics
+	 * @param variantType	variant type
+	 * @param alternative	alternative
+	 */
+	private void updateVariationSampleStatistics (VCFSampleStatistic statistic, VariantType variantType, String alternative) {
+		if (variantType == VariantType.SNPS) {
+			statistic.incrementNumberOfSNPs();
+		} else if (variantType == VariantType.INSERTION) {
+			if (isStructuralVariant(alternative)) {
+				statistic.incrementNumberOfLongInsertions();
+			} else {
+				statistic.incrementNumberOfShortInsertions();
+			}
+		} else if (variantType == VariantType.DELETION) {
+			if (isStructuralVariant(alternative)) {
+				statistic.incrementNumberOfLongDeletions();
+			} else {
+				statistic.incrementNumberOfShortDeletions();
+			}
+		}
+	}
+
+
+	/**
+	 * @param alternative ALT field (or part of it)
+	 * @return true if the given alternative is coded as an SV
+	 */
+	private boolean isStructuralVariant (String alternative) {
+		if (alternative.charAt(0) == '<') {
+			return true;
+		}
+		return false;
 	}
 
 

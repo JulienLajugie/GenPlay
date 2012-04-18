@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 
@@ -185,7 +185,7 @@ public class NewProjectPanel extends JPanel {
 	/**
 	 * @return the mapping between genome full names and their readers.
 	 */
-	public Map<String, List<VCFReader>> getGenomeFileAssociation ()  {
+	public Map<String, List<VCFFile>> getGenomeFileAssociation ()  {
 		return multiGenomePanel.getGenomeFileAssociation();
 	}
 	

@@ -37,7 +37,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBox;
@@ -68,7 +68,9 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 	private int lastRow = 0;		// saves the row index of the last event on getCellEditor
 	private int lastCol = 0;		// saves the column index of the last event on getCellEditor
 
-	private Map<String, List<String>> temporaryFileMap; 
+	private Map<String, List<String>> temporaryFileAndGenomeNameMap;
+	private List<VCFFile> vcfFileList;
+
 
 
 	/**
@@ -77,7 +79,8 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 	 */
 	public VCFLoaderTable (VCFLoaderModel model) {
 		super(model);
-		temporaryFileMap = new HashMap<String, List<String>>();
+		temporaryFileAndGenomeNameMap = new HashMap<String, List<String>>();
+		vcfFileList = new ArrayList<VCFFile>();
 		initializesBoxes();
 	}
 
@@ -118,8 +121,9 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		case VCFData.RAW_INDEX:
 			try {
 				File file = (File) getValueAt(row, VCFData.FILE_INDEX);
-				VCFReader reader = new VCFReader(file);
-				List<String> rawGenomeNames = reader.getRawGenomesNames();
+				//VCFFile vcfFile = new VCFFile(file);
+				VCFFile vcfFile = getVCFFile(file);
+				List<String> rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
 				JComboBox combo = new RawNameComboBox(rawGenomeNames.toArray());
 				combo.addActionListener(this);
 				/*JComboBox combo = new JComboBox(rawGenomeNames.toArray());
@@ -232,17 +236,14 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		if (lastCol == VCFData.FILE_INDEX && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
 			String filePath = value.toString();
 			List<String> rawGenomeNames = null;
-			if (temporaryFileMap.containsKey(filePath)) {
-				rawGenomeNames = temporaryFileMap.get(filePath);
+			if (temporaryFileAndGenomeNameMap.containsKey(filePath)) {
+				rawGenomeNames = temporaryFileAndGenomeNameMap.get(filePath);
 			} else {
 				File file = new File(value.toString());
-				try {
-					VCFReader reader = new VCFReader(file);
-					rawGenomeNames = reader.getRawGenomesNames();
-					temporaryFileMap.put(filePath, rawGenomeNames);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				VCFFile vcfFile = getVCFFile(file);
+				//VCFFile vcfFile = new VCFFile(file);
+				rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
+				temporaryFileAndGenomeNameMap.put(filePath, rawGenomeNames);
 			}
 			if (rawGenomeNames != null) {
 				setValueAt(rawGenomeNames.get(0), lastRow, VCFData.RAW_INDEX);
@@ -280,6 +281,27 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * @param file
+	 * @return the existing VCF file (if exists) or a new VCF File
+	 */
+	public VCFFile getVCFFile (File file) {
+		for (VCFFile vcfFile: vcfFileList) {
+			if (vcfFile.getFile().getAbsoluteFile().equals(file.getAbsoluteFile())) {
+				return vcfFile;
+			}
+		}
+		VCFFile vcfFile = null;
+		try {
+			vcfFile = new VCFFile(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		vcfFileList.add(vcfFile);
+		return vcfFile;
 	}
 
 }

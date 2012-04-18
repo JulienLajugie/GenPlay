@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
@@ -160,23 +160,23 @@ public class MGVariantListForDisplay implements Serializable {
 	 */
 	public MGPosition getFullVariantInformation (VariantInterface variant) {
 		if (!(variant instanceof MixVariant)) {
-			List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenomeProject().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
-			List<String> columns = vcfReaderList.get(0).getFixedColumn();
+			List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(alleleForDisplay.getGenomeInformation().getName(), this.type);
+			List<String> columns = vcfFileList.get(0).getHeader().getFixedColumn();
 			columns.add(FormattedMultiGenomeName.getRawName(alleleForDisplay.getGenomeInformation().getName()));
 			int start = variant.getReferenceGenomePosition();
 			List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
-			List<VCFReader> requiredReader = new ArrayList<VCFReader>();
-			for (VCFReader reader: vcfReaderList) {
+			List<VCFFile> requiredFiles = new ArrayList<VCFFile>();
+			for (VCFFile vcfFile: vcfFileList) {
 				List<Map<String, Object>> resultsTmp = null;
 				try {
-					resultsTmp = reader.query(chromosome.getName(), start - 1, start, columns);
+					resultsTmp = vcfFile.getReader().query(chromosome.getName(), start - 1, start, columns);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				if (resultsTmp.size() > 0) {
 					for (Map<String, Object> resultTmp: resultsTmp) {
 						results.add(resultTmp);
-						requiredReader.add(reader);
+						requiredFiles.add(vcfFile);
 					}
 				}
 			}
@@ -185,13 +185,13 @@ public class MGVariantListForDisplay implements Serializable {
 			int size = results.size();
 			switch (size) {
 			case 1:
-				position = new MGPosition(variant, results.get(0), requiredReader.get(0));
+				position = new MGPosition(variant, results.get(0), requiredFiles.get(0));
 			case 0:
 				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: No variant found");
 				break;
 			default:
 				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: Many variant found: " + size);
-				position = getRightInformation(variant, results, requiredReader);
+				position = getRightInformation(variant, results, requiredFiles);
 				break;
 			}
 			return position;
@@ -206,17 +206,17 @@ public class MGVariantListForDisplay implements Serializable {
 	 * Browses a list of results to find out the right one comparing to the given variant
 	 * @param variant	the variant
 	 * @param results	the list of results
-	 * @param readers	the list of readers
+	 * @param vcfFiles	the list of VCF files
 	 * @return			the {@link MGPosition} object containing all information about the variant.
 	 */
-	private MGPosition getRightInformation (VariantInterface variant, List<Map<String, Object>> results, List<VCFReader> readers) {
+	private MGPosition getRightInformation (VariantInterface variant, List<Map<String, Object>> results, List<VCFFile> vcfFiles) {
 		if (results.size() > 0) {
 			float variantScore = variant.getScore();
 			for (int i = 0; i < results.size(); i++) {
 				Map<String, Object> result = results.get(i);
 				float currentScore = getQUALFromResult(result);
 				if (variantScore == currentScore) {
-					return new MGPosition(variant, results.get(i), readers.get(i));
+					return new MGPosition(variant, results.get(i), vcfFiles.get(i));
 				}
 			}
 		}
@@ -249,9 +249,9 @@ public class MGVariantListForDisplay implements Serializable {
 		info += "Variant type: " + type + "\n";
 		info += "Variant list size: " + variantList.size() + "\n";
 		info += "Readers: ";
-		List<VCFReader> vcfReaderList = ProjectManager.getInstance().getMultiGenomeProject().getReaders(alleleForDisplay.getGenomeInformation().getName(), this.type);
-		for (VCFReader reader: vcfReaderList) {
-			info += " " + reader.getFile().getName();
+		List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(alleleForDisplay.getGenomeInformation().getName(), this.type);
+		for (VCFFile vcfFile: vcfFileList) {
+			info += " " + vcfFile.getFile().getName();
 		}
 		//info += "\n";
 		System.out.println("MGVariantListForDisplay.show()");

@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -47,6 +48,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -381,6 +383,15 @@ public class VCFLoaderDialog extends JDialog {
 	 */
 	public void setData(List<VCFData> data) {
 		table.setData(data);
+	}
+	
+	
+	/**
+	 * @param file
+	 * @return the existing VCF file (if exists) or a new VCF File
+	 */
+	public VCFFile getVCFFile (File file) {
+		return table.getVCFFile(file);
 	}
 
 }

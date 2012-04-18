@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;
@@ -74,7 +74,7 @@ public class MultiGenomeProject implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;					// saved format version
 	
 	private		List<String>					genomeNames;					// The genome names list.
-	private 	Map<String, List<VCFReader>> 	genomeFileAssociation;			// The map between genome names and their readers.
+	private 	Map<String, List<VCFFile>> 		genomeFileAssociation;			// The map between genome names and their files.
 
 	private 	MGMultiGenome 					multiGenome;					// The genome synchronization data structure.
 	private 	MGMultiGenomeForDisplay 		multiGenomeForDisplay;			// The genome display data structure.
@@ -109,7 +109,7 @@ public class MultiGenomeProject implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		genomeNames = (List<String>) in.readObject();
-		genomeFileAssociation = (Map<String, List<VCFReader>>) in.readObject();
+		genomeFileAssociation = (Map<String, List<VCFFile>>) in.readObject();
 		multiGenome = (MGMultiGenome) in.readObject();
 		multiGenomeForDisplay = (MGMultiGenomeForDisplay) in.readObject();
 		multiGenomeSynchronizer = (MGSynchronizer) in.readObject();
@@ -142,15 +142,15 @@ public class MultiGenomeProject implements Serializable {
 	 * Initializes synchronizer attributes.
 	 * @param genomeFileAssociation	the genome file association
 	 */
-	public void initializeSynchronization (Map<String, List<VCFReader>> genomeFileAssociation) {
+	public void initializeSynchronization (Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 		this.genomeNames = new ArrayList<String>(this.genomeFileAssociation.keySet());
 		Collections.sort(genomeNames);
 
 		for (String genomeName: genomeNames) {
-			List<VCFReader> readers = genomeFileAssociation.get(genomeName);
-			for (VCFReader reader: readers) {
-				reader.addGenomeName(genomeName);
+			List<VCFFile> vcfFiles = genomeFileAssociation.get(genomeName);
+			for (VCFFile vcfFile: vcfFiles) {
+				vcfFile.addGenomeName(genomeName);
 			}
 		}
 
@@ -166,10 +166,10 @@ public class MultiGenomeProject implements Serializable {
 	 * This method notice the file manager of the dependant files.
 	 */
 	private void initializeFileDependancy () {
-		List<VCFReader> readers = getAllReaders();
-		String[] paths = new String[readers.size()];
+		List<VCFFile> vcfFiles = getAllVCFFiles();
+		String[] paths = new String[vcfFiles.size()];
 		for (int i = 0; i < paths.length; i++) {
-			paths[i] = readers.get(i).getFile().getPath();
+			paths[i] = vcfFiles.get(i).getFile().getPath();
 		}
 		ProjectFiles.getInstance().setCurrentFiles(paths);
 	}
@@ -178,7 +178,7 @@ public class MultiGenomeProject implements Serializable {
 	/**
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
-	public void setGenomeFileAssociation(Map<String, List<VCFReader>> genomeFileAssociation) {
+	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 	}
 
@@ -260,14 +260,14 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * Retrieves all the VCF readers
-	 * @return the full list of VCF reader
+	 * Retrieves all the VCF files
+	 * @return the full list of VCF files
 	 */
-	public List<VCFReader> getAllReaders () {
-		List<VCFReader> readerList = new ArrayList<VCFReader>();
+	public List<VCFFile> getAllVCFFiles () {
+		List<VCFFile> readerList = new ArrayList<VCFFile>();
 
-		for (List<VCFReader> currentReaderList: genomeFileAssociation.values()) {
-			for (VCFReader currentReader: currentReaderList) {
+		for (List<VCFFile> currentReaderList: genomeFileAssociation.values()) {
+			for (VCFFile currentReader: currentReaderList) {
 				if (!readerList.contains(currentReader)) {
 					readerList.add(currentReader);
 				}
@@ -279,36 +279,36 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * Retrieves the VCF reader according to a genome name and a variant type
+	 * Retrieves the VCF diles according to a genome name and a variant type
 	 * @param genomeName	the full genome name
 	 * @param type			the variant type
-	 * @return				the list of VCF reader for the given genome and variant type
+	 * @return				the list of VCF files for the given genome and variant type
 	 */
-	public List<VCFReader> getReaders (String genomeName, VariantType type) {
-		List<VCFReader> readerList = new ArrayList<VCFReader>();
-		List<VCFReader> currentList = genomeFileAssociation.get(genomeName);
+	public List<VCFFile> getVCFFiles (String genomeName, VariantType type) {
+		List<VCFFile> fileList = new ArrayList<VCFFile>();
+		List<VCFFile> currentList = genomeFileAssociation.get(genomeName);
 
-		for (VCFReader currentReader: currentList) {
+		for (VCFFile currentReader: currentList) {
 			List<VariantType> typeList = currentReader.getVariantTypes(genomeName);
 			if (typeList != null && typeList.contains(type)) {
-				readerList.add(currentReader);
+				fileList.add(currentReader);
 			}
 		}
 
-		return readerList;
+		return fileList;
 	}
 
 
 	/**
-	 * Get a vcf reader object with a vcf file name.
+	 * Get a vcf file object with a vcf file name.
 	 * @param fileName 	the name of the vcf file
 	 * @return			the reader
 	 */
-	public VCFReader getReadersFromName (String fileName) {
-		List<VCFReader> list = getAllReaders();
-		for (VCFReader reader: list) {
-			if (reader.getFile().getName().equals(fileName)) {
-				return reader;
+	public VCFFile getVCFFileFromName (String fileName) {
+		List<VCFFile> list = getAllVCFFiles();
+		for (VCFFile vcfFile: list) {
+			if (vcfFile.getFile().getName().equals(fileName)) {
+				return vcfFile;
 			}
 		}
 		return null;
@@ -353,7 +353,7 @@ public class MultiGenomeProject implements Serializable {
 	/**
 	 * @return the genomeFileAssociation
 	 */
-	public Map<String, List<VCFReader>> getGenomeFileAssociation() {
+	public Map<String, List<VCFFile>> getGenomeFileAssociation() {
 		return genomeFileAssociation;
 	}
 

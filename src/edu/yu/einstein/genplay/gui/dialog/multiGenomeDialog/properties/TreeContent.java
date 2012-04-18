@@ -31,7 +31,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 
 /**
  * @author Nicolas Fourel
@@ -97,8 +97,8 @@ class TreeContent {
 		
 		// FILES nodes
 		DefaultMutableTreeNode vcfFiles = new DefaultMutableTreeNode(PropertiesDialog.FILES);
-		List<VCFReader> readerList = ProjectManager.getInstance().getMultiGenomeProject().getAllReaders();
-		for (VCFReader reader: readerList) {
+		List<VCFFile> readerList = ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles();
+		for (VCFFile reader: readerList) {
 			DefaultMutableTreeNode readerNode = new DefaultMutableTreeNode(reader.getFile().getName());
 			readerNode.add(new DefaultMutableTreeNode("Information"));
 			readerNode.add(new DefaultMutableTreeNode("Statistics"));

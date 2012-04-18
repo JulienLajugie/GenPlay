@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -44,7 +44,7 @@ public class MGPosition implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private VariantInterface		variant;	// The variant
 	private Map<String, Object> 	VCFLine;	// The line from the VCF file
-	private VCFReader 				reader;		// The reader object of the VCF file
+	private VCFFile 				vcfFile;		// The vcfFile object of the VCF file
 	private String genomeRawName;
 
 
@@ -57,7 +57,7 @@ public class MGPosition implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(variant);
 		out.writeObject(VCFLine);
-		out.writeObject(reader);
+		out.writeObject(vcfFile);
 	}
 
 
@@ -72,7 +72,7 @@ public class MGPosition implements Serializable {
 		in.readInt();
 		variant = (VariantInterface) in.readObject();
 		VCFLine = (Map<String, Object>) in.readObject();
-		reader = (VCFReader) in.readObject();
+		vcfFile = (VCFFile) in.readObject();
 	}
 
 
@@ -80,14 +80,14 @@ public class MGPosition implements Serializable {
 	 * Constructor of {@link MGPosition}
 	 * @param variant 		the native variant
 	 * @param line 			the line information from the VCF file
-	 * @param reader 		the VCF reader associated to the the VCF file
+	 * @param vcfFile 		the VCF file associated to the the VCF file
 	 */
-	public MGPosition (VariantInterface variant, Map<String, Object> line, VCFReader reader) {
+	public MGPosition (VariantInterface variant, Map<String, Object> line, VCFFile vcfFile) {
 		this.variant = variant;
-		this.reader = reader;
+		this.vcfFile = vcfFile;
 		VCFLine = line;
 		this.genomeRawName = FormattedMultiGenomeName.getRawName(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName());
-		this.reader.retrievePositionInformation(this);
+		this.vcfFile.getHeader().retrievePositionInformation(this);
 	}
 
 
@@ -172,7 +172,7 @@ public class MGPosition implements Serializable {
 	 * @return the value associated to the ID
 	 */
 	public Object getInfoValue(String field) {
-		return reader.getInfoValues(getString(VCFLine.get("INFO")), field);
+		return vcfFile.getInfoValues(getString(VCFLine.get("INFO")), field);
 	}
 
 
@@ -208,7 +208,7 @@ public class MGPosition implements Serializable {
 		}
 		for (int i = 0; i < formatHeader.length; i++) {
 			if (formatHeader[i].equals(field)) {
-				return reader.getFormatValue(formatValues[i], field);
+				return vcfFile.getFormatValue(formatValues[i], field);
 			}
 		}
 		return result;
@@ -230,7 +230,7 @@ public class MGPosition implements Serializable {
 	 */
 	public VCFHeaderAdvancedType getInfoHeader (String id) {
 		VCFHeaderAdvancedType header = null;
-		List<VCFHeaderAdvancedType> headers = reader.getInfoHeader();
+		List<VCFHeaderAdvancedType> headers = vcfFile.getHeader().getInfoHeader();
 		for (VCFHeaderAdvancedType current: headers) {
 			if (current.getId().equals(id)) {
 				header = current;
@@ -248,7 +248,7 @@ public class MGPosition implements Serializable {
 	 */
 	public VCFHeaderAdvancedType getFormatHeader (String id) {
 		VCFHeaderAdvancedType header = null;
-		List<VCFHeaderAdvancedType> headers = reader.getFormatHeader();
+		List<VCFHeaderAdvancedType> headers = vcfFile.getHeader().getFormatHeader();
 		for (VCFHeaderAdvancedType current: headers) {
 			if (current.getId().equals(id)) {
 				header = current;
@@ -266,7 +266,7 @@ public class MGPosition implements Serializable {
 	 */
 	public VCFHeaderType getAltHeader (String id) {
 		VCFHeaderType header = null;
-		List<VCFHeaderType> headers = reader.getAltHeader();
+		List<VCFHeaderType> headers = vcfFile.getHeader().getAltHeader();
 		String idTmp = id.substring(1, id.length()-1);
 		for (VCFHeaderType current: headers) {
 			if (current.getId().equals(idTmp)) {
@@ -279,10 +279,10 @@ public class MGPosition implements Serializable {
 	
 
 	/**
-	 * @return the reader
+	 * @return the vcfFile
 	 */
-	public VCFReader getReader() {
-		return reader;
+	public VCFFile getReader() {
+		return vcfFile;
 	}
 
 

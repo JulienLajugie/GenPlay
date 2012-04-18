@@ -28,7 +28,7 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -106,7 +106,7 @@ public class FiltersData implements Serializable {
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	protected FiltersData(VCFReader reader, VCFHeaderType id,
+	protected FiltersData(VCFFile reader, VCFHeaderType id,
 			IDFilterInterface filter, Track<?>[] trackList) {
 		this.id = id;
 		this.filter = new VCFFilter(filter, reader);
@@ -122,7 +122,7 @@ public class FiltersData implements Serializable {
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	protected FiltersData(VCFReader reader, VCFColumnName nonIDName,
+	protected FiltersData(VCFFile reader, VCFColumnName nonIDName,
 			IDFilterInterface filter, Track<?>[] trackList) {
 		this.id = null;
 		this.filter = new VCFFilter(filter, reader);
@@ -177,7 +177,7 @@ public class FiltersData implements Serializable {
 	/**
 	 * @return the reader
 	 */
-	public VCFReader getReader() {
+	public VCFFile getReader() {
 		return this.filter.getReader();
 	}
 

@@ -157,11 +157,7 @@ public class VCFLoaderModel extends AbstractTableModel {
 	 */
 	protected void addEmptyRow() {
 		VCFData newData = new VCFData();
-		/*if (data.size() == 0) {
-			newData.setGroup("Group 1");
-		}*/
 		data.add(newData);
-		//data.add(new VCFData());
 		fireTableRowsInserted(
 				data.size() - 1,
 				data.size() - 1);

@@ -138,10 +138,12 @@ public class Utils {
 	 */
 	private static JPanel getTablePanel (String[] columnNames, Object[][] data, int[] widths) {
 		// Initializes table
-		JTable table = new JTable(data, columnNames);
+		MGDialogTableModel model = new MGDialogTableModel(columnNames, data);
+		JTable table = new JTable(model);
 		table.setRowSelectionAllowed(false);
 		table.setColumnSelectionAllowed(false);
 		table.setCellSelectionEnabled(false);
+		
 
 		// Sets column width
 		for (int i = 0; i < columnNames.length; i++) {

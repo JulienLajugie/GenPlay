@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 
@@ -46,9 +46,9 @@ class FileInformationPanel extends JPanel {
 
 	/**
 	 * Constructor of {@link FileInformationPanel}
-	 * @param reader the reader of the VCF file
+	 * @param vcfFile the reader of the VCF file
 	 */
-	protected FileInformationPanel (VCFReader reader) {
+	protected FileInformationPanel (VCFFile vcfFile) {
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
@@ -69,7 +69,7 @@ class FileInformationPanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
-		add(getGeneralInformationPanel(reader), gbc);
+		add(getGeneralInformationPanel(vcfFile), gbc);
 
 		// Meta data header title
 		gbc.gridx = 0;
@@ -81,7 +81,7 @@ class FileInformationPanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
-		add(getMetaDataPanel(reader.getHeaderInfo()), gbc);
+		add(getMetaDataPanel(vcfFile.getHeader().getHeaderInfo()), gbc);
 
 		// ALT header title
 		gbc.gridx = 0;
@@ -93,7 +93,7 @@ class FileInformationPanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
-		add(getVCFHeaderTypePanel(reader.getAltHeader()), gbc);
+		add(getVCFHeaderTypePanel(vcfFile.getHeader().getAltHeader()), gbc);
 
 		// FILTER header title
 		gbc.gridx = 0;
@@ -105,7 +105,7 @@ class FileInformationPanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
-		add(getVCFHeaderTypePanel(reader.getFilterHeader()), gbc);
+		add(getVCFHeaderTypePanel(vcfFile.getHeader().getFilterHeader()), gbc);
 
 		// INFO header title
 		gbc.gridx = 0;
@@ -117,7 +117,7 @@ class FileInformationPanel extends JPanel {
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
-		add(getVCFHeaderAdvancedTypePanel(reader.getInfoHeader()), gbc);
+		add(getVCFHeaderAdvancedTypePanel(vcfFile.getHeader().getInfoHeader()), gbc);
 
 		// FORMAT header title
 		gbc.gridx = 0;
@@ -130,17 +130,17 @@ class FileInformationPanel extends JPanel {
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
 		gbc.weighty = 1;
-		add(getVCFHeaderAdvancedTypePanel(reader.getFormatHeader()), gbc);
+		add(getVCFHeaderAdvancedTypePanel(vcfFile.getHeader().getFormatHeader()), gbc);
 
 	}
 
 
 	/**
 	 * Creates the panel that contains general information about the file
-	 * @param reader the vcf file reader
+	 * @param vcfFile the vcf file reader
 	 * @return the panel
 	 */
-	private JPanel getGeneralInformationPanel (VCFReader reader) {
+	private JPanel getGeneralInformationPanel (VCFFile vcfFile) {
 		// The main panel
 		JPanel panel = new JPanel();
 
@@ -149,8 +149,8 @@ class FileInformationPanel extends JPanel {
 		JLabel jlKeyFolder = new JLabel("Folder: ");
 
 		// Value labels
-		JLabel jlValFileName = new JLabel(reader.getFile().getName());
-		JLabel jlValFolder = new JLabel(reader.getFile().getParent());
+		JLabel jlValFileName = new JLabel(vcfFile.getFile().getName());
+		JLabel jlValFolder = new JLabel(vcfFile.getFile().getParent());
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();

@@ -40,7 +40,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
@@ -64,7 +64,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 
 	// File panel components
 	private JLabel					jlFile;				// Label to display the file name
-	private ListDialog<VCFReader> 	fileListDialog;		// The file list dialog
+	private ListDialog<VCFFile> 	fileListDialog;		// The file list dialog
 	private JButton 				showFileListButton;	// The button to show the file list dialog
 
 	// ID panel components
@@ -77,7 +77,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	private IDEditor				filterEditor;		// The filter editor (creates panel for the filter and return the filter)
 
 	// Others
-	private VCFReader 					currentVCFReader;		// the current VCF reader
+	private VCFFile 					currentVCFFile;		// the current VCF reader
 	private VCFHeaderType 				currentID;				// the current header ID
 	private Map<VCFHeaderType, String> 	idMap;					// map between ID and their full description (as shown in the jlist)
 	private Map<VCFColumnName, String>	nonIdMap;				// map between the non ID (some ALT/FILTER and QUAL) and their full description
@@ -165,7 +165,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 
 	@Override
 	public void refresh () {
-		currentVCFReader = null;
+		currentVCFFile = null;
 		currentID = null;
 		idMap = null;
 
@@ -191,7 +191,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 */
 	private JPanel getFilePanel () {
 		// Creates the selection ID dialog
-		fileListDialog = new ListDialog<VCFReader>("Select a file");
+		fileListDialog = new ListDialog<VCFFile>("Select a file");
 
 		// Instantiates the label
 		jlFile = getDefaultLabel("select ->");
@@ -206,18 +206,18 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		showFileListButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				List<VCFReader> readerList = ProjectManager.getInstance().getMultiGenomeProject().getAllReaders();
-				List<VCFReader> list = new ArrayList<VCFReader>();
-				for (VCFReader reader: readerList) {
+				List<VCFFile> readerList = ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles();
+				List<VCFFile> list = new ArrayList<VCFFile>();
+				for (VCFFile reader: readerList) {
 					list.add(reader);
 				}
 				if (fileListDialog.showDialog(getRootPane(), list) == ListDialog.APPROVE_OPTION){
-					VCFReader newVCFReader = fileListDialog.getSelectedElement();
-					if (currentVCFReader == null) {
-						setCurrentReader(newVCFReader);
+					VCFFile newVCFFile = fileListDialog.getSelectedElement();
+					if (currentVCFFile == null) {
+						setCurrentReader(newVCFFile);
 					}
-					if (!currentVCFReader.getFile().equals(newVCFReader.getFile())) {
-						setCurrentReader(newVCFReader);
+					if (!currentVCFFile.getFile().equals(newVCFFile.getFile())) {
+						setCurrentReader(newVCFFile);
 					}
 				}
 			}
@@ -335,21 +335,21 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	 * Creates a map between ID and their description for the ID list.
 	 * @param reader the new vcf file reader
 	 */
-	private void setCurrentReader (VCFReader reader) {
-		currentVCFReader = reader;
-		jlFile.setText(reader.toString());
+	private void setCurrentReader (VCFFile vcfFile) {
+		currentVCFFile = vcfFile;
+		jlFile.setText(vcfFile.toString());
 		jlFile.setForeground(getForeground());
-		jlFile.setToolTipText(reader.toString());
+		jlFile.setToolTipText(vcfFile.toString());
 		
 		idMap = new HashMap<VCFHeaderType, String>();
 
 		// Store the ALT fields
-		for (VCFHeaderType header: reader.getAltHeader()) {
+		for (VCFHeaderType header: vcfFile.getHeader().getAltHeader()) {
 			idMap.put(header, VCFColumnName.ALT + ": " + header.getId() + " (" + header.getDescription() + ")");
 		}
 
 		// Store the FILTER fields
-		for (VCFHeaderType header: reader.getFilterHeader()) {
+		for (VCFHeaderType header: vcfFile.getHeader().getFilterHeader()) {
 			idMap.put(header, VCFColumnName.FILTER + ": " + header.getId() + " (" + header.getDescription() + ")");
 		}
 
@@ -359,7 +359,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		}*/
 
 		// Store the INFO fields
-		for (VCFHeaderAdvancedType header: reader.getInfoHeader()) {
+		for (VCFHeaderAdvancedType header: vcfFile.getHeader().getInfoHeader()) {
 			idMap.put(header, VCFColumnName.INFO + ": " + header.getId() + " (" + header.getDescription() + ")");
 		}
 		
@@ -514,11 +514,11 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 		// Create the stripe data object
 		FiltersData data;
 		if (filterEditor == null) {
-			data = new FiltersData(currentVCFReader, currentID, null, trackList);
+			data = new FiltersData(currentVCFFile, currentID, null, trackList);
 		} else if (filterEditor.getID() == null) { 
-			data = new FiltersData(currentVCFReader, filterEditor.getCategory(), filterEditor.getFilter(), trackList);
+			data = new FiltersData(currentVCFFile, filterEditor.getCategory(), filterEditor.getFilter(), trackList);
 		} else {
-			data = new FiltersData(currentVCFReader, currentID, filterEditor.getFilter(), trackList);
+			data = new FiltersData(currentVCFFile, currentID, filterEditor.getFilter(), trackList);
 		}
 
 		// Return the stripe data object
