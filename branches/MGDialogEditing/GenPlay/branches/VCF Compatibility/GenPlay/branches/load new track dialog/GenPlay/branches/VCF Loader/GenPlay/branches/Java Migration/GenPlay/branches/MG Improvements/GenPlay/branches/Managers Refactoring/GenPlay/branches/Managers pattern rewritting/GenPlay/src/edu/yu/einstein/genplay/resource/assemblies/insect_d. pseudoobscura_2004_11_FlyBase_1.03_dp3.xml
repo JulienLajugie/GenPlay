@@ -1,0 +1,19 @@
+<assembly clade="insect" genome="d. pseudoobscura" name="FlyBase 1.03/dp3" date="11 2004">
+	<chromosome name="chr2" length="30711475"/>
+	<chromosome name="chr3" length="19738957"/>
+	<chromosome name="chr4_group1" length="5302587"/>
+	<chromosome name="chr4_group2" length="1217433"/>
+	<chromosome name="chr4_group3" length="11635473"/>
+	<chromosome name="chr4_group4" length="6604331"/>
+	<chromosome name="chr4_group5" length="2329291"/>
+	<chromosome name="chrU" length="14308685"/>
+	<chromosome name="chrXL_group1a" length="9052427"/>
+	<chromosome name="chrXL_group1e" length="12499574"/>
+	<chromosome name="chrXL_group3a" length="2686958"/>
+	<chromosome name="chrXL_group3b" length="374547"/>
+	<chromosome name="chrXR_group3a" length="1468299"/>
+	<chromosome name="chrXR_group5" length="733150"/>
+	<chromosome name="chrXR_group6" length="6604477"/>
+	<chromosome name="chrXR_group8" length="9190824"/>
+	<chromosome name="chrXR_group9" length="6620765"/>
+</assembly>

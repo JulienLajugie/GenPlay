@@ -1,0 +1,4 @@
+<assembly clade="deuterostome" genome="lancelet" name="JGI 1.0/braFlo1" date="03 2006">
+	<chromosome name="chrUn" length="926371504"/>
+	<chromosome name="chrM" length="15083"/>
+</assembly>
