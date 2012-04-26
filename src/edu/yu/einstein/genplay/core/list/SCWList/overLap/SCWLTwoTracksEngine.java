@@ -364,6 +364,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 				newScwList.add(new ScoredChromosomeWindow(	getStart(track),
 						getStop(track),
 						getScore(track)));
+				currentIndex[track]++;
 			}
 		}
 	}

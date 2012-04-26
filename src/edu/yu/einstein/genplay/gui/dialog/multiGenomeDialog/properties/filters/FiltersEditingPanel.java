@@ -80,7 +80,7 @@ class FiltersEditingPanel extends EditingPanel<FiltersData> {
 	private VCFFile 					currentVCFFile;		// the current VCF reader
 	private VCFHeaderType 				currentID;				// the current header ID
 	private Map<VCFHeaderType, String> 	idMap;					// map between ID and their full description (as shown in the jlist)
-	private Map<VCFColumnName, String>	nonIdMap;				// map between the non ID (some ALT/FILTER and QUAL) and their full description
+	private Map<VCFColumnName, String>	nonIdMap;				// map between the non ID (ALT/FILTER and QUAL) and their full description
 
 
 	/**
