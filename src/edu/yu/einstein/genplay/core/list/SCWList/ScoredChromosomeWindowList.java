@@ -401,7 +401,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			fittedDataList = currentChromosomeList;
 		} else {
 			fittedDataList = new ArrayList<ScoredChromosomeWindow>();			
-			if (currentChromosomeList.size() > 1) {
+			if (currentChromosomeList.size() > 0) {
 				ArrayList<Double> scoreList = new ArrayList<Double>();
 				fittedDataList.add(new ScoredChromosomeWindow(currentChromosomeList.get(0)));
 				scoreList.add(currentChromosomeList.get(0).getScore());
@@ -434,7 +434,8 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 					i++;
 				}
 			}
-		}		
+		}
+		
 	}
 
 
