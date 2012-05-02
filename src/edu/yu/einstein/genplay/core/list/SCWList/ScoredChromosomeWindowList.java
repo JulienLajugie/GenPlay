@@ -189,12 +189,14 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();	
-					for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
-						if (binList.get(currentChromosome, i) != 0.0) {
-							resultList.add(new ScoredChromosomeWindow( 	(i * binList.getBinSize()),
-									((i + 1) * binList.getBinSize()),
-									binList.get(currentChromosome, i)));
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+					if (binList.get(currentChromosome) != null) {
+						for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
+							if (binList.get(currentChromosome, i) != 0.0) {
+								resultList.add(new ScoredChromosomeWindow( 	(i * binList.getBinSize()),
+										((i + 1) * binList.getBinSize()),
+										binList.get(currentChromosome, i)));
+							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -435,7 +437,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 				}
 			}
 		}
-		
+
 	}
 
 
