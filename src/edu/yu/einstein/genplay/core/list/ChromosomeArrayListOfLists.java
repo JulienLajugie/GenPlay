@@ -45,7 +45,7 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 	private static final long serialVersionUID = 3989560975472825193L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private ProjectChromosome projectChromosome; 						// Instance of the Chromosome Manager
-	
+
 
 	/**
 	 * Constructor of {@link ChromosomeArrayListOfLists}.
@@ -65,8 +65,8 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(projectChromosome);
 	}
-	
-	
+
+
 	/**
 	 * Unserializes the save format version number
 	 * @param in
@@ -77,7 +77,7 @@ public class ChromosomeArrayListOfLists<T> extends ArrayList<List<T>> implements
 		in.readInt();
 		projectChromosome = (ProjectChromosome) in.readObject();
 	}
-	
+
 
 	@Override
 	public void add(Chromosome chromosome, T element) throws InvalidChromosomeException {

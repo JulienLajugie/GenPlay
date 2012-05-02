@@ -74,9 +74,8 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {			
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = null;
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = new ArrayList<ScoredChromosomeWindow>();
 						for (int i = 0; i < currentList.size() && !stopped; i++) {
 							double currentScore = currentList.get(i).getScore();
 							if (currentScore != 0) {

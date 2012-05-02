@@ -76,9 +76,8 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = null;
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = new ArrayList<ScoredChromosomeWindow>();
 						// search the min and max for the current chromosome before index 
 						double oldMin = minNoZero(currentList);						
 						double oldMax = maxNoZero(currentList);

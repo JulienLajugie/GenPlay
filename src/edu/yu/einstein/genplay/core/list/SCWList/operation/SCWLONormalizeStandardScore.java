@@ -72,9 +72,8 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
-					List<ScoredChromosomeWindow> resultList = null;
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						resultList = new ArrayList<ScoredChromosomeWindow>();
 						for (int j = 0; j < currentList.size() && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);

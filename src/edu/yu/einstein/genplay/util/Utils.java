@@ -687,10 +687,10 @@ public class Utils {
 	 * Tries to force the garbage collector to run
 	 */
 	public static void garbageCollect() {
+		System.gc();/*System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
-		System.gc();System.gc();System.gc();System.gc();
+		System.gc();System.gc();System.gc();System.gc();*/
 	}
 }
