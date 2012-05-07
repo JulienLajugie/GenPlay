@@ -174,7 +174,7 @@ public class VCFHeader implements Serializable {
 							type.equals(VCFColumnName.ALT.toString()) ||
 							type.equals(VCFColumnName.FILTER.toString()) ||
 							type.equals(VCFColumnName.FORMAT.toString())) {
-						Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 2));
+						Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 1));
 
 						VCFHeaderType headerType = null;
 
