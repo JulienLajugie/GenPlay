@@ -167,12 +167,41 @@ public class MGDisplaySettings implements Serializable {
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void newTrack (Track<?> oldTrack, Track<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.changeTrack(oldTrack, newTrack);
 			stripeSettings.changeTrack(oldTrack, newTrack);
 		}
 	}
+	
+	
+	/**
+	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
+	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
+	 * @param copiedTrack	the copied track
+	 * @param newTrack		the pasted track
+	 */
+	public void pasteTrack (Track<?> copiedTrack, Track<?> newTrack) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			filterSettings.pasteData(copiedTrack, newTrack);
+			stripeSettings.pasteData(copiedTrack, newTrack);
+		}
+	}
+	
+	
+	/**
+	 * When deleting a track, all its settings must be deleted.
+	 * The setting of a track can be mixed with the ones of other tracks.
+	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
+	 * @param deleteTrack the deleted track
+	 */
+	public void deleteTrack (Track<?> deleteTrack) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			filterSettings.deleteData(deleteTrack);
+			stripeSettings.deleteData(deleteTrack);
+		}
+	}
+	
 
 
 	/**

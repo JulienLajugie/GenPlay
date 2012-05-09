@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
-
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -139,7 +138,79 @@ public class MGFilterSettings implements Serializable {
 		}
 		return vcfFiltersList;	
 	}
-
+	
+	
+	/**
+	 * Creates the list of filters according to a track
+	 * @param track the track
+	 * @return		its list of filters
+	 */
+	public List<FiltersData> getFiltersForTrack (Track<?> track) {
+		List<FiltersData> list = new ArrayList<FiltersData>();
+		
+		for (FiltersData data: filtersList) {
+			Track<?>[] trackList = data.getTrackList();
+			for (Track<?> currentTrack: trackList) {
+				if (currentTrack.toString().equals(track.toString())) {
+					list.add(data);
+					break;
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	
+	/**
+	 * When pasting a track, associated filters settings to the copying track must be given to the pasting track.
+	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
+	 * @param copiedTrack	the copied track
+	 * @param newTrack		the pasted track
+	 */
+	public void pasteData (Track<?> copiedTrack, Track<?> newTrack) {
+		List<FiltersData> filterList = getFiltersForTrack(copiedTrack);
+		if (filterList != null) {
+			for (FiltersData data: filterList) {
+				Track<?>[] track = {newTrack};
+				FiltersData newData = new FiltersData(data.getReader(), data.getFilter().getDuplicate(), track);
+				newData.getVCFFilter().setBooleanList(data.getVCFFilter().getDuplicatedBooleanList());
+				if (!filterList.contains(newData)) {
+					filtersList.add(newData);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * When deleting a track, all its settings must be deleted.
+	 * The setting of a track can be mixed with the ones of other tracks.
+	 * Therefore, deleting settings must be processed carefully, taking into account the other track.
+	 * @param deleteTrack the deleted track
+	 */
+	public void deleteData (Track<?> deleteTrack) {
+		List<FiltersData> filterList = getFiltersForTrack(deleteTrack);
+		if (filterList != null) {
+			for (FiltersData data: filterList) {
+				Track<?>[] trackList = data.getTrackList();
+				if (trackList.length == 1) {
+					filtersList.remove(data);
+				} else {
+					Track<?>[] newTrackList = new Track<?>[trackList.length - 1];
+					int cpt = 0;
+					for (Track<?> track: trackList) {
+						if (!deleteTrack.toString().equals(track.toString())) {
+							newTrackList[cpt] = track;
+							cpt++;
+						}
+					}
+					data.setTrackList(newTrackList);
+				}
+			}
+		}
+	}
+	
 	
 	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.

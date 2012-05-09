@@ -398,7 +398,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			track.setStripes(stripes);
 		}
 		if (stripesList != null && filtersList != null) {
-			MGDisplaySettings.getInstance().changeTrack(trackList[index], track);
+			MGDisplaySettings.getInstance().newTrack(trackList[index], track);
 			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
 		trackList[index] = track;
@@ -748,7 +748,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				Track<?> newTrack = copiedTrack.deepClone();
 				selectedTrack.enableStripeListSerialization();
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
-				MGDisplaySettings.getInstance().getStripeSettings().pasteData(copiedTrack, newTrack);
+				MGDisplaySettings.getInstance().pasteTrack(copiedTrack, newTrack);
 				newTrack.updateMultiGenomeInformation(MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack), MGDisplaySettings.getInstance().getFilterSettings().getVCFFiltersForTrack(newTrack));
 				selectedTrack = null;
 			} catch (Exception e) {
@@ -770,7 +770,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}
 			trackList[trackList.length - 1] = new EmptyTrack(trackList.length);
 			trackList[trackList.length - 1].addPropertyChangeListener(this);
-			MGDisplaySettings.getInstance().getStripeSettings().deleteData(selectedTrack);
+			MGDisplaySettings.getInstance().deleteTrack(selectedTrack);
 
 			selectedTrack = null;
 			rebuildPanel();

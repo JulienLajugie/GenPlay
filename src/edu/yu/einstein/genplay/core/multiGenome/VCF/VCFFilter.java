@@ -150,6 +150,24 @@ public class VCFFilter implements Serializable{
 	
 	
 	/**
+	 * @return a clone of the booleanList
+	 */
+	public ByteArrayAsBooleanList getDuplicatedBooleanList() {
+		System.out.println("VCFFilter.getDuplicatedBooleanList()");
+		if (booleanList != null) {
+			System.out.println("VCFFilter.getDuplicatedBooleanList() booleanList != null");
+			ByteArrayAsBooleanList duplicate = new ByteArrayAsBooleanList(booleanList.size());
+			for (int i = 0; i < duplicate.size(); i++) {
+				duplicate.set(i, booleanList.get(i));
+			}
+			return duplicate;
+		}
+		System.out.println("VCFFilter.getDuplicatedBooleanList() booleanList == null");
+		return null;
+	}
+	
+	
+	/**
 	 * @return the reader
 	 */
 	public VCFFile getVCFFile() {

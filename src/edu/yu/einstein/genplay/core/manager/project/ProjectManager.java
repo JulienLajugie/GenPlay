@@ -80,7 +80,6 @@ public class ProjectManager implements Serializable {
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		System.out.println("ProjectManager.readObject()");
 		getInstance();
 		in.readInt();
 		instance.setProjectName((String) in.readObject());
