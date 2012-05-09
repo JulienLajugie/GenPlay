@@ -112,7 +112,7 @@ public class ProjectFiles {
 		if (oldPathIndex >= 0) {
 			return newFiles[oldPathIndex];
 		}
-		return null;
+		return path;
 	}
 
 

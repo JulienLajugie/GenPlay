@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
+
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
@@ -83,6 +84,19 @@ public class MGFilterSettings implements Serializable {
 	public List<FiltersData> getFiltersList() {
 		return filtersList;
 	}
+	
+	
+	/**
+	 * @return a duplicate of the filtersList
+	 */
+	public List<FiltersData> getDuplicatedFiltersList() {
+		List<FiltersData> duplicate = new ArrayList<FiltersData>();
+		for (FiltersData data: filtersList) {
+			duplicate.add(data.getDuplicate());
+		}
+		return duplicate;
+	}
+	
 
 	/**
 	 * @param filtersList the filtersList to set
@@ -126,6 +140,19 @@ public class MGFilterSettings implements Serializable {
 		return vcfFiltersList;	
 	}
 
+	
+	/**
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
+	 */
+	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+		for (FiltersData filter: filtersList) {
+			filter.changeTrack(oldTrack, newTrack);
+		}
+	}
+	
 
 	/**
 	 * Show the settings

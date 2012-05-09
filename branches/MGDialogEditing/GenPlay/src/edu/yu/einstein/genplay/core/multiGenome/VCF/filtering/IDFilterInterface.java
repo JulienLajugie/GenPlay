@@ -21,8 +21,12 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 
+import java.util.List;
+import java.util.Map;
+
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
@@ -33,40 +37,47 @@ public interface IDFilterInterface {
 	
 	
 	/**
-	 * @return the ID of the filter
+	 * @return the header type of the filter
 	 */
-	public VCFHeaderType getID ();
+	public VCFHeaderType getHeaderType ();
 	
 	
 	/**
-	 * Sets the ID of the filter
-	 * @param id the ID
+	 * Sets the header type of the filter
+	 * @param header the ID
 	 */
-	public void setID (VCFHeaderType id);
-	
-	
-	/**
-	 * Sets the category of the filter:
-	 * - ALT
-	 * - QUAL
-	 * - FILTER
-	 * - INFO
-	 * - FORMAT
-	 * @param category the ID category
-	 */
-	public void setCategory (VCFColumnName category);
-	
-	
-	/**
-	 * @return the category of the filter
-	 */
-	public VCFColumnName getCategory ();
+	public void setHeaderType (VCFHeaderType header);
 	
 	
 	/**
 	 * @return the {@link VCFColumnName} enum
 	 */
 	public VCFColumnName getColumnName ();
+	
+	
+	/**
+	 * Sets the list of genomes to apply the filter
+	 * @param genomeNames
+	 */
+	public void setGenomeNames (List<String> genomeNames);
+	
+	
+	/**
+	 * @return the genome names
+	 */
+	public List<String> getGenomeNames ();
+	
+	
+	/**
+	 * @param operator the operator to use to filter the genomes
+	 */
+	public void setOperator (FormatFilterOperatorType operator);
+	
+	
+	/**
+	 * @return the operator to use to filter the genomes
+	 */
+	public FormatFilterOperatorType getOperator ();
 	
 	
 	/**
@@ -93,10 +104,10 @@ public interface IDFilterInterface {
 	
 	/**
 	 * Checks if the object (purpose of the filter) is valid according to the filter
-	 * @param value the object, value from the variant information
+	 * @param value the line of a VCF with columns and values
 	 * @return true if it is valid, false otherwise;
 	 */
-	public boolean isValid (Object value);
+	public boolean isValid (Map<String, Object> value);
 	
 	
 	/**
@@ -105,4 +116,10 @@ public interface IDFilterInterface {
 	 * @return true if the parameter is equal to the instance
 	 */
 	public boolean equals(Object obj);
+	
+	
+	/**
+	 * @return a duplicate of the current object
+	 */
+	public IDFilterInterface getDuplicate ();
 }

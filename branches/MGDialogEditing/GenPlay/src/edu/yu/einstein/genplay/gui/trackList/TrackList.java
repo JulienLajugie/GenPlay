@@ -331,7 +331,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAInsert.ACCELERATOR, ATAInsert.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAPaste.ACCELERATOR, ATAPaste.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATARename.ACCELERATOR, ATARename.ACTION_KEY);
-		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATASave.ACCELERATOR, ATASave.ACTION_KEY);
 		// curve tracks
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTAHistory.ACCELERATOR, VTAHistory.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTARedo.ACCELERATOR, VTARedo.ACTION_KEY);
@@ -399,6 +398,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			track.setStripes(stripes);
 		}
 		if (stripesList != null && filtersList != null) {
+			MGDisplaySettings.getInstance().changeTrack(trackList[index], track);
 			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
 		trackList[index] = track;

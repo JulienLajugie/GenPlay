@@ -99,14 +99,11 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	protected Track(int trackNumber, T data) {
 		// create handle
 		trackHandle = new TrackHandle(trackNumber);
-		//trackHandle.addPropertyChangeListener(this);
 
 		// create graphics
 		trackGraphics = createsTrackGraphics(data);
-		//trackGraphics.addPropertyChangeListener(this);
 
 		// registered the listener to the genome window manager
-		//ProjectManager.getInstance().getProjectWindow().addGenomeWindowListener(this);
 		addListeners();
 
 		// Add the components

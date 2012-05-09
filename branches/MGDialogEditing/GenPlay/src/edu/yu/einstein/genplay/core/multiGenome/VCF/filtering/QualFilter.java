@@ -24,10 +24,15 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FilterUtility;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.NumberUtility;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
@@ -40,6 +45,8 @@ public class QualFilter implements NumberIDFilterInterface {
 	private static final long serialVersionUID = 3099777763400649421L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
+	private FilterUtility			utility;
+	private VCFHeaderType			header;
 	private InequalityOperators		inequation01;
 	private InequalityOperators 	inequation02;
 	private Float 					value01;
@@ -54,10 +61,12 @@ public class QualFilter implements NumberIDFilterInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(header);
 		out.writeObject(inequation01);
 		out.writeObject(inequation02);
 		out.writeFloat(value01);
 		out.writeFloat(value02);
+		out.writeBoolean(cumulative);
 	}
 
 
@@ -69,21 +78,34 @@ public class QualFilter implements NumberIDFilterInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		header = (VCFHeaderType) in.readObject();
 		inequation01 = (InequalityOperators) in.readObject();
 		inequation02 = (InequalityOperators) in.readObject();
 		value01 = in.readFloat();
 		value02 = in.readFloat();
+		cumulative = in.readBoolean();
+		utility = new NumberUtility();
+	}
+
+
+	/**
+	 * Constructor of {@link QualFilter}
+	 */
+	public QualFilter () {
+		utility = new NumberUtility();
+	}
+	
+	
+	@Override
+	public VCFHeaderType getHeaderType() {
+		return header;
 	}
 
 
 	@Override
-	public VCFHeaderType getID() {
-		return null;
+	public void setHeaderType(VCFHeaderType id) {
+		this.header = id;
 	}
-
-
-	@Override
-	public void setID(VCFHeaderType id) {}
 
 
 	@Override
@@ -136,59 +158,21 @@ public class QualFilter implements NumberIDFilterInterface {
 
 	@Override
 	public String toStringForDisplay() {
-		String text = "";
-
-		text += "x " + inequation01 + " " + value01;
-		if (inequation02 != null && value02 != null) {
-			if (cumulative) {
-				text += " AND ";
-			} else {
-				text += " OR ";
-			}
-			text += "x " + inequation02 + " " + value02;
-		}
-
-		return text;
+		return utility.toStringForDisplay(this);
 	}
 
 
 	@Override
 	public String getErrors() {
-		String error = "";
-
-		if (inequation01 == null || inequation01.equals(" ")) {
-			error += "First inequation invalid;";
-		}
-
-		if (value01 == null) {
-			error += "First value invalid;";
-		}
-
-		if (inequation02 != null && inequation02.equals(" ") && value02 != null) {
-			error += "Second sign inequation missing";
-		}
-
-		if (inequation02 != null && !inequation02.equals(" ") && value02 == null) {
-			error += "Second value missing";
-		}
-
-		if (error.equals("")) {
-			return null;
-		} else {
-			return error;
-		}
+		return utility.getErrors(this);
 	}
-
-
+	
+	
 	@Override
-	public void setCategory(VCFColumnName category) {}
-
-
-	@Override
-	public VCFColumnName getCategory () {
-		return null;
+	public boolean equals(Object obj) {
+		return utility.equals(this, obj);
 	}
-
+	
 
 	@Override
 	public boolean isValid(VariantInterface variant) {
@@ -197,32 +181,8 @@ public class QualFilter implements NumberIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object o) {
-		if (o != null) {
-			String fullLine = o.toString();
-			Float valueToCompare = FilterTester.getFloatValue(getColumnName(), fullLine, null);
-			Boolean result01 = FilterTester.passInequation(inequation01, value01, valueToCompare);
-			Boolean result02 = null;
-			if (inequation02 != null) {
-				result02 = FilterTester.passInequation(inequation02, value02, valueToCompare);
-			}
-
-			if (cumulative) {		// cumulative treatment
-				if (result02 != null) {
-					return (result01 & result02);
-				}
-				return result01;
-			} else {				// non cumulative treatment
-				if (result01 || result02) {
-					return true;
-				}
-			}
-		} else {
-			System.out.println("QualFilter.isValid()");
-			System.out.println("value == null");
-		}
-
-		return false;
+	public boolean isValid(Map<String, Object> o) {
+		return utility.isValid(this, o);
 	}
 
 
@@ -241,5 +201,38 @@ public class QualFilter implements NumberIDFilterInterface {
 	@Override
 	public boolean isCumulative() {
 		return cumulative;
+	}
+	
+	
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return null;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {}
+
+
+	@Override
+	public FormatFilterOperatorType getOperator() {
+		return null;
+	}
+	
+	
+	@Override
+	public IDFilterInterface getDuplicate() {
+		NumberIDFilterInterface duplicate = new NumberIDFilter();
+		duplicate.setHeaderType(getHeaderType());
+		duplicate.setInequation01(getInequation01());
+		duplicate.setInequation02(getInequation02());
+		duplicate.setValue01(getValue01());
+		duplicate.setValue02(getValue02());
+		duplicate.setCumulative(isCumulative());
+		return duplicate;
 	}
 }

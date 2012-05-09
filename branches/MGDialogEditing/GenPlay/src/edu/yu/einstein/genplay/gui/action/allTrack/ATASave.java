@@ -21,12 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.allTrack;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
-import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -57,12 +55,6 @@ public final class ATASave extends TrackListActionWorker<Void> {
 	private Writer 					writer;								// object that writes the data
 
 	/**
-	 * action accelerator {@link KeyStroke}
-	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK);
-
-
-	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "saveTrack";
@@ -76,7 +68,6 @@ public final class ATASave extends TrackListActionWorker<Void> {
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 

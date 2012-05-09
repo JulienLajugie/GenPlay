@@ -150,6 +150,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		addMouseWheelListener(this);
 		multiGenomeInitializing();
 	}
+	
+	
+	public void setName (String name) {
+		super.setName(name);
+	}
 
 
 	/**

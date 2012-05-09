@@ -25,9 +25,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FilterUtility;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FlagUtility;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
@@ -40,9 +45,11 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	private static final long serialVersionUID = -2692600453534744380L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private VCFHeaderType 	ID;			// ID of the filter
-	private VCFColumnName	category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
-	private boolean 		required;	// true if the value is required to pass the the filter
+	private FilterUtility				utility;
+	private VCFHeaderType 				header;			// ID of the filter
+	private boolean 					required;		// true if the value is required to pass the the filter
+	private List<String>				genomeNames;	// the list of genomes to apply the filter (if required, null otherwise)
+	private FormatFilterOperatorType 	operator;		// the operator to use to filter the genomes (if required, null otherwise)
 
 
 	/**
@@ -52,9 +59,10 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(ID);
-		out.writeObject(category);
+		out.writeObject(header);
 		out.writeBoolean(required);
+		out.writeObject(genomeNames);
+		out.writeObject(operator);
 	}
 
 
@@ -64,23 +72,34 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		ID = (VCFHeaderType) in.readObject();
-		category = (VCFColumnName) in.readObject();
+		header = (VCFHeaderType) in.readObject();
 		required = in.readBoolean();
+		genomeNames = (List<String>) in.readObject();
+		operator = (FormatFilterOperatorType) in.readObject();
+		utility = new FlagUtility();
+	}
+
+	
+	/**
+	 * Constructor of {@link FlagIDFilter}
+	 */
+	public FlagIDFilter () {
+		utility = new FlagUtility();
+	}
+	
+
+	@Override
+	public VCFHeaderType getHeaderType() {
+		return header;
 	}
 
 
 	@Override
-	public VCFHeaderType getID() {
-		return ID;
-	}
-
-
-	@Override
-	public void setID(VCFHeaderType id) {
-		this.ID = id;
+	public void setHeaderType(VCFHeaderType id) {
+		this.header = id;
 	}
 
 
@@ -102,49 +121,13 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 
 	@Override
 	public String toStringForDisplay() {
-		String text = "must be ";
-		if (required) {
-			text += "present";
-		} else {
-			text += "absent";
-		}
-		return text;
+		return utility.toStringForDisplay(this);
 	}
 
 
 	@Override
 	public String getErrors() {
-		String error = "";
-
-		if (ID == null) {
-			error += "ID missing;";
-		}
-
-		try {
-			if (required) {
-				// instantiation control of the boolean
-			}
-		} catch (Exception e) {
-			error += "Boolean missing;";
-		}
-
-		if (error.equals("")) {
-			return null;
-		} else {
-			return error;
-		}
-	}
-
-
-	@Override
-	public void setCategory(VCFColumnName category) {
-		this.category = category;
-	}
-
-
-	@Override
-	public VCFColumnName getCategory() {
-		return category;
+		return utility.getErrors(this);
 	}
 
 
@@ -155,32 +138,55 @@ public class FlagIDFilter implements IDFilterInterface, Serializable {
 
 
 	@Override
-	public boolean isValid(Object object) {
-		boolean found = FilterTester.isStringFound(object, ID.getId());
-
-		return FilterTester.passTest(required, found);
+	public boolean isValid(Map<String, Object> object) {
+		return utility.isValid(this, object);
 	}
 
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-
-		// object must be Test at this point
-		FlagIDFilter test = (FlagIDFilter)obj;
-		return ID.getId().equals(test.getID().getId()) && 
-		category.equals(test.getCategory()) &&
-		required == test.isRequired();
+		return utility.equals(this, obj);
 	}
 
 
 	@Override
 	public VCFColumnName getColumnName() {
-		return category;
+		return header.getColumnCategory();
 	}
+
+
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {
+		this.genomeNames = genomeNames;
+	}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return genomeNames;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {
+		this.operator = operator;
+	}
+
+
+	@Override
+	public FormatFilterOperatorType getOperator() {
+		return operator;
+	}
+
+
+	@Override
+	public IDFilterInterface getDuplicate() {
+		IDFilterInterface duplicate = new FlagIDFilter();
+		duplicate.setHeaderType(getHeaderType());
+		((FlagIDFilter)duplicate).setRequired(isRequired());
+		duplicate.setGenomeNames(getGenomeNames());
+		duplicate.setOperator(getOperator());
+		return duplicate;
+	}
+
 }

@@ -24,9 +24,14 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FilterUtility;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.StringUtility;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
@@ -39,10 +44,12 @@ public class StringIDFilter implements StringIDFilterInterface {
 	private static final long serialVersionUID = -4601435986037527188L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	
-	private VCFHeaderType 	ID;			// ID of the filter
-	private VCFColumnName	category;	// category of the filter (ALT QUAL FILTER INFO FORMAT)
-	private String 			value;		// value of the filter
-	private boolean 		required;	// true if the value is required to pass the the filter
+	private FilterUtility				utility;
+	private VCFHeaderType 				header;				// ID of the filter
+	private String 						value;			// value of the filter
+	private boolean 					required;		// true if the value is required to pass the the filter
+	private List<String>				genomeNames;	// the list of genomes to apply the filter (if required, null otherwise)
+	private FormatFilterOperatorType 	operator;		// the operator to use to filter the genomes (if required, null otherwise)
 
 	
 	/**
@@ -52,12 +59,13 @@ public class StringIDFilter implements StringIDFilterInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		if (ID != null) {
-			out.writeObject(ID);
+		if (header != null) {
+			out.writeObject(header);
 		}
-		out.writeObject(category);
 		out.writeObject(value);
 		out.writeBoolean(required);
+		out.writeObject(genomeNames);
+		out.writeObject(operator);
 	}
 
 
@@ -67,28 +75,39 @@ public class StringIDFilter implements StringIDFilterInterface {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		try {
-			ID = (VCFHeaderType) in.readObject();
+			header = (VCFHeaderType) in.readObject();
 		} catch (Exception e) {
-			ID = null;
+			header = null;
 		}
-		category = (VCFColumnName) in.readObject();
 		value = (String) in.readObject();
 		required = in.readBoolean();
+		genomeNames = (List<String>) in.readObject();
+		operator = (FormatFilterOperatorType) in.readObject();
+		utility = new StringUtility();
+	}
+	
+	
+	/**
+	 * Constructor of {@link StringIDFilter}
+	 */
+	public StringIDFilter () {
+		utility = new StringUtility();
 	}
 	
 	
 	@Override
-	public VCFHeaderType getID() {
-		return ID;
+	public VCFHeaderType getHeaderType() {
+		return header;
 	}
 
 
 	@Override
-	public void setID(VCFHeaderType id) {
-		this.ID = id;
+	public void setHeaderType(VCFHeaderType id) {
+		this.header = id;
 	}
 
 
@@ -118,56 +137,13 @@ public class StringIDFilter implements StringIDFilterInterface {
 	
 	@Override
 	public String toStringForDisplay() {
-		String text = "must ";
-		if (required) {
-			text += "contains ";
-		} else {
-			text += "not contains ";
-		}
-		text += value;
-		return text;
+		return utility.toStringForDisplay(this);
 	}
 	
 	
 	@Override
 	public String getErrors() {
-		String error = "";
-		
-		if (ID == null) {
-			error += "ID missing;";
-		}
-		
-		if (value == null) {
-			error += "Value missing";
-		} else if (value.isEmpty()) {
-			error += "Value empty";
-		}
-		
-		try {
-			if (required) {
-				// instantiation control of the boolean
-			}
-		} catch (Exception e) {
-			error += "Bollean missing;";
-		}
-		
-		if (error.equals("")) {
-			return null;
-		} else {
-			return error;
-		}
-	}
-	
-
-	@Override
-	public void setCategory(VCFColumnName category) {
-		this.category = category;
-	}
-	
-	
-	@Override
-	public VCFColumnName getCategory() {
-		return category;
+		return utility.getErrors(this);
 	}
 	
 	
@@ -178,34 +154,55 @@ public class StringIDFilter implements StringIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object object) {
-		boolean found = FilterTester.isStringFound(object, ID.getId());
-
-		return FilterTester.passTest(required, found);
+	public boolean isValid(Map<String, Object> object) {
+		return utility.isValid(this, object);
 	}
 	
 	
-
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-		
-		// object must be Test at this point
-		StringIDFilter test = (StringIDFilter)obj;
-		return ID.getId().equals(test.getID().getId()) && 
-		category.equals(test.getCategory()) &&
-		value.equals(test.getValue()) &&
-		required == test.isRequired();
+		return utility.equals(this, obj);
 	}
 
 
 	@Override
 	public VCFColumnName getColumnName() {
-		return category;
+		return header.getColumnCategory();
+	}
+	
+	
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {
+		this.genomeNames = genomeNames;
+	}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return genomeNames;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {
+		this.operator = operator;
+	}
+
+
+	@Override
+	public FormatFilterOperatorType getOperator() {
+		return operator;
+	}
+	
+	
+	@Override
+	public IDFilterInterface getDuplicate() {
+		StringIDFilterInterface duplicate = new StringIDFilter();
+		duplicate.setHeaderType(getHeaderType());
+		duplicate.setValue(getValue());
+		duplicate.setRequired(isRequired());
+		duplicate.setGenomeNames(getGenomeNames());
+		duplicate.setOperator(getOperator());
+		return duplicate;
 	}
 }

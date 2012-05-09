@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 
@@ -46,7 +48,7 @@ public class MGFiltersManager {
 	private List<VCFFilter> currentFilterList;						// List of new filters
 	private List<VCFFilter> filterListToUpdate;						// List of filters to update
 	private boolean chromosomeHasChanged;
-	
+
 	private Map<VCFFile, List<VCFFilter>> filterMap;
 	private Map<VCFFile, List<Map<String, Object>>> resultMap;
 
@@ -74,7 +76,7 @@ public class MGFiltersManager {
 		return instance;
 	}
 
-	
+
 	/**
 	 * Reset to initial value all class attributes.
 	 */
@@ -116,18 +118,32 @@ public class MGFiltersManager {
 				}
 			}
 		}
-		
+
 		// Gather filters by readers
 		filterMap = new HashMap<VCFFile, List<VCFFilter>>();
 		for (VCFFilter filter: filterListToUpdate) {
-			if (!filterMap.containsKey(filter.getReader())) {
-				filterMap.put(filter.getReader(), new ArrayList<VCFFilter>());
+			if (!filterMap.containsKey(filter.getVCFFile())) {
+				filterMap.put(filter.getVCFFile(), new ArrayList<VCFFilter>());
 			}
-			filterMap.get(filter.getReader()).add(filter);
+			filterMap.get(filter.getVCFFile()).add(filter);
 		}
 	}
 
-	
+	/*private void printList (List<VCFFilter> list) {
+		if (list == null) {
+			System.out.println("The list is null");
+		} else {
+			if (list.size() == 0) {
+				System.out.println("The list is empty");
+			} else {
+				for (VCFFilter filter: list) {
+					System.out.println(filter.hashCode() + ": " + filter.getFilter().toStringForDisplay());
+				}
+			}
+		}
+	}*/
+
+
 	/**
 	 * Retrieves the VCF lines from each VCF files.
 	 * It retrieves only the required columns.
@@ -136,28 +152,37 @@ public class MGFiltersManager {
 		if (filterMap != null && filterMap.size() > 0) {
 			resultMap = new HashMap<VCFFile, List<Map<String,Object>>>();
 			Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-			
+
 			for (VCFFile vcfFile: filterMap.keySet()) {
-				
+
 				List<String> columnNameList = new ArrayList<String>();
 				for (VCFFilter filter: filterMap.get(vcfFile)) {
-					System.out.println("MGFiltersManager.retrieveDataFromVCF() " + filter.getFilter().getColumnName().toString());
-					columnNameList.add(filter.getFilter().getColumnName().toString());
+					VCFColumnName columnName = filter.getFilter().getColumnName();
+					columnNameList.add(columnName.toString());
+					if (columnName == VCFColumnName.FORMAT) {
+						List<String> genomeNames = filter.getFilter().getGenomeNames();
+						for (String genomeName: genomeNames) {
+							String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
+							if (!columnNameList.contains(genomeRawName)) {
+								columnNameList.add(genomeRawName);
+							}
+						}
+					}
 				}
-				
+
 				List<Map<String, Object>> results = null;
 				try {
 					results = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength(), columnNameList);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 				resultMap.put(vcfFile, results);
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return true if filters must be created, false otherwise
 	 */
@@ -167,14 +192,14 @@ public class MGFiltersManager {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * @param filter the filter
 	 * @return the result of the query on the VCF file related to the filter
 	 */
 	public List<Map<String, Object>> getResultOfFilter (VCFFilter filter) {
-		return resultMap.get(filter.getReader());
+		return resultMap.get(filter.getVCFFile());
 	}
 
 

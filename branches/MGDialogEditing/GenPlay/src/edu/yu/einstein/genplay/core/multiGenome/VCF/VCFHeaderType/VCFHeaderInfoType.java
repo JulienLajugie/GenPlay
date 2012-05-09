@@ -27,6 +27,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+
 /**
  * This class manages the INFO VCF field type information.
  * @author Nicolas Fourel
@@ -85,6 +87,16 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 	public VCFHeaderInfoType () {
 		values = new HashMap<Object, Integer>();
 	}
+	
+	
+	@Override
+	public VCFColumnName getColumnCategory() {
+		return VCFColumnName.INFO;
+	}
+
+
+	@Override
+	public void setColumnCategory(VCFColumnName columnCategory) {}
 	
 	
 	@Override
@@ -160,6 +172,12 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType {
 			return true;
 		}
 		return false;
+	}
+	
+	
+	@Override
+	public String toString () {
+		return getColumnCategory() + " - " + id + ": " + description;
 	}
 	
 }

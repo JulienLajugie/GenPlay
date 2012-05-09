@@ -164,6 +164,19 @@ public class MGStripeSettings implements Serializable {
 	
 	
 	/**
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
+	 */
+	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+		for (StripesData stripe: stripesList) {
+			stripe.changeTrack(oldTrack, newTrack);
+		}
+	}
+	
+	
+	/**
 	 * Show the settings
 	 */
 	public void showSettings () {

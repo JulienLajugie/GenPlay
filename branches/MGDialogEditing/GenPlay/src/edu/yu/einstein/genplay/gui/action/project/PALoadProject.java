@@ -89,6 +89,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected Track<?>[] processAction() throws Exception {
+		boolean hasBeenInitialized = true;						// If the file has been selected, managers have been successfully initialized.
 		if (!skipFileSelection) {
 			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 			FileFilter[] fileFilters = {new GenPlayProjectFilter()};
@@ -99,10 +100,14 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			PAInitManagers init = new PAInitManagers();
 			init.setFile(selectedFile);
 			init.actionPerformed(null);
+			hasBeenInitialized = init.hasBeenInitialized();		// We just selected the file, we have to check if managers have been successfully initialized 
 		}
-		MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)
-		notifyActionStart("Loading Project", 1, false);
-		return RecordingManager.getInstance().getProjectRecording().getTrackList();
+		if (hasBeenInitialized) {
+			MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)
+			notifyActionStart("Loading Project", 1, false);
+			return RecordingManager.getInstance().getProjectRecording().getTrackList();
+		}
+		return null;
 	}
 
 
@@ -113,7 +118,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
-			
+
 			MainFrame.getInstance().setVisible(true);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();

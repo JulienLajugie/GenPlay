@@ -26,6 +26,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.gui.track.Track;
+
 
 /**
  * @author Nicolas Fourel
@@ -39,36 +42,36 @@ public class MGDisplaySettings implements Serializable {
 
 	/** Enable a MG option */
 	public static final int YES_MG_OPTION = 1;
-	
+
 	/** Disable a MG option */
 	public static final int NO_MG_OPTION = 0;
-	
+
 	/** Blank of synchronization are involved by insertion in genomes on the reference genome */
 	public static int INCLUDE_BLANK_OPTION = YES_MG_OPTION;
-	
+
 	/** Insertion stripes can be drawn with an edge line */
 	public static int DRAW_INSERTION_EDGE = YES_MG_OPTION;
-	
+
 	/** Deletion stripes can be drawn with an edge line */
 	public static int DRAW_DELETION_EDGE = YES_MG_OPTION;
-	
+
 	/** Draw the inserted nucleotides over an insertion stripe */
 	public static int DRAW_INSERTION_LETTERS = YES_MG_OPTION;
-	
+
 	/** Draw the deleted nucleotides over a deletion stripe */
 	public static int DRAW_DELETION_LETTERS = YES_MG_OPTION;
-	
+
 	/** Draw the replaced nucleotide over a SNP stripe */
 	public static int DRAW_SNP_LETTERS = YES_MG_OPTION;
-	
-	
+
+
 	private static MGDisplaySettings 	instance;			// Instance of the class
 
 	private MGFilterSettings 	filterSettings; 	// All settings about the filters
 	private MGStripeSettings 	stripeSettings; 	// All settings about the stripes
 	private MGVariousSettings 	variousSettings;	// All settings about various settings
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -80,7 +83,13 @@ public class MGDisplaySettings implements Serializable {
 		out.writeObject(filterSettings);
 		out.writeObject(stripeSettings);
 		out.writeObject(variousSettings);
-		showSettings();
+
+		out.writeInt(INCLUDE_BLANK_OPTION);
+		out.writeInt(DRAW_INSERTION_EDGE);
+		out.writeInt(DRAW_DELETION_EDGE);
+		out.writeInt(DRAW_INSERTION_LETTERS);
+		out.writeInt(DRAW_DELETION_LETTERS);
+		out.writeInt(DRAW_SNP_LETTERS);
 	}
 
 
@@ -96,8 +105,15 @@ public class MGDisplaySettings implements Serializable {
 		filterSettings = (MGFilterSettings) in.readObject();
 		stripeSettings = (MGStripeSettings) in.readObject();
 		variousSettings = (MGVariousSettings) in.readObject();
+
+		INCLUDE_BLANK_OPTION = in.readInt();
+		DRAW_INSERTION_EDGE = in.readInt();
+		DRAW_DELETION_EDGE = in.readInt();
+		DRAW_INSERTION_LETTERS = in.readInt();
+		DRAW_DELETION_LETTERS = in.readInt();
+		DRAW_SNP_LETTERS = in.readInt();
 	}
-	
+
 
 	/**
 	 * @return an instance of a {@link MGDisplaySettings}. 
@@ -143,8 +159,22 @@ public class MGDisplaySettings implements Serializable {
 	public MGVariousSettings getVariousSettings() {
 		return variousSettings;
 	}
-	
-	
+
+
+	/**
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
+	 */
+	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			filterSettings.changeTrack(oldTrack, newTrack);
+			stripeSettings.changeTrack(oldTrack, newTrack);
+		}
+	}
+
+
 	/**
 	 * Show the settings
 	 */

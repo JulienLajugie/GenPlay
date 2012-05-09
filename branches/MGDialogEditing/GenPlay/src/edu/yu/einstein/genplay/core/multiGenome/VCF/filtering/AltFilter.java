@@ -24,21 +24,29 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.filtering;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FilterUtility;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.StringUtility;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class AltFilter implements StringIDFilterInterface {
+public class AltFilter implements StringIDFilterInterface, Serializable {
 
 	/** Generated default serial ID*/
 	private static final long serialVersionUID = 7496390269460579587L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
+	private FilterUtility	utility;
+	private VCFHeaderType	header;
 	private String			value;		//
 	private boolean 		required;	// true if the value is required to pass the the filter
 
@@ -50,6 +58,7 @@ public class AltFilter implements StringIDFilterInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(header);
 		out.writeObject(value);
 		out.writeBoolean(required);
 	}
@@ -63,19 +72,31 @@ public class AltFilter implements StringIDFilterInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		header = (VCFHeaderType) in.readObject();
 		value = (String) in.readObject();
 		required = in.readBoolean();
+		utility = new StringUtility();
+	}
+
+	
+	/**
+	 * Constructor of {@link AltFilter}
+	 */
+	public AltFilter () {
+		utility = new StringUtility();
+	}
+	
+
+	@Override
+	public VCFHeaderType getHeaderType() {
+		return header;
 	}
 
 
 	@Override
-	public VCFHeaderType getID() {
-		return null;
+	public void setHeaderType(VCFHeaderType id) {
+		this.header = id;
 	}
-
-
-	@Override
-	public void setID(VCFHeaderType id) {}
 
 
 	@Override
@@ -104,50 +125,15 @@ public class AltFilter implements StringIDFilterInterface {
 
 	@Override
 	public String toStringForDisplay() {
-		String text = "must ";
-		if (required) {
-			text += "contains ";
-		} else {
-			text += "not contains ";
-		}
-		text += value;
-		return text;
+		return utility.toStringForDisplay(this);
 	}
 
 
 	@Override
 	public String getErrors() {
-		String error = "";
-
-		if (value == null) {
-			error += "Value missing;";
-		}
-
-		try {
-			if (required) {
-				// instantiation control of the boolean
-			}
-		} catch (Exception e) {
-			error += "Boolean missing;";
-		}
-
-		if (error.equals("")) {
-			return null;
-		} else {
-			return error;
-		}
+		return utility.getErrors(this);
 	}
-
-
-	@Override
-	public void setCategory(VCFColumnName category) {}
-
-
-	@Override
-	public VCFColumnName getCategory() {
-		return null;
-	}
-
+	
 
 	@Override
 	public boolean isValid(VariantInterface variant) {
@@ -156,31 +142,49 @@ public class AltFilter implements StringIDFilterInterface {
 
 
 	@Override
-	public boolean isValid(Object object) {
-		boolean found = FilterTester.isStringFound(object, value);
-		
-		return FilterTester.passTest(required, found);
+	public boolean isValid(Map<String, Object> object) {
+		return utility.isValid(this, object);
 	}
 
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-
-		// object must be Test at this point
-		AltFilter test = (AltFilter)obj;
-		return value.equals(test.getValue()) &&
-		required == test.isRequired();
+		return utility.equals(this, obj);
 	}
 
 
 	@Override
 	public VCFColumnName getColumnName() {
 		return VCFColumnName.ALT;
+	}
+
+
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return null;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {}
+
+
+	@Override
+	public FormatFilterOperatorType getOperator() {
+		return null;
+	}
+
+
+	@Override
+	public IDFilterInterface getDuplicate() {
+		StringIDFilterInterface duplicate = new AltFilter();
+		duplicate.setHeaderType(getHeaderType());
+		duplicate.setValue(getValue());
+		duplicate.setRequired(isRequired());
+		return duplicate;
 	}
 }

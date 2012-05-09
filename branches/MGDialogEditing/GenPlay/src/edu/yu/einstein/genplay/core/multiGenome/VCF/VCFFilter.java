@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -33,22 +37,64 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFFilter {
+public class VCFFilter implements Serializable{
 
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 8207888574897530618L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	
 	private IDFilterInterface 		filter;				// the filter
-	private VCFFile				reader;				// the file reader
+	private VCFFile					vcfFile;			// the file reader
 	
 	private ByteArrayAsBooleanList 	booleanList;		// list of boolean meaning whether variants pass the filter or not
 
 	
 	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(filter);
+		out.writeObject(vcfFile);
+		out.writeObject(booleanList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		filter = (IDFilterInterface) in.readObject();
+		vcfFile = (VCFFile) in.readObject();
+		booleanList = (ByteArrayAsBooleanList) in.readObject();
+	}
+	
+	
+	/**
+	 * Constructor of {@link VCFFilter}
+	 */
+	public VCFFilter () {
+		this.filter = null;
+		this.vcfFile = null;
+		booleanList = null;
+	}
+	
+	
+	/**
 	 * Constructor of {@link VCFFilter}
 	 * @param filter the filter
-	 * @param reader the reader
+	 * @param vcfFile the reader
 	 */
-	public VCFFilter (IDFilterInterface filter, VCFFile reader) {
+	public VCFFilter (IDFilterInterface filter, VCFFile vcfFile) {
 		this.filter = filter;
-		this.reader = reader;
+		this.vcfFile = vcfFile;
+		booleanList = null;
 	}
 
 	
@@ -59,8 +105,8 @@ public class VCFFilter {
 	public boolean isValid (VariantInterface variant) {
 		MGPosition information = variant.getFullVariantInformation();
 		if (information != null) {
-			if (reader.equals(information.getReader())) {
-				int index = reader.getPositionList().getIndex(information.getPos());
+			if (vcfFile.equals(information.getReader())) {
+				int index = vcfFile.getPositionList().getIndex(information.getPos());
 				if (index != -1) {
 					return booleanList.get(index);
 				}
@@ -79,8 +125,8 @@ public class VCFFilter {
 		int index = -1;
 		MGPosition information = variant.getFullVariantInformation();
 		if (information != null) {
-			if (reader.equals(information.getReader())) {
-				index = reader.getPositionList().getIndex(information.getPos());
+			if (vcfFile.equals(information.getReader())) {
+				index = vcfFile.getPositionList().getIndex(information.getPos());
 			}
 		}
 		return index;
@@ -106,8 +152,8 @@ public class VCFFilter {
 	/**
 	 * @return the reader
 	 */
-	public VCFFile getReader() {
-		return reader;
+	public VCFFile getVCFFile() {
+		return vcfFile;
 	}
 
 	
@@ -122,8 +168,16 @@ public class VCFFilter {
 	/**
 	 * @param reader the reader to set
 	 */
-	public void setReader(VCFFile reader) {
-		this.reader = reader;
+	public void setVCFFile(VCFFile reader) {
+		this.vcfFile = reader;
+	}
+
+
+	/**
+	 * @param booleanList the booleanList to set
+	 */
+	public void setBooleanList(ByteArrayAsBooleanList booleanList) {
+		this.booleanList = booleanList;
 	}
 
 
@@ -132,13 +186,12 @@ public class VCFFilter {
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
 	public void generateFilter (List<Map<String, Object>> results) {
-		reader.initializesPositionList();
+		vcfFile.initializesPositionList();
 
 		if (results != null) {
-			booleanList = new ByteArrayAsBooleanList(reader.getPositionList().size());
-			String columnName = filter.getColumnName().toString();
+			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
 			for (int i = 0; i < results.size(); i++) {
-				boolean valid = filter.isValid(results.get(i).get(columnName));
+				boolean valid = filter.isValid(results.get(i));
 				booleanList.set(i, valid);
 			}
 		}
@@ -150,7 +203,7 @@ public class VCFFilter {
 	 */
 	public void show () {
 		String info = "";
-		info += "VCF File: " + reader.getFile().getName() + "\n";
+		info += "VCF File: " + vcfFile.getFile().getName() + "\n";
 		info += "Filter display: " + filter.toStringForDisplay() + "\n";
 		System.out.println(info);
 	}
@@ -167,7 +220,23 @@ public class VCFFilter {
 		
 		// object must be Test at this point
 		VCFFilter test = (VCFFilter)obj;
-		return reader.equals(test.getReader()) &&
+		return vcfFile.equals(test.getVCFFile()) &&
 		filter.equals(test.getFilter());
+	}
+	
+	
+	/**
+	 * Creates a clone of the current {@link VCFFilter}.
+	 * Technically, the {@link VCFFile} is not duplicated since we want to keep the original ones and never create new ones after the creation of the project.
+	 * The boolean list is also not duplicated because of memory purpose.
+	 * This method is supposed to be use for the Multigenome Properties Dialog.
+	 * @return a clone of the current object
+	 */
+	public VCFFilter getDuplicate () {
+		VCFFilter duplicate = new VCFFilter();
+		duplicate.setFilter(getFilter().getDuplicate());
+		duplicate.setVCFFile(getVCFFile());
+		duplicate.setBooleanList(getBooleanList());
+		return duplicate;
 	}
 }
