@@ -360,10 +360,16 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	 */
 	private void finishTrack (int track) {
 		if (validPosition[track]) {
+			if (track == 0) {
+				currentScore[1] = 0.0;
+			} else {
+				currentScore[0] = 0.0;
+			}
 			for (int i = currentIndex[track]; i < getTrackSize(track) && !stopped; i++) {
 				newScwList.add(new ScoredChromosomeWindow(	getStart(track),
 						getStop(track),
-						getScore(track)));
+						//getScore(track)));
+						getScore()));
 				currentIndex[track]++;
 			}
 		}

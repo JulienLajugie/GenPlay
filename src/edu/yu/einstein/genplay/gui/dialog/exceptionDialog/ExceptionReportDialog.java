@@ -36,6 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import edu.yu.einstein.genplay.util.Images;
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -82,8 +84,9 @@ public class ExceptionReportDialog extends JDialog {
 		add(getButtonPanel(), BorderLayout.SOUTH);
 
 		// Dialog settings
-		setTitle("Errors report");
-		setAlwaysOnTop(true);
+		setTitle("Warnings report");
+		setIconImage(Images.getApplicationImage());
+		//setAlwaysOnTop(true);
 		setResizable(true);
 		setVisible(false);
 		pack();

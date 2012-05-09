@@ -153,7 +153,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 							if (readHandler != null) {
 								ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
 								start = resultStartStop.getStart();
-								stop = resultStartStop.getStop();							
+								stop = resultStartStop.getStop();
 							}
 							// if we are in a multi-genome project, we compute the position on the meta genome 
 							start = getMultiGenomePosition(chromosome, start);

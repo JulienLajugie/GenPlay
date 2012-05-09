@@ -27,7 +27,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
-import edu.yu.einstein.genplay.gui.action.project.PAErrorReport;
+import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -71,7 +71,7 @@ public final class MainMenu extends JPopupMenu {
 		jmiLoadProject = new JMenuItem(actionMap.get(PALoadProject.ACTION_KEY));
 		jmiSaveProject = new JMenuItem(actionMap.get(PASaveProject.ACTION_KEY));
 		jmiFullScreen = new JMenuItem(actionMap.get(PAFullScreen.ACTION_KEY));
-		jmiErrorReport = new JMenuItem(actionMap.get(PAErrorReport.ACTION_KEY));
+		jmiErrorReport = new JMenuItem(actionMap.get(PAWarningReport.ACTION_KEY));
 		jmiOption = new JMenuItem(actionMap.get(PAOption.ACTION_KEY));
 		jmiRNAToDNAPos = new JMenuItem(actionMap.get(PARNAPosToDNAPos.ACTION_KEY));
 		jmiHelp = new JMenuItem(actionMap.get(PAHelp.ACTION_KEY));

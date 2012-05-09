@@ -38,12 +38,12 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PAErrorReport extends AbstractAction {
+public final class PAWarningReport extends AbstractAction {
 
 	private static final long serialVersionUID = -7328322178569010171L; // generated ID
-	private static final int 		MNEMONIC = KeyEvent.VK_E;		// mnemonic key
-	private static final String 	ACTION_NAME = "Error report";	// action name
-	private final MainFrame 		mainFrame;						// main frame of the application
+	private static final int 		MNEMONIC = KeyEvent.VK_E;			// mnemonic key
+	private static final String 	ACTION_NAME = "Warnings report";	// action name
+	private final MainFrame 		mainFrame;							// main frame of the application
 
 	
 	/**
@@ -53,10 +53,10 @@ public final class PAErrorReport extends AbstractAction {
 	
 	
 	/**
-	 * Creates an instance of {@link PAErrorReport}
+	 * Creates an instance of {@link PAWarningReport}
 	 * @param mainFrame {@link MainFrame} of the application
 	 */
-	public PAErrorReport(MainFrame mainFrame) {
+	public PAWarningReport(MainFrame mainFrame) {
 		super();
 		this.mainFrame = mainFrame; 
         putValue(NAME, ACTION_NAME);

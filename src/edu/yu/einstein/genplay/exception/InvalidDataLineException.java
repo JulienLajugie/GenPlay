@@ -44,7 +44,13 @@ public final class InvalidDataLineException extends Exception {
 	/** Comment for an invalid format number in a line */
 	public static final String INVALID_FORMAT_NUMBER 		= "The error may occured because of an invalid format number.";
 	
+	/** Comment when a data has been skipped */
+	public static final String SKIP_PROCESS = "The data has been skipped.";
+	/** Comment when a stop position has been modified to fit the chromosome length */
+	public static final String SHRINK_STOP_PROCESS = "The stop position has been shrinked to fit the chromosome length.";
+	
 	private final 	String 	description;	// Description of the error
+	private final 	String 	process;	// Description of the error
 	private 		File 	file;			// File where the error happened
 	private			String	line;			// Original line where the error happened
 	private 		int 	lineNumber;		// Line of the file where the error happened
@@ -54,9 +60,11 @@ public final class InvalidDataLineException extends Exception {
 	 * Creates an instance of {@link InvalidDataLineException}
 	 * @param description description of the error
 	 */
+	//public InvalidDataLineException(String description, String process) {
 	public InvalidDataLineException(String description) {
 		super();
 		this.description = description;
+		this.process = SKIP_PROCESS;
 	}
 
 	
@@ -66,6 +74,7 @@ public final class InvalidDataLineException extends Exception {
 		String defaultIndentPattern = "Description: ";
 		
 		message += "Error in the file " + file.getPath() + " at the line " + lineNumber + "\n";
+		message += "Treatment: " + process + "\n";
 		message += "Description: ";
 		String[] array = description.split("\n");
 		for (int i = 0; i < array.length; i++) {

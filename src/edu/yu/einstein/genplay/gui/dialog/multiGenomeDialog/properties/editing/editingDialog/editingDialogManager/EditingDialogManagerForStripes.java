@@ -25,6 +25,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -131,7 +133,27 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 
 		List<StripesData> result = new ArrayList<StripesData>();
 
-		for (String genomeName: genomeNames) {
+		if (currentData != null) {
+			currentData.setGenome(genomeNames.get(0));
+			currentData.setAlleleType(alleleType);
+			currentData.setVariationTypeList(variantList);
+			currentData.setColorList(colorList);
+			currentData.setTrackList(trackList);
+			StripesData data = currentData;
+			result.add(data);
+			if (genomeNames.size() > 1) {
+				String message = "You are editing a stripe and more than one genome has been selected.\n";
+				message += "Only the first genome will be taken into account:\n";
+				message += genomeNames.get(0);
+				JOptionPane.showMessageDialog(null, message, "Stripe editing message", JOptionPane.INFORMATION_MESSAGE);
+			}
+		} else {
+			for (String genomeName: genomeNames) {
+				result.add(new StripesData(genomeName, alleleType, variantList, colorList, trackList));
+			}
+		}
+		
+		/*for (String genomeName: genomeNames) {
 			StripesData data;
 			if (currentData != null) {
 				currentData.setGenome(genomeName);
@@ -144,7 +166,7 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 				data = new StripesData(genomeName, alleleType, variantList, colorList, trackList);
 			}
 			result.add(data);		
-		}
+		}*/
 
 		return result;
 	}

@@ -61,9 +61,10 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 	 */
 	private static final long serialVersionUID = 9060290582452147288L;
 
-	private CustomStringComboBox 	groupBox;	// the box for Group column
-	private CustomStringComboBox 	genomeBox;	// the box for Genome column
-	private CustomFileComboBox 		fileBox;	// the box for VCF file column
+	private CustomStringComboBox 	groupBox;		// the box for Group column
+	private CustomStringComboBox 	genomeBox;		// the box for Genome column
+	private CustomFileComboBox 		fileBox;		// the box for VCF file column
+	private List<JComboBox>	rawComboList;
 
 	private int lastRow = 0;		// saves the row index of the last event on getCellEditor
 	private int lastCol = 0;		// saves the column index of the last event on getCellEditor
@@ -81,6 +82,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		super(model);
 		temporaryFileAndGenomeNameMap = new HashMap<String, List<String>>();
 		vcfFileList = new ArrayList<VCFFile>();
+		rawComboList = new ArrayList<JComboBox>();
 		initializesBoxes();
 	}
 
@@ -120,19 +122,17 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		switch (column) {
 		case VCFData.RAW_INDEX:
 			try {
-				File file = (File) getValueAt(row, VCFData.FILE_INDEX);
-				//VCFFile vcfFile = new VCFFile(file);
-				VCFFile vcfFile = getVCFFile(file);
-				List<String> rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
-				JComboBox combo = new RawNameComboBox(rawGenomeNames.toArray());
-				combo.addActionListener(this);
-				/*JComboBox combo = new JComboBox(rawGenomeNames.toArray());
-				combo.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						updateNickNameBox();
-					}
-				});*/
+				JComboBox combo;
+				if (lastRow < rawComboList.size()) {
+					combo = rawComboList.get(lastRow);
+				} else {
+					File file = (File) getValueAt(row, VCFData.FILE_INDEX);
+					VCFFile vcfFile = getVCFFile(file);
+					List<String> rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
+					combo = new RawNameComboBox(rawGenomeNames.toArray());
+					combo.addActionListener(this);
+					rawComboList.add(combo);
+				}
 				return new DefaultCellEditor(combo);
 			} catch (Exception e) {
 				System.out.println("not a valid file : " + getValueAt(row, VCFData.FILE_INDEX));
@@ -241,12 +241,12 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 			} else {
 				File file = new File(value.toString());
 				VCFFile vcfFile = getVCFFile(file);
-				//VCFFile vcfFile = new VCFFile(file);
 				rawGenomeNames = vcfFile.getHeader().getRawGenomesNames();
 				temporaryFileAndGenomeNameMap.put(filePath, rawGenomeNames);
 			}
 			if (rawGenomeNames != null) {
 				setValueAt(rawGenomeNames.get(0), lastRow, VCFData.RAW_INDEX);
+				updateRawName(lastRow);
 			}
 		}
 	}
@@ -272,14 +272,22 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		if (e.getSource() instanceof RawNameComboBox) {
 			RawNameComboBox box = (RawNameComboBox) e.getSource();
 			if (box.isClicked()) {
-				String rawName = (String) getValueAt(lastRow, VCFData.RAW_INDEX);;
-				String selectedNickname = (String) getValueAt(lastRow, VCFData.NICKNAME_INDEX);
-				if (rawName != null && !rawName.isEmpty() && selectedNickname.equals(CustomComboBox.ADD_TEXT)) {
-					genomeBox.addElement(rawName);
-					genomeBox.resetCombo();
-					((VCFLoaderModel) getModel()).setValueAt(rawName, lastRow, VCFData.NICKNAME_INDEX);
-				}
+				updateRawName(lastRow);
 			}
+		}
+	}
+
+
+	/**
+	 * Updates the nickname box in a row according to the selected raw name of the same row
+	 * @param row	a row
+	 */
+	private void updateRawName (int row) {
+		String rawName = (String) getValueAt(row, VCFData.RAW_INDEX);;
+		if (rawName != null && !rawName.isEmpty()) {
+			genomeBox.addElement(rawName);
+			genomeBox.resetCombo();
+			((VCFLoaderModel) getModel()).setValueAt(rawName, row, VCFData.NICKNAME_INDEX);
 		}
 	}
 
