@@ -21,15 +21,14 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.EventListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -37,76 +36,117 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingDialogManager.EditingDialogManagerInterface;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  * @param <K>
  */
-public abstract class ContentPanel<K> extends JPanel implements ActionListener {
+public class TableEditingPanel<K> extends JPanel implements ActionListener, MouseListener {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 159376731917929812L;
 
 	// Insets
-	protected Insets firstInset = new Insets(10, 15, 0, 0);
-	protected Insets titleInset = new Insets(15, 5, 5, 0);
-	protected Insets panelInset = new Insets(0, 5, 0, 0);
+	protected Insets titleInset = new Insets(10, 15, 0, 0);
+	protected Insets tableTitleInset = new Insets(15, 5, 5, 0);
+	protected Insets contentInset = new Insets(0, 5, 0, 0);
 
 	protected GridBagConstraints gbc;				// Layout constraints
 
-	private 	JPanel 				tableHeader;	// the header panel of the table
+	private 	TableHeaderPanel 	tableHeader;	// the header panel of the table
 	private 	JPanel 				tablePanel;		// the panel that contains the table
 	private		JPanel 				buttonPanel;	// the button panel to handle the table
-	private 	ContentTable<K> 	table;			// the table that summarize all stripes settings
+	private		JLabel				tableLabel;
+	private 	EditingTable<K> 	table;			// the table that summarize all stripes settings
+	private 	EditingDialogManagerInterface<K> editingDialogManager;
+	
+	private		JButton				jbAddRows;		// button to add row(s)
 	private		JButton				jbDeleteRows;	// button to delete row(s)
 	private		JButton				jbMoveRowsUp;	// button to move row(s) to the top of the table
 	private		JButton				jbMoveRowsDown;	// button to move row(s) to the bottom of the table
 
 
 	/**
-	 * Constructor of {@link ContentPanel}
+	 * Constructor of {@link TableEditingPanel}
+	 * @param title the title of the panel
+	 * @param table the table to use
+	 * @param editingDialogManager editing dialog manager
 	 */
-	protected ContentPanel () {
+	public TableEditingPanel (String title, EditingTable<K> table, EditingDialogManagerInterface<K> editingDialogManager) {
+		// Sets class parameters
+		this.table = table;
+		this.editingDialogManager = editingDialogManager;
+
+		// Adds listeners
+		this.table.addMouseListener(this);
+		this.addMouseListener(this);
+		
+		// Create header panel
+		String[] columnNames = ((EditingTableModel<K>)table.getModel()).getColumnNames();
+		tableHeader = new TableHeaderPanel(columnNames);
+		
+		// Create label for empty table
+		tableLabel = new JLabel("No information available");
+		
+		// Create the table panel
+		tablePanel = new JPanel();
+		((FlowLayout)(tablePanel.getLayout())).setHgap(0);
+		((FlowLayout)(tablePanel.getLayout())).setVgap(0);
+		tablePanel.add(tableLabel);
+		tablePanel.add(this.table);
+		
+		// Sets the table components
+		tableLabel.setVisible(true);
+		this.table.setVisible(false);
+		
+		//initializeTable();
+		refreshPanel();
+		initializeButtonPanel();
+
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.gridx = 0;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
+
+		// Panel title
+		gbc.gridy = 0;
+		gbc.insets = titleInset;
+		add(Utils.getTitleLabel(title), gbc);
+
+		// Table title
+		gbc.gridy++;
+		gbc.insets = tableTitleInset;
+		add(Utils.getTitleLabel("Table"), gbc);
+
+		// Table header panel
+		gbc.gridy++;
+		gbc.insets = contentInset;
+		add(tableHeader, gbc);
+
+		// Table panel
+		gbc.gridy++;
+		add(tablePanel, gbc);
+
+		// Button panel
+		gbc.gridy++;
+		gbc.weighty = 1;
+		add(buttonPanel, gbc);
 	}
 
 
 	/**
-	 * Creates the table panel and its header
-	 * @param table 		the table to add
-	 * @param columnNames 	column names of the table
-	 * @return				the panel containing the table
+	 * Creates and initializes the button panel
 	 */
-	protected JPanel getTablePanel (ContentTable<K> table, String[] columnNames) {
-		this.table = table;
-
-		// Creates the panel
-		JPanel panel = new JPanel();
-		BorderLayout layout = new BorderLayout(0, 0);
-		panel.setLayout(layout);
-
-		// Create the table
-		table.updateColumnSize();
-
-		// Create the table panel
-		tablePanel = new JPanel();
-		((FlowLayout)(tablePanel.getLayout())).setHgap(0);
-		((FlowLayout)(tablePanel.getLayout())).setVgap(0);
-
-		// Get column header
-		tableHeader = new JPanel();
-		((FlowLayout)(tableHeader.getLayout())).setHgap(0);
-		((FlowLayout)(tableHeader.getLayout())).setVgap(0);
-		tableHeader.add(Utils.getTableHeaderPanel(columnNames, table.getColumnSize()));
-
+	private void initializeButtonPanel () {
 		// Create buttons
+		jbAddRows = new JButton("Add");
+		jbAddRows.addActionListener(this);
 		jbDeleteRows = new JButton("Delete");
 		jbDeleteRows.addActionListener(this);
 		jbMoveRowsUp = new JButton("Move up");
@@ -117,29 +157,13 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 		// Create the button panel
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+		buttonPanel.add(jbAddRows);
 		buttonPanel.add(jbDeleteRows);
 		buttonPanel.add(jbMoveRowsUp);
 		buttonPanel.add(jbMoveRowsDown);
 
-		// Add the table if data exists
-		if (table.getData().size() > 0) {
-			tablePanel.add(table);
-		} else {
-			tableHeader.setVisible(false);
-			buttonPanel.setVisible(false);
-			tablePanel.add(new JLabel("No information available"));
-		}
-
-		// Add components to the main panel
-		panel.add(tableHeader, BorderLayout.NORTH);
-		panel.add(tablePanel, BorderLayout.CENTER);
-		panel.add(buttonPanel, BorderLayout.SOUTH);
-
 		// Update enable state of all buttons
 		updateEnableButtons();
-
-		// Return the panel
-		return panel;
 	}
 
 
@@ -147,27 +171,10 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	 * Set a list of data to the table
 	 * @param data list of data
 	 */
-	protected void setData (List<K> data) {
+	public void setData (List<K> data) {
 		// Set the data to the table
 		table.setData(data);
-
-		// Reset the table panel to zero
-		tablePanel.removeAll();
-
-		// Set layout gaps
-		((FlowLayout)(tablePanel.getLayout())).setHgap(0);
-		((FlowLayout)(tablePanel.getLayout())).setVgap(0);
-
-		// Add the table to the panel
-		tablePanel.add(table);
-
-		// Table is visible so other panel must be visible too
-		tableHeader.setVisible(true);
-		buttonPanel.setVisible(true);
-
-		// Graphical validation
-		tablePanel.repaint();
-		validate();
+		refreshPanel();
 	}
 
 
@@ -176,12 +183,8 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	 * @param data data to add
 	 */
 	public void addRow (K data) {
-		if (table.getData().size() == 0) {
-			refreshTable(false);
-		}
 		table.addRow(data);
-		updateTableSize();
-		updateEnableButtons();
+		refreshPanel();
 	}
 
 
@@ -191,105 +194,37 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	 */
 	public void removeRows (int[] rows) {
 		table.removeRows(rows);
+		refreshPanel();
+	}
+
+
+	/**
+	 * Refreshes the whole panel
+	 */
+	public void refreshPanel () {
 		if (table.getData().size() == 0) {
-			refreshTable(true);
-		}
-		updateTableSize();
-	}
-
-
-	/**
-	 * Updates the size of the table and its header according to longest elements.
-	 */
-	public void updateTableSize () {
-		// Update the column size of the table 
-		table.updateColumnSize();
-
-		// Reset the table header panel to zero
-		tableHeader.removeAll();
-
-		// Set layout gaps
-		((FlowLayout)(tableHeader.getLayout())).setHgap(0);
-		((FlowLayout)(tableHeader.getLayout())).setVgap(0);
-
-		// Gets the header panel
-		@SuppressWarnings("unchecked")
-		String[] columnNames = ((ContentTableModel<K>)table.getModel()).getColumnNames();
-		tableHeader.add(Utils.getTableHeaderPanel(columnNames, table.getColumnSize()));
-
-		// Graphical validation
-		tableHeader.repaint();
-		validate();
-	}
-
-
-	/**
-	 * @return the table
-	 */
-	public ContentTable<K> getTable() {
-		return table;
-	}
-
-
-	/**
-	 * Add an action listener to the 'Add' and 'Apply' buttons
-	 * @param el the action listener
-	 */
-	public void addListener (EventListener el) {
-		table.addMouseListener((MouseListener) el);
-		this.addMouseListener((MouseListener) el);
-		jbDeleteRows.addActionListener((ActionListener) el);
-	}
-
-
-	/**
-	 * Refresh the panel:
-	 * - set to an "unselected" state the editing panel (empty)
-	 * - refresh the content pane (table, headers, buttons)
-	 */
-	public void refresh () {
-		if (table.getData().size() == 0) {
-			refreshTable(true);
-		} else {
-			refreshTable(false);
-		}
-	}
-
-
-	/**
-	 * Refreshes the table panel adding the table or a label wether the table is empty
-	 * If the table is signaled as empty, a label is shown, if not, the table is shown.
-	 * @param isEmpty signal for showing the table
-	 */
-	private void refreshTable (boolean isEmpty) {
-
-		// Reset the table panel to zero
-		tablePanel.removeAll();
-
-		// Set layout gaps
-		((FlowLayout)(tablePanel.getLayout())).setHgap(0);
-		((FlowLayout)(tablePanel.getLayout())).setVgap(0);
-
-		if (isEmpty) {
+			// The header must not be visible
+			tableHeader.setVisible(false);
+			table.setVisible(false);
+			
 			// No information label
-			tablePanel.add(new JLabel("No information available"));
+			tableLabel.setVisible(true);
 		} else {
-			// Add the table to the panel
-			tablePanel.add(table);
+			// Update the column size of the table
+			table.updateColumnSize();
+			tableHeader.updateHeaderWidths(table.getColumnSize());
+			
+			// No information label
+			tableLabel.setVisible(false);
+			
+			// The header must not be visible
+			tableHeader.setVisible(true);
+			table.setVisible(true);
 		}
-
-		// Table is not visible so other panel must not be visible
-		tableHeader.setVisible(!isEmpty);
-		buttonPanel.setVisible(!isEmpty);
-
-		// Graphical validation
-		tablePanel.repaint();
-		
-		updateTableSize();
-		
-		validate();
+		repaint();
 	}
-
+	
+	
 
 	/**
 	 * This methods enables or disables buttons whether a row is selected
@@ -328,18 +263,17 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 	}
 
 
-	/**
-	 * @return the jbDeleteRows
-	 */
-	public JButton getDeleteRowsButton() {
-		return jbDeleteRows;
-	}
-
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JButton button = (JButton)e.getSource();
-		if (button.equals(jbDeleteRows)) {
+		if (button.equals(jbAddRows)) {
+			List<K> tableData = editingDialogManager.showDialog();
+			if (tableData != null) {
+				for (K k: tableData) {
+					addRow(k);
+				}
+			}
+		} else if (button.equals(jbDeleteRows)) {
 			removeRows(table.getSelectedRows());
 		} else if (button.equals(jbMoveRowsUp)) {
 			// Move row(s) to the top of the table
@@ -363,9 +297,55 @@ public abstract class ContentPanel<K> extends JPanel implements ActionListener {
 
 
 	/**
-	 * Reset the panel to an "empty" state
+	 * @return the table
 	 */
-	//protected void clearSelection () {
-	//}
+	public EditingTable<K> getTable() {
+		return table;
+	}
+
+
+	/**
+	 * @return the list of data
+	 */
+	public List<K> getData () {
+		return table.getData();
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int column = table.getColumnModel().getColumnIndexAtX(e.getX());	// get the column that has been clicked
+		int row = e.getY()/table.getRowHeight();							// get the row that has been clicked
+
+		boolean isIn = false;
+		if (row < table.getRowCount() &&									// if row and column are valid
+				row >= 0 &&
+				column < table.getColumnCount() &&
+				column >= 0) {
+			isIn = true;
+		}
+
+		if (!isIn) {														// if the click is not in the table
+			table.clearSelection();											// unselect all rows and columns
+		} else {
+			K k = table.getModel().getCurrentData();
+			if (k != null) {
+				editingDialogManager.setData(k);
+				//List<K> tableData = editingDialogManager.showDialog();
+				editingDialogManager.showDialog();
+				table.getModel().resetCurrentData();
+				refreshPanel();
+			}
+		}
+		updateEnableButtons();							// update the state of the panel button used for table handling
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+	@Override
+	public void mouseExited(MouseEvent e) {}
+	@Override
+	public void mousePressed(MouseEvent e) {}
+	@Override
+	public void mouseReleased(MouseEvent e) {}
 
 }

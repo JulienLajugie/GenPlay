@@ -25,9 +25,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FilterUtility;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.StringUtility;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
@@ -40,6 +45,8 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 	private static final long serialVersionUID = -2473654708635102953L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
+	private FilterUtility	utility;
+	private VCFHeaderType	header;
 	private String			value;		// category of the filter (ALT QUAL FILTER INFO FORMAT)
 	private boolean 		required;	// true if the value is required to pass the the filter
 
@@ -51,6 +58,7 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(header);
 		out.writeObject(value);
 		out.writeBoolean(required);
 	}
@@ -64,19 +72,31 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		header = (VCFHeaderType) in.readObject();
 		value = (String) in.readObject();
 		required = in.readBoolean();
+		utility = new StringUtility();
+	}
+	
+	
+	/**
+	 * Constructor of {@link FilterFilter}
+	 */
+	public FilterFilter () {
+		utility = new StringUtility();
 	}
 
 
 	@Override
-	public VCFHeaderType getID() {
-		return null;
+	public VCFHeaderType getHeaderType() {
+		return header;
 	}
 
 
 	@Override
-	public void setID(VCFHeaderType id) {}
+	public void setHeaderType(VCFHeaderType id) {
+		this.header = id;
+	}
 
 
 	@Override
@@ -105,48 +125,13 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 
 	@Override
 	public String toStringForDisplay() {
-		String text = "must ";
-		if (required) {
-			text += "contains ";
-		} else {
-			text += "not contains ";
-		}
-		text += value;
-		return text;
+		return utility.toStringForDisplay(this);
 	}
 
 
 	@Override
 	public String getErrors() {
-		String error = "";
-
-		if (value == null) {
-			error += "Value missing;";
-		}
-
-		try {
-			if (required) {
-				// instantiation control of the boolean
-			}
-		} catch (Exception e) {
-			error += "Boolean missing;";
-		}
-
-		if (error.equals("")) {
-			return null;
-		} else {
-			return error;
-		}
-	}
-
-
-	@Override
-	public void setCategory(VCFColumnName category) {}
-
-
-	@Override
-	public VCFColumnName getCategory() {
-		return null;
+		return utility.getErrors(this);
 	}
 
 
@@ -157,26 +142,14 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 
 
 	@Override
-	public boolean isValid(Object object) {
-		boolean found = FilterTester.isStringFound(object, value);
-
-		return FilterTester.passTest(required, found);
+	public boolean isValid(Map<String, Object> object) {
+		return utility.isValid(this, object);
 	}
 
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if((obj == null) || (obj.getClass() != this.getClass())) {
-			return false;
-		}
-
-		// object must be Test at this point
-		FilterFilter test = (FilterFilter)obj;
-		return value.equals(test.getValue()) &&
-		required == test.isRequired();
+		return utility.equals(this, obj);
 	}
 
 
@@ -184,4 +157,35 @@ public class FilterFilter implements StringIDFilterInterface, Serializable {
 	public VCFColumnName getColumnName() {
 		return VCFColumnName.FILTER;
 	}
+	
+	
+	@Override
+	public void setGenomeNames(List<String> genomeNames) {}
+
+
+	@Override
+	public List<String> getGenomeNames() {
+		return null;
+	}
+
+
+	@Override
+	public void setOperator(FormatFilterOperatorType operator) {}
+
+
+	@Override
+	public FormatFilterOperatorType getOperator() {
+		return null;
+	}
+	
+	
+	@Override
+	public IDFilterInterface getDuplicate() {
+		StringIDFilterInterface duplicate = new FilterFilter();
+		duplicate.setHeaderType(getHeaderType());
+		duplicate.setValue(getValue());
+		duplicate.setRequired(isRequired());
+		return duplicate;
+	}
+
 }

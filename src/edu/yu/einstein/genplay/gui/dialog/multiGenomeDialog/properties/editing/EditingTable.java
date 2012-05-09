@@ -30,88 +30,121 @@ import javax.swing.JTable;
  * @version 0.1
  * @param <K> class of the data that are used in the table
  */
-public abstract class ContentTable<K> extends JTable {
+public abstract class EditingTable<K> extends JTable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -3342831482530035559L;
-	
-	
+
+	EditingTableModel<K> model;
+
+
+	/**
+	 * @param model the model to set
+	 */
+	public void setModel (EditingTableModel<K> model) {
+		this.model = model;
+		super.setModel(model);
+		this.getColumnModel().getColumn(model.buttonColumnIndex).setCellRenderer(new TableButtonRenderer());
+		addMouseListener(new TableButtonListener(this));
+	}
+
+
+	@Override
+	public EditingTableModel<K> getModel () {
+		return model;
+	}
+
+
 	/**
 	 * @return the data
 	 */
-	@SuppressWarnings("unchecked")
 	public List<K> getData() {
-		return ((ContentTableModel<K>)getModel()).getData();
+		return model.getData();
 	}
-	
+
 
 	/**
 	 * Add a row in the table
 	 * @param data data to add
 	 */
-	@SuppressWarnings("unchecked")
 	protected void addRow (K data) {
-		((ContentTableModel<K>)getModel()).addRow(data);
+		model.addRow(data);
 	}
-	
-	
+
+
 	/**
 	 * Delete rows
 	 * @param rows row indexes to delete
 	 */
-	@SuppressWarnings("unchecked")
 	protected void removeRows (int[] rows) {
 		rows = edu.yu.einstein.genplay.util.Utils.reverse(rows);
 		for (int row: rows) {
-			((ContentTableModel<K>)getModel()).deleteRow(row);
+			model.deleteRow(row);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Move the selected rows to the top of the table
 	 */
-	@SuppressWarnings("unchecked")
 	protected void moveRowsUp () {
-		((ContentTableModel<K>)getModel()).move(getSelectedRows(), true);
+		int[] movedRows = model.move(getSelectedRows(), true);
+		setSelectedRows(movedRows);
 	}
-	
-	
+
+
 	/**
 	 * Move the selected rows to the bottom of the table
 	 */
-	@SuppressWarnings("unchecked")
 	protected void moveRowsDown () {
-		((ContentTableModel<K>)getModel()).move(getSelectedRows(), false);
+		int[] movedRows = model.move(getSelectedRows(), false);
+		setSelectedRows(movedRows);
 	}
 
-	
+
 	/**
 	 * @return an array containing size of each column
 	 */
 	protected int[] getColumnSize () {
-		@SuppressWarnings("unchecked")
-		int columnNumber = ((ContentTableModel<K>)getModel()).getColumnCount();
+		int columnNumber = getModel().getColumnCount();
 		int[] widths = new int[columnNumber];
-
 		for (int i = 0; i < columnNumber; i++) {
 			widths[i] = getColumnModel().getColumn(i).getPreferredWidth();
 		}
 		return widths;
 	}
-	
-	
+
+
+	/**
+	 * Select the given rows
+	 * @param rows rows to select
+	 */
+	private void setSelectedRows (int[] rows) {
+		boolean first = true;
+		for (int row: rows) {
+			if (row < model.getRowCount()) {
+				if (first) {
+					first = false;
+					setRowSelectionInterval(row, row);
+				} else {
+					addRowSelectionInterval(row, row);
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * @param data the data to set
 	 */
 	protected abstract void setData(List<K> data);
-	
-		
+
+
 	/**
 	 * This method scans all cells of each column to find the maximum width for each of them.
 	 * Then, it sets the column size according to the width.
 	 */
 	protected abstract void updateColumnSize ();
-	
-	
+
+
 }

@@ -135,28 +135,28 @@ public class StripesData implements Serializable {
 	/**
 	 * @param genome the genome to set
 	 */
-	protected void setGenome(String genome) {
+	public void setGenome(String genome) {
 		this.genome = genome;
 	}
 
 	/**
 	 * @param alleleType the alleleType to set
 	 */
-	protected void setAlleleType(AlleleType alleleType) {
+	public void setAlleleType(AlleleType alleleType) {
 		this.alleleType = alleleType;
 	}
 
 	/**
 	 * @param variantList the variantList to set
 	 */
-	protected void setVariationTypeList(List<VariantType> variantList) {
+	public void setVariationTypeList(List<VariantType> variantList) {
 		this.variationTypeList = variantList;
 	}
 
 	/**
 	 * @param colorList the colorList to set
 	 */
-	protected void setColorList(List<Color> colorList) {
+	public void setColorList(List<Color> colorList) {
 		this.colorList = colorList;
 	}
 
@@ -397,6 +397,21 @@ public class StripesData implements Serializable {
 					}
 				}
 				return true;
+			}
+		}
+	}
+	
+	
+	/**
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
+	 */
+	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+		for (int i = 0; i < trackList.length; i++) {
+			if (trackList[i].equals(oldTrack)) {
+				trackList[i] = newTrack;
 			}
 		}
 	}

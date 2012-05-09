@@ -19,16 +19,16 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -42,7 +42,7 @@ public class FiltersData implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 2767629722281248634L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
 	/** Index used for vcf file column */
 	public static final int VCF_FILE_INDEX 	= 0;
 	/** Index used for the vcf header id column */
@@ -52,13 +52,10 @@ public class FiltersData implements Serializable {
 	/** Index used for track column */
 	public static final int TRACK_INDEX 	= 3;
 
-
-	private VCFHeaderType 		id;				// vcf header id
 	private VCFFilter			filter;
-	private VCFColumnName		nonIDName;		// 
 	private Track<?>[] 			trackList;		// list of track
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -66,9 +63,7 @@ public class FiltersData implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(id);
 		out.writeObject(filter);
-		out.writeObject(nonIDName);
 		out.writeObject(trackList);
 	}
 
@@ -81,52 +76,28 @@ public class FiltersData implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		id = (VCFHeaderType) in.readObject();
 		filter = (VCFFilter) in.readObject();
-		nonIDName = (VCFColumnName) in.readObject();
 		trackList = (Track[]) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link FiltersData}
 	 */
 	protected FiltersData() {
-		this.id = null;
 		this.filter = null;
-		this.nonIDName = null;
 		this.trackList = null;
 	}
 
 
 	/**
 	 * Constructor of {@link FiltersData}
-	 * @param genome		name of the genome
-	 * @param variantList	list of variation
-	 * @param colorList		list of color
+	 * @param reader 		the VCF file
+	 * @param filter 		the filter
 	 * @param trackList		list of track
 	 */
-	protected FiltersData(VCFFile reader, VCFHeaderType id,
-			IDFilterInterface filter, Track<?>[] trackList) {
-		this.id = id;
+	public FiltersData(VCFFile reader, IDFilterInterface filter, Track<?>[] trackList) {
 		this.filter = new VCFFilter(filter, reader);
-		this.nonIDName = null;
-		this.trackList = trackList;
-	}
-
-
-	/**
-	 * Constructor of {@link FiltersData}
-	 * @param genome		name of the genome
-	 * @param variantList	list of variation
-	 * @param colorList		list of color
-	 * @param trackList		list of track
-	 */
-	protected FiltersData(VCFFile reader, VCFColumnName nonIDName,
-			IDFilterInterface filter, Track<?>[] trackList) {
-		this.id = null;
-		this.filter = new VCFFilter(filter, reader);
-		this.nonIDName = nonIDName;
 		this.trackList = trackList;
 	}
 
@@ -134,33 +105,17 @@ public class FiltersData implements Serializable {
 	//////////////////// Setters
 
 	/**
-	 * @param id the id to set
-	 */
-	protected void setNonIdName (VCFColumnName nonIDName) {
-		this.nonIDName = nonIDName;
-	}
-
-
-	/**
-	 * @param id the id to set
-	 */
-	protected void setId(VCFHeaderType id) {
-		this.id = id;
-	}
-
-	
-	/**
 	 * @param filter the VCF filter to set
 	 */
-	protected void setVCFFilter (VCFFilter filter) {
+	public void setVCFFilter (VCFFilter filter) {
 		this.filter = filter;
 	}
-	
+
 
 	/**
 	 * @param trackList the trackList to set
 	 */
-	protected void setTrackList(Track<?>[] trackList) {
+	public void setTrackList(Track<?>[] trackList) {
 		this.trackList = trackList;
 	}
 
@@ -173,27 +128,14 @@ public class FiltersData implements Serializable {
 	public VCFFilter getVCFFilter () {
 		return filter;
 	}
-	
+
 	/**
 	 * @return the reader
 	 */
 	public VCFFile getReader() {
-		return this.filter.getReader();
+		return this.filter.getVCFFile();
 	}
 
-	/**
-	 * @return the id
-	 */
-	public VCFColumnName getNonIdName() {
-		return nonIDName;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public VCFHeaderType getId() {
-		return id;
-	}
 
 	/**
 	 * @return the filter
@@ -223,11 +165,12 @@ public class FiltersData implements Serializable {
 	 * @return the variantList
 	 */
 	public String getIDForDisplay() {
-		if (id != null) {
-			return id.getId();
-		} else {
-			return nonIDName.toString();
+		VCFHeaderType header = this.filter.getFilter().getHeaderType();
+		IDFilterInterface filter = this.filter.getFilter();
+		if (filter.getHeaderType() instanceof VCFHeaderBasicType) {
+			return filter.getColumnName().toString();
 		}
+		return header.getId();
 	}
 
 	/**
@@ -251,4 +194,29 @@ public class FiltersData implements Serializable {
 		return text;
 	}
 
+
+	/**
+	 * @return a duplicate of the current object
+	 */
+	public FiltersData getDuplicate () {
+		FiltersData duplicate = new FiltersData();
+		duplicate.setVCFFilter(getVCFFilter().getDuplicate());
+		duplicate.setTrackList(getTrackList());
+		return duplicate;
+	}
+
+	
+	/**
+	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
+	 * It will replace the references to the old track by the one of the new track.
+	 * @param oldTrack the old track
+	 * @param newTrack the new track
+	 */
+	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+		for (int i = 0; i < trackList.length; i++) {
+			if (trackList[i].equals(oldTrack)) {
+				trackList[i] = newTrack;
+			}
+		}
+	}
 }

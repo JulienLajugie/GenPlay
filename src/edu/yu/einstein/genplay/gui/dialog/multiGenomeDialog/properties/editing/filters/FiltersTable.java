@@ -19,20 +19,20 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters;
 
 import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTable;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class FiltersTable extends ContentTable<FiltersData> {
+public class FiltersTable extends EditingTable<FiltersData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -3302281291755118456L;
@@ -41,7 +41,7 @@ public class FiltersTable extends ContentTable<FiltersData> {
 	/**
 	 * Constructor of {@link FiltersTable}
 	 */
-	protected FiltersTable () {
+	public FiltersTable () {
 		FiltersTableModel model = new FiltersTableModel();
 		setModel(model);
 	}
@@ -53,11 +53,6 @@ public class FiltersTable extends ContentTable<FiltersData> {
 		for (int i = 0; i < data.size(); i++) {
 			FiltersData rowData = new FiltersData();
 			rowData.setVCFFilter(data.get(i).getVCFFilter());
-			if (data.get(i).getId() != null) {
-				rowData.setId(data.get(i).getId());
-			} else {
-				rowData.setNonIdName(data.get(i).getNonIdName());
-			}
 			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
 		}

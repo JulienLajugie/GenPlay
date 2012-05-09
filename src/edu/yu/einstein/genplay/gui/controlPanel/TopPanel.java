@@ -35,6 +35,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -49,6 +50,7 @@ import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomePrope
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * This panel gathers two elements:
@@ -64,7 +66,6 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	private static final long serialVersionUID = 2637751583693743095L;
 
 	private static final int HANDLE_WIDTH 			= 50;					// Width of the track handle
-	private static final int BUTTON_WIDTH 			= 25;					// Width of the button
 	private static final int TRACKS_SCROLL_WIDTH 	= 17;					// Width of the scroll bar
 	private final JScrollBar 		jsbPosition;		// scroll bar to modify the position
 	private final ProjectWindow		projectWindow;		// Instance of the Genome Window Manager
@@ -105,8 +106,6 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 			initializesMultiGenomeButton();
 
 			// add the button
-			int padding = (HANDLE_WIDTH - jbMultiGenome.getSize().width) / 2;
-			gbc.insets = new Insets(0, padding, 0, padding);
 			add(jbMultiGenome, gbc);
 
 			// update constraints for the scroll bar
@@ -134,10 +133,12 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		popupMenu = new MGButtonPopupMenu();
 
 		// sets some attributes
-		Dimension buttonDimension = new Dimension(BUTTON_WIDTH, TRACKS_SCROLL_WIDTH);
-		jbMultiGenome.setSize(buttonDimension);
-		jbMultiGenome.setPreferredSize(buttonDimension);
+		Dimension buttonDimension = new Dimension(HANDLE_WIDTH, TRACKS_SCROLL_WIDTH - 1);
+		jbMultiGenome.setBackground(Colors.WHITE);
 		jbMultiGenome.setMargin(new Insets(0, 0, 0, 0));
+		jbMultiGenome.setFocusPainted(false);
+		jbMultiGenome.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 0, Colors.LIGHT_GREY));	
+		jbMultiGenome.setPreferredSize(buttonDimension);
 		jbMultiGenome.setToolTipText("Show the Multi Genome Properties Dialog");
 
 		// defines the action listener
@@ -151,6 +152,15 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		
 		// defines the mouse listener
 		jbMultiGenome.addMouseListener(new MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				jbMultiGenome.setBackground(Colors.GREY);
+				super.mouseEntered(e);
+			}
+			public void mouseExited(MouseEvent e) {
+				jbMultiGenome.setBackground(Colors.WHITE);
+				
+				super.mouseExited(e);
+			}
 			public void mousePressed(MouseEvent e) {
 		        maybeShowPopup(e);
 		    }

@@ -25,14 +25,14 @@ import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTable;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesTable extends ContentTable<StripesData> {
+public class StripesTable extends EditingTable<StripesData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -3302281291755118456L;
@@ -41,7 +41,7 @@ public class StripesTable extends ContentTable<StripesData> {
 	/**
 	 * Constructor of {@link StripesTable}
 	 */
-	protected StripesTable () {
+	public StripesTable () {
 		StripesTableModel model = new StripesTableModel();
 		setModel(model);
 		getColumnModel().getColumn(StripesData.VARIANT_INDEX).setCellRenderer(new StripesTableRenderer());

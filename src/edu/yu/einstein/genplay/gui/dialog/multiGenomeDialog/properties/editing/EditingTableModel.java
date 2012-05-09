@@ -21,9 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing;
 
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -31,22 +35,34 @@ import javax.swing.table.AbstractTableModel;
  * @version 0.1
  * @param <K> class of the data that are used in the table
  */
-public abstract class ContentTableModel<K> extends AbstractTableModel {
+public abstract class EditingTableModel<K> extends AbstractTableModel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
 
-	protected final 	String[]	columnNames;	// the table column names
-	protected 			List<K>		data;			// list of data
+	protected final int buttonColumnIndex;
+	
+	protected final 	String[]		columnNames;	// the table column names
+	protected 			List<K>			data;			// list of data
+	protected			List<JButton>	buttons;		// list of buttons
+	private				K				currentData;
 
 
 	/**
-	 * Constructor of {@link ContentTableModel}
+	 * Constructor of {@link EditingTableModel}
 	 * @param columnNames name of the columns
 	 */
-	protected ContentTableModel (String[] columnNames) {
-		this.columnNames = columnNames;
+	protected EditingTableModel (String[] columnNames) {
+		this.columnNames = new String[columnNames.length + 1];
+		for (int i = 0; i < columnNames.length; i++) {
+			this.columnNames[i] = columnNames[i];
+		}
+		this.columnNames[columnNames.length] = "Edit";
+		
 		data = new ArrayList<K>();
+		buttons = new ArrayList<JButton>();
+		buttonColumnIndex = columnNames.length;
+		currentData = null;
 	}
 
 
@@ -61,6 +77,7 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 		return data.size();
 	}
 
+	
 	@Override
 	public boolean isCellEditable(int row, int col)	{
 		return false;
@@ -82,6 +99,14 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 		return data;
 	}
 	
+	
+	/**
+	 * @return the index of the edit column
+	 */
+	protected int getEditColumnIndex () {
+		return buttonColumnIndex;
+	}
+	
 
 	/**
 	 * Add a row
@@ -89,6 +114,7 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 	 */
 	protected void addRow (K row) {
 		data.add(row);
+		buttons.add(getNewButton());
 		fireTableRowsInserted(data.size() - 1, data.size() - 1);
 	}
 
@@ -99,6 +125,7 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 	 */
 	protected void deleteRow(int row) {
 		data.remove(row);
+		buttons.remove(row);
 		fireTableRowsDeleted(row, row);
 	}
 	
@@ -108,25 +135,31 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 	 * @param list	the list of row numbers to move
 	 * @param toUp	rows will be move up if true, down if false 
 	 */
-	protected void move (int[] list, boolean toUp) {
+	protected int[] move (int[] list, boolean toUp) {
+		int[] movedRows = new int[list.length];
+		int cpt = 0;
 		if (toUp) {
 			for (int i: list) {
-				moveStripeDataUp(i);
+				movedRows[cpt] = moveDataUp(i);
+				cpt++;
 			}
 		} else {
-			for (int i: list) {
-				moveStripeDataDown(i);
+			int[] reversedList = reverseIntArray(list);
+			for (int i: reversedList) {
+				movedRows[cpt] = moveDataDown(i);
+				cpt++;
 			}
 		}
 		fireTableDataChanged();
+		return movedRows;
 	}
 	
 	
 	/**
-	 * Move a stripe data one step lower in the list in order to show it one row closer to the top of the table.
+	 * Move a data one step lower in the list in order to show it one row closer to the top of the table.
 	 * @param index index of the row
 	 */
-	private void moveStripeDataUp (int index) {
+	private int moveDataUp (int index) {
 		if (index > 0) {
 			K dataToMove = data.get(index);
 			K dataToReplace = data.get(index - 1);
@@ -145,15 +178,17 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 				currentIndex++;
 			}
 			data = newDataList;
+			return (index - 1);
 		}
+		return index;
 	}
 	
 	
 	/**
-	 * Move a stripe data one step higher in the list in order to show it one row closer to the bottom of the table.
+	 * Move a data one step higher in the list in order to show it one row closer to the bottom of the table.
 	 * @param index index of the row
 	 */
-	private void moveStripeDataDown (int index) {
+	private int moveDataDown (int index) {
 		if (index < (data.size() - 1)) {
 			K dataToMove = data.get(index);
 			K dataToReplace = data.get(index + 1);
@@ -172,7 +207,24 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 				currentIndex++;
 			}
 			data = newDataList;
+			return (index + 1);
 		}
+		return index;
+	}
+	
+	
+	/**
+	 * Reverse an array: the last value becomes the firt one and so on.
+	 * @param array array to reverse
+	 * @return the reversed array
+	 */
+	private int[] reverseIntArray (int[] array) {
+		int[] newArray = new int[array.length];
+		for (int i = 0; i < newArray.length; i++) {
+			int index = array.length - 1 - i;
+			newArray[i] = array[index];
+		}
+		return newArray;
 	}
 	
 
@@ -189,4 +241,28 @@ public abstract class ContentTableModel<K> extends AbstractTableModel {
 	 */
 	protected abstract void setData(List<K> data);
 
+	
+	protected JButton getNewButton () {
+		JButton button = new JButton();
+		button.setMargin(new Insets(0, 0, 0, 0));
+		button.setText("e");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JButton button = (JButton) arg0.getSource();
+				currentData = data.get(buttons.indexOf(button));
+			}
+		});
+		return button;
+	}
+	
+	
+	protected K getCurrentData () {
+		return currentData;
+	}
+	
+	
+	protected void resetCurrentData () {
+		currentData = null;
+	}
 }

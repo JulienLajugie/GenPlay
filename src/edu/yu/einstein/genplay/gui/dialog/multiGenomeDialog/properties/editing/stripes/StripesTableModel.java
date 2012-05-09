@@ -21,17 +21,19 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentTableModel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTableModel;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesTableModel extends ContentTableModel<StripesData> {
+public class StripesTableModel extends EditingTableModel<StripesData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
@@ -47,6 +49,9 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 
 	@Override
 	public Object getValueAt(int row, int col) {
+		if (col == buttonColumnIndex) {
+			return buttons.get(row);
+		}
 		StripesData stripesData = data.get(row);
 		switch (col) {
 		case StripesData.GENOME_INDEX:
@@ -65,6 +70,9 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 
 	@Override
 	public Class<?> getColumnClass(int column) {
+		if (column == buttonColumnIndex) {
+			return JButton.class;
+		}
 		switch (column) {
 		case StripesData.GENOME_INDEX:
 			return String.class;
@@ -93,11 +101,14 @@ public class StripesTableModel extends ContentTableModel<StripesData> {
 	 */
 	protected void setData(List<StripesData> data) {
 		this.data = data;
+		buttons = new ArrayList<JButton>();
 		for (int row = 0; row <data.size(); row++) {
+			buttons.add(getNewButton());
 			fireTableCellUpdated(row, StripesData.GENOME_INDEX);
 			fireTableCellUpdated(row, StripesData.ALLELE_INDEX);
 			fireTableCellUpdated(row, StripesData.VARIANT_INDEX);
 			fireTableCellUpdated(row, StripesData.TRACK_INDEX);
+			fireTableCellUpdated(row, buttonColumnIndex);
 		}
 	}
 

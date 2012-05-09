@@ -91,6 +91,7 @@ public class VCFFile implements Serializable {
 		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
 		positionList = (IntArrayAsIntegerList) in.readObject();
 		indexVCFFile(); // recreate the tabix reader
+		reader.setColumnNames(header.getColumnNames());
 	}
 
 
@@ -121,6 +122,9 @@ public class VCFFile implements Serializable {
 	private void indexVCFFile () throws IOException {
 		if (!isVCFIndexed ()) {
 			file = ProjectFiles.getInstance().getValidFileOf(file);
+			if (reader == null) {
+				reader = new VCFReader();
+			}
 			reader.indexVCFFile(file);
 		}
 	}
@@ -131,7 +135,7 @@ public class VCFFile implements Serializable {
 	 * @return true if the VCF is indexed
 	 */
 	private boolean isVCFIndexed () {
-		if (reader.getVCFParser() != null) {
+		if (reader != null && reader.getVCFParser() != null) {
 			return true;
 		}
 		return false;

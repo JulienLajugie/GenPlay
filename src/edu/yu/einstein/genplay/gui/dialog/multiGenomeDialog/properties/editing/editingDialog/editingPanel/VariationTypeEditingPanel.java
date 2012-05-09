@@ -19,9 +19,10 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingPanel;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -42,9 +42,6 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingPanel;
-import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
@@ -52,13 +49,12 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
  * @author Nicolas Fourel
  * @version 0.1
  */
-class StripesEditingPanel extends EditingPanel<StripesData> {
+public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 
 	/** Generated serial version ID */
-	private static final long serialVersionUID = 1002708176297238005L;
-	
-	private final Color[]		defaultVariationColor = {Colors.GREEN, Colors.RED, Color.cyan};	// Array of default variation colors (Insertion, Deletion, SNPs)
-	private JComboBox 			jcbGenome;			// The combo box for the genome selection
+	private static final long serialVersionUID = -4060807866730514644L;
+
+	private Color[]				defaultVariationColor;	// Array of default variation colors (Insertion, Deletion, SNPs)
 	private JComboBox 			jcbAllele;			// The combo box for the allele selection
 	private List<VariantType> 	variationName;		// Variation names list
 	private List<JCheckBox> 	selectedVariation;	// Variation check box selection list
@@ -66,127 +62,54 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 
 
 	/**
-	 * Constructor of {@link StripesEditingPanel}
+	 * Constructor of {@link VariationTypeEditingPanel}
 	 */
-	protected StripesEditingPanel () {
-		super();
+	public VariationTypeEditingPanel() {
+		super("Stripe(s)");
+	}
 
-		// Panel title
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.insets = firstInset;
-		add(Utils.getTitleLabel("Editing"), gbc);
 
-		// Genome selection title
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = titleInset;
-		add(Utils.getTitleLabel("Genome"), gbc);
+	@Override
+	protected void initializeContentPanel() {
+		JLabel jlAllele = new JLabel("Allele");
+		JLabel jlVariation = new JLabel("Variations");
 
-		// Genome selection box
+		defaultVariationColor = new Color[3];
+		defaultVariationColor[0] = Colors.GREEN;
+		defaultVariationColor[1] = Colors.RED;
+		defaultVariationColor[2] = Colors.LIGHT_BLUE;
+
+		// Init the content panel
+		contentPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = panelInset;
-		add(getGenomeBox(), gbc);
-		
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+
 		// Allele selection title
-		gbc.gridx = 0;
 		gbc.gridy++;
-		gbc.insets = titleInset;
-		add(Utils.getTitleLabel("Allele"), gbc);
+		gbc.insets = new Insets(10, 10, 10, 0);
+		contentPanel.add(jlAllele, gbc);
 
 		// Allele selection box
-		gbc.gridx = 0;
 		gbc.gridy++;
-		gbc.insets = panelInset;
-		add(getAlleleBox(), gbc);
+		gbc.insets = new Insets(5, 20, 0, 0);
+		contentPanel.add(getAlleleBox(), gbc);
 
 		// Variation selection title
-		gbc.gridx = 0;
 		gbc.gridy++;
-		gbc.insets = titleInset;
-		add(Utils.getTitleLabel("Variations"), gbc);
+		gbc.insets = new Insets(20, 10, 10, 0);
+		contentPanel.add(jlVariation, gbc);
 
 		// Variation selection panel
-		gbc.gridx = 0;
 		gbc.gridy++;
-		gbc.insets = panelInset;
-		add(getVariationSelectionPanel(), gbc);
-
-		// Track selection title
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = titleInset;
-		add(Utils.getTitleLabel("Tracks"), gbc);
-
-		// Track selection panel
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = panelInset;
+		gbc.insets = new Insets(5, 20, 0, 0);
 		gbc.weighty = 1;
-		add(getTrackSelectionPanel(), gbc);
-
-		// Validation panel
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.insets = new Insets(0, 0, 0, 0);
-		gbc.weighty = 0;
-		add(getValidationPanel(), gbc);
+		contentPanel.add(getVariationSelectionPanel(), gbc);
 	}
 
-	
-	@Override
-	public void refresh () {
-		jcbGenome.setSelectedIndex(0);
-		jcbGenome.setToolTipText(jcbGenome.getSelectedItem().toString());
-		jcbAllele.setSelectedIndex(0);
-		jcbAllele.setToolTipText(jcbAllele.getSelectedItem().toString());
-		for (int i = 0; i < defaultVariationColor.length; i++) {
-			selectedVariation.get(i).setSelected(false);
-			variationColor.get(i).setBackground(defaultVariationColor[i]);
-		}
-		refreshVariationSelection();
-		selectedTracks.setModel(new DefaultListModel());
-		getApplyButton().setEnabled(false);
-	}
-	
-	
-	/**
-	 * Creates a combo box containing all genomes
-	 * @return the combo box
-	 */
-	private JComboBox getGenomeBox () {
-		// Get the genome array without the reference genome
-		Object[] allGenomes = ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray();
-		Object[] genomes = new Object[allGenomes.length - 1];
-		int index = 0;
-		for (Object o: allGenomes) {
-			if (!o.toString().equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
-				genomes[index] = o;
-				index++;
-			}
-		}
-		
-		// Creates the box
-		jcbGenome = new JComboBox(genomes);
-		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(180, height);
-		jcbGenome.setPreferredSize(dimension);
-		jcbGenome.setMinimumSize(dimension);
-		jcbGenome.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JComboBox box = (JComboBox)e.getSource();
-				String element = box.getSelectedItem().toString();
-				box.setToolTipText(element);
-				refreshVariationSelection();
-			}
-		});
-		jcbGenome.setToolTipText("Select a genome to display its variation(s).");
-		return jcbGenome;
-	}
-	
-	
+
 	/**
 	 * Creates a combo box containing in order to choose the allele
 	 * @return the combo box
@@ -194,11 +117,11 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 	private JComboBox getAlleleBox () {
 		// Creates the array containing the different alleles
 		Object[] alleles = new Object[]{AlleleType.BOTH, AlleleType.ALLELE01, AlleleType.ALLELE02};
-		
+
 		// Creates the box
 		jcbAllele = new JComboBox(alleles);
 		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(180, height);
+		Dimension dimension = new Dimension(100, height);
 		jcbAllele.setPreferredSize(dimension);
 		jcbAllele.setMinimumSize(dimension);
 		jcbAllele.addActionListener(new ActionListener() {
@@ -233,6 +156,7 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		// Fill the list that contains the checkbox for selecting variation
 		for (int i = 0; i < 3; i++) {
 			JCheckBox checkBox = new JCheckBox();
+			checkBox.setEnabled(false);
 			checkBox.setBorder(null);
 			checkBox.setMargin(new Insets(0, 0, 0, 0));
 			checkBox.setToolTipText("Enable/Disable " + variationName.get(i).toString().toLowerCase() + ".");
@@ -267,10 +191,10 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 		// Create the panel
 		JPanel panel = new JPanel();
 		int height = getFontMetrics(getFont()).getHeight() * 3;
-		Dimension dimension = new Dimension(120, height);
+		Dimension dimension = new Dimension(150, height);
 		panel.setPreferredSize(dimension);
 		panel.setMinimumSize(dimension);
-		
+
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
@@ -286,6 +210,10 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 
 		// Add components to the panel
 		for (int i = 0; i < 3; i++) {
+			if (i == 2) {
+				gbc.weighty = 1;
+			}
+
 			// Variation name
 			gbc.gridx = 0;
 			gbc.gridy = i;
@@ -305,20 +233,36 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			panel.add(variationColor.get(i), gbc);
 		}
 
-		refreshVariationSelection();
-		
 		// Return the panel
 		return panel;
 	}
-	
-	
-	private void refreshVariationSelection () {
-		if (variationName != null) {
-			String genomeName = jcbGenome.getSelectedItem().toString();
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void update(Object object) {
+		List<String> genomeNames = null;
+
+		if (object instanceof List<?>) {
+			if (((List<?>)object).size() > 0 && ((List<?>)object).get(0) instanceof String) {
+				genomeNames = (List<String>) object;
+			}
+		}
+
+		if (genomeNames != null) {
 			for (int i = 0; i < variationName.size(); i++) {
 				VariantType type = variationName.get(i);
-				List<VCFFile> readers = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(genomeName, type);
-				if (readers.size() > 0) {
+				boolean exist = true;
+				int j = 0;
+				while (exist && j < genomeNames.size()) {
+					String genomeName = genomeNames.get(j);
+					List<VCFFile> readers = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(genomeName, type);
+					if (readers.size() == 0) {
+						exist = false;
+					}
+					j++;
+				}
+				if (exist) {
 					selectedVariation.get(i).setEnabled(true);
 				} else {
 					selectedVariation.get(i).setEnabled(false);
@@ -327,72 +271,79 @@ class StripesEditingPanel extends EditingPanel<StripesData> {
 			}
 		}
 	}
-	
-	
-	@Override
-	protected void setEditingPanel (StripesData data) {
-		// Set the genome
-		jcbGenome.setSelectedItem(data.getGenome());
-		
-		// Set the allele
-		jcbAllele.setSelectedItem(data.getAlleleType());
-		
-		// Set selected variation and color
-		for (int i = 0; i < variationName.size(); i++) {
-			int variationIndex = data.getVariationTypeList().indexOf(variationName.get(i));
-			if (variationIndex == -1) {
-				selectedVariation.get(i).setSelected(false);
-				variationColor.get(i).setBackground(defaultVariationColor[i]);
-			} else {
-				selectedVariation.get(i).setSelected(true);
-				variationColor.get(i).setBackground(data.getColorList().get(variationIndex));
-			}
-		}
-		
-		// Set the selected track list
-		DefaultListModel listModel = new DefaultListModel();
-		for (Track<?> track: data.getTrackList()) {
-			listModel.addElement(track);
-		}
-		selectedTracks.setModel(listModel);
-	}
-	
-	
-	@Override
-	protected StripesData getElement () {
-		// Retrieve the genome name
-		String genome = jcbGenome.getSelectedItem().toString();
-		
-		AlleleType alleleType = (AlleleType) jcbAllele.getSelectedItem();
-		
-		// Retrieve the variant and color lists
-		List<VariantType> variantList = new ArrayList<VariantType>();
-		List<Color> colorList = new ArrayList<Color>();
-		for (int i = 0; i < variationName.size(); i++) {
-			if (selectedVariation.get(i).isSelected()) {
-				VariantType type = variationName.get(i);
-				Color color = variationColor.get(i).getBackground();
-				if (type == VariantType.INSERTION) {
-					variantList.add(VariantType.INSERTION);
-					colorList.add(color);
-				} else if (type == VariantType.DELETION) {
-					variantList.add(VariantType.DELETION);
-					colorList.add(color);
-				} else if (type == VariantType.SNPS) {
-					variantList.add(VariantType.SNPS);
-					colorList.add(color);
-				}
-			}
-		}
-		
-		// Retrieve selected tracks
-		Track<?>[] trackList = getSelectedTracks();
-		
-		// Create the stripe data object
-		StripesData data = new StripesData(genome, alleleType, variantList, colorList, trackList);
-		
-		// Return the stripe data object
-		return data;
+
+
+	/**
+	 * @return the stripes editing panel instance
+	 */
+	protected Component getCurrentInstance() {
+		return this;
 	}
 
+	
+	/**
+	 * @return the selected {@link AlleleType}
+	 */
+	public AlleleType getSelectedAlleleType () {
+		return (AlleleType) jcbAllele.getSelectedItem();
+	}
+	
+	
+	/**
+	 * @return the list of selected variant types
+	 */
+	public List<VariantType> getSelectedVariantTypes () {
+		List<VariantType> list = new ArrayList<VariantType>();
+		for (int i = 0; i < selectedVariation.size(); i++) {
+			if (selectedVariation.get(i).isSelected()) {
+				list.add(variationName.get(i));
+			}
+		}
+		return list;
+	}
+	
+	
+	/**
+	 * @return the list of color according to the selected variant types
+	 */
+	public List<Color> getSelectedColors () {
+		List<Color> list = new ArrayList<Color>();
+		for (int i = 0; i < selectedVariation.size(); i++) {
+			if (selectedVariation.get(i).isSelected()) {
+				list.add(variationColor.get(i).getBackground());
+			}
+		}
+		return list;
+	}
+	
+	
+	@Override
+	public String getErrors() {
+		String errors = "";
+		if (getSelectedVariantTypes().size() == 0) {
+			errors += "Variation type selection\n";
+		}
+		return errors;
+	}
+	
+	
+	@Override
+	public void reset() {
+		for (JCheckBox box: selectedVariation) {
+			box.setSelected(false);
+			box.setEnabled(false);
+		}
+	}
+
+
+	@Override
+	public void initialize(List<VariantType> element) {
+		if (element != null) {
+			for (VariantType variantType: element) {
+				int index = variationName.indexOf(variantType);
+				selectedVariation.get(index).setSelected(true);
+				selectedVariation.get(index).setEnabled(true);
+			}
+		}
+	}
 }

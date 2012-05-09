@@ -117,7 +117,6 @@ public class Utils {
 		
 		// Adds panels
 		for (int i = 0; i < widths.length; i++) {
-			//JLabel current = new JLabel(columnNames[i]);
 			JLabel current = new JLabel();
 			current.setPreferredSize(new Dimension(widths[i], fm.getHeight()));
 			current.setText("<html><i>" + columnNames[i] + "</i></html>");

@@ -64,6 +64,7 @@ public final class PAInitManagers extends AbstractAction {
 	private static final String 	ACTION_NAME = "Initializes Managers";		// action name
 	private File 		file;			// the file of the project to load
 	private InputStream inputStream;	// the input stream of the project to load
+	private boolean		loadingFromWelcomeScreen;
 	private String[] 	formerPaths;	// array of the former paths
 	private String[] 	invalidPaths;	// array of the invalid paths
 	private String[] 	newPaths;		// array of the new paths
@@ -87,6 +88,7 @@ public final class PAInitManagers extends AbstractAction {
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		file = null;
 		inputStream = null;
+		loadingFromWelcomeScreen = false;
 		formerPaths = null;
 		invalidPaths = null;
 		newPaths = null;
@@ -102,7 +104,6 @@ public final class PAInitManagers extends AbstractAction {
 		if (file != null || inputStream != null) {
 			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
 
-
 			// Initializes the object input stream
 			try {
 				if (file != null) {
@@ -112,7 +113,9 @@ public final class PAInitManagers extends AbstractAction {
 				}
 			} catch (Exception e) {
 				error = "Could not open the project file.";
+				e.printStackTrace();
 			}
+
 
 			if (error == null) {
 				// Reads the project information object
@@ -120,56 +123,74 @@ public final class PAInitManagers extends AbstractAction {
 					projectRecording.initProjectInformation();
 				} catch (Exception e) {
 					error = "Could not read the project information.";
+					e.printStackTrace();
 				}
 
-				if (error == null) {
-					// Manages the missing files
-					try {
-						// Gets the project information object
-						ProjectInformation projectInformation = projectRecording.getProjectInformation();
+				if (!isValidProjectType()) {
+					String message = "";
+					if (loadIncorrectMultiGenomeProject()) {
+						message += "You are trying to load a Multi Genome Project from a Single Genome Project.\n";
+					} else if (loadIncorrectSingleProject()) {
+						message += "You are trying to load a Single Genome Project from a Multi Genome Project.\n";
+					}
+					message += "GenPlay does not allow this operation yet.\n";
+					message += "Please restart GenPlay and load your project from the welcome screen.";
+					JOptionPane.showMessageDialog(null, message, "Invalid project type", JOptionPane.INFORMATION_MESSAGE);
+					error = message;
+				} else {
+					if (error == null) {
+						// Manages the missing files
+						try {
+							// Gets the project information object
+							ProjectInformation projectInformation = projectRecording.getProjectInformation();
 
-						// Gets the files dependant to the project
-						formerPaths = projectInformation.getProjectFiles();
+							// Gets the files dependant to the project
+							formerPaths = projectInformation.getProjectFiles();
 
-						if (formerPaths != null) {									// if the project is file dependant
-							invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
-							if (hasInvalidFiles()) {		// if some invalid files exist,
+							if (formerPaths != null) {									// if the project is file dependant
+								invalidPaths = getInvalidPath(formerPaths);				// we get the invalid files
+								if (hasInvalidFiles()) {		// if some invalid files exist,
 
-								// Warn the user about the .gz and .gz.tbi files
-								if (!projectInformation.isSingleProject()) {
-									JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
-											"The next window will allow you to define their new location.\n" +
-									"Please remind that .gz and .gz.tbi files must have the same name and location.");
-								}
+									// Warn the user about the .gz and .gz.tbi files
+									if (!projectInformation.isSingleProject()) {
+										JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
+												"The next window will allow you to define their new location.\n" +
+										"Please remind that .gz and .gz.tbi files must have the same name and location.");
+									}
 
-								InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
-								if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
-									newPaths = invalidFileDialog.getCorrectedPaths();
-									if (getNumberOfInvalidFiles(newPaths) == 0) {
-										ProjectFiles.getInstance().setCurrentFiles(formerPaths);
-										ProjectFiles.getInstance().setNewFiles(newPaths);
-									} else {						// the user can valid the dialog using invalid files
+									InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
+									if (invalidFileDialog.showDialog(null) == InvalidFileDialog.APPROVE_OPTION) {
+										newPaths = invalidFileDialog.getCorrectedPaths();
+										if (getNumberOfInvalidFiles(newPaths) == 0) {
+											ProjectFiles.getInstance().setCurrentFiles(formerPaths);
+											ProjectFiles.getInstance().setNewFiles(newPaths);
+										} else {						// the user can valid the dialog using invalid files
+											throw new Exception();
+										}
+									} else {							// the user canceled the dialog
 										throw new Exception();
 									}
-								} else {							// the user canceled the dialog
-									throw new Exception();
 								}
 							}
-						}
-					} catch (Exception e) {
-						error = "Invalid files path not corrected.";
-					}
-
-					if (error == null) {
-						// Reads the project manager
-						try {
-							projectRecording.initProjectManager();
 						} catch (Exception e) {
-							error = "Could not read the managers.";
+							error = "Invalid files path not corrected.";
+						}
+
+						if (error == null) {
+							// Reads the project manager
+							try {
+								projectRecording.initProjectManager();
+							} catch (Exception e) {
+								error = "Could not read the managers.";
+								e.printStackTrace();
+							}
 						}
 					}
 				}
 			}
+		}
+		if (error != null) {
+			System.err.println("PAInitManagers.actionPerformed() Errors:\n" + error);
 		}
 	}
 
@@ -198,8 +219,8 @@ public final class PAInitManagers extends AbstractAction {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Create an array of invalid paths.
 	 * @param paths the file paths
@@ -264,6 +285,59 @@ public final class PAInitManagers extends AbstractAction {
 			return true;
 		}
 		return false;
+	}
+
+
+	/**
+	 * Checks if the current project and the new project are the same type (single/multigenome)
+	 * @return
+	 */
+	private boolean isValidProjectType () {
+		if (loadIncorrectMultiGenomeProject() || loadIncorrectSingleProject()) {
+			return false;
+		}
+		return true;
+	}
+
+
+	/**
+	 * @return true if the user is trying to load a multi genome project from a single genome project, false otherwise
+	 */
+	private boolean loadIncorrectMultiGenomeProject () {
+		if (!loadingFromWelcomeScreen) {
+			boolean newSingleProject = RecordingManager.getInstance().getProjectRecording().getProjectInformation().isSingleProject();
+			boolean currentMultiGenomeProject = ProjectManager.getInstance().isMultiGenomeProject();
+			if (!currentMultiGenomeProject && !newSingleProject) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * @return true if the user is trying to load a single genome project from a multi genome project, false otherwise
+	 */
+	private boolean loadIncorrectSingleProject () {
+		if (!loadingFromWelcomeScreen) {
+			boolean newSingleProject = RecordingManager.getInstance().getProjectRecording().getProjectInformation().isSingleProject();
+			boolean currentMultiGenomeProject = ProjectManager.getInstance().isMultiGenomeProject();
+			if (currentMultiGenomeProject && newSingleProject) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Use this method when a project is loaded from the welcome screen.
+	 * Do not need to use when the action is started from the main frame.
+	 * False by default.
+	 * @param loadingFromWelcomeScreen the loadingFromWelcomeScreen to set
+	 */
+	public void setLoadingFromWelcomeScreen(boolean loadingFromWelcomeScreen) {
+		this.loadingFromWelcomeScreen = loadingFromWelcomeScreen;
 	}
 
 }

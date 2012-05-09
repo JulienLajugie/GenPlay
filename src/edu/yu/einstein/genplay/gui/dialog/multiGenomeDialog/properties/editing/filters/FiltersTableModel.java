@@ -19,17 +19,21 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.ContentTableModel;
+import javax.swing.JButton;
+
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTableModel;
+
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class FiltersTableModel extends ContentTableModel<FiltersData> {
+public class FiltersTableModel extends EditingTableModel<FiltersData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
@@ -45,6 +49,9 @@ public class FiltersTableModel extends ContentTableModel<FiltersData> {
 
 	@Override
 	public Object getValueAt(int row, int col) {
+		if (col == buttonColumnIndex) {
+			return buttons.get(row);
+		}
 		FiltersData filtersData = data.get(row);
 		switch (col) {
 		case FiltersData.VCF_FILE_INDEX:
@@ -91,11 +98,14 @@ public class FiltersTableModel extends ContentTableModel<FiltersData> {
 	 */
 	protected void setData(List<FiltersData> data) {
 		this.data = data;
+		buttons = new ArrayList<JButton>();
 		for (int row = 0; row <data.size(); row++) {
+			buttons.add(getNewButton());
 			fireTableCellUpdated(row, FiltersData.VCF_FILE_INDEX);
 			fireTableCellUpdated(row, FiltersData.ID_INDEX);
 			fireTableCellUpdated(row, FiltersData.FILTER_INDEX);
 			fireTableCellUpdated(row, FiltersData.TRACK_INDEX);
+			fireTableCellUpdated(row, buttonColumnIndex);
 		}
 	}
 

@@ -43,10 +43,13 @@ import javax.swing.tree.TreePath;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.TableEditingPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingDialogManager.EditingDialogManagerForFilters;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingDialogManager.EditingDialogManagerForStripes;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesGlobalPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.FiltersGlobalPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesTable;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -90,17 +93,15 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	private final Dimension regularContentDimension = new Dimension(600, DIALOG_HEIGHT);
-	private final Dimension extraContentDimension = new Dimension(800, DIALOG_HEIGHT);
+	private final Dimension contentDimension = new Dimension(600, DIALOG_HEIGHT);
 
-	private TreeContent 		treeContent;							// the tree manager
-	private JTree 				tree;									// the tree of the dialog
-	private JPanel 				contentPane;							// right part of the dialog
-	private JPanel		 		validationPanel;						// the validation panel (ok/cancel buttons)
-	private GeneralPanel 		generalPanel;							// the general information panel
-	private SettingsPanel 		settingsPanel;							// the settings panel
-	private StripesGlobalPanel 	stripesPanel;							// the stripes panel
-	private FiltersGlobalPanel 	filtersPanel;							// the stripes panel
+	private TreeContent 				treeContent;							// the tree manager
+	private JTree 						tree;									// the tree of the dialog
+	private JPanel 						contentPane;							// right part of the dialog
+	private GeneralPanel 				generalPanel;							// the general information panel
+	private SettingsPanel 				settingsPanel;							// the settings panel
+	private TableEditingPanel<StripesData> 	stripesPanel;						// the stripes panel
+	private TableEditingPanel<FiltersData> 	filtersPanel;						// the filters panel
 
 
 	/**
@@ -122,15 +123,12 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 		// Content panel (right part of the dialog)
 		contentPane = new JPanel();
-		contentPane.setPreferredSize(regularContentDimension);
-
-		// Validation panel
-		validationPanel = getValidationPanel();
+		contentPane.setPreferredSize(contentDimension);
 
 		// Adds panels
 		add(treeScroll, BorderLayout.WEST);
 		add(contentPane, BorderLayout.CENTER);
-		add(validationPanel, BorderLayout.SOUTH);
+		add(getValidationPanel(), BorderLayout.SOUTH);
 
 
 		// Creates the general panel
@@ -140,10 +138,10 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		settingsPanel = new SettingsPanel();
 
 		// Creates the stripes panel
-		stripesPanel = new StripesGlobalPanel();
+		stripesPanel = new TableEditingPanel<StripesData>("Variations settings", new StripesTable(), new EditingDialogManagerForStripes());
 
 		// Creates the filters panel
-		filtersPanel = new FiltersGlobalPanel();
+		filtersPanel = new TableEditingPanel<FiltersData>("Filters settings", new FiltersTable(), new EditingDialogManagerForFilters());
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
@@ -153,7 +151,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		setVisible(false);
 		pack();
 	}
-
+	
 
 	/**
 	 * Shows the component.
@@ -179,10 +177,10 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (accessor.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
 		} else if (accessor.equals(FILTERS)) {
-			setCenterPanel(filtersPanel);
+			setScrollableCenterPanel(filtersPanel);
 			//setCenterPanel(getEmptyPanel());
 		} else if (accessor.equals(STRIPES)) {
-			setCenterPanel(stripesPanel);
+			setScrollableCenterPanel(stripesPanel);
 		}
 
 		// Gets the tree path if exists and select it
@@ -203,44 +201,19 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 	/**
 	 * Sets the panel at the center of the dialog with the one given as parameter
-	 * @param panel the panel to show at the center of the dialog
-	 */
-	protected void setCenterPanel (JPanel panel) {
-		// Removes all content of the contentPane
-		contentPane.removeAll();
-
-		// Set the extra dimension for the content panel
-		contentPane.setPreferredSize(extraContentDimension);
-
-		// Set the panel gaps to zero
-		((FlowLayout)(contentPane.getLayout())).setHgap(0);
-		((FlowLayout)(contentPane.getLayout())).setVgap(0);
-
-		// Add the panel to the content panel
-		contentPane.add(panel);
-		contentPane.repaint();
-		validate();
-
-		pack();
-
-	}
-
-
-	/**
-	 * Sets the panel at the center of the dialog with the one given as parameter
 	 * It first includes the panel in a scroll panel.
 	 * @param panel the panel to show at the center of the dialog
 	 */
 	protected void setScrollableCenterPanel (JPanel panel) {
 		// Set the panel to the right dimension
 		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setPreferredSize(regularContentDimension);
+		scrollPane.setPreferredSize(contentDimension);
 
 		// Removes all content of the contentPane
 		contentPane.removeAll();
 
 		// Set the redular dimension for the content panel
-		contentPane.setPreferredSize(regularContentDimension);
+		contentPane.setPreferredSize(contentDimension);
 
 		// Set the panel gaps to zero
 		((FlowLayout)(contentPane.getLayout())).setHgap(0);
@@ -254,13 +227,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		pack();
 
 	}
-
-
-	/*private JPanel getEmptyPanel () {
-		JPanel emptyPane = new JPanel();
-		emptyPane.add(new JLabel("Coming soon..."));
-		return emptyPane;
-	}*/
 
 
 	@Override
@@ -281,10 +247,9 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			VCFFile vcfFile = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(new StatisticPanel(vcfFile));
 		} else if (nodeInfo.equals(FILTERS)) {
-			setCenterPanel(filtersPanel);
-			//setCenterPanel(getEmptyPanel());
+			setScrollableCenterPanel(filtersPanel);
 		} else if (nodeInfo.equals(STRIPES)) {
-			setCenterPanel(stripesPanel);
+			setScrollableCenterPanel(stripesPanel);
 		}
 	}
 
@@ -348,12 +313,12 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 				settings.getVariousSettings().isShowLegend());
 
 		// Filter settings panel
-		filtersPanel.setSettings(settings.getFilterSettings().getFiltersList());
-		filtersPanel.refresh();
+		filtersPanel.setData(settings.getFilterSettings().getDuplicatedFiltersList());
+		filtersPanel.refreshPanel();
 
 		// Stripes settings panel
-		stripesPanel.setSettings(settings.getStripeSettings().getStripesList());
-		stripesPanel.refresh();
+		stripesPanel.setData(settings.getStripeSettings().getStripesList());
+		stripesPanel.refreshPanel();
 	}
 
 
@@ -401,7 +366,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @return the filters list
 	 */
 	public List<FiltersData> getFiltersData () {
-		return filtersPanel.getFiltersData();
+		return filtersPanel.getData();
 	}
 
 
@@ -409,7 +374,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @return the filters list
 	 */
 	public List<StripesData> getStripesData () {
-		return stripesPanel.getStripesData();
+		return stripesPanel.getData();
 	}
 	
 	

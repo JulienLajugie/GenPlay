@@ -138,6 +138,7 @@ public class Launcher {
 	 * Loads a project.
 	 */
 	private static void loadProject (PAInitManagers initAction) {
+		initAction.setLoadingFromWelcomeScreen(true);
 		initAction.actionPerformed(null);
 		if (initAction.hasBeenInitialized()) {
 			MainFrame.getInstance().setVisible(true);

@@ -61,6 +61,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	private List<MGVariantListForDisplay> 	listOfVariantList;			// The list of list of variant for display
 	private List<VariantInterface> 			variantList;				// The full list of variant
 	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
+	private List<VCFFilter> filtersList;
 
 
 	/**
@@ -133,7 +134,6 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param filtersList	a list of filters
 	 * @return				true is the variant passes all filters
 	 */
-	//@SuppressWarnings("unused")	// under development
 	private boolean isValid (VariantInterface variant, List<VCFFilter> filtersList) {
 		for (VCFFilter filter: filtersList) {		// loop on all filters
 			if (!filter.isValid(variant)) {			// test the variant for the current filter
@@ -202,7 +202,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param filtersList list of filter to apply
 	 */
 	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList, List<VCFFilter> filtersList) {
-		if (hasChanged(listOfVariantList)) {
+		if (variantsHaveChanged(listOfVariantList) || filtersHaveChanged(filtersList)) {
 			this.listOfVariantList = listOfVariantList;
 			resetList(filtersList);
 		}
@@ -232,7 +232,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param listOfVariantList the other list of variant list for display
 	 * @return true is lists are different, false otherwise
 	 */
-	private boolean hasChanged (List<MGVariantListForDisplay> listOfVariantList) {
+	private boolean variantsHaveChanged (List<MGVariantListForDisplay> listOfVariantList) {
 		if (this.listOfVariantList == null || listOfVariantList == null) {
 			return true;
 		} else if (this.listOfVariantList.size() != listOfVariantList.size()) {
@@ -240,6 +240,27 @@ public class DisplayableVariantListMaker implements Serializable {
 		} else {
 			for (MGVariantListForDisplay currentVariantList: this.listOfVariantList) {
 				if (!listOfVariantList.contains(currentVariantList)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Compares the current list of filters with another one
+	 * @param filtersList the other list of filer
+	 * @return true is lists are different, false otherwise
+	 */
+	private boolean filtersHaveChanged (List<VCFFilter> filtersList) {
+		if (this.filtersList == null || filtersList == null) {
+			return true;
+		} else if (this.filtersList.size() != filtersList.size()) {
+			return true;
+		} else {
+			for (VCFFilter currentFilter: this.filtersList) {
+				if (!filtersList.contains(currentFilter)) {
 					return true;
 				}
 			}

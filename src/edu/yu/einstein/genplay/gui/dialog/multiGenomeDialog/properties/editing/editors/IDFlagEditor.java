@@ -19,9 +19,8 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -31,7 +30,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.FlagIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
@@ -42,27 +40,31 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
  */
 public class IDFlagEditor implements IDEditor {
 
-	private VCFHeaderType 	id;			// Header ID
-	private VCFColumnName	category;	// category of the filter
-	private JRadioButton 	present;
-	private JRadioButton 	absent;
+	private final static String CONSTRAINT_LABEL_TTT 	= "Select a constraint for the value.";
+	private final static String PRESENT_TTT 			= "The flag in the associated file data will must be PRESENT in order to be accepted.";
+	private final static String ABSENT_TTT 				= "The flag in the associated file data will must be ABSENT in order to be accepted.";
+	private final static String PRESENT 				= "must contains";
+	private final static String ABSENT 					= "must not contains";
+	
+	private JPanel			panel;
+	private VCFHeaderType 	header;			// Header ID
+	private JRadioButton	present;		// Radio box for PRESENT value
+	private JRadioButton	absent;			// Radio box for ABSENT value
+	
 
 	@Override
-	public void updatePanel(JPanel panel) {
-		// Back up the size of the panel
-		Dimension previousDimension = panel.getPreferredSize();
-
-		// Remove everything from the panel
-		panel.removeAll();
+	public JPanel updatePanel() {
+		panel = new JPanel();
 
 		// Creates the label
-		JLabel label = new JLabel("Must be:");
+		JLabel constraintLabel = new JLabel("Must be:");
+		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
 
-		// Creates the "present" radio box
-		present = new JRadioButton("present");
-
-		// Creates the "absent" radio box
-		absent = new JRadioButton("absent");
+		// Creates the radio boxes
+		present = new JRadioButton(PRESENT);
+		present.setToolTipText(PRESENT_TTT);
+		absent = new JRadioButton(ABSENT);
+		absent.setToolTipText(ABSENT_TTT);
 
 		// Creates the group
 		ButtonGroup group = new ButtonGroup();
@@ -77,40 +79,33 @@ public class IDFlagEditor implements IDEditor {
 		panel.setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gbc.weightx = 0;
+		gbc.weightx = 1;
 		gbc.weighty = 0;
 
 		// Label
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		gbc.insets = new Insets(3, 0, 0, 0);
-		panel.add(label, gbc);
+		gbc.insets = new Insets(10, 10, 10, 0);
+		panel.add(constraintLabel, gbc);
 
 		// "Present" button
-		gbc.gridx = 1;
-		gbc.weightx = 1;
-		gbc.insets = new Insets(0, 5, 0, 0);
+		gbc.gridy = 1;
+		gbc.insets = new Insets(5, 20, 0, 0);
 		panel.add(present, gbc);
 
 		// "Absent" button
-		gbc.gridx = 1;
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		gbc.weighty = 1;
 		panel.add(absent, gbc);
-
-		// Create a new dimension based on the previous one
-		Dimension dimension = new Dimension((int)previousDimension.getWidth(), 50);
-
-		// Restore size to former value
-		panel.setPreferredSize(dimension);
-		panel.setMinimumSize(dimension);
+		
+		return panel;
 	}
 
+	
 	@Override
 	public IDFilterInterface getFilter() {
 		FlagIDFilter filter = new FlagIDFilter();
-		filter.setID(id);
-		filter.setCategory(category);
+		filter.setHeaderType(header);
 		if (present.isSelected()) {
 			filter.setRequired(true);
 		} else {
@@ -119,15 +114,16 @@ public class IDFlagEditor implements IDEditor {
 		return filter;
 	}
 
+	
 	@Override
-	public void setID(VCFHeaderType id) {
-		this.id = id;
+	public void setHeaderType(VCFHeaderType id) {
+		this.header = id;
 	}
 	
 	
 	@Override
-	public VCFHeaderType getID () {
-		return id;
+	public VCFHeaderType getHeaderType () {
+		return header;
 	}
 	
 
@@ -143,14 +139,28 @@ public class IDFlagEditor implements IDEditor {
 
 	
 	@Override
-	public void setCategory(VCFColumnName category) {
-		this.category = category;
+	public String getErrors() {
+		String errors = "";
+		if (header == null) {
+			errors += "ID selection\n";
+		}
+		return errors;
 	}
 
-	
+
 	@Override
-	public VCFColumnName getCategory() {
-		return category;
+	public void setEnabled(boolean b) {
+		if (panel != null) {
+			panel.setEnabled(b);
+			present.setEnabled(b);
+			absent.setEnabled(b);
+		}
+	}
+
+
+	@Override
+	public boolean isEnabled() {
+		return panel.isEnabled();
 	}
 
 }

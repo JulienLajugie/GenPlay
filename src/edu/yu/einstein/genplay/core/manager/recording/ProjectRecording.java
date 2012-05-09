@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -52,7 +53,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
  * @version 0.1
  */
 public class ProjectRecording {
-	
+
 	private 		File 					fileToLoad;							// The project file to load
 	private 		Track<?>[]				trackList;							// The list of tracks to save
 	private 		ObjectInputStream 		ois;								// The input file stream
@@ -60,17 +61,16 @@ public class ProjectRecording {
 	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
 	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
 	private 		String 					currentProjectPath;					// path to the current project
-	
-	
+
+
 	protected ProjectRecording () {
 		ois = null;
 		projectInformation = null;
 		trackListReadyToLoad = false;
 		loadingEvent = false;
 	}
-	
-	
-	
+
+
 	/**
 	 * Saves the current list of tracks into a file
 	 * @param outputFile file where the project needs to be saved
@@ -93,6 +93,9 @@ public class ProjectRecording {
 			updatesCurrentProjectInformation();
 			oos.writeObject(projectInformation);
 			oos.writeObject(ProjectManager.getInstance());
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				oos.writeObject(MGDisplaySettings.getInstance());
+			}
 			oos.writeObject(trackList.getTrackList());
 
 			// there is bug during the serialization with the nimbus LAF if the track list is visible
@@ -117,7 +120,7 @@ public class ProjectRecording {
 		return true;
 	}
 
-	
+
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param inputFile		project file
@@ -129,7 +132,7 @@ public class ProjectRecording {
 		initObjectInputStream(fis);
 	}
 
-	
+
 	/**
 	 * Creates/sets chromosome manager object.
 	 * @param is InputStream object
@@ -144,8 +147,8 @@ public class ProjectRecording {
 			throw new InvalidFileTypeException();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Initializes the project information.
 	 * It unserializes the first object contained in the file that is the information about the project.
@@ -158,8 +161,8 @@ public class ProjectRecording {
 			projectInformation = (ProjectInformation) ois.readObject();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Initializes the project manager.
 	 * It unserializes the second object contained in the file that is the project manager.
@@ -169,12 +172,15 @@ public class ProjectRecording {
 	 */
 	public void initProjectManager () throws ClassNotFoundException, IOException {
 		if (ois != null) {
-			ois.readObject();
+			ois.readObject();		// read the project manager
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				ois.readObject();		// read the MGDisplaySettings
+			}
 			trackListReadyToLoad = true;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Reads the track list object.
 	 * @return a track list
@@ -193,8 +199,8 @@ public class ProjectRecording {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @return the projectInformation
 	 */
@@ -233,13 +239,13 @@ public class ProjectRecording {
 			}
 		}
 		projectInformation.setProjectTrackNumber(Integer.toString(trackCount));
-		
+
 		if (ProjectFiles.getInstance().isFileDependant()) {
 			projectInformation.setProjectFiles(ProjectFiles.getInstance().getValidArrayOfFiles());
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the fileToLoad
 	 */
@@ -270,8 +276,8 @@ public class ProjectRecording {
 	public void setLoadingEvent(boolean loadingEvent) {
 		this.loadingEvent = loadingEvent;
 	}
-	
-	
+
+
 	/**
 	 * @param currentProjectPath the currentProjectPath to set
 	 */

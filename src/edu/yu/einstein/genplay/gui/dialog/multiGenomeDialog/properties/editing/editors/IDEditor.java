@@ -19,11 +19,10 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.filters.IDEditors;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
 
@@ -35,41 +34,36 @@ public interface IDEditor {
 
 	
 	/**
-	 * Initializes the panel putting all necessary elements for selecting the filter.
-	 * @param panel the panel
+	 * Creates and return the panel putting all necessary elements for selecting the filter.
+	 * @return the panel
 	 */
-	public void updatePanel (JPanel panel);
+	public JPanel updatePanel ();
+	
+	
+	/**
+	 * Enable/Disable the panel
+	 * @param b true if the panel must be enabled, false otherwise 
+	 */
+	public void setEnabled (boolean b);
+	
+	
+	/**
+	 * @return true if the panel is activated, false otherwise
+	 */
+	public boolean isEnabled ();
 	
 	
 	/**
 	 * Sets the ID of the filter
-	 * @param id the ID
+	 * @param header the ID
 	 */
-	public void setID (VCFHeaderType id);
+	public void setHeaderType (VCFHeaderType header);
 	
 	
 	/**
 	 * @return the ID
 	 */
-	public VCFHeaderType getID ();
-	
-	
-	/**
-	 * Sets the category of the filter:
-	 * - ALT
-	 * - QUAL
-	 * - FILTER
-	 * - INFO
-	 * - FORMAT
-	 * @param category the ID category
-	 */
-	public void setCategory (VCFColumnName category);
-	
-	
-	/**
-	 * @return the category of the editor
-	 */
-	public VCFColumnName getCategory ();
+	public VCFHeaderType getHeaderType ();
 	
 	
 	/**
@@ -83,5 +77,11 @@ public interface IDEditor {
 	 * @param filter the filter
 	 */
 	public void initializesPanel (IDFilterInterface filter);
+	
+	
+	/**
+	 * @return a list of error gathered in one String
+	 */
+	public abstract String getErrors ();
 	
 }

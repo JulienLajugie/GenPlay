@@ -165,7 +165,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<VCFFilter> filtersList) {
 		this.stripesList = stripesList;
 		this.vcfFiltersList = filtersList;
-		
+
 		List<MGVariantListForDisplay> allele01VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the first allele
 		List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
 
@@ -180,7 +180,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 				allele02 = true;
 			} else if (alleleType == AlleleType.ALLELE01) {				// if the defined allele type is ALLELE01, only the first allele will be processed
 				allele01 = true;
-			} else if (alleleType == AlleleType.ALLELE02) {				// if the defined allele type is ALLELE01, only the second allele will be processed
+			} else if (alleleType == AlleleType.ALLELE02) {				// if the defined allele type is ALLELE02, only the second allele will be processed
 				allele02 = true;
 			}
 
@@ -199,9 +199,9 @@ public class MultiGenomeDrawer<T> implements Serializable {
 				}
 			}
 		}
-		
+
 		if (allele01VariantLists.size() > 0 || allele02VariantLists.size() > 0) {
-			
+
 		}
 
 		// Sets the list maker with the new list of variant
@@ -210,9 +210,9 @@ public class MultiGenomeDrawer<T> implements Serializable {
 
 		//repaint();
 	}
-	
-	
-	
+
+
+
 
 
 	///////////////////////////////////////////////////////////////// Stripes drawing
@@ -691,7 +691,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 		}
 		return copy;
 	}
-	
+
 
 	/**
 	 * Enable the serialization of the stripes list for multi genome project.

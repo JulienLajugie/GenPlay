@@ -99,7 +99,7 @@ public class ProjectFiles {
 	 * @return		the valid path (if defined, the same otherwise)
 	 */
 	public String getValidPathOf (String path) {
-		if (currentFiles == null) {
+		if (currentFiles == null || newFiles == null) {
 			return path;
 		}
 		int oldPathIndex = -1;
@@ -112,7 +112,7 @@ public class ProjectFiles {
 		if (oldPathIndex >= 0) {
 			return newFiles[oldPathIndex];
 		}
-		return null;
+		return path;
 	}
 
 

@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+
 
 /**
  * This class declares methods required for VCF type field:
@@ -36,6 +38,18 @@ public interface VCFHeaderType extends Serializable {
 	
 	/** Number maximum of elements an ID can have */
 	public static final int ELEMENT_LIMIT = 10;
+	
+	
+	/**
+	 * @return the columnCategory
+	 */
+	public VCFColumnName getColumnCategory();
+
+	
+	/**
+	 * @param columnCategory the id to set
+	 */
+	public void setColumnCategory(VCFColumnName columnCategory);
 	
 	
 	/**

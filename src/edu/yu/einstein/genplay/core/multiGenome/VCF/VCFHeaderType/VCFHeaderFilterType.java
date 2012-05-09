@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+
 /**
  * This class manages the FILTER VCF field type information.
  * @author Nicolas Fourel
@@ -64,6 +66,16 @@ public class VCFHeaderFilterType implements VCFHeaderType {
 	
 	
 	@Override
+	public VCFColumnName getColumnCategory() {
+		return VCFColumnName.FILTER;
+	}
+
+
+	@Override
+	public void setColumnCategory(VCFColumnName columnCategory) {}
+	
+	
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -86,5 +98,10 @@ public class VCFHeaderFilterType implements VCFHeaderType {
 		this.description = description;
 	}
 
+	
+	@Override
+	public String toString () {
+		return getColumnCategory() + " - " + id + ": " + description;
+	}
 	
 }
