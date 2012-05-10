@@ -52,7 +52,7 @@ public class DataLineValidator {
 		String errors = "";
 
 		errors = addError(errors, getErrors(chromosome, start));
-		errors = addError(errors, getErrors(chromosome, stop));
+		//errors = addError(errors, getErrors(chromosome, stop));
 		errors = addError(errors, getErrors(start, stop));
 
 		return errors;

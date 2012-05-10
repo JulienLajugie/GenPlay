@@ -32,7 +32,7 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.TreeSet;
 
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -166,13 +166,13 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	 * @param line a line from the data file that is not a header line. 
 	 * (ie: a line that doesn't start with "#", "browser" or "track")
 	 * @return true when the last selected chromosome has been totally extracted (ie returns true when the extraction is done)
-	 * @throws InvalidDataLineException
+	 * @throws DataLineException
 	 */
-	abstract protected boolean extractLine(String line) throws InvalidDataLineException;
+	abstract protected boolean extractLine(String line) throws DataLineException;
 
 
 	@Override
-	public void extract() throws FileNotFoundException, IOException, InterruptedException, InvalidDataLineException {
+	public void extract() throws FileNotFoundException, IOException, InterruptedException, DataLineException {
 		BufferedReader reader = null;
 		try {
 			// if the randomLineCount variable is not null we generate a tree set of random line numbers to extract
@@ -211,7 +211,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 							isExtractionDone = extractLine(line);
 						}
 						currentValidLineNumber++;
-					} catch (InvalidDataLineException e) {
+					} catch (DataLineException e) {
 						//logMessage("The following line can't be extracted: \"" + line + "\"");
 						//e.printStackTrace();
 						e.setFile(dataFile);

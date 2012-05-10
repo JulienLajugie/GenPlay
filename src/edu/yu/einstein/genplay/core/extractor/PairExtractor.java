@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -76,10 +76,10 @@ implements Serializable, BinListGenerator {
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param extractedLine line read from the data file
 	 * @return true when the extraction is done
-	 * @throws InvalidDataLineException 
+	 * @throws DataLineException 
 	 */
 	@Override
-	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws DataLineException {
 		if (extractedLine.trim().length() == 0) {
 			return false;
 		}
@@ -94,12 +94,12 @@ implements Serializable, BinListGenerator {
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 10) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		String chromosomeField[] = splitedLine[2].split(":");
 		if (chromosomeField.length != 2) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		try {
 			int chromosomeStatus;
@@ -128,12 +128,12 @@ implements Serializable, BinListGenerator {
 					lineCount++;
 					return false;
 				} else {
-					throw new InvalidDataLineException(errors);
+					throw new DataLineException(errors);
 				}
 			}
 		} catch (InvalidChromosomeException e) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 

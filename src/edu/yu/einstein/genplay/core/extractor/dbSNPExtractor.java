@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 
 
 
@@ -60,7 +60,7 @@ public class dbSNPExtractor extends TextFileExtractor implements Serializable, S
 	
 	
 	@Override
-	protected boolean extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws DataLineException {
 		// TODO Auto-generated method stub
 		return false;
 	}

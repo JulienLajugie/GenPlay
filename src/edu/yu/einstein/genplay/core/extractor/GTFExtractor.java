@@ -53,7 +53,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -101,11 +101,11 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 
 	@Override
-	protected boolean extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws DataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(line);
 		if (splitedLine.length < 8) {
 			//throw new InvalidDataLineException(line);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		// we're just interested in exon lines
 		if (splitedLine[2].trim().equalsIgnoreCase("exon")) {
@@ -163,7 +163,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							} else {
 								// this is a mandatory attribute for genplay
 								//throw new InvalidDataLineException(line);
-								throw new InvalidDataLineException("The attribute 'gene_id' is missing.");
+								throw new DataLineException("The attribute 'gene_id' is missing.");
 							}
 							// if there is a FPKM attribute we replace the score by the FPKM 
 							if (attributes.containsKey("FPKM")) {
@@ -177,6 +177,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						// Checks errors
 						String errors = DataLineValidator.getErrors(chromo, start, stop, score, name, strand);
 						if (errors.length() == 0) {
+							
+							// Stop position checking, must not overpass the chromosome length
+							DataLineException stopEndException = null;
+							String stopEndErrorMessage = DataLineValidator.getErrors(chromo, stop);
+							if (!stopEndErrorMessage.isEmpty()) {
+								stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+								stop = chromo.getLength();
+							}
+							
 							// if we are in a multi-genome project, we compute the position on the meta genome
 							start = getMultiGenomePosition(chromo, start);
 							stop = getMultiGenomePosition(chromo, stop);
@@ -185,14 +194,18 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							scoreList.add(chromo, score);
 							strandList.add(chromo, strand);
 							nameList.add(chromo, name);
+							
+							if (stopEndException != null) {
+								throw stopEndException;
+							}
 						} else {
-							throw new InvalidDataLineException(errors);
+							throw new DataLineException(errors);
 						}
 					}
 				}
 			} catch (InvalidChromosomeException e) {
 				//throw new InvalidDataLineException(line);
-				throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+				throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}
 		return false;

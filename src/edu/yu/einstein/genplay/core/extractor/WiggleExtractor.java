@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -88,7 +88,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 
 	@Override
-	protected boolean extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws DataLineException {
 		String[] splittedLine = Utils.parseLineTabAndSpace(line);
 
 		int i = 0;
@@ -98,7 +98,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				// a variableStep must at least contain 2 elements
 				if (splittedLine.length < 2) {
 					//throw new InvalidDataLineException(line);
-					throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+					throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 				} else {
 					isFixedStep = false;
 					currentSpan = 1;
@@ -108,7 +108,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				// a fixedStep must at least contain 4 elements
 				if (splittedLine.length < 4) {
 					//throw new InvalidDataLineException(line);
-					throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+					throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 				} else {
 					isFixedStep = true;
 					currentSpan = 1;
@@ -157,18 +157,18 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 									stopList.add(currentChromo, stop);
 									scoreList.add(currentChromo, score);
 								} else {
-									throw new InvalidDataLineException(errors);
+									throw new DataLineException(errors);
 								}
 							}
 							lineCount++;
 							currentPosition += currentStep;
 						} catch (Exception e) {
-							throw new InvalidDataLineException(e.getMessage());
+							throw new DataLineException(e.getMessage());
 						}					
 					} else {
 						if (splittedLine.length < 2) {
 							//throw new InvalidDataLineException(line);
-							throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+							throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 						} else {
 							currentPosition = Integer.parseInt(splittedLine[i].trim());
 							double score = Double.parseDouble(splittedLine[i + 1]);
@@ -180,16 +180,28 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 									// Checks errors
 									String errors = DataLineValidator.getErrors(currentChromo, start, stop);
 									if (errors.length() == 0) {
+										// Stop position checking, must not overpass the chromosome length
+										DataLineException stopEndException = null;
+										String stopEndErrorMessage = DataLineValidator.getErrors(currentChromo, stop);
+										if (!stopEndErrorMessage.isEmpty()) {
+											stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+											stop = currentChromo.getLength();
+										}
+
 										startList.add(currentChromo, start);
 										stopList.add(currentChromo, stop);
 										scoreList.add(currentChromo, score);
+										
+										if (stopEndException != null) {
+											throw stopEndException;
+										}
 									} else {
-										throw new InvalidDataLineException(errors);
+										throw new DataLineException(errors);
 									}
 								}
 								lineCount++;
 							} catch (Exception e) {
-								throw new InvalidDataLineException(e.getMessage());
+								throw new DataLineException(e.getMessage());
 							}		
 						}
 					}			

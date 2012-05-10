@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 
 
 
@@ -138,7 +138,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 
 	@Override
-	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws DataLineException {
 		byte[] line = extractedLine.getBytes();
 		byte[] matchChar = new byte[4]; 
 		byte[] chromoChar = new byte[64];
@@ -148,8 +148,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		int positionNumber;
 
 		if (line[0] == '\0') {
-			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException("Null character found at the beginning of the line.");
+			throw new DataLineException("Null character found at the beginning of the line.");
 		}
 
 		// skip first field
@@ -177,8 +176,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			} else if (matchChar[0] == 'Q') {
 				QCCount++;
 			}
-			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException("No match found for: " + matchChar[0]);
+			throw new DataLineException("No match found for: " + matchChar[0]);
 		}
 		match0MNumber = Short.parseShort(new String(matchChar, 0, j));
 		// try to extract the number of match 1M
@@ -202,8 +200,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		// we only want lines that correspond to our criteria
 		if (match0MNumber + match1MNumber + match2MNumber != 1) {
 			multiMatchCount++;
-			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException("The line does not match the criteria: " + match0MNumber + " + " + match1MNumber + " + " + match2MNumber + " != 1");
+			throw new DataLineException("The line does not match the criteria: " + match0MNumber + " + " + match1MNumber + " + " + match2MNumber + " != 1");
 		}
 
 		while ((i < line.length) && (line[i] != '.'))  {
@@ -214,8 +211,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 		// if we reach the end of the line now there is no data to extract
 		if (i == line.length) {
-			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException("End of the line reached, no data to extract.");
+			throw new DataLineException("End of the line reached, no data to extract.");
 		}
 		try {
 			chromo = projectChromosome.get(new String(chromoChar, 0, j).trim());
@@ -230,7 +226,6 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			return false;
 		} else {
 			chromoNumber = projectChromosome.getIndex(chromo);
-
 
 			// try to extract the position number
 			i+=4;  // we want to get rid of 'fa:'

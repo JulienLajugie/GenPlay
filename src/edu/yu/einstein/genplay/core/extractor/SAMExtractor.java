@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -76,7 +76,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 
 
 	@Override
-	protected boolean extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws DataLineException {
 		// if the line starts with @ it's header line so we skip it
 		if (line.trim().charAt(0) != '@') {
 			String[] splitedLine = Utils.parseLineTabOnly(line);
@@ -119,6 +119,14 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 						// Checks errors
 						String errors = DataLineValidator.getErrors(chromosome, start, stop);
 						if (errors.length() == 0) {
+							// Stop position checking, must not overpass the chromosome length
+							DataLineException stopEndException = null;
+							String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+							if (!stopEndErrorMessage.isEmpty()) {
+								stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+								stop = chromosome.getLength();
+							}
+							
 							// if we are in a multi-genome project, we compute the position on the meta genome 
 							start = getMultiGenomePosition(chromosome, start);
 							stop = getMultiGenomePosition(chromosome, stop);
@@ -128,15 +136,19 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 							// as score list so we don't need the useless next line
 							scoreList.add(chromosome, 1.0);
 							lineCount++;
+							
+							if (stopEndException != null) {
+								throw stopEndException;
+							}
 						} else {
-							throw new InvalidDataLineException(errors);
+							throw new DataLineException(errors);
 						}
 					}
 					return false;
 				}
 			} catch (InvalidChromosomeException e) {
 				//return false;
-				throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+				throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 			}
 		}
 		return false;

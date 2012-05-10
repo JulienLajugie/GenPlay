@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class InvalidDataLineException extends Exception {
+public final class DataLineException extends Exception {
 
 	private static final long serialVersionUID = 7000180996789501289L;	// generated ID
 	
@@ -57,14 +57,25 @@ public final class InvalidDataLineException extends Exception {
 	
 	
 	/**
-	 * Creates an instance of {@link InvalidDataLineException}
+	 * Creates an instance of {@link DataLineException}
 	 * @param description description of the error
 	 */
-	//public InvalidDataLineException(String description, String process) {
-	public InvalidDataLineException(String description) {
+	public DataLineException(String description) {
 		super();
 		this.description = description;
 		this.process = SKIP_PROCESS;
+	}
+	
+	
+	/**
+	 * Creates an instance of {@link DataLineException}
+	 * @param description 	description of the error
+	 * @param process 		defines how the data has been processed
+	 */
+	public DataLineException(String description, String process) {
+		super();
+		this.description = description;
+		this.process = process;
 	}
 
 	

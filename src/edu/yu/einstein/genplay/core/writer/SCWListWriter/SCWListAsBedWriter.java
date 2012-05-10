@@ -67,6 +67,7 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 			// print the data
 			for(Chromosome currentChromosome: projectChromosome) {
 				List<ScoredChromosomeWindow> currentList = data.get(currentChromosome);
+				int currentChromosomeSize = currentChromosome.getLength();
 				if (currentList != null) {
 					for (ScoredChromosomeWindow currentWindow: currentList){
 						// if the operation need to be stopped we close the writer and delete the file 
@@ -77,7 +78,12 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 						}
 						// we don't print the line if the score is 0
 						if (currentWindow.getScore() != 0) {
-							writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t-\t" + currentWindow.getScore());
+							int stop = currentWindow.getStop();
+							if (stop > currentChromosomeSize) {
+								stop = currentChromosomeSize;
+							}
+							//writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t-\t" + currentWindow.getScore());
+							writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + stop + "\t-\t" + currentWindow.getScore());
 							writer.newLine();
 						}
 					}

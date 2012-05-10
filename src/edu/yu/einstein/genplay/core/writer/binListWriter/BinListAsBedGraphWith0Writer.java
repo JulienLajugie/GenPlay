@@ -68,6 +68,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 			for(Chromosome currentChromosome: projectChromosome) {
 				if(data.get(currentChromosome) != null) {
 					List<Double> currentList = data.get(currentChromosome);
+					int currentChromosomeSize = currentChromosome.getLength();
 					for (int j = 0; j < currentList.size(); j++) {
 						// if the operation need to be stopped we close the writer and delete the file 
 						if (needsToBeStopped) {
@@ -75,7 +76,14 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 							outputFile.delete();
 							throw new InterruptedException();
 						}
-						writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
+						
+						int stop = ((j + 1) * binSize);
+						if (stop > currentChromosomeSize) {
+							stop = currentChromosomeSize;
+						}
+						
+						//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
+						writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + stop + "\t" + currentList.get(j));
 						writer.newLine();
 					}
 				}

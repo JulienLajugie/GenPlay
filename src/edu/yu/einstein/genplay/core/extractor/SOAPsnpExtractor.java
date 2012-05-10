@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -83,7 +83,7 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 
 
 	@Override
-	protected boolean extractLine(String line) throws InvalidDataLineException {
+	protected boolean extractLine(String line) throws DataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(line);
 		try {
 			int chromosomeStatus;
@@ -121,13 +121,13 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 					isSecondBaseSignificantList.add(chromosome, isSecondBaseSignificant);				
 					lineCount++;
 				} else {
-					throw new InvalidDataLineException(errors);
+					throw new DataLineException(errors);
 				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
 			//throw new InvalidDataLineException(line);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 

@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.extractor.Extractor;
 import edu.yu.einstein.genplay.core.extractor.ExtractorFactory;
 import edu.yu.einstein.genplay.core.generator.Generator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
@@ -151,7 +151,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 	
 
 	@Override
-	public void handleDataError(InvalidDataLineException e) {
+	public void handleDataError(DataLineException e) {
 		handleError(e);
 	}
 }

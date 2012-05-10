@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -103,14 +103,14 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 
 	@Override
-	protected boolean extractLine(String extractedLine)	throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine)	throws DataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
 			searchURL = extractedLine.split("\"")[1].trim();
 		}
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 21) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 
 		try {
@@ -159,6 +159,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					// Checks errors
 					String errors = DataLineValidator.getErrors(chromosome, start, stop, exonStarts, exonStops, name, strand);
 					if (errors.length() == 0) {
+						
+						// Stop position checking, must not overpass the chromosome length
+						DataLineException stopEndException = null;
+						String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+						if (!stopEndErrorMessage.isEmpty()) {
+							stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+							stop = chromosome.getLength();
+						}
+						
 						// if we are in a multi-genome project, we compute the position on the meta genome					
 						start = getMultiGenomePosition(chromosome, start);
 						stop = getMultiGenomePosition(chromosome, stop);
@@ -170,15 +179,19 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						exonStartsList.add(chromosome, exonStarts);
 						exonStopsList.add(chromosome, exonStops);
 						lineCount++;
+						
+						if (stopEndException != null) {
+							throw stopEndException;
+						}
 					} else {
-						throw new InvalidDataLineException(errors);
+						throw new DataLineException(errors);
 					}
 				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 

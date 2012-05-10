@@ -72,6 +72,12 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 						outputFile.delete();
 						throw new InterruptedException();
 					}
+					int currentChromosomeSize = currentGene.getChromo().getLength();
+					int stop = currentGene.getStop();
+					if (stop > currentChromosomeSize) {
+						stop = currentChromosomeSize;
+					}
+					
 					String lineToPrint = new String();
 					lineToPrint = currentGene.getName();
 					lineToPrint += "\t";
@@ -81,7 +87,7 @@ public final class GeneListAsGdpGeneWriter extends GeneListWriter implements Sto
 					lineToPrint += "\t";
 					lineToPrint += currentGene.getStart();
 					lineToPrint += "\t";
-					lineToPrint += currentGene.getStop();
+					lineToPrint += stop;
 					lineToPrint += "\t";
 					if (currentGene.getExonStarts() == null) {
 						lineToPrint += "-";

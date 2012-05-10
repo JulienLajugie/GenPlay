@@ -46,7 +46,7 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -98,14 +98,14 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param extractedLine line read from the data file
 	 * @return true when the extraction is done
-	 * @throws InvalidDataLineException 
+	 * @throws DataLineException 
 	 */
 	@Override
-	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws DataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 7) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 
 		try {
@@ -139,6 +139,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 					// Checks errors
 					String errors = DataLineValidator.getErrors(chromosome, start, stop, score, name, strand);
 					if (errors.length() == 0) {
+						
+						// Stop position checking, must not overpass the chromosome length
+						DataLineException stopEndException = null;
+						String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+						if (!stopEndErrorMessage.isEmpty()) {
+							stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+							stop = chromosome.getLength();
+						}
+						
 						nameList.add(chromosome, name);
 						// if we are in a multi-genome project, we compute the position on the meta genome
 						start = getMultiGenomePosition(chromosome, start);
@@ -148,15 +157,19 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 						scoreList.add(chromosome, score);
 						strandList.add(chromosome, strand);
 						lineCount++;
+						
+						if (stopEndException != null) {
+							throw stopEndException;
+						}
 					} else {
-						throw new InvalidDataLineException(errors);
+						throw new DataLineException(errors);
 					}
 				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 

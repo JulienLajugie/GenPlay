@@ -31,7 +31,7 @@ import javax.swing.SwingWorker;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
@@ -201,7 +201,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	protected void doAtTheEnd(T actionResult) {};
 	
 	
-	protected void handleError (InvalidDataLineException e) {
+	protected void handleError (DataLineException e) {
 		ExceptionReportDialog.getInstance().addMessage(e.getMessage());
 		ExceptionReportDialog.getInstance().showDialog(getRootPane());
 	}

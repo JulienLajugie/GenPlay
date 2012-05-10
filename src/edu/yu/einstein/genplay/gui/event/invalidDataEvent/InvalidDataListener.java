@@ -21,7 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.event.invalidDataEvent;
 
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 
 
 /**
@@ -38,5 +38,5 @@ public interface InvalidDataListener {
 	 * Invoked when an error happens in a file.
 	 * @param e	invalid data line exception
 	 */
-	public abstract void handleDataError(InvalidDataLineException e);
+	public abstract void handleDataError(DataLineException e);
 }

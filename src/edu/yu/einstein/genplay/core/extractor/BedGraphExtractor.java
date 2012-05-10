@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.exception.InvalidDataLineException;
+import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -84,15 +84,15 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	 * a chromosome, a position start, a position stop and a score to the lists.
 	 * @param extractedLine line read from the data file 
 	 * @return true when the extraction is done
-	 * @throws InvalidDataLineException 
+	 * @throws DataLineException 
 	 * @throws FileErrorException 
 	 */
 	@Override
-	protected boolean extractLine(String extractedLine) throws InvalidDataLineException {
+	protected boolean extractLine(String extractedLine) throws DataLineException {
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 4) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_PARAMETER_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
 		try {
 			int chromosomeStatus;
@@ -117,20 +117,31 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				
 				String errors = DataLineValidator.getErrors(chromosome, start, stop, score);
 				if (errors.length() == 0) {
+					
+					// Stop position checking, must not overpass the chromosome length
+					DataLineException stopEndException = null;
+					String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
+					if (!stopEndErrorMessage.isEmpty()) {
+						stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
+						stop = chromosome.getLength();
+					}
 					if (score != 0) {
 						startList.add(chromosome, start);
 						stopList.add(chromosome, stop);
 						scoreList.add(chromosome, score);
 						lineCount++;
 					}
+					if (stopEndException != null) {
+						throw stopEndException;
+					}
 				} else {
-					throw new InvalidDataLineException(errors);
+					throw new DataLineException(errors);
 				}
 				return false;
 			}
 		} catch (InvalidChromosomeException e) {
 			//throw new InvalidDataLineException(extractedLine);
-			throw new InvalidDataLineException(InvalidDataLineException.INVALID_FORMAT_NUMBER);
+			throw new DataLineException(DataLineException.INVALID_FORMAT_NUMBER);
 		}
 	}
 
