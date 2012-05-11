@@ -66,7 +66,7 @@ public class BLOFilterThreshold implements Operation<BinList> {
 	public BinList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
-		}	
+		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
