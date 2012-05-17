@@ -39,10 +39,11 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public final class StatusBar extends JPanel {
 
 	private static final long serialVersionUID = 6145997500187047785L; // generated ID
-	private final MemoryPanel 	memoryPanel;		// panel showing the memory usage
-	private final ProgressBar	progressBar;		// progress bar
-	private final StopButton	stopButton;			// stop button
-	private final StatusLabel 	statusLabel;		// label in the middle of the bar
+	private final MemoryPanel 				memoryPanel;			// panel showing the memory usage
+	private final ProgressBar				progressBar;			// progress bar
+	private final StopButton				stopButton;				// stop button
+	private final StatusLabel 				statusLabel;			// label in the middle of the bar
+	private final GarbageCollectorButton	garbageCollectorButton;	// garbage collector button
 	
 		
 	/**
@@ -54,38 +55,38 @@ public final class StatusBar extends JPanel {
 		stopButton = new StopButton();
 		statusLabel = new StatusLabel();		
 		memoryPanel = new MemoryPanel();
+		garbageCollectorButton = new GarbageCollectorButton();
 		
 		// we add the subcomponents to the status bar
 		setLayout(new GridBagLayout());
 		
 		GridBagConstraints gbc = new GridBagConstraints();		
 		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.anchor = GridBagConstraints.CENTER;
+		
 		gbc.insets = new Insets(5, 10, 5, 3);
 		gbc.weightx = 0;
 		gbc.weighty = 1;
+		gbc.gridx = 0;
 		add(progressBar, gbc);
 
-		gbc = new GridBagConstraints();
-		gbc.weightx = 0;
-		gbc.weighty = 1;
-		gbc.gridx = 1;
+		gbc.insets = new Insets(5, 0, 5, 0);
+		gbc.gridx++;
 		add(stopButton, gbc);		
 		
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.VERTICAL;
-		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.weightx = 1;
 		gbc.weighty = 1;
-		gbc.gridx = 2;
+		gbc.gridx++;
 		add(statusLabel, gbc);
 
-		gbc = new GridBagConstraints();
-		gbc.insets = new Insets(1, 3, 1, 1);
-		gbc.fill = GridBagConstraints.VERTICAL;
+		gbc.insets = new Insets(5, 0, 5, 0);
 		gbc.weightx = 0;
 		gbc.weighty = 1;
-		gbc.gridx = 3;	
-		//gbc.ipadx = 10;
+		gbc.gridx++;
+		add(garbageCollectorButton, gbc);
+		
+		gbc.insets = new Insets(1, 3, 1, 1);
+		gbc.gridx++;
 		add(memoryPanel, gbc);
 		setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Colors.LIGHT_GREY));
 	}
@@ -108,6 +109,7 @@ public final class StatusBar extends JPanel {
 		statusLabel.startCounter();
 		// initialize the stop button
 		stopButton.setStoppable(stoppable);
+		garbageCollectorButton.setEnabled(false);
 	}
 	
 	
@@ -125,6 +127,7 @@ public final class StatusBar extends JPanel {
 		statusLabel.setStepCount(1); // set the step count to 1 so the step is not displayed anymore
 		// disable the stop button
 		stopButton.setStoppable(null);
+		garbageCollectorButton.setEnabled(true);
 	}
 	
 	
@@ -144,7 +147,8 @@ public final class StatusBar extends JPanel {
 	 */
 	public void reinit() {
 		statusLabel.reinit();
-		progressBar.setProgress(0);		
+		progressBar.setProgress(0);	
+		garbageCollectorButton.setEnabled(true);
 	}
 	
 	
