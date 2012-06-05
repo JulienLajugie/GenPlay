@@ -85,13 +85,6 @@ public final class BinListDrawer extends CurveDrawer {
 					int screenYPosition = scoreToScreenPos(currentIntensity);
 					int rectHeight = screenYPosition - screenY0;
 
-					/*if (currentIntensity > 0) {
-						graphics.setColor(trackColor);
-						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidth, -rectHeight);
-					} else {
-						graphics.setColor(reverseCurveColor);
-						graphics.fillRect(screenXPosition, screenY0, screenWindowWidth, rectHeight);
-					}*/
 					if (currentIntensity > 0) {
 						graphics.setColor(trackColor);
 						rectHeight *= -1;

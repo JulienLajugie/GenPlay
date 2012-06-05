@@ -201,6 +201,24 @@ public class ChromosomeWindow implements Serializable, Cloneable, Comparable<Chr
 		return (start + stop) / (double)2;
 	}
 
+	
+	/**
+	 * Checks if the window contains the given position.
+	 * If the position is located before the window, -1 is returned.
+	 * If the position is located after the window, 1 is returned.
+	 * if the position is included in the window, 0 is returned.
+	 * @param position the position to check
+	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
+	 */
+	public int containsPosition (int position) {
+		if (position < start) {
+			return -1;
+		} else if (position > stop) {
+			return 1;
+		}
+		return 0;
+	}
+	
 
 	/**
 	 * A ChromosomeWindow is superior to another one if its position start is greater 

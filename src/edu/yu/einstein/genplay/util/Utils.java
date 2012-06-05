@@ -314,52 +314,6 @@ public class Utils {
 
 
 	/**
-	 * Recursive function. Returns the index where the start value of the window is found
-	 * or the index right after if the exact value is not find.
-	 * @param list
-	 * @param value
-	 * @param indexStart
-	 * @param indexStop
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not find 
-	 */
-	private static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
-	 * Recursive function. Returns the index where the stop value of the window is found
-	 * or the index right before if the exact value is not find.
-	 * @param list
-	 * @param value
-	 * @param indexStart
-	 * @param indexStop
-	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
-	 */
-	private static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
 	 * @param file a {@link File}
 	 * @return the extension of the file. null if none
 	 */
@@ -584,7 +538,7 @@ public class Utils {
 
 	/**
 	 * Returns a sublist of the input list. The first window contains or
-	 * starts after the specified start positions.
+	 * starts after the specified start position.
 	 * The last window contains or stops before the specified stop position. 
 	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow}, 
 	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
@@ -600,24 +554,106 @@ public class Utils {
 
 		ArrayList<T> resultList = new ArrayList<T>();
 
-		int indexStart = findStart(list, positionStart, 0, list.size() - 1);
-		int indexStop = findStop(list, positionStop, 0, list.size() - 1);
-		if (indexStart > 0) {
-			if (list.get(indexStart - 1).getStop() >= positionStart) {
-				T currentWindow = list.get(indexStart - 1); 
-				resultList.add(currentWindow);
-			}
-		}
-		for (int i = indexStart; i <= indexStop; i++) {
+		// Gets the start and stop indexes of the list
+		int indexStart = findPosition(list, positionStart, 0, list.size() - 1);
+		int indexStop = findPosition(list, positionStop, 0, list.size() - 1);
+
+		// Extract the windows from the start (included) to the stop (excluded)
+		for (int i = indexStart; i < indexStop; i++) {
 			resultList.add(list.get(i));
 		}
-		if (indexStop + 1 < list.size()) {
-			if (list.get(indexStop + 1).getStart() <= positionStop) {
-				T currentWindow = list.get(indexStop + 1); 
-				resultList.add(currentWindow);
+
+		// The stop position may have been returned even if the window is not included between the start and stop position
+		// It is necessary to test it before adding it
+		T element = list.get(indexStop);
+		if (element.getStart() >= positionStart && element.getStart() <= positionStop || 	// need to test the position of the window in order to add it OR not 
+				element.getStop() >= positionStart && element.getStop() <= positionStop) {
+			resultList.add(element);
+		}
+
+		return resultList;
+	}
+
+
+	/**
+	 * Returns the index of the window where the value is found OR the index right after if not found.
+	 * The scan is based on the start and stop position of the windows (containsPosition method of {@link ChromosomeWindow} is used).
+	 * Recursive function.
+	 * 
+	 * @param <T> 			type of the element of the input list
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return				the index where the value of the window is found or the index right after if the exact value is not found 
+	 */
+	private static <T extends ChromosomeWindow> int findPosition(List<T> list, int value, int indexStart, int indexStop) {
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int middle = (indexStop - indexStart) / 2;
+			int compare = list.get(indexStart + middle).containsPosition(value);
+
+			if (compare == 0) {
+				return indexStart + middle;
+			} else if (compare < 0) {
+				return findPosition(list, value, indexStart, indexStart + middle);
+			} else {
+				return findPosition(list, value, indexStart + middle + 1, indexStop);
 			}
 		}
-		return resultList;
+	}
+
+
+	/**
+	 * Returns the index of the window where the value is found OR the index right after if not found.
+	 * The scan is based on the start position of the windows.
+	 * Recursive function.
+	 * 
+	 * @param <T> 			type of the element of the input list
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found 
+	 */
+	public static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == list.get(indexStart + middle).getStart()) {
+			return indexStart + middle;
+		} else if (value > list.get(indexStart + middle).getStart()) {
+			return findStart(list, value, indexStart + middle + 1, indexStop);
+		} else {
+			return findStart(list, value, indexStart, indexStart + middle);
+		}
+	}
+
+
+	/**
+	 * Returns the index of the window where the value is found OR the index right after if not found.
+	 * The scan is based on the stop position of the windows.
+	 * Recursive function.
+	 * 
+	 * @param <T> 			type of the element of the input list
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return 				the index where the stop value of the window is found or the index right before if the exact value is not found
+	 */
+	public static <T extends ChromosomeWindow> int findStop(List<T> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else if (value == list.get(indexStart + middle).getStop()) {
+			return indexStart + middle;
+		} else if (value > list.get(indexStart + middle).getStop()) {
+			return findStop(list, value, indexStart + middle + 1, indexStop);
+		} else {
+			return findStop(list, value, indexStart, indexStart + middle);
+		}
 	}
 
 
@@ -682,7 +718,7 @@ public class Utils {
 		return b;
 	}
 
-	
+
 	/**
 	 * Tries to force the garbage collector to run
 	 */

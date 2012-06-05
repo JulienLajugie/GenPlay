@@ -118,7 +118,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 			return new GeneList(result, geneList.getSearchURL());
 		}
 	}
-
+	
 
 	@Override
 	public String getDescription() {

@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.DoubleLists;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -337,52 +338,6 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 
 
 	/**
-	 * Recursive function. Returns the index where the start value of the window is found
-	 * or the index right after if the exact value is not find.
-	 * @param list
-	 * @param value
-	 * @param indexStart
-	 * @param indexStop
-	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
-	 */
-	private int findStart(List<ScoredChromosomeWindow> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStart()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStart()) {
-			return findStart(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStart(list, value, indexStart, indexStart + middle);
-		}
-	}	
-
-
-	/**
-	 * Recursive function. Returns the index where the stop value of the window is found
-	 * or the index right before if the exact value is not find.
-	 * @param list
-	 * @param value
-	 * @param indexStart
-	 * @param indexStop
-	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
-	 */
-	private int findStop(List<ScoredChromosomeWindow> list, int value, int indexStart, int indexStop) {
-		int middle = (indexStop - indexStart) / 2;
-		if (indexStart == indexStop) {
-			return indexStart;
-		} else if (value == list.get(indexStart + middle).getStop()) {
-			return indexStart + middle;
-		} else if (value > list.get(indexStart + middle).getStop()) {
-			return findStop(list, value, indexStart + middle + 1, indexStop);
-		} else {
-			return findStop(list, value, indexStart, indexStart + middle);
-		}
-	}
-
-
-	/**
 	 * Merges two windows together if the gap between this two windows is not visible 
 	 */
 	@Override
@@ -559,33 +514,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
 		}
-
-		ArrayList<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-
-		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
-		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
-		if (indexStart > 0) {
-			// any window starting before the screen start position 
-			// and ending after this position need to be printed  
-			for (int i = 0; i < indexStart; i++) {
-				if (fittedDataList.get(i).getStop() >= start) {
-					ScoredChromosomeWindow currentWindow = fittedDataList.get(i); 
-					ScoredChromosomeWindow newLastWindow = new ScoredChromosomeWindow(start, currentWindow.getStop(), currentWindow.getScore());
-					resultList.add(newLastWindow);
-				}
-			}
-		}
-		for (int i = indexStart; i <= indexStop; i++) {
-			resultList.add(fittedDataList.get(i));
-		}
-		if (indexStop + 1 < fittedDataList.size()) {
-			if (fittedDataList.get(indexStop + 1).getStart() <= stop) {
-				ScoredChromosomeWindow currentWindow = fittedDataList.get(indexStop + 1); 
-				ScoredChromosomeWindow newLastWindow = new ScoredChromosomeWindow(currentWindow.getStart(), stop, currentWindow.getScore());
-				resultList.add(newLastWindow);
-			}
-		}
-		return resultList;
+		return Utils.searchInterval(fittedDataList, start, stop);
 	}
 
 
@@ -623,7 +552,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 			return 0;
 		}
 		// we search a window containing the position in parameter
-		int indexStart = findStop(get(fittedChromosome), position, 0, size(fittedChromosome) - 1);
+		int indexStart = Utils.findStop(get(fittedChromosome), position, 0, size(fittedChromosome) - 1);
 		if (position == get(fittedChromosome, indexStart).getStop()) {
 			if ((indexStart + 1) < get(fittedChromosome).size()) {
 				indexStart++;
