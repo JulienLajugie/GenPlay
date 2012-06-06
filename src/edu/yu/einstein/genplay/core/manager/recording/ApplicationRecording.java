@@ -96,6 +96,8 @@ public class ApplicationRecording {
 					projectConfiguration.setTrackHeight(Integer.parseInt(value));
 				} else if (key.equalsIgnoreCase("undo count")) {
 					projectConfiguration.setUndoCount(Integer.parseInt(value));
+				} else if (key.equalsIgnoreCase("reset track")) {
+					projectConfiguration.setResetTrack(Boolean.parseBoolean(value));
 				} else if (key.equalsIgnoreCase("show legend")) {
 					projectConfiguration.setLegend(Boolean.parseBoolean(value));
 				}
@@ -129,6 +131,8 @@ public class ApplicationRecording {
 			writer.write("track height: " + projectConfiguration.getTrackHeight());
 			writer.newLine();
 			writer.write("undo count: " + projectConfiguration.getUndoCount());
+			writer.newLine();
+			writer.write("reset track: " + projectConfiguration.isResetTrack());
 			writer.newLine();
 			writer.write("show legend: " + projectConfiguration.isLegend());
 		} finally {

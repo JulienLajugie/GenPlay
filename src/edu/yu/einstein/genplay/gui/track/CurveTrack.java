@@ -178,6 +178,14 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 
 	
 	/**
+	 * Disable the reset function
+	 */
+	public void deactivateReset () {
+		((CurveTrackGraphics<?>) trackGraphics).deactivateReset();
+	}
+	
+	
+	/**
 	 * Changes the undo count of the track
 	 * @param undoCount
 	 */

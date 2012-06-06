@@ -283,6 +283,14 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	protected boolean isResetable() {
 		return urrManager.isResetable();
 	}
+	
+	
+	/**
+	 * Disable the reset function
+	 */
+	protected void deactivateReset () {
+		urrManager.deactivateReset();
+	}
 
 
 	/**

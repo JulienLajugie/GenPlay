@@ -144,6 +144,7 @@ import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.VersionedTrack;
 
 
 
@@ -554,6 +555,22 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
+	 * Checks if a track is compressed or not.
+	 * Only {@link BinListTrack} can be compressed.
+	 * @param track a track
+	 * @return		true if the track is compressed, false otherwise.
+	 */
+	private boolean isCompressedTrack (Track<?> track) {
+		if (track instanceof BinListTrack) {
+			if (((BinListTrack) track).getData().isCompressed()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * @return an array containing all the {@link EmptyTrack}
 	 */
 	public Track<?>[] getEmptyTracks() {
@@ -579,6 +596,35 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
+	 * @return an array containing all the {@link VersionedTrack}
+	 */
+	public Track<?>[] getVersionnedTracks() {
+		int count = 0;
+		for (Track<?> currentTrack: trackList) {
+			if (currentTrack instanceof VersionedTrack) {
+				if (!isCompressedTrack(currentTrack)) {
+					count++;
+				}
+			}
+		}
+		if (count == 0) {
+			return null;
+		}
+		Track<?>[] result = new Track[count];
+		int i = 0;
+		for (Track<?> currentTrack: trackList) {
+			if (currentTrack instanceof VersionedTrack) {
+				if (!isCompressedTrack(currentTrack)) {
+					result[i] = currentTrack;
+					i++;
+				}
+			}
+		}
+		return result;
+	}
+
+
+	/**
 	 * @return an array containing all the {@link BinListTrack}
 	 */
 	public Track<?>[] getBinListTracks() {
@@ -596,11 +642,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		Track<?>[] result = new Track[count];
 		int i = 0;
 		for (Track<?> currentTrack: trackList) {
-			if (currentTrack instanceof BinListTrack) {
-				if (!((BinListTrack) currentTrack).getData().isCompressed()) {
-					result[i] = currentTrack;
-					i++;
-				}
+			if (!isCompressedTrack(currentTrack)) {
+				result[i] = currentTrack;
+				i++;
 			}
 		}
 		return result;
@@ -666,7 +710,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int count = 0;
 		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof CurveTrack<?>) {
-				count++;
+				if (!isCompressedTrack(currentTrack)) {
+					count++;
+				}
 			}
 		}
 		if (count == 0) {
@@ -676,8 +722,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int i = 0;
 		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof CurveTrack<?>) {
-				result[i] = currentTrack;
-				i++;
+				if (!isCompressedTrack(currentTrack)) {
+					result[i] = currentTrack;
+					i++;
+				}
 			}
 		}
 		return result;
@@ -825,10 +873,25 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void undoCountChanged() {
 		int undoCount = ProjectManager.getInstance().getProjectConfiguration().getUndoCount();
-		if (getBinListTracks() != null) {
-			for (Track<?> currentTrack: getBinListTracks()) {
-				((BinListTrack) currentTrack).setUndoCount(undoCount);
-			}		
+		if (getVersionnedTracks() != null) {
+			for (Track<?> currentTrack: getVersionnedTracks()) {
+				((VersionedTrack) currentTrack).setUndoCount(undoCount);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Change the reset track function of the versionned tracks.
+	 */
+	public void resetTrackChanged() {
+		boolean hasToBeDisabled = !ProjectManager.getInstance().getProjectConfiguration().isResetTrack();
+		if (hasToBeDisabled) {
+			if (getVersionnedTracks() != null) {
+				for (Track<?> currentTrack: getVersionnedTracks()) {
+					((VersionedTrack) currentTrack).deactivateReset();
+				}
+			}
 		}
 	}
 

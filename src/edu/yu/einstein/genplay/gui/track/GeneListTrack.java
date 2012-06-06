@@ -125,6 +125,14 @@ public class GeneListTrack extends Track<GeneList> implements VersionedTrack {
 
 	
 	/**
+	 * Disable the reset function
+	 */
+	public void deactivateReset () {
+		((GeneListTrackGraphics) trackGraphics).deactivateReset();
+	}
+	
+	
+	/**
 	 * Sets the data showed in the track
 	 * @param data
 	 * @param description description of the data

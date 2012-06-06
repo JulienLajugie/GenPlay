@@ -34,6 +34,8 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+
 /**
  * A generic class to provides tool to handle the Undo / Redo / Reset actions
  * @author Julien Lajugie
@@ -46,12 +48,12 @@ public class URRManager<T extends Serializable> implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private int 									length; 			// number of action that can be undone / redone
 	private T 										currentObject; 		// current object
-	private T 										initialObjectSaver; // initial object to restore with the reset action
+	private T 										initialObjectSaver; // Initial object to restore with the reset action. Used only for the serialization.
 	private transient ByteArrayOutputStream 		initialObject; 		// the initial object in it's compressed form. Transient because a BAOS can't be serialized
 	private transient List<ByteArrayOutputStream> 	undoList; 			// a list of object to restore with the undo action in a compressed form.
 	private transient List<ByteArrayOutputStream> 	redoList; 			// a list of object to restore with the redo action in a compressed form.
-	private List<T> 								undoListSaver; 		// the list of undo in an uncompressed form. Used only for the serialization
-	private List<T> 								redoListSaver; 		// the list of redo in an uncompressed form. Used only for the serialization
+	private List<T> 								undoListSaver; 		// the list of undo in an uncompressed form. Used only for the serialization.
+	private List<T> 								redoListSaver; 		// the list of redo in an uncompressed form. Used only for the serialization.
 	
 	
 	/**
@@ -127,7 +129,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		undoList = new LinkedList<ByteArrayOutputStream>();
 		redoList = new LinkedList<ByteArrayOutputStream>();
 		if (initialObjectSaver != null) {
-			initialObject = serializeAndZip(initialObjectSaver);
+			setInitialObject(serializeAndZip(initialObjectSaver));
 			initialObjectSaver = null;
 		}
 		if (undoListSaver != null) {
@@ -170,9 +172,9 @@ public class URRManager<T extends Serializable> implements Serializable {
 			int lastIndex = redoList.size() - 1;
 			ByteArrayOutputStream newBaos = redoList.get(lastIndex);
 			if (initialObject == null) {
-				initialObject = oldBaos;
+				setInitialObject(oldBaos);
 			} else if (initialObject.equals(newBaos)) {
-				initialObject = null;
+				setInitialObject(null);
 			}
 			currentObject = unzipAndUnserialize(newBaos);
 			redoList.remove(lastIndex);
@@ -191,7 +193,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 	 */
 	public T reset() throws IOException, ClassNotFoundException {
 		set(unzipAndUnserialize(initialObject));
-		initialObject = null;
+		setInitialObject(null);
 		return currentObject;
 	}
 
@@ -224,9 +226,9 @@ public class URRManager<T extends Serializable> implements Serializable {
 		if (newObject != null) {
 			ByteArrayOutputStream oldBaos = null;
 			// if it's the first operation
-			if (initialObject == null) {
+			if (initialObject == null && ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
 				oldBaos = serializeAndZip(currentObject);
-				initialObject = oldBaos;
+				setInitialObject(oldBaos);
 			}
 			// if we accept the undo operation
 			if (length > 0) {
@@ -281,9 +283,9 @@ public class URRManager<T extends Serializable> implements Serializable {
 			int lastIndex = undoList.size() - 1;
 			ByteArrayOutputStream newBaos = undoList.get(lastIndex);
 			if (initialObject == null) {
-				initialObject = oldBaos;
+				setInitialObject(oldBaos);
 			} else if (initialObject.equals(newBaos)) {
-				initialObject = null;
+				setInitialObject(null);
 			}
 			currentObject = unzipAndUnserialize(newBaos);
 			undoList.remove(lastIndex);
@@ -294,7 +296,27 @@ public class URRManager<T extends Serializable> implements Serializable {
 	}
 
 	
+	/**
+	 * Delete the initial object
+	 */
+	public void deactivateReset () {
+		setInitialObject(null);
+	}
+	
+	
 	 /**
+	 * @param initialObject the initialObject to set
+	 */
+	private void setInitialObject(ByteArrayOutputStream initialObject) {
+		if (initialObject == null) {
+			this.initialObject = null;
+		} else if (ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
+			this.initialObject = initialObject;
+		}
+	}
+
+
+	/**
 	 * Unzips and then unserializes a specified ByteArrayOutputStream
 	 * @param baos
 	 * @return an unziped and unserialized representation of the input parameter

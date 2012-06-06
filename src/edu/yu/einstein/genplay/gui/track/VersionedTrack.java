@@ -70,6 +70,11 @@ public interface VersionedTrack {
 	public void resetData();
 
 
+	/**
+	 * Disable the reset function
+	 */
+	public void deactivateReset();
+	
 	
 	/**
 	 * Changes the undo count of the track

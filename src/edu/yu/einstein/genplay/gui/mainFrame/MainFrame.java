@@ -84,7 +84,7 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 584; 						// GenPlay version
+	private static final int VERSION_NUMBER = 585; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
@@ -235,9 +235,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// if the chromosome changed we reinitialize the multigenome data
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
-			//projectChromosome.setCurrentChromosome(evt.getNewWindow().getChromosome());
-			//PAMultiGenomeSNP multiGenomeSNP = new PAMultiGenomeSNP();
-			//multiGenomeSNP.actionPerformed(null);
 			PAMultiGenomeRefresh tracksUpdate = new PAMultiGenomeRefresh();
 			tracksUpdate.actionPerformed(null);
 		}
@@ -406,6 +403,9 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			}
 			if (optionDialog.undoCountChanged()) {
 				trackList.undoCountChanged();
+			}
+			if (optionDialog.resetTrackChanged()) {
+				trackList.resetTrackChanged();
 			}
 			if (optionDialog.legendChanged()) {
 				trackList.legendChanged();

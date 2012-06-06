@@ -230,6 +230,14 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 
 	
 	/**
+	 * Disable the reset function
+	 */
+	protected void deactivateReset () {
+		urrManager.deactivateReset();
+	}
+	
+	
+	/**
 	 * Sets the data showed in the track
 	 * @param data the data showed in the track
 	 * @param description description of the data

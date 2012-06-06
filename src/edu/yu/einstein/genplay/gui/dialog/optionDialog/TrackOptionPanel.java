@@ -55,6 +55,8 @@ final class TrackOptionPanel extends OptionPanel {
 	private final JFormattedTextField 	jftfTrackHeight;	// text field track count
 	private final JLabel 				jlUndoCount; 		// label undo count
 	private final JFormattedTextField 	jftfUndoCount; 		// label undo count
+	private final JLabel 				jlResetTrack;	 	// label reset track
+	private final JCheckBox				jcResetTrack;	 	// checkbox reset track
 	private final JLabel 				jlLegend;	 		// label legend (multi-genome)
 	private final JCheckBox				jcLegend;	 		// checkbox legend (multi-genome)
 
@@ -107,6 +109,16 @@ final class TrackOptionPanel extends OptionPanel {
 			}
 		});
 		
+		jlResetTrack = new JLabel("Enable reset:");
+		jcResetTrack = new JCheckBox();
+		jcResetTrack.setSelected(ProjectManager.getInstance().getProjectConfiguration().isResetTrack());
+		jcResetTrack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				projectConfiguration.setResetTrack(jcResetTrack.isSelected());
+			}
+		});
+		
 		jlLegend = new JLabel("Show Legend:");
 		jcLegend = new JCheckBox();
 		jcLegend.setSelected(ProjectManager.getInstance().getProjectConfiguration().isLegend());
@@ -116,7 +128,7 @@ final class TrackOptionPanel extends OptionPanel {
 				projectConfiguration.setLegend(jcLegend.isSelected());
 			}
 		});
-		
+
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -161,10 +173,22 @@ final class TrackOptionPanel extends OptionPanel {
 		c.gridy = 3;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(10, 0, 10, 10);
-		add(jlLegend, c);
+		add(jlResetTrack, c);
 
 		c.gridx = 1;
 		c.gridy = 3;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(10, 10, 10, 0);
+		add(jcResetTrack, c);
+		
+		c.gridx = 0;
+		c.gridy = 4;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(10, 0, 10, 10);
+		add(jlLegend, c);
+
+		c.gridx = 1;
+		c.gridy = 4;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(10, 10, 10, 0);
 		add(jcLegend, c);

@@ -51,6 +51,9 @@ public final class ProjectConfiguration implements Serializable {
 	private static final int MIN_TRACK_HEIGHT 		= 30; 					// minimum height of the tracks
 	private static final int MAX_TRACK_HEIGHT 		= 2000; 				// maximum height of the tracks
 	private static final int DEFAULT_UNDO_COUNT 	= 1; 					// default number of undo in memory
+	
+	private static final boolean DEFAULT_RESET_TRACK 	= true; 			// default value of reset track
+	private static final boolean DEFAULT_SHOW_LEGEND 	= true; 			// default value of show legend
 
 
 	private static String CONFIG_FILE_NAME = "GenPlay_config.cfg"; 			// the config file
@@ -62,7 +65,8 @@ public final class ProjectConfiguration implements Serializable {
 	private int 	trackCount = DEFAULT_TRACK_COUNT; 						// track count
 	private int 	trackHeight = DEFAULT_TRACK_HEIGHT; 					// track height
 	private int 	undoCount = DEFAULT_UNDO_COUNT; 						// number of undo in memory
-	private boolean legend = true;											// show legend for multi genome stripes
+	private boolean resetTrack = DEFAULT_RESET_TRACK;						// enable the reset track feature
+	private boolean legend = DEFAULT_SHOW_LEGEND;							// show legend for multi genome stripes
 
 
 	/**
@@ -86,7 +90,8 @@ public final class ProjectConfiguration implements Serializable {
 		trackCount = DEFAULT_TRACK_COUNT;
 		trackHeight = DEFAULT_TRACK_HEIGHT;
 		undoCount = DEFAULT_UNDO_COUNT;
-		legend = true;
+		resetTrack = DEFAULT_RESET_TRACK;
+		legend = DEFAULT_SHOW_LEGEND;
 	}
 
 
@@ -210,6 +215,14 @@ public final class ProjectConfiguration implements Serializable {
 	public int getUndoCount() {
 		return undoCount;
 	}
+	
+
+	/**
+	 * @return the resetTrack
+	 */
+	public boolean isResetTrack() {
+		return resetTrack;
+	}
 
 
 	/**
@@ -288,6 +301,14 @@ public final class ProjectConfiguration implements Serializable {
 	}
 
 
+	/**
+	 * @param resetTrack the resetTrack to set
+	 */
+	public void setResetTrack(boolean resetTrack) {
+		this.resetTrack = resetTrack;
+	}
+	
+	
 	/**
 	 * @param legend the legend to set
 	 */

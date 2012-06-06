@@ -77,6 +77,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	private final int 					trackCount; 		// track count
 	private final int 					trackHeight; 		// track height
 	private final int 					undoCount; 			// undo count
+	private final boolean				resetTrack;			// reset track feature
 	private final boolean				legend;				// show legend (multi genome)
 	private int 			approved = CANCEL_OPTION; 		// Equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
@@ -106,6 +107,7 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 		trackCount = cm.getTrackCount();
 		trackHeight = cm.getTrackHeight();
 		undoCount = cm.getUndoCount();
+		resetTrack = cm.isResetTrack();
 		legend = cm.isLegend();
 
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode("Options");
@@ -340,6 +342,14 @@ public final class OptionDialog extends JDialog implements TreeSelectionListener
 	 */
 	public boolean undoCountChanged() {
 		return undoCount != cm.getUndoCount();
+	}
+	
+	
+	/**
+	 * @return true if the reset track parameter changed
+	 */
+	public boolean resetTrackChanged() {
+		return resetTrack != cm.isResetTrack();
 	}
 	
 	
