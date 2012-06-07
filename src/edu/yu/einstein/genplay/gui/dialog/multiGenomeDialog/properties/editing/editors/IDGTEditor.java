@@ -48,10 +48,11 @@ public class IDGTEditor implements IDEditor {
 	private final static String HETEROZYGOTE 			= "heterozygote";
 
 	private JPanel			panel;
-	private VCFHeaderType 	header;			// Header ID
-	private JRadioButton	homozygote;		// Radio box for PRESENT value
-	private JRadioButton	heterozygote;			// Radio box for ABSENT value
-	private JCheckBox		phased;			// Check box to take into account (or not) phased genotypes
+	private VCFHeaderType 	header;				// Header ID
+	private JLabel 			constraintLabel;	// Label for naming the constraint
+	private JRadioButton	homozygote;			// Radio box for PRESENT value
+	private JRadioButton	heterozygote;		// Radio box for ABSENT value
+	private JCheckBox		phased;				// Check box to take into account (or not) phased genotypes
 	private JCheckBox		unPhased;			// Check box to take into account (or not) phased genotypes
 
 
@@ -60,7 +61,7 @@ public class IDGTEditor implements IDEditor {
 		panel = new JPanel();
 
 		// Creates the label
-		JLabel constraintLabel = new JLabel("Must be:");
+		constraintLabel = new JLabel("Must be:");
 		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
 
 		// Creates the radio boxes
@@ -188,6 +189,7 @@ public class IDGTEditor implements IDEditor {
 	public void setEnabled(boolean b) {
 		if (panel != null) {
 			panel.setEnabled(b);
+			constraintLabel.setEnabled(b);
 			homozygote.setEnabled(b);
 			heterozygote.setEnabled(b);
 			phased.setEnabled(b);

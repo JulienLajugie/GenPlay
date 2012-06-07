@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 
 /**
@@ -77,8 +78,11 @@ public class IDEditingPanel extends EditingPanel<VCFHeaderType> implements ListS
 			String[] paths = new String[headers.size()];
 			model.clear();
 			for (int i = 0; i < headers.size(); i++) {
-				model.addElement(headers.get(i));
-				paths[i] = headers.get(i).toString();
+				VCFHeaderType current = headers.get(i);
+				if (!(current instanceof VCFHeaderFilterType)) {
+					model.addElement(headers.get(i));
+					paths[i] = headers.get(i).toString();
+				}
 			}
 			int width = getMaxStringLength(paths);
 			int height = getStringHeight() * headers.size();

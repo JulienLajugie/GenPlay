@@ -21,39 +21,33 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 
+import java.util.List;
 
 /**
- * This class declares methods required for advanced VCF type field:
- * - INFO
- * - FORMAT
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VCFHeaderAdvancedType extends VCFHeaderType {
+public interface VCFHeaderElementRecord extends VCFHeaderType {
 	
 	
 	/**
-	 * @return the number
+	 * Checks if the header ID accepts more elements
+	 * @return true if it can have more elements, false otherwise.
 	 */
-	public String getNumber();
-
+	public boolean acceptMoreElements ();
+	
 	
 	/**
-	 * @param number the number to set
+	 * Add an element to the list of element of the header ID
+	 * @param element the element
 	 */
-	public void setNumber(String number);
-
+	public void addElement (Object element);
+	
 	
 	/**
-	 * @return the type
+	 * @return the values found for this header ID
 	 */
-	public Class<?> getType();
-
-	
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(Class<?> type);
+	public List<Object> getElements ();
 	
 	
 }

@@ -87,7 +87,6 @@ public class MGPosition implements Serializable {
 		this.vcfFile = vcfFile;
 		VCFLine = line;
 		this.genomeRawName = FormattedMultiGenomeName.getRawName(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName());
-		this.vcfFile.getHeader().retrievePositionInformation(this);
 	}
 
 

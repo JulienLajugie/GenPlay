@@ -59,6 +59,8 @@ public class IDStringEditor implements IDEditor {
 
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
+	private JLabel 			constraintLabel;	// Label for naming the constraint
+	private JLabel 			valueLabel;			// Label for naming the value
 	private JComboBox		jcValue;			// Editable combo box for selecting the value
 	private List<String>	defaultElements;	// The default elements for the value box
 	private JRadioButton	present;			// Radio box for PRESENT value
@@ -70,18 +72,17 @@ public class IDStringEditor implements IDEditor {
 	 */
 	public IDStringEditor () {
 		defaultElements = new ArrayList<String>();
+		// Creates the labels
+		constraintLabel = new JLabel("Constraint:");
+		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
+		valueLabel = new JLabel("Value:");
+		valueLabel.setToolTipText(VALUE_LABEL_TTT);
 	}
 
 
 	@Override
 	public JPanel updatePanel() {
 		panel = new JPanel();
-
-		// Creates the labels
-		JLabel constraintLabel = new JLabel("Constraint:");
-		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
-		JLabel valueLabel = new JLabel("Value:");
-		valueLabel.setToolTipText(VALUE_LABEL_TTT);
 
 		// Creates the radio boxes
 		present = new JRadioButton(PRESENT);
@@ -253,6 +254,8 @@ public class IDStringEditor implements IDEditor {
 	public void setEnabled(boolean b) {
 		if (panel != null) {
 			panel.setEnabled(b);
+			constraintLabel.setEnabled(b);
+			valueLabel.setEnabled(b);
 			jcValue.setEnabled(b);
 			present.setEnabled(b);
 			absent.setEnabled(b);

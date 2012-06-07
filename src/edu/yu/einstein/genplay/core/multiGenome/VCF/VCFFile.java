@@ -58,7 +58,7 @@ public class VCFFile implements Serializable {
 	private VCFReader 							reader;				// Reader for the VCF file
 	private VCFFileStatistic					statistics;			// VCF file statistics
 	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
-	private IntArrayAsIntegerList				positionList;		// reference genome position array (indexes match with the boolean list)
+	private IntArrayAsIntegerList				positionList;		// reference genome position array (indexes match with the boolean list of filters)
 
 
 	/**

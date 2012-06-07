@@ -137,4 +137,5 @@ public class VCFLineUtility {
 
 		return result;
 	}
+	
 }

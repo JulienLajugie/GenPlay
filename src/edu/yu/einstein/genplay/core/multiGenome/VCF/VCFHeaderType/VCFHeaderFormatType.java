@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 
@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.enums.VCFColumnName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFHeaderFormatType implements VCFHeaderAdvancedType {
+public class VCFHeaderFormatType implements VCFHeaderAdvancedType, VCFHeaderElementRecord {
 	
 	private static final long serialVersionUID = -6443787383850651884L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;			// saved format version
@@ -42,7 +42,7 @@ public class VCFHeaderFormatType implements VCFHeaderAdvancedType {
 	private String description; 	// field description
 	private String number;			// the number of values that can be included
 	private Class<?> type;			// type of the value. Can be Integer, Float, Character, and String (and Flag for INFO field)
-	private Map<Object, Integer> values;
+	private List<Object> elements;
 	
 
 	/**
@@ -56,7 +56,7 @@ public class VCFHeaderFormatType implements VCFHeaderAdvancedType {
 		out.writeObject(description);
 		out.writeObject(number);
 		out.writeObject(type);
-		out.writeObject(values);
+		out.writeObject(elements);
 	}
 
 
@@ -77,7 +77,7 @@ public class VCFHeaderFormatType implements VCFHeaderAdvancedType {
 			number = (String) in.readObject();
 		}
 		type = (Class<?>) in.readObject();	
-		values = (Map<Object, Integer>) in.readObject();
+		elements = (List<Object>) in.readObject();
 	}
 	
 	
@@ -85,7 +85,7 @@ public class VCFHeaderFormatType implements VCFHeaderAdvancedType {
 	 * Constructor of {@link VCFHeaderFormatType}
 	 */
 	public VCFHeaderFormatType () {
-		values = new HashMap<Object, Integer>();
+		elements = new ArrayList<Object>();
 	}
 	
 	
@@ -149,26 +149,23 @@ public class VCFHeaderFormatType implements VCFHeaderAdvancedType {
 
 	@Override
 	public void addElement(Object element) {
-		//System.out.println(id + ": " + element.toString());
-		int cpt = 0;
-		if (values.containsKey(element)) {
-			cpt = values.get(element) + 1;
+		if (!elements.contains(element)) {
+			elements.add(element);
 		}
-		values.put(element, cpt);
 	}
 	
 	
 	/**
 	 * @return the values found for this header ID
 	 */
-	public Map<Object, Integer> getElements () {
-		return values;
+	public List<Object> getElements () {
+		return elements;
 	}
 
 
 	@Override
 	public boolean acceptMoreElements() {
-		if (values.size() <= VCFHeaderType.ELEMENT_LIMIT) {
+		if (elements.size() <= VCFHeaderType.ELEMENT_LIMIT) {
 			return true;
 		}
 		return false;

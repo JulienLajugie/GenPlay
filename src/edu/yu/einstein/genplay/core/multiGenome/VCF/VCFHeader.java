@@ -40,7 +40,6 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 
 
 /**
@@ -183,6 +182,8 @@ public class VCFHeader implements Serializable {
 		basicFilterHeader.setColumnCategory(VCFColumnName.FILTER);
 		basicFilterHeader.setId(VCFColumnName.FILTER.toString());
 		basicFilterHeader.setDescription("Filter value");
+		basicFilterHeader.addElement("PASS");
+		basicFilterHeader.addElement(".");
 		
 		basicHeader.add(basicAlternativeHeader);
 		basicHeader.add(basicQualityHeader);
@@ -209,6 +210,7 @@ public class VCFHeader implements Serializable {
 						} else if (type.equals(VCFColumnName.FILTER.toString())) {
 							headerType = new VCFHeaderFilterType();
 							filterHeader.add(headerType);
+							basicFilterHeader.addElement(headerType);
 						} else if (type.equals(VCFColumnName.INFO.toString())) {
 							headerType = new VCFHeaderInfoType();
 							infoHeader.add((VCFHeaderAdvancedType) headerType);
@@ -265,60 +267,32 @@ public class VCFHeader implements Serializable {
 	
 	
 	/**
-	 * Analyze a a VCF position line to update the IDs elements lists.
-	 * @param positionInformation the position information object
+	 * Looks for a INFO header using an ID.
+	 * @param id the ID
+	 * @return	the header or null
 	 */
-	public void retrievePositionInformation (MGPosition positionInformation) {
-		retrieveINFOValues(positionInformation.getInfo());
-		retrieveFORMATValues(positionInformation);
-	}
-
-
-	/**
-	 * Analyze a a VCF INFO line to update the IDs elements lists.
-	 * @param line a INFO line of a VCF
-	 */
-	private void retrieveFORMATValues (MGPosition positionInformation) {
-		if (formatHeader.size() > 0) {
-			//for (String genomeRawName: genomeNames) {
-			for (VCFHeaderAdvancedType header: formatHeader) {
-				if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
-					Object value = positionInformation.getFormatValue(header.getId());
-					header.addElement(value);
-				}
-			}
-			//}
-		}
-	}
-
-
-	/**
-	 * Analyze a a VCF INFO line to update the IDs elements lists.
-	 * @param line a INFO line of a VCF
-	 */
-	private void retrieveINFOValues (String line) {
-		if (infoHeader.size() > 0) {
-			for (VCFHeaderAdvancedType header: infoHeader) {
-				if (header.getType().isInstance(new String()) && header.acceptMoreElements()) {
-					if (header.getId() == null) {
-
-					}
-					Object value;
-					try {
-						value = VCFLineUtility.getIDValue(line, header.getId());
-					} catch (Exception e) {
-						String info = "ID: " + header.getId() + "; ";
-						info += "DESCRIPTION: " + header.getDescription() + "; ";
-						info += "NUMBER: " + header.getNumber() + "; ";
-						info += "CLASS: " + header.getClass() + "; ";
-						System.out.println(info);
-					}
-					value = VCFLineUtility.getIDValue(line, header.getId());
-					//Object value = getIDValue(line, header.getId());
-					header.addElement(value);
-				}
+	public VCFHeaderAdvancedType getInfoHeaderFromID (String id) {
+		for (VCFHeaderAdvancedType header: infoHeader) {
+			if (header.getId().equals(id)) {
+				return header;
 			}
 		}
+		return null;
+	}
+	
+	
+	/**
+	 * Looks for a FORMAT header using an ID.
+	 * @param id the ID
+	 * @return	the header or null
+	 */
+	public VCFHeaderAdvancedType getFormatHeaderFromID (String id) {
+		for (VCFHeaderAdvancedType header: formatHeader) {
+			if (header.getId().equals(id)) {
+				return header;
+			}
+		}
+		return null;
 	}
 	
 	

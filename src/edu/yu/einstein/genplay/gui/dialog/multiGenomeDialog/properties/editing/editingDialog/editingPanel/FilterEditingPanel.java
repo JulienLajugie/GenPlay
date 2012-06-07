@@ -28,7 +28,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
@@ -37,6 +36,7 @@ import javax.swing.JRadioButton;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderElementRecord;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.GenotypeIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
@@ -104,6 +104,20 @@ public class FilterEditingPanel extends EditingPanel<IDFilterInterface> implemen
 				filterEditor = new IDNumberEditor();
 			} else if (column == VCFColumnName.FILTER) {
 				filterEditor = new IDStringEditor();
+				if (header instanceof VCFHeaderElementRecord) {
+					List<String> elements = new ArrayList<String>();
+					List<Object> elementsList = ((VCFHeaderElementRecord)header).getElements();
+					for (Object o: elementsList) {
+						if (elementsList != null && elementsList.size() > 0) {
+							if (o instanceof String) {
+								elements.add(o.toString());
+							} else if (o instanceof VCFHeaderBasicType) {
+								elements.add(((VCFHeaderBasicType)o).getId());
+							}
+						}
+					}
+					((IDStringEditor)filterEditor).setDefaultElements(elements);
+				}
 			}
 		} else if (object instanceof VCFHeaderAdvancedType) {
 			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) object;
@@ -113,12 +127,16 @@ public class FilterEditingPanel extends EditingPanel<IDFilterInterface> implemen
 				filterEditor = new IDFlagEditor();
 			} else if (advancedHeader.getType() == String.class){
 				filterEditor = new IDStringEditor();
-				List<String> elements = new ArrayList<String>();
-				Map<Object, Integer> elementsMap = advancedHeader.getElements();
-				for (Object o: elementsMap.keySet()) {
-					elements.add(o.toString());
+				if (advancedHeader instanceof VCFHeaderElementRecord) {
+					List<Object> elementsList = ((VCFHeaderElementRecord)advancedHeader).getElements();
+					if (elementsList != null && elementsList.size() > 0) {
+						List<String> elements = new ArrayList<String>();
+						for (Object o: elementsList) {
+							elements.add(o.toString());
+						}
+						((IDStringEditor)filterEditor).setDefaultElements(elements);
+					}
 				}
-				((IDStringEditor)filterEditor).setDefaultElements(elements);
 			}
 
 			if (advancedHeader.getId().equals("GT")) {
@@ -271,7 +289,7 @@ public class FilterEditingPanel extends EditingPanel<IDFilterInterface> implemen
 		filterEditor.setEnabled(true);
 	}
 
-	
+
 	/**
 	 * Enables the panel for special filters
 	 */

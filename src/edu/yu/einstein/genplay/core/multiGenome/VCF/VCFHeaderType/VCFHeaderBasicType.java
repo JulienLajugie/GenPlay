@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 
@@ -36,12 +38,13 @@ import edu.yu.einstein.genplay.core.enums.VCFColumnName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFHeaderBasicType implements VCFHeaderType {
+public class VCFHeaderBasicType implements VCFHeaderType, VCFHeaderElementRecord {
 
 	private static final long serialVersionUID = 7171924074043506204L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private	VCFColumnName columnCategory;
 	private String description; 	// field description
+	private List<Object> elements;
 	
 	
 	/**
@@ -53,6 +56,7 @@ public class VCFHeaderBasicType implements VCFHeaderType {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(columnCategory);
 		out.writeObject(description);
+		out.writeObject(elements);
 	}
 
 
@@ -62,10 +66,12 @@ public class VCFHeaderBasicType implements VCFHeaderType {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		columnCategory = (VCFColumnName) in.readObject();
 		description = (String) in.readObject();
+		elements = (List<Object>) in.readObject();	
 	}
 	
 	
@@ -102,6 +108,34 @@ public class VCFHeaderBasicType implements VCFHeaderType {
 		this.description = description;
 	}
 
+	
+	@Override
+	public void addElement(Object element) {
+		if (elements == null) {
+			elements = new ArrayList<Object>();
+		}
+		if (!elements.contains(element)) {
+			elements.add(element);
+		}
+	}
+	
+	
+	/**
+	 * @return the values found for this header ID
+	 */
+	public List<Object> getElements () {
+		return elements;
+	}
+
+
+	@Override
+	public boolean acceptMoreElements() {
+		if (elements.size() <= VCFHeaderType.ELEMENT_LIMIT) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	@Override
 	public String toString () {

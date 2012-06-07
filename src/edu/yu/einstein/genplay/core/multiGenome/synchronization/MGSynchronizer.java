@@ -31,6 +31,7 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -39,7 +40,10 @@ import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileStatistic;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFSampleStatistic;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderElementRecord;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
@@ -124,16 +128,17 @@ public class MGSynchronizer implements Serializable {
 			for (VCFFile vcfFile: VCFFileList) {																	// loop on every vcf reader
 				VCFFileStatistic statistic = vcfFile.getStatistics();
 				List<String> genomeNames = getRequiredGenomeNamesFromAReader(vcfFile);								// get the genome names list
-				List<String> columnNames = getColumnNamesForQuery(genomeNames);										// get the list of column to perform the query on the current vcf
-
+				VCFHeader fileHeader = vcfFile.getHeader();
+				List<String> genomeRawNames = fileHeader.getRawGenomesNames();
+				List<String> columnNames = getColumnNamesForQuery(genomeRawNames);									// get the list of column to perform the query on the current vcf
 				List<Map<String, Object>> result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
 
 				for (Map<String, Object> VCFLine: result) {															// loop on every line of the result of the query
-					int referencePosition = Integer.parseInt(VCFLine.get("POS").toString());						// get the reference genome position (POS field)
-					String reference = VCFLine.get("REF").toString();												// get the reference value (REF field)
-					String alternative = VCFLine.get("ALT").toString();												// get the alternative values and split them into an array (comma separated)
+					int referencePosition = Integer.parseInt(VCFLine.get(VCFColumnName.POS.toString()).toString());	// get the reference genome position (POS field)
+					String reference = VCFLine.get(VCFColumnName.REF.toString()).toString();						// get the reference value (REF field)
+					String alternative = VCFLine.get(VCFColumnName.ALT.toString()).toString();						// get the alternative values and split them into an array (comma separated)
 					String[] alternatives = alternative.split(",");
-					String info = VCFLine.get("INFO").toString();													// get the information of the variation (INFO field). Needs it if the variation is SV coded.
+					String info = VCFLine.get(VCFColumnName.INFO.toString()).toString();							// get the information of the variation (INFO field). Needs it if the variation is SV coded.
 					float score;
 					try {
 						score = Float.parseFloat(VCFLine.get("QUAL").toString());
@@ -145,7 +150,8 @@ public class MGSynchronizer implements Serializable {
 					VariantType[] variantTypes = getVariantTypes(variantLengths);
 
 					updateFileStatistics(statistic, variantTypes, alternatives);
-
+					updateHeaderInformation(fileHeader, VCFLine, genomeRawNames);
+					
 					for (String genomeName: genomeNames) {															// loop on every genome raw name
 						String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
 
@@ -213,18 +219,19 @@ public class MGSynchronizer implements Serializable {
 	 * Creates the list of the column names necessary for a query.
 	 * Four fields are static: POS, REF, ALT and INFO for the position synchronization.
 	 * Name of the genomes (raw name) must be added dynamically according to the content of the VCF file and the project requirements.
-	 * @param genomeNames list of genome names to add to the static list
+	 * @param genomeNames list of genome raw names to add to the static list
 	 * @return the list of column names necessary for a query
 	 */
-	private List<String> getColumnNamesForQuery (List<String> genomeNames) {
+	private List<String> getColumnNamesForQuery (List<String> genomeRawNames) {
 		List<String> columnNames = new ArrayList<String>();
-		columnNames.add("POS");
-		columnNames.add("REF");
-		columnNames.add("ALT");
-		columnNames.add("QUAL");
-		columnNames.add("INFO");
-		for (String genomeName: genomeNames) {
-			columnNames.add(FormattedMultiGenomeName.getRawName(genomeName));
+		columnNames.add(VCFColumnName.POS.toString());
+		columnNames.add(VCFColumnName.REF.toString());
+		columnNames.add(VCFColumnName.ALT.toString());
+		columnNames.add(VCFColumnName.QUAL.toString());
+		columnNames.add(VCFColumnName.INFO.toString());
+		columnNames.add(VCFColumnName.FORMAT.toString());
+		for (String genomeName: genomeRawNames) {
+			columnNames.add(genomeName);
 		}
 		return columnNames;
 	}
@@ -405,6 +412,12 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
+	/**
+	 * Defines if a variant is homozygote according to its genotype.
+	 * @param firstAlleleNumber		number related to the "first" allele
+	 * @param secondAlleleNumber	number related to the "second" allele
+	 * @return	true if the variant is homozygote, false otherwise
+	 */
 	private boolean isVariantHomozygote (int firstAlleleNumber, int secondAlleleNumber) {
 		if (firstAlleleNumber == secondAlleleNumber && firstAlleleNumber >= 0) {
 			return true;
@@ -413,6 +426,12 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
+	/**
+	 * Defines if a variant is heterozygote according to its genotype.
+	 * @param firstAlleleNumber		number related to the "first" allele
+	 * @param secondAlleleNumber	number related to the "second" allele
+	 * @return	true if the variant is heterozygote, false otherwise
+	 */
 	private boolean isVariantHeterozygote (int firstAlleleNumber, int secondAlleleNumber) {
 		if (firstAlleleNumber != secondAlleleNumber) {
 			if (firstAlleleNumber >= 0 || secondAlleleNumber >= 0) {
@@ -459,6 +478,62 @@ public class MGSynchronizer implements Serializable {
 		return false;
 	}
 
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Update common information section
+	
+	
+	/**
+	 * Updates the header information.
+	 * It consists in storing the first values found of the IDs from INFO and FORMAT fields.
+	 */
+	private void updateHeaderInformation (VCFHeader fileHeader, Map<String, Object> VCFLine, List<String> genomeNames) {
+		updateHeaderINFOInformation(fileHeader, VCFLine);
+		updateHeaderFORMATInformation(fileHeader, VCFLine, genomeNames);
+	}
+	
+	
+	/**
+	 * Updates the INFO header information.
+	 * It consists in storing the first values found of the IDs from the INFO field.
+	 */
+	private void updateHeaderINFOInformation (VCFHeader header, Map<String, Object> VCFLine) {
+		String info = (String) VCFLine.get(VCFColumnName.INFO.toString());
+		String[] fields = info.split(";");
+		for (int i = 0; i < fields.length; i++) {
+			String[] pair = fields[i].split("=");
+			if (pair.length == 2) {
+				String id = pair[0];
+				Object value = pair[1];
+				VCFHeaderAdvancedType infoHeader = header.getInfoHeaderFromID(id);
+				if (infoHeader.getType() == String.class) {
+					((VCFHeaderElementRecord)infoHeader).addElement(value);
+				}
+			}
+		}
+	}
+	
+	
+	/**
+	 * Updates the FORMAT header information.
+	 * It consists in storing the first values found of the IDs from the FORMAT field.
+	 */
+	private void updateHeaderFORMATInformation (VCFHeader header, Map<String, Object> VCFLine, List<String> genomeNames) {
+		String format = (String) VCFLine.get(VCFColumnName.FORMAT.toString());
+		String[] fields = format.split(":");
+		for (int i = 0; i < fields.length; i++) {
+			VCFHeaderAdvancedType formatHeader = header.getFormatHeaderFromID(fields[i]);
+			if (formatHeader.getId().equals("GT") || formatHeader.getType() == String.class) {
+				for (String genome: genomeNames) {
+					String[] values = ((String) VCFLine.get(genome)).split(":");
+					if (i < values.length) {
+						((VCFHeaderElementRecord)formatHeader).addElement(values[i]);
+					}
+				}
+			}
+		}
+	}
+	
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Synchronization section
 

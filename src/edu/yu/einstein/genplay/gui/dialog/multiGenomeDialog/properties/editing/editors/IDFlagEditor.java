@@ -48,6 +48,7 @@ public class IDFlagEditor implements IDEditor {
 	
 	private JPanel			panel;
 	private VCFHeaderType 	header;			// Header ID
+	private JLabel 			constraintLabel;	// Label for naming the constraint
 	private JRadioButton	present;		// Radio box for PRESENT value
 	private JRadioButton	absent;			// Radio box for ABSENT value
 	
@@ -57,7 +58,7 @@ public class IDFlagEditor implements IDEditor {
 		panel = new JPanel();
 
 		// Creates the label
-		JLabel constraintLabel = new JLabel("Must be:");
+		constraintLabel = new JLabel("Must be:");
 		constraintLabel.setToolTipText(CONSTRAINT_LABEL_TTT);
 
 		// Creates the radio boxes
@@ -152,6 +153,7 @@ public class IDFlagEditor implements IDEditor {
 	public void setEnabled(boolean b) {
 		if (panel != null) {
 			panel.setEnabled(b);
+			constraintLabel.setEnabled(b);
 			present.setEnabled(b);
 			absent.setEnabled(b);
 		}
