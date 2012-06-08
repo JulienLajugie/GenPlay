@@ -36,11 +36,11 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
 import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
-import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 

@@ -34,11 +34,11 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOTwoTracks;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 

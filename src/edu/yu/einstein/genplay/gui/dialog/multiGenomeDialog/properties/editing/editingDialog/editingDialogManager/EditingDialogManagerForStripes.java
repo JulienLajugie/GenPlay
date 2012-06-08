@@ -46,9 +46,9 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class EditingDialogManagerForStripes implements EditingDialogManagerInterface<StripesData>{
 
 	private List<EditingPanel<?>> 			editingPanelList;			// List of editing panel
+	private TrackEditingPanel 				trackEditingPanel;			// Panel to edit the tracks
 	private GenomeEditingPanel 				genomeEditingPanel;			// Panel to edit the genomes
 	private VariationTypeEditingPanel 		variationTypeEditingPanel;	// Panel to edit the variations
-	private TrackEditingPanel 				trackEditingPanel;			// Panel to edit the tracks
 
 	private StripesData currentData;								// The current stripe data (can be null)
 
@@ -57,6 +57,9 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	 * Constructor of {@link EditingDialogManagerForStripes}
 	 */
 	public EditingDialogManagerForStripes () {
+		// Tracks editing panel
+		trackEditingPanel = new TrackEditingPanel();
+		
 		// Genomes editing panel
 		genomeEditingPanel = new GenomeEditingPanel(false);
 
@@ -64,14 +67,12 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 		variationTypeEditingPanel = new VariationTypeEditingPanel();
 		genomeEditingPanel.addPanelListener(variationTypeEditingPanel);
 
-		// Tracks editing panel
-		trackEditingPanel = new TrackEditingPanel();
 
 		// List of editing panel
 		editingPanelList = new ArrayList<EditingPanel<?>>();
+		editingPanelList.add(trackEditingPanel);
 		editingPanelList.add(genomeEditingPanel);
 		editingPanelList.add(variationTypeEditingPanel);
-		editingPanelList.add(trackEditingPanel);
 	}
 
 

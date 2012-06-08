@@ -30,9 +30,9 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.binListWriter.ConcatenateBinListWriter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.dialog.MultiTrackChooser;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.trackChooser.MultiTrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 

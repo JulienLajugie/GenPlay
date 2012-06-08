@@ -48,12 +48,12 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class EditingDialogManagerForFilters implements EditingDialogManagerInterface<FiltersData>{
 
 	private List<EditingPanel<?>> 		editingPanelList;		// List of editing panel
+	private TrackEditingPanel 			trackEditingPanel;		// Panel to edit the tracks
 	private FileEditingPanel 			fileEditingPanel;		// Panel to edit the file
 	private IDEditingPanel 				IDEditingPanel;			// Panel to edit the ID
 	private GenomeEditingPanel			genomeEditingPanel;		// Panel to edit the genomes
 	private OperatorEditingPanel 		operatorEditingPanel;	// Panel to edit the operator
 	private FilterEditingPanel 			filterEditingPanel;		// Panel to edit the filter
-	private TrackEditingPanel 			trackEditingPanel;		// Panel to edit the tracks
 
 	private FiltersData currentData;						// The current filter data (can be null)
 
@@ -62,6 +62,9 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 	 * Constructor of {@link EditingDialogManagerForFilters}
 	 */
 	public EditingDialogManagerForFilters () {
+		// Tracks editing panel
+		trackEditingPanel = new TrackEditingPanel();
+		
 		// File editing panel
 		fileEditingPanel = new FileEditingPanel();
 
@@ -84,17 +87,15 @@ public class EditingDialogManagerForFilters implements EditingDialogManagerInter
 		filterEditingPanel = new FilterEditingPanel();
 		IDEditingPanel.addPanelListener(filterEditingPanel);
 
-		// Tracks editing panel
-		trackEditingPanel = new TrackEditingPanel();
 
 		// List of editing panel
 		editingPanelList = new ArrayList<EditingPanel<?>>();
+		editingPanelList.add(trackEditingPanel);
 		editingPanelList.add(fileEditingPanel);
 		editingPanelList.add(IDEditingPanel);
 		editingPanelList.add(genomeEditingPanel);
 		editingPanelList.add(operatorEditingPanel);
 		editingPanelList.add(filterEditingPanel);
-		editingPanelList.add(trackEditingPanel);
 	}
 
 

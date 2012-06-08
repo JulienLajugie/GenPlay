@@ -31,10 +31,10 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromBinList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.dialog.TrackChooser;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.Utils;
 
 
