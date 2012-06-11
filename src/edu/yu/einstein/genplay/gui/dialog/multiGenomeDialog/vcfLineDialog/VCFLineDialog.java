@@ -79,15 +79,10 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		// Initialize the table
 		table = new JTable();
 		table.addMouseListener(this);
-		//table.setFillsViewportHeight(true);
 		
 		// Initialize the scroll pane
-		//pane = new JScrollPane(table);
 		pane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
-		
-		//setLayout(new BorderLayout());
-		//add(pane, BorderLayout.CENTER);
 		add(pane);
 
 		// Initialize the popup menu
@@ -193,6 +188,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		VCFLineTableModel model = new VCFLineTableModel(columns.toArray(), data);
 		table = new JTable(model);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.addMouseListener(this);
 
 		// Sets the column widths
 		TableColumnModel columnModel = table.getColumnModel();

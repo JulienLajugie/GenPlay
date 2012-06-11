@@ -24,8 +24,6 @@ package edu.yu.einstein.genplay.gui.trackChooser;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.FontMetrics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -39,13 +37,12 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ExpressTrackChooserPanel extends JPanel implements MouseListener {
+public class ExpressTrackChooserPanel extends JPanel {
 
 	/** Generated default version ID */
 	private static final long serialVersionUID = -1472615405340919386L;
 
 	private Track<?>[] allTracks;
-	private int[] indexes;
 	private JList jList;
 	private DefaultListModel model;
 
@@ -69,13 +66,10 @@ public class ExpressTrackChooserPanel extends JPanel implements MouseListener {
 		jList = new JList();
 		jList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		jList.setModel(model);
-		jList.addMouseListener(this);
-
-		// Set the list of selected index
-		indexes = new int[0];
 
 		// Adds the list
 		add(jList);
+		jList.setSelectionModel(new ExpressTrackChooserListSelectionModel());
 	}
 
 
@@ -84,7 +78,6 @@ public class ExpressTrackChooserPanel extends JPanel implements MouseListener {
 	 */
 	public void reset () {
 		jList.clearSelection();
-		indexes = new int[0];
 	}
 
 
@@ -121,70 +114,15 @@ public class ExpressTrackChooserPanel extends JPanel implements MouseListener {
 	 * @return an array of selected tracks
 	 */
 	public Track<?>[] getSelectedTrack () {
-		if (indexes.length > 0) {
-			Track<?>[] result = new Track<?>[indexes.length];
-			int i = 0;
-			for (int index: indexes) {
-				result[i] = allTracks[index];
-				i++;
-			}
-			return result;
-		}
-		return null;
-	}
-
-
-	/**
-	 * Look after an index in the index array
-	 * @param index the index do find
-	 * @return	true if it has been found, false otherwise
-	 */
-	private boolean hasFound (int index) {
-		boolean hasBeenFound = false;
-		int i = 0;
-		while (i < indexes.length && !hasBeenFound) {
-			if (indexes[i] == index) {
-				hasBeenFound = true;
-			}
-			i++;
-		}
-		return hasBeenFound;
-	}
-	
-	
-	/**
-	 * Adds an index in the list of selected index
-	 * @param index the index
-	 */
-	private void addIndex (int index) {
-		int size = indexes.length + 1;
-		int[] indexesTmp = new int[size];
+		int[] indexes = jList.getSelectedIndices();
+		Track<?>[] tracks = new Track[indexes.length];
 		for (int i = 0; i < indexes.length; i++) {
-			indexesTmp[i] = indexes[i];
+			tracks[i] = allTracks[indexes[i]];
 		}
-		indexesTmp[indexesTmp.length - 1] = index;
-		indexes = indexesTmp;
+		return tracks;
 	}
-	
 
-	/**
-	 * Removes an index in the list of selected index
-	 * @param index the index
-	 */
-	private void removeIndex (int index) {
-		int size = indexes.length - 1;
-		int[] indexesTmp = new int[size];
-		int i = 0;
-		for (int current: indexes) {
-			if (index != current) {
-				indexesTmp[i] = current;
-				i++;
-			}
-		}
-		indexes = indexesTmp;
-	}
-	
-	
+
 	/**
 	 * Makes the calculation of the minimum dimension of the list.
 	 * @return the dimension of the list
@@ -202,8 +140,8 @@ public class ExpressTrackChooserPanel extends JPanel implements MouseListener {
 		int height = (fm.getHeight() + 3) * allTracks.length;
 		return new Dimension(width, height);
 	}
-	
-	
+
+
 	/**
 	 * Set the size of the list.
 	 * @param dimension
@@ -211,30 +149,5 @@ public class ExpressTrackChooserPanel extends JPanel implements MouseListener {
 	public void setListSize (Dimension dimension) {
 		jList.setPreferredSize(dimension);
 	}
-
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {}
-
-	@Override
-	public void mousePressed(MouseEvent arg0) {}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		int index = jList.getSelectedIndex();
-		if (hasFound(index)) {
-			removeIndex(index);
-		} else {
-			addIndex(index);
-		}
-		jList.setSelectedIndices(indexes);
-		//jList.setSelectionInterval(index, index);
-	}
-
+	
 }
