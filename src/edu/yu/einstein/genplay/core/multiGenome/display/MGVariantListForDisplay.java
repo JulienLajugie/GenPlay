@@ -156,20 +156,41 @@ public class MGVariantListForDisplay implements Serializable {
 
 	/**
 	 * @param variant a variant
+	 * @param includeAllGenomes true if all format fields must be included in the result, false if only the format field of the related genome matters
 	 * @return all information about the variant (from the vcf)
 	 */
-	public MGPosition getFullVariantInformation (VariantInterface variant) {
+	public MGPosition getVariantInformation (VariantInterface variant, boolean includeAllGenomes) {
+		if (includeAllGenomes) {
+			return getVariantInformation(variant, null);
+		} else {
+			return getVariantInformation(variant, alleleForDisplay.getGenomeInformation().getName());
+		}
+	}
+	
+	
+	/**
+	 * @param variant a variant
+	 * @return all information about the variant (from the vcf)
+	 */
+	private MGPosition getVariantInformation (VariantInterface variant, String genomeName) {
 		if (!(variant instanceof MixVariant)) {
 			List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(alleleForDisplay.getGenomeInformation().getName(), this.type);
-			List<String> columns = vcfFileList.get(0).getHeader().getFixedColumn();
-			columns.add(FormattedMultiGenomeName.getRawName(alleleForDisplay.getGenomeInformation().getName()));
+			List<String> columns = null;
+			if (genomeName != null) {
+				columns = vcfFileList.get(0).getHeader().getFixedColumn();
+				columns.add(FormattedMultiGenomeName.getRawName(genomeName));	//alleleForDisplay.getGenomeInformation().getName()
+			}
 			int start = variant.getReferenceGenomePosition();
 			List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
 			List<VCFFile> requiredFiles = new ArrayList<VCFFile>();
 			for (VCFFile vcfFile: vcfFileList) {
 				List<Map<String, Object>> resultsTmp = null;
 				try {
-					resultsTmp = vcfFile.getReader().query(chromosome.getName(), start - 1, start, columns);
+					if (columns == null) {
+						resultsTmp = vcfFile.getReader().query(chromosome.getName(), start - 1, start);
+					} else {
+						resultsTmp = vcfFile.getReader().query(chromosome.getName(), start - 1, start, columns);
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

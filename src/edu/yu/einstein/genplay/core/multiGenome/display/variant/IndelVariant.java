@@ -155,8 +155,14 @@ public class IndelVariant implements Serializable, VariantInterface {
 
 
 	@Override
+	public MGPosition getVariantInformation() {
+		return variantListForDisplay.getVariantInformation(this, false);
+	}
+	
+	
+	@Override
 	public MGPosition getFullVariantInformation() {
-		return variantListForDisplay.getFullVariantInformation(this);
+		return variantListForDisplay.getVariantInformation(this, true);
 	}
 
 

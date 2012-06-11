@@ -103,7 +103,7 @@ public class VCFFilter implements Serializable{
 	 * @return true if the variant is valid, false otherwise
 	 */
 	public boolean isValid (VariantInterface variant) {
-		MGPosition information = variant.getFullVariantInformation();
+		MGPosition information = variant.getVariantInformation();
 		if (information != null) {
 			if (vcfFile.equals(information.getReader())) {
 				int index = vcfFile.getPositionList().getIndex(information.getPos());
@@ -123,7 +123,7 @@ public class VCFFilter implements Serializable{
 	 */
 	public int getVariantIndex (VariantInterface variant) {
 		int index = -1;
-		MGPosition information = variant.getFullVariantInformation();
+		MGPosition information = variant.getVariantInformation();
 		if (information != null) {
 			if (vcfFile.equals(information.getReader())) {
 				index = vcfFile.getPositionList().getIndex(information.getPos());

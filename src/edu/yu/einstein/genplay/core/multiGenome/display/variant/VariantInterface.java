@@ -87,7 +87,13 @@ public interface VariantInterface {
 	
 	
 	/**
-	 * @return all information of the variant (from the vcf)
+	 * @return information of the variant (from the vcf)
+	 */
+	public MGPosition getVariantInformation ();
+	
+	
+	/**
+	 * @return all information of the variant (from the vcf) (includes all other genomes format information)
 	 */
 	public MGPosition getFullVariantInformation ();
 	

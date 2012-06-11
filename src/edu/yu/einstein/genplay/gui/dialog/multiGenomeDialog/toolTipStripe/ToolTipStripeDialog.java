@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Images;
 
@@ -53,6 +54,8 @@ public class ToolTipStripeDialog extends JDialog {
 	private static final int V_GAP = 5;		// vertical gap between dialog components
 	private static final int H_GAP = 5;		// horizontal gap between dialog components
 
+	private VCFLineDialog vcfLineDialog;
+	
 	private List<VariantInterface> 	variantList;		// a list of displayable variant
 	private MGPosition 				variantInformation;	// the current variant object to display
 	private VariantInterface 		variant;			// the current variant object to display
@@ -69,6 +72,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 */
 	public ToolTipStripeDialog (List<VariantInterface> fittedVariantList) {
 		super(MainFrame.getInstance());
+		this.vcfLineDialog = new VCFLineDialog();
 		this.variantList = fittedVariantList;
 		setIconImage(Images.getApplicationImage());
 		setResizable(false);
@@ -118,6 +122,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * Initializes the content of the dialog box according to a variant
 	 */
 	private void initContent () {
+		//this.variantInformation.show();
 		VariantInfo variantInfo;
 		VariantFormat variantFormat;
 
@@ -132,7 +137,13 @@ public class ToolTipStripeDialog extends JDialog {
 		updatePanel(headerPanel, new GlobalInformationPanel(variant, variantInformation));
 		updatePanel(infoPanel, variantInfo.getPane());
 		updatePanel(formatPanel, variantFormat.getPane());
-		updatePanel(navigationPanel, new NavigationPanel(this));
+		NavigationPanel newNavigationPanel = new NavigationPanel(this);
+		if (variantInformation == null) {
+			newNavigationPanel.setEnableDetail(false);
+		} else {
+			newNavigationPanel.setEnableDetail(true);
+		}
+		updatePanel(navigationPanel, newNavigationPanel);
 
 		validate();
 	}
@@ -309,6 +320,11 @@ public class ToolTipStripeDialog extends JDialog {
 			return index;
 		}
 		return i;
+	}
+	
+	
+	protected void showVCFLine () {
+		vcfLineDialog.show(variantInformation);
 	}
 
 }

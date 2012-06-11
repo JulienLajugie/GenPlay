@@ -431,7 +431,7 @@ public class MultiGenomeDrawer<T> implements Serializable {
 			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics
 			if (fm.getHeight() < height && fm.stringWidth("A") < windowWidth) {				// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
-				MGPosition fullInformation = variant.getFullVariantInformation();			// gets the full information of the variant
+				MGPosition fullInformation = variant.getVariantInformation();			// gets the full information of the variant
 				if (fullInformation != null) {												// if they exist (variant can be MIX which does not have full information)
 					String letters = fullInformation.getAlternative();						// we first get the ALT field (by default)
 					if (letters.charAt(0) == '<') {											// if the first character is '<', it a SV variation and the sequence is not provided

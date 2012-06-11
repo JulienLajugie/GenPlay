@@ -137,6 +137,12 @@ public class MixVariant implements Serializable, VariantInterface {
 	
 	
 	@Override
+	public MGPosition getVariantInformation() {
+		return null;
+	}
+	
+	
+	@Override
 	public MGPosition getFullVariantInformation() {
 		return null;
 	}

@@ -25,9 +25,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
@@ -35,6 +38,9 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * This class gathers all common genome information contained in a line of a VCF file.
+ * When created, it is done according to a specific variant, the genome raw name is therefore the one related to this variant.
+ * However, the VCF Line object can contain information about the other variant.
+ * For the FORMAT methods, if no genome raw name are defined, the default name is the one defined at the creation.
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -44,8 +50,9 @@ public class MGPosition implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private VariantInterface		variant;	// The variant
 	private Map<String, Object> 	VCFLine;	// The line from the VCF file
-	private VCFFile 				vcfFile;		// The vcfFile object of the VCF file
+	private VCFFile 				vcfFile;	// The vcfFile object of the VCF file
 	private String genomeRawName;
+	private List<String> otherGenomeRawName;
 
 
 	/**
@@ -87,6 +94,7 @@ public class MGPosition implements Serializable {
 		this.vcfFile = vcfFile;
 		VCFLine = line;
 		this.genomeRawName = FormattedMultiGenomeName.getRawName(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName());
+		initOtherGenomeRawName();
 	}
 
 
@@ -187,15 +195,34 @@ public class MGPosition implements Serializable {
 	 * @return the format value for the given genome name
 	 */
 	public String getFormatValues() {
-		return getString(VCFLine.get(genomeRawName));
+		return getFormatValues(genomeRawName);
 	}
 
+	
+	/**
+	 * @param genomeRawName a genome raw name
+	 * @return the format value for the given genome name
+	 */
+	public String getFormatValues(String genomeRawName) {
+		return getString(VCFLine.get(genomeRawName));
+	}
+	
 
 	/**
 	 * @param field	an ID from the FORMAT field
 	 * @return		the value associated to the ID
 	 */
 	public Object getFormatValue(String field) {
+		return getFormatValue(field, genomeRawName);
+	}
+	
+	
+	/**
+	 * @param field	an ID from the FORMAT field
+	 * @param genomeRawName a genome raw name
+	 * @return		the value associated to the ID
+	 */
+	public Object getFormatValue(String field, String genomeRawName) {
 		Object result = null;
 		String[] formatHeader = getString(VCFLine.get("FORMAT")).split(":");
 		String[] formatValues;
@@ -219,6 +246,14 @@ public class MGPosition implements Serializable {
 	 */
 	public String getVCFLine () {
 		return VCFLine.toString();
+	}
+	
+	
+	/**
+	 * @return the map of the VCF line
+	 */
+	public Map<String, Object> getMappedVCFLine () {
+		return VCFLine;
 	}
 	
 	
@@ -296,12 +331,79 @@ public class MGPosition implements Serializable {
 	
 	
 	/**
+	 * @return the genomeRawName
+	 */
+	public String getGenomeRawName() {
+		return genomeRawName;
+	}
+
+
+	/**
+	 * Initialize the list of name of the other genome
+	 */
+	private void initOtherGenomeRawName () {
+		otherGenomeRawName = new ArrayList<String>();
+		for (String key: VCFLine.keySet()) {
+			if (!key.equals(VCFColumnName.CHROM.toString()) &&
+					!key.equals(VCFColumnName.POS.toString()) &&
+					!key.equals(VCFColumnName.ID.toString()) &&
+					!key.equals(VCFColumnName.REF.toString()) &&
+					!key.equals(VCFColumnName.ALT.toString()) &&
+					!key.equals(VCFColumnName.QUAL.toString()) &&
+					!key.equals(VCFColumnName.FILTER.toString()) &&
+					!key.equals(VCFColumnName.INFO.toString()) &&
+					!key.equals(VCFColumnName.FORMAT.toString()) &&
+					!key.equals(genomeRawName)) {
+				otherGenomeRawName.add(key);
+			}
+		}
+	}
+	
+	
+	/**
+	 * @return the list of genome raw name that are different than the default one
+	 */
+	public List<String> getOtherGenomeRawName () {
+		return otherGenomeRawName;
+	}
+	
+	
+	/**
+	 * @return the list of genome raw names this object defines.
+	 */
+	public List<String> getAllGenomeRawNames () {
+		List<String> result = new ArrayList<String>();
+		result.add(genomeRawName);
+		for (String name: otherGenomeRawName) {
+			result.add(name);
+		}
+		Collections.sort(result);
+		return result;
+	}
+	
+	
+	/**
+	 * @return true if this object contains information about other genomes, false otherwise
+	 */
+	public boolean containsOtherGenomeInformation () {
+		if (otherGenomeRawName.size() == 0) {
+			return false;
+		}
+		return true;
+	}
+	
+	
+	/**
 	 * Show the position information
 	 */
 	public void show () {
-		System.out.println("Position information:");
+		String info = "-----------------";
+		System.out.println();
+		info += "Position information:\n";
 		for (String key: VCFLine.keySet()) {
-			System.out.println(key + ": " + VCFLine.get(key));
+			info += key + ": " + VCFLine.get(key) + "\n";
 		}
+		info += "-----------------";
+		System.out.println(info);
 	}
 }

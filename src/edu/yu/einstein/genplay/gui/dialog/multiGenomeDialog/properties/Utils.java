@@ -58,7 +58,7 @@ public class Utils {
 	 * @param data			data for filling the table
 	 * @return				the panel containing the table
 	 */
-	protected static JPanel getTablePanel (String[] columnNames, Object[][] data) {
+	public static JPanel getTablePanel (String[] columnNames, Object[][] data) {
 		// Initializes font metrics
 		FontMetrics fm = MainFrame.getInstance().getFontMetrics(MainFrame.getInstance().getFont());
 		

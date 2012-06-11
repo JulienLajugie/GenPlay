@@ -22,7 +22,8 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
 
 import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.util.Images;
@@ -50,7 +50,8 @@ public class NavigationPanel extends JPanel{
 	private static final int WIDTH = 230;	// width of the panel
 	private static final int HEIGHT = 30;	// height of the panel
 	
-	private ToolTipStripeDialog origin;			// tooltipstripe object to aware it of any changes.
+	private ToolTipStripeDialog origin;		// tooltipstripe object to aware it of any changes.
+	private JButton details;				// button to show the full line
 	private JButton previous;				// the previous button (move backward)
 	private JButton next;					// the next button (move forward)
 	
@@ -66,9 +67,18 @@ public class NavigationPanel extends JPanel{
 		setMinimumSize(paneDim);
 		setMaximumSize(paneDim);
 		setPreferredSize(paneDim);
-		
-		setLayout(new GridLayout(1, 2, 0, 0));
+
 		Insets inset = new Insets(0, 0, 0, 0);
+		
+		details = new JButton("Details");
+		details.setToolTipText("See the whole VCF line.");
+		details.setMargin(inset);
+		details.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				getOrigin().showVCFLine();
+			}
+		});
 
 		next = new JButton(getIcon(Images.getNextImage()));
 		next.setContentAreaFilled(false);
@@ -93,12 +103,34 @@ public class NavigationPanel extends JPanel{
 				previous.setEnabled(enable);
 			}
 		});
-	
-		add(previous);
-		add(new JLabel());	// glue label
-		add(new JLabel());	// glue label
-		add(next);
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
 		
+		
+		gbc.insets = inset;
+		gbc.weighty = 1;
+		gbc.gridy = 0;
+
+		// Add the "previous" button
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.gridx = 0;
+		gbc.weightx = 0;
+		add(previous, gbc);
+		
+		// Add the "details" button
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.gridx++;
+		gbc.weightx = 1;
+		add(details, gbc);
+		
+		// Add the "next" button
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.gridx++;
+		gbc.weightx = 0;
+		add(next, gbc);
 	}
 
 	
@@ -128,6 +160,15 @@ public class NavigationPanel extends JPanel{
 	 */
 	protected static int getPanelHeight () {
 		return NavigationPanel.HEIGHT;
+	}
+	
+	
+	/**
+	 * Enable the detail button
+	 * @param activate true if the button has to be enabled, false otherwise
+	 */
+	public void setEnableDetail (boolean activate) {
+		details.setEnabled(activate);
 	}
 
 }
