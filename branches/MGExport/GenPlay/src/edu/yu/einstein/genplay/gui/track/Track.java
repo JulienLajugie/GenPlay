@@ -48,6 +48,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -555,5 +556,13 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
 			removePropertyChangeListener(curList);
 		}
-	}	
+	}
+	
+	
+	/**
+	 * @return the genomeDrawer
+	 */
+	public MultiGenomeDrawer<T> getMultiGenomeDrawer() {
+		return trackGraphics.getMultiGenomeDrawer();
+	}
 }

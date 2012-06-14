@@ -130,6 +130,7 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeExport;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
@@ -279,7 +280,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
-		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
 		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());		
 		getActionMap().put(BLAIntervalsSummarization.ACTION_KEY, new BLAIntervalsSummarization());
@@ -318,6 +318,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SLAFindNext.ACTION_KEY, new SLAFindNext());
 		getActionMap().put(SLAFindPrevious.ACTION_KEY, new SLAFindPrevious());
 		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
+		
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			getActionMap().put(PAMultiGenomeExport.ACTION_KEY, new PAMultiGenomeExport());
+		}
 	}
 
 

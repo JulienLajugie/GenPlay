@@ -258,7 +258,7 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
-	private int getAlleleIndex (char alleleChar) {
+	public int getAlleleIndex (char alleleChar) {
 		int alleleIndex = -1;
 		if (alleleChar != '.' && alleleChar != '0') {
 			try {
@@ -274,11 +274,11 @@ public class MGSynchronizer implements Serializable {
 	 * Retrieves the length of all defined alternatives
 	 * If an alternative is SV coded, the info field is required
 	 * @param reference		the REF field
-	 * @param alternative	the ALT field
+	 * @param alternatives	the parsed ALT field
 	 * @param info			the INFO field
 	 * @return				an array of integer as lengths
 	 */
-	private int[] getVariantLengths(String reference, String[] alternatives, String info) {
+	public int[] getVariantLengths(String reference, String[] alternatives, String info) {
 		int[] lengths = new int[alternatives.length];
 
 		for (int i = 0; i < alternatives.length; i++) {
@@ -294,7 +294,7 @@ public class MGSynchronizer implements Serializable {
 	 * @param length 	array of length
 	 * @return			an array of variant types
 	 */
-	private VariantType[] getVariantTypes (int[] length) {
+	public VariantType[] getVariantTypes (int[] length) {
 		VariantType[] variantTypes = new VariantType[length.length];
 
 		for (int i = 0; i < length.length; i++) {

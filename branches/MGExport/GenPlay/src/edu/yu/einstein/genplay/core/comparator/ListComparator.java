@@ -32,7 +32,8 @@ import java.util.List;
  */
 public class ListComparator<K> implements Comparator<List<K>> {
 
-
+	private int result = -10;
+	
 	@Override
 	/**
 	 * This method compares two lists but uses special code meaning:
@@ -46,8 +47,24 @@ public class ListComparator<K> implements Comparator<List<K>> {
 	 * -1: the first list if not null but the second list is null
 	 * -2: the first list if null but the second list is not null
 	 * -3: both lists are null
+	 * 
+	 * @param o1 first list
+	 * @param o2 second list
+	 * @return	the integer code
 	 */
 	public int compare(List<K> o1, List<K> o2) {
+		result = perform(o1, o2);
+		return result;
+	}
+	
+	
+	/**
+	 * Compares both list.
+	 * @param o1 first list
+	 * @param o2 second list
+	 * @return	the integer code
+	 */
+	private int perform (List<K> o1, List<K> o2) {
 		if (o1 == null && o2 == null) {
 			return -3;
 		} else if (o1 == null && o2 != null) {
@@ -96,6 +113,31 @@ public class ListComparator<K> implements Comparator<List<K>> {
 			return true;
 		}
 		return false;
+	}
+	
+	
+	/**
+	 * @return the message associated to the error code
+	 */
+	public String getErrorCode () {
+		switch (result) {
+		case 0:
+			return "Both lists are equal.";
+		case 1:
+			return "Lists are different.";
+		case 2:
+			return "First list is bigger than the second list.";
+		case 3:
+			return "First list is smaller than the second list.";
+		case -1:
+			return "The first list if not null but the second list is null.";
+		case -2:
+			return "The first list if null but the second list is not null.";
+		case -3:
+			return "Both lists are null.";
+		default:
+			return "Comparison never happend.";
+		}
 	}
 	
 }
