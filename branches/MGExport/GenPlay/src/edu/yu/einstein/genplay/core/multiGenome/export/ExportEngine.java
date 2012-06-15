@@ -47,16 +47,14 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
  * @version 0.1
  */
 public abstract class ExportEngine implements ExportEngineInterface {
-
 	
+	protected ObjectOutputStream 				data;			// the temporary stream for data
+	protected String 							header;			// the new VCF header
 	
-	protected ObjectOutputStream data;
-	protected String header;
-	
-	protected Map<String, List<VCFFile>> 		fileMap;
-	protected Map<String, List<VariantType>> 	variationMap;
-	protected List<VCFFilter> 					filterList;
-	protected String 							path;
+	protected Map<String, List<VCFFile>> 		fileMap;		// map between genome names and their related files
+	protected Map<String, List<VariantType>> 	variationMap;	// map between genome names and their required variation
+	protected List<VCFFilter> 					filterList;		// list of filter
+	protected String 							path;			// path of the new VCF file
 
 
 	@Override

@@ -37,12 +37,12 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  */
 public class BGZIPReader {
 
-	private File file;
-	private BlockCompressedInputStream bcis;
-	private VCFLine currentLine;
-	private String header;
+	private File 						file;			// file to read
+	private BlockCompressedInputStream 	bcis;			// stream for the file
+	private String 						header;			// header of the file
+	private VCFLine 					currentLine;	// current line in the file
 	//private String columns;
-	private Map<String, Integer> genomeMap;
+	private Map<String, Integer> 		genomeMap;		// map between genome names and their related index according to their location on the column line
 
 
 	/**
