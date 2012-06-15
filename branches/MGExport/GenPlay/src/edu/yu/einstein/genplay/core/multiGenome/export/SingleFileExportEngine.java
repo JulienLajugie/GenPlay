@@ -21,15 +21,19 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.export;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -38,69 +42,128 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
  */
 public class SingleFileExportEngine extends ExportEngine {
 
+
 	@Override
-	protected void performExport() throws IOException {
-		//showInformation();
+	protected boolean canStart() {
 		List<VCFFile> fileList = getFileList();
 		if (fileList.size() == 1) {
-			//System.out.println("SingleFileExportEngine.performExport()");
-
-			// Initialize the reader
-			File file = fileList.get(0).getFile();
-			BGZIPReader reader = new BGZIPReader(file);
-
-			// Initialize the output
-			String output = "";
-
-			// Add the header (with columns) to the output
-			output += reader.getFulleHeader() + "\n";
-
-			VCFLine currentLine = reader.getCurrentLine();
-
-			MGSynchronizer synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
-
-			while (!currentLine.isLastLine()) {
-
-				if (currentLine.isValid()) {
-					int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), currentLine.getALT().split(","), currentLine.getINFO());
-					VariantType[] variations = synchronizer.getVariantTypes(lengths);
-					List<Integer> allValidIndex = new ArrayList<Integer>();
-					List<String> allValidGenome = new ArrayList<String>();
-					for (String genomeName: variationMap.keySet()) {
-						int[] altIndexes = getAlternativeIndexes(genomeName, reader, synchronizer);
-						//VariantType[] variationsFound = getVariantTypes(variations, altIndexes);
-						//List<Integer> validIndex = getValidIndexes(variationMap.get(genomeName), variationsFound);
-						//List<Integer> validIndex = getValidIndexes(variationMap.get(genomeName), variations, );
-						/*if (validIndex.size() > 0) {
-							allValidGenome.add(genomeName);
-							for (int index: validIndex) {
-								if (!allValidIndex.contains(index)) {
-									allValidIndex.add(index);
-								}
-							}
-						}*/
-					}
-					if (allValidGenome.size() > 0) {
-						System.out.println(allValidIndex.toString());
-						output += buildLine(reader, allValidIndex, allValidGenome) + "\n";
-					}
-					
-				}
-
-				reader.goNextLine();
-				currentLine = reader.getCurrentLine();
-			}
-
-			//reader.printAllFile();
-			//reader.printFileAsElements();
-
-			System.out.println("OUTPUT:\n" + output);
-		} else {
-			System.err.println("SingleFileExportEngine.performExport() number of files invalid: " + fileList.size());
+			return true;
 		}
+		System.err.println("SingleFileExportEngine.performExport() number of files invalid: " + fileList.size());
+		return false;
 	}
 
 
+	@Override
+	protected void performExport() throws IOException {
+		// Initialize the reader
+		File file = getFileList().get(0).getFile();
+		BGZIPReader reader = new BGZIPReader(file);
+
+		// Initialize the list of genomes
+		List<String> genomeList = getGenomeList();
+
+		// Initialize the output file
+		File outputFile = new File(path);
+		FileWriter fw = new FileWriter(outputFile);
+		BufferedWriter out = new BufferedWriter(fw);
+
+		// Initialize the output
+		String output = "";
+
+		// Add the header (with column names) to the output
+		output += getFullHeader(reader, genomeList);
+
+		// Gets the first line of data
+		VCFLine currentLine = reader.getCurrentLine();
+
+		// Gets the synchronizer object
+		MGSynchronizer synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
+
+		// Scan the file line by line
+		while (!currentLine.isLastLine()) {
+			if (currentLine.isValid()) {																											// The line has to be a valid line to be processed
+				int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), currentLine.getALT().split(","), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
+				VariantType[] variations = synchronizer.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
+				List<Integer> allValidIndex = new ArrayList<Integer>();																				// Initializes the array that will contain all valid alternative indexes of the line
+				List<String> allValidGenome = new ArrayList<String>();																				// Initializes the array that will contain all valid genome names of the line
+				for (int i = 0; i < genomeList.size(); i++) {																						// Will scan information for all genomes of the line
+					int[] altIndexes = getAlternativeIndexes(genomeList.get(i), reader, synchronizer);												// Gets indexes defined by the GT type ('.' is converted as -1)
+					List<Integer> validIndex = getValidIndexes(variationMap.get(genomeList.get(i)), variations, altIndexes);						// Only keeps the valid ones (excludes the ones referring to the reference)
+					if (validIndex.size() > 0) {																									// If we have found at least one valid index (one variant matching the variation requirements)
+						allValidGenome.add(genomeList.get(i));																						// If the process comes here, it means information has been found for the current genome
+						for (int index: validIndex) {																								// For all found indexes
+							if (!allValidIndex.contains(index)) {																					// If it does not have been stored yet
+								allValidIndex.add(index);																							// We store it
+							}
+						}
+					}
+				}
+				if (allValidGenome.size() > 0) {																									// If information has been found for at least one genome
+					output += buildLine(reader, allValidIndex, genomeList, allValidGenome) + "\n";													// We have to add the line
+					data.writeObject(buildLine(reader, allValidIndex, genomeList, allValidGenome) + "\n");
+				}
+			}
+
+			reader.goNextLine();
+			currentLine = reader.getCurrentLine();
+		}
+
+		fw.close();
+		out.close();
+
+		System.out.println("OUTPUT:\n" + output);
+	}
+
+	
+	@Override
+	protected void createHeader() throws IOException {
+		// Initialize the reader
+		File file = getFileList().get(0).getFile();
+		BGZIPReader reader = new BGZIPReader(file);
+		
+		// Initialize the list of genomes
+		List<String> genomeList = getGenomeList();
+		
+		// Creates the header
+		header = reader.getHeader() + "\n";
+		header += reader.getFixedColumns();
+		for (int i = 0; i < genomeList.size(); i++) {
+			header += FormattedMultiGenomeName.getRawName(genomeList.get(i));
+			if (i < (genomeList.size() - 1)) {
+				header += "\t";
+			}
+		}
+	}
+	
+
+	/**
+	 * Creates the header of the file with columns
+	 * @param reader		the reader (that contains the header)
+	 * @param genomeList	the list of required genomes
+	 * @return				the header
+	 */
+	private String getFullHeader (BGZIPReader reader, List<String> genomeList) {
+		String header = reader.getHeader() + "\n";
+		header += reader.getFixedColumns();
+		for (int i = 0; i < genomeList.size(); i++) {
+			header += FormattedMultiGenomeName.getRawName(genomeList.get(i));
+			if (i < (genomeList.size() - 1)) {
+				header += "\t";
+			}
+		}
+		header += "\n";
+		return header;
+	}
+
+
+	/**
+	 * Retrieves the indexes of the alternatives defined by the genotype field of a genome
+	 * @param genomeName	the name of the genome
+	 * @param reader		the reader (to get the GT field)
+	 * @param synchronizer	the multi genome synchronizer (to convert character as index)
+	 * @return				an array of two integers containing the indexes
+	 */
 	private int[] getAlternativeIndexes (String genomeName, BGZIPReader reader, MGSynchronizer synchronizer) {
 		int[] indexes = new int[2];
 
@@ -114,37 +177,21 @@ public class SingleFileExportEngine extends ExportEngine {
 	}
 
 
-	private VariantType[] getVariantTypes (VariantType[] variations, int[] altIndexes) {
-		VariantType[] result = new VariantType[2];
-		for (int i = 0; i < altIndexes.length; i++) {
-			if (altIndexes[i] >= 0) {
-				result[i] = variations[altIndexes[i]];
-			} else {
-				result[i] = null;
-			}
-		}
-		return result;
-	}
-
-
-	/*private List<Integer> getValidIndexes (List<VariantType> requiredVariation, VariantType[] foundVariation) {
-		List<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < foundVariation.length; i++) {
-			if (requiredVariation.contains(foundVariation[i])) {
-				if () {
-					list.add(i);
-				}
-			}
-		}
-		return list;
-	}*/
-	
+	/**
+	 * Compares the required variations and the ones from the line in order to select the correct indexes.
+	 * @param requiredVariation	the variations required for the export
+	 * @param variations		the variations defined in the line
+	 * @param indexes			an array of indexes referring to the variations of the line
+	 * @return					the list of indexes related to required variations
+	 */
 	private List<Integer> getValidIndexes (List<VariantType> requiredVariation, VariantType[] variations, int[] indexes) {
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < indexes.length; i++) {
-			if (requiredVariation.contains(variations[indexes[i]])) {
-				if (!list.contains(indexes[i])) {
-					list.add(indexes[i]);
+			if (indexes[i] >= 0) {
+				if (requiredVariation.contains(variations[indexes[i]])) {
+					if (!list.contains(indexes[i])) {
+						list.add(indexes[i]);
+					}
 				}
 			}
 		}
@@ -152,7 +199,18 @@ public class SingleFileExportEngine extends ExportEngine {
 	}
 
 
-	private String buildLine (BGZIPReader reader, List<Integer> indexes, List<String> genomes) {
+	/**
+	 * Builds the line to insert in the output.
+	 * The ALT field contains information only about the required variations.
+	 * The genome fields are native fields. Genomes that don't define any required variation will have a empty field: ./.
+	 * All other fields are the ones from the native line. 
+	 * @param reader			the file reader
+	 * @param indexes			the indexes referring to the correct alternatives
+	 * @param fullGenomesList	the list of all required genomes
+	 * @param genomes			the list of genomes that have information matching requirements
+	 * @return					the line to insert
+	 */
+	private String buildLine (BGZIPReader reader, List<Integer> indexes, List<String> fullGenomesList, List<String> genomes) {
 		String result = "";
 		VCFLine line = reader.getCurrentLine();
 
@@ -165,18 +223,31 @@ public class SingleFileExportEngine extends ExportEngine {
 		result += line.getFILTER() + "\t";
 		result += line.getINFO() + "\t";
 		result += line.getFORMAT() + "\t";
-		for (int i = 0; i < genomes.size(); i++) {
-			result += line.getField(reader.getGenomeIndex(genomes.get(i)));
-			if (i < genomes.size() - 1) {
+		for (int i = 0; i < fullGenomesList.size(); i++) {
+			String currentGenome = fullGenomesList.get(i);
+
+			if (genomes.contains(currentGenome)) {
+				result += line.getField(reader.getGenomeIndex(genomes.get(i)));
+			} else {
+				result += "./.";
+			}
+			if (i < fullGenomesList.size() - 1) {
 				result += "\t";
 			}
 		}
-
 		return result;
 	}
 
 
+	/**
+	 * Build the ALT field.
+	 * It contains only alternatives matching the requirements
+	 * @param indexes	the list of indexes referring to the alternatives
+	 * @param alt		the native ALT field
+	 * @return			the ALT field to insert
+	 */
 	private String buildALTField (List<Integer> indexes, String alt) {
+		Collections.sort(indexes);
 		String[] alternatives = alt.split(",");
 		String result = "";
 		for (int i = 0; i < indexes.size(); i++) {

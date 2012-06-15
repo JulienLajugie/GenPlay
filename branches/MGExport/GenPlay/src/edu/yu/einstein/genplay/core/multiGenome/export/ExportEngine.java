@@ -21,11 +21,21 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.export;
 
+import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
@@ -38,6 +48,11 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
  */
 public abstract class ExportEngine implements ExportEngineInterface {
 
+	
+	
+	protected ObjectOutputStream data;
+	protected String header;
+	
 	protected Map<String, List<VCFFile>> 		fileMap;
 	protected Map<String, List<VariantType>> 	variationMap;
 	protected List<VCFFilter> 					filterList;
@@ -45,13 +60,19 @@ public abstract class ExportEngine implements ExportEngineInterface {
 
 
 	@Override
-	public void process() {
+	public void process() throws Exception {
 		String errors = getParameterErrors();
 		if (errors == null) {
-			try {
-				performExport();
-			} catch (IOException e) {
-				e.printStackTrace();
+			if (canStart()) {
+				File dataFile = new File(getDataPath());
+				
+				createDataFile(dataFile);
+				
+				createHeader();
+				
+				writeFinalFile(dataFile);
+				
+				dataFile.delete();
 			}
 		} else {
 			System.err.println("ExportEngine.process()\n" + errors);
@@ -60,11 +81,94 @@ public abstract class ExportEngine implements ExportEngineInterface {
 
 
 	/**
+	 * @return true if the export can start, false otherwise
+	 */
+	protected abstract boolean canStart ();
+
+
+	/**
 	 * Performs the export action
 	 * @throws IOException 
 	 */
 	protected abstract void performExport() throws IOException;
+	
+	
+	/**
+	 * Creates the header of the new VCF file
+	 * @throws IOException
+	 */
+	protected abstract void createHeader() throws IOException;
 
+	
+	/**
+	 * Initializes the data output stream
+	 * @throws Exception
+	 */
+	private void createDataFile (File dataFile) throws Exception {
+		FileOutputStream fos = new FileOutputStream(dataFile);
+		GZIPOutputStream gz = new GZIPOutputStream(fos);
+		data = new ObjectOutputStream(gz);
+		
+		performExport();
+		
+		data.close();
+		gz.close();
+		fos.close();
+	}
+	
+	
+	/**
+	 * 
+	 * @return the path of the temporary data file
+	 */
+	private String getDataPath () {
+		return (path.substring(0, path.length() - 4) + "_tmp.vcf");
+	}
+	
+	
+	/**
+	 * Merges the data file and the header into a new file
+	 * @param dataFile		the file containing the data
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void writeFinalFile (File dataFile) throws IOException, ClassNotFoundException {
+		// Initializes the output file writer
+		File outputFile = new File(path);
+		FileWriter fw = new FileWriter(outputFile);
+		BufferedWriter out = new BufferedWriter(fw);
+		
+		// Writes the header
+		header += "\n";
+		out.write(header);
+		
+		// Initializes the data file reader
+		FileInputStream fis = new FileInputStream(dataFile);
+		GZIPInputStream gz = new GZIPInputStream(fis);
+		ObjectInputStream ois = new ObjectInputStream(gz);
+		
+		// Writes the data file into the output file
+		boolean endOfFile = false;
+		while (!endOfFile) {
+			String line = null;
+			try {
+				line = (String) ois.readObject();
+				out.write(line);
+			} catch (EOFException e) {
+				endOfFile = true;
+			}
+		}
+		
+		// Closes the data file reader
+		ois.close();
+		gz.close();
+		fis.close();
+		
+		// Closes the output file writer
+		out.close();
+		fw.close();
+	}
+	
 
 	/**
 	 * Checks every parameter and create an full error message if any of them is not valid.
@@ -104,7 +208,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 			ListComparator<String> comparator = new ListComparator<String>();
 			List<String> genomesFileMap = new ArrayList<String>(fileMap.keySet());
 			List<String> genomesVariationMap = new ArrayList<String>(variationMap.keySet());
-			
+
 			int result = comparator.compare(genomesFileMap, genomesVariationMap);
 			if (result != 0) {
 				errors = addErrorMessage(errors, "Genome names lists are not equal:");
@@ -133,7 +237,17 @@ public abstract class ExportEngine implements ExportEngineInterface {
 		return errors;
 	}
 
-	
+
+	/**
+	 * @return the sorted list of genome names
+	 */
+	protected List<String> getGenomeList () {
+		List<String> result = new ArrayList<String>(variationMap.keySet());
+		Collections.sort(result);
+		return result;
+	}
+
+
 	/**
 	 * @return the list of files
 	 */
@@ -149,7 +263,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 		}
 		return fileList;
 	}
-	
+
 
 	@Override
 	public void setFileMap(Map<String, List<VCFFile>> fileMap) {

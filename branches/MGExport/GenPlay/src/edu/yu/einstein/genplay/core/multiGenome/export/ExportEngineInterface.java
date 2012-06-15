@@ -37,8 +37,9 @@ public interface ExportEngineInterface {
 	
 	/**
 	 * Export the data to a new VCF
+	 * @throws Exception 
 	 */
-	public void process ();
+	public void process () throws Exception;
 	
 	
 	/**

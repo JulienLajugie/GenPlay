@@ -27,9 +27,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-
 import net.sf.samtools.util.BlockCompressedInputStream;
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
@@ -41,7 +41,7 @@ public class BGZIPReader {
 	private BlockCompressedInputStream bcis;
 	private VCFLine currentLine;
 	private String header;
-	private String columns;
+	//private String columns;
 	private Map<String, Integer> genomeMap;
 
 
@@ -77,7 +77,7 @@ public class BGZIPReader {
 					}
 					header += line;
 				} else if (line.substring(0, 1).equals("#")) {
-					this.columns = line;
+					//this.columns = line;
 					String[] columns = line.split("\t");
 					for (int i = 9; i < columns.length; i++) {
 						genomeMap.put(columns[i], i);
@@ -92,10 +92,31 @@ public class BGZIPReader {
 
 	
 	/**
-	 * @return the header including the columns
+	 * @return the header without the columns
 	 */
-	protected String getFulleHeader () {
-		return header + "\n" + columns;
+	protected String getHeader () {
+		return header;
+	}
+	
+	
+	/**
+	 * Creates the string of fixed columns of a VCF files.
+	 * It goes from CHROM to FORMAT included.
+	 * It includes tabs (even after the FORMAT field).
+	 * @return the formated string of the fixed columns 
+	 */
+	protected String getFixedColumns () {
+		String columns = "#";
+		columns += VCFColumnName.CHROM.toString() + "\t";
+		columns += VCFColumnName.POS.toString() + "\t";
+		columns += VCFColumnName.ID.toString() + "\t";
+		columns += VCFColumnName.REF.toString() + "\t";
+		columns += VCFColumnName.ALT.toString() + "\t";
+		columns += VCFColumnName.QUAL.toString() + "\t";
+		columns += VCFColumnName.FILTER.toString() + "\t";
+		columns += VCFColumnName.INFO.toString() + "\t";
+		columns += VCFColumnName.FORMAT.toString() + "\t";
+		return columns;
 	}
 	
 	

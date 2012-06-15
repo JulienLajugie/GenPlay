@@ -258,6 +258,13 @@ public class MGSynchronizer implements Serializable {
 	}
 
 
+	/**
+	 * Transforms a character into its allele index.
+	 * The char 1 will refer to the first alternative located at the index 0 of any arrays.
+	 * The char 0 and '.' will return -1 and don't refer to any alternatives.
+	 * @param alleleChar the character
+	 * @return the associated code
+	 */
 	public int getAlleleIndex (char alleleChar) {
 		int alleleIndex = -1;
 		if (alleleChar != '.' && alleleChar != '0') {
