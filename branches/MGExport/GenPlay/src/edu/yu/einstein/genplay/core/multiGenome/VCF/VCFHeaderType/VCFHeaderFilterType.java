@@ -104,4 +104,15 @@ public class VCFHeaderFilterType implements VCFHeaderType {
 		return getColumnCategory() + " - " + id + ": " + description;
 	}
 	
+	
+	@Override
+	public String getAsOriginalLine() {
+		String line = "";
+		line += "##FILTER=<ID=";
+		line += id;
+		line += ",Description=\"";
+		line += description;
+		line += "\">";
+		return line;
+	}
 }

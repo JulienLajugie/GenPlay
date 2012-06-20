@@ -22,13 +22,16 @@
 package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.ActionMap;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -37,8 +40,11 @@ import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngineInterface;
 import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileExportEngine;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -82,12 +88,10 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Void> {
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 			
 			if (genomeDrawer.getStripesList().size() > 0) {
+				
 				// Get input parameters
 				Map<String, List<VCFFile>> fileMap = getGenomeFileMap(genomeDrawer.getStripesList());
 				Map<String, List<VariantType>> variationMap = getVariationMap(genomeDrawer.getStripesList());
-				
-				// Temporary parameter
-				String path = "D:\\GenPlay\\VCF\\Export\\export.vcf";
 				
 				// Declare the export engine
 				ExportEngineInterface exportEngine = null;
@@ -102,12 +106,17 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Void> {
 					System.err.println("PAMultiGenomeExport.processAction(): Number of file required is " + fileNumber);
 				}
 				
+				File file = getFile();
+				
 				// Runs the export process
-				if (exportEngine != null) {
+				if (file != null && exportEngine != null) {
+					// Notifies the action
+					notifyActionStart(ACTION_NAME, 1, false);
+					
 					exportEngine.setFileMap(fileMap);
 					exportEngine.setVariationMap(variationMap);
 					exportEngine.setFilterList(genomeDrawer.getFiltersList());
-					exportEngine.setPath(path);
+					exportEngine.setPath(file.getPath());
 					
 					exportEngine.process();
 				}
@@ -123,6 +132,32 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Void> {
 	@Override
 	protected void doAtTheEnd(Void actionResult) {
 		
+	}
+	
+	
+	/**
+	 * @return a file to export the VCF
+	 */
+	private File getFile () {
+		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+		JFileChooser jfc = new JFileChooser(defaultDirectory);
+		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		jfc.setDialogTitle("Export track as VCF");
+		FileFilter[] filters = {new VCFFilter()};
+		for (FileFilter currentFilter: filters) {
+			jfc.addChoosableFileFilter(currentFilter);
+		}
+		jfc.setAcceptAllFileFilterUsed(false);
+		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
+		int returnVal = jfc.showSaveDialog(getRootPane());
+		if(returnVal == JFileChooser.APPROVE_OPTION) {
+			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
+			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
+			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
+				return selectedFile;
+			}
+		}
+		return null;
 	}
 	
 	

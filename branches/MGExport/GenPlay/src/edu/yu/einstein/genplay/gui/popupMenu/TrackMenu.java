@@ -94,6 +94,9 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		jmiSetVerticalLineCount = new JMenuItem(actionMap.get(ATASetVerticalLineCount.ACTION_KEY));
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			jmiExportAsVCF = new JMenuItem(actionMap.get(PAMultiGenomeExport.ACTION_KEY));
+			if (trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList().size() == 0) {
+				jmiExportAsVCF.setEnabled(false);
+			}
 		} else {
 			jmiExportAsVCF = null;
 		}

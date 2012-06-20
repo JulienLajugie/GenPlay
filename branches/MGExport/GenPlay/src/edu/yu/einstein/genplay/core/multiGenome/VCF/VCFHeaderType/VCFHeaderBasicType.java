@@ -142,4 +142,9 @@ public class VCFHeaderBasicType implements VCFHeaderType, VCFHeaderElementRecord
 		return getColumnCategory() + ": " + description;
 	}
 	
+	
+	@Override
+	public String getAsOriginalLine() {
+		return "";
+	}
 }

@@ -41,7 +41,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBox;
-import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.VCFGZFilter;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -172,7 +172,7 @@ public class InvalidFileDialog extends JDialog {
 		correctedFiles = new CustomFileComboBox[files.length];
 		Dimension comboDimension = new Dimension(dialogWidth - 2 * inset, lineHeight);
 
-		VCFFilter[] filter = {new VCFFilter()};
+		VCFGZFilter[] filter = {new VCFGZFilter()};
 
 		for (int i = 0; i < files.length; i++) {
 			String path = files[i];

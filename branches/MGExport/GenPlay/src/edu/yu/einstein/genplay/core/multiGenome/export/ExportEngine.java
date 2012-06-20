@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import net.sf.samtools.util.BlockCompressedOutputStream;
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
@@ -47,10 +48,17 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
  * @version 0.1
  */
 public abstract class ExportEngine implements ExportEngineInterface {
-	
+
+
+	/** Option to export the track as VCF file (not compressed) */
+	public static boolean EXPORT_AS_VCF_FILE = true;
+	/** Option to export the track as a compressed VCF file (BGZIP) */
+	public static boolean EXPORT_AS_BGZIP_FILE = false;
+
 	protected ObjectOutputStream 				data;			// the temporary stream for data
 	protected String 							header;			// the new VCF header
-	
+
+	protected ExportHeaderHandler				headerHandler;	// handler for the new header
 	protected Map<String, List<VCFFile>> 		fileMap;		// map between genome names and their related files
 	protected Map<String, List<VariantType>> 	variationMap;	// map between genome names and their required variation
 	protected List<VCFFilter> 					filterList;		// list of filter
@@ -62,14 +70,15 @@ public abstract class ExportEngine implements ExportEngineInterface {
 		String errors = getParameterErrors();
 		if (errors == null) {
 			if (canStart()) {
+				createHeaderHandler();
+
 				File dataFile = new File(getDataPath());
-				
 				createDataFile(dataFile);
-				
+
 				createHeader();
-				
-				writeFinalFile(dataFile);
-				
+
+				writeFile(dataFile);
+
 				dataFile.delete();
 			}
 		} else {
@@ -89,15 +98,24 @@ public abstract class ExportEngine implements ExportEngineInterface {
 	 * @throws IOException 
 	 */
 	protected abstract void performExport() throws IOException;
-	
-	
+
+
 	/**
 	 * Creates the header of the new VCF file
 	 * @throws IOException
 	 */
 	protected abstract void createHeader() throws IOException;
 
-	
+
+	/**
+	 * Creates and initializes the handler for the header
+	 */
+	private void createHeaderHandler () {
+		headerHandler = new ExportHeaderHandler();
+		headerHandler.initializeHeadersMap(getFileList());
+	}
+
+
 	/**
 	 * Initializes the data output stream
 	 * @throws Exception
@@ -106,45 +124,63 @@ public abstract class ExportEngine implements ExportEngineInterface {
 		FileOutputStream fos = new FileOutputStream(dataFile);
 		GZIPOutputStream gz = new GZIPOutputStream(fos);
 		data = new ObjectOutputStream(gz);
-		
+
 		performExport();
-		
+
 		data.close();
 		gz.close();
 		fos.close();
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @return the path of the temporary data file
 	 */
 	private String getDataPath () {
-		return (path.substring(0, path.length() - 4) + "_tmp.vcf");
+		return (path.substring(0, path.length() - 4) + "_tmp.vcf.gz");
 	}
-	
-	
+
+
+	/**
+	 * Writes required files.
+	 * Merges the data file and the header into a new file.
+	 * @param dataFile	the file containing the data
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void writeFile (File dataFile) throws IOException, ClassNotFoundException {
+		if (EXPORT_AS_VCF_FILE) {
+			writeVCFFinalFile(dataFile);
+		}
+
+		if (EXPORT_AS_BGZIP_FILE) {
+			writeCompressedFinalFile(dataFile);
+		}
+	}
+
+
 	/**
 	 * Merges the data file and the header into a new file
 	 * @param dataFile		the file containing the data
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	private void writeFinalFile (File dataFile) throws IOException, ClassNotFoundException {
+	private void writeVCFFinalFile (File dataFile) throws IOException, ClassNotFoundException {
 		// Initializes the output file writer
 		File outputFile = new File(path);
 		FileWriter fw = new FileWriter(outputFile);
 		BufferedWriter out = new BufferedWriter(fw);
-		
+
 		// Writes the header
 		header += "\n";
 		out.write(header);
-		
+
 		// Initializes the data file reader
 		FileInputStream fis = new FileInputStream(dataFile);
 		GZIPInputStream gz = new GZIPInputStream(fis);
 		ObjectInputStream ois = new ObjectInputStream(gz);
-		
+
 		// Writes the data file into the output file
 		boolean endOfFile = false;
 		while (!endOfFile) {
@@ -156,17 +192,59 @@ public abstract class ExportEngine implements ExportEngineInterface {
 				endOfFile = true;
 			}
 		}
-		
+
 		// Closes the data file reader
 		ois.close();
 		gz.close();
 		fis.close();
-		
+
 		// Closes the output file writer
 		out.close();
 		fw.close();
 	}
-	
+
+
+	/**
+	 * Merges the data file and the header into a new file (compressed as bgzip)
+	 * @param dataFile		the file containing the data
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void writeCompressedFinalFile (File dataFile) throws IOException, ClassNotFoundException {
+		// Initializes the output file writer
+		File outputFile = new File(path);
+		BlockCompressedOutputStream output = new BlockCompressedOutputStream(outputFile);
+
+		// Writes the header
+		header += "\n";
+		output.write(header.getBytes());
+
+		// Initializes the data file reader
+		FileInputStream fis = new FileInputStream(dataFile);
+		GZIPInputStream gz = new GZIPInputStream(fis);
+		ObjectInputStream ois = new ObjectInputStream(gz);
+
+		// Writes the data file into the output file
+		boolean endOfFile = false;
+		while (!endOfFile) {
+			String line = null;
+			try {
+				line = (String) ois.readObject();
+				output.write(line.getBytes());
+			} catch (EOFException e) {
+				endOfFile = true;
+			}
+		}
+
+		// Closes the data file reader
+		ois.close();
+		gz.close();
+		fis.close();
+
+		// Closes the output file writer
+		output.close();
+	}
+
 
 	/**
 	 * Checks every parameter and create an full error message if any of them is not valid.

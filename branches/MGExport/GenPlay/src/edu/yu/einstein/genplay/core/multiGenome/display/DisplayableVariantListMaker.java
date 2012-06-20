@@ -136,7 +136,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 */
 	private boolean isValid (VariantInterface variant, List<VCFFilter> filtersList) {
 		for (VCFFilter filter: filtersList) {		// loop on all filters
-			if (!filter.isValid(variant)) {			// test the variant for the current filter
+			if (!filter.isVariantValid(variant)) {			// test the variant for the current filter
 				return false;						// if one is tested false, the variant does not pass
 			}
 		}

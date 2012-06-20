@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.export;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+
 
 /**
  * @author Nicolas Fourel
@@ -28,11 +33,12 @@ package edu.yu.einstein.genplay.core.multiGenome.export;
  */
 public class VCFLine {
 
+	private final BGZIPReader reader;
+	private final String[] elements;
 
-	private String[] elements;
 
-
-	protected VCFLine (String line) {
+	protected VCFLine (BGZIPReader reader, String line) {
+		this.reader = reader;
 		if (line == null) {					// if null
 			elements = null;				// there is no element and it is the last line
 		} else if (line.isEmpty()) {		// if empty: bad reading behavior
@@ -75,6 +81,14 @@ public class VCFLine {
 		}
 		return false;
 	}
+	
+
+	/**
+	 * @return the reader
+	 */
+	public BGZIPReader getReader() {
+		return reader;
+	}
 
 
 	/**
@@ -87,7 +101,7 @@ public class VCFLine {
 	/**
 	 * @return the POS field
 	 */
-	protected String getPOS () {
+	public String getPOS () {
 		return elements[1];
 	}
 
@@ -149,5 +163,28 @@ public class VCFLine {
 			return elements[index];
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * @return the whole line as map (keys are column names)
+	 */
+	protected Map<String, Object> toFullMap () {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put(VCFColumnName.CHROM.toString(), getCHROM());
+		map.put(VCFColumnName.POS.toString(), getPOS());
+		map.put(VCFColumnName.ID.toString(), getID());
+		map.put(VCFColumnName.REF.toString(), getREF());
+		map.put(VCFColumnName.ALT.toString(), getALT());
+		map.put(VCFColumnName.QUAL.toString(), getQUAL());
+		map.put(VCFColumnName.FILTER.toString(), getFILTER());
+		map.put(VCFColumnName.INFO.toString(), getINFO());
+		map.put(VCFColumnName.FORMAT.toString(), getFORMAT());
+		
+		for (int i = 9; i < elements.length; i++) {
+			map.put(reader.getGenomeFromIndex(i), elements[i]);
+		}
+		
+		return map;
 	}
 }

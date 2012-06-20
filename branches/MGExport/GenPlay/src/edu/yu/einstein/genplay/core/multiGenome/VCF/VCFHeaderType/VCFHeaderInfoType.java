@@ -178,5 +178,31 @@ public class VCFHeaderInfoType implements VCFHeaderAdvancedType, VCFHeaderElemen
 	public String toString () {
 		return getColumnCategory() + " - " + id + ": " + description;
 	}
+	
+	
+	@Override
+	public String getAsOriginalLine() {
+		String line = "";
+		line += "##INFO=<ID=";
+		line += id;
+		line += ",Number=";
+		line += number;
+		line += ",Type=";
+		if (type == Integer.class) {
+			line += "Integer";
+		} else if (type == Float.class) {
+			line += "Float";
+		} else if (type == Boolean.class) {
+			line += "Flag";
+		} else if (type == char.class) {
+			line += "Character";
+		} else if (type == String.class) {
+			line += "String";
+		}
+		line += ",Description=\"";
+		line += description;
+		line += "\">";
+		return line;
+	}
 
 }

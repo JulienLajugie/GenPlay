@@ -78,7 +78,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 			JFileChooser jfc = new JFileChooser(defaultDirectory);
 			jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 			jfc.setDialogTitle("Save Track");
-			Track<?> selectedTrack = getTrackList().getSelectedTrack(); 
+			Track<?> selectedTrack = getTrackList().getSelectedTrack();
 			FileFilter[] filters = null;
 			if (selectedTrack instanceof BinListTrack) {
 				filters = Utils.getWritableBinListFileFilters();
@@ -106,11 +106,12 @@ public final class ATASave extends TrackListActionWorker<Void> {
 					notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
 					writer.write();
 				}
-			}		}
+			}
+		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public void stop() {
 		if ((writer != null) && (writer instanceof Stoppable)) {
