@@ -122,12 +122,12 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 	 * @return	true is an overlapping region is found
 	 */
 	public static boolean overLappingExist (ChromosomeListOfLists<Integer> startList, ChromosomeListOfLists<Integer> stopList) {
-		ProjectChromosome projectChromosomeTmp = ProjectManager.getInstance().getProjectChromosome();
+		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		int index = 0;
 		boolean isFound = false;
-		for(final Chromosome currentChromosome : projectChromosomeTmp) {
-			while (index < startList.get(projectChromosomeTmp.getIndex(currentChromosome)).size()) {
-				isFound = searchOverLappingPositionsForIndex(projectChromosomeTmp, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
+		for(final Chromosome currentChromosome : projectChromosome) {
+			while (index < startList.get(projectChromosome.getIndex(currentChromosome)).size()) {
+				isFound = searchOverLappingPositionsForIndex(projectChromosome, startList, stopList, currentChromosome, index);	//Search for overlapping position on the current index
 				if (isFound) {
 					return true;
 				} else {
