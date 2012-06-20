@@ -27,7 +27,6 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
@@ -93,14 +92,6 @@ public interface IDFilterInterface {
 	 */
 	public String getErrors ();
 
-	
-	/**
-	 * Checks if the given variant is valid according to the filter
-	 * @param variant the variant
-	 * @return true if it is valid, false otherwise;
-	 */
-	public boolean isValid (VariantInterface variant);
-	
 	
 	/**
 	 * Checks if the object (purpose of the filter) is valid according to the filter

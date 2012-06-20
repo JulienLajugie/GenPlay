@@ -34,7 +34,6 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FilterUtility;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.utils.NumberUtility;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
  * @author Nicolas Fourel
@@ -187,12 +186,6 @@ public class NumberIDFilter implements NumberIDFilterInterface, Serializable {
 	@Override
 	public String getErrors() {
 		return utility.getErrors(this);
-	}
-
-
-	@Override
-	public boolean isValid(VariantInterface variant) {
-		return false;
 	}
 
 

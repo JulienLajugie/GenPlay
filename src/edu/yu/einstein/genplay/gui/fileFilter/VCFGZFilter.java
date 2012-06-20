@@ -19,66 +19,28 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
-
-import java.io.Serializable;
-
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+package edu.yu.einstein.genplay.gui.fileFilter;
 
 
 /**
- * This class declares methods required for VCF type field:
- * - ALT
- * - FILTER
+ * This class is a filter for var file extension.
  * @author Nicolas Fourel
- * @version 0.1
  */
-public interface VCFHeaderType extends Serializable {
+public class VCFGZFilter extends ExtendedFileFilter {
+	
+	private static final long serialVersionUID = 3191118665245397752L; // generated ID
+	/** Valid extensions */
+	public static final String[] EXTENSIONS = {"gz"};
+	/** File type description */
+	public static final String DESCRIPTION = "GZipped VCF Files (*.vcf.gz)";
 
-	
-	/** Number maximum of elements an ID can have */
-	public static final int ELEMENT_LIMIT = 10;
-	
-	
-	/**
-	 * @return the columnCategory
-	 */
-	public VCFColumnName getColumnCategory();
 
-	
 	/**
-	 * @param columnCategory the id to set
+	 * Creates an instance of {@link VCFGZFilter}
 	 */
-	public void setColumnCategory(VCFColumnName columnCategory);
+	public VCFGZFilter() {
+		super(EXTENSIONS, DESCRIPTION);
+	}
 	
-	
-	/**
-	 * @return the id
-	 */
-	public String getId();
-
-	
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id);
-	
-	
-	/**
-	 * @return the description
-	 */
-	public String getDescription();
-
-	
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description);
-	
-	
-	/**
-	 * @return a line formatted as the native line from the VCF file
-	 */
-	public String getAsOriginalLine();
 	
 }

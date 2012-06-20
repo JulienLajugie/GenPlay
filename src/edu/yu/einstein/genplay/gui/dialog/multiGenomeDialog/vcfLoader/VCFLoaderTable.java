@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComb
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomStringComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxListener;
-import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.VCFGZFilter;
 
 
 
@@ -108,7 +108,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		// File combo box
 		fileBox = new CustomFileComboBox();
 		fileBox.getRenderer().addCustomComboBoxListener(this);
-		VCFFilter[] filter = {new VCFFilter()};
+		VCFGZFilter[] filter = {new VCFGZFilter()};
 		fileBox.setFilters(filter);
 		column = this.getColumnModel().getColumn(VCFData.FILE_INDEX);
 		column.setCellEditor(new DefaultCellEditor(fileBox));

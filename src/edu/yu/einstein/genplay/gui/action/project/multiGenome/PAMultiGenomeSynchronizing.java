@@ -109,6 +109,7 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 				// Insert the variation into the data structure
 				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenomeSynchronizer().insertVariantposition();
+				//System.out.println("time: " + TabixReader.time / 1000 + " s");
 				
 				// Sort lists of position for every chromosome of every genome
 				times.add(System.currentTimeMillis());

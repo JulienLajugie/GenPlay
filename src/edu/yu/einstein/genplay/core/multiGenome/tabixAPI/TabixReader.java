@@ -96,7 +96,7 @@ public class TabixReader {
 		return ByteBuffer.wrap(buf).order(ByteOrder.LITTLE_ENDIAN).getLong();
 	}
 
-
+	//public static long time = 0;
 	/**
 	 * Reads a line
 	 * @param is	the input stream
@@ -104,13 +104,28 @@ public class TabixReader {
 	 * @throws IOException
 	 */
 	public static String readLine(final InputStream is) throws IOException {
+		//long start = System.currentTimeMillis();
 		StringBuffer buf = new StringBuffer();
 		int c;
-		while ((c = is.read()) >= 0 && c != '\n')
+		while ((c = is.read()) >= 0 && c != '\n') {
 			buf.append((char)c);
-		if (c < 0) return null;
-		return buf.toString();
+		}
+		if (c < 0) {
+			//time += System.currentTimeMillis() - start;
+			return null;
+		}
+		String result = buf.toString();
+		//time += System.currentTimeMillis() - start;
+		return result;
 	}
+	
+	/*public static String readLine(final InputStream is) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		long start = System.currentTimeMillis();
+		String result = reader.readLine();
+		time += System.currentTimeMillis() - start;
+		return result;
+	}*/
 
 
 	/**

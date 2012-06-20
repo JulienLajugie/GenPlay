@@ -19,66 +19,55 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType;
+package edu.yu.einstein.genplay.core.multiGenome.export;
 
-import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-
+import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 
 /**
- * This class declares methods required for VCF type field:
- * - ALT
- * - FILTER
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VCFHeaderType extends Serializable {
-
-	
-	/** Number maximum of elements an ID can have */
-	public static final int ELEMENT_LIMIT = 10;
+public interface ExportEngineInterface {
 	
 	
 	/**
-	 * @return the columnCategory
+	 * Export the data to a new VCF
+	 * @throws Exception 
 	 */
-	public VCFColumnName getColumnCategory();
-
-	
-	/**
-	 * @param columnCategory the id to set
-	 */
-	public void setColumnCategory(VCFColumnName columnCategory);
+	public void process () throws Exception;
 	
 	
 	/**
-	 * @return the id
+	 * Set the map of genome according to the files they are mentionned.
+	 * @param fileMap the map between genome and their files
 	 */
-	public String getId();
-
-	
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(String id);
+	public void setFileMap (Map<String, List<VCFFile>> fileMap);
 	
 	
 	/**
-	 * @return the description
+	 * Set the map of variation types according to their required genomes.
+	 * Each genome can have its own variation types list.
+	 * @param variationMap the map between genome and their variation types
 	 */
-	public String getDescription();
-
-	
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description);
+	public void setVariationMap (Map<String, List<VariantType>> variationMap);
 	
 	
 	/**
-	 * @return a line formatted as the native line from the VCF file
+	 * Set the list of filter applied to the track.
+	 * @param filterList the list of {@link VCFFilter}
 	 */
-	public String getAsOriginalLine();
+	public void setFilterList (List<VCFFilter> filterList);
+	
+	
+	/**
+	 * Set the path of the new VCF
+	 * @param path the VCF path
+	 */
+	public void setPath (String path);
 	
 }

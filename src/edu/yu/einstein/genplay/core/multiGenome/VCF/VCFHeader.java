@@ -191,6 +191,7 @@ public class VCFHeader implements Serializable {
 		
 		while (valid) {
 			String line = reader.getVCFParser().readLine();
+			System.out.println("line: " + line);
 			if (line.length() > 0) {
 				if (line.substring(0, 2).equals("##")) {
 					int equalChar = line.indexOf("=");

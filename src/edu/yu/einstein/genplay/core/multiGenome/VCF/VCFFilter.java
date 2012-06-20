@@ -42,13 +42,13 @@ public class VCFFilter implements Serializable{
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 8207888574897530618L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
 	private IDFilterInterface 		filter;				// the filter
 	private VCFFile					vcfFile;			// the file reader
-	
+
 	private ByteArrayAsBooleanList 	booleanList;		// list of boolean meaning whether variants pass the filter or not
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -74,8 +74,8 @@ public class VCFFilter implements Serializable{
 		vcfFile = (VCFFile) in.readObject();
 		booleanList = (ByteArrayAsBooleanList) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link VCFFilter}
 	 */
@@ -84,8 +84,8 @@ public class VCFFilter implements Serializable{
 		this.vcfFile = null;
 		booleanList = null;
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link VCFFilter}
 	 * @param filter the filter
@@ -97,12 +97,12 @@ public class VCFFilter implements Serializable{
 		booleanList = null;
 	}
 
-	
+
 	/**
 	 * @param variant the variant
 	 * @return true if the variant is valid, false otherwise
 	 */
-	public boolean isValid (VariantInterface variant) {
+	public boolean isVariantValid (VariantInterface variant) {
 		MGPosition information = variant.getVariantInformation();
 		if (information != null) {
 			if (vcfFile.equals(information.getReader())) {
@@ -114,8 +114,8 @@ public class VCFFilter implements Serializable{
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Looks for the index of the variant in the array, call this method and use the index to look for this variant in other arrays!
 	 * @param variant 	the variant
@@ -131,7 +131,7 @@ public class VCFFilter implements Serializable{
 		}
 		return index;
 	}
-	
+
 
 	/**
 	 * @return the filter
@@ -147,8 +147,8 @@ public class VCFFilter implements Serializable{
 	public ByteArrayAsBooleanList getBooleanList() {
 		return booleanList;
 	}
-	
-	
+
+
 	/**
 	 * @return a clone of the booleanList
 	 */
@@ -165,8 +165,8 @@ public class VCFFilter implements Serializable{
 		System.out.println("VCFFilter.getDuplicatedBooleanList() booleanList == null");
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * @return the reader
 	 */
@@ -174,7 +174,7 @@ public class VCFFilter implements Serializable{
 		return vcfFile;
 	}
 
-	
+
 	/**
 	 * @param filter the filter to set
 	 */
@@ -214,8 +214,8 @@ public class VCFFilter implements Serializable{
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows information about the VCF filter
 	 */
@@ -225,8 +225,8 @@ public class VCFFilter implements Serializable{
 		info += "Filter display: " + filter.toStringForDisplay() + "\n";
 		System.out.println(info);
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -235,14 +235,14 @@ public class VCFFilter implements Serializable{
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		VCFFilter test = (VCFFilter)obj;
 		return vcfFile.equals(test.getVCFFile()) &&
 		filter.equals(test.getFilter());
 	}
-	
-	
+
+
 	/**
 	 * Creates a clone of the current {@link VCFFilter}.
 	 * Technically, the {@link VCFFile} is not duplicated since we want to keep the original ones and never create new ones after the creation of the project.

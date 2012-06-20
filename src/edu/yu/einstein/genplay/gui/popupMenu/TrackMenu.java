@@ -29,6 +29,7 @@ import javax.swing.event.PopupMenuListener;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
@@ -40,6 +41,7 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetHeight;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetVerticalLineCount;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeExport;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
 
@@ -62,6 +64,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	private final JMenuItem 	jmiSetHeight;				// menu set height 
 	private final JMenuItem 	jmiSetVerticalLineCount;	// menu set vertical line count
 	private final JMenuItem 	jmiSaveAsImage;				// menu save track as image
+	private final JMenuItem 	jmiExportAsVCF;				// menu export track as VCF
 	private final JMenuItem 	jmiLoadStripes;				// menu load stripes
 	private final JMenuItem 	jmiRemoveStripes;			// menu remove stripe
 
@@ -89,6 +92,14 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
 		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
 		jmiSetVerticalLineCount = new JMenuItem(actionMap.get(ATASetVerticalLineCount.ACTION_KEY));
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			jmiExportAsVCF = new JMenuItem(actionMap.get(PAMultiGenomeExport.ACTION_KEY));
+			if (trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList().size() == 0) {
+				jmiExportAsVCF.setEnabled(false);
+			}
+		} else {
+			jmiExportAsVCF = null;
+		}
 		
 		add(jmiCopy);
 		add(jmiCut);
@@ -103,6 +114,9 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		}
 		addSeparator();
 		add(jmiSaveAsImage);
+		if (jmiExportAsVCF != null) {
+			add(jmiExportAsVCF);
+		}
 		addSeparator();
 		add(jmiLoadStripes);
 		add(jmiRemoveStripes);

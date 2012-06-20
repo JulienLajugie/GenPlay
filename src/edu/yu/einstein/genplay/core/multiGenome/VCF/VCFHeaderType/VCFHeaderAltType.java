@@ -103,5 +103,17 @@ public class VCFHeaderAltType implements VCFHeaderType {
 	public String toString () {
 		return getColumnCategory() + " - " + id + ": " + description;
 	}
+
+
+	@Override
+	public String getAsOriginalLine() {
+		String line = "";
+		line += "##ALT=<ID=";
+		line += id;
+		line += ",Description=\"";
+		line += description;
+		line += "\">";
+		return line;
+	}
 	
 }
