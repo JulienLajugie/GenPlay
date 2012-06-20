@@ -27,6 +27,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
@@ -89,7 +90,9 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		final JFileChooser jfc = new JFileChooser(ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory());
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		jfc.setDialogTitle("Save Project");
-		jfc.addChoosableFileFilter(new GenPlayProjectFilter());
+		FileFilter[] filters = {new GenPlayProjectFilter()};
+		jfc.addChoosableFileFilter(filters[0]);
+		jfc.setFileFilter(filters[0]);
 		jfc.setAcceptAllFileFilterUsed(false);
 		File f = new File(ProjectManager.getInstance().getProjectName().concat(".gen"));
 		jfc.setSelectedFile(f);

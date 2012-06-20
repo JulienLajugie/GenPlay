@@ -72,7 +72,6 @@ public class SCWListDrawer extends CurveDrawer {
 			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					System.out.println(currentWindow.getStart() + " to " + currentWindow.getStop());
 					int x = projectWindow.genomePosToScreenXPos(currentWindow.getStart()); 
 					int widthWindow = projectWindow.genomePosToScreenXPos(currentWindow.getStop()) - x;
 					if (widthWindow < 1) {

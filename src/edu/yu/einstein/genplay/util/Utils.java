@@ -566,12 +566,33 @@ public class Utils {
 		// The stop position may have been returned even if the window is not included between the start and stop position
 		// It is necessary to test it before adding it
 		T element = list.get(indexStop);
-		if (element.getStart() >= positionStart && element.getStart() <= positionStop || 	// need to test the position of the window in order to add it OR not 
-				element.getStop() >= positionStart && element.getStop() <= positionStop) {
+		if (isIn(element, positionStart, positionStop)) {
 			resultList.add(element);
 		}
 
 		return resultList;
+	}
+
+
+	/**
+	 * 
+	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow}, 
+	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
+	 * @param element		the element to test
+	 * @param windowStart	the start position on the main frame
+	 * @param windowStop	the stop position on the main frame
+	 * @return true if the element is in the main frame, false otherwise
+	 */
+	public static <T extends ChromosomeWindow> boolean isIn (T element, int windowStart, int windowStop) {
+		if (element.getStop() < windowStart) {
+			return false;
+		}
+
+		if (element.getStart() > windowStop) {
+			return false;
+		}
+
+		return true;
 	}
 
 
