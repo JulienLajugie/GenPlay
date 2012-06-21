@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -39,12 +40,12 @@ public class VCFLine {
 
 	protected VCFLine (BGZIPReader reader, String line) {
 		this.reader = reader;
-		if (line == null) {					// if null
-			elements = null;				// there is no element and it is the last line
-		} else if (line.isEmpty()) {		// if empty: bad reading behavior
-			elements = new String[0];		// we filter setting the elements as "empty" in order to be skipped in the process
-		} else {							// the line matches the requirements 
-			elements = line.split("\t");	// we split with tabulations
+		if (line == null) {							// if null
+			elements = null;						// there is no element and it is the last line
+		} else if (line.isEmpty()) {				// if empty: bad reading behavior
+			elements = new String[0];				// we filter setting the elements as "empty" in order to be skipped in the process
+		} else {									// the line matches the requirements 
+			elements = Utils.splitWithTab(line);	// we split with tabulations
 		}
 	}
 

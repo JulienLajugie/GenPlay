@@ -21,8 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.VCF;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -40,6 +42,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -52,21 +55,23 @@ public class VCFHeader implements Serializable {
 	private static final long serialVersionUID = 5071204705996276780L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
 	
+	private BufferedReader headerReader;
+
 	private Map<String, String> 				headerInfo;			// Header main information
 	private	Map<String, Class<?>>				fieldType;			// Association between field type and java class
 	private	List<String>						fixedColumn;		// Fixed header names included in the VCF file
-	
+
 	private List<VCFHeaderType>					basicHeader;		// Header without ID for ALT, QUAL and FILTER
 	private List<VCFHeaderType> 				altHeader;			// Header for the ALT field
 	private List<VCFHeaderType> 				filterHeader;		// Header for the FILTER field
 	private List<VCFHeaderAdvancedType> 		infoHeader;			// Header for the INFO field
 	private List<VCFHeaderAdvancedType> 		formatHeader;		// Header for the FORMAT field
-	
+
 	private	List<String>						columnNames;		// All column header names
 	private	List<String>						genomeRawNames;		// Dynamic header names included in the VCF file (raw genome names)
 	private	List<String>						genomeNames;		// Full genome names list
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -111,8 +116,8 @@ public class VCFHeader implements Serializable {
 		genomeRawNames = (List<String>) in.readObject();
 		genomeNames = (List<String>) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link VCFHeader}.
 	 */
@@ -121,8 +126,8 @@ public class VCFHeader implements Serializable {
 		initFixedColumnList();
 		genomeNames = new ArrayList<String>();
 	}
-	
-	
+
+
 	/**
 	 * Initializes field/java class association.
 	 */
@@ -134,8 +139,8 @@ public class VCFHeader implements Serializable {
 		fieldType.put("Character", char.class);
 		fieldType.put("String", String.class);
 	}
-	
-	
+
+
 	/**
 	 * Initializes column header list.
 	 */
@@ -151,8 +156,8 @@ public class VCFHeader implements Serializable {
 		fixedColumn.add(VCFColumnName.INFO.toString());
 		fixedColumn.add(VCFColumnName.FORMAT.toString());
 	}
-	
-	
+
+
 	/**
 	 * This method reads and saves the vcf header information
 	 * @param reader the VCF reader
@@ -160,6 +165,7 @@ public class VCFHeader implements Serializable {
 	 * @throws IOException
 	 */
 	public void processHeader (VCFReader reader) throws FileNotFoundException, IOException {
+		headerReader = new BufferedReader(new InputStreamReader(reader.getVCFParser().getmFp()));
 		boolean valid = true;
 		headerInfo = new HashMap<String, String>();
 		basicHeader = new ArrayList<VCFHeaderType>();
@@ -167,82 +173,87 @@ public class VCFHeader implements Serializable {
 		filterHeader = new ArrayList<VCFHeaderType>();
 		infoHeader = new ArrayList<VCFHeaderAdvancedType>();
 		formatHeader = new ArrayList<VCFHeaderAdvancedType>();
-		
+
 		VCFHeaderBasicType basicAlternativeHeader = new VCFHeaderBasicType();
 		basicAlternativeHeader.setColumnCategory(VCFColumnName.ALT);
 		basicAlternativeHeader.setId(VCFColumnName.ALT.toString());
 		basicAlternativeHeader.setDescription("Alternative value");
-		
+
 		VCFHeaderBasicType basicQualityHeader = new VCFHeaderBasicType();
 		basicQualityHeader.setColumnCategory(VCFColumnName.QUAL);
 		basicQualityHeader.setId(VCFColumnName.QUAL.toString());
 		basicQualityHeader.setDescription("Quality value");
-		
+
 		VCFHeaderBasicType basicFilterHeader = new VCFHeaderBasicType();
 		basicFilterHeader.setColumnCategory(VCFColumnName.FILTER);
 		basicFilterHeader.setId(VCFColumnName.FILTER.toString());
 		basicFilterHeader.setDescription("Filter value");
 		basicFilterHeader.addElement("PASS");
 		basicFilterHeader.addElement(".");
-		
+
 		basicHeader.add(basicAlternativeHeader);
 		basicHeader.add(basicQualityHeader);
 		basicHeader.add(basicFilterHeader);
-		
+
 		while (valid) {
-			String line = reader.getVCFParser().readLine();
-			System.out.println("line: " + line);
-			if (line.length() > 0) {
-				if (line.substring(0, 2).equals("##")) {
-					int equalChar = line.indexOf("=");
-					String type = line.substring(2, equalChar);
+			String line = reader.getVCFParser().readLine(headerReader);
+			if (line == null) {
+				valid = false;
+			} else {
+				if (line != null && line.length() > 0) {
+					if (line.substring(0, 2).equals("##")) {
+						int equalChar = line.indexOf("=");
+						String type = line.substring(2, equalChar);
 
-					if (type.equals(VCFColumnName.INFO.toString()) ||
-							type.equals(VCFColumnName.ALT.toString()) ||
-							type.equals(VCFColumnName.FILTER.toString()) ||
-							type.equals(VCFColumnName.FORMAT.toString())) {
-						Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 1));
+						if (type.equals(VCFColumnName.INFO.toString()) ||
+								type.equals(VCFColumnName.ALT.toString()) ||
+								type.equals(VCFColumnName.FILTER.toString()) ||
+								type.equals(VCFColumnName.FORMAT.toString())) {
+							Map<String, String> info = parseVCFHeaderInfo(line.substring(equalChar + 2, line.length() - 1));
 
-						VCFHeaderType headerType = null;
+							VCFHeaderType headerType = null;
 
-						if (type.equals(VCFColumnName.ALT.toString())) {
-							headerType = new VCFHeaderAltType();
-							altHeader.add(headerType);
-						} else if (type.equals(VCFColumnName.FILTER.toString())) {
-							headerType = new VCFHeaderFilterType();
-							filterHeader.add(headerType);
-							basicFilterHeader.addElement(headerType);
-						} else if (type.equals(VCFColumnName.INFO.toString())) {
-							headerType = new VCFHeaderInfoType();
-							infoHeader.add((VCFHeaderAdvancedType) headerType);
-						} else if (type.equals(VCFColumnName.FORMAT.toString())) {
-							headerType = new VCFHeaderFormatType();
-							formatHeader.add((VCFHeaderAdvancedType) headerType);
-						}
+							if (type.equals(VCFColumnName.ALT.toString())) {
+								headerType = new VCFHeaderAltType();
+								altHeader.add(headerType);
+							} else if (type.equals(VCFColumnName.FILTER.toString())) {
+								headerType = new VCFHeaderFilterType();
+								filterHeader.add(headerType);
+								basicFilterHeader.addElement(headerType);
+							} else if (type.equals(VCFColumnName.INFO.toString())) {
+								headerType = new VCFHeaderInfoType();
+								infoHeader.add((VCFHeaderAdvancedType) headerType);
+							} else if (type.equals(VCFColumnName.FORMAT.toString())) {
+								headerType = new VCFHeaderFormatType();
+								formatHeader.add((VCFHeaderAdvancedType) headerType);
+							}
 
-						headerType.setId(info.get(VCFColumnName.ID.toString()));
-						headerType.setDescription(info.get("Description"));
-						if (headerType instanceof VCFHeaderAdvancedType) {
-							((VCFHeaderAdvancedType) headerType).setNumber(info.get("Number"));
-							((VCFHeaderAdvancedType) headerType).setType(fieldType.get(info.get("Type")));
+							headerType.setId(info.get(VCFColumnName.ID.toString()));
+							headerType.setDescription(info.get("Description"));
+							if (headerType instanceof VCFHeaderAdvancedType) {
+								((VCFHeaderAdvancedType) headerType).setNumber(info.get("Number"));
+								((VCFHeaderAdvancedType) headerType).setType(fieldType.get(info.get("Type")));
+							}
+						} else {
+							headerInfo.put(type, line.substring(equalChar + 1, line.length() - 1));
 						}
 					} else {
-						headerInfo.put(type, line.substring(equalChar + 1, line.length() - 1));
-					}
-				} else {
-					valid = false;
-					if (line.substring(0, 1).equals("#")) {
-						columnNames = new ArrayList<String>();
-						for (String name: line.substring(1, line.length()).split("[\t]")) {
-							columnNames.add(name.trim());
+						valid = false;
+						if (line.substring(0, 1).equals("#")) {
+							columnNames = new ArrayList<String>();
+							String[] details = Utils.splitWithTab(line);
+							//for (String name: line.substring(1, line.length()).split("[\t]")) {
+							for (String name: details) {
+								columnNames.add(name.trim());
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * This method parses the content of attributes header information.
 	 * @param line
@@ -250,10 +261,10 @@ public class VCFHeader implements Serializable {
 	 */
 	private Map<String, String> parseVCFHeaderInfo (String line) {
 		Map<String, String> info = new HashMap<String, String>();
-		String details[] = line.split(",");
+		String[] details = Utils.split(line, ',');
 		String detail[];
 		for (String s: details) {
-			detail = s.split("=");
+			detail = Utils.split(s, '=');
 			if (detail.length > 1 && !detail[0].equals("Description")) {
 				info.put(detail[0], detail[1]);
 			}
@@ -265,8 +276,8 @@ public class VCFHeader implements Serializable {
 		info.put("Description", description);
 		return info;
 	}
-	
-	
+
+
 	/**
 	 * Looks for a INFO header using an ID.
 	 * @param id the ID
@@ -280,8 +291,8 @@ public class VCFHeader implements Serializable {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Looks for a FORMAT header using an ID.
 	 * @param id the ID
@@ -295,8 +306,8 @@ public class VCFHeader implements Serializable {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Add a genome name to the list of genome name
 	 * @param genomeName a full genome name
@@ -324,24 +335,24 @@ public class VCFHeader implements Serializable {
 		}
 		return genomeRawNames;
 	}
-	
-	
+
+
 	/**
 	 * @return the columnNames
 	 */
 	public List<String> getColumnNames() {
 		return columnNames;
 	}
-	
-	
+
+
 	/**
 	 * @return the genomeNames
 	 */
 	public List<String> getGenomeNames() {
 		return genomeNames;
 	}
-	
-	
+
+
 	/**
 	 * @return the fixedColumn
 	 */
@@ -349,8 +360,8 @@ public class VCFHeader implements Serializable {
 		List<String> list = new ArrayList<String>(fixedColumn);
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * @return the basicHeader
 	 */
@@ -397,39 +408,38 @@ public class VCFHeader implements Serializable {
 	public List<VCFHeaderAdvancedType> getFormatHeader() {
 		return formatHeader;
 	}
-	
-	
+
+
 	/**
 	 * @return all the header type
 	 */
 	public List<VCFHeaderType> getAllHeader () {
 		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
-		
+
 		for (VCFHeaderType header: basicHeader) {
 			result.add(header);
 		}
-		
+
 		for (VCFHeaderType header: altHeader) {
 			result.add(header);
 		}
-		
+
 		for (VCFHeaderType header: filterHeader) {
 			result.add(header);
 		}
-		
+
 		for (VCFHeaderType header: infoHeader) {
 			result.add(header);
 		}
-		
+
 		for (VCFHeaderType header: formatHeader) {
 			result.add(header);
 		}
-		
+
 		return result;
 	}
-	
-	
-	
+
+
 	/**
 	 * Shows the main header information
 	 */
@@ -439,8 +449,8 @@ public class VCFHeader implements Serializable {
 			System.out.println(key + ": " + headerInfo.get(key));
 		}
 	}
-	
-	
+
+
 	/**
 	 * Shows the column names
 	 */

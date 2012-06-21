@@ -27,6 +27,7 @@ import java.io.FileReader;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -63,7 +64,7 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 			String lineRead;
 			String geneNames[];
 			while ((lineRead = bufReader.readLine()) != null && !stopped) {
-				geneNames = lineRead.split("\t");
+				geneNames = Utils.splitWithTab(lineRead);
 				for (int i = 0; i < renamedList.size() && !stopped; i++) {
 					for (int j = 0; j < renamedList.size(i) && !stopped; j++) {
 						if (geneNames.length > 1) {

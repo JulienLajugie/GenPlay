@@ -27,6 +27,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -55,10 +56,12 @@ public class VariantInfo {
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
 
-			String[] elements = variantInformation.getInfo().split(";");
+			//String[] elements = variantInformation.getInfo().split(";");
+			String[] elements = Utils.split(variantInformation.getInfo(), ';');
 
 			for (String element: elements) {
-				String[] map = element.split("=");
+				//String[] map = element.split("=");
+				String[] map = Utils.split(element, '=');
 				String key = map[0];
 				String value = null;
 				if (map.length > 1) {

@@ -750,4 +750,54 @@ public class Utils {
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();*/
 	}
+	
+	
+	/**
+	 * Split a string using the char code of a character.
+	 * @param s	the string to split
+	 * @param c	the integer code of the character
+	 * @return	an array containing the split string
+	 */
+	public static String[] split (String s, int c) {
+		List<String> list = new ArrayList<String>();
+		if (s != null) {
+			int pos = 0, end;
+            while ((end = s.indexOf(c, pos)) >= 0) {
+            	list.add(s.substring(pos, end));
+                pos = end + 1;
+            }
+            list.add(s.substring(pos));
+		}
+		
+		String[] result = new String[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			result[i] = list.get(i);
+		}
+
+		return result;
+	}
+	
+	
+	/**
+	 * Split a string using the tabulation character.
+	 * @param s	the string to split
+	 * @return	an array containing the split string
+	 */
+	public static String[] splitWithTab (String s) {
+		List<String> list = new ArrayList<String>();
+		if (s != null) {
+			int pos = 0, end;
+            while ((end = s.indexOf("	", pos)) >= 0) {
+            	list.add(s.substring(pos, end));
+                pos = end + 1;
+            }
+            list.add(s.substring(pos));
+		}
+		
+		String[] result = new String[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			result[i] = list.get(i);
+		}
+		return result;
+	}
 }

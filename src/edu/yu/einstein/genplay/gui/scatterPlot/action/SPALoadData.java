@@ -36,6 +36,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
+import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -92,7 +93,8 @@ public class SPALoadData extends ScatterPlotAction {
 			if (line == null) {
 				JOptionPane.showMessageDialog(getRootPane(), "The input file is empty", "Invalid File", JDialog.ERROR);
 			} else {
-				splittedLine = line.split(",");
+				//splittedLine = line.split(",");
+				splittedLine = Utils.split(line, ',');
 				// we need a file with two fields
 				if (splittedLine.length != 2) {
 					JOptionPane.showMessageDialog(getRootPane(), "The input file needs to contain two fields", "Invalid File", JDialog.ERROR);
@@ -102,7 +104,8 @@ public class SPALoadData extends ScatterPlotAction {
 					List<Double> yData= new ArrayList<Double>();
 					while ((line = reader.readLine()) != null) {
 						if (!line.trim().isEmpty()) {
-							splittedLine = line.split(",");
+							//splittedLine = line.split(",");
+							splittedLine = Utils.split(line, ',');
 							if (splittedLine.length != 2) {
 								JOptionPane.showMessageDialog(getRootPane(), "The file needs to contain 2 fields", "Invalid File", JDialog.ERROR);
 							} else {

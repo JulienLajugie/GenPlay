@@ -31,6 +31,7 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -88,7 +89,7 @@ public class VCFReader {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		String line;
 		while (iter != null && (line = iter.next()) != null){
-			String info[] = line.split("[\t]");
+			String[] info = Utils.splitWithTab(line);
 			Map<String, Object> row = new HashMap<String, Object>();
 			for (String columnName: columnNames) {
 				if (fields.indexOf(columnName) != -1) {
@@ -115,7 +116,7 @@ public class VCFReader {
 		int cpt = 0;
 		String line;
 		while (iter != null && (line = iter.next()) != null && cpt < 10){
-			String info[] = line.split("[\t]");
+			String[] info = Utils.splitWithTab(line);
 			Map<String, Object> row = new HashMap<String, Object>();
 			for (String columnName: columnNames) {
 				if (fields.indexOf(columnName) != -1) {

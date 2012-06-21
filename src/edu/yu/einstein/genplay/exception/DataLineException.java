@@ -25,6 +25,7 @@ import java.awt.FontMetrics;
 import java.io.File;
 
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -87,7 +88,8 @@ public final class DataLineException extends Exception {
 		message += "Error in the file " + file.getPath() + " at the line " + lineNumber + "\n";
 		message += "Treatment: " + process + "\n";
 		message += "Description: ";
-		String[] array = description.split("\n");
+		//String[] array = description.split("\n");
+		String[] array = Utils.split(description, '\n');
 		for (int i = 0; i < array.length; i++) {
 			switch (i) {
 			case 0:

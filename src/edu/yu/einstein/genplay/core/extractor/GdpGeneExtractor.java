@@ -96,7 +96,8 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 	@Override
 	protected boolean extractLine(String extractedLine) throws DataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
-			searchURL = extractedLine.split("\"")[1].trim();
+			//searchURL = extractedLine.split("\"")[1].trim();
+			searchURL = Utils.split(extractedLine, '"')[1].trim();
 			return false;
 		} else {
 			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
@@ -126,8 +127,10 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 					start = getMultiGenomePosition(chromosome, start);
 					int stop = Integer.parseInt(splitedLine[4].trim());
 					stop = getMultiGenomePosition(chromosome, stop);
-					String[] exonStartsStr = splitedLine[5].split(",");
-					String[] exonStopsStr = splitedLine[6].split(",");
+					//String[] exonStartsStr = splitedLine[5].split(",");
+					//String[] exonStopsStr = splitedLine[6].split(",");
+					String[] exonStartsStr = Utils.split(splitedLine[5], ',');
+					String[] exonStopsStr = Utils.split(splitedLine[6], ',');
 					int[] exonStarts = new int[exonStartsStr.length];
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
@@ -159,7 +162,8 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 						// Gets the scores
 						if (splitedLine.length > 7) {
-							String[] exonScoresStr = splitedLine[7].split(",");
+							//String[] exonScoresStr = splitedLine[7].split(",");
+							String[] exonScoresStr = Utils.split(splitedLine[7], ',');
 							double[] exonScores = new double[exonScoresStr.length];
 							for (int i = 0; i < exonScoresStr.length; i++) {
 								exonScores[i] = Double.parseDouble(exonScoresStr[i]);

@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -83,7 +84,7 @@ public class SingleFileExportEngine extends ExportEngine {
 		while (!currentLine.isLastLine()) {
 			
 			if (currentLine.isValid()) {																											// The line has to be a valid line to be processed
-				int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), currentLine.getALT().split(","), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
+				int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
 				VariantType[] variations = synchronizer.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
 				
 				List<Integer> allValidIndex = new ArrayList<Integer>();																				// Initializes the array that will contain all valid alternative indexes of the line
@@ -153,7 +154,7 @@ public class SingleFileExportEngine extends ExportEngine {
 	private int[] getAlternativeIndexes (String genomeName, BGZIPReader reader, MGSynchronizer synchronizer) {
 		int[] indexes = new int[2];
 		int genomeIndex = reader.getIndexFromGenome(genomeName);
-		String genotype = reader.getCurrentLine().getField(genomeIndex).split(":")[0];
+		String genotype = Utils.split(reader.getCurrentLine().getField(genomeIndex), ':')[0];
 
 		indexes[0] = synchronizer.getAlleleIndex(genotype.charAt(0));
 		indexes[1] = synchronizer.getAlleleIndex(genotype.charAt(2));
@@ -250,7 +251,7 @@ public class SingleFileExportEngine extends ExportEngine {
 	 */
 	private String buildALTField (List<Integer> indexes, String alt) {
 		Collections.sort(indexes);
-		String[] alternatives = alt.split(",");
+		String[] alternatives = Utils.split(alt, ',');
 		String result = "";
 		for (int i = 0; i < indexes.size(); i++) {
 			result += alternatives[indexes.get(i)];

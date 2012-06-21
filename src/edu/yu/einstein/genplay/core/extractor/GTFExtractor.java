@@ -219,7 +219,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	 */
 	private Map<String, String> parseAttributes(String attributeString) {
 		Map<String, String> attributeMap = new HashMap<String, String>();
-		String[] attributes = attributeString.split(";");
+		//String[] attributes = attributeString.split(";");
+		String[] attributes = Utils.split(attributeString, ';');
 		for (String currentAttribute: attributes) {
 			int indexFirstQuote = currentAttribute.indexOf('"');
 			int indexLastQuote = currentAttribute.lastIndexOf('"');

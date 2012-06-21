@@ -96,7 +96,8 @@ implements Serializable, BinListGenerator {
 			//throw new InvalidDataLineException(extractedLine);
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 		}
-		String chromosomeField[] = splitedLine[2].split(":");
+		//String chromosomeField[] = splitedLine[2].split(":");
+		String chromosomeField[] = Utils.split(splitedLine[2], ':');
 		if (chromosomeField.length != 2) {
 			//throw new InvalidDataLineException(extractedLine);
 			throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);

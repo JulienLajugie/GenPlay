@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 
@@ -95,8 +96,8 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 	 * @throws InvalidChromosomeException
 	 */
 	public GenomeWindow(String genomeWindowStr, ProjectChromosome projectChromosome) throws ChromosomeWindowException, InvalidChromosomeException {
-		super(genomeWindowStr.split(":")[1].trim());
-		chromosome = projectChromosome.get(genomeWindowStr.split(":")[0].trim());
+		super(Utils.split(genomeWindowStr, ':')[1].trim());
+		chromosome = projectChromosome.get(Utils.split(genomeWindowStr, ':')[0].trim());
 	}
 
 	

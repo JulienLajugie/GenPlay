@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -123,7 +124,7 @@ public class MGSynchronizer implements Serializable {
 		List<AlleleType> alleleTypeList = new ArrayList<AlleleType>();
 		alleleTypeList.add(AlleleType.ALLELE01);
 		alleleTypeList.add(AlleleType.ALLELE02);
-
+		
 		for (Chromosome chromosome: chromosomeList) {																// loop on every chromosome
 			for (VCFFile vcfFile: VCFFileList) {																	// loop on every vcf reader
 				VCFFileStatistic statistic = vcfFile.getStatistics();
@@ -133,11 +134,14 @@ public class MGSynchronizer implements Serializable {
 				List<String> columnNames = getColumnNamesForQuery(genomeRawNames);									// get the list of column to perform the query on the current vcf
 				List<Map<String, Object>> result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
 
+				int[] chromosomeBounds = getBounds(result.size());
+				int lineNumber = 0;
 				for (Map<String, Object> VCFLine: result) {															// loop on every line of the result of the query
+					lineNumber++;
 					int referencePosition = Integer.parseInt(VCFLine.get(VCFColumnName.POS.toString()).toString());	// get the reference genome position (POS field)
 					String reference = VCFLine.get(VCFColumnName.REF.toString()).toString();						// get the reference value (REF field)
 					String alternative = VCFLine.get(VCFColumnName.ALT.toString()).toString();						// get the alternative values and split them into an array (comma separated)
-					String[] alternatives = alternative.split(",");
+					String[] alternatives = Utils.split(alternative, ',');
 					String info = VCFLine.get(VCFColumnName.INFO.toString()).toString();							// get the information of the variation (INFO field). Needs it if the variation is SV coded.
 					float score;
 					try {
@@ -150,16 +154,20 @@ public class MGSynchronizer implements Serializable {
 					VariantType[] variantTypes = getVariantTypes(variantLengths);
 
 					updateFileStatistics(statistic, variantTypes, alternatives);
-					updateHeaderInformation(fileHeader, VCFLine, genomeRawNames);
-					
+
+					if (isInBounds(chromosomeBounds, lineNumber)) {
+						updateHeaderInformation(fileHeader, VCFLine, genomeRawNames);
+					}
+
 					for (String genomeName: genomeNames) {															// loop on every genome raw name
 						String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-
-						String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype 
+						//String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype 
+						String genotype = Utils.split(VCFLine.get(genomeRawName).toString().trim(), ':')[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype
 						if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
 							int firstAlleleIndex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(0));
 							int secondAlleleindex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(2));
 							updateGenotypeSampleStatistics(statistic.getSampleStatistics(genomeName), variantTypes, firstAlleleIndex, secondAlleleindex);
+
 							for (AlleleType alleleType: alleleTypeList) {
 								int currentAlleleIndex = -1;
 								if (alleleType == AlleleType.ALLELE01) {													// if we are processing the paternal allele
@@ -206,14 +214,53 @@ public class MGSynchronizer implements Serializable {
 				}
 			}
 		}
-
 		for (VCFFile vcfFile: VCFFileList) {
 			vcfFile.getStatistics().processStatistics();
-			//System.out.println("Statistics for the VCF: " + vcfFile.getFile().getName());
-			//vcfFile.getStatistics().show();
 		}
 	}
-
+	
+	
+	/**
+	 * Some function are time expensive and could be applied only on some lines.
+	 * Which ones? The beginning/ending of a set of results can have non representative results.
+	 * That function will define a minimum and a maximum bound to delimit a sample of lines to use.
+	 * It will take the X percent of lines that are in the middle of the set.
+	 * @param length	length of a set of result
+	 * @return			an array of bounds (0: min; 1: max)
+	 */
+	private int[] getBounds (int length) {
+		int delimiter = (int) (length * 0.1) / 2;
+		
+		int[] result = new int[2];
+		int middle = length / 2;
+		
+		result[0] = middle - delimiter;
+		result[1] = middle + delimiter;
+		
+		if (result[0] < 0) {
+			result[0] = 0;
+		}
+		
+		if (result[1] > length) {
+			result[1] = length;
+		}
+		
+		return result;
+	}
+	
+	
+	/**
+	 * @param bounds	the bounds
+	 * @param line	the line number
+	 * @return true if the line number is in the bounds, false if out
+	 */
+	private boolean isInBounds (int[] bounds, int line) {
+		if (line < bounds[0] || line > bounds[1]) {
+			return false;
+		}
+		return true;
+	}
+	
 
 	/**
 	 * Creates the list of the column names necessary for a query.
@@ -489,7 +536,6 @@ public class MGSynchronizer implements Serializable {
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Update common information section
 	
-	
 	/**
 	 * Updates the header information.
 	 * It consists in storing the first values found of the IDs from INFO and FORMAT fields.
@@ -506,9 +552,11 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private void updateHeaderINFOInformation (VCFHeader header, Map<String, Object> VCFLine) {
 		String info = (String) VCFLine.get(VCFColumnName.INFO.toString());
-		String[] fields = info.split(";");
+		String[] fields = Utils.split(info, ';');
+
 		for (int i = 0; i < fields.length; i++) {
-			String[] pair = fields[i].split("=");
+			//String[] pair = fields[i].split("=");
+			String[] pair = Utils.split(fields[i], '=');
 			if (pair.length == 2) {
 				String id = pair[0];
 				Object value = pair[1];
@@ -527,12 +575,14 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private void updateHeaderFORMATInformation (VCFHeader header, Map<String, Object> VCFLine, List<String> genomeNames) {
 		String format = (String) VCFLine.get(VCFColumnName.FORMAT.toString());
-		String[] fields = format.split(":");
+		String[] fields = Utils.split(format, ':');
+
 		for (int i = 0; i < fields.length; i++) {
 			VCFHeaderAdvancedType formatHeader = header.getFormatHeaderFromID(fields[i]);
 			if (formatHeader.getId().equals("GT") || formatHeader.getType() == String.class) {
 				for (String genome: genomeNames) {
-					String[] values = ((String) VCFLine.get(genome)).split(":");
+					//String[] values = ((String) VCFLine.get(genome)).split(":");
+					String[] values = Utils.split(((String) VCFLine.get(genome)), ':');
 					if (i < values.length) {
 						((VCFHeaderElementRecord)formatHeader).addElement(values[i]);
 					}

@@ -158,10 +158,12 @@ public final class ExtractorFactory {
 								if (line.charAt(0) == '\"') {
 									// remove the first "
 									line = line.substring(1);
-									type = line.split("\"")[0];
+									//type = line.split("\"")[0];
+									type = Utils.split(line, '"')[0];
 								} else {
 									line = line.trim();
-									type = line.split(" ")[0].trim();
+									//type = line.split(" ")[0].trim();
+									type = Utils.split(line, ' ')[0];
 								}
 								reader.close();
 								if (type.equalsIgnoreCase("bedgraph")) {

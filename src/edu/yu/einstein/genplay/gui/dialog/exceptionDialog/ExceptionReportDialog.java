@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -154,7 +155,8 @@ public class ExceptionReportDialog extends JDialog {
 		String prefix = messageNumber + ": ";
 		String indent = getIndent(prefix);
 
-		String[] array = message.split("\n");
+		//String[] array = message.split("\n");
+		String[] array = Utils.split(message, '\n');
 		for (int i = 0; i < array.length; i++) {
 			switch (i) {
 			case 0:

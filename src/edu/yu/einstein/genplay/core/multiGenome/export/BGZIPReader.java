@@ -31,6 +31,7 @@ import net.sf.samtools.util.BlockCompressedInputStream;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -91,7 +92,7 @@ public class BGZIPReader {
 					}
 				} else if (line.substring(0, 1).equals("#")) {
 					//this.columns = line;
-					String[] columns = line.split("\t");
+					String[] columns = Utils.splitWithTab(line);
 					for (int i = 9; i < columns.length; i++) {
 						genomeMap.put(columns[i], i);
 					}

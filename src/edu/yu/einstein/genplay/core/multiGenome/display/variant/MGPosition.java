@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * This class gathers all common genome information contained in a line of a VCF file.
@@ -224,13 +225,13 @@ public class MGPosition implements Serializable {
 	 */
 	public Object getFormatValue(String field, String genomeRawName) {
 		Object result = null;
-		String[] formatHeader = getString(VCFLine.get("FORMAT")).split(":");
+		String[] formatHeader = Utils.split(getString(VCFLine.get("FORMAT")), ':');
 		String[] formatValues;
 		if (formatHeader.length == 1) {
 			formatValues = new String[1];
 			formatValues[0] = getString(VCFLine.get(genomeRawName));
 		} else {
-			formatValues = getString(VCFLine.get(genomeRawName)).split(":");
+			formatValues = Utils.split(getString(VCFLine.get(genomeRawName)), ':');
 		}
 		for (int i = 0; i < formatHeader.length; i++) {
 			if (formatHeader[i].equals(field)) {

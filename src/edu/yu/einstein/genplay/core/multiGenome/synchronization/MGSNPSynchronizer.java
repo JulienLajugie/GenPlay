@@ -41,6 +41,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -166,10 +167,12 @@ public class MGSNPSynchronizer implements Serializable {
 				if (results != null) {
 					for (Map<String, Object> result: results) {
 						if (hasSNP(result.get("REF").toString(), result.get("ALT").toString())) {
-							String[] alternatives = result.get("ALT").toString().split(",");
+							//String[] alternatives = result.get("ALT").toString().split(",");
+							String[] alternatives = Utils.split(result.get("ALT").toString(), ',');
 							for (String genomeName: readers.get(reader)) {
 								String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-								String genoType = result.get(genomeRawName).toString().split(":")[0];
+								//String genoType = result.get(genomeRawName).toString().split(":")[0];
+								String genoType = Utils.split(result.get(genomeRawName).toString(), ':')[0];
 								for (AlleleType alleleType: genomes.get(genomeName)) {
 									int pos = getAlternativePosition(genoType, alleleType);
 									if (pos > 0) {
@@ -268,7 +271,8 @@ public class MGSNPSynchronizer implements Serializable {
 
 	private boolean hasSNP (String ref, String alt) {
 		if (ref.length() == 1) {
-			String[] altArray = alt.split(",");
+			//String[] altArray = alt.split(",");
+			String[] altArray = Utils.split(alt, ',');
 			for (String element: altArray) {
 				if (element.length() == 1) {
 					return true;

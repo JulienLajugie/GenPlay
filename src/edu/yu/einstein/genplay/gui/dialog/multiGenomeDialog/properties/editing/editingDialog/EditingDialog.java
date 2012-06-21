@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingDialogManager.EditingDialogManagerInterface;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingPanel.EditingPanel;
 import edu.yu.einstein.genplay.util.Images;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -180,7 +181,8 @@ public class EditingDialog<K> extends JDialog {
 	 */
 	private void showErrorDialog (String errors) {
 		String message = "Some errors have been found, please check out the following points:\n";
-		String[] errorsArray = errors.split("\n");
+		//String[] errorsArray = errors.split("\n");
+		String[] errorsArray = Utils.split(errors, '\n');
 		for (int i = 0; i < errorsArray.length; i++) {
 			if (!errorsArray[i].isEmpty()) {
 				message += i + 1 + ": " + errorsArray[i];

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -118,7 +119,8 @@ public class VCFLineUtility {
 	 * @return		the value of the specific field of the FORMAT field
 	 */
 	public static String getFormatValue (Map<String, Object> line, VCFHeaderType header, String genomeRawName) {
-		String[] format = line.get(VCFColumnName.FORMAT.toString()).toString().split(":");
+		//String[] format = line.get(VCFColumnName.FORMAT.toString()).toString().split(":");
+		String[] format = Utils.split(line.get(VCFColumnName.FORMAT.toString()).toString(), ':');
 		String result = null;
 
 		int idIndex = -1;
@@ -129,7 +131,8 @@ public class VCFLineUtility {
 		}
 
 		if (idIndex != -1) {
-			String[] genomeFormat = line.get(genomeRawName).toString().split(":");
+			//String[] genomeFormat = line.get(genomeRawName).toString().split(":");
+			String[] genomeFormat = Utils.split(line.get(genomeRawName).toString(), ':');
 			if (idIndex < genomeFormat.length) {
 				result = genomeFormat[idIndex];
 			}

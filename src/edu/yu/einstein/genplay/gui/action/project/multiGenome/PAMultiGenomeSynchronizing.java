@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -62,9 +61,6 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 	private static		 String 			ACTION_NAME = "Multi-genome loading";	// action name
 	private MultiGenomeProject 					multiGenomeProject;							// instance of the multi genome
 	private Map<String, List<VCFFile>> 	genomeFileAssociation;					// Mapping between genome names and their readers.
-
-	
-	private List<Long> times = new ArrayList<Long>();
 	
 
 	/**
@@ -95,7 +91,7 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 			
 			// Checks if parameters have been set
 			if (hasBeenInitialized()) {
-				
+
 				// Notifies the action
 				notifyActionStart(ACTION_NAME, 1, false);
 				
@@ -103,39 +99,26 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 				MainFrame.getInstance().lock();
 				
 				// Initializes the genome synchronization
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.initializeSynchronization (genomeFileAssociation);
 				
 				// Insert the variation into the data structure
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenomeSynchronizer().insertVariantposition();
-				//System.out.println("time: " + TabixReader.time / 1000 + " s");
 				
 				// Sort lists of position for every chromosome of every genome
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenome().sort();
 				
-				//genomeSynchronizer.getMultiGenome().show();
-				
 				// Remove the duplicate from the reference genome lists of position
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenome().getReferenceGenome().removeDuplicate();
 				
 				// Creates the variation for the reference genome.
 				// This is the only place where this method must be called!! After removing duplicates and before position synchronization.
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenomeForDisplay().getReferenceGenome().getAllele().initialize();
 				
 				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenomeSynchronizer().performPositionSynchronization();
 				
 				// Compacts the offset lists in order to optimize the memory usage
-				times.add(System.currentTimeMillis());
 				multiGenomeProject.getMultiGenome().compactLists();
-				
-				// End
-				times.add(System.currentTimeMillis());
 			} else {
 				// Generates error when parameters have not been set
 				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
@@ -151,25 +134,14 @@ public class PAMultiGenomeSynchronizing extends TrackListActionWorker<Track<?>[]
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
-	
 		multiGenomeProject.updateChromosomeList();
-		
-		//multiGenomeProject.show();
-		
+
 		initializesTrackListForMultiGenomeProject();
 		
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
 		
-		
 		// Unlocks the main frame
 		MainFrame.getInstance().unlock();
-		
-		//ProjectManager.getInstance().getProjectChromosome().getChromosomeList().toString();
-		
-		/*for (int i = 1; i < times.size(); i++) {
-			System.out.println("[" + i + "]: " + (times.get(i) - times.get(i - 1)));
-		}
-		System.out.println("[total]: " + (times.get(times.size() - 1) - times.get(0)));*/
 	}
 	
 	

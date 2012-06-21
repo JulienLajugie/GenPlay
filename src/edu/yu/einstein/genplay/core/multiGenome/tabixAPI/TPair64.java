@@ -23,4 +23,8 @@ class TPair64 implements Comparable<TPair64> {
 		return u == p.u? 0 : ((u < p.u) ^ (u < 0) ^ (p.u < 0))? -1 : 1; // unsigned 64-bit comparison
 	}
 	
+	protected String getDescription () {
+		return "u: " + u + "; v: " + v;
+	}
+	
 }

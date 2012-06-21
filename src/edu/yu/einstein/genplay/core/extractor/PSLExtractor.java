@@ -105,7 +105,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	@Override
 	protected boolean extractLine(String extractedLine)	throws DataLineException {
 		if (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL=")) {
-			searchURL = extractedLine.split("\"")[1].trim();
+			//searchURL = extractedLine.split("\"")[1].trim();
+			searchURL = Utils.split(extractedLine, '"')[1].trim();
 		}
 		String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
 		if (splitedLine.length < 21) {
@@ -139,8 +140,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						stop = resultStartStop.getStop();							
 					}
 					// add exons
-					String[] exonStartsStr = splitedLine[20].split(",");
-					String[] exonLengthsStr = splitedLine[18].split(",");
+					//String[] exonStartsStr = splitedLine[20].split(",");
+					//String[] exonLengthsStr = splitedLine[18].split(",");
+					String[] exonStartsStr = Utils.split(splitedLine[20], '"');
+					String[] exonLengthsStr = Utils.split(splitedLine[18], '"');
 					int[] exonStarts = new int[exonStartsStr.length];
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {

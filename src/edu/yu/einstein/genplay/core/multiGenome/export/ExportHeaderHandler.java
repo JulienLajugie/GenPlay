@@ -29,6 +29,7 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -92,7 +93,7 @@ public class ExportHeaderHandler {
 	 * @param ALT	the information field
 	 */
 	private void processALT (VCFFile file, String ALT) {
-		String[] alternatives = ALT.split(",");
+		String[] alternatives = Utils.split(ALT, ',');
 		for (String alternative: alternatives) {
 			if (alternative.charAt(0) == '<') {
 				List<VCFHeaderType> altHeader = file.getHeader().getAltHeader();
@@ -123,9 +124,9 @@ public class ExportHeaderHandler {
 	 * @param INFO	the information field
 	 */
 	private void processINFO (VCFFile file, String INFO) {
-		String[] information = INFO.split(";");
+		String[] information = Utils.split(INFO, ';');
 		for (String info: information) {
-			String id = info.split("=")[0];
+			String id = Utils.split(info, '=')[0];
 			List<VCFHeaderAdvancedType> infoHeader = file.getHeader().getInfoHeader();
 			for (VCFHeaderAdvancedType header: infoHeader) {
 				if (header.getId().equals(id)) {
@@ -144,7 +145,7 @@ public class ExportHeaderHandler {
 	 * @param FORMAT	the information field
 	 */
 	private void processFORMAT (VCFFile file, String FORMAT) {
-		String[] format = FORMAT.split(":");
+		String[] format = Utils.split(FORMAT, ':');
 		for (String id: format) {
 			List<VCFHeaderAdvancedType> formatHeader = file.getHeader().getFormatHeader();
 			for (VCFHeaderAdvancedType header: formatHeader) {

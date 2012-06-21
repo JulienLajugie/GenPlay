@@ -35,6 +35,7 @@ import java.util.TreeSet;
 import edu.yu.einstein.genplay.exception.DataLineException;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -96,11 +97,11 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 							reader.close();
 							// remove the first "
 							line = line.substring(1);
-							return line.split("\"")[0];							
+							return Utils.split(line, '"')[0];							
 						} else {
 							reader.close();
 							line = line.trim();
-							return line.split(" ")[0].trim();
+							return Utils.split(line, ' ')[0].trim();
 						}
 					}
 				}				

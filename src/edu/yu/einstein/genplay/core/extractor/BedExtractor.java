@@ -115,7 +115,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 	@Override
 	protected boolean extractLine(String extractedLine) throws DataLineException {
 		if ((extractedLine.trim().length() >= 10) && (extractedLine.trim().substring(0, 10).equalsIgnoreCase("searchURL="))) {
-			searchURL = extractedLine.split("\"")[1].trim();
+			//searchURL = extractedLine.split("\"")[1].trim();
+			searchURL = Utils.split(extractedLine, '"')[1].trim();
 			return false;
 		} else {
 			String[] splitedLine = Utils.parseLineTabOnly(extractedLine);
@@ -198,8 +199,10 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 										UTR3BoundList.add(chromosome, UTR3Bound);
 										if (splitedLine.length > 11) {
 											if ((!splitedLine[10].trim().equals("-")) && (!splitedLine[11].trim().equals("-"))) {
-												String[] exonStartsStr = splitedLine[11].split(",");
-												String[] exonLengthsStr = splitedLine[10].split(",");
+												//String[] exonStartsStr = splitedLine[11].split(",");
+												//String[] exonLengthsStr = splitedLine[10].split(",");
+												String[] exonStartsStr = Utils.split(splitedLine[11], ',');
+												String[] exonLengthsStr = Utils.split(splitedLine[10], ',');
 												int[] exonStarts = new int[exonLengthsStr.length];
 												int[] exonStops = new int[exonLengthsStr.length];
 												for (int i = 0; i < exonLengthsStr.length; i++) {
@@ -209,7 +212,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 												exonStartsList.add(chromosome, exonStarts);
 												exonStopsList.add(chromosome, exonStops);
 												if (splitedLine.length > 12) {
-													String[] exonScoresStr = splitedLine[12].split(",");
+													//String[] exonScoresStr = splitedLine[12].split(",");
+													String[] exonScoresStr = Utils.split(splitedLine[12], ',');
 													double[] exonScores = new double[exonScoresStr.length];
 													for (int i = 0; i < exonScoresStr.length; i++) {
 														exonScores[i] = Double.parseDouble(exonScoresStr[i]);

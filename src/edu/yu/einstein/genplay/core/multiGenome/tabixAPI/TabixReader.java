@@ -3,6 +3,7 @@ package edu.yu.einstein.genplay.core.multiGenome.tabixAPI;
 /* Contact: Heng Li <hengli@broadinstitute.org> */
 
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,10 +30,9 @@ public class TabixReader {
 	private int mBc;
 	private int mEc;
 	private int mMeta;
-	@SuppressWarnings("unused")
-	private int mSkip;	//exists only for the vcf reading but never used
-	private String[] mSeq;
-	private HashMap<String, Integer> mChr2tid;
+	private int lineToSkip;	//exists only for the vcf reading but never used
+	private String[] chromosomeNames;
+	private HashMap<String, Integer> chromosomeIndexes;
 	private static int MAX_BIN = 37450;
 	//private static int TAD_MIN_CHUNK_GAP = 32768;
 	private static int TAD_LIDX_SHIFT = 14;
@@ -47,7 +47,7 @@ public class TabixReader {
 	/**
 	 * The constructor
 	 * @param fn File name of the data file
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public TabixReader(final String fn) throws IOException {
 		mFn = fn;
@@ -96,37 +96,17 @@ public class TabixReader {
 		return ByteBuffer.wrap(buf).order(ByteOrder.LITTLE_ENDIAN).getLong();
 	}
 
-	//public static long time = 0;
+	
 	/**
 	 * Reads a line
-	 * @param is	the input stream
+	 * @param br	the buffered input stream
 	 * @return		a String value
 	 * @throws IOException
 	 */
-	public static String readLine(final InputStream is) throws IOException {
-		//long start = System.currentTimeMillis();
-		StringBuffer buf = new StringBuffer();
-		int c;
-		while ((c = is.read()) >= 0 && c != '\n') {
-			buf.append((char)c);
-		}
-		if (c < 0) {
-			//time += System.currentTimeMillis() - start;
-			return null;
-		}
-		String result = buf.toString();
-		//time += System.currentTimeMillis() - start;
-		return result;
+	public String readLine(final BufferedReader br) throws IOException {
+		return br.readLine();
 	}
 	
-	/*public static String readLine(final InputStream is) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		long start = System.currentTimeMillis();
-		String result = reader.readLine();
-		time += System.currentTimeMillis() - start;
-		return result;
-	}*/
-
 
 	/**
 	 * Reads the Tabix index from a file
@@ -139,14 +119,14 @@ public class TabixReader {
 		byte[] buf = new byte[4];
 
 		is.read(buf, 0, 4); // read "TBI\1"
-		mSeq = new String[readInt(is)]; // # sequences
-		mChr2tid = new HashMap<String, Integer>();
+		chromosomeNames = new String[readInt(is)]; // # sequences
+		chromosomeIndexes = new HashMap<String, Integer>();
 		mPreset = readInt(is);
 		mSc = readInt(is);
 		mBc = readInt(is);
 		mEc = readInt(is);
 		mMeta = readInt(is);
-		mSkip = readInt(is);
+		lineToSkip = readInt(is);
 		// read sequence dictionary
 		int i, j, k, l = readInt(is);
 		buf = new byte[l];
@@ -156,14 +136,14 @@ public class TabixReader {
 				byte[] b = new byte[i - j];
 				System.arraycopy(buf, j, b, 0, b.length);
 				String s = new String(b);
-				mChr2tid.put(s, k);
-				mSeq[k++] = s;
+				chromosomeIndexes.put(s, k);
+				chromosomeNames[k++] = s;
 				j = i + 1;
 			}
 		}
 		// read the index
-		mIndex = new TIndex[mSeq.length];
-		for (i = 0; i < mSeq.length; ++i) {
+		mIndex = new TIndex[chromosomeNames.length];
+		for (i = 0; i < chromosomeNames.length; ++i) {
 			// the binning index
 			int n_bin = readInt(is);
 			mIndex[i] = new TIndex();
@@ -180,8 +160,9 @@ public class TabixReader {
 			}
 			// the linear index
 			mIndex[i].l = new long[readInt(is)];
-			for (k = 0; k < mIndex[i].l.length; ++k)
+			for (k = 0; k < mIndex[i].l.length; ++k) {
 				mIndex[i].l[k] = readLong(is);
+			}
 		}
 		// close
 		is.close();
@@ -198,18 +179,14 @@ public class TabixReader {
 
 
 	/**
-	 * Reads one line from the data file.
-	 * @return the line as String object
-	 * @throws IOException 
+	 * @param chr a chromosome
+	 * @return the index of the chromosome
 	 */
-	public String readLine() throws IOException {
-		return readLine(mFp);
-	}
-
-
-	protected int chr2tid(final String chr) {
-		if (mChr2tid.containsKey(chr)) return mChr2tid.get(chr);
-		else return -1;
+	protected int getChromosomeIndex (final String chr) {
+		if (chromosomeIndexes.containsKey(chr)) {
+			return chromosomeIndexes.get(chr);
+		}
+		return -1;
 	}
 
 
@@ -225,7 +202,7 @@ public class TabixReader {
 		int[] ret = new int[3];
 		colon = reg.indexOf(':');
 		hyphen = reg.indexOf('-');
-		ret[0] = chr2tid(reg.substring(0, colon));
+		ret[0] = getChromosomeIndex(reg.substring(0, colon));
 		ret[1] = Integer.parseInt(reg.substring(colon+1, hyphen));
 		ret[2] = Integer.parseInt(reg.substring(hyphen+1, reg.length()));
 		return ret;
@@ -317,7 +294,7 @@ public class TabixReader {
 	/**
 	 * @return the mFp
 	 */
-	protected BlockCompressedInputStream getmFp() {
+	public BlockCompressedInputStream getmFp() {
 		return mFp;
 	}
 
@@ -361,4 +338,38 @@ public class TabixReader {
 		return mMeta;
 	}
 
+	
+	/**
+	 * Show all class parameters.
+	 */
+	public void show () {
+		String info = "===== show tabix reader\n";
+		info += "mFn: " + mFn + "\n";
+		info += "mPreset: " + mPreset + "\n";
+		info += "mSc: " + mSc + "\n";
+		info += "mBc: " + mBc + "\n";
+		info += "mEc: " + mEc + "\n";
+		info += "mMeta: " + mMeta + "\n";
+		info += "mSkip: " + lineToSkip + "\n";
+		
+		for (int i = 0; i < chromosomeNames.length; i++) {
+			info += "mSeq[" + i + "]: " + chromosomeNames[i] + "\n";
+		}
+		
+		int cpt = 0;
+		for (String key: chromosomeIndexes.keySet()) {
+			info += "mChr2tid[" + cpt + "]: " + key + " -> " + chromosomeIndexes.get(key) + "\n";
+			cpt++;
+		}
+
+		/*for (int i = 0; i < mIndex.length; i++) {
+			info += "mIndex[" + i + "]:\n" + mIndex[i].getDescription();
+		}*/
+		
+		info += "mIndex: " + mIndex.length + "\n";
+		
+		info += "=====";
+		
+		System.out.println(info);
+	}
 }
