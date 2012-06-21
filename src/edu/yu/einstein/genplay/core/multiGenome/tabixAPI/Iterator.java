@@ -39,7 +39,6 @@ public class Iterator {
 		stop = _end;
 		this.tabixReader = tabixReader;
 		reader = new BufferedReader(new InputStreamReader(tabixReader.getmFp()));
-		show();
 	}
 
 	
