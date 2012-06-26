@@ -65,9 +65,8 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  * - displaying an information dialog about a variant when the user clicks on it
  * @author Nicolas Fourel
  * @version 0.1
- * @param <T>
  */
-public class MultiGenomeDrawer<T> implements Serializable {
+public class MultiGenomeDrawer implements Serializable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 2329957235585775255L;

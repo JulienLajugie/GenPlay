@@ -128,7 +128,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private String 							genomeName;						// genome on which the track is based (ie aligned on)
 	private TrackHeaderDrawer				trackHeaderDrawer;				// the track header drawer
 	protected ProjectWindow					projectWindow;					// instance of the genome window manager
-	private MultiGenomeDrawer<T>			multiGenomeDrawer = null;		// the multi genome drawer manages all MG graphics
+	private MultiGenomeDrawer				multiGenomeDrawer = null;		// the multi genome drawer manages all MG graphics
 
 
 	/**
@@ -192,7 +192,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	public void multiGenomeInitializing() {
 		if (multiGenomeDrawer == null && ProjectManager.getInstance().isMultiGenomeProject()) {
-			multiGenomeDrawer = new MultiGenomeDrawer<T>();
+			multiGenomeDrawer = new MultiGenomeDrawer();
 		}
 	}
 
@@ -552,7 +552,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		data = (T) in.readObject();
 		genomeName = (String) in.readObject();
 		trackHeaderDrawer = (TrackHeaderDrawer) in.readObject();
-		multiGenomeDrawer = (MultiGenomeDrawer<T>) in.readObject();
+		multiGenomeDrawer = (MultiGenomeDrawer) in.readObject();
 		
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE)); 
@@ -585,7 +585,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	/**
 	 * @return the genomeDrawer
 	 */
-	public MultiGenomeDrawer<T> getMultiGenomeDrawer() {
+	public MultiGenomeDrawer getMultiGenomeDrawer() {
 		return multiGenomeDrawer;
 	}
 

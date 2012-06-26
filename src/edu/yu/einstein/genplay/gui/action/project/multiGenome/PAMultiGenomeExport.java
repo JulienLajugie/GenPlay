@@ -23,47 +23,45 @@ package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngineInterface;
-import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileExportEngine;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
-import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.export.ExportDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.export.ExportSettings;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class PAMultiGenomeExport extends TrackListActionWorker<Void> {
+public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION = 
 		"Performs the multi genome algorithm"; 										// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 			ACTION_NAME = "Export as VCF";			// action name
-	
+	private static		 String 			ACTION_NAME = "Export track";			// action name
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "Multi Genome Export";
+
+	private ExportDialog dialog;
+	private ExportSettings settings;
+	private File vcfFile;
+
+	private PAMultiGenomeVCFExport exportAction;
+	private PAMultiGenomeBGZIPCompression compressionAction;
+	private PAMultiGenomeTBIIndex indexAction;
 
 
 	/**
@@ -75,174 +73,274 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Void> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
+		exportAction = null;
+		compressionAction = null;
+		indexAction = null;
 	}
 
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	protected Void processAction() throws Exception {
+	protected Boolean processAction() {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
+
 			// Get track information
-			Track<?> track = getTrackList().getSelectedTrack();
+			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
 			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
-			
-			if (genomeDrawer.getStripesList().size() > 0) {
-				
-				// Get input parameters
-				Map<String, List<VCFFile>> fileMap = getGenomeFileMap(genomeDrawer.getStripesList());
-				Map<String, List<VariantType>> variationMap = getVariationMap(genomeDrawer.getStripesList());
-				
-				// Declare the export engine
-				ExportEngineInterface exportEngine = null;
-				
-				// Initialize the engine if the export is about only one VCF file
-				int fileNumber = getFileNumber(fileMap);
-				if (fileNumber == 1) {
-					exportEngine = new SingleFileExportEngine();
-				} else if (fileNumber > 1) {
-					JOptionPane.showMessageDialog(getRootPane(), "Cannot export data from more than one VCF.\nMore support coming soon.", "Export error", JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					System.err.println("PAMultiGenomeExport.processAction(): Number of file required is " + fileNumber);
-				}
-				
-				File file = getFile();
-				
-				// Runs the export process
-				if (file != null && exportEngine != null) {
-					// Notifies the action
-					notifyActionStart(ACTION_NAME, 1, false);
-					
-					exportEngine.setFileMap(fileMap);
-					exportEngine.setVariationMap(variationMap);
-					exportEngine.setFilterList(genomeDrawer.getFiltersList());
-					exportEngine.setPath(file.getPath());
-					
-					exportEngine.process();
-				}
-				
-			} else {
-				JOptionPane.showMessageDialog(getRootPane(), "The selected tracks does not contain any stripes,\nit cannot be exported as VCF file.", "Export error", JOptionPane.INFORMATION_MESSAGE);
-			}
-		}
-		return null;
-	}
 
+			// Create the export settings
+			settings = new ExportSettings(genomeDrawer);
 
-	@Override
-	protected void doAtTheEnd(Void actionResult) {
-		
-	}
-	
-	
-	/**
-	 * @return a file to export the VCF
-	 */
-	private File getFile () {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		JFileChooser jfc = new JFileChooser(defaultDirectory);
-		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Export track as VCF");
-		FileFilter[] filters = {new VCFFilter()};
-		for (FileFilter currentFilter: filters) {
-			jfc.addChoosableFileFilter(currentFilter);
-		}
-		jfc.setAcceptAllFileFilterUsed(false);
-		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
-		int returnVal = jfc.showSaveDialog(getRootPane());
-		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
-			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
-				return selectedFile;
-			}
-		}
-		return null;
-	}
-	
-	
-	/**
-	 * Retrieves a map between genome names and their list of variant type from a list of stripes.
-	 * @param stripeList the list of stripes
-	 * @return the map genome/file list
-	 */
-	private Map<String, List<VariantType>> getVariationMap (List<StripesData> stripeList) {
-		Map<String, List<VariantType>> map = new HashMap<String, List<VariantType>>();
-		for (StripesData stripe: stripeList) {
-			String genome = stripe.getGenome();
-			List<VariantType> variationList = stripe.getVariationTypeList();
-			if (!map.containsKey(genome)) {
-				map.put(genome, new ArrayList<VariantType>());
-			}
-			List<VariantType> currentList = map.get(genome);
-			for (VariantType variantType: variationList) {
-				if (!currentList.contains(variantType)) {
-					currentList.add(variantType);
+			// Create the dialog
+			dialog = new ExportDialog(settings);
+
+			// Show the dialog
+			if (dialog.showDialog(null) == ExportDialog.APPROVE_OPTION) {
+
+				ExportThread thread = new ExportThread();
+				CountDownLatch latch = new CountDownLatch(1);
+				thread.setLatch(latch);
+				thread.start();
+
+				// The current thread is waiting for the export thread to finish
+				try {
+					latch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			}
-		}
-		return map;
-	}
-	
-	
-	/**
-	 * Retrieves a map between genome names and their list of file from a list of stripes. 
-	 * The selection takes into account what kind of variation a file can handle according to the genome.
-	 * If insertions are required but the file contains deletion for the same genome, it won't be selected.
-	 * @param stripeList the list of stripes
-	 * @return the map genome/file list
-	 */
-	private Map<String, List<VCFFile>> getGenomeFileMap (List<StripesData> stripeList) {
-		Map<String, List<VCFFile>> map = new HashMap<String, List<VCFFile>>();
-		Map<String, List<VCFFile>> projectMap = ProjectManager.getInstance().getMultiGenomeProject().getGenomeFileAssociation();
-		for (StripesData stripe: stripeList) {
-			String genome = stripe.getGenome();
-			if (!map.containsKey(genome)) {
-				map.put(genome, new ArrayList<VCFFile>());
-			}
-			List<VCFFile> projectList = projectMap.get(genome);
-			List<VCFFile> currentList = map.get(genome);
-			for (VCFFile file: projectList) {
-				if (!currentList.contains(file) && canManageRequirements(file, genome, stripe.getVariationTypeList())) {
-					currentList.add(file);
-				}
-			}
-		}
-		return map;
-	}
-	
-	
-	/**
-	 * Checks if a file contains data about the given genome for at least one of the given variant type.
-	 * @param file			the VCF file
-	 * @param genomeName	the genome name
-	 * @param variantList	the variation list
-	 * @return				true if the file contains information for that genome and those variation types, false otherwise
-	 */
-	private boolean canManageRequirements (VCFFile file, String genomeName, List<VariantType> variantList) {
-		for (VariantType variantType: variantList) {
-			if (file.canManage(genomeName, variantType)) {
+
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
+
+	@Override
+	protected void doAtTheEnd(Boolean actionResult) {
+		if (actionResult) {
+			String description = getMessageDescription();
+			JOptionPane.showMessageDialog(getRootPane(), description, "Export report", JOptionPane.INFORMATION_MESSAGE);
+		}
+
+	}
+
 
 	/**
-	 * @return the number of file involved into the export process
+	 * @return a description to sum up the result of the operation
 	 */
-	private int getFileNumber (Map<String, List<VCFFile>> fileMap) {
-		List<VCFFile> fileList = new ArrayList<VCFFile>();
-		for (String genome: fileMap.keySet()) {
-			List<VCFFile> projectList = fileMap.get(genome);
-			for (VCFFile file: projectList) {
-				if (!fileList.contains(file)) {
-					fileList.add(file);
+	private String getMessageDescription () {
+		String result = "";
+		String action = "";
+		String files = "";
+
+		if (dialog != null) {
+
+			if (exportAction != null) {
+				action += "Export as VCF: ";
+				if (exportAction.hasBeenDone()) {
+					action += "success.";
+					files += vcfFile.getName();
+				} else {
+					action += "error.";
+				}
+
+				if (compressionAction != null) {
+					action += "\nCompress in BGZIP: ";
+					if (compressionAction.hasBeenDone()) {
+						action += "success.";
+						files += "\n" + compressionAction.getCompressedFile().getName();
+					} else {
+						action += "error.";
+					}
+
+					if (indexAction != null) {
+						action += "\nIndex with Tabix: ";
+						if (indexAction.hasBeenDone()) {
+							action += "success.";
+							files += "\n" + indexAction.getIndexedFile().getName();
+						} else {
+							action += "error.";
+						}
+
+					}
 				}
 			}
+			result = "Operation:\n" + action + "\nGenerated files:\n" + files;
 		}
-		return fileList.size();
+		return result;
 	}
-	
+
+
+	/////////////////////////////////////////////////////////////////////// ExportThread class
+
+	/**
+	 * Main thread of the action.
+	 * Rules the following thread:
+	 * - export the track as VCF
+	 * - compress the VCF as BGZIP
+	 * - index the BGZIP with Tabix
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	public class ExportThread extends Thread {
+
+		CountDownLatch latch;
+
+		@Override
+		public void run() {
+			// Export as VCF
+			if (dialog.exportAsVCF()) {
+				vcfFile = new File(dialog.getVCFPath());
+
+				// Create the VCF thread
+				ExportVCFThread vcfThread = new ExportVCFThread();
+				CountDownLatch vcfLatch = new CountDownLatch(1);
+				vcfThread.setLatch(vcfLatch);
+				vcfThread.start();
+
+				// The current thread is waiting for the VCF thread to finish
+				try {
+					vcfLatch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				// Compress the VCF
+				if (dialog.compressVCF() && exportAction.hasBeenDone()) {
+					// Create the compress thread
+					CompressThread compressThread = new CompressThread();
+					CountDownLatch compressLatch = new CountDownLatch(1);
+					compressThread.setLatch(compressLatch);
+					compressThread.start();
+
+					// The current thread is waiting for the compress thread to finish
+					try {
+						compressLatch.await();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					// Index the BGZIP
+					if (dialog.indexVCF() && compressionAction.hasBeenDone()) {
+						// Create the index thread
+						IndexThread indexThread = new IndexThread();
+						CountDownLatch indexLatch = new CountDownLatch(1);
+						indexThread.setLatch(indexLatch);
+						indexThread.start();
+						// The current thread is waiting for the index thread to finish
+						try {
+							indexLatch.await();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			latch.countDown();
+		}
+
+		/**
+		 * @param latch count down latch to set
+		 */
+		public void setLatch (CountDownLatch latch) {
+			this.latch = latch;
+		}
+	}
+
+
+	/////////////////////////////////////////////////////////////////////// ExportVCFThread class
+
+	/**
+	 * The export VCF thread class.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private class ExportVCFThread extends Thread {
+
+		/**
+		 * Constructor of the {@link ExportVCFThread}
+		 */
+		public ExportVCFThread () {
+			exportAction = new PAMultiGenomeVCFExport(vcfFile, settings);
+		}
+
+		@Override
+		public void run() {
+			exportAction.actionPerformed(null);
+		}
+
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			exportAction.setLatch(latch);
+		}
+	}
+
+
+	/////////////////////////////////////////////////////////////////////// CompressThread class
+
+	/**
+	 * The compress VCF thread class.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private class CompressThread extends Thread {
+
+		/**
+		 * Constructor of the {@link CompressThread}
+		 */
+		public CompressThread () {
+			compressionAction = new PAMultiGenomeBGZIPCompression(vcfFile);
+		}
+
+		@Override
+		public void run() {
+			compressionAction.actionPerformed(null);
+		}
+
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			compressionAction.setLatch(latch);
+		}
+	}
+
+
+	/////////////////////////////////////////////////////////////////////// IndexThread class
+
+	/**
+	 * The index BGZIP thread class.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private class IndexThread extends Thread {
+
+		/**
+		 * Constructor of the {@link IndexThread}
+		 */
+		public IndexThread () {
+			File bgzipFile = compressionAction.getCompressedFile();
+			indexAction = new PAMultiGenomeTBIIndex(bgzipFile);
+		}
+
+		@Override
+		public void run() {
+			indexAction.actionPerformed(null);
+		}
+
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			indexAction.setLatch(latch);
+		}
+	}
+
 }

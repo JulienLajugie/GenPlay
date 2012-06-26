@@ -774,6 +774,8 @@ public class Utils {
 			result[i] = list.get(i);
 		}
 
+		//result = list.toArray(result);
+		
 		return result;
 	}
 	

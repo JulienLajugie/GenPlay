@@ -241,7 +241,7 @@ public class VCFHeader implements Serializable {
 						valid = false;
 						if (line.substring(0, 1).equals("#")) {
 							columnNames = new ArrayList<String>();
-							String[] details = Utils.splitWithTab(line);
+							String[] details = Utils.splitWithTab(line.substring(1, line.length()));
 							//for (String name: line.substring(1, line.length()).split("[\t]")) {
 							for (String name: details) {
 								columnNames.add(name.trim());

@@ -562,7 +562,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * @return the genomeDrawer
 	 */
-	public MultiGenomeDrawer<T> getMultiGenomeDrawer() {
+	public MultiGenomeDrawer getMultiGenomeDrawer() {
 		return trackGraphics.getMultiGenomeDrawer();
 	}
 }
