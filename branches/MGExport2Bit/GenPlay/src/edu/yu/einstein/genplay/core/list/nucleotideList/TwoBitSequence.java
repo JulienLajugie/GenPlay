@@ -297,7 +297,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
 			if (position < nBlockStarts[i] + nBlockSizes[i]) {
-				return Nucleotide.ANY;	
+				return Nucleotide.ANY;
 			}
 			i++;
 		}
@@ -309,7 +309,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			raf.seek(offsetPosition + offset + headerSize);
 			// rotate the result until the two bits we want are on the far right 
 			// and then apply a 0x0003 filter
-			int result2Bit= Integer.rotateRight(raf.readByte(), offsetInsideByte * 2) & 0x3;
+			int result2Bit = Integer.rotateRight(raf.readByte(), offsetInsideByte * 2) & 0x3;
 			return Nucleotide.get((byte)result2Bit);
 		} catch (IOException e) {
 			return null;

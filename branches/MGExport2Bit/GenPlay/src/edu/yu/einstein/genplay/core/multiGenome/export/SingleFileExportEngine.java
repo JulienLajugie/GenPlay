@@ -71,9 +71,6 @@ public class SingleFileExportEngine extends ExportEngine {
 		FileWriter fw = new FileWriter(outputFile);
 		BufferedWriter out = new BufferedWriter(fw);
 
-		// Initialize the output
-		//String output = "";
-
 		// Gets the first line of data
 		VCFLine currentLine = reader.getCurrentLine();
 

@@ -802,4 +802,44 @@ public class Utils {
 		}
 		return result;
 	}
+	
+	
+	/**
+	 * This method looks for the full integer part in a string from a start index.
+	 * @param s		the string
+	 * @param index	index of the first integer
+	 * @return		the full integer starting at the index
+	 */
+	public static Integer getFullIntegerPart (String s, int index) {
+		Integer result = null;									// Initialize the result to null
+		int nextIndex = index + 1;								// Next index is initialized with index + 1
+		while (nextIndex <= s.length()) {						// while the next index is shorter or equal to the string length
+			String text = s.substring(index, nextIndex);		// gets the sub string from the string (index to next index)
+			try {
+				result = Integer.parseInt(text);				// tries to get the integer part
+			} catch (Exception e) {								// if there is no integer part
+				return result;									// we return result (that contains the previous integer part or null)
+			}
+			nextIndex++;										// if it worked, we keep looking in the string increasing the next index
+		}
+		return result;											// return the result of the scan
+	}
+	
+	
+	/**
+	 * This method return the index of the first int found in a string, starting from the specified index position
+	 * @param s			the string
+	 * @param index		the index to start
+	 * @return			the index of the first int found in the string after the specified start, -1 if not found
+	 */
+	public static int getFirstIntegerOffset (String s, int index) {
+		for (int i = 0; i < s.length(); i++) {
+			int c = s.charAt(i);
+			if (c >= 48 && c <= 57) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
 }
