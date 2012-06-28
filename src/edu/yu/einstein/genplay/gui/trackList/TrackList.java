@@ -205,7 +205,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			trackList[i] = new EmptyTrack(i + 1);
 			trackList[i].setPreferredHeight(preferredHeight);
 			trackList[i].addPropertyChangeListener(this);
-		}		
+		}
 		System.gc();
 		rebuildPanel();
 	}
