@@ -33,7 +33,7 @@ import net.sf.samtools.util.SeekableStream;
  * 
  */
 public class LineBlockCompressedInputStream extends BlockCompressedInputStream {
-	
+
 	private BufferedReader br=null;
 	/**
 	 * Reads a line from the inputstream until a \n or \n\r is encountered. The
@@ -42,8 +42,9 @@ public class LineBlockCompressedInputStream extends BlockCompressedInputStream {
 	 * 
 	 * @return a string with the read characters. Null when no more characters
 	 *         are being read.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
+	@Override
 	public String readLine() throws IOException {
 		return br.readLine();
 	}
@@ -54,11 +55,10 @@ public class LineBlockCompressedInputStream extends BlockCompressedInputStream {
 			super.seek(place);
 			br=new BufferedReader(new InputStreamReader(this));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * @param strm
 	 */

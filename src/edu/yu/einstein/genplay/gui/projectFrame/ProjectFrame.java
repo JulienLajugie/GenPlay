@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -54,51 +54,51 @@ public class ProjectFrame extends JFrame {
 	private static final long serialVersionUID = -5785973410951935317L; // generated ID
 
 	//Ratio
-	/** TODO: Nico add comment */ 
-	public static final Double BANNER_RATIO 			= 0.15; 
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the banner section */
+	public static final Double BANNER_RATIO 			= 0.15;
+	/** Ratio for the height of the type section */
 	public static final Double TYPE_RATIO 				= 0.08;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the content section */
 	public static final Double CONTENT_RATIO 			= 0.7;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the name section in the content part */
 	public static final Double NAME_RATIO 				= 0.1;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the assembly section in the content part */
 	public static final Double ASSEMBLY_RATIO 			= 0.25;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the genome section in the content part */
 	public static final Double GENOME_RATIO 			= 0.15;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the VCF section in the content part */
 	public static final Double VCF_RATIO 				= 0.5;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the line section in the content part */
 	public static final Double LINE_RATIO 				= 0.1;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the project chooser section */
 	public static final Double PROJECT_CHOOSER_RATIO 	= 0.05;
-	/** TODO: Nico add comment */
+	/** Ratio for the height of the confirmation section */
 	public static final Double CONFIRM_RATIO 			= 0.07;
 	//Size
-	/** TODO: Nico add comment */
-	public static final int SCREEN_WIDTH 				= 450;
-	/** TODO: Nico add comment */
-	public static final int SCREEN_HEIGHT 				= 700;
-	/** TODO: Nico add comment */
-	public static final int BANNER_HEIGHT 				= (int)Math.round(SCREEN_HEIGHT*BANNER_RATIO);
-	/** TODO: Nico add comment */
-	public static final int TYPE_HEIGHT 				= (int)Math.round(SCREEN_HEIGHT*TYPE_RATIO);
-	/** TODO: Nico add comment */
-	public static final int CONTENT_HEIGHT 			= (int)Math.round(SCREEN_HEIGHT*CONTENT_RATIO);
-	/** TODO: Nico add comment */
-	public static final int NAME_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*NAME_RATIO);
-	/** TODO: Nico add comment */
-	public static final int ASSEMBLY_HEIGHT 			= (int)Math.round(CONTENT_HEIGHT*ASSEMBLY_RATIO);
-	/** TODO: Nico add comment */
-	public static final int GENOME_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*GENOME_RATIO);
-	/** TODO: Nico add comment */
-	public static final int VCF_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*VCF_RATIO);
-	/** TODO: Nico add comment */
-	public static final int LINE_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*LINE_RATIO);
-	/** TODO: Nico add comment */
-	public static final int PROJECT_CHOOSER_HEIGHT 	= (int)Math.round(CONTENT_HEIGHT*PROJECT_CHOOSER_RATIO);
-	/** TODO: Nico add comment */
-	public static final int CONFIRM_HEIGHT = (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
+	/** Width of the dialog */
+	public static final int SCREEN_WIDTH 					= 450;
+	/** Height of the dialog */
+	public static final int SCREEN_HEIGHT 					= 700;
+	/** Height of the banner section */
+	public static final int BANNER_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*BANNER_RATIO);
+	/** Height of the type section */
+	public static final int TYPE_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*TYPE_RATIO);
+	/** Height of the content section */
+	public static final int CONTENT_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*CONTENT_RATIO);
+	/** Height of the name section in the content part */
+	public static final int NAME_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*NAME_RATIO);
+	/** Height of the assembly section in the content part */
+	public static final int ASSEMBLY_HEIGHT 				= (int)Math.round(CONTENT_HEIGHT*ASSEMBLY_RATIO);
+	/** Height of the genome section in the content part */
+	public static final int GENOME_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*GENOME_RATIO);
+	/** Height of the VCF section in the content part */
+	public static final int VCF_HEIGHT 						= (int)Math.round(CONTENT_HEIGHT*VCF_RATIO);
+	/** Height of the line section in the content part */
+	public static final int LINE_HEIGHT 					= (int)Math.round(CONTENT_HEIGHT*LINE_RATIO);
+	/** Height of the project chooser section */
+	public static final int PROJECT_CHOOSER_HEIGHT 			= (int)Math.round(CONTENT_HEIGHT*PROJECT_CHOOSER_RATIO);
+	/** Height of the confirmation section */
+	public static final int CONFIRM_HEIGHT 					= (int)Math.round(SCREEN_HEIGHT*CONFIRM_RATIO);
 
 	/** Banner panel dimensions */
 	public static final Dimension BANNER_DIM 	= new Dimension (SCREEN_WIDTH, BANNER_HEIGHT);
@@ -106,70 +106,70 @@ public class ProjectFrame extends JFrame {
 	public static final Dimension TYPE_DIM 		= new Dimension (SCREEN_WIDTH, TYPE_HEIGHT);
 
 	// New project panel dimensions
-	/** TODO: Nico add comment */
+	/** Dimension of the new project section */
 	public static final Dimension NEW_DIM 		= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the name section */
 	public static final Dimension NAME_DIM 		= new Dimension (SCREEN_WIDTH, NAME_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the assembly section */
 	public static final Dimension ASSEMBLY_DIM 	= new Dimension (SCREEN_WIDTH, ASSEMBLY_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the genome section */
 	public static final Dimension GENOME_DIM 	= new Dimension (SCREEN_WIDTH, GENOME_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the VCF section */
 	public static final Dimension VCF_DIM 		= new Dimension (SCREEN_WIDTH, VCF_HEIGHT);
 	// Load project panel dimensions
-	/** TODO: Nico add comment */
+	/** Dimension of the load project section */
 	public static final Dimension LOAD_DIM 				= new Dimension (SCREEN_WIDTH, CONTENT_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the line section */
 	public static final Dimension LINE_DIM 				= new Dimension (SCREEN_WIDTH, LINE_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the project chooser section */
 	public static final Dimension PROJECT_CHOOSER_DIM 	= new Dimension (SCREEN_WIDTH-70, PROJECT_CHOOSER_HEIGHT);
-	/** TODO: Nico add comment */
+	/** Dimension of the confirmation section */
 	public static final Dimension CONFIRM_DIM 			= new Dimension (SCREEN_WIDTH, CONFIRM_HEIGHT);
 	//Tool tip text
-	/** TODO: Nico add comment */
+	/** Name for adding a vcf file */
 	public static final String ADD_VCF_FILE 		= "Add vcf file";
-	/** TODO: Nico add comment */
-	public static final String DEL_VCF_FILES 	= "Delete selection";
-	/** TODO: Nico add comment */
+	/** Name for deleting g a vcf file */
+	public static final String DEL_VCF_FILES 		= "Delete selection";
+	/** Name to confirm selection */
 	public static final String CONFIRM_FILES		= "Confirm selection";
-	/** TODO: Nico add comment */
-	public static final String CANCEL_FILES		= "Cancel modification";
-	/** TODO: Nico add comment */
+	/** Name to cancel modification */
+	public static final String CANCEL_FILES			= "Cancel modification";
+	/** Name to enable the selection */
 	public static final String SELECT_FILES 		= "Enable selection";
-	/** TODO: Nico add comment */
-	public static final String UNSELECT_FILES 	= "Disable selection";
-	/** TODO: Nico add comment */
-	public static final String MOVE_UP_FILES 	= "Move up selection";
-	/** TODO: Nico add comment */
-	public static final String MOVE_DOWN_FILES 	= "Move down selection";
-	/** TODO: Nico add comment */
+	/** Name to disable the selection */
+	public static final String UNSELECT_FILES 		= "Disable selection";
+	/** Name to move the files up */
+	public static final String MOVE_UP_FILES 		= "Move up selection";
+	/** Name to move the files down */
+	public static final String MOVE_DOWN_FILES 		= "Move down selection";
+	/** Name to select the basic chromosomes */
 	public static final String SELECT_BASIC_CHR 	= "Select basics chromosome";
 	//Real colors
-	/** TODO: Nico add comment */
-	public static final	Color COLOR 			= Color.white;
-	/** TODO: Nico add comment */
+	/** White color */
+	public static final		Color COLOR 			= Color.white;
+	/** Color of the banner section */
 	public static final 	Color BANNER_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the type section */
 	public static final 	Color TYPE_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the new section */
 	public static final 	Color NEW_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the name section */
 	public static final 	Color NAME_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the assembly section */
 	public static final 	Color ASSEMBLY_COLOR 	= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the genome section */
 	public static final 	Color GENOME_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the VCF section */
 	public static final 	Color VCF_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the table section */
 	public static final 	Color TABLE_PANEL_COLOR = COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the button section */
 	public static final 	Color TABLE_BUTTON_COLOR = COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the load section */
 	public static final 	Color LOAD_COLOR 		= COLOR;
-	/** TODO: Nico add comment */
+	/** Color of the confirmation section */
 	public static final 	Color CONFIRM_COLOR 	= COLOR;
-	
+
 	// Validate button labels
 	/** Text of the button if you choose a new project */
 	public static final 	String 	CREATE_BUTTON = "Create";
@@ -303,7 +303,7 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * This method gather new project information. 
+	 * This method gather new project information.
 	 */
 	protected void confirmCreate () {
 		Boolean valid = true;
@@ -330,7 +330,7 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * This method determines if user chose a simple or a multi genome project. 
+	 * This method determines if user chose a simple or a multi genome project.
 	 * @return true if user chose a simple genome project.
 	 */
 	public boolean isSingleProject () {
@@ -339,7 +339,7 @@ public class ProjectFrame extends JFrame {
 
 
 	/**
-	 * This method gather loading project information. 
+	 * This method gather loading project information.
 	 */
 	protected void confirmLoading () {
 		if (loadProjectPanel.getFileProjectToLoad() != null) {
@@ -404,8 +404,8 @@ public class ProjectFrame extends JFrame {
 	public void setVarTableVisible(boolean visible) {
 		newProjectPanel.setVarTableVisible(visible);
 	}
-	
-	
+
+
 	/**
 	 * Reinitializes the list of the recent project files when the ProjectScreens is shown
 	 */

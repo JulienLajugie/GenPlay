@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,8 +42,8 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 
@@ -56,14 +56,14 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	private static final long serialVersionUID = 8952410963820358882L;	// generated ID
 
-	private ChromosomeListOfLists<Integer>	positionList;		// list of position
+	private final ChromosomeListOfLists<Integer>	positionList;		// list of position
 	private ChromosomeListOfLists<Integer>	stopPositionList;	// list of stop position. Only used when a read length is specified
 	private ChromosomeListOfLists<Double>	scoreList;			// list of score. Only used when a read length is specified
-	private ChromosomeListOfLists<Strand>	strandList;			// list of strand
-	private int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
+	private final ChromosomeListOfLists<Strand>	strandList;			// list of strand
+	private final int[][] 						matchTypeCount; 	// number of lines with 0,1,2 mistakes per chromosome
 	private int 							NMCount = 0;		// Non matched line count
 	private int 							QCCount = 0;		// quality control line count
-	private int 							multiMatchCount = 0;// multi-match line count 
+	private int 							multiMatchCount = 0;// multi-match line count
 	private Strand 							selectedStrand;		// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;		// handler that computes the position of read by applying the shift
 
@@ -81,10 +81,11 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			positionList.add(new IntArrayAsIntegerList());
 			strandList.add(new ArrayList<Strand>());
 		}
-		matchTypeCount = new int[projectChromosome.size()][3];		
+		matchTypeCount = new int[projectChromosome.size()][3];
 		for(short i = 0; i < projectChromosome.size(); i++) {
-			for(short j = 0; j < 3; j++)
+			for(short j = 0; j < 3; j++) {
 				matchTypeCount[i][j] = 0;
+			}
 		}
 	}
 
@@ -101,33 +102,33 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 				DecimalFormat df = new DecimalFormat("##.#");
 				writer.write("NM: " + NMCount);
 				writer.newLine();
-				writer.write("Percentage of NM: " + df.format((double)NMCount / totalCount * 100) + "%");
+				writer.write("Percentage of NM: " + df.format(((double)NMCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.write("QC: " + QCCount);
 				writer.newLine();
-				writer.write("Percentage of QC: " + df.format((double)QCCount / totalCount * 100) + "%");
+				writer.write("Percentage of QC: " + df.format(((double)QCCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.write("Multi match: " + multiMatchCount);
 				writer.newLine();
-				writer.write("Percentage of multimatch: " + df.format((double)multiMatchCount / totalCount * 100) + "%");				
+				writer.write("Percentage of multimatch: " + df.format(((double)multiMatchCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.write("Chromosome\t0MM\t1MM\t2MM\tTotal");
 				writer.newLine();
 				for(short i = 0; i < projectChromosome.size(); i++) {
-					writer.write(projectChromosome.get(i) + 
-							"\t\t" + df.format((double)matchTypeCount[i][0] / lineCount*100) + 
-							"%\t" + df.format((double)matchTypeCount[i][1] / lineCount*100) + 
-							"%\t" + df.format((double)matchTypeCount[i][2] / lineCount*100) + 
-							"%\t" + df.format((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount*100) + "%");
+					writer.write(projectChromosome.get(i) +
+							"\t\t" + df.format(((double)matchTypeCount[i][0] / lineCount)*100) +
+							"%\t" + df.format(((double)matchTypeCount[i][1] / lineCount)*100) +
+							"%\t" + df.format(((double)matchTypeCount[i][2] / lineCount)*100) +
+							"%\t" + df.format(((double)(matchTypeCount[i][0] + matchTypeCount[i][1] + matchTypeCount[i][2]) / lineCount)*100) + "%");
 					writer.newLine();
 					total0M+=matchTypeCount[i][0];
 					total1M+=matchTypeCount[i][1];
 					total2M+=matchTypeCount[i][2];
 				}
-				writer.write("Total:\t" + df.format((double)total0M/lineCount*100) + 
-						"%\t" + df.format((double)total1M/lineCount*100) + 
-						"%\t" + df.format((double)total2M/lineCount*100) + 
-				"%\t\t100%");
+				writer.write("Total:\t" + df.format(((double)total0M/lineCount)*100) +
+						"%\t" + df.format(((double)total1M/lineCount)*100) +
+						"%\t" + df.format(((double)total2M/lineCount)*100) +
+						"%\t\t100%");
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
@@ -140,7 +141,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 	@Override
 	protected boolean extractLine(String extractedLine) throws DataLineException {
 		byte[] line = extractedLine.getBytes();
-		byte[] matchChar = new byte[4]; 
+		byte[] matchChar = new byte[4];
 		byte[] chromoChar = new byte[64];
 		byte[] positionChar = new byte[10];
 		short match0MNumber, match1MNumber, match2MNumber, chromoNumber;
@@ -198,7 +199,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 		}
 		match2MNumber = Short.parseShort(new String(matchChar, 0, j));
 		// we only want lines that correspond to our criteria
-		if (match0MNumber + match1MNumber + match2MNumber != 1) {
+		if ((match0MNumber + match1MNumber + match2MNumber) != 1) {
 			multiMatchCount++;
 			throw new DataLineException("The line does not match the criteria: " + match0MNumber + " + " + match1MNumber + " + " + match2MNumber + " != 1");
 		}
@@ -257,7 +258,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 							int stop = resultStartStop.getStop();
 							stop = getMultiGenomePosition(chromo, stop);
 							stopPositionList.add(chromo, stop);
-							// TODO: add a BinList constructor that doesn't need 
+							// TODO: add a BinList constructor that doesn't need
 							// as score list so we don't need the useless next line
 							scoreList.add(chromo, 1.0);
 						}
@@ -312,7 +313,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 
 	@Override
 	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;		
+		selectedStrand = strandToSelect;
 	}
 
 
@@ -335,5 +336,5 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			}
 		}
 	}
-	
+
 }

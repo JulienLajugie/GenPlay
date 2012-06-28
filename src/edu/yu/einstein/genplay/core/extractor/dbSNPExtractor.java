@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,8 +27,8 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 
@@ -40,14 +40,14 @@ import edu.yu.einstein.genplay.exception.DataLineException;
 public class dbSNPExtractor extends TextFileExtractor implements Serializable, SNPListGenerator {
 
 	private static final long serialVersionUID = 968798875579059098L;	// generated ID
-/*	private final ChromosomeListOfLists<Integer>	positionList;		// list of extracted position
+	/*	private final ChromosomeListOfLists<Integer>	positionList;		// list of extracted position
 	private final ChromosomeListOfLists<Nucleotide> firstBaseList;		// list of first base
 	private final ChromosomeListOfLists<Integer> 	firstBaseCountList;	// list of first base count
 	private final ChromosomeListOfLists<Nucleotide> secondBaseList;		// list of second base
 	private final ChromosomeListOfLists<Integer> 	secondBaseCountList;// list of second base count
 	private final ChromosomeListOfLists<Boolean> 	isSecondBaseSignificantList; // true if the second base is significant
-*/	
-	
+	 */
+
 	/**
 	 * 
 	 * @param dataFile
@@ -55,20 +55,17 @@ public class dbSNPExtractor extends TextFileExtractor implements Serializable, S
 	 */
 	public dbSNPExtractor(File dataFile, File logFile) {
 		super(dataFile, logFile);
-		// TODO Auto-generated constructor stub
 	}
-	
-	
+
+
 	@Override
 	protected boolean extractLine(String line) throws DataLineException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public SNPList toSNPList() throws InvalidChromosomeException,
-			InterruptedException, ExecutionException {
-		// TODO Auto-generated method stub
+	InterruptedException, ExecutionException {
 		return null;
 	}
 
