@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -48,100 +49,100 @@ public class DistanceCalculatorDialog extends JDialog {
 	private static final long serialVersionUID = 6243891166900722503L;
 	private static final int WINDOW_WIDTH = 400;
 	private static final int WINDOW_HEIGHT = 300;
-	
-	private JPanel jpstrandSelection;
-	private JPanel jprelAbsSelection;
-	private JPanel jptrack1Panel;
-	private JPanel jptrack2Panel;
-	
+
+	private final JPanel jpstrandSelection;
+	private final JPanel jprelAbsSelection;
+	private final JPanel jptrack1Panel;
+	private final JPanel jptrack2Panel;
+
 	private final JRadioButton positiveStrand;
 	private final JRadioButton negativeStrand;
 	private final JRadioButton bothStrand;
-	
+
 	/**
 	 * Return value when OK has been clicked.
 	 */
 	public static final int 	APPROVE_OPTION = 1;
-	
+
 	/**
 	 * Return value when Cancel has been clicked.
 	 */
 	public static final int 	CANCEL_OPTION = 0;
-	
+
 	private static final int POSITIVE_STRAND = 1;
 	private static final int NEGATIVE_STRAND = 2;
 	private static final int BOTH_STRAND = 3;
-	
+
 	private final JRadioButton relative;
 	private final JRadioButton absolute;
-	
+
 	private static final int RELATIVE = 1;
 	private static final int ABSOLUTE = 2;
-	
+
 	private final JRadioButton track1Start;
 	private final JRadioButton track1Middle;
 	private final JRadioButton track1Stop;
-	
+
 	private static final int START_1 = 1;
 	private static final int MIDDLE_1 = 2;
 	private static final int STOP_1 = 3;
-	
+
 	private final JRadioButton track2Start;
 	private final JRadioButton track2Middle;
 	private final JRadioButton track2Stop;
-	
+
 	private final JButton jbOK;
 	private final JButton jbCancel;
-	
+
 	private static final int START_2 = 1;
 	private static final int MIDDLE_2 = 2;
 	private static final int STOP_2 = 3;
-	
+
 	private int strand;
 	private int relabs;
 	private int t1pos;
 	private int t2pos;
-	
-	private int selectionFlag; 
+
+	private int selectionFlag;
 	private int approved = CANCEL_OPTION;
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link DistanceCalculatorDialog}
 	 */
 	public DistanceCalculatorDialog() {
 		super();
-						
+
 		jpstrandSelection = new JPanel();
 		jprelAbsSelection = new JPanel();
 		jptrack1Panel = new JPanel();
 		jptrack2Panel = new JPanel();
-		
+
 		jpstrandSelection.setPreferredSize(new Dimension(150,60));
 		jprelAbsSelection.setPreferredSize(new Dimension(150,60));
 		jptrack1Panel.setPreferredSize(new Dimension(150,60));
 		jptrack2Panel.setPreferredSize(new Dimension(150,60));
-		
+
 		positiveStrand = new JRadioButton("Positive Strand");
 		negativeStrand = new JRadioButton("Negative Strand");
 		bothStrand = new JRadioButton("Both Strands");
-		
+
 		relative = new JRadioButton("Relative");
 		absolute = new JRadioButton("Absolute");
-		
+
 		track1Start = new JRadioButton("Start");
 		track1Middle = new JRadioButton("Middle");
 		track1Stop = new JRadioButton("Stop");
-		
+
 		track2Start = new JRadioButton("Start");
 		track2Middle = new JRadioButton("Middle");
 		track2Stop = new JRadioButton("Stop");
-		
+
 		jbOK = new JButton("OK");
 		jbOK.setPreferredSize(new Dimension(100, 30));
 		jbOK.setDefaultCapable(true);
 		jbOK.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (getStrand() == POSITIVE_STRAND) {
@@ -152,7 +153,7 @@ public class DistanceCalculatorDialog extends JDialog {
 							setSelectionFlag(2);
 						} else {
 							setSelectionFlag(3);
-						}						
+						}
 					} else if (getT1pos() == MIDDLE_1) {
 						if (getT2pos() == START_2) {
 							setSelectionFlag(4);
@@ -178,7 +179,7 @@ public class DistanceCalculatorDialog extends JDialog {
 							setSelectionFlag(11);
 						} else {
 							setSelectionFlag(12);
-						}						
+						}
 					} else if (getT1pos() == MIDDLE_1) {
 						if (getT2pos() == START_2) {
 							setSelectionFlag(13);
@@ -205,131 +206,131 @@ public class DistanceCalculatorDialog extends JDialog {
 				}
 				approved = APPROVE_OPTION;
 				setVisible(false);
-			}			
+			}
 		});
-		
+
 		jbCancel = new JButton("Cancel");
 		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setSelectionFlag(1);
 				setVisible(false);
 			}
-		});		
-		
+		});
+
 		positiveStrand.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				strandChanged();
-			}			
+			}
 		});
-		
+
 		negativeStrand.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				strandChanged();
 			}
 		});
-		
+
 		bothStrand.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				strandChanged();
 			}
 		});
-		
+
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(positiveStrand);
 		bg.add(negativeStrand);
 		bg.add(bothStrand);
 		bg.setSelected(positiveStrand.getModel(), true);
-		
+
 		relative.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				relabsChanged();
 			}
 		});
-		
+
 		absolute.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				relabsChanged();
 			}
 		});
-		
+
 		bg = new ButtonGroup();
 		bg.add(relative);
 		bg.add(absolute);
 		bg.setSelected(relative.getModel(), true);
-		
+
 		track1Start.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				t1posChanged();
 			}
 		});
-		
+
 		track1Middle.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				t1posChanged();
 			}
 		});
-		
+
 		track1Stop.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				t1posChanged();
-			}			
+			}
 		});
-		
+
 		bg = new ButtonGroup();
 		bg.add(track1Start);
 		bg.add(track1Middle);
 		bg.add(track1Stop);
 		bg.setSelected(track1Start.getModel(), true);
-		
+
 		track2Start.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				t2posChanged();
 			}
 		});
-		
+
 		track2Middle.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				t2posChanged();
 			}
 		});
-		
+
 		track2Stop.addChangeListener(new ChangeListener() {
-			
+
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				t2posChanged();
 			}
 		});
-		
+
 		bg = new ButtonGroup();
 		bg.add(track2Start);
 		bg.add(track2Middle);
 		bg.add(track2Stop);
 		bg.setSelected(track2Start.getModel(), true);
-		
+
 		jpstrandSelection.setLayout(new GridBagLayout());
 		//jpstrandSelection.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		jpstrandSelection.setBorder(BorderFactory.createTitledBorder("Strand"));
@@ -345,7 +346,7 @@ public class DistanceCalculatorDialog extends JDialog {
 		c.gridy = 2;
 		jpstrandSelection.add(bothStrand,c);
 		jpstrandSelection.setVisible(true);
-		
+
 		jprelAbsSelection.setLayout(new GridBagLayout());
 		//jprelAbsSelection.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		jprelAbsSelection.setBorder(BorderFactory.createTitledBorder("Relative/Absolute"));
@@ -359,7 +360,7 @@ public class DistanceCalculatorDialog extends JDialog {
 		jprelAbsSelection.add(absolute,c);
 		jprelAbsSelection.setEnabled(false);
 		jprelAbsSelection.setVisible(false);
-		
+
 		jptrack1Panel.setLayout(new GridBagLayout());
 		//jptrack1Panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		jptrack1Panel.setBorder(BorderFactory.createTitledBorder("Track 1 position"));
@@ -375,7 +376,7 @@ public class DistanceCalculatorDialog extends JDialog {
 		jptrack1Panel.add(track1Stop,c);
 		jptrack1Panel.setEnabled(false);
 		jptrack1Panel.setVisible(true);
-		
+
 		jptrack2Panel.setLayout(new GridBagLayout());
 		//jptrack2Panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		jptrack2Panel.setBorder(BorderFactory.createTitledBorder("Track 2 position"));
@@ -391,7 +392,7 @@ public class DistanceCalculatorDialog extends JDialog {
 		jptrack2Panel.add(track2Stop,c);
 		jptrack2Panel.setEnabled(false);
 		jptrack2Panel.setVisible(true);
-		
+
 		setLayout(new GridBagLayout());
 		c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
@@ -401,28 +402,28 @@ public class DistanceCalculatorDialog extends JDialog {
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		add(jpstrandSelection, c);
-		
+
 		c.gridx = 2;
 		c.gridy = 0;
 		c.gridwidth = 2;
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		add(jprelAbsSelection, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 2;
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		add(jptrack1Panel, c);
-		
+
 		c.gridx = 2;
 		c.gridy = 1;
 		c.gridwidth = 2;
 		c.weightx = 0.5;
 		c.weighty = 0.5;
 		add(jptrack2Panel, c);
-		
+
 		c.gridx = 2;
 		c.gridy = 2;
 		c.gridwidth = 1;
@@ -430,26 +431,26 @@ public class DistanceCalculatorDialog extends JDialog {
 		c.weighty = 0;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(jbOK, c);
-		
+
 		c.gridx = 3;
 		c.gridy = 2;
 		c.weightx = 0;
 		c.weighty = 0;
 		c.anchor = GridBagConstraints.LINE_START;
 		add(jbCancel, c);
-		
+
 		pack();
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setModal(true);
 		setTitle("Distance Calculator Paramters");
-		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - WINDOW_WIDTH/2, GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - WINDOW_HEIGHT/2);
+		setLocation(GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().x - (WINDOW_WIDTH/2), GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint().y - (WINDOW_HEIGHT/2));
 		setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
 		setResizable(false);
 		setVisible(false);
 		jbOK.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOK);
 	}
-	
+
 	/**
 	 * @param strand the strand to set
 	 */
@@ -464,7 +465,7 @@ public class DistanceCalculatorDialog extends JDialog {
 	public int getStrand() {
 		return strand;
 	}
-	
+
 	/**
 	 * @param relabs the relabs to set
 	 */
@@ -507,7 +508,7 @@ public class DistanceCalculatorDialog extends JDialog {
 	public int getT2pos() {
 		return t2pos;
 	}
-	
+
 
 	/**
 	 * Method to handle changes in the strand selection
@@ -528,7 +529,7 @@ public class DistanceCalculatorDialog extends JDialog {
 			jprelAbsSelection.setEnabled(true);
 		}
 	}
-	
+
 	/**
 	 * Method to handle changes in the rel/abs selection
 	 */
@@ -540,7 +541,7 @@ public class DistanceCalculatorDialog extends JDialog {
 			setRelabs(ABSOLUTE);
 		}
 	}
-	
+
 	/**
 	 * Method to handle changes in the track 1 position
 	 */
@@ -554,7 +555,7 @@ public class DistanceCalculatorDialog extends JDialog {
 			setT1pos(STOP_1);
 		}
 	}
-	
+
 	/**
 	 * Method to handle changes in the track 2 position
 	 */
@@ -568,7 +569,7 @@ public class DistanceCalculatorDialog extends JDialog {
 			setT2pos(STOP_2);
 		}
 	}
-	
+
 	/**
 	 * @param selectionFlag the selectionFlag to set
 	 */
@@ -582,11 +583,11 @@ public class DistanceCalculatorDialog extends JDialog {
 	public int getSelectionFlag() {
 		return selectionFlag;
 	}
-	
-		
+
+
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION if OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {

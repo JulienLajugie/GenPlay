@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -47,16 +47,16 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  */
 public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 
-	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID	
+	private static final long serialVersionUID = -5740813392910733205L; 				// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final DecimalFormat 	COUNT_FORMAT = new DecimalFormat("###,###,###");// format for the count
 	private static final Color 			BACKGROUND_COLOR = new Color(255, 200, 165);	// color of the stripes in the background
 	private static final Color			NOT_SIGNIFICANT_COLOR = Colors.GREY;			// color of a not significant base
-	private static final Nucleotide[] 	LINE_BASES = 
-	{Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};	// bases ordered the way they are printed on the track
-	private SNP 						snpUnderMouse = null;							// snp under the mouse cursor, null if none 
-	
-	
+	private static final Nucleotide[] 	LINE_BASES =
+		{Nucleotide.ADENINE, Nucleotide.CYTOSINE, Nucleotide.GUANINE, Nucleotide.THYMINE};	// bases ordered the way they are printed on the track
+	private SNP 						snpUnderMouse = null;							// snp under the mouse cursor, null if none
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -77,7 +77,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		in.readInt();
 		snpUnderMouse = null;
 	}
-		
+
 
 	/**
 	 * Creates an instance of {@link SNPListTrackGraphics}
@@ -112,7 +112,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		int width = projectWindow.twoGenomePosToScreenWidth(snpUnderMouse.getPosition(), snpUnderMouse.getPosition() + 1);
 		Color color = new Color(150, 150, 150, 100);
 		g.setColor(color);
-		g.fillRect(xPos, 0, width, getHeight());		
+		g.fillRect(xPos, 0, width, getHeight());
 	}
 
 
@@ -127,11 +127,11 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		int leftXPos = 5;
 		int rightXPos = getWidth() - 10;
 		for (int i = 0; i < 4; i++) {
-			int yPos = (int) (lineHeight * i + halfLineHeight + halfFontHeight);
+			int yPos = (int) ((lineHeight * i) + halfLineHeight + halfFontHeight);
 			Nucleotide nucleotideToPrint = LINE_BASES[i];
 			g.setColor(GenPlayColor.nucleotideToColor(nucleotideToPrint));
 			g.drawString(nucleotideToPrint.toString(), leftXPos, yPos);
-			g.drawString(nucleotideToPrint.toString(), rightXPos, yPos);			
+			g.drawString(nucleotideToPrint.toString(), rightXPos, yPos);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		double lineHeight = getHeight() / 4d;
 		g.setColor(BACKGROUND_COLOR);
 		for (int i = 0; i < 4; i++) {
-			if (i % 2 == 1) {
+			if ((i % 2) == 1) {
 				g.fillRect(0, (int) (i * lineHeight), width, (int) Math.ceil(lineHeight));
 			}
 		}
@@ -163,7 +163,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			for (int i = 0; i < snpList.size(); i++) {
 				// retrieve current SNP
 				SNP currentSNP = snpList.get(i);
-				// format base counts as strings 
+				// format base counts as strings
 				String firstBaseString = COUNT_FORMAT.format(currentSNP.getFirstBaseCount());
 				String secondBaseString = COUNT_FORMAT.format(currentSNP.getSecondBaseCount());
 				// compute the largest string width to print for the current SNP
@@ -172,10 +172,10 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 				int widthSNP = Math.max(firstBaseWidth, secondBaseWidth);
 				// check if there is enough space to print the values for the current SNP
 				drawDenseSNP(g, currentSNP);
-				if (projectWindow.getXFactor() / widthSNP > 1) {
+				if ((projectWindow.getXFactor() / widthSNP) > 1) {
 					drawDetailedSNP(g, currentSNP);
-				} 
-			}	
+				}
+			}
 		}
 	}
 
@@ -207,9 +207,11 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		case THYMINE:
 			yPos = (int) (3 * lineHeight);
 			break;
+		default:
+			break;
 		}
 		// we set the color of the SNP depending on the type of the first base
-		Color snpColor = GenPlayColor.nucleotideToColor(currentSNP.getFirstBase()); 
+		Color snpColor = GenPlayColor.nucleotideToColor(currentSNP.getFirstBase());
 		g.setColor(snpColor);
 		// we draw the first base
 		g.fillRect(xPos, yPos, width, (int) Math.ceil(lineHeight));
@@ -217,7 +219,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			g.setColor(Color.BLACK);
 			g.drawRect(xPos, yPos, width - 1, (int) Math.ceil(lineHeight) - 1);
 		}
-		
+
 		// we search for the second base y position
 		yPos = 0;
 		switch (currentSNP.getSecondBase()) {
@@ -233,14 +235,16 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		case THYMINE:
 			yPos = (int) (3 * lineHeight);
 			break;
+		default:
+			break;
 		}
 		// we set the color and draw the second base
 		if (currentSNP.isSecondBaseSignificant()) {
-			snpColor = GenPlayColor.nucleotideToColor(currentSNP.getSecondBase()); 
+			snpColor = GenPlayColor.nucleotideToColor(currentSNP.getSecondBase());
 		} else {
 			// if the second base is not significant we draw it in gray
-			snpColor = NOT_SIGNIFICANT_COLOR; 
-		}				
+			snpColor = NOT_SIGNIFICANT_COLOR;
+		}
 		g.setColor(snpColor);
 		g.fillRect(xPos, yPos, width, (int) Math.ceil(lineHeight));
 		if (width >= 5) {
@@ -255,12 +259,12 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 	 * @param g {@link Graphics}
 	 * @param currentSNP {@link SNP} to draw
 	 */
-	private void drawDetailedSNP(Graphics g, SNP currentSNP) {		
+	private void drawDetailedSNP(Graphics g, SNP currentSNP) {
 		g.setColor(Colors.WHITE);
 		// half height of the font
 		int halfFontHeight = g.getFontMetrics().getHeight() / 2;
-		// height of a line 
-		int lineHeight = getHeight() / 4;		
+		// height of a line
+		int lineHeight = getHeight() / 4;
 		int halfLineHeight = getHeight() / 8;
 		int xPos = projectWindow.genomePosToScreenXPos(currentSNP.getPosition());
 		int yPos = 0;
@@ -273,10 +277,12 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			yPos = halfLineHeight + halfFontHeight + lineHeight;
 			break;
 		case GUANINE:
-			yPos = halfLineHeight + halfFontHeight + 2 * lineHeight;
+			yPos = halfLineHeight + halfFontHeight + (2 * lineHeight);
 			break;
 		case THYMINE:
-			yPos = halfLineHeight + halfFontHeight + 3 * lineHeight;
+			yPos = halfLineHeight + halfFontHeight + (3 * lineHeight);
+			break;
+		default:
 			break;
 		}
 		String countStr = COUNT_FORMAT.format(currentSNP.getFirstBaseCount());
@@ -291,17 +297,19 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			yPos = halfLineHeight + halfFontHeight + lineHeight;
 			break;
 		case GUANINE:
-			yPos = halfLineHeight + halfFontHeight + 2 * lineHeight;
+			yPos = halfLineHeight + halfFontHeight + (2 * lineHeight);
 			break;
 		case THYMINE:
-			yPos = halfLineHeight + halfFontHeight + 3 * lineHeight;
+			yPos = halfLineHeight + halfFontHeight + (3 * lineHeight);
+			break;
+		default:
 			break;
 		}
 		countStr = COUNT_FORMAT.format(currentSNP.getSecondBaseCount());
 		g.drawString(countStr, xPos, yPos);
 	}
-	
-	
+
+
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse exits the track
 	 */
@@ -314,8 +322,8 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 			repaint();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Sets the mouse cursor, the tooltip and the SNP with the mouse over when the mouse move
 	 */
@@ -324,39 +332,39 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		super.mouseMoved(e);
 		//long baseToPrintCount = genomeWindow.getSize();
 		SNP oldSnpUnderMouse = snpUnderMouse;
-		snpUnderMouse = null;		
+		snpUnderMouse = null;
 		if (!getScrollMode()) {
 			// if the zoom is too out we can't print the bases and so there is none under the mouse
 			//if (baseToPrintCount <= getWidth()) {
-				// retrieve the position of the mouse
-				Point mousePosition = e.getPoint();
-				// retrieve the list of the printed nucleotides
-				List<SNP> printedSNPs = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
-				// do nothing if there is no genes
-				if (printedSNPs != null) {
-					int i = 0;
-					while ((i < printedSNPs.size()) && (snpUnderMouse == null)) {
-						SNP currentSNP = printedSNPs.get(i);
-						if ((mousePosition.x >= projectWindow.genomePosToScreenXPos(currentSNP.getPosition())) &&
-								(mousePosition.x <= projectWindow.genomePosToScreenXPos(currentSNP.getPosition() + 1))) {
-							// we found a gene under the mouse
-							snpUnderMouse = currentSNP;
-						}
-						i++;
-					}					
-					// we repaint the track only if the gene under the mouse changed
-					if (((oldSnpUnderMouse == null) && (snpUnderMouse != null)) 
-							|| ((oldSnpUnderMouse != null) && (!oldSnpUnderMouse.equals(snpUnderMouse)))) {
-						repaint();
-					}				
+			// retrieve the position of the mouse
+			Point mousePosition = e.getPoint();
+			// retrieve the list of the printed nucleotides
+			List<SNP> printedSNPs = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			// do nothing if there is no genes
+			if (printedSNPs != null) {
+				int i = 0;
+				while ((i < printedSNPs.size()) && (snpUnderMouse == null)) {
+					SNP currentSNP = printedSNPs.get(i);
+					if ((mousePosition.x >= projectWindow.genomePosToScreenXPos(currentSNP.getPosition())) &&
+							(mousePosition.x <= projectWindow.genomePosToScreenXPos(currentSNP.getPosition() + 1))) {
+						// we found a gene under the mouse
+						snpUnderMouse = currentSNP;
+					}
+					i++;
+				}
+				// we repaint the track only if the gene under the mouse changed
+				if (((oldSnpUnderMouse == null) && (snpUnderMouse != null))
+						|| ((oldSnpUnderMouse != null) && (!oldSnpUnderMouse.equals(snpUnderMouse)))) {
+					repaint();
+				}
 				//}
 			}
 			if (snpUnderMouse != null) {
 				// changes the cursor of the mouse
 				setCursor(new Cursor(Cursor.HAND_CURSOR));
-				// tooltip text 
+				// tooltip text
 				String toolTipText = snpUnderMouse.getFirstBase() + " = " + snpUnderMouse.getFirstBaseCount() +
-				", " + snpUnderMouse.getSecondBase() + " = " + snpUnderMouse.getSecondBaseCount();
+						", " + snpUnderMouse.getSecondBase() + " = " + snpUnderMouse.getSecondBaseCount();
 				// add the ratio 1st base count / 2nd base count to the tooltip text if the 2nd base count is not null
 				if (snpUnderMouse.getSecondBaseCount() != 0) {
 					DecimalFormat df = new DecimalFormat("###,###.###");

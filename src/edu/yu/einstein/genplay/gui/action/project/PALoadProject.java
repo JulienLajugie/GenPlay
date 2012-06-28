@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -46,8 +47,8 @@ import edu.yu.einstein.genplay.util.Utils;
 public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
-	private static final String 	DESCRIPTION = 
-		"Load a project from a file"; 								// tooltip
+	private static final String 	DESCRIPTION =
+			"Load a project from a file"; 								// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_L; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Load Project";	// action name
 	private boolean					skipFileSelection = false;		// true if the file selection need to be skipped. Default is false
@@ -56,7 +57,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.CTRL_DOWN_MASK); 
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -79,7 +80,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 
 	/**
-	 * Sets the user selection of a file to load needs to be skipped 
+	 * Sets the user selection of a file to load needs to be skipped
 	 * @param skipFileSelection true if no files need to be selected by the user
 	 */
 	public void setSkipFileSelection(boolean skipFileSelection) {
@@ -100,7 +101,7 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			PAInitManagers init = new PAInitManagers();
 			init.setFile(selectedFile);
 			init.actionPerformed(null);
-			hasBeenInitialized = init.hasBeenInitialized();		// We just selected the file, we have to check if managers have been successfully initialized 
+			hasBeenInitialized = init.hasBeenInitialized();		// We just selected the file, we have to check if managers have been successfully initialized
 		}
 		if (hasBeenInitialized) {
 			MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)

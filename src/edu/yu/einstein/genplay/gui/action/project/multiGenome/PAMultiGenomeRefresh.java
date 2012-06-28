@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK); 
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -175,7 +176,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 				e.printStackTrace();
 			}
 
-			// Many data has been loaded, removed, garbage collecting free some memory 
+			// Many data has been loaded, removed, garbage collecting free some memory
 			Utils.garbageCollect();
 		}
 	}

@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog;
 
+import java.awt.Adjustable;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -41,24 +42,24 @@ import javax.swing.JScrollBar;
 
 
 /**
- * A dialog box used to choose a value for the sigma parameter of a gaussian filter. 
+ * A dialog box used to choose a value for the sigma parameter of a gaussian filter.
  * @author Julien Lajugie
  * @version 0.1
  */
 public final class GenomeWidthChooser extends JDialog {
 
 	private static final long 			serialVersionUID = -1145665933228762636L; 	// Generated serial number
-	private static JScrollBar 			jsbGenomeWidth;								// ScrollBar use to choose sigma 
-	private static JFormattedTextField 	jftfGenomeWidth;							// TextField for the value of sigma 
+	private static JScrollBar 			jsbGenomeWidth;								// ScrollBar use to choose sigma
+	private static JFormattedTextField 	jftfGenomeWidth;							// TextField for the value of sigma
 	private static JButton 				jbOk;										// Button Ok
 	private static JButton 				jbCancel;									// Button Cancel
 	private static int 					windowSize;									// Greatest bin size of the selected curves
 	private static Integer 				validGenomeWidth;							// A valid value for sigma
 	private static boolean 				validated;									// True if OK has been pressed
 	private static String				type; 										// Describe the data asked.
-	
+
 	/**
-	 * Private constructor. Used internally to create a {@link GenomeWidthChooser} dialog. 
+	 * Private constructor. Used internally to create a {@link GenomeWidthChooser} dialog.
 	 * @param parent The parent {@link Component} from which the dialog is displayed.
 	 */
 	private GenomeWidthChooser(Component parent) {
@@ -71,12 +72,12 @@ public final class GenomeWidthChooser extends JDialog {
 		setLocationRelativeTo(parent);
 	}
 
-	
+
 	/**
 	 * Creates the component and all the subcomponents.
 	 */
 	private void initComponent() {
-		jsbGenomeWidth = new JScrollBar(JScrollBar.HORIZONTAL, validGenomeWidth, 0, windowSize, windowSize * 1000);
+		jsbGenomeWidth = new JScrollBar(Adjustable.HORIZONTAL, validGenomeWidth, 0, windowSize, windowSize * 1000);
 		jsbGenomeWidth.setBlockIncrement(windowSize);
 		jsbGenomeWidth.setUnitIncrement(windowSize);
 		jsbGenomeWidth.addAdjustmentListener(new AdjustmentListener() {
@@ -89,10 +90,10 @@ public final class GenomeWidthChooser extends JDialog {
 		jftfGenomeWidth = new JFormattedTextField(new DecimalFormat("###,###,###"));
 		jftfGenomeWidth.setValue(validGenomeWidth);
 		jftfGenomeWidth.setColumns(8);
-		jftfGenomeWidth.addPropertyChangeListener(new PropertyChangeListener() {				
+		jftfGenomeWidth.addPropertyChangeListener(new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				jftfSigmaPropertyChange();	
+				jftfSigmaPropertyChange();
 			}
 		});
 
@@ -101,7 +102,7 @@ public final class GenomeWidthChooser extends JDialog {
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbOkActionPerformed();				
+				jbOkActionPerformed();
 			}
 		});
 
@@ -110,7 +111,7 @@ public final class GenomeWidthChooser extends JDialog {
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbCancelActionPerformed();				
+				jbCancelActionPerformed();
 			}
 		});
 
@@ -130,21 +131,21 @@ public final class GenomeWidthChooser extends JDialog {
 		c.gridy = 1;
 		c.gridwidth = 1;
 		c.anchor = GridBagConstraints.CENTER;
-		add(jftfGenomeWidth, c);	
+		add(jftfGenomeWidth, c);
 
 		c.gridx = 0;
 		c.gridy = 2;
-		add(jbOk, c);		
+		add(jbOk, c);
 
 		c.gridx = 2;
 		c.gridy = 2;
 		add(jbCancel, c);
 
 		this.pack();
-		this.setResizable(false);		
+		this.setResizable(false);
 	}
 
-	
+
 	/**
 	 * Closes the dialog. No action are performed.
 	 */
@@ -153,23 +154,23 @@ public final class GenomeWidthChooser extends JDialog {
 
 	}
 
-	
+
 	/**
 	 * Closes the dialog. Sets validated to true so the main function can return the two selected curves.
 	 */
 	private void jbOkActionPerformed() {
 		validated = true;
-		this.dispose();		
+		this.dispose();
 	}
 
-	
+
 	/**
-	 * Changes the text of textField jftfGenomicWidth when the scrollBar jftfSigma is used.  
+	 * Changes the text of textField jftfGenomicWidth when the scrollBar jftfSigma is used.
 	 */
 	private void jftfSigmaPropertyChange() {
 		int currentGenomicWidth = ((Number)(jftfGenomeWidth.getValue())).intValue();
 
-		if((currentGenomicWidth < windowSize) || (currentGenomicWidth > windowSize * 100000)) {
+		if((currentGenomicWidth < windowSize) || (currentGenomicWidth > (windowSize * 100000))) {
 			JOptionPane.showMessageDialog(getRootPane(), type + " value must be between " + windowSize + " and " + (windowSize * 100) + ".", "Incorrect sigma value.", JOptionPane.WARNING_MESSAGE);
 			jftfGenomeWidth.setValue(validGenomeWidth);
 		}
@@ -179,22 +180,22 @@ public final class GenomeWidthChooser extends JDialog {
 		}
 	}
 
-	
+
 	/**
 	 * Changes the position of the scrollBar jftfSigma when the value of the textField jsbSigma changes.
 	 */
 	private void jsbSigmaAdjustmentValueChanged() {
 		validGenomeWidth = jsbGenomeWidth.getValue();
 		jftfGenomeWidth.setValue(validGenomeWidth);
-	}	
+	}
 
-	
+
 	/**
-	 * Displays a GenomeWidthChooser dialog, and returns  
+	 * Displays a GenomeWidthChooser dialog, and returns
 	 * an integer value for sigma.
 	 * @param parent The parent {@link Component} from which the dialog is displayed..
 	 * @param aWindowSize a size of bins.
-	 * @return An Integer value of sigma if OK has been pressed. Null otherwise. 
+	 * @return An Integer value of sigma if OK has been pressed. Null otherwise.
 	 */
 	public static Integer getSigma(Component parent, int aWindowSize) {
 		windowSize = aWindowSize;
@@ -202,19 +203,20 @@ public final class GenomeWidthChooser extends JDialog {
 		type = "Sigma";
 		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
 		FS.setVisible(true);
-		if(validated)
+		if(validated) {
 			return validGenomeWidth;
-		else
+		} else {
 			return null;
+		}
 	}
-	
-	
+
+
 	/**
-	 * Displays a GenomeWidthChooser dialog, and returns  
+	 * Displays a GenomeWidthChooser dialog, and returns
 	 * an integer value for the moving window size.
 	 * @param parent The parent {@link Component} from which the dialog is displayed..
 	 * @param aWindowSize a size of bins.
-	 * @return An Integer value of the moving window size if OK has been pressed. Null otherwise. 
+	 * @return An Integer value of the moving window size if OK has been pressed. Null otherwise.
 	 */
 	public static Integer getMovingWindowSize(Component parent, int aWindowSize) {
 		windowSize = aWindowSize;
@@ -222,19 +224,20 @@ public final class GenomeWidthChooser extends JDialog {
 		type = "Moving Window Size";
 		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
 		FS.setVisible(true);
-		if(validated)
+		if(validated) {
 			return validGenomeWidth;
-		else
+		} else {
 			return null;
+		}
 	}
-	
-	
+
+
 	/**
-	 * Displays a GenomeWidthChooser dialog, and returns  
+	 * Displays a GenomeWidthChooser dialog, and returns
 	 * an integer value for the width of a moving standard deviation.
 	 * @param parent The parent {@link Component} from which the dialog is displayed..
 	 * @param aWindowSize greatest size of the bins of the curves.
-	 * @return An Integer value if OK has been pressed. Null otherwise. 
+	 * @return An Integer value if OK has been pressed. Null otherwise.
 	 */
 	public static Integer getMovingStdDevWidth(Component parent, int aWindowSize) {
 		windowSize = aWindowSize;
@@ -242,9 +245,10 @@ public final class GenomeWidthChooser extends JDialog {
 		type = "Moving std deviation width";
 		GenomeWidthChooser FS = new GenomeWidthChooser(parent);
 		FS.setVisible(true);
-		if(validated)
+		if(validated) {
 			return validGenomeWidth;
-		else
+		} else {
 			return null;
+		}
 	}
 }

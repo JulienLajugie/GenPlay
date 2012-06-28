@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -47,8 +47,8 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 
 	private static final long serialVersionUID = 1920229861641233827L;	// generated ID
 	private BinList extractedBinList = null;	 // BinList extracted from the file
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link SerializedBinListExtractor}
 	 * @param dataFile file containing the data
@@ -58,14 +58,15 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 		super(dataFile, logFile);
 	}
 
-	
+
 	@Override
 	public void extract() throws FileNotFoundException, IOException, ClassNotFoundException, InterruptedException, ExecutionException {
-		startTime = System.currentTimeMillis();		
+		startTime = System.currentTimeMillis();
 		FileInputStream fis = new FileInputStream(dataFile);
 		GZIPInputStream gz = new GZIPInputStream(fis);
 		ObjectInputStream ois = new ObjectInputStream(gz);
 		extractedBinList = (BinList)ois.readObject();
+		ois.close();
 		for (int i = 0; i < extractedBinList.size(); i++) {
 			int chromoStatus = checkChromosomeStatus(projectChromosome.get(i));
 			if ((chromoStatus == AFTER_LAST_SELECTED) || (chromoStatus == NEED_TO_BE_SKIPPED)) {
@@ -77,7 +78,7 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 		extractedBinList = new BinList(extractedBinList.getBinSize(), extractedBinList.getPrecision(), extractedBinList);
 	}
 
-	
+
 	@Override
 	public boolean isBinSizeNeeded() {
 		return false;
@@ -88,14 +89,14 @@ public class SerializedBinListExtractor extends Extractor implements BinListGene
 	public boolean isCriterionNeeded() {
 		return false;
 	}
-	
+
 
 	@Override
 	public boolean isPrecisionNeeded() {
 		return false;
 	}
 
-	
+
 	@Override
 	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) throws IllegalArgumentException {
 		return extractedBinList;

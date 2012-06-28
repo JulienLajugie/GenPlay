@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,10 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
  */
 class TreeContent {
 
-	/** Generated serial version ID */
-	private static final long serialVersionUID = -4125853855970664341L;
-
-	private JTree 							tree;	// the tree
+	private final JTree 							tree;	// the tree
 	private DefaultMutableTreeNode 			root;	// root of the tree
 	private List<DefaultMutableTreeNode>	nodes;	// nodes record
 
@@ -81,20 +78,20 @@ class TreeContent {
 	 */
 	private void createNodes () {
 		root = new DefaultMutableTreeNode();
-		
+
 		nodes = new ArrayList<DefaultMutableTreeNode>();
 		DefaultMutableTreeNode currentNode;
-		
+
 		// GENERAL node
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.GENERAL);
 		root.add(currentNode);
 		nodes.add(currentNode);
-		
+
 		// SETTINGS node
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.SETTINGS);
 		root.add(currentNode);
 		nodes.add(currentNode);
-		
+
 		// FILES nodes
 		DefaultMutableTreeNode vcfFiles = new DefaultMutableTreeNode(PropertiesDialog.FILES);
 		List<VCFFile> readerList = ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles();
@@ -105,12 +102,12 @@ class TreeContent {
 			vcfFiles.add(readerNode);
 		}
 		root.add(vcfFiles);
-		
+
 		// FILTERS node
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
 		root.add(currentNode);
 		nodes.add(currentNode);
-		
+
 		// STRIPES node
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.STRIPES);
 		root.add(currentNode);

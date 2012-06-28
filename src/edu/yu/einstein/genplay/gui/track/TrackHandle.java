@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -50,7 +51,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;								// saved format version
 	private static final int 	HANDLE_WIDTH = 50;											// width of the handle
 	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;								// height of the resize zone
-	private static final Color 	BACKGROUND_COLOR = Colors.TRACK_HANDLE_BACKGROUND_COLOR;	// background color 
+	private static final Color 	BACKGROUND_COLOR = Colors.TRACK_HANDLE_BACKGROUND_COLOR;	// background color
 	private static final Color 	ROLLOVER_COLOR = Colors.TRACK_HANDLE_ROLLOVER_COLOR; 		// rollover color
 	private static final Color 	SELECTED_COLOR = Colors.TRACK_HANDLE_SELECTED_COLOR; 		// selected color
 	private static final String FONT_NAME = "ARIAL";										// name of the font
@@ -62,7 +63,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	private boolean 			trackDragged = false;		// true if the user is dragging the track
 	private boolean				selected = false;			// true if the track is selected
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -85,7 +86,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 		in.readInt();
 		trackNumber = in.readInt();
 		jlNumber = (JLabel) in.readObject();
-		startDragY = 0; 
+		startDragY = 0;
 		trackDragged = false;
 		selected = false;
 	}
@@ -124,14 +125,14 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 					setBackground(BACKGROUND_COLOR);
 				}
 				firePropertyChange("selected", !selected, selected);
-			}			
+			}
 			if (arg0.getButton() == MouseEvent.BUTTON1) {
-				if (getHeight() - arg0.getY() <= MOVE_RESIZE_ZONE_HEIGHT) {
+				if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
 					if (arg0.getClickCount() == 2) {
 						firePropertyChange("defaultSize", false, true);
 					}
-				} 
-			} 
+				}
+			}
 		}
 	}
 
@@ -159,11 +160,11 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	public void mousePressed(MouseEvent arg0) {
 		if (isEnabled()) {
 			if (arg0.getButton() == MouseEvent.BUTTON1) {
-				if (getHeight() - arg0.getY() <= MOVE_RESIZE_ZONE_HEIGHT) {
+				if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
 					startDragY = arg0.getY();
 				} else {
 					trackDragged = true;
-				}			
+				}
 			}
 			if (arg0.getButton() == MouseEvent.BUTTON3) {
 				if (!selected) {
@@ -202,8 +203,8 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
 		if (isEnabled()) {
-			if (getHeight() - arg0.getY() <= MOVE_RESIZE_ZONE_HEIGHT) {
-				if (arg0.getModifiers() == MouseEvent.CTRL_DOWN_MASK) {
+			if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
+				if (arg0.getModifiers() == InputEvent.CTRL_DOWN_MASK) {
 					setCursor(new Cursor(Cursor.MOVE_CURSOR));
 				} else {
 					setCursor(new Cursor(Cursor.N_RESIZE_CURSOR));
@@ -239,7 +240,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	 * Locks the handle
 	 */
 	public void lock() {
-		setEnabled(false);		
+		setEnabled(false);
 	}
 
 

@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.geneListTrack;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -42,14 +43,14 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 	// generated ID
 	private static final String 	ACTION_NAME = "Search Gene";		// action name
-	private static final String 	DESCRIPTION = 
-		"Search a gene on the selected track"; 							// tooltip
+	private static final String 	DESCRIPTION =
+			"Search a gene on the selected track"; 							// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -81,8 +82,8 @@ public final class GLASearchGene extends TrackListActionWorker<Void> {
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(Void actionResult) {}
 }

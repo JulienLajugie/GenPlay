@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,6 +39,7 @@ import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
@@ -49,7 +50,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * Option dialog for the axis of a {@link ScatterPlotPane} 
+ * Option dialog for the axis of a {@link ScatterPlotPane}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -124,7 +125,7 @@ public class AxisOptionDialog extends JDialog {
 				super.focusLost(e);
 			}
 		});
-		
+
 		jlMinorUnit = new JLabel("Minor unit:");
 		jftfMinorUnit = new JFormattedTextField(DF);
 		// we just accept values > 0
@@ -141,16 +142,16 @@ public class AxisOptionDialog extends JDialog {
 		// panel for min, max, major and minor units
 		topPanel = new JPanel();
 		topPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.LIGHT_GREY));
-		
+
 		jcbShowGrid = new JCheckBox("Show Grid");
-		
+
 		// panel for the show grid check box
 		middlePanel = new JPanel();
 
-		jchbLog = new JCheckBox("Logarithnmic scale");		
+		jchbLog = new JCheckBox("Logarithnmic scale");
 		jchbLog.setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Colors.LIGHT_GREY));
 		// disable the combo box for the log base if the log scale is not selected
-		jchbLog.addChangeListener(new ChangeListener() {			
+		jchbLog.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				jcbLog.setEnabled(jchbLog.isSelected());
@@ -161,7 +162,7 @@ public class AxisOptionDialog extends JDialog {
 						jftfMin.setValue(1d);
 					}
 				}
-				
+
 			}
 		});
 		jcbLog = new JComboBox(LogBase.values());
@@ -172,14 +173,14 @@ public class AxisOptionDialog extends JDialog {
 		bottomPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Colors.LIGHT_GREY));
 
 		jbCancel = new JButton("Cancel");
-		jbCancel.addActionListener(new ActionListener() {			
+		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);				
+				setVisible(false);
 			}
 		});
 		jbOk = new JButton("Ok");
-		jbOk.addActionListener(new ActionListener() {			
+		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				approved = APPROVE_OPTION;
@@ -192,7 +193,7 @@ public class AxisOptionDialog extends JDialog {
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(PAD, PAD, 0, 0);
-		topPanel.add(jlMin, c);		
+		topPanel.add(jlMin, c);
 
 		c = new GridBagConstraints();
 		c.gridx = 1;
@@ -301,12 +302,12 @@ public class AxisOptionDialog extends JDialog {
 		add(jbCancel, c);
 
 		setResizable(false);
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 	}
 
-	
+
 	/**
 	 * @return the selected log base
 	 */
@@ -365,7 +366,7 @@ public class AxisOptionDialog extends JDialog {
 
 	/**
 	 * Sets the log base
-	 * @param logBase log base to set 
+	 * @param logBase log base to set
 	 */
 	public void setLogBase(LogBase logBase) {
 		jcbLog.setSelectedItem(logBase);
@@ -374,7 +375,7 @@ public class AxisOptionDialog extends JDialog {
 
 	/**
 	 * Sets to true to select the log scale option
-	 * @param logScale 
+	 * @param logScale
 	 */
 	public void setLogScale(boolean logScale) {
 		jchbLog.setSelected(logScale);

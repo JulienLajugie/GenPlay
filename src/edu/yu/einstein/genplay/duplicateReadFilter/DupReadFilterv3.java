@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,17 +43,17 @@ import edu.yu.einstein.genplay.gui.dialog.DupReadFilterDialog;
  * @version 2
  */
 public class DupReadFilterv3 {
-	
+
 	private int minDupCount;	// minimum duplicate count
-	private int maxDupCount;	// maximum duplicate count 
+	private int maxDupCount;	// maximum duplicate count
 	private Map<String, List<ReadsData>> mapForInputFile;
-	
+
 	private static final int LESS_THAN_EQUAL_TO = 1;
 	private static final int EXACTLY_EQUAL_TO = 2;
 	private static final int BETWEEN = 3;
 	private static final int MORE_THAN = 4;
 
-	
+
 	/**
 	 * Main method. Usage: " + "java -jar <inputfile> <outputfile>
 	 * @param args
@@ -66,64 +66,64 @@ public class DupReadFilterv3 {
 		}
 		DupReadFilterDialog drfd = new DupReadFilterDialog();
 		drfd.showDialog(null);
-		DupReadFilterv3 drf = new DupReadFilterv3();		
+		DupReadFilterv3 drf = new DupReadFilterv3();
 		File inFile = new File (args[0]);
 		File outFile = new File (args[1]);
-		
+
 		switch (drfd.getOptionSelected()) {
 		case LESS_THAN_EQUAL_TO:	drf.maxDupCount = drfd.getMaxDupCount();
-									drf.handleLessThanOrEqualTo(inFile, outFile);
-									break;
-									
+		drf.handleLessThanOrEqualTo(inFile, outFile);
+		break;
+
 		case EXACTLY_EQUAL_TO:		drf.maxDupCount = drfd.getMaxDupCount();
-									drf.handleExactlyEqualTo(inFile, outFile);
-									break;
-									
+		drf.handleExactlyEqualTo(inFile, outFile);
+		break;
+
 		case BETWEEN:				drf.minDupCount = drfd.getMinDupCount();
-									drf.maxDupCount = drfd.getMaxDupCount();
-									drf.handleBetween(inFile, outFile);
-									break;
-		
+		drf.maxDupCount = drfd.getMaxDupCount();
+		drf.handleBetween(inFile, outFile);
+		break;
+
 		case MORE_THAN:				drf.minDupCount = drfd.getMinDupCount();
-									drf.handleMoreThan(inFile, outFile);
-									break;
-		}	
+		drf.handleMoreThan(inFile, outFile);
+		break;
+		}
 		System.exit(0);
 	}
 
-	
+
 	private void handleMoreThan(File inFile, File outFile) throws IOException {
 		BufferedReader bufReader = new BufferedReader(new FileReader(inFile));
 		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outFile));
 		mapForInputFile = new HashMap<String, List<ReadsData>>();
 		String lineRead = bufReader.readLine();
-//		int lineNumber = 0;
+		//		int lineNumber = 0;
 		StringTokenizer strTok;
 		String prevReadName = "";
 		String readName = "";
 		System.out.println("Writing to output file...");
 		while (lineRead != null) {
 			if (lineRead.length() != 0) {
-//				System.out.println(lineNumber++);
+				//				System.out.println(lineNumber++);
 				strTok = new StringTokenizer(lineRead, " \t\n");
 				readName = strTok.nextToken();
 				String strand = strTok.nextToken();
 				String chromosome = strTok.nextToken();
 				int start = Integer.parseInt(strTok.nextToken());
-				
-				ReadsData rd = new ReadsData(readName, strand, chromosome, start);				
-				
+
+				ReadsData rd = new ReadsData(readName, strand, chromosome, start);
+
 				if (mapForInputFile.containsKey(readName)) {
 					mapForInputFile.get(readName).add(rd);
 					prevReadName = readName;
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (mapForInputFile.containsKey(prevReadName) && mapForInputFile.get(prevReadName).size() <= minDupCount) {
+				} else if (mapForInputFile.containsKey(prevReadName) && (mapForInputFile.get(prevReadName).size() <= minDupCount)) {
 					prevReadName = readName;
 					mapForInputFile.clear();
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (!mapForInputFile.isEmpty() && mapForInputFile.get(prevReadName).size() > minDupCount){					
+				} else if (!mapForInputFile.isEmpty() && (mapForInputFile.get(prevReadName).size() > minDupCount)){
 					Iterator<String> iter = mapForInputFile.keySet().iterator();
 					while (iter.hasNext()) {
 						String readNameToPrint = iter.next();
@@ -135,10 +135,10 @@ public class DupReadFilterv3 {
 							// for debug purposes readName is also written to the file
 							bufWriter.write(prevReadName + "\t" + rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
 							//bufWriter.write(rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
-						}						
+						}
 					}
 					mapForInputFile.clear();
-				}	
+				}
 				List<ReadsData> readsData = new ArrayList<ReadsData>();
 				if (!readName.equals(prevReadName)) {
 					readsData.add(rd);
@@ -146,9 +146,10 @@ public class DupReadFilterv3 {
 					mapForInputFile.put(readName, readsData);
 				}
 			}
-			lineRead = bufReader.readLine();			
+			lineRead = bufReader.readLine();
 		}
-		if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() > minDupCount) {
+		bufReader.close();
+		if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() > minDupCount)) {
 			double score = 1;
 			score /= mapForInputFile.get(readName).size();
 			for (int i = 0; i < mapForInputFile.get(readName).size(); i++) {
@@ -167,33 +168,33 @@ public class DupReadFilterv3 {
 		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outFile));
 		mapForInputFile = new HashMap<String, List<ReadsData>>();
 		String lineRead = bufReader.readLine();
-//		int lineNumber = 0;
+		//		int lineNumber = 0;
 		StringTokenizer strTok;
 		String prevReadName = "";
 		String readName = "";
 		System.out.println("Writing to output file...");
 		while (lineRead != null) {
 			if (lineRead.length() != 0) {
-//				System.out.println(lineNumber++);
+				//				System.out.println(lineNumber++);
 				strTok = new StringTokenizer(lineRead, " \t\n");
 				readName = strTok.nextToken();
 				String strand = strTok.nextToken();
 				String chromosome = strTok.nextToken();
 				int start = Integer.parseInt(strTok.nextToken());
-				
-				ReadsData rd = new ReadsData(readName, strand, chromosome, start);				
-				
-				if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() < maxDupCount) {
+
+				ReadsData rd = new ReadsData(readName, strand, chromosome, start);
+
+				if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() < maxDupCount)) {
 					mapForInputFile.get(readName).add(rd);
 					prevReadName = readName;
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() == maxDupCount) {
+				} else if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() == maxDupCount)) {
 					prevReadName = readName;
 					mapForInputFile.clear();
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (!mapForInputFile.isEmpty() && mapForInputFile.get(prevReadName).size() <= maxDupCount && mapForInputFile.get(prevReadName).size() >= minDupCount){					
+				} else if (!mapForInputFile.isEmpty() && (mapForInputFile.get(prevReadName).size() <= maxDupCount) && (mapForInputFile.get(prevReadName).size() >= minDupCount)){
 					Iterator<String> iter = mapForInputFile.keySet().iterator();
 					while (iter.hasNext()) {
 						String readNameToPrint = iter.next();
@@ -205,10 +206,10 @@ public class DupReadFilterv3 {
 							// for debug purposes readName is also written to the file
 							bufWriter.write(prevReadName + "\t" + rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
 							//bufWriter.write(rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
-						}						
+						}
 					}
 					mapForInputFile.clear();
-				}	
+				}
 				List<ReadsData> readsData = new ArrayList<ReadsData>();
 				if (!readName.equals(prevReadName)) {
 					readsData.add(rd);
@@ -216,9 +217,10 @@ public class DupReadFilterv3 {
 					mapForInputFile.put(readName, readsData);
 				}
 			}
-			lineRead = bufReader.readLine();			
+			lineRead = bufReader.readLine();
 		}
-		if (mapForInputFile.get(readName).size() <= maxDupCount && mapForInputFile.get(prevReadName).size() >= minDupCount) {
+		bufReader.close();
+		if ((mapForInputFile.get(readName).size() <= maxDupCount) && (mapForInputFile.get(prevReadName).size() >= minDupCount)) {
 			double score = 1;
 			score /= mapForInputFile.get(readName).size();
 			for (int i = 0; i < mapForInputFile.get(readName).size(); i++) {
@@ -237,33 +239,33 @@ public class DupReadFilterv3 {
 		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outFile));
 		mapForInputFile = new HashMap<String, List<ReadsData>>();
 		String lineRead = bufReader.readLine();
-//		int lineNumber = 0;
+		//		int lineNumber = 0;
 		StringTokenizer strTok;
 		String prevReadName = "";
 		String readName = "";
 		System.out.println("Writing to output file ...");
 		while (lineRead != null) {
 			if (lineRead.length() != 0) {
-//				System.out.println(lineNumber++);
+				//				System.out.println(lineNumber++);
 				strTok = new StringTokenizer(lineRead, " \t\n");
 				readName = strTok.nextToken();
 				String strand = strTok.nextToken();
 				String chromosome = strTok.nextToken();
 				int start = Integer.parseInt(strTok.nextToken());
-				
-				ReadsData rd = new ReadsData(readName, strand, chromosome, start);				
-				
-				if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() < maxDupCount) {
+
+				ReadsData rd = new ReadsData(readName, strand, chromosome, start);
+
+				if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() < maxDupCount)) {
 					mapForInputFile.get(readName).add(rd);
 					prevReadName = readName;
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() == maxDupCount) {
+				} else if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() == maxDupCount)) {
 					prevReadName = readName;
 					mapForInputFile.clear();
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (!mapForInputFile.isEmpty() && mapForInputFile.get(prevReadName).size() == maxDupCount){					
+				} else if (!mapForInputFile.isEmpty() && (mapForInputFile.get(prevReadName).size() == maxDupCount)){
 					Iterator<String> iter = mapForInputFile.keySet().iterator();
 					while (iter.hasNext()) {
 						String readNameToPrint = iter.next();
@@ -275,10 +277,10 @@ public class DupReadFilterv3 {
 							// for debug purposes readName is also written to the file
 							bufWriter.write(prevReadName + "\t" + rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
 							//bufWriter.write(rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
-						}						
+						}
 					}
 					mapForInputFile.clear();
-				}	
+				}
 				List<ReadsData> readsData = new ArrayList<ReadsData>();
 				if (!readName.equals(prevReadName)) {
 					readsData.add(rd);
@@ -287,8 +289,9 @@ public class DupReadFilterv3 {
 					mapForInputFile.put(readName, readsData);
 				}
 			}
-			lineRead = bufReader.readLine();			
+			lineRead = bufReader.readLine();
 		}
+		bufReader.close();
 		if (mapForInputFile.get(readName).size() == maxDupCount) {
 			double score = 1;
 			score /= mapForInputFile.get(readName).size();
@@ -308,33 +311,33 @@ public class DupReadFilterv3 {
 		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outFile));
 		mapForInputFile = new HashMap<String, List<ReadsData>>();
 		String lineRead = bufReader.readLine();
-//		int lineNumber = 0;
+		//		int lineNumber = 0;
 		StringTokenizer strTok;
 		String prevReadName = "";
 		String readName = "";
 		System.out.println("Writing to output file...");
 		while (lineRead != null) {
 			if (lineRead.length() != 0) {
-//				System.out.println(lineNumber++);
+				//				System.out.println(lineNumber++);
 				strTok = new StringTokenizer(lineRead, " \t\n");
 				readName = strTok.nextToken();
 				String strand = strTok.nextToken();
 				String chromosome = strTok.nextToken();
 				int start = Integer.parseInt(strTok.nextToken());
-				
-				ReadsData rd = new ReadsData(readName, strand, chromosome, start);				
-				
-				if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() < maxDupCount) {
+
+				ReadsData rd = new ReadsData(readName, strand, chromosome, start);
+
+				if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() < maxDupCount)) {
 					mapForInputFile.get(readName).add(rd);
 					prevReadName = readName;
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (mapForInputFile.containsKey(readName) && mapForInputFile.get(readName).size() == maxDupCount) {
+				} else if (mapForInputFile.containsKey(readName) && (mapForInputFile.get(readName).size() == maxDupCount)) {
 					prevReadName = readName;
 					mapForInputFile.clear();
 					lineRead = bufReader.readLine();
 					continue;
-				} else if (!mapForInputFile.isEmpty()){					
+				} else if (!mapForInputFile.isEmpty()){
 					Iterator<String> iter = mapForInputFile.keySet().iterator();
 					while (iter.hasNext()) {
 						String readNameToPrint = iter.next();
@@ -346,10 +349,10 @@ public class DupReadFilterv3 {
 							// for debug purposes readName is also written to the file
 							bufWriter.write(prevReadName + "\t" + rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
 							//bufWriter.write(rdFromMap.getChromosome() + "\t" + rdFromMap.getStart() + "\t" + (rdFromMap.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rdFromMap.getStrand() + "\n");
-						}						
+						}
 					}
 					mapForInputFile.clear();
-				}	
+				}
 				List<ReadsData> readsData = new ArrayList<ReadsData>();
 				if (!readName.equals(prevReadName)) {
 					readsData.add(rd);
@@ -357,8 +360,9 @@ public class DupReadFilterv3 {
 					mapForInputFile.put(readName, readsData);
 				}
 			}
-			lineRead = bufReader.readLine();			
+			lineRead = bufReader.readLine();
 		}
+		bufReader.close();
 		if (mapForInputFile.get(readName).size() <= maxDupCount) {
 			double score = 1;
 			score /= mapForInputFile.get(readName).size();
@@ -370,5 +374,5 @@ public class DupReadFilterv3 {
 			}
 		}
 		bufWriter.close();
-	}	
+	}
 }

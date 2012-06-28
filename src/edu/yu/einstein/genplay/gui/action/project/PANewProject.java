@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -44,13 +45,13 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 	private static final int 		MNEMONIC = KeyEvent.VK_N; 			// mnemonic key
 	private static final String 	ACTION_NAME = "New Project";		// action name
 
-	
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_DOWN_MASK); 
-	
-	
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK);
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -68,7 +69,7 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
-	
+
 
 	@Override
 	protected Boolean processAction() throws Exception {

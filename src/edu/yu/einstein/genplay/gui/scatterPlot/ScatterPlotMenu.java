@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -54,11 +54,11 @@ public class ScatterPlotMenu extends JPopupMenu {
 	private final JMenuItem 			jmiChangeColor;			// change graph colors
 	private final JMenuItem				jmiXAxisOptions;		// menu for setting x axis parameters
 	private final JMenuItem				jmiYAxisOptions;		// menu for setting y axis parameters
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ScatterPlotMenu}
-	 * @param scatterPlotPane {@link ScatterPlotPane} 
+	 * @param scatterPlotPane {@link ScatterPlotPane}
 	 */
 	public ScatterPlotMenu(ScatterPlotPane scatterPlotPane) {
 		jrbmiBarChart = new JRadioButtonMenuItem(new SPABarChart(scatterPlotPane));
@@ -68,12 +68,12 @@ public class ScatterPlotMenu extends JPopupMenu {
 		jmiSaveData = new JMenuItem(new SPASaveData(scatterPlotPane));
 		jmiSaveImage = new JMenuItem(new SPASaveImage(scatterPlotPane));
 		jmiLoadData = new JMenuItem(new SPALoadData(scatterPlotPane));
-		
+
 		jmiChangeColor = new JMenuItem(new SPAChangeColor(scatterPlotPane));
 
 		jmiXAxisOptions = new JMenuItem(new SPAXAxisOptions(scatterPlotPane));
 		jmiYAxisOptions = new JMenuItem(new SPAYAxisOptions(scatterPlotPane));
-		
+
 		add(jrbmiBarChart);
 		add(jrbmiPointChart);
 		add(jrbmiCurveChart);
@@ -86,7 +86,7 @@ public class ScatterPlotMenu extends JPopupMenu {
 		add(jmiLoadData);
 		addSeparator();
 		add(jmiChangeColor);
-		
+
 		switch (scatterPlotPane.getChartType()) {
 		case BAR:
 			jrbmiBarChart.setSelected(true);
@@ -95,7 +95,9 @@ public class ScatterPlotMenu extends JPopupMenu {
 			jrbmiCurveChart.setSelected(true);
 			break;
 		case POINTS:
-			jrbmiPointChart.setSelected(true);		
+			jrbmiPointChart.setSelected(true);
+		default:
+			break;
 		}
 	}
 }

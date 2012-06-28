@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,6 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -95,13 +96,13 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 	private final Dimension contentDimension = new Dimension(600, DIALOG_HEIGHT);
 
-	private TreeContent 				treeContent;							// the tree manager
-	private JTree 						tree;									// the tree of the dialog
-	private JPanel 						contentPane;							// right part of the dialog
-	private GeneralPanel 				generalPanel;							// the general information panel
-	private SettingsPanel 				settingsPanel;							// the settings panel
-	private TableEditingPanel<StripesData> 	stripesPanel;						// the stripes panel
-	private TableEditingPanel<FiltersData> 	filtersPanel;						// the filters panel
+	private final TreeContent 				treeContent;							// the tree manager
+	private final JTree 						tree;									// the tree of the dialog
+	private final JPanel 						contentPane;							// right part of the dialog
+	private final GeneralPanel 				generalPanel;							// the general information panel
+	private final SettingsPanel 				settingsPanel;							// the settings panel
+	private final TableEditingPanel<StripesData> 	stripesPanel;						// the stripes panel
+	private final TableEditingPanel<FiltersData> 	filtersPanel;						// the filters panel
 
 
 	/**
@@ -116,7 +117,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		treeContent = new TreeContent();
 		tree = treeContent.getTree();
 		tree.addTreeSelectionListener(this);
-		JScrollPane treeScroll = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane treeScroll = new JScrollPane(tree, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		Dimension scrollDimension = new Dimension(200, DIALOG_HEIGHT);
 		treeScroll.setPreferredSize(scrollDimension);
 		treeScroll.setMinimumSize(scrollDimension);
@@ -151,11 +152,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		setVisible(false);
 		pack();
 	}
-	
+
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
@@ -166,7 +167,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 	/**
 	 * Shows the component.
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
 	 * @param accessor 	get into a specific node of the properties dialog
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
@@ -206,7 +207,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 */
 	protected void setScrollableCenterPanel (JPanel panel) {
 		// Set the panel to the right dimension
-		JScrollPane scrollPane = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setPreferredSize(contentDimension);
 
 		// Removes all content of the contentPane
@@ -271,7 +272,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	private JPanel getValidationPanel () {
 		// Creates the ok button
 		JButton jbOk = new JButton("Ok");
-		jbOk.addActionListener(new ActionListener() {			
+		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				approved = APPROVE_OPTION;
@@ -281,11 +282,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 		// Creates the cancel button
 		JButton jbCancel = new JButton("Cancel");
-		jbCancel.addActionListener(new ActionListener() {			
+		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				approved = CANCEL_OPTION;
-				setVisible(false);				
+				setVisible(false);
 			}
 		});
 
@@ -376,8 +377,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public List<StripesData> getStripesData () {
 		return stripesPanel.getData();
 	}
-	
-	
+
+
 	/**
 	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS, STRIPES)
 	 */

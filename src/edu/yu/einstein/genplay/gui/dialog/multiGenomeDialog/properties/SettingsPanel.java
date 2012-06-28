@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -53,10 +53,10 @@ class SettingsPanel extends JPanel {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3353198770426567657L;
 
-	
+
 	// Propeties dialog options
 	private JComboBox jcbDefaultItem;
-	
+
 	// VCF Loader options
 	private JTextField jtfDefaultGroupText;
 
@@ -75,8 +75,8 @@ class SettingsPanel extends JPanel {
 	// Static in option
 	private List<String> optionNameList;
 	private List<Integer> optionValueList;
-	private List<JRadioButton> yesOptionRadioList;
-	private List<JRadioButton> noOptionRadioList;
+	private final List<JRadioButton> yesOptionRadioList;
+	private final List<JRadioButton> noOptionRadioList;
 
 
 	/**
@@ -95,7 +95,7 @@ class SettingsPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 
-		
+
 		// Stripes transparency option title
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -106,7 +106,7 @@ class SettingsPanel extends JPanel {
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
 		add(getDefaultDialogItemPanel(), gbc);
-		
+
 		// VCF Loader option title
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.TITLE_INSET;
@@ -193,9 +193,9 @@ class SettingsPanel extends JPanel {
 		}
 	}
 
-	
+
 	/////////////////////////////////////////// VCF Loader option
-	
+
 	private JPanel getDefaultDialogItemPanel () {
 		JPanel panel = new JPanel();
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -211,8 +211,8 @@ class SettingsPanel extends JPanel {
 
 		return panel;
 	}
-	
-	
+
+
 	/////////////////////////////////////////// VCF Loader option
 
 	/**
@@ -252,12 +252,12 @@ class SettingsPanel extends JPanel {
 		sliderValue = new JLabel(TRANSPARENCY_INIT + " %", SwingConstants.CENTER);
 
 		// Initializes the slider
-		slider = new JSlider(JSlider.HORIZONTAL, TRANSPARENCY_MIN, TRANSPARENCY_MAX, TRANSPARENCY_INIT);
+		slider = new JSlider(SwingConstants.HORIZONTAL, TRANSPARENCY_MIN, TRANSPARENCY_MAX, TRANSPARENCY_INIT);
 		slider.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JSlider source = (JSlider)e.getSource();
-				int transparency = (int)source.getValue();
+				int transparency = source.getValue();
 				sliderValue.setText(transparency + " %");
 			}
 		});
@@ -292,7 +292,7 @@ class SettingsPanel extends JPanel {
 		if (showLegend) {
 			yesButton.setSelected(true);
 		} else {
-			yesButton.setSelected(false);	
+			yesButton.setSelected(false);
 		}
 
 		// Group the radio buttons
@@ -388,9 +388,9 @@ class SettingsPanel extends JPanel {
 	 */
 	public void setSettings (String defaultItemDialog, String defaultGroupText, int transparency, boolean showLegend) {
 		jcbDefaultItem.setSelectedItem(defaultItemDialog);
-		
+
 		jtfDefaultGroupText.setText(defaultGroupText);
-		
+
 		sliderValue.setText(transparency + " %");
 		slider.setValue(transparency);
 
@@ -407,23 +407,23 @@ class SettingsPanel extends JPanel {
 		refreshStaticOptionBoxes();
 	}
 
-	
+
 	/**
 	 * @return the default item dialog to show
 	 */
 	public String getDefaultItemDialog () {
 		return jcbDefaultItem.getSelectedItem().toString();
 	}
-	
-	
+
+
 	/**
 	 * @return the default group text
 	 */
 	public String getDefaultGroupText () {
 		return jtfDefaultGroupText.getText();
 	}
-	
-	
+
+
 	/**
 	 * @return the transparency value
 	 */
@@ -438,7 +438,7 @@ class SettingsPanel extends JPanel {
 	public boolean isShowLegend() {
 		return showLegend;
 	}
-	
+
 
 	/**
 	 * @return the optionValueList

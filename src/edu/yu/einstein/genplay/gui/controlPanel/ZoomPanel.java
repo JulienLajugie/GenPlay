@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,6 +34,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -48,7 +49,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 
 /**
- * The ZoomPanel part of the {@link ControlPanel} 
+ * The ZoomPanel part of the {@link ControlPanel}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -60,10 +61,10 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	private final JButton 							jbPlus;				// button '+'
 	private final JButton 							jbMinus;			// button '-'
 	private final JSlider 							jsZoom;				// zoom slider
-	private final ProjectZoom						projectZoom;		// ZoomManager 
+	private final ProjectZoom						projectZoom;		// ZoomManager
 	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ZoomPanel}
 	 * @param genomeWindow a {@link GenomeWindow}
@@ -91,19 +92,20 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 				zoomChanged(projectZoom.getZoomOut(projectWindow.getGenomeWindow().getSize()));
 			}
 		});
-		
+
 		int	maximumZoom = projectWindow.getGenomeWindow().getChromosome().getLength() * 2;
-		jsZoom = new JSlider(JSlider.HORIZONTAL, 0, projectZoom.getZoomIndex(maximumZoom), projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()));
+		jsZoom = new JSlider(SwingConstants.HORIZONTAL, 0, projectZoom.getZoomIndex(maximumZoom), projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()));
 		jsZoom.setMinorTickSpacing(1);
 		jsZoom.setPaintTicks(true);
 		jsZoom.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				if (projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()) != jsZoom.getValue())
+				if (projectZoom.getZoomIndex(projectWindow.getGenomeWindow().getSize()) != jsZoom.getValue()) {
 					zoomChanged(projectZoom.getZoom(jsZoom.getValue()));
+				}
 			}
 		});
-		
+
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -143,7 +145,7 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		addMouseWheelListener(this);
 	}
 
-	
+
 	/**
 	 * Called when the zoom changes
 	 * @param newZoom new zoom value
@@ -182,21 +184,21 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// we notify the gui
 		int currentZoom = evt.getNewWindow().getSize();
-		jlZoom.setText("Size: " + SIZE_FORMAT.format(currentZoom));			
+		jlZoom.setText("Size: " + SIZE_FORMAT.format(currentZoom));
 		// if the chromosome changes we change the maximum zoom
 		if (evt.getNewWindow().getChromosome() != evt.getOldWindow().getChromosome()) {
 			int	oldMaximumZoom = evt.getOldWindow().getChromosome().getLength() * 2;
 			int newMaximumZoom = evt.getNewWindow().getChromosome().getLength() * 2;
-			// if the new zoom value is greatter than the old max zoom we change the max first 
+			// if the new zoom value is greatter than the old max zoom we change the max first
 			if (currentZoom > oldMaximumZoom) {
 				jsZoom.setMaximum(projectZoom.getZoomIndex(newMaximumZoom));
 				jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
-				
+
 			} else {
 				// else we change the value first because the new max could be smaller than the old value
 				jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
 				jsZoom.setMaximum(projectZoom.getZoomIndex(newMaximumZoom));
-			}	
+			}
 		} else {
 			jsZoom.setValue(projectZoom.getZoomIndex(currentZoom));
 		}

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
@@ -50,14 +51,14 @@ public final class PAMultiGenomeProperties extends TrackListAction{
 	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
 
 	private 				PropertiesDialog 	dialog;								// the dialog properties
-	private					MGDisplaySettings 	settings;							// the multi genome settings object shortcut
+	private final					MGDisplaySettings 	settings;							// the multi genome settings object shortcut
 	private					String				itemDialog;							// the dialog section to show
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK); 
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -116,8 +117,8 @@ public final class PAMultiGenomeProperties extends TrackListAction{
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the itemDialog
 	 */

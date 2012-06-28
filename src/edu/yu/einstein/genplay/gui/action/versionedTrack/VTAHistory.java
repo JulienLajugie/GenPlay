@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.versionedTrack;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -42,14 +43,14 @@ public final class VTAHistory extends TrackListAction {
 
 	private static final long serialVersionUID = 6153915221242216274L;  // generated ID
 	private static final String 	ACTION_NAME = "Show History";		// action name
-	private static final String 	DESCRIPTION = 
-		"Show the history of the selected track";				 		// tooltip
+	private static final String 	DESCRIPTION =
+			"Show the history of the selected track";				 		// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -78,7 +79,7 @@ public final class VTAHistory extends TrackListAction {
 				String trackName = getTrackList().getSelectedTrack().getName();
 				History history = selectedTrack.getHistory();
 				HistoryDialog.showHistoryDialog(getRootPane(), trackName, history);
-			}		
+			}
 		}
 	}
 }

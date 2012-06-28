@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.SNPListTrack;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -39,7 +40,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
- * Finds the previous SNP from a specified position 
+ * Finds the previous SNP from a specified position
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -47,14 +48,14 @@ public class SLAFindPrevious extends TrackListActionOperationWorker<SNP> {
 
 	private static final long serialVersionUID = -5784510426787285411L;	// generated ID
 	private static final String 	ACTION_NAME = "Find Previous SNP";	// action name
-	private static final String 	DESCRIPTION = 
-		"Search the previous SNP on the current track";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Search the previous SNP on the current track";					// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_DOWN_MASK);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -74,7 +75,7 @@ public class SLAFindPrevious extends TrackListActionOperationWorker<SNP> {
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
-	
+
 	@Override
 	public Operation<SNP> initializeOperation() throws Exception {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
@@ -87,17 +88,17 @@ public class SLAFindPrevious extends TrackListActionOperationWorker<SNP> {
 		return null;
 	}
 
-	
+
 	@Override
 	protected void doAtTheEnd(SNP actionResult) {
 		if (actionResult != null) {
 			GenomeWindow currentWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 			Chromosome currentChromosome = currentWindow.getChromosome();
 			int currentLength = currentWindow.getSize();
-			int newStart = actionResult.getPosition() - currentLength / 2;
+			int newStart = actionResult.getPosition() - (currentLength / 2);
 			int newStop = newStart + currentLength;
 			GenomeWindow newGenomeWindow = new GenomeWindow(currentChromosome, newStart, newStop);
 			ProjectManager.getInstance().getProjectWindow().setGenomeWindow(newGenomeWindow);
-		}		
+		}
 	}
 }

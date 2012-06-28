@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,13 +22,13 @@
 package edu.yu.einstein.genplay.gui.scatterPlot.action;
 
 import java.awt.event.ActionEvent;
+import java.awt.image.ImageObserver;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -49,11 +49,11 @@ public class SPALoadData extends ScatterPlotAction {
 
 	private static final long serialVersionUID = 1879651187524309395L; // generated ID
 	private static final String 	ACTION_NAME = "Load Data";		// action name
-	private static final String 	DESCRIPTION = 
-		"Load data in the charts from a CSV file";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Load data in the charts from a CSV file";					// tooltip
 	private ScatterPlotData 		extractedData;					// data extracted from the file
 
-	
+
 	/**
 	 * Creates an instance of {@link SPASaveData}
 	 * @param scatterPlotPane a {@link ScatterPlotPane}
@@ -67,7 +67,7 @@ public class SPALoadData extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();		
+		String defaultDirectoryPath = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		JFileChooser jfc = new JFileChooser(defaultDirectoryPath);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV file (*.csv)", "csv");
@@ -91,13 +91,13 @@ public class SPALoadData extends ScatterPlotAction {
 			String line = reader.readLine();
 			String[] splittedLine = null;
 			if (line == null) {
-				JOptionPane.showMessageDialog(getRootPane(), "The input file is empty", "Invalid File", JDialog.ERROR);
+				JOptionPane.showMessageDialog(getRootPane(), "The input file is empty", "Invalid File", ImageObserver.ERROR);
 			} else {
 				//splittedLine = line.split(",");
 				splittedLine = Utils.split(line, ',');
 				// we need a file with two fields
 				if (splittedLine.length != 2) {
-					JOptionPane.showMessageDialog(getRootPane(), "The input file needs to contain two fields", "Invalid File", JDialog.ERROR);
+					JOptionPane.showMessageDialog(getRootPane(), "The input file needs to contain two fields", "Invalid File", ImageObserver.ERROR);
 				} else {
 					extractedData = new ScatterPlotData(splittedLine[1].trim(), Colors.BLACK);
 					List<Double> xData= new ArrayList<Double>();
@@ -107,7 +107,7 @@ public class SPALoadData extends ScatterPlotAction {
 							//splittedLine = line.split(",");
 							splittedLine = Utils.split(line, ',');
 							if (splittedLine.length != 2) {
-								JOptionPane.showMessageDialog(getRootPane(), "The file needs to contain 2 fields", "Invalid File", JDialog.ERROR);
+								JOptionPane.showMessageDialog(getRootPane(), "The file needs to contain 2 fields", "Invalid File", ImageObserver.ERROR);
 							} else {
 								xData.add(Double.parseDouble(splittedLine[0].trim()));
 								yData.add(Double.parseDouble(splittedLine[1].trim()));
@@ -119,7 +119,7 @@ public class SPALoadData extends ScatterPlotAction {
 						dataToAdd[i][0] = xData.get(i);
 						dataToAdd[i][1] = yData.get(i);
 					}
-					extractedData.setData(dataToAdd);					
+					extractedData.setData(dataToAdd);
 				}
 			}
 			reader.close();

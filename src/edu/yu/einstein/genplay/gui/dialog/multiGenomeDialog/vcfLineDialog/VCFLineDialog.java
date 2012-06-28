@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,6 +39,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumnModel;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
@@ -59,12 +60,12 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 
 	private final int maxWidth = 700;
 
-	private FontMetrics 	fm;			// the dialog font metrics
+	private final FontMetrics 	fm;			// the dialog font metrics
 	private List<String> 	columns;	// list of the columns for the table
 	private JTable			table;		// the table containing the vcf line
-	private JScrollPane 	pane;		// the scroll pane containing the table
-	private JPopupMenu 		menu;		// the popup menu object
-	private JMenuItem 		copyItem;	// the item of the popup menu to copy the line to the clipboard
+	private final JScrollPane 	pane;		// the scroll pane containing the table
+	private final JPopupMenu 		menu;		// the popup menu object
+	private final JMenuItem 		copyItem;	// the item of the popup menu to copy the line to the clipboard
 
 
 	/**
@@ -72,17 +73,17 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	 */
 	public VCFLineDialog () {
 		super(MainFrame.getInstance());
-		
+
 		// Gets the font metrics
 		fm = getFontMetrics(getFont());
-		
+
 		// Initialize the table
 		table = new JTable();
 		table.addMouseListener(this);
-		
+
 		// Initialize the scroll pane
-		pane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		
+		pane = new JScrollPane(table, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
 		add(pane);
 
 		// Initialize the popup menu
@@ -130,7 +131,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		initColumnList(information);
 		initTable(information);
 		pane.setViewportView(table);
-		
+
 		// Manages the sizes
 		int heightOffset = 0;
 		int tableHeight = (int)table.getPreferredSize().getHeight();
@@ -148,7 +149,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		setVisible(true);
 	}
 
-	
+
 	/**
 	 * Sets the size of a component
 	 * @param component
@@ -162,8 +163,8 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		component.setMinimumSize(dimension);
 		component.setMaximumSize(dimension);
 	}
-	
-	
+
+
 	/**
 	 * Creates the table containing the details
 	 * @param information
@@ -228,8 +229,8 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	public void mouseReleased(MouseEvent arg0) {
 		maybeShowPopup(arg0);
 	}
-	
-	
+
+
 	/**
 	 * Shows the popup menu if the event if valid
 	 * @param e
@@ -250,7 +251,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		}
 	}
 
-	
+
 	/**
 	 * Formats the table data and return the transferable string
 	 * @return the string for the clipboard
@@ -265,5 +266,5 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		}
 		return new StringSelection(line);
 	}
-	
+
 }

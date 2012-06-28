@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,6 +34,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractIntervals;
@@ -59,15 +60,15 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 	public static final int 	CANCEL_OPTION = 1;
 
 	private static final long serialVersionUID = 4391029438908582693L;	// generated ID
-	private final static String[] OPTIONS = 
-	{"before start position", "after start position", "before middle position", 
+	private final static String[] OPTIONS =
+		{"before start position", "after start position", "before middle position",
 		"after middle position", "before stop position", "after stop position"};		// available options in the comboBoxes
 	private final static int[] OPTION_VALUES = {
-		GLOExtractIntervals.BEFORE_START, 
+		GLOExtractIntervals.BEFORE_START,
 		GLOExtractIntervals.AFTER_START,
 		GLOExtractIntervals.BEFORE_MIDDLE,
 		GLOExtractIntervals.AFTER_MIDDLE,
-		GLOExtractIntervals.BEFORE_STOP, 
+		GLOExtractIntervals.BEFORE_STOP,
 		GLOExtractIntervals.AFTER_STOP
 	};														// value associated to this operations
 	private final JLabel 				jlStart1;			// first label start
@@ -95,7 +96,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		jftfStartDistance.setValue(0);
 		jftfStartDistance.setColumns(9);
 		jlStart2 = new JLabel(" bp ");
-		jcbStartFrom = new JComboBox(OPTIONS);		
+		jcbStartFrom = new JComboBox(OPTIONS);
 
 		jlStop1 = new JLabel("and stop at ");
 		jftfStopDistance = new JFormattedTextField(new DecimalFormat("###,###,###"));
@@ -166,7 +167,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 
 		pack();
 		setResizable(false);
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Extract Intervals");
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
@@ -178,13 +179,13 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 	 * @return the start distance
 	 */
 	public int getStartDistance() {
-		Number res = (Number) jftfStartDistance.getValue();  
+		Number res = (Number) jftfStartDistance.getValue();
 		return res.intValue();
 	}
 
 
 	/**
-	 * @return an int corresponding to start from 
+	 * @return an int corresponding to start from
 	 */
 	public int getStartFrom() {
 		return OPTION_VALUES[jcbStartFrom.getSelectedIndex()];
@@ -195,7 +196,7 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 	 * @return the stop distance
 	 */
 	public int getStopDistance() {
-		Number res = (Number) jftfStopDistance.getValue();  
+		Number res = (Number) jftfStopDistance.getValue();
 		return res.intValue();
 	}
 
@@ -213,13 +214,13 @@ public final class ExtractGeneIntervalsDialog extends JDialog implements ActionL
 		if (arg0.getSource() == jbOk) {
 			approved = APPROVE_OPTION;
 		}
-		setVisible(false);		
+		setVisible(false);
 	}
 
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {

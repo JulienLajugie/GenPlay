@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -58,13 +58,13 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 	private static final long serialVersionUID = 1372400925707415741L; 		// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final double				MIN_X_RATIO_PRINT_NAME = 
-		GeneList.MIN_X_RATIO_PRINT_NAME;									// the name of the genes are printed if the ratio is higher than this value			
+	private static final double				MIN_X_RATIO_PRINT_NAME =
+			GeneList.MIN_X_RATIO_PRINT_NAME;									// the name of the genes are printed if the ratio is higher than this value
 	private static final double 			SCORE_SATURATION = 0.01d;		// saturation of the score of the exon for the display
 	private static final short				GENE_HEIGHT = 6;				// size of a gene in pixel
 	private static final short				UTR_HEIGHT = 3;					// height of a UTR region of a gene in pixel
-	protected static final DecimalFormat 	SCORE_FORMAT = 
-		new DecimalFormat("#.###");											// decimal format for the score
+	protected static final DecimalFormat 	SCORE_FORMAT =
+			new DecimalFormat("#.###");											// decimal format for the score
 	private int 							firstLineToDisplay = 0;			// number of the first line to be displayed
 	private int 							geneLinesCount = 0;				// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
@@ -95,7 +95,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	 * @param in
 	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 */	
+	 */
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		mouseStartDragY = -1;
@@ -141,7 +141,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	 * @param g {@link Graphics}
 	 */
 	private void drawGenes(Graphics g) {
-		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME 
+		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
 		boolean isGeneNamePrinted = projectWindow.getXFactor() > MIN_X_RATIO_PRINT_NAME;
 		// Retrieve the genes to print
 		List<List<Gene>> genesToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
@@ -149,20 +149,20 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			// Compute the maximum number of line displayable
 			int displayedLineCount = 0;
 			if (isGeneNamePrinted) {
-				displayedLineCount = (getHeight() - 2 * GENE_HEIGHT) / (GENE_HEIGHT * 3) + 1;
+				displayedLineCount = ((getHeight() - (2 * GENE_HEIGHT)) / (GENE_HEIGHT * 3)) + 1;
 			} else {
-				displayedLineCount = (getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2) + 1;
+				displayedLineCount = ((getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2)) + 1;
 			}
 			// calculate how many scroll on the Y axis are necessary to show all the genes
-			geneLinesCount = genesToPrint.size() - displayedLineCount + 2;
+			geneLinesCount = (genesToPrint.size() - displayedLineCount) + 2;
 			// For each line of genes on the screen
 			for (int i = 0; i < displayedLineCount; i++) {
 				// Calculate the height of the gene
 				int currentHeight;
 				if (isGeneNamePrinted) {
-					currentHeight = i * (GENE_HEIGHT * 3) + 2 * GENE_HEIGHT;
+					currentHeight = (i * (GENE_HEIGHT * 3)) + (2 * GENE_HEIGHT);
 				} else {
-					currentHeight = i * (GENE_HEIGHT * 2) + GENE_HEIGHT;
+					currentHeight = (i * (GENE_HEIGHT * 2)) + GENE_HEIGHT;
 				}
 				// Calculate which line has to be printed depending on the position of the scroll bar
 				int currentLine = i + firstLineToDisplay;
@@ -182,7 +182,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 							if (isGeneNamePrinted) {
 								String geneName = geneToPrint.getName();
 								if (geneToPrint.getStart() < projectWindow.getGenomeWindow().getStart()) {
-									int newX = (int)Math.round((double)(geneToPrint.getStart() - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());	// former method
+									int newX = (int)Math.round((geneToPrint.getStart() - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());	// former method
 									g.drawString(geneName, newX, currentHeight - 1);
 								} else {
 									g.drawString(geneName, x1, currentHeight - 1);
@@ -206,35 +206,35 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 												g.setColor(GenPlayColor.scoreToColor(geneToPrint.getExonScores()[j], min, max));
 											}
 										}
-										// case where the exon is not at all in a UTR (untranslated region) 
+										// case where the exon is not at all in a UTR (untranslated region)
 										if ((geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] <= geneToPrint.getUTR3Bound())) {
 											g.fillRect(exonX, currentHeight + 1, exonWidth, GENE_HEIGHT);
 										} else {
 											// case where the whole exon is in a UTR
 											if ((geneToPrint.getExonStops()[j] <= geneToPrint.getUTR5Bound()) || (geneToPrint.getExonStarts()[j] >= geneToPrint.getUTR3Bound())) {
-												g.fillRect(exonX, currentHeight + 1, exonWidth, UTR_HEIGHT);										
+												g.fillRect(exonX, currentHeight + 1, exonWidth, UTR_HEIGHT);
 											} else {
 												// case where the exon is in both UTR
 												if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
 													int UTR5Width = projectWindow.genomePosToScreenXPos(geneToPrint.getUTR5Bound()) - exonX;
 													int TRWidth = projectWindow.genomePosToScreenXPos(geneToPrint.getUTR3Bound()) - exonX - UTR5Width;
-													int UTR3Width = exonWidth - UTR5Width - TRWidth; 
+													int UTR3Width = exonWidth - UTR5Width - TRWidth;
 													g.fillRect(exonX, currentHeight + 1, UTR5Width, UTR_HEIGHT);
 													g.fillRect(exonX + UTR5Width, currentHeight + 1, TRWidth, GENE_HEIGHT);
 													g.fillRect(exonX + UTR5Width + TRWidth, currentHeight + 1, UTR3Width, UTR_HEIGHT);
 
-												} else {								
+												} else {
 													// case where part of the exon is in the UTR and part is not
 													if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR5Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR5Bound())) {
 														// case where part is in the 5'UTR
 														int UTRWidth = projectWindow.genomePosToScreenXPos(geneToPrint.getUTR5Bound()) - exonX;
 														g.fillRect(exonX, currentHeight + 1, UTRWidth, UTR_HEIGHT);
-														g.fillRect(exonX + UTRWidth, currentHeight + 1, exonWidth - UTRWidth, GENE_HEIGHT);											
+														g.fillRect(exonX + UTRWidth, currentHeight + 1, exonWidth - UTRWidth, GENE_HEIGHT);
 													} else if ((geneToPrint.getExonStarts()[j] <= geneToPrint.getUTR3Bound()) && (geneToPrint.getExonStops()[j] >= geneToPrint.getUTR3Bound())) {
-														// case where part is in the 3' UTR 
+														// case where part is in the 3' UTR
 														int TRWidth = projectWindow.genomePosToScreenXPos(geneToPrint.getUTR3Bound()) - exonX; // TRWidth is the with of the TRANSLATED region
 														g.fillRect(exonX, currentHeight + 1, TRWidth, GENE_HEIGHT);
-														g.fillRect(exonX + TRWidth, currentHeight + 1, exonWidth - TRWidth, UTR_HEIGHT);											
+														g.fillRect(exonX + TRWidth, currentHeight + 1, exonWidth - TRWidth, UTR_HEIGHT);
 													}
 												}
 											}
@@ -283,8 +283,8 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	protected boolean isResetable() {
 		return urrManager.isResetable();
 	}
-	
-	
+
+
 	/**
 	 * Disable the reset function
 	 */
@@ -326,24 +326,24 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		super.mouseDragged(e);
-		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME 
+		// we print the gene names if the x ratio > MIN_X_RATIO_PRINT_NAME
 		boolean isGeneNamePrinted = projectWindow.getXFactor() > MIN_X_RATIO_PRINT_NAME;
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
 			int distance = 0;
 			if (isGeneNamePrinted) {
-				distance = (mouseStartDragY - e.getY()) / (3 * GENE_HEIGHT);				
+				distance = (mouseStartDragY - e.getY()) / (3 * GENE_HEIGHT);
 			} else {
 				distance = (mouseStartDragY - e.getY()) / (2 * GENE_HEIGHT);
 			}
 			if (Math.abs(distance) > 0) {
-				if (((distance < 0) && (distance + firstLineToDisplay >= 0)) 
-						|| ((distance > 0) && (distance + firstLineToDisplay <= geneLinesCount))) {
+				if (((distance < 0) && ((distance + firstLineToDisplay) >= 0))
+						|| ((distance > 0) && ((distance + firstLineToDisplay) <= geneLinesCount))) {
 					firstLineToDisplay += distance;
 					mouseStartDragY = e.getY();
 					repaint();
 				}
 			}
-		}		
+		}
 	}
 
 
@@ -369,25 +369,25 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 			// look for how many lines of genes are printed
 			int displayedLineCount = 0;
 			if (isGeneNamePrinted) {
-				displayedLineCount = (getHeight() - 2 * GENE_HEIGHT) / (GENE_HEIGHT * 3) + 1;
-			} else {				
-				displayedLineCount = (getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2) + 1;
-			}	
+				displayedLineCount = ((getHeight() - (2 * GENE_HEIGHT)) / (GENE_HEIGHT * 3)) + 1;
+			} else {
+				displayedLineCount = ((getHeight() - GENE_HEIGHT) / (GENE_HEIGHT * 2)) + 1;
+			}
 
 			// search if the mouse is on a line where there is genes printed on the track
 			int mouseLine = -1;
 			int i = 0;
 			while ((mouseLine == -1) &&  (i < displayedLineCount)) {
 				if (isGeneNamePrinted) {
-					if ((mousePosition.y >= i * GENE_HEIGHT * 3 + GENE_HEIGHT) &&
-							(mousePosition.y <= i * GENE_HEIGHT * 3 + 3 * GENE_HEIGHT)) {
+					if ((mousePosition.y >= ((i * GENE_HEIGHT * 3) + GENE_HEIGHT)) &&
+							(mousePosition.y <= ((i * GENE_HEIGHT * 3) + (3 * GENE_HEIGHT)))) {
 						mouseLine = i;
 					}
 				} else {
-					if ((mousePosition.y >= i * GENE_HEIGHT * 2 + GENE_HEIGHT) &&
-							(mousePosition.y <= i * GENE_HEIGHT * 2 + 2 * GENE_HEIGHT)) {
+					if ((mousePosition.y >= ((i * GENE_HEIGHT * 2) + GENE_HEIGHT)) &&
+							(mousePosition.y <= ((i * GENE_HEIGHT * 2) + (2 * GENE_HEIGHT)))) {
 						mouseLine = i;
-					}				
+					}
 				}
 				i++;
 			}
@@ -400,7 +400,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 					int j = 0;
 					while ((j < printedGenes.get(mouseLine).size()) && (geneUnderMouse == null)) {
 						Gene currentGene = printedGenes.get(mouseLine).get(j);
-						if (mousePosition.x >= projectWindow.genomePosToScreenXPos(currentGene.getStart()) &&
+						if ((mousePosition.x >= projectWindow.genomePosToScreenXPos(currentGene.getStart())) &&
 								(mousePosition.x <= projectWindow.genomePosToScreenXPos(currentGene.getStop()))) {
 							// we found a gene under the mouse
 							geneUnderMouse = currentGene;
@@ -414,14 +414,14 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 				setToolTipText(null);
 			} else {
-				// if there is a gene under the mouse we also check 
+				// if there is a gene under the mouse we also check
 				// if there is an exon with a score under the mouse cursor
 				Double scoreUnderMouse = null;
-				if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) { 
+				if ((geneUnderMouse.getExonScores() != null) && (geneUnderMouse.getExonScores().length > 0)) {
 					for (int k = 0; (k < geneUnderMouse.getExonStarts().length) && (scoreUnderMouse == null); k++) {
-						if (mousePosition.x >= projectWindow.genomePosToScreenXPos(geneUnderMouse.getExonStarts()[k]) &&
+						if ((mousePosition.x >= projectWindow.genomePosToScreenXPos(geneUnderMouse.getExonStarts()[k])) &&
 								(mousePosition.x <= projectWindow.genomePosToScreenXPos(geneUnderMouse.getExonStops()[k]))) {
-							if (geneUnderMouse.getExonScores().length == 1) {	
+							if (geneUnderMouse.getExonScores().length == 1) {
 								scoreUnderMouse = geneUnderMouse.getExonScores()[0];
 							} else {
 								scoreUnderMouse = geneUnderMouse.getExonScores()[k];
@@ -440,7 +440,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 				}
 			}
 			// we repaint the track only if the gene under the mouse changed
-			if (((oldGeneUnderMouse == null) && (geneUnderMouse != null)) 
+			if (((oldGeneUnderMouse == null) && (geneUnderMouse != null))
 					|| ((oldGeneUnderMouse != null) && (!oldGeneUnderMouse.equals(geneUnderMouse)))) {
 				repaint();
 			}
@@ -454,9 +454,9 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		super.mousePressed(e);
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
 			mouseStartDragY = e.getY();
-		}		
+		}
 	}
 
 	/**
@@ -465,11 +465,11 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			if (((e.getWheelRotation() < 0) && (e.getWheelRotation() + firstLineToDisplay >= 0)) 
-					|| ((e.getWheelRotation() > 0) && (e.getWheelRotation() + firstLineToDisplay <= geneLinesCount))) {
+			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
+					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= geneLinesCount))) {
 				firstLineToDisplay += e.getWheelRotation();
 				repaint();
-			}		
+			}
 		} else {
 			super.mouseWheelMoved(e);
 		}
@@ -494,7 +494,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 
 
 	/**
-	 * Resets the data 
+	 * Resets the data
 	 * Copies the value of the original data into the current value
 	 */
 	protected void resetData() {
@@ -569,7 +569,7 @@ public class GeneListTrackGraphics extends TrackGraphics<GeneList> {
 	 * @param undoCount
 	 */
 	protected void setUndoCount(int undoCount) {
-		urrManager.setLength(undoCount);		
+		urrManager.setLength(undoCount);
 	}
 
 

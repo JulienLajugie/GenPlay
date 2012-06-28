@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.controlPanel;
 
+import java.awt.Adjustable;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -79,12 +80,12 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	TopPanel () {
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 0, 0);
 		setLayout(layout);
-		
+
 		this.projectWindow = ProjectManager.getInstance().getProjectWindow();
 		int currentPosition = (int)projectWindow.getGenomeWindow().getMiddlePosition();
 		int currentSize = projectWindow.getGenomeWindow().getSize();
-		Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();		
-		jsbPosition = new JScrollBar(JScrollBar.HORIZONTAL, currentPosition, currentSize, 0, currentChromosome.getLength() + currentSize);
+		Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();
+		jsbPosition = new JScrollBar(Adjustable.HORIZONTAL, currentPosition, currentSize, 0, currentChromosome.getLength() + currentSize);
 		jsbPosition.setBlockIncrement(currentSize / 10);
 		jsbPosition.setUnitIncrement(currentSize / 10);
 		jsbPosition.addAdjustmentListener(this);
@@ -128,7 +129,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	private void initializesMultiGenomeButton () {
 		// creates the button
 		jbMultiGenome = new JButton(new ImageIcon(Images.getDNAImage()));
-		
+
 		// creates the button popup menu
 		popupMenu = new MGButtonPopupMenu();
 
@@ -137,7 +138,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		jbMultiGenome.setBackground(Colors.WHITE);
 		jbMultiGenome.setMargin(new Insets(0, 0, 0, 0));
 		jbMultiGenome.setFocusPainted(false);
-		jbMultiGenome.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 0, Colors.LIGHT_GREY));	
+		jbMultiGenome.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 0, Colors.LIGHT_GREY));
 		jbMultiGenome.setPreferredSize(buttonDimension);
 		jbMultiGenome.setToolTipText("Show the Multi Genome Properties Dialog");
 
@@ -149,30 +150,34 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 				action.actionPerformed(null);
 			}
 		});
-		
+
 		// defines the mouse listener
 		jbMultiGenome.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseEntered(MouseEvent e) {
 				jbMultiGenome.setBackground(Colors.GREY);
 				super.mouseEntered(e);
 			}
+			@Override
 			public void mouseExited(MouseEvent e) {
 				jbMultiGenome.setBackground(Colors.WHITE);
-				
+
 				super.mouseExited(e);
 			}
+			@Override
 			public void mousePressed(MouseEvent e) {
-		        maybeShowPopup(e);
-		    }
-		    public void mouseReleased(MouseEvent e) {
-		        maybeShowPopup(e);
-		    }
-		    private void maybeShowPopup(MouseEvent e) {
-		        if (e.isPopupTrigger()) {
-		        	popupMenu.show(e.getComponent(),
-		                       e.getX(), e.getY());
-		        }
-		    }
+				maybeShowPopup(e);
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+			private void maybeShowPopup(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					popupMenu.show(e.getComponent(),
+							e.getX(), e.getY());
+				}
+			}
 		});
 	}
 
@@ -182,7 +187,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	 */
 	private void setMaximumPosition() {
 		int extent = projectWindow.getGenomeWindow().getSize();
-		int newMaximum = projectWindow.getGenomeWindow().getChromosome().getLength() + extent; 
+		int newMaximum = projectWindow.getGenomeWindow().getChromosome().getLength() + extent;
 		jsbPosition.setMaximum(newMaximum);
 	}
 
@@ -193,7 +198,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	private void setIncrement() {
 		int increment = projectWindow.getGenomeWindow().getSize() / 10;
 		jsbPosition.setBlockIncrement(increment);
-		jsbPosition.setUnitIncrement(increment);	
+		jsbPosition.setUnitIncrement(increment);
 	}
 
 
@@ -202,7 +207,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 	 */
 	private void setExtent() {
 		int newExtent = projectWindow.getGenomeWindow().getSize();
-		int maximumPosition = projectWindow.getGenomeWindow().getChromosome().getLength(); 
+		int maximumPosition = projectWindow.getGenomeWindow().getChromosome().getLength();
 		jsbPosition.setValue((int)projectWindow.getGenomeWindow().getMiddlePosition());
 		if (newExtent > jsbPosition.getVisibleAmount()) {
 			jsbPosition.setMaximum(maximumPosition + newExtent);

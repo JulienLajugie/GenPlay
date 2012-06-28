@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.project;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
@@ -50,20 +51,20 @@ import edu.yu.einstein.genplay.util.Utils;
 public class PASaveProject extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = -8503082838697971220L;	// generated ID
-	private static final String 	DESCRIPTION = 
-		"Save the project into a file"; 							// tooltip
+	private static final String 	DESCRIPTION =
+			"Save the project into a file"; 							// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_S; 		// mnemonic key
 	private static final String 	ACTION_NAME = "Save Project";	// action name
 	private final 		TrackList	trackList;						// track list containing the project to save
 	private File 					selectedFile;					// selected file
 
-	
+
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK); 
-	
-	
+	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK);
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -81,7 +82,7 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-        putValue(ACCELERATOR_KEY, ACCELERATOR);
+		putValue(ACCELERATOR_KEY, ACCELERATOR);
 	}
 
 
@@ -120,5 +121,5 @@ public class PASaveProject extends TrackListActionWorker<Boolean> {
 			MainFrame.getInstance().setTitle();
 		}
 	}
-	
+
 }

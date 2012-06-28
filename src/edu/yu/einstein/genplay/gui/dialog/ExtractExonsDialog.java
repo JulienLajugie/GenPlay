@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
@@ -43,7 +44,7 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
  * @version 0.1
  */
 public class ExtractExonsDialog extends JDialog implements ActionListener{
-	
+
 	private static final long serialVersionUID = -2409644228796158983L;
 	/**
 	 * Return value when OK has been clicked.
@@ -53,22 +54,22 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 	 * Return value when Cancel has been clicked.
 	 */
 	public static final int 	CANCEL_OPTION = 1;
-	
-	private final static String[] OPTIONS = 
-	{"Extract First Exon", "Extract Last Exon", "Extract All Exons"};		// available options in the comboBoxes
+
+	private final static String[] OPTIONS =
+		{"Extract First Exon", "Extract Last Exon", "Extract All Exons"};		// available options in the comboBoxes
 	private final static int[] OPTION_VALUES = {
-		GLOExtractExons.FIRST_EXON, 
+		GLOExtractExons.FIRST_EXON,
 		GLOExtractExons.LAST_EXON,
-		GLOExtractExons.ALL_EXONS,		
+		GLOExtractExons.ALL_EXONS,
 	};
-	
+
 	private final JLabel jlExonOptions;			// exon option label
 	private final JComboBox jcbExonOptions;		// comboBox Exon Options
 	private final JButton jbOk;					// button okay
 	private final JButton jbCancel;				// button cancel
-	private int	approved = CANCEL_OPTION;	
-	
-	
+	private int	approved = CANCEL_OPTION;
+
+
 	/**
 	 * Creates an instance of {@link ExtractExonsDialog}
 	 */
@@ -76,7 +77,7 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		super();
 		jlExonOptions = new JLabel("Extract Exon Options: ");
 		jcbExonOptions = new JComboBox(OPTIONS);
-		
+
 		jbOk = new JButton("Ok");
 		jbOk.setPreferredSize(new Dimension(75, 30));
 		jbOk.setDefaultCapable(true);
@@ -85,18 +86,18 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		jbCancel = new JButton("Cancel");
 		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(this);
-		
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		add(jlExonOptions);
-		
+
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		add(jcbExonOptions);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.LINE_END;
@@ -106,18 +107,18 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.LINE_START;
 		add(jbCancel, gbc);
-		
+
 		pack();
 		setResizable(false);
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Extract Exons");
 		setVisible(false);
 		jbOk.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOk);
 	}
-	
+
 	/**
-	 * @return an int corresponding to exon-option selected 
+	 * @return an int corresponding to exon-option selected
 	 */
 	public int getSelectedExonOption() {
 		return OPTION_VALUES[jcbExonOptions.getSelectedIndex()];
@@ -130,10 +131,10 @@ public class ExtractExonsDialog extends JDialog implements ActionListener{
 		}
 		setVisible(false);
 	}
-	
+
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {

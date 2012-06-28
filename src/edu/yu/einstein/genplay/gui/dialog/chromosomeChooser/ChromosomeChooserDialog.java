@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,6 +36,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumn;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
@@ -144,7 +145,7 @@ public class ChromosomeChooserDialog extends JDialog {
 
 	/**
 	 * Displays the chromosome chooser dialog
-	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent 	the parent component of the dialog, can be null; see showDialog for details
 	 * @return 			APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
@@ -175,7 +176,7 @@ public class ChromosomeChooserDialog extends JDialog {
 		chromosomeTable.setBackground(CHROMOSOME_CHOOSER_COLOR);
 		JScrollPane scrollPane = new JScrollPane(chromosomeTable);
 		scrollPane.setBackground(CHROMOSOME_CHOOSER_COLOR);
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		chromosomeTable.setModel(tableModel);
 		chromosomeTable.repaint();
 		initializeColumnProperties();
@@ -289,7 +290,7 @@ public class ChromosomeChooserDialog extends JDialog {
 		BorderLayout border = new BorderLayout();
 		setLayout(border);
 		add(scrollPane, BorderLayout.CENTER);
-		add(buttonPanel, BorderLayout.SOUTH);		
+		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
 

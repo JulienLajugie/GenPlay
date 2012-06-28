@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,6 +32,7 @@ import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.WindowConstants;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -61,7 +62,7 @@ public class DASDialog extends JDialog {
 	/**
 	 * Return value when OK has been clicked.
 	 */
-	public static final int APPROVE_OPTION = 1;	
+	public static final int APPROVE_OPTION = 1;
 	/**
 	 * Generate a Gene List Option
 	 */
@@ -82,16 +83,16 @@ public class DASDialog extends JDialog {
 	 * Generate the user specified Option
 	 */
 	public static final int GENERATE_USER_SPECIFIED_LIST = 2;
-	
+
 	private final DataSelectionPanel 		dataSelectionPanel;			// panel selection of the data
-	private final GenerateTrackTypePanel 	generateTrackTypePanel;		// panel selection of the generated track type 
+	private final GenerateTrackTypePanel 	generateTrackTypePanel;		// panel selection of the generated track type
 	private final DataRangePanel 			dataRangePanel;				// panel selection of the data range
 	private final GenomeSelectionPanel		genomeSelectionPanel;		// panel for the selection of the genome in a multigenome project
 	private final JButton 					jbCancel;					// cancel button
 	private final JButton 					jbOk;						// ok button
-	private int								approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not 
+	private int								approved = CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	
+
 	/**
 	 * Creates an instance of {@link DASDialog}
 	 * @throws ParserConfigurationException
@@ -100,31 +101,31 @@ public class DASDialog extends JDialog {
 	 */
 	public DASDialog() throws ParserConfigurationException, SAXException, IOException {
 		super();
-		
+
 		// create the panels
 		dataSelectionPanel = new DataSelectionPanel();
 		generateTrackTypePanel = new GenerateTrackTypePanel();
 		dataRangePanel = new DataRangePanel();
-		
+
 		// creates the multi-genome panel if the project is a multi-genome project
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			genomeSelectionPanel = new GenomeSelectionPanel();
 		} else {
 			genomeSelectionPanel =  null;
 		}
-		
+
 		// create the cancel button
 		jbCancel = new JButton("Cancel");
-		jbCancel.addActionListener(new ActionListener() {			
+		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				setVisible(false);				
+				setVisible(false);
 			}
 		});
-		
+
 		// create the ok button
 		jbOk = new JButton("Ok");
-		jbOk.addActionListener(new ActionListener() {			
+		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				jbOkClicked();
@@ -134,8 +135,8 @@ public class DASDialog extends JDialog {
 		// add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
-		
-		c.gridx = 0;		
+
+		c.gridx = 0;
 		c.gridy = 0;
 		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
@@ -150,18 +151,18 @@ public class DASDialog extends JDialog {
 		c.anchor = GridBagConstraints.LAST_LINE_START;
 		c.insets = new Insets(MARGIN, MARGIN, MARGIN, MARGIN);
 		add(generateTrackTypePanel, c);
-		
-		c.gridx = 0;		
+
+		c.gridx = 0;
 		c.gridy = 2;
 		c.gridwidth = 2;
 		c.fill = GridBagConstraints.BOTH;
 		c.anchor = GridBagConstraints.LAST_LINE_START;
 		c.insets = new Insets(0, MARGIN, MARGIN, MARGIN);
 		add(dataRangePanel, c);
-		
+
 		// add the genome selection panel if the project is a mutli-genome project
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			c.gridx = 0;		
+			c.gridx = 0;
 			c.gridy = 3;
 			c.gridwidth = 2;
 			c.fill = GridBagConstraints.BOTH;
@@ -169,8 +170,8 @@ public class DASDialog extends JDialog {
 			c.insets = new Insets(0, MARGIN, MARGIN, MARGIN);
 			add(genomeSelectionPanel, c);
 		}
-		
-		c.gridx = 0;		
+
+		c.gridx = 0;
 		c.gridy = 4;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
@@ -179,7 +180,7 @@ public class DASDialog extends JDialog {
 		c.weightx = 1;
 		add(jbOk, c);
 
-		c.gridx = 1;		
+		c.gridx = 1;
 		c.gridy = 4;
 		c.gridwidth = 1;
 		c.fill = GridBagConstraints.NONE;
@@ -189,14 +190,14 @@ public class DASDialog extends JDialog {
 		add(jbCancel, c);
 
 		setTitle("Retrieve DAS Data");
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		getRootPane().setDefaultButton(jbOk);
 		pack();
 		setResizable(false);
-		setModal(true);		
+		setModal(true);
 	}
 
-	
+
 	/**
 	 * @return the selected DasConnector
 	 */
@@ -219,8 +220,8 @@ public class DASDialog extends JDialog {
 	public final DataSource getSelectedDataSource() {
 		return dataSelectionPanel.getSelectedDataSource();
 	}
-	
-	
+
+
 	/**
 	 * @return generateType (GENERATE_GENE_LIST or GENERATE_SCW_LIST)
 	 */
@@ -228,7 +229,7 @@ public class DASDialog extends JDialog {
 		return generateTrackTypePanel.getGenerateType();
 	}
 
-	
+
 	/**
 	 * @return dataRange(GENERATE_GENOMEWIDE_LIST or GENERATE_CURRENT_LIST or GENERATE_USER_SPECIFIED_LIST)
 	 */
@@ -236,7 +237,7 @@ public class DASDialog extends JDialog {
 		return dataRangePanel.getDataRange();
 	}
 
-		
+
 	/**
 	 * @return the selected Chromosome
 	 */
@@ -244,7 +245,7 @@ public class DASDialog extends JDialog {
 		return dataRangePanel.getUserSpecifiedGenomeWindow();
 	}
 
-	
+
 	/**
 	 * @return the name of the Genome used for the mapping of the DAS data
 	 */
@@ -255,8 +256,8 @@ public class DASDialog extends JDialog {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the type of allele to load the DAS data
 	 */
@@ -267,7 +268,7 @@ public class DASDialog extends JDialog {
 			return null;
 		}
 	}
-	
+
 
 	/**
 	 * Method called when the button okay is clicked
@@ -284,7 +285,7 @@ public class DASDialog extends JDialog {
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return GENERATE_OPTION if Generate is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDASDialog(Component parent) {

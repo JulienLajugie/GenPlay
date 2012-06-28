@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -52,14 +53,14 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
- * A dialog window showing the correlations for each chromosome between two tracks 
+ * A dialog window showing the correlations for each chromosome between two tracks
  * @author Julien Lajugie
  * @version 0.1
  */
 public class CorrelationReportDialog extends JDialog {
 
 	/**
-	 * An extension of the {@link DefaultTableCellRenderer} class that changes the background color and the alignment of the cells 
+	 * An extension of the {@link DefaultTableCellRenderer} class that changes the background color and the alignment of the cells
 	 * @author Julien Lajugie
 	 * @version 0.1
 	 */
@@ -71,15 +72,15 @@ public class CorrelationReportDialog extends JDialog {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-			if ((!isSelected) && (row % 2 == 1)) {
+			if ((!isSelected) && ((row % 2) == 1)) {
 				component.setBackground(Colors.LIGHT_GREY);
 			} else {
 				component.setBackground(Colors.WHITE);
 			}
 			if (column == 0) {
-				((JLabel) component).setHorizontalAlignment(JLabel.LEFT);
+				((JLabel) component).setHorizontalAlignment(SwingConstants.LEFT);
 			} else {
-				((JLabel) component).setHorizontalAlignment(JLabel.RIGHT);
+				((JLabel) component).setHorizontalAlignment(SwingConstants.RIGHT);
 			}
 			setMaxMinStyle(table, value, row, column, component);
 			setTotalStyle(table, value, row, column, component);
@@ -107,9 +108,9 @@ public class CorrelationReportDialog extends JDialog {
 			}
 		}
 
-		
+
 		/**
-		 * Sets the style of rows with the minimum and the maximum correlation 
+		 * Sets the style of rows with the minimum and the maximum correlation
 		 * @param table the JTable
 		 * @param value the value to assign to the cell at [row, column]
 		 * @param row the row of the cell to render
@@ -128,7 +129,7 @@ public class CorrelationReportDialog extends JDialog {
 					valueAsDouble = Double.parseDouble((String) value);
 				}
 			} catch (NumberFormatException e) {
-				// if we can't parse the value it might be because it's a line having "-" as a value 
+				// if we can't parse the value it might be because it's a line having "-" as a value
 				component.setForeground(Color.BLACK);
 				return;
 			}
@@ -160,7 +161,7 @@ public class CorrelationReportDialog extends JDialog {
 				component.setForeground(Color.BLACK);
 			}
 		}
-	}; 
+	};
 
 
 	/**
@@ -201,7 +202,7 @@ public class CorrelationReportDialog extends JDialog {
 	private class CorrelationJTableSorter<T extends TableModel> extends TableRowSorter<T > {
 
 		private final Object[][] data;	// data inside the JTable in the original order
-		
+
 		/**
 		 * Redefines the sorting process for the column containing the chromosome.
 		 * The order of the chromosome is define by the order used when the JTable is created
@@ -210,9 +211,9 @@ public class CorrelationReportDialog extends JDialog {
 		 */
 		public CorrelationJTableSorter(Object[][] tableData, T model) {
 			super(model);
-			this.data = tableData;			
-			
-			Comparator<Object> comparator = new Comparator<Object>() {					
+			this.data = tableData;
+
+			Comparator<Object> comparator = new Comparator<Object>() {
 				@Override
 				public int compare(Object o1, Object o2) {
 					int index1 = 0;
@@ -242,12 +243,12 @@ public class CorrelationReportDialog extends JDialog {
 
 
 	private static final long serialVersionUID = 5952700526094523963L;	// generated ID
-	private static final String text1 = "Correlation Between ";			// text before the first track name in the text pane 
+	private static final String text1 = "Correlation Between ";			// text before the first track name in the text pane
 	private static final String text2 = "\n And ";						// text after the first track name in the text pane
 	private static JScrollPane 	jsp;									// scroll pane containing the JTable
 	private static JTable 		jt;										// JTable showing the result of the correlation for each chromosome plus the genome wide result
 	private static JButton 		jbOk;									// button OK
-	private static JTextPane	jtaTrackNames; 							// text pane with the name of the tracks 
+	private static JTextPane	jtaTrackNames; 							// text pane with the name of the tracks
 
 
 	/**
@@ -283,7 +284,7 @@ public class CorrelationReportDialog extends JDialog {
 		jsp = new JScrollPane(jt);
 		// create the OK button
 		jbOk = new JButton("OK");
-		jbOk.addActionListener(new ActionListener() {				
+		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -294,9 +295,9 @@ public class CorrelationReportDialog extends JDialog {
 		// retrieve the document
 		StyledDocument document = jtaTrackNames.getStyledDocument();
 		// add a centered justification to the default style
-		MutableAttributeSet attributes = new SimpleAttributeSet(); 		
+		MutableAttributeSet attributes = new SimpleAttributeSet();
 		StyleConstants.setAlignment(attributes, StyleConstants.ALIGN_CENTER);
-		document.setParagraphAttributes(0, 0, attributes, false);		
+		document.setParagraphAttributes(0, 0, attributes, false);
 		// set the text of the document
 		jtaTrackNames.setText(text1 + name1 + text2 + name2);
 		// change the style of the track names
@@ -312,7 +313,7 @@ public class CorrelationReportDialog extends JDialog {
 		GridBagConstraints c = new GridBagConstraints();
 
 		c.weightx = 1;
-		c.weighty = 1;		
+		c.weighty = 1;
 		c.anchor = GridBagConstraints.CENTER;
 		add(jtaTrackNames, c);
 

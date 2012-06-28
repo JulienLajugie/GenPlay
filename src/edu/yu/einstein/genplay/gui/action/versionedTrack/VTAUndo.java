@@ -14,13 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.versionedTrack;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ActionMap;
@@ -39,14 +40,14 @@ public final class VTAUndo extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 7486534068270241965L; 	// generated ID
 	private static final String 	ACTION_NAME = "Undo";				// action name
-	private static final String 	DESCRIPTION = 
-		"Undo the last action performed on the selected track"; 		// tooltip
+	private static final String 	DESCRIPTION =
+			"Undo the last action performed on the selected track"; 		// tooltip
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK); 
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK);
 
 
 	/**
@@ -71,7 +72,7 @@ public final class VTAUndo extends TrackListActionWorker<Void> {
 	protected Void processAction() throws Exception {
 		if (getTrackList().getSelectedTrack() instanceof VersionedTrack) {
 			VersionedTrack selectedTrack = (VersionedTrack) getTrackList().getSelectedTrack();
-			notifyActionStart("Undoing", 1, false);		
+			notifyActionStart("Undoing", 1, false);
 			selectedTrack.undoData();
 		}
 		return null;

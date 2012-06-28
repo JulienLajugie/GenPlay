@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.mainFrame;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -41,6 +42,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
@@ -49,7 +51,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
-import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
@@ -60,6 +61,7 @@ import edu.yu.einstein.genplay.gui.action.project.PANewProject;
 import edu.yu.einstein.genplay.gui.action.project.PAOption;
 import edu.yu.einstein.genplay.gui.action.project.PARNAPosToDNAPos;
 import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
+import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
 import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeRefresh;
@@ -94,10 +96,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
 	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
-	private 		Ruler 				ruler; 				// Ruler component
-	private 		TrackList 			trackList; 			// TrackList component
-	private 		ControlPanel		controlPanel; 		// ControlPanel component
-	private 		StatusBar 			statusBar; 			// Status bar component
+	private final 		Ruler 				ruler; 				// Ruler component
+	private final 		TrackList 			trackList; 			// TrackList component
+	private final 		ControlPanel		controlPanel; 		// ControlPanel component
+	private final 		StatusBar 			statusBar; 			// Status bar component
 	private 		Rectangle			screenBounds; 		// position and dimension of this frame
 
 
@@ -184,7 +186,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		setMinimumSize(WINDOW_MINIMUM_SIZE);
 		setPreferredSize(WINDOW_DEFAULT_SIZE);
 		pack();
-		setExtendedState(JFrame.MAXIMIZED_BOTH);
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setLocationByPlatform(true);
 
 		if (RecordingManager.getInstance().getProjectRecording().isLoadingEvent()) {
@@ -200,12 +202,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 * Application title - Project name - Genome name - Assembly name.
 	 */
 	public void setTitle () {
-		setTitle(	MainFrame.APPLICATION_TITLE 
-				+ " - " + 
+		setTitle(	MainFrame.APPLICATION_TITLE
+				+ " - " +
 				ProjectManager.getInstance().getProjectName()
-				+ " - (" + 
+				+ " - (" +
 				ProjectManager.getInstance().getGenomeName()
-				+ ", " + 
+				+ ", " +
 				ProjectManager.getInstance().getAssembly().getName()
 				+ ")");
 	}
@@ -239,8 +241,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			tracksUpdate.actionPerformed(null);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Registers every control panel components to the genome window manager.
 	 */
@@ -337,7 +339,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 * exiting
 	 */
 	private void setDefaultCloseOperation() {
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -426,7 +428,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			controlPanel.setVisible(false);
 			statusBar.setVisible(false);
 			screenBounds = getBounds();
-			setExtendedState(JFrame.MAXIMIZED_BOTH);
+			setExtendedState(Frame.MAXIMIZED_BOTH);
 			setVisible(true);
 		} else {
 			setVisible(false);
@@ -441,7 +443,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 
 	/**
-	 * Reinit the {@link ProjectChromosome} and the chromosome panel of the {@link ControlPanel} if needed 
+	 * Reinit the {@link ProjectChromosome} and the chromosome panel of the {@link ControlPanel} if needed
 	 */
 	public static void reinit() {
 		// if instance is null the mainframe has never been initialized
@@ -454,8 +456,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			instance.getStatusBar().reinit();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Locks the main frame:
 	 * - the action button (top left button)
@@ -468,8 +470,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		trackList.lockTrackHandles();
 		controlPanel.lock();
 	}
-	
-	
+
+
 	/**
 	 * Unlocks the main frame
 	 */
@@ -478,8 +480,8 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		trackList.unlockTracksHandles();
 		controlPanel.unlock();
 	}
-	
-	
+
+
 	/**
 	 * Initializes the status bar when starting a new project
 	 */

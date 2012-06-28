@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -51,8 +51,8 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	private int 				firstLineToDisplay = 0;					// number of the first line to be displayed
 	private int 				repeatLinesCount = 0;					// number of lines of repeats
 	private int 				mouseStartDragY = -1;					// position of the mouse when start dragging
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -76,8 +76,8 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 		firstLineToDisplay = 0;
 		mouseStartDragY = -1;
 	}
-	
-	
+
+
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyListTrackGraphics}
@@ -105,19 +105,19 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 		List<RepeatFamily> repeatFamilyList = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
 		if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
 			// calculate how many lines are displayable
-			int displayedLineCount = (getHeight() - SPACE_HEIGHT) / (REPEAT_HEIGHT + 2 * SPACE_HEIGHT) + 1;
+			int displayedLineCount = ((getHeight() - SPACE_HEIGHT) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT))) + 1;
 			// calculate how many scroll on the Y axis are necessary to show all the repeats
-			repeatLinesCount = repeatFamilyList.size() - displayedLineCount + 2;
-			int currentColor = firstLineToDisplay;		
+			repeatLinesCount = (repeatFamilyList.size() - displayedLineCount) + 2;
+			int currentColor = firstLineToDisplay;
 			// loop for each line of the track
 			for (int i = 0; i < displayedLineCount; i++) { //(RepeatFamily currentFamily : repeatFamilyList) {
-				if (i + firstLineToDisplay < repeatFamilyList.size()) {
+				if ((i + firstLineToDisplay) < repeatFamilyList.size()) {
 					// retrieve the repeat associated to the current line to draw
 					RepeatFamily currentFamily = repeatFamilyList.get(i + firstLineToDisplay);
 					// calculate if the background is white or gray
-					if (currentColor % 2 == 1) {
+					if ((currentColor % 2) == 1) {
 						g.setColor(Colors.LIGHT_GREY);
-						g.fillRect(0, currentHeight, width, REPEAT_HEIGHT + 2 * SPACE_HEIGHT);
+						g.fillRect(0, currentHeight, width, REPEAT_HEIGHT + (2 * SPACE_HEIGHT));
 					}
 					// calculate the color of the line
 					g.setColor(intToColor(currentColor));
@@ -137,7 +137,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 					// calculate the witdh of the text of the repeat name
 					int textWidth = fm.stringWidth(currentFamily.getName());
 					// draw a rectangle under the text with the color of the background
-					if (currentColor % 2 == 1) {
+					if ((currentColor % 2) == 1) {
 						g.setColor(Color.LIGHT_GRAY);
 					} else {
 						g.setColor(Color.WHITE);
@@ -147,10 +147,10 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 					// Write the repeat name
 					g.setColor(intToColor(currentColor));
 					g.drawString(currentFamily.getName(), 2, currentHeight);
-					currentHeight += SPACE_HEIGHT;				
+					currentHeight += SPACE_HEIGHT;
 					currentColor++;
 				}
-			}	
+			}
 		}
 	}
 
@@ -167,7 +167,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 
 
 	/**
-	 * Associates a {@link Color} to an integer value 
+	 * Associates a {@link Color} to an integer value
 	 * @param i integer value
 	 * @return a {@link Color}
 	 */
@@ -175,7 +175,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 		Color[] colorArray = {Colors.BLACK, Colors.GREEN, Colors.BLUE, Color.PINK, Colors.RED, Color.CYAN, Color.MAGENTA, Colors.ORANGE};
 		i = i % colorArray.length;
 		return colorArray[i];
-	}	
+	}
 
 
 	/**
@@ -184,17 +184,17 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		super.mouseDragged(e);
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
-			int distance = (mouseStartDragY - e.getY()) / (REPEAT_HEIGHT + 2 * SPACE_HEIGHT);
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+			int distance = (mouseStartDragY - e.getY()) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT));
 			if (Math.abs(distance) > 0) {
-				if (((distance < 0) && (distance + firstLineToDisplay >= 0)) 
-						|| ((distance > 0) && (distance + firstLineToDisplay <= repeatLinesCount))) {
+				if (((distance < 0) && ((distance + firstLineToDisplay) >= 0))
+						|| ((distance > 0) && ((distance + firstLineToDisplay) <= repeatLinesCount))) {
 					firstLineToDisplay += distance;
 					mouseStartDragY = e.getY();
 					repaint();
 				}
 			}
-		}		
+		}
 	}
 
 
@@ -204,9 +204,9 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	@Override
 	public void mousePressed(MouseEvent e) {
 		super.mousePressed(e);
-		if (e.getModifiers() == MouseEvent.BUTTON3_MASK) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
 			mouseStartDragY = e.getY();
-		}		
+		}
 	}
 
 
@@ -216,11 +216,11 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			if (((e.getWheelRotation() < 0) && (e.getWheelRotation() + firstLineToDisplay >= 0)) 
-					|| ((e.getWheelRotation() > 0) && (e.getWheelRotation() + firstLineToDisplay <= repeatLinesCount))) {
+			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
+					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= repeatLinesCount))) {
 				firstLineToDisplay += e.getWheelRotation();
 				repaint();
-			}		
+			}
 		} else {
 			super.mouseWheelMoved(e);
 		}

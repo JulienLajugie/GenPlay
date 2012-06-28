@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,14 +39,14 @@ import java.util.StringTokenizer;
 
 /**
  * Class to provide a filter for duplicate reads
- * @author Chirag Gorasia 
+ * @author Chirag Gorasia
  * @version 1
  */
 public class DupReadFilter {
-	private Map<String, List<ReadsData>> mapForInputFile = new HashMap<String, List<ReadsData>>();
-	private Map<String, Integer> mapForReadsAlreadyExceeded = new HashMap<String, Integer>();
+	private final Map<String, List<ReadsData>> mapForInputFile = new HashMap<String, List<ReadsData>>();
+	private final Map<String, Integer> mapForReadsAlreadyExceeded = new HashMap<String, Integer>();
 	private int maxDupCount;
-	
+
 	/**
 	 * Private method to populate a hash map for the input file
 	 * @param inputFile
@@ -66,23 +66,23 @@ public class DupReadFilter {
 				String strand = strTok.nextToken();
 				String chromosome = strTok.nextToken();
 				int start = Integer.parseInt(strTok.nextToken());
-//				String geneSequence = strTok.nextToken();
-//				String unusedCodeField = strTok.nextToken();
-//				int unusedUnknownField = Integer.parseInt(strTok.nextToken());
-//				String mismatches = "";
-//				if (strTok.hasMoreTokens()) {
-//					mismatches = strTok.nextToken();
-//				}
-			//	ReadsData rd = new ReadsData(readName, strand, chromosome, start, geneSequence, unusedCodeField, unusedUnknownField, mismatches);
+				//				String geneSequence = strTok.nextToken();
+				//				String unusedCodeField = strTok.nextToken();
+				//				int unusedUnknownField = Integer.parseInt(strTok.nextToken());
+				//				String mismatches = "";
+				//				if (strTok.hasMoreTokens()) {
+				//					mismatches = strTok.nextToken();
+				//				}
+				//	ReadsData rd = new ReadsData(readName, strand, chromosome, start, geneSequence, unusedCodeField, unusedUnknownField, mismatches);
 				ReadsData rd = new ReadsData(readName, strand, chromosome, start);
-//				if (this.mapForInputFile.containsKey(readName)) {
-//					this.mapForInputFile.get(readName).add(rd);
-//				} else {
-//					List<ReadsData> readsData = new ArrayList<ReadsData>();
-//					readsData.add(rd);
-//					this.mapForInputFile.put(readName, readsData);
-//				}
-				
+				//				if (this.mapForInputFile.containsKey(readName)) {
+				//					this.mapForInputFile.get(readName).add(rd);
+				//				} else {
+				//					List<ReadsData> readsData = new ArrayList<ReadsData>();
+				//					readsData.add(rd);
+				//					this.mapForInputFile.put(readName, readsData);
+				//				}
+
 				if (this.mapForInputFile.containsKey(readName)) {
 					if (this.mapForInputFile.get(readName).size() < this.maxDupCount) {
 						this.mapForInputFile.get(readName).add(rd);
@@ -94,13 +94,14 @@ public class DupReadFilter {
 					List<ReadsData> readsData = new ArrayList<ReadsData>();
 					readsData.add(rd);
 					this.mapForInputFile.put(readName, readsData);
-				} 
-				
+				}
+
 			}
 			lineRead = bufReader.readLine();
-		}		
+		}
+		bufReader.close();
 	}
-	
+
 	/**
 	 * Private method to write the output to a file
 	 * @param outputFile
@@ -118,12 +119,12 @@ public class DupReadFilter {
 				for (int i = 0; i < rdList.size(); i++) {
 					ReadsData rd = rdList.get(i);
 					bufWriter.write(readName + "\t" + rd.getChromosome() + "\t" + rd.getStart() + "\t" + (rd.getStart()+1) + "\t" + "-" + "\t" + score + "\t" + rd.getStrand() + "\n");
-				}				
+				}
 			}
 		}
 		bufWriter.close();
 	}
-	
+
 	/**
 	 * private method to sort the file
 	 * @throws IOException
@@ -147,10 +148,11 @@ public class DupReadFilter {
 			if (lineRead != null) {
 				strtok = new StringTokenizer(lineRead,"\t\n");
 			}
-		}			
-		
+		}
+		buf.close();
+
 		Collections.sort(file);
-		// write the sorted data to the file		
+		// write the sorted data to the file
 		//String sortedFile = outputFile.getParent() + "sorted" + outputFile.getName();
 		//BufferedWriter bufWriter = new BufferedWriter(new FileWriter(sortedFile));
 		BufferedWriter bufWriter = new BufferedWriter(new FileWriter(outputFile));
@@ -159,9 +161,9 @@ public class DupReadFilter {
 			BedFileSorter fs = iter.next();
 			bufWriter.write(fs.getChromosomeName() + "\t" + fs.getStart() + "\t" + fs.getStop() + "\t-" + "\t" + fs.getScore() + "\t" + fs.getStrand() + "\n");
 		}
-		bufWriter.close();		
-	}	
-	
+		bufWriter.close();
+	}
+
 	/**
 	 * main method
 	 * @param args
@@ -176,22 +178,22 @@ public class DupReadFilter {
 		Scanner in = new Scanner(System.in);
 		System.out.println("\nEnter the maximum number of duplicate reads to be allowed i.e. a positive number");
 		String input = in.nextLine();
-		
+
 		try {
 			drf.maxDupCount = Integer.parseInt(input);
 		} catch (NumberFormatException e) {
 			System.err.println("Invalid input " + "\"" + input + "\"");
 			System.exit(0);
-		} 
-		
+		}
+
 		File inputFile = new File(args[0]);
-		
-		drf.populateHashMap(inputFile);		
-		
+
+		drf.populateHashMap(inputFile);
+
 		File outputFile = new File(args[1]);
-		
+
 		drf.printToOutputFile(outputFile);
-		
+
 		drf.sortRepositionedFile(outputFile);
-	}	
+	}
 }

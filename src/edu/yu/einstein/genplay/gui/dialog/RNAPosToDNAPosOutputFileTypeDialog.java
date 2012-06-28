@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,6 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
 
@@ -47,7 +48,7 @@ import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
 public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 8313046917432891962L;	// generated ID
-	private static final int INSET = 15;	// gab between the components and the window 
+	private static final int INSET = 15;	// gab between the components and the window
 	/**
 	 * Return value when OK has been clicked.
 	 */
@@ -59,11 +60,11 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 
 	private final JComboBox jcb;			// combo box
 	private final JLabel jlFileTypeOptions;	// Output File Type Option Label
-	private JButton jbOK;					// ok button
-	private JButton jbCancel;				// cancel button
+	private final JButton jbOK;					// ok button
+	private final JButton jbCancel;				// cancel button
 	private int	approved = CANCEL_OPTION;	// true if okay has been clicked
-		
-	
+
+
 	/**
 	 * Public constructor. Creates an instance of {@link RNAPosToDNAPosOutputFileTypeDialog}
 	 */
@@ -71,7 +72,7 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		super();
 		jlFileTypeOptions = new JLabel("RNA To DNA Output File Type: ");
 		jcb = new JComboBox(RNAToDNAResultType.values());
-		
+
 		jbOK = new JButton("OK");
 		jbOK.setPreferredSize(new Dimension(75, 30));
 		jbOK.setDefaultCapable(true);
@@ -80,20 +81,20 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		jbCancel = new JButton("Cancel");
 		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(this);
-		
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(INSET, INSET, INSET, 0);
 		add(jlFileTypeOptions, gbc);
-		
+
 		gbc.gridx = 1;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(INSET, 0, INSET, INSET);
 		add(jcb, gbc);
-		
+
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.LINE_END;
@@ -105,16 +106,16 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.insets = new Insets(INSET, 0, INSET, INSET);
 		add(jbCancel, gbc);
-		
+
 		pack();
 		setResizable(false);
-		setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		setTitle("RNA To DNA Output File Selector");
 		setVisible(false);
 		jbOK.setDefaultCapable(true);
 		getRootPane().setDefaultButton(jbOK);
 	}
-	
+
 
 	/**
 	 * @return an {@link RNAToDNAResultType} corresponding to the selected output
@@ -123,7 +124,7 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		return (RNAToDNAResultType) jcb.getSelectedItem();
 	}
 
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == jbOK) {
@@ -131,11 +132,11 @@ public class RNAPosToDNAPosOutputFileTypeDialog extends JDialog implements Actio
 		}
 		setVisible(false);
 	}
-	
-	
+
+
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {

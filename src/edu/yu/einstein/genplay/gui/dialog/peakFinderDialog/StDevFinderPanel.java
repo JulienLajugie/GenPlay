@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,6 +31,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.enums.PeakFinderType;
@@ -60,15 +61,15 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 	private final JFormattedTextField 	jftfRegionWidth;				// input box region width
 	private final JFormattedTextField 	jftfThreshold;					// input box threshold
 	private final BLOFindPeaksStDev 	bloFindPeaks;					// BinList operation to set
-		
+
 	/**
 	 * Creates an instance of {@link StDevFinderPanel}
 	 */
 	StDevFinderPanel(BLOFindPeaksStDev bloFindPeaks) {
 		super();
-		
+
 		this.bloFindPeaks = bloFindPeaks;
-		
+
 		setName(NAME);
 		this.setBorder(BorderFactory.createTitledBorder("Input"));
 		/*
@@ -83,23 +84,23 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		jtaDescription.setBackground(getBackground());
 		jtaDescription.setLineWrap(true);
 		jtaDescription.setWrapStyleWord(true);
-		
+
 		jlRegionWidth1 = new JLabel("Enter the half size, S = ");
 		jftfRegionWidth = new JFormattedTextField(new DecimalFormat("0"));
 		jftfRegionWidth.setValue(defaultRegionWidth);
-		jftfRegionWidth.setHorizontalAlignment(JFormattedTextField.RIGHT);
+		jftfRegionWidth.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfRegionWidth.setColumns(4);
 		((NumberFormatter) jftfRegionWidth.getFormatter()).setMinimum(1);
 		jlRegionWidth2 = new JLabel(" windows");
-		
+
 		jlThreshold1 = new JLabel("Enter the threshold, T = ");
 		jftfThreshold = new JFormattedTextField(new DecimalFormat("0.0"));
 		jftfThreshold.setValue(defaultThreshold);
-		jftfThreshold.setHorizontalAlignment(JFormattedTextField.RIGHT);
+		jftfThreshold.setHorizontalAlignment(SwingConstants.RIGHT);
 		jftfThreshold.setColumns(4);
 		((NumberFormatter) jftfThreshold.getFormatter()).setMinimum(0);
 		jlThreshold2 = new JLabel(" times the chromosome stdev");
-		
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -111,41 +112,41 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		c.gridwidth = 3;
 		c.insets = new Insets(INSET, INSET, 30, INSET);
 		add(jtaDescription, c);
-		
+
 		c.gridy = 1;
 		c.gridwidth = 1;
 		c.weightx = 0;
 		c.insets = new Insets(0, INSET, INSET, 0);
 		add(jlRegionWidth1, c);
-	
+
 		c.gridx = 1;
 		c.weightx = 1;
 		c.insets = new Insets(0, 0, INSET, 0);
 		add(jftfRegionWidth, c);
-		
+
 		c.gridx = 2;
 		c.weightx = 0;
 		c.insets = new Insets(0, 0, INSET, INSET);
 		add(jlRegionWidth2, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 2;
 		c.weightx = 0;
 		c.insets = new Insets(0, INSET, INSET, 0);
 		add(jlThreshold1, c);
-		
+
 		c.gridx = 1;
 		c.weightx = 1;
 		c.insets = new Insets(0, 0, INSET, 0);
 		add(jftfThreshold, c);
-	
+
 		c.gridx = 2;
 		c.weightx = 0;
 		c.insets = new Insets(0, 0, INSET, INSET);
 		add(jlThreshold2, c);
 	}
-	
-	
+
+
 	/**
 	 * @return the half window width parameter of the standard deviation peak finder
 	 */
@@ -153,8 +154,8 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		int windowWidth = ((Number) jftfRegionWidth.getValue()).intValue();
 		return windowWidth;
 	}
-	
-	
+
+
 	/**
 	 * @return the threshold parameter of the standard deviation peak finder
 	 */
@@ -162,24 +163,24 @@ class StDevFinderPanel extends JPanel implements PeakFinderPanel {
 		double threshold = ((Number) jftfThreshold.getValue()).doubleValue();
 		return threshold;
 	}
-	
-	
+
+
 	/**
 	 * Save the input in static variables
 	 */
 	@Override
 	public void saveInput() {
 		defaultRegionWidth = getRegionWidth();
-		defaultThreshold = getThreshold();		
+		defaultThreshold = getThreshold();
 	}
-	
-	
+
+
 	@Override
 	public String toString() {
 		return getName();
 	}
-	
-	
+
+
 	@Override
 	public Operation<BinList[]> validateInput() {
 		bloFindPeaks.setHalfWidth(getRegionWidth());

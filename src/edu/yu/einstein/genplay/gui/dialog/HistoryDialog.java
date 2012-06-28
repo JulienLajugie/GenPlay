@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,10 +33,10 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import edu.yu.einstein.genplay.util.History;
@@ -51,18 +51,18 @@ import edu.yu.einstein.genplay.util.Utils;
 public final class HistoryDialog extends JDialog {
 
 	private static final long serialVersionUID = 9059804292908454294L; // generated ID
-	private static final Dimension HISTORY_FRAME_DIMENSION = 
-		new Dimension(500, 300);							// dimension of the frame 
+	private static final Dimension HISTORY_FRAME_DIMENSION =
+			new Dimension(500, 300);							// dimension of the frame
 	private final JList 		jlHistory;					// list containing the history
-	private final JScrollPane   jspHistory;					// scroll pane containing the history list 
+	private final JScrollPane   jspHistory;					// scroll pane containing the history list
 	private final JButton 		jbSave;						// save button
 	private final JButton 		jbClose;					// close button
 	private final String 		trackName;					// name of a curve
 	private final History 		history;					// history of a curve
-	
-	
+
+
 	/**
-	 * Public constructor. 
+	 * Public constructor.
 	 * @param parent parent component
 	 * @param trackName name of a curve
 	 * @param history history of a curve
@@ -71,44 +71,44 @@ public final class HistoryDialog extends JDialog {
 		super();
 		setTitle(trackName);
 		setModal(true);
-		this.trackName = trackName; 
+		this.trackName = trackName;
 		this.history = history;
-		
+
 		jlHistory = new JList(history.get());
 		//jlHistory.get()
 		jspHistory = new JScrollPane(jlHistory);
 		jbClose = new JButton("Close");
 		jbSave = new JButton("Save");
-		
+
 		initComponent();
 		setSize(HISTORY_FRAME_DIMENSION);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(parent);
 		getRootPane().setDefaultButton(jbClose);
 	}
-	
-	
+
+
 	/**
 	 * Initializes the component and sub components.
 	 */
 	private void initComponent() {
 		jlHistory.setLayoutOrientation(JList.VERTICAL);
 		jlHistory.setVisibleRowCount(history.size());
-						
+
 		jbClose.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-				
+
 		jbSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
 				saveHistory();
 			}
 		});
-		
+
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -120,20 +120,20 @@ public final class HistoryDialog extends JDialog {
 		c.weightx = 1;
 		c.weighty = 0.99;
 		add(jspHistory, c);
-		
+
 		c.fill = GridBagConstraints.VERTICAL;
 		c.gridx = 0;
 		c.gridy = 1;
 		c.gridwidth = 1;
 		c.weighty = 0.01;
-		add(jbSave, c);		
-		
+		add(jbSave, c);
+
 		c.gridx = 1;
 		c.gridy = 1;
 		add(jbClose, c);
 	}
-	
-	
+
+
 	/**
 	 * Saves the history in a file.
 	 */
@@ -157,8 +157,8 @@ public final class HistoryDialog extends JDialog {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Asks if the user wants to replace a file if this file already exists.
 	 * @param f A file.
@@ -174,10 +174,10 @@ public final class HistoryDialog extends JDialog {
 		f.delete();
 		return false;
 	}
-	
-	
+
+
 	/**
-	 * Show the history dialog box 
+	 * Show the history dialog box
 	 * @param parent parent component
 	 * @param trackName name of a curve
 	 * @param history history of a curve
