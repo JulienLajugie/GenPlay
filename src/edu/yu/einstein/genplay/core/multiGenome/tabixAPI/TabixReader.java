@@ -9,6 +9,8 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import edu.yu.einstein.genplay.util.Utils;
+
 import net.sf.samtools.util.BlockCompressedInputStream;
 
 
@@ -22,6 +24,8 @@ import net.sf.samtools.util.BlockCompressedInputStream;
  * - punctuation added
  * - getters & setters added (no more direct access to attributes)
  * - few processing improvements
+ * 		- reading much faster, do not use the read char method but read line
+ * 		- can match chromosome names in request and the ones in the vcf (e.g. request "chr1:0-100" will work even if chromosome 1 is written "1" in the vcf)
  * 
  * 
  * This class handle the way to communicate between an indexed VCF file (using Tabix) and Java.
@@ -41,6 +45,8 @@ public class TabixReader {
 	protected int lineToSkip;	//exists only for the vcf reading but never used
 	private String[] chromosomeNames;
 	protected HashMap<String, Integer> chromosomeIndexes;
+	protected HashMap<String, String> chromosomeNamesMap;
+	protected HashMap<String, String> chromosomeNamesHistoryMap;
 	private static int MAX_BIN = 37450;
 	//private static int TAD_MIN_CHUNK_GAP = 32768;
 	/** ??? */
@@ -139,7 +145,7 @@ public class TabixReader {
 	 * @param fp File pointer
 	 * @throws IOException 
 	 */
-	public void readIndex(final File fp) throws IOException {
+	private void readIndex(final File fp) throws IOException {
 		if (fp == null) return;
 		BlockCompressedInputStream is = new BlockCompressedInputStream(fp);
 		byte[] buf = new byte[4];
@@ -201,6 +207,50 @@ public class TabixReader {
 	 */
 	public void readIndex() throws IOException {
 		readIndex(new File(mFn + ".tbi"));
+		initializeChromosomeNameMap();
+		initializeChromosomeNameHistoryMap();
+	}
+
+
+	/**
+	 * The chromosome map is made for compatibility purpose.
+	 * The way chromosome names are written in a vcf file and the way they are loaded in GenPlay can differ.
+	 * This map will use part of both names in order to figure if names are equals or not.
+	 * For instance:
+	 * Chromosomes in GenPlay have the prefix "chr" (e.g. chr1, chr2...), chromosomes in a vcf do not have (e.g. 1, 2...).
+	 * The principle is to get the string starting at the first integer of the name: chr1 -> 1; 1 -> 1.
+	 * That way, we compare names and admit "chr1" is equal to "1".
+	 * If no int is found, the whole is kept (chrfirst -> chrfirst). The user will have to change his files or to load the right assembly to match the names.
+	 */
+	private void initializeChromosomeNameMap () {
+		chromosomeNamesMap = new HashMap<String, String>();
+		for (String fileChromosomeName: chromosomeIndexes.keySet()) {
+			String shortName;
+			int intOffset = Utils.getFirstIntegerOffset(fileChromosomeName, 0);
+
+			if (intOffset != -1) {
+				shortName = fileChromosomeName.substring(intOffset);
+			} else {
+				char lastChar = fileChromosomeName.charAt(fileChromosomeName.length() - 1);
+				if (lastChar == 'X' || lastChar == 'Y' || lastChar == 'M') {
+					shortName = "" + lastChar;
+				} else {
+					shortName = fileChromosomeName;
+				}
+			}
+			chromosomeNamesMap.put(shortName, fileChromosomeName);
+		}
+	}
+
+
+	/**
+	 * The chromosome name history map is made for efficiency purpose.
+	 * When a request with "chr1" is made, it looks for "1".
+	 * If the "chr1" request has already been made, it is a waste of time to find out "1" again.
+	 * That map stores the association between the requested chromosome names and their short names.
+	 */
+	private void initializeChromosomeNameHistoryMap () {
+		chromosomeNamesHistoryMap = new HashMap<String, String>();
 	}
 
 
@@ -209,12 +259,47 @@ public class TabixReader {
 	 * @return the index of the chromosome
 	 */
 	protected int getChromosomeIndex (final String chr) {
+		int result = -1;
+		// We get the index according to the name given in the VCF
 		if (chromosomeIndexes.containsKey(chr)) {
-			return chromosomeIndexes.get(chr);
+			result = chromosomeIndexes.get(chr);
 		}
-		return -1;
+		return result;
 	}
 
+	
+	/**
+	 * @param chr a chromosome
+	 * @return the index of the chromosome
+	 */
+	protected int getParsedChromosomeIndex (final String chr) {
+		// We get the short name of the chromosome
+		String name;
+		if (chromosomeNamesHistoryMap.containsKey(chr)) {	// it already may exists
+			name = chromosomeNamesHistoryMap.get(chr);
+		} else {											// or we create it
+			int intOffset = Utils.getFirstIntegerOffset(chr, 0);
+			if (intOffset != -1) {
+				name = chr.substring(intOffset);
+			} else {
+				char lastChar = chr.charAt(chr.length() - 1);
+				if (lastChar == 'X' || lastChar == 'Y' || lastChar == 'M') {
+					name = "" + lastChar;
+				} else {
+					name = chr;
+				}
+			}
+			chromosomeNamesHistoryMap.put(name, chr);
+		}
+
+		// We get the index according to the name given in the VCF
+		int result = -1;
+		if (chromosomeIndexes.containsKey(chromosomeNamesMap.get(name))) {
+			result = chromosomeIndexes.get(chromosomeNamesMap.get(name));
+		}
+
+		return result;
+	}
 
 	/**
 	 * Parse a region in the format of "chr1", "chr1:100" or "chr1:100-1000"
@@ -228,7 +313,7 @@ public class TabixReader {
 		int[] ret = new int[3];
 		colon = reg.indexOf(':');
 		hyphen = reg.indexOf('-');
-		ret[0] = getChromosomeIndex(reg.substring(0, colon));
+		ret[0] = getParsedChromosomeIndex(reg.substring(0, colon));
 		ret[1] = Integer.parseInt(reg.substring(colon+1, hyphen));
 		ret[2] = Integer.parseInt(reg.substring(hyphen+1, reg.length()));
 		return ret;

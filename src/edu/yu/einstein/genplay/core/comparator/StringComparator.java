@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.core.comparator;
 
 import java.util.Comparator;
 
+import edu.yu.einstein.genplay.util.Utils;
+
 
 /**
  * @author Nicolas Fourel
@@ -59,8 +61,8 @@ public class StringComparator implements Comparator<String> {
 			} catch (Exception e) {}
 
 			if (i1 != null && i2 != null ) {							// If both current characters are integer
-				Integer i3 = getFullIntegerPart(s1, index);				// gets the full integer present in the string
-				Integer i4 = getFullIntegerPart(s2, index);
+				Integer i3 = Utils.getFullIntegerPart(s1, index);		// gets the full integer present in the string
+				Integer i4 = Utils.getFullIntegerPart(s2, index);
 
 				int compare = i3.compareTo(i4);							// regular integer comparison
 
@@ -91,26 +93,5 @@ public class StringComparator implements Comparator<String> {
 		}
 		return 0;														// if scan is here, both sting are equal.
 	}
-
-
-	/**
-	 * This methods looks for the full integer part in a string from a start index.
-	 * @param s		the string
-	 * @param index	index of the first integer
-	 * @return		the full integer starting at the index
-	 */
-	private Integer getFullIntegerPart (String s, int index) {
-		Integer result = null;									// Initialize the result to null
-		int nextIndex = index + 1;								// Next index is initialized with index + 1
-		while (nextIndex <= s.length()) {						// while the next index is shorter or equal to the string length
-			String text = s.substring(index, nextIndex);		// gets the sub string from the string (index to next index)
-			try {
-				result = Integer.parseInt(text);				// tries to get the integer part
-			} catch (Exception e) {								// if there is no integer part
-				return result;									// we return result (that contains the previous integer part or null)
-			}
-			nextIndex++;										// if it worked, we keep looking in the string increasing the next index
-		}
-		return result;											// return the result of the scan
-	}
+	
 }
