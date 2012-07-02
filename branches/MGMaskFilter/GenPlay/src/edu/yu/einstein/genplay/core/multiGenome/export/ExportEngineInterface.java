@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,49 +25,50 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
 public interface ExportEngineInterface {
-	
-	
+
+
 	/**
 	 * Export the data to a new VCF
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void process () throws Exception;
-	
-	
+
+
 	/**
 	 * Set the map of genome according to the files they are mentionned.
 	 * @param fileMap the map between genome and their files
 	 */
 	public void setFileMap (Map<String, List<VCFFile>> fileMap);
-	
-	
+
+
 	/**
 	 * Set the map of variation types according to their required genomes.
 	 * Each genome can have its own variation types list.
 	 * @param variationMap the map between genome and their variation types
 	 */
 	public void setVariationMap (Map<String, List<VariantType>> variationMap);
-	
-	
+
+
 	/**
 	 * Set the list of filter applied to the track.
 	 * @param filterList the list of {@link VCFFilter}
 	 */
-	public void setFilterList (List<VCFFilter> filterList);
-	
-	
+	public void setFilterList (List<MGFilter> filterList);
+
+
 	/**
 	 * Set the path of the new VCF
 	 * @param path the VCF path
 	 */
 	public void setPath (String path);
-	
+
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -69,22 +69,22 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * Default border of a track
 	 */
 	public static final Border 	REGULAR_BORDER =
-		BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK); 		// regular border of a track
+			BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK); 		// regular border of a track
 	/**
 	 * Border of a track when the track starts being dragged
 	 */
-	public static final Border 	DRAG_START_BORDER = 
-		BorderFactory.createMatteBorder(2, 2, 2, 2, Colors.BLACK);		// alternative border when a track is dragged
+	public static final Border 	DRAG_START_BORDER =
+			BorderFactory.createMatteBorder(2, 2, 2, 2, Colors.BLACK);		// alternative border when a track is dragged
 	/**
 	 * Border of a track when the track is being dragged up
 	 */
-	public static final Border 	DRAG_UP_BORDER = 
-		BorderFactory.createMatteBorder(2, 0, 1, 0, Colors.BLACK);		// alternative border when a track is dragged up
+	public static final Border 	DRAG_UP_BORDER =
+			BorderFactory.createMatteBorder(2, 0, 1, 0, Colors.BLACK);		// alternative border when a track is dragged up
 	/**
 	 * Border of a track when the track is being dragged down
 	 */
-	public static final Border 	DRAG_DOWN_BORDER = 
-		BorderFactory.createMatteBorder(0, 0, 2, 0, Colors.BLACK);		// alternative border when a track is dragged down
+	public static final Border 	DRAG_DOWN_BORDER =
+			BorderFactory.createMatteBorder(0, 0, 2, 0, Colors.BLACK);		// alternative border when a track is dragged down
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private TrackHandle				trackHandle;						// handle of the track
 	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
@@ -160,13 +160,13 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * Copies the track
 	 * @return a copy of the track
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
 	public Track<?> deepClone() throws IOException, ClassNotFoundException {
-		// we save in a local variable and then remove the listeners 
+		// we save in a local variable and then remove the listeners
 		// before cloning the track in order to avoid cloning the listeners
-		PropertyChangeListener[] pclSaver = getPropertyChangeListeners(); 
+		PropertyChangeListener[] pclSaver = getPropertyChangeListeners();
 		for (PropertyChangeListener curList: pclSaver)	{
 			removePropertyChangeListener(curList);
 		}
@@ -244,7 +244,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			MGDisplaySettings settings = MGDisplaySettings.getInstance();
-			List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(this);
+			List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(this);
 			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(this);
 			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
@@ -259,7 +259,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<VCFFilter> filtersList) {
+	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
@@ -321,7 +321,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public int getPreferredHeight() {
 		return getPreferredSize().height;
-	}	
+	}
 
 
 	/**
@@ -398,7 +398,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * @return the filtersList
 	 */
-	public List<VCFFilter> getFiltersList() {
+	public List<MGFilter> getFiltersList() {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			return trackGraphics.getMultiGenomeDrawer().getFiltersList();
 		}
@@ -418,7 +418,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * Locks the handle of the track
 	 */
 	public void lockHandle() {
-		trackHandle.lock();	
+		trackHandle.lock();
 	}
 
 
@@ -426,7 +426,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName() == "resize") {
 			int newHeight = getPreferredSize().height + (Integer)arg0.getNewValue();
-			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT	
+			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
 			newHeight = Math.max(TRACK_MINIMUM_HEIGHT, newHeight);
 			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
 			revalidate();
@@ -557,8 +557,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			removePropertyChangeListener(curList);
 		}
 	}
-	
-	
+
+
 	/**
 	 * @return the genomeDrawer
 	 */

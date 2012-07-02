@@ -25,7 +25,7 @@ import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.EditingTable;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**

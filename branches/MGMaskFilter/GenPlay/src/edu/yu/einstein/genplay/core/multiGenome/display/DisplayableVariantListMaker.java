@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,9 +33,9 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
@@ -61,7 +61,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	private List<MGVariantListForDisplay> 	listOfVariantList;			// The list of list of variant for display
 	private List<VariantInterface> 			variantList;				// The full list of variant
 	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
-	private List<VCFFilter> filtersList;
+	private List<MGFilter> filtersList;
 
 
 	/**
@@ -112,7 +112,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	/**
 	 * Creates the full list of variant and sort it.
 	 */
-	private void computeVariantList (List<VCFFilter> filtersList) {
+	private void computeVariantList (List<MGFilter> filtersList) {
 		variantList = new ArrayList<VariantInterface>();
 		if (listOfVariantList.size() > 0) {
 			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {			// loop on every variant list for display
@@ -134,13 +134,13 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param filtersList	a list of filters
 	 * @return				true is the variant passes all filters
 	 */
-	private boolean isValid (VariantInterface variant, List<VCFFilter> filtersList) {
-		for (VCFFilter filter: filtersList) {		// loop on all filters
-			if (!filter.isVariantValid(variant)) {			// test the variant for the current filter
-				return false;						// if one is tested false, the variant does not pass
+	private boolean isValid (VariantInterface variant, List<MGFilter> filtersList) {
+		for (MGFilter filter: filtersList) {			// loop on all filters
+			if (!filter.isVariantValid(variant)) {		// test the variant for the current filter
+				return false;							// if one is tested false, the variant does not pass
 			}
 		}
-		return true;								// if all tests are correct, the variant passes
+		return true;									// if all tests are correct, the variant passes
 	}
 
 
@@ -157,7 +157,7 @@ public class DisplayableVariantListMaker implements Serializable {
 				List<VariantInterface> newVariantList = new ArrayList<VariantInterface>();
 				int currentListIndex = 0;
 				int referenceListIndex = 0;
-				while (currentListIndex < variantList.size() && referenceListIndex < referenceVariantList.size()) {
+				while ((currentListIndex < variantList.size()) && (referenceListIndex < referenceVariantList.size())) {
 					VariantInterface currentVariant = variantList.get(currentListIndex);
 					VariantInterface referenceVariant = referenceVariantList.get(referenceListIndex);
 
@@ -201,7 +201,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param listOfVariantList the listOfVariantList to set
 	 * @param filtersList list of filter to apply
 	 */
-	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList, List<VCFFilter> filtersList) {
+	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList, List<MGFilter> filtersList) {
 		if (variantsHaveChanged(listOfVariantList) || filtersHaveChanged(filtersList)) {
 			this.listOfVariantList = listOfVariantList;
 			resetList(filtersList);
@@ -213,7 +213,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * Reset the variant list.
 	 * @param filtersList list of filter to apply
 	 */
-	public void resetList (List<VCFFilter> filtersList) {
+	public void resetList (List<MGFilter> filtersList) {
 		computeVariantList(filtersList);
 		fitToScreen();
 	}
@@ -233,7 +233,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @return true is lists are different, false otherwise
 	 */
 	private boolean variantsHaveChanged (List<MGVariantListForDisplay> listOfVariantList) {
-		if (this.listOfVariantList == null || listOfVariantList == null) {
+		if ((this.listOfVariantList == null) || (listOfVariantList == null)) {
 			return true;
 		} else if (this.listOfVariantList.size() != listOfVariantList.size()) {
 			return true;
@@ -246,20 +246,20 @@ public class DisplayableVariantListMaker implements Serializable {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Compares the current list of filters with another one
 	 * @param filtersList the other list of filer
 	 * @return true is lists are different, false otherwise
 	 */
-	private boolean filtersHaveChanged (List<VCFFilter> filtersList) {
-		if (this.filtersList == null || filtersList == null) {
+	private boolean filtersHaveChanged (List<MGFilter> filtersList) {
+		if ((this.filtersList == null) || (filtersList == null)) {
 			return true;
 		} else if (this.filtersList.size() != filtersList.size()) {
 			return true;
 		} else {
-			for (VCFFilter currentFilter: this.filtersList) {
+			for (MGFilter currentFilter: this.filtersList) {
 				if (!filtersList.contains(currentFilter)) {
 					return true;
 				}
@@ -294,7 +294,7 @@ public class DisplayableVariantListMaker implements Serializable {
 
 
 	/**
-	 * Merges two windows together if the gap between this two windows is not visible 
+	 * Merges two windows together if the gap between this two windows is not visible
 	 */
 	protected void fitToScreen() {
 		List<VariantInterface> currentVariantList = variantList;
@@ -377,7 +377,7 @@ public class DisplayableVariantListMaker implements Serializable {
 				resultList.add(fittedDataList.get(i));
 			}
 		}
-		if (indexStop + 1 < fittedDataList.size()) {
+		if ((indexStop + 1) < fittedDataList.size()) {
 			VariantInterface variant = fittedDataList.get(indexStop + 1);
 			if (variant.getStart() <= stop) {
 				resultList.add(variant);

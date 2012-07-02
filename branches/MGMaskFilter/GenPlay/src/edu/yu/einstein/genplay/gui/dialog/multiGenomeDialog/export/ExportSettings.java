@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,8 +28,8 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 
@@ -41,10 +41,10 @@ public class ExportSettings {
 
 	private final Map<String, List<VariantType>> variationMap;
 	private final Map<String, List<VCFFile>> fileMap;
-	private final List<VCFFilter> filterList;
+	private final List<MGFilter> filterList;
 	private final List<VCFFile> fileList;
-	
-	
+
+
 	/**
 	 * Constructor of {@link ExportSettings}
 	 * @param genomeDrawer the genome drawer
@@ -55,8 +55,8 @@ public class ExportSettings {
 		filterList = genomeDrawer.getFiltersList();
 		fileList = getFileList(fileMap);
 	}
-	
-	
+
+
 	/**
 	 * Retrieves a map between genome names and their list of variant type from a list of stripes.
 	 * @param stripeList the list of stripes
@@ -79,10 +79,10 @@ public class ExportSettings {
 		}
 		return map;
 	}
-	
-	
+
+
 	/**
-	 * Retrieves a map between genome names and their list of file from a list of stripes. 
+	 * Retrieves a map between genome names and their list of file from a list of stripes.
 	 * The selection takes into account what kind of variation a file can handle according to the genome.
 	 * If insertions are required but the file contains deletion for the same genome, it won't be selected.
 	 * @param stripeList the list of stripes
@@ -106,8 +106,8 @@ public class ExportSettings {
 		}
 		return map;
 	}
-	
-	
+
+
 	/**
 	 * Checks if a file contains data about the given genome for at least one of the given variant type.
 	 * @param file			the VCF file
@@ -124,7 +124,7 @@ public class ExportSettings {
 		return false;
 	}
 
-	
+
 	/**
 	 * @return the number of file involved into the export process
 	 */
@@ -140,15 +140,15 @@ public class ExportSettings {
 		}
 		return fileList;
 	}
-	
-	
+
+
 	/**
 	 * @return the number of file involved into the export process
 	 */
 	public int getFileNumber () {
 		return fileList.size();
 	}
-	
+
 
 	/**
 	 * @return the variationMap
@@ -169,7 +169,7 @@ public class ExportSettings {
 	/**
 	 * @return the filterList
 	 */
-	public List<VCFFilter> getFilterList() {
+	public List<MGFilter> getFilterList() {
 		return filterList;
 	}
 
@@ -180,5 +180,5 @@ public class ExportSettings {
 	public List<VCFFile> getFileList() {
 		return fileList;
 	}
-	
+
 }

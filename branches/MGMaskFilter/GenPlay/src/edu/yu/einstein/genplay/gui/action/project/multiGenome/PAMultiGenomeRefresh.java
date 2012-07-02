@@ -32,7 +32,7 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -57,7 +57,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 	private static final 	String ACTION_NAME = "Multi Genome Properties";			// action name
 	private static final 	String DESCRIPTION = "Shows the project properties"; 	// tooltip
 	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
-	private List<VCFFilter> previousFilterList;
+	private List<MGFilter> previousFilterList;
 
 	/**
 	 * action accelerator {@link KeyStroke}
@@ -80,7 +80,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		previousFilterList = new ArrayList<VCFFilter>();
+		previousFilterList = new ArrayList<MGFilter>();
 	}
 
 
@@ -99,7 +99,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 	/**
 	 * @return the previousFilterList
 	 */
-	public List<VCFFilter> getPreviousFilterList() {
+	public List<MGFilter> getPreviousFilterList() {
 		return previousFilterList;
 	}
 
@@ -107,7 +107,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 	/**
 	 * @param previousFilterList the previousFilterList to set
 	 */
-	public void setPreviousFilterList(List<VCFFilter> previousFilterList) {
+	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
 		this.previousFilterList = previousFilterList;
 	}
 
@@ -264,7 +264,7 @@ public final class PAMultiGenomeRefresh extends TrackListAction {
 		/**
 		 * @param previousFilterList the previousFilterList to set
 		 */
-		public void setPreviousFilterList(List<VCFFilter> previousFilterList) {
+		public void setPreviousFilterList(List<MGFilter> previousFilterList) {
 			multigenomeFilters.setPreviousFilterList(previousFilterList);
 		}
 	}

@@ -25,7 +25,7 @@ import java.awt.FontMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.EditingTable;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 /**
@@ -52,7 +52,7 @@ public class FiltersTable extends EditingTable<FiltersData> {
 		List<FiltersData> newData = new ArrayList<FiltersData>();
 		for (int i = 0; i < data.size(); i++) {
 			FiltersData rowData = new FiltersData();
-			rowData.setVCFFilter(data.get(i).getVCFFilter());
+			rowData.setMGFilter(data.get(i).getMGFilter());
 			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
 		}

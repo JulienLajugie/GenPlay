@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,7 +28,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.BasicFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -83,19 +85,35 @@ public class MGFilterSettings implements Serializable {
 	public List<FiltersData> getFiltersList() {
 		return filtersList;
 	}
-	
-	
+
+
 	/**
-	 * @return a duplicate of the filtersList
+	 * @return a duplicate of the file filters List
 	 */
-	public List<FiltersData> getDuplicatedFiltersList() {
+	public List<FiltersData> getDuplicatedFileFiltersList() {
 		List<FiltersData> duplicate = new ArrayList<FiltersData>();
 		for (FiltersData data: filtersList) {
-			duplicate.add(data.getDuplicate());
+			if (data.getFilter() instanceof VCFFilter) {
+				duplicate.add(data.getDuplicate());
+			}
 		}
 		return duplicate;
 	}
-	
+
+
+	/**
+	 * @return a duplicate of the advanced filters List
+	 */
+	public List<FiltersData> getDuplicatedAdvancedFiltersList() {
+		List<FiltersData> duplicate = new ArrayList<FiltersData>();
+		for (FiltersData data: filtersList) {
+			if (data.getMGFilter() instanceof BasicFilter) {
+				duplicate.add(data.getDuplicate());
+			}
+		}
+		return duplicate;
+	}
+
 
 	/**
 	 * @param filtersList the filtersList to set
@@ -106,40 +124,40 @@ public class MGFilterSettings implements Serializable {
 
 
 	/**
-	 * Creates the list of VCF filters according to a track
+	 * Creates the list of {@link MGFilter} according to a track
 	 * @param track the track
 	 * @return		its list of filters
 	 */
-	public List<VCFFilter> getVCFFiltersForTrack (Track<?> track) {
-		List<VCFFilter> vcfFiltersList = new ArrayList<VCFFilter>();
+	public List<MGFilter> getMGFiltersForTrack (Track<?> track) {
+		List<MGFilter> mgFiltersList = new ArrayList<MGFilter>();
 
 		for (FiltersData filterData: filtersList) {
 			Track<?>[] trackList = filterData.getTrackList();
 			for (Track<?> currentTrack: trackList) {
 				if (currentTrack.equals(track)) {
-					if (filterData.getVCFFilter() != null) {
-						vcfFiltersList.add(filterData.getVCFFilter());
+					if (filterData.getMGFilter() != null) {
+						mgFiltersList.add(filterData.getMGFilter());
 					}
 				}
 			}
 		}
-		
-		return vcfFiltersList;
+
+		return mgFiltersList;
 	}
-	
-	
+
+
 	/**
-	 * @return all VCF filters
+	 * @return all {@link MGFilter}
 	 */
-	public List<VCFFilter> getAllVCFFilters () {
-		List<VCFFilter> vcfFiltersList = new ArrayList<VCFFilter>();
+	public List<MGFilter> getAllMGFilters () {
+		List<MGFilter> mgFiltersList = new ArrayList<MGFilter>();
 		for (FiltersData filterData: filtersList) {
-			vcfFiltersList.add(filterData.getVCFFilter());
+			mgFiltersList.add(filterData.getMGFilter());
 		}
-		return vcfFiltersList;	
+		return mgFiltersList;
 	}
-	
-	
+
+
 	/**
 	 * Creates the list of filters according to a track
 	 * @param track the track
@@ -147,7 +165,7 @@ public class MGFilterSettings implements Serializable {
 	 */
 	public List<FiltersData> getFiltersForTrack (Track<?> track) {
 		List<FiltersData> list = new ArrayList<FiltersData>();
-		
+
 		for (FiltersData data: filtersList) {
 			Track<?>[] trackList = data.getTrackList();
 			for (Track<?> currentTrack: trackList) {
@@ -157,11 +175,11 @@ public class MGFilterSettings implements Serializable {
 				}
 			}
 		}
-		
+
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * When pasting a track, associated filters settings to the copying track must be given to the pasting track.
 	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
@@ -173,16 +191,15 @@ public class MGFilterSettings implements Serializable {
 		if (filterList != null) {
 			for (FiltersData data: filterList) {
 				Track<?>[] track = {newTrack};
-				FiltersData newData = new FiltersData(data.getReader(), data.getFilter().getDuplicate(), track);
-				newData.getVCFFilter().setBooleanList(data.getVCFFilter().getDuplicatedBooleanList());
+				FiltersData newData = new FiltersData(data.getMGFilter(), track);
 				if (!filterList.contains(newData)) {
 					filtersList.add(newData);
 				}
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * When deleting a track, all its settings must be deleted.
 	 * The setting of a track can be mixed with the ones of other tracks.
@@ -210,8 +227,8 @@ public class MGFilterSettings implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
 	 * It will replace the references to the old track by the one of the new track.
@@ -223,7 +240,7 @@ public class MGFilterSettings implements Serializable {
 			filter.changeTrack(oldTrack, newTrack);
 		}
 	}
-	
+
 
 	/**
 	 * Show the settings

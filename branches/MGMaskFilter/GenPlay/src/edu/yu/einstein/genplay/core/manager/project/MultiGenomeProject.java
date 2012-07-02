@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGMultiGenome;

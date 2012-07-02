@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,7 +29,8 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.manager.MGFiltersManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -44,8 +45,8 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
-	private static final String 	DESCRIPTION = 
-		"Performs the multi genome algorithm for SNPs"; 						// tooltip
+	private static final String 	DESCRIPTION =
+			"Performs the multi genome algorithm for SNPs"; 						// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 			// mnemonic key
 	private static		 String 			ACTION_NAME = "Updating filters";	// action name
 
@@ -90,10 +91,15 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 
 				filterManager.retrieveDataFromVCF();
 
-				List<VCFFilter> filterListToUpdate = filterManager.getFilterListToUpdate();
+				List<MGFilter> filterListToUpdate = filterManager.getFilterListToUpdate();
 
-				for (VCFFilter filter: filterListToUpdate) {
-					filter.generateFilter(filterManager.getResultOfFilter(filter));
+				for (MGFilter filter: filterListToUpdate) {
+					if (filter instanceof VCFFilter) {
+						VCFFilter vcfFilter = (VCFFilter) filter;
+						vcfFilter.generateFilter(filterManager.getResultOfFilter(vcfFilter));
+					} else {
+						filter.generateFilter();
+					}
 				}
 
 			}
@@ -142,7 +148,7 @@ public class PAMultiGenomeFilters extends TrackListActionWorker<Track<?>[]> {
 	/**
 	 * @param previousFilterList the previousFilterList to set
 	 */
-	public void setPreviousFilterList(List<VCFFilter> previousFilterList) {
+	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
 		filterManager.setPreviousFilterList(previousFilterList);
 		hasBeenInitialized = false;
 	}

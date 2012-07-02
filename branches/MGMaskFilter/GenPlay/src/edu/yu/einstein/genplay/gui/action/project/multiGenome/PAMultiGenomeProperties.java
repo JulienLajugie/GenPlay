@@ -30,7 +30,7 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
@@ -92,7 +92,7 @@ public final class PAMultiGenomeProperties extends TrackListAction{
 			}
 			dialog.setSettings(settings);								// and set it with the current settings
 			if (dialog.showDialog(getRootPane(), itemDialog) == PropertiesDialog.APPROVE_OPTION) {	// we show it waiting to be approved
-				List<VCFFilter> previousFilterList = settings.getFilterSettings().getAllVCFFilters();
+				List<MGFilter> previousFilterList = settings.getFilterSettings().getAllMGFilters();
 
 				// Set the various settings
 				settings.getVariousSettings().setVariousSettings(dialog.getDefaultItemDialog(), dialog.getDefaultGroupText(), dialog.getTransparency(), dialog.isShowLegend());

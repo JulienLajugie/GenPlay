@@ -80,7 +80,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 						if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length != 0))  {
 							double[] scores = new double[currentGene.getExonStarts().length] ;
 							for (int k = 0; k < currentGene.getExonStarts().length && !stopped; k++) {
-								List<ScoredChromosomeWindow> currentExonSCW = Utils.searchInterval(currentSCWList, currentGene.getExonStarts()[k], currentGene.getExonStops()[k]);
+								List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExonStarts()[k], currentGene.getExonStops()[k]);
 								if (currentExonSCW != null) {
 									int length = 0; // used for the average
 									for (int l = 0; l < currentExonSCW.size() && !stopped; l++) {

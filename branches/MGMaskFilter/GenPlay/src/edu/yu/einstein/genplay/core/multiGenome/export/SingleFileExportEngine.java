@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,8 +32,8 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.util.Utils;
@@ -79,14 +79,14 @@ public class SingleFileExportEngine extends ExportEngine {
 
 		// Scan the file line by line
 		while (!currentLine.isLastLine()) {
-			
+
 			if (currentLine.isValid()) {																											// The line has to be a valid line to be processed
 				int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
 				VariantType[] variations = synchronizer.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
-				
+
 				List<Integer> allValidIndex = new ArrayList<Integer>();																				// Initializes the array that will contain all valid alternative indexes of the line
 				List<String> allValidGenome = new ArrayList<String>();																				// Initializes the array that will contain all valid genome names of the line
-				
+
 				for (int i = 0; i < genomeList.size(); i++) {																						// Will scan information for all genomes of the line
 					int[] altIndexes = getAlternativeIndexes(genomeList.get(i), reader, synchronizer);												// Gets indexes defined by the GT type ('.' is converted as -1)
 					List<Integer> validIndex = getValidIndexes(variationMap.get(genomeList.get(i)), variations, altIndexes);						// Only keeps the valid ones (excludes the ones referring to the reference)
@@ -101,8 +101,8 @@ public class SingleFileExportEngine extends ExportEngine {
 						}
 					}
 				}
-				
-				if (allValidGenome.size() > 0) {																										// If information has been found for at least one genome												
+
+				if (allValidGenome.size() > 0) {																										// If information has been found for at least one genome
 					data.writeObject(buildLine(reader, allValidIndex, genomeList, allValidGenome) + "\n");												// We have to add the line
 					headerHandler.processLine(vcfFile, currentLine.getALT(), currentLine.getFILTER(), currentLine.getINFO(), currentLine.getFORMAT());	// Checks the line in order to update IDs for the header
 				}
@@ -190,7 +190,7 @@ public class SingleFileExportEngine extends ExportEngine {
 	private boolean isValid (VCFLine line) {
 		if (filterList != null) {
 			Map<String, Object> map = line.toFullMap();
-			for (VCFFilter filter: filterList) {
+			for (MGFilter filter: filterList) {
 				if (!filter.getFilter().isValid(map)) {
 					return false;
 				}
@@ -204,7 +204,7 @@ public class SingleFileExportEngine extends ExportEngine {
 	 * Builds the line to insert in the output.
 	 * The ALT field contains information only about the required variations.
 	 * The genome fields are native fields. Genomes that don't define any required variation will have a empty field: ./.
-	 * All other fields are the ones from the native line. 
+	 * All other fields are the ones from the native line.
 	 * @param reader			the file reader
 	 * @param indexes			the indexes referring to the correct alternatives
 	 * @param fullGenomesList	the list of all required genomes
@@ -231,7 +231,7 @@ public class SingleFileExportEngine extends ExportEngine {
 			} else {
 				result += "./.";
 			}
-			if (i < fullGenomesList.size() - 1) {
+			if (i < (fullGenomesList.size() - 1)) {
 				result += "\t";
 			}
 		}
@@ -252,7 +252,7 @@ public class SingleFileExportEngine extends ExportEngine {
 		String result = "";
 		for (int i = 0; i < indexes.size(); i++) {
 			result += alternatives[indexes.get(i)];
-			if (i < indexes.size() - 1) {
+			if (i < (indexes.size() - 1)) {
 				result += ",";
 			}
 		}

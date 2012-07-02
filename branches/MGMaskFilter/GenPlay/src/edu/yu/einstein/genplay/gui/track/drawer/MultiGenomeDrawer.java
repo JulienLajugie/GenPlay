@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,11 +42,11 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.display.DisplayableVariantListMaker;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
@@ -77,7 +77,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private DisplayableVariantListMaker		allele01VariantListMaker;		// displayable variants list creator (for MG project)
 	private DisplayableVariantListMaker		allele02VariantListMaker;		// displayable variants list creator (for MG project)
 
-	private List<VCFFilter>					vcfFiltersList;					// list of filters that will apply rules of filtering
+	private List<MGFilter>					mgFiltersList;					// list of filters that will apply rules of filtering
 	private List<StripesData>				stripesList;					// list of stripes to apply to this track (for MG project)
 	private int								stripesOpacity;					// Transparency of the stripes
 	private VariantInterface 				variantUnderMouse = null;		// Special display when the mouse is over a variant stripe
@@ -134,7 +134,7 @@ public class MultiGenomeDrawer implements Serializable {
 			allele02VariantListMaker = null;
 		}
 		stripesList = null;
-		vcfFiltersList = new ArrayList<VCFFilter>();
+		mgFiltersList = new ArrayList<MGFilter>();
 	}
 
 
@@ -144,10 +144,10 @@ public class MultiGenomeDrawer implements Serializable {
 	public void resetVariantListMaker () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			if (allele01VariantListMaker != null) {
-				allele01VariantListMaker.resetList(vcfFiltersList);
+				allele01VariantListMaker.resetList(mgFiltersList);
 			}
 			if (allele02VariantListMaker != null) {
-				allele02VariantListMaker.resetList(vcfFiltersList);
+				allele02VariantListMaker.resetList(mgFiltersList);
 			}
 		}
 	}
@@ -161,9 +161,9 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<VCFFilter> filtersList) {
+	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
 		this.stripesList = stripesList;
-		this.vcfFiltersList = filtersList;
+		this.mgFiltersList = filtersList;
 
 		List<MGVariantListForDisplay> allele01VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the first allele
 		List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
@@ -199,13 +199,13 @@ public class MultiGenomeDrawer implements Serializable {
 			}
 		}
 
-		if (allele01VariantLists.size() > 0 || allele02VariantLists.size() > 0) {
+		if ((allele01VariantLists.size() > 0) || (allele02VariantLists.size() > 0)) {
 
 		}
 
 		// Sets the list maker with the new list of variant
-		allele01VariantListMaker.setListOfVariantList(allele01VariantLists, vcfFiltersList);	// we set the list maker with the temporary list
-		allele02VariantListMaker.setListOfVariantList(allele02VariantLists, vcfFiltersList);	// we set the list maker with the temporary list
+		allele01VariantListMaker.setListOfVariantList(allele01VariantLists, mgFiltersList);	// we set the list maker with the temporary list
+		allele02VariantListMaker.setListOfVariantList(allele02VariantLists, mgFiltersList);	// we set the list maker with the temporary list
 
 		//repaint();
 	}
@@ -224,7 +224,7 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param xFactor 		the x factor
 	 */
 	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
-		if (stripesList != null && stripesList.size() > 0) {																// if there are stripes
+		if ((stripesList != null) && (stripesList.size() > 0)) {																// if there are stripes
 			stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
 			AlleleType trackAlleleType = getTrackAlleleType();																// get the allele type of the track
 			if (trackAlleleType == AlleleType.BOTH) {																		// if both allele must be displayed
@@ -235,7 +235,7 @@ public class MultiGenomeDrawer implements Serializable {
 				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
 				drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow); 	// draw the stripes for the first allele
 				drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
-				drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half. 
+				drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
 			} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
 				drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw its stripes
 			} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
@@ -263,7 +263,7 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param variantList	list of variants
 	 */
 	private void drawGenome (Graphics g, List<VariantInterface> variantList, GenomeWindow genomeWindow) {
-		if (variantList != null && variantList.size() > 0) {													// if the variation list has at least one variant
+		if ((variantList != null) && (variantList.size() > 0)) {													// if the variation list has at least one variant
 			// Set color for unused position, dead area and mixed variant
 			//Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
 			Color blankZoneColor = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue(), stripesOpacity);	// color for blank of synchronization
@@ -303,10 +303,10 @@ public class MultiGenomeDrawer implements Serializable {
 		}
 
 		// Fits the start and stop position to the screen
-		if (start < genomeWindow.getStart() && stop > genomeWindow.getStart()) {	// if the variant starts before the left edge of the track but stop after 
+		if ((start < genomeWindow.getStart()) && (stop > genomeWindow.getStart())) {	// if the variant starts before the left edge of the track but stop after
 			start = genomeWindow.getStart();										// the drawing must start from the left edge of the track
 		}
-		if (start < genomeWindow.getStop() && stop > genomeWindow.getStop()) {		// if the variant start before the right edge of the track and ends up further,
+		if ((start < genomeWindow.getStop()) && (stop > genomeWindow.getStop())) {		// if the variant start before the right edge of the track and ends up further,
 			stop = genomeWindow.getStop();											// the drawing must stop at the right edge of the track
 		}
 
@@ -330,7 +330,7 @@ public class MultiGenomeDrawer implements Serializable {
 
 		// Sets the stripe color
 		Color newColor;
-		if (variantUnderMouse != null && variantUnderMouse.equals(variant)) {		// if there is a variant under the mouse
+		if ((variantUnderMouse != null) && variantUnderMouse.equals(variant)) {		// if there is a variant under the mouse
 			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
 		} else {																	// if not
 			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);	// we use the defined color taking into account the opacity
@@ -338,7 +338,7 @@ public class MultiGenomeDrawer implements Serializable {
 		g.setColor(newColor);														// we set the graphic object color
 
 		// Draws the variant
-		if (variant.getType() == VariantType.BLANK) {								// drawing a blank of synchronization requires a different method (shorter and more simple) 
+		if (variant.getType() == VariantType.BLANK) {								// drawing a blank of synchronization requires a different method (shorter and more simple)
 			drawBlank(g, x, width);
 		} else {																	// if it is not a blank of synchronization
 			int y = clipHeight - height;											// y represents the top left corner of the stripes, the axis goes to the bottom
@@ -420,22 +420,22 @@ public class MultiGenomeDrawer implements Serializable {
 	private void drawLetters (Graphics g, int x, int width, int height, VariantInterface variant, int nucleotideNumber) {
 		boolean draw = false;								// boolean to check if drawing letters is required
 		VariantType variantType = variant.getType();		// gets the variant type
-		if (	variantType == VariantType.INSERTION 	&& 		MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION ||	// checks all options in order to determine if the letters must be drawn
-				variantType == VariantType.DELETION 	&& 		MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION ||
-				variantType == VariantType.SNPS 		&& 		MGDisplaySettings.DRAW_SNP_LETTERS 			== MGDisplaySettings.YES_MG_OPTION) {
+		if (	((variantType == VariantType.INSERTION) 	&& 		(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
+				((variantType == VariantType.DELETION) 	&& 		(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
+				((variantType == VariantType.SNPS) 		&& 		(MGDisplaySettings.DRAW_SNP_LETTERS 			== MGDisplaySettings.YES_MG_OPTION))) {
 			draw = true;
 		}
 
 		if (draw) {																			// if the letters must be drawn
 			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics
-			if (fm.getHeight() < height && fm.stringWidth("A") < windowWidth) {				// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
+			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {				// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
 				MGPosition fullInformation = variant.getVariantInformation();			// gets the full information of the variant
 				if (fullInformation != null) {												// if they exist (variant can be MIX which does not have full information)
 					String letters = fullInformation.getAlternative();						// we first get the ALT field (by default)
 					if (letters.charAt(0) == '<') {											// if the first character is '<', it a SV variation and the sequence is not provided
 						letters = "?";														// the letter is the question mark
-					} else if (variantType == VariantType.DELETION) {						// if the variant is a deletion, 
+					} else if (variantType == VariantType.DELETION) {						// if the variant is a deletion,
 						letters = fullInformation.getReference().substring(1);				// the deleted nucleotides are provided by the REF field (we do not want the first one)
 					} else if (variantType == VariantType.INSERTION) {						// if the variant is an insertion,
 						letters = letters.substring(1);										// we already have the right field but we don't ant the first letter
@@ -444,11 +444,11 @@ public class MultiGenomeDrawer implements Serializable {
 					int letterHeight = (height + fm.getHeight()) / 2;						// define where the draw will start on the Y axis
 					for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
 						String letter = "?";												// the default letter is the question mark
-						if (letters != "?" && i < letters.length()) {						// if the letters are different to the question mark and if the current index is smaller than the string length
+						if ((letters != "?") && (i < letters.length())) {						// if the letters are different to the question mark and if the current index is smaller than the string length
 							letter = letters.charAt(i) + "";								// we get the current character
 						}
-						int xC = (int) Math.round(x + i * windowWidth + (windowWidth - fm.stringWidth(letter)) * 0.5);	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
-						if (getTrackAlleleType() == AlleleType.BOTH && allele02VariantListMaker.getVariantList().contains(variant)) { // if both allele must be drawn and if the current variant is contained in the second allele variant list,
+						int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
+						if ((getTrackAlleleType() == AlleleType.BOTH) && allele02VariantListMaker.getVariantList().contains(variant)) { // if both allele must be drawn and if the current variant is contained in the second allele variant list,
 							Graphics2D g2d = (Graphics2D) g.create();						// we reverse all coordinates to display the letter on the right way
 							g2d.scale(1, -1);
 							g2d.translate(0, -g2d.getClipBounds().height - 1);
@@ -467,7 +467,7 @@ public class MultiGenomeDrawer implements Serializable {
 
 	/**
 	 * Display the content of a variant in the tool tip stripe dialog
-	 * @param trackHeight 
+	 * @param trackHeight
 	 * @param e mouse event
 	 */
 	public void toolTipStripe (int trackHeight, MouseEvent e) {
@@ -496,13 +496,13 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Checks if the mouse is over a variant and says whether the track graphics must repaint or not 
-	 * @param trackHeight 
+	 * Checks if the mouse is over a variant and says whether the track graphics must repaint or not
+	 * @param trackHeight
 	 * @param e the mouse event
 	 * @return	true if the track must be repainted, false otherwise
 	 */
 	public boolean isOverVariant (int trackHeight, MouseEvent e) {
-		if (ProjectManager.getInstance().isMultiGenomeProject() && allele01VariantListMaker != null && allele02VariantListMaker != null) {	// if we are in multi genome project
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (allele01VariantListMaker != null) && (allele02VariantListMaker != null)) {	// if we are in multi genome project
 			double pos = projectWindow.screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), e.getX());	// we translate the position on the screen into a position on the genome
 			VariantInterface variant = getDisplayableVariant(trackHeight, pos, e.getY());						// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
 			if (variant != null) {																				// if a variant has been found
@@ -544,8 +544,8 @@ public class MultiGenomeDrawer implements Serializable {
 	/**
 	 * @return the vcfFiltersList
 	 */
-	public List<VCFFilter> getFiltersList() {
-		return vcfFiltersList;
+	public List<MGFilter> getFiltersList() {
+		return mgFiltersList;
 	}
 
 
@@ -617,7 +617,7 @@ public class MultiGenomeDrawer implements Serializable {
 		AlleleType trackAlleleType = getTrackAlleleType();			// we get the allele type of the track
 		if (trackAlleleType != null) {
 			if (trackAlleleType == AlleleType.BOTH) {					// if both allele are displayed, we must distinguish on which allele the variant is
-				if (y <= trackHeight / 2) {				// if Y is less than the half of the track height
+				if (y <= (trackHeight / 2)) {				// if Y is less than the half of the track height
 					variantList = allele01VariantListMaker.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());	// we have to look on the first allele list
 				} else {												// if Y is more than the half of the track height
 					variantList = allele02VariantListMaker.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());	// we have to look on the second allele list
@@ -637,7 +637,7 @@ public class MultiGenomeDrawer implements Serializable {
 						return current;
 					}
 				} else {
-					if (x >= current.getStart() && x <= current.getStop()) {	// if X is included in a variant,
+					if ((x >= current.getStart()) && (x <= current.getStop())) {	// if X is included in a variant,
 						return current;											// we have found it!
 					}
 				}
@@ -709,6 +709,27 @@ public class MultiGenomeDrawer implements Serializable {
 	 */
 	public void disableStripeListSerialization () {
 		serializeStripeList = false;
+	}
+
+
+	/**
+	 * @return a copy of the full list of variant of the track
+	 */
+	public List<VariantInterface> getFullVariantList () {
+		AlleleType trackAlleleType = getTrackAlleleType();												// we get the allele type of the track
+		List<VariantInterface> variantList = null;														// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
+		if (trackAlleleType == AlleleType.BOTH) {														// if both allele are displayed,
+			variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// create a copy of the variant list of the first allele
+			for (VariantInterface currentVariant: allele02VariantListMaker.getVariantList()) {			// we add all variant from the variant list of the second allele
+				variantList.add(currentVariant);
+			}
+			Collections.sort(variantList, new VariantComparator());										// we sort the global list
+		} else if (trackAlleleType == AlleleType.ALLELE01) {											// if the first allele only is displayed
+			variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// we get the copy of its list
+		} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
+			variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
+		}
+		return variantList;
 	}
 
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,7 +38,8 @@ import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowLi
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
@@ -175,7 +176,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getVerticalScrollBar().setUnitIncrement(15);
 		getVerticalScrollBar().setBlockIncrement(40);
 		jpTrackList = new JPanel();
-		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));		
+		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
 		int trackCount = projectConfiguration.getTrackCount();
 		int preferredHeight = projectConfiguration.getTrackHeight();
 		trackList = new Track[trackCount];
@@ -184,7 +185,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			trackList[i].setPreferredHeight(preferredHeight);
 			trackList[i].addPropertyChangeListener(this);
 			jpTrackList.add(trackList[i]);
-		}		
+		}
 		for (int i = 0; i < trackCount; i++) {
 			jpTrackList.add(trackList[i]);
 		}
@@ -195,7 +196,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * Resets the {@link TrackList} by filling it with empty tracks 
+	 * Resets the {@link TrackList} by filling it with empty tracks
 	 */
 	public void resetTrackList() {
 		int trackCount = projectConfiguration.getTrackCount();
@@ -263,10 +264,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
 		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());
-		getActionMap().put(SCWLAIndexByChromosome.ACTION_KEY, new SCWLAIndexByChromosome());		
-		getActionMap().put(SCWLAInvertConstant.ACTION_KEY, new SCWLAInvertConstant());		
+		getActionMap().put(SCWLAIndexByChromosome.ACTION_KEY, new SCWLAIndexByChromosome());
+		getActionMap().put(SCWLAInvertConstant.ACTION_KEY, new SCWLAInvertConstant());
 		getActionMap().put(SCWLALog.ACTION_KEY, new SCWLALog());
-		getActionMap().put(SCWLALogOnAvgWithDamper.ACTION_KEY, new SCWLALogOnAvgWithDamper());		
+		getActionMap().put(SCWLALogOnAvgWithDamper.ACTION_KEY, new SCWLALogOnAvgWithDamper());
 		getActionMap().put(SCWLAMax.ACTION_KEY, new SCWLAMax());
 		getActionMap().put(SCWLAMin.ACTION_KEY, new SCWLAMin());
 		getActionMap().put(SCWLAMultiplyConstant.ACTION_KEY, new SCWLAMultiplyConstant());
@@ -281,7 +282,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
-		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());		
+		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());
 		getActionMap().put(BLAIntervalsSummarization.ACTION_KEY, new BLAIntervalsSummarization());
 		getActionMap().put(BLAChangeBinSize.ACTION_KEY, new BLAChangeBinSize());
 		getActionMap().put(BLAChangeDataPrecision.ACTION_KEY, new BLAChangeDataPrecision());
@@ -318,7 +319,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SLAFindNext.ACTION_KEY, new SLAFindNext());
 		getActionMap().put(SLAFindPrevious.ACTION_KEY, new SLAFindPrevious());
 		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
-		
+
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			getActionMap().put(PAMultiGenomeExport.ACTION_KEY, new PAMultiGenomeExport());
 		}
@@ -394,7 +395,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param stripesList {@link StripesData} (can be null)
 	 * @param filtersList {@link VCFFilter} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<VCFFilter> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<MGFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);
@@ -402,7 +403,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (stripes != null) {
 			track.setStripes(stripes);
 		}
-		if (stripesList != null && filtersList != null) {
+		if ((stripesList != null) && (filtersList != null)) {
 			MGDisplaySettings.getInstance().newTrack(trackList[index], track);
 			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
@@ -420,7 +421,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * Switches the scroll mode on / off 
+	 * Switches the scroll mode on / off
 	 * @param b
 	 */
 	public void setScrollMode(boolean b) {
@@ -438,8 +439,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for (int i = 0; i < trackList.length; i++) {
 			if (getMousePosition() != null) {
 				int screenTrackTop = trackList[i].getY() - getVerticalScrollBar().getValue();
-				int screenTrackBottom = trackList[i].getY() + trackList[i].getHeight() - getVerticalScrollBar().getValue();
-				if ((getMousePosition().y > screenTrackTop) && ( getMousePosition().y < screenTrackBottom) 
+				int screenTrackBottom = (trackList[i].getY() + trackList[i].getHeight()) - getVerticalScrollBar().getValue();
+				if ((getMousePosition().y > screenTrackTop) && ( getMousePosition().y < screenTrackBottom)
 						&& (draggedOverTrackIndex != i)) {
 					if (draggedOverTrackIndex != -1) {
 						trackList[draggedOverTrackIndex].setBorder(Track.REGULAR_BORDER);
@@ -451,8 +452,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 						trackList[draggedOverTrackIndex].setBorder(Track.DRAG_UP_BORDER);
 					} else {
 						trackList[draggedOverTrackIndex].setBorder(Track.DRAG_DOWN_BORDER);
-					}					
-				} 
+					}
+				}
 			}
 		}
 	}
@@ -464,7 +465,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void releaseTrack() {
 		if ((draggedTrackIndex != -1) && (draggedOverTrackIndex != -1)) {
 			trackList[draggedOverTrackIndex].setBorder(Track.REGULAR_BORDER);
-			if (getMousePosition() != null) { 
+			if (getMousePosition() != null) {
 				Track<?> trackTmp = trackList[draggedTrackIndex];
 				if (draggedTrackIndex < draggedOverTrackIndex) {
 					for (int i = draggedTrackIndex; i < draggedOverTrackIndex; i++) {
@@ -474,9 +475,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				} else if (draggedTrackIndex > draggedOverTrackIndex) {
 					for (int i = draggedTrackIndex - 1; i >= draggedOverTrackIndex; i--) {
 						trackList[i + 1] = trackList[i];
-					}					
+					}
 				}
-				trackList[draggedOverTrackIndex] = trackTmp;				
+				trackList[draggedOverTrackIndex] = trackTmp;
 			}
 		}
 		rebuildPanel();
@@ -494,7 +495,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setTrackNumber(i + 1);
 			jpTrackList.add(trackList[i]);
-			if (trackList[i].getPropertyChangeListeners().length == 0) {				
+			if (trackList[i].getPropertyChangeListeners().length == 0) {
 				trackList[i].addPropertyChangeListener(this);
 			}
 		}
@@ -517,7 +518,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * Changes the number of {@link Track} in the {@link TrackList} according to 
+	 * Changes the number of {@link Track} in the {@link TrackList} according to
 	 * the value specified in the {@link ProjectConfiguration}
 	 */
 	public void trackCountChanged() {
@@ -663,7 +664,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int count = 0;
 		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof SCWListTrack) {
-				count++;				
+				count++;
 			}
 		}
 		if (count == 0) {
@@ -676,7 +677,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				result[i] = currentTrack;
 				i++;
 			}
-		}		
+		}
 		return result;
 	}
 
@@ -689,7 +690,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		int count = 0;
 		for (Track<?> currentTrack: trackList) {
 			if (currentTrack instanceof GeneListTrack) {
-				count++;				
+				count++;
 			}
 		}
 		if (count == 0) {
@@ -702,7 +703,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				result[i] = currentTrack;
 				i++;
 			}
-		}		
+		}
 		return result;
 	}
 
@@ -762,7 +763,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (selectedTrack != null) {
 			try {
 				copiedTrack = selectedTrack;
-				int selectedTrackIndex = getSelectedTrackIndex();				
+				int selectedTrackIndex = getSelectedTrackIndex();
 				Track<?> emptyTrack = new EmptyTrack(trackList.length);
 				setTrack(selectedTrackIndex, emptyTrack, projectConfiguration.getTrackHeight(), null, null, null, null);
 				selectedTrack = null;
@@ -782,7 +783,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * @return true if there is stripes to remove 
+	 * @return true if there is stripes to remove
 	 */
 	public boolean isRemoveStripesEnable() {
 		return (getSelectedTrack().getStripes() != null);
@@ -801,7 +802,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				selectedTrack.enableStripeListSerialization();
 				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
 				MGDisplaySettings.getInstance().pasteTrack(copiedTrack, newTrack);
-				newTrack.updateMultiGenomeInformation(MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack), MGDisplaySettings.getInstance().getFilterSettings().getVCFFiltersForTrack(newTrack));
+				newTrack.updateMultiGenomeInformation(MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack), MGDisplaySettings.getInstance().getFilterSettings().getMGFiltersForTrack(newTrack));
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while pasting the track");
@@ -831,7 +832,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * Locks the handles of all the tracks 
+	 * Locks the handles of all the tracks
 	 */
 	public void lockTrackHandles() {
 		for (Track<?> currentTrack: trackList) {
@@ -883,8 +884,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Change the reset track function of the versionned tracks.
 	 */
@@ -948,5 +949,5 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public JPanel getJpTrackList() {
 		return jpTrackList;
-	}	
+	}
 }

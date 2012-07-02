@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,8 +30,10 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
@@ -44,9 +46,9 @@ public class MGFiltersManager {
 
 	private static	MGFiltersManager	instance = null;		// unique instance of the singleton
 
-	private List<VCFFilter> previousFilterList;						// List of previous filters
-	private List<VCFFilter> currentFilterList;						// List of new filters
-	private List<VCFFilter> filterListToUpdate;						// List of filters to update
+	private List<MGFilter> previousFilterList;						// List of previous filters
+	private List<MGFilter> currentFilterList;						// List of new filters
+	private List<MGFilter> filterListToUpdate;						// List of filters to update
 	private boolean chromosomeHasChanged;
 
 	private Map<VCFFile, List<VCFFilter>> filterMap;
@@ -62,7 +64,7 @@ public class MGFiltersManager {
 
 
 	/**
-	 * @return an instance of a {@link MGFiltersManager}. 
+	 * @return an instance of a {@link MGFiltersManager}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
 	public static MGFiltersManager getInstance() {
@@ -86,7 +88,7 @@ public class MGFiltersManager {
 		filterListToUpdate = null;
 		filterMap = null;
 		resultMap = null;
-		currentFilterList = MGDisplaySettings.getInstance().getFilterSettings().getAllVCFFilters();
+		currentFilterList = MGDisplaySettings.getInstance().getFilterSettings().getAllMGFilters();
 	}
 
 
@@ -94,19 +96,19 @@ public class MGFiltersManager {
 	 * Initializes the list of filters to delete/create/update.
 	 */
 	public void initializeFilterLists () {
-		currentFilterList = MGDisplaySettings.getInstance().getFilterSettings().getAllVCFFilters();
+		currentFilterList = MGDisplaySettings.getInstance().getFilterSettings().getAllMGFilters();
 
 		// Create the list of filters to update
 		if (chromosomeHasChanged) {
 			filterListToUpdate = currentFilterList;
 		} else {
-			filterListToUpdate = new ArrayList<VCFFilter>();
+			filterListToUpdate = new ArrayList<MGFilter>();
 
 			// Initializes list of filters to create and to update
-			for (VCFFilter newFilter: currentFilterList) {
+			for (MGFilter newFilter: currentFilterList) {
 				boolean found = false;
 				int index = 0;
-				while (!found && index < previousFilterList.size()) {
+				while (!found && (index < previousFilterList.size())) {
 					if (newFilter.equals(previousFilterList.get(index))) {
 						found = true;
 					}
@@ -121,11 +123,14 @@ public class MGFiltersManager {
 
 		// Gather filters by readers
 		filterMap = new HashMap<VCFFile, List<VCFFilter>>();
-		for (VCFFilter filter: filterListToUpdate) {
-			if (!filterMap.containsKey(filter.getVCFFile())) {
-				filterMap.put(filter.getVCFFile(), new ArrayList<VCFFilter>());
+		for (MGFilter filter: filterListToUpdate) {
+			if (filter instanceof VCFFilter) {
+				VCFFilter vcfFilter = (VCFFilter) filter;
+				if (!filterMap.containsKey(vcfFilter.getVCFFile())) {
+					filterMap.put(vcfFilter.getVCFFile(), new ArrayList<VCFFilter>());
+				}
+				filterMap.get(vcfFilter.getVCFFile()).add(vcfFilter);
 			}
-			filterMap.get(filter.getVCFFile()).add(filter);
 		}
 	}
 
@@ -149,7 +154,7 @@ public class MGFiltersManager {
 	 * It retrieves only the required columns.
 	 */
 	public void retrieveDataFromVCF () {
-		if (filterMap != null && filterMap.size() > 0) {
+		if ((filterMap != null) && (filterMap.size() > 0)) {
 			resultMap = new HashMap<VCFFile, List<Map<String,Object>>>();
 			Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 
@@ -157,10 +162,10 @@ public class MGFiltersManager {
 
 				List<String> columnNameList = new ArrayList<String>();
 				for (VCFFilter filter: filterMap.get(vcfFile)) {
-					VCFColumnName columnName = filter.getFilter().getColumnName();
+					VCFColumnName columnName =  ((IDFilterInterface)filter.getFilter()).getColumnName();
 					columnNameList.add(columnName.toString());
 					if (columnName == VCFColumnName.FORMAT) {
-						List<String> genomeNames = filter.getFilter().getGenomeNames();
+						List<String> genomeNames = ((IDFilterInterface)filter.getFilter()).getGenomeNames();
 						for (String genomeName: genomeNames) {
 							String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
 							if (!columnNameList.contains(genomeRawName)) {
@@ -187,7 +192,7 @@ public class MGFiltersManager {
 	 * @return true if filters must be created, false otherwise
 	 */
 	public boolean hasToBeRun () {
-		if (filterListToUpdate != null && filterListToUpdate.size() > 0) {
+		if ((filterListToUpdate != null) && (filterListToUpdate.size() > 0)) {
 			return true;
 		}
 		return false;
@@ -206,7 +211,7 @@ public class MGFiltersManager {
 	/**
 	 * @param previousFilterList the previousFilterList to set
 	 */
-	public void setPreviousFilterList(List<VCFFilter> previousFilterList) {
+	public void setPreviousFilterList(List<MGFilter> previousFilterList) {
 		this.previousFilterList = previousFilterList;
 	}
 
@@ -230,7 +235,7 @@ public class MGFiltersManager {
 	/**
 	 * @return the filterListToUpdate
 	 */
-	public List<VCFFilter> getFilterListToUpdate() {
+	public List<MGFilter> getFilterListToUpdate() {
 		return filterListToUpdate;
 	}
 
