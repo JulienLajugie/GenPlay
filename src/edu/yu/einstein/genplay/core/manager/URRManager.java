@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -54,11 +54,11 @@ public class URRManager<T extends Serializable> implements Serializable {
 	private transient List<ByteArrayOutputStream> 	redoList; 			// a list of object to restore with the redo action in a compressed form.
 	private List<T> 								undoListSaver; 		// the list of undo in an uncompressed form. Used only for the serialization.
 	private List<T> 								redoListSaver; 		// the list of redo in an uncompressed form. Used only for the serialization.
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link URRManager}
-	 * @param length 
+	 * @param length
 	 * @param initialObject the initial state of the object to save
 	 */
 	public URRManager(int length, T initialObject) {
@@ -68,9 +68,9 @@ public class URRManager<T extends Serializable> implements Serializable {
 		redoList = new LinkedList<ByteArrayOutputStream>();
 	}
 
-	
+
 	/**
-	 * @return a deep clone of the current object 
+	 * @return a deep clone of the current object
 	 */
 	public URRManager<?> deepClone() {
 		try {
@@ -86,7 +86,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * @return true if the redo action is available. False otherwise
 	 */
@@ -94,15 +94,15 @@ public class URRManager<T extends Serializable> implements Serializable {
 		return (redoList != null) && (!redoList.isEmpty());
 	}
 
-	
+
 	/**
-	 * @return true if the reset action is available. False otherwise 
+	 * @return true if the reset action is available. False otherwise
 	 */
 	public boolean isResetable() {
 		return initialObject != null;
 	}
 
-	
+
 	/**
 	 * @return true if the undo action is available. False otherwise
 	 */
@@ -110,7 +110,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		return (undoList != null) && (!undoList.isEmpty());
 	}
 
-	
+
 	/**
 	 * Serializes and zips the undo and the redo lists
 	 * after the unserialization of an instance.
@@ -125,7 +125,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		currentObject = (T) in.readObject();
 		initialObjectSaver = (T) in.readObject();
 		undoListSaver = (List<T>) in.readObject();
-		redoListSaver = (List<T>) in.readObject();		
+		redoListSaver = (List<T>) in.readObject();
 		undoList = new LinkedList<ByteArrayOutputStream>();
 		redoList = new LinkedList<ByteArrayOutputStream>();
 		if (initialObjectSaver != null) {
@@ -136,7 +136,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 			// if the undo saver list is longer than the authorized count of
 			// undo
 			// we remove the first elements of the undo saver
-			while (length - undoListSaver.size() < 0) {
+			while ((length - undoListSaver.size()) < 0) {
 				undoListSaver.remove(0);
 			}
 			for (T currentUndo : undoListSaver) {
@@ -148,7 +148,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 			// if the redo saver list is longer than the authorized count of
 			// undo
 			// we remove the first elements of the redo saver
-			while (length - redoListSaver.size() < 0) {
+			while ((length - redoListSaver.size()) < 0) {
 				redoListSaver.remove(0);
 			}
 			for (T currentRedo : redoListSaver) {
@@ -158,7 +158,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		}
 	}
 
-	
+
 	/**
 	 * Restores the last undone object
 	 * @return the restored object
@@ -178,13 +178,15 @@ public class URRManager<T extends Serializable> implements Serializable {
 			}
 			currentObject = unzipAndUnserialize(newBaos);
 			redoList.remove(lastIndex);
+			newBaos.close();
+			oldBaos.close();
 			return currentObject;
 		} else {
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Restores the original states of the objects
 	 * @return the original states
@@ -197,7 +199,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		return currentObject;
 	}
 
-	
+
 	/**
 	 * Serializes and then zips the input parameter
 	 * @param inputObject
@@ -216,7 +218,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		return baos;
 	}
 
-	
+
 	/**
 	 * Sets a new states. This operation can be undone
 	 * @param newObject
@@ -226,9 +228,10 @@ public class URRManager<T extends Serializable> implements Serializable {
 		if (newObject != null) {
 			ByteArrayOutputStream oldBaos = null;
 			// if it's the first operation
-			if (initialObject == null && ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
+			if ((initialObject == null) && ProjectManager.getInstance().getProjectConfiguration().isResetTrack()) {
 				oldBaos = serializeAndZip(currentObject);
 				setInitialObject(oldBaos);
+				oldBaos.close();
 			}
 			// if we accept the undo operation
 			if (length > 0) {
@@ -240,13 +243,14 @@ public class URRManager<T extends Serializable> implements Serializable {
 					oldBaos = serializeAndZip(currentObject);
 				}
 				undoList.add(oldBaos);
+				oldBaos.close();
 			}
 			currentObject = newObject;
 			redoList.clear();
 		}
 	}
 
-	
+
 	/**
 	 * Sets the number of undo saved
 	 * @param length number of undo saved
@@ -264,11 +268,11 @@ public class URRManager<T extends Serializable> implements Serializable {
 				redoList.remove(0);
 			}
 		}
-		
+
 	}
-	
-	
-	 /**
+
+
+	/**
 	 * Undone the last action
 	 * @return the restored object
 	 * @throws IOException
@@ -289,22 +293,24 @@ public class URRManager<T extends Serializable> implements Serializable {
 			}
 			currentObject = unzipAndUnserialize(newBaos);
 			undoList.remove(lastIndex);
+			oldBaos.close();
+			newBaos.close();
 			return currentObject;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	/**
 	 * Delete the initial object
 	 */
 	public void deactivateReset () {
 		setInitialObject(null);
 	}
-	
-	
-	 /**
+
+
+	/**
 	 * @param initialObject the initialObject to set
 	 */
 	private void setInitialObject(ByteArrayOutputStream initialObject) {
@@ -334,7 +340,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 		return outputObject;
 	}
 
-	
+
 	/**
 	 * Unzips and unserializes the undo and the redo lists so they can
 	 * be serialized with the rest of the current instance and saved.
@@ -359,7 +365,7 @@ public class URRManager<T extends Serializable> implements Serializable {
 				}
 			}
 			// unserialize the redo BinLists
-			if (this.isRedoable()) {				
+			if (this.isRedoable()) {
 				redoListSaver = new ArrayList<T>();
 				for (ByteArrayOutputStream currentRedo : redoList) {
 					redoListSaver.add(unzipAndUnserialize(currentRedo));

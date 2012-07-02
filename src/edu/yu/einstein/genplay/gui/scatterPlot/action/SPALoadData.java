@@ -26,6 +26,7 @@ import java.awt.image.ImageObserver;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,6 +126,11 @@ public class SPALoadData extends ScatterPlotAction {
 			reader.close();
 			getScatterPlotPane().addData(extractedData);
 		} catch (Exception e) {
+			try {
+				reader.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			JOptionPane.showMessageDialog(getRootPane(), "The specified file is not valid", "Invalid File", JOptionPane.ERROR_MESSAGE);
 		}
 	}

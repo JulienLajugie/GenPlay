@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -63,12 +63,12 @@ class MultiGenomePanel extends JPanel {
 
 	private static final long serialVersionUID = -1295541774864815129L;
 
-	private MultiGenomeInformationPanel informationPanel;	// multi genome information panel 
+	private final MultiGenomeInformationPanel informationPanel;	// multi genome information panel
 	private VCFLoaderDialog				vcfLoaderDialog;	// the VCF loader
 	private List<VCFData> 				data;				// data
 	private Map<String, List<VCFFile>> genomeFileAssociation;
 
-	private JFileChooser 				fc;					// file chooser
+	private final JFileChooser 				fc;					// file chooser
 
 
 	/**
@@ -117,7 +117,7 @@ class MultiGenomePanel extends JPanel {
 				if (vcfLoaderDialog.showDialog(ProjectFrame.getInstance().getRootPane()) == VCFLoaderDialog.APPROVE_OPTION) {
 					setData(vcfLoaderDialog.getData());
 					if (vcfLoaderDialog.areValidSettings()) {
-						
+
 						initializesGenomeFileAssociation();
 						updatesStatistics();
 						//vcfLoaderDialog.closeDialog();
@@ -159,6 +159,7 @@ class MultiGenomePanel extends JPanel {
 	/**
 	 * Imports a XML file settings
 	 */
+	@SuppressWarnings("resource")
 	private void importXML () {
 		// XML File
 		File xmlFile = null;
@@ -170,7 +171,7 @@ class MultiGenomePanel extends JPanel {
 			xmlFile = new File(xmlPath);
 
 			// Stream & Parsers
-			FileInputStream xml;
+			FileInputStream xml = null;
 			SAXParser parser;
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			parserFactory.setValidating(true);
@@ -179,21 +180,42 @@ class MultiGenomePanel extends JPanel {
 				xml = new FileInputStream(xmlFile);
 				parser = parserFactory.newSAXParser();
 				parser.parse(xml, xmlParser);
+				closeXML(xml);
 			} catch (ParserConfigurationException e1) {
+				closeXML(xml);
 				e1.printStackTrace();
 			} catch (SAXException e1) {
+				closeXML(xml);
 				e1.printStackTrace();
 			} catch (FileNotFoundException e) {
+				closeXML(xml);
 				e.printStackTrace();
 			} catch (IOException e) {
+				closeXML(xml);
 				e.printStackTrace();
 			}
-
+			closeXML(xml);
 			// Manager initialization
 			addData(xmlParser.getData());
+
 			vcfLoaderDialog.setData(data);
 			initializesGenomeFileAssociation();
 			updatesStatistics();
+		}
+	}
+
+
+	/**
+	 * Closes the XML stream
+	 * @param xml
+	 */
+	private void closeXML (FileInputStream xml) {
+		if (xml != null) {
+			try {
+				xml.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

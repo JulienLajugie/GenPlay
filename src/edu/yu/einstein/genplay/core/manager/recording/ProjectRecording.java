@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -56,7 +56,11 @@ public class ProjectRecording {
 
 	private 		File 					fileToLoad;							// The project file to load
 	private 		Track<?>[]				trackList;							// The list of tracks to save
+
+	private 		FileInputStream fis;
+	private 		GZIPInputStream gz;
 	private 		ObjectInputStream 		ois;								// The input file stream
+
 	private 		ProjectInformation		projectInformation;					// The project information
 	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
 	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
@@ -86,7 +90,7 @@ public class ProjectRecording {
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			GZIPOutputStream gz = new GZIPOutputStream(fos);
 			ObjectOutputStream oos = new ObjectOutputStream(gz);
-			// there is bug during the serialization with the nimbus LAF if the track list is visible 
+			// there is bug during the serialization with the nimbus LAF if the track list is visible
 			if (UIManager.getLookAndFeel().getID().equalsIgnoreCase("Nimbus")) {
 				trackList.setViewportView(null);
 			}
@@ -128,7 +132,7 @@ public class ProjectRecording {
 	 */
 	public void initObjectInputStream (File inputFile) throws Exception {
 		fileToLoad = inputFile;
-		FileInputStream fis = new FileInputStream(inputFile);
+		fis = new FileInputStream(inputFile);
 		initObjectInputStream(fis);
 	}
 
@@ -140,10 +144,10 @@ public class ProjectRecording {
 	 */
 	public void initObjectInputStream (InputStream is) throws Exception {
 		try {
-			GZIPInputStream gz = new GZIPInputStream(is);
+			gz = new GZIPInputStream(is);
 			ois = new ObjectInputStream(gz);
 		} catch (IOException e) {
-			// a IOException is likely to be caused by a invalid file type 
+			// a IOException is likely to be caused by a invalid file type
 			throw new InvalidFileTypeException();
 		}
 	}
@@ -190,6 +194,7 @@ public class ProjectRecording {
 			try {
 				trackList = (Track[])ois.readObject();
 				trackListReadyToLoad = false;
+				closeStreams();
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
@@ -198,6 +203,34 @@ public class ProjectRecording {
 			return trackList;
 		}
 		return null;
+	}
+
+
+	/**
+	 * Closes input streams
+	 */
+	private void closeStreams () {
+		try {
+			ois.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			gz.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			fis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		ois = null;
+		gz = null;
+		fis = null;
 	}
 
 
@@ -226,8 +259,8 @@ public class ProjectRecording {
 
 		GregorianCalendar calendar = new GregorianCalendar();
 		String currentDate = (calendar.get(Calendar.MONTH) + 1) + "/" +
-		calendar.get(Calendar.DATE) + "/" +
-		calendar.get(Calendar.YEAR);
+				calendar.get(Calendar.DATE) + "/" +
+				calendar.get(Calendar.YEAR);
 		projectInformation.setProjectDate(currentDate);
 
 		// we count the number of non-empty tracks in the track list

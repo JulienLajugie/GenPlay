@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -51,12 +51,12 @@ public class Launcher {
 	 * This constant can be set to a project file path in the resource folder of the jar.
 	 * In this case this project will be directly loaded when GenPlay starts.
 	 */
-	private static final String DEMO_PROJECT_PATH = null; 
+	private static final String DEMO_PROJECT_PATH = null;
 
 
 	/**
 	 * Starts the application
-	 * @param args a project file path can be specified. In this case the project  
+	 * @param args a project file path can be specified. In this case the project
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
@@ -79,10 +79,12 @@ public class Launcher {
 
 
 	/**
-	 * This method starts a demo project.  The project file needs to be in the resource folder and 
+	 * This method starts a demo project.  The project file needs to be in the resource folder and
 	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
 	 */
 	private static void startDemoProject() {
+		@SuppressWarnings("resource")
+		// The input stream is closed at the end of the loading in PAInitManagers
 		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
 
 		try {
@@ -172,7 +174,7 @@ public class Launcher {
 
 
 	/**
-	 * This method is used by the ProjectFrame after closing 
+	 * This method is used by the ProjectFrame after closing
 	 * to initiate a new project.
 	 */
 	public static void initiateNewProject() {
@@ -191,7 +193,7 @@ public class Launcher {
 
 		// Initializes the genome window manager
 		projectManager.getProjectWindow().initialize();
-		
+
 		// Set the project as a multi genome project before any call of the MainFrame (some graphical elements check it out in order to be displayed)
 		if (!projectFrame.isSingleProject()) {
 			ProjectManager.getInstance().setMultiGenomeProject(true);

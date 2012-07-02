@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.action.project;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.swing.AbstractAction;
@@ -101,7 +102,7 @@ public final class PAInitManagers extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		if (file != null || inputStream != null) {
+		if ((file != null) || (inputStream != null)) {
 			ProjectRecording projectRecording = RecordingManager.getInstance().getProjectRecording();
 
 			// Initializes the object input stream
@@ -155,7 +156,7 @@ public final class PAInitManagers extends AbstractAction {
 									if (!projectInformation.isSingleProject()) {
 										JOptionPane.showMessageDialog(null, "You are about to load a Multi Genome Project but some files have been moved.\n" +
 												"The next window will allow you to define their new location.\n" +
-										"Please remind that .gz and .gz.tbi files must have the same name and location.");
+												"Please remind that .gz and .gz.tbi files must have the same name and location.");
 									}
 
 									InvalidFileDialog invalidFileDialog = new InvalidFileDialog(invalidPaths);
@@ -188,6 +189,12 @@ public final class PAInitManagers extends AbstractAction {
 					}
 				}
 			}
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				inputStream = null;
+				e.printStackTrace();
+			}
 		}
 		if (error != null) {
 			System.err.println("PAInitManagers.actionPerformed() Errors:\n" + error);
@@ -208,6 +215,14 @@ public final class PAInitManagers extends AbstractAction {
 	 */
 	public void setInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
+	}
+
+
+	/**
+	 * @return the inputStream
+	 */
+	public InputStream getInputStream() {
+		return inputStream;
 	}
 
 

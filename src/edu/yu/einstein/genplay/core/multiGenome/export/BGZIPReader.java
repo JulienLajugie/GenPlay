@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,13 +40,13 @@ import edu.yu.einstein.genplay.util.Utils;
 public class BGZIPReader {
 
 	private final VCFFile 				vcfFile;			// file to read
-	private BlockCompressedInputStream 	bcis;				// stream for the file
-	private BufferedReader 				reader;
+	private final BlockCompressedInputStream 	bcis;				// stream for the file
+	private final BufferedReader 				reader;
 	private String 						metaDataHeader;		// header of the file
 	private String 						fieldDataHeader;	// header of the file
 	private VCFLine 					currentLine;		// current line in the file
 	//private String columns;
-	private Map<String, Integer> 		genomeMap;			// map between genome names and their related index according to their location on the column line
+	private final Map<String, Integer> 		genomeMap;			// map between genome names and their related index according to their location on the column line
 
 
 	/**
@@ -76,7 +76,7 @@ public class BGZIPReader {
 
 		while (!isData) {
 			String line = readLine(reader);
-			if (line != null && line.length() > 2) {
+			if ((line != null) && (line.length() > 2)) {
 				if (line.substring(0, 2).equals("##")) {
 
 					if (isMetaDataLine(line)) {
@@ -131,7 +131,7 @@ public class BGZIPReader {
 	 * Creates the string of fixed columns of a VCF files.
 	 * It goes from CHROM to FORMAT included.
 	 * It includes tabs (even after the FORMAT field).
-	 * @return the formated string of the fixed columns 
+	 * @return the formated string of the fixed columns
 	 */
 	protected String getFixedColumns () {
 		String columns = "#";
@@ -147,7 +147,7 @@ public class BGZIPReader {
 		return columns;
 	}
 
-	
+
 	/**
 	 * Reads a line from the input stream
 	 * @return		the line (or null)
@@ -191,8 +191,8 @@ public class BGZIPReader {
 	protected int getIndexFromGenome (String genomeName) {
 		return genomeMap.get(FormattedMultiGenomeName.getRawName(genomeName));
 	}
-	
-	
+
+
 	/**
 	 * @param index the index of a genome
 	 * @return		the genome raw name associated to the index
@@ -205,7 +205,7 @@ public class BGZIPReader {
 		}
 		return null;
 	}
-	
+
 
 	/**
 	 * @return the vcfFile
@@ -232,6 +232,7 @@ public class BGZIPReader {
 				System.out.println(currentLine);
 			}
 		}
+		reader.close();
 	}
 
 
@@ -252,5 +253,6 @@ public class BGZIPReader {
 				currentLine.showElements();
 			}
 		}
+		reader.close();
 	}
 }

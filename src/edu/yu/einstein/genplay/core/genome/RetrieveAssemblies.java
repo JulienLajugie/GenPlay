@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,9 +27,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.SAXException;
 
 /**
@@ -37,13 +39,13 @@ import org.xml.sax.SAXException;
  * @author Nicolas Fourel
  */
 public class RetrieveAssemblies {
-	
+
 	private final static String XML_ASSEMBLIES_ROOT_PATH = "edu/yu/einstein/genplay/resource/assemblies/";
-	private List<String> 		xmlAssembliesPath;
-	private Map<String, Clade> 	cladeList;
+	private final List<String> 		xmlAssembliesPath;
+	private final Map<String, Clade> 	cladeList;
 	private GenomeHandler 		genomeParser;
-	
-	
+
+
 	/**
 	 * Constructor of {@link RetrieveAssemblies}
 	 * @throws ParserConfigurationException
@@ -56,8 +58,8 @@ public class RetrieveAssemblies {
 		initGenomePath ();
 		computeList ();
 	}
-	
-	
+
+
 	/**
 	 * This method read all XML files defined to build a list of clade.
 	 * @throws ParserConfigurationException
@@ -68,17 +70,18 @@ public class RetrieveAssemblies {
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setValidating(true);
 		SAXParser parser = parserFactory.newSAXParser();
-		
+
 		for (String currentGenomePath: xmlAssembliesPath) {
 			InputStream xml = getClass().getClassLoader().getResourceAsStream(currentGenomePath);
 			genomeParser = new GenomeHandler();
 			parser.parse(xml, genomeParser);
 			genomeParser.computeClade();
 			addClade(genomeParser.getClade());
+			xml.close();
 		}
 	}
-	
-	
+
+
 	/**
 	 * XML path files are set here.
 	 */
@@ -157,16 +160,16 @@ public class RetrieveAssemblies {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_zebrafish_2007_07_Zv7_danRer5.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_zebrafish_2010_07_Zv9_danRer7.xml"));
 	}
-	
-	
+
+
 	/**
 	 * @return the clade list
 	 */
 	public Map<String, Clade> getCladeList() {
 		return cladeList;
 	}
-	
-	
+
+
 	/**
 	 * Add a clade to the clade list
 	 * If the clade is already existing, this method will try to add the genome.
@@ -181,5 +184,5 @@ public class RetrieveAssemblies {
 			}
 		}
 	}
-	
+
 }

@@ -101,6 +101,7 @@ public class TabixWriter extends TabixReader {
 	 * @param idx			the output file
 	 * @throws Exception
 	 */
+	@SuppressWarnings("resource")
 	public void createIndex(File idx) throws Exception {
 		LineBlockCompressedInputStream fp = new LineBlockCompressedInputStream(new SeekableFileStream(new File(mFn)));
 		makeIndex(fp);
@@ -120,7 +121,7 @@ public class TabixWriter extends TabixReader {
 	private void makeIndex(BlockCompressedInputStream fp) throws Exception {
 		int last_bin, save_bin;
 		int last_coor, last_tid, save_tid;
-		long save_off, last_off, lineno = 0, offset0 = (long) -1;
+		long save_off, last_off, lineno = 0, offset0 = -1;
 		String str;
 
 		save_bin = save_tid = last_tid = last_bin = 0xffffffff; // Was unsigned
@@ -130,12 +131,12 @@ public class TabixWriter extends TabixReader {
 		last_coor = 0xffffffff; // Should be unsigned.
 		while ((str = readLine(fp)) != null) {
 			++lineno;
-			if (lineno <= lineToSkip || str.charAt(0) == mMeta) {
+			if ((lineno <= lineToSkip) || (str.charAt(0) == mMeta)) {
 				last_off = fp.getFilePointer();
 				continue;
 			}
 			TIntv intv = getIntv(str);
-			if (intv.getBeg() < 0 || intv.getEnd() < 0) {
+			if ((intv.getBeg() < 0) || (intv.getEnd() < 0)) {
 				throw new Exception("The indexes overlap or are out of bounds.");
 			}
 			if (last_tid != intv.getTid()) { // change of chromosomes
@@ -151,8 +152,9 @@ public class TabixWriter extends TabixReader {
 				throw new Exception(String.format("File out of order at line %d.", lineno));
 			}
 			long tmp = insertLinear(linearIndex.get(intv.getTid()), intv.getBeg(), intv.getEnd(), last_off);
-			if (last_off == 0)
+			if (last_off == 0) {
 				offset0 = tmp;
+			}
 			if (intv.getBin() != last_bin) { // then possibly write the binning index
 				if (save_bin != 0xffffffff) { // save_bin==0xffffffffu only
 					// happens to the first record
@@ -172,11 +174,12 @@ public class TabixWriter extends TabixReader {
 			last_off = fp.getFilePointer();
 			last_coor = intv.getBeg();
 		}
-		if (save_tid >= 0)
+		if (save_tid >= 0) {
 			insertBinning(binningIndex.get(save_tid), save_bin, save_off, fp.getFilePointer());
+		}
 		mergeChunks();
 		fillMissing();
-		if (offset0 != (long) -1 && !linearIndex.isEmpty() && linearIndex.get(0) != null) {
+		if ((offset0 != -1) && !linearIndex.isEmpty() && (linearIndex.get(0) != null)) {
 			int beg = (int) (offset0 >> 32), end = (int) (offset0 & 0xffffffff);
 			for (int i = beg; i <= end; ++i) {
 				linearIndex.get(0).set(i, 0L);
@@ -214,7 +217,7 @@ public class TabixWriter extends TabixReader {
 					}
 				}
 			}
-			return (long) beg << 32 | end;
+			return ((long) beg << 32) | end;
 	}
 
 
@@ -225,13 +228,13 @@ public class TabixWriter extends TabixReader {
 				List<TPair64> p = binningForChr.get(k);
 				int m = 0;
 				for (int l = 1; l < p.size(); l++) {
-					if (p.get(m).getV() >> 16 == p.get(l).getU() >> 16) {
+					if ((p.get(m).getV() >> 16) == (p.get(l).getU() >> 16)) {
 						p.get(m).setV(p.get(l).getV());
 					} else {
 						p.set(++m, p.get(l));
 					}
 				}
-				while (p.size() > m + 1) {
+				while (p.size() > (m + 1)) {
 					p.remove(p.size() - 1);
 				}
 			}
@@ -360,23 +363,28 @@ public class TabixWriter extends TabixReader {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 		return result;
 	}
 
 
 	private int reg2bin(int beg, int end) {
 		--end;
-		if (beg >> 14 == end >> 14)
+		if ((beg >> 14) == (end >> 14)) {
 			return 4681 + (beg >> 14);
-		if (beg >> 17 == end >> 17)
+		}
+		if ((beg >> 17) == (end >> 17)) {
 			return 585 + (beg >> 17);
-		if (beg >> 20 == end >> 20)
+		}
+		if ((beg >> 20) == (end >> 20)) {
 			return 73 + (beg >> 20);
-		if (beg >> 23 == end >> 23)
+		}
+		if ((beg >> 23) == (end >> 23)) {
 			return 9 + (beg >> 23);
-		if (beg >> 26 == end >> 26)
+		}
+		if ((beg >> 26) == (end >> 26)) {
 			return 1 + (beg >> 26);
+		}
 		return 0;
 	}
 

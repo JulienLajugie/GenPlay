@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -67,7 +67,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 
 	/**
-	 * @return 
+	 * @return
 	 */
 	private String retrieveName() {
 		BufferedReader reader = null;
@@ -97,17 +97,22 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 							reader.close();
 							// remove the first "
 							line = line.substring(1);
-							return Utils.split(line, '"')[0];							
+							return Utils.split(line, '"')[0];
 						} else {
 							reader.close();
 							line = line.trim();
 							return Utils.split(line, ' ')[0].trim();
 						}
 					}
-				}				
+				}
 			}
 			reader.close();
 		} catch (Exception e) {
+			try {
+				reader.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			return null;
 		}
 		return null;
@@ -123,7 +128,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		// That version does not work with SAM files from Eric
 		// In order to make it working and in a temporary way, this method return true by default.
 
-		
+
 		// the following line is an optimization:
 		// if the line starts with chr it's a data line so we skip the other tests
 		if ((line.length() >= 3) && (line.substring(0, 3).equalsIgnoreCase("chr"))) {
@@ -145,7 +150,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		if ((line.length() >= 7) && (line.substring(0, 7).equalsIgnoreCase("browser"))) {
 			return false;
 		}
-		
+
 		return true; // This is a modification compare to the original version
 	}
 
@@ -159,12 +164,12 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			return true;
 		}
 		return false;
-	}	
+	}
 
 
 	/**
-	 * Extracts the data from a line. 
-	 * @param line a line from the data file that is not a header line. 
+	 * Extracts the data from a line.
+	 * @param line a line from the data file that is not a header line.
 	 * (ie: a line that doesn't start with "#", "browser" or "track")
 	 * @return true when the last selected chromosome has been totally extracted (ie returns true when the extraction is done)
 	 * @throws DataLineException
@@ -190,7 +195,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 			// extract data
 			String line = null;
 			int currentLineNumber = 1; 		// current line number
-			int currentValidLineNumber = 1; // current valid line number 
+			int currentValidLineNumber = 1; // current valid line number
 			boolean isExtractionDone = false; // true when the last selected chromosome has been extracted
 			// we stop at the end of the file or when the last selected chromosome has been extracted
 			while(((line = reader.readLine()) != null) && (!isExtractionDone)){
@@ -206,8 +211,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 						totalCount++;
 						// we extract a line if either way:
 						// 1. the whole file needs to be extracted (ie: the randomLineNumbers variable is not set)
-						// 2. we extract a random part of the file and the current line was selected as one of the random line to extract 
-						// (ie the current line number is present in the randomLineNumbers set) 
+						// 2. we extract a random part of the file and the current line was selected as one of the random line to extract
+						// (ie the current line number is present in the randomLineNumbers set)
 						if ((randomLineNumbers == null) || (randomLineNumbers.contains(currentValidLineNumber))) {
 							isExtractionDone = extractLine(line);
 						}
@@ -240,7 +245,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	 */
 	@Override
 	public void stop() {
-		needToBeStopped = true;		
+		needToBeStopped = true;
 	}
 
 
@@ -255,7 +260,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 				writer.newLine();
 				writer.write("Number of lines extracted: " + lineCount);
 				writer.newLine();
-				writer.write("Percentage of lines extracted: " + df.format((double)lineCount / totalCount * 100) + "%");
+				writer.write("Percentage of lines extracted: " + df.format(((double)lineCount / totalCount) * 100) + "%");
 				writer.newLine();
 				writer.close();
 			} catch (IOException e) {
@@ -297,7 +302,7 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		TreeSet<Integer> randomLineNumbers = new TreeSet<Integer>();
 		// we compute how many lines there is in the file
 		int lineCount = countLines(dataFile);
-		// if there is less line in the file than the specified number of line to extract 
+		// if there is less line in the file than the specified number of line to extract
 		// we extract the entire file
 		if (lineCount > randomCount) {
 			randomLineNumbers = new TreeSet<Integer>();
