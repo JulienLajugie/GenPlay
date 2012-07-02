@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,7 +40,7 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 	/** Generated default version ID */
 	private static final long serialVersionUID = 5640045293380707735L;
 
-	
+
 	/**
 	 * Constructor of {@link MGButtonPopupMenu}.
 	 */
@@ -48,19 +48,20 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 		super();
 		initializeItem();
 	}
-	
-	
+
+
 	/**
 	 * Initializes the list of items for this menu
 	 */
 	private void initializeItem () {
 		add(getItemMenu(PropertiesDialog.GENERAL));
 		add(getItemMenu(PropertiesDialog.SETTINGS));
-		add(getItemMenu(PropertiesDialog.FILTERS));
+		add(getItemMenu(PropertiesDialog.FILTERS_FILE));
+		add(getItemMenu(PropertiesDialog.FILTERS_ADVANCED));
 		add(getItemMenu(PropertiesDialog.STRIPES));
 	}
-	
-	
+
+
 	/**
 	 * Instantiates an item using a text as label
 	 * @param text 	text that will be use as a label

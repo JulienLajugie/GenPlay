@@ -31,9 +31,9 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.comparator.StringComparator;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFileStatistic;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFSampleStatistic;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFileStatistic;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFSampleStatistic;
 
 /**
  * @author Nicolas Fourel

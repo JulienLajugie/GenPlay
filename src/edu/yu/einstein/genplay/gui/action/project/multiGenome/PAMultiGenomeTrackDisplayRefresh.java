@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
@@ -45,8 +45,8 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class PAMultiGenomeTrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
-	private static final String 	DESCRIPTION = 
-		"Performs the multi genome algorithm for SNPs"; 						// tooltip
+	private static final String 	DESCRIPTION =
+			"Performs the multi genome algorithm for SNPs"; 						// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 			// mnemonic key
 	private static		 String 			ACTION_NAME = "Updating tracks";	// action name
 
@@ -76,20 +76,20 @@ public class PAMultiGenomeTrackDisplayRefresh extends TrackListActionWorker<Bool
 
 		// Checks if the project is multi-genome
 		if (projectManager.isMultiGenomeProject()) {
-			
+
 			// Notifies the action
 			notifyActionStart(ACTION_NAME, 1, false);
-			
+
 			settings = MGDisplaySettings.getInstance();
-			
+
 			// Update tracks
 			Track<?>[] tracks = getTrackList().getTrackList();
 			for (Track<?> track: tracks) {
-				List<VCFFilter> filtersList = settings.getFilterSettings().getVCFFiltersForTrack(track);
+				List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(track);
 				List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
 				track.updateMultiGenomeInformation(stripesList, filtersList);
 			}
-			
+
 			return true;
 		}
 
@@ -109,8 +109,8 @@ public class PAMultiGenomeTrackDisplayRefresh extends TrackListActionWorker<Bool
 			latch.countDown();
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param latch the latch to set
 	 */

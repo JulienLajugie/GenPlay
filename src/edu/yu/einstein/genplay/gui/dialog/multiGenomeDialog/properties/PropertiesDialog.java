@@ -42,15 +42,17 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.TableEditingPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingDialogManager.EditingDialogManagerForFilters;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editingDialog.editingDialogManager.EditingDialogManagerForStripes;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForAdvancedFilters;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForFilters;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForStripes;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.AdvancedFiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesTable;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.TableEditingPanel;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -69,19 +71,23 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	/** Height of the dialog */
 	public static final	int					DIALOG_HEIGHT 		= 400;
 	/** Text for GENERAL tree node */
-	public static final		String			GENERAL 		= "General";
+	public static final		String			GENERAL 			= "General";
 	/** Text for SETTINGS tree node */
-	public static final		String			SETTINGS 		= "Settings";
+	public static final		String			SETTINGS 			= "Settings";
 	/** Text for FILES tree node */
-	public static final		String			FILES 			= "Files";
+	public static final		String			FILES 				= "Files";
 	/** Text for INFORMATION tree node */
-	public static final		String			INFORMATION 	= "Information";
+	public static final		String			INFORMATION 		= "Information";
 	/** Text for STATISTICS tree node */
-	public static final		String			STATISTICS 		= "Statistics";
+	public static final		String			STATISTICS 			= "Statistics";
 	/** Text for FILTERS tree node */
-	public static final		String			FILTERS 		= "Filters";
+	public static final		String			FILTERS 			= "Filters";
+	/** Text for BASIC FILTERS tree node */
+	public static final		String			FILTERS_FILE		= "VCF Files";
+	/** Text for ADVANCED FILTERS tree node */
+	public static final		String			FILTERS_ADVANCED	= "Advanced";
 	/** Text for STRIPES tree node */
-	public static final		String			STRIPES 		= "Stripes";
+	public static final		String			STRIPES 			= "Stripes";
 
 
 	/** Insets for the first title in top of the content panel */
@@ -96,13 +102,14 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 	private final Dimension contentDimension = new Dimension(600, DIALOG_HEIGHT);
 
-	private final TreeContent 				treeContent;							// the tree manager
-	private final JTree 						tree;									// the tree of the dialog
-	private final JPanel 						contentPane;							// right part of the dialog
-	private final GeneralPanel 				generalPanel;							// the general information panel
-	private final SettingsPanel 				settingsPanel;							// the settings panel
-	private final TableEditingPanel<StripesData> 	stripesPanel;						// the stripes panel
-	private final TableEditingPanel<FiltersData> 	filtersPanel;						// the filters panel
+	private final TreeContent 						treeContent;			// the tree manager
+	private final JTree 							tree;					// the tree of the dialog
+	private final JPanel 							contentPane;			// right part of the dialog
+	private final GeneralPanel 						generalPanel;			// the general information panel
+	private final SettingsPanel 					settingsPanel;			// the settings panel
+	private final TableEditingPanel<StripesData> 	stripesPanel;			// the stripes panel
+	private final TableEditingPanel<FiltersData> 	fileFiltersPanel;		// the file filters panel
+	private final TableEditingPanel<FiltersData> 	advancedFiltersPanel;	// the advanced filters panel
 
 
 	/**
@@ -141,8 +148,11 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		// Creates the stripes panel
 		stripesPanel = new TableEditingPanel<StripesData>("Variations settings", new StripesTable(), new EditingDialogManagerForStripes());
 
-		// Creates the filters panel
-		filtersPanel = new TableEditingPanel<FiltersData>("Filters settings", new FiltersTable(), new EditingDialogManagerForFilters());
+		// Creates the file filters panel
+		fileFiltersPanel = new TableEditingPanel<FiltersData>("VCF Files Filters settings", new FiltersTable(), new EditingDialogManagerForFilters());
+
+		// Creates the advanced filters panel
+		advancedFiltersPanel = new TableEditingPanel<FiltersData>("Advanced Filters settings", new AdvancedFiltersTable(), new EditingDialogManagerForAdvancedFilters());
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
@@ -177,9 +187,10 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			setScrollableCenterPanel(generalPanel);
 		} else if (accessor.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
-		} else if (accessor.equals(FILTERS)) {
-			setScrollableCenterPanel(filtersPanel);
-			//setCenterPanel(getEmptyPanel());
+		} else if (accessor.equals(FILTERS_FILE)) {
+			setScrollableCenterPanel(fileFiltersPanel);
+		} else if (accessor.equals(FILTERS_ADVANCED)) {
+			setScrollableCenterPanel(advancedFiltersPanel);
 		} else if (accessor.equals(STRIPES)) {
 			setScrollableCenterPanel(stripesPanel);
 		}
@@ -247,8 +258,10 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (nodeInfo.equals(STATISTICS)) {
 			VCFFile vcfFile = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(new StatisticPanel(vcfFile));
-		} else if (nodeInfo.equals(FILTERS)) {
-			setScrollableCenterPanel(filtersPanel);
+		} else if (nodeInfo.equals(FILTERS_FILE)) {
+			setScrollableCenterPanel(fileFiltersPanel);
+		} else if (nodeInfo.equals(FILTERS_ADVANCED)) {
+			setScrollableCenterPanel(advancedFiltersPanel);
 		} else if (nodeInfo.equals(STRIPES)) {
 			setScrollableCenterPanel(stripesPanel);
 		}
@@ -313,9 +326,13 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 				settings.getVariousSettings().getTransparencyPercentage(),
 				settings.getVariousSettings().isShowLegend());
 
-		// Filter settings panel
-		filtersPanel.setData(settings.getFilterSettings().getDuplicatedFiltersList());
-		filtersPanel.refreshPanel();
+		// File Filter settings panel
+		fileFiltersPanel.setData(settings.getFilterSettings().getDuplicatedFileFiltersList());
+		fileFiltersPanel.refreshPanel();
+
+		// Advanced Filter settings panel
+		advancedFiltersPanel.setData(settings.getFilterSettings().getDuplicatedAdvancedFiltersList());
+		advancedFiltersPanel.refreshPanel();
 
 		// Stripes settings panel
 		stripesPanel.setData(settings.getStripeSettings().getStripesList());
@@ -367,7 +384,13 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @return the filters list
 	 */
 	public List<FiltersData> getFiltersData () {
-		return filtersPanel.getData();
+		List<FiltersData> list = fileFiltersPanel.getData();
+
+		for (FiltersData data: advancedFiltersPanel.getData()) {
+			list.add(data);
+		}
+
+		return list;
 	}
 
 
@@ -380,10 +403,10 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 
 
 	/**
-	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS, STRIPES)
+	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS_BASIC, FILTERS_ADVANCED, STRIPES)
 	 */
 	public static String[] getPropertiesDialogMainItems () {
-		String[] items = {GENERAL, SETTINGS, FILTERS, STRIPES};
+		String[] items = {GENERAL, SETTINGS, FILTERS_FILE, FILTERS_ADVANCED, STRIPES};
 		return items;
 	}
 }

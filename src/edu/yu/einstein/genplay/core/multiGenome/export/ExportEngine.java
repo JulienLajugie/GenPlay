@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,8 +40,8 @@ import java.util.zip.GZIPOutputStream;
 import net.sf.samtools.util.BlockCompressedOutputStream;
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 
 /**
  * @author Nicolas Fourel
@@ -61,7 +61,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 	protected ExportHeaderHandler				headerHandler;	// handler for the new header
 	protected Map<String, List<VCFFile>> 		fileMap;		// map between genome names and their related files
 	protected Map<String, List<VariantType>> 	variationMap;	// map between genome names and their required variation
-	protected List<VCFFilter> 					filterList;		// list of filter
+	protected List<MGFilter> 					filterList;		// list of filter
 	protected String 							path;			// path of the new VCF file
 
 
@@ -95,7 +95,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 
 	/**
 	 * Performs the export action
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	protected abstract void performExport() throws IOException;
 
@@ -280,7 +280,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 			}
 		}
 
-		if (fileMap != null && variationMap != null) {
+		if ((fileMap != null) && (variationMap != null)) {
 			ListComparator<String> comparator = new ListComparator<String>();
 			List<String> genomesFileMap = new ArrayList<String>(fileMap.keySet());
 			List<String> genomesVariationMap = new ArrayList<String>(variationMap.keySet());
@@ -354,7 +354,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 
 
 	@Override
-	public void setFilterList(List<VCFFilter> filterList) {
+	public void setFilterList(List<MGFilter> filterList) {
 		this.filterList = filterList;
 	}
 
@@ -411,7 +411,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 
 	private void showFilterList () {
 		String info = "List of filter:";
-		if (filterList == null || filterList.size() == 0) {
+		if ((filterList == null) || (filterList.size() == 0)) {
 			info += " no filter";
 		} else {
 			info += "\n";

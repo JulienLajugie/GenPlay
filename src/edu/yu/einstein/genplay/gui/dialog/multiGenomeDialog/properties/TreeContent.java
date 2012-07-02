@@ -31,7 +31,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 
 /**
  * @author Nicolas Fourel
@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
  */
 class TreeContent {
 
-	private final JTree 							tree;	// the tree
+	private final JTree 					tree;	// the tree
 	private DefaultMutableTreeNode 			root;	// root of the tree
 	private List<DefaultMutableTreeNode>	nodes;	// nodes record
 
@@ -104,9 +104,11 @@ class TreeContent {
 		root.add(vcfFiles);
 
 		// FILTERS node
-		currentNode = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
-		root.add(currentNode);
-		nodes.add(currentNode);
+		DefaultMutableTreeNode filter = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
+		filter.add(new DefaultMutableTreeNode(PropertiesDialog.FILTERS_FILE));
+		filter.add(new DefaultMutableTreeNode(PropertiesDialog.FILTERS_ADVANCED));
+		root.add(filter);
+		nodes.add(filter);
 
 		// STRIPES node
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.STRIPES);

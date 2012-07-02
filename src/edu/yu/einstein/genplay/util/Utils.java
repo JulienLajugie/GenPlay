@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.util;
 
 import java.awt.Component;
+import java.awt.FontMetrics;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +45,7 @@ import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -72,8 +74,8 @@ public class Utils {
 
 	/**
 	 * Checks if the specified {@link File} name ends with one of the specified extensions.
-	 * If not adds the first specified extension to the file name. 
-	 * @param file a file 
+	 * If not adds the first specified extension to the file name.
+	 * @param file a file
 	 * @param extensions file extensions
 	 * @return a File with the specified extension
 	 */
@@ -94,8 +96,8 @@ public class Utils {
 				i++;
 			}
 		}
-		// if we didn't find one of the specified extensions we return 
-		// a new file having the name of the input file concatenated  
+		// if we didn't find one of the specified extensions we return
+		// a new file having the name of the input file concatenated
 		// with the first specified extension
 		if (!specifedExtensionsFound) {
 			String newFile = file.getPath() + "." + extensions[0];
@@ -107,13 +109,13 @@ public class Utils {
 
 
 	/**
-	 * @param chromoList array of boolean. 
-	 * @return true if all the booleans are set to true or if the array is null. False otherwise 
+	 * @param chromoList array of boolean.
+	 * @return true if all the booleans are set to true or if the array is null. False otherwise
 	 */
 	public static boolean allChromosomeSelected(boolean[] chromoList) {
 		if (chromoList == null) {
 			return true;
-		} 
+		}
 		for (boolean isSelected: chromoList) {
 			if (!isSelected) {
 				return false;
@@ -164,7 +166,7 @@ public class Utils {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = jfc.getSelectedFile();
 			if (!selectedFile.canRead()) {
-				JOptionPane.showMessageDialog(parentComponent, 
+				JOptionPane.showMessageDialog(parentComponent,
 						"You don't have the permission to read the selected file.", "File Incorrect", JOptionPane.ERROR_MESSAGE, null);
 				return null;
 			} else {
@@ -178,7 +180,7 @@ public class Utils {
 
 	/**
 	 * A dialog box used to choose a {@link FilterType}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link FilterType} value
 	 */
 	public static FilterType chooseFilterType(Component parentComponent) {
@@ -195,7 +197,7 @@ public class Utils {
 
 	/**
 	 * A dialog box used to choose a {@link IslandResultType}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link FilterType} value
 	 */
 	public static IslandResultType chooseIslandResultType(Component parentComponent) {
@@ -217,19 +219,19 @@ public class Utils {
 	 */
 	public static LogBase chooseLogBase(Component parentComponent) {
 		return (LogBase) JOptionPane.showInputDialog(
-				parentComponent, 
-				"Choose a base for the logarithm", 
-				"Logarithm Base", 
-				JOptionPane.QUESTION_MESSAGE, 
-				null, 
-				LogBase.values(), 
+				parentComponent,
+				"Choose a base for the logarithm",
+				"Logarithm Base",
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				LogBase.values(),
 				LogBase.BASE_2);
 	}
 
 
 	/**
 	 * A dialog box used to choose a {@link DataPrecision}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link DataPrecision}
 	 */
 	public static DataPrecision choosePrecision(Component parentComponent) {
@@ -241,12 +243,12 @@ public class Utils {
 				null,
 				DataPrecision.values(),
 				DataPrecision.PRECISION_32BIT);
-	}	
+	}
 
 
 	/**
 	 * A dialog box used to choose a {@link DataPrecision}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @param defaultValue default value in the input box
 	 * @return a {@link DataPrecision}
 	 */
@@ -264,7 +266,7 @@ public class Utils {
 
 	/**
 	 * A dialog box used to choose a {@link SaturationType}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link SaturationType}
 	 */
 	public static SaturationType chooseSaturationType(Component parentComponent) {
@@ -281,7 +283,7 @@ public class Utils {
 
 	/**
 	 * A dialog box used to choose a {@link ScoreCalculationMethod}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreCalculationMethod}
 	 */
 	public static ScoreCalculationMethod chooseScoreCalculation(Component parentComponent) {
@@ -298,7 +300,7 @@ public class Utils {
 
 	/**
 	 * A dialog box used to choose a {@link ScoreCalculationMethod}
-	 * @param parentComponent the parent Component for the dialog 
+	 * @param parentComponent the parent Component for the dialog
 	 * @return a {@link ScoreCalculationMethod}
 	 */
 	public static ScoreCalculationTwoTrackMethod chooseScoreCalculationTwoTrackMethod(Component parentComponent) {
@@ -323,11 +325,11 @@ public class Utils {
 			return null;
 		}
 		int dotIndex =  fileName.lastIndexOf('.');
-		if ((dotIndex > 0) && (dotIndex < fileName.length() - 1)) {
+		if ((dotIndex > 0) && (dotIndex < (fileName.length() - 1))) {
 			return fileName.substring(dotIndex + 1).toLowerCase().trim();
 		} else {
 			return null;
-		}		
+		}
 	}
 
 
@@ -337,8 +339,8 @@ public class Utils {
 	 */
 	public static String getFileNameWithoutExtension(File file) {
 		String fileName = file.getName();
-		int index = fileName.lastIndexOf('.');		
-		if ((index > 0) && (index <= file.getName().length() - 2)) {
+		int index = fileName.lastIndexOf('.');
+		if ((index > 0) && (index <= (file.getName().length() - 2))) {
 			return fileName.substring(0, index);
 		} else {
 			return fileName;
@@ -370,7 +372,7 @@ public class Utils {
 	public static ExtendedFileFilter[] getReadableRepeatFileFilters() {
 		ExtendedFileFilter[] filters = {new BedFilter(), new GFFFilter(), new GTFFilter(), new PSLFilter()};
 		return filters;
-	}	
+	}
 
 
 	/**
@@ -437,7 +439,7 @@ public class Utils {
 
 
 	/**
-	 * Returns the logarithm of a double value. The logarithm is computed in the specified base 
+	 * Returns the logarithm of a double value. The logarithm is computed in the specified base
 	 * @param logBase
 	 * @param value value to l
 	 * @return a logarithm value
@@ -448,14 +450,14 @@ public class Utils {
 			return Math.log(value);
 		} else {
 			// change of base: logb(x) = logk(x) / logk(b)
-			return Math.log(value) / Math.log(logBase.getValue());									
+			return Math.log(value) / Math.log(logBase.getValue());
 		}
 	}
 
 
 	/**
 	 * This methods parse a line and returns an array of strings containing
-	 * all the fields from the input line that are separated either by one or many 
+	 * all the fields from the input line that are separated either by one or many
 	 * continuous spaces or tabs except if this tabs or spaces are from inside double quotes.
 	 * @param line input line to parse
 	 * @return an array of strings containing the fields of the input line
@@ -465,7 +467,7 @@ public class Utils {
 		int i = 0;
 		while (i < line.length()) {
 			// skip all the space and tabs
-			while ((i < line.length()) && 
+			while ((i < line.length()) &&
 					((line.charAt(i) == ' ') || (line.charAt(i) == '\t'))) {
 				i++;
 			}
@@ -473,7 +475,7 @@ public class Utils {
 				// if the spaces and tabs weren't at the end of the line
 				int indexStart = i; // retrieve the start index
 				boolean isInsideQuotes = false; // when we start we're not inside double quotes
-				while ((i < line.length()) && 
+				while ((i < line.length()) &&
 						(isInsideQuotes || ((line.charAt(i) != ' ') && (line.charAt(i) != '\t')))) {
 					// loop until we meet a new space or tab that is not between double quotes
 					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
@@ -497,7 +499,7 @@ public class Utils {
 
 	/**
 	 * This methods parse a line and returns an array of strings containing
-	 * all the fields from the input line that are separated by one or many 
+	 * all the fields from the input line that are separated by one or many
 	 * continuous tabs except if this tabs are from inside double quotes.
 	 * @param line input line to parse
 	 * @return an array of strings containing the fields of the input line
@@ -507,7 +509,7 @@ public class Utils {
 		int i = 0;
 		while (i < line.length()) {
 			// skip all the tabs
-			while ((i < line.length()) && 
+			while ((i < line.length()) &&
 					(line.charAt(i) == '\t')) {
 				i++;
 			}
@@ -515,7 +517,7 @@ public class Utils {
 				// if the tabs weren't at the end of the line
 				int indexStart = i; // retrieve the start index
 				boolean isInsideQuotes = false; // when we start we're not inside double quotes
-				while ((i < line.length()) && 
+				while ((i < line.length()) &&
 						(isInsideQuotes || (line.charAt(i) != '\t'))) {
 					// loop until we meet a new tab that is not between double quotes
 					if (line.charAt(i) == '"') { // check if we enter or leave double quotes
@@ -536,18 +538,122 @@ public class Utils {
 		}
 	}
 
+
+	/**
+	 * Returns a sublist of the input list. The first variant contains or
+	 * starts after the specified start position.
+	 * The last variant contains or stops before the specified stop position.
+	 * @param list input list
+	 * @param positionStart
+	 * @param positionStop
+	 * @return a sublist of the input list
+	 */
+	public static ArrayList<VariantInterface> searchVariantInterval(List<VariantInterface> list, int positionStart, int positionStop) {
+		if ((list == null) || (list.size() == 0)) {
+			return null;
+		}
+
+		ArrayList<VariantInterface> resultList = new ArrayList<VariantInterface>();
+
+		// Gets the start and stop indexes of the list
+		int indexStart = findVariantPosition(list, positionStart, 0, list.size() - 1);
+		int indexStop = findVariantPosition(list, positionStop, 0, list.size() - 1);
+
+		// Extract the windows from the start (included) to the stop (excluded)
+		for (int i = indexStart; i < indexStop; i++) {
+			resultList.add(list.get(i));
+		}
+
+		// The stop position may have been returned even if the window is not included between the start and stop position
+		// It is necessary to test it before adding it
+		VariantInterface element = list.get(indexStop);
+		if (isInVariant(element, positionStart, positionStop)) {
+			resultList.add(element);
+		}
+
+		return resultList;
+	}
+
+
+	/**
+	 * Returns the index of the variant where the value is found OR the index right after if not found.
+	 * The scan is based on the start and stop position of the variant.
+	 * Recursive function.
+	 * 
+	 * @param list			list to scan
+	 * @param value			value to find
+	 * @param indexStart	index of the list to start the scan
+	 * @param indexStop		index of the list to stop the scan
+	 * @return				the index where the value of the variant is found or the index right after if the exact value is not found
+	 */
+	private static int findVariantPosition(List<VariantInterface> list, int value, int indexStart, int indexStop) {
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int middle = (indexStop - indexStart) / 2;
+			int compare = containsVariantPosition(list.get(indexStart + middle), value);
+
+			if (compare == 0) {
+				return indexStart + middle;
+			} else if (compare < 0) {
+				return findVariantPosition(list, value, indexStart, indexStart + middle);
+			} else {
+				return findVariantPosition(list, value, indexStart + middle + 1, indexStop);
+			}
+		}
+	}
+
+
+	/**
+	 * Checks if the variant contains the given position.
+	 * If the position is located before the window, -1 is returned.
+	 * If the position is located after the window, 1 is returned.
+	 * if the position is included in the window, 0 is returned.
+	 * @param variant the variant
+	 * @param position the position to check
+	 * @return 0 is the position is in the variant, -1 if lower, 1 if higher.
+	 */
+	public static int containsVariantPosition (VariantInterface variant, int position) {
+		if (position < variant.getStart()) {
+			return -1;
+		} else if (position > variant.getStop()) {
+			return 1;
+		}
+		return 0;
+	}
+
+
+	/**
+	 * @param element		the element to test
+	 * @param positionStart	the start position on the main frame
+	 * @param positionStop	the stop position on the main frame
+	 * @return true if the element is in the main frame, false otherwise
+	 */
+	public static boolean isInVariant (VariantInterface element, int positionStart, int positionStop) {
+		if (element.getStop() < positionStart) {
+			return false;
+		}
+
+		if (element.getStart() > positionStop) {
+			return false;
+		}
+
+		return true;
+	}
+
+
 	/**
 	 * Returns a sublist of the input list. The first window contains or
 	 * starts after the specified start position.
-	 * The last window contains or stops before the specified stop position. 
-	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow}, 
+	 * The last window contains or stops before the specified stop position.
+	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow},
 	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
 	 * @param list input list
 	 * @param positionStart
 	 * @param positionStop
 	 * @return a sublist of the input list
 	 */
-	public static <T extends ChromosomeWindow> List<T> searchInterval(List<T> list, int positionStart, int positionStop) {
+	public static <T extends ChromosomeWindow> List<T> searchChromosomeWindowInterval(List<T> list, int positionStart, int positionStop) {
 		if ((list == null) || (list.size() == 0)) {
 			return null;
 		}
@@ -555,8 +661,8 @@ public class Utils {
 		ArrayList<T> resultList = new ArrayList<T>();
 
 		// Gets the start and stop indexes of the list
-		int indexStart = findPosition(list, positionStart, 0, list.size() - 1);
-		int indexStop = findPosition(list, positionStop, 0, list.size() - 1);
+		int indexStart = findChromosomePosition(list, positionStart, 0, list.size() - 1);
+		int indexStop = findChromosomePosition(list, positionStop, 0, list.size() - 1);
 
 		// Extract the windows from the start (included) to the stop (excluded)
 		for (int i = indexStart; i < indexStop; i++) {
@@ -566,7 +672,7 @@ public class Utils {
 		// The stop position may have been returned even if the window is not included between the start and stop position
 		// It is necessary to test it before adding it
 		T element = list.get(indexStop);
-		if (isIn(element, positionStart, positionStop)) {
+		if (isInWindow(element, positionStart, positionStop)) {
 			resultList.add(element);
 		}
 
@@ -574,16 +680,17 @@ public class Utils {
 	}
 
 
+
 	/**
 	 * 
-	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow}, 
+	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow},
 	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
 	 * @param element		the element to test
 	 * @param windowStart	the start position on the main frame
 	 * @param windowStop	the stop position on the main frame
 	 * @return true if the element is in the main frame, false otherwise
 	 */
-	public static <T extends ChromosomeWindow> boolean isIn (T element, int windowStart, int windowStop) {
+	public static <T extends ChromosomeWindow> boolean isInWindow (T element, int windowStart, int windowStop) {
 		if (element.getStop() < windowStart) {
 			return false;
 		}
@@ -606,9 +713,9 @@ public class Utils {
 	 * @param value			value to find
 	 * @param indexStart	index of the list to start the scan
 	 * @param indexStop		index of the list to stop the scan
-	 * @return				the index where the value of the window is found or the index right after if the exact value is not found 
+	 * @return				the index where the value of the window is found or the index right after if the exact value is not found
 	 */
-	private static <T extends ChromosomeWindow> int findPosition(List<T> list, int value, int indexStart, int indexStop) {
+	private static <T extends ChromosomeWindow> int findChromosomePosition(List<T> list, int value, int indexStart, int indexStop) {
 		if (indexStart == indexStop) {
 			return indexStart;
 		} else {
@@ -618,9 +725,9 @@ public class Utils {
 			if (compare == 0) {
 				return indexStart + middle;
 			} else if (compare < 0) {
-				return findPosition(list, value, indexStart, indexStart + middle);
+				return findChromosomePosition(list, value, indexStart, indexStart + middle);
 			} else {
-				return findPosition(list, value, indexStart + middle + 1, indexStop);
+				return findChromosomePosition(list, value, indexStart + middle + 1, indexStop);
 			}
 		}
 	}
@@ -636,7 +743,7 @@ public class Utils {
 	 * @param value			value to find
 	 * @param indexStart	index of the list to start the scan
 	 * @param indexStop		index of the list to stop the scan
-	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found 
+	 * @return 				the index where the start value of the window is found or the index right after if the exact value is not found
 	 */
 	public static <T extends ChromosomeWindow> int findStart(List<T> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
@@ -685,7 +792,7 @@ public class Utils {
 	 */
 	public static List<Chromosome> getSortedChromosomeList(List<Chromosome> list) {
 
-		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>(); 
+		Map<String, Chromosome> chromosomeMap = new HashMap<String, Chromosome>();
 		List<Chromosome> chromosomeList = new ArrayList<Chromosome>();
 		List<String> chromosomeNames = new ArrayList<String>();
 
@@ -750,8 +857,8 @@ public class Utils {
 		System.gc();System.gc();System.gc();System.gc();
 		System.gc();System.gc();System.gc();System.gc();*/
 	}
-	
-	
+
+
 	/**
 	 * Split a string using the char code of a character.
 	 * @param s	the string to split
@@ -762,24 +869,24 @@ public class Utils {
 		List<String> list = new ArrayList<String>();
 		if (s != null) {
 			int pos = 0, end;
-            while ((end = s.indexOf(c, pos)) >= 0) {
-            	list.add(s.substring(pos, end));
-                pos = end + 1;
-            }
-            list.add(s.substring(pos));
+			while ((end = s.indexOf(c, pos)) >= 0) {
+				list.add(s.substring(pos, end));
+				pos = end + 1;
+			}
+			list.add(s.substring(pos));
 		}
-		
+
 		String[] result = new String[list.size()];
 		for (int i = 0; i < list.size(); i++) {
 			result[i] = list.get(i);
 		}
 
 		//result = list.toArray(result);
-		
+
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Split a string using the tabulation character.
 	 * @param s	the string to split
@@ -789,21 +896,21 @@ public class Utils {
 		List<String> list = new ArrayList<String>();
 		if (s != null) {
 			int pos = 0, end;
-            while ((end = s.indexOf("	", pos)) >= 0) {
-            	list.add(s.substring(pos, end));
-                pos = end + 1;
-            }
-            list.add(s.substring(pos));
+			while ((end = s.indexOf("	", pos)) >= 0) {
+				list.add(s.substring(pos, end));
+				pos = end + 1;
+			}
+			list.add(s.substring(pos));
 		}
-		
+
 		String[] result = new String[list.size()];
 		for (int i = 0; i < list.size(); i++) {
 			result[i] = list.get(i);
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * This method looks for the full integer part in a string from a start index.
 	 * @param s		the string
@@ -824,8 +931,8 @@ public class Utils {
 		}
 		return result;											// return the result of the scan
 	}
-	
-	
+
+
 	/**
 	 * This method return the index of the first int found in a string, starting from the specified index position
 	 * @param s			the string
@@ -835,11 +942,49 @@ public class Utils {
 	public static int getFirstIntegerOffset (String s, int index) {
 		for (int i = 0; i < s.length(); i++) {
 			int c = s.charAt(i);
-			if (c >= 48 && c <= 57) {
+			if ((c >= 48) && (c <= 57)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
+
+
+
+	/**
+	 * This methods will split a String in different lines according to a maximum length.
+	 * It does split in middle of a word but at a whitespace if necessary
+	 * @param s			the string
+	 * @param length	the length
+	 * @param fm		the font metrics
+	 * @return			the formatted line
+	 */
+	public static String[] splitStringWithLength (String s, int length, FontMetrics fm) {
+		List<String> result = new ArrayList<String>();
+		String[] array = split(s, ' ');
+		String current = array[0];
+		int currentLength = fm.stringWidth(current);
+
+		for (int i = 1; i < array.length; i++) {
+			String tmp = array[i];
+			currentLength += fm.stringWidth(" " + tmp);
+			if (currentLength < length) {
+				current += " " + tmp;
+			} else {
+				result.add(current);
+				current = tmp;
+				currentLength = fm.stringWidth(tmp);
+			}
+		}
+		result.add(current);
+
+
+		String[] arrayResult = new String[result.size()];
+		for (int i = 0; i < arrayResult.length; i++) {
+			arrayResult[i] = result.get(i);
+		}
+
+		return arrayResult;
+	}
+
 }

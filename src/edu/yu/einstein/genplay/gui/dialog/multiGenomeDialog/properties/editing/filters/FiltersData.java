@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,11 +26,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.filtering.IDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
+import edu.yu.einstein.genplay.core.multiGenome.filter.advancedFilters.TrackMaskFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
@@ -52,7 +54,7 @@ public class FiltersData implements Serializable {
 	/** Index used for track column */
 	public static final int TRACK_INDEX 	= 3;
 
-	private VCFFilter			filter;
+	private MGFilter			filter;
 	private Track<?>[] 			trackList;		// list of track
 
 
@@ -76,7 +78,7 @@ public class FiltersData implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		filter = (VCFFilter) in.readObject();
+		filter = (MGFilter) in.readObject();
 		trackList = (Track[]) in.readObject();
 	}
 
@@ -92,12 +94,11 @@ public class FiltersData implements Serializable {
 
 	/**
 	 * Constructor of {@link FiltersData}
-	 * @param reader 		the VCF file
-	 * @param filter 		the filter
+	 * @param filter 		the {@link MGFilter}
 	 * @param trackList		list of track
 	 */
-	public FiltersData(VCFFile reader, IDFilterInterface filter, Track<?>[] trackList) {
-		this.filter = new VCFFilter(filter, reader);
+	public FiltersData(MGFilter filter, Track<?>[] trackList) {
+		this.filter = filter.getDuplicate();
 		this.trackList = trackList;
 	}
 
@@ -107,7 +108,7 @@ public class FiltersData implements Serializable {
 	/**
 	 * @param filter the VCF filter to set
 	 */
-	public void setVCFFilter (VCFFilter filter) {
+	public void setMGFilter (MGFilter filter) {
 		this.filter = filter;
 	}
 
@@ -125,7 +126,7 @@ public class FiltersData implements Serializable {
 	/**
 	 * @return the VCF filter
 	 */
-	public VCFFilter getVCFFilter () {
+	public MGFilter getMGFilter () {
 		return filter;
 	}
 
@@ -133,14 +134,17 @@ public class FiltersData implements Serializable {
 	 * @return the reader
 	 */
 	public VCFFile getReader() {
-		return this.filter.getVCFFile();
+		if (filter instanceof VCFFilter) {
+			return ((VCFFilter)this.filter).getVCFFile();
+		}
+		return null;
 	}
 
 
 	/**
 	 * @return the filter
 	 */
-	public IDFilterInterface getFilter() {
+	public FilterInterface getFilter() {
 		return this.filter.getFilter();
 	}
 
@@ -165,12 +169,16 @@ public class FiltersData implements Serializable {
 	 * @return the variantList
 	 */
 	public String getIDForDisplay() {
-		VCFHeaderType header = this.filter.getFilter().getHeaderType();
-		IDFilterInterface filter = this.filter.getFilter();
-		if (filter.getHeaderType() instanceof VCFHeaderBasicType) {
-			return filter.getColumnName().toString();
+		if (filter.getFilter() instanceof IDFilterInterface) {
+			IDFilterInterface filter = (IDFilterInterface) this.filter.getFilter();
+			if (filter.getHeaderType() instanceof VCFHeaderBasicType) {
+				return filter.getColumnName().toString();
+			}
+			return filter.getHeaderType().getId();
+		} else if (filter.getFilter() instanceof TrackMaskFilter) {
+			return filter.getFilter().toStringForDisplay();
 		}
-		return header.getId();
+		return filter.getFilter().getName();
 	}
 
 	/**
@@ -200,12 +208,12 @@ public class FiltersData implements Serializable {
 	 */
 	public FiltersData getDuplicate () {
 		FiltersData duplicate = new FiltersData();
-		duplicate.setVCFFilter(getVCFFilter().getDuplicate());
+		duplicate.setMGFilter(getMGFilter().getDuplicate());
 		duplicate.setTrackList(getTrackList());
 		return duplicate;
 	}
 
-	
+
 	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
 	 * It will replace the references to the old track by the one of the new track.

@@ -514,7 +514,7 @@ public final class ScoredChromosomeWindowList extends DisplayableListOfLists<Sco
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
 		}
-		return Utils.searchInterval(fittedDataList, start, stop);
+		return Utils.searchChromosomeWindowInterval(fittedDataList, start, stop);
 	}
 
 

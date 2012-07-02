@@ -27,7 +27,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.EditingTableModel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.EditingTableModel;
 
 /**
  * @author Nicolas Fourel
