@@ -159,7 +159,6 @@ class MultiGenomePanel extends JPanel {
 	/**
 	 * Imports a XML file settings
 	 */
-	@SuppressWarnings("resource")
 	private void importXML () {
 		// XML File
 		File xmlFile = null;

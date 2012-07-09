@@ -101,7 +101,6 @@ public class TabixWriter extends TabixReader {
 	 * @param idx			the output file
 	 * @throws Exception
 	 */
-	@SuppressWarnings("resource")
 	public void createIndex(File idx) throws Exception {
 		LineBlockCompressedInputStream fp = new LineBlockCompressedInputStream(new SeekableFileStream(new File(mFn)));
 		makeIndex(fp);
@@ -351,8 +350,7 @@ public class TabixWriter extends TabixReader {
 	 * Override getIntv because it's a good time to figure out which bin things
 	 * should go into.
 	 * 
-	 * @param line
-	 *            a line read from the source file
+	 * @param line a line read from the source file
 	 * @return an object describing the interval
 	 */
 	@Override
@@ -361,7 +359,7 @@ public class TabixWriter extends TabixReader {
 		try {
 			result.setBin(reg2bin(result.getBeg(), result.getEnd()));
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 
 		return result;

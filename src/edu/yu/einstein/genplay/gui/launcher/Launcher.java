@@ -83,8 +83,6 @@ public class Launcher {
 	 * the path to this file must be specified in the DEMO_PROJECT_PATH constant
 	 */
 	private static void startDemoProject() {
-		@SuppressWarnings("resource")
-		// The input stream is closed at the end of the loading in PAInitManagers
 		InputStream is = MainFrame.getInstance().getClass().getClassLoader().getResourceAsStream(DEMO_PROJECT_PATH);
 
 		try {
