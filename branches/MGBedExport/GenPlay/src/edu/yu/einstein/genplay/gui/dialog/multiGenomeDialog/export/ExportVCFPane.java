@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,6 +38,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
+
+import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 
 /**
  * @author Nicolas Fourel
@@ -47,14 +50,14 @@ public class ExportVCFPane extends JPanel {
 
 	/** Generated default serial version ID */
 	private static final long serialVersionUID = -8162524063553965192L;
-	
+
 	protected static final String TAB_NAME = "VCF";
-	
+
 	private JTextField 	jtfFile;		// Text field for the path of the new VCF file
 	private JCheckBox 	jcbCompress;	// Check box to compress with BGZIP
 	private JCheckBox 	jcbIndex;		// Check box to index with Tabix
-	
-	
+
+
 	/**
 	 * Constructor of {@link ExportVCFPane}
 	 */
@@ -62,24 +65,24 @@ public class ExportVCFPane extends JPanel {
 		// Create the field set effect
 		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export");
 		setBorder(titledBorder);
-		
+
 		// Create the layout
 		BorderLayout layout = new BorderLayout();
 		setLayout(layout);
-		
+
 		// Add panels
 		add(getVCFPanel(), BorderLayout.CENTER);
 		add(getOptionPanel(), BorderLayout.SOUTH);
 	}
-	
-	
+
+
 	/**
 	 * @return the panel to select a path to export the track
 	 */
 	private JPanel getVCFPanel () {
 		// Create the panel
 		JPanel panel = new JPanel();
-		
+
 		// Create the layout
 		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
@@ -90,15 +93,15 @@ public class ExportVCFPane extends JPanel {
 		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
-		
+
 		// Create the title label
 		JLabel label = new JLabel("Please select a destination file:");
-		
+
 		// Create the text field
 		jtfFile = new JTextField();
 		Dimension jtfDim = new Dimension(ExportDialog.DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
-		
+
 		// Create the button
 		JButton button = new JButton();
 		Dimension bDim = new Dimension(20, 20);
@@ -107,7 +110,8 @@ public class ExportVCFPane extends JPanel {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File file = ExportUtils.getFile();
+				FileFilter[] filters = {new VCFFilter()};
+				File file = ExportUtils.getFile(filters);
 				if (file != null) {
 					jtfFile.setText(file.getPath());
 					jcbCompress.setEnabled(true);
@@ -117,36 +121,36 @@ public class ExportVCFPane extends JPanel {
 				}
 			}
 		});
-		
+
 		// Add components
 		panel.add(label, gbc);
-		
+
 		gbc.gridy++;
 		panel.add(jtfFile, gbc);
-		
+
 		gbc.gridx++;
 		panel.add(button, gbc);
-		
+
 		return panel;
 	}
-	
-	
+
+
 	/**
 	 * @return the panel to select the additional export options
 	 */
 	private JPanel getOptionPanel () {
 		// Create the panel
 		JPanel panel = new JPanel();
-		
+
 		// Create the layout
 		GridLayout layout = new GridLayout(2, 1);
 		panel.setLayout(layout);
-		
+
 		// Create the check box for the compression
 		jcbCompress = new JCheckBox("Compress with BGZIP");
 		jcbCompress.setEnabled(false);
 		jcbCompress.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (jcbCompress.isSelected()) {
@@ -156,27 +160,27 @@ public class ExportVCFPane extends JPanel {
 				}
 			}
 		});
-		
+
 		// Create the check box for the indexing
 		jcbIndex = new JCheckBox("Index with Tabix");
 		jcbIndex.setEnabled(false);
-		
+
 		// Add components
 		panel.add(jcbCompress);
 		panel.add(jcbIndex);
-		
+
 		return panel;
 	}
 
-	
+
 	/**
 	 * @return the path of the selected VCF
 	 */
 	protected String getVCFPath () {
 		return jtfFile.getText();
 	}
-	
-	
+
+
 	/**
 	 * @return true if the file has to be compressed
 	 */
@@ -186,8 +190,8 @@ public class ExportVCFPane extends JPanel {
 		}
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * @return true if the file has to be indexed
 	 */

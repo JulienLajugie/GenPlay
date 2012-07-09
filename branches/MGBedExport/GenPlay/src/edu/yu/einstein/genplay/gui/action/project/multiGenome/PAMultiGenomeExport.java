@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.action.project.multiGenome;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
@@ -44,8 +45,8 @@ import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
-	private static final String 	DESCRIPTION = 
-		"Performs the multi genome algorithm"; 										// tooltip
+	private static final String 	DESCRIPTION =
+			"Performs the multi genome export function"; 							// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
 	private static		 String 			ACTION_NAME = "Export track";			// action name
 
@@ -57,11 +58,12 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 
 	private ExportDialog dialog;
 	private ExportSettings settings;
-	private File vcfFile;
+	private File outputFile;
 
-	private PAMultiGenomeVCFExport exportAction;
-	private PAMultiGenomeBGZIPCompression compressionAction;
-	private PAMultiGenomeTBIIndex indexAction;
+	private PAMultiGenomeVCFExport 			exportVCFAction;
+	private PAMultiGenomeBGZIPCompression 	compressionAction;
+	private PAMultiGenomeTBIIndex 			indexAction;
+	private PAMultiGenomeBedExport			exportBedAction;
 
 
 	/**
@@ -73,7 +75,7 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		exportAction = null;
+		exportVCFAction = null;
 		compressionAction = null;
 		indexAction = null;
 	}
@@ -136,13 +138,14 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 
 		if (dialog != null) {
 
-			if (exportAction != null) {
+			if (exportVCFAction != null) {
 				action += "Export as VCF: ";
-				if (exportAction.hasBeenDone()) {
+				if (exportVCFAction.hasBeenDone()) {
 					action += "success.";
-					files += vcfFile.getName();
+					files += outputFile.getName();
 				} else {
 					action += "error.";
+					files += "no VCF file";
 				}
 
 				if (compressionAction != null) {
@@ -152,6 +155,7 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 						files += "\n" + compressionAction.getCompressedFile().getName();
 					} else {
 						action += "error.";
+						files += "\nno BGZIP file";
 					}
 
 					if (indexAction != null) {
@@ -161,9 +165,25 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 							files += "\n" + indexAction.getIndexedFile().getName();
 						} else {
 							action += "error.";
+							files += "\nno Tabix file";
 						}
 
 					}
+				}
+			} else if (exportBedAction != null) {
+				action += "Export as BED: ";
+				if (exportBedAction.hasBeenDone()) {
+					action += "success.";
+					List<File> list = exportBedAction.getExportedFiles();
+					for (int i = 0; i < list.size(); i++) {
+						files += list.get(i).getName();
+						if (i < (list.size() - 1)) {
+							files += "\n";
+						}
+					}
+				} else {
+					action += "error.";
+					files += "no BED file";
 				}
 			}
 			result = "Operation:\n" + action + "\nGenerated files:\n" + files;
@@ -192,7 +212,7 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 		public void run() {
 			// Export as VCF
 			if (dialog.exportAsVCF()) {
-				vcfFile = new File(dialog.getVCFPath());
+				outputFile = new File(dialog.getOutputPath());
 
 				// Create the VCF thread
 				ExportVCFThread vcfThread = new ExportVCFThread();
@@ -208,7 +228,7 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 				}
 
 				// Compress the VCF
-				if (dialog.compressVCF() && exportAction.hasBeenDone()) {
+				if (dialog.compressVCF() && exportVCFAction.hasBeenDone()) {
 					// Create the compress thread
 					CompressThread compressThread = new CompressThread();
 					CountDownLatch compressLatch = new CountDownLatch(1);
@@ -237,6 +257,21 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 						}
 					}
 				}
+			} else if (dialog.exportAsBED()) {
+				outputFile = new File(dialog.getOutputPath());
+
+				// Create the BED thread
+				ExportBEDThread bedThread = new ExportBEDThread();
+				CountDownLatch bedLatch = new CountDownLatch(1);
+				bedThread.setLatch(bedLatch);
+				bedThread.start();
+
+				// The current thread is waiting for the BED thread to finish
+				try {
+					bedLatch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 			latch.countDown();
 		}
@@ -264,19 +299,19 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 		 * Constructor of the {@link ExportVCFThread}
 		 */
 		public ExportVCFThread () {
-			exportAction = new PAMultiGenomeVCFExport(vcfFile, settings);
+			exportVCFAction = new PAMultiGenomeVCFExport(outputFile, settings);
 		}
 
 		@Override
 		public void run() {
-			exportAction.actionPerformed(null);
+			exportVCFAction.actionPerformed(null);
 		}
 
 		/**
 		 * @param latch the latch to set
 		 */
 		public void setLatch(CountDownLatch latch) {
-			exportAction.setLatch(latch);
+			exportVCFAction.setLatch(latch);
 		}
 	}
 
@@ -295,7 +330,7 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 		 * Constructor of the {@link CompressThread}
 		 */
 		public CompressThread () {
-			compressionAction = new PAMultiGenomeBGZIPCompression(vcfFile);
+			compressionAction = new PAMultiGenomeBGZIPCompression(outputFile);
 		}
 
 		@Override
@@ -340,6 +375,37 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 		 */
 		public void setLatch(CountDownLatch latch) {
 			indexAction.setLatch(latch);
+		}
+	}
+
+
+	/////////////////////////////////////////////////////////////////////// ExportBEDThread class
+
+	/**
+	 * The export BED thread class.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private class ExportBEDThread extends Thread {
+
+		/**
+		 * Constructor of the {@link ExportBEDThread}
+		 */
+		public ExportBEDThread () {
+			exportBedAction = new PAMultiGenomeBedExport(outputFile, settings, dialog.getBedPane().getGenomeName(), dialog.getBedPane().getAlleleType(), dialog.getBedPane().getHeader());
+		}
+
+		@Override
+		public void run() {
+			exportBedAction.actionPerformed(null);
+		}
+
+		/**
+		 * @param latch the latch to set
+		 */
+		public void setLatch(CountDownLatch latch) {
+			exportBedAction.setLatch(latch);
 		}
 	}
 

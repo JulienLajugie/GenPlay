@@ -21,23 +21,13 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.export;
 
-import java.io.BufferedWriter;
-import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-import net.sf.samtools.util.BlockCompressedOutputStream;
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -47,202 +37,29 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public abstract class ExportEngine implements ExportEngineInterface {
+public abstract class ExportEngine {
 
 
-	/** Option to export the track as VCF file (not compressed) */
-	public static boolean EXPORT_AS_VCF_FILE = true;
-	/** Option to export the track as a compressed VCF file (BGZIP) */
-	public static boolean EXPORT_AS_BGZIP_FILE = false;
-
-	protected ObjectOutputStream 				data;			// the temporary stream for data
-	protected String 							header;			// the new VCF header
-
-	protected ExportHeaderHandler				headerHandler;	// handler for the new header
+	protected FileAlgorithmInterface			fileHandler;
 	protected Map<String, List<VCFFile>> 		fileMap;		// map between genome names and their related files
 	protected Map<String, List<VariantType>> 	variationMap;	// map between genome names and their required variation
 	protected List<MGFilter> 					filterList;		// list of filter
 	protected String 							path;			// path of the new VCF file
 
 
-	@Override
-	public void process() throws Exception {
+	/**
+	 * Export the data
+	 * @throws Exception
+	 */
+	public void export () throws Exception {
 		String errors = getParameterErrors();
 		if (errors == null) {
 			if (canStart()) {
-				createHeaderHandler();
-
-				File dataFile = new File(getDataPath());
-				createDataFile(dataFile);
-
-				createHeader();
-
-				writeFile(dataFile);
-
-				dataFile.delete();
+				process();
 			}
 		} else {
 			System.err.println("ExportEngine.process()\n" + errors);
 		}
-	}
-
-
-	/**
-	 * @return true if the export can start, false otherwise
-	 */
-	protected abstract boolean canStart ();
-
-
-	/**
-	 * Performs the export action
-	 * @throws IOException
-	 */
-	protected abstract void performExport() throws IOException;
-
-
-	/**
-	 * Creates the header of the new VCF file
-	 * @throws IOException
-	 */
-	protected abstract void createHeader() throws IOException;
-
-
-	/**
-	 * Creates and initializes the handler for the header
-	 */
-	private void createHeaderHandler () {
-		headerHandler = new ExportHeaderHandler();
-		headerHandler.initializeHeadersMap(getFileList());
-	}
-
-
-	/**
-	 * Initializes the data output stream
-	 * @throws Exception
-	 */
-	private void createDataFile (File dataFile) throws Exception {
-		FileOutputStream fos = new FileOutputStream(dataFile);
-		GZIPOutputStream gz = new GZIPOutputStream(fos);
-		data = new ObjectOutputStream(gz);
-
-		performExport();
-
-		data.close();
-		gz.close();
-		fos.close();
-	}
-
-
-	/**
-	 * 
-	 * @return the path of the temporary data file
-	 */
-	private String getDataPath () {
-		return (path.substring(0, path.length() - 4) + "_tmp.vcf.gz");
-	}
-
-
-	/**
-	 * Writes required files.
-	 * Merges the data file and the header into a new file.
-	 * @param dataFile	the file containing the data
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void writeFile (File dataFile) throws IOException, ClassNotFoundException {
-		if (EXPORT_AS_VCF_FILE) {
-			writeVCFFinalFile(dataFile);
-		}
-
-		if (EXPORT_AS_BGZIP_FILE) {
-			writeCompressedFinalFile(dataFile);
-		}
-	}
-
-
-	/**
-	 * Merges the data file and the header into a new file
-	 * @param dataFile		the file containing the data
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void writeVCFFinalFile (File dataFile) throws IOException, ClassNotFoundException {
-		// Initializes the output file writer
-		File outputFile = new File(path);
-		FileWriter fw = new FileWriter(outputFile);
-		BufferedWriter out = new BufferedWriter(fw);
-
-		// Writes the header
-		header += "\n";
-		out.write(header);
-
-		// Initializes the data file reader
-		FileInputStream fis = new FileInputStream(dataFile);
-		GZIPInputStream gz = new GZIPInputStream(fis);
-		ObjectInputStream ois = new ObjectInputStream(gz);
-
-		// Writes the data file into the output file
-		boolean endOfFile = false;
-		while (!endOfFile) {
-			String line = null;
-			try {
-				line = (String) ois.readObject();
-				out.write(line);
-			} catch (EOFException e) {
-				endOfFile = true;
-			}
-		}
-
-		// Closes the data file reader
-		ois.close();
-		gz.close();
-		fis.close();
-
-		// Closes the output file writer
-		out.close();
-		fw.close();
-	}
-
-
-	/**
-	 * Merges the data file and the header into a new file (compressed as bgzip)
-	 * @param dataFile		the file containing the data
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void writeCompressedFinalFile (File dataFile) throws IOException, ClassNotFoundException {
-		// Initializes the output file writer
-		File outputFile = new File(path);
-		BlockCompressedOutputStream output = new BlockCompressedOutputStream(outputFile);
-
-		// Writes the header
-		header += "\n";
-		output.write(header.getBytes());
-
-		// Initializes the data file reader
-		FileInputStream fis = new FileInputStream(dataFile);
-		GZIPInputStream gz = new GZIPInputStream(fis);
-		ObjectInputStream ois = new ObjectInputStream(gz);
-
-		// Writes the data file into the output file
-		boolean endOfFile = false;
-		while (!endOfFile) {
-			String line = null;
-			try {
-				line = (String) ois.readObject();
-				output.write(line.getBytes());
-			} catch (EOFException e) {
-				endOfFile = true;
-			}
-		}
-
-		// Closes the data file reader
-		ois.close();
-		gz.close();
-		fis.close();
-
-		// Closes the output file writer
-		output.close();
 	}
 
 
@@ -278,6 +95,7 @@ public abstract class ExportEngine implements ExportEngineInterface {
 			if (!file.isFile()) {
 				errors = addErrorMessage(errors, "The path of the new VCF file is not a valid file: " + path + ".");
 			}
+			file.delete();
 		}
 
 		if ((fileMap != null) && (variationMap != null)) {
@@ -315,6 +133,17 @@ public abstract class ExportEngine implements ExportEngineInterface {
 
 
 	/**
+	 * @return true if the export is from only one file, false if several files are involved
+	 */
+	protected boolean isSingleExport () {
+		if (getFileList().size() == 1) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
 	 * @return the sorted list of genome names
 	 */
 	protected List<String> getGenomeList () {
@@ -341,89 +170,117 @@ public abstract class ExportEngine implements ExportEngineInterface {
 	}
 
 
-	@Override
+	/**
+	 * @return true if the export can start, false otherwise
+	 * @throws Exception
+	 */
+	protected abstract boolean canStart () throws Exception;
+
+
+	/**
+	 * Processes the export
+	 * @throws Exception
+	 */
+	protected abstract void process () throws Exception;
+
+
+	/**
+	 * Processes a line
+	 * @throws IOException
+	 * @throws Exception
+	 */
+	protected abstract void processLine (FileAlgorithmInterface fileAlgorithm) throws IOException;
+
+
+	/**
+	 * @return the fileMap
+	 */
+	public Map<String, List<VCFFile>> getFileMap() {
+		return fileMap;
+	}
+
+
+	/**
+	 * @param fileMap the fileMap to set
+	 */
 	public void setFileMap(Map<String, List<VCFFile>> fileMap) {
 		this.fileMap = fileMap;
 	}
 
 
-	@Override
+	/**
+	 * @return the variationMap
+	 */
+	public Map<String, List<VariantType>> getVariationMap() {
+		return variationMap;
+	}
+
+
+	/**
+	 * @param variationMap the variationMap to set
+	 */
 	public void setVariationMap(Map<String, List<VariantType>> variationMap) {
 		this.variationMap = variationMap;
 	}
 
 
-	@Override
+	/**
+	 * @return the filterList
+	 */
+	public List<MGFilter> getFilterList() {
+		return filterList;
+	}
+
+
+	/**
+	 * @param filterList the filterList to set
+	 */
 	public void setFilterList(List<MGFilter> filterList) {
 		this.filterList = filterList;
 	}
 
 
-	@Override
+	/**
+	 * @return the path
+	 */
+	public String getPath() {
+		return path;
+	}
+
+
+	/**
+	 * @param path the path to set
+	 */
 	public void setPath(String path) {
 		this.path = path;
 	}
 
 
+	/**
+	 * @return a description of the genomes and their variants
+	 */
+	protected String getVariantDescription () {
+		String description = "";
 
-	///////////////////////////////////////////////////////////////////////////////////// DEVELOPMENT
-
-	protected void showInformation () {
-		System.out.println("===== ExportEngine.showInformation()");
-		System.out.println("Path: " + path);
-		showFileMap();
-		showVariationMap();
-		showFilterList();
-		System.out.println("=====");
-	}
-
-	private void showFileMap () {
-		String info = "List of VCF files:\n";
-		for (String genome: fileMap.keySet()) {
-			info += "Genome: " + genome + "\n";
-			info += "Files: ";
-			List<VCFFile> list = fileMap.get(genome);
+		int genomeIndex = 0;
+		List<String> genomeNames = new ArrayList<String>(variationMap.keySet());
+		for (String genomeName: genomeNames) {
+			description += genomeName + " (";
+			List<VariantType> list = variationMap.get(genomeName);
 			for (int i = 0; i < list.size(); i++) {
-				info += list.get(i).getFile();
+				description += list.get(i);
 				if (i < (list.size() - 1)) {
-					info += "; ";
+					description += ", ";
 				}
 			}
+			description += ")";
+			if (genomeIndex < (genomeNames.size() - 1)) {
+				description += " ";
+			}
+			genomeIndex++;
 		}
-		System.out.println(info);
-	}
 
-	private void showVariationMap () {
-		String info = "List of variation:\n";
-		for (String genome: variationMap.keySet()) {
-			info += "Genome: " + genome + "\n";
-			info += "Variations: ";
-			List<VariantType> list = variationMap.get(genome);
-			for (int i = 0; i < list.size(); i++) {
-				info += list.get(i).toString();
-				if (i < (list.size() - 1)) {
-					info += "; ";
-				}
-			}
-		}
-		System.out.println(info);
+		return description;
 	}
-
-	private void showFilterList () {
-		String info = "List of filter:";
-		if ((filterList == null) || (filterList.size() == 0)) {
-			info += " no filter";
-		} else {
-			info += "\n";
-			for (int i = 0; i < filterList.size(); i++) {
-				info += filterList.get(i).getFilter().toStringForDisplay();
-				if (i < (filterList.size() - 1)) {
-					info += "\n";
-				}
-			}
-		}
-		System.out.println(info);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////
 
 }

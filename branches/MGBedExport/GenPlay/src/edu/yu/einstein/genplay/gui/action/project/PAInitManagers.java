@@ -189,11 +189,13 @@ public final class PAInitManagers extends AbstractAction {
 					}
 				}
 			}
-			try {
-				inputStream.close();
-			} catch (IOException e) {
-				inputStream = null;
-				e.printStackTrace();
+			if (inputStream != null) {
+				try {
+					inputStream.close();
+				} catch (IOException e) {
+					inputStream = null;
+					e.printStackTrace();
+				}
 			}
 		}
 		if (error != null) {

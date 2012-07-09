@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,6 +26,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
+
 
 /**
  * This class represents a genome, it has a name and two alleles ({@link MGAllele}.
@@ -34,15 +36,15 @@ import java.io.Serializable;
  * @version 0.1
  */
 public class MGGenome implements Serializable {
-	
+
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 5586375868869637887L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private String 		name;			// full name of the genome
 	private MGAllele 	alleleA;		// first allele of the genome
 	private MGAllele 	alleleB;		// second allele of the genome
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -68,8 +70,8 @@ public class MGGenome implements Serializable {
 		alleleA = (MGAllele) in.readObject();
 		alleleB = (MGAllele) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link MGGenome}
 	 * @param name full name of the genome
@@ -104,7 +106,21 @@ public class MGGenome implements Serializable {
 		return alleleB;
 	}
 
-	
+
+	/**
+	 * @param alleleType the first or second allele
+	 * @return the {@link MGAllele} according to the requested allele
+	 */
+	public MGAllele getAllele (AlleleType alleleType) {
+		if (alleleType == AlleleType.ALLELE01) {
+			return getAlleleA();
+		} else if (alleleType == AlleleType.ALLELE02) {
+			return getAlleleB();
+		}
+		return null;
+	}
+
+
 	/**
 	 * Sorts the alleles according to the position of the variation and their length (longer first when position is equal)
 	 */
@@ -112,8 +128,8 @@ public class MGGenome implements Serializable {
 		alleleA.sort();
 		alleleB.sort();
 	}
-	
-	
+
+
 	/**
 	 * Compacts the list of {@link MGOffset}
 	 * The lists are optimized for memory usage, however some parts of it can be empty.
@@ -123,8 +139,8 @@ public class MGGenome implements Serializable {
 		alleleA.compact();
 		alleleB.compact();
 	}
-	
-	
+
+
 	/**
 	 * Show the information of the {@link MGGenome}
 	 */

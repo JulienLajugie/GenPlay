@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,14 +36,14 @@ public class ExportValidationPane extends JPanel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -7340132842303233253L;
-	
+
 	protected static final String EXPORT_TEXT = "Export";
 	protected static final String CANCEL_TEXT = "Cancel";
 
-	private JButton export;	// The export button
-	private JButton cancel;	// The cancel button
-	
-	
+	private final JButton export;	// The export button
+	private final JButton cancel;	// The cancel button
+
+
 	/**
 	 * Constructor of {@link ExportValidationPane}
 	 */
@@ -51,20 +51,32 @@ public class ExportValidationPane extends JPanel {
 		// Create the field set effect
 		TitledBorder titledBorder = BorderFactory.createTitledBorder("Validation");
 		setBorder(titledBorder);
-		
+
 		// Create the buttons
 		export = new JButton(EXPORT_TEXT);
 		cancel = new JButton(CANCEL_TEXT);
-		
+
 		// Add the action listener
 		if (al != null) {
 			export.addActionListener(al);
 			cancel.addActionListener(al);
 		}
-		
+
 		// Add components
 		add(export);
 		add(cancel);
+	}
+
+
+	/**
+	 * @param button	a button
+	 * @return true if the button is one the button of this panel
+	 */
+	protected boolean contains (JButton button) {
+		if (button.equals(export) || button.equals(cancel)) {
+			return true;
+		}
+		return false;
 	}
 
 }

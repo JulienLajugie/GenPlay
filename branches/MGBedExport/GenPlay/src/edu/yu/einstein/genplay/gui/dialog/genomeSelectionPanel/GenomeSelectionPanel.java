@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -64,7 +64,7 @@ public class GenomeSelectionPanel extends JPanel {
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
-		
+
 		// Insert the genome label
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -93,7 +93,7 @@ public class GenomeSelectionPanel extends JPanel {
 
 	}
 
-	
+
 	/**
 	 * Creates the label about the description of this panel.
 	 * @return the description label
@@ -110,7 +110,7 @@ public class GenomeSelectionPanel extends JPanel {
 		label.setText(text);
 		return label;
 	}
-	
+
 
 	/**
 	 * Creates the genome combo box.
@@ -141,7 +141,7 @@ public class GenomeSelectionPanel extends JPanel {
 		return jcbGenome;
 	}
 
-	
+
 	/**
 	 * Update the allele type combo box state.
 	 * If the reference genome is selected, the allele type box should not be enabled.

@@ -143,6 +143,16 @@ public class ExportSettings {
 
 
 	/**
+	 * @return the list of all genomes
+	 */
+	public List<String> getGenomeNames () {
+		List<String> result = new ArrayList<String>(variationMap.keySet());
+		return result;
+	}
+
+
+
+	/**
 	 * @return the number of file involved into the export process
 	 */
 	public int getFileNumber () {
