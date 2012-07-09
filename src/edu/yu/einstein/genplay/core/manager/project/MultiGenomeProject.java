@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,8 +42,8 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSNP;
+import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
 
 
 /**
@@ -72,7 +72,7 @@ public class MultiGenomeProject implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -6096336417566795182L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;					// saved format version
-	
+
 	private		List<String>					genomeNames;					// The genome names list.
 	private 	Map<String, List<VCFFile>> 		genomeFileAssociation;			// The map between genome names and their files.
 
@@ -97,7 +97,7 @@ public class MultiGenomeProject implements Serializable {
 		out.writeObject(multiGenomeSynchronizer);
 		out.writeObject(multiGenomeSynchronizerForSNP);
 	}
-	
+
 
 	/**
 	 * Method used for unserialization
@@ -123,12 +123,12 @@ public class MultiGenomeProject implements Serializable {
 	 * @param project the instance of {@link MultiGenomeProject} to use
 	 */
 	protected void setMultiGenomeProject (MultiGenomeProject project) {
-			this.genomeNames = project.getGenomeNames();
-			this.genomeFileAssociation = project.getGenomeFileAssociation();
-			this.multiGenome = project.getMultiGenome();
-			this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
-			this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
-			this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
+		this.genomeNames = project.getGenomeNames();
+		this.genomeFileAssociation = project.getGenomeFileAssociation();
+		this.multiGenome = project.getMultiGenome();
+		this.multiGenomeForDisplay = project.getMultiGenomeForDisplay();
+		this.multiGenomeSynchronizer = project.getMultiGenomeSynchronizer();
+		this.multiGenomeSynchronizerForSNP = project.getMultiGenomeSynchronizerForSNP();
 	}
 
 
@@ -160,8 +160,8 @@ public class MultiGenomeProject implements Serializable {
 		initializesDisplayInformation();
 		initializeFileDependancy();
 	}
-	
-	
+
+
 	/**
 	 * This method notice the file manager of the dependant files.
 	 */
@@ -208,14 +208,32 @@ public class MultiGenomeProject implements Serializable {
 
 
 	/**
-	 * Creates an array with all genome names association.
+	 * Creates an array with all genome names association (including the reference genome).
 	 * Used for display.
 	 * @return	genome names association array
 	 */
 	public Object[] getFormattedGenomeArray () {
-		String[] names = new String[genomeNames.size() + 1];
-		names[0] = ProjectManager.getInstance().getAssembly().getDisplayName();
-		int index = 1;
+		return getFormattedGenomeArray(true);
+	}
+
+
+
+	/**
+	 * Creates an array with all genome names association.
+	 * Used for display.
+	 * @param withReferenceGenome true to add the reference genome to the list
+	 * @return	genome names association array
+	 */
+	public Object[] getFormattedGenomeArray (boolean withReferenceGenome) {
+		String[] names;
+		int index = 0;
+		if (withReferenceGenome) {
+			names = new String[genomeNames.size() + 1];
+			names[index] = ProjectManager.getInstance().getAssembly().getDisplayName();
+			index++;
+		} else {
+			names = new String[genomeNames.size() ];
+		}
 		for (String name: genomeNames) {
 			names[index] = name;
 			index++;
@@ -290,7 +308,7 @@ public class MultiGenomeProject implements Serializable {
 
 		for (VCFFile currentReader: currentList) {
 			List<VariantType> typeList = currentReader.getVariantTypes(genomeName);
-			if (typeList != null && typeList.contains(type)) {
+			if ((typeList != null) && typeList.contains(type)) {
 				fileList.add(currentReader);
 			}
 		}

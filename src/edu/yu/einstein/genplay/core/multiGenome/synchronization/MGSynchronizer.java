@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -124,7 +124,7 @@ public class MGSynchronizer implements Serializable {
 		List<AlleleType> alleleTypeList = new ArrayList<AlleleType>();
 		alleleTypeList.add(AlleleType.ALLELE01);
 		alleleTypeList.add(AlleleType.ALLELE02);
-		
+
 		for (Chromosome chromosome: chromosomeList) {																// loop on every chromosome
 			for (VCFFile vcfFile: VCFFileList) {																	// loop on every vcf reader
 				VCFFileStatistic statistic = vcfFile.getStatistics();
@@ -161,7 +161,7 @@ public class MGSynchronizer implements Serializable {
 
 					for (String genomeName: genomeNames) {															// loop on every genome raw name
 						String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-						//String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype 
+						//String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype
 						String genotype = Utils.split(VCFLine.get(genomeRawName).toString().trim(), ':')[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype
 						if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
 							int firstAlleleIndex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(0));
@@ -218,8 +218,8 @@ public class MGSynchronizer implements Serializable {
 			vcfFile.getStatistics().processStatistics();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Some function are time expensive and could be applied only on some lines.
 	 * Which ones? The beginning/ending of a set of results can have non representative results.
@@ -230,37 +230,37 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private int[] getBounds (int length) {
 		int delimiter = (int) (length * 0.1) / 2;
-		
+
 		int[] result = new int[2];
 		int middle = length / 2;
-		
+
 		result[0] = middle - delimiter;
 		result[1] = middle + delimiter;
-		
+
 		if (result[0] < 0) {
 			result[0] = 0;
 		}
-		
+
 		if (result[1] > length) {
 			result[1] = length;
 		}
-		
+
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * @param bounds	the bounds
 	 * @param line	the line number
 	 * @return true if the line number is in the bounds, false if out
 	 */
 	private boolean isInBounds (int[] bounds, int line) {
-		if (line < bounds[0] || line > bounds[1]) {
+		if ((line < bounds[0]) || (line > bounds[1])) {
 			return false;
 		}
 		return true;
 	}
-	
+
 
 	/**
 	 * Creates the list of the column names necessary for a query.
@@ -310,11 +310,11 @@ public class MGSynchronizer implements Serializable {
 	 * The char 1 will refer to the first alternative located at the index 0 of any arrays.
 	 * The char 0 and '.' will return -1 and don't refer to any alternatives.
 	 * @param alleleChar the character
-	 * @return the associated code
+	 * @return the associated code (char - 1)
 	 */
 	public int getAlleleIndex (char alleleChar) {
 		int alleleIndex = -1;
-		if (alleleChar != '.' && alleleChar != '0') {
+		if ((alleleChar != '.') && (alleleChar != '0')) {
 			try {
 				alleleIndex = Integer.parseInt(alleleChar + "") - 1;
 			} catch (Exception e) {}
@@ -361,7 +361,7 @@ public class MGSynchronizer implements Serializable {
 
 	/**
 	 * Retrieves the length of a variation using the reference and the alternative.
-	 * If the alternative is a structural variant, the length is given by the SVLEN INFO attributes 
+	 * If the alternative is a structural variant, the length is given by the SVLEN INFO attributes
 	 * @param reference		REF field
 	 * @param alternative	ALT field
 	 * @param info			INFO field
@@ -473,7 +473,7 @@ public class MGSynchronizer implements Serializable {
 	 * @return	true if the variant is homozygote, false otherwise
 	 */
 	private boolean isVariantHomozygote (int firstAlleleNumber, int secondAlleleNumber) {
-		if (firstAlleleNumber == secondAlleleNumber && firstAlleleNumber >= 0) {
+		if ((firstAlleleNumber == secondAlleleNumber) && (firstAlleleNumber >= 0)) {
 			return true;
 		}
 		return false;
@@ -488,7 +488,7 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private boolean isVariantHeterozygote (int firstAlleleNumber, int secondAlleleNumber) {
 		if (firstAlleleNumber != secondAlleleNumber) {
-			if (firstAlleleNumber >= 0 || secondAlleleNumber >= 0) {
+			if ((firstAlleleNumber >= 0) || (secondAlleleNumber >= 0)) {
 				return true;
 			}
 		}
@@ -532,10 +532,10 @@ public class MGSynchronizer implements Serializable {
 		return false;
 	}
 
-	
-	
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Update common information section
-	
+
 	/**
 	 * Updates the header information.
 	 * It consists in storing the first values found of the IDs from INFO and FORMAT fields.
@@ -544,8 +544,8 @@ public class MGSynchronizer implements Serializable {
 		updateHeaderINFOInformation(fileHeader, VCFLine);
 		updateHeaderFORMATInformation(fileHeader, VCFLine, genomeNames);
 	}
-	
-	
+
+
 	/**
 	 * Updates the INFO header information.
 	 * It consists in storing the first values found of the IDs from the INFO field.
@@ -567,8 +567,8 @@ public class MGSynchronizer implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Updates the FORMAT header information.
 	 * It consists in storing the first values found of the IDs from the FORMAT field.
@@ -579,7 +579,7 @@ public class MGSynchronizer implements Serializable {
 
 		for (int i = 0; i < fields.length; i++) {
 			VCFHeaderAdvancedType formatHeader = header.getFormatHeaderFromID(fields[i]);
-			if (formatHeader.getId().equals("GT") || formatHeader.getType() == String.class) {
+			if (formatHeader.getId().equals("GT") || (formatHeader.getType() == String.class)) {
 				for (String genome: genomeNames) {
 					//String[] values = ((String) VCFLine.get(genome)).split(":");
 					String[] values = Utils.split(((String) VCFLine.get(genome)), ':');
@@ -590,7 +590,7 @@ public class MGSynchronizer implements Serializable {
 			}
 		}
 	}
-	
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Synchronization section
 
@@ -615,7 +615,7 @@ public class MGSynchronizer implements Serializable {
 	 */
 	private void synchronizeToGenomesLevel () {
 		for (String genomeName: multiGenomeProject.getGenomeNames()) {																// scan on every genome
-			MGGenome genomeInformation = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName);						// current genome information 
+			MGGenome genomeInformation = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName);						// current genome information
 
 			ChromosomeListOfLists<MGOffset> chromosomeAlleleAOffsetList = synchronizeToAlleleLevel(genomeInformation.getAlleleA().getOffsetList());		// get the synchronized chromosome list of list for the allele A
 			ChromosomeListOfLists<MGOffset> chromosomeAlleleBOffsetList = synchronizeToAlleleLevel(genomeInformation.getAlleleB().getOffsetList());		// get the synchronized chromosome list of list for the allele B
@@ -670,12 +670,12 @@ public class MGSynchronizer implements Serializable {
 			MGOffset currentAlleleOffset = getOffset(alleleOffsetList, alleleOffsetIndex);												// get the current offset from the current genome
 			MGOffset newOffset = null;																									// declare a new offset
 
-			if (currentReferenceOffset != null && currentAlleleOffset != null) {														// if both offset exist
+			if ((currentReferenceOffset != null) && (currentAlleleOffset != null)) {														// if both offset exist
 
 				if (currentAlleleOffset.getPosition() == currentReferenceOffset.getPosition()) {										// if both position are similar
 					if (currentReferenceOffset.getValue() > currentAlleleOffset.getValue()) {											// if the value from the reference offset is higher than the one from the current allele, it means that an other genome of the project contains a bigger insertion.
 						newOffset = getNewOffset(list, currentAlleleOffset, lastRefPosition, length, currentAlleleOffset.getValue());	// get the new offset
-						lastRefPosition = currentReferenceOffset.getPosition() + 1;														// the last reference position is the current reference position + 1 
+						lastRefPosition = currentReferenceOffset.getPosition() + 1;														// the last reference position is the current reference position + 1
 						length = 0;																										// reset the length counter
 					} else if (currentReferenceOffset.getValue() == currentAlleleOffset.getValue()) {									// if both value (length) are equal, there is no new offset
 						length += currentReferenceOffset.getValue();																	// but the length must be taken into account
@@ -698,7 +698,7 @@ public class MGSynchronizer implements Serializable {
 					referenceOffsetIndex++;																								// increase the current reference offset only
 				}
 
-			} else if (currentReferenceOffset == null && currentAlleleOffset != null) {													// if only the offset from the current genome exists
+			} else if ((currentReferenceOffset == null) && (currentAlleleOffset != null)) {													// if only the offset from the current genome exists
 
 				if (currentAlleleOffset.getValue() < 0) {																				// if the current offset is related to a deletion
 					newOffset = getNewOffset(list, currentAlleleOffset, lastRefPosition, length, 0);									// get the new offset
@@ -709,7 +709,7 @@ public class MGSynchronizer implements Serializable {
 				}
 				alleleOffsetIndex++;																									// increase the current genome offset
 
-			} else if (currentReferenceOffset != null && currentAlleleOffset == null) {													// if only the current offset from the reference exists
+			} else if ((currentReferenceOffset != null) && (currentAlleleOffset == null)) {													// if only the current offset from the reference exists
 
 				newOffset = getNewOffset(list, currentReferenceOffset, lastRefPosition, length, 0);										// get the new offset
 				lastRefPosition = currentReferenceOffset.getPosition() + 1;

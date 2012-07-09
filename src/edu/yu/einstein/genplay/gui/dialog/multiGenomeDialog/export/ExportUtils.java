@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,7 +30,6 @@ import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
-import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -44,12 +43,11 @@ public class ExportUtils {
 	/**
 	 * @return a file to export the VCF
 	 */
-	protected static File getFile () {
+	protected static File getFile (FileFilter[] filters) {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-		jfc.setDialogTitle("Export track as VCF");
-		FileFilter[] filters = {new VCFFilter()};
+		jfc.setDialogTitle("Select an output file");
 		for (FileFilter currentFilter: filters) {
 			jfc.addChoosableFileFilter(currentFilter);
 		}
@@ -65,8 +63,8 @@ public class ExportUtils {
 		}
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Set the size of a component
 	 * @param c		the component

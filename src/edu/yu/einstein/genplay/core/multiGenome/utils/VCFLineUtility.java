@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,7 +33,7 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class VCFLineUtility {
 
-	
+
 	/**
 	 * Looks in a line for an ID in order to return its value
 	 * @param line	part of a VCF line
@@ -56,8 +56,8 @@ public class VCFLineUtility {
 		}
 		return line.substring(indexValue, indexEnd);
 	}
-	
-	
+
+
 	/**
 	 * Retrieves a String value within a string.
 	 * According to the column, the value can be the full line associated to the current column, or part of it.
@@ -95,6 +95,17 @@ public class VCFLineUtility {
 	 */
 	public static String getInfoValue (Map<String, Object> line, VCFHeaderType header) {
 		String info = line.get(VCFColumnName.INFO.toString()).toString();
+		return getInfoValue(info, header);
+	}
+
+
+	/**
+	 * Gets the value according to the INFO field and a specific field
+	 * @param info		the info part of the line
+	 * @param header	the header (containing the ID field)
+	 * @return		the value of the specific field of the INFO field
+	 */
+	public static String getInfoValue (String info, VCFHeaderType header) {
 		String result = null;
 
 		int indexStart = info.indexOf(header.getId());
@@ -119,10 +130,19 @@ public class VCFLineUtility {
 	 * @return		the value of the specific field of the FORMAT field
 	 */
 	public static String getFormatValue (Map<String, Object> line, VCFHeaderType header, String genomeRawName) {
-		//String[] format = line.get(VCFColumnName.FORMAT.toString()).toString().split(":");
-		String[] format = Utils.split(line.get(VCFColumnName.FORMAT.toString()).toString(), ':');
-		String result = null;
+		return getFormatValue(line.get(VCFColumnName.FORMAT.toString()).toString(), line.get(genomeRawName).toString(), header);
+	}
 
+
+	/**
+	 * Gets the value according to the FORMAT field and a specific field
+	 * @param lineFormat	the FORMAT line
+	 * @param genomeFormat	the format field of the related genome
+	 * @param header		the header
+	 * @return				the value of the field, null otherwise
+	 */
+	public static String getFormatValue (String lineFormat, String genomeFormat, VCFHeaderType header) {
+		String[] format = Utils.split(lineFormat, ':');
 		int idIndex = -1;
 		for (int i = 0; i < format.length; i++) {
 			if (format[i].equals(header.getId())) {
@@ -130,15 +150,16 @@ public class VCFLineUtility {
 			}
 		}
 
+		String result = null;
+
 		if (idIndex != -1) {
 			//String[] genomeFormat = line.get(genomeRawName).toString().split(":");
-			String[] genomeFormat = Utils.split(line.get(genomeRawName).toString(), ':');
-			if (idIndex < genomeFormat.length) {
-				result = genomeFormat[idIndex];
+			String[] genomeFormats = Utils.split(genomeFormat, ':');
+			if (idIndex < genomeFormats.length) {
+				result = genomeFormats[idIndex];
 			}
 		}
 
 		return result;
 	}
-	
 }

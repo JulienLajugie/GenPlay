@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export;
+package edu.yu.einstein.genplay.core.multiGenome.export.VCFExport;
 
 import java.util.ArrayList;
 import java.util.HashMap;

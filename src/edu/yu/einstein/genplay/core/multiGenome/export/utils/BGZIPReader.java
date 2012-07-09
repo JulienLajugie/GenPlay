@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export;
+package edu.yu.einstein.genplay.core.multiGenome.export.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,25 +39,27 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class BGZIPReader {
 
-	private final VCFFile 				vcfFile;			// file to read
+	private final VCFFile 						vcfFile;			// file to read
 	private final BlockCompressedInputStream 	bcis;				// stream for the file
+	private final InputStreamReader				isr;
 	private final BufferedReader 				reader;
-	private String 						metaDataHeader;		// header of the file
-	private String 						fieldDataHeader;	// header of the file
-	private VCFLine 					currentLine;		// current line in the file
+	private String 								metaDataHeader;		// header of the file
+	private String 								fieldDataHeader;	// header of the file
+	private VCFLine 							currentLine;		// current line in the file
 	//private String columns;
-	private final Map<String, Integer> 		genomeMap;			// map between genome names and their related index according to their location on the column line
+	private final Map<String, Integer> 			genomeMap;			// map between genome names and their related index according to their location on the column line
 
 
 	/**
 	 * Constructor of {@link BGZIPReader}
-	 * @param file
+	 * @param vcfFile		the VCF file
 	 * @throws IOException
 	 */
-	protected BGZIPReader (VCFFile vcfFile) throws IOException {
+	public BGZIPReader (VCFFile vcfFile) throws IOException {
 		this.vcfFile = vcfFile;
 		this.bcis = new BlockCompressedInputStream(vcfFile.getFile());
-		this.reader = new BufferedReader(new InputStreamReader(bcis));
+		this.isr = new InputStreamReader(bcis);
+		this.reader = new BufferedReader(isr);
 		this.currentLine = null;
 		this.metaDataHeader = "";
 		this.fieldDataHeader = "";
@@ -122,7 +124,7 @@ public class BGZIPReader {
 	/**
 	 * @return the header without the columns
 	 */
-	protected String getMetaDataHeader () {
+	public String getMetaDataHeader () {
 		return metaDataHeader;
 	}
 
@@ -133,7 +135,7 @@ public class BGZIPReader {
 	 * It includes tabs (even after the FORMAT field).
 	 * @return the formated string of the fixed columns
 	 */
-	protected String getFixedColumns () {
+	public String getFixedColumns () {
 		String columns = "#";
 		columns += VCFColumnName.CHROM.toString() + "\t";
 		columns += VCFColumnName.POS.toString() + "\t";
@@ -145,6 +147,30 @@ public class BGZIPReader {
 		columns += VCFColumnName.INFO.toString() + "\t";
 		columns += VCFColumnName.FORMAT.toString() + "\t";
 		return columns;
+	}
+
+
+	/**
+	 * Close the streams
+	 */
+	public void closeStreams () {
+		try {
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			isr.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			bcis.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 
@@ -163,7 +189,7 @@ public class BGZIPReader {
 	 * Updates the current line.
 	 * @throws IOException
 	 */
-	protected void goNextLine () throws IOException {
+	public void goNextLine () throws IOException {
 		currentLine = new VCFLine(this, readLine(reader));
 	}
 
@@ -171,7 +197,7 @@ public class BGZIPReader {
 	/**
 	 * @return the currentLine
 	 */
-	protected VCFLine getCurrentLine() {
+	public VCFLine getCurrentLine() {
 		return currentLine;
 	}
 
@@ -179,7 +205,7 @@ public class BGZIPReader {
 	/**
 	 * @return the file
 	 */
-	protected VCFFile getVCFFile() {
+	public VCFFile getVCFFile() {
 		return vcfFile;
 	}
 
@@ -188,7 +214,7 @@ public class BGZIPReader {
 	 * @param genomeName the full genome name
 	 * @return the column index of the genome
 	 */
-	protected int getIndexFromGenome (String genomeName) {
+	public int getIndexFromGenome (String genomeName) {
 		return genomeMap.get(FormattedMultiGenomeName.getRawName(genomeName));
 	}
 
@@ -197,7 +223,7 @@ public class BGZIPReader {
 	 * @param index the index of a genome
 	 * @return		the genome raw name associated to the index
 	 */
-	protected String getGenomeFromIndex (int index) {
+	public String getGenomeFromIndex (int index) {
 		for (String genome: genomeMap.keySet()) {
 			if (genomeMap.get(genome) == index) {
 				return genome;
@@ -219,7 +245,7 @@ public class BGZIPReader {
 	 * Print the all the lines of the file
 	 * @throws IOException
 	 */
-	protected void printAllFile () throws IOException {
+	public void printAllFile () throws IOException {
 		BlockCompressedInputStream bcis = new BlockCompressedInputStream(vcfFile.getFile());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(bcis));
 		System.out.println("Content of the file " + vcfFile.getFile().getName() + ":");
@@ -240,7 +266,7 @@ public class BGZIPReader {
 	 * Print the all the lines of the file with the detail of each line
 	 * @throws IOException
 	 */
-	protected void printFileAsElements () throws IOException {
+	public void printFileAsElements () throws IOException {
 		BlockCompressedInputStream bcis = new BlockCompressedInputStream(vcfFile.getFile());
 		BufferedReader reader = new BufferedReader(new InputStreamReader(bcis));
 		System.out.println("Content of the file " + vcfFile.getFile().getName() + ":");

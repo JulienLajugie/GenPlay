@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -53,8 +53,8 @@ public class VCFHeader implements Serializable {
 
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = 5071204705996276780L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
-	
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+
 	private BufferedReader headerReader;
 
 	private Map<String, String> 				headerInfo;			// Header main information
@@ -200,7 +200,7 @@ public class VCFHeader implements Serializable {
 			if (line == null) {
 				valid = false;
 			} else {
-				if (line != null && line.length() > 0) {
+				if ((line != null) && (line.length() > 0)) {
 					if (line.substring(0, 2).equals("##")) {
 						int equalChar = line.indexOf("=");
 						String type = line.substring(2, equalChar);
@@ -265,7 +265,7 @@ public class VCFHeader implements Serializable {
 		String detail[];
 		for (String s: details) {
 			detail = Utils.split(s, '=');
-			if (detail.length > 1 && !detail[0].equals("Description")) {
+			if ((detail.length > 1) && !detail[0].equals("Description")) {
 				info.put(detail[0], detail[1]);
 			}
 		}
@@ -434,6 +434,36 @@ public class VCFHeader implements Serializable {
 
 		for (VCFHeaderType header: formatHeader) {
 			result.add(header);
+		}
+
+		return result;
+	}
+
+
+	/**
+	 * @return all the header type
+	 */
+	public List<VCFHeaderType> getAllNumberHeader () {
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: basicHeader) {
+			if (header.getColumnCategory() == VCFColumnName.QUAL) {
+				result.add(header);
+			}
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
+			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+				result.add(header);
+			}
+		}
+
+		for (VCFHeaderType header: formatHeader) {
+			VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
+			if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+				result.add(header);
+			}
 		}
 
 		return result;

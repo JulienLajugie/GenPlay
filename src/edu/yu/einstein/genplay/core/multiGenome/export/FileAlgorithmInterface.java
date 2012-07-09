@@ -21,54 +21,48 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.export;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
+import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface ExportEngineInterface {
+public interface FileAlgorithmInterface {
 
 
 	/**
-	 * Export the data to a new VCF
-	 * @throws Exception
+	 * Compute the file algorithm
+	 * @throws IOException
 	 */
-	public void process () throws Exception;
+	public void compute () throws IOException;
 
 
 	/**
-	 * Set the map of genome according to the files they are mentionned.
-	 * @param fileMap the map between genome and their files
+	 * @return the current VCF line
 	 */
-	public void setFileMap (Map<String, List<VCFFile>> fileMap);
+	public VCFLine getCurrentLine ();
 
 
 	/**
-	 * Set the map of variation types according to their required genomes.
-	 * Each genome can have its own variation types list.
-	 * @param variationMap the map between genome and their variation types
+	 * @return the current VCF file
 	 */
-	public void setVariationMap (Map<String, List<VariantType>> variationMap);
+	public VCFFile getCurrentVCFFile ();
 
 
 	/**
-	 * Set the list of filter applied to the track.
-	 * @param filterList the list of {@link VCFFilter}
+	 * @return the current VCF reader
 	 */
-	public void setFilterList (List<MGFilter> filterList);
+	public ManualVCFReader getCurrentVCFReader ();
 
 
 	/**
-	 * Set the path of the new VCF
-	 * @param path the VCF path
+	 * @return the required list of genome names
 	 */
-	public void setPath (String path);
+	public List<String> getGenomeList ();
 
 }
