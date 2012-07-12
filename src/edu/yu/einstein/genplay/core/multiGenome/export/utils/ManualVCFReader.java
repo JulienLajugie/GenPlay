@@ -39,6 +39,8 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class ManualVCFReader {
 
+	private static boolean INCLUDE_ZERO = true;
+
 	private final VCFFile							vcfFile; 		// The vcf file (.gz)
 	private final BGZIPReader 						reader;			// The gz reader
 	private final List<String> 						genomeList;		// The list of required genomes
@@ -170,6 +172,7 @@ public class ManualVCFReader {
 
 	/**
 	 * Compares the required variations and the ones from the line in order to select the correct indexes.
+	 * If it has to include the 0 genotype (refers to reference), the index will be -1.
 	 * @param requiredVariation	the variations required for the export
 	 * @param variations		the variations defined in the line
 	 * @param indexes			an array of indexes referring to the variations of the line
@@ -178,15 +181,37 @@ public class ManualVCFReader {
 	private List<Integer> getValidIndexes (List<VariantType> requiredVariation, VariantType[] variations, int[] indexes) {
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < indexes.length; i++) {
-			if (indexes[i] >= 0) {
-				if (requiredVariation.contains(variations[indexes[i]])) {
-					if (!list.contains(indexes[i])) {
-						list.add(indexes[i]);
-					}
+			int index = -2;
+
+			// Manage the zero
+			if (INCLUDE_ZERO) {
+				if (indexes[i] == -1) {
+					index = -1;
 				}
 			}
+
+			if (indexes[i] >= 0) {
+				if (requiredVariation.contains(variations[indexes[i]])) {
+					index = indexes[i];
+				}
+			}
+
+			if ((index > -2) && !list.contains(index)) {
+				list.add(index);
+			}
 		}
-		return list;
+
+		boolean isValid = false;
+		for (int index: list) {
+			if (index >= 0) {
+				isValid = true;
+			}
+		}
+
+		if (isValid) {
+			return list;
+		}
+		return new ArrayList<Integer>();
 	}
 
 

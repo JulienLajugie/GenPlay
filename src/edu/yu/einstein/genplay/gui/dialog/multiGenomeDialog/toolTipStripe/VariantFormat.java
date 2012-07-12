@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -36,7 +37,7 @@ import edu.yu.einstein.genplay.util.Utils;
 public class VariantFormat {
 
 	private PanelInformation 		pane;			// scrollpane containing information
-	private String 					title;			// header of the pane
+	private final String 					title;			// header of the pane
 	private List<String> 			keys;			// key values
 	private List<String> 			values;			// values
 	private List<String> 			description;	// keys description
@@ -57,22 +58,20 @@ public class VariantFormat {
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
 
-			//String[] headerElements = variantInformation.getFormat().split(":");
-			//String[] valueElements = variantInformation.getFormatValues().split(":");
 			String[] headerElements = Utils.split(variantInformation.getFormat(), ':');
 			String[] valueElements = Utils.split(variantInformation.getFormatValues(), ':');
 
 			for (int i = 0; i < headerElements.length; i++) {
-				keys.add(headerElements[i]);
-				if (i < valueElements.length) {
-					values.add(valueElements[i]);
-				} else {
-					values.add("-");	
+				VCFHeaderAdvancedType header = variantInformation.getFormatHeader(headerElements[i]);
+				if (header != null) {
+					keys.add(header.getId());
+					description.add(header.getDescription());
+					if (i < valueElements.length) {
+						values.add(valueElements[i]);
+					} else {
+						values.add("-");
+					}
 				}
-			}
-
-			for (String key: keys) {
-				description.add(variantInformation.getFormatHeader(key).getDescription());
 			}
 
 			pane = new PanelInformation(title, keys, values, description);

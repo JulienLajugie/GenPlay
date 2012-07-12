@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
 
 
 /**
@@ -39,7 +40,13 @@ public class AlleleSettingsBedExport {
 	private FileWriter 			fw;
 	private BufferedWriter 		data;
 	private final AlleleType 	allele;
-	private int					offset;
+
+	private int					charIndex;
+	private int					currentOffset;
+	private int					currentLength;
+	private int					currentStart;
+	private int					currentStop;
+	private int					currentAltIndex;
 
 
 	/**
@@ -50,7 +57,12 @@ public class AlleleSettingsBedExport {
 	protected AlleleSettingsBedExport (String path, AlleleType allele) {
 		bedFile = getFile(path, allele);
 		this.allele = allele;
-		offset = 0;
+		currentOffset = 0;
+		if (allele.equals(AlleleType.ALLELE01)) {
+			charIndex = 0;
+		} else if (allele.equals(AlleleType.ALLELE02)) {
+			charIndex = 2;
+		}
 	}
 
 
@@ -103,10 +115,154 @@ public class AlleleSettingsBedExport {
 
 
 	/**
+	 * Initializes the current information about:
+	 * - start and stop position (on the current genome)
+	 * - length
+	 * - alternative index
+	 * @param lengths		lengths of variations in the line
+	 * @param currentLine	the current line
+	 * @param altIndex		the index of the alternative
+	 */
+	public void initializeCurrentInformation (int[] lengths, VCFLine currentLine, int altIndex) {
+		currentAltIndex = altIndex;
+		if (currentAltIndex == -1) {
+			currentLength = 0;
+			currentStart = Integer.parseInt(currentLine.getPOS()) + currentOffset;
+			currentStop = currentStart + 1;
+		} else if (currentAltIndex > -1) {
+			currentLength = lengths[currentAltIndex];
+			currentStart = Integer.parseInt(currentLine.getPOS()) + currentOffset;
+			currentStop = currentStart + 1;
+			currentOffset += currentLength;
+			if (currentLength > 0) {
+				currentStop += currentLength;
+			}
+		} else {
+			currentLength = 0;
+			currentStart = -1;
+			currentStop = -1;
+		}
+	}
+
+
+	/**
+	 * Initializes the current information about:
+	 * - start and stop position (on the reference genome)
+	 * - length
+	 * - alternative index
+	 * @param lengths		lengths of variations in the line
+	 * @param currentLine	the current line
+	 * @param altIndex		the index of the alternative
+	 */
+	public void initializeCurrentInformationForReferenceGenome (int[] lengths, VCFLine currentLine, int altIndex) {
+		currentAltIndex = altIndex;
+		if (currentAltIndex == -1) {
+			currentLength = 0;
+			currentStart = Integer.parseInt(currentLine.getPOS());
+			currentStop = currentStart + 1;
+		} else if (currentAltIndex > -1) {
+			currentLength = lengths[currentAltIndex];
+			currentStart = Integer.parseInt(currentLine.getPOS());
+			currentStop = currentStart + 1;
+			if (currentLength < 0) {
+				currentStop += Math.abs(currentLength);
+			}
+		} else {
+			currentLength = 0;
+			currentStart = -1;
+			currentStop = -1;
+		}
+	}
+
+
+	/**
+	 * Updates the current information using information from the other allele.
+	 * e.g.: with a 0/1 genotype, information in the 0 allele has to be updated with information from the 1 allele
+	 * @param allele the other allele
+	 */
+	public void updateCurrentInformation (AlleleSettingsBedExport allele) {
+		if (isReference() && allele.isAlternative()) {
+			currentLength = allele.getCurrentLength();
+			currentOffset += currentLength;
+			if (currentLength > 0) {
+				currentStop += currentLength;
+			}
+		}
+	}
+
+
+	/**
+	 * Updates the current information using information from the other allele.
+	 * e.g.: with a 0/1 genotype, information in the 0 allele has to be updated with information from the 1 allele
+	 * @param allele the other allele
+	 */
+	public void updateCurrentInformationForReferenceGenome (AlleleSettingsBedExport allele) {
+		if (isReference() && allele.isAlternative()) {
+			currentLength = allele.getCurrentLength();
+			if (currentLength < 0) {
+				currentStop += Math.abs(currentLength);
+			}
+		}
+	}
+
+
+	/**
+	 * @param line the current VCF line
+	 * @return a name for the position
+	 */
+	public String getName (VCFLine line) {
+		String name = "";
+		if (currentLength == 0) {
+			name = "SNP:";
+		} else if (currentLength > 0) {
+			name = "INS:";
+		} else {
+			name = "DEL:";
+		}
+		name += currentLength + ":";
+		name += line.getID();
+		return name;
+	}
+
+
+	/**
+	 * @return true if the current information refers to the reference, false otherwise
+	 */
+	public boolean isReference () {
+		if (currentAltIndex == -1) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * @return true if the current information refers to known variation (reference/alternatives), false otherwise (if '.')
+	 */
+	public boolean isKnown () {
+		if (currentAltIndex > -2) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * @return true if the current information refers to an alternative, false otherwise
+	 */
+	public boolean isAlternative () {
+		if (currentAltIndex > -1) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
 	 * @return the offset
 	 */
 	public int getOffset() {
-		return offset;
+		return currentOffset;
 	}
 
 
@@ -114,7 +270,7 @@ public class AlleleSettingsBedExport {
 	 * @param offset the offset to set
 	 */
 	public void addOffset(int offset) {
-		this.offset += offset;
+		this.currentOffset += offset;
 	}
 
 
@@ -131,6 +287,46 @@ public class AlleleSettingsBedExport {
 	 */
 	public AlleleType getAllele() {
 		return allele;
+	}
+
+
+	/**
+	 * @return the charIndex
+	 */
+	public int getCharIndex() {
+		return charIndex;
+	}
+
+
+	/**
+	 * @return the currentLength
+	 */
+	public int getCurrentLength() {
+		return currentLength;
+	}
+
+
+	/**
+	 * @return the currentAltIndex
+	 */
+	public int getCurrentAltIndex() {
+		return currentAltIndex;
+	}
+
+
+	/**
+	 * @return the currentStart
+	 */
+	public int getCurrentStart() {
+		return currentStart;
+	}
+
+
+	/**
+	 * @return the currentStop
+	 */
+	public int getCurrentStop() {
+		return currentStop;
 	}
 
 }

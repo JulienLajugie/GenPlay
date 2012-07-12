@@ -393,7 +393,7 @@ public class PAMultiGenomeExport extends TrackListActionWorker<Boolean> {
 		 * Constructor of the {@link ExportBEDThread}
 		 */
 		public ExportBEDThread () {
-			exportBedAction = new PAMultiGenomeBedExport(outputFile, settings, dialog.getBedPane().getGenomeName(), dialog.getBedPane().getAlleleType(), dialog.getBedPane().getHeader());
+			exportBedAction = new PAMultiGenomeBedExport(outputFile, settings, dialog.getBedPane().getGenomeName(), dialog.getBedPane().getAlleleType(), dialog.getBedPane().getHeader(), dialog.getBedPane().isReferenceGenome());
 		}
 
 		@Override

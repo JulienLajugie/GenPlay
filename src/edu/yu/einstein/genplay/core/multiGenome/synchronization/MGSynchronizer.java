@@ -314,7 +314,11 @@ public class MGSynchronizer implements Serializable {
 	 */
 	public int getAlleleIndex (char alleleChar) {
 		int alleleIndex = -1;
-		if ((alleleChar != '.') && (alleleChar != '0')) {
+		if (alleleChar == '.') {
+			alleleIndex = -2;
+		} else if (alleleChar == '0') {
+			alleleIndex = -1;
+		} else {
 			try {
 				alleleIndex = Integer.parseInt(alleleChar + "") - 1;
 			} catch (Exception e) {}
@@ -434,7 +438,6 @@ public class MGSynchronizer implements Serializable {
 
 
 	/**
-	 * 
 	 * @param statistic				sample statistics
 	 * @param variantTypes			array of variant types
 	 * @param firstAlleleNumber		number of the first allele
@@ -579,14 +582,18 @@ public class MGSynchronizer implements Serializable {
 
 		for (int i = 0; i < fields.length; i++) {
 			VCFHeaderAdvancedType formatHeader = header.getFormatHeaderFromID(fields[i]);
-			if (formatHeader.getId().equals("GT") || (formatHeader.getType() == String.class)) {
-				for (String genome: genomeNames) {
-					//String[] values = ((String) VCFLine.get(genome)).split(":");
-					String[] values = Utils.split(((String) VCFLine.get(genome)), ':');
-					if (i < values.length) {
-						((VCFHeaderElementRecord)formatHeader).addElement(values[i]);
+			if (formatHeader != null) {
+				if (formatHeader.getId().equals("GT") || (formatHeader.getType() == String.class)) {
+					for (String genome: genomeNames) {
+						//String[] values = ((String) VCFLine.get(genome)).split(":");
+						String[] values = Utils.split(((String) VCFLine.get(genome)), ':');
+						if (i < values.length) {
+							((VCFHeaderElementRecord)formatHeader).addElement(values[i]);
+						}
 					}
 				}
+			} else {
+				//System.err.println("The ID '" + fields[i] + "' has not been found in the header of the VCF and it is not right according to the VCF specification.");
 			}
 		}
 	}

@@ -32,10 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
@@ -62,6 +64,7 @@ public class ExportBEDPane extends JPanel {
 	private AlleleType allele;
 	private JTextField 	jtfFile;		// Text field for the path of the new VCF file
 	private VCFHeaderType header;
+	private boolean isReferenceGenome;
 
 
 	/**
@@ -84,17 +87,14 @@ public class ExportBEDPane extends JPanel {
 		gbc.gridy = 0;
 
 
-
 		add(getBedPanel(), gbc);
-
 		gbc.gridy++;
-		add(getGenomeSelectionPanel(genomeList), gbc);
 
+		add(getGenomeSelectionPanel(genomeList), gbc);
 
 		gbc.gridy++;
 		gbc.weighty = 1;
 		add(getIDPanel(fileList), gbc);
-
 	}
 
 
@@ -161,12 +161,27 @@ public class ExportBEDPane extends JPanel {
 		// Create the labels
 		JLabel genomeLabel = new JLabel("Select a genome to export:");
 		JLabel alleleLabel = new JLabel("Select the allele(s) of the genome to export:");
+		JLabel exportLabel = new JLabel("Select the genome coordinate system for start/stop positions:");
 
 
 		// Create the boxes
 		JComboBox jcbGenome = getGenomeComboBox(genomeList);
 		JComboBox jcbAllele = getAlleleTypeComboBox();
 
+		// Create the radios
+		JRadioButton currentButton = new JRadioButton("Current genome");
+		JRadioButton referenceButton = new JRadioButton("Reference genome");
+		ButtonGroup group = new ButtonGroup();
+		group.add(currentButton);
+		group.add(referenceButton);
+		currentButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {isReferenceGenome = false;}});
+		referenceButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {isReferenceGenome = true;}});
+		currentButton.setSelected(true);
+		isReferenceGenome = false;
 
 		// Create the layout
 		GridBagLayout layout = new GridBagLayout();
@@ -196,9 +211,25 @@ public class ExportBEDPane extends JPanel {
 
 		// Insert the allele type combo box
 		gbc.gridy++;
-		gbc.weighty = 1;
-		gbc.insets = new Insets(0, 10, 5, 0);
+
+		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(jcbAllele, gbc);
+
+		// Insert the coordinate system label
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		panel.add(exportLabel, gbc);
+
+		// Insert the current genome radio
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		panel.add(currentButton, gbc);
+
+		// Insert the reference genome radio
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 5, 0);
+		gbc.weighty = 1;
+		panel.add(referenceButton, gbc);
 
 		return panel;
 	}
@@ -375,5 +406,12 @@ public class ExportBEDPane extends JPanel {
 		return header;
 	}
 
+
+	/**
+	 * @return the isReferenceGenome
+	 */
+	public boolean isReferenceGenome() {
+		return isReferenceGenome;
+	}
 
 }

@@ -62,6 +62,7 @@ public class PAMultiGenomeBedExport extends TrackListActionWorker<Boolean> {
 	private final String 			fullGenomeName;
 	private final AlleleType 		allele;
 	private final VCFHeaderType 	header;
+	private final boolean			isReferenceGenome;
 	private boolean 				success;
 
 
@@ -72,8 +73,9 @@ public class PAMultiGenomeBedExport extends TrackListActionWorker<Boolean> {
 	 * @param fullGenomeName the full genome name
 	 * @param allele  the allele(s) to export
 	 * @param header the header to use as a score
+	 * @param isReferenceGenome true if the export has to be in the coordinate system of the reference genome, false if on the current genome
 	 */
-	public PAMultiGenomeBedExport(File file, ExportSettings settings, String fullGenomeName, AlleleType allele, VCFHeaderType header) {
+	public PAMultiGenomeBedExport(File file, ExportSettings settings, String fullGenomeName, AlleleType allele, VCFHeaderType header, boolean isReferenceGenome) {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -84,6 +86,7 @@ public class PAMultiGenomeBedExport extends TrackListActionWorker<Boolean> {
 		this.fullGenomeName = fullGenomeName;
 		this.allele = allele;
 		this.header = header;
+		this.isReferenceGenome = isReferenceGenome;
 	}
 
 
@@ -99,7 +102,7 @@ public class PAMultiGenomeBedExport extends TrackListActionWorker<Boolean> {
 					// Notifies the action
 					notifyActionStart(ACTION_NAME, 1, false);
 
-					exportEngine = new BedExportEngineSingleFile(fullGenomeName, allele, header);
+					exportEngine = new BedExportEngineSingleFile(fullGenomeName, allele, header, isReferenceGenome);
 
 					exportEngine.setFileMap(settings.getFileMap());
 					exportEngine.setVariationMap(settings.getVariationMap());
