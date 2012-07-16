@@ -37,11 +37,11 @@ import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderBasicType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderElementRecord;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.GenotypeIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.idEditors.IDEditor;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.idEditors.IDFlagEditor;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.idEditors.IDGTEditor;
@@ -81,7 +81,6 @@ public class FilterEditingPanel extends EditingPanel<FilterInterface> implements
 		JPanel panel;
 		if (filterEditor != null) {
 			panel = getCustomPanel();
-
 		} else {
 			panel = new JPanel();
 		}
@@ -148,6 +147,8 @@ public class FilterEditingPanel extends EditingPanel<FilterInterface> implements
 			VCFHeaderType header = (VCFHeaderType) object;
 			if (header.getColumnCategory() == VCFColumnName.ALT) {
 				filterEditor = new IDStringEditor();
+			} else if (object instanceof VCFHeaderFilterType) {
+				filterEditor = new IDFlagEditor();
 			}
 		}
 

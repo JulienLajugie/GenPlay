@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,14 +35,14 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
  * @version 0.1
  */
 public class MixVariant implements Serializable, VariantInterface {
-	
+
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 4873498320038629297L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private int 	start;
 	private int 	stop;
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -66,11 +66,11 @@ public class MixVariant implements Serializable, VariantInterface {
 		start = in.readInt();
 		stop = in.readInt();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link MixVariant}
-	 * @param start 
+	 * @param start
 	 * @param stop
 	 */
 	public MixVariant(int start, int stop) {
@@ -78,13 +78,13 @@ public class MixVariant implements Serializable, VariantInterface {
 		this.stop = stop;
 	}
 
-	
+
 	@Override
 	public MGVariantListForDisplay getVariantListForDisplay() {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public int getReferenceGenomePosition() {
 		return -1;
@@ -113,8 +113,8 @@ public class MixVariant implements Serializable, VariantInterface {
 	public VariantType getType() {
 		return VariantType.MIX;
 	}
-	
-	
+
+
 	@Override
 	public void show() {
 		String info = "T: " + getType() + "; ";
@@ -134,20 +134,20 @@ public class MixVariant implements Serializable, VariantInterface {
 	public int getStop() {
 		return stop;
 	}
-	
-	
+
+
 	@Override
 	public MGPosition getVariantInformation() {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public MGPosition getFullVariantInformation() {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -156,20 +156,26 @@ public class MixVariant implements Serializable, VariantInterface {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		if (this.hashCode() != obj.hashCode()) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		MixVariant test = (MixVariant)obj;
-		return start == test.getStart() &&
-		stop == test.getStop();
+		return (start == test.getStart()) &&
+				(stop == test.getStop());
 	}
-	
-	
+
+
 	@Override
 	public AlleleType getAlleleType() {
+		return null;
+	}
+
+
+	@Override
+	public String getGenomeName() {
 		return null;
 	}
 }

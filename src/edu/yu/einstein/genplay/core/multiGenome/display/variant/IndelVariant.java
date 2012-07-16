@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -80,7 +80,7 @@ public class IndelVariant implements Serializable, VariantInterface {
 
 	/**
 	 * Constructor of {@link IndelVariant}
-	 * @param variantListForDisplay 
+	 * @param variantListForDisplay
 	 * @param referenceGenomePosition
 	 * @param length
 	 * @param score
@@ -158,8 +158,8 @@ public class IndelVariant implements Serializable, VariantInterface {
 	public MGPosition getVariantInformation() {
 		return variantListForDisplay.getVariantInformation(this, false);
 	}
-	
-	
+
+
 	@Override
 	public MGPosition getFullVariantInformation() {
 		return variantListForDisplay.getVariantInformation(this, true);
@@ -175,7 +175,7 @@ public class IndelVariant implements Serializable, VariantInterface {
 		}
 	}
 
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -184,23 +184,29 @@ public class IndelVariant implements Serializable, VariantInterface {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		if (this.hashCode() != obj.hashCode()) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		IndelVariant test = (IndelVariant)obj;
-		return referenceGenomePosition == test.getReferenceGenomePosition() &&
-		length == test.getLength() &&
-		score == test.getScore() &&
-		phasedWithPos == test.getScore();
+		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
+				(length == test.getLength()) &&
+				(score == test.getScore()) &&
+				(phasedWithPos == test.getScore());
 	}
 
 
 	@Override
 	public AlleleType getAlleleType() {
 		return variantListForDisplay.getAlleleForDisplay().getAlleleType();
+	}
+
+
+	@Override
+	public String getGenomeName() {
+		return variantListForDisplay.getAlleleForDisplay().getGenomeInformation().getName();
 	}
 
 }

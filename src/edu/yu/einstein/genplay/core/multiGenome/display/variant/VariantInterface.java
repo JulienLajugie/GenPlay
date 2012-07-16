@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -31,83 +31,90 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
  */
 public interface VariantInterface {
 
-	
+
 	/**
 	 * @return the associated variant list for display object
 	 */
 	public MGVariantListForDisplay getVariantListForDisplay ();
-	
-	
+
+
 	/**
 	 * @return the position of the variation on the reference genome
 	 */
 	public int getReferenceGenomePosition ();
-	
-	
+
+
 	/**
 	 * @return the length of the variation
 	 */
 	public int getLength ();
-	
-	
+
+
 	/**
 	 * @return the allele type of the variant
 	 */
 	public AlleleType getAlleleType ();
-	
-	
+
+
 	/**
 	 * @return the score of the variation
 	 */
 	public float getScore ();
-	
-	
+
+
 	/**
 	 * @return the position on the reference genome of the variation where the current variation is phased with
 	 */
 	public int phasedWithPos ();
-	
-	
+
+
 	/**
 	 * @return the type of the variation
 	 */
 	public VariantType getType ();
-	
-	
+
+
 	/**
 	 * @return the start position of the variation on the meta genome
 	 */
 	public int getStart ();
-	
-	
+
+
 	/**
 	 * @return the start position of the variation on the meta genome
 	 */
 	public int getStop ();
-	
-	
+
+
 	/**
 	 * @return information of the variant (from the vcf)
 	 */
 	public MGPosition getVariantInformation ();
-	
-	
+
+
 	/**
 	 * @return all information of the variant (from the vcf) (includes all other genomes format information)
 	 */
 	public MGPosition getFullVariantInformation ();
-	
-	
+
+
+	/**
+	 * @return the full genome name of the variant
+	 */
+	public String getGenomeName ();
+
+
 	/**
 	 * Show the information of the variant
 	 */
 	public void show ();
-	
-	
+
+
 	/**
 	 * Equals method
 	 * @param obj
 	 * @return true if the parameter is equal to the instance
 	 */
+	@Override
 	public boolean equals(Object obj);
 }

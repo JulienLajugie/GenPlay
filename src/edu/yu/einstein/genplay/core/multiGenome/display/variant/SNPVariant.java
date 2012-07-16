@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
  * @version 0.1
  */
 public class SNPVariant implements Serializable, VariantInterface {
-	
+
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -9017009720555361231L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -44,8 +44,8 @@ public class SNPVariant implements Serializable, VariantInterface {
 	private int 						referenceGenomePosition;
 	private float 						score;
 	private int 						phasedWithPos;
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -73,11 +73,11 @@ public class SNPVariant implements Serializable, VariantInterface {
 		score = in.readFloat();
 		phasedWithPos = in.readInt();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link SNPVariant}
-	 * @param variantListForDisplay 
+	 * @param variantListForDisplay
 	 * @param referenceGenomePosition
 	 * @param score
 	 * @param phasedWithPos
@@ -88,8 +88,8 @@ public class SNPVariant implements Serializable, VariantInterface {
 		this.score = score;
 		this.phasedWithPos = phasedWithPos;
 	}
-	
-	
+
+
 	@Override
 	public MGVariantListForDisplay getVariantListForDisplay() {
 		return variantListForDisplay;
@@ -142,18 +142,18 @@ public class SNPVariant implements Serializable, VariantInterface {
 		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition);
 	}
 
-	
+
 	@Override
 	public MGPosition getVariantInformation() {
 		return variantListForDisplay.getVariantInformation(this, false);
 	}
-	
-	
+
+
 	@Override
 	public MGPosition getFullVariantInformation() {
 		return variantListForDisplay.getVariantInformation(this, true);
 	}
-	
+
 
 	@Override
 	public int getStop() {
@@ -162,8 +162,8 @@ public class SNPVariant implements Serializable, VariantInterface {
 		//return 0;
 		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition + 1);
 	}
-	
-	
+
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -172,22 +172,28 @@ public class SNPVariant implements Serializable, VariantInterface {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		if (this.hashCode() != obj.hashCode()) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		SNPVariant test = (SNPVariant)obj;
-		return referenceGenomePosition == test.getReferenceGenomePosition() &&
-		score == test.getScore() &&
-		phasedWithPos == test.getScore();
+		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
+				(score == test.getScore()) &&
+				(phasedWithPos == test.getScore());
 	}
-	
-	
+
+
 	@Override
 	public AlleleType getAlleleType() {
 		return variantListForDisplay.getAlleleForDisplay().getAlleleType();
 	}
-	
+
+
+	@Override
+	public String getGenomeName() {
+		return variantListForDisplay.getAlleleForDisplay().getGenomeInformation().getName();
+	}
+
 }

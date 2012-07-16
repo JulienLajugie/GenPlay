@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,7 +33,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilterType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 
@@ -79,21 +78,18 @@ public class IDFilterSelectionPanel extends EditingPanel<VCFHeaderType> implemen
 			String[] paths = new String[headers.size()];
 			model.clear();
 			for (int i = 0; i < headers.size(); i++) {
-				VCFHeaderType current = headers.get(i);
-				if (!(current instanceof VCFHeaderFilterType)) {
-					model.addElement(headers.get(i));
-					paths[i] = headers.get(i).toString();
-				}
+				model.addElement(headers.get(i));
+				paths[i] = headers.get(i).toString();
 			}
 			int width = getMaxStringLength(paths);
 			int height = getStringHeight() * headers.size();
 
 			Dimension newDimension = initializeContentPanelSize(width, height);
 			jList.setPreferredSize(newDimension);
-			
+
 			// Creates the content panel
 			contentPanel.add(jList);
-			
+
 			repaint();
 		}
 	}
@@ -151,7 +147,7 @@ public class IDFilterSelectionPanel extends EditingPanel<VCFHeaderType> implemen
 
 		Dimension newDimension = new Dimension(0, 0);
 		jList.setPreferredSize(newDimension);
-		
+
 		setNewContentPanel(new JPanel());
 		((FlowLayout) contentPanel.getLayout()).setHgap(0);
 		((FlowLayout) contentPanel.getLayout()).setVgap(0);

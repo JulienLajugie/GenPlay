@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,15 +38,15 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
  * @version 0.1
  */
 public class ReferenceVariant implements Serializable, VariantInterface {
-	
+
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2068590198125427396L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private int 						referenceGenomePosition;
 	private int 						length;
-	private int							chromosomeCode;
-	
-	
+	private final int							chromosomeCode;
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -70,8 +70,8 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		referenceGenomePosition = in.readInt();
 		length = in.readInt();
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link ReferenceVariant}
 	 * @param referenceGenomePosition
@@ -84,13 +84,13 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		this.chromosomeCode = chromosomeCode;
 	}
 
-	
+
 	@Override
 	public MGVariantListForDisplay getVariantListForDisplay() {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public int getReferenceGenomePosition() {
 		return referenceGenomePosition;
@@ -119,8 +119,8 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	public VariantType getType() {
 		return VariantType.BLANK;
 	}
-	
-	
+
+
 	@Override
 	public void show() {
 		String info = "[P:" + referenceGenomePosition + "; ";
@@ -132,36 +132,36 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		System.out.println(info);
 	}
 
-	
+
 	private Chromosome getChromosome () {
 		return ProjectManager.getInstance().getProjectChromosome().get(chromosomeCode);
 	}
-	
+
 
 	@Override
 	public int getStart() {
 		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition) + 1;
 	}
 
-	
+
 	@Override
 	public MGPosition getVariantInformation() {
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public MGPosition getFullVariantInformation() {
 		return null;
 	}
-	
+
 
 	@Override
 	public int getStop() {
 		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
 	}
 
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
@@ -170,16 +170,22 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		if((obj == null) || (obj.getClass() != this.getClass())) {
 			return false;
 		}
-		
+
 		// object must be Test at this point
 		ReferenceVariant test = (ReferenceVariant)obj;
-		return referenceGenomePosition == test.getReferenceGenomePosition() &&
-		length == test.getLength();
+		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
+				(length == test.getLength());
 	}
-	
-	
+
+
 	@Override
 	public AlleleType getAlleleType() {
 		return null;
+	}
+
+
+	@Override
+	public String getGenomeName() {
+		return ProjectManager.getInstance().getAssembly().getDisplayName();
 	}
 }

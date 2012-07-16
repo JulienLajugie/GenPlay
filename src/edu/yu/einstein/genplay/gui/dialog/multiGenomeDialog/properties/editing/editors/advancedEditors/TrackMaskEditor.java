@@ -25,9 +25,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.advancedFilters.TrackMaskFilter;
@@ -41,19 +43,37 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class TrackMaskEditor implements AdvancedEditor {
 
 	private JPanel			panel;
-	private JLabel 			jlDescription;		// Label for the description
-	private JComboBox		jcTracks;			// Combo box to select a track
+	private JLabel 			jlTrack;		// Label for the description
+	private JLabel 			jlMethod;		// Label for the description
+	private JComboBox		jcTracks;		// Combo box to select a track
+	private JRadioButton	jrVariation;	// Radio box for strict variation method
+	private JRadioButton	jrOverlap;		// Radio box for overlap method
 
 
 	@Override
 	public JPanel updatePanel() {
 		panel = new JPanel();
 
-		// Creates the label
-		jlDescription = new JLabel("Select the mask:");
+		// Creates the labels
+		jlTrack = new JLabel("Select the mask:");
+		jlMethod = new JLabel("Select mask method:");
+
+		// Creates the track selection box
+		jcTracks = new JComboBox(MainFrame.getInstance().getTrackList().getTrackList());
 
 		// Creates the radio boxes
-		jcTracks = new JComboBox(MainFrame.getInstance().getTrackList().getTrackList());
+		jrVariation = new JRadioButton("Variation");
+		jrVariation.setToolTipText("The VCF line is used to compare variation.");
+		jrOverlap = new JRadioButton("Overlap");
+		jrOverlap.setToolTipText("Only start and stop information are used and can overlap to pass the filter.");
+
+		// Creates the group
+		ButtonGroup group = new ButtonGroup();
+		group.add(jrVariation);
+		group.add(jrOverlap);
+
+		// Default setting
+		jrVariation.setSelected(true);
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
@@ -67,12 +87,26 @@ public class TrackMaskEditor implements AdvancedEditor {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.insets = new Insets(10, 10, 10, 0);
-		panel.add(jlDescription, gbc);
+		panel.add(jlTrack, gbc);
 
 		// Track box
-		gbc.gridy = 1;
-		gbc.weighty = 1;
+		gbc.gridy++;
 		panel.add(jcTracks, gbc);
+
+		// Label
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 10, 10, 0);
+		panel.add(jlMethod, gbc);
+
+		// "Exact variation" button
+		gbc.gridy++;
+		gbc.insets = new Insets(5, 20, 0, 0);
+		panel.add(jrVariation, gbc);
+
+		// "Overlap" button
+		gbc.gridy++;
+		gbc.weighty = 1;
+		panel.add(jrOverlap, gbc);
 
 		return panel;
 	}
@@ -83,6 +117,11 @@ public class TrackMaskEditor implements AdvancedEditor {
 		TrackMaskFilter filter = new TrackMaskFilter();
 		Track<?> track = (Track<?>) jcTracks.getSelectedItem();
 		filter.setTrack(track);
+		if (jrVariation.isSelected()) {
+			filter.setStrictComparisonMethod();
+		} else {
+			filter.setOverlapComparisonMethod();
+		}
 		return filter;
 	}
 
@@ -100,6 +139,5 @@ public class TrackMaskEditor implements AdvancedEditor {
 		String errors = "";
 		return errors;
 	}
-
 
 }
