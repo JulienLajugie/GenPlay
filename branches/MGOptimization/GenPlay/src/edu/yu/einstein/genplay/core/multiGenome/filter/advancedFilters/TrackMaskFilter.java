@@ -27,19 +27,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
@@ -54,14 +49,20 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 	private static final long serialVersionUID = 2892057204781001181L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
+	/**
+	 * 
+	 */
 	public static int STRICT_METHOD = 1;
+	/**
+	 * 
+	 */
 	public static int OVERLAP_METHOD = 2;
 
 	private Track<?> track;
 	private int method = STRICT_METHOD;
 	private List<VariantInterface> 	variantList;		// The list of variant
-	private final MGSynchronizer synchronizer;
-	private Chromosome chromosome;
+	//private final MGSynchronizer synchronizer;
+	//private Chromosome chromosome;
 
 
 	/**
@@ -94,7 +95,7 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 	 * Constructor of {@link TrackMaskFilter}
 	 */
 	public TrackMaskFilter () {
-		synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
+		//synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
 	}
 
 
@@ -119,7 +120,7 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 	 */
 	public void generateFilter () {
 		variantList = track.getMultiGenomeDrawer().getFullVariantList();
-		chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+		//chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 	}
 
 
@@ -191,22 +192,22 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 	 * The input map can anyway contains genotype with zeros.
 	 * 
 	 */
-	public boolean isValid(Map<String, Object> value) {
+	public boolean isValid(VCFLine line) {
 		if (hasStripes()) {
 			Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-			int refPosition = Integer.parseInt(value.get(VCFColumnName.POS).toString());
+			int refPosition = line.getReferencePosition();
 			int startPosition = ShiftCompute.computeShiftForReferenceGenome(chromosome, refPosition);
 			List<VariantInterface> trackVariants = Utils.searchVariantInterval(variantList, startPosition, startPosition + 1);
-			return mapLoop(trackVariants, value);
+			return mapLoop(trackVariants, line);
 		}
 		return false;
 	}
 
 
-	private boolean mapLoop (List<VariantInterface> trackVariants, Map<String, Object> value) {
+	private boolean mapLoop (List<VariantInterface> trackVariants, VCFLine line) {
 		for (VariantInterface current: trackVariants) {
 			if ((current instanceof IndelVariant) || (current instanceof SNPVariant)) {
-				if (compareMap(current, value)) {
+				if (compareMap(current, line)) {
 					return true;
 				}
 			}
@@ -215,39 +216,39 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 	}
 
 
-	private boolean compareMap (VariantInterface variant, Map<String, Object> value) {
+	private boolean compareMap (VariantInterface variant, VCFLine line) {
 		if (method == STRICT_METHOD) {
-			return compareStrictMap(variant, value);
+			return compareStrictMap(variant, line);
 		} else {
-			return compareOverlapMap(variant, value);
+			return compareOverlapMap(variant, line);
 		}
 	}
 
 
-	private boolean compareStrictMap (VariantInterface variant, Map<String, Object> value) {
-		MGPosition position = variant.getVariantInformation();
+	private boolean compareStrictMap (VariantInterface variant, VCFLine currentLine) {
+		/*MGPosition position = variant.getVariantInformation();
 		if (position != null) {
-			Map<String, Object> currentPosition = position.getMappedVCFLine();
-			if (areStrictlyEqual(currentPosition, value)) {
+			VCFLine line = position.getVCFLine();
+			if (areStrictlyEqual(line, currentLine)) {
 				return true;
 			}
-		}
+		}*/
 		return false;
 	}
 
 
-	private boolean areStrictlyEqual (Map<String, Object> variant, Map<String, Object> current) {
-		if ((variant.get(VCFColumnName.POS) == current.get(VCFColumnName.POS)) &&
-				(variant.get(VCFColumnName.REF) == current.get(VCFColumnName.REF)) &&
-				(variant.get(VCFColumnName.INFO) == current.get(VCFColumnName.INFO))) {
+	/*private boolean areStrictlyEqual (VCFLine variant, VCFLine current) {
+		if ((variant.getPOS() == current.getPOS()) &&
+				(variant.getREF() == current.getREF()) &&
+				(variant.getINFO() == current.getINFO())) {
 			return true;
 		}
 		return false;
-	}
+	}*/
 
 
-	private boolean compareOverlapMap (VariantInterface variant, Map<String, Object> value) {
-		String rawName = FormattedMultiGenomeName.getRawName(variant.getGenomeName());
+	private boolean compareOverlapMap (VariantInterface variant, VCFLine line) {
+		/*String rawName = FormattedMultiGenomeName.getRawName(variant.getGenomeName());
 		Object format = value.get(rawName);
 		if (format != null) {
 			String reference = value.get(VCFColumnName.REF.toString()).toString();						// get the reference value (REF field)
@@ -280,7 +281,7 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 				return false;
 			}
 			return true;
-		}
+		}*/
 		return false;
 	}
 
@@ -351,62 +352,6 @@ public class TrackMaskFilter implements FilterInterface, Serializable {
 		}
 		return true;
 	}
-
-
-	/**
-	 * Checks if a variant has a equal variant in a list of variant
-	 * @param trackVariants	the list of variants
-	 * @param variant		the variant to process
-	 * @return				true if one variant from the list is equal to the variant to process
-	 */
-	/*private boolean areValid (List<VariantInterface> trackVariants, Map<String, Object> variant) {
-		for (VariantInterface current: trackVariants) {
-			if ((current instanceof IndelVariant) || (current instanceof SNPVariant)) {
-				MGPosition position = current.getVariantInformation();
-				if (position != null) {
-					Map<String, Object> currentPosition = position.getMappedVCFLine();
-					if (areEqual(variant, currentPosition)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}*/
-
-
-	/**
-	 * Checks if two variants are equal according to the fields POS and INFO
-	 * @param variant	the variant to process
-	 * @param current	the current variant
-	 * @return			true if variants are equals
-	 */
-	/*private boolean areEqual (Map<String, Object> variant, Map<String, Object> current) {
-		// FIXME the variant comparison will work most of the time since the INFO field is extremely specific.
-		// However, if the INFO fields are similar, it will need to compare the genomes related to the variations.
-		// The problem is that we cannot always know it...
-
-		if (method == STRICT_METHOD) {
-			return areStrictlyEqual(variant, current);
-		} else {
-
-		}
-	}*/
-
-
-	/*private boolean areStrictlyEqual (Map<String, Object> variant, Map<String, Object> current) {
-		if ((variant.get(VCFColumnName.POS) == current.get(VCFColumnName.POS)) &&
-				(variant.get(VCFColumnName.REF) == current.get(VCFColumnName.REF)) &&
-				(variant.get(VCFColumnName.INFO) == current.get(VCFColumnName.INFO))) {
-			return true;
-		}
-		return false;
-	}*/
-
-
-	/*private boolean areOverlapping () {
-
-	}*/
 
 
 	@Override

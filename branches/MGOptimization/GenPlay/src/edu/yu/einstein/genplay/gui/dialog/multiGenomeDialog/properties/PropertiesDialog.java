@@ -32,6 +32,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -261,10 +262,21 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (nodeInfo.equals(FILTERS_FILE)) {
 			setScrollableCenterPanel(fileFiltersPanel);
 		} else if (nodeInfo.equals(FILTERS_ADVANCED)) {
-			setScrollableCenterPanel(advancedFiltersPanel);
+			//setScrollableCenterPanel(advancedFiltersPanel);
+			setScrollableCenterPanel(getEmptyPanel());
 		} else if (nodeInfo.equals(STRIPES)) {
 			setScrollableCenterPanel(stripesPanel);
 		}
+	}
+
+	/**
+	 * TEST
+	 * @return
+	 */
+	private JPanel getEmptyPanel () {
+		JPanel emptyPane = new JPanel();
+		emptyPane.add(new JLabel("Coming soon..."));
+		return emptyPane;
 	}
 
 

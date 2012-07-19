@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,11 +32,11 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 
 
@@ -51,7 +51,7 @@ public class VCFFile implements Serializable {
 
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = 7316097355767936880L;	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private File 								file;				// Path of the VCF file
 	private VCFHeader 							header;				// Information about the header
@@ -104,11 +104,11 @@ public class VCFFile implements Serializable {
 		this.file = file;
 		positionList = null;
 		variantTypeList = new HashMap<String, List<VariantType>>();
-		
+
 		reader = new VCFReader();
 		header = new VCFHeader();
 		statistics = new VCFFileStatistic();
-		
+
 		indexVCFFile();
 		header.processHeader(reader);
 		reader.setColumnNames(header.getColumnNames());
@@ -135,7 +135,7 @@ public class VCFFile implements Serializable {
 	 * @return true if the VCF is indexed
 	 */
 	private boolean isVCFIndexed () {
-		if (reader != null && reader.getVCFParser() != null) {
+		if ((reader != null) && (reader.getVCFParser() != null)) {
 			return true;
 		}
 		return false;
@@ -228,11 +228,11 @@ public class VCFFile implements Serializable {
 	 * @param id	the specific ID field
 	 * @return		the index
 	 */
-	private int getIndex (List<VCFHeaderAdvancedType> list, String id) {		
+	private int getIndex (List<VCFHeaderAdvancedType> list, String id) {
 		boolean found = false;
 		int index = 0;
 
-		while (!found && index < list.size()) {
+		while (!found && (index < list.size())) {
 			if (id.equals(list.get(index).getId())) {
 				found = true;
 			} else {
@@ -297,7 +297,7 @@ public class VCFFile implements Serializable {
 	 * @return	true if this VCF can manage the request
 	 */
 	public boolean canManage (String genomeName, VariantType variantType) {
-		if (getVariantTypes(genomeName) != null && getVariantTypes(genomeName).contains(variantType)) {
+		if ((getVariantTypes(genomeName) != null) && getVariantTypes(genomeName).contains(variantType)) {
 			return true;
 		}
 		return false;
@@ -334,19 +334,18 @@ public class VCFFile implements Serializable {
 	public void initializesPositionList () {
 		if (positionList == null) {
 			Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-			List<String> columns = new ArrayList<String>();
-			columns.add(VCFColumnName.POS.toString());
-			List<Map<String, Object>> results = null;
+			List<String> results = null;
 			try {
-				results = reader.query(currentChromosome.getName(), 0, currentChromosome.getLength(), columns);
+				results = reader.query(currentChromosome.getName(), 0, currentChromosome.getLength());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			if (results != null) {
 				positionList = new IntArrayAsIntegerList(results.size());
+				VCFLine line = new VCFLine(null, null);
 				for (int i = 0; i < results.size(); i++) {
-					int pos = Integer.parseInt(results.get(i).get(VCFColumnName.POS.toString()).toString());
-					positionList.set(i, pos);
+					line.initialize(results.get(i), null);
+					positionList.set(i, line.getReferencePosition());
 				}
 			}
 		}
@@ -375,5 +374,5 @@ public class VCFFile implements Serializable {
 	public VCFFileStatistic getStatistics() {
 		return statistics;
 	}
-	
+
 }

@@ -9,9 +9,8 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import edu.yu.einstein.genplay.util.Utils;
-
 import net.sf.samtools.util.BlockCompressedInputStream;
+import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -29,14 +28,14 @@ import net.sf.samtools.util.BlockCompressedInputStream;
  * 
  * 
  * This class handle the way to communicate between an indexed VCF file (using Tabix) and Java.
- * The author is mentioned on the license above, however, the layout has been reformatted. 
+ * The author is mentioned on the license above, however, the layout has been reformatted.
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class TabixReader {
 
 	protected String mFn;
-	private BlockCompressedInputStream mFp;
+	private final BlockCompressedInputStream mFp;
 	protected int preset;
 	protected int chromosomeColumn;
 	protected int startColumn;
@@ -73,15 +72,29 @@ public class TabixReader {
 
 	private static int reg2bins(final int beg, final int _end, final int[] list) {
 		int i = 0, k, end = _end;
-		if (beg >= end) return 0;
-		if (end >= 1<<29) end = 1<<29;
+		if (beg >= end) {
+			return 0;
+		}
+		if (end >= (1<<29)) {
+			end = 1<<29;
+		}
 		--end;
 		list[i++] = 0;
-		for (k =    1 + (beg>>26); k <=    1 + (end>>26); ++k) list[i++] = k;
-		for (k =    9 + (beg>>23); k <=    9 + (end>>23); ++k) list[i++] = k;
-		for (k =   73 + (beg>>20); k <=   73 + (end>>20); ++k) list[i++] = k;
-		for (k =  585 + (beg>>17); k <=  585 + (end>>17); ++k) list[i++] = k;
-		for (k = 4681 + (beg>>14); k <= 4681 + (end>>14); ++k) list[i++] = k;
+		for (k =    1 + (beg>>26); k <=    (1 + (end>>26)); ++k) {
+			list[i++] = k;
+		}
+		for (k =    9 + (beg>>23); k <=    (9 + (end>>23)); ++k) {
+			list[i++] = k;
+		}
+		for (k =   73 + (beg>>20); k <=   (73 + (end>>20)); ++k) {
+			list[i++] = k;
+		}
+		for (k =  585 + (beg>>17); k <=  (585 + (end>>17)); ++k) {
+			list[i++] = k;
+		}
+		for (k = 4681 + (beg>>14); k <= (4681 + (end>>14)); ++k) {
+			list[i++] = k;
+		}
 		return i;
 	}
 
@@ -132,10 +145,12 @@ public class TabixReader {
 	public static String readLine(final InputStream is) throws IOException {
 		StringBuffer buf = new StringBuffer();
 		int c;
-		while ((c = is.read()) >= 0 && c != '\n')
+		while (((c = is.read()) >= 0) && (c != '\n')) {
 			buf.append((char) c);
-		if (c < 0)
+		}
+		if (c < 0) {
 			return null;
+		}
 		return buf.toString();
 	}
 
@@ -143,10 +158,12 @@ public class TabixReader {
 	/**
 	 * Reads the Tabix index from a file
 	 * @param fp File pointer
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private void readIndex(final File fp) throws IOException {
-		if (fp == null) return;
+		if (fp == null) {
+			return;
+		}
 		BlockCompressedInputStream is = new BlockCompressedInputStream(fp);
 		byte[] buf = new byte[4];
 
@@ -203,7 +220,7 @@ public class TabixReader {
 
 	/**
 	 * Read the Tabix index from the default file.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public void readIndex() throws IOException {
 		readIndex(new File(mFn + ".tbi"));
@@ -232,7 +249,7 @@ public class TabixReader {
 				shortName = fileChromosomeName.substring(intOffset);
 			} else {
 				char lastChar = fileChromosomeName.charAt(fileChromosomeName.length() - 1);
-				if (lastChar == 'X' || lastChar == 'Y' || lastChar == 'M') {
+				if ((lastChar == 'X') || (lastChar == 'Y') || (lastChar == 'M')) {
 					shortName = "" + lastChar;
 				} else {
 					shortName = fileChromosomeName;
@@ -267,7 +284,7 @@ public class TabixReader {
 		return result;
 	}
 
-	
+
 	/**
 	 * @param chr a chromosome
 	 * @return the index of the chromosome
@@ -283,7 +300,7 @@ public class TabixReader {
 				name = chr.substring(intOffset);
 			} else {
 				char lastChar = chr.charAt(chr.length() - 1);
-				if (lastChar == 'X' || lastChar == 'Y' || lastChar == 'M') {
+				if ((lastChar == 'X') || (lastChar == 'Y') || (lastChar == 'M')) {
 					name = "" + lastChar;
 				} else {
 					name = chr;
@@ -322,7 +339,7 @@ public class TabixReader {
 
 	/**
 	 * @param indexChr index of the chromosome (e.g.: 0)
-	 * @return the results of the first chromosome presents in the VCF 
+	 * @return the results of the first chromosome presents in the VCF
 	 */
 	public Iterator shortQuery (int indexChr) {
 		int begin = 0;
@@ -345,7 +362,7 @@ public class TabixReader {
 		int[] bins = new int[MAX_BIN];
 		int i, l, n_off, n_bins = reg2bins(beg, end, bins);
 		if (idx.getL().length > 0){
-			min_off = (beg>>TAD_LIDX_SHIFT >= idx.getL().length)? idx.getL()[idx.getL().length-1] : idx.getL()[beg>>TAD_LIDX_SHIFT];
+			min_off = ((beg>>TAD_LIDX_SHIFT) >= idx.getL().length)? idx.getL()[idx.getL().length-1] : idx.getL()[beg>>TAD_LIDX_SHIFT];
 		} else {
 			min_off = 0;
 		}
@@ -388,7 +405,7 @@ public class TabixReader {
 		}
 		// merge adjacent blocks
 		for (i = 1, l = 0; i < n_off; ++i) {
-			if (off[l].getV()>>16 == off[i].getU()>>16) {
+			if ((off[l].getV()>>16) == (off[i].getU()>>16)) {
 				off[l].setV(off[i].getV());
 			} else {
 				++l;
@@ -506,7 +523,7 @@ public class TabixReader {
 	protected TIntv getIntv(String line) {
 		TIntv intv = new TIntv();
 		int col = 0, end = 0, beg = 0;
-		while ((end = line.indexOf('\t', beg)) >= 0 || end == -1) {
+		while (((end = line.indexOf('\t', beg)) >= 0) || (end == -1)) {
 			++col;
 			if (col == chromosomeColumn) {
 				intv.setTid(getChromosomeIndex(line.substring(beg, end)));
@@ -526,8 +543,9 @@ public class TabixReader {
 				}
 			} else { // FIXME: SAM supports are not tested yet
 				if ((preset&0xffff) == 0) { // generic
-					if (col == stopColumn)
+					if (col == stopColumn) {
 						intv.setEnd(Integer.parseInt(line.substring(beg, end)));
+					}
 				} else if ((preset&0xffff) == 1) { // SAM
 					if (col == 6) { // CIGAR
 						int l = 0, i, j;
@@ -535,8 +553,9 @@ public class TabixReader {
 						for (i = j = 0; i < cigar.length(); ++i) {
 							if (cigar.charAt(i) > '9') {
 								int op = cigar.charAt(i);
-								if (op == 'M' || op == 'D' || op == 'N')
+								if ((op == 'M') || (op == 'D') || (op == 'N')) {
 									l += Integer.parseInt(cigar.substring(j, i));
+								}
 							}
 						}
 						intv.setEnd(intv.getBeg() + l);
@@ -565,7 +584,9 @@ public class TabixReader {
 					}
 				}
 			}
-			if (end == -1) break;
+			if (end == -1) {
+				break;
+			}
 			beg = end + 1;
 		}
 		return intv;

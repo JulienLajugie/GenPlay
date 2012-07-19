@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -54,16 +54,16 @@ public class ToolTipStripeDialog extends JDialog {
 	private static final int V_GAP = 5;		// vertical gap between dialog components
 	private static final int H_GAP = 5;		// horizontal gap between dialog components
 
-	private VCFLineDialog vcfLineDialog;
-	
-	private List<VariantInterface> 	variantList;		// a list of displayable variant
-	private MGPosition 				variantInformation;	// the current variant object to display
-	private VariantInterface 		variant;			// the current variant object to display
+	private final VCFLineDialog vcfLineDialog;
 
-	private JPanel headerPanel;			// panel containing the global information
-	private JPanel infoPanel;			// panel containing the INFO field information of the VCF
-	private JPanel formatPanel;			// panel containing the FORMAT field information of the VCF
-	private JPanel navigationPanel;		// panel to move forward/backward
+	private final List<VariantInterface> 	variantList;		// a list of displayable variant
+	private VariantInterface 		currentVariant;			// the current variant object to display
+	private VCFLine 				currentLine;	// the current variant object to display
+
+	private final JPanel headerPanel;			// panel containing the global information
+	private final JPanel infoPanel;			// panel containing the INFO field information of the VCF
+	private final JPanel formatPanel;			// panel containing the FORMAT field information of the VCF
+	private final JPanel navigationPanel;		// panel to move forward/backward
 
 
 	/**
@@ -79,10 +79,10 @@ public class ToolTipStripeDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 		setTitle("Variant properties");
-		
+
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP);
 		setLayout(layout);
-		
+
 		headerPanel = new JPanel();
 		infoPanel = new JPanel();
 		formatPanel = new JPanel();
@@ -92,12 +92,12 @@ public class ToolTipStripeDialog extends JDialog {
 		add(infoPanel);
 		add(formatPanel);
 		add(navigationPanel);
-		
+
 		int height = GlobalInformationPanel.getPanelHeight() +
-		PanelInformation.getPanelHeight() +
-		PanelInformation.getPanelHeight() +
-		NavigationPanel.getPanelHeight() +
-		(V_GAP * 11) + 30;
+				PanelInformation.getPanelHeight() +
+				PanelInformation.getPanelHeight() +
+				NavigationPanel.getPanelHeight() +
+				(V_GAP * 11) + 30;
 		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, height);
 		setSize(dimension);
 	}
@@ -110,8 +110,11 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param Y			Y position on the screen
 	 */
 	public void show (VariantInterface variant, int X, int Y) {
-		this.variant = variant;
-		this.variantInformation = variant.getFullVariantInformation();
+		this.currentVariant = variant;
+		this.currentLine = variant.getVCFLine();
+		if (currentLine != null) {
+			this.currentLine.processForAnalyse();
+		}
 		initContent();
 		setLocation(X, Y);
 		setVisible(true);
@@ -122,23 +125,22 @@ public class ToolTipStripeDialog extends JDialog {
 	 * Initializes the content of the dialog box according to a variant
 	 */
 	private void initContent () {
-		//this.variantInformation.show();
 		VariantInfo variantInfo;
 		VariantFormat variantFormat;
 
-		if (variantInformation == null) {
+		if (currentLine == null) {
 			variantInfo = new VariantInfo(null);
-			variantFormat = new VariantFormat(null);
+			variantFormat = new VariantFormat(null, null);
 		} else {
-			variantInfo = new VariantInfo(variantInformation);
-			variantFormat = new VariantFormat(variantInformation);
+			variantInfo = new VariantInfo(currentLine);
+			variantFormat = new VariantFormat(currentVariant, currentLine);
 		}
 
-		updatePanel(headerPanel, new GlobalInformationPanel(variant, variantInformation));
+		updatePanel(headerPanel, new GlobalInformationPanel(currentVariant, currentLine));
 		updatePanel(infoPanel, variantInfo.getPane());
 		updatePanel(formatPanel, variantFormat.getPane());
 		NavigationPanel newNavigationPanel = new NavigationPanel(this);
-		if (variantInformation == null) {
+		if (currentLine == null) {
 			newNavigationPanel.setEnableDetail(false);
 		} else {
 			newNavigationPanel.setEnableDetail(true);
@@ -164,7 +166,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @return the variant
 	 */
 	public VariantInterface getVariant() {
-		return variant;
+		return currentVariant;
 	}
 
 
@@ -191,16 +193,20 @@ public class ToolTipStripeDialog extends JDialog {
 	/**
 	 * initializes the dialog content and moves the screen onto the related variant.
 	 * @param newVariant	the variant to display
-	 * @return				if it moves to the previous variant, false otherwise 
+	 * @return				if it moves to the previous variant, false otherwise
 	 */
 	private boolean initVariant (VariantInterface newVariant) {
 		if (newVariant == null) {
 			return false;
 		}
-		this.variant = newVariant;
-		this.variantInformation = variant.getFullVariantInformation();
+		this.currentVariant = newVariant;
+		this.currentLine = currentVariant.getVCFLine();
+		if (currentLine != null) {
+			this.currentLine.processForAnalyse();
+		}
+
 		initContent();
-		int variantStart = variant.getStart();
+		int variantStart = currentVariant.getStart();
 		GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
 		int width = currentGenomeWindow.getSize();
 		int startWindow = variantStart - (width / 2);
@@ -227,16 +233,16 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
-	 * @param variant	the current variant
+	 * @param currentVariant	the current variant
 	 * @return the previous variant compare to the current variant
 	 */
 	private VariantInterface getPreviousVariant () {
 		VariantInterface result;
-		int currentIndex = getVariantIndex(variant);
+		int currentIndex = getVariantIndex(currentVariant);
 		int previousIndex = currentIndex - 1;
 		if (previousIndex >= 0) {
 			result = variantList.get(previousIndex);
-			if (variant.getType() == VariantType.BLANK) {
+			if ((currentVariant.getType() == VariantType.BLANK) || (currentVariant.getType() == VariantType.REFERENCE)) {
 				previousIndex = getPreviousValidIndex(previousIndex);
 				result = variantList.get(previousIndex);
 			}
@@ -248,17 +254,17 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
-	 * @param variant	the current variant
+	 * @param currentVariant	the current variant
 	 * @return the next variant compare to the current variant
 	 */
 	private VariantInterface getNextVariant () {
 		VariantInterface result;
-		int currentIndex = getVariantIndex(variant);
+		int currentIndex = getVariantIndex(currentVariant);
 		int nextIndex = currentIndex + 1;
 
-		if (nextIndex >= 0 && nextIndex < variantList.size()) {
+		if ((nextIndex >= 0) && (nextIndex < variantList.size())) {
 			result = variantList.get(nextIndex);
-			if (variant.getType() == VariantType.BLANK) {
+			if ((currentVariant.getType() == VariantType.BLANK) || (currentVariant.getType() == VariantType.REFERENCE)) {
 				nextIndex = getNextValidIndex(nextIndex);
 				result = variantList.get(nextIndex);
 			}
@@ -268,7 +274,7 @@ public class ToolTipStripeDialog extends JDialog {
 		return result;
 	}
 
-	
+
 	/**
 	 * Gets the the next valid index.
 	 * A valid index is not an index related to a blank variant where the scan is already on.
@@ -279,10 +285,11 @@ public class ToolTipStripeDialog extends JDialog {
 	private int getNextValidIndex (int index) {
 		boolean found = false;
 		int i = index;
-		while (!found && i < variantList.size()) {
-			if (variantList.get(i).getType() == VariantType.BLANK) {
-				if (	(i + 1) < variantList.size() &&
-						variantList.get(i + 1).getStart() > variantList.get(i).getStop()) {
+		while (!found && (i < variantList.size())) {
+			VariantType type = variantList.get(i).getType();
+			if ((type == VariantType.BLANK) || (type == VariantType.REFERENCE)) {
+				if (	((i + 1) < variantList.size()) &&
+						(variantList.get(i + 1).getStart() > variantList.get(i).getStop())) {
 					found = true;
 				}
 				i++;
@@ -305,10 +312,11 @@ public class ToolTipStripeDialog extends JDialog {
 	private int getPreviousValidIndex (int index) {
 		boolean found = false;
 		int i = index;
-		while (!found && i >= 0) {
-			if (variantList.get(i).getType() == VariantType.BLANK) {
-				if (	(i - 1) >= 0 &&
-						variantList.get(i - 1).getStop() < variantList.get(i).getStart()) {
+		while (!found && (i >= 0)) {
+			VariantType type = variantList.get(i).getType();
+			if ((type == VariantType.BLANK) || (type == VariantType.REFERENCE)) {
+				if (	((i - 1) >= 0) &&
+						(variantList.get(i - 1).getStop() < variantList.get(i).getStart())) {
 					found = true;
 				}
 				i--;
@@ -321,10 +329,10 @@ public class ToolTipStripeDialog extends JDialog {
 		}
 		return i;
 	}
-	
-	
+
+
 	protected void showVCFLine () {
-		vcfLineDialog.show(variantInformation);
+		vcfLineDialog.show(currentLine);
 	}
 
 }

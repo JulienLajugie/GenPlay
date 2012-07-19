@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
@@ -136,7 +137,7 @@ public class MGSNPSynchronizer implements Serializable {
 				}
 			}
 		}
-		
+
 		deleteSNP(genomesToDelete);
 
 		this.chromosome = currentChromosome;
@@ -151,32 +152,31 @@ public class MGSNPSynchronizer implements Serializable {
 
 
 	private void addSNP (Map<String, List<AlleleType>> genomes) {
-		if (genomes != null && genomes.size() > 0) {
+		if ((genomes != null) && (genomes.size() > 0)) {
 			Map<VCFFile, List<String>> readers = getSNPReaders(genomes);
 			MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay();
-			
+
 			for (VCFFile reader: readers.keySet()) {
-				List<String> genomeNames = transformList(readers.get(reader));
-				List<String> fields = getColumnNamesForQuery(genomeNames);
-				List<Map<String, Object>> results = null;
+				List<String> results = null;
 				try {
-					results = reader.getReader().query(chromosome.getName(), 0, chromosome.getLength(), fields);
+					results = reader.getReader().query(chromosome.getName(), 0, chromosome.getLength());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				if (results != null) {
-					for (Map<String, Object> result: results) {
-						if (hasSNP(result.get("REF").toString(), result.get("ALT").toString())) {
-							//String[] alternatives = result.get("ALT").toString().split(",");
-							String[] alternatives = Utils.split(result.get("ALT").toString(), ',');
+					VCFLine line = new VCFLine(null, null);
+					for (String result: results) {
+						line.initialize(result, reader.getHeader());
+						if (hasSNP(line.getREF(), line.getALT())) {
+							line.processForAnalyse();
 							for (String genomeName: readers.get(reader)) {
 								String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
 								//String genoType = result.get(genomeRawName).toString().split(":")[0];
-								String genoType = Utils.split(result.get(genomeRawName).toString(), ':')[0];
+								String genoType = line.getGenotype(genomeRawName);
 								for (AlleleType alleleType: genomes.get(genomeName)) {
 									int pos = getAlternativePosition(genoType, alleleType);
 									if (pos > 0) {
-										String alternative = alternatives[pos - 1];
+										String alternative = line.getAlternatives()[pos - 1];
 										if (alternative.length() == 1) {
 											MGVariantListForDisplay variantListForDisplay = null;
 											if (alleleType == AlleleType.ALLELE01) {
@@ -185,8 +185,8 @@ public class MGSNPSynchronizer implements Serializable {
 												variantListForDisplay = multiGenomeForDisplay.getGenomeInformation(genomeName).getAlleleB().getVariantList(chromosome, VariantType.SNPS);
 											}
 											if (variantListForDisplay != null) {
-												int referenceGenomePosition = getIntFromString(result.get("POS").toString());
-												float score = getFloatFromString(result.get("QUAL").toString());
+												int referenceGenomePosition = line.getReferencePosition();
+												float score = line.getQuality();
 												if (score == -1) {
 													score = 50;	// default value...
 												}
@@ -224,7 +224,7 @@ public class MGSNPSynchronizer implements Serializable {
 
 	private Map<VCFFile, List<String>> getSNPReaders (Map<String, List<AlleleType>> genomes) {
 		List<VCFFile> allReaders = ProjectManager.getInstance().getMultiGenomeProject().getAllVCFFiles();
-		Map<VCFFile, List<String>> readers = new HashMap<VCFFile, List<String>>(); 
+		Map<VCFFile, List<String>> readers = new HashMap<VCFFile, List<String>>();
 
 		for (VCFFile reader: allReaders) {
 			for (String genomeName: genomes.keySet()) {
@@ -237,35 +237,6 @@ public class MGSNPSynchronizer implements Serializable {
 			}
 		}
 		return readers;
-	}
-
-
-	private List<String> transformList (List<String> genomeFullNames) {
-		List<String> genomeRawNames = new ArrayList<String>();
-		for (String genomeFullName: genomeFullNames) {
-			genomeRawNames.add(FormattedMultiGenomeName.getRawName(genomeFullName));
-		}
-		return genomeRawNames;
-	}
-
-
-	/**
-	 * Creates the list of the column names necessary for a query.
-	 * Four fields are static: POS, REF, ALT and INFO for the position synchronization.
-	 * Name of the genomes (raw name) must be added dynamically according to the content of the VCF file and the project requirements.
-	 * @param genomeRawNames list of genome raw names to add to the static list
-	 * @return the list of column names necessary for a query
-	 */
-	private List<String> getColumnNamesForQuery (List<String> genomeRawNames) {
-		List<String> columnNames = new ArrayList<String>();
-		columnNames.add("POS");
-		columnNames.add("REF");
-		columnNames.add("ALT");
-		columnNames.add("QUAL");
-		for (String genomeName: genomeRawNames) {
-			columnNames.add(genomeName);
-		}
-		return columnNames;
 	}
 
 
@@ -300,30 +271,11 @@ public class MGSNPSynchronizer implements Serializable {
 		return 0;
 	}
 
-
-	private int getIntFromString (String s) {
-		int result = -1;
-		try {
-			result = Integer.parseInt(s);
-		} catch (Exception e) {}
-		return result;
-	}
-
-
-	private float getFloatFromString (String s) {
-		float result = (float) -1.0;
-		try {
-			result = Float.parseFloat(s);
-		} catch (Exception e) {}
-		return result;
-	}
-
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	private void deleteSNP (Map<String, List<AlleleType>> genomes) {
-		if (genomes != null && genomes.size() > 0) {
+		if ((genomes != null) && (genomes.size() > 0)) {
 			MGMultiGenomeForDisplay multiGenome = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay();
 
 			List<AlleleType> alleleList = getAlleleTypeList();
@@ -350,8 +302,8 @@ public class MGSNPSynchronizer implements Serializable {
 		alleleList.add(AlleleType.ALLELE02);
 		return alleleList;
 	}
-	
-	
+
+
 	/*private void printList (Map<String, List<AlleleType>> genomes) {
 		String info = "";
 		for (String genomeName: genomes.keySet()) {

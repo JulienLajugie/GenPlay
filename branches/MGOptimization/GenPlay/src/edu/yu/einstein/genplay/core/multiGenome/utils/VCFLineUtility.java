@@ -21,10 +21,20 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 
-import java.util.Map;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -66,9 +76,9 @@ public class VCFLineUtility {
 	 * @param genomeRawName	the line associated to a genome ONLY FOR FORMAT FILTER (can be null otherwise)
 	 * @return				the string value of the ID, null otherwise
 	 */
-	public static String getValue (Map<String, Object> line, VCFHeaderType header, String genomeRawName) {
+	public static String getValue (VCFLine line, VCFHeaderType header, String genomeRawName) {
 		VCFColumnName columnName = header.getColumnCategory();
-		String fieldLine = line.get(columnName.toString()).toString();
+		String fieldLine = line.getValueFromColumn(columnName);
 
 		String result = null;
 		if (columnName == VCFColumnName.ALT) {						// Columns ALT, QUAL, FILTER are not composed of different ID
@@ -93,8 +103,8 @@ public class VCFLineUtility {
 	 * @param header	the header (containing the ID field)
 	 * @return		the value of the specific field of the INFO field
 	 */
-	public static String getInfoValue (Map<String, Object> line, VCFHeaderType header) {
-		String info = line.get(VCFColumnName.INFO.toString()).toString();
+	public static String getInfoValue (VCFLine line, VCFHeaderType header) {
+		String info = line.getINFO();
 		return getInfoValue(info, header);
 	}
 
@@ -129,8 +139,8 @@ public class VCFLineUtility {
 	 * @param genomeRawName the genome raw name
 	 * @return		the value of the specific field of the FORMAT field
 	 */
-	public static String getFormatValue (Map<String, Object> line, VCFHeaderType header, String genomeRawName) {
-		return getFormatValue(line.get(VCFColumnName.FORMAT.toString()).toString(), line.get(genomeRawName).toString(), header);
+	public static String getFormatValue (VCFLine line, VCFHeaderType header, String genomeRawName) {
+		return getFormatValue(line.getFORMAT(), line.getFormatValues(genomeRawName), header);
 	}
 
 
@@ -142,6 +152,19 @@ public class VCFLineUtility {
 	 * @return				the value of the field, null otherwise
 	 */
 	public static String getFormatValue (String lineFormat, String genomeFormat, VCFHeaderType header) {
+		String[] genomeFormats = Utils.split(genomeFormat, ':');
+		return getFormatValue(lineFormat, genomeFormats, header);
+	}
+
+
+	/**
+	 * Gets the value according to the FORMAT field and a specific field
+	 * @param lineFormat	the FORMAT line
+	 * @param genomeFormat	the parsed format field of the related genome
+	 * @param header		the header
+	 * @return				the value of the field, null otherwise
+	 */
+	public static String getFormatValue (String lineFormat, String[] genomeFormat, VCFHeaderType header) {
 		String[] format = Utils.split(lineFormat, ':');
 		int idIndex = -1;
 		for (int i = 0; i < format.length; i++) {
@@ -153,13 +176,98 @@ public class VCFLineUtility {
 		String result = null;
 
 		if (idIndex != -1) {
-			//String[] genomeFormat = line.get(genomeRawName).toString().split(":");
-			String[] genomeFormats = Utils.split(genomeFormat, ':');
-			if (idIndex < genomeFormats.length) {
-				result = genomeFormats[idIndex];
+			if (idIndex < genomeFormat.length) {
+				result = genomeFormat[idIndex];
 			}
 		}
 
 		return result;
 	}
+
+
+	/**
+	 * @param variant a variant
+	 * @return the VCF line of the variant
+	 */
+	public static VCFLine getVCFLine (VariantInterface variant) {
+		if ((variant instanceof IndelVariant) || (variant instanceof SNPVariant)) {
+			List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(), variant.getVariantListForDisplay().getType());
+			int start = variant.getReferenceGenomePosition();
+			List<String> results = new ArrayList<String>();
+			List<VCFFile> requiredFiles = new ArrayList<VCFFile>();
+			for (VCFFile vcfFile: vcfFileList) {
+				List<String> resultsTmp = null;
+				try {
+					resultsTmp = vcfFile.getReader().query(variant.getVariantListForDisplay().getChromosome().getName(), start - 1, start);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (resultsTmp.size() > 0) {
+					for (String resultTmp: resultsTmp) {
+						results.add(resultTmp);
+						requiredFiles.add(vcfFile);
+					}
+				}
+			}
+
+			VCFLine line = null;
+			int size = results.size();
+			switch (size) {
+			case 1:
+				line = new VCFLine(results.get(0), requiredFiles.get(0).getHeader());
+			case 0:
+				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: No variant found");
+				break;
+			default:
+				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: Many variant found: " + size);
+				line = getRightInformation(variant, results, requiredFiles);
+				break;
+			}
+			return line;
+		} else if (variant instanceof ReferenceVariant) {
+			VCFFile file = ((ReferenceVariant) variant).getVCFFile();
+			Chromosome chromosome = ((ReferenceVariant) variant).getChromosome();
+			List<String> resultsTmp = null;
+			try {
+				resultsTmp = file.getReader().query(chromosome.getName(), variant.getReferenceGenomePosition() - 1, variant.getReferenceGenomePosition());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (resultsTmp.size() > 0) {
+				return new VCFLine(resultsTmp.get(0), file.getHeader());
+			}
+		}
+		return null;
+	}
+
+
+	private static VCFLine getRightInformation (VariantInterface variant, List<String> results, List<VCFFile> vcfFiles) {
+		if (results.size() > 0) {
+			float variantScore = variant.getScore();
+			for (int i = 0; i < results.size(); i++) {
+				String result = results.get(i);
+				float currentScore = getQUALFromResult(result);
+				if (variantScore == currentScore) {
+					return new VCFLine(result, vcfFiles.get(i).getHeader());
+				}
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * Retrieves the QUAL field from a result line
+	 * @param result	the result
+	 * @return			the quality as a float or 0 is the QUAL field is not valid (eg: '.')
+	 */
+	private static float getQUALFromResult (String result) {
+		String[] array = Utils.splitWithTab(result);
+		float qual = 0;
+		try {
+			qual = Float.parseFloat(array[5].toString());
+		} catch (Exception e) {}
+		return qual;
+	}
+
 }

@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 
 /**
@@ -137,18 +138,6 @@ public class MixVariant implements Serializable, VariantInterface {
 
 
 	@Override
-	public MGPosition getVariantInformation() {
-		return null;
-	}
-
-
-	@Override
-	public MGPosition getFullVariantInformation() {
-		return null;
-	}
-
-
-	@Override
 	public boolean equals(Object obj) {
 		if(this == obj){
 			return true;
@@ -177,5 +166,17 @@ public class MixVariant implements Serializable, VariantInterface {
 	@Override
 	public String getGenomeName() {
 		return null;
+	}
+
+
+	@Override
+	public VCFLine getVCFLine() {
+		return null;
+	}
+
+
+	@Override
+	public String getVariantSequence() {
+		return "?";
 	}
 }

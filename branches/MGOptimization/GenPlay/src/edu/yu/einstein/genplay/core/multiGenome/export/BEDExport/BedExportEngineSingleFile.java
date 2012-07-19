@@ -30,13 +30,13 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.export.FileAlgorithmInterface;
 import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileAlgorithm;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.util.Utils;
 

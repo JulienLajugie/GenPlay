@@ -26,10 +26,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FilterUtility;
@@ -199,8 +199,8 @@ public class NumberIDFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
-	public boolean isValid(Map<String, Object> object) {
-		return utility.isValid(this, object);
+	public boolean isValid(VCFLine line) {
+		return utility.isValid(this, line);
 	}
 
 

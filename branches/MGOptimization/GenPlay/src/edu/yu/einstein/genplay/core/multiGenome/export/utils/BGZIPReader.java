@@ -25,19 +25,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.samtools.util.BlockCompressedInputStream;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFGenomeIndexer;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BGZIPReader {
+public class BGZIPReader implements VCFGenomeIndexer {
 
 	private final VCFFile 						vcfFile;			// file to read
 	private final BlockCompressedInputStream 	bcis;				// stream for the file
@@ -99,7 +102,7 @@ public class BGZIPReader {
 						genomeMap.put(columns[i], i);
 					}
 				} else {
-					currentLine = new VCFLine(this, line);
+					currentLine = new VCFLine(line, this);
 					isData = true;
 				}
 			}
@@ -190,7 +193,7 @@ public class BGZIPReader {
 	 * @throws IOException
 	 */
 	public void goNextLine () throws IOException {
-		currentLine = new VCFLine(this, readLine(reader));
+		currentLine = new VCFLine(readLine(reader), this);
 	}
 
 
@@ -272,7 +275,7 @@ public class BGZIPReader {
 		System.out.println("Content of the file " + vcfFile.getFile().getName() + ":");
 		boolean end = false;
 		while (!end) {
-			VCFLine currentLine = new VCFLine(this, readLine(reader));
+			VCFLine currentLine = new VCFLine(readLine(reader), this);
 			if (currentLine.isLastLine()) {
 				end = true;
 			} else if (currentLine.isValid()) {
@@ -280,5 +283,38 @@ public class BGZIPReader {
 			}
 		}
 		reader.close();
+	}
+
+
+	@Override
+	public int getIndexFromRawGenomeName(String genomeRawName) {
+		try {
+			return genomeMap.get(genomeRawName);
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+
+	@Override
+	public int getIndexFromFullGenomeName(String genomeFullName) {
+		return getIndexFromRawGenomeName(FormattedMultiGenomeName.getRawName(genomeFullName));
+	}
+
+
+	@Override
+	public String getGenomeRawName(int index) {
+		for (String rawName: genomeMap.keySet()) {
+			if (genomeMap.get(rawName) == index) {
+				return rawName;
+			}
+		}
+		return null;
+	}
+
+
+	@Override
+	public List<String> getGenomeRawNames() {
+		return vcfFile.getHeader().getGenomeRawNames();
 	}
 }

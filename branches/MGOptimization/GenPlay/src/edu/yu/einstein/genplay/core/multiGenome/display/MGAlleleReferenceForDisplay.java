@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,13 +26,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
@@ -106,9 +108,10 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 			List<VariantInterface> variantList = chromosomeListOfVariantList.get(i);
 			List<MGOffset> offsetList = genome.getAllele().getOffsetList().get(i);
 			for (MGOffset offset: offsetList) {
-				VariantInterface variant =  new ReferenceVariant(offset.getPosition(), offset.getValue(), i);
+				VariantInterface variant =  new ReferenceBlankVariant(offset.getPosition(), offset.getValue(), i);
 				variantList.add(variant);
 			}
+			Collections.sort(variantList, new VariantComparator());								// sorts the list
 		}
 	}
 

@@ -26,13 +26,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsBooleanList;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
-
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -98,14 +96,14 @@ public class VCFFilter extends MGFilter implements Serializable {
 
 	@Override
 	public boolean isVariantValid (VariantInterface variant) {
-		MGPosition information = variant.getVariantInformation();
-		if (information != null) {
-			if (vcfFile.equals(information.getReader())) {
-				int index = vcfFile.getPositionList().getIndex(information.getPos());
-				if (index != -1) {
-					return booleanList.get(index);
-				}
+		VCFLine line = variant.getVCFLine();
+		if (line != null) {
+			//if (vcfFile.equals(information.getReader())) {
+			int index = vcfFile.getPositionList().getIndex(line.getReferencePosition());
+			if (index != -1) {
+				return booleanList.get(index);
 			}
+			//}
 		}
 		return false;
 	}
@@ -147,13 +145,16 @@ public class VCFFilter extends MGFilter implements Serializable {
 	 * Analyzes lines from VCF file in order to determine if variation pass the filter.
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
-	public void generateFilter (List<Map<String, Object>> results) {
+	public void generateFilter (List<String> results) {
 		vcfFile.initializesPositionList();
 
 		if (results != null) {
 			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
+			VCFLine line = new VCFLine(null, null);
 			for (int i = 0; i < results.size(); i++) {
-				boolean valid = filter.isValid(results.get(i));
+				line.initialize(results.get(i), vcfFile.getHeader());
+				line.processForAnalyse();
+				boolean valid = filter.isValid(line);
 				booleanList.set(i, valid);
 			}
 		}

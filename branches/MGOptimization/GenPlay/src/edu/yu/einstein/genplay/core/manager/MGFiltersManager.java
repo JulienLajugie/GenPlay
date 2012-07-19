@@ -52,7 +52,7 @@ public class MGFiltersManager {
 	private boolean chromosomeHasChanged;
 
 	private Map<VCFFile, List<VCFFilter>> filterMap;
-	private Map<VCFFile, List<Map<String, Object>>> resultMap;
+	private Map<VCFFile, List<String>> resultMap;
 
 
 	/**
@@ -155,7 +155,7 @@ public class MGFiltersManager {
 	 */
 	public void retrieveDataFromVCF () {
 		if ((filterMap != null) && (filterMap.size() > 0)) {
-			resultMap = new HashMap<VCFFile, List<Map<String,Object>>>();
+			resultMap = new HashMap<VCFFile, List<String>>();
 			Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 
 			for (VCFFile vcfFile: filterMap.keySet()) {
@@ -175,9 +175,9 @@ public class MGFiltersManager {
 					}
 				}
 
-				List<Map<String, Object>> results = null;
+				List<String> results = null;
 				try {
-					results = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength(), columnNameList);
+					results = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -203,7 +203,7 @@ public class MGFiltersManager {
 	 * @param filter the filter
 	 * @return the result of the query on the VCF file related to the filter
 	 */
-	public List<Map<String, Object>> getResultOfFilter (VCFFilter filter) {
+	public List<String> getResultOfFilter (VCFFilter filter) {
 		return resultMap.get(filter.getVCFFile());
 	}
 

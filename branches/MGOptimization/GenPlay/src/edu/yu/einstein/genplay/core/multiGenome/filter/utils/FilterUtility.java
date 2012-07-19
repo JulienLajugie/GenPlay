@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,9 +22,9 @@
 package edu.yu.einstein.genplay.core.multiGenome.filter.utils;
 
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.AltFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.FilterFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.FlagIDFilter;
@@ -51,7 +51,7 @@ public abstract class FilterUtility {
 	 * @param line		the VCF line (map String/Object)
 	 * @return			true if the line verifies the filter, false otherwise
 	 */
-	public boolean isValid(IDFilterInterface filter, Map<String, Object> line) {
+	public boolean isValid(IDFilterInterface filter, VCFLine line) {
 
 		if (filter.getColumnName() == VCFColumnName.FORMAT) {
 			List<String> genomeNames = filter.getGenomeNames();
@@ -83,7 +83,7 @@ public abstract class FilterUtility {
 			return false;
 		}
 
-		String value = line.get(filter.getColumnName().toString()).toString();
+		String value = line.getValueFromColumn(filter.getColumnName());
 		return passTest(filter, value);
 	}
 
@@ -179,7 +179,7 @@ public abstract class FilterUtility {
 	public String toStringForDisplay (IDFilterInterface filter) {
 		String text = "";
 
-		if (filter instanceof AltFilter || filter instanceof FilterFilter || filter instanceof StringIDFilter) {
+		if ((filter instanceof AltFilter) || (filter instanceof FilterFilter) || (filter instanceof StringIDFilter)) {
 			StringIDFilterInterface current = (StringIDFilterInterface) filter;
 			text += "Must ";
 			if (current.isRequired()) {
@@ -189,10 +189,10 @@ public abstract class FilterUtility {
 			}
 			text += current.getValue();
 
-		} else if (filter instanceof QualFilter || filter instanceof NumberIDFilter) {
+		} else if ((filter instanceof QualFilter) || (filter instanceof NumberIDFilter)) {
 			NumberIDFilterInterface current = (NumberIDFilterInterface) filter;
 			text += "x " + current.getInequation01() + " " + current.getValue01();
-			if (current.getInequation02() != null && current.getValue02() != null) {
+			if ((current.getInequation02() != null) && (current.getValue02() != null)) {
 				if (current.isCumulative()) {
 					text += " AND ";
 				} else {
@@ -217,7 +217,7 @@ public abstract class FilterUtility {
 				text += "heterozygote";
 			} else if (current.getOption() == GenotypeIDFilter.HOMOZYGOTE_OPTION) {
 				text += "homozygote";
-			} 
+			}
 
 			text += " (";
 			if (current.canBePhased() && current.canBeUnPhased()) {
@@ -242,7 +242,7 @@ public abstract class FilterUtility {
 					text += " - " + operator.toString().toUpperCase() + " of ";
 					for (int i = 0; i < genomeNames.size(); i++) {
 						text += genomeNames.get(i);
-						if (i < genomeNames.size() - 1) {
+						if (i < (genomeNames.size() - 1)) {
 							text += ", ";
 						}
 					}

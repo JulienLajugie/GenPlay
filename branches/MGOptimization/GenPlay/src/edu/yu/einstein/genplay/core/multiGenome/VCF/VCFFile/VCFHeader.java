@@ -42,6 +42,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFilte
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderFormatType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderInfoType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFGenomeIndexer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -49,7 +51,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFHeader implements Serializable {
+public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = 5071204705996276780L;
@@ -70,6 +72,7 @@ public class VCFHeader implements Serializable {
 	private	List<String>						columnNames;		// All column header names
 	private	List<String>						genomeRawNames;		// Dynamic header names included in the VCF file (raw genome names)
 	private	List<String>						genomeNames;		// Full genome names list
+	private Map<String, Integer> 				genomeMap;			// map between genome names and their related index according to their location on the column line
 
 
 	/**
@@ -91,6 +94,7 @@ public class VCFHeader implements Serializable {
 		out.writeObject(columnNames);
 		out.writeObject(genomeRawNames);
 		out.writeObject(genomeNames);
+		out.writeObject(genomeMap);
 	}
 
 
@@ -115,6 +119,7 @@ public class VCFHeader implements Serializable {
 		columnNames = (List<String>) in.readObject();
 		genomeRawNames = (List<String>) in.readObject();
 		genomeNames = (List<String>) in.readObject();
+		genomeMap = (Map<String, Integer>) in.readObject();
 	}
 
 
@@ -125,6 +130,7 @@ public class VCFHeader implements Serializable {
 		initFieldType();
 		initFixedColumnList();
 		genomeNames = new ArrayList<String>();
+		genomeMap = new HashMap<String, Integer>();
 	}
 
 
@@ -243,14 +249,32 @@ public class VCFHeader implements Serializable {
 							columnNames = new ArrayList<String>();
 							String[] details = Utils.splitWithTab(line.substring(1, line.length()));
 							//for (String name: line.substring(1, line.length()).split("[\t]")) {
-							for (String name: details) {
-								columnNames.add(name.trim());
+							for (int i = 0; i < details.length; i++) {
+								columnNames.add(details[i].trim());
+								if (i > 8) {
+									genomeMap.put(details[i].trim(), i);
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Looks for a ALT header using an ID.
+	 * @param id the ID
+	 * @return	the header or null
+	 */
+	public VCFHeaderType getAltHeaderFromID (String id) {
+		for (VCFHeaderType header: altHeader) {
+			if (header.getId().equals(id)) {
+				return header;
+			}
+		}
+		return null;
 	}
 
 
@@ -491,5 +515,38 @@ public class VCFHeader implements Serializable {
 			line = line + name + "\t";
 		}
 		System.out.println(line);
+	}
+
+
+	@Override
+	public int getIndexFromRawGenomeName(String genomeRawName) {
+		try {
+			return genomeMap.get(genomeRawName);
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+
+	@Override
+	public int getIndexFromFullGenomeName(String genomeFullName) {
+		return getIndexFromRawGenomeName(FormattedMultiGenomeName.getRawName(genomeFullName));
+	}
+
+
+	@Override
+	public String getGenomeRawName(int index) {
+		for (String rawName: genomeMap.keySet()) {
+			if (genomeMap.get(rawName) == index) {
+				return rawName;
+			}
+		}
+		return null;
+	}
+
+
+	@Override
+	public List<String> getGenomeRawNames() {
+		return genomeRawNames;
 	}
 }

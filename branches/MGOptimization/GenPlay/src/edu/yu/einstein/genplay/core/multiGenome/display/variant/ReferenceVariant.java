@@ -30,8 +30,11 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
 /**
  * @author Nicolas Fourel
@@ -42,9 +45,10 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2068590198125427396L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private int 						referenceGenomePosition;
-	private int 						length;
-	private final int							chromosomeCode;
+	private int 				referenceGenomePosition;
+	private int 				length;
+	private int					chromosomeCode;
+	private VCFFile				file;
 
 
 	/**
@@ -56,6 +60,8 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeInt(referenceGenomePosition);
 		out.writeInt(length);
+		out.writeInt(chromosomeCode);
+		out.writeObject(file);
 	}
 
 
@@ -69,6 +75,8 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		in.readInt();
 		referenceGenomePosition = in.readInt();
 		length = in.readInt();
+		chromosomeCode = in.readInt();
+		file = (VCFFile) in.readObject();
 	}
 
 
@@ -77,11 +85,13 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	 * @param referenceGenomePosition
 	 * @param length
 	 * @param chromosomeCode code of the chromosome (eg: 1 -> chr1)
+	 * @param file the associated vcf file
 	 */
-	public ReferenceVariant(int referenceGenomePosition, int length, int chromosomeCode) {
+	public ReferenceVariant(int referenceGenomePosition, int length, int chromosomeCode, VCFFile file) {
 		this.referenceGenomePosition = referenceGenomePosition;
 		this.length = length;
 		this.chromosomeCode = chromosomeCode;
+		this.file = file;
 	}
 
 
@@ -99,6 +109,9 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 
 	@Override
 	public int getLength() {
+		if (length == 0) {	// the related variant is a SNP if length is registered as 0.
+			return 1;
+		}
 		return length;
 	}
 
@@ -117,7 +130,7 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 
 	@Override
 	public VariantType getType() {
-		return VariantType.BLANK;
+		return VariantType.REFERENCE;
 	}
 
 
@@ -125,7 +138,7 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	public void show() {
 		String info = "[P:" + referenceGenomePosition + "; ";
 		info += "T: " + getType() + "; ";
-		info += "L: " + length + "; ";
+		info += "L: " + getLength() + "; ";
 		info += "St: " + getStart() + "; ";
 		info += "Sp: " + getStop() + "; ";
 		info += "P': " + phasedWithPos() + "]";
@@ -133,32 +146,31 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	}
 
 
-	private Chromosome getChromosome () {
+	/**
+	 * @return the chromosome related to the variant
+	 */
+	public Chromosome getChromosome () {
 		return ProjectManager.getInstance().getProjectChromosome().get(chromosomeCode);
 	}
 
 
 	@Override
 	public int getStart() {
-		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition) + 1;
-	}
-
-
-	@Override
-	public MGPosition getVariantInformation() {
-		return null;
-	}
-
-
-	@Override
-	public MGPosition getFullVariantInformation() {
-		return null;
+		int start = ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
+		if (length > 0) {	// the related variant is a SNP if length is registered as 0.
+			start++;
+		}
+		return start;
 	}
 
 
 	@Override
 	public int getStop() {
-		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
+		if (length > 0) {
+			//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + length) - 1;
+			return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + getLength());
+		}
+		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
 	}
 
 
@@ -174,7 +186,7 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 		// object must be Test at this point
 		ReferenceVariant test = (ReferenceVariant)obj;
 		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
-				(length == test.getLength());
+				(getLength() == test.getLength());
 	}
 
 
@@ -188,4 +200,36 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	public String getGenomeName() {
 		return ProjectManager.getInstance().getAssembly().getDisplayName();
 	}
+
+
+	@Override
+	public VCFLine getVCFLine() {
+		return VCFLineUtility.getVCFLine(this);
+	}
+
+
+	/**
+	 * @return the vcf file
+	 */
+	public VCFFile getVCFFile() {
+		return file;
+	}
+
+
+	@Override
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		String ref = line.getREF();
+		String chain = "?";
+		if (ref.length() > 1) {
+			chain = ref.substring(1);
+		} else if (ref.length() == 1) {
+			if (length == 0) {
+				chain = ref;
+			}
+		}
+
+		return chain;
+	}
+
 }

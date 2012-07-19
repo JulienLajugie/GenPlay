@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,7 +26,8 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -36,7 +37,7 @@ import edu.yu.einstein.genplay.util.Utils;
 public class VariantInfo {
 
 	private PanelInformation 		pane;			// pane containing information
-	private String 					title;			// header of the pane
+	private final String 			title;			// header of the pane
 	private List<String> 			keys;			// key values
 	private List<String> 			values;			// values
 	private List<String> 			description;	// keys description
@@ -46,21 +47,19 @@ public class VariantInfo {
 	 * Constructor of {@link VariantInfo}
 	 * @param info string containing information about the INFO field of the variant information
 	 */
-	protected VariantInfo (MGPosition variantInformation) {
+	protected VariantInfo (VCFLine line) {
 		title = "Information";
-		
-		if (variantInformation == null) {
+
+		if (line == null) {
 			pane = new PanelInformation(title, null, null, null);
 		} else {
 			keys = new ArrayList<String>();
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
 
-			//String[] elements = variantInformation.getInfo().split(";");
-			String[] elements = Utils.split(variantInformation.getInfo(), ';');
+			String[] elements = Utils.split(line.getINFO(), ';');
 
 			for (String element: elements) {
-				//String[] map = element.split("=");
 				String[] map = Utils.split(element, '=');
 				String key = map[0];
 				String value = null;
@@ -70,9 +69,19 @@ public class VariantInfo {
 				keys.add(key);
 				values.add(value);
 			}
-			
+
+			VCFHeader header = null;
+			if (line.getGenomeIndexer() instanceof VCFHeader) {
+				header = (VCFHeader) line.getGenomeIndexer();
+			}
 			for (String key: keys) {
-				description.add(variantInformation.getInfoHeader(key).getDescription());
+				String desc;
+				if (header != null) {
+					desc = header.getInfoHeaderFromID(key).getDescription();
+				} else {
+					desc = "-";
+				}
+				description.add(desc);
 			}
 
 			pane = new PanelInformation(title, keys, values, description);

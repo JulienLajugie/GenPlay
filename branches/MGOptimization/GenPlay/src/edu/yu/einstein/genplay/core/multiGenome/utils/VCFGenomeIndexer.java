@@ -19,50 +19,42 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export;
+package edu.yu.einstein.genplay.core.multiGenome.utils;
 
-import java.io.IOException;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface FileAlgorithmInterface {
+public interface VCFGenomeIndexer {
 
 
 	/**
-	 * Compute the file algorithm
-	 * @throws IOException
+	 * @param genomeRawName a raw name of a genome
+	 * @return the index of the column within a VCF file for the one the given genome name is related to.
 	 */
-	public void compute () throws IOException;
+	public int getIndexFromRawGenomeName (String genomeRawName);
 
 
 	/**
-	 * @return the current VCF line
+	 * @param genomeFullName a raw name of a genome
+	 * @return the index of the column within a VCF file for the one the given genome name is related to.
 	 */
-	public VCFLine getCurrentLine ();
+	public int getIndexFromFullGenomeName (String genomeFullName);
 
 
 	/**
-	 * @return the current VCF file
+	 * @param index index of a column in a VCF file
+	 * @return the raw name of the genome related to the index of a column
 	 */
-	public VCFFile getCurrentVCFFile ();
+	public String getGenomeRawName (int index);
 
 
 	/**
-	 * @return the current VCF reader
+	 * @return the list of genome raw names
 	 */
-	public ManualVCFReader getCurrentVCFReader ();
-
-
-	/**
-	 * @return the required list of genome names
-	 */
-	public List<String> getGenomeList ();
+	public List<String> getGenomeRawNames ();
 
 }

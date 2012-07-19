@@ -28,8 +28,10 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
 /**
  * @author Nicolas Fourel
@@ -155,18 +157,6 @@ public class IndelVariant implements Serializable, VariantInterface {
 
 
 	@Override
-	public MGPosition getVariantInformation() {
-		return variantListForDisplay.getVariantInformation(this, false);
-	}
-
-
-	@Override
-	public MGPosition getFullVariantInformation() {
-		return variantListForDisplay.getVariantInformation(this, true);
-	}
-
-
-	@Override
 	public int getStop() {
 		if (getType() == VariantType.INSERTION) {
 			return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition + 1) - 1;
@@ -207,6 +197,32 @@ public class IndelVariant implements Serializable, VariantInterface {
 	@Override
 	public String getGenomeName() {
 		return variantListForDisplay.getAlleleForDisplay().getGenomeInformation().getName();
+	}
+
+
+	@Override
+	public VCFLine getVCFLine() {
+		return VCFLineUtility.getVCFLine(this);
+	}
+
+
+	@Override
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		line.processForAnalyse();
+		String chain = "?";
+		if (length > 0) {
+			String alt = line.getAlternative(getGenomeName(), getAlleleType());
+			if ((alt != null) && (alt.charAt(0) != '<')) {
+				chain = alt.substring(1);
+			}
+		} else if (length < 0) {
+			String ref = line.getREF();
+			if (ref.length() > 1) {
+				chain = ref.substring(1);
+			}
+		}
+		return chain;
 	}
 
 }

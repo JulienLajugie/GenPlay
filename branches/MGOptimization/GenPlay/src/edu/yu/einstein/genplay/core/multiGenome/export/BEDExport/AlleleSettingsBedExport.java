@@ -27,7 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 
 
 /**

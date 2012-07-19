@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  */
 public class ApplicationRecording {
 
-	
+
 	/**
 	 * Reads the configuration from a file.
 	 * @throws IOException
@@ -68,8 +68,8 @@ public class ApplicationRecording {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Reads a line from the configuration file and extracts the data
 	 * @param line a line from the configuration file
@@ -98,14 +98,16 @@ public class ApplicationRecording {
 					projectConfiguration.setUndoCount(Integer.parseInt(value));
 				} else if (key.equalsIgnoreCase("reset track")) {
 					projectConfiguration.setResetTrack(Boolean.parseBoolean(value));
+				} else if (key.equalsIgnoreCase("cache track")) {
+					projectConfiguration.setCacheTrack(Boolean.parseBoolean(value));
 				} else if (key.equalsIgnoreCase("show legend")) {
 					projectConfiguration.setLegend(Boolean.parseBoolean(value));
 				}
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Writes the configuration in a file
 	 * @throws IOException
@@ -134,6 +136,8 @@ public class ApplicationRecording {
 			writer.newLine();
 			writer.write("reset track: " + projectConfiguration.isResetTrack());
 			writer.newLine();
+			writer.write("cache track: " + projectConfiguration.isCacheTrack());
+			writer.newLine();
 			writer.write("show legend: " + projectConfiguration.isLegend());
 		} finally {
 			if (writer != null) {
@@ -141,5 +145,5 @@ public class ApplicationRecording {
 			}
 		}
 	}
-	
+
 }

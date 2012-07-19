@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,17 +28,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * This class manages a list of variants.
@@ -155,111 +151,6 @@ public class MGVariantListForDisplay implements Serializable {
 
 
 	/**
-	 * @param variant a variant
-	 * @param includeAllGenomes true if all format fields must be included in the result, false if only the format field of the related genome matters
-	 * @return all information about the variant (from the vcf)
-	 */
-	public MGPosition getVariantInformation (VariantInterface variant, boolean includeAllGenomes) {
-		if (includeAllGenomes) {
-			return getVariantInformation(variant, null);
-		} else {
-			return getVariantInformation(variant, alleleForDisplay.getGenomeInformation().getName());
-		}
-	}
-	
-	
-	/**
-	 * @param variant a variant
-	 * @return all information about the variant (from the vcf)
-	 */
-	private MGPosition getVariantInformation (VariantInterface variant, String genomeName) {
-		if (!(variant instanceof MixVariant)) {
-			List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(alleleForDisplay.getGenomeInformation().getName(), this.type);
-			List<String> columns = null;
-			if (genomeName != null) {
-				columns = vcfFileList.get(0).getHeader().getFixedColumn();
-				columns.add(FormattedMultiGenomeName.getRawName(genomeName));	//alleleForDisplay.getGenomeInformation().getName()
-			}
-			int start = variant.getReferenceGenomePosition();
-			List<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
-			List<VCFFile> requiredFiles = new ArrayList<VCFFile>();
-			for (VCFFile vcfFile: vcfFileList) {
-				List<Map<String, Object>> resultsTmp = null;
-				try {
-					if (columns == null) {
-						resultsTmp = vcfFile.getReader().query(chromosome.getName(), start - 1, start);
-					} else {
-						resultsTmp = vcfFile.getReader().query(chromosome.getName(), start - 1, start, columns);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (resultsTmp.size() > 0) {
-					for (Map<String, Object> resultTmp: resultsTmp) {
-						results.add(resultTmp);
-						requiredFiles.add(vcfFile);
-					}
-				}
-			}
-
-			MGPosition position = null;
-			int size = results.size();
-			switch (size) {
-			case 1:
-				position = new MGPosition(variant, results.get(0), requiredFiles.get(0));
-			case 0:
-				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: No variant found");
-				break;
-			default:
-				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: Many variant found: " + size);
-				position = getRightInformation(variant, results, requiredFiles);
-				break;
-			}
-			return position;
-		} else {
-			MGPosition position = new MGPosition(variant, null, null);
-			return position;
-		}
-	}
-
-
-	/**
-	 * Browses a list of results to find out the right one comparing to the given variant
-	 * @param variant	the variant
-	 * @param results	the list of results
-	 * @param vcfFiles	the list of VCF files
-	 * @return			the {@link MGPosition} object containing all information about the variant.
-	 */
-	private MGPosition getRightInformation (VariantInterface variant, List<Map<String, Object>> results, List<VCFFile> vcfFiles) {
-		if (results.size() > 0) {
-			float variantScore = variant.getScore();
-			for (int i = 0; i < results.size(); i++) {
-				Map<String, Object> result = results.get(i);
-				float currentScore = getQUALFromResult(result);
-				if (variantScore == currentScore) {
-					return new MGPosition(variant, results.get(i), vcfFiles.get(i));
-				}
-			}
-		}
-		return null;
-	}
-	
-	
-	/**
-	 * Retrieves the QUAL field from a result line
-	 * @param result	the result
-	 * @return			the quality as a float or 0 is the QUAL field is not valid (eg: '.')
-	 */
-	private float getQUALFromResult (Map<String, Object> result) {
-		float qual = 0;
-		try {
-			qual = Float.parseFloat(result.get("QUAL").toString());
-		} catch (Exception e) {}
-		return qual;
-	}
-
-
-	/**
 	 * Show the information of the {@link MGAlleleForDisplay}
 	 */
 	public void show () {
@@ -277,7 +168,7 @@ public class MGVariantListForDisplay implements Serializable {
 		//info += "\n";
 		System.out.println("MGVariantListForDisplay.show()");
 		System.out.println(info);
-		
+
 		/*int cpt = 0;
 		for (VariantInterface variant: variantList) {
 			if (cpt < 10) {

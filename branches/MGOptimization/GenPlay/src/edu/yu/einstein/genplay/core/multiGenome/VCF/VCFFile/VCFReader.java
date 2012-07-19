@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.Iterator;
 import edu.yu.einstein.genplay.core.multiGenome.tabixAPI.TabixReader;
@@ -42,16 +43,16 @@ public class VCFReader {
 
 	private transient	TabixReader 			vcfParser;		// Tabix object for the VCF file (Tabix Java API)
 	private	List<String>						columnNames;		// All column header names
-	
-	
+
+
 	/**
 	 * Constructor of {@link VCFReader}
 	 */
 	protected VCFReader () {
 		vcfParser = null;
 	}
-	
-	
+
+
 	/**
 	 * Indexes the file creating using the Tabix API
 	 * @param file
@@ -60,18 +61,16 @@ public class VCFReader {
 	protected void indexVCFFile (File file) throws IOException {
 		this.vcfParser = new TabixReader(file.getPath());
 	}
-	
-	
+
+
 	/**
-	 * Performs a query on the indexed VCF file.
-	 * @param chr		chromosome
-	 * @param start		start position
-	 * @param stop		stop position
-	 * @return query 	results list
+	 * Performs a query on the indexed VCF file for a whole chromosome.
+	 * @param chromosome	the chromosome
+	 * @return	the results list
 	 * @throws IOException
 	 */
-	public List<Map<String, Object>> query (String chr, int start, int stop) throws IOException {
-		return query(chr, start, stop, columnNames);
+	public List<String> query (Chromosome chromosome) throws IOException {
+		return query(chromosome.getName(), 0, chromosome.getLength());
 	}
 
 
@@ -80,23 +79,15 @@ public class VCFReader {
 	 * @param chr		chromosome
 	 * @param start		start position
 	 * @param stop		stop position
-	 * @param fields	filter to select specific fields
 	 * @return query 	results list
 	 * @throws IOException
 	 */
-	public List<Map<String, Object>> query (String chr, int start, int stop, List<String> fields) throws IOException {
+	public List<String> query (String chr, int start, int stop) throws IOException {
 		Iterator iter = vcfParser.query(chr + ":" + start + "-" + stop);
-		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
+		List<String> result = new ArrayList<String>();
 		String line;
-		while (iter != null && (line = iter.next()) != null){
-			String[] info = Utils.splitWithTab(line);
-			Map<String, Object> row = new HashMap<String, Object>();
-			for (String columnName: columnNames) {
-				if (fields.indexOf(columnName) != -1) {
-					row.put(columnName, info[columnNames.indexOf(columnName)]);
-				}
-			}
-			result.add(row);
+		while ((iter != null) && ((line = iter.next()) != null)){
+			result.add(line);
 		}
 		return result;
 	}
@@ -115,7 +106,7 @@ public class VCFReader {
 		List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 		int cpt = 0;
 		String line;
-		while (iter != null && (line = iter.next()) != null && cpt < 10){
+		while ((iter != null) && ((line = iter.next()) != null) && (cpt < 10)){
 			String[] info = Utils.splitWithTab(line);
 			Map<String, Object> row = new HashMap<String, Object>();
 			for (String columnName: columnNames) {
@@ -128,7 +119,7 @@ public class VCFReader {
 		}
 		return result;
 	}
-	
+
 
 	/**
 	 * @return the vcfParser
@@ -136,7 +127,7 @@ public class VCFReader {
 	public TabixReader getVCFParser() {
 		return vcfParser;
 	}
-	
+
 
 	/**
 	 * @param columnNames the columnNames to set

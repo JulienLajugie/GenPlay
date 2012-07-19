@@ -26,8 +26,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -37,15 +39,14 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SNPVariant implements Serializable, VariantInterface {
+public class ReferenceBlankVariant implements Serializable, VariantInterface {
 
 	/** Generated serial version ID */
-	private static final long serialVersionUID = -9017009720555361231L;
+	private static final long serialVersionUID = -2068590198125427396L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private MGVariantListForDisplay 	variantListForDisplay;
 	private int 						referenceGenomePosition;
-	private float 						score;
-	private int 						phasedWithPos;
+	private int 						length;
+	private final int					chromosomeCode;
 
 
 	/**
@@ -55,10 +56,8 @@ public class SNPVariant implements Serializable, VariantInterface {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(variantListForDisplay);
 		out.writeInt(referenceGenomePosition);
-		out.writeFloat(score);
-		out.writeInt(phasedWithPos);
+		out.writeInt(length);
 	}
 
 
@@ -70,31 +69,27 @@ public class SNPVariant implements Serializable, VariantInterface {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		variantListForDisplay = (MGVariantListForDisplay) in.readObject();
 		referenceGenomePosition = in.readInt();
-		score = in.readFloat();
-		phasedWithPos = in.readInt();
+		length = in.readInt();
 	}
 
 
 	/**
-	 * Constructor of {@link SNPVariant}
-	 * @param variantListForDisplay
+	 * Constructor of {@link ReferenceBlankVariant}
 	 * @param referenceGenomePosition
-	 * @param score
-	 * @param phasedWithPos
+	 * @param length
+	 * @param chromosomeCode code of the chromosome (eg: 1 -> chr1)
 	 */
-	public SNPVariant (MGVariantListForDisplay variantListForDisplay, int referenceGenomePosition, float score, int phasedWithPos) {
-		this.variantListForDisplay = variantListForDisplay;
+	public ReferenceBlankVariant(int referenceGenomePosition, int length, int chromosomeCode) {
 		this.referenceGenomePosition = referenceGenomePosition;
-		this.score = score;
-		this.phasedWithPos = phasedWithPos;
+		this.length = length;
+		this.chromosomeCode = chromosomeCode;
 	}
 
 
 	@Override
 	public MGVariantListForDisplay getVariantListForDisplay() {
-		return variantListForDisplay;
+		return null;
 	}
 
 
@@ -106,50 +101,54 @@ public class SNPVariant implements Serializable, VariantInterface {
 
 	@Override
 	public int getLength() {
-		return 1;
+		return length;
 	}
 
 
 	@Override
 	public float getScore() {
-		return score;
+		return -1;
 	}
 
 
 	@Override
 	public int phasedWithPos() {
-		return phasedWithPos;
+		return -1;
 	}
 
 
 	@Override
 	public VariantType getType() {
-		return VariantType.SNPS;
+		return VariantType.BLANK;
 	}
 
 
 	@Override
 	public void show() {
 		String info = "[P:" + referenceGenomePosition + "; ";
-		info += "T: " + VariantType.SNPS + "; ";
-		info += "L: 1; ";
+		info += "T: " + getType() + "; ";
+		info += "L: " + length + "; ";
 		info += "St: " + getStart() + "; ";
-		info += "P': " + phasedWithPos + "]";
+		info += "Sp: " + getStop() + "; ";
+		info += "P': " + phasedWithPos() + "]";
 		System.out.println(info);
+	}
+
+
+	private Chromosome getChromosome () {
+		return ProjectManager.getInstance().getProjectChromosome().get(chromosomeCode);
 	}
 
 
 	@Override
 	public int getStart() {
-		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition);
+		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition) + 1;
 	}
 
 
 	@Override
 	public int getStop() {
-		//System.err.println("Illegal use of the method \"SNPVariant.getStop\", this method shouldn't be invoked for redundancy purpose");
-		//return getStart() + 1;	// if getStop() is called, getStart() has been probably called right before. In case of SNP, just add 1 to the getStart() result to have its stop.
-		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition + 1);
+		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
 	}
 
 
@@ -162,27 +161,22 @@ public class SNPVariant implements Serializable, VariantInterface {
 			return false;
 		}
 
-		if (this.hashCode() != obj.hashCode()) {
-			return false;
-		}
-
 		// object must be Test at this point
-		SNPVariant test = (SNPVariant)obj;
+		ReferenceBlankVariant test = (ReferenceBlankVariant)obj;
 		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
-				(score == test.getScore()) &&
-				(phasedWithPos == test.getScore());
+				(length == test.getLength());
 	}
 
 
 	@Override
 	public AlleleType getAlleleType() {
-		return variantListForDisplay.getAlleleForDisplay().getAlleleType();
+		return null;
 	}
 
 
 	@Override
 	public String getGenomeName() {
-		return variantListForDisplay.getAlleleForDisplay().getGenomeInformation().getName();
+		return ProjectManager.getInstance().getAssembly().getDisplayName();
 	}
 
 
@@ -194,9 +188,6 @@ public class SNPVariant implements Serializable, VariantInterface {
 
 	@Override
 	public String getVariantSequence() {
-		VCFLine line = getVCFLine();
-		line.processForAnalyse();
-		String chain = line.getAlternative(getGenomeName(), getAlleleType());
-		return chain;
+		return "?";
 	}
 }

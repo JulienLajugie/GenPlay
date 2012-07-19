@@ -19,71 +19,83 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.filter;
+package edu.yu.einstein.genplay.core.list;
 
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
+ * @param <K>
  */
-public interface FilterInterface {
+public class CacheTrack<K> {
 
-	/**
-	 * @return the name of the filter
-	 */
-	public String getName ();
+
+	Map<Double, K> map;
 
 
 	/**
-	 * @return a description of the filter
+	 * Constructor of {@link CacheTrack}
 	 */
-	public String getDescription ();
+	public CacheTrack () {
+		initialize();
+	}
 
 
 	/**
-	 * Gives a string for display use of the filter
-	 * @return a string
+	 * Initialize/Reset the cache
 	 */
-	public String toStringForDisplay ();
+	public void initialize () {
+		map = new HashMap<Double, K>();
+	}
 
 
 	/**
-	 * Checks for all errors
-	 * @return the string of errors if exists or null otherwise
+	 * Set some data for xRatio.
+	 * it will erase current data for that ratio.
+	 * @param xRatio	the xRation
+	 * @param data		the data to set
 	 */
-	public String getErrors ();
+	public void setData (double xRatio, K data) {
+		if (isCacheEnable()) {
+			map.put(xRatio, data);
+		}
+	}
 
 
 	/**
-	 * Checks if the object (purpose of the filter) is valid according to the filter
-	 * @param line the line of a VCF
-	 * @return true if it is valid, false otherwise;
+	 * @param xRatio an xRation
+	 * @return the data associated to the xRatio, null if no match
 	 */
-	public boolean isValid (VCFLine line);
+	public K getData (double xRatio) {
+		if (map.containsKey(xRatio)) {
+			return map.get(xRatio);
+		}
+		return null;
+	}
 
 
 	/**
-	 * Checks if the object (purpose of the filter) is valid according to the filter
-	 * @param variant the variant
-	 * @return true if it is valid, false otherwise;
+	 * @param xRatio an xRatio
+	 * @return true if the cache has data the given xRation, false otherwise
 	 */
-	public boolean isValid (VariantInterface variant);
+	public boolean hasData (double xRatio) {
+		if (map.containsKey(xRatio)) {
+			return true;
+		}
+		return false;
+	}
 
 
 	/**
-	 * Equals method
-	 * @param obj
-	 * @return true if the parameter is equal to the instance
+	 * @return true is cache system is enabled, false otherwise
 	 */
-	@Override
-	public boolean equals(Object obj);
-
-
-	/**
-	 * @return a duplicate of the current object
-	 */
-	public FilterInterface getDuplicate ();
+	private boolean isCacheEnable () {
+		return ProjectManager.getInstance().getProjectConfiguration().isCacheTrack();
+	}
 
 }

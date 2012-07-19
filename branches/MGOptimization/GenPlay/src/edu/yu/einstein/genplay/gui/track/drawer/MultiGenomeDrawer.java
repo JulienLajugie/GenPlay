@@ -44,7 +44,6 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.display.DisplayableVariantListMaker;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
@@ -62,7 +61,8 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  * - drawing the stripe from the specific height and width, genome positions must be translated to the screen positions
  * - drawing the letters (nucleotide) for each stripe when they are known
  * - changing the stripe display when the mouse goes over a stripe
- * - displaying an information dialog about a variant when the user clicks on it
+ * - displaying an information dialog about a variant when the user clicks on it.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -76,6 +76,7 @@ public class MultiGenomeDrawer implements Serializable {
 
 	private DisplayableVariantListMaker		allele01VariantListMaker;		// displayable variants list creator (for MG project)
 	private DisplayableVariantListMaker		allele02VariantListMaker;		// displayable variants list creator (for MG project)
+	private AlleleType						currentDrawingAllele;
 
 	private List<MGFilter>					mgFiltersList;					// list of filters that will apply rules of filtering
 	private List<StripesData>				stripesList;					// list of stripes to apply to this track (for MG project)
@@ -98,6 +99,7 @@ public class MultiGenomeDrawer implements Serializable {
 			out.writeObject(stripesList);
 		}
 		out.writeInt(stripesOpacity);
+		out.writeObject(mgFiltersList);
 	}
 
 
@@ -117,6 +119,7 @@ public class MultiGenomeDrawer implements Serializable {
 			stripesList = (List<StripesData>) in.readObject();
 		}
 		stripesOpacity = in.readInt();
+		mgFiltersList = (List<MGFilter>) in.readObject();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 	}
 
@@ -233,7 +236,9 @@ public class MultiGenomeDrawer implements Serializable {
 				Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, g.getClipBounds().width, halfHeight);		// create a 2D graphics for the second allele that correspond to the lower half of the track
 				allele02Graphic.scale(1, -1);																				// all Y axis (vertical) coordinates must be reversed for the second allele
 				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
+				currentDrawingAllele = AlleleType.ALLELE01;
 				drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow); 	// draw the stripes for the first allele
+				currentDrawingAllele = AlleleType.ALLELE02;
 				drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
 				drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
 			} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
@@ -274,7 +279,9 @@ public class MultiGenomeDrawer implements Serializable {
 				Color color;
 				if (type == VariantType.BLANK) {				// defines its color according to its type
 					color = blankZoneColor;
-				} else if (type == VariantType.MIX) {
+				} else if (type == VariantType.REFERENCE) {
+					color = blankZoneColor;
+				}  else if (type == VariantType.MIX) {
 					color = mixColor;
 				} else  {
 					String genomeName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(); 	// gets the genome name of the variant
@@ -337,25 +344,34 @@ public class MultiGenomeDrawer implements Serializable {
 		}
 		g.setColor(newColor);														// we set the graphic object color
 
-		// Draws the variant
-		if (variant.getType() == VariantType.BLANK) {								// drawing a blank of synchronization requires a different method (shorter and more simple)
-			drawBlank(g, x, width);
-		} else {																	// if it is not a blank of synchronization
-			int y = clipHeight - height;											// y represents the top left corner of the stripes, the axis goes to the bottom
+		// if it is not a blank of synchronization
+		int y = clipHeight - height;												// y represents the top left corner of the stripes, the axis goes to the bottom
 
-			// Draws the edge line of stripes
-			if (variant.getType() == VariantType.INSERTION) {						// the edge of an insertion and a deletion are different
-				drawInsertion(g, x, y, width, height);
-			} else if (variant.getType() == VariantType.DELETION) {
-				drawDeletion(g, x, y, width, height);
-			}
-
-			// Draws the stripe
-			g.fillRect(x, y, width, height);										// draw the stripe
-
-			// Draw the variant letters
-			drawLetters(g, x, width, height, variant, stop - start);				// draw the letters (nucleotides) over the stripe
+		// Draws the edge line of stripes
+		if (variant.getType() == VariantType.INSERTION) {							// the edge of an insertion and a deletion are different
+			drawInsertion(g, x, y, width, height);
+		} else if (variant.getType() == VariantType.DELETION) {
+			drawDeletion(g, x, y, width, height);
 		}
+
+		int nucleotideNumber;
+
+		// Draws the variant
+		if ((variant.getType() == VariantType.BLANK) && (MGDisplaySettings.DRAW_BLANK == MGDisplaySettings.YES_MG_OPTION)) {								// drawing a blank of synchronization requires a different method (shorter and more simple)
+			drawBlank(g, x, width);
+			height = clipHeight;
+			nucleotideNumber = variant.getLength();
+		} else if ((variant.getType() == VariantType.REFERENCE) && (MGDisplaySettings.DRAW_REFERENCE == MGDisplaySettings.YES_MG_OPTION)) {					// drawing a reference stripe requires a different method (shorter and more simple)
+			drawBlank(g, x, width);
+			height = clipHeight;
+			nucleotideNumber = variant.getLength();
+		} else {
+			g.fillRect(x, y, width, height);										// draw the stripe
+			nucleotideNumber = stop - start;
+		}
+
+		// Draw the variant letters
+		drawLetters(g, x, width, height, variant, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
 	}
 
 
@@ -420,42 +436,35 @@ public class MultiGenomeDrawer implements Serializable {
 	private void drawLetters (Graphics g, int x, int width, int height, VariantInterface variant, int nucleotideNumber) {
 		boolean draw = false;								// boolean to check if drawing letters is required
 		VariantType variantType = variant.getType();		// gets the variant type
-		if (	((variantType == VariantType.INSERTION) 	&& 		(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
-				((variantType == VariantType.DELETION) 	&& 		(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
-				((variantType == VariantType.SNPS) 		&& 		(MGDisplaySettings.DRAW_SNP_LETTERS 			== MGDisplaySettings.YES_MG_OPTION))) {
+		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
+				((variantType == VariantType.DELETION) 	&& 	(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
+				((variantType == VariantType.SNPS) 		&& 	(MGDisplaySettings.DRAW_SNP_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
+				((variantType == VariantType.BLANK) 	&& 	(MGDisplaySettings.DRAW_BLANK_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
+				((variantType == VariantType.REFERENCE) && 	(MGDisplaySettings.DRAW_REFERENCE_LETTERS 	== MGDisplaySettings.YES_MG_OPTION))) {
 			draw = true;
 		}
 
-		if (draw) {																			// if the letters must be drawn
+		if (draw) {
+			// if the letters must be drawn
 			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics
-			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {				// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
-				MGPosition fullInformation = variant.getVariantInformation();			// gets the full information of the variant
-				if (fullInformation != null) {												// if they exist (variant can be MIX which does not have full information)
-					String letters = fullInformation.getAlternative();						// we first get the ALT field (by default)
-					if (letters.charAt(0) == '<') {											// if the first character is '<', it a SV variation and the sequence is not provided
-						letters = "?";														// the letter is the question mark
-					} else if (variantType == VariantType.DELETION) {						// if the variant is a deletion,
-						letters = fullInformation.getReference().substring(1);				// the deleted nucleotides are provided by the REF field (we do not want the first one)
-					} else if (variantType == VariantType.INSERTION) {						// if the variant is an insertion,
-						letters = letters.substring(1);										// we already have the right field but we don't ant the first letter
+			if ((fm.getHeight() < height) && (fm.stringWidth("A") < windowWidth)) {			// verifies if the height of the font is smaller than the height of the stripe AND if the width of a reference letter (A) is smaller than a window size
+				String letters = variant.getVariantSequence();
+				g.setColor(Colors.BLACK);												// set the color of the letters
+				int letterHeight = (height + fm.getHeight()) / 2;						// define where the draw will start on the Y axis
+				for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
+					String letter = "?";												// the default letter is the question mark
+					if ((letters != "?") && (i < letters.length())) {					// if the letters are different to the question mark and if the current index is smaller than the string length
+						letter = letters.charAt(i) + "";								// we get the current character
 					}
-					g.setColor(Colors.BLACK);												// set the color of the letters
-					int letterHeight = (height + fm.getHeight()) / 2;						// define where the draw will start on the Y axis
-					for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
-						String letter = "?";												// the default letter is the question mark
-						if ((letters != "?") && (i < letters.length())) {						// if the letters are different to the question mark and if the current index is smaller than the string length
-							letter = letters.charAt(i) + "";								// we get the current character
-						}
-						int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
-						if ((getTrackAlleleType() == AlleleType.BOTH) && allele02VariantListMaker.getVariantList().contains(variant)) { // if both allele must be drawn and if the current variant is contained in the second allele variant list,
-							Graphics2D g2d = (Graphics2D) g.create();						// we reverse all coordinates to display the letter on the right way
-							g2d.scale(1, -1);
-							g2d.translate(0, -g2d.getClipBounds().height - 1);
-							g2d.drawString(letter, xC, letterHeight);						// we draw the letter
-						} else {
-							g.drawString(letter, xC, letterHeight);							// we draw the letter
-						}
+					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
+					if ((getTrackAlleleType() == AlleleType.BOTH) && (currentDrawingAllele == AlleleType.ALLELE02)) {
+						Graphics2D g2d = (Graphics2D) g.create();						// we reverse all coordinates to display the letter on the right way
+						g2d.scale(1, -1);
+						g2d.translate(0, -g2d.getClipBounds().height - 1);
+						g2d.drawString(letter, xC, letterHeight);						// we draw the letter
+					} else {
+						g.drawString(letter, xC, letterHeight);							// we draw the letter
 					}
 				}
 			}
