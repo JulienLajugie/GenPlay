@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -54,7 +54,7 @@ public class PAMultiGenomeBGZIPCompression extends TrackListActionWorker<Boolean
 	 */
 	public static final String ACTION_KEY = "Compress VCF as BGZIP";
 
-	private File vcfFile;	// the vcf file
+	private final File vcfFile;	// the vcf file
 	private File bgzFile;	// the bgzip file
 	private boolean success;
 
@@ -114,7 +114,7 @@ public class PAMultiGenomeBGZIPCompression extends TrackListActionWorker<Boolean
 				e.printStackTrace();
 			}
 		} else {
-			JOptionPane.showMessageDialog(getRootPane(), "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error.", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		return false;

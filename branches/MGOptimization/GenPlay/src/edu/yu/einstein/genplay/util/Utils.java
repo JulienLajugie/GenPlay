@@ -317,7 +317,7 @@ public class Utils {
 
 	/**
 	 * @param file a {@link File}
-	 * @return the extension of the file. null if none
+	 * @return the extension of the file (without the dot), null if none.
 	 */
 	final public static String getExtension(File file) {
 		String fileName = file.getName();

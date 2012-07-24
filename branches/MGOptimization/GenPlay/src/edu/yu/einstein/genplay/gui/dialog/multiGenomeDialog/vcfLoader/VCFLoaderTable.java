@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,10 +40,12 @@ import javax.swing.table.TableColumn;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomComboBox;
-import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBox;
+import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomFileComboBoxMG;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.CustomStringComboBox;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxEvent;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxListener;
+import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFGZFilter;
 
 
@@ -63,14 +65,14 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 
 	private CustomStringComboBox 	groupBox;		// the box for Group column
 	private CustomStringComboBox 	genomeBox;		// the box for Genome column
-	private CustomFileComboBox 		fileBox;		// the box for VCF file column
-	private List<JComboBox>	rawComboList;
+	private CustomFileComboBoxMG 	fileBox;		// the box for VCF file column
+	private final List<JComboBox>	rawComboList;
 
 	private int lastRow = 0;		// saves the row index of the last event on getCellEditor
 	private int lastCol = 0;		// saves the column index of the last event on getCellEditor
 
-	private Map<String, List<String>> temporaryFileAndGenomeNameMap;
-	private List<VCFFile> vcfFileList;
+	private final Map<String, List<String>> temporaryFileAndGenomeNameMap;
+	private final List<VCFFile> vcfFileList;
 
 
 
@@ -106,9 +108,9 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		column.setCellEditor(new DefaultCellEditor(genomeBox));
 
 		// File combo box
-		fileBox = new CustomFileComboBox();
+		fileBox = new CustomFileComboBoxMG(this);
 		fileBox.getRenderer().addCustomComboBoxListener(this);
-		VCFGZFilter[] filter = {new VCFGZFilter()};
+		ExtendedFileFilter[] filter = {new VCFFilter(), new VCFGZFilter()};
 		fileBox.setFilters(filter);
 		column = this.getColumnModel().getColumn(VCFData.FILE_INDEX);
 		column.setCellEditor(new DefaultCellEditor(fileBox));
@@ -210,7 +212,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 			rowData.setRaw(data.get(i).getRaw());
 			rowData.setFile(data.get(i).getFile());
 			newData.add(rowData);
-		}	
+		}
 		((VCFLoaderModel)getModel()).setData(newData);
 
 		initializesBoxes();
@@ -233,7 +235,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 		setValueAt(value, lastRow, lastCol);
 		updateSize(value, lastCol);
 
-		if (lastCol == VCFData.FILE_INDEX && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
+		if ((lastCol == VCFData.FILE_INDEX) && !value.toString().equals(CustomComboBox.ADD_TEXT)) {
 			String filePath = value.toString();
 			List<String> rawGenomeNames = null;
 			if (temporaryFileAndGenomeNameMap.containsKey(filePath)) {
@@ -284,7 +286,7 @@ public class VCFLoaderTable extends JTable implements CustomComboBoxListener, Ac
 	 */
 	private void updateRawName (int row) {
 		String rawName = (String) getValueAt(row, VCFData.RAW_INDEX);;
-		if (rawName != null && !rawName.isEmpty()) {
+		if ((rawName != null) && !rawName.isEmpty()) {
 			genomeBox.addElement(rawName);
 			genomeBox.resetCombo();
 			((VCFLoaderModel) getModel()).setValueAt(rawName, row, VCFData.NICKNAME_INDEX);

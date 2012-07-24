@@ -51,7 +51,7 @@ public final class PAMultiGenomeProperties extends TrackListAction{
 	private static final 	int 	MNEMONIC = KeyEvent.VK_P; 						// mnemonic key
 
 	private 				PropertiesDialog 	dialog;								// the dialog properties
-	private final					MGDisplaySettings 	settings;							// the multi genome settings object shortcut
+	private final			MGDisplaySettings 	settings;							// the multi genome settings object shortcut
 	private					String				itemDialog;							// the dialog section to show
 
 

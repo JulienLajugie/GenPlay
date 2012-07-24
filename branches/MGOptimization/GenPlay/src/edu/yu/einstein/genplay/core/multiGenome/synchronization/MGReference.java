@@ -183,7 +183,6 @@ public class MGReference implements Serializable {
 	 */
 	public void show () {
 		System.out.println("Reference genome: " + getName());
-		System.out.println("Allele");
 		allele.show();
 	}
 

@@ -530,7 +530,7 @@ public class VCFLine implements Serializable {
 	 * @return true if the line is valid, false otherwise
 	 */
 	public boolean isValid () {
-		if ((elements != null) && (elements.length > 10)) {
+		if ((elements != null) && (elements.length > 9)) {
 			return true;
 		}
 		return false;

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,14 +44,14 @@ public class PAMultiGenomeTBIIndex extends TrackListActionWorker<Boolean> {
 	private static final String 	DESCRIPTION = "Index GZIP with Tabix"; 	// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
 	private static		 String 	ACTION_NAME = "Index GZIP with Tabix";	// action name
-	
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "Index GZIP with Tabix";
-	
-	private File bgzFile;	// the bgzip file
+
+	private final File bgzFile;	// the bgzip file
 	private File file;		// the tbi file
 	private boolean success;
 
@@ -72,11 +72,11 @@ public class PAMultiGenomeTBIIndex extends TrackListActionWorker<Boolean> {
 
 	@Override
 	protected Boolean processAction() throws Exception {
-		
+
 		if (Utils.getExtension(bgzFile).equals("gz")) {
 			// Notifies the action
 			notifyActionStart(ACTION_NAME, 1, false);
-			
+
 			file = new File(bgzFile.getPath() + ".tbi");
 			file.createNewFile();
 
@@ -89,9 +89,9 @@ public class PAMultiGenomeTBIIndex extends TrackListActionWorker<Boolean> {
 				e.printStackTrace();
 			}
 		} else {
-			JOptionPane.showMessageDialog(getRootPane(), "The BGZIP extension has not been found.\nThe file will not be indexed.", "Compression error", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "The BGZIP extension has not been found.\nThe file will not be indexed.", "Indexing error.", JOptionPane.INFORMATION_MESSAGE);
 		}
-		
+
 		return false;
 	}
 
@@ -99,13 +99,13 @@ public class PAMultiGenomeTBIIndex extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
-		
+
 		if (latch != null) {
 			latch.countDown();
 		}
 	}
 
-	
+
 	/**
 	 * @return true if the action has been correctly finish, false otherwise
 	 */
@@ -120,13 +120,13 @@ public class PAMultiGenomeTBIIndex extends TrackListActionWorker<Boolean> {
 	public File getIndexedFile() {
 		return file;
 	}
-	
-	
+
+
 	/**
 	 * @param latch the latch to set
 	 */
 	public void setLatch(CountDownLatch latch) {
 		this.latch = latch;
 	}
-	
+
 }
