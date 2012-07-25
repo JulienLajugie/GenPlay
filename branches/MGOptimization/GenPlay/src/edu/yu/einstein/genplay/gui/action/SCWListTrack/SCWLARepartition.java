@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,6 +30,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLORepartition;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -48,15 +49,15 @@ import edu.yu.einstein.genplay.gui.trackChooser.MultiTrackChooser;
  * @version 0.1
  */
 public final class SCWLARepartition extends TrackListActionOperationWorker<double [][][]>{
-	
+
 	private static final long serialVersionUID = -6665806475919318742L;
 	private static final String 	ACTION_NAME = "Show Repartition";	// action name
-	private static final String 	DESCRIPTION = 
-		"Generate a plot showing the repartition of the scores of the selected track";	// tooltip
+	private static final String 	DESCRIPTION =
+			"Generate a plot showing the repartition of the scores of the selected track";	// tooltip
 	private Track<?>[] 				selectedTracks;
 	private List<ScatterPlotData> 	scatPlotData;
 	private int graphIndicator;
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -102,35 +103,35 @@ public final class SCWLARepartition extends TrackListActionOperationWorker<doubl
 					setGraphIndicator(SCWLORepartition.WINDOW_COUNT_GRAPH);
 				} else {
 					setGraphIndicator(SCWLORepartition.BASE_COUNT_GRAPH);
-				}				
+				}
 				Number scoreBin = NumberOptionPane.getValue(getRootPane(), "Size", "Enter the size of the bin of score:", new DecimalFormat("0.0#####"), 0 + Double.MIN_NORMAL, 1000, 1);
-				if (scoreBin != null) {	
+				if (scoreBin != null) {
 					// we ask the user to choose the tracks for the repartition only if there is more than one track
 					if (getTrackList().getSCWListTracks().length > 1) {
 						selectedTracks = MultiTrackChooser.getSelectedTracks(getRootPane(), getTrackList().getSCWListTracks());
 					} else {
 						selectedTracks = getTrackList().getSCWListTracks();
-					}					
+					}
 					if ((selectedTracks != null)) {
-						ScoredChromosomeWindowList[] scwListArray = new ScoredChromosomeWindowList[selectedTracks.length];
+						ScoredChromosomeWindowList[] scwListArray = new SimpleScoredChromosomeWindowList[selectedTracks.length];
 						for (int i = 0; i < selectedTracks.length; i++) {
-							scwListArray[i] = ((SCWListTrack)selectedTracks[i]).getData();						
-						}	
+							scwListArray[i] = ((SCWListTrack)selectedTracks[i]).getData();
+						}
 						if (scwListArray.length > 0) {
 							Operation<double[][][]> operation = new SCWLORepartition(scwListArray, scoreBin.doubleValue(), getGraphIndicator());
 							return operation;
 						}
 					}
-				}				
+				}
 			}
 		}
 		return null;
 	}
 
-	
+
 	@Override
 	protected void doAtTheEnd(double[][][] actionResult) {
-		if (actionResult != null && selectedTracks.length != 0) {
+		if ((actionResult != null) && (selectedTracks.length != 0)) {
 			scatPlotData = new ArrayList<ScatterPlotData>();
 			for (int k = 0; k < actionResult.length; k++) {
 				Color trackColor = ((CurveTrack<?>) selectedTracks[k]).getTrackColor(); // retrieve the color of the track

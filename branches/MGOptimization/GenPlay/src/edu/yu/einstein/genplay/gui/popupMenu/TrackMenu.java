@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -61,7 +61,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	private final JMenuItem		jmiPaste;					// menu paste track
 	private final JMenuItem 	jmiDelete;					// menu delete track
 	private final JMenuItem 	jmiRename;					// menu rename track
-	private final JMenuItem 	jmiSetHeight;				// menu set height 
+	private final JMenuItem 	jmiSetHeight;				// menu set height
 	private final JMenuItem 	jmiSetVerticalLineCount;	// menu set vertical line count
 	private final JMenuItem 	jmiSaveAsImage;				// menu save track as image
 	private final JMenuItem 	jmiExportAsVCF;				// menu export track as VCF
@@ -70,8 +70,8 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 
 	protected final TrackList 	trackList;					// track list where the menu popped up
 	protected final ActionMap	actionMap;					// map containing the actions for this menu
-	
-	
+
+
 	/**
 	 * Constructor.
 	 * @param tl {@link TrackList} where the menu popped up
@@ -80,7 +80,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		super ("Track Menu");
 		this.trackList = tl;
 		this.actionMap = tl.getActionMap();
-		
+
 		jmiCopy = new JMenuItem(actionMap.get(ATACopy.ACTION_KEY));
 		jmiCut = new JMenuItem(actionMap.get(ATACut.ACTION_KEY));
 		jmiDelete = new JMenuItem(actionMap.get(ATADelete.ACTION_KEY));
@@ -100,7 +100,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		} else {
 			jmiExportAsVCF = null;
 		}
-		
+
 		add(jmiCopy);
 		add(jmiCut);
 		add(jmiPaste);
@@ -120,18 +120,18 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		addSeparator();
 		add(jmiLoadStripes);
 		add(jmiRemoveStripes);
-		
+
 		jmiPaste.setEnabled(trackList.isPasteEnable());
 		jmiRemoveStripes.setEnabled(trackList.isRemoveStripesEnable());
-		
+
 		addPopupMenuListener(this);
 	}
 
-	
+
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent arg0) {}
 
-	
+
 	/**
 	 * Unlocks the handle of the tracks when a menu disappear
 	 */
@@ -140,7 +140,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		trackList.unlockTracksHandles();
 	}
 
-	
+
 	/**
 	 * Locks the handle of the tracks when a menu appear
 	 */

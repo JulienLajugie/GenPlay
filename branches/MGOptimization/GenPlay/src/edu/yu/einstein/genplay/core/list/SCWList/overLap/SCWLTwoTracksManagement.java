@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,8 +25,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
@@ -39,18 +39,18 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * 	- addition
  * 	- subtraction
  * 	- multiplication
- * 	- division 
+ * 	- division
  * 
  * @author Nicolas
  * @version 0.1
  */
 public class SCWLTwoTracksManagement implements Serializable, Stoppable {
-	
+
 	private static final long serialVersionUID = -4066526880193456101L;
 	protected 	final 	ProjectChromosome 					projectChromosome;	//ChromosomeManager
 	private 	final 	List<ChromosomeListOfLists<?>> 		scwList;			//list containing originals lists
-	private 			List<SCWLTwoTracksEngine>			twoTracksEngineList;
-	
+	private 	final 	List<SCWLTwoTracksEngine>			twoTracksEngineList;
+
 	/**
 	 * SCWLTwoTracks constructor
 	 * 
@@ -59,8 +59,8 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 	 * @param scm		operation
 	 */
 	public SCWLTwoTracksManagement (	ChromosomeListOfLists<?> list1,
-										ChromosomeListOfLists<?> list2,
-										ScoreCalculationTwoTrackMethod scm) {
+			ChromosomeListOfLists<?> list2,
+			ScoreCalculationTwoTrackMethod scm) {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.scwList = new ArrayList<ChromosomeListOfLists<?>>();
 		this.scwList.add(list1);
@@ -70,7 +70,7 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 			this.twoTracksEngineList.add(new SCWLTwoTracksEngine(scm));
 		}
 	}
-	
+
 	/**
 	 * Runs the two tracks overlap process
 	 * @param chromosome the chromosome
@@ -95,5 +95,5 @@ public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 			}
 		}
 	}
-	
+
 }

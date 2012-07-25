@@ -14,37 +14,30 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.exception;
+package edu.yu.einstein.genplay.core.chromosomeWindow;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 /**
- * The ChromosomeWindowException class represents an exception associated to a {@link SimpleChromosomeWindow}. 
- * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class ChromosomeWindowException extends Exception {
+public interface ScoredChromosomeWindow extends ChromosomeWindow {
 
-	private static final long serialVersionUID = -4357641195693048950L;	// Generated ID
-	
 	/**
-	 * Creates an instance of {@link ChromosomeWindowException}.
+	 * @return the score of the window
 	 */
-	public ChromosomeWindowException() {
-		super("Invalid window");
-	}
-	
-	
+	public double getScore ();
+
+
 	/**
-	 * Creates an instance of {@link ChromosomeWindowException}.
-	 * @param msg message of the error
+	 * Sets the score of the window
+	 * @param score	the score
 	 */
-	public ChromosomeWindowException(String msg) {
-		super (msg);
-	}	
+	public void setScore (double score);
+
 }

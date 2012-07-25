@@ -43,8 +43,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -238,9 +238,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// create a transparent color for the stripes
 			Color color = new Color(STRIPES_COLOR.getRed(), STRIPES_COLOR.getGreen(), STRIPES_COLOR.getBlue(), STRIPES_TRANSPARENCY);
 			g.setColor(color);
-			List<ChromosomeWindow> chromoStripeList = stripeList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
+			List<SimpleChromosomeWindow> chromoStripeList = stripeList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
 			if (chromoStripeList != null) {
-				for (ChromosomeWindow currentStripe: chromoStripeList) {
+				for (SimpleChromosomeWindow currentStripe: chromoStripeList) {
 					int x = projectWindow.genomePosToScreenXPos(currentStripe.getStart());
 					//int widthWindow = projectWindow.genomePosToScreenXPos(currentStripe.getStop()) - x;
 					int widthWindow = projectWindow.twoGenomePosToScreenWidth(currentStripe.getStart(), currentStripe.getStop());

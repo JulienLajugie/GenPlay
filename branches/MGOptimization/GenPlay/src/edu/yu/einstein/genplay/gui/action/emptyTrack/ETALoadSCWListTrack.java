@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
@@ -59,7 +60,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	private int						strandShift = 0;										// position shift on a strand
 	private int 					readLength = 0;											// user specified length of the reads (0 to keep the original length)
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -86,14 +87,14 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
 		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true);
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
-			selectedChromo = nctd.getSelectedChromosomes();			
+			selectedChromo = nctd.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
 			// to ask the user if the file is sorted or not
 			if (!Utils.allChromosomeSelected(selectedChromo)) {
@@ -108,8 +109,8 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 					extractor.setFileSorted(false);
 				} else if (dialogResult == JOptionPane.CLOSED_OPTION) {
 					throw new InterruptedException();
-				}			
-			}	
+				}
+			}
 			extractor.setSelectedChromosomes(selectedChromo);
 			if (isStrandNeeded) {
 				strand = nctd.getStrandToExtract();
@@ -138,14 +139,14 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				scoreCalculation = nctd.getScoreCalculationMethod();
-				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);
+				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
 			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false, false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
-				notifyActionStart("Generating Track", ScoredChromosomeWindowList.getCreationStepCount(), true);
+				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(null);
 			}
 		}
@@ -161,10 +162,10 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			SCWListTrack newTrack = new SCWListTrack(selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
-			String history = new String(); 
+			String history = new String();
 			if (scoreCalculation != null) {
 				history += "Method of Calculation = " + scoreCalculation;
-			}	
+			}
 			if (strand != null) {
 				history += ", Strand = ";
 				if (strand == Strand.FIVE) {

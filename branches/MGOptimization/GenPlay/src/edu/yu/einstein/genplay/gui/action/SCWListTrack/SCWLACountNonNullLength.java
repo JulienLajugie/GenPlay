@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -76,8 +76,8 @@ public class SCWLACountNonNullLength extends TrackListActionOperationWorker<Long
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(Long actionResult) {
 		if (actionResult != null) {

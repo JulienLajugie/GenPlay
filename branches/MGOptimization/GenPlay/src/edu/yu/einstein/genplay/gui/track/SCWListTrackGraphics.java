@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,8 +42,8 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 
 	private static final long serialVersionUID = -996344743923414353L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -63,21 +63,21 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 	}
-	
+
 
 	/**
 	 * Creates an instance of a {@link SCWListTrackGraphics}
-	 * @param data displayed {@link ScoredChromosomeWindowList} 
+	 * @param data displayed {@link ScoredChromosomeWindowList}
 	 */
 	protected SCWListTrackGraphics(ScoredChromosomeWindowList data) {
 		super(data, new SCWLOMinScoreToDisplay(data).compute(), new SCWLOMaxScoreToDisplay(data).compute());
 	}
-	
-	
+
+
 	@Override
 	protected void drawData(Graphics g) {
 		CurveDrawer cd = new SCWListDrawer(g, getWidth(), getHeight(), yMin, yMax, trackColor, typeOfGraph, data);
-		cd.draw();		
+		cd.draw();
 	}
 
 
@@ -91,8 +91,8 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 			scoreYPosition =  getHeight() - 2;
 		} else if (getScorePosition() == TOP_SCORE_POSITION) {
 			scoreYPosition = g.getFontMetrics().getHeight();
-		}	
-		g.drawString("y=" + SCORE_FORMAT.format(middleScore), getWidth() / 2 + 3, scoreYPosition);	
+		}
+		g.drawString("y=" + SCORE_FORMAT.format(middleScore), (getWidth() / 2) + 3, scoreYPosition);
 	}
 
 

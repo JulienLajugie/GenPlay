@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,9 +26,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -44,8 +46,8 @@ public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 	private final ScoredChromosomeWindowList 	scwList;	// input list
 	private final LogBase						logBase;	// base of the log
 	private boolean				stopped = false;// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link SCWLOLog}
 	 * @param scwList input list
@@ -55,25 +57,25 @@ public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 		this.scwList = scwList;
 		this.logBase = logBase;
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-		
+
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
-			
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// We log each element
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
+							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
 							// log is define on R+*
 							if (currentWindow.getScore() > 0) {
 								double resultValue;
@@ -82,7 +84,7 @@ public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 									resultValue = Math.log(currentWindow.getScore());
 								} else {
 									// change of base: logb(x) = logk(x) / logk(b)
-									resultValue = Math.log(currentWindow.getScore()) / Math.log(logBase.getValue());									
+									resultValue = Math.log(currentWindow.getScore()) / Math.log(logBase.getValue());
 								}
 								resultWindow.setScore(resultValue);
 							} else if (currentWindow.getScore() == 0) {
@@ -104,32 +106,32 @@ public class SCWLOLog implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Log, Base = " + logBase;
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Logging";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

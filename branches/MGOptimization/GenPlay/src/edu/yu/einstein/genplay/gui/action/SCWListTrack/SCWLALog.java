@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,11 +42,11 @@ public final class SCWLALog extends TrackListActionOperationWorker<ScoredChromos
 
 	private static final long serialVersionUID = -7633526345952471304L; // generated ID
 	private static final String 	ACTION_NAME = "Log";				// action name
-	private static final String 	DESCRIPTION = 
-		"Apply a log function to the scores of the selected track";	// tooltip
+	private static final String 	DESCRIPTION =
+			"Apply a log function to the scores of the selected track";	// tooltip
 	private SCWListTrack			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */

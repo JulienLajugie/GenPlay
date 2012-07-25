@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -128,13 +128,13 @@ public final class WriterFactory {
 		} else if (ff instanceof BedGraphFilter) {
 			return new SCWListAsBedGraphWriter(outputFile, data, name);
 		} else if (ff instanceof GFFFilter) {
-			return new SCWListAsGFFWriter(outputFile, data, name);		
+			return new SCWListAsGFFWriter(outputFile, data, name);
 		} else {
 			return null;
 		}
 	}
-		
-	
+
+
 	/**
 	 * Tries to create and to return a class implementing the {@link Writer} interface
 	 * @param outputFile output {@link File}

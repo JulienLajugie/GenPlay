@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.action.SCWListTrack;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterBandStop;
 import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOFilterCount;
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 
 
 /**
- * Filters the {@link ScoredChromosomeWindow} track.
+ * Filters the {@link SimpleScoredChromosomeWindow} track.
  * Different kind of filters are availables
  * @author Julien Lajugie
  */
@@ -44,8 +44,8 @@ public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosome
 
 	private static final long serialVersionUID = 960963269753754801L;	// generated ID
 	private static final String 	ACTION_NAME = "Filter";				// action name
-	private static final String 	DESCRIPTION = 
-		"Filter the selected track";									// tooltip
+	private static final String 	DESCRIPTION =
+			"Filter the selected track";									// tooltip
 	private SCWListTrack			selectedTrack ;						// selected track
 
 
@@ -74,7 +74,7 @@ public class SCWLAFilter extends TrackListActionOperationWorker<ScoredChromosome
 				ScoredChromosomeWindowList list = selectedTrack.getData();
 				Number min = filterDialog.getMinInput();
 				Number max = filterDialog.getMaxInput();
-				boolean isSaturation = filterDialog.isSaturation(); 
+				boolean isSaturation = filterDialog.isSaturation();
 				switch (filterDialog.getFilterType()) {
 				case COUNT:
 					return new SCWLOFilterCount(list, min.intValue(), max.intValue(), isSaturation);

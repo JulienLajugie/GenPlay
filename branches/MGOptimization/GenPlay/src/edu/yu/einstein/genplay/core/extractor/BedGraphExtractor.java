@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,12 +35,13 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -50,13 +51,13 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class BedGraphExtractor extends TextFileExtractor 
+public final class BedGraphExtractor extends TextFileExtractor
 implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7106474719716124894L; // generated ID
-	private ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private ChromosomeListOfLists<Double>	scoreList;		// list of scores
+	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
+	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
+	private final ChromosomeListOfLists<Double>	scoreList;		// list of scores
 
 
 	/**
@@ -80,12 +81,12 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 
 	/**
-	 * Receives one line from the input file and extracts and adds 
+	 * Receives one line from the input file and extracts and adds
 	 * a chromosome, a position start, a position stop and a score to the lists.
-	 * @param extractedLine line read from the data file 
+	 * @param extractedLine line read from the data file
 	 * @return true when the extraction is done
-	 * @throws DataLineException 
-	 * @throws FileErrorException 
+	 * @throws DataLineException
+	 * @throws FileErrorException
 	 */
 	@Override
 	protected boolean extractLine(String extractedLine) throws DataLineException {
@@ -103,7 +104,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} catch (InvalidChromosomeException e) {
 				chromosomeStatus = NEED_TO_BE_SKIPPED;
 			}
-			
+
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
@@ -114,10 +115,10 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 				int stop = Integer.parseInt(splitedLine[2].trim());
 				stop = getMultiGenomePosition(chromosome, stop);
 				double score = Double.parseDouble(splitedLine[3].trim());
-				
+
 				String errors = DataLineValidator.getErrors(chromosome, start, stop, score);
 				if (errors.length() == 0) {
-					
+
 					// Stop position checking, must not overpass the chromosome length
 					DataLineException stopEndException = null;
 					String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
@@ -154,7 +155,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
 
@@ -184,7 +185,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public boolean overlapped() {
-		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+		return SimpleScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,7 +40,7 @@ public class SCWLOGenerateBinList implements Operation<BinList> {
 	private final DataPrecision 				precision;	// precision of the result binlist
 	private final ScoreCalculationMethod 		method; 	// method for the calculation of the scores of the result binlist
 
-	
+
 	/**
 	 * Creates a BinList from the data of the input {@link ScoredChromosomeWindowList}
 	 * @param scwList input list
@@ -55,7 +55,7 @@ public class SCWLOGenerateBinList implements Operation<BinList> {
 		this.method = method;
 	}
 
-	
+
 	@Override
 	public BinList compute() throws Exception {
 		return new BinList(binSize, precision, method, scwList);
@@ -79,7 +79,7 @@ public class SCWLOGenerateBinList implements Operation<BinList> {
 		return 1 + BinList.getCreationStepCount(binSize);
 	}
 
-	
+
 	/**
 	 * Does nothing
 	 */

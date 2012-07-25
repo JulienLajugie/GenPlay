@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,8 +27,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public class SCWListAsBedGraphWriter extends SCWListWriter implements Stoppable {
 
-	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
 
 
 	/**
@@ -70,7 +70,7 @@ public class SCWListAsBedGraphWriter extends SCWListWriter implements Stoppable 
 				int currentChromosomeSize = currentChromosome.getLength();
 				if (currentList != null) {
 					for (ScoredChromosomeWindow currentWindow: currentList){
-						// if the operation need to be stopped we close the writer and delete the file 
+						// if the operation need to be stopped we close the writer and delete the file
 						if (needsToBeStopped) {
 							writer.close();
 							outputFile.delete();
@@ -82,7 +82,7 @@ public class SCWListAsBedGraphWriter extends SCWListWriter implements Stoppable 
 							if (stop > currentChromosomeSize) {
 								stop = currentChromosomeSize;
 							}
-							
+
 							//writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t" + currentWindow.getScore());
 							writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + stop + "\t" + currentWindow.getScore());
 							writer.newLine();

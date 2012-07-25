@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,8 +25,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
@@ -39,7 +40,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  * 	- addition
  * 	- subtraction
  * 	- multiplication
- * 	- division 
+ * 	- division
  * 
  * @author Nicolas
  * @version 0.1
@@ -48,7 +49,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = 2965349494486829320L;
 	private final 	List<ChromosomeListOfLists<?>> 		list;				//list containing originals lists
-	private 		List<ScoredChromosomeWindow> 		newScwList;			//new list
+	private final 	List<ScoredChromosomeWindow> 		newScwList;			//new list
 	private final	ScoreCalculationTwoTrackMethod		scm;				//operation to apply
 	private 		Chromosome 							chromosome;
 	private			boolean[]							isSCWList;			//stores the instance class of the lists
@@ -211,7 +212,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	/**
 	 * isValid method
 	 * This method check if the current position on each list is valid.
-	 *  
+	 * 
 	 * @return	true if both position are correct
 	 */
 	private boolean isValid () {
@@ -235,11 +236,11 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 
 	/**
 	 * min method
-	 * This method returns the relative position of the current position on the first track with the second track. 
+	 * This method returns the relative position of the current position on the first track with the second track.
 	 * 
 	 * @return	0 	if it is equal,
 	 * 			-1 	if the current position on the first track is lower than the current position on the second track
-	 * 			1 	if the current position on the first track is higher than the current position on the second track 
+	 * 			1 	if the current position on the first track is higher than the current position on the second track
 	 */
 	private int min () {
 		int currentMin0;
@@ -269,7 +270,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	 */
 	private void addPosition () {
 		if (getScore() != 0.0) {
-			newScwList.add(new ScoredChromosomeWindow(	currentPosition[0],
+			newScwList.add(new SimpleScoredChromosomeWindow(	currentPosition[0],
 					currentPosition[1],
 					getScore()));
 		}
@@ -365,8 +366,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			} else {
 				currentScore[0] = 0.0;
 			}
-			for (int i = currentIndex[track]; i < getTrackSize(track) && !stopped; i++) {
-				newScwList.add(new ScoredChromosomeWindow(	getStart(track),
+			for (int i = currentIndex[track]; (i < getTrackSize(track)) && !stopped; i++) {
+				newScwList.add(new SimpleScoredChromosomeWindow(	getStart(track),
 						getStop(track),
 						//getScore(track)));
 						getScore()));
@@ -391,7 +392,7 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	}
 
 	private double division() {
-		if (currentScore[0] != 0.0 && currentScore[1] != 0.0) {
+		if ((currentScore[0] != 0.0) && (currentScore[1] != 0.0)) {
 			return currentScore[0] / currentScore[1];
 		} else {
 			return 0.0;

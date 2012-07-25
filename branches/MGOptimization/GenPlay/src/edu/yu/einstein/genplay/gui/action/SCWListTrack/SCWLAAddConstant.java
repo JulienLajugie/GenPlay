@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,11 +43,11 @@ public final class SCWLAAddConstant extends TrackListActionOperationWorker<Score
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Addition (Constant)";// action name
-	private static final String 	DESCRIPTION = 
-		"Add a constant to the scores of the selected track";			// tooltip
+	private static final String 	DESCRIPTION =
+			"Add a constant to the scores of the selected track";			// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -71,19 +71,19 @@ public final class SCWLAAddConstant extends TrackListActionOperationWorker<Score
 		if (selectedTrack != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to add: f(x)=x + C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
+				ScoredChromosomeWindowList scwList = selectedTrack.getData();
 				operation = new SCWLOAddConstant(scwList, constant.doubleValue());
 				return operation;
 			}
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+		}
 	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,10 +42,10 @@ public final class SCWLAMin extends TrackListActionOperationWorker<Double> {
 
 	private static final long serialVersionUID = 3523404731226850786L;	// generated ID
 	private static final String 	ACTION_NAME = "Minimum";			// action name
-	private static final String 	DESCRIPTION = 
-		"Show the minimum score of the selected track";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Show the minimum score of the selected track";					// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
-	
+
 
 	/**
 	 * key of the action in the {@link ActionMap}

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -54,19 +54,19 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 		}
 		// if the max of the BinList can be written as 10^x we return this value as a maximum
 		double maxScoreDisplayed = 1;
-		while (realMax / maxScoreDisplayed > 1 && !stopped) {
+		while (((realMax / maxScoreDisplayed) > 1) && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
-		if (realMax / maxScoreDisplayed == 1) {
+		if ((realMax / maxScoreDisplayed) == 1) {
 			return realMax;
 		}
-		// otherwise we try to find the closest 10^x value above (average + stdev) 
-		double proposedMax = scwList.getAverage() + scwList.getStDev(); 
+		// otherwise we try to find the closest 10^x value above (average + stdev)
+		double proposedMax = scwList.getAverage() + scwList.getStDev();
 		if (proposedMax <= 0) {
 			return 0d;
 		}
 		maxScoreDisplayed = 1;
-		while (proposedMax / maxScoreDisplayed > 1 && !stopped) {
+		while (((proposedMax / maxScoreDisplayed) > 1) && !stopped) {
 			maxScoreDisplayed *= 10;
 		}
 		return maxScoreDisplayed;
@@ -90,7 +90,7 @@ public class SCWLOMaxScoreToDisplay implements Operation<Double> {
 		return "Searching Maximum";
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

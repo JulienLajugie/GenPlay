@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,11 +43,11 @@ public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromos
 
 	private static final long serialVersionUID = 3820923997838773226L;	// generated ID
 	private static final String 	ACTION_NAME = "Normalize";			// action name
-	private static final String 	DESCRIPTION = 
-		"Normalize the scores of the selected track";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Normalize the scores of the selected track";					// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -68,14 +68,14 @@ public class SCWLANormalize extends TrackListActionOperationWorker<ScoredChromos
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {		
+		if (selectedTrack != null) {
 			Number factor = NumberOptionPane.getValue(getRootPane(), "Multiplicative constant", "Enter a factor of X:", new DecimalFormat("###,###,###,###"), 0, 1000000000, 10000000);
 			if(factor != null) {
 				ScoredChromosomeWindowList inputList = selectedTrack.getData();
 				Operation<ScoredChromosomeWindowList> operation = new SCWLONormalize(inputList, factor.doubleValue());
 				return operation;
-			}	
-		}	
+			}
+		}
 		return null;
 	}
 

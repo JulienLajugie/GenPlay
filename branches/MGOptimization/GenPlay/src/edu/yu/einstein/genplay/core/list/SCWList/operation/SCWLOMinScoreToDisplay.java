@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -54,19 +54,19 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 		}
 		// if the min of the list can be written as -10^x we return this value as a minimum
 		double minScoreDisplayed = -1;
-		while (realMin / minScoreDisplayed > 1 && !stopped) {
+		while (((realMin / minScoreDisplayed) > 1) && !stopped) {
 			minScoreDisplayed *= 10;
 		}
-		if (realMin / minScoreDisplayed == 1) {
+		if ((realMin / minScoreDisplayed) == 1) {
 			return realMin;
 		}
-		// otherwise we try to find the closest 10^x value under (average - stdev) 
-		double proposedMin = scwList.getAverage() - scwList.getStDev(); 
+		// otherwise we try to find the closest 10^x value under (average - stdev)
+		double proposedMin = scwList.getAverage() - scwList.getStDev();
 		if (proposedMin >= 0) {
 			return 0d;
 		}
 		minScoreDisplayed = -1;
-		while (proposedMin / minScoreDisplayed > 1 && !stopped) {
+		while (((proposedMin / minScoreDisplayed) > 1) && !stopped) {
 			minScoreDisplayed *= 10;
 		}
 		return minScoreDisplayed;
@@ -90,7 +90,7 @@ public class SCWLOMinScoreToDisplay implements Operation<Double> {
 		return "Searching Minimum";
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

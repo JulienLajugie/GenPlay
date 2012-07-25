@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,13 +36,13 @@ import edu.yu.einstein.genplay.core.writer.Writer;
  * @version 0.1
  */
 public abstract class SCWListWriter implements Writer {
-	
+
 	protected final ProjectChromosome			projectChromosome;	// ChromosomeManager
-	protected final File 						outputFile;			// output file 
+	protected final File 						outputFile;			// output file
 	protected final ScoredChromosomeWindowList	data;				// data to print
 	protected final String						name;				// name of the BinList
-	
-	
+
+
 	/**
 	 * Constructor
 	 * @param outputFile output {@link File}

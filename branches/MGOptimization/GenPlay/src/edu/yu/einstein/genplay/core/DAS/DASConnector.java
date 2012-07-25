@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,10 +38,12 @@ import org.xml.sax.SAXException;
 
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -60,10 +62,10 @@ public class DASConnector {
 	private final ProjectChromosome projectChromosome; 	// Instance of the Chromosome Manager
 	private String 					genomeName;			// for multi-genome project only.  Name of the genome on which the data were mapped
 	private AlleleType 				alleleType;			// for multi-genome project only.  Type of allele for synchronization
-	
+
 
 	/**
-	 * Creates an instance of {@link DASConnector} 
+	 * Creates an instance of {@link DASConnector}
 	 * @param serverAddress address of a DAS server
 	 */
 	public DASConnector(String serverAddress) {
@@ -88,19 +90,19 @@ public class DASConnector {
 	public List<DataSource> getDataSourceList() throws IOException, ParserConfigurationException, SAXException {
 		URL dsnURL = new URL(serverAddress + "dsn");
 		URLConnection connection = dsnURL.openConnection();
-		connection.setUseCaches(true);		
+		connection.setUseCaches(true);
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setValidating(true);
 		SAXParser parser = parserFactory.newSAXParser();
 		DataSourceHandler dsh = new DataSourceHandler();
 		connection.getInputStream();
-		parser.parse(connection.getInputStream(), dsh);		
+		parser.parse(connection.getInputStream(), dsh);
 		return dsh.getDataSourceList();
 	}
 
 
 	/**
-	 * Retrieves a list of DAS types for a specified data Source 
+	 * Retrieves a list of DAS types for a specified data Source
 	 * @param dataSource a {@link DataSource}
 	 * @return a List of {@link DataSource}
 	 * @throws IOException
@@ -110,7 +112,7 @@ public class DASConnector {
 	public List<DASType> getDASTypeList(DataSource dataSource) throws IOException, ParserConfigurationException, SAXException {
 		URL dasTypesURL = new URL(serverAddress + dataSource.getID() + "/types");
 		URLConnection connection = dasTypesURL.openConnection();
-		connection.setUseCaches(true);		
+		connection.setUseCaches(true);
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setValidating(true);
 		SAXParser parser = parserFactory.newSAXParser();
@@ -121,7 +123,7 @@ public class DASConnector {
 
 
 	/**
-	 * Retrieves a list of DAS entry points for a specified data Source 
+	 * Retrieves a list of DAS entry points for a specified data Source
 	 * @param dataSource a {@link DataSource}
 	 * @return a List of {@link EntryPoint}
 	 * @throws IOException
@@ -132,7 +134,7 @@ public class DASConnector {
 		URL entryPointURL = new URL(serverAddress + dataSource.getID() + "/entry_points");
 		//System.out.println("Entry Point URL: " + entryPointURL);
 		URLConnection connection = entryPointURL.openConnection();
-		connection.setUseCaches(true);		
+		connection.setUseCaches(true);
 		SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 		parserFactory.setValidating(true);
 		SAXParser parser = parserFactory.newSAXParser();
@@ -143,7 +145,7 @@ public class DASConnector {
 
 
 	/**
-	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type 
+	 * Retrieves a list of genes from a specified Data Source and a specified DAS Type
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @return a {@link GeneList}
@@ -152,14 +154,14 @@ public class DASConnector {
 	 * @throws SAXException
 	 */
 	public GeneList getGeneList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
-//		if ((dasType.getPreferredFormat() != null) && (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;"))) {
-//			return getGeneListFromPSL(cm, dataSource, dasType);
-//		}
+		//		if ((dasType.getPreferredFormat() != null) && (dasType.getPreferredFormat().equals(".link.psl;.bps;.psl;"))) {
+		//			return getGeneListFromPSL(cm, dataSource, dasType);
+		//		}
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		List<List<Gene>> resultList = new ArrayList<List<Gene>>();
 		for (Chromosome currentChromo: projectChromosome) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
-			// if we found a chromosome retrieve the data and 
+			// if we found a chromosome retrieve the data and
 			// we create a genelist for this chromosome
 			if (currentEntryPoint != null) {
 				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
@@ -169,7 +171,7 @@ public class DASConnector {
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
 				GeneHandler gh = new GeneHandler(currentChromo);
-				// if the current project is a muti genome project we set the 
+				// if the current project is a muti genome project we set the
 				// name of the genome that was used for the mapping of the data
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					gh.setGenomeName(genomeName);
@@ -200,7 +202,7 @@ public class DASConnector {
 				}
 			}
 		}
-		// if the exons are not scored we set the exonScore field of every gene to null 
+		// if the exons are not scored we set the exonScore field of every gene to null
 		if (!areExonsScored) {
 			for (List<Gene> currentList: resultList) {
 				if (currentList != null) {
@@ -222,8 +224,8 @@ public class DASConnector {
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
-	 */	
-	public GeneList getGeneList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException 
+	 */
+	public GeneList getGeneList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException
 	{
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		//System.out.println("1st Entry Point " + entryPointList.get(0));
@@ -241,7 +243,7 @@ public class DASConnector {
 			parserFactory.setValidating(true);
 			SAXParser parser = parserFactory.newSAXParser();
 			GeneHandler gh = new GeneHandler(currentChromo);
-			// if the current project is a muti genome project we set the 
+			// if the current project is a muti genome project we set the
 			// name of the genome that was used for the mapping of the data
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				gh.setGenomeName(genomeName);
@@ -271,7 +273,7 @@ public class DASConnector {
 				}
 			}
 		}
-		// if the exons are not scored we set the exonScore field of every gene to null 
+		// if the exons are not scored we set the exonScore field of every gene to null
 		if (!areExonsScored) {
 			for (List<Gene> currentList: resultList) {
 				if (currentList != null) {
@@ -281,82 +283,82 @@ public class DASConnector {
 				}
 			}
 		}
-		return new GeneList(resultList);		
+		return new GeneList(resultList);
 	}
-	
 
-//	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
-//		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
-//		File tempFile = File.createTempFile("GenPlay", null);
-//		FileWriter fw = new FileWriter(tempFile);
-//		for (Chromosome currentChromo: cm) {
-//			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
-//			// if we found a chromosome retrieve the data and 
-//			// we create a genelist for this chromosome
-//			if (currentEntryPoint != null) {
-//				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
-//				URLConnection connection = queryUrl.openConnection();
-//				connection.setUseCaches(true);
-//				System.out.println(queryUrl.toString());
-//				connection.connect();
-//				for (List<String> currentList: connection.getHeaderFields().values()) {
-//					for (String currString: currentList) {
-//						System.out.println(currString);
-//					}
-//				}
-//				System.out.println(connection.getHeaderFields().values());
-//				//File f = new File(queryUrl.toString() + "/features");
-//				//InputStream is = connection.getInputStream();
-//				BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
-//				//FileReader fr = new FileReader(f);
-//				//InputStream is = new FileInputStream(f);
-//				byte[] test = new byte[1];
-//				int readInt = is.read(test);
-//				System.out.println(readInt);
-//				while (readInt != -1)	{
-//					System.out.println((char)readInt);
-//					//fw.write(test);
-//					readInt = is.read(test);
-//				}
-//				is.close();
-//			}
-//		}		
-//		fw.close();
-//		System.out.println(tempFile.getAbsolutePath());
-//		PSLExtractor pslExtractor = new PSLExtractor(tempFile, null, cm);
-//		return pslExtractor.toGeneList();
-//	}
+
+	//	private GeneList getGeneListFromPSL(ChromosomeManager cm, DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException {
+	//		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
+	//		File tempFile = File.createTempFile("GenPlay", null);
+	//		FileWriter fw = new FileWriter(tempFile);
+	//		for (Chromosome currentChromo: cm) {
+	//			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
+	//			// if we found a chromosome retrieve the data and
+	//			// we create a genelist for this chromosome
+	//			if (currentEntryPoint != null) {
+	//				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
+	//				URLConnection connection = queryUrl.openConnection();
+	//				connection.setUseCaches(true);
+	//				System.out.println(queryUrl.toString());
+	//				connection.connect();
+	//				for (List<String> currentList: connection.getHeaderFields().values()) {
+	//					for (String currString: currentList) {
+	//						System.out.println(currString);
+	//					}
+	//				}
+	//				System.out.println(connection.getHeaderFields().values());
+	//				//File f = new File(queryUrl.toString() + "/features");
+	//				//InputStream is = connection.getInputStream();
+	//				BufferedInputStream is = new BufferedInputStream(connection.getInputStream());
+	//				//FileReader fr = new FileReader(f);
+	//				//InputStream is = new FileInputStream(f);
+	//				byte[] test = new byte[1];
+	//				int readInt = is.read(test);
+	//				System.out.println(readInt);
+	//				while (readInt != -1)	{
+	//					System.out.println((char)readInt);
+	//					//fw.write(test);
+	//					readInt = is.read(test);
+	//				}
+	//				is.close();
+	//			}
+	//		}
+	//		fw.close();
+	//		System.out.println(tempFile.getAbsolutePath());
+	//		PSLExtractor pslExtractor = new PSLExtractor(tempFile, null, cm);
+	//		return pslExtractor.toGeneList();
+	//	}
 
 
 	/**
-	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type 
+	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
-	 * @return a {@link ScoredChromosomeWindowList}
+	 * @return a {@link ChromosomeArrayListOfLists}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		for (Chromosome currentChromo: projectChromosome) {
 			EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
-			// if we found a chromosome retrieve the data and 
+			// if we found a chromosome retrieve the data and
 			// we create a genelist for this chromosome
 			//System.out.println("Current Entry Point: " + currentEntryPoint.toString());
 			if (currentEntryPoint != null) {
 				URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType);
 				//System.out.println("QueryURL: " + queryUrl);
 				URLConnection connection = queryUrl.openConnection();
-				connection.setUseCaches(true);		
+				connection.setUseCaches(true);
 				SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 				parserFactory.setValidating(true);
 				SAXParser parser = parserFactory.newSAXParser();
-				SCWHandler scwh = new SCWHandler(currentChromo);				
-				// if the current project is a muti genome project we set the 
+				SCWHandler scwh = new SCWHandler(currentChromo);
+				// if the current project is a muti genome project we set the
 				// name of the genome that was used for the mapping of the data
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					scwh.setGenomeName(genomeName);
@@ -392,41 +394,41 @@ public class DASConnector {
 				}
 			}
 		}
-		return new ScoredChromosomeWindowList(resultList);
+		return new SimpleScoredChromosomeWindowList(resultList);
 	}
 
 	/**
-	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type and a specified Data Range 
+	 * Retrieves a list of ScoredChromosomeWindow from a specified Data Source and a specified DAS Type and a specified Data Range
 	 * @param dataSource a {@link DataSource}
 	 * @param dasType a {@link DASType}
 	 * @param genomeWindow a {@link GenomeWindow}
-	 * @return a {@link ScoredChromosomeWindowList}
+	 * @return a {@link ChromosomeArrayListOfLists}
 	 * @throws IOException
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	
+
 	public ScoredChromosomeWindowList getSCWList(DataSource dataSource, DASType dasType, GenomeWindow genomeWindow) throws IOException, ParserConfigurationException, SAXException, InterruptedException, ExecutionException {
 		List<EntryPoint> entryPointList = getEntryPointList(dataSource);
 		ArrayList<List<ScoredChromosomeWindow>> resultList = new ArrayList<List<ScoredChromosomeWindow>>();
 		Chromosome currentChromo = genomeWindow.getChromosome();
 		//System.out.println("Chormozome = " + currentChromo.getName());
 		EntryPoint currentEntryPoint = findEntryPoint(entryPointList, currentChromo);
-		// if we found a chromosome retrieve the data and 
+		// if we found a chromosome retrieve the data and
 		// we create a genelist for this chromosome
 		//System.out.println("Current Entry Point: " + currentEntryPoint.toString());
 		if (currentEntryPoint != null) {
 			URL queryUrl = generateQuery(dataSource, currentEntryPoint, dasType, genomeWindow);
 			//System.out.println("QueryURL: " + queryUrl);
 			URLConnection connection = queryUrl.openConnection();
-			connection.setUseCaches(true);		
+			connection.setUseCaches(true);
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
 			parserFactory.setValidating(true);
 			SAXParser parser = parserFactory.newSAXParser();
 			SCWHandler scwh = new SCWHandler(currentChromo);
-			// if the current project is a muti genome project we set the 
+			// if the current project is a muti genome project we set the
 			// name of the genome that was used for the mapping of the data
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				scwh.setGenomeName(genomeName);
@@ -437,7 +439,7 @@ public class DASConnector {
 			resultList.add(currentSCWList);
 		} else {
 			resultList.add(null);
-		}		
+		}
 		// Check if the list is scored
 		boolean isScored = false;
 		for (List<ScoredChromosomeWindow> currentList: resultList) {
@@ -462,7 +464,7 @@ public class DASConnector {
 				}
 			}
 		}
-		return new ScoredChromosomeWindowList(resultList);
+		return new SimpleScoredChromosomeWindowList(resultList);
 	}
 
 
@@ -496,7 +498,7 @@ public class DASConnector {
 	}
 
 	/**
-	 * Generates a query for all the data for a specified data source, entry point and das type 
+	 * Generates a query for all the data for a specified data source, entry point and das type
 	 * @param dataSource a {@link DataSource}
 	 * @param entryPoint an {@link EntryPoint}
 	 * @param dasType a {@link DASType}
@@ -504,7 +506,7 @@ public class DASConnector {
 	 * @throws MalformedURLException
 	 */
 	private URL generateQuery(DataSource dataSource, EntryPoint entryPoint, DASType dasType) throws MalformedURLException {
-		String URLStr = new String(serverAddress); 
+		String URLStr = new String(serverAddress);
 		URLStr += dataSource.getID();
 		URLStr += "/features?segment=";
 		URLStr += entryPoint.getID();
@@ -518,7 +520,7 @@ public class DASConnector {
 	}
 
 	/**
-	 * Generates a query for all the data for a specified data source, entry point, das type and data range 
+	 * Generates a query for all the data for a specified data source, entry point, das type and data range
 	 * @param dataSource a {@link DataSource}
 	 * @param entryPoint an {@link EntryPoint}
 	 * @param dasType a {@link DASType}
@@ -527,22 +529,24 @@ public class DASConnector {
 	 * @throws MalformedURLException
 	 */
 	private URL generateQuery(DataSource dataSource, EntryPoint entryPoint, DASType dasType, GenomeWindow genomeWindow) throws MalformedURLException {
-		String URLStr = new String(serverAddress); 
+		String URLStr = new String(serverAddress);
 		URLStr += dataSource.getID();
 		URLStr += "/features?segment=";
 		URLStr += entryPoint.getID();
 		URLStr += ":";
-		if(genomeWindow.getStart() < entryPoint.getStart())
+		if(genomeWindow.getStart() < entryPoint.getStart()) {
 			genomeWindow.setStart(entryPoint.getStart());
+		}
 		URLStr += genomeWindow.getStart();
 		URLStr += ",";
-		if(genomeWindow.getStop() > entryPoint.getStop())
+		if(genomeWindow.getStop() > entryPoint.getStop()) {
 			genomeWindow.setStop(entryPoint.getStop());
+		}
 		URLStr += genomeWindow.getStop();
 		URLStr += ";type=";
 		URLStr += dasType.getID();
-//		System.out.println("New Start: " + genomeWindow.getStart());
-//		System.out.println("New Stop: " + genomeWindow.getStop());
+		//		System.out.println("New Start: " + genomeWindow.getStart());
+		//		System.out.println("New Stop: " + genomeWindow.getStop());
 		return new URL(URLStr);
 	}
 
@@ -561,8 +565,8 @@ public class DASConnector {
 	public String getGenomeName() {
 		return genomeName;
 	}
-	
-	
+
+
 	/**
 	 * @return the alleleType
 	 */
@@ -578,7 +582,7 @@ public class DASConnector {
 		this.alleleType = alleleType;
 	}
 
-	
+
 	//	public static void main(String[] args) {
 	//		try {
 	//			long startTime = System.currentTimeMillis();
@@ -590,7 +594,7 @@ public class DASConnector {
 	//			List<DASType> dasTypeList = dasc.getDASTypeList(dataSource);
 	//			DASType dasType = dasTypeList.get(39);
 	//			System.out.println(dasType.getID());
-	//			//ScoredChromosomeWindowList scwList = dasc.getSCWList(ChromosomeManager.getInstance(), dataSource, dasType);
+	//			//ScoredChromosomeWindowListInterface scwList = dasc.getSCWList(ChromosomeManager.getInstance(), dataSource, dasType);
 	//			GeneList geneList = dasc.getGeneList(ChromosomeManager.getInstance(), dataSource, dasType);
 	//			GeneListAsBedWriter glabw = new GeneListAsBedWriter(ChromosomeManager.getInstance(), new File("testDAS.bed"), geneList, "test");
 	//			glabw.write();
@@ -599,5 +603,5 @@ public class DASConnector {
 	//		} catch (Exception e) {
 	//			e.printStackTrace();
 	//		}
-	//	}	
+	//	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.core.list.SCWList.overLap;
 
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 
 
 /**
@@ -34,11 +34,11 @@ import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
  * @version 0.1
  */
 final class OverLappingNode implements Comparable<OverLappingNode>, Serializable {
-	
+
 	private static final long serialVersionUID = 2744418236142472607L;
-	private boolean 				start;	//the node refer to a start position
-	private ScoredChromosomeWindow 	scw;	//scored chromosome window
-	
+	private final boolean 				start;	//the node refer to a start position
+	private final ScoredChromosomeWindow 	scw;	//scored chromosome window
+
 	/**
 	 * OverLapNode constructor
 	 * 
@@ -49,7 +49,7 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 		this.start = start;
 		this.scw = scw;
 	}
-	
+
 	/**
 	 * isStart method
 	 * This method allows to know if the node refers to a start or a stop position.
@@ -59,7 +59,7 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 	protected boolean isStart() {
 		return this.start;
 	}
-	
+
 	/**
 	 * getScw method
 	 * 
@@ -68,7 +68,7 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 	protected ScoredChromosomeWindow getScw() {
 		return scw;
 	}
-	
+
 	/**
 	 * getValue method
 	 * This method return the position of the node.
@@ -84,7 +84,7 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 			return this.scw.getStop();
 		}
 	}
-	
+
 	@Override
 	public int compareTo(OverLappingNode arg) {
 		if (this.getValue() > arg.getValue()) {
@@ -95,5 +95,5 @@ final class OverLappingNode implements Comparable<OverLappingNode>, Serializable
 			return -1;
 		}
 	}
-	
+
 }

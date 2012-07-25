@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
@@ -46,13 +46,13 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  * @version 0.1
  */
 public class OverLappingManagement implements Serializable {
-	
+
 	private static final long serialVersionUID = 419831643761204027L;
-	
+
 	protected final ProjectChromosome 			projectChromosome;		// TChromosomeManager
-	private 		SCWLOptions 				sortSCW;				// use the sort option for chromosome list
+	private final 		SCWLOptions 				sortSCW;				// use the sort option for chromosome list
 	private 		List<OverLappingEngine> 	overLappingEngineList;	// overlapping engine for chromosome list
-	
+
 	/**
 	 * OverLapManagement constructor
 	 * 
@@ -63,29 +63,29 @@ public class OverLappingManagement implements Serializable {
 	 * @throws ExecutionException
 	 */
 	public OverLappingManagement (	ChromosomeListOfLists<Integer> startList,
-								ChromosomeListOfLists<Integer> stopList,
-								ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
+			ChromosomeListOfLists<Integer> stopList,
+			ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.sortSCW = new SCWLOptions(startList, stopList, scoreList);
 		this.sortSCW.sortAll();
 	}
-	
-	
+
+
 	////////////////////////////////////////////////	OverLapping running methods
-	
+
 	/**
 	 * run method
 	 * This method allow to run the overlapping engine for a specific chromosome
 	 * @param chromosome	Chromosome
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
+	 * @throws InterruptedException
+	 * @throws ExecutionException
 	 */
 	public void run (Chromosome chromosome) throws InterruptedException, ExecutionException {
 		this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).init(this.sortSCW.getList().get(chromosome));	//the overlapengine is ran for the chromosome list
 		this.sortSCW.setNewList(chromosome, getNewStartList(chromosome), getNewStopList(chromosome), getNewScoreList(chromosome));	//the old chromosome list is replaced by the new one
 	}
-	
-	
+
+
 	////////////////////////////////////////////////	GETTERS & SETTERS
 
 	/**
@@ -95,19 +95,19 @@ public class OverLappingManagement implements Serializable {
 	public List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
 		return this.sortSCW.getList(chromosome);
 	}
-	
+
 	private IntArrayAsIntegerList getNewStartList(Chromosome chromosome) {
 		return this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).getNewStartList();
 	}
-	
+
 	private IntArrayAsIntegerList getNewStopList(Chromosome chromosome) {
 		return this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).getNewStopList();
 	}
-	
+
 	private List<Double> getNewScoreList(Chromosome chromosome) {
 		return this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).getNewScoreList();
 	}
-	
+
 	/**
 	 * Sets the score calculation method
 	 * @param scm the score calculation method

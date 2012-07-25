@@ -19,35 +19,63 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.generator;
-
-import java.util.concurrent.ExecutionException;
-
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
-import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+package edu.yu.einstein.genplay.core.chromosomeWindow;
 
 
 /**
- * The interface ScoredChromosomeWindowListGenerator could be implemented by a class able to create a {@link ChromosomeArrayListOfLists}
- * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public interface ScoredChromosomeWindowListGenerator extends Generator {
+public interface ChromosomeWindow extends Comparable<ChromosomeWindow> {
+
+
 
 	/**
-	 * @param scm ScoreCalculationMethod to know how to calculate score in case of overlapping
-	 * @return a new {@link ChromosomeArrayListOfLists}
-	 * @throws InvalidChromosomeException
-	 * @throws InterruptedException
-	 * @throws ExecutionException
+	 * @return the size of the window in base pair (ie: stop - start)
 	 */
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException;
+	public int getSize();
+
 
 	/**
-	 * Allows to check if overlapping regions exists.
-	 * @return	boolean
+	 * @return the position of the middle of the window
 	 */
-	public boolean overlapped ();
+	public double getMiddlePosition();
+
+
+	/**
+	 * Checks if the window contains the given position.
+	 * If the position is located before the window, -1 is returned.
+	 * If the position is located after the window, 1 is returned.
+	 * if the position is included in the window, 0 is returned.
+	 * @param position the position to check
+	 * @return 0 is the position is in the window, -1 if lower, 1 if higher.
+	 */
+	public int containsPosition (int position);
+
+
+	/**
+	 * @return the start position of the window
+	 */
+	public int getStart ();
+
+
+	/**
+	 * Sets the start position of the window
+	 * @param start	the start position
+	 */
+	public void setStart (int start);
+
+
+	/**
+	 * @return the sopt position of the window
+	 */
+	public int getStop ();
+
+
+	/**
+	 * Sets the stop position of the window
+	 * @param stop	the stop position
+	 */
+	public void setStop (int stop);
+
 }

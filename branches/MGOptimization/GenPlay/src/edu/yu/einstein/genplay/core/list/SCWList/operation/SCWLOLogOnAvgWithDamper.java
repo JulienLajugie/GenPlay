@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,9 +27,11 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -47,7 +49,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 	private final double						damper;		// damper
 	private boolean				stopped = false;// true if the operation must be stopped
 
-	
+
 	/**
 	 * Applies the function f(x)=log((x + damper) / (avg + damper)) to each score x of the {@link ScoredChromosomeWindowList}
 	 * @param scwList input {@link ScoredChromosomeWindowList}
@@ -70,7 +72,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 		final double mean = scwList.getAverage();
 		final double logMean;
 		// log is defined on R+*
-		if (mean + damper > 0) {
+		if ((mean + damper) > 0) {
 			if (logBase == LogBase.BASE_E) {
 				// the Math.log function return the natural log (no needs to change the base)
 				logMean = Math.log(mean + damper);
@@ -80,29 +82,29 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 			}
 		} else {
 			throw new ArithmeticException("Logarithm of a negative value not allowed");
-		}		
+		}
 
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// We log each element
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
+							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
 							// log is define on R+*
 							if (currentWindow.getScore() > 0) {
 								double resultValue;
 								if (logBase == LogBase.BASE_E) {
 									// the Math.log function return the natural log (no needs to change the base)
-									resultValue = Math.log(currentWindow.getScore() + damper) - logMean;	
+									resultValue = Math.log(currentWindow.getScore() + damper) - logMean;
 								} else {
 									// change of base: logb(x) = logk(x) / logk(b)
-									resultValue = Math.log(currentWindow.getScore() + damper) / Math.log(logBase.getValue()) - logMean;									
+									resultValue = (Math.log(currentWindow.getScore() + damper) / Math.log(logBase.getValue())) - logMean;
 								}
 								resultWindow.setScore(resultValue);
 							} else if (currentWindow.getScore() == 0) {
@@ -124,7 +126,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
@@ -140,7 +142,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
 
@@ -149,7 +151,7 @@ public class SCWLOLogOnAvgWithDamper implements Operation<ScoredChromosomeWindow
 		return "Logging";
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

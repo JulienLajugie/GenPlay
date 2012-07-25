@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,15 +27,17 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 
 /**
- * Indexes the scores of a {@link ScoredChromosomeWindowList} based on 
+ * Indexes the scores of a {@link ScoredChromosomeWindowList} based on
  * the greatest and the smallest value of each chromosome
  * @author Julien Lajugie
  * @version 0.1
@@ -50,7 +52,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 
 	/**
 	 * Creates an instance of {@link SCWLOIndexByChromosome}
-	 * Indexes the scores between the specified minimum and maximum 
+	 * Indexes the scores between the specified minimum and maximum
 	 * based on the greatest and the smallest value of each chromosome.
 	 * @param scwList {@link ScoredChromosomeWindowList} to index
 	 * @param newMin minimum value after index
@@ -78,18 +80,18 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						// search the min and max for the current chromosome before index 
-						double oldMin = minNoZero(currentList);						
+						// search the min and max for the current chromosome before index
+						double oldMin = minNoZero(currentList);
 						double oldMax = maxNoZero(currentList);
 						// we calculate the difference between the highest and the lowest value
 						double oldDistance = oldMax - oldMin;
 						if (oldDistance != 0) {
-							// We index the intensities 
-							for (int j = 0; j < currentList.size() && !stopped; j++) {
+							// We index the intensities
+							for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 								ScoredChromosomeWindow currentWindow = currentList.get(j);
-								ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
+								ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
 								if (currentWindow.getScore() != 0) {
-									resultWindow.setScore(newDistance * (currentWindow.getScore() - oldMin) / oldDistance + newMin);
+									resultWindow.setScore(((newDistance * (currentWindow.getScore() - oldMin)) / oldDistance) + newMin);
 								}
 								resultList.add(resultWindow);
 							}
@@ -105,11 +107,11 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
-		}		
+		}
 	}
 
 
@@ -121,7 +123,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
 
@@ -129,8 +131,8 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 	public String getProcessingDescription() {
 		return "Indexing";
 	}
-	
-	
+
+
 	/**
 	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list
@@ -145,8 +147,8 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 		}
 		return max;
 	}
-	
-	
+
+
 	/**
 	 * Returns the minimum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list
@@ -162,7 +164,7 @@ public class SCWLOIndexByChromosome implements Operation<ScoredChromosomeWindowL
 		return min;
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

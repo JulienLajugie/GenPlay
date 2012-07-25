@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,11 +40,11 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 
 	private static final long serialVersionUID = 4481408947601757066L;	// generated ID
 	private static final String 	ACTION_NAME = "Standard Score";		// action name
-	private static final String 	DESCRIPTION = 
-		"Compute the standard score of the selected track";				// tooltip
+	private static final String 	DESCRIPTION =
+			"Compute the standard score of the selected track";				// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -65,11 +65,11 @@ public class SCWLANormalizeStandardScore extends TrackListActionOperationWorker<
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {		
+		if (selectedTrack != null) {
 			ScoredChromosomeWindowList scwList = selectedTrack.getData();
 			Operation<ScoredChromosomeWindowList> operation = new SCWLONormalizeStandardScore(scwList);
 			return operation;
-		}	
+		}
 		return null;
 	}
 

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,8 +33,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
@@ -57,7 +58,7 @@ import edu.yu.einstein.genplay.exception.CompressionException;
 public final class BinList extends DisplayableListOfLists<Double, double[]> implements Serializable {
 
 	private static final long serialVersionUID = -6114967730638134020L; // generated ID
-	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; 			// saved format version 
+	private static final int SAVED_FORMAT_VERSION_NUMBER = 0; 			// saved format version
 	private ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome(); // Instance of the Chromosome Manager
 	private int 				binSize;		// size of the bins
 	private DataPrecision 		precision;		// precision of the data
@@ -67,16 +68,16 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/*
 	 * The  following parameters are used for the display of the BinList.
-	 * A BinList contains another BinList with a bigger binSize. 
+	 * A BinList contains another BinList with a bigger binSize.
 	 * When the method that returns the data to be printed on the screen is called,
-	 * if the binSize of the current BinList is too small (ie if the screen resolution is 
+	 * if the binSize of the current BinList is too small (ie if the screen resolution is
 	 * not big enough to show all the bins) the equivalent method from the BinList
-	 * with bigger window will be called. 
-	 * This BinList can also have a BinList with a bigger binSize. 
+	 * with bigger window will be called.
+	 * This BinList can also have a BinList with a bigger binSize.
 	 */
 	private final static int 	ACCELERATOR_FACTOR = 100;	// factor used for the acceleration. Indicates how much bigger is the binSize of the accelerator binlist
-	private final static int	ACCELERATOR_MAX_BINSIZE = 
-		500000000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that 
+	private final static int	ACCELERATOR_MAX_BINSIZE =
+			500000000 / ACCELERATOR_FACTOR;						// we don't create accelerator BinList with a window bigger than that
 	transient private BinList 			acceleratorBinList = null;	// BinList with a bigger binSize
 	transient private double[]		 	acceleratorCurrentChromo;	// copy of the values of the currently displayed chromosome
 
@@ -86,7 +87,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * They are calculated at the creation of the BinList to avoid being recalculated
 	 */
 	private Double 	min = null;			// smallest value of the BinList
-	private Double 	max = null;			// greatest value of the BinList 
+	private Double 	max = null;			// greatest value of the BinList
 	private Double 	average = null;		// average of the BinList
 	private Double 	stDev = null;		// standar deviation of the BinList
 	private Double 	sumScore = null;	// sum of the scores of the BinList
@@ -117,8 +118,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param precision precision of the data
 	 * @param positions list of positions
 	 * @throws IllegalArgumentException
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public BinList(final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
@@ -127,16 +128,16 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();	
+		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		for(final Chromosome currentChromosome : projectChromosome)  {
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
-					List<Double> resultList = null; 
+					List<Double> resultList = null;
 					if ((positions.get(currentChromosome) != null) && (positions.size(currentChromosome) != 0)) {
-						int currentSize = currentChromosome.getLength() / binSize + 1;
-						resultList = ListFactory.createList(precision, currentSize); 
+						int currentSize = (currentChromosome.getLength() / binSize) + 1;
+						resultList = ListFactory.createList(precision, currentSize);
 						for (int i = 0; i < positions.size(currentChromosome); i++) {
 							if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
 								int windowTmp = positions.get(currentChromosome, i) / binSize;
@@ -173,26 +174,26 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param positions list of positions
 	 * @param scores list of score
 	 * @throws IllegalArgumentException thrown if precision is not valid
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public BinList(final int binSize, final DataPrecision precision, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
 		this.binSize = binSize;
-		this.precision = precision;		
+		this.precision = precision;
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
-		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();		
+		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		for(final Chromosome currentChromosome : projectChromosome)  {
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
-					List<Double> resultList = null; 
+					List<Double> resultList = null;
 					if ((positions.get(currentChromosome) != null) && (positions.size(currentChromosome) != 0)) {
-						int currentSize = currentChromosome.getLength() / binSize + 1;
-						resultList = ListFactory.createList(precision, currentSize); 
+						int currentSize = (currentChromosome.getLength() / binSize) + 1;
+						resultList = ListFactory.createList(precision, currentSize);
 						for (int i = 0; i < positions.size(currentChromosome); i++) {
 							if (positions.get(currentChromosome, i) <= currentChromosome.getLength()) {
 								int currentWindow = positions.get(currentChromosome, i) / binSize;
@@ -227,8 +228,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param data data of the BinList
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public BinList(int binSize, DataPrecision precision, List<List<Double>> data) throws InterruptedException, ExecutionException {
 		super();
@@ -248,8 +249,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param method method of the score calculation
 	 * @param binList input BinList
 	 * @param generateStatistics true if the statistics need to be calculated (we don't want to generate the statistics of the accelerator BinLists)
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 * @throws IllegalArgumentException thrown if precision is not valid
 	 */
 	public BinList(int binSize, DataPrecision precision, final ScoreCalculationMethod method, final BinList binList, boolean generateStatistics) throws InterruptedException, ExecutionException {
@@ -263,17 +264,17 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		for(final Chromosome currentChromosome : projectChromosome)  {
 			final List<Double> currentList = binList.get(currentChromosome);
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// size of the BinList for the current chromosome
-						int currentSize = currentChromosome.getLength() / getBinSize() + 1;
+						int currentSize = (currentChromosome.getLength() / getBinSize()) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
 						if (method == ScoreCalculationMethod.AVERAGE) {
-							counts = new int[currentSize];  
+							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(getPrecision(), currentSize);
 						// for each input windows
@@ -281,7 +282,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 							int start = i * binList.getBinSize();
 							int stop = (i + 1) * binList.getBinSize();
 							double score = currentList.get(i);
-							ScoredChromosomeWindow scw = new ScoredChromosomeWindow(start, stop, score);							
+							SimpleScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(start, stop, score);
 							computeScore(method, scw, resultList, counts);
 						}
 					}
@@ -305,7 +306,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		generateAcceleratorBinList();
 		// we generate the statistics only if the parameter generateStatistics is set to true
 		if(generateStatistics) {
-			generateStatistics();	
+			generateStatistics();
 		}
 	}
 
@@ -318,8 +319,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param positions list of positions
 	 * @param scores list of scores
 	 * @throws IllegalArgumentException
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> positions, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
@@ -333,13 +334,13 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			final List<Double> currentScores = scores.get(currentChromosome);
 			final List<Integer> currentPositions = positions.get(currentChromosome);
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((currentPositions != null) && (currentPositions.size() != 0)) {
-						int currentSize = currentChromosome.getLength() / getBinSize() + 1;
-						resultList = ListFactory.createList(getPrecision(), currentSize); 
+						int currentSize = (currentChromosome.getLength() / getBinSize()) + 1;
+						resultList = ListFactory.createList(getPrecision(), currentSize);
 						// if the method is average we create an array to store the count of scores
 						int[] counts = null;
 						if (method == ScoreCalculationMethod.AVERAGE) {
@@ -347,7 +348,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 						}
 
 						for (int i = 0; i < currentPositions.size(); i++) {
-							ScoredChromosomeWindow scw = new ScoredChromosomeWindow(currentPositions.get(i), currentPositions.get(i), currentScores.get(i));
+							SimpleScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(currentPositions.get(i), currentPositions.get(i), currentScores.get(i));
 							computeScore(method, scw, resultList, counts);
 						}
 					}
@@ -382,11 +383,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param stops list of stop positions
 	 * @param scores list of scores
 	 * @throws IllegalArgumentException thrown if precision is not valid
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<Integer> starts, final ChromosomeListOfLists<Integer> stops, final ChromosomeListOfLists<Double> scores) throws IllegalArgumentException, InterruptedException, ExecutionException {
-		super();		
+		super();
 		this.binSize = binSize;
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
@@ -395,22 +396,22 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		// for each chromosome
 		for(final Chromosome currentChromosome : projectChromosome)  {
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((starts.get(currentChromosome) != null) && (starts.size(currentChromosome) != 0)) {
 						// size of the BinList for the current chromosome
-						int currentSize = currentChromosome.getLength() / binSize + 1;
+						int currentSize = (currentChromosome.getLength() / binSize) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
 						if (method == ScoreCalculationMethod.AVERAGE) {
-							counts = new int[currentSize];  
+							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(precision, currentSize);
 						// for each input windows
 						for  (int i = 0; i < starts.size(currentChromosome); i++) {
-							ScoredChromosomeWindow scw = new ScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), scores.get(currentChromosome, i));
+							SimpleScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), scores.get(currentChromosome, i));
 							computeScore(method, scw, resultList, counts);
 						}
 					}
@@ -441,14 +442,14 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param binSize size of the bins
 	 * @param precision precision of the data
 	 * @param method method of the score calculation
-	 * @param list list of {@link ScoredChromosomeWindow}
+	 * @param list list of {@link SimpleScoredChromosomeWindow}
 	 * @throws IllegalArgumentException thrown if precision is not valid
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final ChromosomeListOfLists<ScoredChromosomeWindow> list)  throws IllegalArgumentException, InterruptedException, ExecutionException {
 		super();
-		this.binSize = binSize;	
+		this.binSize = binSize;
 		this.precision = precision;
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
@@ -457,17 +458,17 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		for(final Chromosome currentChromosome : projectChromosome)  {
 			final List<ScoredChromosomeWindow> currentList = list.get(currentChromosome);
 
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> resultList = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// size of the BinList for the current chromosome
-						int currentSize = currentChromosome.getLength() / binSize + 1;
+						int currentSize = (currentChromosome.getLength() / binSize) + 1;
 						// array to count how many elements for the average
 						int[] counts = null;
 						if (method == ScoreCalculationMethod.AVERAGE) {
-							counts = new int[currentSize];  
+							counts = new int[currentSize];
 						}
 						resultList = ListFactory.createList(precision, currentSize);
 						// for each input windows
@@ -552,7 +553,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 		}
 		isCompressed = true;
 		if (acceleratorBinList != null) {
-			acceleratorBinList.compress();				
+			acceleratorBinList.compress();
 		} else {
 			// if there is no more accelerator BinList we call the garbage collector
 			System.gc();
@@ -565,7 +566,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @param method method for the calculation of the score
 	 * @param window input data needed to generate the binlist
 	 * @param resultList result list that's represent one chromosome of BinList that is created
-	 * @param counts used only if the method is average. Stores the number of element inserted in order to be able to compute the average. Must be the same length as the result list 
+	 * @param counts used only if the method is average. Stores the number of element inserted in order to be able to compute the average. Must be the same length as the result list
 	 */
 	private void computeScore(ScoreCalculationMethod method, ScoredChromosomeWindow window, List<Double>resultList, int[] counts) {
 		double start = window.getStart() / (double) binSize;
@@ -581,19 +582,19 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				} else { // case where the score is divided into more than one bin
 					// if it's the first bin
 					if ((j == (int) start)) {
-						int firstWindowLength = (j + 1) * binSize - window.getStart(); 
-						score = window.getScore() / currentWindowSize * firstWindowLength;											
+						int firstWindowLength = ((j + 1) * binSize) - window.getStart();
+						score = (window.getScore() / currentWindowSize) * firstWindowLength;
 					} else if (((j + 1) >= stop)) { // if it's the last bin
-						int lastWindowLength = window.getStop() - j * binSize;
-						score = window.getScore() / currentWindowSize * lastWindowLength;
+						int lastWindowLength = window.getStop() - (j * binSize);
+						score = (window.getScore() / currentWindowSize) * lastWindowLength;
 					} else { // for the other bins
-						score = window.getScore() / currentWindowSize * binSize;
+						score = (window.getScore() / currentWindowSize) * binSize;
 					}
 				}
 				// add the score with the good method
 				switch (method) {
 				case AVERAGE:
-					score = resultList.get(j) * counts[j] + score;
+					score = (resultList.get(j) * counts[j]) + score;
 					counts[j]++;
 					resultList.set(j, score / counts[j]);
 					break;
@@ -636,12 +637,12 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Generates the BinList accelerator and the statistics.
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	private void finalizeConstruction() throws InterruptedException, ExecutionException {
 		generateAcceleratorBinList();
-		generateStatistics();	
+		generateStatistics();
 	}
 
 
@@ -653,7 +654,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				return;
 			}
 
-			// if there is to many bins to print we print the bins of the accelerator BinList 
+			// if there is to many bins to print we print the bins of the accelerator BinList
 			// (same list) with bigger binsize
 			if ((fittedXRatio * binSize) < (1 / (double)ACCELERATOR_FACTOR)) {
 				// if the accelerator binlist doesn't exist we create it
@@ -662,12 +663,12 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					acceleratorBinList.fittedChromosome = fittedChromosome;
 					acceleratorBinList.chromosomeChanged();
 				}
-				acceleratorBinList.fittedXRatio = fittedXRatio;				
+				acceleratorBinList.fittedXRatio = fittedXRatio;
 				acceleratorBinList.fitToScreen();
 				this.fittedDataList = acceleratorBinList.fittedDataList;
 				this.fittedBinSize = acceleratorBinList.fittedBinSize;
 				// else even if the binsize of the current binlist is adapted,
-				// we might still need to calculate the average if we have to print 
+				// we might still need to calculate the average if we have to print
 				//more than one bin per pixel
 			} else {
 				// we calculate how many windows are printable depending on the screen resolution
@@ -676,20 +677,20 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				// if the fitted bin size is smaller than the regular bin size we don't modify the data
 				if (fittedBinSize <= binSize) {
 					this.fittedDataList = acceleratorCurrentChromo;
-					this.fittedBinSize = binSize;	
+					this.fittedBinSize = binSize;
 				} else {
 					// otherwise we calculate the average because we have to print more than
 					// one bin per pixel
-					fittedDataList = new double[(int)(acceleratorCurrentChromo.length / binSizeRatio + 1)];
+					fittedDataList = new double[(acceleratorCurrentChromo.length / binSizeRatio) + 1];
 					int newIndex = 0;
 					for(int i = 0; i < acceleratorCurrentChromo.length; i += binSizeRatio) {
 						double sum = 0;
 						int n = 0;
 						for(int j = 0; j < binSizeRatio; j ++) {
-							if ((i + j < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
+							if (((i + j) < acceleratorCurrentChromo.length) && (acceleratorCurrentChromo[i + j] != 0)){
 								sum += acceleratorCurrentChromo[i + j];
-								n++;					
-							}				
+								n++;
+							}
 						}
 						if (n > 0) {
 							fittedDataList[newIndex] = sum / n;
@@ -698,7 +699,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 							fittedDataList[newIndex] = 0;
 						}
 						newIndex++;
-					}		
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -710,11 +711,11 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Creates a BinList with a greater binSize in order to accelerate the display
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	private void generateAcceleratorBinList() throws InterruptedException, ExecutionException {
-		if (binSize < ACCELERATOR_MAX_BINSIZE) {			
+		if (binSize < ACCELERATOR_MAX_BINSIZE) {
 			acceleratorBinList = new BinList(binSize * ACCELERATOR_FACTOR, getPrecision(), ScoreCalculationMethod.AVERAGE, this, false);
 		}
 	}
@@ -722,8 +723,8 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 
 	/**
 	 * Computes some statistic values for this BinList
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
 	private void generateStatistics() throws InterruptedException, ExecutionException {
 		// retrieve the instance of the OperationPool singleton
@@ -751,12 +752,12 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			final List<Double> currentList = get(i);
 			final short currentIndex = i;
 
-			Callable<Void> currentThread = new Callable<Void>() {	
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
 					mins[currentIndex] = Double.POSITIVE_INFINITY;
 					maxs[currentIndex] = Double.NEGATIVE_INFINITY;
-					if (currentList != null) {				
+					if (currentList != null) {
 						for (Double currentValue: currentList) {
 							if (currentValue != 0) {
 								mins[currentIndex] = Math.min(mins[currentIndex], currentValue);
@@ -772,9 +773,9 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				}
 			};
 
-			threadList.add(currentThread);			
+			threadList.add(currentThread);
 		}
-		// start the pool of thread 
+		// start the pool of thread
 		op.startPool(threadList);
 
 		// compute the genome wide result from the chromosomes results
@@ -795,10 +796,10 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 				final List<Double> currentList = get(i);
 				final short currentIndex = i;
 
-				Callable<Void> currentThread = new Callable<Void>() {	
+				Callable<Void> currentThread = new Callable<Void>() {
 					@Override
 					public Void call() throws Exception {
-						if (currentList != null) {				
+						if (currentList != null) {
 							for (Double currentValue: currentList) {
 								if (currentValue != 0) {
 									stDevs[currentIndex] += Math.pow(currentValue - average, 2);
@@ -811,7 +812,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 					}
 				};
 
-				threadList.add(currentThread);			
+				threadList.add(currentThread);
 			}
 			// start the pool of thread
 			op.startPool(threadList);
@@ -964,7 +965,7 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 	 * @throws ClassNotFoundException
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt(); // read the saved format number (useful if there is different loading method depending on the saved format number) 
+		in.readInt(); // read the saved format number (useful if there is different loading method depending on the saved format number)
 		projectChromosome = (ProjectChromosome) in.readObject();
 		binSize = in.readInt();
 		precision = (DataPrecision) in.readObject();

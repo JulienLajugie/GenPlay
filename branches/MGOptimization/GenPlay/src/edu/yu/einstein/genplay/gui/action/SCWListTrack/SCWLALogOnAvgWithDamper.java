@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -45,9 +45,9 @@ public final class SCWLALogOnAvgWithDamper extends TrackListActionOperationWorke
 
 	private static final long serialVersionUID = -8640599725095033450L;	// generated ID
 	private static final String 	ACTION_NAME = "Log With Damper";	// action name
-	private static final String 	DESCRIPTION = 
-		"Apply a log + dumper function to the scores of " +
-		"the selected track";											// tooltip
+	private static final String 	DESCRIPTION =
+			"Apply a log + dumper function to the scores of " +
+					"the selected track";											// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
 
@@ -90,6 +90,6 @@ public final class SCWLALogOnAvgWithDamper extends TrackListActionOperationWorke
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+		}
 	}
 }

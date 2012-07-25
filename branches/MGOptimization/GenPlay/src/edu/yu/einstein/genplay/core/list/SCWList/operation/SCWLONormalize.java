@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -45,8 +47,8 @@ public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
 	private final double						factor;			// the result of the normalization is multiplied by this factor
 	private Double 								scoreSum;		// sum of the scores
 	private boolean								stopped = false;// true if the operation must be stopped
-		
-	
+
+
 	/**
 	 * Normalizes a {@link ScoredChromosomeWindowList} and multiplies the result by a specified factor
 	 * @param inputList ScoredChromosomeWindowList to normalize
@@ -56,27 +58,27 @@ public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
 		this.inputList = inputList;
 		this.factor = factor;
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws InterruptedException, ExecutionException {
 		scoreSum = new SCWLOSumScore(inputList, null).compute();
 		// we want to multiply each window by the following coefficient
 		final double coef = factor / scoreSum;
-		
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		for (short i = 0; i < inputList.size(); i++)  {
 			final List<ScoredChromosomeWindow> currentList = inputList.get(i);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							// we multiply each window by the coefficient previously computed
-							ScoredChromosomeWindow windowToAdd = new ScoredChromosomeWindow(currentList.get(j));
+							ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j));
 							windowToAdd.setScore(currentList.get(j).getScore() * coef);
 							resultList.add(windowToAdd);
 						}
@@ -91,32 +93,32 @@ public class SCWLONormalize implements Operation<ScoredChromosomeWindowList> {
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Normalize, Factor = " + factor;
 	}
-	
-	
+
+
 	@Override
 	public int getStepCount() {
-		return ScoredChromosomeWindowList.getCreationStepCount() + 1;
+		return SimpleScoredChromosomeWindowList.getCreationStepCount() + 1;
 	}
-	
-	
+
+
 	@Override
 	public String getProcessingDescription() {
 		return "Normalizing";
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

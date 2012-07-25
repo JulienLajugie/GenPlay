@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,12 +36,13 @@ import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerato
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -50,14 +51,14 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class WiggleExtractor extends TextFileExtractor 
+public final class WiggleExtractor extends TextFileExtractor
 implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowListGenerator, BinListGenerator{
 
 	private static final long serialVersionUID = 3397954112622122744L; // generated ID
 
-	private ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private ChromosomeListOfLists<Double>	scoreList;		// list of scores
+	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
+	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
+	private final ChromosomeListOfLists<Double>	scoreList;		// list of scores
 
 	private Chromosome 		currentChromo;					// last chromosome specified
 	private int 			currentSpan;					// last span specified
@@ -125,7 +126,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 					currentChromo = null;
 					chromosomeStatus = NEED_TO_BE_SKIPPED;
 				}
-				
+
 				// check if the extraction is done
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					return true;
@@ -141,11 +142,11 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} else if ((currentField.length() > 5) && (currentField.substring(0, 5).equalsIgnoreCase("span="))) {
 				// retrieve span
 				String spanStr = splittedLine[i].trim().substring(5);
-				currentSpan = Integer.parseInt(spanStr);				
+				currentSpan = Integer.parseInt(spanStr);
 			} else {
 				if (currentChromo != null) {
 					if (isFixedStep) {
-						double score = Double.parseDouble(splittedLine[i]); 
+						double score = Double.parseDouble(splittedLine[i]);
 						try {
 							if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
 								int start = getMultiGenomePosition(currentChromo, currentPosition);
@@ -164,7 +165,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 							currentPosition += currentStep;
 						} catch (Exception e) {
 							throw new DataLineException(e.getMessage());
-						}					
+						}
 					} else {
 						if (splittedLine.length < 2) {
 							//throw new InvalidDataLineException(line);
@@ -191,7 +192,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 										startList.add(currentChromo, start);
 										stopList.add(currentChromo, stop);
 										scoreList.add(currentChromo, score);
-										
+
 										if (stopEndException != null) {
 											throw stopEndException;
 										}
@@ -202,9 +203,9 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 								lineCount++;
 							} catch (Exception e) {
 								throw new DataLineException(e.getMessage());
-							}		
+							}
 						}
-					}			
+					}
 				}
 			}
 			i++;
@@ -247,7 +248,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
 
@@ -292,7 +293,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public boolean overlapped() {
-		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+		return SimpleScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 
 
@@ -302,7 +303,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 	 */
 	@Override
 	public void setRandomLineCount(Integer randomLineCount) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException("Wiggle files need to be entirely extracted");		
+		throw new UnsupportedOperationException("Wiggle files need to be entirely extracted");
 	}
 
 }

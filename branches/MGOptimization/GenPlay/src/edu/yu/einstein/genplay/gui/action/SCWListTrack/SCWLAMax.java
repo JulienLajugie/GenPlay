@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -42,11 +42,11 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Double> {
 
 	private static final long serialVersionUID = -3864460354387970028L;	// generated ID
 	private static final String 	ACTION_NAME = "Maximum";			// action name
-	private static final String 	DESCRIPTION = 
-		"Show the maximum score of the selected track";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Show the maximum score of the selected track";					// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -73,7 +73,7 @@ public final class SCWLAMax extends TrackListActionOperationWorker<Double> {
 				ScoredChromosomeWindowList scwList = selectedTrack.getData();
 				Operation<Double> operation = new SCWLOMax(scwList, selectedChromo);
 				return operation;
-			}		
+			}
 		}
 		return null;
 	}

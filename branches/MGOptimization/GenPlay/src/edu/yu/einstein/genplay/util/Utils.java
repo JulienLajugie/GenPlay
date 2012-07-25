@@ -34,9 +34,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.comparator.ChromosomeComparator;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.FilterType;
@@ -646,8 +647,8 @@ public class Utils {
 	 * Returns a sublist of the input list. The first window contains or
 	 * starts after the specified start position.
 	 * The last window contains or stops before the specified stop position.
-	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow},
-	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
+	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
+	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
 	 * @param list input list
 	 * @param positionStart
 	 * @param positionStop
@@ -683,8 +684,8 @@ public class Utils {
 
 	/**
 	 * 
-	 * @param <T> type of the window list (ie: {@link ScoredChromosomeWindow},
-	 * {@link ChromosomeWindow} ...) must be or extends {@link ChromosomeWindow}
+	 * @param <T> type of the window list (ie: {@link SimpleScoredChromosomeWindow},
+	 * {@link SimpleChromosomeWindow} ...) must be or extends {@link SimpleChromosomeWindow}
 	 * @param element		the element to test
 	 * @param windowStart	the start position on the main frame
 	 * @param windowStop	the stop position on the main frame
@@ -705,7 +706,7 @@ public class Utils {
 
 	/**
 	 * Returns the index of the window where the value is found OR the index right after if not found.
-	 * The scan is based on the start and stop position of the windows (containsPosition method of {@link ChromosomeWindow} is used).
+	 * The scan is based on the start and stop position of the windows (containsPosition method of {@link SimpleChromosomeWindow} is used).
 	 * Recursive function.
 	 * 
 	 * @param <T> 			type of the element of the input list

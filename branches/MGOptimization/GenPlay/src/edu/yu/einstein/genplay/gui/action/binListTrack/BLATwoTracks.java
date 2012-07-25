@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -59,7 +59,7 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 	private Track<?>						resultTrack = null;								// result track
 	private ScoreCalculationTwoTrackMethod 	scm;
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -89,15 +89,15 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 					if (scm != null) {
 						if (isSCWList()) {
 							operation = new SCWLOTwoTracks(	(ChromosomeListOfLists<?>)selectedTrack.getData(),
-															(ChromosomeListOfLists<?>)otherTrack.getData(),
-															this.scm);
+									(ChromosomeListOfLists<?>)otherTrack.getData(),
+									this.scm);
 						} else {
 							DataPrecision precision = Utils.choosePrecision(getRootPane());
 							if (precision != null) {
 								operation = new BLOTwoTracks(	((BinListTrack)selectedTrack).getData(),
-																((BinListTrack)otherTrack).getData(),
-																precision,
-																scm);
+										((BinListTrack)otherTrack).getData(),
+										precision,
+										scm);
 							}
 						}
 						return operation;
@@ -107,8 +107,8 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(ChromosomeListOfLists<?> actionResult) {
 		if (actionResult != null) {
@@ -127,13 +127,13 @@ public final class BLATwoTracks extends TrackListActionOperationWorker<Chromosom
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " & " + otherTrack.getName(), null, null, null);
 		}
 	}
-	
+
 	private boolean isSCWList () {
-		if (selectedTrack.getData() instanceof BinList & otherTrack.getData() instanceof BinList) {
+		if ((selectedTrack.getData() instanceof BinList) & (otherTrack.getData() instanceof BinList)) {
 			if (((BinList)selectedTrack.getData()).getBinSize() == ((BinList)otherTrack.getData()).getBinSize()) {
 				return false;
 			}
 		}
 		return true;
-	}	
+	}
 }

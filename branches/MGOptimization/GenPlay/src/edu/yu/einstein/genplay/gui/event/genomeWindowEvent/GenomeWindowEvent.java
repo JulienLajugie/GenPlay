@@ -23,9 +23,9 @@ package edu.yu.einstein.genplay.gui.event.genomeWindowEvent;
 
 import java.util.EventObject;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 
 /**
@@ -99,10 +99,10 @@ public final class GenomeWindowEvent extends EventObject {
 	
 	
 	/**
-	 * @return true if the {@link ChromosomeWindow} of the {@link GenomeWindow} changed
+	 * @return true if the {@link SimpleChromosomeWindow} of the {@link GenomeWindow} changed
 	 */
 	public boolean chromosomeWindowChanged() {
-		return !((ChromosomeWindow)oldWindow).equals((ChromosomeWindow)newWindow);
+		return !((SimpleChromosomeWindow)oldWindow).equals((SimpleChromosomeWindow)newWindow);
 	}
 	
 }

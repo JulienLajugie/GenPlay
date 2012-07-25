@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.core;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+
 /**
  * The RepeatFamily class provides a representation of a family of repeats.
  * @author Julien Lajugie
@@ -33,7 +35,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 
 	private static final long serialVersionUID = -7691967168795920365L; // generated ID
 	private String 						name;			// Name of the family of repeat
-	private ArrayList<ChromosomeWindow> repeatList;		// 1 list of repeat per chromosome
+	private ArrayList<SimpleChromosomeWindow> repeatList;		// 1 list of repeat per chromosome
 	
 	
 	/**
@@ -42,7 +44,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	 */
 	public RepeatFamily(String name) {
 		this.name = name; 
-		repeatList = new ArrayList<ChromosomeWindow>();
+		repeatList = new ArrayList<SimpleChromosomeWindow>();
 	}
 	
 	
@@ -58,7 +60,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	 * Adds a repeat to the list
 	 * @param repeat a repeat
 	 */
-	public void addRepeat(ChromosomeWindow repeat) {
+	public void addRepeat(SimpleChromosomeWindow repeat) {
 		repeatList.add(repeat);
 	}
 	
@@ -68,7 +70,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	 * @param index index of the repeat to return 
 	 * @return the repeat at the specified position in this list 
 	 */
-	public ChromosomeWindow getRepeat(int index) {
+	public SimpleChromosomeWindow getRepeat(int index) {
 		return repeatList.get(index);
 	}
 	
@@ -76,7 +78,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	/**
 	 * @return the list of repeat
 	 */
-	public ArrayList<ChromosomeWindow> getRepeatList() {
+	public ArrayList<SimpleChromosomeWindow> getRepeatList() {
 		return repeatList;
 	}
 	

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -41,11 +43,11 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList> {
 
 	private final ScoredChromosomeWindowList 	inputList;		// input SCW list
-	private final double 						lowThreshold;	// low bound 
+	private final double 						lowThreshold;	// low bound
 	private final double 						highThreshold;	// high bound
 	private boolean								stopped = false;// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link SCWLOFilterBandStop}
 	 * @param inputList input {@link ScoredChromosomeWindowList}
@@ -57,29 +59,29 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 		this.lowThreshold = lowThreshold;
 		this.highThreshold = highThreshold;
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
-		}	
+		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		for (final List<ScoredChromosomeWindow> currentList: inputList) {
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {			
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
-							double currentValue = currentList.get(j).getScore(); 
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
+							double currentValue = currentList.get(j).getScore();
 							if ((currentValue < lowThreshold) || (currentValue > highThreshold)) {
-								ScoredChromosomeWindow windowToAdd = new ScoredChromosomeWindow(currentList.get(j));
+								ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(j));
 								resultList.add(windowToAdd);
-							}					
+							}
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -92,7 +94,7 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
@@ -114,10 +116,10 @@ public class SCWLOFilterBandStop implements Operation<ScoredChromosomeWindowList
 
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

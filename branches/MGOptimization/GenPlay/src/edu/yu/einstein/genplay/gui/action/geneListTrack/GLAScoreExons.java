@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -48,8 +48,8 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 
 	private static final long serialVersionUID = 2102571378866219218L; 	// generated ID
 	private static final String 	ACTION_NAME = "Score Exons";		// action name
-	private static final String 	DESCRIPTION = 
-		"Give a score to the exons of the genes from a scored track";	// tooltip
+	private static final String 	DESCRIPTION =
+			"Give a score to the exons of the genes from a scored track";	// tooltip
 	private GeneListTrack 			selectedTrack;						// selected track
 	private CurveTrack<?> 			curveTrack;							// curve track
 
@@ -101,6 +101,6 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription() + curveTrack.getName());
-		}		
+		}
 	}
 }

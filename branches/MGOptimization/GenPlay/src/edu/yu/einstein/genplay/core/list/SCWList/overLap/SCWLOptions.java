@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,8 +29,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
@@ -46,14 +47,14 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * @version 0.1
  */
 final class SCWLOptions implements Serializable {
-	
+
 	private static final long serialVersionUID = -2601316105498708787L;
 	protected final ProjectChromosome 									projectChromosome;	//ChromosomeManager
-	private 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
-	private 		ChromosomeListOfLists<Integer> 						startList;			//store the original start list position
-	private 		ChromosomeListOfLists<Integer> 						stopList;			//store the original stop list position
-	private 		ChromosomeListOfLists<Double> 						scoreList;			//store the original score list
-	
+	private final 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
+	private final 		ChromosomeListOfLists<Integer> 						startList;			//store the original start list position
+	private final 		ChromosomeListOfLists<Integer> 						stopList;			//store the original stop list position
+	private final 		ChromosomeListOfLists<Double> 						scoreList;			//store the original score list
+
 	/**
 	 * SCWOption constructor
 	 * 
@@ -63,9 +64,9 @@ final class SCWLOptions implements Serializable {
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	protected SCWLOptions (	final ChromosomeListOfLists<Integer> startList, 
-							final ChromosomeListOfLists<Integer> stopList,
-							final ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
+	protected SCWLOptions (	final ChromosomeListOfLists<Integer> startList,
+			final ChromosomeListOfLists<Integer> stopList,
+			final ChromosomeListOfLists<Double> scoreList) throws InterruptedException, ExecutionException {
 		this.projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 		this.list = new ChromosomeArrayListOfLists<ScoredChromosomeWindow>();
 		this.startList = startList;
@@ -75,10 +76,10 @@ final class SCWLOptions implements Serializable {
 			this.list.add(new ArrayList<ScoredChromosomeWindow>());
 		}
 	}
-	
-	
+
+
 	///////////////////////////	Manage all list
-	
+
 	/**
 	 * sortAll method
 	 * This method manage the generating and sorting operation for all chromosomes
@@ -90,7 +91,7 @@ final class SCWLOptions implements Serializable {
 		generateAllList();
 		sortAllList();
 	}
-	
+
 	/**
 	 * generateList method
 	 * This method generate the right list for all chromosomes
@@ -100,9 +101,9 @@ final class SCWLOptions implements Serializable {
 	 */
 	private void generateAllList () throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();	
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		for(final Chromosome currentChromosome : this.projectChromosome) {
-			Callable<Void> currentThread = new Callable<Void>() {	
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
 					generateList(currentChromosome);
@@ -116,7 +117,7 @@ final class SCWLOptions implements Serializable {
 		// starts the pool
 		op.startPool(threadList);
 	}
-	
+
 	/**
 	 * sortAllList method
 	 * This method sort the right list for all chromosomes
@@ -126,9 +127,9 @@ final class SCWLOptions implements Serializable {
 	 */
 	private void sortAllList () throws InterruptedException, ExecutionException {
 		final OperationPool op = OperationPool.getInstance();
-		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();	
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
 		for(final Chromosome currentChromosome : this.projectChromosome) {
-			Callable<Void> currentThread = new Callable<Void>() {	
+			Callable<Void> currentThread = new Callable<Void>() {
 				@Override
 				public Void call() throws Exception {
 					sortList(currentChromosome);
@@ -142,10 +143,10 @@ final class SCWLOptions implements Serializable {
 		// starts the pool
 		op.startPool(threadList);
 	}
-	
-	
+
+
 	///////////////////////////	Manage one list
-	
+
 	/**
 	 * sortOne method
 	 * This method manage the generating and sorting operation of the right list for a specific chromosome
@@ -156,7 +157,7 @@ final class SCWLOptions implements Serializable {
 		generateList(chromosome);
 		sortList(chromosome);
 	}
-	
+
 	/**
 	 * generateList method
 	 * This method generate the right list for a specific chromosome
@@ -166,13 +167,13 @@ final class SCWLOptions implements Serializable {
 	private void generateList (final Chromosome chromosome) {
 		if (startList.get(chromosome) != null) {
 			for (int i=0; i < startList.get(chromosome).size(); i++) {
-				this.list.add(chromosome, new ScoredChromosomeWindow(	startList.get(chromosome, i),
-																		stopList.get(chromosome, i),
-																		scoreList.get(chromosome, i)));
+				this.list.add(chromosome, new SimpleScoredChromosomeWindow(	startList.get(chromosome, i),
+						stopList.get(chromosome, i),
+						scoreList.get(chromosome, i)));
 			}
 		}
 	}
-	
+
 	/**
 	 * sortList method
 	 * This method sort the right list for a specific chromosome
@@ -184,27 +185,27 @@ final class SCWLOptions implements Serializable {
 			Collections.sort(list.get(chromosome));
 		}
 	}
-	
-	
+
+
 	///////////////////////////	GETTERS & SETTERS
-	
+
 	protected void setNewList (Chromosome chromosome, IntArrayAsIntegerList newStartList, IntArrayAsIntegerList newStopList, List<Double> newScoresList) {
-		if (newStartList != null & newStopList != null & newScoresList != null) {
+		if ((newStartList != null) & (newStopList != null) & (newScoresList != null)) {
 			this.list.get(chromosome).clear();
 			for (int i=0; i < newStartList.size(); i++) {
-				this.list.add(chromosome, new ScoredChromosomeWindow(	newStartList.get(i),
-																		newStopList.get(i),
-																		newScoresList.get(i)));
+				this.list.add(chromosome, new SimpleScoredChromosomeWindow(	newStartList.get(i),
+						newStopList.get(i),
+						newScoresList.get(i)));
 			}
 		}
 	}
-	
+
 	protected ChromosomeArrayListOfLists<ScoredChromosomeWindow> getList() {
 		return list;
 	}
-	
+
 	protected List<ScoredChromosomeWindow> getList(Chromosome chromosome) {
 		return list.get(chromosome);
 	}
-	
+
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,8 +28,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
@@ -37,7 +38,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
 /**
- * Parse a DNS XML file and extract the list of {@link ScoredChromosomeWindow}
+ * Parse a DNS XML file and extract the list of {@link SimpleScoredChromosomeWindow}
  * <br/>See <a href="http://www.biodas.org/documents/spec.html">http://www.biodas.org/documents/spec.html</a>
  * @author Julien Lajugie
  * @version 0.1
@@ -45,12 +46,12 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 public class SCWHandler extends DefaultHandler {
 
 	private final List<ScoredChromosomeWindow>	SCWList;				// list of SCW
-	private final Chromosome 					chromosome;				// chromosome being extracted	
+	private final Chromosome 					chromosome;				// chromosome being extracted
 	private String 								currentMarkup = null;	// current XML markup
 	private	ScoredChromosomeWindow				currentSCW = null;		// current SCW
 	private String 								genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
 	private AlleleType 							alleleType;				// for multi-genome project only.  Type of allele for synchronization
-	
+
 
 	/**
 	 * Creates an instance of {@link SCWHandler}
@@ -74,7 +75,7 @@ public class SCWHandler extends DefaultHandler {
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equalsIgnoreCase("FEATURE")) {
-			currentSCW = new ScoredChromosomeWindow();
+			currentSCW = new SimpleScoredChromosomeWindow();
 		} else 	if (qName.equalsIgnoreCase("START")) {
 			currentMarkup = "START";
 		} else 	if (qName.equalsIgnoreCase("END")) {
@@ -116,8 +117,8 @@ public class SCWHandler extends DefaultHandler {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param position		current position
 	 * @return				the associated associated meta genome position
@@ -128,9 +129,9 @@ public class SCWHandler extends DefaultHandler {
 		} else {
 			return position;
 		}
-	}	
-	
-	
+	}
+
+
 	/**
 	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
 	 */
@@ -145,8 +146,8 @@ public class SCWHandler extends DefaultHandler {
 	public String getGenomeName() {
 		return genomeName;
 	}
-	
-	
+
+
 	/**
 	 * @return the alleleType
 	 */

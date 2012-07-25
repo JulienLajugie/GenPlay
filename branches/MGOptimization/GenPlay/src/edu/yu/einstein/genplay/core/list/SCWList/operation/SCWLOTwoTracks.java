@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,11 +26,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.SCWLTwoTracksManagement;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -48,32 +50,32 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
 
 	private final ScoreCalculationTwoTrackMethod 	scm;
-	private final SCWLTwoTracksManagement 			twoTracks;			// manage the operation between two tracks	
-	
-	
+	private final SCWLTwoTracksManagement 			twoTracks;			// manage the operation between two tracks
+
+
 	/**
-	 * Adds a specified constant to the scores of each window of a {@link ScoredChromosomeWindow}
+	 * Adds a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
 	 * @param list1 1st input list
-	 * @param list2 2nd input list 
+	 * @param list2 2nd input list
 	 * @param scm {@link ScoreCalculationTwoTrackMethod}
 	 */
 	public SCWLOTwoTracks(	ChromosomeListOfLists<?> list1,
-							ChromosomeListOfLists<?> list2,
-							ScoreCalculationTwoTrackMethod scm) {
+			ChromosomeListOfLists<?> list2,
+			ScoreCalculationTwoTrackMethod scm) {
 		this.scm = scm;
 		twoTracks = new SCWLTwoTracksManagement(list1, list2, scm);
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
-		
+
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		
+
 		for(final Chromosome currentChromosome : projectChromosome) {
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					twoTracks.run(currentChromosome);
@@ -86,29 +88,29 @@ public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stop
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation on two tracks: " + scm.toString();
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Two Tracks Operation";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
 
