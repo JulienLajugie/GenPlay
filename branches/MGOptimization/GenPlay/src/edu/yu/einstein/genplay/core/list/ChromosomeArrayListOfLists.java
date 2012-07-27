@@ -48,7 +48,7 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 	private static final long serialVersionUID = 3989560975472825193L; 	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private ProjectChromosome projectChromosome; 						// Instance of the Chromosome Manager
-	private final List<List<T>> dataList;
+	private List<List<T>> dataList;
 
 	/**
 	 * Constructor of {@link ChromosomeArrayListOfLists}.
@@ -68,6 +68,7 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(projectChromosome);
+		out.writeObject(dataList);
 	}
 
 
@@ -77,9 +78,11 @@ public class ChromosomeArrayListOfLists<T> implements List<List<T>>, Cloneable, 
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		projectChromosome = (ProjectChromosome) in.readObject();
+		dataList = (List<List<T>>) in.readObject();
 	}
 
 

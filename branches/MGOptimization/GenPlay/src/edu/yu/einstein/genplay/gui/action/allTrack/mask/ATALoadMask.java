@@ -14,12 +14,12 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.allTrack;
+package edu.yu.einstein.genplay.gui.action.allTrack.mask;
 
 import java.io.File;
 
@@ -36,8 +36,9 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Sets the stripes on the selected track
+ * Sets the mask on the selected track
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class ATALoadMask extends TrackListActionExtractorWorker<ScoredChromosomeWindowList> {
@@ -63,7 +64,7 @@ public final class ATALoadMask extends TrackListActionExtractorWorker<ScoredChro
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
-	
+
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -76,8 +77,8 @@ public final class ATALoadMask extends TrackListActionExtractorWorker<ScoredChro
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	protected File retrieveFileToExtract() {
 		Track<?> selectedTrack = getTrackList().getSelectedTrack();
@@ -91,14 +92,14 @@ public final class ATALoadMask extends TrackListActionExtractorWorker<ScoredChro
 		return null;
 	}
 
-	
+
 	@Override
 	public ScoredChromosomeWindowList generateList() throws Exception {
 		//return ((ChromosomeWindowListGenerator)extractor).toChromosomeWindowList();
 		return ((ScoredChromosomeWindowListGenerator)extractor).toMaskChromosomeWindowList();
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {

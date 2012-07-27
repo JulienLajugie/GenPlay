@@ -83,7 +83,7 @@ public class ETAGenerateMultiCurvesTrack extends TrackListAction {
 					}
 				}
 				int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
-				ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+				ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getMask();
 				MultiCurvesTrack newTrack = new MultiCurvesTrack(selectedTrackIndex + 1, curveTracks);
 				getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), trackName, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());	
 			} else {

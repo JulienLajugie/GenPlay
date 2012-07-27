@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.allTrack;
+package edu.yu.einstein.genplay.gui.action.allTrack.mask;
 
 
 import javax.swing.ActionMap;
@@ -38,9 +38,8 @@ import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
-
 /**
- * Adds a constant to the scores of the selected {@link SCWListTrack}
+ * Applies a mask to a fixed/variable windows track
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -76,9 +75,9 @@ public final class ATAApplyMask extends TrackListActionOperationWorker<Chromosom
 	public Operation<ChromosomeListOfLists<?>> initializeOperation() {
 		selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-		    ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>)selectedTrack.getData();
-		    ChromosomeListOfLists<?> mask = selectedTrack.getStripes();
-		    resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
+			ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>)selectedTrack.getData();
+			ChromosomeListOfLists<?> mask = selectedTrack.getMask();
+			resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 			if (resultTrack != null) {
 				this.scm = ScoreCalculationTwoTrackMethod.MULTIPLICATION;
 				operation = new SCWLOTwoTracks(data, mask, this.scm);

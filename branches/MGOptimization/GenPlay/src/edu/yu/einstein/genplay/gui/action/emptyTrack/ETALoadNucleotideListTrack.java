@@ -98,7 +98,7 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		}
 		if (actionResult != null && valid) {
 			int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
-			ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getMask();
 			NucleotideListTrack newTrack = new NucleotideListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);

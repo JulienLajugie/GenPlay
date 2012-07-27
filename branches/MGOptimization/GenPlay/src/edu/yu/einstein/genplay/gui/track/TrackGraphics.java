@@ -124,10 +124,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	transient private int					mouseStartDragX = -1;			// position of the mouse when start dragging
 	transient private boolean				isScrollMode = false;			// true if the scroll mode is on
 	transient private int					scrollModeIntensity = 0;		// Intensity of the scroll.
-	transient private ScrollModeThread 			scrollModeThread; 				// Thread executed when the scroll mode is on
-	private ScoredChromosomeWindowList			stripeList = null;				// stripes to display on the track
-	protected T 						data;							// data showed in the track
-	private String 						genomeName;						// genome on which the track is based (ie aligned on)
+	transient private ScrollModeThread 		scrollModeThread; 				// Thread executed when the scroll mode is on
+	private ScoredChromosomeWindowList		mask = null;				// stripes to display on the track
+	protected T 							data;							// data showed in the track
+	private String 							genomeName;						// genome on which the track is based (ie aligned on)
 	private TrackHeaderDrawer				trackHeaderDrawer;				// the track header drawer
 	protected ProjectWindow					projectWindow;					// instance of the genome window manager
 	private MultiGenomeDrawer				multiGenomeDrawer = null;		// the multi genome drawer manages all MG graphics
@@ -234,12 +234,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param g Graphics
 	 */
 	protected void drawStripes(Graphics g) {
-		if (stripeList != null) {
+		if (mask != null) {
 			int height = getHeight();
 			// create a transparent color for the stripes
 			Color color = new Color(STRIPES_COLOR.getRed(), STRIPES_COLOR.getGreen(), STRIPES_COLOR.getBlue(), STRIPES_TRANSPARENCY);
 			g.setColor(color);
-			List<ScoredChromosomeWindow> chromoStripeList = stripeList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
+			List<ScoredChromosomeWindow> chromoStripeList = mask.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
 			if (chromoStripeList != null) {
 				for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
 					int x = projectWindow.genomePosToScreenXPos(currentStripe.getStart());
@@ -304,10 +304,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * @return the stripe list of the track
+	 * @return the mask of the track
 	 */
-	public ScoredChromosomeWindowList getStripes() {
-		return stripeList;
+	public ScoredChromosomeWindowList getMask() {
+		return mask;
 	}
 
 
@@ -511,7 +511,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param stripeList a {@link ChromosomeWindowList}
 	 */
 	public void setStripes(ScoredChromosomeWindowList stripeList) {
-		this.stripeList = stripeList;
+		this.mask = stripeList;
 		repaint();
 	}
 
@@ -533,7 +533,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeInt(verticalLineCount);
-		out.writeObject(stripeList);
+		out.writeObject(mask);
 		out.writeObject(data);
 		out.writeObject(genomeName);
 		out.writeObject(trackHeaderDrawer);
@@ -551,7 +551,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		verticalLineCount = in.readInt();
-		stripeList = (ScoredChromosomeWindowList) in.readObject();
+		mask = (ScoredChromosomeWindowList) in.readObject();
 		data = (T) in.readObject();
 		genomeName = (String) in.readObject();
 		trackHeaderDrawer = (TrackHeaderDrawer) in.readObject();
@@ -582,6 +582,14 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
 			removePropertyChangeListener(curList);
 		}
+	}
+
+
+	/**
+	 * This function deletes the data of the track
+	 */
+	protected void deleteData() {
+		data = null;
 	}
 
 

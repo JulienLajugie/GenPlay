@@ -19,49 +19,42 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.binListTrack;
+package edu.yu.einstein.genplay.gui.action.allTrack.mask;
+
 
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOGenerateSCWList;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.MCWLOInvertMask;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
-
 
 
 /**
- * Creates a {@link SCWListTrack} from a {@link BinListTrack}
+ * Reverts a mask reverting mask windows by white spaces and white spaces by mask windows.
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
+public final class ATAInvertMask extends TrackListActionOperationWorker<ScoredChromosomeWindowList> {
 
-	private static final long serialVersionUID = 2102571378866219218L; // generated ID
-	private static final String 	ACTION_NAME = "Generate " +
-			"Variable Window Track";									// action name
-	private static final String 	DESCRIPTION = "Generate a " +
-			"variable window track from the selected track"; 			// tooltip
-	private BinListTrack 			selectedTrack;					// selected track
-	private Track<?>				resultTrack;					// result track
+	private static final long 				serialVersionUID = 4027173438789911860L; 		// generated ID
+	private static final String 			ACTION_NAME = "Invert Mask";					// action name
+	private static final String 			DESCRIPTION = "Invert the mask of the track";	// tooltip
+	private Track<?> 						selectedTrack;									// selected track
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAGenerateSCWList";
+	public static final String ACTION_KEY = "ATAInvertMask";
 
 
 	/**
-	 * Creates an instance of {@link BLAGenerateSCWList}
+	 * Creates an instance of {@link ATAInvertMask}
 	 */
-	public BLAGenerateSCWList() {
+	public ATAInvertMask() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -71,13 +64,11 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
-		selectedTrack = (BinListTrack) getTrackList().getSelectedTrack();
+		selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
-			resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
-			if (resultTrack != null) {
-				Operation<ScoredChromosomeWindowList> operation = new BLOGenerateSCWList(selectedTrack.getData());
-				return operation;
-			}
+			ScoredChromosomeWindowList mask = selectedTrack.getMask();
+			operation = new MCWLOInvertMask(mask);
+			return operation;
 		}
 		return null;
 	}
@@ -86,9 +77,14 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
-			int index = resultTrack.getTrackNumber() - 1;
-			SCWListTrack newTrack = new SCWListTrack(index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+			//int index = resultTrack.getTrackNumber() - 1;
+
+			// add info to the history
+			//selectedTrack.getHistory().add("Invert mask", Colors.GREY);
+			//selectedTrack.getHistory().add("Track: " + this.selectedTrack.getName(), Colors.GREY);
+
+			selectedTrack.setStripes(actionResult);
 		}
 	}
+
 }

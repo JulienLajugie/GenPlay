@@ -79,6 +79,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(projectChromosome);
+		out.writeDouble(totalNumberOfWindows);
 	}
 
 
@@ -91,6 +92,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		projectChromosome = (ProjectChromosome) in.readObject();
+		totalNumberOfWindows = in.readDouble();
 		try {
 			generateStatistics();
 		} catch (Exception e) {
@@ -242,7 +244,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 					overLapManagement.run(currentChromosome);
 					List<ScoredChromosomeWindow> list = overLapManagement.getList(currentChromosome);
 					for(int j = 0; j < list.size(); j++) {
-					    resultList.add(new MaskChromosomeWindow(list.get(j).getStart(), list.get(j).getStop()));
+						resultList.add(new MaskChromosomeWindow(list.get(j).getStart(), list.get(j).getStop()));
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();

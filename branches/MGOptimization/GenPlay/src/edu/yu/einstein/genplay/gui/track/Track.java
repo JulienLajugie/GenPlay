@@ -87,7 +87,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			BorderFactory.createMatteBorder(0, 0, 2, 0, Colors.BLACK);		// alternative border when a track is dragged down
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private TrackHandle				trackHandle;						// handle of the track
-	protected TrackGraphics<T>			trackGraphics;						// graphics part of the track
+	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
 	protected String 				genomeName;							// genome on which the track is based (ie aligned on)
 
 
@@ -333,10 +333,10 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
-	 * @return the stripe list of the track
+	 * @return the mask of the track
 	 */
-	public ScoredChromosomeWindowList getStripes() {
-		return trackGraphics.getStripes();
+	public ScoredChromosomeWindowList getMask() {
+		return trackGraphics.getMask();
 	}
 
 
@@ -556,6 +556,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
 			removePropertyChangeListener(curList);
 		}
+	}
+
+
+	/**
+	 * This function deletes the data of the track
+	 */
+	public void deleteData() {
+		trackGraphics.deleteData();
 	}
 
 

@@ -83,16 +83,18 @@ public final class SCWListTrackGraphics extends CurveTrackGraphics<ScoredChromos
 
 	@Override
 	protected void drawScore(Graphics g) {
-		g.setColor(getScoreColor());
-		double middlePosition = projectWindow.getGenomeWindow().getMiddlePosition();
-		double middleScore = data.getScore((int) middlePosition);
-		int scoreYPosition = 0;
-		if (getScorePosition() == BOTTOM_SCORE_POSITION) {
-			scoreYPosition =  getHeight() - 2;
-		} else if (getScorePosition() == TOP_SCORE_POSITION) {
-			scoreYPosition = g.getFontMetrics().getHeight();
+		if (data != null) {
+			g.setColor(getScoreColor());
+			double middlePosition = projectWindow.getGenomeWindow().getMiddlePosition();
+			double middleScore = data.getScore((int) middlePosition);
+			int scoreYPosition = 0;
+			if (getScorePosition() == BOTTOM_SCORE_POSITION) {
+				scoreYPosition =  getHeight() - 2;
+			} else if (getScorePosition() == TOP_SCORE_POSITION) {
+				scoreYPosition = g.getFontMetrics().getHeight();
+			}
+			g.drawString("y=" + SCORE_FORMAT.format(middleScore), (getWidth() / 2) + 3, scoreYPosition);
 		}
-		g.drawString("y=" + SCORE_FORMAT.format(middleScore), (getWidth() / 2) + 3, scoreYPosition);
 	}
 
 

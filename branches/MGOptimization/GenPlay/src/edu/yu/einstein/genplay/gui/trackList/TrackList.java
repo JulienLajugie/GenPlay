@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
@@ -44,6 +45,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
@@ -69,25 +71,28 @@ import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFilterThreshold;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindNext;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindPrevious;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLARemoveSNPsNotInGenes;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATAApplyMask;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadMask;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveMask;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetHeight;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetVerticalLineCount;
+import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATAApplyMask;
+import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATAInvertMask;
+import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATALoadMask;
+import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATARemoveMask;
+import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATASaveMask;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAAverage;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeDataPrecision;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACompress;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConcatenate;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACountNonNullBins;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLADensity;
@@ -224,8 +229,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATADelete.ACTION_KEY, new ATADelete());
 		getActionMap().put(ATAInsert.ACTION_KEY, new ATAInsert());
 		getActionMap().put(ATALoadMask.ACTION_KEY, new ATALoadMask());
+		getActionMap().put(ATASaveMask.ACTION_KEY, new ATASaveMask());
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
 		getActionMap().put(ATARemoveMask.ACTION_KEY, new ATARemoveMask());
+		getActionMap().put(ATAInvertMask.ACTION_KEY, new ATAInvertMask());
 		getActionMap().put(ATAApplyMask.ACTION_KEY, new ATAApplyMask());
 		getActionMap().put(ATARename.ACTION_KEY, new ATARename());
 		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
@@ -282,6 +289,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLASumScore.ACTION_KEY, new SCWLASumScore());
 		getActionMap().put(SCWLATransfrag.ACTION_KEY, new SCWLATransfrag());
 		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
+		getActionMap().put(SCWLAConvertToMask.ACTION_KEY, new SCWLAConvertToMask());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
@@ -316,6 +324,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
+		getActionMap().put(BLAConvertToMask.ACTION_KEY, new BLAConvertToMask());
 		// SNP tracks
 		getActionMap().put(SLAFilterRatio.ACTION_KEY, new SLAFilterRatio());
 		getActionMap().put(SLAFilterThreshold.ACTION_KEY, new SLAFilterThreshold());
@@ -789,22 +798,22 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @return true if there is a mask to remove
 	 */
 	public boolean isMaskRemovable() {
-		return (getSelectedTrack().getStripes() != null);
+		return (getSelectedTrack().getMask() != null);
 	}
-	
-	
+
+
 	/**
 	 * @return true if the mask can be used, false otherwise
 	 */
 	public boolean isMaskApplicable () {
-	    if (getSelectedTrack().getData() != null &&
-		    getSelectedTrack().getStripes() != null) {
-		if (getSelectedTrack().getData() instanceof ChromosomeWindowList ||
-			getSelectedTrack().getData() instanceof ScoredChromosomeWindowList ) {
-		    return true;
+		if ((getSelectedTrack().getData() != null) &&
+				(getSelectedTrack().getMask() != null)) {
+			if ((getSelectedTrack().getData() instanceof BinList) ||
+					(getSelectedTrack().getData() instanceof ScoredChromosomeWindowList) ) {
+				return true;
+			}
 		}
-	    }
-	    return false;
+		return false;
 	}
 
 

@@ -14,12 +14,12 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.allTrack;
+package edu.yu.einstein.genplay.gui.action.allTrack.mask;
 
 import java.awt.event.ActionEvent;
 
@@ -31,8 +31,9 @@ import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
- * Removes the stripes on the selected track
+ * Removes the mask on the selected track
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
 public final class ATARemoveMask extends TrackListAction {
