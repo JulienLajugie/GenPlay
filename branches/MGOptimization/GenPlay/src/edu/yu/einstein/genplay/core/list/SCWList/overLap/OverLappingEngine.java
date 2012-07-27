@@ -212,18 +212,22 @@ final class OverLappingEngine implements Serializable {
 		for (ScoredChromosomeWindow scw: linkedList) {
 			list.add(scw.getScore());
 		}
-		switch (this.scm) {
-		case AVERAGE:
-			score = DoubleLists.average(list);
-			break;
-		case MAXIMUM:
-			score = DoubleLists.maxNoZero(list);
-			break;
-		case SUM:
-			score = DoubleLists.sum(list);
-			break;
-		default:
-			break;
+		if (this.scm == null) {
+		    score = SCWLOptions.DEFAULT_SCORE;
+		} else {
+        		switch (this.scm) {
+        		case AVERAGE:
+        			score = DoubleLists.average(list);
+        			break;
+        		case MAXIMUM:
+        			score = DoubleLists.maxNoZero(list);
+        			break;
+        		case SUM:
+        			score = DoubleLists.sum(list);
+        			break;
+        		default:
+        			break;
+        		}
 		}
 		return score;
 	}

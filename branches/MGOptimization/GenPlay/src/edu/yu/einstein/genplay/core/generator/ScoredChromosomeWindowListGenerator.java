@@ -45,6 +45,16 @@ public interface ScoredChromosomeWindowListGenerator extends Generator {
 	 */
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException;
 
+	
+	/**
+	 * @return a new {@link ChromosomeArrayListOfLists}
+	 * @throws InvalidChromosomeException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException;
+	
+	
 	/**
 	 * Allows to check if overlapping regions exists.
 	 * @return	boolean

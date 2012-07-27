@@ -26,7 +26,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.generator.GeneListGenerator;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
@@ -106,7 +106,7 @@ public final class ETALoadGeneListTrack extends TrackListActionExtractorWorker<G
 		if (actionResult != null && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
-			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			GeneListTrack newTrack;
 			newTrack = new GeneListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {

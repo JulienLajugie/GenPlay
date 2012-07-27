@@ -33,8 +33,8 @@ import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.extractor.ReadLengthAndShiftHandler;
 import edu.yu.einstein.genplay.core.extractor.StrandedExtractor;
 import edu.yu.einstein.genplay.core.generator.BinListGenerator;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
@@ -86,7 +86,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 		if (actionResult != null) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
-			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			BinListTrack newTrack = new BinListTrack(selectedTrackIndex + 1, actionResult);
 			// write in the history
 			DecimalFormat dF = new DecimalFormat("###,###,###,###,###,###.##");

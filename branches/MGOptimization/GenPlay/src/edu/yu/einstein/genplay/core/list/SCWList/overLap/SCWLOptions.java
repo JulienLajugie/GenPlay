@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -49,18 +50,20 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 final class SCWLOptions implements Serializable {
 
 	private static final long serialVersionUID = -2601316105498708787L;
+	protected static final Double DEFAULT_SCORE = 1.0;
+	
 	protected final ProjectChromosome 									projectChromosome;	//ChromosomeManager
 	private final 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
-	private final 		ChromosomeListOfLists<Integer> 						startList;			//store the original start list position
-	private final 		ChromosomeListOfLists<Integer> 						stopList;			//store the original stop list position
-	private final 		ChromosomeListOfLists<Double> 						scoreList;			//store the original score list
+	private final 		ChromosomeListOfLists<Integer> 				startList;			//store the original start list position
+	private final 		ChromosomeListOfLists<Integer> 				stopList;			//store the original stop list position
+	private final 		ChromosomeListOfLists<Double> 				scoreList;			//store the original score list
 
 	/**
 	 * SCWOption constructor
 	 * 
 	 * @param startList	the original start list position
 	 * @param stopList	the original stop list position
-	 * @param scoreList	the original score list
+	 * @param scoreList	the original score list (can be null, must be null for {@link MaskWindowList})
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
@@ -169,10 +172,25 @@ final class SCWLOptions implements Serializable {
 			for (int i=0; i < startList.get(chromosome).size(); i++) {
 				this.list.add(chromosome, new SimpleScoredChromosomeWindow(	startList.get(chromosome, i),
 						stopList.get(chromosome, i),
-						scoreList.get(chromosome, i)));
+						getScore(chromosome, i)));
+				
 			}
 		}
 	}
+	
+	
+	/**
+	 * @param chromosome a chromosome
+	 * @param index a list index
+	 * @return	the related score of the chromosome and the index, the default score value otherwise
+	 */
+	private Double getScore (Chromosome chromosome, int index) {
+		if (scoreList != null) {
+			return scoreList.get(chromosome, index);
+		}
+		return DEFAULT_SCORE;
+	}
+	
 
 	/**
 	 * sortList method

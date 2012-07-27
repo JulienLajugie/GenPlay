@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
@@ -68,13 +69,14 @@ import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFilterThreshold;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindNext;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindPrevious;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLARemoveSNPsNotInGenes;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATAApplyMask;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadStripes;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadMask;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveStripes;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveMask;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
@@ -221,9 +223,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATACut.ACTION_KEY, new ATACut());
 		getActionMap().put(ATADelete.ACTION_KEY, new ATADelete());
 		getActionMap().put(ATAInsert.ACTION_KEY, new ATAInsert());
-		getActionMap().put(ATALoadStripes.ACTION_KEY, new ATALoadStripes());
+		getActionMap().put(ATALoadMask.ACTION_KEY, new ATALoadMask());
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
-		getActionMap().put(ATARemoveStripes.ACTION_KEY, new ATARemoveStripes());
+		getActionMap().put(ATARemoveMask.ACTION_KEY, new ATARemoveMask());
+		getActionMap().put(ATAApplyMask.ACTION_KEY, new ATAApplyMask());
 		getActionMap().put(ATARename.ACTION_KEY, new ATARename());
 		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
@@ -395,7 +398,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param stripesList {@link StripesData} (can be null)
 	 * @param filtersList {@link VCFFilter} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<MGFilter> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ScoredChromosomeWindowList stripes, List<StripesData> stripesList, List<MGFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);
@@ -783,10 +786,25 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * @return true if there is stripes to remove
+	 * @return true if there is a mask to remove
 	 */
-	public boolean isRemoveStripesEnable() {
+	public boolean isMaskRemovable() {
 		return (getSelectedTrack().getStripes() != null);
+	}
+	
+	
+	/**
+	 * @return true if the mask can be used, false otherwise
+	 */
+	public boolean isMaskApplicable () {
+	    if (getSelectedTrack().getData() != null &&
+		    getSelectedTrack().getStripes() != null) {
+		if (getSelectedTrack().getData() instanceof ChromosomeWindowList ||
+			getSelectedTrack().getData() instanceof ScoredChromosomeWindowList ) {
+		    return true;
+		}
+	    }
+	    return false;
 	}
 
 

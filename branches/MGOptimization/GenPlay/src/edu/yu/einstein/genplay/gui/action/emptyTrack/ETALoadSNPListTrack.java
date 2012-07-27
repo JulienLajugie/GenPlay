@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.SNPList.SNPList;
 import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
@@ -89,7 +89,7 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 		if (actionResult != null && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
-			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
 			SNPListTrack newTrack = new SNPListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);

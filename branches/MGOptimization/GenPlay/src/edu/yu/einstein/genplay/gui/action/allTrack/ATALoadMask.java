@@ -19,51 +19,50 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.emptyTrack;
+package edu.yu.einstein.genplay.gui.action.allTrack;
 
 import java.io.File;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
+import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
-import edu.yu.einstein.genplay.gui.track.RepeatFamilyListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 
 /**
- * Loads a {@link RepeatFamilyListTrack} in the {@link TrackList}
+ * Sets the stripes on the selected track
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractorWorker<RepeatFamilyList> {
+public final class ATALoadMask extends TrackListActionExtractorWorker<ScoredChromosomeWindowList> {
 
-	private static final long serialVersionUID = -6264760599336397028L;	// generated ID
-	private static final String ACTION_NAME = "Load Repeat Track";		// action name
-	private static final String DESCRIPTION = "Load a track showing the repeats";	// tooltip
+	private static final long serialVersionUID = -900140642202561851L; // generated ID
+	private static final String ACTION_NAME = "Load Mask"; // action name
+	private static final String DESCRIPTION = "Load mask on the selected track"; // tooltip
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "ETALoadRepeatFamilyListTrack";
+	public static final String ACTION_KEY = "ATALoadMask";
 
 
 	/**
-	 * Creates an instance of {@link ETALoadRepeatFamilyListTrack}
+	 * Creates an instance of {@link ATALoadMask}
 	 */
-	public ETALoadRepeatFamilyListTrack() {
-		super(RepeatFamilyListGenerator.class);
+	public ATALoadMask() {
+		super(ScoredChromosomeWindowListGenerator.class);
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
-	
+
 	
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
@@ -77,40 +76,34 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 			}
 		}
 	}
-
-
+	
+	
 	@Override
 	protected File retrieveFileToExtract() {
-		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Repeat Track", defaultDirectory, Utils.getReadableRepeatFileFilters(), true);
-		if (selectedFile != null) {
-			return selectedFile;
+		Track<?> selectedTrack = getTrackList().getSelectedTrack();
+		if (selectedTrack != null) {
+			String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+			File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Mask File", defaultDirectory, Utils.getReadableStripeFileFilters(), true);
+			if (selectedFile != null) {
+				return selectedFile;
+			}
 		}
 		return null;
 	}
 
-
+	
 	@Override
-	protected RepeatFamilyList generateList() throws Exception {
-		return ((RepeatFamilyListGenerator)extractor).toRepeatFamilyList();
+	public ScoredChromosomeWindowList generateList() throws Exception {
+		//return ((ChromosomeWindowListGenerator)extractor).toChromosomeWindowList();
+		return ((ScoredChromosomeWindowListGenerator)extractor).toMaskChromosomeWindowList();
 	}
-
-
+	
+	
 	@Override
-	public void doAtTheEnd(RepeatFamilyList actionResult) {
-		boolean valid = true;
-		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
-			valid = false;
-		}
-		if (actionResult != null && valid) {
-			TrackList trackList = getTrackList();
-			int selectedTrackIndex = trackList.getSelectedTrackIndex();
-			ScoredChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
-			RepeatFamilyListTrack newTrack = new RepeatFamilyListTrack(selectedTrackIndex + 1, actionResult);
-			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				newTrack.setGenomeName(genomeName);
-			}
-			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
+	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
+		if (actionResult != null) {
+			getTrackList().getSelectedTrack().setStripes(actionResult);
 		}
 	}
+
 }

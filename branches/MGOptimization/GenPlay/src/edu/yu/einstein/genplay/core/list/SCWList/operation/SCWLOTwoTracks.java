@@ -50,7 +50,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLOTwoTracks implements Operation<ChromosomeListOfLists<?>>, Stoppable {
 
 	private final ScoreCalculationTwoTrackMethod 	scm;
-	private final SCWLTwoTracksManagement 			twoTracks;			// manage the operation between two tracks
+	private final SCWLTwoTracksManagement 		twoTracks;			// manage the operation between two tracks
 
 
 	/**

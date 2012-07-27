@@ -47,8 +47,8 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public class SCWLTwoTracksManagement implements Serializable, Stoppable {
 
 	private static final long serialVersionUID = -4066526880193456101L;
-	protected 	final 	ProjectChromosome 					projectChromosome;	//ChromosomeManager
-	private 	final 	List<ChromosomeListOfLists<?>> 		scwList;			//list containing originals lists
+	protected 	final 	ProjectChromosome 				projectChromosome;	//ChromosomeManager
+	private 	final 	List<ChromosomeListOfLists<?>> 			scwList;		//list containing originals lists
 	private 	final 	List<SCWLTwoTracksEngine>			twoTracksEngineList;
 
 	/**

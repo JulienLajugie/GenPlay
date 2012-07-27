@@ -35,9 +35,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.OverLappingManagement;
@@ -51,7 +50,7 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * A list of {@link SimpleScoredChromosomeWindow}
+ * A list of {@link MaskChromosomeWindow}
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -170,8 +169,8 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 
 
 	/**
-	 * Creates an instance of {@link SimpleScoredChromosomeWindow} from a specified {@link BinList}
-	 * @param binList BinList used for the creation of the {@link SimpleScoredChromosomeWindow}
+	 * Creates an instance of {@link MaskChromosomeWindow} from a specified {@link BinList}
+	 * @param binList BinList used for the creation of the {@link MaskChromosomeWindow}
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
@@ -189,9 +188,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 					if (binList.get(currentChromosome) != null) {
 						for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
 							if (binList.get(currentChromosome, i) != 0.0) {
-								resultList.add(new SimpleScoredChromosomeWindow( 	(i * binList.getBinSize()),
-										((i + 1) * binList.getBinSize()),
-										binList.get(currentChromosome, i)));
+								resultList.add(new MaskChromosomeWindow((i * binList.getBinSize()), ((i + 1) * binList.getBinSize())));
 							}
 						}
 					}
@@ -220,31 +217,20 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	 * Creates an instance of {@link MaskWindowList}
 	 * @param startList list of start positions
 	 * @param stopList list of stop position
-	 * @param scoreList list of score
-	 * @param scm {@link ScoreCalculationMethod} used to create the {@link BinList}
 	 * @throws InvalidChromosomeException
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
 	public MaskWindowList(	final ChromosomeListOfLists<Integer> startList,
-			final ChromosomeListOfLists<Integer> stopList,
-			final ChromosomeListOfLists<Double> scoreList,
-			final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+			final ChromosomeListOfLists<Integer> stopList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
-
-		final boolean runOverLapEngine;
-		this.overLapManagement = new OverLappingManagement(startList, stopList, scoreList);
-		if (scm != null) {
-			this.overLapManagement.setScoreCalculationMethod(scm);
-			runOverLapEngine = true;
-		} else {
-			runOverLapEngine = false;
-		}
+		this.overLapManagement = new OverLappingManagement(startList, stopList, null);
+		this.overLapManagement.setScoreCalculationMethod(null);
 		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -253,17 +239,10 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 						return null;
 					}
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
-					if (runOverLapEngine) {
-						overLapManagement.run(currentChromosome);
-					}
+					overLapManagement.run(currentChromosome);
 					List<ScoredChromosomeWindow> list = overLapManagement.getList(currentChromosome);
 					for(int j = 0; j < list.size(); j++) {
-						double score = list.get(j).getScore();
-						if (score != 0) {
-							resultList.add(new SimpleScoredChromosomeWindow(	list.get(j).getStart(),
-									list.get(j).getStop(),
-									score));
-						}
+					    resultList.add(new MaskChromosomeWindow(list.get(j).getStart(), list.get(j).getStop()));
 					}
 					// tell the operation pool that a chromosome is done
 					op.notifyDone();
@@ -289,8 +268,8 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 
 
 	/**
-	 * Creates an instance of {@link SimpleScoredChromosomeWindow} from a list of {@link SimpleScoredChromosomeWindow}
-	 * @param data list of {@link SimpleScoredChromosomeWindow} with the data of the {@link SimpleScoredChromosomeWindow} to create
+	 * Creates an instance of {@link MaskChromosomeWindow} from a list of {@link MaskChromosomeWindow}
+	 * @param data list of {@link MaskChromosomeWindow} with the data of the {@link MaskChromosomeWindow} to create
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
@@ -356,7 +335,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 			fittedDataList = new ArrayList<ScoredChromosomeWindow>();
 			if (currentChromosomeList.size() > 0) {
 				ArrayList<Double> scoreList = new ArrayList<Double>();
-				fittedDataList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(0)));
+				fittedDataList.add(new MaskChromosomeWindow(currentChromosomeList.get(0)));
 				scoreList.add(currentChromosomeList.get(0).getScore());
 				int i = 1;
 				int j = 0;
@@ -380,7 +359,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 						nextScore = currentChromosomeList.get(i).getScore();
 					}
 					fittedDataList.get(j).setScore(DoubleLists.average(scoreList));
-					fittedDataList.add(new SimpleScoredChromosomeWindow(currentChromosomeList.get(i)));
+					fittedDataList.add(new MaskChromosomeWindow(currentChromosomeList.get(i)));
 					scoreList = new ArrayList<Double>();
 					scoreList.add(currentChromosomeList.get(i).getScore());
 					j++;

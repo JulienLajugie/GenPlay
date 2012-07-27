@@ -50,7 +50,7 @@ public class OverLappingManagement implements Serializable {
 	private static final long serialVersionUID = 419831643761204027L;
 
 	protected final ProjectChromosome 			projectChromosome;		// TChromosomeManager
-	private final 		SCWLOptions 				sortSCW;				// use the sort option for chromosome list
+	private final 	SCWLOptions 				sortSCW;				// use the sort option for chromosome list
 	private 		List<OverLappingEngine> 	overLappingEngineList;	// overlapping engine for chromosome list
 
 	/**

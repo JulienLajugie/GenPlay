@@ -25,7 +25,7 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -98,7 +98,7 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		}
 		if (actionResult != null && valid) {
 			int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
-			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
 			NucleotideListTrack newTrack = new NucleotideListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);

@@ -456,7 +456,11 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindowList) this.list.get(track)).get(chromosome).size();
 		} else {
-			return ((BinList) this.list.get(track)).get(chromosome).size();
+		    List<Double> data = ((BinList) this.list.get(track)).get(chromosome);
+		    if (data != null) {
+			return data.size();
+		    }
+		    return 0;
 		}
 	}
 

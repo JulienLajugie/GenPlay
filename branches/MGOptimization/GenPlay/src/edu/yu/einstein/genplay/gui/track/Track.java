@@ -40,7 +40,7 @@ import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
@@ -87,7 +87,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 			BorderFactory.createMatteBorder(0, 0, 2, 0, Colors.BLACK);		// alternative border when a track is dragged down
 	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
 	private TrackHandle				trackHandle;						// handle of the track
-	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
+	protected TrackGraphics<T>			trackGraphics;						// graphics part of the track
 	protected String 				genomeName;							// genome on which the track is based (ie aligned on)
 
 
@@ -335,7 +335,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * @return the stripe list of the track
 	 */
-	public ChromosomeWindowList getStripes() {
+	public ScoredChromosomeWindowList getStripes() {
 		return trackGraphics.getStripes();
 	}
 
@@ -496,9 +496,9 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 	/**
 	 * shows stripes on the track
-	 * @param stripeList a {@link ChromosomeWindowList}
+	 * @param stripeList a {@link ScoredChromosomeWindowList}
 	 */
-	public void setStripes(ChromosomeWindowList stripeList) {
+	public void setStripes(ScoredChromosomeWindowList stripeList) {
 		trackGraphics.setStripes(stripeList);
 		repaint();
 	}
