@@ -32,9 +32,9 @@ import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
@@ -206,7 +206,7 @@ public class Launcher {
 
 		// generate the multi-genome manager if the user starts a multi-genome project
 		if (!projectFrame.isSingleProject()) {
-			PAMultiGenomeSynchronizing multiGenome = new PAMultiGenomeSynchronizing();
+			MGASynchronizing multiGenome = new MGASynchronizing();
 			multiGenome.setGenomeFileAssociation(projectFrame.getGenomeFileAssociation());
 			multiGenome.actionPerformed(null);
 		} else {

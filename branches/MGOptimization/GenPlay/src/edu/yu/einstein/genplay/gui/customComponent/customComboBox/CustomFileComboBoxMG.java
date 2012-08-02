@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.gui.action.actionWaiting.ActionWaiter;
 import edu.yu.einstein.genplay.gui.action.actionWaiting.SwingWorkerActionWaiting;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeVCFToTBI;
+import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFToTBI;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxListener;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -43,7 +43,7 @@ public class CustomFileComboBoxMG extends CustomFileComboBox implements ActionWa
 	 */
 	private static final long serialVersionUID = -6704320621396590562L;
 
-	private PAMultiGenomeVCFToTBI action;
+	private MGAVCFToTBI action;
 	private final Object owner;
 
 
@@ -74,7 +74,7 @@ public class CustomFileComboBoxMG extends CustomFileComboBox implements ActionWa
 			if (ext.equals("vcf")) {
 				result = null;
 				if (showMessage()) {
-					action = new PAMultiGenomeVCFToTBI(file);
+					action = new MGAVCFToTBI(file);
 					action.setLoadingPassBy(true);
 					SwingWorkerActionWaiting swAction = new SwingWorkerActionWaiting(this, action);
 					swAction.execute();

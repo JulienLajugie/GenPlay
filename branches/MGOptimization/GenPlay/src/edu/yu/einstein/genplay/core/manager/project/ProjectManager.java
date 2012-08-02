@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,6 +29,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -47,10 +48,10 @@ public class ProjectManager implements Serializable {
 	private			boolean			multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
 
 
-	private ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
-	private ProjectWindow				projectWindow;				// Instance of the Genome Window Manager
-	private ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
-	private ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
+	private final ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
+	private final ProjectWindow				projectWindow;				// Instance of the Genome Window Manager
+	private final ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
+	private final ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
 
 
@@ -88,7 +89,7 @@ public class ProjectManager implements Serializable {
 		instance.setAssembly((Assembly) in.readObject());
 		instance.setMultiGenomeProject(in.readBoolean());
 
-		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());	
+		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
 		instance.getProjectChromosome().setProjectChromosome((ProjectChromosome) in.readObject());
 		if (instance.isMultiGenomeProject()) {
 			instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
@@ -97,7 +98,7 @@ public class ProjectManager implements Serializable {
 
 
 	/**
-	 * @return an instance of a {@link ProjectManager}. 
+	 * @return an instance of a {@link ProjectManager}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
 	public static ProjectManager getInstance() {
@@ -189,8 +190,9 @@ public class ProjectManager implements Serializable {
 	 * @return the genomeSynchroniser
 	 */
 	public MultiGenomeProject getMultiGenomeProject() {
-		if (multiGenome && multiGenomeProject == null) {
+		if (multiGenome && (multiGenomeProject == null)) {
 			multiGenomeProject = new MultiGenomeProject();
+			FormattedMultiGenomeName.referenceGenomeName = assembly.getDisplayName();
 		}
 		return multiGenomeProject;
 	}

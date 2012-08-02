@@ -251,6 +251,24 @@ public class VCFLine implements Serializable {
 
 	///////////////////////////////////////////////////// Advanced field getters
 	/**
+	 * The reference genome position is not always the position where the variation starts.
+	 * The given position may refer to the last nucleotide before the variation starts, which means the start position is one nucleotide further.
+	 * @param altIndex	the alternative index
+	 * @return the start position on the reference genome of the given alternative index
+	 */
+	public int getStartPosition (int altIndex) {
+		int pos = getReferencePosition();
+		if (altIndex >= 0) {
+			//String alternative = alternatives[altIndex];
+			if (alternativesTypes[altIndex] != VariantType.SNPS) {
+				pos++;
+			}
+		}
+		return pos;
+	}
+
+
+	/**
 	 * @return the chromosome related to the VCF line
 	 */
 	public Chromosome getChromosome () {
@@ -380,8 +398,9 @@ public class VCFLine implements Serializable {
 	 * @return	the alternative of the genome
 	 */
 	public String getAlternative (String fullGenomeName, AlleleType allele) {
-		if ((fullGenomeName == null) || !fullGenomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
-			String genotype = getGenotype(FormattedMultiGenomeName.getRawName(fullGenomeName));
+		String rawName = FormattedMultiGenomeName.getRawName(fullGenomeName);
+		if (rawName != null) {
+			String genotype = getGenotype(FormattedMultiGenomeName.getRawName(rawName));
 			if (genotype != null) {
 				int index = -1;
 				if (allele == AlleleType.ALLELE01) {

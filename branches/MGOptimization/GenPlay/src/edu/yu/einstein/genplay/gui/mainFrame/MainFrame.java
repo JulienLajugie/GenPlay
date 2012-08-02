@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
@@ -64,7 +65,6 @@ import edu.yu.einstein.genplay.gui.action.project.PASaveProject;
 import edu.yu.einstein.genplay.gui.action.project.PAWarningReport;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
 import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeRefresh;
 import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -237,7 +237,7 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// if the chromosome changed we reinitialize the multigenome data
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
-			PAMultiGenomeRefresh tracksUpdate = new PAMultiGenomeRefresh();
+			MGARefresh tracksUpdate = new MGARefresh();
 			tracksUpdate.actionPerformed(null);
 		}
 	}

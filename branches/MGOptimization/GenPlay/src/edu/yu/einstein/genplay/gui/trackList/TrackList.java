@@ -81,11 +81,6 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetHeight;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetVerticalLineCount;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATAApplyMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATAInvertMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATALoadMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATARemoveMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATASaveMask;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAAverage;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeBinSize;
@@ -138,7 +133,14 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeExport;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTAApplyMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTALoadMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTARemoveMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
+import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
@@ -228,12 +230,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATACut.ACTION_KEY, new ATACut());
 		getActionMap().put(ATADelete.ACTION_KEY, new ATADelete());
 		getActionMap().put(ATAInsert.ACTION_KEY, new ATAInsert());
-		getActionMap().put(ATALoadMask.ACTION_KEY, new ATALoadMask());
-		getActionMap().put(ATASaveMask.ACTION_KEY, new ATASaveMask());
+		getActionMap().put(MTALoadMask.ACTION_KEY, new MTALoadMask());
+		getActionMap().put(MTASaveMask.ACTION_KEY, new MTASaveMask());
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
-		getActionMap().put(ATARemoveMask.ACTION_KEY, new ATARemoveMask());
-		getActionMap().put(ATAInvertMask.ACTION_KEY, new ATAInvertMask());
-		getActionMap().put(ATAApplyMask.ACTION_KEY, new ATAApplyMask());
+		getActionMap().put(MTARemoveMask.ACTION_KEY, new MTARemoveMask());
+		getActionMap().put(MTAInvertMask.ACTION_KEY, new MTAInvertMask());
+		getActionMap().put(MTAApplyMask.ACTION_KEY, new MTAApplyMask());
 		getActionMap().put(ATARename.ACTION_KEY, new ATARename());
 		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
@@ -333,7 +335,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
 
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			getActionMap().put(PAMultiGenomeExport.ACTION_KEY, new PAMultiGenomeExport());
+			getActionMap().put(MGAGlobalVCFExport.ACTION_KEY, new MGAGlobalVCFExport());
+			getActionMap().put(MGABedExport.ACTION_KEY, new MGABedExport());
+			getActionMap().put(MGASCWLConvert.ACTION_KEY, new MGASCWLConvert());
 		}
 	}
 

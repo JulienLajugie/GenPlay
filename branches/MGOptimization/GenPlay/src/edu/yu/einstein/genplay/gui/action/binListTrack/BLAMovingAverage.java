@@ -71,14 +71,14 @@ public final class BLAMovingAverage extends TrackListActionOperationWorker<BinLi
 			BinList binList = selectedTrack.getData();
 			int windowSize = binList.getBinSize();
 			if(windowSize > 0) {
-				Integer sigma = GenomeWidthChooser.getMovingWindowSize(getRootPane(), windowSize);
-				if(sigma != null) {
+				Integer movingWindowWidth = GenomeWidthChooser.getMovingWindowSize(getRootPane(), windowSize);
+				if(movingWindowWidth != null) {
 					int fillNull = JOptionPane.showConfirmDialog(getRootPane(), "Do you want to extrapolate the null windows", "Extrapolate null windows", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
 					Operation<BinList> operation = null;
 					if (fillNull == JOptionPane.YES_OPTION) {
-						operation = new BLOMovingAverage(binList, sigma, true);
+						operation = new BLOMovingAverage(binList, movingWindowWidth, true);
 					} else if (fillNull == JOptionPane.NO_OPTION) {
-						operation = new BLOMovingAverage(binList, sigma, false);
+						operation = new BLOMovingAverage(binList, movingWindowWidth, false);
 					}
 					return operation;
 				}

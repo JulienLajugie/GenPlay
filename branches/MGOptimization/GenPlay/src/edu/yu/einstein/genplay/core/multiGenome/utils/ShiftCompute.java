@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 
 /**
  * This class manages the shifting process in order to get a meta genome position from a genome position.
- * In a multi genome project, every position must be shifted in order to synchronize tracks. 
+ * In a multi genome project, every position must be shifted in order to synchronize tracks.
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -48,6 +48,10 @@ public class ShiftCompute {
 	 * @return					the corresponding meta genome position
 	 */
 	public static int computeShift (String genome, Chromosome chromosome, AlleleType alleleType, int genomePosition) {
+		if (genome.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+			return genomePosition;
+		}
+
 		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
 			return computeShiftForReferenceGenome(chromosome, genomePosition);
 		}
@@ -65,7 +69,7 @@ public class ShiftCompute {
 	 * Calculates the genome position according to the given meta genome position
 	 * @param genome				the raw genome name (containing the genome position)
 	 * @param chromosome			the chromosome (containing the genome position)
-	 * @param alleleType 		the allele (paternal or maternal)
+	 * @param alleleType 			the allele (paternal or maternal)
 	 * @param metaGenomePosition	the given genome position
 	 * @return						the corresponding genome position
 	 */

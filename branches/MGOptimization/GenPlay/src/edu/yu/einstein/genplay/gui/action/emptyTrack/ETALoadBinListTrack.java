@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -63,7 +63,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	private Strand					strand = null;											// strand to extract
 	private int						strandShift = 0;										// position shift on a strand
 	private int 					readLength = 0;											// user specified length of the reads (0 to keep the original length)
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -120,7 +120,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	protected void doBeforeExtraction() throws InterruptedException {
 		binListGenerator = (BinListGenerator)extractor;
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true);
+		NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, binListGenerator.isBinSizeNeeded(), binListGenerator.isPrecisionNeeded(), binListGenerator.isCriterionNeeded(), isStrandNeeded, true, true);
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 			name = nctd.getTrackName();
 			binSize = nctd.getBinSize();
@@ -141,8 +141,8 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 					extractor.setFileSorted(false);
 				} else if (dialogResult == JOptionPane.CLOSED_OPTION) {
 					throw new InterruptedException();
-				}			
-			}			
+				}
+			}
 			extractor.setSelectedChromosomes(selectedChromo);
 			if (isStrandNeeded) {
 				strand = nctd.getStrandToExtract();
@@ -162,7 +162,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 
 	@Override
 	protected BinList generateList() throws Exception {
-		notifyActionStop();		
+		notifyActionStop();
 		// if the binSize is known we can find out how many steps will be used
 		if (binListGenerator.isBinSizeNeeded()) {
 			notifyActionStart("Generating Track", 1 + BinList.getCreationStepCount(binSize), true);
@@ -177,7 +177,7 @@ public final class ETALoadBinListTrack extends TrackListActionExtractorWorker<Bi
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		File selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Fixed Window Track", defaultDirectory, Utils.getReadableBinListFileFilters(), true);
-		if (selectedFile != null) {			
+		if (selectedFile != null) {
 			return selectedFile;
 		} else {
 			return null;

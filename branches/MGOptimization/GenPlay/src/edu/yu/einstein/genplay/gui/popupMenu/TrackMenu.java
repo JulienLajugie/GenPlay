@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu;
 
+import java.util.List;
+
 import javax.swing.ActionMap;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -40,12 +42,15 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetHeight;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetVerticalLineCount;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATAApplyMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATAInvertMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATALoadMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATARemoveMask;
-import edu.yu.einstein.genplay.gui.action.allTrack.mask.ATASaveMask;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeExport;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTAApplyMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTALoadMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTARemoveMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
+import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
 
@@ -68,14 +73,20 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	private final JMenuItem 	jmiSetHeight;				// menu set height
 	private final JMenuItem 	jmiSetVerticalLineCount;		// menu set vertical line count
 	private final JMenuItem 	jmiSaveAsImage;				// menu save track as image
-	private final JMenuItem 	jmiExportAsVCF;				// menu export track as VCF
 
+	// Menu for mask track
 	private final JMenu			jmMask;						// menu for the mask
 	private final JMenuItem 	jmiLoadMask;				// menu load mask
 	private final JMenuItem 	jmiSaveMask;				// menu load mask
 	private final JMenuItem 	jmiRemoveMask;				// menu remove mask
 	private final JMenuItem 	jmiInvertMask;				// menu invert mask
 	private final JMenuItem 	jmiApplyMask;				// menu apply mask
+
+	// Menu for Multi Genome
+	private final JMenu			jmMultiGenome;				// menu for multi genome
+	private final JMenuItem		jmiExportVCF;				// menu to export stripes as VCF
+	private final JMenuItem		jmiExportBED;				// menu to export stripes as BED
+	private final JMenuItem		jmiConvertBED;				// menu to convert stripes as BED
 
 	protected final TrackList 	trackList;					// track list where the menu popped up
 	protected final ActionMap	actionMap;					// map containing the actions for this menu
@@ -90,6 +101,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		this.trackList = tl;
 		this.actionMap = tl.getActionMap();
 
+
 		// Initialize items
 		jmiCopy = new JMenuItem(actionMap.get(ATACopy.ACTION_KEY));
 		jmiCut = new JMenuItem(actionMap.get(ATACut.ACTION_KEY));
@@ -101,30 +113,51 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
 		jmiSetVerticalLineCount = new JMenuItem(actionMap.get(ATASetVerticalLineCount.ACTION_KEY));
 
+
 		// Initialize mask items
 		jmMask = new JMenu("Mask");
-		jmiLoadMask = new JMenuItem(actionMap.get(ATALoadMask.ACTION_KEY));
-		jmiSaveMask = new JMenuItem(actionMap.get(ATASaveMask.ACTION_KEY));
-		jmiRemoveMask = new JMenuItem(actionMap.get(ATARemoveMask.ACTION_KEY));
-		jmiInvertMask = new JMenuItem(actionMap.get(ATAInvertMask.ACTION_KEY));
-		jmiApplyMask = new JMenuItem(actionMap.get(ATAApplyMask.ACTION_KEY));
+		jmiLoadMask = new JMenuItem(actionMap.get(MTALoadMask.ACTION_KEY));
+		jmiSaveMask = new JMenuItem(actionMap.get(MTASaveMask.ACTION_KEY));
+		jmiRemoveMask = new JMenuItem(actionMap.get(MTARemoveMask.ACTION_KEY));
+		jmiInvertMask = new JMenuItem(actionMap.get(MTAInvertMask.ACTION_KEY));
+		jmiApplyMask = new JMenuItem(actionMap.get(MTAApplyMask.ACTION_KEY));
 		jmMask.add(jmiLoadMask);
 		jmMask.add(jmiSaveMask);
 		jmMask.add(jmiRemoveMask);
 		jmMask.addSeparator();
 		jmMask.add(jmiInvertMask);
 		jmMask.add(jmiApplyMask);
+		jmiSaveMask.setEnabled(trackList.isMaskRemovable());
+		jmiRemoveMask.setEnabled(trackList.isMaskRemovable());
+		jmiInvertMask.setEnabled(trackList.isMaskRemovable());
+		jmiApplyMask.setEnabled(trackList.isMaskApplicable());
+
 
 		// Initialize multi genome items
+		jmMultiGenome = new JMenu("Multi Genome");
+		jmiExportVCF = new JMenuItem(actionMap.get(MGAGlobalVCFExport.ACTION_KEY));
+		jmiExportBED = new JMenuItem(actionMap.get(MGABedExport.ACTION_KEY));
+		jmiConvertBED = new JMenuItem(actionMap.get(MGASCWLConvert.ACTION_KEY));
+		jmMultiGenome.add(jmiExportVCF);
+		jmMultiGenome.add(jmiExportBED);
+		jmMultiGenome.addSeparator();
+		jmMultiGenome.add(jmiConvertBED);
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			jmiExportAsVCF = new JMenuItem(actionMap.get(PAMultiGenomeExport.ACTION_KEY));
-			if (trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList().size() == 0) {
-				jmiExportAsVCF.setEnabled(false);
+			List<StripesData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList();
+			if ((stripes == null) || (stripes.size() == 0)) {
+				jmiExportVCF.setEnabled(false);
+				jmiExportBED.setEnabled(false);
+				jmiConvertBED.setEnabled(false);
 			}
 		} else {
-			jmiExportAsVCF = null;
+			jmMultiGenome.setEnabled(false);
+			jmiExportVCF.setEnabled(false);
+			jmiExportBED.setEnabled(false);
+			jmiConvertBED.setEnabled(false);
 		}
 
+
+		// Add items
 		add(jmiCopy);
 		add(jmiCut);
 		add(jmiPaste);
@@ -138,17 +171,12 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		}
 		addSeparator();
 		add(jmiSaveAsImage);
-		if (jmiExportAsVCF != null) {
-			add(jmiExportAsVCF);
-		}
 		addSeparator();
 		add(jmMask);
+		add(jmMultiGenome);
+
 
 		jmiPaste.setEnabled(trackList.isPasteEnable());
-		jmiSaveMask.setEnabled(trackList.isMaskRemovable());
-		jmiRemoveMask.setEnabled(trackList.isMaskRemovable());
-		jmiInvertMask.setEnabled(trackList.isMaskRemovable());
-		jmiApplyMask.setEnabled(trackList.isMaskApplicable());
 
 		addPopupMenuListener(this);
 	}

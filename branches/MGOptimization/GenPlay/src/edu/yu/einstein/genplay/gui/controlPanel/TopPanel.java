@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeProperties;
+import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGAProperties;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.util.Images;
@@ -146,7 +146,7 @@ public class TopPanel extends JPanel implements AdjustmentListener, MouseWheelLi
 		jbMultiGenome.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PAMultiGenomeProperties action = new PAMultiGenomeProperties();
+				MGAProperties action = new MGAProperties();
 				action.actionPerformed(null);
 			}
 		});

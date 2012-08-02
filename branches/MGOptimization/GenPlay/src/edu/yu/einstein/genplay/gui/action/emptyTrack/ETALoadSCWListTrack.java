@@ -91,7 +91,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		boolean isStrandNeeded = extractor instanceof StrandedExtractor;
-		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true);
+		NewCurveTrackDialog nctd = new NewCurveTrackDialog(null, false, false, false, false, isStrandNeeded, true, true);
 		if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 			selectedChromo = nctd.getSelectedChromosomes();
 			// if not all the chromosomes are selected we need
@@ -134,7 +134,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 	protected ScoredChromosomeWindowList generateList() throws Exception {
 		notifyActionStop();
 		if (((ScoredChromosomeWindowListGenerator)extractor).overlapped()){
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, true, false, false,  false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				scoreCalculation = nctd.getScoreCalculationMethod();
@@ -142,7 +142,7 @@ public final class ETALoadSCWListTrack extends TrackListActionExtractorWorker<Sc
 				return ((ScoredChromosomeWindowListGenerator)extractor).toScoredChromosomeWindowList(scoreCalculation);
 			}
 		} else {
-			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false, false);
+			NewCurveTrackDialog nctd = new NewCurveTrackDialog(name, true, false, false, false, false, false,  false);
 			if (nctd.showDialog(getRootPane()) == NewCurveTrackDialog.APPROVE_OPTION) {
 				name = nctd.getTrackName();
 				notifyActionStart("Generating Track", SimpleScoredChromosomeWindowList.getCreationStepCount(), true);

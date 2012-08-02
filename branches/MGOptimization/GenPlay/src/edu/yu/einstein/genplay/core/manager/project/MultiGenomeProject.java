@@ -42,8 +42,8 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSNP;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
+import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASNP;
+import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
 
 /**
@@ -62,7 +62,7 @@ import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynch
  * ALL GENOME NAMES ARE STORED IN THIS DATA STRUCTURE AS "FULL GENOME NAME" (with group/genome/raw name).
  * See {@link FormattedMultiGenomeName} for more details.
  * 
- * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link PAMultiGenomeSynchronizing} AND {@link PAMultiGenomeSNP}.
+ * THE WHOLE SYNCHRONIZATION PROCESS IS HANDLED BY {@link MGASynchronizing} AND {@link MGASNP}.
  * 
  * @author Nicolas Fourel
  * @version 0.1
@@ -213,7 +213,7 @@ public class MultiGenomeProject implements Serializable {
 	 * @return	genome names association array
 	 */
 	public Object[] getFormattedGenomeArray () {
-		return getFormattedGenomeArray(true);
+		return getFormattedGenomeArray(true, true);
 	}
 
 
@@ -222,22 +222,33 @@ public class MultiGenomeProject implements Serializable {
 	 * Creates an array with all genome names association.
 	 * Used for display.
 	 * @param withReferenceGenome true to add the reference genome to the list
+	 * @param withMetaGenome true to add the meta genome to the list
 	 * @return	genome names association array
 	 */
-	public Object[] getFormattedGenomeArray (boolean withReferenceGenome) {
+	public Object[] getFormattedGenomeArray (boolean withReferenceGenome, boolean withMetaGenome) {
 		String[] names;
+		List<String> preNames = new ArrayList<String>();
 		int index = 0;
+
+		if (withMetaGenome) {
+			preNames.add(FormattedMultiGenomeName.META_GENOME_NAME);
+		}
+
 		if (withReferenceGenome) {
-			names = new String[genomeNames.size() + 1];
-			names[index] = ProjectManager.getInstance().getAssembly().getDisplayName();
+			preNames.add(ProjectManager.getInstance().getAssembly().getDisplayName());
+		}
+
+		names = new String[genomeNames.size() + preNames.size()];
+
+		for (String preName: preNames) {
+			names[index] = preName;
 			index++;
-		} else {
-			names = new String[genomeNames.size() ];
 		}
 		for (String name: genomeNames) {
 			names[index] = name;
 			index++;
 		}
+
 		return names;
 	}
 
