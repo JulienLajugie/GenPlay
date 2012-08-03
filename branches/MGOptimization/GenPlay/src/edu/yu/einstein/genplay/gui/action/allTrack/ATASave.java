@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.writer.Writer;
 import edu.yu.einstein.genplay.core.writer.WriterFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
@@ -50,8 +51,8 @@ public final class ATASave extends TrackListActionWorker<Void> {
 
 	private static final long serialVersionUID = 212223991804272305L;	// generated ID
 	private static final String 	ACTION_NAME = "Save As";			// action name
-	private static final String 	DESCRIPTION = 
-		"Save the selected track";								 		// tooltip
+	private static final String 	DESCRIPTION =
+			"Save the selected track";								 		// tooltip
 	private Writer 					writer;								// object that writes the data
 
 	/**
@@ -89,7 +90,7 @@ public final class ATASave extends TrackListActionWorker<Void> {
 			} else {
 				// case where we don't know how to save the type of the selected track
 				return null;
-			}		
+			}
 			for (FileFilter currentFilter: filters) {
 				jfc.addChoosableFileFilter(currentFilter);
 			}
@@ -100,11 +101,22 @@ public final class ATASave extends TrackListActionWorker<Void> {
 				ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 				File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
 				if (!Utils.cancelBecauseFileExist(getRootPane(), selectedFile)) {
+					boolean isValid = true;
 					ChromosomeListOfLists<?> data = (ChromosomeListOfLists<?>) selectedTrack.getData();
 					String name = selectedTrack.getName();
 					writer = WriterFactory.getWriter(selectedFile, data, name, selectedFilter);
-					notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
-					writer.write();
+					if (ProjectManager.getInstance().isMultiGenomeProject()) {
+						GenomeSelectionDialog dialog = new GenomeSelectionDialog();
+						if (dialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
+							writer.setMultiGenomeCoordinateSystem(dialog.getGenomeName(), dialog.getAlleleType());
+						} else {
+							isValid = false;
+						}
+					}
+					if (isValid) {
+						notifyActionStart("Saving Track #" + selectedTrack.getTrackNumber(), 1, writer instanceof Stoppable);
+						writer.write();
+					}
 				}
 			}
 		}

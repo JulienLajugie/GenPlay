@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,12 +35,13 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
 /**
- * This class provides the representation of a sequence from a .2bit file as described 
+ * This class provides the representation of a sequence from a .2bit file as described
  * in the help file of the UCSC Genome Browser: http://genome.ucsc.edu/FAQ/FAQformat.html#format7
  * @author Julien Lajugie
  * @version 0.1
@@ -51,10 +52,10 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	public static final int MISSING_POSITION = -1000000000;
 	private static final long serialVersionUID = 4155123051619828951L;	// generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private transient RandomAccessFile 	raf;			// 2bit random access file  
+	private transient RandomAccessFile 	raf;			// 2bit random access file
 	private String	filePath;					// path of the 2bit file (used for the serialization)
 	private int 	headerSize;					// the size in byte of the header of the sequence
-	private String 	name;						// the sequence name  
+	private String 	name;						// the sequence name
 	private int 	offset;						// the offset of the sequence data relative to the start of the file
 	private int 	dnaSize;					// number of bases of DNA in the sequence
 	private int[] 	nBlockStarts;				// the starting position for each block of Ns
@@ -96,7 +97,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		filePath = (String) in.readObject();	
+		filePath = (String) in.readObject();
 		headerSize = in.readInt();
 		name = (String) in.readObject();
 		offset = in.readInt();
@@ -133,7 +134,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 	 * @param name name of the sequence
 	 * @param reverseBytes true if the byte order in the input file need to be reversed
 	 * @throws IOException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public void extract(String filePath, RandomAccessFile raf, int offset, String name, boolean reverseBytes) throws IOException, InterruptedException {
 		this.filePath = filePath;
@@ -174,7 +175,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 				nBlockSizes[i] = Integer.reverseBytes(raf.readInt());
 			} else {
 				nBlockSizes[i] = raf.readInt();
-			}			
+			}
 		}
 
 		int maskBlockCount = 0;
@@ -284,7 +285,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			return null;
 		}
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
+			position = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, alleleType, position, chromosome, genomeName);
+			//position = ShiftCompute.computeReversedShift(genomeName, chromosome, alleleType, position);
 			if (position == MISSING_POSITION) {
 				return Nucleotide.BLANK;
 			}
@@ -296,18 +298,18 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 		position--;
 		int i = 0;
 		while ((i < nBlockStarts.length) && (nBlockStarts[i] <= position)) {
-			if (position < nBlockStarts[i] + nBlockSizes[i]) {
+			if (position < (nBlockStarts[i] + nBlockSizes[i])) {
 				return Nucleotide.ANY;
 			}
 			i++;
 		}
 		// integer in the file containing the position we look for
-		int offsetPosition = (int)(position / 4);
+		int offsetPosition = position / 4;
 		// position of the nucleotide inside the integer
 		int offsetInsideByte = 3 - (position % 4);
 		try {
 			raf.seek(offsetPosition + offset + headerSize);
-			// rotate the result until the two bits we want are on the far right 
+			// rotate the result until the two bits we want are on the far right
 			// and then apply a 0x0003 filter
 			int result2Bit = Integer.rotateRight(raf.readByte(), offsetInsideByte * 2) & 0x3;
 			return Nucleotide.get((byte)result2Bit);
@@ -315,8 +317,8 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Returns the number of nucleotides
 	 */
@@ -336,7 +338,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 
 
 	/**
-	 * Re-initializes the connection to the random access file containing the sequences  
+	 * Re-initializes the connection to the random access file containing the sequences
 	 * @throws FileNotFoundException
 	 */
 	private void reinitDataFile() throws FileNotFoundException {
@@ -346,7 +348,7 @@ public class TwoBitSequence extends AbstractList<Nucleotide> implements Serializ
 
 	/**
 	 * Sets the file path to the random access file containing the sequences
-	 * @param filePath path to the 
+	 * @param filePath path to the
 	 * @throws FileNotFoundException
 	 */
 	public void setSequenceFilePath(String filePath) throws FileNotFoundException {

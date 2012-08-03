@@ -42,7 +42,7 @@ public class FormattedMultiGenomeName {
 	/** Meta Genome name for display */
 	public static final String META_GENOME_NAME = "Current Meta Genome";
 	/** Name of the reference genome */
-	public static			String referenceGenomeName = null;
+	public static			String REFERENCE_GENOME_NAME = null;
 
 	private static final 	String separator1 = " - ";	// First separator
 	private static final 	String separator2 = " (";	// Second separator
@@ -144,7 +144,7 @@ public class FormattedMultiGenomeName {
 			return false;
 		}
 
-		if ((referenceGenomeName != null) && fullName.equals(referenceGenomeName)) {
+		if ((REFERENCE_GENOME_NAME != null) && fullName.equals(REFERENCE_GENOME_NAME)) {
 			return false;
 		}
 

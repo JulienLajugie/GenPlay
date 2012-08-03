@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
@@ -125,7 +126,8 @@ public class SCWHandler extends DefaultHandler {
 	 */
 	private int getMultiGenomePosition (int position) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
+			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+			//return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
 		} else {
 			return position;
 		}

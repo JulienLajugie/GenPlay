@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
@@ -156,7 +157,8 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 
 	@Override
 	public int getStart() {
-		int start = ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
+		int start = ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
+		//int start = ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
 		if (length > 0) {	// the related variant is a SNP if length is registered as 0.
 			start++;
 		}
@@ -168,9 +170,11 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	public int getStop() {
 		if (length > 0) {
 			//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + length) - 1;
-			return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + getLength());
+			return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition + getLength(), getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
+			//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + getLength());
 		}
-		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
+		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
+		//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
 	}
 
 

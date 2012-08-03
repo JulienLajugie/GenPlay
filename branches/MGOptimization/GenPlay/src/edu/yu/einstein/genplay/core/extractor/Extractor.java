@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
@@ -53,7 +54,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 	private static final long serialVersionUID = 374481155831573347L;	// generated ID
 	protected static final int NEED_TO_BE_EXTRACTED = 0;			// the chromsome needs to be extracted
 	protected static final int NEED_TO_BE_SKIPPED = 1;				// the chromosome needs to be skipped
-	protected static final int AFTER_LAST_SELECTED = 2;				// the chromosome is after the last selected chromosome 
+	protected static final int AFTER_LAST_SELECTED = 2;				// the chromosome is after the last selected chromosome
 	protected File 						dataFile = null;			// file containing the data
 	protected File 						logFile = null;				// log file
 	protected long 						startTime = 0;				// time at the beginning of the extraction
@@ -65,8 +66,8 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 	private int		 					lastSelectedChromoIndex;	// index of the last chromosome to extract
 	private	String						genomeName;					// name of the genome used for the mapping of the data
 	private AlleleType					alleleType;					// type of allele to load the data (multi genome)
-	
-	
+
+
 	/**
 	 * Constructor
 	 * @param dataFile file containing the data
@@ -105,7 +106,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 
 	/**
 	 * Extracts the data from a file.
-	 * @throws Exception 
+	 * @throws Exception
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
@@ -121,7 +122,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 
 
 	/**
-	 * Writes basic information about the extraction 
+	 * Writes basic information about the extraction
 	 * in the log file if the log file is specified
 	 */
 	protected void logBasicInfo() {
@@ -145,7 +146,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 
 
 	/**
-	 * Writes information about the execution of the extraction 
+	 * Writes information about the execution of the extraction
 	 * in the log file if the log file is specified
 	 */
 	protected void logExecutionInfo() {
@@ -183,7 +184,7 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 
 	/**
 	 * Sets the chromosomes selected for the extraction
-	 * @param selectedChromosomes array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the {@link ProjectChromosome}	
+	 * @param selectedChromosomes array of booleans. The indexes set to true correspond to the index of the selected chromosomes in the {@link ProjectChromosome}
 	 */
 	public void setSelectedChromosomes(boolean[] selectedChromosomes) {
 		this.selectedChromo = selectedChromosomes;
@@ -224,8 +225,8 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 	public void setGenomeName(String genomeName) {
 		this.genomeName = genomeName;
 	}
-	
-	
+
+
 	/**
 	 * @param alleleType the alleleType to set
 	 */
@@ -241,13 +242,14 @@ public abstract class Extractor implements Serializable, InvalidDataEventsGenera
 	 */
 	protected int getMultiGenomePosition (Chromosome chromosome, int position) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
+			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+			//return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
 		} else {
 			return position;
 		}
 	}
-	
-	
+
+
 	@Override
 	public void addInvalidDataListener(InvalidDataListener invalidDataListener) {
 		if (!invalidDataListenersList.contains(invalidDataListener)) {

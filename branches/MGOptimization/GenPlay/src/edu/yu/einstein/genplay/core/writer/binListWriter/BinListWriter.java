@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.writer.binListWriter;
 
 import java.io.File;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -36,13 +37,16 @@ import edu.yu.einstein.genplay.core.writer.Writer;
  * @version 0.1
  */
 public abstract class BinListWriter implements Writer {
-	
+
 	protected final ProjectChromosome	projectChromosome;	// ChromosomeManager
-	protected final File 				outputFile;			// output file 
+	protected final File 				outputFile;			// output file
 	protected final BinList				data;				// data to print
 	protected final String				name;				// name of the BinList
-	
-	
+
+	protected String					fullGenomeName;		// the genome name (multi genome project only)
+	protected AlleleType				allele;				// the allele type (multi genome project only)
+
+
 	/**
 	 * Creates an instance of {@link BinListWriter}.
 	 * @param outputFile output {@link File}
@@ -54,5 +58,15 @@ public abstract class BinListWriter implements Writer {
 		this.outputFile = outputFile;
 		this.data = data;
 		this.name = name;
+		this.fullGenomeName = null;
+		this.allele = null;
 	}
+
+
+	@Override
+	public void setMultiGenomeCoordinateSystem (String genome, AlleleType allele) {
+		this.fullGenomeName = genome;
+		this.allele = allele;
+	}
+
 }

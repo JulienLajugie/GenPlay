@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -47,14 +47,14 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 	private static final long serialVersionUID = -2828875849368222868L; // generated ID
 	private static final String 	ACTION_NAME = "Load SNP Track";	// action name
 	private static final String 	DESCRIPTION = "Load a track showing the SNPs";	// tooltip
-	
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
 	public static final String ACTION_KEY = "ETALoadSNPListTrack";
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ETALoadSNPListTrack}
 	 */
@@ -65,11 +65,11 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
 
-	
+
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray());
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
 				alleleType = genomeDialog.getAlleleType();
@@ -78,15 +78,15 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 			}
 		}
 	}
-	
-	
+
+
 	@Override
 	public void doAtTheEnd(SNPList actionResult) {
 		boolean valid = true;
-		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
 			valid = false;
 		}
-		if (actionResult != null && valid) {
+		if ((actionResult != null) && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
 			ScoredChromosomeWindowList stripes = trackList.getSelectedTrack().getMask();
@@ -97,14 +97,14 @@ public class ETALoadSNPListTrack extends TrackListActionExtractorWorker<SNPList>
 			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}
 	}
-	
-	
+
+
 	@Override
 	protected SNPList generateList() throws Exception {
 		return ((SNPListGenerator) extractor).toSNPList();
 	}
 
-	
+
 	@Override
 	protected File retrieveFileToExtract() {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();

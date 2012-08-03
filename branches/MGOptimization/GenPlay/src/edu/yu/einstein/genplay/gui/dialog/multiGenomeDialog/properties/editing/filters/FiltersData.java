@@ -32,7 +32,6 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.IDFilterInterface;
-import edu.yu.einstein.genplay.core.multiGenome.filter.advancedFilters.TrackMaskFilter;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
@@ -175,8 +174,6 @@ public class FiltersData implements Serializable {
 				return filter.getColumnName().toString();
 			}
 			return filter.getHeaderType().getId();
-		} else if (filter.getFilter() instanceof TrackMaskFilter) {
-			return filter.getFilter().toStringForDisplay();
 		}
 		return filter.getFilter().getName();
 	}

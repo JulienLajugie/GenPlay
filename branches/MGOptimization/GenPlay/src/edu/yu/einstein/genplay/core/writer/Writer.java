@@ -14,12 +14,14 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.writer;
+
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 
 
 /**
@@ -28,10 +30,24 @@ package edu.yu.einstein.genplay.core.writer;
  * @version 0.1
  */
 public interface Writer {
-	
+
 	/**
 	 * Writes data in an output file
 	 * @throws Exception
 	 */
 	public void write() throws Exception;
+
+
+	/**
+	 * In Multi Genome projects, tracks can be saved according to three different categories of coordinate system:
+	 * - the meta genome
+	 * - the reference genome
+	 * - a genome (among the ones from the current project)
+	 * 
+	 * The user can select which coordinate system he wants to use to save a track
+	 * 
+	 * @param genome a full genome name (meta genome, reference genome or one of the genome within the project)
+	 * @param allele an allele, will not be considered if the genome is the meta genome or the reference genome (therefore null)
+	 */
+	public void setMultiGenomeCoordinateSystem (String genome, AlleleType allele);
 }

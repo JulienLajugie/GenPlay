@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
@@ -142,13 +143,15 @@ public class ReferenceBlankVariant implements Serializable, VariantInterface {
 
 	@Override
 	public int getStart() {
-		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition) + 1;
+		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME) + 1;
+		//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition) + 1;
 	}
 
 
 	@Override
 	public int getStop() {
-		return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
+		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition + 1, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME) - 1;
+		//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + 1) - 1;
 	}
 
 

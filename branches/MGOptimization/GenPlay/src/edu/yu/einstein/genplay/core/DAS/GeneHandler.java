@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.Strand;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
@@ -59,7 +60,7 @@ public class GeneHandler extends DefaultHandler {
 	private final Chromosome chromosome;	// chromosome being extracted
 	private String genomeName;				// for multi-genome project only.  Name of the genome on which the data were mapped
 	private AlleleType alleleType;			// for multi-genome project only.  Type of allele for synchronization
-	
+
 
 	/**
 	 * Creates an instance of {@link GeneHandler}
@@ -123,8 +124,8 @@ public class GeneHandler extends DefaultHandler {
 				geneList.add(currentGene);
 				previousGroupID = groupID;
 				currentGene = new Gene();
-			} 
-			currentGene.addExon(getMultiGenomePosition(start), getMultiGenomePosition(end), score);			
+			}
+			currentGene.addExon(getMultiGenomePosition(start), getMultiGenomePosition(end), score);
 		}
 	}
 
@@ -138,7 +139,7 @@ public class GeneHandler extends DefaultHandler {
 			} else if (currentMarkup.equals("END")) {
 				end = Integer.parseInt(elementValue);
 			} else if (currentMarkup.equals("ORIENTATION")) {
-				orientation = Strand.get(elementValue.charAt(0));				
+				orientation = Strand.get(elementValue.charAt(0));
 			} else if (currentMarkup.equals("SCORE")) {
 				// if the score is not specified we set a 0 score value
 				if (elementValue.trim().equals("-")) {
@@ -149,21 +150,22 @@ public class GeneHandler extends DefaultHandler {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param position		current position
 	 * @return				the associated associated meta genome position
 	 */
 	private int getMultiGenomePosition (int position) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
+			return ShiftCompute.getPosition(genomeName, alleleType, position, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+			//return ShiftCompute.computeShift(genomeName, chromosome, alleleType, position);
 		} else {
 			return position;
 		}
-	}	
-	
-	
+	}
+
+
 	/**
 	 * @param genomeName for multi-genome project only.  Name of the genome on which the data were mapped
 	 */
@@ -194,5 +196,5 @@ public class GeneHandler extends DefaultHandler {
 	public void setAlleleType(AlleleType alleleType) {
 		this.alleleType = alleleType;
 	}
-	
+
 }

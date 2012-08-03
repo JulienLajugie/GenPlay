@@ -24,10 +24,8 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
-import edu.yu.einstein.genplay.core.multiGenome.filter.advancedFilters.TrackMaskFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.advancedEditors.AdvancedEditor;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.editors.advancedEditors.TrackMaskEditor;
 
 /**
  * @author Nicolas Fourel
@@ -72,10 +70,6 @@ public class AdvancedFilterEditingPanel extends EditingPanel<FilterInterface> {
 
 	private void initEditors (Object object) {
 		filterEditor = null;
-
-		if (object instanceof TrackMaskFilter) {
-			filterEditor = new TrackMaskEditor();
-		}
 	}
 
 

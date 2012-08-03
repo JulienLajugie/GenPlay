@@ -192,7 +192,7 @@ public class ProjectManager implements Serializable {
 	public MultiGenomeProject getMultiGenomeProject() {
 		if (multiGenome && (multiGenomeProject == null)) {
 			multiGenomeProject = new MultiGenomeProject();
-			FormattedMultiGenomeName.referenceGenomeName = assembly.getDisplayName();
+			FormattedMultiGenomeName.REFERENCE_GENOME_NAME = assembly.getDisplayName();
 		}
 		return multiGenomeProject;
 	}

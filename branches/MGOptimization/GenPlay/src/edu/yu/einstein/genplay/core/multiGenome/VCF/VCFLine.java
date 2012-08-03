@@ -400,7 +400,7 @@ public class VCFLine implements Serializable {
 	public String getAlternative (String fullGenomeName, AlleleType allele) {
 		String rawName = FormattedMultiGenomeName.getRawName(fullGenomeName);
 		if (rawName != null) {
-			String genotype = getGenotype(FormattedMultiGenomeName.getRawName(rawName));
+			String genotype = getGenotype(rawName);
 			if (genotype != null) {
 				int index = -1;
 				if (allele == AlleleType.ALLELE01) {

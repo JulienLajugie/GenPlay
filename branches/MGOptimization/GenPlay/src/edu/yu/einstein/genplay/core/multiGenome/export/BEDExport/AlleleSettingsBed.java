@@ -25,6 +25,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
@@ -168,8 +169,10 @@ public class AlleleSettingsBed {
 	 */
 	protected void initializeCurrentInformationForMetaGenome (Chromosome chromosome, int[] lengths, VCFLine currentLine, int altIndex) {
 		initializeCurrentInformationForReferenceGenome(lengths, currentLine, altIndex);
-		currentStart = ShiftCompute.computeShiftForReferenceGenome(chromosome, currentStart);
-		currentStop = ShiftCompute.computeShiftForReferenceGenome(chromosome, currentStop);
+		currentStart =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, allele, currentStart, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+		currentStop =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, allele, currentStop, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+		//currentStart = ShiftCompute.computeShiftForReferenceGenome(chromosome, currentStart);
+		//currentStop = ShiftCompute.computeShiftForReferenceGenome(chromosome, currentStop);
 	}
 
 

@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
@@ -141,7 +142,8 @@ public class SNPVariant implements Serializable, VariantInterface {
 
 	@Override
 	public int getStart() {
-		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition);
+		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition, variantListForDisplay.getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
+		//return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition);
 	}
 
 
@@ -149,7 +151,8 @@ public class SNPVariant implements Serializable, VariantInterface {
 	public int getStop() {
 		//System.err.println("Illegal use of the method \"SNPVariant.getStop\", this method shouldn't be invoked for redundancy purpose");
 		//return getStart() + 1;	// if getStop() is called, getStart() has been probably called right before. In case of SNP, just add 1 to the getStart() result to have its stop.
-		return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition + 1);
+		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition + 1, variantListForDisplay.getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
+		//return ShiftCompute.computeShiftForReferenceGenome(variantListForDisplay.getChromosome(), referenceGenomePosition + 1);
 	}
 
 

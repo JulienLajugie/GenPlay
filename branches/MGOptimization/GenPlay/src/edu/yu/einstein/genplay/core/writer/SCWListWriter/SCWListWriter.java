@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.writer.SCWListWriter;
 
 import java.io.File;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -42,6 +43,9 @@ public abstract class SCWListWriter implements Writer {
 	protected final ScoredChromosomeWindowList	data;				// data to print
 	protected final String						name;				// name of the BinList
 
+	protected String							fullGenomeName;		// the genome name (multi genome project only)
+	protected AlleleType						allele;				// the allele type (multi genome project only)
+
 
 	/**
 	 * Constructor
@@ -54,5 +58,12 @@ public abstract class SCWListWriter implements Writer {
 		this.outputFile = outputFile;
 		this.data = data;
 		this.name = name;
+	}
+
+
+	@Override
+	public void setMultiGenomeCoordinateSystem (String genome, AlleleType allele) {
+		this.fullGenomeName = genome;
+		this.allele = allele;
 	}
 }
