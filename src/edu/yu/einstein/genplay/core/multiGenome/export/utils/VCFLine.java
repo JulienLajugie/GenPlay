@@ -63,6 +63,9 @@ public class VCFLine {
 	}
 
 
+
+
+
 	/**
 	 * Shows the elements of line
 	 */
