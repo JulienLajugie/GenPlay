@@ -104,11 +104,14 @@ class TreeContent {
 		root.add(vcfFiles);
 
 		// FILTERS node
-		DefaultMutableTreeNode filter = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
-		filter.add(new DefaultMutableTreeNode(PropertiesDialog.FILTERS_FILE));
-		filter.add(new DefaultMutableTreeNode(PropertiesDialog.FILTERS_ADVANCED));
-		root.add(filter);
-		nodes.add(filter);
+		//DefaultMutableTreeNode filter = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
+		//filter.add(new DefaultMutableTreeNode(PropertiesDialog.FILTERS_FILE));
+		//filter.add(new DefaultMutableTreeNode(PropertiesDialog.FILTERS_ADVANCED));
+		//root.add(filter);
+		//nodes.add(filter);
+		currentNode = new DefaultMutableTreeNode(PropertiesDialog.FILTERS);
+		root.add(currentNode);
+		nodes.add(currentNode);
 
 		// STRIPES node
 		currentNode = new DefaultMutableTreeNode(PropertiesDialog.STRIPES);

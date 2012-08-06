@@ -56,8 +56,9 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 	private void initializeItem () {
 		add(getItemMenu(PropertiesDialog.GENERAL));
 		add(getItemMenu(PropertiesDialog.SETTINGS));
-		add(getItemMenu(PropertiesDialog.FILTERS_FILE));
-		add(getItemMenu(PropertiesDialog.FILTERS_ADVANCED));
+		add(getItemMenu(PropertiesDialog.FILTERS));
+		//add(getItemMenu(PropertiesDialog.FILTERS_FILE));
+		//add(getItemMenu(PropertiesDialog.FILTERS_ADVANCED));
 		add(getItemMenu(PropertiesDialog.STRIPES));
 	}
 

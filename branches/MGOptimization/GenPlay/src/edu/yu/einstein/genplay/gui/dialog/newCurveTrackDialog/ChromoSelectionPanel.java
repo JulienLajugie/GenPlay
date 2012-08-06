@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,6 +25,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -33,12 +35,11 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListModel;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
+import edu.yu.einstein.genplay.gui.dialog.chromosomeChooser.ChromosomeChooserDialog;
 
 
 
@@ -55,6 +56,8 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 	private final JScrollPane 		jcpSelectedChromo;		// scroll pane containing the list
 	private final JButton 			jbModifySelection;		// button to modify the selection
 	private static boolean[]		defaultSelection = null;// default selected chromosome
+	private final List<Chromosome> 	fullChromosomeList;		// List of chromosome to display
+	private List<Chromosome> 		selectedChromosomes;	// List of chromosome after selection
 
 	/**
 	 * Creates an instance of {@link ChromoSelectionPanel}
@@ -62,10 +65,14 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 	ChromoSelectionPanel() {
 		super();
 		jlSelectedChromo = new JList(new DefaultListModel());
+		fullChromosomeList = new ArrayList<Chromosome>();
+		selectedChromosomes = new ArrayList<Chromosome>();
 		cm = ProjectManager.getInstance().getProjectChromosome();
 		for (int i = 0; i < cm.size(); i++) {
+			fullChromosomeList.add(cm.get(i));
 			if ((defaultSelection == null) || (defaultSelection[i])) {
 				((DefaultListModel) jlSelectedChromo.getModel()).addElement(cm.get(i));
+				selectedChromosomes.add(cm.get(i));
 			}
 		}
 		jcpSelectedChromo = new JScrollPane(jlSelectedChromo);
@@ -78,7 +85,7 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 		gbc.weightx = 1;
 		gbc.weighty = 1;
 		add(jcpSelectedChromo, gbc);
-		
+
 		gbc = new GridBagConstraints();
 		gbc.gridy = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
@@ -91,26 +98,29 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 
 
 	/**
-	 * Shows a windows where the user can select the chromosomes 
+	 * Shows a windows where the user can select the chromosomes
 	 * when the "modify selection" button is clicked
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		boolean[] newSelectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane(), getSelectedChromosomes());
-		if (newSelectedChromo != null) {
-			if (noChromoSelected(newSelectedChromo)) {
+		ChromosomeChooserDialog chromosomeChooser = new ChromosomeChooserDialog();
+		chromosomeChooser.setFullChromosomeList(fullChromosomeList);
+		chromosomeChooser.setListOfSelectedChromosome(selectedChromosomes);
+		chromosomeChooser.setOrdering(false);
+		if (chromosomeChooser.showDialog(getRootPane()) == ChromosomeChooserDialog.APPROVE_OPTION) {
+			selectedChromosomes = chromosomeChooser.getListOfSelectedChromosome();
+			if (selectedChromosomes.size() == 0) {
 				JOptionPane.showMessageDialog(getRootPane(), "You must select at least one chromosome", "Nothing Selected", JOptionPane.WARNING_MESSAGE);
 			} else {
 				DefaultListModel lm = (DefaultListModel) jlSelectedChromo.getModel();
 				lm.removeAllElements();
-				for (int i = 0; i < cm.size(); i++) {
-					if (newSelectedChromo[i]) {
-						lm.addElement(cm.get(i));
-					}
+				for (int i = 0; i < selectedChromosomes.size(); i++) {
+					lm.addElement(selectedChromosomes.get(i));
 				}
 			}
 		}
 	}
+
 
 	/**
 	 * @return the chromosomes selected
@@ -129,30 +139,13 @@ class ChromoSelectionPanel extends JPanel implements ActionListener {
 	 * @return true if the specified chromosome had been selected. Otherwise return false
 	 */
 	private boolean isSelected(Chromosome chromo) {
-		ListModel lm = jlSelectedChromo.getModel();
-		for (int i = 0; i < lm.getSize(); i++) {
-			if (chromo.equals(lm.getElementAt(i))) {
-				return true;
-			}
+		if (selectedChromosomes.contains(chromo)) {
+			return true;
 		}
 		return false;
 	}
 
 
-	/**
-	 * @param chromoArray an array of boolean representing the selection state of chromosomes
-	 * @return true if a no chromosomes is selected. False otherwise
-	 */
-	private boolean noChromoSelected(boolean[] chromoArray) {
-		for (boolean chromo: chromoArray) {
-			if (chromo) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	
 	/**
 	 * Saves the selected chromsomes as default
 	 */
