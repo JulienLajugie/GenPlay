@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,7 +38,7 @@ import javax.swing.text.NumberFormatter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 /**
- * Panel of the {@link OptionDialog} that allows to configure the tracks * 
+ * Panel of the {@link OptionDialog} that allows to configure the tracks *
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -57,10 +57,12 @@ final class TrackOptionPanel extends OptionPanel {
 	private final JFormattedTextField 	jftfUndoCount; 		// label undo count
 	private final JLabel 				jlResetTrack;	 	// label reset track
 	private final JCheckBox				jcResetTrack;	 	// checkbox reset track
+	private final JLabel 				jlCacheTrack;	 	// label cache track
+	private final JCheckBox				jcCacheTrack;	 	// checkbox cache track
 	private final JLabel 				jlLegend;	 		// label legend (multi-genome)
 	private final JCheckBox				jcLegend;	 		// checkbox legend (multi-genome)
 
-	
+
 	/**
 	 * Creates an instance of {@link TrackOptionPanel}
 	 */
@@ -108,7 +110,7 @@ final class TrackOptionPanel extends OptionPanel {
 				projectConfiguration.setUndoCount(((Number) jftfUndoCount.getValue()).intValue());
 			}
 		});
-		
+
 		jlResetTrack = new JLabel("Enable reset:");
 		jcResetTrack = new JCheckBox();
 		jcResetTrack.setSelected(ProjectManager.getInstance().getProjectConfiguration().isResetTrack());
@@ -118,7 +120,17 @@ final class TrackOptionPanel extends OptionPanel {
 				projectConfiguration.setResetTrack(jcResetTrack.isSelected());
 			}
 		});
-		
+
+		jlCacheTrack = new JLabel("Enable cache:");
+		jcCacheTrack = new JCheckBox();
+		jcCacheTrack.setSelected(ProjectManager.getInstance().getProjectConfiguration().isCacheTrack());
+		jcCacheTrack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				projectConfiguration.setCacheTrack(jcCacheTrack.isSelected());
+			}
+		});
+
 		jlLegend = new JLabel("Show Legend:");
 		jcLegend = new JCheckBox();
 		jcLegend.setSelected(ProjectManager.getInstance().getProjectConfiguration().isLegend());
@@ -129,7 +141,7 @@ final class TrackOptionPanel extends OptionPanel {
 			}
 		});
 
-		
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -168,7 +180,7 @@ final class TrackOptionPanel extends OptionPanel {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(10, 10, 10, 0);
 		add(jftfUndoCount, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 3;
 		c.anchor = GridBagConstraints.LINE_START;
@@ -180,15 +192,27 @@ final class TrackOptionPanel extends OptionPanel {
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(10, 10, 10, 0);
 		add(jcResetTrack, c);
-		
+
 		c.gridx = 0;
 		c.gridy = 4;
+		c.anchor = GridBagConstraints.LINE_START;
+		c.insets = new Insets(10, 0, 10, 10);
+		add(jlCacheTrack, c);
+
+		c.gridx = 1;
+		c.gridy = 4;
+		c.anchor = GridBagConstraints.LINE_END;
+		c.insets = new Insets(10, 10, 10, 0);
+		add(jcCacheTrack, c);
+
+		c.gridx = 0;
+		c.gridy = 5;
 		c.anchor = GridBagConstraints.LINE_START;
 		c.insets = new Insets(10, 0, 10, 10);
 		add(jlLegend, c);
 
 		c.gridx = 1;
-		c.gridy = 4;
+		c.gridy = 5;
 		c.anchor = GridBagConstraints.LINE_END;
 		c.insets = new Insets(10, 10, 10, 0);
 		add(jcLegend, c);

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,6 +26,7 @@ import javax.swing.JMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
@@ -65,17 +66,17 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenu		jmOperation;			// category operation
 
 	private final JMenuItem	jmiSave;				// menu save
-	
+
 	private final JMenuItem jmiAddConstant;			// menu add constant
 	private final JMenuItem jmiAverage;				// menu average
 	private final JMenuItem	jmiCountNonNullLength;	// menu count non null length
 	private final JMenuItem jmiDivideConstant;		// menu divide constant
 	private final JMenuItem jmiFilter;				// menu filter
 	private final JMenuItem jmiGenerateBinList;		// menu generate a BinList track
-	private final JMenuItem	jmiIndex;				// menu index 
+	private final JMenuItem	jmiIndex;				// menu index
 	private final JMenuItem	jmiIndexPerChromosome;	// menu index per chromosome
 	private final JMenuItem jmiInvertConstant;		// menu invert constant
-	private final JMenuItem	jmiLog;					// menu log 
+	private final JMenuItem	jmiLog;					// menu log
 	private final JMenuItem	jmiLogWithDamper;		// menu log with damper
 	private final JMenuItem	jmiMax;					// menu max
 	private final JMenuItem	jmiMin;					// menu min
@@ -88,8 +89,9 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem jmiSumScore;			// menu sum score
 	private final JMenuItem	jmiTransfrag;			// menu transfrag of the SCWListTrack
 	private final JMenuItem jmiTwoTracks;			// menu two tracks operation
+	private final JMenuItem jmiConvertMask;			// menu convert to mask
 
-	
+
 	/**
 	 * Creates an instance of a {@link SCWListTrackMenu}
 	 * @param tl {@link TrackList}
@@ -99,13 +101,13 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation = new JMenu("Operation");
 
 		jmiSave = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
-		
+
 		jmiAddConstant = new JMenuItem(actionMap.get(SCWLAAddConstant.ACTION_KEY));
 		jmiAverage = new JMenuItem(actionMap.get(SCWLAAverage.ACTION_KEY));
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(SCWLADivideConstant.ACTION_KEY));
 		jmiFilter  = new JMenuItem(actionMap.get(SCWLAFilter.ACTION_KEY));
-		jmiGenerateBinList = new JMenuItem(actionMap.get(SCWLAGenerateBinList.ACTION_KEY));		
+		jmiGenerateBinList = new JMenuItem(actionMap.get(SCWLAGenerateBinList.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(SCWLAIndex.ACTION_KEY));
 		jmiIndexPerChromosome = new JMenuItem(actionMap.get(SCWLAIndexByChromosome.ACTION_KEY));
 		jmiInvertConstant = new JMenuItem(actionMap.get(SCWLAInvertConstant.ACTION_KEY));
@@ -122,7 +124,8 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiSumScore= new JMenuItem(actionMap.get(SCWLASumScore.ACTION_KEY));
 		jmiTransfrag = new JMenuItem(actionMap.get(SCWLATransfrag.ACTION_KEY));
 		jmiTwoTracks = new JMenuItem(actionMap.get(SCWLATwoTracks.ACTION_KEY));
-		
+		jmiConvertMask = new JMenuItem(actionMap.get(SCWLAConvertToMask.ACTION_KEY));
+
 		add(jmOperation, 0);
 		add(new Separator(), 1);
 		jmOperation.add(jmiAddConstant);
@@ -146,14 +149,15 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiSumScore);
 		jmOperation.add(jmiAverage);
 		jmOperation.add(jmiStandardDeviation);
-		jmOperation.add(jmiCountNonNullLength);		
+		jmOperation.add(jmiCountNonNullLength);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiFilter);
 		jmOperation.add(jmiTransfrag);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.addSeparator();
-		jmOperation.add(jmiGenerateBinList);				
+		jmOperation.add(jmiGenerateBinList);
+		jmOperation.add(jmiConvertMask);
 		add(jmiSave, 10);
 	}
 }

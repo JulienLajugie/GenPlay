@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,8 +43,8 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChrom
 
 	private static final long serialVersionUID = -4566157311251154991L; // generated ID
 	private static final String 	ACTION_NAME = "Indexation";			// action name
-	private static final String 	DESCRIPTION = 
-		"Index the selected track";		 								// tooltip
+	private static final String 	DESCRIPTION =
+			"Index the selected track";		 								// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
 	/**
@@ -67,7 +67,7 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChrom
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {			
+		if (selectedTrack != null) {
 			Number indexMin = NumberOptionPane.getValue(getRootPane(), "Minimum", "New minimum score:", new DecimalFormat("0.0"), -1000000, 1000000, 0);
 			if (indexMin != null) {
 				Number indexMax = NumberOptionPane.getValue(getRootPane(), "Maximum", "New maximum score:", new DecimalFormat("0.0"), -1000000, 1000000, 100);
@@ -77,7 +77,7 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChrom
 					return operation;
 				}
 			}
-		}	
+		}
 		return null;
 	}
 
@@ -86,6 +86,6 @@ public final class SCWLAIndex extends TrackListActionOperationWorker<ScoredChrom
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription());
-		}	
+		}
 	}
 }

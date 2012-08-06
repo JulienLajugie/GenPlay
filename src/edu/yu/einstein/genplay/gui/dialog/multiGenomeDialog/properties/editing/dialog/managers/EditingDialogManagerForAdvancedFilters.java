@@ -27,7 +27,6 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.multiGenome.filter.BasicFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.core.multiGenome.filter.advancedFilters.TrackMaskFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.EditingDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.display.DescriptionDisplayPanel;
@@ -160,8 +159,6 @@ public class EditingDialogManagerForAdvancedFilters implements EditingDialogMana
 
 	private List<FilterInterface> getAllAdvancedFilter () {
 		List<FilterInterface> list = new ArrayList<FilterInterface>();
-
-		list.add(new TrackMaskFilter());
 
 		return list;
 	}

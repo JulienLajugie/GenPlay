@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -55,6 +55,12 @@ public class MGDisplaySettings implements Serializable {
 	/** Deletion stripes can be drawn with an edge line */
 	public static int DRAW_DELETION_EDGE = YES_MG_OPTION;
 
+	/** Draw the blank of synchronization */
+	public static int DRAW_BLANK = YES_MG_OPTION;
+
+	/** Draw the reference genome stripes */
+	public static int DRAW_REFERENCE = YES_MG_OPTION;
+
 	/** Draw the inserted nucleotides over an insertion stripe */
 	public static int DRAW_INSERTION_LETTERS = YES_MG_OPTION;
 
@@ -63,6 +69,12 @@ public class MGDisplaySettings implements Serializable {
 
 	/** Draw the replaced nucleotide over a SNP stripe */
 	public static int DRAW_SNP_LETTERS = YES_MG_OPTION;
+
+	/** Draw the blank of synchronization letters */
+	public static int DRAW_BLANK_LETTERS = YES_MG_OPTION;
+
+	/** Draw the reference genome stripes letters */
+	public static int DRAW_REFERENCE_LETTERS = YES_MG_OPTION;
 
 
 	private static MGDisplaySettings 	instance;			// Instance of the class
@@ -116,7 +128,7 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
-	 * @return an instance of a {@link MGDisplaySettings}. 
+	 * @return an instance of a {@link MGDisplaySettings}.
 	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
 	public static MGDisplaySettings getInstance() {
@@ -173,8 +185,8 @@ public class MGDisplaySettings implements Serializable {
 			stripeSettings.changeTrack(oldTrack, newTrack);
 		}
 	}
-	
-	
+
+
 	/**
 	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
 	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
@@ -187,8 +199,8 @@ public class MGDisplaySettings implements Serializable {
 			stripeSettings.pasteData(copiedTrack, newTrack);
 		}
 	}
-	
-	
+
+
 	/**
 	 * When deleting a track, all its settings must be deleted.
 	 * The setting of a track can be mixed with the ones of other tracks.
@@ -201,7 +213,7 @@ public class MGDisplaySettings implements Serializable {
 			stripeSettings.deleteData(deleteTrack);
 		}
 	}
-	
+
 
 
 	/**

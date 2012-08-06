@@ -45,6 +45,7 @@ public abstract class ExportEngine {
 	protected Map<String, List<VariantType>> 	variationMap;	// map between genome names and their required variation
 	protected List<MGFilter> 					filterList;		// list of filter
 	protected String 							path;			// path of the new VCF file
+	protected boolean							isConversion = false;
 
 
 	/**
@@ -82,20 +83,22 @@ public abstract class ExportEngine {
 			errors = addErrorMessage(errors, "The variation map is empty.");
 		}
 
-		if (path == null) {
-			errors = addErrorMessage(errors, "The path of the new VCF file has been declared.");
-		} else {
-			File file = new File(path);
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				errors = addErrorMessage(errors, "The file could not created, the path may not be valid: " + path + ".");
-				e.printStackTrace();
+		if (!isConversion) {
+			if (path == null) {
+				errors = addErrorMessage(errors, "The path of the new VCF file has not been declared.");
+			} else {
+				File file = new File(path);
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					errors = addErrorMessage(errors, "The file could not created, the path may not be valid: " + path + ".");
+					e.printStackTrace();
+				}
+				if (!file.isFile()) {
+					errors = addErrorMessage(errors, "The path of the new VCF file is not a valid file: " + path + ".");
+				}
+				file.delete();
 			}
-			if (!file.isFile()) {
-				errors = addErrorMessage(errors, "The path of the new VCF file is not a valid file: " + path + ".");
-			}
-			file.delete();
 		}
 
 		if ((fileMap != null) && (variationMap != null)) {

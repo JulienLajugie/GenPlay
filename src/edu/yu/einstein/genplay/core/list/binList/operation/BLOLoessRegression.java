@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 public class BLOLoessRegression implements Operation<BinList> {
 
 	private final BinList 	binList;			// input list
-	private final int 		halfMovingWindow;	// half size of the moving window in bp
+	private final int 		movingWindowWidth;				// size of the moving window in bp
 	private final boolean	fillNullValues; 	// true to fill the null values
 	private boolean			stopped = false;	// true if the operation must be stopped
 
@@ -52,12 +52,12 @@ public class BLOLoessRegression implements Operation<BinList> {
 	 * Creates an instance of {@link BLOLoessRegression}
 	 * Applies a Loess regression on the BinList and returns the result in a new BinList.
 	 * @param binList input {@link BinList}
-	 * @param halfMovingWindow half size of the moving window in bp
+	 * @param movingWindowWidth size of the moving window in bp
 	 * @param fillNullValues set to true to fill the null values
 	 */
-	public BLOLoessRegression(BinList binList, int halfMovingWindow, boolean fillNullValues) {
+	public BLOLoessRegression(BinList binList, int movingWindowWidth, boolean fillNullValues) {
 		this.binList = binList;
-		this.halfMovingWindow = halfMovingWindow;
+		this.movingWindowWidth = movingWindowWidth;
 		this.fillNullValues = fillNullValues;
 	}
 
@@ -68,8 +68,8 @@ public class BLOLoessRegression implements Operation<BinList> {
 		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
 		final DataPrecision precision = binList.getPrecision();
 		final int binSize =  binList.getBinSize();
-		final int halfWidth = 2 * halfMovingWindow / binSize;		
-		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient 
+		final int halfWidth = movingWindowWidth / 2 / binSize;
+		// we create an array of coefficients. The index correspond to a distance and for each distance we calculate a coefficient
 		final double[] weights = new double[halfWidth + 1];
 		for(int i = 0; i <= halfWidth; i++) {
 			weights[i] = Math.pow(1d - Math.pow(i / (double) halfWidth,  3d), 3d);
@@ -77,13 +77,13 @@ public class BLOLoessRegression implements Operation<BinList> {
 		// we compute the Loess regression
 		for(short i = 0; i < binList.size(); i++) {
 			final List<Double> currentList = binList.get(i);
-			Callable<List<Double>> currentThread = new Callable<List<Double>>() {			 	
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
 				@Override
 				public List<Double> call() throws Exception {
 					List<Double> listToAdd = null;
 					if ((currentList != null) && (currentList.size() != 0)) {
 						listToAdd = ListFactory.createList(precision, currentList.size());
-						for(int j = 0; j < currentList.size() && !stopped; j++) {
+						for(int j = 0; (j < currentList.size()) && !stopped; j++) {
 							if ((currentList.get(j) != 0) || (fillNullValues)) {
 								// apply the array of coefficients centered on the current value to gauss
 								double sumWts = 0;
@@ -91,16 +91,16 @@ public class BLOLoessRegression implements Operation<BinList> {
 								double sumWtX2 = 0;
 								double sumWtY = 0;
 								double sumWtXY = 0;
-								for (int k = -halfWidth; k <= halfWidth && !stopped; k++) {
+								for (int k = -halfWidth; (k <= halfWidth) && !stopped; k++) {
 									int movingX = j + k; // x coordinate of the current point in the moving window
 									if((movingX >= 0) && (movingX < currentList.size()))  {
 										int distance = Math.abs(k);
 										if(currentList.get(j + k) != 0)  {
 											sumWts += weights[distance];
 											sumWtX += movingX * weights[distance];
-											sumWtX2 += (movingX ^ 2) * weights[distance];											
+											sumWtX2 += (movingX ^ 2) * weights[distance];
 											sumWtY += currentList.get(movingX) * weights[distance];
-											sumWtXY += movingX * currentList.get(movingX) * weights[distance];										
+											sumWtXY += movingX * currentList.get(movingX) * weights[distance];
 										}
 									}
 								}
@@ -108,9 +108,9 @@ public class BLOLoessRegression implements Operation<BinList> {
 								if(denom == 0) {
 									listToAdd.set(j, 0d);
 								} else {
-									double WLRSlope = (sumWts * sumWtXY - sumWtX * sumWtY) / denom;
-									double WLRIntercept = (sumWtX2 * sumWtY - sumWtX * sumWtXY) / denom;
-									double yLoess = WLRSlope * j + WLRIntercept;									
+									double WLRSlope = ((sumWts * sumWtXY) - (sumWtX * sumWtY)) / denom;
+									double WLRIntercept = ((sumWtX2 * sumWtY) - (sumWtX * sumWtXY)) / denom;
+									double yLoess = (WLRSlope * j) + WLRIntercept;
 									listToAdd.set(j, yLoess);
 								}
 							} else {
@@ -136,7 +136,7 @@ public class BLOLoessRegression implements Operation<BinList> {
 
 	@Override
 	public String getDescription() {
-		return "Operation: Loess Regression, half moving window size = " + halfMovingWindow + "bp";
+		return "Operation: Loess Regression, half moving window size = " + movingWindowWidth + "bp";
 	}
 
 

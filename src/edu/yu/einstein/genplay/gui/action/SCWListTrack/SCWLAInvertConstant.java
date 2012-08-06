@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,8 +44,8 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Invert (Constant)";	// action name
-	private static final String 	DESCRIPTION = 
-		"Invert the values of the selected track";						// tooltip
+	private static final String 	DESCRIPTION =
+			"Invert the values of the selected track";						// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
 
@@ -75,7 +75,7 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 				if (constant.doubleValue() == 0) {
 					JOptionPane.showMessageDialog(getRootPane(), "The constant must be different from 0", "Invalid Parameter", JOptionPane.WARNING_MESSAGE);
 				} else {
-					ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
+					ScoredChromosomeWindowList scwList = selectedTrack.getData();
 					operation = new SCWLOInvertConstant(scwList, constant.doubleValue());
 					return operation;
 				}
@@ -89,6 +89,6 @@ public final class SCWLAInvertConstant extends TrackListActionOperationWorker<Sc
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+		}
 	}
 }

@@ -24,9 +24,9 @@ package edu.yu.einstein.genplay.core.multiGenome.export;
 import java.io.IOException;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
 
 /**
  * @author Nicolas Fourel

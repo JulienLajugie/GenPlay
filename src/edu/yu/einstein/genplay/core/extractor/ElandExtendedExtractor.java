@@ -31,8 +31,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -251,7 +251,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 					// compute the read position with specified strand shift and read length
 					positionNumber = getMultiGenomePosition(chromo, positionNumber);
 					if (readHandler != null) {
-						ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, positionNumber, positionNumber, strand);
+						SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, positionNumber, positionNumber, strand);
 						positionNumber = resultStartStop.getStart();
 						// if a read length is specified we need to add a stop position
 						if (readHandler.getReadLength() != 0) {

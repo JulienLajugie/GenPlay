@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,7 +24,6 @@ package edu.yu.einstein.genplay.gui.action.binListTrack;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOGenerateSCWList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -51,8 +50,8 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 			"variable window track from the selected track"; 			// tooltip
 	private BinListTrack 			selectedTrack;					// selected track
 	private Track<?>				resultTrack;					// result track
-	
-	
+
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -68,7 +67,7 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
-	
+
 
 	@Override
 	public Operation<ScoredChromosomeWindowList> initializeOperation() {
@@ -76,20 +75,20 @@ public final class BLAGenerateSCWList  extends TrackListActionOperationWorker<Sc
 		if (selectedTrack != null) {
 			resultTrack = TrackChooser.getTracks(getRootPane(), "Choose A Track", "Generate the result on track:", getTrackList().getEmptyTracks());
 			if (resultTrack != null) {
-				Operation<ScoredChromosomeWindowList> operation = new BLOGenerateSCWList((BinList)selectedTrack.getData());
+				Operation<ScoredChromosomeWindowList> operation = new BLOGenerateSCWList(selectedTrack.getData());
 				return operation;
 			}
 		}
 		return null;
 	}
 
-	
+
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			SCWListTrack newTrack = new SCWListTrack(index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}
-	}	
+	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,11 +43,11 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 
 	private static final long serialVersionUID = 4027173438789911860L; 	// generated ID
 	private static final String 	ACTION_NAME = "Subtraction (Constant)";// action name
-	private static final String 	DESCRIPTION = 
-		"Subtract a constant to the scores of the selected track";			// tooltip
+	private static final String 	DESCRIPTION =
+			"Subtract a constant to the scores of the selected track";			// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -71,19 +71,19 @@ public final class SCWLASubtractConstant extends TrackListActionOperationWorker<
 		if (selectedTrack != null) {
 			Number constant = NumberOptionPane.getValue(getRootPane(), "Constant", "Enter a value C to subtract: f(x)=x - C", new DecimalFormat("0.0"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 0);
 			if ((constant != null) && (constant.doubleValue() != 0)) {
-				ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
+				ScoredChromosomeWindowList scwList = selectedTrack.getData();
 				operation = new SCWLOSubtractConstant(scwList, constant.doubleValue());
 				return operation;
 			}
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+		}
 	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -48,12 +48,12 @@ public class SCWLORepartition implements Operation<double [][][]>{
 	/**
 	 * Window count plot
 	 */
-	public static final int WINDOW_COUNT_GRAPH = 1; 
+	public static final int WINDOW_COUNT_GRAPH = 1;
 
 	/**
 	 * Base count plot
 	 */
-	public static final int BASE_COUNT_GRAPH = 2;	
+	public static final int BASE_COUNT_GRAPH = 2;
 
 
 	/**
@@ -74,7 +74,7 @@ public class SCWLORepartition implements Operation<double [][][]>{
 		if(scoreBinSize <= 0) {
 			throw new IllegalArgumentException("the size of the score bins must be strictly positive");
 		}
-		double[][][] finalResult = new double[scwListArray.length][][];	
+		double[][][] finalResult = new double[scwListArray.length][][];
 		for (int i = 0; i < scwListArray.length; i++) {
 			finalResult[i] = singleSCWListResult(scwListArray[i]);
 		}
@@ -83,7 +83,7 @@ public class SCWLORepartition implements Operation<double [][][]>{
 
 
 	/**
-	 * Generates the scatter plot data for the specified list 
+	 * Generates the scatter plot data for the specified list
 	 * @param scwList {@link ScoredChromosomeWindowList}
 	 * @return the scater plot data for the specified list
 	 * @throws InterruptedException
@@ -103,30 +103,30 @@ public class SCWLORepartition implements Operation<double [][][]>{
 		// meaning that we need to have the value for i + 1
 		double result[][] = new double[(int)(distanceMinMax / scoreBinSize) + 2][2];
 		int i = 0;
-		// we add max + scoreBinSize to have a value for i + 1 (cf previous comment) 
-		while ((startPoint + i * scoreBinSize) <= (max + scoreBinSize) && !stopped) {
-			result[i][0] = startPoint + i * scoreBinSize;
+		// we add max + scoreBinSize to have a value for i + 1 (cf previous comment)
+		while (((startPoint + (i * scoreBinSize)) <= (max + scoreBinSize)) && !stopped) {
+			result[i][0] = startPoint + (i * scoreBinSize);
 			i++;
 		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<double[]>> threadList = new ArrayList<Callable<double[]>>();
 
-		for (final List<ScoredChromosomeWindow> currentList: scwList) { 
-			Callable<double[]> currentThread = new Callable<double[]>() {	
+		for (final List<ScoredChromosomeWindow> currentList: scwList) {
+			Callable<double[]> currentThread = new Callable<double[]>() {
 				@Override
-				public double[] call() throws Exception {				
+				public double[] call() throws Exception {
 					if (currentList == null) {
 						return null;
 					}
 					// create an array for the counts
 					double[] chromoResult = new double[(int)(distanceMinMax / scoreBinSize) + 2];
 					// count the bins
-					for(int j = 0; j < currentList.size() && !stopped; j++) {
+					for(int j = 0; (j < currentList.size()) && !stopped; j++) {
 						if (currentList.get(j).getScore() != 0) {
 							if (graphType == WINDOW_COUNT_GRAPH) {
 								chromoResult[(int)((currentList.get(j).getScore() - startPoint) / scoreBinSize)]++;
-							} else if (graphType == BASE_COUNT_GRAPH) {							
+							} else if (graphType == BASE_COUNT_GRAPH) {
 								chromoResult[(int)((currentList.get(j).getScore() - startPoint) / scoreBinSize)] += currentList.get(j).getStop() - currentList.get(j).getStart();
 							} else {
 								throw new IllegalArgumentException("Invalid Plot Type");
@@ -142,7 +142,7 @@ public class SCWLORepartition implements Operation<double [][][]>{
 
 		List<double[]> threadResult = op.startPool(threadList);
 		if (threadResult == null) {
-			return null;		
+			return null;
 		}
 
 		for (double [] currentResult: threadResult) {

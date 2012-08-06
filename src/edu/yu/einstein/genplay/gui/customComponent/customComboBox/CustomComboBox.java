@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBox
  * 
  * @author Nicolas Fourel
  * @version 0.1
- * @param <T> 
+ * @param <T>
  */
 public abstract class CustomComboBox<T> extends JComboBox implements CustomComboBoxListener {
 
@@ -55,6 +55,7 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 
 	protected List<T> elements;		// List of elements
 	private final CustomComboBoxRenderer renderer;
+	protected CustomComboBoxEvent lastEvent;
 
 
 	/**
@@ -62,6 +63,7 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 	 */
 	public CustomComboBox () {
 		super();
+		lastEvent = null;
 		elements = new ArrayList<T>();
 		resetCombo();
 		setSelectedItem(ADD_TEXT);
@@ -76,7 +78,7 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 	 * @param e the element
 	 */
 	public void addElement (T e) {
-		if (e != null && !elements.contains(e)) {
+		if ((e != null) && !elements.contains(e)) {
 			elements.add(e);
 		}
 	}
@@ -105,18 +107,29 @@ public abstract class CustomComboBox<T> extends JComboBox implements CustomCombo
 		}
 		this.addItem(ADD_TEXT);
 	}
-	
+
 
 	/**
 	 * @return the renderer
 	 */
+	@Override
 	public CustomComboBoxRenderer getRenderer() {
 		return renderer;
 	}
 
 
 	@Override
-	public abstract void customComboBoxChanged(CustomComboBoxEvent evt);
+	public void customComboBoxChanged(CustomComboBoxEvent evt) {
+		lastEvent = evt;
+		customComboBoxHasChanged(evt);
+	}
+
+
+	/**
+	 * Called when a box has changed
+	 * @param evt the combo box event
+	 */
+	protected abstract void customComboBoxHasChanged(CustomComboBoxEvent evt);
 
 
 	/**

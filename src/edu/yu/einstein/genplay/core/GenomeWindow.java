@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.exception.ChromosomeWindowException;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
@@ -34,17 +35,17 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * The GenomeWindow class represents a window on the genome. 
+ * The GenomeWindow class represents a window on the genome.
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class GenomeWindow extends ChromosomeWindow implements Serializable, Cloneable, Comparable<ChromosomeWindow> {
+public final class GenomeWindow extends SimpleChromosomeWindow implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 8873056842762282328L; 	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private Chromosome chromosome;	// Chromosome of the window
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -66,8 +67,8 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 		in.readInt();
 		chromosome = (Chromosome) in.readObject();
 	}
-	
-	
+
+
 	/**
 	 * Default constructor.
 	 */
@@ -75,7 +76,7 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 		super();
 	}
 
-	
+
 	/**
 	 * Creates an instance of {@link GenomeWindow}.
 	 * @param chromosome a chromosome
@@ -86,10 +87,10 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 		super(start, stop);
 		this.chromosome = chromosome;
 	}
-	
-	
+
+
 	/**
-	 * Creates an instance of {@link GenomeWindow} from a String. 
+	 * Creates an instance of {@link GenomeWindow} from a String.
 	 * @param genomeWindowStr String following the format "chr:start-stop" (ex: "chr1:100-120")
 	 * @param projectChromosome a {@link ProjectChromosome}
 	 * @throws ChromosomeWindowException
@@ -100,7 +101,7 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 		chromosome = projectChromosome.get(Utils.split(genomeWindowStr, ':')[0].trim());
 	}
 
-	
+
 	/**
 	 * @return the chromosome
 	 */
@@ -108,15 +109,15 @@ public final class GenomeWindow extends ChromosomeWindow implements Serializable
 		return chromosome;
 	}
 
-	
+
 	/**
 	 * @param chromosome the chromosome to set
 	 */
 	public final void setChromosome(Chromosome chromosome) {
 		this.chromosome = chromosome;
 	}
-	
-	
+
+
 	@Override
 	public String toString() {
 		return chromosome.toString() + ":" + super.toString();

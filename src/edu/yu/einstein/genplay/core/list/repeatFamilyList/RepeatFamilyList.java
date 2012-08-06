@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
@@ -103,7 +103,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 					// Hashtable indexed by repeat family name
 					Hashtable<String, Integer> indexTable = new Hashtable<String, Integer>();;
 					for(int j = 0; j < startList.size(currentChromosome); j++) {
-						ChromosomeWindow currentRepeat = new ChromosomeWindow(startList.get(currentChromosome, j), stopList.get(currentChromosome, j));
+						SimpleChromosomeWindow currentRepeat = new SimpleChromosomeWindow(startList.get(currentChromosome, j), stopList.get(currentChromosome, j));
 						String familyName = familyNameList.get(currentChromosome, j);
 						// case when a chromosome doesn't have any data yet
 						if (resultList.size() == 0) {
@@ -171,7 +171,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 			for (RepeatFamily currentFamily : currentChromosomeList) {
 				if (currentFamily.repeatCount() > 1) {
 					RepeatFamily fittedFamily = new RepeatFamily(currentFamily.getName());
-					fittedFamily.addRepeat(new ChromosomeWindow(currentFamily.getRepeat(0)));
+					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
 					int i = 1;
 					int j = 0;
 					while (i < currentFamily.repeatCount()) {
@@ -182,7 +182,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 							i++;
 							distance = (currentFamily.getRepeat(i).getStart() - fittedFamily.getRepeat(j).getStop()) * fittedXRatio;
 						}
-						fittedFamily.addRepeat(new ChromosomeWindow(currentFamily.getRepeat(i)));
+						fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(i)));
 						i++;
 						j++;						
 					}
@@ -202,7 +202,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @return The index of a Repeat with a position start equals to value. 
 	 * Index of the first Repeat with a start position superior to value if nothing found.
 	 */
-	private int findStart(ArrayList<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
+	private int findStart(ArrayList<SimpleChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -225,7 +225,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @return The index of a Repeat with a position stop equals to value. 
 	 * Index of the first Repeat with a stop position superior to value if nothing found.
 	 */
-	private int findStop(ArrayList<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
+	private int findStop(ArrayList<SimpleChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;

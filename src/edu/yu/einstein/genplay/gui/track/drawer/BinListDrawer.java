@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,7 +44,7 @@ public final class BinListDrawer extends CurveDrawer {
 	/**
 	 * Creates an instance of {@link BinListDrawer}
 	 * @param graphics {@link Graphics} of a track
-	 * @param trackWidth width of a track 
+	 * @param trackWidth width of a track
 	 * @param trackHeight height of a track
 	 * @param scoreMin score minimum to display
 	 * @param scoreMax score maximum to display
@@ -70,11 +70,11 @@ public final class BinListDrawer extends CurveDrawer {
 			}
 			int currentMinX = projectWindow.getGenomeWindow().getStart();
 			int currentMaxX = projectWindow.getGenomeWindow().getStop();
-			// Compute the Y = 0 position 
+			// Compute the Y = 0 position
 			int screenY0 = scoreToScreenPos(0);
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
+			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
 			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
@@ -100,7 +100,7 @@ public final class BinListDrawer extends CurveDrawer {
 					}
 				}
 				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;			
+				currentGenomePosition = firstGenomePosition + (i * windowData);
 			}
 		}
 	}
@@ -116,7 +116,7 @@ public final class BinListDrawer extends CurveDrawer {
 			graphics.setColor(trackColor);
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
+			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
 			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
@@ -126,7 +126,7 @@ public final class BinListDrawer extends CurveDrawer {
 					double currentIntensity = data[currentIndex];
 					double nextIntensity = data[nextIndex];
 					//int screenX1Position = genomePosToScreenPos(currentGenomePosition);
-					int screenX1Position = (int)Math.round((double)(currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());
+					int screenX1Position = (int)Math.round((currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());
 					int screenX2Position = screenX1Position + screenWindowWidth;
 					int screenY1Position = scoreToScreenPos(currentIntensity);
 					int screenY2Position = scoreToScreenPos(nextIntensity);
@@ -134,13 +134,13 @@ public final class BinListDrawer extends CurveDrawer {
 						graphics.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);
 					} else if ((currentIntensity != 0) && (nextIntensity == 0)) {
 						graphics.drawLine(screenX1Position, screenY1Position, screenX2Position, screenY1Position);
-						graphics.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);					
+						graphics.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);
 					} else if ((currentIntensity != 0) && (nextIntensity != 0)) {
 						graphics.drawLine(screenX1Position, screenY1Position, screenX2Position, screenY2Position);
 					}
 				}
 				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;	
+				currentGenomePosition = firstGenomePosition + (i * windowData);
 			}
 		}
 	}
@@ -155,7 +155,7 @@ public final class BinListDrawer extends CurveDrawer {
 			int currentMaxX = projectWindow.getGenomeWindow().getStop();
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
+			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
 			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
@@ -167,7 +167,7 @@ public final class BinListDrawer extends CurveDrawer {
 					graphics.fillRect(screenXPosition, 0, screenWindowWidth, trackHeight);
 				}
 				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;			
+				currentGenomePosition = firstGenomePosition + (i * windowData);
 			}
 		}
 	}
@@ -183,7 +183,7 @@ public final class BinListDrawer extends CurveDrawer {
 			graphics.setColor(trackColor);
 			// First position
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
-			int currentGenomePosition = firstGenomePosition;		
+			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
 			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
 			while (currentGenomePosition < currentMaxX) {
@@ -199,12 +199,12 @@ public final class BinListDrawer extends CurveDrawer {
 					} else {
 						screenX2Position = screenX1Position + screenWindowWidth;
 					}
-					
+
 					graphics.drawLine(screenX1Position, screenYPosition, screenX2Position, screenYPosition);
 				}
 				i++;
-				currentGenomePosition = firstGenomePosition + i * windowData;	
-			}	
+				currentGenomePosition = firstGenomePosition + (i * windowData);
+			}
 		}
 	}
 }

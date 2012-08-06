@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,6 +29,9 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -41,9 +44,9 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 public final class BinListAsWiggleWriter extends BinListWriter implements Stoppable {
 
 	private static final int ZERO_COUNT = 15;	// how many successive 0 values are needed to print a new a header line
-	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
-	
-	
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
+
+
 	/**
 	 * Creates an instance of {@link BinListAsWiggleWriter}.
 	 * @param outputFile output {@link File}
@@ -59,6 +62,8 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
 		try {
+			boolean isMultiGenome = ProjectManager.getInstance().isMultiGenomeProject() && (fullGenomeName != null) && (allele != null);
+
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
@@ -75,35 +80,44 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 						j++;
 					}
 					while (j < currentList.size()) {
-						// we print a header
-						writer.write("fixedStep chrom=" + currentChromosome.getName() + " start=" + j * binSize + " step=" + binSize + " span=" + binSize);
-						writer.newLine();
-						int cpt = 0;
-						// if there is more than ZERO_COUNT 0 values we print a new header
-						while ((j < currentList.size()) && ((cpt < ZERO_COUNT) || (currentList.get(j) == 0))) {
-							// if the operation need to be stopped we close the writer and delete the file 
-							if (needsToBeStopped) {
-								writer.close();
-								outputFile.delete();
-								throw new InterruptedException();
-							}
-							if (currentList.get(j) == 0) {
-								cpt++;
-							} else {
-								if (cpt != 0) {
-									// case where there were less than ZERO_COUNT 0 values so we need to print them
-									for (int k = 0; k < cpt; k++) {
-										writer.write(Double.toString(0d));
-										writer.newLine();						
-									}
-									cpt = 0;
+						int start = j * binSize;
+						if (isMultiGenome) {
+							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
+						}
+
+						if (start != -1) {
+							// we print a header
+							writer.write("fixedStep chrom=" + currentChromosome.getName() + " start=" + start + " step=" + binSize + " span=" + binSize);
+							writer.newLine();
+							int cpt = 0;
+							// if there is more than ZERO_COUNT 0 values we print a new header
+							while ((j < currentList.size()) && ((cpt < ZERO_COUNT) || (currentList.get(j) == 0))) {
+								// if the operation need to be stopped we close the writer and delete the file
+								if (needsToBeStopped) {
+									writer.close();
+									outputFile.delete();
+									throw new InterruptedException();
 								}
-								writer.write(Double.toString(currentList.get(j)));
-								writer.newLine();
+								if (currentList.get(j) == 0) {
+									cpt++;
+								} else {
+									if (cpt != 0) {
+										// case where there were less than ZERO_COUNT 0 values so we need to print them
+										for (int k = 0; k < cpt; k++) {
+											writer.write(Double.toString(0d));
+											writer.newLine();
+										}
+										cpt = 0;
+									}
+									writer.write(Double.toString(currentList.get(j)));
+									writer.newLine();
+								}
+								j++;
 							}
-							j++;							
-						}						
-					}					
+						} else {
+							j++;
+						}
+					}
 				}
 			}
 		} finally {
@@ -112,8 +126,8 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Stops the writer while it's writing a file
 	 */

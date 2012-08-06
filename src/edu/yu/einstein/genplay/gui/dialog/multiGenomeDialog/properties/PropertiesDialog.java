@@ -44,10 +44,8 @@ import javax.swing.tree.TreePath;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForAdvancedFilters;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForFilters;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.managers.EditingDialogManagerForStripes;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.AdvancedFiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
@@ -109,7 +107,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	private final SettingsPanel 					settingsPanel;			// the settings panel
 	private final TableEditingPanel<StripesData> 	stripesPanel;			// the stripes panel
 	private final TableEditingPanel<FiltersData> 	fileFiltersPanel;		// the file filters panel
-	private final TableEditingPanel<FiltersData> 	advancedFiltersPanel;	// the advanced filters panel
+	//private final TableEditingPanel<FiltersData> 	advancedFiltersPanel;	// the advanced filters panel DO NOT ERASE ANYTHING ABOUT ADVANCED FILTER, WE MAY NEED IT!!!
 
 
 	/**
@@ -152,7 +150,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		fileFiltersPanel = new TableEditingPanel<FiltersData>("VCF Files Filters settings", new FiltersTable(), new EditingDialogManagerForFilters());
 
 		// Creates the advanced filters panel
-		advancedFiltersPanel = new TableEditingPanel<FiltersData>("Advanced Filters settings", new AdvancedFiltersTable(), new EditingDialogManagerForAdvancedFilters());
+		//advancedFiltersPanel = new TableEditingPanel<FiltersData>("Advanced Filters settings", new AdvancedFiltersTable(), new EditingDialogManagerForAdvancedFilters());
 
 		// Dialog settings
 		setTitle("Multi-Genome Project Properties");
@@ -187,11 +185,13 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			setScrollableCenterPanel(generalPanel);
 		} else if (accessor.equals(SETTINGS)) {
 			setScrollableCenterPanel(settingsPanel);
-		} else if (accessor.equals(FILTERS_FILE)) {
+		} else if (accessor.equals(FILTERS)) {
+			setScrollableCenterPanel(fileFiltersPanel);
+		} /*else if (accessor.equals(FILTERS_FILE)) {
 			setScrollableCenterPanel(fileFiltersPanel);
 		} else if (accessor.equals(FILTERS_ADVANCED)) {
 			setScrollableCenterPanel(advancedFiltersPanel);
-		} else if (accessor.equals(STRIPES)) {
+		}*/ else if (accessor.equals(STRIPES)) {
 			setScrollableCenterPanel(stripesPanel);
 		}
 
@@ -258,14 +258,27 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		} else if (nodeInfo.equals(STATISTICS)) {
 			VCFFile vcfFile = retrieveReader(node.getParent().toString());
 			setScrollableCenterPanel(new StatisticPanel(vcfFile));
-		} else if (nodeInfo.equals(FILTERS_FILE)) {
+		} else if (nodeInfo.equals(FILTERS)) {
+			setScrollableCenterPanel(fileFiltersPanel);
+		}/* else if (nodeInfo.equals(FILTERS_FILE)) {
 			setScrollableCenterPanel(fileFiltersPanel);
 		} else if (nodeInfo.equals(FILTERS_ADVANCED)) {
-			setScrollableCenterPanel(advancedFiltersPanel);
-		} else if (nodeInfo.equals(STRIPES)) {
+			//setScrollableCenterPanel(advancedFiltersPanel);
+			setScrollableCenterPanel(getEmptyPanel());
+		}*/ else if (nodeInfo.equals(STRIPES)) {
 			setScrollableCenterPanel(stripesPanel);
 		}
 	}
+
+	/**
+	 * TEST
+	 * @return
+	 */
+	/*private JPanel getEmptyPanel () {
+		JPanel emptyPane = new JPanel();
+		emptyPane.add(new JLabel("Coming soon..."));
+		return emptyPane;
+	}*/
 
 
 	/**
@@ -331,8 +344,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		fileFiltersPanel.refreshPanel();
 
 		// Advanced Filter settings panel
-		advancedFiltersPanel.setData(settings.getFilterSettings().getDuplicatedAdvancedFiltersList());
-		advancedFiltersPanel.refreshPanel();
+		/*advancedFiltersPanel.setData(settings.getFilterSettings().getDuplicatedAdvancedFiltersList());
+		advancedFiltersPanel.refreshPanel();*/
 
 		// Stripes settings panel
 		stripesPanel.setData(settings.getStripeSettings().getStripesList());
@@ -386,9 +399,9 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	public List<FiltersData> getFiltersData () {
 		List<FiltersData> list = fileFiltersPanel.getData();
 
-		for (FiltersData data: advancedFiltersPanel.getData()) {
+		/*for (FiltersData data: advancedFiltersPanel.getData()) {
 			list.add(data);
-		}
+		}*/
 
 		return list;
 	}
@@ -406,7 +419,8 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 * @return an array of Strings containing the 4 main items (GENERAL, SETTINGS, FILTERS_BASIC, FILTERS_ADVANCED, STRIPES)
 	 */
 	public static String[] getPropertiesDialogMainItems () {
-		String[] items = {GENERAL, SETTINGS, FILTERS_FILE, FILTERS_ADVANCED, STRIPES};
+		//String[] items = {GENERAL, SETTINGS, FILTERS_FILE, FILTERS_ADVANCED, STRIPES};
+		String[] items = {GENERAL, SETTINGS, FILTERS, STRIPES};
 		return items;
 	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -49,12 +49,12 @@ public class SCWLATransfrag extends TrackListAction {
 
 	private static final long serialVersionUID = 4913086320948928688L;
 	private static final String 	ACTION_NAME = "Transfrag";			// action name
-	private static final String 	DESCRIPTION = 
-		"Define regions separated by gaps of a specified length " +
-		"and compute the average/max/sum of these regions";				// tooltip
+	private static final String 	DESCRIPTION =
+			"Define regions separated by gaps of a specified length " +
+					"and compute the average/max/sum of these regions";				// tooltip
 	private SCWListTrack 			selectedTrack;						// selected track
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -77,16 +77,16 @@ public class SCWLATransfrag extends TrackListAction {
 		selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			final ScoredChromosomeWindowList scwList = selectedTrack.getData();
-			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);			
+			final TransfragDialog tfDialog = new TransfragDialog(TransfragDialog.SCWLIST_TRANSFRAG);
 			int res = tfDialog.showTransfragDialog(getRootPane());
 			if (res == TransfragDialog.APPROVE_OPTION) {
 				int resType = tfDialog.getResultType();
 				final ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
 				if(operationType != null) {
-					try {						
-						if (resType == TransfragDialog.GENERATE_GENE_LIST) {							
+					try {
+						if (resType == TransfragDialog.GENERATE_GENE_LIST) {
 							new TrackListActionOperationWorker<GeneList>(){
-								
+
 								private static final long serialVersionUID = 1L;
 								@Override
 								public Operation<GeneList> initializeOperation()
@@ -99,15 +99,15 @@ public class SCWLATransfrag extends TrackListAction {
 									if (actionResult != null) {
 										int selectedIndex = getTrackList().getSelectedTrackIndex();
 										GeneListTrack glt = new GeneListTrack(selectedIndex + 1, actionResult);
-										getTrackList().setTrack(selectedIndex, glt, selectedTrack.getPreferredHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+										getTrackList().setTrack(selectedIndex, glt, selectedTrack.getPreferredHeight(), selectedTrack.getName(), selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 									}
 								}
 							}.actionPerformed(null);
-							
-													
+
+
 						} else if (resType == TransfragDialog.GENERATE_SCORED_LIST) {
 							new TrackListActionOperationWorker<ScoredChromosomeWindowList>(){
-								
+
 								private static final long serialVersionUID = 1L;
 								@Override
 								public Operation<ScoredChromosomeWindowList> initializeOperation()
@@ -122,7 +122,7 @@ public class SCWLATransfrag extends TrackListAction {
 									}
 								}
 							}.actionPerformed(null);
-						}					
+						}
 					} catch (Exception err) {
 						ExceptionManager.handleException(getRootPane(), err, "Error generating Transfrag");
 						err.printStackTrace();
@@ -133,19 +133,19 @@ public class SCWLATransfrag extends TrackListAction {
 	}
 
 
-//	public Operation<ScoredChromosomeWindowList> initializeOperation() {
-//	selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
-//	if (selectedTrack != null) {
-//		ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
-//		Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
-//		if (gap != null) {
-//			ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
-//			if (operationType != null) {						
-//				Operation<ScoredChromosomeWindowList> operation = new SCWLOTransfrag(scwList, gap.intValue(), operationType);
-//				return operation;
-//			}
-//		}
-//	}
-//	return null;
-//}
+	//	public Operation<ScoredChromosomeWindowList> initializeOperation() {
+	//	selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
+	//	if (selectedTrack != null) {
+	//		ScoredChromosomeWindowList scwList = ((SCWListTrack)selectedTrack).getData();
+	//		Number gap = NumberOptionPane.getValue(getRootPane(), "Gap", "<html>Select a length for the gap between two island<br><center>in number of window</center></html>", new DecimalFormat("0"), 1, Integer.MAX_VALUE, 1);
+	//		if (gap != null) {
+	//			ScoreCalculationMethod operationType = Utils.chooseScoreCalculation(getRootPane());
+	//			if (operationType != null) {
+	//				Operation<ScoredChromosomeWindowList> operation = new SCWLOTransfrag(scwList, gap.intValue(), operationType);
+	//				return operation;
+	//			}
+	//		}
+	//	}
+	//	return null;
+	//}
 }

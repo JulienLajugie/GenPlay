@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,7 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.util.DoubleLists;
@@ -45,7 +46,7 @@ import edu.yu.einstein.genplay.util.DoubleLists;
  * @version 0.1
  */
 final class OverLappingEngine implements Serializable {
-	
+
 	private static final long serialVersionUID = 7462066006408418433L;
 	private List<ScoredChromosomeWindow> 	list;					//original list of value
 	private IntArrayAsIntegerList 			newStartList;			//new list of start positions
@@ -54,8 +55,8 @@ final class OverLappingEngine implements Serializable {
 	private List<OverLappingNode> 			currentListOfNode;		//current list of nodes
 	private List<Integer> 					currentListOfPosition;	//current list of positions
 	private List<Double> 					currentListOfScore;		//current list of scores
-	private ScoreCalculationMethod			scm;
-	
+	private final ScoreCalculationMethod			scm;
+
 	/**
 	 * OverLapEngine constructor
 	 * The OverLapManagement class controls this class
@@ -64,7 +65,7 @@ final class OverLappingEngine implements Serializable {
 	protected OverLappingEngine (ScoreCalculationMethod scm) {
 		this.scm = scm;
 	}
-	
+
 	/**
 	 * init method
 	 * This method initializes and generates the new list of:
@@ -83,10 +84,10 @@ final class OverLappingEngine implements Serializable {
 		this.newScoresList = new ArrayList<Double>();
 		generateList();
 	}
-	
-	
+
+
 	////////////////////////////////////////////////	Generate list
-	
+
 	/**
 	 * generateList method
 	 * This method generates all the new lists:
@@ -114,7 +115,7 @@ final class OverLappingEngine implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
 	 * overLappingManagement method
 	 * This method manage the overlapping for a specific index
@@ -141,7 +142,7 @@ final class OverLappingEngine implements Serializable {
 		}
 		return (index + (this.currentListOfNode.size()/2));	//return the next index after the overlapping region
 	}
-	
+
 	/**
 	 * generatePositionsAndNodesLists method
 	 * This method generates the list of nodes and the list of positions contained in the overlapping regions.
@@ -174,10 +175,10 @@ final class OverLappingEngine implements Serializable {
 				}
 			}
 		}
-		Collections.sort(this.currentListOfNode);	//the nodes list is sorted 
-		Collections.sort(this.currentListOfPosition);	//the position list is sorted 
+		Collections.sort(this.currentListOfNode);	//the nodes list is sorted
+		Collections.sort(this.currentListOfPosition);	//the position list is sorted
 	}
-	
+
 	/**
 	 * generateScoreList method
 	 * This method generates the current score list
@@ -197,7 +198,7 @@ final class OverLappingEngine implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
 	 * getScore method
 	 * This method calculates the score for the list of scored chromosome window
@@ -211,84 +212,88 @@ final class OverLappingEngine implements Serializable {
 		for (ScoredChromosomeWindow scw: linkedList) {
 			list.add(scw.getScore());
 		}
-		switch (this.scm) {
-			case AVERAGE:
-				score = DoubleLists.average(list);
-				break;
-			case MAXIMUM:
-				score = DoubleLists.maxNoZero(list);
-				break;
-			case SUM:
-				score = DoubleLists.sum(list);
-				break;
-			default:
-				break;
+		if (this.scm == null) {
+		    score = SCWLOptions.DEFAULT_SCORE;
+		} else {
+        		switch (this.scm) {
+        		case AVERAGE:
+        			score = DoubleLists.average(list);
+        			break;
+        		case MAXIMUM:
+        			score = DoubleLists.maxNoZero(list);
+        			break;
+        		case SUM:
+        			score = DoubleLists.sum(list);
+        			break;
+        		default:
+        			break;
+        		}
 		}
 		return score;
 	}
-	
-	
+
+
 	////////////////////////////////////////////////	List management methods (add & get)
-	
+
 	private int getOriginalStart (int index) {
 		return this.list.get(index).getStart();
 	}
-	
+
 	private int getOriginalStop (int index) {
 		return this.list.get(index).getStop();
 	}
-	
+
 	private double getOriginalScore (int index) {
 		return this.list.get(index).getScore();
 	}
-	
+
 	private void addInStart (int value) {
 		if (!this.newStartList.contains(value)) {
 			this.newStartList.add(value);
 		}
 	}
-	
+
 	private void addInStop (int value) {
 		if (!this.newStopList.contains(value)) {
 			this.newStopList.add(value);
 		}
 	}
-	
+
 	private void addPosition (Integer value) {
 		if (!this.currentListOfPosition.contains(value)) {
 			this.currentListOfPosition.add(value);
 		}
 	}
-	
+
 	private void addNode (OverLappingNode node) {
 		if (!this.currentListOfNode.contains(node)) {
 			this.currentListOfNode.add(node);
 		}
 	}
-	
-	
+
+
 	////////////////////////////////////////////////	GETTERS
 
 	protected IntArrayAsIntegerList getNewStartList() {
 		return this.newStartList;
 	}
-	
+
 	protected IntArrayAsIntegerList getNewStopList() {
 		return this.newStopList;
 	}
-	
+
 	protected List<Double> getNewScoreList() {
 		return this.newScoresList;
 	}
-	
-	protected List<ScoredChromosomeWindow> getNewList () {
-		List<ScoredChromosomeWindow> list = new ArrayList<ScoredChromosomeWindow>();
+
+	protected List<SimpleScoredChromosomeWindow> getNewList () {
+		List<SimpleScoredChromosomeWindow> list = new ArrayList<SimpleScoredChromosomeWindow>();
 		for (int i = 0; i < this.newStartList.size(); i++) {
-			list.add(new ScoredChromosomeWindow(this.newStartList.get(i),
-												this.newStopList.get(i),
-												this.newScoresList.get(i)));
+			list.add(new SimpleScoredChromosomeWindow(this.newStartList.get(i),
+					this.newStopList.get(i),
+					this.newScoresList.get(i)));
 		}
 		return list;
 	}
-	
+
 }

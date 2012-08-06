@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -56,7 +56,7 @@ public class MGReference implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private MGAllele allele;	// single allele of the reference genome
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -78,7 +78,7 @@ public class MGReference implements Serializable {
 		in.readInt();
 		allele = (MGAllele) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link MGReference}
@@ -86,8 +86,8 @@ public class MGReference implements Serializable {
 	protected MGReference () {
 		allele = new MGAllele();
 	}
-	
-	
+
+
 	/**
 	 * @return the name of the reference genome
 	 */
@@ -130,7 +130,7 @@ public class MGReference implements Serializable {
 			int nextIndex = currentIndex + 1;																			// set the next index to 1
 			int lastIndex = listOfMGOffset.size() - 1;																	// set the last index to the offset list - 1
 
-			while (currentIndex <= lastIndex) {																			// while the current index is under or equal to the last index 
+			while (currentIndex <= lastIndex) {																			// while the current index is under or equal to the last index
 				MGOffset currentMGOffset = listOfMGOffset.get(currentIndex);											// we get the current offset
 				MGOffset nextMGOffset = null;																			// the next offset is set to null by default
 				if (nextIndex <= lastIndex) {																			// if the next index is valid (inferior or equal to the last index)
@@ -149,16 +149,16 @@ public class MGReference implements Serializable {
 
 		allele.setOffsetList(chromosomeListOfListTmp);																	// we change the current chromosome list of offset by the temporary one
 	}
-	
-	
+
+
 	/**
 	 * Compacts the list of {@link MGOffset}
 	 */
 	public void compact () {
 		allele.compact();
 	}
-	
-	
+
+
 	/**
 	 * Synchronizes the position of the reference genome.
 	 */
@@ -171,12 +171,7 @@ public class MGReference implements Serializable {
 				MGOffset currentOffset = offsetList.get(j);
 				int position = currentOffset.getPosition() + 1;
 				value += currentOffset.getValue();
-				MGOffset newOffset;
-				if (j == 0) {
-					newOffset = new MGOffset(position, value);
-				} else {
-					newOffset = new MGOffset(position, value);
-				}
+				MGOffset newOffset = new MGOffset(position, value);
 				offsetList.set(j, newOffset);
 			}
 		}
@@ -188,7 +183,6 @@ public class MGReference implements Serializable {
 	 */
 	public void show () {
 		System.out.println("Reference genome: " + getName());
-		System.out.println("Allele");
 		allele.show();
 	}
 

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.dialog.genomeSelectionPanel.GenomeSelectionPa
 
 
 /**
- * Dialog for choosing a genome. 
+ * Dialog for choosing a genome.
  * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
@@ -54,25 +54,24 @@ public class GenomeSelectionDialog extends JDialog {
 	 * Return value when Cancel has been clicked.
 	 */
 	public static final int 	CANCEL_OPTION = 1;
-	
+
 	private static final 	long 		serialVersionUID = -2863825210102188370L;	// generated ID
 	private static final 	int 		dialogWidth 		= 180;					// dialog width
-	private					GenomeSelectionPanel panel;
+	private final					GenomeSelectionPanel panel;
 	private 				int			approved = CANCEL_OPTION;					// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
-	
-	
+
+
 	/**
 	 * Creates an instance of a {@link GenomeSelectionDialog}
-	 * @param genomeNames name of genomes to display
 	 */
-	public GenomeSelectionDialog(Object[] genomeNames) {
+	public GenomeSelectionDialog() {
 		super();
-		
+
 		// Init
 		setTitle("Synchronization parameters");
 		setResizable(false);
 		setVisible(false);
-		
+
 		//Layout
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
@@ -80,34 +79,34 @@ public class GenomeSelectionDialog extends JDialog {
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
-		
+
 		panel = new GenomeSelectionPanel();
-		
+
 		// Insert the genome label
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		add(panel, gbc);
-		
+
 		// Insert the buttons panel
 		gbc.gridy = 1;
 		add(getButtonPanel(), gbc);
-		
+
 		pack();
 	}
-	
-	
+
+
 	private JPanel getButtonPanel () {
 		JPanel panel = new JPanel();
-		
+
 		//Dimension
 		Dimension panelDim = new Dimension(dialogWidth, 40);
 		panel.setSize(panelDim);
 		panel.setPreferredSize(panelDim);
 		panel.setMinimumSize(panelDim);
 		panel.setMaximumSize(panelDim);
-		
+
 		Dimension buttonDim = new Dimension(50, 25);
-		
+
 		//Confirm button
 		JButton confirm = new JButton("Ok");
 		confirm.setToolTipText("Ok");
@@ -122,7 +121,7 @@ public class GenomeSelectionDialog extends JDialog {
 				validChoice();
 			}
 		});
-		
+
 		//Cancel button
 		JButton cancel = new JButton("Cancel");
 		cancel.setToolTipText("Cancel");
@@ -137,22 +136,22 @@ public class GenomeSelectionDialog extends JDialog {
 				cancelChoice();
 			}
 		});
-		
+
 		getRootPane().setDefaultButton(confirm);
-		
+
 		FlowLayout layout = new FlowLayout();
 		layout.setHgap(20);
 		layout.setVgap(10);
 		//layout.set
 		panel.setLayout(layout);
-		
+
 		panel.add(confirm);
 		panel.add(cancel);
-		
+
 		return panel;
 	}
-	
-	
+
+
 	private void cancelChoice() {
 		setVisible(false);
 	}
@@ -166,7 +165,7 @@ public class GenomeSelectionDialog extends JDialog {
 
 	/**
 	 * Shows the component.
-	 * @param parent the parent component of the dialog, can be null; see showDialog for details 
+	 * @param parent the parent component of the dialog, can be null; see showDialog for details
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
@@ -183,13 +182,13 @@ public class GenomeSelectionDialog extends JDialog {
 	public String getGenomeName () {
 		return panel.getGenomeName();
 	}
-	
-	
+
+
 	/**
 	 * @return the selected allele type
 	 */
 	public AlleleType getAlleleType () {
 		return panel.getAlleleType();
 	}
-	
+
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -40,7 +42,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  */
 public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWindowList> {
 
-	private final ScoredChromosomeWindowList 	scwList;		// input list 
+	private final ScoredChromosomeWindowList 	scwList;		// input list
 	private final SCWLOAverage 					avgOp;			// average
 	private final SCWLOStandardDeviation 		stdevOp;		// standard deviation
 	private boolean								stopped = false;// true if the operation must be stopped
@@ -69,17 +71,17 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
+							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
 							if (currentWindow.getScore() != 0) {
-								// apply the standard score formula: (x - avg) / stdev 
-								double resultScore = (currentWindow.getScore() - avg) / stdev; 
+								// apply the standard score formula: (x - avg) / stdev
+								double resultScore = (currentWindow.getScore() - avg) / stdev;
 								resultWindow.setScore(resultScore);
 							}
 							resultList.add(resultWindow);
@@ -95,7 +97,7 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
@@ -117,7 +119,7 @@ public class SCWLONormalizeStandardScore implements Operation<ScoredChromosomeWi
 
 	@Override
 	public int getStepCount() {
-		return 1 + avgOp.getStepCount() + stdevOp.getStepCount() + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + avgOp.getStepCount() + stdevOp.getStepCount() + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
 

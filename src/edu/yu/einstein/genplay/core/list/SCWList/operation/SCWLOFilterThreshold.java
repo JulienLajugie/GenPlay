@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -42,10 +44,10 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 	private final ScoredChromosomeWindowList 	inputList; 		// input SCW list
 	private final double 						lowThreshold;	// filters the values under this threshold
 	private final double 						highThreshold;	// filters the values above this threshold
-	private final boolean						isSaturation;	// true if we saturate, false if we remove the filtered values 
+	private final boolean						isSaturation;	// true if we saturate, false if we remove the filtered values
 	private boolean								stopped = false;// true if the operation must be stopped
 
-	
+
 	/**
 	 * Creates an instance of {@link SCWLOFilterThreshold}
 	 * @param inputList {@link ScoredChromosomeWindowList} to filter
@@ -65,25 +67,25 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 	public ScoredChromosomeWindowList compute() throws Exception {
 		if (lowThreshold >= highThreshold) {
 			throw new IllegalArgumentException("The high threshold must be greater than the low one");
-		}	
+		}
 
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 		for (final List<ScoredChromosomeWindow> currentList: inputList) {
 
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {			
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-						for (int i = 0; i < currentList.size() && !stopped; i++) {
+						for (int i = 0; (i < currentList.size()) && !stopped; i++) {
 							double currentScore = currentList.get(i).getScore();
 							if (currentScore != 0) {
 								if (currentScore > highThreshold) {
 									// if the score is greater than the high threshold
 									if (isSaturation) {
 										// set the value to high threshold (saturation)
-										ScoredChromosomeWindow windowToAdd = new ScoredChromosomeWindow(currentList.get(i));
+										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(i));
 										windowToAdd.setScore(highThreshold);
 										resultList.add(windowToAdd);
 									}
@@ -91,13 +93,13 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 									// if the score is smaller than the low threshold
 									if (isSaturation) {
 										// set the value to low threshold (saturation)
-										ScoredChromosomeWindow windowToAdd = new ScoredChromosomeWindow(currentList.get(i));
+										ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(i));
 										windowToAdd.setScore(lowThreshold);
 										resultList.add(windowToAdd);
 									}
 								} else {
 									// if the score is between the two threshold
-									ScoredChromosomeWindow windowToAdd = new ScoredChromosomeWindow(currentList.get(i));
+									ScoredChromosomeWindow windowToAdd = new SimpleScoredChromosomeWindow(currentList.get(i));
 									resultList.add(windowToAdd);
 								}
 							}
@@ -113,7 +115,7 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
@@ -141,12 +143,12 @@ public class SCWLOFilterThreshold implements Operation<ScoredChromosomeWindowLis
 
 	@Override
 	public int getStepCount() {
-		return ScoredChromosomeWindowList.getCreationStepCount() + 1;
+		return SimpleScoredChromosomeWindowList.getCreationStepCount() + 1;
 	}
 
 
 	@Override
 	public void stop() {
-		this.stopped = true;		
+		this.stopped = true;
 	}
 }

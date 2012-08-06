@@ -22,9 +22,9 @@
 package edu.yu.einstein.genplay.core.multiGenome.filter.VCFID;
 
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.FilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
@@ -98,11 +98,11 @@ public interface IDFilterInterface extends FilterInterface {
 
 	/**
 	 * Checks if the object (purpose of the filter) is valid according to the filter
-	 * @param value the line of a VCF with columns and values
+	 * @param line the line of a VCF
 	 * @return true if it is valid, false otherwise;
 	 */
 	@Override
-	public boolean isValid (Map<String, Object> value);
+	public boolean isValid (VCFLine line);
 
 
 	/**

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,8 +24,9 @@ package edu.yu.einstein.genplay.core.list.SCWList.operation;
 import java.util.Arrays;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 
 
@@ -40,7 +41,7 @@ public class SCWLOFilterCount implements Operation<ScoredChromosomeWindowList> {
 	private final ScoredChromosomeWindowList 		inputList;				// list to filter
 	private final int 								lowValuesCount;			// number of low values to filter
 	private final int 								highValuesCount;		// number of high values to filter
-	private final boolean							isSaturation;			// true if we saturate, false if we remove the filtered values 
+	private final boolean							isSaturation;			// true if we saturate, false if we remove the filtered values
 	private boolean									stopped = false;		// true if the operation must be stopped
 	private Operation<ScoredChromosomeWindowList> 	scwloFilterThreshold;	// threshold filter that does the real fitering operation
 
@@ -77,7 +78,7 @@ public class SCWLOFilterCount implements Operation<ScoredChromosomeWindowList> {
 		int i = 0;
 		for (List<ScoredChromosomeWindow> currentList: inputList) {
 			if (currentList != null) {
-				for (int j = 0; j < currentList.size() && !stopped; j++) {
+				for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 					Double currentScore = currentList.get(j).getScore();
 					allScores[i] = currentScore;
 					i++;
@@ -89,8 +90,8 @@ public class SCWLOFilterCount implements Operation<ScoredChromosomeWindowList> {
 		double minValue = lowValuesCount == 0 ? Double.NEGATIVE_INFINITY : allScores[lowValuesCount - 1];
 		double maxValue = highValuesCount == 0 ? Double.POSITIVE_INFINITY : allScores[allScores.length - highValuesCount];
 		// start a SCWLOFilterThreshold with the min and max value that we just found
-		scwloFilterThreshold = new SCWLOFilterThreshold(inputList, minValue, maxValue, isSaturation); 
-		return scwloFilterThreshold.compute(); 
+		scwloFilterThreshold = new SCWLOFilterThreshold(inputList, minValue, maxValue, isSaturation);
+		return scwloFilterThreshold.compute();
 	}
 
 
@@ -114,7 +115,7 @@ public class SCWLOFilterCount implements Operation<ScoredChromosomeWindowList> {
 
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
 

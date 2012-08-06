@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.core.multiGenome.display.variant;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 
 /**
@@ -87,15 +88,9 @@ public interface VariantInterface {
 
 
 	/**
-	 * @return information of the variant (from the vcf)
+	 * @return the VCF line related to the variant
 	 */
-	public MGPosition getVariantInformation ();
-
-
-	/**
-	 * @return all information of the variant (from the vcf) (includes all other genomes format information)
-	 */
-	public MGPosition getFullVariantInformation ();
+	public VCFLine getVCFLine ();
 
 
 	/**
@@ -103,6 +98,11 @@ public interface VariantInterface {
 	 */
 	public String getGenomeName ();
 
+
+	/**
+	 * @return the string of the nucleotide of the variation
+	 */
+	public String getVariantSequence ();
 
 	/**
 	 * Show the information of the variant

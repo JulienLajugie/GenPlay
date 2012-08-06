@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -25,7 +25,7 @@ import java.io.File;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -73,7 +73,7 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 		selectedFile = Utils.chooseFileToLoad(getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
 		if (selectedFile != null) {
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray());
+				GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
 				if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 					genomeName = genomeDialog.getGenomeName();
 					alleleType = genomeDialog.getAlleleType();
@@ -93,12 +93,12 @@ public class ETALoadNucleotideListTrack extends TrackListActionWorker<TwoBitSequ
 	@Override
 	protected void doAtTheEnd(TwoBitSequenceList actionResult) {
 		boolean valid = true;
-		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
 			valid = false;
 		}
-		if (actionResult != null && valid) {
+		if ((actionResult != null) && valid) {
 			int selectedTrackIndex = getTrackList().getSelectedTrackIndex();
-			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getMask();
 			NucleotideListTrack newTrack = new NucleotideListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);

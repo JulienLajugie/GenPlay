@@ -43,8 +43,9 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -124,7 +125,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	transient private boolean				isScrollMode = false;			// true if the scroll mode is on
 	transient private int					scrollModeIntensity = 0;		// Intensity of the scroll.
 	transient private ScrollModeThread 		scrollModeThread; 				// Thread executed when the scroll mode is on
-	private ChromosomeWindowList			stripeList = null;				// stripes to display on the track
+	private ScoredChromosomeWindowList		mask = null;				// stripes to display on the track
 	protected T 							data;							// data showed in the track
 	private String 							genomeName;						// genome on which the track is based (ie aligned on)
 	private TrackHeaderDrawer				trackHeaderDrawer;				// the track header drawer
@@ -233,14 +234,14 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @param g Graphics
 	 */
 	protected void drawStripes(Graphics g) {
-		if (stripeList != null) {
+		if (mask != null) {
 			int height = getHeight();
 			// create a transparent color for the stripes
 			Color color = new Color(STRIPES_COLOR.getRed(), STRIPES_COLOR.getGreen(), STRIPES_COLOR.getBlue(), STRIPES_TRANSPARENCY);
 			g.setColor(color);
-			List<ChromosomeWindow> chromoStripeList = stripeList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
+			List<ScoredChromosomeWindow> chromoStripeList = mask.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
 			if (chromoStripeList != null) {
-				for (ChromosomeWindow currentStripe: chromoStripeList) {
+				for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
 					int x = projectWindow.genomePosToScreenXPos(currentStripe.getStart());
 					//int widthWindow = projectWindow.genomePosToScreenXPos(currentStripe.getStop()) - x;
 					int widthWindow = projectWindow.twoGenomePosToScreenWidth(currentStripe.getStart(), currentStripe.getStop());
@@ -303,10 +304,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * @return the stripe list of the track
+	 * @return the mask of the track
 	 */
-	public ChromosomeWindowList getStripes() {
-		return stripeList;
+	public ScoredChromosomeWindowList getMask() {
+		return mask;
 	}
 
 
@@ -509,8 +510,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * shows stripes on the track
 	 * @param stripeList a {@link ChromosomeWindowList}
 	 */
-	public void setStripes(ChromosomeWindowList stripeList) {
-		this.stripeList = stripeList;
+	public void setStripes(ScoredChromosomeWindowList stripeList) {
+		this.mask = stripeList;
 		repaint();
 	}
 
@@ -532,7 +533,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeInt(verticalLineCount);
-		out.writeObject(stripeList);
+		out.writeObject(mask);
 		out.writeObject(data);
 		out.writeObject(genomeName);
 		out.writeObject(trackHeaderDrawer);
@@ -550,7 +551,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		verticalLineCount = in.readInt();
-		stripeList = (ChromosomeWindowList) in.readObject();
+		mask = (ScoredChromosomeWindowList) in.readObject();
 		data = (T) in.readObject();
 		genomeName = (String) in.readObject();
 		trackHeaderDrawer = (TrackHeaderDrawer) in.readObject();
@@ -581,6 +582,14 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
 			removePropertyChangeListener(curList);
 		}
+	}
+
+
+	/**
+	 * This function deletes the data of the track
+	 */
+	protected void deleteData() {
+		data = null;
 	}
 
 

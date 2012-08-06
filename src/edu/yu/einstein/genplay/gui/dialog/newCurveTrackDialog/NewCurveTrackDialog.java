@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -53,14 +53,14 @@ public class NewCurveTrackDialog extends JDialog {
 	private final 	TrackNamePanel 			trackNamePanel;			// panel for the track name
 	private final 	BinSizePanel			binSizePanel;			// panel for the binsize
 	private final 	ChromoSelectionPanel 	chromoSelectionPanel;	// panel for selecting chromosomes
-	private final 	CalculMethodPanel 		calculMethodPanel;		// panel for the method of score calculation 
+	private final 	CalculMethodPanel 		calculMethodPanel;		// panel for the method of score calculation
 	private final 	DataPrecisionPanel 		dataPrecisionPanel;		// panel for the precision of the data
 	private final 	StrandSelectionPanel	strandSelectionPanel;	// panel for the selection of the strand to extract
 	private final 	ReadDefinitionPanel		readDefinitionPanel;	// panel for the shift and the length of the reads
 	private final	GenomeSelectionPanel	genomeSelectionPanel;	// panel for the selection of the genome in a multigenome project
 	private final 	JButton 				jbOk; 					// Button OK
 	private final 	JButton 				jbCancel; 				// Button cancel
-	private int 						approved = CANCEL_OPTION;	// indicate if the user canceled or validated	
+	private int 						approved = CANCEL_OPTION;	// indicate if the user canceled or validated
 
 	/**
 	 * Return value when OK has been clicked.
@@ -73,15 +73,15 @@ public class NewCurveTrackDialog extends JDialog {
 	public static final int CANCEL_OPTION = 1;
 
 
-//	/**
-//	 * Main method for the tests
-//	 * @param args
-//	 */
-//	public static void main(String[] args) {
-//		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", false, false, false, false, true, true);
-//		ctd.showDialog(null);
-//		ctd.dispose();
-//	}
+	//	/**
+	//	 * Main method for the tests
+	//	 * @param args
+	//	 */
+	//	public static void main(String[] args) {
+	//		NewCurveTrackDialog ctd = new NewCurveTrackDialog("test", false, false, false, false, true, true);
+	//		ctd.showDialog(null);
+	//		ctd.dispose();
+	//	}
 
 
 	/**
@@ -91,11 +91,12 @@ public class NewCurveTrackDialog extends JDialog {
 	 * @param isBinSizeNeeded true if the binsize need to be asked
 	 * @param isPrecisionNeeded true if the precision need to be asked
 	 * @param isMethodNeeded true if the method of calculation need to be asked
-	 * @param isStrandNeeded true if the strand selection need to be asked 
+	 * @param isStrandNeeded true if the strand selection need to be asked
 	 * @param isChromoSelectionNeeded true if the chromosome selection need to be asked
+	 * @param isGenomeSelectionNeeded true if the genome selection need to be asked (works only in multi genome)
 	 */
-	public NewCurveTrackDialog(String trackName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded, 
-			boolean isMethodNeeded, boolean isStrandNeeded, boolean isChromoSelectionNeeded) {
+	public NewCurveTrackDialog(String trackName, boolean isNameNeeded, boolean isBinSizeNeeded, boolean isPrecisionNeeded,
+			boolean isMethodNeeded, boolean isStrandNeeded, boolean isChromoSelectionNeeded, boolean isGenomeSelectionNeeded) {
 		super();
 		// create panels
 		trackNamePanel = new TrackNamePanel(trackName);
@@ -105,7 +106,7 @@ public class NewCurveTrackDialog extends JDialog {
 		dataPrecisionPanel = new DataPrecisionPanel();
 		strandSelectionPanel = new StrandSelectionPanel();
 		readDefinitionPanel = new ReadDefinitionPanel();
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+		if (isGenomeSelectionNeeded && ProjectManager.getInstance().isMultiGenomeProject()) {
 			genomeSelectionPanel = new GenomeSelectionPanel();
 			genomeSelectionPanel.setBorder(BorderFactory.createTitledBorder("Genome Selection"));
 			//genomeSelectionPanel.setPreferredSize(new Dimension(150, getPreferredSize().height));
@@ -124,7 +125,7 @@ public class NewCurveTrackDialog extends JDialog {
 				chromoSelectionPanel.saveDefault();
 				strandSelectionPanel.saveDefault();
 				readDefinitionPanel.saveDefault();
-				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				if (genomeSelectionPanel != null) {
 					genomeSelectionPanel.saveDefault();
 				}
 				approved = APPROVE_OPTION;
@@ -141,7 +142,7 @@ public class NewCurveTrackDialog extends JDialog {
 			}
 		});
 
-		// if there is no chromosome selection panel the other panels 
+		// if there is no chromosome selection panel the other panels
 		int leftPanelsGridWidth = 1;
 		if (!isChromoSelectionNeeded) {
 			leftPanelsGridWidth = 2;
@@ -150,7 +151,7 @@ public class NewCurveTrackDialog extends JDialog {
 		// add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints c;
-		
+
 		if (isNameNeeded) {
 			c = new GridBagConstraints();
 			c.anchor = GridBagConstraints.LINE_END;
@@ -214,7 +215,7 @@ public class NewCurveTrackDialog extends JDialog {
 			c.weighty = 1;
 			add(dataPrecisionPanel, c);
 		}
-		
+
 		if (isStrandNeeded) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL;
@@ -226,7 +227,7 @@ public class NewCurveTrackDialog extends JDialog {
 			c.weightx = 1;
 			c.weighty = 1;
 			add(strandSelectionPanel, c);
-			
+
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
@@ -236,10 +237,10 @@ public class NewCurveTrackDialog extends JDialog {
 			c.ipadx = INSET * 2;
 			c.weightx = 1;
 			c.weighty = 1;
-			add(readDefinitionPanel, c);			
+			add(readDefinitionPanel, c);
 		}
-		
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+
+		if (genomeSelectionPanel != null) {
 			c = new GridBagConstraints();
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.gridwidth = leftPanelsGridWidth;
@@ -270,7 +271,7 @@ public class NewCurveTrackDialog extends JDialog {
 		c.insets = new Insets(INSET, INSET, INSET, INSET);
 		c.weightx = 1;
 		c.weighty = 1;
-		add(jbCancel, c);		
+		add(jbCancel, c);
 
 		setTitle("New Track");
 		pack();
@@ -321,47 +322,47 @@ public class NewCurveTrackDialog extends JDialog {
 		return readDefinitionPanel.getShiftValue();
 	}
 
-	
+
 	/**
-	 * @return the read length value. Returns zero if the read length is not specified 
+	 * @return the read length value. Returns zero if the read length is not specified
 	 */
 	public int getReadLengthValue() {
 		return readDefinitionPanel.getReadLengthValue();
 	}
-	
-	
+
+
 	/**
 	 * @return the Strand to extract. Null if both
 	 */
 	public Strand getStrandToExtract() {
 		return strandSelectionPanel.getStrandToExtract();
 	}
-	
-	
+
+
 	/**
 	 * @return the name of the track
 	 */
 	public String getTrackName() {
 		return trackNamePanel.getTrackName();
 	}
-	
-	
+
+
 	/**
 	 * @return the name of the genome
 	 */
 	public String getGenomeName () {
 		return genomeSelectionPanel.getGenomeName();
 	}
-	
-	
+
+
 	/**
 	 * @return the selected allele type
 	 */
 	public AlleleType getAlleleType () {
 		return genomeSelectionPanel.getAlleleType();
 	}
-	
-	
+
+
 	/**
 	 * Shows the component
 	 * @param parent parent component. Can be null

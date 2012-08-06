@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -94,7 +94,7 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 
 
 	@Override
-	public void customComboBoxChanged(CustomComboBoxEvent evt) {
+	public void customComboBoxHasChanged(CustomComboBoxEvent evt) {
 		if (evt.getAction() == CustomComboBoxEvent.SELECT_ACTION) {
 			setSelectedItem(evt.getElement());
 		} else if (evt.getAction() == CustomComboBoxEvent.ADD_ACTION) {
@@ -116,14 +116,19 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 		int returnVal = fc.showOpenDialog(getRootPane());
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			String path = fc.getSelectedFile().getPath();
-			File element = new File(path); //Utils.chooseFileToLoad(getRootPane(), "Select a file", ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory(), filters);
-			if (element != null) {
-				addElement(element);
-				resetCombo();
-				setSelectedItem(element);
-			}
+			File element = new File(path);
+			element = actionPostSelection(element);
+			addElementToCombo(element);
 		}
+	}
 
+
+	protected void addElementToCombo (File element) {
+		if (element != null) {
+			addElement(element);
+			resetCombo();
+			setSelectedItem(element);
+		}
 	}
 
 
@@ -168,5 +173,19 @@ public class CustomFileComboBox extends CustomComboBox<File> {
 			setSelectedItem(element);
 		}
 	}
+
+
+	/**
+	 * Action on the file after its selection and before its process.
+	 * By default, the method return the same file and does not verify anything.
+	 * If the class is extended, that method can be overwrited in order to validate the file selection.
+	 * See the method in the class {@link CustomFileComboBoxMG} for more example.
+	 * 
+	 * @param file the selected file
+	 * @return the verified/processed file to add or null if not valid
+	 */
+	protected File actionPostSelection (File file) {
+		return file;
+	};
 
 }

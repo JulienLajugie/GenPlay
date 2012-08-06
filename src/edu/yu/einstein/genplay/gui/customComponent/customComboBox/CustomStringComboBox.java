@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,12 +40,13 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 	 * Generated default serial version
 	 */
 	private static final long serialVersionUID = -3013901769963683217L;
-	
-	
+
+
 	/**
 	 * Resets the combo list removing all items and adding the new ones.
 	 * It also adds the ADD_TEXT value.
 	 */
+	@Override
 	public void resetCombo () {
 		this.removeAllItems();
 		Collections.sort(elements);
@@ -56,10 +57,10 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 		}
 		this.addItem(ADD_TEXT);
 	}
-	
-	
+
+
 	@Override
-	public void customComboBoxChanged(CustomComboBoxEvent evt) {
+	public void customComboBoxHasChanged (CustomComboBoxEvent evt) {
 		if (evt.getAction() == CustomComboBoxEvent.SELECT_ACTION) {
 			setSelectedItem(evt.getElement());
 		} else if (evt.getAction() == CustomComboBoxEvent.ADD_ACTION) {
@@ -70,7 +71,7 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 			replaceAction(evt.getElement().toString());
 		}
 	}
-	
+
 
 	/**
 	 * Adds a new element to the combo box.
@@ -79,13 +80,13 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 	@Override
 	protected void addAction () {
 		String element = JOptionPane.showInputDialog(this,
-					"Please type a new entry.",
-					"Entry insertion",
-					JOptionPane.PLAIN_MESSAGE);
-		if (element != null && !element.equals("")) {
-				addElement(element);
-				resetCombo();
-				setSelectedItem(element);
+				"Please type a new entry.",
+				"Entry insertion",
+				JOptionPane.PLAIN_MESSAGE);
+		if ((element != null) && !element.equals("")) {
+			addElement(element);
+			resetCombo();
+			setSelectedItem(element);
 		} else {
 			setSelectedItem("");
 		}
@@ -125,15 +126,15 @@ public class CustomStringComboBox extends CustomComboBox<String> {
 	@Override
 	protected void replaceAction (String element) {
 		String newElement = (String) JOptionPane.showInputDialog(
-					this,
-					"The new entry will replace '" + element + "'.",
-					"Entry modification",
-					JOptionPane.PLAIN_MESSAGE,
-					null,
-					null,
-					element);
+				this,
+				"The new entry will replace '" + element + "'.",
+				"Entry modification",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				null,
+				element);
 
-		if (newElement != null && !element.equals("")) {
+		if ((newElement != null) && !element.equals("")) {
 			elements.remove(element);
 			addElement( newElement);
 			resetCombo();

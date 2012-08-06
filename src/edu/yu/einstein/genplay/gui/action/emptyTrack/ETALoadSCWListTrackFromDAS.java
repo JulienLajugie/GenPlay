@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,7 +26,6 @@ import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
@@ -47,9 +46,9 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 	private final DataSource 	dataSource;			// DAS data source
 	private final DASConnector 	dasConnector;		// DAS connector
 	private final DASType 		dasType;			// DAS type
-	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined) 
+	private final int 			dataRange;			// enum representing the type of range (genome wide / current range / user defined)
 	private final GenomeWindow 	genomeWindow;		// genome window defined by the user
-	private final GenomeWindow 	currentWindow;		// current genome window 
+	private final GenomeWindow 	currentWindow;		// current genome window
 	private final int 			selectedTrackIndex;	// index of the selected track
 
 
@@ -63,7 +62,7 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 	 * @param currentWindow current genome window
 	 * @param selectedTrackIndex index of the selected track
 	 */
-	public ETALoadSCWListTrackFromDAS(DataSource dataSource, DASConnector dasConnector, DASType dasType, int dataRange, 
+	public ETALoadSCWListTrackFromDAS(DataSource dataSource, DASConnector dasConnector, DASType dasType, int dataRange,
 			GenomeWindow genomeWindow, GenomeWindow currentWindow, int selectedTrackIndex) {
 		this.dataSource = dataSource;
 		this.dasConnector = dasConnector;
@@ -90,18 +89,18 @@ public class ETALoadSCWListTrackFromDAS extends TrackListActionWorker<ScoredChro
 		else if(dataRange == DASDialog.GENERATE_CURRENT_LIST) {
 			return dasConnector.getSCWList(dataSource, dasType, currentWindow);
 		}
-		return null;									
+		return null;
 	}
 
 
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
-			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+		    	ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getMask();
 			SCWListTrack newTrack = new SCWListTrack(selectedTrackIndex + 1, actionResult);
 			newTrack.getHistory().add("Load From DAS Server", Colors.GREY);
 			newTrack.setTrackColor(TrackColor.getTrackColor());
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
-		}							
+		}
 	}
 }

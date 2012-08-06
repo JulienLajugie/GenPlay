@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,10 +44,10 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 
 	private static final long serialVersionUID = 4662911501034876210L;
 	private static final String 	ACTION_NAME = "Average";			// action name
-	private static final String 	DESCRIPTION = 
-		"Compute the average of the scores of the selected track";		// tooltip
+	private static final String 	DESCRIPTION =
+			"Compute the average of the scores of the selected track";		// tooltip
 
-	
+
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
@@ -63,8 +63,8 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
-	
-	
+
+
 	@Override
 	public Operation<Double> initializeOperation() {
 		SCWListTrack selectedTrack = (SCWListTrack) getTrackList().getSelectedTrack();
@@ -78,12 +78,12 @@ public class SCWLAAverage extends TrackListActionOperationWorker<Double> {
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
-			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + new DecimalFormat("0.000").format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);		
-		}		
+			JOptionPane.showMessageDialog(getRootPane(), "Average: \n" + new DecimalFormat("0.000").format(actionResult), "Average", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 }

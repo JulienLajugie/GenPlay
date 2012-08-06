@@ -121,6 +121,7 @@ public class RetrieveAssemblies {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2005_08_NCBI35_mm7.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2006_02_NCBI36_mm8.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2007_07_NCBI37_mm9.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_mouse_2011_12_GRCm38_mm10.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_opossum_2006_01_Broad_monDom4.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_opossum_2006_10_Broad_monDom5.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("mammal_orangutan_2007_07_WUGSC_2.0.2_ponAbe2.xml"));

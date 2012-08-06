@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,7 +36,14 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -56,22 +63,31 @@ public class GlobalInformationPanel extends JPanel {
 	private static final int LABEL_HEIGHT = 15;		// height of a label
 	private static final int KEY_WIDTH = 40;		// width of a label used to display a key
 	private static final int VALUE_WIDTH = 60;		// width of a label used to display a value
-	private VariantInterface variant;
-	private MGPosition variantInformation;			// the variant to display the information of
-	private GridBagConstraints gbc;
+	private final VariantInterface variant;
+	private final VCFLine variantInformation;			// the variant to display the information of
+	private final String genomeFullName;
+	private final GridBagConstraints gbc;
 
 
 	/**
 	 * Constructor of {@link GlobalInformationPanel}
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
-	protected GlobalInformationPanel (VariantInterface variant, MGPosition variantInformation) {
+	protected GlobalInformationPanel (VariantInterface variant, VCFLine variantInformation) {
 		this.variant = variant;
 		this.variantInformation = variantInformation;
 
+		if ((variant instanceof IndelVariant) || (variant instanceof SNPVariant)) {
+			genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
+		} else if ((variant instanceof ReferenceVariant) || (variant instanceof ReferenceBlankVariant)) {
+			genomeFullName = ProjectManager.getInstance().getAssembly().getDisplayName();
+		} else {
+			genomeFullName = "";
+		}
+
 		Dimension dimension = new Dimension(WIDTH, getPanelHeight());
 		setPreferredSize(dimension);
-		
+
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		gbc = new GridBagConstraints();
@@ -82,9 +98,11 @@ public class GlobalInformationPanel extends JPanel {
 			addMixPanel();
 		} else if (variant.getType() == VariantType.BLANK) {
 			addBlankPanel();
+		} else if (variant.getType() == VariantType.REFERENCE) {
+			addReferencePanel();
 		} else if (variant.getType() == VariantType.SNPS) {
 			addSNPPanel();
-		} else if (variant.getType() == VariantType.INSERTION || variant.getType() == VariantType.DELETION) {
+		} else if ((variant.getType() == VariantType.INSERTION) || (variant.getType() == VariantType.DELETION)) {
 			addIndelPanel();
 		} else {
 			addUnknownPanel();
@@ -94,7 +112,6 @@ public class GlobalInformationPanel extends JPanel {
 
 	/**
 	 * Insert a description of the mixed variation
-	 * @param gbc the layout constraints
 	 */
 	private void addMixPanel () {
 		String text = "<html><i>";
@@ -104,82 +121,95 @@ public class GlobalInformationPanel extends JPanel {
 		//String text = "When variation stripes are too small to be displayed one by one, GenPlay merged them creating a " + VariantType.MIX.toString() + " type.";
 		addDescriptionRow(text);
 		addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop());
-		addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart() + 1));
+		addObjectRow("Length: ", "" + ((variant.getStop() - variant.getStart()) + 1));
 		gbc.weighty = 1;
 		addObjectRow("Type: ", VariantType.MIX.toString());
 	}
 
 
 	/**
-	 * Insert a description of the blank of synchronization
-	 * @param gbc the layout constraints
+	 * Insert a description of the reference stripe
 	 */
 	private void addBlankPanel () {
 		String text = "<html><i>";
 		text += "A blank of synchronization is the display of an insertion that occured in an other allele/genome within the project.";
 		text += "</i></html>";
-		//String text = "A blank of synchronization is the display of an insertion that occured in an other allele/genome within the project.";
 		addDescriptionRow(text);
 		addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop());
-		addObjectRow("Length: ", "" + (variant.getStop() - variant.getStart() + 1));
+		addObjectRow("Length: ", "" + ((variant.getStop() - variant.getStart()) + 1));
 		gbc.weighty = 1;
 		addObjectRow("Type: ", VariantType.BLANK.toString());
 	}
 
 
 	/**
+	 * Insert a description of the blank of synchronization
+	 */
+	private void addReferencePanel () {
+		String text = "<html><i>";
+		text += "This stripe represents the reference.";
+		text += "</i></html>";
+		addDescriptionRow(text);
+		addObjectRow("Position: ", variant.getStart() + " to " + variant.getStop());
+		addObjectRow("Length: ", "" + ((variant.getStop() - variant.getStart()) + 1));
+		addObjectRow("Type: ", VariantType.REFERENCE.toString());
+		String reference = this.variantInformation.getREF();
+		if (reference.length() > 1) {
+			reference = reference.substring(1);
+		}
+		gbc.weighty = 1;
+		addObjectRow("REF: ", reference);
+	}
+
+
+	/**
 	 * Insert SNP variant information
-	 * @param gbc the layout constraints
 	 */
 	private void addSNPPanel () {
 		int startPosition = variant.getStart();
 		int stopPosition = startPosition + 1;
 		int length = 1;
-		String genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
 		addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")");
 		addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName));
 		addObjectRow("Position: ", startPosition + " to " + stopPosition);
 		addObjectRow("Length: ", "" + length);
 		addObjectRow("Type: ", variant.getType().toString());
-		if (!this.variantInformation.getId().equals(".")) {
-			addLabelRow("ID: ", getIDLabel(this.variantInformation.getId()));
+		if (!this.variantInformation.getID().equals(".")) {
+			addLabelRow("ID: ", getIDLabel(this.variantInformation.getID()));
 		} else {
-			addObjectRow("ID: ", this.variantInformation.getId());
+			addObjectRow("ID: ", this.variantInformation.getID());
 		}
-		addObjectRow("REF: ", this.variantInformation.getReference());
-		addObjectRow("ALT: ", this.variantInformation.getAlternative());
+		addObjectRow("REF: ", this.variantInformation.getREF());
+		addObjectRow("ALT: ", this.variantInformation.getALT());
 		addObjectRow("Quality: ", "" + variant.getScore());
 		gbc.weighty = 1;
-		addObjectRow("Filter: ", this.variantInformation.getFilter());
+		addObjectRow("Filter: ", this.variantInformation.getFILTER());
 	}
 
 
 	/**
 	 * Insert Indel variant information
-	 * @param gbc the layout constraints
 	 */
 	private void addIndelPanel () {
 		int startPosition = variant.getStart();
 		int stopPosition = variant.getStop();
-		int length = stopPosition - startPosition + 1;
-		String genomeFullName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
+		int length = (stopPosition - startPosition) + 1;
 		addObjectRow("Genome: ", FormattedMultiGenomeName.getUsualName(genomeFullName) + " (" + FormattedMultiGenomeName.getRawName(genomeFullName) + ")");
 		addObjectRow("Group: ", FormattedMultiGenomeName.getGroupName(genomeFullName));
 		addObjectRow("Position: ", startPosition + " to " + stopPosition);
 		addObjectRow("Length: ", "" + length);
 		addObjectRow("Type: ", variant.getType().toString());
-		addObjectRow("ID: ", this.variantInformation.getId());
-		addObjectRow("REF: ", this.variantInformation.getReference());
-		addObjectRow("ALT: ", this.variantInformation.getAlternative());
+		addObjectRow("ID: ", this.variantInformation.getID());
+		addObjectRow("REF: ", this.variantInformation.getREF());
+		addObjectRow("ALT: ", this.variantInformation.getALT());
 		addObjectRow("Quality: ", "" + variant.getScore());
 		gbc.weighty = 1;
-		addObjectRow("Filter: ", this.variantInformation.getFilter());
+		addObjectRow("Filter: ", this.variantInformation.getFILTER());
 	}
 
 
 	/**
 	 * Unsupported variant
-	 * @param gbc the layout constraints
 	 */
 	private void addUnknownPanel () {
 		gbc.weighty = 1;
@@ -241,7 +271,7 @@ public class GlobalInformationPanel extends JPanel {
 	 */
 	private void addObjectRow (String key, Object valueObject) {
 		String value;
-		if (valueObject == null || valueObject.toString().equals("")) {
+		if ((valueObject == null) || valueObject.toString().equals("")) {
 			value = "-";
 		} else {
 			value = valueObject.toString();
@@ -258,6 +288,11 @@ public class GlobalInformationPanel extends JPanel {
 	 * @param gbc			the constraint
 	 */
 	private void addLabelRow (String key, JLabel valueLabel) {
+		VCFHeader header = null;
+		if ((variantInformation != null) && (variantInformation.getGenomeIndexer() instanceof VCFHeader)) {
+			header = (VCFHeader) variantInformation.getGenomeIndexer();
+		}
+
 		Dimension keyDimension = new Dimension(KEY_WIDTH, LABEL_HEIGHT);
 		Dimension valueDimension = new Dimension(VALUE_WIDTH, LABEL_HEIGHT);
 
@@ -265,9 +300,11 @@ public class GlobalInformationPanel extends JPanel {
 		keyLabel.setSize(keyDimension);
 		valueLabel.setSize(valueDimension);
 		String toolTip;
-		if (variantInformation != null && variantInformation.getVariant() != null && key.equals("ALT: ") && valueLabel.getText().charAt(0) == '<') {
+		if ((variantInformation != null) && (header != null) && key.equals("ALT: ") && (valueLabel.getText().charAt(0) == '<')) {
 			toolTip = valueLabel.getText() + " (";
-			toolTip += variantInformation.getAltHeader(valueLabel.getText()).getDescription();
+			String id = valueLabel.getText().substring(1, valueLabel.getText().length() - 1);
+			VCFHeaderType headerType = header.getAltHeaderFromID(id);
+			toolTip += headerType.getDescription();
 			toolTip += ")";
 		} else {
 			toolTip = valueLabel.getText();
@@ -282,8 +319,8 @@ public class GlobalInformationPanel extends JPanel {
 		add(valueLabel, gbc);
 		gbc.gridy++;
 	}
-	
-	
+
+
 	/**
 	 * Adds an association key/value to the panel.
 	 * @param text			the description
@@ -291,7 +328,7 @@ public class GlobalInformationPanel extends JPanel {
 	 */
 	private void addDescriptionRow (String text) {
 		Dimension keyDimension = new Dimension(WIDTH - 20, LABEL_HEIGHT * 4);
-		
+
 		JLabel descriptionLabel = new JLabel(text);
 		descriptionLabel.setSize(keyDimension);
 		descriptionLabel.setPreferredSize(keyDimension);

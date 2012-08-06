@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,7 +28,7 @@ package edu.yu.einstein.genplay.core.enums;
  * @version 0.1
  */
 public enum VariantType {
-	
+
 	// From indel type VCF file
 	/**
 	 * For an insertion
@@ -38,15 +38,15 @@ public enum VariantType {
 	 * For a deletion
 	 */
 	DELETION ("Deletion"),
-	
-	
+
+
 	// From SNPs type VCF file
 	/**
 	 * For SNPs
 	 */
 	SNPS ("SNPs"),
-	
-	
+
+
 	// From SV type VCF file
 	/*
 	 * For a SV deletion
@@ -68,9 +68,13 @@ public enum VariantType {
 	 * For a SV copy number variation
 	 */
 	CNV ("Copy Number Variation (SV)"),
-	
-	
+
+
 	// For display
+	/**
+	 * To display the reference
+	 */
+	REFERENCE ("Reference"),
 	/**
 	 * When type are mixed during the fitting screen data process
 	 */
@@ -79,11 +83,11 @@ public enum VariantType {
 	 * When there is an insertion in another genome
 	 */
 	BLANK ("Blank");
-	
-	
-	private final String name; // String representing the indel 
-	
-	
+
+
+	private final String name; // String representing the indel
+
+
 	/**
 	 * Private constructor. Creates an instance of {@link VariantType}
 	 * @param name
@@ -91,10 +95,10 @@ public enum VariantType {
 	private VariantType(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
 	}
-	
+
 }

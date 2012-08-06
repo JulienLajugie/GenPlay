@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,29 +23,28 @@ package edu.yu.einstein.genplay.core.enums;
 
 
 /**
- * A type of indel for vcf
  * @author Nicolas Fourel
  * @version 0.1
  */
 public enum CoordinateSystemType {
-	
+
 	/**
-	 * For a simple genome project
+	 * For the reference genome
 	 */
 	REFERENCE ("Reference Genome"),
 	/**
-	 * For a multi genome project: meta genome
+	 * For the meta genome
 	 */
 	METAGENOME ("Meta Genome"),
 	/**
-	 * For a multi genome project: reference genome
+	 * For the current genome
 	 */
-	REFERENCEMULTIGENOME ("Reference Multi Genome");
+	CURRENT_GENOME ("Current Genome");
 
-	
-	private final String name; // String representing the indel 
-	
-	
+
+	private final String name; // String representing the indel
+
+
 	/**
 	 * Private constructor. Creates an instance of {@link CoordinateSystemType}
 	 * @param name
@@ -53,7 +52,7 @@ public enum CoordinateSystemType {
 	private CoordinateSystemType(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;

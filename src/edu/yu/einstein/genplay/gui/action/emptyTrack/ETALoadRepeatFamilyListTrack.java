@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,7 +26,7 @@ import java.io.File;
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
@@ -63,12 +63,12 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 	}
-	
-	
+
+
 	@Override
 	protected void doBeforeExtraction() throws InterruptedException {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog(ProjectManager.getInstance().getMultiGenomeProject().getFormattedGenomeArray());
+			GenomeSelectionDialog genomeDialog = new GenomeSelectionDialog();
 			if (genomeDialog.showDialog(getRootPane()) == GenomeSelectionDialog.APPROVE_OPTION) {
 				genomeName = genomeDialog.getGenomeName();
 				alleleType = genomeDialog.getAlleleType();
@@ -99,13 +99,13 @@ public final class ETALoadRepeatFamilyListTrack extends TrackListActionExtractor
 	@Override
 	public void doAtTheEnd(RepeatFamilyList actionResult) {
 		boolean valid = true;
-		if (ProjectManager.getInstance().isMultiGenomeProject() && genomeName == null) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && (genomeName == null)) {
 			valid = false;
 		}
-		if (actionResult != null && valid) {
+		if ((actionResult != null) && valid) {
 			TrackList trackList = getTrackList();
 			int selectedTrackIndex = trackList.getSelectedTrackIndex();
-			ChromosomeWindowList stripes = trackList.getSelectedTrack().getStripes();
+			ScoredChromosomeWindowList stripes = trackList.getSelectedTrack().getMask();
 			RepeatFamilyListTrack newTrack = new RepeatFamilyListTrack(selectedTrackIndex + 1, actionResult);
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
 				newTrack.setGenomeName(genomeName);

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,6 +29,9 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -40,9 +43,9 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public final class BinListAsBedGraphWriter extends BinListWriter implements Stoppable {
 
-	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
-	
-	
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
+
+
 	/**
 	 * Creates an instance of {@link BinListAsBedGraphWriter}.
 	 * @param outputFile output {@link File}
@@ -58,6 +61,8 @@ public final class BinListAsBedGraphWriter extends BinListWriter implements Stop
 	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
 		try {
+			boolean isMultiGenome = ProjectManager.getInstance().isMultiGenomeProject() && (fullGenomeName != null) && (allele != null);
+
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
@@ -70,7 +75,7 @@ public final class BinListAsBedGraphWriter extends BinListWriter implements Stop
 					List<Double> currentList = data.get(currentChromosome);
 					int currentChromosomeSize = currentChromosome.getLength();
 					for (int j = 0; j < currentList.size(); j++) {
-						// if the operation need to be stopped we close the writer and delete the file 
+						// if the operation need to be stopped we close the writer and delete the file
 						if (needsToBeStopped) {
 							writer.close();
 							outputFile.delete();
@@ -78,14 +83,22 @@ public final class BinListAsBedGraphWriter extends BinListWriter implements Stop
 						}
 						// we don't print the line if the score is 0
 						if (currentList.get(j) != 0) {
-							int stop = ((j + 1) * binSize);
+							int start = j * binSize;
+							int stop = start + binSize;
 							if (stop > currentChromosomeSize) {
 								stop = currentChromosomeSize;
 							}
-							
-							//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
-							writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + stop + "\t" + currentList.get(j));
-							writer.newLine();
+
+							if (isMultiGenome) {
+								start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
+								stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
+							}
+
+							if ((start != -1) && (stop != -1)) {
+								//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
+								writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + stop + "\t" + currentList.get(j));
+								writer.newLine();
+							}
 						}
 					}
 				}
@@ -96,8 +109,8 @@ public final class BinListAsBedGraphWriter extends BinListWriter implements Stop
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Stops the writer while it's writing a file
 	 */

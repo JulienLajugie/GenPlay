@@ -100,7 +100,7 @@ public class SLARemoveSNPsNotInGenes extends TrackListActionOperationWorker<SNPL
 		if (actionResult != null) {
 			int index = selectedTrack.getTrackNumber() - 1;
 			Track<?> newTrack = new SNPListTrack(index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName() + " filtered", selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}		
 	}
 }

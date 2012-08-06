@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -44,42 +44,42 @@ public class SCWLOMax implements Operation<Double> {
 	private final boolean[] chromoList;	// list of the selected chromosomes
 	private final ScoredChromosomeWindowList scwList; // input list
 	private boolean				stopped = false;// true if the operation must be stopped
-	
-	
+
+
 	/**
 	 * Searches the maximum value of the selected chromosomes of a specified {@link ScoredChromosomeWindowList}
 	 * @param scwList input list
-	 * @param chromoList list of boolean. A boolean set to true means that the 
-	 * chromosome with the same index is going to be used for the calculation. 
+	 * @param chromoList list of boolean. A boolean set to true means that the
+	 * chromosome with the same index is going to be used for the calculation.
 	 */
 	public SCWLOMax(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
 		this.scwList = scwList;
 		this.chromoList = chromoList;
 	}
-	
-	
+
+
 	@Override
 	public Double compute() throws Exception {
-		// if the operation has to be calculated on all chromosome 
+		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
 		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getMax() != null)) {
 			return scwList.getMax();
-		}	
-		
+		}
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 		for (int i = 0; i < scwList.size(); i++) {
 			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (scwList.get(i) != null)) {
 				final List<ScoredChromosomeWindow> currentList = scwList.get(i);
-				
-				Callable<Double> currentThread = new Callable<Double>() {	
+
+				Callable<Double> currentThread = new Callable<Double>() {
 					@Override
 					public Double call() throws Exception {
 						// we set the max to the smallest double value
 						double max = Double.NEGATIVE_INFINITY;
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							if (currentList.get(j).getScore() != 0) {
-								max = Math.max(max, currentList.get(j).getScore());					
+								max = Math.max(max, currentList.get(j).getScore());
 							}
 						}
 						// tell the operation pool that a chromosome is done
@@ -87,9 +87,9 @@ public class SCWLOMax implements Operation<Double> {
 						return max;
 					}
 				};
-			
+
 				threadList.add(currentThread);
-			}			
+			}
 		}
 		List<Double> result = op.startPool(threadList);
 		if (result == null) {
@@ -103,25 +103,25 @@ public class SCWLOMax implements Operation<Double> {
 		return max;
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Maximum";
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Searching Maximum";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
 		return 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

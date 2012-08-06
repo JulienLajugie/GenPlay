@@ -25,7 +25,7 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.DAS.DASConnector;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
@@ -94,7 +94,7 @@ public class ETALoadGeneListTrackFromDAS extends TrackListActionWorker<GeneList>
 	@Override
 	protected void doAtTheEnd(GeneList actionResult) {
 		if (actionResult != null) {
-			ChromosomeWindowList stripes = getTrackList().getSelectedTrack().getStripes();
+		    	ScoredChromosomeWindowList stripes = getTrackList().getSelectedTrack().getMask();
 			GeneListTrack newTrack = new GeneListTrack(selectedTrackIndex + 1, actionResult);
 			getTrackList().setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), dasType.getID(), stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());
 		}								

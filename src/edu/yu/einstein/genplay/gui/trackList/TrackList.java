@@ -34,6 +34,8 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
@@ -43,6 +45,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
@@ -72,9 +75,7 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATALoadStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
-import edu.yu.einstein.genplay.gui.action.allTrack.ATARemoveStripes;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
@@ -86,6 +87,7 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeDataPrecision;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACompress;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConcatenate;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACountNonNullBins;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLADensity;
@@ -131,7 +133,14 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeExport;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTAApplyMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTALoadMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTARemoveMask;
+import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
+import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
@@ -221,9 +230,12 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ATACut.ACTION_KEY, new ATACut());
 		getActionMap().put(ATADelete.ACTION_KEY, new ATADelete());
 		getActionMap().put(ATAInsert.ACTION_KEY, new ATAInsert());
-		getActionMap().put(ATALoadStripes.ACTION_KEY, new ATALoadStripes());
+		getActionMap().put(MTALoadMask.ACTION_KEY, new MTALoadMask());
+		getActionMap().put(MTASaveMask.ACTION_KEY, new MTASaveMask());
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
-		getActionMap().put(ATARemoveStripes.ACTION_KEY, new ATARemoveStripes());
+		getActionMap().put(MTARemoveMask.ACTION_KEY, new MTARemoveMask());
+		getActionMap().put(MTAInvertMask.ACTION_KEY, new MTAInvertMask());
+		getActionMap().put(MTAApplyMask.ACTION_KEY, new MTAApplyMask());
 		getActionMap().put(ATARename.ACTION_KEY, new ATARename());
 		getActionMap().put(ATASave.ACTION_KEY, new ATASave());
 		getActionMap().put(ATASaveAsImage.ACTION_KEY, new ATASaveAsImage());
@@ -279,6 +291,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLASumScore.ACTION_KEY, new SCWLASumScore());
 		getActionMap().put(SCWLATransfrag.ACTION_KEY, new SCWLATransfrag());
 		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
+		getActionMap().put(SCWLAConvertToMask.ACTION_KEY, new SCWLAConvertToMask());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
@@ -313,6 +326,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
+		getActionMap().put(BLAConvertToMask.ACTION_KEY, new BLAConvertToMask());
 		// SNP tracks
 		getActionMap().put(SLAFilterRatio.ACTION_KEY, new SLAFilterRatio());
 		getActionMap().put(SLAFilterThreshold.ACTION_KEY, new SLAFilterThreshold());
@@ -321,7 +335,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
 
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			getActionMap().put(PAMultiGenomeExport.ACTION_KEY, new PAMultiGenomeExport());
+			getActionMap().put(MGAGlobalVCFExport.ACTION_KEY, new MGAGlobalVCFExport());
+			getActionMap().put(MGABedExport.ACTION_KEY, new MGABedExport());
+			getActionMap().put(MGASCWLConvert.ACTION_KEY, new MGASCWLConvert());
 		}
 	}
 
@@ -395,7 +411,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param stripesList {@link StripesData} (can be null)
 	 * @param filtersList {@link VCFFilter} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ChromosomeWindowList stripes, List<StripesData> stripesList, List<MGFilter> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ScoredChromosomeWindowList stripes, List<StripesData> stripesList, List<MGFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		if (name != null) {
 			track.setName(name);
@@ -783,10 +799,25 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	/**
-	 * @return true if there is stripes to remove
+	 * @return true if there is a mask to remove
 	 */
-	public boolean isRemoveStripesEnable() {
-		return (getSelectedTrack().getStripes() != null);
+	public boolean isMaskRemovable() {
+		return (getSelectedTrack().getMask() != null);
+	}
+
+
+	/**
+	 * @return true if the mask can be used, false otherwise
+	 */
+	public boolean isMaskApplicable () {
+		if ((getSelectedTrack().getData() != null) &&
+				(getSelectedTrack().getMask() != null)) {
+			if ((getSelectedTrack().getData() instanceof BinList) ||
+					(getSelectedTrack().getData() instanceof ScoredChromosomeWindowList) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 

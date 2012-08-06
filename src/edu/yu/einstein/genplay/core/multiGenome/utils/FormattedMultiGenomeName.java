@@ -14,12 +14,13 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
+
 
 /**
  * This class manages the genome name display.
@@ -37,16 +38,21 @@ package edu.yu.einstein.genplay.core.multiGenome.utils;
  * @version 0.1
  */
 public class FormattedMultiGenomeName {
-	
+
+	/** Meta Genome name for display */
+	public static final String META_GENOME_NAME = "Current Meta Genome";
+	/** Name of the reference genome */
+	public static			String REFERENCE_GENOME_NAME = null;
+
 	private static final 	String separator1 = " - ";	// First separator
 	private static final 	String separator2 = " (";	// Second separator
 	private static final 	String separator3 = ")";	// Third separator
 	private static 			String elements[];			// Strings for the full name (group, genome, raw name)
-	
-	
+
+
 	/**
 	 * Concatenates names in order to make a formatted genome name.
-	 * @param groupName		the genome group name 
+	 * @param groupName		the genome group name
 	 * @param usualName		the genome usual name
 	 * @param rawName		the genome raw name
 	 * @return				the formatted genome name
@@ -55,11 +61,11 @@ public class FormattedMultiGenomeName {
 		setElements(groupName, usualName, rawName);
 		return elements[0] + separator1 + elements[1] + separator2 + elements[2] + separator3;
 	}
-	
-	
+
+
 	/**
 	 * Sets elements in a string array waiting for process.
-	 * @param groupName		the genome group name 
+	 * @param groupName		the genome group name
 	 * @param usualName		the genome usual name
 	 * @param rawName		the genome raw name
 	 */
@@ -69,8 +75,8 @@ public class FormattedMultiGenomeName {
 		elements[1] = usualName;
 		elements[2] = rawName;
 	}
-	
-	
+
+
 	/**
 	 * Sets elements in a string array waiting for process.
 	 * @param fullName	the formatted genome name
@@ -84,36 +90,65 @@ public class FormattedMultiGenomeName {
 		elements[1] = fullName.substring((separator1Index + separator1.length()), separator2Index);
 		elements[2] = fullName.substring((separator2Index + separator2.length()), separator3Index);
 	}
-	
-	
-	
+
+
 	/**
 	 * @param fullName	the formatted genome name
-	 * @return			the genome group name
+	 * @return			the genome group name, null if it is not a valid genome name
 	 */
 	public static String getGroupName (String fullName) {
-		setElements(fullName);
-		return elements[0];
+		if (isValidGenomeName(fullName)) {
+			setElements(fullName);
+			return elements[0];
+		}
+		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param fullName	the formatted genome name
-	 * @return			the genome usual name
+	 * @return			the genome usual name, null if it is not a valid genome name
 	 */
 	public static String getUsualName (String fullName) {
-		setElements(fullName);
-		return elements[1];
+		if (isValidGenomeName(fullName)) {
+			setElements(fullName);
+			return elements[1];
+		}
+		return null;
 	}
-	
-	
+
+
 	/**
 	 * @param fullName	the formatted genome name
-	 * @return			the genome raw name
+	 * @return			the genome raw name, null if it is not a valid genome name
 	 */
 	public static String getRawName (String fullName) {
-		setElements(fullName);
-		return elements[2];
+		if (isValidGenomeName(fullName)) {
+			setElements(fullName);
+			return elements[2];
+		}
+		return null;
 	}
-	
+
+
+	/**
+	 * @param fullName the full genome name
+	 * @return true if it is not the name of the meta/reference genome
+	 */
+	public static boolean isValidGenomeName (String fullName) {
+		if (fullName == null) {
+			return false;
+		}
+
+		if (fullName.equals(META_GENOME_NAME)) {
+			return false;
+		}
+
+		if ((REFERENCE_GENOME_NAME != null) && fullName.equals(REFERENCE_GENOME_NAME)) {
+			return false;
+		}
+
+		return true;
+	}
+
 }

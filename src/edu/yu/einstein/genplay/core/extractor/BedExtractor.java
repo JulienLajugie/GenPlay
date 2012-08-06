@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -40,15 +40,17 @@ import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -58,8 +60,8 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BedExtractor extends TextFileExtractor 
-implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
+public class BedExtractor extends TextFileExtractor
+implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator,
 ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
@@ -133,7 +135,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 				} catch (InvalidChromosomeException e) {
 					chromosomeStatus = NEED_TO_BE_SKIPPED;
 				}
-				
+
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					return true;
 				} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
@@ -150,7 +152,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 						String errors = DataLineValidator.getErrors(chromosome, start, stop);
 						if (errors.length() == 0) {
-							
+
 							// Stop position checking, must not overpass the chromosome length
 							DataLineException stopEndException = null;
 							String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
@@ -160,11 +162,11 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 							}
 							// compute the read position with specified strand shift and read length
 							if (readHandler != null) {
-								ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+								SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
 								start = resultStartStop.getStart();
 								stop = resultStartStop.getStop();
 							}
-							// if we are in a multi-genome project, we compute the position on the meta genome 
+							// if we are in a multi-genome project, we compute the position on the meta genome
 							start = getMultiGenomePosition(chromosome, start);
 							stop = getMultiGenomePosition(chromosome, stop);
 							startList.add(chromosome, start);
@@ -182,8 +184,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 									if (splitedLine.length > 7) {
 										int UTR5Bound;
 										int UTR3Bound;
-										try { 
-											// UTR bounds are for genes only so we don't need to 
+										try {
+											// UTR bounds are for genes only so we don't need to
 											// worry about the strand shift and the read length
 											// since these operations are not available for genes
 											UTR5Bound = Integer.parseInt(splitedLine[6].trim());
@@ -256,9 +258,13 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
+	@Override
+	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
+	    return new MaskWindowList(startList, stopList);
+	}
 
 	@Override
 	public ChromosomeWindowList toChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException {
@@ -284,16 +290,16 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 		// if there is no exon score value we check if there is a general gene score value
 		if (!areExonsScored) {
 			boolean areGenesScored = false;
-			for (int i = 0; i < scoreList.size() && !areGenesScored; i++) {
-				for (int j = 0; j < scoreList.size(i) && !areGenesScored; j++) {
+			for (int i = 0; (i < scoreList.size()) && !areGenesScored; i++) {
+				for (int j = 0; (j < scoreList.size(i)) && !areGenesScored; j++) {
 					if ((scoreList.get(i, j) != 0) && (scoreList.get(i, j) != 1)) {
 						areGenesScored = true;
 					}
 				}
 			}
-			// in this case (where there is no exon specific score values but there is 
+			// in this case (where there is no exon specific score values but there is
 			// genes score values) we attribute the gene score values as exon scores
-			if (areGenesScored) {			
+			if (areGenesScored) {
 				for (int i = 0; i < scoreList.size(); i++) {
 					for (int j = 0; j < scoreList.size(i); j++) {
 						double[] scoreToAdd = {scoreList.get(i, j)};
@@ -326,7 +332,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public boolean overlapped() {
-		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+		return SimpleScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 
 
@@ -342,7 +348,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;		
+		selectedStrand = strandToSelect;
 	}
 
 

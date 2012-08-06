@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,8 +36,8 @@ public final class SCWListTrack extends CurveTrack<ScoredChromosomeWindowList> {
 
 	private static final long serialVersionUID = -2203140318940911180L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -57,8 +57,8 @@ public final class SCWListTrack extends CurveTrack<ScoredChromosomeWindowList> {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 	}
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link SCWListTrack}
 	 * @param trackNumber number of the track

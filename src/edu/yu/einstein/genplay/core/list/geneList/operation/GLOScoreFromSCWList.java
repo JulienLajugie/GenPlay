@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import edu.yu.einstein.genplay.core.Gene;
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
@@ -45,7 +45,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 	private final GeneList 						geneList;	// input GeneList
 	private final ScoredChromosomeWindowList 	scwList;	// BinList with the scores
 	private final ScoreCalculationMethod 		method;		// method to use to compute the score
-	private boolean stopped = false;	// true if the writer needs to be stopped 
+	private boolean stopped = false;	// true if the writer needs to be stopped
 
 
 	/**
@@ -70,23 +70,23 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 			final List<Gene> currentGeneList = geneList.get(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {					
+				public List<Gene> call() throws Exception {
 					if ((currentGeneList == null) || (currentSCWList == null)) {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; j < currentGeneList.size() && !stopped; j++) {
+					for (int j = 0; (j < currentGeneList.size()) && !stopped; j++) {
 						Gene currentGene = currentGeneList.get(j);
 						if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length != 0))  {
 							double[] scores = new double[currentGene.getExonStarts().length] ;
-							for (int k = 0; k < currentGene.getExonStarts().length && !stopped; k++) {
+							for (int k = 0; (k < currentGene.getExonStarts().length) && !stopped; k++) {
 								List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExonStarts()[k], currentGene.getExonStops()[k]);
 								if (currentExonSCW != null) {
 									int length = 0; // used for the average
-									for (int l = 0; l < currentExonSCW.size() && !stopped; l++) {
+									for (int l = 0; (l < currentExonSCW.size()) && !stopped; l++) {
 										switch (method) {
 										case AVERAGE:
-											scores[k] = (scores[k] * length + currentExonSCW.get(l).getScore() * currentExonSCW.get(l).getSize()) / (length + currentExonSCW.get(l).getSize());
+											scores[k] = ((scores[k] * length) + (currentExonSCW.get(l).getScore() * currentExonSCW.get(l).getSize())) / (length + currentExonSCW.get(l).getSize());
 											length += currentExonSCW.get(l).getSize();
 											break;
 										case MAXIMUM:
@@ -118,7 +118,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 			return new GeneList(result, geneList.getSearchURL());
 		}
 	}
-	
+
 
 	@Override
 	public String getDescription() {
@@ -141,5 +141,5 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 	@Override
 	public void stop() {
 		stopped = true;
-	}	
+	}
 }

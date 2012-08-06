@@ -26,9 +26,13 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
-import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * @author Nicolas Fourel
@@ -37,7 +41,7 @@ import edu.yu.einstein.genplay.util.Utils;
 public class VariantFormat {
 
 	private PanelInformation 		pane;			// scrollpane containing information
-	private final String 					title;			// header of the pane
+	private final String 			title;			// header of the pane
 	private List<String> 			keys;			// key values
 	private List<String> 			values;			// values
 	private List<String> 			description;	// keys description
@@ -48,28 +52,32 @@ public class VariantFormat {
 	 * @param formatHeader string containing header information about the FORMAT field of the variant information
 	 * @param formatValues string containing values information about the FORMAT field of the variant information according to a specific genome
 	 */
-	protected VariantFormat (MGPosition variantInformation) {
+	protected VariantFormat (VariantInterface variant, VCFLine line) {
 		title = "Format";
 
-		if (variantInformation == null) {
+		if ((line == null) || (variant instanceof ReferenceVariant) || (variant instanceof ReferenceBlankVariant)) {
 			pane = new PanelInformation(title, null, null, null);
 		} else {
 			keys = new ArrayList<String>();
 			values = new ArrayList<String>();
 			description = new ArrayList<String>();
 
-			String[] headerElements = Utils.split(variantInformation.getFormat(), ':');
-			String[] valueElements = Utils.split(variantInformation.getFormatValues(), ':');
+			String[] headerElements = line.getFormat();
+			String[] valueElements = line.getFormatValues(FormattedMultiGenomeName.getRawName(variant.getGenomeName()));
 
-			for (int i = 0; i < headerElements.length; i++) {
-				VCFHeaderAdvancedType header = variantInformation.getFormatHeader(headerElements[i]);
-				if (header != null) {
-					keys.add(header.getId());
-					description.add(header.getDescription());
-					if (i < valueElements.length) {
-						values.add(valueElements[i]);
-					} else {
-						values.add("-");
+			VCFHeader header = null;
+			if (line.getGenomeIndexer() instanceof VCFHeader) {
+				header = (VCFHeader) line.getGenomeIndexer();
+				for (int i = 0; i < headerElements.length; i++) {
+					VCFHeaderAdvancedType headerField = header.getFormatHeaderFromID(headerElements[i]);
+					if (headerField != null) {
+						keys.add(headerField.getId());
+						description.add(headerField.getDescription());
+						if (i < valueElements.length) {
+							values.add(valueElements[i]);
+						} else {
+							values.add("-");
+						}
 					}
 				}
 			}

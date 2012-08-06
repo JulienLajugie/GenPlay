@@ -21,8 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.extractor;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.Strand;
 
 
@@ -71,14 +71,14 @@ public class ReadLengthAndShiftHandler {
 	 * @param start start of the read
 	 * @param stop stop of the read
 	 * @param strand strand of the read
-	 * @return a {@link ChromosomeWindow} with the result start and stop positions
+	 * @return a {@link SimpleChromosomeWindow} with the result start and stop positions
 	 */
-	public ChromosomeWindow computeStartStop(Chromosome chromo, int start, int stop, Strand strand) {
+	public SimpleChromosomeWindow computeStartStop(Chromosome chromo, int start, int stop, Strand strand) {
 		if ((strand == null) || (chromo == null)) {
 			// if the strand or chromosome parameter is null we return the value without modifying them
-			return new ChromosomeWindow(start, stop);
+			return new SimpleChromosomeWindow(start, stop);
 		}		
-		ChromosomeWindow resultPositions = new ChromosomeWindow();
+		SimpleChromosomeWindow resultPositions = new SimpleChromosomeWindow();
 		if (strand == Strand.FIVE) {
 			// case where the read is on the 5' strand
 			// we want to make sure that the result positions are not greater than the chromosome length

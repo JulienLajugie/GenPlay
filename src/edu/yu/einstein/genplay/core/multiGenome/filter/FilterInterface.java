@@ -21,8 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.filter;
 
-import java.util.Map;
-
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 
 /**
@@ -59,10 +58,10 @@ public interface FilterInterface {
 
 	/**
 	 * Checks if the object (purpose of the filter) is valid according to the filter
-	 * @param value the line of a VCF with columns and values
+	 * @param line the line of a VCF
 	 * @return true if it is valid, false otherwise;
 	 */
-	public boolean isValid (Map<String, Object> value);
+	public boolean isValid (VCFLine line);
 
 
 	/**
@@ -86,4 +85,5 @@ public interface FilterInterface {
 	 * @return a duplicate of the current object
 	 */
 	public FilterInterface getDuplicate ();
+
 }

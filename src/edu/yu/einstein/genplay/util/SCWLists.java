@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -23,8 +23,8 @@ package edu.yu.einstein.genplay.util;
 
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 
 /**
@@ -40,7 +40,7 @@ public class SCWLists {
 	 */
 	public static double average(List<ScoredChromosomeWindow> list) {
 		double sum = 0;
-		int n = 0; 
+		int n = 0;
 		for (ScoredChromosomeWindow currentValue : list) {
 			if (currentValue != null) {
 				sum += currentValue.getScore();
@@ -53,8 +53,8 @@ public class SCWLists {
 			return sum / n;
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param list {@link List} of Double
 	 * @param indexStart index where to start in the list
@@ -62,12 +62,12 @@ public class SCWLists {
 	 * @return the average value of the list between indexStart and indexStop included
 	 */
 	public static double average(List<ScoredChromosomeWindow> list, int indexStart, int indexStop) {
-		if (indexStart > indexStop || indexStop >= list.size()) {
+		if ((indexStart > indexStop) || (indexStop >= list.size())) {
 			return 0;
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart).getScore();
 		}
-		
+
 		double sum = 0;
 		int n = 0;
 		int i = indexStart;
@@ -84,13 +84,13 @@ public class SCWLists {
 			return sum / n;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Returns the maximum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list input list of ScoredChromosomeWindow
-	 * @param regionStart index of the first {@link ChromosomeWindow}
-	 * @param regionStop index of the last {@link ChromosomeWindow}
+	 * @param regionStart index of the first {@link SimpleChromosomeWindow}
+	 * @param regionStop index of the last {@link SimpleChromosomeWindow}
 	 * @return the non-zero maximum of the specified list
 	 */
 	public static double maxNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
@@ -102,13 +102,13 @@ public class SCWLists {
 		}
 		return max;
 	}
-	
-	
+
+
 	/**
 	 * Returns the minimum of the list in parameter. Doesn't take the 0 value elements into account.
 	 * @param list input list of ScoredChromosomeWindow
-	 * @param regionStart index of the first {@link ChromosomeWindow}
-	 * @param regionStop index of the last {@link ChromosomeWindow}
+	 * @param regionStart index of the first {@link SimpleChromosomeWindow}
+	 * @param regionStop index of the last {@link SimpleChromosomeWindow}
 	 * @return the non-zero minimum of the specified list
 	 */
 	public static double minNoZero(List<ScoredChromosomeWindow> list, int regionStart, int regionStop) {
@@ -120,8 +120,8 @@ public class SCWLists {
 		}
 		return min;
 	}
-	
-	
+
+
 	/**
 	 * @param list {@link List} of Double
 	 * @param indexStart index where to start in the list
@@ -134,22 +134,22 @@ public class SCWLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart).getScore();
 		}
-		
+
 		double mean = average(list, indexStart, indexStop);
-		double sum = 0;	
+		double sum = 0;
 		int n = 0;
-		int i = indexStart;		
-		while ((i <= indexStop) && (i < list.size())) {			
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
 			if (list.get(i) != null) {
 				sum += Math.pow(list.get(i).getScore() - mean, 2);
 				n++;
 			}
 			i++;
-		}		
+		}
 		if (n == 0) {
 			return 0;
 		} else {
-			return sum / n;			
+			return sum / n;
 		}
 	}
 
@@ -165,8 +165,8 @@ public class SCWLists {
 		}
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Sum all the value of the specified list between the start index and the stop index
 	 * @param list
@@ -180,13 +180,13 @@ public class SCWLists {
 		} else if (indexStart == indexStop) {
 			return list.get(indexStart).getScore();
 		}
-		
-		double sum = 0;	
-		int i = indexStart;		
-		while ((i <= indexStop) && (i < list.size())) {			
+
+		double sum = 0;
+		int i = indexStart;
+		while ((i <= indexStop) && (i < list.size())) {
 			sum += list.get(i).getScore();
 			i++;
-		}		
-		return sum;			
-	}	
+		}
+		return sum;
+	}
 }

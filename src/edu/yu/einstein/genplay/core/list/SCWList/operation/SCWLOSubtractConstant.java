@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,15 +26,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
 
 
 /**
- * Subtracts a specified constant from the scores of each window of a {@link ScoredChromosomeWindow}
+ * Subtracts a specified constant from the scores of each window of a {@link SimpleScoredChromosomeWindow}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -43,10 +45,10 @@ public class SCWLOSubtractConstant implements Operation<ScoredChromosomeWindowLi
 	private final ScoredChromosomeWindowList 	scwList;		// input list
 	private final double 						constant;		// constant to subtract
 	private boolean								stopped = false;// true if the operation must be stopped
-	
-	
+
+
 	/**
-	 * Subtracts a specified constant to the scores of each window of a {@link ScoredChromosomeWindow}
+	 * Subtracts a specified constant to the scores of each window of a {@link SimpleScoredChromosomeWindow}
 	 * @param scwList input list
 	 * @param constant constant to add
 	 */
@@ -54,29 +56,29 @@ public class SCWLOSubtractConstant implements Operation<ScoredChromosomeWindowLi
 		this.scwList = scwList;
 		this.constant = constant;
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		if (constant == 0) {
 			return scwList.deepClone();
 		}
-		
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
-			
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// We subtract a constant to each element
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
+							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
 							resultWindow.setScore(currentWindow.getScore() - constant);
 							resultList.add(resultWindow);
 						}
@@ -91,14 +93,14 @@ public class SCWLOSubtractConstant implements Operation<ScoredChromosomeWindowLi
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Subtract Constant, Constant = " + constant;
@@ -110,13 +112,13 @@ public class SCWLOSubtractConstant implements Operation<ScoredChromosomeWindowLi
 		return "Subtracting Constant";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

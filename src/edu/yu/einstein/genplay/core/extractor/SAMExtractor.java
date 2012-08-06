@@ -25,8 +25,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -111,7 +111,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 						int stop = start + sequence.length();
 						// compute the read position with specified strand shift and read length
 						if (readHandler != null) {
-							ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+							SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
 							start = resultStartStop.getStart();
 							stop = resultStartStop.getStop();							
 						}

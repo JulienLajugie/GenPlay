@@ -27,30 +27,28 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
-import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsOffsetList;
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFileStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFSampleStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderElementRecord;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
-import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeSynchronizing;
+import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -60,7 +58,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * - insertVariantposition: add all concerned variants from the VCF files to the data structure.
  * - performPositionSynchronization: perform the synchronization properly speaking.
  * 
- * This class is totally managed in the full synchronization process by the class {@link PAMultiGenomeSynchronizing}.
+ * This class is totally managed in the full synchronization process by the class {@link MGASynchronizing}.
  * 
  * A synchronization process means updating genome(s) offset according to the variation.
  * A deletion involves a synchronization process on the genome it occurs.
@@ -125,90 +123,81 @@ public class MGSynchronizer implements Serializable {
 		alleleTypeList.add(AlleleType.ALLELE01);
 		alleleTypeList.add(AlleleType.ALLELE02);
 
-		for (Chromosome chromosome: chromosomeList) {																// loop on every chromosome
-			for (VCFFile vcfFile: VCFFileList) {																	// loop on every vcf reader
+		MGAlleleHandler alleleHandler = new MGAlleleHandler(multiGenomeProject);
+
+		ChromosomeListOfLists<MGOffset> referenceOffsetList = multiGenomeProject.getMultiGenome().getReferenceGenome().getAllele().getOffsetList();
+
+		VCFLine line = new VCFLine(null, null);
+
+		for (int i = 0; i < chromosomeList.size(); i++) {												// loop on every chromosome
+			Chromosome chromosome = chromosomeList.get(i);
+			for (VCFFile vcfFile: VCFFileList) {														// loop on every vcf reader
 				VCFFileStatistic statistic = vcfFile.getStatistics();
-				List<String> genomeNames = getRequiredGenomeNamesFromAReader(vcfFile);								// get the genome names list
+				List<String> genomeNames = getRequiredGenomeNamesFromAReader(vcfFile);					// get the genome names list
 				VCFHeader fileHeader = vcfFile.getHeader();
 				List<String> genomeRawNames = fileHeader.getRawGenomesNames();
-				List<String> columnNames = getColumnNamesForQuery(genomeRawNames);									// get the list of column to perform the query on the current vcf
-				List<Map<String, Object>> result = vcfFile.getReader().query(chromosome.getName(), 0, chromosome.getLength(), columnNames);	// perform the query on the current vcf: chromosome name, from 0 to its length
+				List<String> results = vcfFile.getReader().query(chromosome);							// perform the query on the current vcf: chromosome name, from 0 to its length
 
-				int[] chromosomeBounds = getBounds(result.size());
+				int[] chromosomeBounds = getBounds(results.size());
 				int lineNumber = 0;
-				for (Map<String, Object> VCFLine: result) {															// loop on every line of the result of the query
+				for (String result: results) {															// loop on every line of the result of the query
+					line.initialize(result, vcfFile.getHeader());
 					lineNumber++;
-					int referencePosition = Integer.parseInt(VCFLine.get(VCFColumnName.POS.toString()).toString());	// get the reference genome position (POS field)
-					String reference = VCFLine.get(VCFColumnName.REF.toString()).toString();						// get the reference value (REF field)
-					String alternative = VCFLine.get(VCFColumnName.ALT.toString()).toString();						// get the alternative values and split them into an array (comma separated)
-					String[] alternatives = Utils.split(alternative, ',');
-					String info = VCFLine.get(VCFColumnName.INFO.toString()).toString();							// get the information of the variation (INFO field). Needs it if the variation is SV coded.
-					float score;
-					try {
-						score = Float.parseFloat(VCFLine.get("QUAL").toString());
-					} catch (Exception e) {
-						score = 0;
-					}
+					if (line.isValid()) {
+						line.processForAnalyse();
+						boolean manageReference = false;
+						boolean hadInsertion = false;
+						int referencePosition = line.getReferencePosition();								// get the reference genome position (POS field)
+						float score = line.getQuality();
 
-					int[] variantLengths = getVariantLengths(reference, alternatives, info);
-					VariantType[] variantTypes = getVariantTypes(variantLengths);
+						updateFileStatistics(statistic, line.getAlternativesTypes(), line.getAlternatives());
 
-					updateFileStatistics(statistic, variantTypes, alternatives);
+						if (isInBounds(chromosomeBounds, lineNumber)) {
+							updateHeaderInformation(fileHeader, line, genomeRawNames);
+						}
 
-					if (isInBounds(chromosomeBounds, lineNumber)) {
-						updateHeaderInformation(fileHeader, VCFLine, genomeRawNames);
-					}
+						for (String genomeName: genomeNames) {															// loop on every genome raw name
+							String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
+							String genotype = line.getGenotype(genomeRawName);											// get the related format value, split it (colon separated) into an array, get the first value: the genotype
+							if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
+								alleleHandler.initialize(chromosome, genomeName, getAlleleIndex(genotype.charAt(0)), getAlleleIndex(genotype.charAt(2)));
 
-					for (String genomeName: genomeNames) {															// loop on every genome raw name
-						String genomeRawName = FormattedMultiGenomeName.getRawName(genomeName);
-						//String genotype = VCFLine.get(genomeRawName).toString().trim().split(":")[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype
-						String genotype = Utils.split(VCFLine.get(genomeRawName).toString().trim(), ':')[0];				// get the related format value, split it (colon separated) into an array, get the first value: the genotype
-						if (genotype.length() == 3) {																// the genotype must have 3 characters (eg: 0/0 0/1 1/0 1/1 0|0 0|1 1|0 1|1)
-							int firstAlleleIndex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(0));
-							int secondAlleleindex = getAlleleIndex(VCFLine.get(genomeRawName).toString().charAt(2));
-							updateGenotypeSampleStatistics(statistic.getSampleStatistics(genomeName), variantTypes, firstAlleleIndex, secondAlleleindex);
+								updateGenotypeSampleStatistics(statistic.getSampleStatistics(genomeName), line.getAlternativesTypes(), alleleHandler.getAlleleIndex(AlleleType.ALLELE01), alleleHandler.getAlleleIndex(AlleleType.ALLELE02));
 
-							for (AlleleType alleleType: alleleTypeList) {
-								int currentAlleleIndex = -1;
-								if (alleleType == AlleleType.ALLELE01) {													// if we are processing the paternal allele
-									currentAlleleIndex = firstAlleleIndex;													// we look at the first character
-								} else {																					// if not, it means we are looking to the maternal allele
-									currentAlleleIndex = secondAlleleindex;													// and we look at the third character
-								}
+								for (AlleleType alleleType: alleleTypeList) {
+									int currentAlleleIndex = alleleHandler.getAlleleIndex(alleleType);
 
-								if (currentAlleleIndex >= 0) {																// if we have a variation
-									int alleleLength = variantLengths[currentAlleleIndex];									// we retrieve its length
-									VariantType variantType = variantTypes[currentAlleleIndex];								// get the type of variant according to the length of the variation
-									vcfFile.addVariantType(genomeName, variantType);										// notice the reader of the variant type
-									updateVariationSampleStatistics(statistic.getSampleStatistics(genomeName), variantType, alternatives[currentAlleleIndex]);
-									if (variantType != VariantType.SNPS) {													// if it is not a SNP
-										List<MGOffset> offsetList;
-										MGGenomeForDisplay genomeForDisplay = multiGenomeProject.getMultiGenomeForDisplay().getGenomeInformation(genomeName);
-										MGAlleleForDisplay alleleForDisplay;
-										if (alleleType == AlleleType.ALLELE01) {											// if we are processing the paternal allele
-											offsetList = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName).getAlleleA().getOffsetList().get(chromosome);	// we get the list of offset of the allele A
-											alleleForDisplay = genomeForDisplay.getAlleleA();
-										} else {																			// if not, it means we are looking to the maternal allele
-											offsetList = multiGenomeProject.getMultiGenome().getGenomeInformation(genomeName).getAlleleB().getOffsetList().get(chromosome);	// we get the list of offset of the allele B
-											alleleForDisplay = genomeForDisplay.getAlleleB();
-										}
-										offsetList.add(new MGOffset(referencePosition, alleleLength));						// we insert the new offset
+									if (currentAlleleIndex >= 0) {																// if we have a variation
+										int alleleLength = line.getAlternativesLength()[currentAlleleIndex];									// we retrieve its length
+										VariantType variantType = line.getAlternativesTypes()[currentAlleleIndex];				// get the type of variant according to the length of the variation
+										vcfFile.addVariantType(genomeName, variantType);										// notice the reader of the variant type
+										updateVariationSampleStatistics(statistic.getSampleStatistics(genomeName), variantType, line.getAlternatives()[currentAlleleIndex]);
+										if (variantType != VariantType.SNPS) {													// if it is not a SNP
+											alleleHandler.getOffsetList(alleleType).add(new MGOffset(referencePosition, alleleLength));	// add the offset to the offset list
 
-										if (variantType == VariantType.INSERTION) {											// if we are processing an insertion
-											multiGenomeProject.getMultiGenome().getReferenceGenome().getAllele().getOffsetList().get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// we insert it into the reference genome allele
-											MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, VariantType.INSERTION); // we also insert it to the display data structure
-											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
-											variantListForDisplay.getVariantList().add(variant);
-										} else {																			// if it is not an insertion it is a deletion
-											MGVariantListForDisplay variantListForDisplay = alleleForDisplay.getVariantList(chromosome, VariantType.DELETION); // we only insert it to the display data structure
+											if (variantType == VariantType.INSERTION) {
+												hadInsertion = true;
+												referenceOffsetList.get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// add the offset to the reference genome allele if it is an insertion
+											}
+
+											// Add the variant for the display
+											MGVariantListForDisplay variantListForDisplay = alleleHandler.getAlleleForDisplay(alleleType).getVariantList(chromosome, variantType);
 											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
 										}
+									} else if (currentAlleleIndex == -1) {
+										manageReference = true;
 									}
 								}
+							} else {
+								System.err.println("FORMAT field for the genome " + genomeRawName + " (" + chromosome.getName() + ") at the position " + referencePosition + " of the reference is invalid: GT = " + genotype + " (length: " + genotype.length() + ")");
 							}
-						} else {
-							System.err.println("FORMAT field for the genome " + genomeRawName + " (" + chromosome.getName() + ") at the position " + referencePosition + " of the reference is invalid: GT = " + genotype + " (length: " + genotype.length() + ")");
+						}
+
+						if (manageReference && !hadInsertion) {
+							//VariantInterface variant = new ReferenceVariant(referencePosition, line.getREF().length(), i);
+							VariantInterface variant = new ReferenceVariant(referencePosition, line.getLongestAlternativeLength(), i, vcfFile);
+							alleleHandler.getAlleleReferenceDisplay().getVariantList(chromosome).add(variant);
 						}
 					}
 				}
@@ -263,28 +252,6 @@ public class MGSynchronizer implements Serializable {
 
 
 	/**
-	 * Creates the list of the column names necessary for a query.
-	 * Four fields are static: POS, REF, ALT and INFO for the position synchronization.
-	 * Name of the genomes (raw name) must be added dynamically according to the content of the VCF file and the project requirements.
-	 * @param genomeNames list of genome raw names to add to the static list
-	 * @return the list of column names necessary for a query
-	 */
-	private List<String> getColumnNamesForQuery (List<String> genomeRawNames) {
-		List<String> columnNames = new ArrayList<String>();
-		columnNames.add(VCFColumnName.POS.toString());
-		columnNames.add(VCFColumnName.REF.toString());
-		columnNames.add(VCFColumnName.ALT.toString());
-		columnNames.add(VCFColumnName.QUAL.toString());
-		columnNames.add(VCFColumnName.INFO.toString());
-		columnNames.add(VCFColumnName.FORMAT.toString());
-		for (String genomeName: genomeRawNames) {
-			columnNames.add(genomeName);
-		}
-		return columnNames;
-	}
-
-
-	/**
 	 * Retrieves the name of the genomes required in the project that are present in a VCF file.
 	 * A project does not necessary require all genomes present in a VCF file.
 	 * @param vcfFile	VCF file
@@ -308,7 +275,7 @@ public class MGSynchronizer implements Serializable {
 	/**
 	 * Transforms a character into its allele index.
 	 * The char 1 will refer to the first alternative located at the index 0 of any arrays.
-	 * The char 0 and '.' will return -1 and don't refer to any alternatives.
+	 * The char 0 returns -1 and the char '.' returns -2 and don't refer to any alternatives.
 	 * @param alleleChar the character
 	 * @return the associated code (char - 1)
 	 */
@@ -543,9 +510,9 @@ public class MGSynchronizer implements Serializable {
 	 * Updates the header information.
 	 * It consists in storing the first values found of the IDs from INFO and FORMAT fields.
 	 */
-	private void updateHeaderInformation (VCFHeader fileHeader, Map<String, Object> VCFLine, List<String> genomeNames) {
-		updateHeaderINFOInformation(fileHeader, VCFLine);
-		updateHeaderFORMATInformation(fileHeader, VCFLine, genomeNames);
+	private void updateHeaderInformation (VCFHeader fileHeader, VCFLine line, List<String> genomeNames) {
+		updateHeaderINFOInformation(fileHeader, line);
+		updateHeaderFORMATInformation(fileHeader, line, genomeNames);
 	}
 
 
@@ -553,9 +520,8 @@ public class MGSynchronizer implements Serializable {
 	 * Updates the INFO header information.
 	 * It consists in storing the first values found of the IDs from the INFO field.
 	 */
-	private void updateHeaderINFOInformation (VCFHeader header, Map<String, Object> VCFLine) {
-		String info = (String) VCFLine.get(VCFColumnName.INFO.toString());
-		String[] fields = Utils.split(info, ';');
+	private void updateHeaderINFOInformation (VCFHeader header, VCFLine line) {
+		String[] fields = Utils.split(line.getINFO(), ';');
 
 		for (int i = 0; i < fields.length; i++) {
 			//String[] pair = fields[i].split("=");
@@ -576,17 +542,15 @@ public class MGSynchronizer implements Serializable {
 	 * Updates the FORMAT header information.
 	 * It consists in storing the first values found of the IDs from the FORMAT field.
 	 */
-	private void updateHeaderFORMATInformation (VCFHeader header, Map<String, Object> VCFLine, List<String> genomeNames) {
-		String format = (String) VCFLine.get(VCFColumnName.FORMAT.toString());
-		String[] fields = Utils.split(format, ':');
+	private void updateHeaderFORMATInformation (VCFHeader header, VCFLine line, List<String> genomeNames) {
+		String[] fields = Utils.split(line.getFORMAT(), ':');
 
 		for (int i = 0; i < fields.length; i++) {
 			VCFHeaderAdvancedType formatHeader = header.getFormatHeaderFromID(fields[i]);
 			if (formatHeader != null) {
 				if (formatHeader.getId().equals("GT") || (formatHeader.getType() == String.class)) {
 					for (String genome: genomeNames) {
-						//String[] values = ((String) VCFLine.get(genome)).split(":");
-						String[] values = Utils.split(((String) VCFLine.get(genome)), ':');
+						String[] values = line.getFormatValues(genome);
 						if (i < values.length) {
 							((VCFHeaderElementRecord)formatHeader).addElement(values[i]);
 						}

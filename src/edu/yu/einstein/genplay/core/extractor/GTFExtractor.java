@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.Gene;
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -45,15 +45,17 @@ import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -63,7 +65,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class GTFExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
+public class GTFExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator,
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = 6374158568964537008L; // generated ID
@@ -119,7 +121,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 				} catch (InvalidChromosomeException e) {
 					chromosomeStatus = NEED_TO_BE_SKIPPED;
 				}
-				
+
 				// check if we extracted all the selected chromosomes
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					// case where we extracted all the selected chromosomes
@@ -142,9 +144,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						int stop = Integer.parseInt(splitedLine[4].trim());
 						// compute the read position with specified strand shift and read length
 						if (readHandler != null) {
-							ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, start, stop, strand);
+							SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, start, stop, strand);
 							start = resultStartStop.getStart();
-							stop = resultStartStop.getStop();							
+							stop = resultStartStop.getStop();
 						}
 
 						// retrieve the score
@@ -153,7 +155,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						if (!scoreStr.equals("-") && !scoreStr.equals(".")) {
 							score = Double.parseDouble(scoreStr);
 						}
-						// if there is some attribute informations 
+						// if there is some attribute informations
 						String name = null;
 						if (splitedLine.length >= 9) {
 							Map<String, String> attributes = parseAttributes(splitedLine[8]);
@@ -165,7 +167,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 								//throw new InvalidDataLineException(line);
 								throw new DataLineException("The attribute 'gene_id' is missing.");
 							}
-							// if there is a FPKM attribute we replace the score by the FPKM 
+							// if there is a FPKM attribute we replace the score by the FPKM
 							if (attributes.containsKey("FPKM")) {
 								score = Double.parseDouble(attributes.get("FPKM"));
 							} else if (attributes.containsKey("RPKM")) {
@@ -177,7 +179,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						// Checks errors
 						String errors = DataLineValidator.getErrors(chromo, start, stop, score, name, strand);
 						if (errors.length() == 0) {
-							
+
 							// Stop position checking, must not overpass the chromosome length
 							DataLineException stopEndException = null;
 							String stopEndErrorMessage = DataLineValidator.getErrors(chromo, stop);
@@ -185,7 +187,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 								stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
 								stop = chromo.getLength();
 							}
-							
+
 							// if we are in a multi-genome project, we compute the position on the meta genome
 							start = getMultiGenomePosition(chromo, start);
 							stop = getMultiGenomePosition(chromo, stop);
@@ -194,7 +196,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							scoreList.add(chromo, score);
 							strandList.add(chromo, strand);
 							nameList.add(chromo, name);
-							
+
 							if (stopEndException != null) {
 								throw stopEndException;
 							}
@@ -226,8 +228,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			int indexLastQuote = currentAttribute.lastIndexOf('"');
 			String attributeName = currentAttribute.substring(0, indexFirstQuote).trim();
 			String attributeValue = currentAttribute.substring(indexFirstQuote + 1, indexLastQuote).trim();
-			attributeMap.put(attributeName, attributeValue);			
-		}		
+			attributeMap.put(attributeName, attributeValue);
+		}
 		return attributeMap;
 	}
 
@@ -244,37 +246,43 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;		
+		selectedStrand = strandToSelect;
 	}
 
 
 	@Override
 	public RepeatFamilyList toRepeatFamilyList()
-	throws InvalidChromosomeException, InterruptedException, ExecutionException {
+			throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new RepeatFamilyList(startList, stopList, nameList);
 	}
 
 
 	@Override
 	public ChromosomeWindowList toChromosomeWindowList()
-	throws InvalidChromosomeException, InterruptedException, ExecutionException {
+			throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new ChromosomeWindowList(startList, stopList);
 	}
 
 
 	@Override
 	public boolean overlapped() {
-		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+		return SimpleScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 
 
 	@Override
-	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) 
-	throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm)
+			throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+	}
+	
+	
+	@Override
+	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
+	    return new MaskWindowList(startList, stopList);
 	}
 
-
+	
 	@Override
 	public boolean isBinSizeNeeded() {
 		return true;
@@ -294,15 +302,15 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 
 	@Override
-	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) 
-	throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method)
+			throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
 
 	@Override
-	public GeneList toGeneList() 
-	throws InvalidChromosomeException, InterruptedException, ExecutionException {
+	public GeneList toGeneList()
+			throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		// return list
 		List<List<Gene>> geneList = new ArrayList<List<Gene>>();
 		// creates a list of genes from the list of exons
@@ -311,12 +319,12 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			String name = null;
 			Chromosome chromo = null;
 			Strand strand = null;
-			List<ScoredChromosomeWindow> exons = new ArrayList<ScoredChromosomeWindow>();			
+			List<SimpleScoredChromosomeWindow> exons = new ArrayList<SimpleScoredChromosomeWindow>();
 			if (startList.get(i) != null) {
 				for (int j = 0; j < startList.size(i); j++) {
 					// if we starting a new gene
 					if ((name == null) || !(nameList.get(i, j).equalsIgnoreCase(name))) {
-						// if it's not the first gene of the chromosome and the last gene is done we add it 
+						// if it's not the first gene of the chromosome and the last gene is done we add it
 						if (name != null) {
 							geneList.get(i).add(createGene(name, chromo, strand, exons));
 						}
@@ -324,29 +332,29 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						name = nameList.get(i, j);
 						chromo = projectChromosome.get(i);
 						strand = strandList.get(i, j);
-						// we reset the exon list 
+						// we reset the exon list
 						exons.clear();
 						// if there is no score we add an exon with 0 as a score
 						if (scoreList.get(i).isEmpty()) {
-							exons.add(new ScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), 0));
+							exons.add(new SimpleScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), 0));
 						} else {
-							exons.add(new ScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), scoreList.get(i, j)));
+							exons.add(new SimpleScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), scoreList.get(i, j)));
 						}
 					} else {
 						// if there is no score we add an exon with 0 as a score
 						if (scoreList.get(i).isEmpty()) {
-							exons.add(new ScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), 0));
+							exons.add(new SimpleScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), 0));
 						} else {
-							exons.add(new ScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), scoreList.get(i, j)));
-						}						
-					}				
+							exons.add(new SimpleScoredChromosomeWindow(startList.get(i, j), stopList.get(i, j), scoreList.get(i, j)));
+						}
+					}
 				}
 				// we add the last gene of the current chromosome
 				if (name != null) {
 					geneList.get(i).add(createGene(name, chromo, strand, exons));
-				}	
+				}
 			}
-		}		
+		}
 		return new GeneList(geneList);
 	}
 
@@ -356,10 +364,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 	 * @param name name of the gene
 	 * @param chromo chromosome
 	 * @param strand strand
-	 * @param exons list of {@link ScoredChromosomeWindow} representing the exons of the gene
+	 * @param exons list of {@link SimpleScoredChromosomeWindow} representing the exons of the gene
 	 * @return a new Gene
 	 */
-	private Gene createGene(String name, Chromosome chromo, Strand strand, List<ScoredChromosomeWindow> exons){
+	private Gene createGene(String name, Chromosome chromo, Strand strand, List<SimpleScoredChromosomeWindow> exons){
 		// sort the exon by start position
 		Collections.sort(exons);
 		// creates an array of starts, an array of stops and an array of scores
@@ -373,13 +381,13 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			exonScoresArray[k] = exons.get(k).getScore();
 			// check if all the exons are null
 			if (exonScoresArray[k] != 0) {
-				areExonsScored = true;									
-			}	
+				areExonsScored = true;
+			}
 		}
 		// the start position is the start of the first exon
 		int start = exonStartsArray[0];
 		// the stop position is the stop of the last exon
-		int stop = exonStopsArray[exonStopsArray.length - 1];							
+		int stop = exonStopsArray[exonStopsArray.length - 1];
 		Gene gene = new Gene(name, chromo, strand, start, stop, exonStartsArray, exonStopsArray, exonScoresArray);
 		// if there is no score we set the gene exon score field to null
 		if (!areExonsScored) {

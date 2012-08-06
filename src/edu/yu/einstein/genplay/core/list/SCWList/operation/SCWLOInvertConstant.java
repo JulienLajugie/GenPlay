@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,8 +26,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 
@@ -44,7 +46,7 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 	private final double 						constant;	// coefficient a in f(x) = a / x
 	private boolean				stopped = false;// true if the operation must be stopped
 
-	
+
 	/**
 	 * Creates an instance of {@link SCWLOInvertConstant}
 	 * @param scwList input {@link ScoredChromosomeWindowList}
@@ -54,29 +56,29 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 		this.scwList = scwList;
 		this.constant = constant;
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
 		if (constant == 0) {
 			return null;
 		}
-		
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
 
 		for (short i = 0; i < scwList.size(); i++) {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
-			
-			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {	
+
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
 						// we invert each element
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new ScoredChromosomeWindow(currentWindow);
+							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
 							if (currentWindow.getScore() != 0) {
 								resultWindow.setScore(constant / currentWindow.getScore());
 							}
@@ -93,32 +95,32 @@ public class SCWLOInvertConstant implements Operation<ScoredChromosomeWindowList
 		}
 		List<List<ScoredChromosomeWindow>> result = op.startPool(threadList);
 		if (result != null) {
-			ScoredChromosomeWindowList resultList = new ScoredChromosomeWindowList(result);
+			ScoredChromosomeWindowList resultList = new SimpleScoredChromosomeWindowList(result);
 			return resultList;
 		} else {
 			return null;
 		}
 	}
 
-	
+
 	@Override
 	public String getDescription() {
 		return "Operation: Invert, constant = " + constant;
 	}
 
-	
+
 	@Override
 	public String getProcessingDescription() {
 		return "Inverting";
 	}
 
-	
+
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

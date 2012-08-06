@@ -28,6 +28,7 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
@@ -222,9 +223,8 @@ public class ManualVCFReader {
 	 */
 	private boolean isValid (VCFLine line) {
 		if (filterList != null) {
-			Map<String, Object> map = line.toFullMap();
 			for (MGFilter filter: filterList) {
-				if (!filter.getFilter().isValid(map)) {
+				if (!filter.getFilter().isValid(line)) {
 					return false;
 				}
 			}

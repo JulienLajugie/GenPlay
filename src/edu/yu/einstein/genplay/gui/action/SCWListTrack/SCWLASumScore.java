@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -45,9 +45,9 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 
 	private static final long serialVersionUID = -5973104354521841885L;	// generated ID
 	private static final String 	ACTION_NAME = "Score Count";		// action name
-	private static final String 	DESCRIPTION = 
-		"Return the sum of the scores on the " +
-		"selected chromosomes of the selected track";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Return the sum of the scores on the " +
+					"selected chromosomes of the selected track";					// tooltip
 
 
 	/**
@@ -77,7 +77,7 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 				Operation<Double> operation = new SCWLOSumScore(inpuList, selectedChromo);
 				return operation;
 			}
-		}	
+		}
 		return null;
 	}
 
@@ -86,6 +86,6 @@ public class SCWLASumScore extends TrackListActionOperationWorker<Double> {
 	protected void doAtTheEnd(Double actionResult) {
 		if (actionResult != null) {
 			JOptionPane.showMessageDialog(getRootPane(), "Score count: \n" + new DecimalFormat("###,###,###,###,###,###,###.###").format(actionResult), "Score Count", JOptionPane.INFORMATION_MESSAGE);
-		}		
-	}		
+		}
+	}
 }

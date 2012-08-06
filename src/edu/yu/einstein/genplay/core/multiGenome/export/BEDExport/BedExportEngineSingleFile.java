@@ -28,15 +28,16 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.export.FileAlgorithmInterface;
 import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileAlgorithm;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -50,9 +51,9 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	private final MGSynchronizer 	synchronizer;
 
 	private final String 					fullGenomeName;
-	private final boolean					isReferenceGenome;
 	private final AlleleType				allele;
 	private final VCFHeaderType 			header;
+	private final CoordinateSystemType 		coordinateSystem;
 	private List<AlleleSettingsBedExport> 	fullAlleleList;
 	private List<AlleleSettingsBedExport> 	alleleListToExport;
 
@@ -64,14 +65,14 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	 * @param fullGenomeName the full genome name of the genome to export
 	 * @param allele the allele type to export
 	 * @param header the header to use as a score
-	 * @param isReferenceGenome true if the export has to be in the coordinate system of the reference genome, false if on the current genome
+	 * @param coordinateSystem the coordinate system of the position to export the data
 	 */
-	public BedExportEngineSingleFile (String fullGenomeName, AlleleType allele, VCFHeaderType header, boolean isReferenceGenome) {
+	public BedExportEngineSingleFile (String fullGenomeName, AlleleType allele, VCFHeaderType header, CoordinateSystemType coordinateSystem) {
 		this.synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
 		this.fullGenomeName = fullGenomeName;
 		this.allele = allele;
 		this.header = header;
-		this.isReferenceGenome = isReferenceGenome;
+		this.coordinateSystem = coordinateSystem;
 	}
 
 
@@ -94,17 +95,21 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	 */
 	private void initializeAlleleList () {
 		fullAlleleList = new ArrayList<AlleleSettingsBedExport>();
-		fullAlleleList.add(new AlleleSettingsBedExport(path, AlleleType.ALLELE01));
-		fullAlleleList.add(new AlleleSettingsBedExport(path, AlleleType.ALLELE02));
+		fullAlleleList.add(new AlleleSettingsBedExport(path, AlleleType.ALLELE01, coordinateSystem));
+		fullAlleleList.add(new AlleleSettingsBedExport(path, AlleleType.ALLELE02, coordinateSystem));
 
 		alleleListToExport = new ArrayList<AlleleSettingsBedExport>();
-		if (allele == AlleleType.BOTH) {
+		if (coordinateSystem == CoordinateSystemType.CURRENT_GENOME) {
+			if (allele == AlleleType.BOTH) {
+				alleleListToExport.add(fullAlleleList.get(0));
+				alleleListToExport.add(fullAlleleList.get(1));
+			} else if (allele == AlleleType.ALLELE01) {
+				alleleListToExport.add(fullAlleleList.get(0));
+			} else if (allele == AlleleType.ALLELE02) {
+				alleleListToExport.add(fullAlleleList.get(1));
+			}
+		} else {
 			alleleListToExport.add(fullAlleleList.get(0));
-			alleleListToExport.add(fullAlleleList.get(1));
-		} else if (allele == AlleleType.ALLELE01) {
-			alleleListToExport.add(fullAlleleList.get(0));
-		} else if (allele == AlleleType.ALLELE02) {
-			alleleListToExport.add(fullAlleleList.get(1));
 		}
 	}
 
@@ -134,10 +139,18 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	 * @param alleleExport
 	 * @return the header for the bed
 	 */
-	private String getFileHeader (AlleleSettingsBedExport alleleExport) {
+	private String getFileHeader (AlleleSettingsBed alleleExport) {
 		String header = "";
 
-		String track = fullGenomeName.replace(" ", "_") + "_" + alleleExport.getAllele().toString().toLowerCase() + "_genplay_export";
+		String track = fullGenomeName.replace(" ", "_") + "_";
+		if (alleleExport.getCoordinateSystem() == CoordinateSystemType.CURRENT_GENOME) {
+			track +=  alleleExport.getAllele().toString().toLowerCase();
+		} else if (alleleExport.getCoordinateSystem() == CoordinateSystemType.METAGENOME) {
+			track += "meta_genome";
+		} else if (alleleExport.getCoordinateSystem() == CoordinateSystemType.REFERENCE) {
+			track += "reference_genome";
+		}
+		track += "_genplay_export";
 		String id = this.header.getId();
 		if (id == null) {
 			id = this.header.getColumnCategory().toString();
@@ -154,8 +167,8 @@ public class BedExportEngineSingleFile extends ExportEngine {
 
 	@Override
 	protected void processLine(FileAlgorithmInterface fileAlgorithm) throws IOException {
-		//ManualVCFReader vcfReader = fileAlgorithm.getCurrentVCFReader();
 		VCFLine currentLine = fileAlgorithm.getCurrentLine();
+		currentLine.processForAnalyse();
 
 		String gt = currentLine.getFormatField(genomeIndex, 0).toString();
 		if (gt.length() == 3) {
@@ -164,32 +177,26 @@ public class BedExportEngineSingleFile extends ExportEngine {
 
 			for (AlleleSettingsBedExport alleleExport: fullAlleleList) {
 				int altIndex = synchronizer.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));
-				if (isReferenceGenome) {
-					alleleExport.initializeCurrentInformationForReferenceGenome(lengths, currentLine, altIndex);
-				} else {
-					alleleExport.initializeCurrentInformation(lengths, currentLine, altIndex);
-				}
+				alleleExport.initializeCurrentInformation(chromosome, lengths, currentLine, altIndex);
 			}
 
 			AlleleSettingsBedExport firstAllele = fullAlleleList.get(0);
 			AlleleSettingsBedExport secondAllele = fullAlleleList.get(1);
-			if (isReferenceGenome) {
-				firstAllele.updateCurrentInformationForReferenceGenome(secondAllele);
-				secondAllele.updateCurrentInformationForReferenceGenome(firstAllele);
-			} else {
-				firstAllele.updateCurrentInformation(secondAllele);
-				secondAllele.updateCurrentInformation(firstAllele);
-			}
-
+			firstAllele.updateCurrentInformation(secondAllele);
+			secondAllele.updateCurrentInformation(firstAllele);
 
 			for (AlleleSettingsBedExport alleleExport: alleleListToExport) {
-				Object score = getScore(currentLine, alleleExport);
-				if (score != null) {
-					String name = alleleExport.getName(currentLine);
-					String line = buildLine(chromosome, alleleExport.getCurrentStart(), alleleExport.getCurrentStop(), name, score);
-					alleleExport.write(line);
-				} else {
-					System.err.println("The line could not be exported. It seems the ID '" + header.getId() + "' has not been found in the line: " + currentLine.toString());
+				if (alleleExport.isWritable()) {
+					Object score = getScore(currentLine, alleleExport);
+					if (score != null) {
+						String name = alleleExport.getName(currentLine);
+						String line;
+						line = buildLine(chromosome, alleleExport.getCurrentStart(), alleleExport.getCurrentStop(), name, score);
+
+						alleleExport.write(line);
+					} else {
+						System.err.println("The line could not be exported. It seems the ID '" + header.getId() + "' has not been found in the line: " + currentLine.toString());
+					}
 				}
 			}
 		}

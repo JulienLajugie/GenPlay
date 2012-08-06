@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -48,7 +49,8 @@ public class GenomeSelectionPanel extends JPanel {
 	private static final int 	PANEL_WIDTH = 180;	// width of the panel
 	private 					JComboBox 	jcbGenome; 									// combo box to choose the genome
 	private						JComboBox	jcbAllele;									// combo box to choose the allele type
-	private static int 						defaultGenome = 0;	// default method of calculation
+	private static int 						defaultGenome = 1;	// default selected genome
+	private static int 						defaultAllele = 0;	// default selected allele
 
 
 	/**
@@ -148,7 +150,7 @@ public class GenomeSelectionPanel extends JPanel {
 	 * @param genomeName a genome name
 	 */
 	private void updateAlleleTypeComboBox (String genomeName) {
-		if (genomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
+		if (genomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName()) || genomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
 			jcbAllele.setEnabled(false);
 		} else {
 			jcbAllele.setEnabled(true);
@@ -164,7 +166,7 @@ public class GenomeSelectionPanel extends JPanel {
 		// Creates the combo box
 		Object[] alleles = new Object[]{AlleleType.ALLELE01, AlleleType.ALLELE02};
 		jcbAllele = new JComboBox(alleles);
-		jcbAllele.setSelectedIndex(defaultGenome);
+		jcbAllele.setSelectedIndex(defaultAllele);
 
 		//Dimension
 		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
@@ -209,9 +211,10 @@ public class GenomeSelectionPanel extends JPanel {
 
 
 	/**
-	 * Saves the selected method of calculation as default
+	 * Saves the default selected items
 	 */
 	public void saveDefault() {
 		defaultGenome = getGenomeIndex();
+		defaultAllele = jcbAllele.getSelectedIndex();
 	}
 }

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,25 +24,36 @@ package edu.yu.einstein.genplay.core.generator;
 import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
+import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 
 
 /**
- * The interface ScoredChromosomeWindowListGenerator could be implemented by a class able to create a {@link ScoredChromosomeWindowList}
+ * The interface ScoredChromosomeWindowListGenerator could be implemented by a class able to create a {@link ChromosomeArrayListOfLists}
  * @author Julien Lajugie
  * @version 0.1
  */
 public interface ScoredChromosomeWindowListGenerator extends Generator {
-	
+
 	/**
 	 * @param scm ScoreCalculationMethod to know how to calculate score in case of overlapping
-	 * @return a new {@link ScoredChromosomeWindowList}
+	 * @return a new {@link ChromosomeArrayListOfLists}
 	 * @throws InvalidChromosomeException
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException;
+
+	
+	/**
+	 * @return a new {@link ChromosomeArrayListOfLists}
+	 * @throws InvalidChromosomeException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 */
+	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException, ExecutionException;
+	
 	
 	/**
 	 * Allows to check if overlapping regions exists.

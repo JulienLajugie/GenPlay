@@ -40,7 +40,7 @@ import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
@@ -333,10 +333,10 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
-	 * @return the stripe list of the track
+	 * @return the mask of the track
 	 */
-	public ChromosomeWindowList getStripes() {
-		return trackGraphics.getStripes();
+	public ScoredChromosomeWindowList getMask() {
+		return trackGraphics.getMask();
 	}
 
 
@@ -496,9 +496,9 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 	/**
 	 * shows stripes on the track
-	 * @param stripeList a {@link ChromosomeWindowList}
+	 * @param stripeList a {@link ScoredChromosomeWindowList}
 	 */
-	public void setStripes(ChromosomeWindowList stripeList) {
+	public void setStripes(ScoredChromosomeWindowList stripeList) {
 		trackGraphics.setStripes(stripeList);
 		repaint();
 	}
@@ -556,6 +556,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
 			removePropertyChangeListener(curList);
 		}
+	}
+
+
+	/**
+	 * This function deletes the data of the track
+	 */
+	public void deleteData() {
+		trackGraphics.deleteData();
 	}
 
 

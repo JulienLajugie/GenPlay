@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,11 +32,48 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 
 /**
  * This class manages the shifting process in order to get a meta genome position from a genome position.
- * In a multi genome project, every position must be shifted in order to synchronize tracks. 
+ * In a multi genome project, every position must be shifted in order to synchronize tracks.
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class ShiftCompute {
+
+
+
+	/**
+	 * @param inputGenomeName		the genome name of the position to shift
+	 * @param inputAlleleType		the allele of the genome
+	 * @param inputGenomePosition	the position to shift
+	 * @param chromosome			the chromosome where the position is
+	 * @param outputGenomeName		the genome where the position has to be shifted
+	 * @return						the position of a genome on another genome
+	 */
+	public static int getPosition (String inputGenomeName, AlleleType inputAlleleType, int inputGenomePosition, Chromosome chromosome, String outputGenomeName) {
+		if (inputGenomeName.equals(outputGenomeName)) {
+			return inputGenomePosition;
+		}
+
+		int outputPosition = -1;
+
+		if (outputGenomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+			ChromosomeListOfLists<MGOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
+			if (chromosomeOffsetList != null) {
+				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
+				outputPosition = offsetList.getMetaGenomePosition(inputGenomePosition);
+			}
+		} else if (inputGenomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+			ChromosomeListOfLists<MGOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
+			if (chromosomeOffsetList != null) {
+				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
+				outputPosition = offsetList.getGenomePosition(inputGenomePosition);
+			}
+		} else {
+			int inputPositionOnMetaGenome = getPosition(inputGenomeName, inputAlleleType, inputGenomePosition, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+			outputPosition = getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, inputPositionOnMetaGenome, chromosome, outputGenomeName);
+		}
+
+		return outputPosition;
+	}
 
 
 	/**
@@ -47,7 +84,11 @@ public class ShiftCompute {
 	 * @param genomePosition	the given genome position
 	 * @return					the corresponding meta genome position
 	 */
-	public static int computeShift (String genome, Chromosome chromosome, AlleleType alleleType, int genomePosition) {
+	/*public static int computeShift (String genome, Chromosome chromosome, AlleleType alleleType, int genomePosition) {
+		if (genome.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+			return genomePosition;
+		}
+
 		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
 			return computeShiftForReferenceGenome(chromosome, genomePosition);
 		}
@@ -58,25 +99,33 @@ public class ShiftCompute {
 
 		// Return the final shifted position
 		return metaGenomePosition;
-	}
+	}*/
 
 
 	/**
 	 * Calculates the genome position according to the given meta genome position
 	 * @param genome				the raw genome name (containing the genome position)
 	 * @param chromosome			the chromosome (containing the genome position)
-	 * @param alleleType 		the allele (paternal or maternal)
-	 * @param metaGenomePosition	the given genome position
+	 * @param alleleType 			the allele (paternal or maternal)
+	 * @param metaGenomePosition	the given meta genome position
 	 * @return						the corresponding genome position
 	 */
-	public static int computeReversedShift (String genome, Chromosome chromosome, AlleleType alleleType, int metaGenomePosition) {
+	/*public static int computeReversedShift (String genome, Chromosome chromosome, AlleleType alleleType, int metaGenomePosition) {
+		if (genome.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+			return metaGenomePosition;
+		}
+
+		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
+			return computeShiftForReferenceGenome(chromosome, metaGenomePosition);
+		}
+
 		ChromosomeListOfLists<MGOffset> offsetList = getOffsetList(genome, alleleType);
 
 		int genomePosition = ((IntArrayAsOffsetList)offsetList.get(chromosome)).getGenomePosition(metaGenomePosition);
 
 		// Return the final shifted position
 		return genomePosition;
-	}
+	}*/
 
 
 	/**
@@ -85,12 +134,12 @@ public class ShiftCompute {
 	 * @param referenceGenomePosition	the given reference genome position
 	 * @return							the corresponding meta genome position
 	 */
-	public static int computeShiftForReferenceGenome (Chromosome chromosome, int referenceGenomePosition) {
+	/*public static int computeShiftForReferenceGenome (Chromosome chromosome, int referenceGenomePosition) {
 		ChromosomeListOfLists<MGOffset> offsetList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele().getOffsetList();
 		int metaGenomePosition = ((IntArrayAsOffsetList)offsetList.get(chromosome)).getMetaGenomePosition(referenceGenomePosition);
 		// Return the final shifted position
 		return metaGenomePosition;
-	}
+	}*/
 
 
 

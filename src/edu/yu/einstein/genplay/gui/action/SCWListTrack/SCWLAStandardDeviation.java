@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -45,9 +45,9 @@ public final class SCWLAStandardDeviation extends TrackListActionOperationWorker
 
 	private static final long serialVersionUID = -3906549904760962910L;	// generated ID
 	private static final String 	ACTION_NAME = "Standard Deviation";	// action name
-	private static final String 	DESCRIPTION = 
-		"Return the standard deviation on the " +
-		"selected chromosomes of the selected track";					// tooltip
+	private static final String 	DESCRIPTION =
+			"Return the standard deviation on the " +
+					"selected chromosomes of the selected track";					// tooltip
 
 
 	/**
@@ -87,5 +87,5 @@ public final class SCWLAStandardDeviation extends TrackListActionOperationWorker
 		if (actionResult != null) {
 			JOptionPane.showMessageDialog(getRootPane(), "Standard deviation: \n" + new DecimalFormat("0.000").format(actionResult), "Standard Deviation", JOptionPane.INFORMATION_MESSAGE);
 		}
-	}		
+	}
 }

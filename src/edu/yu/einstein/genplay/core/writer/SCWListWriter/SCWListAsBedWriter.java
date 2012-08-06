@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,9 +27,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
@@ -41,7 +44,7 @@ import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
  */
 public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 
-	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped 
+	private boolean needsToBeStopped = false;	// true if the writer needs to be stopped
 
 
 	/**
@@ -59,6 +62,8 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 	public void write() throws IOException, InterruptedException {
 		BufferedWriter writer = null;
 		try {
+			boolean isMultiGenome = ProjectManager.getInstance().isMultiGenomeProject() && (fullGenomeName != null) && (allele != null);
+
 			// try to create a output file
 			writer = new BufferedWriter(new FileWriter(outputFile));
 			// print the title of the graph
@@ -70,7 +75,7 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 				int currentChromosomeSize = currentChromosome.getLength();
 				if (currentList != null) {
 					for (ScoredChromosomeWindow currentWindow: currentList){
-						// if the operation need to be stopped we close the writer and delete the file 
+						// if the operation need to be stopped we close the writer and delete the file
 						if (needsToBeStopped) {
 							writer.close();
 							outputFile.delete();
@@ -78,13 +83,22 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 						}
 						// we don't print the line if the score is 0
 						if (currentWindow.getScore() != 0) {
+							int start = currentWindow.getStart();
 							int stop = currentWindow.getStop();
 							if (stop > currentChromosomeSize) {
 								stop = currentChromosomeSize;
 							}
-							//writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t-\t" + currentWindow.getScore());
-							writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + stop + "\t-\t" + currentWindow.getScore());
-							writer.newLine();
+
+							if (isMultiGenome) {
+								start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
+								stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
+							}
+
+							if ((start != -1) && (stop != -1)) {
+								//writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t-\t" + currentWindow.getScore());
+								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + currentWindow.getScore());
+								writer.newLine();
+							}
 						}
 					}
 				}

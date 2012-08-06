@@ -102,7 +102,7 @@ public final class SCWLAGenerateBinList  extends TrackListActionOperationWorker<
 		if (actionResult != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
-			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getStripes(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
+			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), selectedTrack.getName(), selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
 		}
 	}	
 }

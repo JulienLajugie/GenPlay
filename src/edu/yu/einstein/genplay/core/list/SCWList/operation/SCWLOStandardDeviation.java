@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -60,12 +60,12 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 
 	@Override
 	public Double compute() throws Exception {
-		// if the operation has to be calculated on all chromosome 
+		// if the operation has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
 		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getStDev() != null)) {
 			return scwList.getStDev();
-		}	
-		
+		}
+
 		// computes the sum of the length of the non-null windows
 		Long length = new SCWLOCountNonNullLength(scwList, chromoList).compute();
 		if (length == 0) {
@@ -73,7 +73,7 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 		}
 		// compute the mean
 		final double mean = new SCWLOAverage(scwList, chromoList, length).compute();
-		
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 
@@ -81,12 +81,12 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
 			final int currentIndex = i;
 
-			Callable<Double> currentThread = new Callable<Double>() {	
+			Callable<Double> currentThread = new Callable<Double>() {
 				@Override
 				public Double call() throws Exception {
 					double stDev = 0;
 					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {
 								stDev += Math.pow(currentWindow.getScore() - mean, 2) * currentWindow.getSize();
@@ -133,7 +133,7 @@ public class SCWLOStandardDeviation implements Operation<Double> {
 		return 1 + 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

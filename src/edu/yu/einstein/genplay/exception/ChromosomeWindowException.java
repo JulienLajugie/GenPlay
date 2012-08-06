@@ -21,10 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.exception;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 
 /**
- * The ChromosomeWindowException class represents an exception associated to a {@link ChromosomeWindow}. 
+ * The ChromosomeWindowException class represents an exception associated to a {@link SimpleChromosomeWindow}. 
  * @author Julien Lajugie
  * @version 0.1
  */

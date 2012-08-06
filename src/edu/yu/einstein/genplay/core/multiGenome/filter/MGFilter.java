@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.core.multiGenome.filter;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
-import edu.yu.einstein.genplay.core.multiGenome.filter.advancedFilters.TrackMaskFilter;
 
 
 /**
@@ -39,9 +38,6 @@ public abstract class MGFilter {
 	 * Generate/Update/Initialize the filter
 	 */
 	public void generateFilter () {
-		if (filter instanceof TrackMaskFilter) {
-			((TrackMaskFilter) filter).generateFilter();
-		}
 	}
 
 

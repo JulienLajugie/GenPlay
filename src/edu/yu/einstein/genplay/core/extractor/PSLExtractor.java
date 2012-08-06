@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -27,8 +27,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.Strand;
@@ -40,15 +40,17 @@ import edu.yu.einstein.genplay.core.generator.RepeatFamilyListGenerator;
 import edu.yu.einstein.genplay.core.generator.ScoredChromosomeWindowListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -58,17 +60,17 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class PSLExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator, 
+public final class PSLExtractor extends TextFileExtractor implements Serializable, StrandedExtractor, RepeatFamilyListGenerator, ChromosomeWindowListGenerator,
 ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	private static final long serialVersionUID = -7099425835087057587L;	//generated ID
-	private ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private ChromosomeListOfLists<String> 	nameList;		// list of name
-	private ChromosomeListOfLists<Double>	scoreList;		// list of scores
-	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
-	private ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
-	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
+	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
+	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
+	private final ChromosomeListOfLists<String> 	nameList;		// list of name
+	private final ChromosomeListOfLists<Double>	scoreList;		// list of scores
+	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
+	private final ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
+	private final ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
 	private String							searchURL;		// url of the gene database for the search
 	private Strand 							selectedStrand;	// strand to extract, null for both
 	private ReadLengthAndShiftHandler		readHandler;	// handler that computes the position of read by applying the shift
@@ -135,9 +137,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					int stop = Integer.parseInt(splitedLine[16]);
 					// compute the read position with specified strand shift and read length
 					if (readHandler != null) {
-						ChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
+						SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
 						start = resultStartStop.getStart();
-						stop = resultStartStop.getStop();							
+						stop = resultStartStop.getStop();
 					}
 					// add exons
 					//String[] exonStartsStr = splitedLine[20].split(",");
@@ -147,13 +149,13 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					int[] exonStarts = new int[exonStartsStr.length];
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
-						// exons are for genes only so we don't need to 
+						// exons are for genes only so we don't need to
 						// worry about the strand shift and the read length
 						// since these operations are not available for genes
 						int exonStart = Integer.parseInt(exonStartsStr[i].trim());
 						exonStart = getMultiGenomePosition(chromosome, exonStart);
 						exonStarts[i] = exonStart;
-						int exonLength = Integer.parseInt(exonLengthsStr[i].trim()); 
+						int exonLength = Integer.parseInt(exonLengthsStr[i].trim());
 						int exonStop = exonStarts[i] + exonLength;
 						exonStop = getMultiGenomePosition(chromosome, exonStop);
 						exonStops[i] = exonStop;
@@ -162,7 +164,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					// Checks errors
 					String errors = DataLineValidator.getErrors(chromosome, start, stop, exonStarts, exonStops, name, strand);
 					if (errors.length() == 0) {
-						
+
 						// Stop position checking, must not overpass the chromosome length
 						DataLineException stopEndException = null;
 						String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
@@ -170,8 +172,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
 							stop = chromosome.getLength();
 						}
-						
-						// if we are in a multi-genome project, we compute the position on the meta genome					
+
+						// if we are in a multi-genome project, we compute the position on the meta genome
 						start = getMultiGenomePosition(chromosome, start);
 						stop = getMultiGenomePosition(chromosome, stop);
 						nameList.add(chromosome, splitedLine[9]);
@@ -182,7 +184,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						exonStartsList.add(chromosome, exonStarts);
 						exonStopsList.add(chromosome, exonStops);
 						lineCount++;
-						
+
 						if (stopEndException != null) {
 							throw stopEndException;
 						}
@@ -213,10 +215,16 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	public ScoredChromosomeWindowList toScoredChromosomeWindowList(ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
-		return new ScoredChromosomeWindowList(startList, stopList, scoreList, scm);
+		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
 
+	@Override
+	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
+	    return new MaskWindowList(startList, stopList);
+	}
+	
+	
 	@Override
 	public boolean isBinSizeNeeded() {
 		return true;
@@ -249,7 +257,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	public boolean overlapped() {
-		return ScoredChromosomeWindowList.overLappingExist(startList, stopList);
+		return SimpleScoredChromosomeWindowList.overLappingExist(startList, stopList);
 	}
 
 
@@ -265,7 +273,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;		
+		selectedStrand = strandToSelect;
 	}
 
 

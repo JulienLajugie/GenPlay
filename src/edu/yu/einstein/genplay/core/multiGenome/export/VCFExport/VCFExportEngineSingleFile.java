@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.export.FileAlgorithmInterface;
 import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileAlgorithm;
 import edu.yu.einstein.genplay.core.multiGenome.export.utils.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.util.Utils;
 

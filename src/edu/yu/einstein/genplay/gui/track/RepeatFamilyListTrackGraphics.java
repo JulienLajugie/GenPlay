@@ -31,8 +31,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.RepeatFamily;
+import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -123,7 +123,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 					g.setColor(intToColor(currentColor));
 					currentHeight += SPACE_HEIGHT;
 					// loop for each repeat of the current family
-					for(ChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
+					for(SimpleChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
 						if (currentRepeat != null) {
 							int x = projectWindow.genomePosToScreenXPos(currentRepeat.getStart());
 							int repeatWidth = projectWindow.genomePosToScreenXPos(currentRepeat.getStop()) - x;

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,9 +26,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import edu.yu.einstein.genplay.core.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
 import edu.yu.einstein.genplay.util.Utils;
@@ -36,7 +37,7 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
- * Computes the average value of the scores of the {@link ScoredChromosomeWindowList}
+ * Computes the average value of the scores of the {@link SimpleScoredChromosomeWindowList}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -48,7 +49,7 @@ public class SCWLOAverage implements Operation<Double> {
 	private boolean				stopped = false;// true if the operation must be stopped
 
 	/**
-	 * Computes the average of the list defined as: 
+	 * Computes the average of the list defined as:
 	 * sum(score * length) / sum(length)
 	 * @param scwList ChromosomeListOfLists of ScoredChromosomeWindow
 	 * @param chromoList set to true each chromosome of this list that you want to use in the calculation
@@ -59,39 +60,39 @@ public class SCWLOAverage implements Operation<Double> {
 		this.scwList = scwList;
 	}
 
-	
+
 	/**
-	 * Computes the average of the list defined as: 
+	 * Computes the average of the list defined as:
 	 * sum(score * length) / sum(length)
 	 * @param scwList input {@link ChromosomeListOfLists}
-	 * @param chromoList list of boolean. A boolean set to true means that the 
+	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
-	 * @param length sum of the lengths of non null windows 
+	 * @param length sum of the lengths of non null windows
 	 */
 	public SCWLOAverage(ScoredChromosomeWindowList scwList, boolean[] chromoList, long length) {
 		this.chromoList = chromoList;
 		this.scwList = scwList;
 		this.length = length;
 	}
-	
-	
+
+
 	@Override
 	public Double compute() throws Exception {
-		// if the average has to be calculated on all chromosome 
+		// if the average has to be calculated on all chromosome
 		// and if it has already been calculated we don't do the calculation again
 		if ((Utils.allChromosomeSelected(chromoList)) && (scwList.getAverage() != null)) {
 			return scwList.getAverage();
-		}	
-		
-		// count the sum of the lengths of the non-null windows if wasn't specified in the constructor 
+		}
+
+		// count the sum of the lengths of the non-null windows if wasn't specified in the constructor
 		if (length == null) {
 			length = new SCWLOCountNonNullLength(scwList, chromoList).compute();
 		}
 		// if there is no none-null value we return 0
 		if (length == 0) {
 			return 0d;
-		}		
-		
+		}
+
 		final OperationPool op = OperationPool.getInstance();
 		final Collection<Callable<Double>> threadList = new ArrayList<Callable<Double>>();
 
@@ -99,12 +100,12 @@ public class SCWLOAverage implements Operation<Double> {
 			final List<ScoredChromosomeWindow> currentList = scwList.get(i);
 			final int currentIndex = i;
 
-			Callable<Double> currentThread = new Callable<Double>() {	
+			Callable<Double> currentThread = new Callable<Double>() {
 				@Override
 				public Double call() throws Exception {
 					double sumScoreByLength = 0;
 					if (((chromoList == null) || ((currentIndex < chromoList.length) && (chromoList[currentIndex]))) && (scwList.get(currentIndex) != null)) {
-						for (int j = 0; j < currentList.size() && !stopped; j++) {
+						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
 							ScoredChromosomeWindow currentWindow = currentList.get(j);
 							if (currentWindow.getScore() != 0) {
 								sumScoreByLength += currentWindow.getScore() * currentWindow.getSize();
@@ -151,7 +152,7 @@ public class SCWLOAverage implements Operation<Double> {
 		return 1;
 	}
 
-	
+
 	@Override
 	public void stop() {
 		this.stopped = true;

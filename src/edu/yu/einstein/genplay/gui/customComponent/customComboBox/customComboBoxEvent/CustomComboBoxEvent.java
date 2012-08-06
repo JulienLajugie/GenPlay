@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -32,9 +32,9 @@ import java.util.EventObject;
  * @version 0.1
  */
 public final class CustomComboBoxEvent extends EventObject {
-	
+
 	private static final long serialVersionUID = -5909384700520572038L;	// generated ID
-	
+
 	/** Nothing must happen */
 	public static final int NO_ACTION = -1;
 	/** The element will be selected */
@@ -46,10 +46,10 @@ public final class CustomComboBoxEvent extends EventObject {
 	/** The element will be removed */
 	public static final int REMOVE_ACTION = 3;
 	private final CustomComboBoxEventsGenerator source;
-	private final Object element;
+	private Object element;
 	private final int action;
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link CustomComboBoxEvent}
 	 * @param source 	the source of the event
@@ -67,6 +67,7 @@ public final class CustomComboBoxEvent extends EventObject {
 	/**
 	 * @return the source
 	 */
+	@Override
 	public final CustomComboBoxEventsGenerator getSource() {
 		return source;
 	}
@@ -81,10 +82,18 @@ public final class CustomComboBoxEvent extends EventObject {
 
 
 	/**
+	 * @param element the element to set
+	 */
+	public void setElement(Object element) {
+		this.element = element;
+	}
+
+
+	/**
 	 * @return the action
 	 */
 	public final int getAction() {
 		return action;
 	}
-	
+
 }

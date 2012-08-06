@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -46,24 +46,24 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGGenome;
  * Actually, three lists of variations are stored for each chromosome. They are created according to the type of variant they store:
  * - insertions
  * - deletions
- * - SNPs 
+ * - SNPs
  * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class MGAlleleForDisplay implements Serializable {
-	
+
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2820418368770648809L;
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final int INSERTION_INDEX 	= 0;					// index for insertions
 	private static final int DELETION_INDEX 	= 1;					// index for deletions
 	private static final int SNPS_INDEX 		= 2;					// index for SNPs
-	
+
 	private MGGenome genomeInformation;													// the genome information object
 	private AlleleType allele;															// the allele type of this allele
 	private ChromosomeListOfLists<MGVariantListForDisplay> chromosomeListOfVariantList;	// the lists of variation stored for each chromosome
-	
+
 
 	/**
 	 * Method used for serialization
@@ -91,7 +91,7 @@ public class MGAlleleForDisplay implements Serializable {
 		allele = (AlleleType) in.readObject();
 		chromosomeListOfVariantList = (ChromosomeListOfLists<MGVariantListForDisplay>) in.readObject();
 	}
-	
+
 
 	/**
 	 * Constructor of {@link MGAlleleForDisplay}
@@ -100,7 +100,7 @@ public class MGAlleleForDisplay implements Serializable {
 		this.genomeInformation = genome;
 		this.allele = allele;
 		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<MGVariantListForDisplay>();
-		ProjectChromosome projectChromosome =ProjectManager.getInstance().getProjectChromosome(); 
+		ProjectChromosome projectChromosome =ProjectManager.getInstance().getProjectChromosome();
 		int chromosomeNumber = projectChromosome.size();
 		for (int i = 0; i < chromosomeNumber; i++) {
 			Chromosome chromosome = projectChromosome.get(i);
@@ -111,7 +111,7 @@ public class MGAlleleForDisplay implements Serializable {
 			chromosomeListOfVariantList.add(i, elements);
 		}
 	}
-	
+
 
 	/**
 	 * @return the genomeInformation
@@ -147,19 +147,8 @@ public class MGAlleleForDisplay implements Serializable {
 			return null;
 		}
 	}
-	
-	
-	/*public void updateChromosomeListOfList () {
-		List<Chromosome> chromosomeList = ProjectManager.getInstance().getProjectChromosome().getChromosomeList();
-		ChromosomeListOfLists<MGVariantListForDisplay> newChromosomeListOfVariantList = new ChromosomeArrayListOfLists<MGVariantListForDisplay>();
-		
-		for (int i = 0; i < chromosomeList.size(); i++) {
-			List<MGVariantListForDisplay> elements = chromosomeListOfVariantList.get(i);
-			newChromosomeListOfVariantList.set(index, element)
-		}
-	}*/
-	
-	
+
+
 	/**
 	 * Show the information of the {@link MGAlleleForDisplay}
 	 */
@@ -172,5 +161,5 @@ public class MGAlleleForDisplay implements Serializable {
 			listOfVariantList.get(SNPS_INDEX).show();
 		}
 	}
-	
+
 }

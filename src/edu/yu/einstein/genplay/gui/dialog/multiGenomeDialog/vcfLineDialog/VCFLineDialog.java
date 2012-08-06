@@ -43,7 +43,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableColumnModel;
 
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MGPosition;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.util.Images;
 
@@ -104,7 +104,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	/**
 	 * Initializes column header list.
 	 */
-	private void initColumnList (MGPosition information) {
+	private void initColumnList (VCFLine line) {
 		columns = new ArrayList<String>();
 		columns.add(VCFColumnName.CHROM.toString());
 		columns.add(VCFColumnName.POS.toString());
@@ -115,7 +115,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		columns.add(VCFColumnName.FILTER.toString());
 		columns.add(VCFColumnName.INFO.toString());
 		columns.add(VCFColumnName.FORMAT.toString());
-		List<String> genomeName = information.getAllGenomeRawNames();
+		List<String> genomeName = line.getGenomeIndexer().getGenomeRawNames();
 		for (String name: genomeName) {
 			columns.add(name);
 		}
@@ -124,12 +124,12 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 
 	/**
 	 * Shows the dialog
-	 * @param information information about the position
+	 * @param line information about the position
 	 */
-	public void show (MGPosition information) {
+	public void show (VCFLine line) {
 		// Initializes the table
-		initColumnList(information);
-		initTable(information);
+		initColumnList(line);
+		initTable(line);
 		pane.setViewportView(table);
 
 		// Manages the sizes
@@ -169,20 +169,20 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	 * Creates the table containing the details
 	 * @param information
 	 */
-	private void initTable (MGPosition information) {
+	private void initTable (VCFLine line) {
 		// Creates the data object
 		Object[][] data = new Object[1][columns.size()];
-		data[0][0] = information.getChromosomeName();
-		data[0][1] = information.getPos();
-		data[0][2] = information.getId();
-		data[0][3] = information.getReference();
-		data[0][4] = information.getAlternative();
-		data[0][5] = information.getQuality();
-		data[0][6] = information.getFilter();
-		data[0][7] = information.getInfo();
-		data[0][8] = information.getFormat();
+		data[0][0] = line.getCHROM();
+		data[0][1] = line.getPOS();
+		data[0][2] = line.getID();
+		data[0][3] = line.getREF();
+		data[0][4] = line.getALT();
+		data[0][5] = line.getQuality();
+		data[0][6] = line.getFILTER();
+		data[0][7] = line.getINFO();
+		data[0][8] = line.getFORMAT();
 		for (int i = 9; i < columns.size(); i++) {
-			data[0][i] = information.getMappedVCFLine().get(columns.get(i));
+			data[0][i] = line.getField(i);
 		}
 
 		// Creates the table

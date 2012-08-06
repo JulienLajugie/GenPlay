@@ -27,7 +27,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import edu.yu.einstein.genplay.gui.action.project.multiGenome.PAMultiGenomeProperties;
+import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGAProperties;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
 
 
@@ -56,8 +56,9 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 	private void initializeItem () {
 		add(getItemMenu(PropertiesDialog.GENERAL));
 		add(getItemMenu(PropertiesDialog.SETTINGS));
-		add(getItemMenu(PropertiesDialog.FILTERS_FILE));
-		add(getItemMenu(PropertiesDialog.FILTERS_ADVANCED));
+		add(getItemMenu(PropertiesDialog.FILTERS));
+		//add(getItemMenu(PropertiesDialog.FILTERS_FILE));
+		//add(getItemMenu(PropertiesDialog.FILTERS_ADVANCED));
 		add(getItemMenu(PropertiesDialog.STRIPES));
 	}
 
@@ -77,7 +78,7 @@ public class MGButtonPopupMenu extends JPopupMenu implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		String item = ((JMenuItem)arg0.getSource()).getText();
-		PAMultiGenomeProperties action = new PAMultiGenomeProperties();
+		MGAProperties action = new MGAProperties();
 		action.setItemDialog(item);
 		action.actionPerformed(null);
 	}

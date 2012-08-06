@@ -32,6 +32,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
+import edu.yu.einstein.genplay.core.list.CacheTrack;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
@@ -63,6 +64,8 @@ public class DisplayableVariantListMaker implements Serializable {
 	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
 	private List<MGFilter> filtersList;
 
+	private CacheTrack<List<VariantInterface>> cache;
+
 
 	/**
 	 * Method used for serialization
@@ -93,6 +96,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		listOfVariantList = (List<MGVariantListForDisplay>) in.readObject();
 		variantList = (List<VariantInterface>) in.readObject();
 		fittedDataList = (List<VariantInterface>) in.readObject();
+		cache = new CacheTrack<List<VariantInterface>>();
 	}
 
 
@@ -106,6 +110,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		variantList = new ArrayList<VariantInterface>();
 		this.fittedChromosome = window.getChromosome();
 		this.fittedXRatio = xRatio;
+		cache = new CacheTrack<List<VariantInterface>>();
 	}
 
 
@@ -114,6 +119,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 */
 	private void computeVariantList (List<MGFilter> filtersList) {
 		variantList = new ArrayList<VariantInterface>();
+		cache.initialize();
 		if (listOfVariantList.size() > 0) {
 			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {			// loop on every variant list for display
 				List<VariantInterface> varianListTmp = variantListForDisplay.getVariantList();	// get the actual variant list
@@ -271,24 +277,30 @@ public class DisplayableVariantListMaker implements Serializable {
 
 	///////////////////////////////////////////////////////////////////// Interface methods
 
-
 	/**
 	 * @param window the genome window
 	 * @param xRatio the x ratio
 	 * @return the variant list that fits the screen
 	 */
 	public final List<VariantInterface> getFittedData(GenomeWindow window, double xRatio) {
+		boolean hasToFit = false;
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
 			fittedChromosome = window.getChromosome();
 			if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
 				fittedXRatio = xRatio;
 			}
-			fitToScreen();
+			hasToFit = true;
 		} else if ((fittedXRatio == null) || (fittedXRatio != xRatio)) {
 			fittedXRatio = xRatio;
-			fitToScreen();
+			hasToFit = true;
 		}
-
+		if (hasToFit) {
+			if (cache.hasData(xRatio)) {
+				fittedDataList = cache.getData(xRatio);
+			} else {
+				fitToScreen();
+			}
+		}
 		return getFittedData(window.getStart(), window.getStop());
 	}
 
@@ -313,9 +325,9 @@ public class DisplayableVariantListMaker implements Serializable {
 				while (currentIndex < variantListSize) {
 					VariantInterface currentVariant = currentVariantList.get(currentIndex);
 					boolean hasToBeMerged = false;
-
 					int start = currentVariant.getStart();
 					int stop = currentVariant.getStop();
+
 					if (nextIndex < variantListSize) {
 						VariantInterface nextVariant = currentVariantList.get(nextIndex);
 						double distance = (nextVariant.getStart() - stop) * fittedXRatio;
@@ -326,8 +338,9 @@ public class DisplayableVariantListMaker implements Serializable {
 							nextIndex++;
 							if (nextIndex < variantListSize) {
 								currentVariant = currentVariantList.get(currentIndex);
-								int stopTmp = currentVariant.getStop();
 								nextVariant = currentVariantList.get(nextIndex);
+
+								int stopTmp = currentVariant.getStop();
 								distance = (nextVariant.getStart() - stopTmp) * fittedXRatio;
 								if (distance < 1) {
 									stop = nextVariant.getStop();
@@ -349,6 +362,7 @@ public class DisplayableVariantListMaker implements Serializable {
 				}
 			}
 		}
+		cache.setData(fittedXRatio, fittedDataList);
 	}
 
 
@@ -383,7 +397,6 @@ public class DisplayableVariantListMaker implements Serializable {
 				resultList.add(variant);
 			}
 		}
-
 		return resultList;
 	}
 

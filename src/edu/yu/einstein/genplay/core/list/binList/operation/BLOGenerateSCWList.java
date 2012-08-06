@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.core.list.binList.operation;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 
@@ -35,8 +36,8 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList> {
 
 	private final BinList 	binList; 		// input list
-	
-	
+
+
 	/**
 	 * Creates a SCWList from the data of the input BinList
 	 * @param binList the BinList
@@ -44,32 +45,32 @@ public class BLOGenerateSCWList implements Operation<ScoredChromosomeWindowList>
 	public BLOGenerateSCWList(BinList binList) {
 		this.binList = binList;
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList compute() throws Exception {
-		return new ScoredChromosomeWindowList(this.binList);
+		return new SimpleScoredChromosomeWindowList(this.binList);
 	}
-	
-	
+
+
 	@Override
 	public String getDescription() {
 		return "Operation: Generate Variable Window Track";
 	}
-	
-	
+
+
 	@Override
 	public String getProcessingDescription() {
 		return "Generating Variable Window Track";
 	}
-	
-	
+
+
 	@Override
 	public int getStepCount() {
-		return 1 + ScoredChromosomeWindowList.getCreationStepCount();
+		return 1 + SimpleScoredChromosomeWindowList.getCreationStepCount();
 	}
 
-	
+
 	/**
 	 * Does nothing
 	 */

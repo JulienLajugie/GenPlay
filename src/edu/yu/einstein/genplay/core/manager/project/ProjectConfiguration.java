@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,11 +38,11 @@ public final class ProjectConfiguration implements Serializable {
 	private static final String DEFAULT_RECENT_PROJECT_FILE_NAME = "GenPlayProjects.txt"; 	// the default log file name
 	private static final String DEFAULT_LOG_FILE_NAME 			= "GenPlayLog.txt"; 	// the default log file name
 	private static final String DEFAULT_DAS_SERVER_FILE_NAME 	= "DASServerList.xml"; 	// the default log file name
-	private final static String DEFAULT_DAS_SERVER_PATH = 
-		"edu/yu/einstein/genplay/resource/DASServerList.xml"; 				// DAS Server List file path
+	private final static String DEFAULT_DAS_SERVER_PATH =
+			"edu/yu/einstein/genplay/resource/DASServerList.xml"; 				// DAS Server List file path
 	private static final String DEFAULT_DEFAULT_DIRECTORY = ""; 			// default directory
-	private static final String DEFAULT_LOOK_AND_FEEL = 
-		"javax.swing.plaf.metal.MetalLookAndFeel";							// default look and feel
+	private static final String DEFAULT_LOOK_AND_FEEL =
+			"javax.swing.plaf.metal.MetalLookAndFeel";							// default look and feel
 
 	private static final int DEFAULT_TRACK_COUNT 	= 50; 					// default number of track
 	private static final int DEFAULT_TRACK_HEIGHT 	= 100; 					// default track height
@@ -51,8 +51,9 @@ public final class ProjectConfiguration implements Serializable {
 	private static final int MIN_TRACK_HEIGHT 		= 30; 					// minimum height of the tracks
 	private static final int MAX_TRACK_HEIGHT 		= 2000; 				// maximum height of the tracks
 	private static final int DEFAULT_UNDO_COUNT 	= 1; 					// default number of undo in memory
-	
+
 	private static final boolean DEFAULT_RESET_TRACK 	= true; 			// default value of reset track
+	private static final boolean DEFAULT_CACHE_TRACK 	= true; 			// default value of cache track
 	private static final boolean DEFAULT_SHOW_LEGEND 	= true; 			// default value of show legend
 
 
@@ -66,6 +67,7 @@ public final class ProjectConfiguration implements Serializable {
 	private int 	trackHeight = DEFAULT_TRACK_HEIGHT; 					// track height
 	private int 	undoCount = DEFAULT_UNDO_COUNT; 						// number of undo in memory
 	private boolean resetTrack = DEFAULT_RESET_TRACK;						// enable the reset track feature
+	private boolean cacheTrack = DEFAULT_CACHE_TRACK;						// enable the reset track feature
 	private boolean legend = DEFAULT_SHOW_LEGEND;							// show legend for multi genome stripes
 
 
@@ -91,6 +93,7 @@ public final class ProjectConfiguration implements Serializable {
 		trackHeight = DEFAULT_TRACK_HEIGHT;
 		undoCount = DEFAULT_UNDO_COUNT;
 		resetTrack = DEFAULT_RESET_TRACK;
+		cacheTrack = DEFAULT_CACHE_TRACK;
 		legend = DEFAULT_SHOW_LEGEND;
 	}
 
@@ -125,8 +128,8 @@ public final class ProjectConfiguration implements Serializable {
 	private String getDefaultDASServerFileAbsolutePath () {
 		return getTemporaryDirectory() + DEFAULT_DAS_SERVER_FILE_NAME;
 	}
-	
-	
+
+
 	/**
 	 * @return the absolute path of the log file
 	 */
@@ -138,7 +141,7 @@ public final class ProjectConfiguration implements Serializable {
 	/**
 	 * Checks if the user is working under Windows or not (-> Unix).
 	 * If the user is using Windows, the temporary directory is the default one (eg: C:\Users\USER\AppData\Local\Temp)
-	 * If the user is using Unix platform, the temporary directory is its working directory 
+	 * If the user is using Unix platform, the temporary directory is its working directory
 	 * @return the temporary directory path
 	 */
 	public String getTemporaryDirectory () {
@@ -154,7 +157,7 @@ public final class ProjectConfiguration implements Serializable {
 	 */
 	private boolean isWindowsPlatform () {
 		String osName = System.getProperty("os.name");
-		if (osName.length() > 7 && osName.substring(0, 7).toUpperCase().equals("WINDOWS")) {
+		if ((osName.length() > 7) && osName.substring(0, 7).toUpperCase().equals("WINDOWS")) {
 			return true;
 		}
 		return false;
@@ -215,13 +218,21 @@ public final class ProjectConfiguration implements Serializable {
 	public int getUndoCount() {
 		return undoCount;
 	}
-	
+
 
 	/**
 	 * @return the resetTrack
 	 */
 	public boolean isResetTrack() {
 		return resetTrack;
+	}
+
+
+	/**
+	 * @return the cacheTrack
+	 */
+	public boolean isCacheTrack() {
+		return cacheTrack;
 	}
 
 
@@ -307,8 +318,16 @@ public final class ProjectConfiguration implements Serializable {
 	public void setResetTrack(boolean resetTrack) {
 		this.resetTrack = resetTrack;
 	}
-	
-	
+
+
+	/**
+	 * @param cacheTrack the cacheTrack to set
+	 */
+	public void setCacheTrack(boolean cacheTrack) {
+		this.cacheTrack = cacheTrack;
+	}
+
+
 	/**
 	 * @param legend the legend to set
 	 */
