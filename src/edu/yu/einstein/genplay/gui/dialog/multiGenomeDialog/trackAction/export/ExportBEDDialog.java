@@ -129,7 +129,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		gbc.gridy = 0;
 
 		// Create the title label
-		JLabel label = new JLabel("Please select a destination track:");
+		JLabel label = new JLabel("Please select a destination file:");
 
 		// Create the text field
 		jtfFile = new JTextField();
@@ -145,7 +145,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				FileFilter[] filters = {new BedFilter()};
-				File file = ExportUtils.getFile(filters);
+				File file = ExportUtils.getFile(filters, true);
 				if (file != null) {
 					jtfFile.setText(file.getPath());
 				}

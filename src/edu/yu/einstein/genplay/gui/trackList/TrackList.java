@@ -141,6 +141,7 @@ import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFUpdateGenotype;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
@@ -338,6 +339,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			getActionMap().put(MGAGlobalVCFExport.ACTION_KEY, new MGAGlobalVCFExport());
 			getActionMap().put(MGABedExport.ACTION_KEY, new MGABedExport());
 			getActionMap().put(MGASCWLConvert.ACTION_KEY, new MGASCWLConvert());
+			getActionMap().put(MGAVCFUpdateGenotype.ACTION_KEY, new MGAVCFUpdateGenotype());
 		}
 	}
 

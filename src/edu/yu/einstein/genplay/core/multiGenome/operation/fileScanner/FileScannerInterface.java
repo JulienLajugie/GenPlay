@@ -19,27 +19,33 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export;
+package edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner;
 
 import java.io.IOException;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
 
 /**
+ * The file scanner interface provides methods to scan file(s).
+ * A file scanner can scan one or several file according to the purpose of the scan.
+ * A scan between several files and one file or to update a file using another one is not the same.
+ * Once a line has to be processed, the scanner calls the process method of the export engine.
+ * This way, the export engine does not have to check if it is the right line, the scanner already did.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface FileAlgorithmInterface {
+public interface FileScannerInterface {
 
 
 	/**
 	 * Compute the file algorithm
 	 * @throws IOException
+	 * @throws Exception
 	 */
-	public void compute () throws IOException;
+	public void compute () throws IOException, Exception;
 
 
 	/**

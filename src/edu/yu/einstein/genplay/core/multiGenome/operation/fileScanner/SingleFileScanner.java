@@ -19,35 +19,36 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export;
+package edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner;
 
 import java.io.IOException;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 
 /**
+ * Scanner for single file.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SingleFileAlgorithm implements FileAlgorithmInterface {
+public class SingleFileScanner implements FileScannerInterface {
 
-	private final ExportEngine engine;
-	private final VCFFile vcfFile;
-	private final List<String> genomeList;
-	private final ManualVCFReader vcfReader;
-	private VCFLine currentLine;
+	private final 	ExportEngine 		engine;			// The export engine.
+	private final 	VCFFile 			vcfFile;		// The VCF file to scan.
+	private final 	List<String> 		genomeList;		// The list of genome names.
+	private final 	ManualVCFReader 	vcfReader;		// The actual VCF reader.
+	private 		VCFLine 			currentLine;	// The current line of the scan.
 
 
 	/**
-	 * Constructor of {@link SingleFileAlgorithm}
+	 * Constructor of {@link SingleFileScanner}
 	 * @param engine		the related export engine
 	 * @throws Exception
 	 */
-	public SingleFileAlgorithm (ExportEngine engine) throws Exception {
-		// Initialize the reader
+	public SingleFileScanner (ExportEngine engine) throws Exception {
 		this.engine = engine;
 		vcfFile = engine.getFileList().get(0);
 		genomeList = engine.getGenomeList();
@@ -58,14 +59,14 @@ public class SingleFileAlgorithm implements FileAlgorithmInterface {
 	@Override
 	public void compute() throws IOException {
 		// Gets the first line of data
-		currentLine = vcfReader.getLine();
+		currentLine = vcfReader.getCurrentValidLine();
 
 		// Scan the file line by line
 		while (!currentLine.isLastLine()) {
 			if (currentLine.hasData()) {
 				engine.processLine(this);
 			}
-			currentLine = vcfReader.goNextLine();
+			currentLine = vcfReader.getNextValidLine();
 		}
 
 		// Closes the streams

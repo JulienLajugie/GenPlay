@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
+import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFUpdateGenotype;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
@@ -87,6 +88,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	private final JMenuItem		jmiExportVCF;				// menu to export stripes as VCF
 	private final JMenuItem		jmiExportBED;				// menu to export stripes as BED
 	private final JMenuItem		jmiConvertBED;				// menu to convert stripes as BED
+	private final JMenuItem		jmiUpdateVCF;				// menu to update the Gt of a VCF
 
 	protected final TrackList 	trackList;					// track list where the menu popped up
 	protected final ActionMap	actionMap;					// map containing the actions for this menu
@@ -138,10 +140,13 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		jmiExportVCF = new JMenuItem(actionMap.get(MGAGlobalVCFExport.ACTION_KEY));
 		jmiExportBED = new JMenuItem(actionMap.get(MGABedExport.ACTION_KEY));
 		jmiConvertBED = new JMenuItem(actionMap.get(MGASCWLConvert.ACTION_KEY));
+		jmiUpdateVCF = new JMenuItem(actionMap.get(MGAVCFUpdateGenotype.ACTION_KEY));
 		jmMultiGenome.add(jmiExportVCF);
 		jmMultiGenome.add(jmiExportBED);
 		jmMultiGenome.addSeparator();
 		jmMultiGenome.add(jmiConvertBED);
+		jmMultiGenome.addSeparator();
+		jmMultiGenome.add(jmiUpdateVCF);
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			List<StripesData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList();
 			if ((stripes == null) || (stripes.size() == 0)) {
@@ -154,6 +159,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 			jmiExportVCF.setEnabled(false);
 			jmiExportBED.setEnabled(false);
 			jmiConvertBED.setEnabled(false);
+			jmiUpdateVCF.setEnabled(false);
 		}
 
 

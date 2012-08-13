@@ -42,9 +42,10 @@ public class ExportUtils {
 
 	/**
 	 * @param filters list of filters
+	 * @param checkIfExist force to check if the file already exist (when selecting an existing file)
 	 * @return a file to export the VCF
 	 */
-	public static File getFile (FileFilter[] filters) {
+	public static File getFile (FileFilter[] filters, boolean checkIfExist) {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -58,7 +59,11 @@ public class ExportUtils {
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);
-			if (!Utils.cancelBecauseFileExist(MainFrame.getInstance().getRootPane(), selectedFile)) {
+			if (checkIfExist) {
+				if (!Utils.cancelBecauseFileExist(MainFrame.getInstance().getRootPane(), selectedFile)) {
+					return selectedFile;
+				}
+			} else {
 				return selectedFile;
 			}
 		}

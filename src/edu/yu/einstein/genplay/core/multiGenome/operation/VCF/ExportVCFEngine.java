@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.VCFExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.VCF;
 
 import java.io.BufferedWriter;
 import java.io.EOFException;
@@ -30,30 +30,28 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import net.sf.samtools.util.BlockCompressedOutputStream;
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 
 /**
+ * The export engine gives basic attributes and control to export a track as a VCF.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public abstract class ExportVCFEngine extends ExportEngine {
-
 
 	/** Option to export the track as VCF file (not compressed) */
 	public static boolean EXPORT_AS_VCF_FILE = true;
 	/** Option to export the track as a compressed VCF file (BGZIP) */
 	public static boolean EXPORT_AS_BGZIP_FILE = false;
 
-	protected ObjectOutputStream 				data;			// the temporary stream for data
-	protected String 							header;			// the new VCF header
-	protected ExportHeaderHandler				headerHandler;	// handler for the new header
+	protected ObjectOutputStream 				data;			// The temporary stream for data.
+	protected String 							header;			// The new VCF header.
+	protected ExportHeaderHandler				headerHandler;	// The handler for the new header.
 
 
 	@Override
@@ -96,7 +94,7 @@ public abstract class ExportVCFEngine extends ExportEngine {
 		GZIPOutputStream gz = new GZIPOutputStream(fos);
 		data = new ObjectOutputStream(gz);
 
-		fileHandler.compute();
+		fileScanner.compute();
 
 		data.close();
 		gz.close();
@@ -215,66 +213,5 @@ public abstract class ExportVCFEngine extends ExportEngine {
 		// Closes the output file writer
 		output.close();
 	}
-
-
-	///////////////////////////////////////////////////////////////////////////////////// DEVELOPMENT
-
-	protected void showInformation () {
-		System.out.println("===== ExportEngine.showInformation()");
-		System.out.println("Path: " + path);
-		showFileMap();
-		showVariationMap();
-		showFilterList();
-		System.out.println("=====");
-	}
-
-	private void showFileMap () {
-		String info = "List of VCF files:\n";
-		for (String genome: fileMap.keySet()) {
-			info += "Genome: " + genome + "\n";
-			info += "Files: ";
-			List<VCFFile> list = fileMap.get(genome);
-			for (int i = 0; i < list.size(); i++) {
-				info += list.get(i).getFile();
-				if (i < (list.size() - 1)) {
-					info += "; ";
-				}
-			}
-		}
-		System.out.println(info);
-	}
-
-	private void showVariationMap () {
-		String info = "List of variation:\n";
-		for (String genome: variationMap.keySet()) {
-			info += "Genome: " + genome + "\n";
-			info += "Variations: ";
-			List<VariantType> list = variationMap.get(genome);
-			for (int i = 0; i < list.size(); i++) {
-				info += list.get(i).toString();
-				if (i < (list.size() - 1)) {
-					info += "; ";
-				}
-			}
-		}
-		System.out.println(info);
-	}
-
-	private void showFilterList () {
-		String info = "List of filter:";
-		if ((filterList == null) || (filterList.size() == 0)) {
-			info += " no filter";
-		} else {
-			info += "\n";
-			for (int i = 0; i < filterList.size(); i++) {
-				info += filterList.get(i).getFilter().toStringForDisplay();
-				if (i < (filterList.size() - 1)) {
-					info += "\n";
-				}
-			}
-		}
-		System.out.println(info);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////
 
 }

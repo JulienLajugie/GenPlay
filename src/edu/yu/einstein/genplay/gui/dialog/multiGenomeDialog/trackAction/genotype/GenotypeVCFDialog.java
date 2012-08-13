@@ -19,9 +19,8 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,6 +29,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -40,32 +42,39 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.VCFFilter;
+import edu.yu.einstein.genplay.gui.fileFilter.VCFGZFilter;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
+public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -1321930230220361216L;
 
-	private final static String DIALOG_TITLE = "Export as VCF file";
+	private final static String DIALOG_TITLE = "Correct genotype of a file using current VCF stripes";
 
-	private JTextField 	jtfFile;		// Text field for the path of the new VCF file
+	private JTextField 	jtfInputFile;		// Text field for the path of the VCF file to correct
+	private JTextField 	jtfOutputFile;		// Text field for the path of the new VCF file
+	private GenomeMappingPanel genomePanel;
 	private JCheckBox 	jcbCompress;	// Check box to compress with BGZIP
 	private JCheckBox 	jcbIndex;		// Check box to index with Tabix
+	private VCFFile vcfToGenotype;
+
 
 	/**
-	 * Constructor of {@link ExportVCFDialog}
+	 * Constructor of {@link GenotypeVCFDialog}
 	 * @param settings the export settings
 	 */
-	public ExportVCFDialog(ExportSettings settings) {
+	public GenotypeVCFDialog(ExportSettings settings) {
 		super(settings, DIALOG_TITLE);
+		vcfToGenotype = null;
 	}
 
 
@@ -78,19 +87,110 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export settings");
 		contentPanel.setBorder(titledBorder);
 
-		// Create the layout
-		BorderLayout layout = new BorderLayout();
-		contentPanel.setLayout(layout);
+		genomePanel = new GenomeMappingPanel();
 
-		// Add panels
-		contentPanel.add(getVCFPanel(), BorderLayout.CENTER);
-		contentPanel.add(getOptionPanel(), BorderLayout.SOUTH);
+		// Panel layout
+		GridBagLayout layout = new GridBagLayout();
+		contentPanel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridy = 0;
+		gbc.gridx = 0;
+
+		// Add the input file panel
+		contentPanel.add(getInputVCFPanel(), gbc);
+
+		// Add the output file panel
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		contentPanel.add(getOutputVCFPanel(), gbc);
+
+		// Add the genome mapping panel
+		gbc.gridy++;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		contentPanel.add(genomePanel, gbc);
+
+		// Add the option panel
+		gbc.gridy++;
+		gbc.weighty = 1;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		contentPanel.add(getOptionPanel(), gbc);
 	}
+
+
+	/**
+	 * @return the panel to select the file to correct
+	 */
+	private JPanel getInputVCFPanel () {
+		// Create the panel
+		JPanel panel = new JPanel();
+
+		// Create the layout
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		// Create the title label
+		JLabel label = new JLabel("Please select the file to correct:");
+
+		// Create the text field
+		jtfInputFile = new JTextField();
+		jtfInputFile.setEditable(false);
+		Dimension jtfDim = new Dimension(DIALOG_WIDTH - 25, 21);
+		ExportUtils.setComponentSize(jtfInputFile, jtfDim);
+
+		// Create the button
+		JButton button = new JButton();
+		Dimension bDim = new Dimension(20, 20);
+		ExportUtils.setComponentSize(button, bDim);
+		button.setMargin(new Insets(0, 0, 0, 0));
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				FileFilter[] filters = {new VCFGZFilter()};
+				File file = ExportUtils.getFile(filters, false);
+				if (file != null) {
+					if ((vcfToGenotype == null) || !file.equals(vcfToGenotype.getFile())) {
+						jtfInputFile.setText(file.getPath());
+						try {
+							vcfToGenotype = new VCFFile(file);
+							List<String> names = vcfToGenotype.getHeader().getRawGenomesNames();
+							genomePanel.initialize(settings.getGenomeNames(), names);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+				pack();
+			}
+		});
+
+		// Add components
+		panel.add(label, gbc);
+
+		gbc.gridy++;
+		panel.add(jtfInputFile, gbc);
+
+		gbc.gridx++;
+		panel.add(button, gbc);
+
+		return panel;
+	}
+
 
 	/**
 	 * @return the panel to select a path to export the track
 	 */
-	private JPanel getVCFPanel () {
+	private JPanel getOutputVCFPanel () {
 		// Create the panel
 		JPanel panel = new JPanel();
 
@@ -109,9 +209,9 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		JLabel label = new JLabel("Please select a destination file:");
 
 		// Create the text field
-		jtfFile = new JTextField();
+		jtfOutputFile = new JTextField();
 		Dimension jtfDim = new Dimension(DIALOG_WIDTH - 25, 21);
-		ExportUtils.setComponentSize(jtfFile, jtfDim);
+		ExportUtils.setComponentSize(jtfOutputFile, jtfDim);
 
 		// Create the button
 		JButton button = new JButton();
@@ -124,11 +224,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 				FileFilter[] filters = {new VCFFilter()};
 				File file = ExportUtils.getFile(filters, true);
 				if (file != null) {
-					jtfFile.setText(file.getPath());
-					jcbCompress.setEnabled(true);
-				} else {
-					jcbCompress.setEnabled(false);
-					jcbIndex.setEnabled(false);
+					jtfOutputFile.setText(file.getPath());
 				}
 			}
 		});
@@ -137,7 +233,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		panel.add(label, gbc);
 
 		gbc.gridy++;
-		panel.add(jtfFile, gbc);
+		panel.add(jtfOutputFile, gbc);
 
 		gbc.gridx++;
 		panel.add(button, gbc);
@@ -154,12 +250,12 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		JPanel panel = new JPanel();
 
 		// Create the layout
-		GridLayout layout = new GridLayout(2, 1);
+		GridLayout layout = new GridLayout(3, 1);
 		panel.setLayout(layout);
 
 		// Create the check box for the compression
 		jcbCompress = new JCheckBox("Compress with BGZIP");
-		jcbCompress.setEnabled(false);
+		//jcbCompress.setEnabled(false);
 		jcbCompress.addActionListener(new ActionListener() {
 
 			@Override
@@ -177,6 +273,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		jcbIndex.setEnabled(false);
 
 		// Add components
+		panel.add(new JLabel("Additional options:"));
 		panel.add(jcbCompress);
 		panel.add(jcbIndex);
 
@@ -185,10 +282,18 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 
 
 	/**
-	 * @return the path of the selected VCF
+	 * @return the VCF to genotype
 	 */
-	public String getVCFPath () {
-		return jtfFile.getText();
+	public VCFFile getVCFToGenotype () {
+		return vcfToGenotype;
+	}
+
+
+	/**
+	 * @return the path of the output file
+	 */
+	public String getOutputFile () {
+		return jtfOutputFile.getText();
 	}
 
 
@@ -214,11 +319,24 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
+	/**
+	 * @return the genome names mapping
+	 */
+	public Map<String, String> getGenomeMap () {
+		return genomePanel.getGenomeMap();
+	}
+
+
 	@Override
 	protected String getErrors() {
 		String error = "";
 
-		String filePath = jtfFile.getText();
+		if (vcfToGenotype == null) {
+			error += "The VCF file to apply the genotype has not been found\n.";
+		}
+
+
+		String filePath = jtfOutputFile.getText();
 		if (filePath == null) {
 			error += "The path of the file has not been found.";
 		} else if (filePath.isEmpty()){

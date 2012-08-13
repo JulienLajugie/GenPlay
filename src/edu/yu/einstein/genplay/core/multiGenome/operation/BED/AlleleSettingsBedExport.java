@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.BEDExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,20 +32,23 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 
 
 /**
+ * This class help for the export of VCF track to a new BED file and for a specific allele.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class AlleleSettingsBedExport extends AlleleSettingsBed {
 
-	private final File 			bedFile;
-	private FileWriter 			fw;
-	private BufferedWriter 		data;
+	private final File 			bedFile;	// The BED file to export the data.
+	private FileWriter 			fw;			// The file writer.
+	private BufferedWriter 		data;		// The main data stream.
 
 
 	/**
 	 * Constructor of {@link AlleleSettingsBedExport}
-	 * @param path
-	 * @param allele
+	 * @param path				the path of the new BED file
+	 * @param allele			the allele to use
+	 * @param coordinateSystem	the coordinate system to use to export position
 	 */
 	protected AlleleSettingsBedExport (String path, AlleleType allele, CoordinateSystemType coordinateSystem) {
 		super(allele, coordinateSystem);

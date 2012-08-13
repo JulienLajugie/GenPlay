@@ -19,34 +19,36 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.VCFExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.VCF;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.multiGenome.VCF.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.export.FileAlgorithmInterface;
-import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileAlgorithm;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.BGZIPReader;
-import edu.yu.einstein.genplay.core.multiGenome.export.utils.ManualVCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.ManualVCFReader;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
+ * This method exports a VCF track into a VCF file.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFExportEngineSingleFile extends ExportVCFEngine {
+public class MGOVCFExportSingleFile extends ExportVCFEngine {
 
 
 	@Override
 	protected boolean canStart() throws Exception {
 		List<VCFFile> fileList = getFileList();
 		if (fileList.size() == 1) {
-			fileHandler = new SingleFileAlgorithm(this);
+			fileScanner = new SingleFileScanner(this);
 			return true;
 		}
 		System.err.println("VCFExportEngineSingleFile.canStart() number of files invalid: " + fileList.size());
@@ -55,7 +57,7 @@ public class VCFExportEngineSingleFile extends ExportVCFEngine {
 
 
 	@Override
-	protected void processLine(FileAlgorithmInterface fileAlgorithm) throws IOException {
+	public void processLine(FileScannerInterface fileAlgorithm) throws IOException {
 		ManualVCFReader vcfReader = fileAlgorithm.getCurrentVCFReader();
 		VCFLine currentLine = fileAlgorithm.getCurrentLine();
 		data.writeObject(buildLine(vcfReader.getReader(), vcfReader.getAllValidIndex(), fileAlgorithm.getGenomeList(), vcfReader.getAllValidGenome()) + "\n");			// We have to add the line

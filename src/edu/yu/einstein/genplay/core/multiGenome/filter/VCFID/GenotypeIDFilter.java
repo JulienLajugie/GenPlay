@@ -232,7 +232,7 @@ public class GenotypeIDFilter implements IDFilterInterface, Serializable {
 		duplicate.setHeaderType(getHeaderType());
 		((GenotypeIDFilter)duplicate).setOption(getOption());
 		((GenotypeIDFilter)duplicate).setCanBePhased(canBePhased);
-		((GenotypeIDFilter)duplicate).setCanBeUnPhased(canBePhased);
+		((GenotypeIDFilter)duplicate).setCanBeUnPhased(canBeUnPhased);
 		duplicate.setGenomeNames(getGenomeNames());
 		duplicate.setOperator(getOperator());
 		return duplicate;

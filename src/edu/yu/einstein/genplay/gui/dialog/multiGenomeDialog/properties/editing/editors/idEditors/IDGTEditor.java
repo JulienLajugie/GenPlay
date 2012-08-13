@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -74,7 +74,7 @@ public class IDGTEditor implements IDEditor {
 		ButtonGroup group = new ButtonGroup();
 		group.add(homozygote);
 		group.add(heterozygote);
-		
+
 		// Creates the checkboxes
 		phased = new JCheckBox("include phased GT");
 		phased.setSelected(true);
@@ -106,11 +106,11 @@ public class IDGTEditor implements IDEditor {
 		// "heterozygote" button
 		gbc.gridy++;
 		panel.add(heterozygote, gbc);
-		
+
 		// "heterozygote" button
 		gbc.gridy++;
 		panel.add(phased, gbc);
-		
+
 		// "heterozygote" button
 		gbc.gridy++;
 		gbc.weighty = 1;
@@ -129,10 +129,10 @@ public class IDGTEditor implements IDEditor {
 		} else {
 			filter.setOption(GenotypeIDFilter.HETEROZYGOTE_OPTION);
 		}
-		
+
 		filter.setCanBePhased(phased.isSelected());
 		filter.setCanBeUnPhased(unPhased.isSelected());
-		
+
 		return filter;
 	}
 
@@ -157,13 +157,13 @@ public class IDGTEditor implements IDEditor {
 		} else {
 			heterozygote.setSelected(true);
 		}
-		
+
 		if (gtFilter.canBePhased()) {
 			phased.setSelected(true);
 		} else {
 			phased.setSelected(false);
 		}
-		
+
 		if (gtFilter.canBeUnPhased()) {
 			unPhased.setSelected(true);
 		} else {
@@ -196,8 +196,8 @@ public class IDGTEditor implements IDEditor {
 			unPhased.setEnabled(b);
 		}
 	}
-	
-	
+
+
 	@Override
 	public boolean isEnabled() {
 		return panel.isEnabled();

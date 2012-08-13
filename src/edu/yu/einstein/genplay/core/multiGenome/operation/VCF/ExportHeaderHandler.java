@@ -14,12 +14,12 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.VCFExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.VCF;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
+ * This class provides help to handle the header and to build it for export action.
  * 
  * @author Nicolas Fourel
  * @version 0.1
@@ -164,18 +165,18 @@ public class ExportHeaderHandler {
 	 */
 	protected String getFieldHeader () {
 		String header = "";
-		
+
 		// Gets the headers
 		String alt = getHeader(altHeadersMap);
 		String filter = getHeader(filterHeadersMap);
 		String info = getHeader(infoHeadersMap);
 		String format = getHeader(formatHeadersMap);
-		
+
 		// Adds the ALT header
 		if (!alt.isEmpty()) {
 			header += alt;
 		}
-		
+
 		// Adds the FILTER header
 		if (!filter.isEmpty()) {
 			if (!header.isEmpty()) {
@@ -183,7 +184,7 @@ public class ExportHeaderHandler {
 			}
 			header += filter;
 		}
-		
+
 		// Adds the INFO header
 		if (!info.isEmpty()) {
 			if (!header.isEmpty()) {
@@ -191,7 +192,7 @@ public class ExportHeaderHandler {
 			}
 			header += info;
 		}
-		
+
 		// Adds the FORMAT header
 		if (!format.isEmpty()) {
 			if (!header.isEmpty()) {
@@ -203,7 +204,7 @@ public class ExportHeaderHandler {
 		return header;
 	}
 
-	
+
 	/**
 	 * @param map map of headers
 	 * @return the formatted field header part using the map

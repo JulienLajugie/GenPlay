@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.BEDExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
@@ -30,20 +30,23 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 
 
 /**
+ * This class helps the processing of a track for a specific allele.
+ * It makes calculation for synchronisation and helps to handle the current information.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class AlleleSettingsBed {
 
-	protected final AlleleType allele;
-	protected final CoordinateSystemType coordinateSystem;
+	protected final AlleleType allele;						// The allele of the helper
+	protected final CoordinateSystemType coordinateSystem;	// The coordinate system to convert the position.
 
-	protected int		charIndex;
-	protected int		currentOffset;
-	protected int		currentLength;
-	protected int		currentStart;
-	protected int		currentStop;
-	protected int		currentAltIndex;
+	protected int	charIndex;			// The index of the genotype matching the allele.
+	protected int	currentOffset;		// The current offset (for synchronisation).
+	protected int	currentLength;		// The length of the current variation.
+	protected int	currentStart;		// The start position of the current variation.
+	protected int	currentStop;;		// The stop position of the current variation.
+	protected int	currentAltIndex;	// The index of the alternative among the other alternatives of the line for the current variation.
 
 
 	/**
@@ -171,8 +174,6 @@ public class AlleleSettingsBed {
 		initializeCurrentInformationForReferenceGenome(lengths, currentLine, altIndex);
 		currentStart =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, allele, currentStart, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
 		currentStop =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, allele, currentStop, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
-		//currentStart = ShiftCompute.computeShiftForReferenceGenome(chromosome, currentStart);
-		//currentStop = ShiftCompute.computeShiftForReferenceGenome(chromosome, currentStop);
 	}
 
 

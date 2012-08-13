@@ -19,27 +19,30 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.BEDExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
+ * This class help for the convertion of VCF track to a {@link ScoredChromosomeWindowList} for a specific allele.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 
-	private final ChromosomeListOfLists<Integer> startList;
-	private final ChromosomeListOfLists<Integer> stopList;
-	private final ChromosomeListOfLists<Double> scoreList;
+	private final ChromosomeListOfLists<Integer> 	startList;	// List of start position.
+	private final ChromosomeListOfLists<Integer> 	stopList;	// List of stop position.
+	private final ChromosomeListOfLists<Double> 	scoreList;	// List of scores.
 
 
 	/**
@@ -76,7 +79,6 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 			startList.add(chromosome, start);
 			stopList.add(chromosome, stop);
 			scoreList.add(chromosome, dbScore);
-			//System.out.println("Insert: " + start + " (" + currentStart + ") " + stop + " (" + currentStop + ") " + dbScore + " (" + score + ")");
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");
 		}

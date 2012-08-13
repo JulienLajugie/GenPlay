@@ -397,20 +397,31 @@ public class VCFLine implements Serializable {
 	 * @param allele an allele type
 	 * @return	the alternative of the genome
 	 */
-	public String getAlternative (String fullGenomeName, AlleleType allele) {
+	public String getAlternativeFromFullName (String fullGenomeName, AlleleType allele) {
 		String rawName = FormattedMultiGenomeName.getRawName(fullGenomeName);
 		if (rawName != null) {
-			String genotype = getGenotype(rawName);
-			if (genotype != null) {
-				int index = -1;
-				if (allele == AlleleType.ALLELE01) {
-					index = getAlleleIndex(genotype.charAt(0));
-				} else if (allele == AlleleType.ALLELE02) {
-					index = getAlleleIndex(genotype.charAt(2));
-				}
-				if (index > -1) {
-					return alternatives[index];
-				}
+			return getAlternativeFromRawName(rawName, allele);
+		}
+		return null;
+	}
+
+
+	/**
+	 * @param rawName a raw genome name
+	 * @param allele an allele type
+	 * @return	the alternative of the genome
+	 */
+	public String getAlternativeFromRawName (String rawName, AlleleType allele) {
+		String genotype = getGenotype(rawName);
+		if (genotype != null) {
+			int index = -1;
+			if (allele == AlleleType.ALLELE01) {
+				index = getAlleleIndex(genotype.charAt(0));
+			} else if (allele == AlleleType.ALLELE02) {
+				index = getAlleleIndex(genotype.charAt(2));
+			}
+			if (index > -1) {
+				return alternatives[index];
 			}
 		}
 		return null;

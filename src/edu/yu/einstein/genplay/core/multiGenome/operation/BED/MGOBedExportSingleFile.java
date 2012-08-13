@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.BEDExport;
+package edu.yu.einstein.genplay.core.multiGenome.operation.BED;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,39 +35,42 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngine;
-import edu.yu.einstein.genplay.core.multiGenome.export.FileAlgorithmInterface;
-import edu.yu.einstein.genplay.core.multiGenome.export.SingleFileAlgorithm;
+import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
+ * Operation to export a VCF track as a BED file.
+ * This will create new file(s).
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class BedExportEngineSingleFile extends ExportEngine {
+public class MGOBedExportSingleFile extends ExportEngine {
 
 	private final MGSynchronizer 	synchronizer;
 
-	private final String 					fullGenomeName;
-	private final AlleleType				allele;
-	private final VCFHeaderType 			header;
-	private final CoordinateSystemType 		coordinateSystem;
-	private List<AlleleSettingsBedExport> 	fullAlleleList;
-	private List<AlleleSettingsBedExport> 	alleleListToExport;
+	private final String 					fullGenomeName;			// The genome to export.
+	private final AlleleType				allele;					// The allele(s) to export.
+	private final VCFHeaderType 			header;					// The header field to use as a score.
+	private final CoordinateSystemType 		coordinateSystem;		// The coordinate system to export the positions.
+	private List<AlleleSettingsBedExport> 	fullAlleleList;			// The full list of allele settings helper.
+	private List<AlleleSettingsBedExport> 	alleleListToExport;		// The list of allele settings helper to use.
 
-	private int genomeIndex;
+	private int genomeIndex;										// The index of the genome in the file to export.
 
 
 	/**
-	 * Constructor of {@link BedExportEngineSingleFile}
+	 * Constructor of {@link MGOBedExportSingleFile}
 	 * @param fullGenomeName the full genome name of the genome to export
 	 * @param allele the allele type to export
 	 * @param header the header to use as a score
 	 * @param coordinateSystem the coordinate system of the position to export the data
 	 */
-	public BedExportEngineSingleFile (String fullGenomeName, AlleleType allele, VCFHeaderType header, CoordinateSystemType coordinateSystem) {
+	public MGOBedExportSingleFile (String fullGenomeName, AlleleType allele, VCFHeaderType header, CoordinateSystemType coordinateSystem) {
 		this.synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
 		this.fullGenomeName = fullGenomeName;
 		this.allele = allele;
@@ -80,7 +83,7 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	protected boolean canStart() throws Exception {
 		List<VCFFile> fileList = getFileList();
 		if (fileList.size() == 1) {
-			fileHandler = new SingleFileAlgorithm(this);
+			fileScanner = new SingleFileScanner(this);
 			initializeAlleleList();
 			return true;
 		} else {
@@ -117,7 +120,7 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	@Override
 	protected void process() throws Exception {
 		// Retrieve the index of the column of the genome in the VCF
-		genomeIndex = fileHandler.getCurrentVCFReader().getReader().getIndexFromGenome(fullGenomeName);
+		genomeIndex = fileScanner.getCurrentVCFReader().getReader().getIndexFromGenome(fullGenomeName);
 
 		// Open the file streams
 		for (AlleleSettingsBedExport alleleExport: alleleListToExport) {
@@ -126,7 +129,7 @@ public class BedExportEngineSingleFile extends ExportEngine {
 		}
 
 		// Compute the file scan algorithm
-		fileHandler.compute();
+		fileScanner.compute();
 
 		// Close the file streams
 		for (AlleleSettingsBedExport alleleExport: alleleListToExport) {
@@ -166,7 +169,7 @@ public class BedExportEngineSingleFile extends ExportEngine {
 
 
 	@Override
-	protected void processLine(FileAlgorithmInterface fileAlgorithm) throws IOException {
+	public void processLine(FileScannerInterface fileAlgorithm) throws IOException {
 		VCFLine currentLine = fileAlgorithm.getCurrentLine();
 		currentLine.processForAnalyse();
 
@@ -203,6 +206,11 @@ public class BedExportEngineSingleFile extends ExportEngine {
 	}
 
 
+	/**
+	 * @param currentLine	the current line in process
+	 * @param alleleExport	the allele setting helper to use
+	 * @return the score to use, null otherwise
+	 */
 	private Object getScore (VCFLine currentLine, AlleleSettingsBedExport alleleExport) {
 		Object value = currentLine.getHeaderField(header, genomeIndex);
 		Object result = null;

@@ -19,58 +19,57 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.multiGenome.export;
+package edu.yu.einstein.genplay.gui.action.multiGenome.update;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
-import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
-import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOVCFExportSingleFile;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.operation.UpdateEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOUpdateVCFGenotype;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype.GenotypeVCFDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGAVCFExport extends TrackListActionWorker<Boolean> {
+public class MGAVCFUpdateGenotype extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Performs the multi genome algorithm"; 										// tooltip
+			"Update the genotype of a file using track variations."; 				// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 			ACTION_NAME = "Export as VCF";			// action name
+	private static		 String 			ACTION_NAME = "Update a VCF";			// action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "Multi Genome VCF Export";
+	public static final String ACTION_KEY = "Multi Genome Genotype Update";
 
-	private final File file;
-	private final ExportSettings settings;
 	private boolean success;
 
 
 	/**
-	 * Creates an instance of {@link MGAVCFExport}.
-	 * @param file output file to export
-	 * @param settings the settings for the export
+	 * Creates an instance of {@link MGAVCFUpdateGenotype}.
 	 */
-	public MGAVCFExport(File file, ExportSettings settings) {
+	public MGAVCFUpdateGenotype() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		this.file = file;
-		this.settings = settings;
 	}
 
 
@@ -79,37 +78,35 @@ public class MGAVCFExport extends TrackListActionWorker<Boolean> {
 		ProjectManager projectManager = ProjectManager.getInstance();
 		if (projectManager.isMultiGenomeProject()) {
 
-			// Declare the export engine
-			ExportEngine exportEngine = null;
+			// Get track information
+			Track<?> track = MainFrame.getInstance().getTrackList().getSelectedTrack();
+			MultiGenomeDrawer genomeDrawer = track.getMultiGenomeDrawer();
 
-			// Initialize the engine if the export is about only one VCF file
-			int fileNumber = settings.getFileNumber();
-			if (fileNumber == 1) {
-				exportEngine = new MGOVCFExportSingleFile();
-			} else if (fileNumber > 1) {
-				JOptionPane.showMessageDialog(getRootPane(), "Cannot export data from more than one VCF.\nMore support coming soon.", "Export error", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				System.err.println("PAMultiGenomeExport.processAction(): Number of file required is not valid: " + fileNumber);
+			// Create the export settings
+			ExportSettings settings = new ExportSettings(genomeDrawer);
+
+			GenotypeVCFDialog dialog = new GenotypeVCFDialog(settings);
+
+			if (dialog.showDialog(getRootPane()) == MultiGenomeTrackActionDialog.APPROVE_OPTION) {
+				// Create the file to update
+				VCFFile VCFFileToUpdate = dialog.getVCFToGenotype();
+
+				// Create the output file
+				String outputPath = dialog.getOutputFile();
+
+				Map<String, String> genomeNameMap = dialog.getGenomeMap();
+
+				// Create the update engine
+				UpdateEngine engine = new MGOUpdateVCFGenotype();
+				engine.setFileMap(settings.getFileMap());
+				engine.setVariationMap(settings.getVariationMap());
+				engine.setFilterList(settings.getFilterList());
+				engine.setFileToPhase(VCFFileToUpdate);
+				engine.setPath(outputPath);
+				engine.setGenomeNameMap(genomeNameMap);
+
+				engine.export();
 			}
-
-			// Runs the export process
-			if ((file != null) && (exportEngine != null)) {
-				// Notifies the action
-				notifyActionStart(ACTION_NAME, 1, false);
-
-				exportEngine.setFileMap(settings.getFileMap());
-				exportEngine.setVariationMap(settings.getVariationMap());
-				exportEngine.setFilterList(settings.getFilterList());
-				exportEngine.setPath(file.getPath());
-
-				try {
-					exportEngine.export();
-					return true;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
 		}
 		return false;
 	}

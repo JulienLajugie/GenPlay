@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -61,7 +61,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 	private JCheckBox 	jcbIndex;		// Check box to index with Tabix
 
 	/**
-	 * Constructor of {@link ExportVCFDialog}
+	 * Constructor of {@link GenotypeVCFDialog}
 	 * @param settings the export settings
 	 */
 	public ExportVCFDialog(ExportSettings settings) {

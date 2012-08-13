@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.utils;
+package edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +28,7 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
@@ -35,6 +36,9 @@ import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
+ * This class reads a VCF file (as a gz) and can process some operations on the lines.
+ * It checks if the line is valid according to the requirements (variations and filters).
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -53,7 +57,7 @@ public class ManualVCFReader {
 	private List<Integer> 							allValidIndex;	// The array that will contain all valid alternative indexes of the line
 	private List<String> 							allValidGenome;	// The array that will contain all valid genome names of the line
 
-	private final MGSynchronizer synchronizer;	// The Multi Genome Synchronizer
+	private final MGSynchronizer synchronizer;						// The Multi Genome Synchronizer
 
 
 	/**
@@ -77,6 +81,16 @@ public class ManualVCFReader {
 
 	/**
 	 * Goes to the next line in the file.
+	 * @throws IOException
+	 */
+	public void goNextLine () throws IOException {
+		reader.goNextLine();
+		currentLine = reader.getCurrentLine();
+	}
+
+
+	/**
+	 * Goes to the next line in the file.
 	 * It processes the line in order to know whether it passes the constraints or not.
 	 * The constraints are variations types and filters.
 	 * When the line passes the constraints, two lists are created:
@@ -86,9 +100,22 @@ public class ManualVCFReader {
 	 * @return the current VCF line
 	 * @throws IOException
 	 */
-	public VCFLine goNextLine () throws IOException {
-		reader.goNextLine();
-		return getLine();
+	public VCFLine getNextValidLine () throws IOException {
+		goNextLine();
+		return getCurrentValidLine();
+	}
+
+
+	/**
+	 * Goes to the next line in the file.
+	 * Does not process anything, just return the next line
+	 * 
+	 * @return the next line in the VCF file
+	 * @throws IOException
+	 */
+	public VCFLine getNextLine () throws IOException {
+		goNextLine();
+		return reader.getCurrentLine();
 	}
 
 
@@ -102,7 +129,7 @@ public class ManualVCFReader {
 	 * 
 	 * @return the current line
 	 */
-	public VCFLine getLine () {
+	public VCFLine getCurrentValidLine () {
 		currentLine = reader.getCurrentLine();
 		passValidation(currentLine);
 		return currentLine;
@@ -122,6 +149,7 @@ public class ManualVCFReader {
 		boolean hasPassed = false;
 
 		if (!currentLine.isLastLine() && currentLine.isValid()) {																											// The line has to be a valid line to be processed
+			currentLine.processForAnalyse();
 			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
 			VariantType[] variations = synchronizer.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
 
@@ -246,14 +274,6 @@ public class ManualVCFReader {
 	 */
 	public BGZIPReader getReader() {
 		return reader;
-	}
-
-
-	/**
-	 * @return the currentLine
-	 */
-	public VCFLine getCurrentLine() {
-		return currentLine;
 	}
 
 

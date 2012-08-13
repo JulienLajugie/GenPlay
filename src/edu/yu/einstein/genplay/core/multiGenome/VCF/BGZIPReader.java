@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export.utils;
+package edu.yu.einstein.genplay.core.multiGenome.VCF;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +30,6 @@ import java.util.Map;
 
 import net.sf.samtools.util.BlockCompressedInputStream;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFGenomeIndexer;
@@ -46,8 +45,9 @@ public class BGZIPReader implements VCFGenomeIndexer {
 	private final BlockCompressedInputStream 	bcis;				// stream for the file
 	private final InputStreamReader				isr;
 	private final BufferedReader 				reader;
-	private String 								metaDataHeader;		// header of the file
-	private String 								fieldDataHeader;	// header of the file
+	private String 								metaDataHeader;		// meta data of the file header
+	private String 								fieldDataHeader;	// field data of the file header
+	private String								fullHeader;			// the fulle header
 	private VCFLine 							currentLine;		// current line in the file
 	//private String columns;
 	private final Map<String, Integer> 			genomeMap;			// map between genome names and their related index according to their location on the column line
@@ -66,6 +66,7 @@ public class BGZIPReader implements VCFGenomeIndexer {
 		this.currentLine = null;
 		this.metaDataHeader = "";
 		this.fieldDataHeader = "";
+		this.fullHeader = "";
 		this.genomeMap = new HashMap<String, Integer>();
 		initialize();
 	}
@@ -83,6 +84,10 @@ public class BGZIPReader implements VCFGenomeIndexer {
 			String line = readLine(reader);
 			if ((line != null) && (line.length() > 2)) {
 				if (line.substring(0, 2).equals("##")) {
+					if (!fullHeader.isEmpty()) {
+						fullHeader += "\n";
+					}
+					fullHeader += line;
 
 					if (isMetaDataLine(line)) {
 						if (!metaDataHeader.isEmpty()) {
@@ -96,6 +101,10 @@ public class BGZIPReader implements VCFGenomeIndexer {
 						fieldDataHeader += line;
 					}
 				} else if (line.substring(0, 1).equals("#")) {
+					if (!fullHeader.isEmpty()) {
+						fullHeader += "\n";
+					}
+					fullHeader += line;
 					//this.columns = line;
 					String[] columns = Utils.splitWithTab(line);
 					for (int i = 9; i < columns.length; i++) {
@@ -317,4 +326,13 @@ public class BGZIPReader implements VCFGenomeIndexer {
 	public List<String> getGenomeRawNames() {
 		return vcfFile.getHeader().getGenomeRawNames();
 	}
+
+
+	/**
+	 * @return the fullHeader
+	 */
+	public String getFullHeader() {
+		return fullHeader;
+	}
+
 }

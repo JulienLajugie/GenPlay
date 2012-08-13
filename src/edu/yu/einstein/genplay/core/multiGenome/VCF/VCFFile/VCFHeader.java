@@ -253,6 +253,7 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 								columnNames.add(details[i].trim());
 								if (i > 8) {
 									genomeMap.put(details[i].trim(), i);
+									//genomeRawNames.add(details[i].trim());
 								}
 							}
 						}

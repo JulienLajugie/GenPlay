@@ -343,10 +343,6 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 		fileFiltersPanel.setData(settings.getFilterSettings().getDuplicatedFileFiltersList());
 		fileFiltersPanel.refreshPanel();
 
-		// Advanced Filter settings panel
-		/*advancedFiltersPanel.setData(settings.getFilterSettings().getDuplicatedAdvancedFiltersList());
-		advancedFiltersPanel.refreshPanel();*/
-
 		// Stripes settings panel
 		stripesPanel.setData(settings.getStripeSettings().getStripesList());
 		stripesPanel.refreshPanel();

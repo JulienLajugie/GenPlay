@@ -28,9 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.core.multiGenome.filter.BasicFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -93,23 +91,7 @@ public class MGFilterSettings implements Serializable {
 	public List<FiltersData> getDuplicatedFileFiltersList() {
 		List<FiltersData> duplicate = new ArrayList<FiltersData>();
 		for (FiltersData data: filtersList) {
-			if (data.getFilter() instanceof VCFFilter) {
-				duplicate.add(data.getDuplicate());
-			}
-		}
-		return duplicate;
-	}
-
-
-	/**
-	 * @return a duplicate of the advanced filters List
-	 */
-	public List<FiltersData> getDuplicatedAdvancedFiltersList() {
-		List<FiltersData> duplicate = new ArrayList<FiltersData>();
-		for (FiltersData data: filtersList) {
-			if (data.getMGFilter() instanceof BasicFilter) {
-				duplicate.add(data.getDuplicate());
-			}
+			duplicate.add(data.getDuplicate());
 		}
 		return duplicate;
 	}

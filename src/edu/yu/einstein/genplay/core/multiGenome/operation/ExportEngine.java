@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.export;
+package edu.yu.einstein.genplay.core.multiGenome.operation;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,19 +32,22 @@ import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 
 /**
+ * The export engine gives basic attributes and control to export a track as a file.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
 public abstract class ExportEngine {
 
 
-	protected FileAlgorithmInterface			fileHandler;
-	protected Map<String, List<VCFFile>> 		fileMap;		// map between genome names and their related files
-	protected Map<String, List<VariantType>> 	variationMap;	// map between genome names and their required variation
-	protected List<MGFilter> 					filterList;		// list of filter
-	protected String 							path;			// path of the new VCF file
+	protected FileScannerInterface				fileScanner;	// The file scanner.
+	protected Map<String, List<VCFFile>> 		fileMap;		// The map between genome names and their related files.
+	protected Map<String, List<VariantType>> 	variationMap;	// The map between genome names and their required variations.
+	protected List<MGFilter> 					filterList;		// The list of filters.
+	protected String 							path;			// Path of the new VCF file.
 	protected boolean							isConversion = false;
 
 
@@ -149,7 +152,7 @@ public abstract class ExportEngine {
 	/**
 	 * @return the sorted list of genome names
 	 */
-	protected List<String> getGenomeList () {
+	public List<String> getGenomeList () {
 		List<String> result = new ArrayList<String>(variationMap.keySet());
 		Collections.sort(result);
 		return result;
@@ -159,7 +162,7 @@ public abstract class ExportEngine {
 	/**
 	 * @return the list of files
 	 */
-	protected List<VCFFile> getFileList () {
+	public List<VCFFile> getFileList () {
 		List<VCFFile> fileList = new ArrayList<VCFFile>();
 		for (String genome: fileMap.keySet()) {
 			List<VCFFile> projectList = fileMap.get(genome);
@@ -189,10 +192,10 @@ public abstract class ExportEngine {
 
 	/**
 	 * Processes a line
+	 * @param fileAlgorithm the file reading algorithm
 	 * @throws IOException
-	 * @throws Exception
 	 */
-	protected abstract void processLine (FileAlgorithmInterface fileAlgorithm) throws IOException;
+	public abstract void processLine (FileScannerInterface fileAlgorithm) throws IOException;
 
 
 	/**

@@ -29,8 +29,8 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngine;
-import edu.yu.einstein.genplay.core.multiGenome.export.BEDExport.BedExportEngineSingleFile;
+import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedExportSingleFile;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportBEDDialog;
@@ -100,7 +100,7 @@ public class MGABedExport extends TrackListActionWorker<Boolean> {
 						// Notifies the action
 						notifyActionStart(ACTION_NAME, 1, false);
 
-						exportEngine = new BedExportEngineSingleFile(dialog.getGenomeName(), dialog.getAlleleType(), dialog.getHeader(), dialog.getCoordinateSystem());
+						exportEngine = new MGOBedExportSingleFile(dialog.getGenomeName(), dialog.getAlleleType(), dialog.getHeader(), dialog.getCoordinateSystem());
 
 						exportEngine.setFileMap(settings.getFileMap());
 						exportEngine.setVariationMap(settings.getVariationMap());
@@ -174,7 +174,7 @@ public class MGABedExport extends TrackListActionWorker<Boolean> {
 	 */
 	private List<File> getExportedFiles () {
 		if (exportEngine != null) {
-			return ((BedExportEngineSingleFile) exportEngine).getExportedFiles();
+			return ((MGOBedExportSingleFile) exportEngine).getExportedFiles();
 		}
 		return null;
 	}

@@ -29,8 +29,8 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.export.ExportEngine;
-import edu.yu.einstein.genplay.core.multiGenome.export.BEDExport.BedConvertEngineSingleFile;
+import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedConvertSingleFile;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
@@ -104,7 +104,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 					// Notifies the action
 					notifyActionStart(ACTION_NAME, 1, false);
 
-					exportEngine = new BedConvertEngineSingleFile(dialog.getGenomeName(), dialog.getFirstAlleleTrack(), dialog.getSecondAlleleTrack(), dialog.getHeader());
+					exportEngine = new MGOBedConvertSingleFile(dialog.getGenomeName(), dialog.getFirstAlleleTrack(), dialog.getSecondAlleleTrack(), dialog.getHeader());
 
 					exportEngine.setFileMap(settings.getFileMap());
 					exportEngine.setVariationMap(settings.getVariationMap());
@@ -135,14 +135,14 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 
 		if (success) {
 			try {
-				ScoredChromosomeWindowList list = ((BedConvertEngineSingleFile) exportEngine).getFirstList();
+				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getFirstList();
 				setTrack(dialog.getFirstAlleleTrack(), list);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			try {
-				ScoredChromosomeWindowList list = ((BedConvertEngineSingleFile) exportEngine).getSecondList();
+				ScoredChromosomeWindowList list = ((MGOBedConvertSingleFile) exportEngine).getSecondList();
 				setTrack(dialog.getSecondAlleleTrack(), list);
 			} catch (Exception e) {
 				e.printStackTrace();

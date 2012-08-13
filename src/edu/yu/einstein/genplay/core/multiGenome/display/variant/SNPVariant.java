@@ -199,7 +199,7 @@ public class SNPVariant implements Serializable, VariantInterface {
 	public String getVariantSequence() {
 		VCFLine line = getVCFLine();
 		line.processForAnalyse();
-		String chain = line.getAlternative(getGenomeName(), getAlleleType());
+		String chain = line.getAlternativeFromFullName(getGenomeName(), getAlleleType());
 		return chain;
 	}
 }
