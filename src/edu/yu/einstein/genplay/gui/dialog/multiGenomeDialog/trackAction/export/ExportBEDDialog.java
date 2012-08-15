@@ -133,7 +133,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the text field
 		jtfFile = new JTextField();
-		Dimension jtfDim = new Dimension(DIALOG_WIDTH - 25, 21);
+		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
 		// Create the button
@@ -268,7 +268,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 		//Dimension
 		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(DIALOG_WIDTH - 50, height);
+		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
 		jcbGenome.setPreferredSize(dimension);
 		jcbGenome.setMinimumSize(dimension);
 
@@ -296,7 +296,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 		//Dimension
 		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(DIALOG_WIDTH - 50, height);
+		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
 		jcbAllele.setPreferredSize(dimension);
 		jcbAllele.setMinimumSize(dimension);
 

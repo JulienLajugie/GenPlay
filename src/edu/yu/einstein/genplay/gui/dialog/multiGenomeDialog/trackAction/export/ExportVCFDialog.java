@@ -110,7 +110,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the text field
 		jtfFile = new JTextField();
-		Dimension jtfDim = new Dimension(DIALOG_WIDTH - 25, 21);
+		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
 		// Create the button

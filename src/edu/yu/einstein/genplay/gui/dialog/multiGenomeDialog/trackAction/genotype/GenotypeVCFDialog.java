@@ -84,7 +84,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 		contentPanel = new JPanel();
 
 		// Create the field set effect
-		TitledBorder titledBorder = BorderFactory.createTitledBorder("Export settings");
+		TitledBorder titledBorder = BorderFactory.createTitledBorder("Update settings");
 		contentPanel.setBorder(titledBorder);
 
 		genomePanel = new GenomeMappingPanel();
@@ -110,14 +110,15 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 
 		// Add the genome mapping panel
 		gbc.gridy++;
-		gbc.insets = new Insets(10, 0, 0, 0);
+		gbc.weighty = 1;
+		//gbc.insets = new Insets(10, 0, 0, 0);
 		contentPanel.add(genomePanel, gbc);
 
 		// Add the option panel
-		gbc.gridy++;
+		/*gbc.gridy++;
 		gbc.weighty = 1;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		contentPanel.add(getOptionPanel(), gbc);
+		contentPanel.add(getOptionPanel(), gbc);*/
 	}
 
 
@@ -134,6 +135,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.insets = new Insets(0, 0, 0, 0);
+		//gbc.weightx = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
@@ -145,7 +147,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 		// Create the text field
 		jtfInputFile = new JTextField();
 		jtfInputFile.setEditable(false);
-		Dimension jtfDim = new Dimension(DIALOG_WIDTH - 25, 21);
+		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfInputFile, jtfDim);
 
 		// Create the button
@@ -210,7 +212,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the text field
 		jtfOutputFile = new JTextField();
-		Dimension jtfDim = new Dimension(DIALOG_WIDTH - 25, 21);
+		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfOutputFile, jtfDim);
 
 		// Create the button
@@ -245,6 +247,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 	/**
 	 * @return the panel to select the additional export options
 	 */
+	@SuppressWarnings("unused") // Will be managed in the action very soon!
 	private JPanel getOptionPanel () {
 		// Create the panel
 		JPanel panel = new JPanel();

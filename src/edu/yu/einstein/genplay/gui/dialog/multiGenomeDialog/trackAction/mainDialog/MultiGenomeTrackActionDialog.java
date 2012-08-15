@@ -47,7 +47,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 	private int				approved 			= CANCEL_OPTION;	// equals APPROVE_OPTION if user clicked OK, CANCEL_OPTION if not
 
-	protected static final int DIALOG_WIDTH = 400;
+	protected static final int MIN_DIALOG_WIDTH = 400;
 	protected final ExportSettings settings;
 
 

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOUpdateVCFGenotype;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * The update engine is made to create a new VCF file based on a file to update, using data from a current VCF track.
@@ -302,7 +304,11 @@ public abstract class UpdateEngine {
 	 * @param genomeNameMap the genomeNameMap to set
 	 */
 	public void setGenomeNameMap(Map<String, String> genomeNameMap) {
-		this.genomeNameMap = genomeNameMap;
+		this.genomeNameMap = new HashMap<String, String>();
+		for (String rawDestName: genomeNameMap.keySet()) {
+			String valueRawName = FormattedMultiGenomeName.getRawName(genomeNameMap.get(rawDestName));
+			this.genomeNameMap.put(rawDestName, valueRawName);
+		}
 	}
 
 

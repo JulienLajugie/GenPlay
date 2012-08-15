@@ -172,7 +172,7 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 		//Dimension
 		int height = jcbGenome.getFontMetrics(jcbGenome.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(DIALOG_WIDTH - 50, height);
+		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
 		jcbGenome.setPreferredSize(dimension);
 		jcbGenome.setMinimumSize(dimension);
 
