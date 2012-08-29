@@ -70,7 +70,6 @@ public class ProjectManager implements Serializable {
 
 		out.writeObject(projectWindow);
 		out.writeObject(projectChromosome);
-		out.writeObject(multiGenomeProject);
 	}
 
 
@@ -91,6 +90,15 @@ public class ProjectManager implements Serializable {
 
 		instance.getProjectWindow().setProjectWindow((ProjectWindow) in.readObject());
 		instance.getProjectChromosome().setProjectChromosome((ProjectChromosome) in.readObject());
+	}
+
+
+	/**
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void readMultiGenomeObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		if (instance.isMultiGenomeProject()) {
 			instance.getMultiGenomeProject().setMultiGenomeProject((MultiGenomeProject) in.readObject());
 		}

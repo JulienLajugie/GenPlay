@@ -869,7 +869,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void lockTrackHandles() {
 		for (Track<?> currentTrack: trackList) {
-			currentTrack.lockHandle();
+			if (currentTrack != null) {
+				currentTrack.lockHandle();
+			}
 		}
 	}
 
@@ -879,7 +881,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void unlockTracksHandles() {
 		for (Track<?> currentTrack: trackList) {
-			currentTrack.unlockHandle();
+			if (currentTrack != null) {
+				currentTrack.unlockHandle();
+			}
 		}
 	}
 

@@ -63,6 +63,7 @@ public class ProjectRecording {
 
 	private 		ProjectInformation		projectInformation;					// The project information
 	private 		boolean 				trackListReadyToLoad 	= false;	// Checks if the list of track can be loaded
+	private 		boolean 				mgManagerReadyToLoad 	= false;	// Checks if the multi genome manager can be loaded
 	private			boolean 				loadingEvent	 		= false;	// Checks if the request is for loading or for saving
 	private 		String 					currentProjectPath;					// path to the current project
 
@@ -71,6 +72,7 @@ public class ProjectRecording {
 		ois = null;
 		projectInformation = null;
 		trackListReadyToLoad = false;
+		mgManagerReadyToLoad = false;
 		loadingEvent = false;
 	}
 
@@ -98,6 +100,7 @@ public class ProjectRecording {
 			oos.writeObject(projectInformation);
 			oos.writeObject(ProjectManager.getInstance());
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				oos.writeObject(ProjectManager.getInstance().getMultiGenomeProject());
 				oos.writeObject(MGDisplaySettings.getInstance());
 			}
 			oos.writeObject(trackList.getTrackList());
@@ -178,10 +181,27 @@ public class ProjectRecording {
 		if (ois != null) {
 			ois.readObject();		// read the project manager
 			if (ProjectManager.getInstance().isMultiGenomeProject()) {
-				ois.readObject();		// read the MGDisplaySettings
+				mgManagerReadyToLoad = true;
+				trackListReadyToLoad = false;
+			} else {
+				mgManagerReadyToLoad = false;
+				trackListReadyToLoad = true;
 			}
-			trackListReadyToLoad = true;
 		}
+	}
+
+
+	/**
+	 * Initializes the manager of the multi genome part
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void initMultiGenomeManager () throws IOException, ClassNotFoundException {
+		if (mgManagerReadyToLoad && ProjectManager.getInstance().isMultiGenomeProject()) {
+			ProjectManager.getInstance().readMultiGenomeObject(ois);	// read the multi genome manager
+			ois.readObject();		// read the MGDisplaySettings
+		}
+		trackListReadyToLoad = true;
 	}
 
 

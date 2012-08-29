@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.action.project;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
@@ -98,10 +99,27 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			if (selectedFile == null) {
 				return null;
 			}
+
+			// Initialize the project manager
 			PAInitManagers init = new PAInitManagers();
 			init.setFile(selectedFile);
 			init.actionPerformed(null);
-			hasBeenInitialized = init.hasBeenInitialized();		// We just selected the file, we have to check if managers have been successfully initialized
+
+			// Initialize the project manager
+			PAInitMGManager initMG = new PAInitMGManager();
+			CountDownLatch latch = new CountDownLatch(1);
+			initMG.setLatch(latch);
+			initMG.actionPerformed(null);
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			// Check if everything has been initialized
+			if (!init.hasBeenInitialized() || !initMG.hasBeenInitialized()) {
+				hasBeenInitialized = false;
+			}
 		}
 		if (hasBeenInitialized) {
 			MainFrame.getInstance().getTrackList().resetTrackList(); // we remove all the track before the loading (better for memory usage)
@@ -125,6 +143,17 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
 			MainFrame.getInstance().registerToGenomeWindow();
 		}
+
+		if (latch != null) {
+			latch.countDown();
+		}
 	}
 
+
+	/**
+	 * @param latch the latch to set
+	 */
+	public void setLatch(CountDownLatch latch) {
+		this.latch = latch;
+	}
 }
