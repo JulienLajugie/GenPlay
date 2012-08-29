@@ -24,20 +24,15 @@ package edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import net.sf.jannot.tabix.TabixConfiguration;
-import net.sf.jannot.tabix.TabixWriter;
-import net.sf.samtools.util.BlockCompressedOutputStream;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPCompression;
+import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOTBIIndex;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -125,37 +120,21 @@ public final class MGAVCFToTBI extends TrackListAction {
 	 * @throws Exception
 	 */
 	private void compression () throws Exception {
-		if (Utils.getExtension(vcfFile).equals("vcf")) {
-			// Open the VCF input stream
-			FileInputStream vcfFIS = new FileInputStream(vcfFile);
-			DataInputStream vcfIN = new DataInputStream(vcfFIS);
-			InputStreamReader vcfISR = new InputStreamReader(vcfIN);
-			BufferedReader vcfBR = new BufferedReader(vcfISR);
 
-			// Get the BGZIP file
-			bgzipFile = new File(vcfFile.getPath() + ".gz");
+		MGOBGZIPCompression operation = new MGOBGZIPCompression(vcfFile);
+		boolean success = false;
+		try {
+			success = operation.compute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-			// Open the BGZIP output stream
-			BlockCompressedOutputStream bgzipBCOS = new BlockCompressedOutputStream(bgzipFile);
-
-			String newLine = "\n";
-			String vcfLine;
-			while ((vcfLine = vcfBR.readLine()) != null) {
-				bgzipBCOS.write(vcfLine.getBytes());
-				bgzipBCOS.write(newLine.getBytes());
-			}
-
-			// Close the BGZIP output stream
-			bgzipBCOS.close();
-
-			// Close the VCF input stream
-			vcfBR.close();
-			vcfISR.close();
-			vcfIN.close();
-			vcfFIS.close();
-		} else {
+		if (!success) {
 			JOptionPane.showMessageDialog(null, "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error.", JOptionPane.INFORMATION_MESSAGE);
 		}
+
+
+		bgzipFile = operation.getBgzFile();
 	}
 
 
@@ -164,13 +143,20 @@ public final class MGAVCFToTBI extends TrackListAction {
 	 * @throws Exception
 	 */
 	private void indexation () throws Exception {
-		if (Utils.getExtension(bgzipFile).equals("gz")) {
-			tbiFile = new File(bgzipFile.getPath() + ".tbi");
-			tbiFile.createNewFile();
-			TabixWriter writer = new TabixWriter(bgzipFile, TabixConfiguration.VCF_CONF);
-			writer.createIndex(tbiFile);
-		} else {
-			JOptionPane.showMessageDialog(null, "The BGZIP extension has not been found.\nThe file will not be indexed.", "Indexing error.", JOptionPane.INFORMATION_MESSAGE);
+		if (bgzipFile != null) {
+			MGOTBIIndex operation = new MGOTBIIndex(bgzipFile);
+			boolean success = false;
+			try {
+				success = operation.compute();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			if (!success) {
+				JOptionPane.showMessageDialog(null, "The BGZIP extension has not been found.\nThe file will not be indexed.", "Indexing error.", JOptionPane.INFORMATION_MESSAGE);
+			}
+
+			tbiFile = operation.getTbiFile();
 		}
 	}
 

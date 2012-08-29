@@ -28,10 +28,8 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import net.sf.jannot.tabix.TabixConfiguration;
-import net.sf.jannot.tabix.TabixWriter;
+import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOTBIIndex;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.util.Utils;
 
 
 /**
@@ -67,29 +65,20 @@ public class MGATBIIndex extends TrackListActionWorker<Boolean> {
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
 		bgzFile = file;
+		success = false;
 	}
 
 
 	@Override
 	protected Boolean processAction() throws Exception {
+		// Notifies the action
+		notifyActionStart(ACTION_NAME, 1, false);
 
-		if (Utils.getExtension(bgzFile).equals("gz")) {
-			// Notifies the action
-			notifyActionStart(ACTION_NAME, 1, false);
-
-			file = new File(bgzFile.getPath() + ".tbi");
-			file.createNewFile();
-
-			TabixWriter writer = new TabixWriter(bgzFile, TabixConfiguration.VCF_CONF);
-
-			try {
-				writer.createIndex(file);
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		} else {
-			JOptionPane.showMessageDialog(getRootPane(), "The BGZIP extension has not been found.\nThe file will not be indexed.", "Indexing error.", JOptionPane.INFORMATION_MESSAGE);
+		MGOTBIIndex operation = new MGOTBIIndex(bgzFile);
+		try {
+			return operation.compute();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		return false;
@@ -99,6 +88,10 @@ public class MGATBIIndex extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
+
+		if (!success) {
+			JOptionPane.showMessageDialog(getRootPane(), "The BGZIP extension has not been found.\nThe file will not be indexed.", "Indexing error.", JOptionPane.INFORMATION_MESSAGE);
+		}
 
 		if (latch != null) {
 			latch.countDown();

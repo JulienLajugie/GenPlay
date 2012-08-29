@@ -28,7 +28,7 @@ import java.util.concurrent.CountDownLatch;
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPCompression;
+import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPUncompression;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 
 
@@ -36,35 +36,35 @@ import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
+public class MGABGZIPUncompression extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
-	private static final String 	DESCRIPTION = "Compress VCF as BGZIP"; 	// tooltip
+	private static final String 	DESCRIPTION = "Decompress BGZIP"; 		// tooltip
 	private static final int 		MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 	ACTION_NAME = "Compress VCF as BGZIP";	// action name
+	private static		 String 	ACTION_NAME = "Decompress BGZIP";	// action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "Compress VCF as BGZIP";
+	public static final String ACTION_KEY = "Decompress BGZIP";
 
-	private final File vcfFile;	// the vcf file
-	private File bgzFile;	// the bgzip file
+	private final File bgzFile;	// the bgzip file
+	private File file;		// the uncompressed file
 	private boolean success;
 
 
 	/**
-	 * Creates an instance of {@link MGABGZIPCompression}.
-	 * @param file the file to compress
+	 * Creates an instance of {@link MGABGZIPUncompression}.
+	 * @param file the file to decompress
 	 */
-	public MGABGZIPCompression(File file) {
+	public MGABGZIPUncompression(File file) {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(SHORT_DESCRIPTION, DESCRIPTION);
 		putValue(MNEMONIC_KEY, MNEMONIC);
-		vcfFile = file;
+		bgzFile = file;
 		success = false;
 	}
 
@@ -74,7 +74,7 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 		// Notifies the action
 		notifyActionStart(ACTION_NAME, 1, false);
 
-		MGOBGZIPCompression operation = new MGOBGZIPCompression(vcfFile);
+		MGOBGZIPUncompression operation = new MGOBGZIPUncompression(bgzFile);
 		try {
 			return operation.compute();
 		} catch (Exception e) {
@@ -90,7 +90,7 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 		success = actionResult;
 
 		if (!success) {
-			JOptionPane.showMessageDialog(getRootPane(), "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error.", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(getRootPane(), "The BGZIP extension has not been found.\nThe file will not be decompressed.", "Compression error", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		if (latch != null) {
@@ -100,18 +100,10 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 
 
 	/**
-	 * @return true if the action has been correctly finish, false otherwise
-	 */
-	public boolean hasBeenDone () {
-		return success;
-	}
-
-
-	/**
 	 * @return the BGZIP file
 	 */
-	public File getCompressedFile() {
-		return bgzFile;
+	public File getDecompressedFile() {
+		return file;
 	}
 
 
