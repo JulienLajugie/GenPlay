@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -26,6 +26,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -36,15 +37,15 @@ import javax.swing.JRadioButton;
  * @author Nicolas Fourel
  */
 class ProjectTypePanel extends JPanel implements ActionListener {
-	
+
 	private static final long serialVersionUID = 5891323545514431816L; //generated ID
-	
-	private ProjectFrame 			projectScreenFrame;	// Screen Project object
+
+	private final ProjectFrame 			projectScreenFrame;	// Screen Project object
 	private JRadioButton 			newRadio;		// The radio button to choose a new project
 	private JRadioButton 			loadRadio;		// The radio button to choose to load a project
 	private ButtonGroup 			projectRadio;	// The button group
-	
-	
+
+
 	/**
 	 * Constructor of {@link ProjectTypePanel}
 	 * @param projectScreenFrame the project screen object
@@ -54,8 +55,8 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 		this.projectScreenFrame = projectScreenFrame;
 		init();
 	}
-	
-	
+
+
 	/**
 	 * Main method of the class.
 	 * It initializes the {@link ProjectTypePanel} panel.
@@ -66,31 +67,31 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 		setPreferredSize(getSize());
 		setMinimumSize(getSize());
 		setMaximumSize(getSize());
-		
+
 		//Radio buttons
 		newRadio = new JRadioButton("New project");
 		newRadio.setSelected(true);
 		loadRadio = new JRadioButton("Load an existing project");
-		
+
 		//Color
 		setBackground(ProjectFrame.TYPE_COLOR);
 		newRadio.setBackground(ProjectFrame.TYPE_COLOR);
 		loadRadio.setBackground(ProjectFrame.TYPE_COLOR);
-		
+
 		//Listener
 		newRadio.addActionListener(this);
 		loadRadio.addActionListener(this);
-		
+
 		//Radio group
 		projectRadio = new ButtonGroup();
 		projectRadio.add(newRadio);
 		projectRadio.add(loadRadio);
-		
+
 		//Layout
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		Insets gbcInsets = new Insets (10, 0, 10, 10);
-		
+
 		//newRadio
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -98,7 +99,7 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 		gbc.insets = gbcInsets;
 		gbc.anchor = GridBagConstraints.CENTER;
 		add(newRadio, gbc);
-		
+
 		//loadRadio
 		gbc.gridx = 1;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -106,8 +107,8 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 		gbc.insets = gbcInsets;
 		add(loadRadio, gbc);
 	}
-	
-	
+
+
 	/**
 	 * This method runs the screen project manager object method
 	 * according to the selected radio button.
@@ -120,4 +121,21 @@ class ProjectTypePanel extends JPanel implements ActionListener {
 			projectScreenFrame.toLoadScreenProject();
 		}
 	}
+
+
+	/**
+	 * @return the newRadio
+	 */
+	public JRadioButton getNewRadio() {
+		return newRadio;
+	}
+
+
+	/**
+	 * @return the loadRadio
+	 */
+	public JRadioButton getLoadRadio() {
+		return loadRadio;
+	}
+
 }

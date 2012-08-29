@@ -285,20 +285,22 @@ public class ProjectFrame extends JFrame {
 	/**
 	 * This method show the {@link LoadProjectPanel} panel
 	 */
-	protected void toLoadScreenProject () {
+	public void toLoadScreenProject () {
 		newProjectPanel.setVisible(false);
 		loadProjectPanel.setVisible(true);
 		confirmPanel.setConfirmButton(LOAD_BUTTON);
+		projectTypePanel.getLoadRadio().setSelected(true);
 	}
 
 
 	/**
 	 * This method show the {@link NewProjectPanel} panel
 	 */
-	protected void toNewScreenProject () {
+	public void toNewScreenProject () {
 		loadProjectPanel.setVisible(false);
 		newProjectPanel.setVisible(true);
 		confirmPanel.setConfirmButton(CREATE_BUTTON);
+		projectTypePanel.getNewRadio().setSelected(true);
 	}
 
 

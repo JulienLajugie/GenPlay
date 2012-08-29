@@ -102,7 +102,9 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 		if (actionResult) {
 			Track<?>[] tracks = getTrackList().getTrackList();
 			for (Track<?> track: tracks) {
-				track.repaint();
+				if (track != null) {
+					track.repaint();
+				}
 			}
 		}
 		if (latch != null) {

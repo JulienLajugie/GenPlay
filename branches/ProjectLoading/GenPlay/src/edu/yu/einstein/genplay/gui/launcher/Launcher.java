@@ -23,6 +23,7 @@ package edu.yu.einstein.genplay.gui.launcher;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -33,6 +34,7 @@ import edu.yu.einstein.genplay.core.genome.Genome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
+import edu.yu.einstein.genplay.gui.action.project.PAInitMGManager;
 import edu.yu.einstein.genplay.gui.action.project.PAInitManagers;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -140,12 +142,12 @@ public class Launcher {
 	private static void loadProject (PAInitManagers initAction) {
 		initAction.setLoadingFromWelcomeScreen(true);
 		initAction.actionPerformed(null);
+
 		if (initAction.hasBeenInitialized()) {
 			MainFrame.getInstance().setVisible(true);
 
-			PALoadProject load = new PALoadProject();
-			load.setSkipFileSelection(true);
-			load.actionPerformed(null);
+			LoadingThread thread = new LoadingThread();
+			thread.start();
 		} else {
 			JOptionPane.showMessageDialog(null, initAction.getErrorMessage(), "The project has not been initialized", JOptionPane.WARNING_MESSAGE);
 			ProjectFrame.getInstance().setVisible(true);
@@ -211,6 +213,39 @@ public class Launcher {
 			multiGenome.actionPerformed(null);
 		} else {
 			projectManager.setMultiGenomeProject(false);
+		}
+	}
+
+
+
+
+	/////////////////////////////////////////////////////////////////////// ExportVCFThread class
+
+	/**
+	 * This class loads the rest of the project (multigenome manager and the tracks).
+	 * The loading of the Multi Genome manager has to be done before the loading of the tracks.
+	 * This is why both processes are within a same thread managing a waiting time between them.
+	 * 
+	 * @author Nicolas Fourel
+	 * @version 0.1
+	 */
+	private static class LoadingThread extends Thread {
+
+		@Override
+		public void run() {
+			PAInitMGManager initMGAction = new PAInitMGManager();
+			CountDownLatch latch = new CountDownLatch(1);
+			initMGAction.setLatch(latch);
+			initMGAction.actionPerformed(null);
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			PALoadProject load = new PALoadProject();
+			load.setSkipFileSelection(true);
+			load.actionPerformed(null);
 		}
 	}
 

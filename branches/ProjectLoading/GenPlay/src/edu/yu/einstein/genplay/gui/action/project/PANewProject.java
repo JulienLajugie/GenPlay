@@ -87,6 +87,7 @@ public class PANewProject extends TrackListActionWorker<Boolean> {
 		if (actionResult) {
 			MainFrame.getInstance().setVisible(false);
 			ProjectFrame.getInstance().setVisible(true);
+			ProjectFrame.getInstance().toNewScreenProject();
 		}
 	}
 }

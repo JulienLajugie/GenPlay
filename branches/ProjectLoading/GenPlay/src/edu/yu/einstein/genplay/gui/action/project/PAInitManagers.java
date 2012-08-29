@@ -119,6 +119,7 @@ public final class PAInitManagers extends AbstractAction {
 
 
 			if (error == null) {
+
 				// Reads the project information object
 				try {
 					projectRecording.initProjectInformation();
@@ -142,6 +143,7 @@ public final class PAInitManagers extends AbstractAction {
 					if (error == null) {
 						// Manages the missing files
 						try {
+
 							// Gets the project information object
 							ProjectInformation projectInformation = projectRecording.getProjectInformation();
 
