@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -55,14 +55,16 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 public class SearchGeneDialog extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = -7154640426239852428L;	// generated ID
-	private static final Color 	NOTHING_FOUND_COLOR = 
-		new Color(230, 150, 115); 							// color of the textfield background when nothing is found
+	private static final Color 	NOTHING_FOUND_COLOR =
+			new Color(230, 150, 115); 							// color of the textfield background when nothing is found
 	private static JTextField 	jtfSearchGene;				// text field for the input gene name
 	private static JPanel 		jpOption;					// panel containing the check boxes
 	private static JCheckBox 	jcbMatchCase;				// check box for the case sensitivity
 	private static JCheckBox 	jcbWholeWord;				// check box for searching whole word
-	private static JButton 		jbNext;						// next button
-	private static JButton 		jbPrevious;					// previous button
+	private static JButton 		jbNextMatch;				// next match button
+	private static JButton 		jbPreviousMatch;			// previous match button
+	private static JButton 		jbNextGene;					// next gene button
+	private static JButton 		jbPreviousGene;				// previous gene button
 	private static GeneSearcher geneSearcher;				// object that searches the genes
 	private static Color 		textFieldDefaultColor;		// default color of the text field background
 
@@ -86,7 +88,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 				Gene geneFound = SearchGeneDialog.geneSearcher.search(jtfSearchGene.getText());
 				showGene(geneFound);
 			}
-		});		
+		});
 		// create the match case check box
 		jcbMatchCase = new JCheckBox("Match Case");
 		jcbMatchCase.setSelected(geneSearcher.isCaseSensitive());
@@ -101,14 +103,22 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		jpOption.setLayout(new BoxLayout(jpOption, BoxLayout.PAGE_AXIS));
 		jpOption.add(jcbMatchCase);
 		jpOption.add(jcbWholeWord);
-		// create the previous button
-		jbPrevious = new JButton("<   Previous");
-		jbPrevious.setPreferredSize(new Dimension(100, jbPrevious.getPreferredSize().height));
-		jbPrevious.addActionListener(this);
-		// create the next button
-		jbNext = new JButton("Next           >");
-		jbNext.setPreferredSize(new Dimension(100, jbNext.getPreferredSize().height));
-		jbNext.addActionListener(this);
+		// create the previous match button
+		jbPreviousMatch = new JButton("< Prev match");
+		jbPreviousMatch.setPreferredSize(new Dimension(150, jbPreviousMatch.getPreferredSize().height));
+		jbPreviousMatch.addActionListener(this);
+		// create the next match button
+		jbNextMatch = new JButton("Next match     >");
+		jbNextMatch.setPreferredSize(new Dimension(150, jbNextMatch.getPreferredSize().height));
+		jbNextMatch.addActionListener(this);
+		// create the previous gene button
+		jbPreviousGene = new JButton("<  Prev gene");
+		jbPreviousGene.setPreferredSize(new Dimension(150, jbPreviousGene.getPreferredSize().height));
+		jbPreviousGene.addActionListener(this);
+		// create the next gene button
+		jbNextGene = new JButton("Next gene      >");
+		jbNextGene.setPreferredSize(new Dimension(150, jbNextGene.getPreferredSize().height));
+		jbNextGene.addActionListener(this);
 
 		// add the components
 		setLayout(new GridBagLayout());
@@ -124,15 +134,22 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 
 		c.gridy = 2;
 		c.gridwidth = 1;
-		add(jbPrevious, c);
+		add(jbPreviousMatch, c);
 
 		c.gridx = 1;
-		add(jbNext, c);
+		add(jbNextMatch, c);
 
-		getRootPane().setDefaultButton(jbNext);
-		setModal(true);
+		c.gridy = 3;
+		c.gridx = 0;
+		add(jbPreviousGene, c);
+
+		c.gridx = 1;
+		add(jbNextGene, c);
+
+		getRootPane().setDefaultButton(jbNextMatch);
 		setTitle("Find Gene");
 		pack();
+		setAlwaysOnTop(true);
 		setResizable(false);
 		setLocationRelativeTo(parent);
 	}
@@ -146,7 +163,6 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	public static void showSearchGeneDialog(Component parent, GeneSearcher geneSearcher) {
 		SearchGeneDialog dialog = new SearchGeneDialog(parent, geneSearcher);
 		dialog.setVisible(true);
-		dialog.dispose();
 	}
 
 
@@ -159,15 +175,23 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		} else if (evt.getSource() == jcbWholeWord) {
 			// case where the whole word check box state changes
 			geneFound = geneSearcher.setWholeWord(jcbWholeWord.isSelected());
-		} else {			
-			if (evt.getSource() == jbNext) {
-				// case where the next button is clicked
-				getRootPane().setDefaultButton(jbNext);
-				geneFound = geneSearcher.searchNext();
-			} else if (evt.getSource() == jbPrevious) {
-				// case where the previous button is clicked
-				getRootPane().setDefaultButton(jbPrevious);
-				geneFound = geneSearcher.searchPrevious();
+		} else {
+			if (evt.getSource() == jbNextMatch) {
+				// case where the next match button is clicked
+				getRootPane().setDefaultButton(jbNextMatch);
+				geneFound = geneSearcher.searchNextMatch();
+			} else if (evt.getSource() == jbPreviousMatch) {
+				// case where the previous match button is clicked
+				getRootPane().setDefaultButton(jbPreviousMatch);
+				geneFound = geneSearcher.searchPreviousMatch();
+			} else if (evt.getSource() == jbNextGene) {
+				// case where the next gene button is clicked
+				getRootPane().setDefaultButton(jbNextGene);
+				geneFound = geneSearcher.searchNextGene();
+			} else if (evt.getSource() == jbPreviousGene) {
+				// case where the previous gene button is clicked
+				getRootPane().setDefaultButton(jbPreviousGene);
+				geneFound = geneSearcher.searchPreviousGene();
 			}
 		}
 		showGene(geneFound);
@@ -180,14 +204,16 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 */
 	private void showGene(Gene geneFound) {
 		if (geneFound != null) {
-			jbNext.setEnabled(true);
-			jbPrevious.setEnabled(true);
+			jbNextMatch.setEnabled(true);
+			jbPreviousMatch.setEnabled(true);
+			jbNextGene.setEnabled(true);
+			jbPreviousGene.setEnabled(true);
 			// we want to see larger than the gene found
-			int windowStart = geneFound.getStart() - (geneFound.getStop() - geneFound.getStart()) * 3;
+			int windowStart = geneFound.getStart() - ((geneFound.getStop() - geneFound.getStart()) * 3);
 			int minimumDisplayableStart = - geneFound.getChromo().getLength();
 			// we don't want the start to be smaller than the minimum displayable position
 			windowStart = Math.max(windowStart, minimumDisplayableStart);
-			int windowStop = geneFound.getStop() + (geneFound.getStop() - geneFound.getStart()) * 3;
+			int windowStop = geneFound.getStop() + ((geneFound.getStop() - geneFound.getStart()) * 3);
 			int maximumDisplayableStop = geneFound.getChromo().getLength() * 2;
 			// we don't want the stop to be greater than the maximum displayable position
 			windowStop = Math.min(windowStop, maximumDisplayableStop);
@@ -196,8 +222,10 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			setEditorColor(true);
 		} else {
 			setEditorColor(false);
-			jbNext.setEnabled(false);
-			jbPrevious.setEnabled(false);
+			jbNextMatch.setEnabled(false);
+			jbPreviousMatch.setEnabled(false);
+			jbNextGene.setEnabled(false);
+			jbPreviousGene.setEnabled(false);
 		}
 	}
 
@@ -205,7 +233,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	/**
 	 * Colors the background of the input box when nothing is found.
 	 * Restores the default color when something is found or when nothing is searched
-	 * @param geneFound true if a gene is found, false if not 
+	 * @param geneFound true if a gene is found, false if not
 	 */
 	private void setEditorColor(boolean geneFound) {
 		if (geneFound) {

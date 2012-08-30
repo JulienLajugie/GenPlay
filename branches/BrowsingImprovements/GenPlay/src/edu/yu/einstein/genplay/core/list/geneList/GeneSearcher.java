@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -66,16 +66,16 @@ public final class GeneSearcher implements Serializable {
 	/**
 	 * @param gene a {@link Gene}
 	 * @param geneName a name
-	 * @return true if the Gene is a searched gene. 
-	 * The definition of a searched gene depends on the 
-	 * parameters about the case sensitivity and if only whole word are accepted  
+	 * @return true if the Gene is a searched gene.
+	 * The definition of a searched gene depends on the
+	 * parameters about the case sensitivity and if only whole word are accepted
 	 */
 	private boolean isASearchedGene(Gene gene, String geneName) {
 		if ((gene == null) || (geneName == null) || (geneName.isEmpty())) {
 			return false;
 		}
-		if ((lastGeneFound != null) && 
-				(gene.getStart() == lastGeneFound.getStart()) && 
+		if ((lastGeneFound != null) &&
+				(gene.getStart() == lastGeneFound.getStart()) &&
 				(gene.getStop() == lastGeneFound.getStop())) {
 			// case where the current gene has the same start and stop positions as the last gene
 			return false;
@@ -160,11 +160,11 @@ public final class GeneSearcher implements Serializable {
 
 
 	/**
-	 * @return the next gene (starting from the last found gene) 
-	 * that has a name that correspond to the searched name. 
-	 * Null is returned if nothing is found 
+	 * @return the next gene (starting from the last found gene)
+	 * that has a name that correspond to the searched name.
+	 * Null is returned if nothing is found
 	 */
-	public Gene searchNext() {
+	public Gene searchNextMatch() {
 		if (lastGeneFound == null) {
 			return null;
 		}
@@ -196,11 +196,11 @@ public final class GeneSearcher implements Serializable {
 
 
 	/**
-	 * @return the previous gene (starting from the last found gene) 
+	 * @return the previous gene (starting from the last found gene)
 	 * that has a name that correspond to the searched name
 	 * Null is returned if nothing is found
 	 */
-	public Gene searchPrevious() {
+	public Gene searchPreviousMatch() {
 		if (lastGeneFound == null) {
 			return null;
 		}
@@ -227,6 +227,46 @@ public final class GeneSearcher implements Serializable {
 			lastFoundGeneIndex = j;
 			lastGeneFound = geneList.get(i, j);
 		}
+		return lastGeneFound;
+	}
+
+
+	/**
+	 * @return the next gene (starting from the last found gene), null is returned if nothing is found.
+	 */
+	public Gene searchNextGene() {
+		if (lastGeneFound == null) {
+			return null;
+		}
+
+		int i = lastFoundChromoIndex;
+		int j = lastFoundGeneIndex + 1;
+		if (j < geneList.get(i).size()) {
+			lastFoundChromoIndex = i;
+			lastFoundGeneIndex = j;
+			lastGeneFound = geneList.get(i, j);
+		}
+
+		return lastGeneFound;
+	}
+
+
+	/**
+	 * @return the previous gene (starting from the last found gene), null is returned if nothing is found.
+	 */
+	public Gene searchPreviousGene() {
+		if (lastGeneFound == null) {
+			return null;
+		}
+
+		int i = lastFoundChromoIndex;
+		int j = lastFoundGeneIndex - 1;
+		if (j >= 0) {
+			lastFoundChromoIndex = i;
+			lastFoundGeneIndex = j;
+			lastGeneFound = geneList.get(i, j);
+		}
+
 		return lastGeneFound;
 	}
 
