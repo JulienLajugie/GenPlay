@@ -43,6 +43,10 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
@@ -143,6 +147,12 @@ final class ZoomPanel extends JPanel implements MouseWheelListener, GenomeWindow
 		add(jbPlus, gbc);
 
 		addMouseWheelListener(this);
+
+		// Deactivate slider key listener (bother the main frame key event management)
+		jsZoom.getInputMap().put(PAMoveLeft.ACCELERATOR, "none");
+		jsZoom.getInputMap().put(PAMoveFarLeft.ACCELERATOR, "none");
+		jsZoom.getInputMap().put(PAMoveRight.ACCELERATOR, "none");
+		jsZoom.getInputMap().put(PAMoveFarRight.ACCELERATOR, "none");
 	}
 
 

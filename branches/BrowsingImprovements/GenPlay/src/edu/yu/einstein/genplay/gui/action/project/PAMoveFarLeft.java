@@ -34,33 +34,34 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 
 /**
- * Increments the start and the stop positions of the {@link GenomeWindow} displayed in the application.
- * The move is 1/10 of the width of the tracks panel.
+ * Decrements the start and the stop positions of the {@link GenomeWindow} displayed in the application.
+ * The move is 4/5 of the width of the tracks panel.
  * 
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public final class PAMoveRight extends AbstractAction {
+public final class PAMoveFarLeft extends AbstractAction {
 
-	private static final long serialVersionUID = 4888602850021128872L; // generated ID
+	private static final long serialVersionUID = -416430771224618219L; // generated ID
 
 
 	/**
 	 * action accelerator {@link KeyStroke}
 	 */
-	public static final KeyStroke 	ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
+	public static final KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0);
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "PAMoveRight";
+	public static final String ACTION_KEY = "PAMoveFarLeft";
 
 
 	/**
-	 * Creates an instance of {@link PAMoveRight}
+	 * Creates an instance of {@link PAMoveFarLeft}
 	 */
-	public PAMoveRight() {
+	public PAMoveFarLeft() {
 		super();
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
 		putValue(ACCELERATOR_KEY, ACCELERATOR);
@@ -68,10 +69,10 @@ public final class PAMoveRight extends AbstractAction {
 
 
 	/**
-	 * Increments the start and the stop positions of the {@link GenomeWindow} displayed in the application
+	 * Decrements the start and the stop positions of the {@link GenomeWindow} displayed in the application
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		MainFrame.getInstance().getControlPanel().moveRight();
+		MainFrame.getInstance().getControlPanel().moveFarLeft();
 	}
 }

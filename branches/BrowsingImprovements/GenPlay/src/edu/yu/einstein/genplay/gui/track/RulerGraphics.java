@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,6 +44,7 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 	private static final int 			MINOR_TEXT_HEIGHT = 2;						// height of the relative position text
 	private static final DecimalFormat 	DF = new DecimalFormat("###,###,###");		// decimal format
 
+	private int currentMiddlePosition;
 
 	/**
 	 * Creates an instance of {@link RulerGraphics}
@@ -53,16 +54,16 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 		setVisible(true);
 	}
 
-	
+
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawRelativeUnits(g);
-		drawAbsoluteUnits(g);		
+		drawAbsoluteUnits(g);
 	}
-	
+
 
 	/**
-	 * Draws the absolute units. 
+	 * Draws the absolute units.
 	 * @param g {@link Graphics}
 	 */
 	private void drawAbsoluteUnits(Graphics g) {
@@ -74,11 +75,12 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 
 		g.setColor(MIDDLE_LINE_COLOR);
 		int yText = height - MAJOR_TEXT_HEIGHT;
-		String stringToPrint = DF.format(positionStart); 
+		String stringToPrint = DF.format(positionStart);
 		g.drawString(stringToPrint, 2, yText);
-		stringToPrint = DF.format((positionStart + positionStop) / 2); 
+		currentMiddlePosition = (positionStart + positionStop) / 2;
+		stringToPrint = DF.format(currentMiddlePosition);
 		g.drawString(stringToPrint, halfWidth + 3, yText);
-		stringToPrint = DF.format(positionStop); 
+		stringToPrint = DF.format(positionStop);
 		g.drawString(stringToPrint, width - fm.stringWidth(stringToPrint) - 1, yText);
 	}
 
@@ -96,8 +98,8 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 		double gap = getWidth() / (double)LINE_COUNT;
 		for (int i = 0; i < LINE_COUNT; i++) {
 			int x1 = (int)Math.round(i * gap);
-			int x2 = (int)Math.round((2 * i + 1) * gap / 2d);
-			int distanceFromMiddle = Math.abs(i - LINE_COUNT / 2) * (positionStop - positionStart) / LINE_COUNT;
+			int x2 = (int)Math.round((((2 * i) + 1) * gap) / 2d);
+			int distanceFromMiddle = (Math.abs(i - (LINE_COUNT / 2)) * (positionStop - positionStart)) / LINE_COUNT;
 			String stringToPrint = DF.format(distanceFromMiddle);
 			if (x1 >= lastTextStopPos) {
 				g.setColor(TEXT_COLOR);
@@ -108,7 +110,15 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 				g.drawLine(x1, y, x1, height);
 			}
 			g.setColor(LINE_COLOR);
-			g.drawLine(x2, y, x2, height);	
-		}	
+			g.drawLine(x2, y, x2, height);
+		}
+	}
+
+
+	/**
+	 * @return the current middle position
+	 */
+	protected int getCurrentMiddlePosition () {
+		return currentMiddlePosition;
 	}
 }

@@ -36,7 +36,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.Thread.UncaughtExceptionHandler;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -53,10 +52,13 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PACopyCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
@@ -97,10 +99,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
 	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
-	private final 		Ruler 				ruler; 				// Ruler component
-	private final 		TrackList 			trackList; 			// TrackList component
-	private final 		ControlPanel		controlPanel; 		// ControlPanel component
-	private final 		StatusBar 			statusBar; 			// Status bar component
+	private final 	Ruler 				ruler; 				// Ruler component
+	private final 	TrackList 			trackList; 			// TrackList component
+	private final 	ControlPanel		controlPanel; 		// ControlPanel component
+	private final 	StatusBar 			statusBar; 			// Status bar component
 	private 		Rectangle			screenBounds; 		// position and dimension of this frame
 
 
@@ -124,7 +126,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	private MainFrame() {
 		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
-		Thread.setDefaultUncaughtExceptionHandler(new GenPlayUncaughtExceptionHandler());
 		setIconImage(Images.getApplicationImage());
 
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
@@ -196,9 +197,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 			loader.setSkipFileSelection(true);
 			loader.actionPerformed(null);
 		}
-
-		String error = null;
-		error.length();
 	}
 
 
@@ -331,11 +329,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
 		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackList));
 		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
+		getRootPane().getActionMap().put(PAMoveFarLeft.ACTION_KEY, new PAMoveFarLeft());
 		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());
+		getRootPane().getActionMap().put(PAMoveFarRight.ACTION_KEY, new PAMoveFarRight());
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
 		getRootPane().getActionMap().put(PAWarningReport.ACTION_KEY, new PAWarningReport(this));
+		getRootPane().getActionMap().put(PACopyCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
 	}
 
 
@@ -368,9 +369,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PALoadProject.ACCELERATOR, PALoadProject.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PANewProject.ACCELERATOR, PANewProject.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveLeft.ACCELERATOR, PAMoveLeft.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarLeft.ACCELERATOR, PAMoveFarLeft.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveRight.ACCELERATOR, PAMoveRight.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarRight.ACCELERATOR, PAMoveFarRight.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, PAZoomIn.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PACopyCurrentPosition.ACCELERATOR, PACopyCurrentPosition.ACTION_KEY);
 	}
 
 
@@ -492,26 +496,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	 */
 	public void initStatusBarForFirstUse () {
 		statusBar.initDescriptionForFirstUse();
-	}
-
-
-
-	private class GenPlayUncaughtExceptionHandler implements UncaughtExceptionHandler {
-		@Override
-		public void uncaughtException(Thread arg0, Throwable arg1) {
-			System.out.println("MainFrame.GenPlayUncaughtExceptionHandler.uncaughtException()");
-			System.out.println(arg1.getMessage());
-			System.out.println(arg1.getCause());
-			System.out.println(arg1.toString());
-			System.out.println(arg1.getLocalizedMessage());
-			System.out.println(arg1.getStackTrace().toString());
-
-			StackTraceElement[] stack = arg1.getStackTrace();
-			for (StackTraceElement currentStack: stack) {
-				System.out.println(currentStack);
-			}
-
-		}
 	}
 
 }

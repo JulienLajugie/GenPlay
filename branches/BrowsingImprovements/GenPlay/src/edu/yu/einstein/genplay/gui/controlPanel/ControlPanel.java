@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,8 +43,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 public final class ControlPanel extends JPanel {
 
 	private static final long serialVersionUID = -8254420324898563978L; // generated ID
-	private static final int INCREMENT_FACTOR = 10; 					// the length of a left or right move is the length of the   
-																		// displayed chromosome window divided by this constant 
+	private static final int INCREMENT_FACTOR = 10; 					// the length of a left or right move is the length of the
+	// displayed chromosome window divided by this constant
 	private final TopPanel							topPanel;			// TopPanel part (multi genome button and position scroll bar)
 	private final ZoomPanel 						zoomPanel;			// ZoomPanel part
 	private final ChromosomePanel 					chromosomePanel;	// ChromosomePanel part
@@ -55,20 +55,20 @@ public final class ControlPanel extends JPanel {
 	/**
 	 * Creates an instance of {@link ControlPanel}
 	 */
-	public ControlPanel() { 
+	public ControlPanel() {
 		topPanel = new TopPanel();
 		zoomPanel = new ZoomPanel();
 		chromosomePanel = new ChromosomePanel();
 		genomeWindowPanel = new GenomeWindowPanel();
 
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
-		
+
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.weighty = 1;
 		gbc.fill = GridBagConstraints.BOTH;
-		
+
 		//gbc.weighty = 1;
 		gbc.anchor = GridBagConstraints.PAGE_START;
 		gbc.gridx = 0;
@@ -76,7 +76,7 @@ public final class ControlPanel extends JPanel {
 		gbc.weightx = 1;
 		gbc.gridwidth = 3;
 		add(topPanel, gbc);
-		
+
 		//gbc.weighty = 0;
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.insets = new Insets(0, 10, 0, 10);
@@ -101,12 +101,34 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
-	 * Decrements the start and the stop positions of the {@link GenomeWindow} 
+	 * Decrements the start and the stop positions of the {@link GenomeWindow}.
+	 * The move is 1/10 of the width of the tracks panel.
 	 */
 	public void moveLeft() {
 		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
+		moveGapLeft(moveGap);
+	}
+
+
+	/**
+	 * Decrements the start and the stop positions of the {@link GenomeWindow}.
+	 * The move is 4/5 of the width of the tracks panel.
+	 */
+	public void moveFarLeft() {
+		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
+		moveGap *= 5;
+		moveGapLeft(moveGap);
+	}
+
+
+	/**
+	 * Decrements the start and the stop positions of the {@link GenomeWindow}.
+	 * @param moveGap the gap to use
+	 */
+	private void moveGapLeft(int moveGap) {
 		// we want to move from at least 1 nucleotide
 		moveGap = Math.max(moveGap, 1);
+
 		GenomeWindow newGenomeWindow = new GenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() - moveGap, projectWindow.getGenomeWindow().getStop() - moveGap);
 		if (newGenomeWindow.getMiddlePosition() < 0) {
 			int size = newGenomeWindow.getSize();
@@ -118,32 +140,53 @@ public final class ControlPanel extends JPanel {
 
 
 	/**
-	 * Increments the start and the stop positions of the {@link GenomeWindow}
+	 * Increments the start and the stop positions of the {@link GenomeWindow}.
+	 * The move is 1/10 of the width of the tracks panel.
 	 */
 	public void moveRight() {
 		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
+		moveGapRight(moveGap);
+	}
+
+
+	/**
+	 * Increments the start and the stop positions of the {@link GenomeWindow}.
+	 * The move is 4/5 of the width of the tracks panel.
+	 */
+	public void moveFarRight() {
+		int moveGap = (int) (projectWindow.getGenomeWindow().getSize() / (double) INCREMENT_FACTOR);
+		moveGap *= 5;
+		moveGapRight(moveGap);
+	}
+
+
+	/**
+	 * Increments the start and the stop positions of the {@link GenomeWindow}.
+	 * @param moveGap the gap to use
+	 */
+	private void moveGapRight(int moveGap) {
 		// we want to move from at least 1 nucleotide
 		moveGap = Math.max(moveGap, 1);
 		GenomeWindow newGenomeWindow = new GenomeWindow(projectWindow.getGenomeWindow().getChromosome(), projectWindow.getGenomeWindow().getStart() + moveGap, projectWindow.getGenomeWindow().getStop() + moveGap);
 		if (newGenomeWindow.getMiddlePosition() > projectWindow.getGenomeWindow().getChromosome().getLength()) {
 			int size = newGenomeWindow.getSize();
-			newGenomeWindow.setStart(projectWindow.getGenomeWindow().getChromosome().getLength() - size / 2);
+			newGenomeWindow.setStart(projectWindow.getGenomeWindow().getChromosome().getLength() - (size / 2));
 			newGenomeWindow.setStop(newGenomeWindow.getStart() + size);
 		}
-		projectWindow.setGenomeWindow(newGenomeWindow);	
-	}		
+		projectWindow.setGenomeWindow(newGenomeWindow);
+	}
 
-	
+
 	/**
-	 * This method reinitializes the elements of the 
-	 * chromosome panel with the values of the {@link ProjectChromosome}. 
+	 * This method reinitializes the elements of the
+	 * chromosome panel with the values of the {@link ProjectChromosome}.
 	 * This method needs to be called when the chomosome manager changes.
 	 */
 	public void reinitChromosomePanel () {
 		chromosomePanel.updateChromosomePanel();
 	}
-	
-	
+
+
 	/**
 	 * Registers every control panel components to the genome window manager.
 	 */
@@ -153,8 +196,8 @@ public final class ControlPanel extends JPanel {
 		projectWindow.addGenomeWindowListener(topPanel);
 		projectWindow.addGenomeWindowListener(zoomPanel);
 	}
-	
-	
+
+
 	/**
 	 * Zooms in
 	 */
@@ -171,8 +214,8 @@ public final class ControlPanel extends JPanel {
 		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomOut(projectWindow.getGenomeWindow().getSize());
 		zoomPanel.zoomChanged(newZoom);
 	}
-	
-	
+
+
 	/**
 	 * Locks the control panel
 	 */
@@ -180,8 +223,8 @@ public final class ControlPanel extends JPanel {
 		chromosomePanel.lock();
 		genomeWindowPanel.lock();
 	}
-	
-	
+
+
 	/**
 	 * Unlocks the control panel
 	 */
