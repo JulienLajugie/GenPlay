@@ -429,7 +429,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		trackList[index].setTrackNumber(index + 1);
 		trackList[index].addPropertyChangeListener(this);
 
-		trackList[index].addListeners();
+		trackList[index].registerToEventGenerators();
 
 		jpTrackList.remove(index);
 		jpTrackList.add(trackList[index], index);

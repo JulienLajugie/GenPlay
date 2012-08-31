@@ -105,7 +105,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackGraphics = createsTrackGraphics(data);
 
 		// registered the listener to the genome window manager
-		addListeners();
+		registerToEventGenerators();
 
 		// Add the components
 		setLayout(new GridBagLayout());
@@ -133,7 +133,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * Adds the relative listeners.
 	 */
-	public void addListeners () {
+	public void registerToEventGenerators () {
 		trackHandle.addPropertyChangeListener(this);
 		trackGraphics.addPropertyChangeListener(this);
 		registerToGenomeWindow();
