@@ -202,10 +202,6 @@ public class MultiGenomeDrawer implements Serializable {
 			}
 		}
 
-		if ((allele01VariantLists.size() > 0) || (allele02VariantLists.size() > 0)) {
-
-		}
-
 		// Sets the list maker with the new list of variant
 		allele01VariantListMaker.setListOfVariantList(allele01VariantLists, mgFiltersList);	// we set the list maker with the temporary list
 		allele02VariantListMaker.setListOfVariantList(allele02VariantLists, mgFiltersList);	// we set the list maker with the temporary list

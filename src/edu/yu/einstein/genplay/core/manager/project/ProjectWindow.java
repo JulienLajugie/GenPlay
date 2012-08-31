@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -112,7 +112,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * This method initializes the genome window.
 	 * It performs this action only if the genome window is null and no methods set it up to null.
 	 * It means that the content of this method is properly ran only once.
-	 * The genome window is initialized using the current chromosome. 
+	 * The genome window is initialized using the current chromosome.
 	 */
 	public void initialize () {
 		if (genomeWindow == null) {
@@ -219,7 +219,7 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		if (genomePosition <= genomeWindow.getStart()) {		// if the position is inferior to the start, an error can occur about a negative sign result
 			result = 0;											// in this case, the position on the genome will start on the pixel 0 of the track.
 		} else {												// if not, we apply the regular calculation
-			float roundedXScreen = Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);
+			float roundedXScreen = Math.round((genomePosition - genomeWindow.getStart()) * xFactor);
 			if (roundedXScreen >= MAX_INT) {					// checks if the result is above the int limit (an error will occur when casting a float into an int when the float is higher than the int limit)
 				result =  MAX_INT;								// if yes, the int result is as high as it can
 			} else {											// if not,
@@ -227,7 +227,6 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 			}
 		}
 		return result;
-		//return (int)Math.round((double)(genomePosition - genomeWindow.getStart()) * xFactor);	// former method
 	}
 
 
@@ -240,18 +239,13 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 		int start = genomePosToScreenXPos(genomePositionStart);
 		int stop = genomePosToScreenXPos(genomePositionStop);
 		return stop - start;
-		
-		/*double x1 = ((double)(genomePositionStart - genomeWindow.getStart())) * xFactor;
-		double x2 = ((double)(genomePositionStop - genomeWindow.getStart())) * xFactor;
-		double distance = Math.abs(x1 - x2);
-		return (int) Math.ceil(distance);*/
 	}
 
 
 	/**
-	 * @param trackGraphicsWidth 
+	 * @param trackGraphicsWidth
 	 * @param x position on the screen
-	 * @return position on the genome 
+	 * @return position on the genome
 	 */
 	public double screenXPosToGenomePos(int trackGraphicsWidth, int x) {
 		double distance = twoScreenPosToGenomeWidth(trackGraphicsWidth, 0, x);
@@ -261,13 +255,13 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 
 	/**
-	 * @param trackGraphicsWidth 
+	 * @param trackGraphicsWidth
 	 * @param x1 position 1 on the screen
 	 * @param x2 position 2 on the screen
-	 * @return the distance in base pair between the screen position x1 and x2 
+	 * @return the distance in base pair between the screen position x1 and x2
 	 */
 	public double twoScreenPosToGenomeWidth(int trackGraphicsWidth, int x1, int x2) {
-		double distance = ((double)(x2 - x1) / (double)trackGraphicsWidth * (double)(genomeWindow.getStop() - genomeWindow.getStart()));
+		double distance = (((double)(x2 - x1) / (double)trackGraphicsWidth) * (genomeWindow.getStop() - genomeWindow.getStart()));
 		return distance;
 	}
 }

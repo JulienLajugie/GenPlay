@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -49,9 +49,9 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 	private static final long serialVersionUID = -5243446035761988387L; // Generated ID
 	private static final int 	HANDLE_WIDTH = 50;				// Width of the track handle
 	private static final int 	TRACKS_SCROLL_WIDTH = 17;		// Width of the scroll bar
-	private static final int 	RULER_HEIGHT = 20;				// Height of the ruler 
+	private static final int 	RULER_HEIGHT = 20;				// Height of the ruler
 	private final RulerGraphics	rulerGraphics;					// Graphics part
-	private final JButton 		rulerButton;					// button of the ruler				 
+	private final JButton 		rulerButton;					// button of the ruler
 
 
 	/**
@@ -60,16 +60,16 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 	public Ruler() {
 		rulerGraphics = new RulerGraphics();
 		rulerButton = new JButton();
-		initButton();		
+		initButton();
 		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();		
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0;
 		gbc.weighty = 1;
-		add(rulerButton, gbc);			
+		add(rulerButton, gbc);
 		gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(0, 0, 0, TRACKS_SCROLL_WIDTH);
@@ -90,7 +90,7 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 		rulerButton.setMargin(new Insets(0, 0, 0, 0));
 		rulerButton.setFocusPainted(false);
 		rulerButton.setIcon(new ImageIcon(Images.getToolsImage()));
-		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Colors.LIGHT_GREY));	
+		rulerButton.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, Colors.LIGHT_GREY));
 		rulerButton.setPreferredSize(new Dimension(HANDLE_WIDTH + 1, RULER_HEIGHT));
 		rulerButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -115,33 +115,41 @@ public final class Ruler extends JPanel implements GenomeWindowListener {
 		rulerGraphics.setScrollMode(scrollMode);
 	}
 
-	
+
 	/**
 	 * @return the main button of the application attached to the Ruler
 	 */
 	public JButton getOptionButton() {
 		return rulerButton;
 	}
-	
+
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-			rulerGraphics.repaint();
+		rulerGraphics.repaint();
 	}
-	
-	
+
+
 	/**
 	 * Locks the ruler (the button)
 	 */
 	public void lock() {
-		rulerButton.setEnabled(false);		
+		rulerButton.setEnabled(false);
 	}
-	
-	
+
+
 	/**
 	 * Unlocks the ruler (the button)
 	 */
 	public void unlock() {
 		rulerButton.setEnabled(true);
+	}
+
+
+	/**
+	 * @return the current middle position
+	 */
+	public int getCurrentMiddlePosition () {
+		return rulerGraphics.getCurrentMiddlePosition();
 	}
 }

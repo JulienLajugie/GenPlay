@@ -52,10 +52,13 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
+import edu.yu.einstein.genplay.gui.action.project.PACopyCurrentPosition;
 import edu.yu.einstein.genplay.gui.action.project.PAExit;
 import edu.yu.einstein.genplay.gui.action.project.PAFullScreen;
 import edu.yu.einstein.genplay.gui.action.project.PAHelp;
 import edu.yu.einstein.genplay.gui.action.project.PALoadProject;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
 import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
 import edu.yu.einstein.genplay.gui.action.project.PANewProject;
@@ -96,10 +99,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 	private static 	MainFrame 			instance = null; 	// instance of the singleton MainFrame
 	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
-	private final 		Ruler 				ruler; 				// Ruler component
-	private final 		TrackList 			trackList; 			// TrackList component
-	private final 		ControlPanel		controlPanel; 		// ControlPanel component
-	private final 		StatusBar 			statusBar; 			// Status bar component
+	private final 	Ruler 				ruler; 				// Ruler component
+	private final 	TrackList 			trackList; 			// TrackList component
+	private final 	ControlPanel		controlPanel; 		// ControlPanel component
+	private final 	StatusBar 			statusBar; 			// Status bar component
 	private 		Rectangle			screenBounds; 		// position and dimension of this frame
 
 
@@ -325,11 +328,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getActionMap().put(PAOption.ACTION_KEY, new PAOption(this));
 		getRootPane().getActionMap().put(PASaveProject.ACTION_KEY, new PASaveProject(trackList));
 		getRootPane().getActionMap().put(PAMoveLeft.ACTION_KEY, new PAMoveLeft());
+		getRootPane().getActionMap().put(PAMoveFarLeft.ACTION_KEY, new PAMoveFarLeft());
 		getRootPane().getActionMap().put(PAMoveRight.ACTION_KEY, new PAMoveRight());
+		getRootPane().getActionMap().put(PAMoveFarRight.ACTION_KEY, new PAMoveFarRight());
 		getRootPane().getActionMap().put(PAZoomIn.ACTION_KEY, new PAZoomIn());
 		getRootPane().getActionMap().put(PAZoomOut.ACTION_KEY, new PAZoomOut());
 		getRootPane().getActionMap().put(PARNAPosToDNAPos.ACTION_KEY, new PARNAPosToDNAPos(this));
 		getRootPane().getActionMap().put(PAWarningReport.ACTION_KEY, new PAWarningReport(this));
+		getRootPane().getActionMap().put(PACopyCurrentPosition.ACTION_KEY, new PACopyCurrentPosition());
 	}
 
 
@@ -362,9 +368,12 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PALoadProject.ACCELERATOR, PALoadProject.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PANewProject.ACCELERATOR, PANewProject.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveLeft.ACCELERATOR, PAMoveLeft.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarLeft.ACCELERATOR, PAMoveFarLeft.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveRight.ACCELERATOR, PAMoveRight.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarRight.ACCELERATOR, PAMoveFarRight.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, PAZoomIn.ACTION_KEY);
 		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, PAZoomOut.ACTION_KEY);
+		getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PACopyCurrentPosition.ACCELERATOR, PACopyCurrentPosition.ACTION_KEY);
 	}
 
 

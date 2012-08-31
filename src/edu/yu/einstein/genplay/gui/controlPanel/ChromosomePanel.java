@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,6 +29,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -37,13 +38,19 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarLeft;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveFarRight;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveLeft;
+import edu.yu.einstein.genplay.gui.action.project.PAMoveRight;
+import edu.yu.einstein.genplay.gui.action.project.PAZoomIn;
+import edu.yu.einstein.genplay.gui.action.project.PAZoomOut;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 
 
 /**
- * The ChromosomePanel part of the {@link ControlPanel} 
+ * The ChromosomePanel part of the {@link ControlPanel}
  * @author Julien Lajugie
  * @version 0.1
  */
@@ -54,8 +61,8 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	private final JComboBox 						jcbChromosome;		// combo box chromosome
 	private final ProjectChromosome 				projectChromosome; 	// Instance of the Chromosome Manager
 	private final ProjectWindow						projectWindow;		// Instance of the Genome Window Manager
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ChromosomePanel}
 	 * @param genomeWindow a {@link GenomeWindow}
@@ -70,7 +77,7 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 		jcbChromosome.setSelectedIndex(0);
 		jcbChromosome.setSelectedItem(projectWindow.getGenomeWindow().getChromosome());
 		jcbChromosome.addItemListener(this);
-		
+
 		// Add the components
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -91,23 +98,31 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 		add(jcbChromosome, gbc);
 
 		addMouseWheelListener(this);
+
+		// Deactivate chromosome box key listener (bother the main frame key event management)
+		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveLeft.ACCELERATOR, "none");
+		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarLeft.ACCELERATOR, "none");
+		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveRight.ACCELERATOR, "none");
+		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAMoveFarRight.ACCELERATOR, "none");
+		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomIn.ACCELERATOR, "none");
+		jcbChromosome.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(PAZoomOut.ACCELERATOR, "none");
 	}
 
-	
+
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent mwe) {
-		if (mwe.getWheelRotation() + jcbChromosome.getSelectedIndex() < 0) {
+		if ((mwe.getWheelRotation() + jcbChromosome.getSelectedIndex()) < 0) {
 			jcbChromosome.setSelectedIndex(0);
-		} else if (mwe.getWheelRotation() + jcbChromosome.getSelectedIndex() > jcbChromosome.getItemCount() - 1) {
+		} else if ((mwe.getWheelRotation() + jcbChromosome.getSelectedIndex()) > (jcbChromosome.getItemCount() - 1)) {
 			jcbChromosome.setSelectedIndex(jcbChromosome.getItemCount() - 1);
 		} else {
 			jcbChromosome.setSelectedIndex(mwe.getWheelRotation() + jcbChromosome.getSelectedIndex());
-		}		
+		}
 	}
-	
-	
+
+
 	/**
-	 * This method updates the chromosome panel when a project is loaded. 
+	 * This method updates the chromosome panel when a project is loaded.
 	 */
 	public void updateChromosomePanel () {
 		jcbChromosome.removeAllItems();
@@ -120,21 +135,21 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	@Override
 	public void itemStateChanged(ItemEvent arg0) {
 		Chromosome newChromosome = (Chromosome)jcbChromosome.getSelectedItem();
-		if (newChromosome != null && !newChromosome.equals(projectWindow.getGenomeWindow().getChromosome())) {
+		if ((newChromosome != null) && !newChromosome.equals(projectWindow.getGenomeWindow().getChromosome())) {
 			GenomeWindow newGenomeWindow = new GenomeWindow(newChromosome, 0, newChromosome.getLength());
 			projectWindow.setGenomeWindow(newGenomeWindow);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Locks the chromosome panel
 	 */
 	public void lock() {
 		jcbChromosome.setEnabled(false);
 	}
-	
-	
+
+
 	/**
 	 * Unlocks the chromosome panel
 	 */
@@ -147,5 +162,5 @@ final class ChromosomePanel extends JPanel implements MouseWheelListener, ItemLi
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		jcbChromosome.setSelectedItem(evt.getNewWindow().getChromosome());
 	}
-	
+
 }
