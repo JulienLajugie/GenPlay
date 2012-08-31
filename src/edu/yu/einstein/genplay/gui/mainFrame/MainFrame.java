@@ -124,7 +124,6 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 	private MainFrame() {
 		super(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 		setIconImage(Images.getApplicationImage());
-
 		projectChromosome = ProjectManager.getInstance().getProjectChromosome();
 
 		setTitle();
