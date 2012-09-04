@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -35,10 +35,10 @@ public class VCFSampleStatistic implements Serializable {
 
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = -1037070449560631967L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version	
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	// Number of lines and columns
-	private static final int LINE_NUMBER				= 13;		// Number of lines in the data object
+	private static final int LINE_NUMBER				= 16;		// Number of lines in the data object
 	private static final int COLUMN_NUMBER				= 4;		// Number of columns in the data object
 
 	// Column indexes
@@ -48,40 +48,46 @@ public class VCFSampleStatistic implements Serializable {
 	private static final int PERCENTAGE_TOTAL_INDEX 	= 3;		// Index for the total percentage column
 
 	// Line indexes
-	private static final int SNP_INDEX 						= 0;		// Index for the SNP section
-	private static final int SNP_HOMOZYGOTE_INDEX 			= 1;		// Index for the SNP homozygote sub-section
-	private static final int SNP_HETEROZYGOTE_INDEX 		= 2;		// Index for the SNP heterozygote sub-section
-	private static final int INSERTION_INDEX 				= 3;		// Index for the Insertion section
-	private static final int INSERTION_INDEL_INDEX 			= 4;		// Index for the Insertion indels sub-section
-	private static final int INSERTION_SV_INDEX 			= 5;		// Index for the Insertion SV sub-section
-	private static final int INSERTION_HOMOZYGOTE_INDEX 	= 6;		// Index for the Insertion homozygote sub-section
-	private static final int INSERTION_HETEROZYGOTE_INDEX 	= 7;		// Index for the Insertion heterozygote sub-section
-	private static final int DELETION_INDEX 				= 8;		// Index for the Deletion section
-	private static final int DELETION_INDEL_INDEX 			= 9;		// Index for the Deletion indels sub-section
-	private static final int DELETION_SV_INDEX 				= 10;		// Index for the Deletion SV sub-section
-	private static final int DELETION_HOMOZYGOTE_INDEX 		= 11;		// Index for the Deletion homozygote sub-section
-	private static final int DELETION_HETEROZYGOTE_INDEX 	= 12;		// Index for the Deletion heterozygote sub-section
+	private static final int SNP_INDEX 							= 0;		// Index for the SNP section
+	private static final int SNP_HOMOZYGOTE_INDEX 				= 1;		// Index for the SNP homozygote sub-section
+	private static final int SNP_HOMOZYGOTE_NO_REF_INDEX 		= 2;		// Index for the SNP homozygote (no reference) sub-section
+	private static final int SNP_HETEROZYGOTE_INDEX 			= 3;		// Index for the SNP heterozygote sub-section
+	private static final int INSERTION_INDEX 					= 4;		// Index for the Insertion section
+	private static final int INSERTION_INDEL_INDEX 				= 5;		// Index for the Insertion indels sub-section
+	private static final int INSERTION_SV_INDEX 				= 6;		// Index for the Insertion SV sub-section
+	private static final int INSERTION_HOMOZYGOTE_INDEX 		= 7;		// Index for the Insertion homozygote sub-section
+	private static final int INSERTION_HOMOZYGOTE_NO_REF_INDEX 	= 8;		// Index for the Insertion homozygote (no reference) sub-section
+	private static final int INSERTION_HETEROZYGOTE_INDEX 		= 9;		// Index for the Insertion heterozygote sub-section
+	private static final int DELETION_INDEX 					= 10;		// Index for the Deletion section
+	private static final int DELETION_INDEL_INDEX 				= 11;		// Index for the Deletion indels sub-section
+	private static final int DELETION_SV_INDEX 					= 12;		// Index for the Deletion SV sub-section
+	private static final int DELETION_HOMOZYGOTE_INDEX 			= 13;		// Index for the Deletion homozygote sub-section
+	private static final int DELETION_HOMOZYGOTE_NO_REF_INDEX 	= 14;		// Index for the Deletion homozygote (no reference) sub-section
+	private static final int DELETION_HETEROZYGOTE_INDEX 		= 15;		// Index for the Deletion heterozygote sub-section
 
 	// Column names
-	private static final String SECTION_NAME				= "";							// Name for the section column
-	private static final String NUMBER_NAME 				= "Number";							// Name for the number column
+	private static final String SECTION_NAME				= "Sections";					// Name for the section column
+	private static final String NUMBER_NAME 				= "Number";						// Name for the number column
 	private static final String PERCENTAGE_SECTION_NAME 	= "% on the variation type";	// Name for the section percentage column
 	private static final String PERCENTAGE_TOTAL_NAME 		= "% on the whole genome";		// Name for the total percentage column
 
 	// Line names
-	private static final String SNP_NAME 						= "SNP";				// Name for the SNP section
-	private static final String SNP_HOMOZYGOTE_NAME 			= "- Homozygote";		// Name for the SNP homozygote sub-section
-	private static final String SNP_HETEROZYGOTE_NAME 			= "- Heterozygote";		// Name for the SNP heterozygote sub-section
-	private static final String INSERTION_NAME 					= "Insertion";			// Name for the Insertion section
-	private static final String INSERTION_INDEL_NAME 			= "- Indel";			// Name for the Insertion indels sub-section
-	private static final String INSERTION_SV_NAME 				= "- SV";				// Name for the Insertion SV sub-section
-	private static final String INSERTION_HOMOZYGOTE_NAME 		= "- Homozygote";		// Name for the Insertion homozygote sub-section
-	private static final String INSERTION_HETEROZYGOTE_NAME 	= "- Heterozygote";		// Name for the Insertion heterozygote sub-section
-	private static final String DELETION_NAME 					= "Deletion";			// Name for the Deletion section
-	private static final String DELETION_INDEL_NAME 			= "- Indel";			// Name for the Deletion indels sub-section
-	private static final String DELETION_SV_NAME 				= "- SV";				// Name for the Deletion SV sub-section
-	private static final String DELETION_HOMOZYGOTE_NAME 		= "- Homozygote";		// Name for the Deletion homozygote sub-section
-	private static final String DELETION_HETEROZYGOTE_NAME 		= "- Heterozygote";		// Name for the Deletion heterozygote sub-section
+	private static final String SNP_NAME 							= "SNP";					// Name for the SNP section
+	private static final String SNP_HOMOZYGOTE_NAME 				= "- Homozygote";			// Name for the SNP homozygote sub-section
+	private static final String SNP_HOMOZYGOTE_NO_REF_NAME 			= "- Homozygote (no ref)";	// Name for the SNP homozygote (no reference) sub-section
+	private static final String SNP_HETEROZYGOTE_NAME 				= "- Heterozygote";			// Name for the SNP heterozygote sub-section
+	private static final String INSERTION_NAME 						= "Insertion";				// Name for the Insertion section
+	private static final String INSERTION_INDEL_NAME 				= "- Indel";				// Name for the Insertion indels sub-section
+	private static final String INSERTION_SV_NAME 					= "- SV";					// Name for the Insertion SV sub-section
+	private static final String INSERTION_HOMOZYGOTE_NAME 			= "- Homozygote";			// Name for the Insertion homozygote sub-section
+	private static final String INSERTION_HOMOZYGOTE_NO_REF_NAME 	= "- Homozygote (no ref)";	// Name for the Insertion homozygote (no reference) sub-section
+	private static final String INSERTION_HETEROZYGOTE_NAME 		= "- Heterozygote";			// Name for the Insertion heterozygote sub-section
+	private static final String DELETION_NAME 						= "Deletion";				// Name for the Deletion section
+	private static final String DELETION_INDEL_NAME 				= "- Indel";				// Name for the Deletion indels sub-section
+	private static final String DELETION_SV_NAME 					= "- SV";					// Name for the Deletion SV sub-section
+	private static final String DELETION_HOMOZYGOTE_NAME 			= "- Homozygote";			// Name for the Deletion homozygote sub-section
+	private static final String DELETION_HOMOZYGOTE_NO_REF_NAME 	= "- Homozygote (no ref)";	// Name for the Deletion homozygote (no reference) sub-section
+	private static final String DELETION_HETEROZYGOTE_NAME 			= "- Heterozygote";			// Name for the Deletion heterozygote sub-section
 
 	private Object[][] data;
 
@@ -92,8 +98,11 @@ public class VCFSampleStatistic implements Serializable {
 	private int numberOfLongDeletions;
 
 	private int numberOfHomozygoteSNPs;
+	private int numberOfHomozygoteNoRefSNPs;
 	private int numberOfHomozygoteInsertions;
+	private int numberOfHomozygoteNoRefInsertions;
 	private int numberOfHomozygoteDeletions;
+	private int numberOfHomozygoteNoRefDeletions;
 	private int numberOfHeterozygoteSNPs;
 	private int numberOfHeterozygoteInsertions;
 	private int numberOfHeterozygoteDeletions;
@@ -135,8 +144,11 @@ public class VCFSampleStatistic implements Serializable {
 		numberOfLongDeletions = 0;
 
 		numberOfHomozygoteSNPs = 0;
+		numberOfHomozygoteNoRefSNPs = 0;
 		numberOfHomozygoteInsertions = 0;
+		numberOfHomozygoteNoRefInsertions = 0;
 		numberOfHomozygoteDeletions = 0;
+		numberOfHomozygoteNoRefDeletions = 0;
 		numberOfHeterozygoteSNPs = 0;
 		numberOfHeterozygoteInsertions = 0;
 		numberOfHeterozygoteDeletions = 0;
@@ -157,71 +169,81 @@ public class VCFSampleStatistic implements Serializable {
 	 */
 	public void processStatistics () {
 		if (data == null) {
-			
+
 			data = new Object[LINE_NUMBER][COLUMN_NUMBER];
-			
-			
 
 			data[SNP_INDEX][SECTION_INDEX] = SNP_NAME;
 			data[SNP_HOMOZYGOTE_INDEX][SECTION_INDEX] = SNP_HOMOZYGOTE_NAME;
+			data[SNP_HOMOZYGOTE_NO_REF_INDEX][SECTION_INDEX] = SNP_HOMOZYGOTE_NO_REF_NAME;
 			data[SNP_HETEROZYGOTE_INDEX][SECTION_INDEX] = SNP_HETEROZYGOTE_NAME;
 			data[INSERTION_INDEX][SECTION_INDEX] = INSERTION_NAME;
 			data[INSERTION_INDEL_INDEX][SECTION_INDEX] = INSERTION_INDEL_NAME;
 			data[INSERTION_SV_INDEX][SECTION_INDEX] = INSERTION_SV_NAME;
 			data[INSERTION_HOMOZYGOTE_INDEX][SECTION_INDEX] = INSERTION_HOMOZYGOTE_NAME;
+			data[INSERTION_HOMOZYGOTE_NO_REF_INDEX][SECTION_INDEX] = INSERTION_HOMOZYGOTE_NO_REF_NAME;
 			data[INSERTION_HETEROZYGOTE_INDEX][SECTION_INDEX] = INSERTION_HETEROZYGOTE_NAME;
 			data[DELETION_INDEX][SECTION_INDEX] = DELETION_NAME;
 			data[DELETION_INDEL_INDEX][SECTION_INDEX] = DELETION_INDEL_NAME;
 			data[DELETION_SV_INDEX][SECTION_INDEX] = DELETION_SV_NAME;
 			data[DELETION_HOMOZYGOTE_INDEX][SECTION_INDEX] = DELETION_HOMOZYGOTE_NAME;
+			data[DELETION_HOMOZYGOTE_NO_REF_INDEX][SECTION_INDEX] = DELETION_HOMOZYGOTE_NO_REF_NAME;
 			data[DELETION_HETEROZYGOTE_INDEX][SECTION_INDEX] = DELETION_HETEROZYGOTE_NAME;
 
 			data[SNP_INDEX][NUMBER_INDEX] = numberOfSNPs;
 			data[SNP_HOMOZYGOTE_INDEX][NUMBER_INDEX] = numberOfHomozygoteSNPs;
+			data[SNP_HOMOZYGOTE_NO_REF_INDEX][NUMBER_INDEX] = numberOfHomozygoteNoRefSNPs;
 			data[SNP_HETEROZYGOTE_INDEX][NUMBER_INDEX] = numberOfHeterozygoteSNPs;
 			data[INSERTION_INDEX][NUMBER_INDEX] = numberOfShortInsertions + numberOfLongInsertions;
 			data[INSERTION_INDEL_INDEX][NUMBER_INDEX] = numberOfShortInsertions;
 			data[INSERTION_SV_INDEX][NUMBER_INDEX] = numberOfLongInsertions;
 			data[INSERTION_HOMOZYGOTE_INDEX][NUMBER_INDEX] = numberOfHomozygoteInsertions;
+			data[INSERTION_HOMOZYGOTE_NO_REF_INDEX][NUMBER_INDEX] = numberOfHomozygoteNoRefInsertions;
 			data[INSERTION_HETEROZYGOTE_INDEX][NUMBER_INDEX] = numberOfHeterozygoteInsertions;
 			data[DELETION_INDEX][NUMBER_INDEX] = numberOfShortDeletions + numberOfLongDeletions;
 			data[DELETION_INDEL_INDEX][NUMBER_INDEX] = numberOfShortDeletions;
 			data[DELETION_SV_INDEX][NUMBER_INDEX] = numberOfLongDeletions;
 			data[DELETION_HOMOZYGOTE_INDEX][NUMBER_INDEX] = numberOfHomozygoteDeletions;
+			data[DELETION_HOMOZYGOTE_NO_REF_INDEX][NUMBER_INDEX] = numberOfHomozygoteNoRefDeletions;
 			data[DELETION_HETEROZYGOTE_INDEX][NUMBER_INDEX] = numberOfHeterozygoteDeletions;
-			
-			int totalGTSNP = getDataInt(SNP_HOMOZYGOTE_INDEX) + getDataInt(SNP_HETEROZYGOTE_INDEX);
-			int totalGTInsertion = getDataInt(INSERTION_HOMOZYGOTE_INDEX) + getDataInt(INSERTION_HETEROZYGOTE_INDEX);
-			int totalGTDeletion = getDataInt(DELETION_HOMOZYGOTE_INDEX) + getDataInt(DELETION_HETEROZYGOTE_INDEX);
+
+			int totalGTSNP = getDataInt(SNP_HOMOZYGOTE_INDEX) + getDataInt(SNP_HOMOZYGOTE_NO_REF_INDEX) + getDataInt(SNP_HETEROZYGOTE_INDEX);
+			int totalGTInsertion = getDataInt(INSERTION_HOMOZYGOTE_INDEX) + getDataInt(INSERTION_HOMOZYGOTE_NO_REF_INDEX) + getDataInt(INSERTION_HETEROZYGOTE_INDEX);
+			int totalGTDeletion = getDataInt(DELETION_HOMOZYGOTE_INDEX) + getDataInt(DELETION_HOMOZYGOTE_NO_REF_INDEX) + getDataInt(DELETION_HETEROZYGOTE_INDEX);
 			int totalGT = totalGTSNP + totalGTInsertion + totalGTDeletion;
 
 			data[SNP_INDEX][PERCENTAGE_SECTION_INDEX] = "100";
 			data[SNP_HOMOZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_HOMOZYGOTE_INDEX), totalGTSNP);
+			data[SNP_HOMOZYGOTE_NO_REF_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_HOMOZYGOTE_NO_REF_INDEX), totalGTSNP);
 			data[SNP_HETEROZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(SNP_HETEROZYGOTE_INDEX), totalGTSNP);
 			data[INSERTION_INDEX][PERCENTAGE_SECTION_INDEX] = "100";
 			data[INSERTION_INDEL_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_INDEL_INDEX), getDataInt(INSERTION_INDEX));
 			data[INSERTION_SV_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_SV_INDEX), getDataInt(INSERTION_INDEX));
 			data[INSERTION_HOMOZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_HOMOZYGOTE_INDEX), totalGTInsertion);
+			data[INSERTION_HOMOZYGOTE_NO_REF_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_HOMOZYGOTE_NO_REF_INDEX), totalGTInsertion);
 			data[INSERTION_HETEROZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(INSERTION_HETEROZYGOTE_INDEX), totalGTInsertion);
 			data[DELETION_INDEX][PERCENTAGE_SECTION_INDEX] = "100";
 			data[DELETION_INDEL_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_INDEL_INDEX), getDataInt(DELETION_INDEX));
 			data[DELETION_SV_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_SV_INDEX), getDataInt(DELETION_INDEX));
 			data[DELETION_HOMOZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_INDEX), totalGTDeletion);
+			data[DELETION_HOMOZYGOTE_NO_REF_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_NO_REF_INDEX), totalGTDeletion);
 			data[DELETION_HETEROZYGOTE_INDEX][PERCENTAGE_SECTION_INDEX] = getPercentage(getDataInt(DELETION_HETEROZYGOTE_INDEX), totalGTDeletion);
 
 			int totalVariation = getDataInt(SNP_INDEX) + getDataInt(INSERTION_INDEX) + getDataInt(DELETION_INDEX);
 			data[SNP_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_INDEX), totalVariation);
 			data[SNP_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_HOMOZYGOTE_INDEX), totalGT);
+			data[SNP_HOMOZYGOTE_NO_REF_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_HOMOZYGOTE_NO_REF_INDEX), totalGT);
 			data[SNP_HETEROZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(SNP_HETEROZYGOTE_INDEX), totalGT);
 			data[INSERTION_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_INDEX), totalVariation);
 			data[INSERTION_INDEL_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_INDEL_INDEX), totalVariation);
 			data[INSERTION_SV_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_SV_INDEX), totalVariation);
 			data[INSERTION_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_HOMOZYGOTE_INDEX), totalGT);
+			data[INSERTION_HOMOZYGOTE_NO_REF_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_HOMOZYGOTE_NO_REF_INDEX), totalGT);
 			data[INSERTION_HETEROZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(INSERTION_HETEROZYGOTE_INDEX) , totalGT);
 			data[DELETION_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_INDEX), totalVariation);
 			data[DELETION_INDEL_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_INDEL_INDEX), totalVariation);
 			data[DELETION_SV_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_SV_INDEX), totalVariation);
 			data[DELETION_HOMOZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_INDEX) , totalGT);
+			data[DELETION_HOMOZYGOTE_NO_REF_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HOMOZYGOTE_NO_REF_INDEX) , totalGT);
 			data[DELETION_HETEROZYGOTE_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_HETEROZYGOTE_INDEX) , totalGT);
 		}
 	}
@@ -234,11 +256,11 @@ public class VCFSampleStatistic implements Serializable {
 	 */
 	private int getPercentage (int value, int total) {
 		int result = 0;
-		if (total == 0 && value == total) {
+		if ((total == 0) && (value == total)) {
 			result = 100;
 		} else {
 			try {
-				result = value * 100 / total;
+				result = (value * 100) / total;
 			} catch (Exception e) {}
 		}
 		return result;
@@ -342,6 +364,30 @@ public class VCFSampleStatistic implements Serializable {
 
 
 	/**
+	 * increment the numberOfHomozygoteNoRefSNPs
+	 */
+	public void incrementNumberOfHomozygoteNoRefSNPs() {
+		this.numberOfHomozygoteNoRefSNPs++;
+	}
+
+
+	/**
+	 * increment the numberOfHomozygoteNoRefInsertions
+	 */
+	public void incrementNumberOfHomozygoteNoRefInsertions() {
+		this.numberOfHomozygoteNoRefInsertions++;
+	}
+
+
+	/**
+	 * increment the numberOfHomozygoteNoRefDeletions
+	 */
+	public void incrementNumberOfHomozygoteNoRefDeletions() {
+		this.numberOfHomozygoteNoRefDeletions++;
+	}
+
+
+	/**
 	 * increment the numberOfHeterozygoteSNPs
 	 */
 	public void incrementNumberOfHeterozygoteSNPs() {
@@ -374,13 +420,34 @@ public class VCFSampleStatistic implements Serializable {
 		for (int i = 0; i < LINE_NUMBER; i++) {
 			for (int j = 0; j < COLUMN_NUMBER; j++) {
 				info += data[i][j];
-				if (j < COLUMN_NUMBER - 1) {
+				if (j < (COLUMN_NUMBER - 1)) {
 					info += "\t";
 				}
 			}
 			info += "\n";
 		}
 		System.out.println(info);
+	}
+
+
+	/**
+	 * @return a String of the the {@link VCFSampleStatistic}
+	 */
+	public String getString () {
+		String info = "";
+		info += SECTION_NAME + "\t" + NUMBER_NAME + "\t" + PERCENTAGE_SECTION_NAME +  "\t" + PERCENTAGE_TOTAL_NAME + "\n";
+		for (int i = 0; i < LINE_NUMBER; i++) {
+			for (int j = 0; j < COLUMN_NUMBER; j++) {
+				info += data[i][j];
+				if (j < (COLUMN_NUMBER - 1)) {
+					info += "\t";
+				}
+			}
+			if (i < (LINE_NUMBER - 1)) {
+				info += "\n";
+			}
+		}
+		return info;
 	}
 
 }

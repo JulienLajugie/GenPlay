@@ -416,12 +416,28 @@ public class MGSynchronizer implements Serializable {
 
 		for (VariantType variantType: variantTypes) {
 			if (homozygote) {
+				boolean isReference = false;
+				if (firstAlleleIndex == 0) {
+					isReference = true;
+				}
 				if (variantType == VariantType.SNPS) {
-					statistic.incrementNumberOfHomozygoteSNPs();
+					if (isReference) {
+						statistic.incrementNumberOfHomozygoteNoRefSNPs();
+					} else {
+						statistic.incrementNumberOfHomozygoteSNPs();
+					}
 				} else if (variantType == VariantType.INSERTION) {
-					statistic.incrementNumberOfHomozygoteInsertions();
+					if (isReference) {
+						statistic.incrementNumberOfHomozygoteNoRefInsertions();
+					} else {
+						statistic.incrementNumberOfHomozygoteInsertions();
+					}
 				} else if (variantType == VariantType.DELETION) {
-					statistic.incrementNumberOfHomozygoteDeletions();
+					if (isReference) {
+						statistic.incrementNumberOfHomozygoteNoRefDeletions();
+					} else {
+						statistic.incrementNumberOfHomozygoteDeletions();
+					}
 				}
 			} else if (heterozygote) {
 				if (variantType == VariantType.SNPS) {
