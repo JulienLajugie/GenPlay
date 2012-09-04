@@ -80,6 +80,7 @@ public class MGAFilters extends TrackListActionWorker<Track<?>[]> {
 
 		// Checks if the project is multi-genome
 		if (projectManager.isMultiGenomeProject()) {
+
 			if (!hasBeenInitialized) {
 				filterManager.initializeFilterLists();
 			}

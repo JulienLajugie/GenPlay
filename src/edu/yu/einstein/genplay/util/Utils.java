@@ -864,25 +864,29 @@ public class Utils {
 	 * Split a string using the char code of a character.
 	 * @param s	the string to split
 	 * @param c	the integer code of the character
-	 * @return	an array containing the split string
+	 * @return	an array containing the split string (or empty if the string is null)
 	 */
 	public static String[] split (String s, int c) {
 		List<String> list = new ArrayList<String>();
 		if (s != null) {
 			int pos = 0, end;
 			while ((end = s.indexOf(c, pos)) >= 0) {
-				list.add(s.substring(pos, end));
+				String sub = s.substring(pos, end);
+				list.add(sub);
 				pos = end + 1;
 			}
 			list.add(s.substring(pos));
 		}
 
-		String[] result = new String[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			result[i] = list.get(i);
+		int size = list.size();
+		if (list.get(size - 1).isEmpty()) {
+			size--;
 		}
 
-		//result = list.toArray(result);
+		String[] result = new String[size];
+		for (int i = 0; i < size; i++) {
+			result[i] = list.get(i);
+		}
 
 		return result;
 	}
@@ -894,21 +898,7 @@ public class Utils {
 	 * @return	an array containing the split string
 	 */
 	public static String[] splitWithTab (String s) {
-		List<String> list = new ArrayList<String>();
-		if (s != null) {
-			int pos = 0, end;
-			while ((end = s.indexOf("	", pos)) >= 0) {
-				list.add(s.substring(pos, end));
-				pos = end + 1;
-			}
-			list.add(s.substring(pos));
-		}
-
-		String[] result = new String[list.size()];
-		for (int i = 0; i < list.size(); i++) {
-			result[i] = list.get(i);
-		}
-		return result;
+		return split(s, '	');
 	}
 
 

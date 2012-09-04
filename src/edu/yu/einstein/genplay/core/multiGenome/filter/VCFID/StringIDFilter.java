@@ -148,6 +148,9 @@ public class StringIDFilter implements StringIDFilterInterface, Serializable {
 	}
 
 
+	long time01 = 0;
+
+
 	@Override
 	public boolean isValid(VCFLine line) {
 		return utility.isValid(this, line);

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
@@ -157,6 +158,43 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
+	 * Compare given multi genome information with the current ones.
+	 * @param stripesList	the new stripes list
+	 * @param filtersList	the new filters list
+	 * @return	true if new information are different than the current ones
+	 */
+	public boolean hasMultiGenomeInformationChanged (List<StripesData> stripesList, List<MGFilter> filtersList) {
+		if (haveStripesChanged(stripesList) || haveFiltersChanged(filtersList)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+
+	/**
+	 * Compare given stripes information with the current one.
+	 * @param stripesList	the new stripes list
+	 * @return	true if new information are different than the current ones
+	 */
+	private boolean haveStripesChanged (List<StripesData> stripesList) {
+		ListComparator<StripesData> stripesComparator = new ListComparator<StripesData>();
+		return stripesComparator.areDifferent(this.stripesList, stripesList);
+	}
+
+
+	/**
+	 * Compare given filters information with the current one.
+	 * @param filtersList	the new filters list
+	 * @return	true if new information are different than the current ones
+	 */
+	private boolean haveFiltersChanged (List<MGFilter> filtersList) {
+		ListComparator<MGFilter> filtersComparator = new ListComparator<MGFilter>();
+		return filtersComparator.areDifferent(this.mgFiltersList, filtersList);
+	}
+
+
+	/**
 	 * Updates information for multi genome project.
 	 * These information are about:
 	 * - stripes
@@ -165,48 +203,50 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param filtersList list of filters
 	 */
 	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
-		this.stripesList = stripesList;
-		this.mgFiltersList = filtersList;
+		if (hasMultiGenomeInformationChanged(stripesList, filtersList)) {
+			this.stripesList = stripesList;
+			this.mgFiltersList = filtersList;
 
-		List<MGVariantListForDisplay> allele01VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the first allele
-		List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
+			List<MGVariantListForDisplay> allele01VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the first allele
+			List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
 
-		for (StripesData data: stripesList) {							// scans all stripes data
+			for (StripesData data: stripesList) {							// scans all stripes data
 
-			// Checks wich alleles must be processed
-			AlleleType alleleType = data.getAlleleType();				// get the allele type defined for the current stripe data
-			boolean allele01 = false;									// initializes a boolean in order to know if we need to process data for the first allele
-			boolean allele02 = false;									// initializes a boolean in order to know if we need to process data for the second allele
-			if (alleleType == AlleleType.BOTH) {						// if the defined allele type is BOTH, both allele must be processed
-				allele01 = true;
-				allele02 = true;
-			} else if (alleleType == AlleleType.ALLELE01) {				// if the defined allele type is ALLELE01, only the first allele will be processed
-				allele01 = true;
-			} else if (alleleType == AlleleType.ALLELE02) {				// if the defined allele type is ALLELE02, only the second allele will be processed
-				allele02 = true;
-			}
+				// Checks wich alleles must be processed
+				AlleleType alleleType = data.getAlleleType();				// get the allele type defined for the current stripe data
+				boolean allele01 = false;									// initializes a boolean in order to know if we need to process data for the first allele
+				boolean allele02 = false;									// initializes a boolean in order to know if we need to process data for the second allele
+				if (alleleType == AlleleType.BOTH) {						// if the defined allele type is BOTH, both allele must be processed
+					allele01 = true;
+					allele02 = true;
+				} else if (alleleType == AlleleType.ALLELE01) {				// if the defined allele type is ALLELE01, only the first allele will be processed
+					allele01 = true;
+				} else if (alleleType == AlleleType.ALLELE02) {				// if the defined allele type is ALLELE02, only the second allele will be processed
+					allele02 = true;
+				}
 
-			// Gathers variant that have been found
-			if (allele01) {												// if the first allele must be processed
-				List<MGVariantListForDisplay> listOfVariantListTmp = data.getListOfVariantList(AlleleType.ALLELE01); 	// we ask the stripe data object the list of variant for this allele
-				for (MGVariantListForDisplay currentVariantList: listOfVariantListTmp) {								// we add all the variants to the global temporary list for the first allele
-					allele01VariantLists.add(currentVariantList);
+				// Gathers variant that have been found
+				if (allele01) {												// if the first allele must be processed
+					List<MGVariantListForDisplay> listOfVariantListTmp = data.getListOfVariantList(AlleleType.ALLELE01); 	// we ask the stripe data object the list of variant for this allele
+					for (MGVariantListForDisplay currentVariantList: listOfVariantListTmp) {								// we add all the variants to the global temporary list for the first allele
+						allele01VariantLists.add(currentVariantList);
+					}
+				}
+
+				if (allele02) {												// if the second allele must be processed
+					List<MGVariantListForDisplay> listOfVariantListTmp = data.getListOfVariantList(AlleleType.ALLELE02); 	// we ask the stripe data object the list of variant for this allele
+					for (MGVariantListForDisplay currentVariantList: listOfVariantListTmp) {								// we add all the variants to the global temporary list for the second allele
+						allele02VariantLists.add(currentVariantList);
+					}
 				}
 			}
 
-			if (allele02) {												// if the second allele must be processed
-				List<MGVariantListForDisplay> listOfVariantListTmp = data.getListOfVariantList(AlleleType.ALLELE02); 	// we ask the stripe data object the list of variant for this allele
-				for (MGVariantListForDisplay currentVariantList: listOfVariantListTmp) {								// we add all the variants to the global temporary list for the second allele
-					allele02VariantLists.add(currentVariantList);
-				}
-			}
+			// Sets the list maker with the new list of variant
+			allele01VariantListMaker.setListOfVariantList(allele01VariantLists, mgFiltersList);	// we set the list maker with the temporary list
+			allele02VariantListMaker.setListOfVariantList(allele02VariantLists, mgFiltersList);	// we set the list maker with the temporary list
+
+			//repaint();
 		}
-
-		// Sets the list maker with the new list of variant
-		allele01VariantListMaker.setListOfVariantList(allele01VariantLists, mgFiltersList);	// we set the list maker with the temporary list
-		allele02VariantListMaker.setListOfVariantList(allele02VariantLists, mgFiltersList);	// we set the list maker with the temporary list
-
-		//repaint();
 	}
 
 

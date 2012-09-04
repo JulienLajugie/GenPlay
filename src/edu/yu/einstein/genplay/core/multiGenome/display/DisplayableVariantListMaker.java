@@ -66,6 +66,12 @@ public class DisplayableVariantListMaker implements Serializable {
 
 	private CacheTrack<List<VariantInterface>> cache;
 
+	long time01;
+	long time02;
+	long time03;
+	long time04;
+	long time05;
+
 
 	/**
 	 * Method used for serialization
@@ -129,6 +135,7 @@ public class DisplayableVariantListMaker implements Serializable {
 					}
 				}
 			}
+
 			Collections.sort(variantList, new VariantComparator());								// sorts the list
 			synchronizationBlank();																// adds the blank of synchronization
 		}

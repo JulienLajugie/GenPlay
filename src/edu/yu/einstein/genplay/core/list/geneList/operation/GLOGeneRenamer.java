@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -24,6 +24,8 @@ package edu.yu.einstein.genplay.core.list.geneList.operation;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.operation.Operation;
@@ -39,8 +41,8 @@ import edu.yu.einstein.genplay.util.Utils;
 
 public class GLOGeneRenamer implements Operation<GeneList> {
 
-	private GeneList 	geneList;			// input geneList
-	private File 		fileName;			// fileName in which the gene needs to be renamed
+	private final GeneList 	geneList;			// input geneList
+	private final File 		fileName;			// fileName in which the gene needs to be renamed
 	private boolean		stopped = false;	// true if the operation must be stopped
 
 
@@ -61,17 +63,23 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 		try {
 			bufReader = new BufferedReader(new FileReader(fileName));
 			GeneList renamedList = geneList.deepClone();
+			Map<String, String> nameMap = new HashMap<String, String>();
 			String lineRead;
-			String geneNames[];
-			while ((lineRead = bufReader.readLine()) != null && !stopped) {
-				geneNames = Utils.splitWithTab(lineRead);
-				for (int i = 0; i < renamedList.size() && !stopped; i++) {
-					for (int j = 0; j < renamedList.size(i) && !stopped; j++) {
-						if (geneNames.length > 1) {
-							if (geneNames[0].trim().equalsIgnoreCase(renamedList.get(i,j).getName())) {
-								renamedList.get(i,j).setName(geneNames[1].trim());			
-							}
-						}
+			while (((lineRead = bufReader.readLine()) != null) && !stopped) {
+				String[] splitLine =  Utils.splitWithTab(lineRead);
+				if (splitLine.length > 1) {
+					if (!nameMap.containsKey(splitLine[1])) {
+						nameMap.put(splitLine[1], splitLine[0]);
+						System.out.println(splitLine[1] + "\t" + splitLine[0]);
+					}
+				}
+			}
+			for (int i = 0; (i < renamedList.size()) && !stopped; i++) {
+				for (int j = 0; (j < renamedList.size(i)) && !stopped; j++) {
+					String newName = null;
+					if ((newName = nameMap.get(renamedList.get(i,
+							j).getName())) != null) {
+						renamedList.get(i, j).setName(newName);
 					}
 				}
 			}
@@ -99,7 +107,7 @@ public class GLOGeneRenamer implements Operation<GeneList> {
 	@Override
 	public int getStepCount() {
 		return 1;
-	}	
+	}
 
 
 	@Override

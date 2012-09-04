@@ -37,8 +37,7 @@ public abstract class MGFilter {
 	/**
 	 * Generate/Update/Initialize the filter
 	 */
-	public void generateFilter () {
-	}
+	public void generateFilter () {}
 
 
 	/**
