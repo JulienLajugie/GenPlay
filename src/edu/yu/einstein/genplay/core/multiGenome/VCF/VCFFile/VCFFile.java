@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.core.manager.ProjectFiles;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileFullStatistic;
 
 
 /**
@@ -56,7 +57,7 @@ public class VCFFile implements Serializable {
 	private File 								file;				// Path of the VCF file
 	private VCFHeader 							header;				// Information about the header
 	private VCFReader 							reader;				// Reader for the VCF file
-	private VCFFileStatistic					statistics;			// VCF file statistics
+	private VCFFileFullStatistic					statistics;			// VCF file statistics
 	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
 	private IntArrayAsIntegerList				positionList;		// reference genome position array (indexes match with the boolean list of filters)
 
@@ -87,7 +88,7 @@ public class VCFFile implements Serializable {
 		in.readInt();
 		file = (File) in.readObject();
 		header = (VCFHeader) in.readObject();
-		statistics = (VCFFileStatistic) in.readObject();
+		statistics = (VCFFileFullStatistic) in.readObject();
 		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
 		positionList = (IntArrayAsIntegerList) in.readObject();
 		indexVCFFile(); // recreate the tabix reader
@@ -107,7 +108,7 @@ public class VCFFile implements Serializable {
 
 		reader = new VCFReader();
 		header = new VCFHeader();
-		statistics = new VCFFileStatistic();
+		statistics = new VCFFileFullStatistic();
 
 		indexVCFFile();
 		header.processHeader(reader);
@@ -371,7 +372,7 @@ public class VCFFile implements Serializable {
 	/**
 	 * @return the statistics
 	 */
-	public VCFFileStatistic getStatistics() {
+	public VCFFileFullStatistic getStatistics() {
 		return statistics;
 	}
 

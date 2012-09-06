@@ -133,8 +133,8 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			} else {
 				Strand strand = Strand.get(splitedLine[8].charAt(0));
 				if (isStrandSelected(strand)) {
-					int start = Integer.parseInt(splitedLine[15]);
-					int stop = Integer.parseInt(splitedLine[16]);
+					int start = getInt(splitedLine[15]);
+					int stop = getInt(splitedLine[16]);
 					// compute the read position with specified strand shift and read length
 					if (readHandler != null) {
 						SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
@@ -152,10 +152,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						// exons are for genes only so we don't need to
 						// worry about the strand shift and the read length
 						// since these operations are not available for genes
-						int exonStart = Integer.parseInt(exonStartsStr[i].trim());
+						int exonStart = getInt(exonStartsStr[i].trim());
 						exonStart = getMultiGenomePosition(chromosome, exonStart);
 						exonStarts[i] = exonStart;
-						int exonLength = Integer.parseInt(exonLengthsStr[i].trim());
+						int exonLength = getInt(exonLengthsStr[i].trim());
 						int exonStop = exonStarts[i] + exonLength;
 						exonStop = getMultiGenomePosition(chromosome, exonStop);
 						exonStops[i] = exonStop;
@@ -179,7 +179,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						nameList.add(chromosome, splitedLine[9]);
 						startList.add(chromosome, start);
 						stopList.add(chromosome, stop);
-						scoreList.add(chromosome, Double.parseDouble(splitedLine[0]));
+						scoreList.add(chromosome, getDouble(splitedLine[0]));
 						strandList.add(chromosome, strand);
 						exonStartsList.add(chromosome, exonStarts);
 						exonStopsList.add(chromosome, exonStops);
@@ -221,10 +221,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-	    return new MaskWindowList(startList, stopList);
+		return new MaskWindowList(startList, stopList);
 	}
-	
-	
+
+
 	@Override
 	public boolean isBinSizeNeeded() {
 		return true;

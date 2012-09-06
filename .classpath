@@ -2,6 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="D:/Development/Workspace/Eclipse/GenPlay/src/edu/yu/einstein/genplay/resource/sam-1.71.jar"/>
+	<classpathentry kind="lib" path="D:/Development/Tools/Archive/sam-1.76.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

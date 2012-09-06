@@ -42,7 +42,7 @@ import edu.yu.einstein.genplay.core.DAS.DASServer;
 import edu.yu.einstein.genplay.core.DAS.DASServerList;
 import edu.yu.einstein.genplay.core.DAS.DASType;
 import edu.yu.einstein.genplay.core.DAS.DataSource;
-import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 
 /**

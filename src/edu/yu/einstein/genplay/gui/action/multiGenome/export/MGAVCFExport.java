@@ -103,7 +103,7 @@ public class MGAVCFExport extends TrackListActionWorker<Boolean> {
 				exportEngine.setPath(file.getPath());
 
 				try {
-					exportEngine.export();
+					exportEngine.compute();
 					return true;
 				} catch (Exception e) {
 					e.printStackTrace();

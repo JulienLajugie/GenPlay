@@ -148,7 +148,8 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 * @return	the X factor
 	 */
 	public double getXFactor (int trackWidth) {
-		double newXFactor = (double)trackWidth / (double)(genomeWindow.getStop() - genomeWindow.getStart());
+		//double newXFactor = (double)trackWidth / (double)(genomeWindow.getStop() - genomeWindow.getStart());
+		double newXFactor = (double)trackWidth / (double)(genomeWindow.getSize());
 		return newXFactor;
 	}
 
@@ -263,5 +264,18 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	public double twoScreenPosToGenomeWidth(int trackGraphicsWidth, int x1, int x2) {
 		double distance = (((double)(x2 - x1) / (double)trackGraphicsWidth) * (genomeWindow.getStop() - genomeWindow.getStart()));
 		return distance;
+	}
+
+
+	/**
+	 * Show {@link ProjectWindow} content
+	 */
+	public void show () {
+		String info = "";
+		info += "Factor: " + xFactor + "\n";
+		info += "Window: " + genomeWindow.getStart() + " to " + genomeWindow.getStop() + ", size: " + genomeWindow.getSize() + "\n";
+		info += "Factor / Window size: " + (xFactor / genomeWindow.getSize()) + "\n";
+		info += "Window size / Factor: " + (genomeWindow.getSize() / xFactor);
+		System.out.println(info);
 	}
 }

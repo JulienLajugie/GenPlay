@@ -51,7 +51,7 @@ final class SCWLOptions implements Serializable {
 
 	private static final long serialVersionUID = -2601316105498708787L;
 	protected static final Double DEFAULT_SCORE = 1.0;
-	
+
 	protected final ProjectChromosome 									projectChromosome;	//ChromosomeManager
 	private final 		ChromosomeArrayListOfLists<ScoredChromosomeWindow> 	list;				//list of scored chromosome windows indexed by chromosome
 	private final 		ChromosomeListOfLists<Integer> 				startList;			//store the original start list position
@@ -173,12 +173,12 @@ final class SCWLOptions implements Serializable {
 				this.list.add(chromosome, new SimpleScoredChromosomeWindow(	startList.get(chromosome, i),
 						stopList.get(chromosome, i),
 						getScore(chromosome, i)));
-				
+
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param chromosome a chromosome
 	 * @param index a list index
@@ -186,11 +186,16 @@ final class SCWLOptions implements Serializable {
 	 */
 	private Double getScore (Chromosome chromosome, int index) {
 		if (scoreList != null) {
+			try {
+				scoreList.get(chromosome, index);
+			} catch (Exception e) {
+				System.out.println();
+			}
 			return scoreList.get(chromosome, index);
 		}
 		return DEFAULT_SCORE;
 	}
-	
+
 
 	/**
 	 * sortList method

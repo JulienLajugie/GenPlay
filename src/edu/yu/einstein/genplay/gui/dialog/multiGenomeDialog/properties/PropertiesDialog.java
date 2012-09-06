@@ -51,6 +51,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.f
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesTable;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.table.TableEditingPanel;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.StatisticPanel;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -257,7 +258,7 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 			setScrollableCenterPanel(new FileInformationPanel(vcfFile));
 		} else if (nodeInfo.equals(STATISTICS)) {
 			VCFFile vcfFile = retrieveReader(node.getParent().toString());
-			setScrollableCenterPanel(new StatisticPanel(vcfFile));
+			setScrollableCenterPanel(new StatisticPanel(vcfFile.getStatistics()));
 		} else if (nodeInfo.equals(FILTERS)) {
 			setScrollableCenterPanel(fileFiltersPanel);
 		}/* else if (nodeInfo.equals(FILTERS_FILE)) {

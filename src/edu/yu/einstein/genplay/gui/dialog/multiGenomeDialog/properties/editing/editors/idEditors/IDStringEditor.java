@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -52,15 +52,15 @@ public class IDStringEditor implements IDEditor {
 	private final static String CONSTRAINT_LABEL_TTT 	= "Select a constraint for the value.";
 	private final static String PRESENT_TTT 			= "The associated file data will must contain the value in order to be accepted.";
 	private final static String ABSENT_TTT 				= "The associated file data will must NOT contain the value in order to be accepted.";
-	private final static String PRESENT 				= "must contains";
-	private final static String ABSENT 					= "must not contains";
+	private final static String PRESENT 				= "must contain";
+	private final static String ABSENT 					= "must not contain";
 	private final static String VALUE_LABEL_TTT 		= "Define a pattern to filter.";
 	private final static String VALUE_BOX_TTT			= "Type or select a value.";
 
 	private JPanel			panel;
 	private VCFHeaderType 	header;				// Header ID
-	private JLabel 			constraintLabel;	// Label for naming the constraint
-	private JLabel 			valueLabel;			// Label for naming the value
+	private final JLabel 			constraintLabel;	// Label for naming the constraint
+	private final JLabel 			valueLabel;			// Label for naming the value
 	private JComboBox		jcValue;			// Editable combo box for selecting the value
 	private List<String>	defaultElements;	// The default elements for the value box
 	private JRadioButton	present;			// Radio box for PRESENT value
@@ -248,8 +248,8 @@ public class IDStringEditor implements IDEditor {
 		}
 		return errors;
 	}
-	
-	
+
+
 	@Override
 	public void setEnabled(boolean b) {
 		if (panel != null) {
@@ -261,8 +261,8 @@ public class IDStringEditor implements IDEditor {
 			absent.setEnabled(b);
 		}
 	}
-	
-	
+
+
 	@Override
 	public boolean isEnabled() {
 		return panel.isEnabled();

@@ -30,8 +30,8 @@ import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMinScoreToDisplay;
-import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.track.drawer.BinListDrawer;
 import edu.yu.einstein.genplay.gui.track.drawer.CurveDrawer;
 

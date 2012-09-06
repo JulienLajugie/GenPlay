@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.operation.UpdateEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.UpdateFileScanner;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -287,5 +288,9 @@ public class MGOUpdateVCFGenotype extends UpdateEngine {
 
 		return line;
 	}
+
+
+	@Override
+	public void processLine(FileScannerInterface fileAlgorithm)	throws IOException {}
 
 }

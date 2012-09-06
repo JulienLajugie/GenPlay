@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -54,31 +55,40 @@ public class ToolTipStripeDialog extends JDialog {
 	private static final int V_GAP = 5;		// vertical gap between dialog components
 	private static final int H_GAP = 5;		// horizontal gap between dialog components
 
-	private final VCFLineDialog vcfLineDialog;
-
+	private final VCFLineDialog 			vcfLineDialog;
 	private final List<VariantInterface> 	variantList;		// a list of displayable variant
-	private VariantInterface 		currentVariant;			// the current variant object to display
-	private VCFLine 				currentLine;	// the current variant object to display
+	private final MultiGenomeDrawer 		multiGenomeDrawer;
+
+	private VariantInterface 		currentVariant;		// the current variant object to display
+	private VCFLine 				currentLine;		// the current variant object to display
 
 	private final JPanel headerPanel;			// panel containing the global information
-	private final JPanel infoPanel;			// panel containing the INFO field information of the VCF
+	private final JPanel infoPanel;				// panel containing the INFO field information of the VCF
 	private final JPanel formatPanel;			// panel containing the FORMAT field information of the VCF
 	private final JPanel navigationPanel;		// panel to move forward/backward
 
 
 	/**
 	 * Constructor of {@link ToolTipStripeDialog}
+	 * @param multiGenomeDrawer the multi genome drawer requesting the dialog
 	 * @param fittedVariantList the full list of displayable variants
 	 */
-	public ToolTipStripeDialog (List<VariantInterface> fittedVariantList) {
+	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer, List<VariantInterface> fittedVariantList) {
 		super(MainFrame.getInstance());
+		ToolTipStripeHandler.getInstance().addDialog(this);
+		this.multiGenomeDrawer = multiGenomeDrawer;
 		this.vcfLineDialog = new VCFLineDialog();
 		this.variantList = fittedVariantList;
+		int trackNumber = MainFrame.getInstance().getTrackList().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
+		String title = "Variant properties";
+		if (trackNumber > 0) {
+			title += " (Track " + trackNumber + ")";
+		}
 		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
-		setTitle("Variant properties");
+		setTitle(title);
 
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP);
 		setLayout(layout);
@@ -335,4 +345,11 @@ public class ToolTipStripeDialog extends JDialog {
 		vcfLineDialog.show(currentLine);
 	}
 
+
+	/**
+	 * @return the multiGenomeDrawer
+	 */
+	public MultiGenomeDrawer getMultiGenomeDrawer() {
+		return multiGenomeDrawer;
+	}
 }

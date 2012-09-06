@@ -108,7 +108,7 @@ public class MGABedExport extends TrackListActionWorker<Boolean> {
 						exportEngine.setPath(filePath);
 
 						try {
-							exportEngine.export();
+							exportEngine.compute();
 							return true;
 						} catch (Exception e) {
 							e.printStackTrace();

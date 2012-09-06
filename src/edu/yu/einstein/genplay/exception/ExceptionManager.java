@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.manager;
+package edu.yu.einstein.genplay.exception;
 
 import java.awt.Component;
 import java.util.concurrent.CancellationException;
@@ -27,8 +27,6 @@ import java.util.concurrent.CancellationException;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.exception.BinListDifferentWindowSizeException;
-import edu.yu.einstein.genplay.exception.InvalidFileTypeException;
 import edu.yu.einstein.genplay.exception.valueOutOfRangeException.ValueOutOfRangeException;
 
 

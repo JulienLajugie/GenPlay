@@ -26,7 +26,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
+import edu.yu.einstein.genplay.core.multiGenome.operation.BasicEngine;
 
 /**
  * Scanner for single file.
@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
  */
 public class SingleFileScanner implements FileScannerInterface {
 
-	private final 	ExportEngine 		engine;			// The export engine.
+	private final 	BasicEngine 		engine;			// The export engine.
 	private final 	VCFFile 			vcfFile;		// The VCF file to scan.
 	private final 	List<String> 		genomeList;		// The list of genome names.
 	private final 	ManualVCFReader 	vcfReader;		// The actual VCF reader.
@@ -48,7 +48,7 @@ public class SingleFileScanner implements FileScannerInterface {
 	 * @param engine		the related export engine
 	 * @throws Exception
 	 */
-	public SingleFileScanner (ExportEngine engine) throws Exception {
+	public SingleFileScanner (BasicEngine engine) throws Exception {
 		this.engine = engine;
 		vcfFile = engine.getFileList().get(0);
 		genomeList = engine.getGenomeList();

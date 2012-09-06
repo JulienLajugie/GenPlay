@@ -139,9 +139,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 					}
 					if ((strand != null) && (isStrandSelected(strand))) {
 						// retrieve the start position
-						int start = Integer.parseInt(splitedLine[3].trim());
+						int start = getInt(splitedLine[3].trim());
 						// retrieve the stop position
-						int stop = Integer.parseInt(splitedLine[4].trim());
+						int stop = getInt(splitedLine[4].trim());
 						// compute the read position with specified strand shift and read length
 						if (readHandler != null) {
 							SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromo, start, stop, strand);
@@ -153,7 +153,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						Double score = null;
 						String scoreStr = splitedLine[5].trim();
 						if (!scoreStr.equals("-") && !scoreStr.equals(".")) {
-							score = Double.parseDouble(scoreStr);
+							score = getDouble(scoreStr);
 						}
 						// if there is some attribute informations
 						String name = null;
@@ -169,10 +169,10 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 							}
 							// if there is a FPKM attribute we replace the score by the FPKM
 							if (attributes.containsKey("FPKM")) {
-								score = Double.parseDouble(attributes.get("FPKM"));
+								score = getDouble(attributes.get("FPKM"));
 							} else if (attributes.containsKey("RPKM")) {
 								// if there is no FPKM but there is a RPKM we replace the score by the RPKM
-								score = Double.parseDouble(attributes.get("RPKM"));
+								score = getDouble(attributes.get("RPKM"));
 							}
 						}
 
@@ -275,14 +275,14 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 			throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
-	
-	
+
+
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-	    return new MaskWindowList(startList, stopList);
+		return new MaskWindowList(startList, stopList);
 	}
 
-	
+
 	@Override
 	public boolean isBinSizeNeeded() {
 		return true;

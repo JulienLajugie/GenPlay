@@ -105,7 +105,7 @@ public class MGAVCFUpdateGenotype extends TrackListActionWorker<Boolean> {
 				engine.setPath(outputPath);
 				engine.setGenomeNameMap(genomeNameMap);
 
-				engine.export();
+				engine.compute();
 			}
 		}
 		return false;

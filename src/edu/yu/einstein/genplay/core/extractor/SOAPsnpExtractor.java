@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,8 +34,8 @@ import edu.yu.einstein.genplay.core.generator.SNPListGenerator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -94,19 +94,19 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 			} catch (InvalidChromosomeException e) {
 				chromosomeStatus = NEED_TO_BE_SKIPPED;
 			}
-			
+
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				int position = Integer.parseInt(splitedLine[1].trim()) - 1;
+				int position = getInt(splitedLine[1].trim()) - 1;
 
 				Nucleotide consensusGenotype = Nucleotide.get(splitedLine[3].trim().charAt(0));
 				Nucleotide firstBase = Nucleotide.get(splitedLine[5].trim().charAt(0));
-				int firstBaseCount = Integer.parseInt(splitedLine[7].trim());
+				int firstBaseCount = getInt(splitedLine[7].trim());
 				Nucleotide secondBase = Nucleotide.get(splitedLine[9].trim().charAt(0));
-				int secondBaseCount = Integer.parseInt(splitedLine[11].trim());				
+				int secondBaseCount = getInt(splitedLine[11].trim());
 				boolean isSecondBaseSignificant = !consensusGenotype.equals(firstBase);
 
 				// Checks errors
@@ -118,7 +118,7 @@ public class SOAPsnpExtractor extends TextFileExtractor implements Serializable,
 					firstBaseCountList.add(chromosome, firstBaseCount);
 					secondBaseList.add(chromosome, secondBase);
 					secondBaseCountList.add(chromosome, secondBaseCount);
-					isSecondBaseSignificantList.add(chromosome, isSecondBaseSignificant);				
+					isSecondBaseSignificantList.add(chromosome, isSecondBaseSignificant);
 					lineCount++;
 				} else {
 					throw new DataLineException(errors);

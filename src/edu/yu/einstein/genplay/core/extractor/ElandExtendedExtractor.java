@@ -240,7 +240,7 @@ public final class ElandExtendedExtractor extends TextFileExtractor implements S
 			char strandChar = (char) (line[i] & 0xFF); // because byte goes from -128 to 127 and char from 0 to 255
 			Strand strand = Strand.get(strandChar);
 			if (isStrandSelected(strand)) {
-				positionNumber = Integer.parseInt(new String(positionChar, 0, j));
+				positionNumber = getInt(new String(positionChar, 0, j));
 				if (positionNumber <= chromo.getLength()) {
 					// add data for the statistics
 					matchTypeCount[chromoNumber][0] += match0MNumber;

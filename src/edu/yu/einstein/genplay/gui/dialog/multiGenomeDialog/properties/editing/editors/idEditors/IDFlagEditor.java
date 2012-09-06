@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -43,15 +43,15 @@ public class IDFlagEditor implements IDEditor {
 	private final static String CONSTRAINT_LABEL_TTT 	= "Select a constraint for the value.";
 	private final static String PRESENT_TTT 			= "The flag in the associated file data will must be PRESENT in order to be accepted.";
 	private final static String ABSENT_TTT 				= "The flag in the associated file data will must be ABSENT in order to be accepted.";
-	private final static String PRESENT 				= "must contains";
-	private final static String ABSENT 					= "must not contains";
-	
+	private final static String PRESENT 				= "must contain";
+	private final static String ABSENT 					= "must not contain";
+
 	private JPanel			panel;
 	private VCFHeaderType 	header;			// Header ID
 	private JLabel 			constraintLabel;	// Label for naming the constraint
 	private JRadioButton	present;		// Radio box for PRESENT value
 	private JRadioButton	absent;			// Radio box for ABSENT value
-	
+
 
 	@Override
 	public JPanel updatePanel() {
@@ -98,11 +98,11 @@ public class IDFlagEditor implements IDEditor {
 		gbc.gridy = 2;
 		gbc.weighty = 1;
 		panel.add(absent, gbc);
-		
+
 		return panel;
 	}
 
-	
+
 	@Override
 	public IDFilterInterface getFilter() {
 		FlagIDFilter filter = new FlagIDFilter();
@@ -115,18 +115,18 @@ public class IDFlagEditor implements IDEditor {
 		return filter;
 	}
 
-	
+
 	@Override
 	public void setHeaderType(VCFHeaderType id) {
 		this.header = id;
 	}
-	
-	
+
+
 	@Override
 	public VCFHeaderType getHeaderType () {
 		return header;
 	}
-	
+
 
 	@Override
 	public void initializesPanel(IDFilterInterface filter) {
@@ -138,7 +138,7 @@ public class IDFlagEditor implements IDEditor {
 		}
 	}
 
-	
+
 	@Override
 	public String getErrors() {
 		String errors = "";

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,8 +34,8 @@ import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -49,13 +49,13 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 	private static final long serialVersionUID = 7967902877674655813L; // generated ID
 
-	private ChromosomeListOfLists<Integer>	startList;		// list of position start
-	private ChromosomeListOfLists<Integer>	stopList;		// list of position stop
-	private ChromosomeListOfLists<String> 	nameList;		// list of name
-	private ChromosomeListOfLists<Strand> 	strandList;		// list of strand
-	private ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
-	private ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
-	private ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
+	private final ChromosomeListOfLists<Integer>	startList;		// list of position start
+	private final ChromosomeListOfLists<Integer>	stopList;		// list of position stop
+	private final ChromosomeListOfLists<String> 	nameList;		// list of name
+	private final ChromosomeListOfLists<Strand> 	strandList;		// list of strand
+	private final ChromosomeListOfLists<int[]> 	exonStartsList;	// list of list of exon starts
+	private final ChromosomeListOfLists<int[]> 	exonStopsList;	// list of list of exon stops
+	private final ChromosomeListOfLists<double[]>	exonScoresList;	// list of list of exon scores
 	private String							searchURL;		// url of the gene database for the search
 
 
@@ -89,9 +89,9 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 
 	/**
 	 * Receives one line from the input file and extracts and adds the data in the lists
-	 * @param extractedLine line read from the data file  
+	 * @param extractedLine line read from the data file
 	 * @return true when the extraction is done
-	 * @throws DataLineException 
+	 * @throws DataLineException
 	 */
 	@Override
 	protected boolean extractLine(String extractedLine) throws DataLineException {
@@ -123,9 +123,9 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 					// Gets the values
 					String name = splitedLine[0].trim();
 					Strand strand = Strand.get(splitedLine[2].trim().charAt(0));
-					int start = Integer.parseInt(splitedLine[3].trim());
+					int start = getInt(splitedLine[3].trim());
 					start = getMultiGenomePosition(chromosome, start);
-					int stop = Integer.parseInt(splitedLine[4].trim());
+					int stop = getInt(splitedLine[4].trim());
 					stop = getMultiGenomePosition(chromosome, stop);
 					//String[] exonStartsStr = splitedLine[5].split(",");
 					//String[] exonStopsStr = splitedLine[6].split(",");
@@ -134,16 +134,16 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 					int[] exonStarts = new int[exonStartsStr.length];
 					int[] exonStops = new int[exonStartsStr.length];
 					for (int i = 0; i < exonStartsStr.length; i++) {
-						exonStarts[i] = Integer.parseInt(exonStartsStr[i].trim());
+						exonStarts[i] = getInt(exonStartsStr[i].trim());
 						exonStarts[i] = getMultiGenomePosition(chromosome, exonStarts[i]);
-						exonStops[i] = Integer.parseInt(exonStopsStr[i].trim());
+						exonStops[i] = getInt(exonStopsStr[i].trim());
 						exonStops[i] = getMultiGenomePosition(chromosome, exonStops[i]);
 					}
 
 					// Checks errors
 					String errors = DataLineValidator.getErrors(chromosome, start, stop, exonStarts, exonStops, name, strand);
 					if (errors.length() == 0) {
-						
+
 						// Stop position checking, must not overpass the chromosome length
 						DataLineException stopEndException = null;
 						String stopEndErrorMessage = DataLineValidator.getErrors(chromosome, stop);
@@ -151,7 +151,7 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 							stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
 							stop = chromosome.getLength();
 						}
-						
+
 						// Adds the values
 						nameList.add(chromosome, name);
 						strandList.add(chromosome, strand);
@@ -166,12 +166,12 @@ public final class GdpGeneExtractor extends TextFileExtractor implements Seriali
 							String[] exonScoresStr = Utils.split(splitedLine[7], ',');
 							double[] exonScores = new double[exonScoresStr.length];
 							for (int i = 0; i < exonScoresStr.length; i++) {
-								exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+								exonScores[i] = getDouble(exonScoresStr[i]);
 							}
 							exonScoresList.add(chromosome, exonScores);
 						}
 						lineCount++;
-						
+
 						if (stopEndException != null) {
 							throw stopEndException;
 						}

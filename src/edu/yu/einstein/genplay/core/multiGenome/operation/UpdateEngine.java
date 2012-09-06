@@ -23,19 +23,11 @@ package edu.yu.einstein.genplay.core.multiGenome.operation;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import edu.yu.einstein.genplay.core.comparator.ListComparator;
-import edu.yu.einstein.genplay.core.enums.VariantType;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOUpdateVCFGenotype;
-import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
@@ -45,14 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public abstract class UpdateEngine {
-
-	protected FileScannerInterface				fileScanner;	// The file scanner.
-
-	// Input parameters: data to use as model
-	protected Map<String, List<VCFFile>> 		fileMap;		// The map between genome names and their related files.
-	protected Map<String, List<VariantType>> 	variationMap;	// The map between genome names and their required variations.
-	protected List<MGFilter> 					filterList;		// The list of filters.
+public abstract class UpdateEngine extends BasicEngine {
 
 	// Input parameters: file to update
 	protected VCFFile							fileToUpdate;	// The file to update.
@@ -63,39 +48,12 @@ public abstract class UpdateEngine {
 
 
 	/**
-	 * Export the data
-	 * @throws Exception
-	 */
-	public void export () throws Exception {
-		String errors = getParameterErrors();
-		if (errors == null) {
-			if (canStart()) {
-				process();
-			}
-		} else {
-			System.err.println("ExportEngine.process()\n" + errors);
-		}
-	}
-
-
-	/**
 	 * Checks every parameter and create an full error message if any of them is not valid.
 	 * @return the error message, null if no error.
 	 */
-	private String getParameterErrors () {
-		String errors = null;
-
-		if (fileMap == null) {
-			errors = addErrorMessage(errors, "No file map has been declared.");
-		} else if (fileMap.size() == 0) {
-			errors = addErrorMessage(errors, "The file map is empty.");
-		}
-
-		if (variationMap == null) {
-			errors = addErrorMessage(errors, "No variation map has been declared.");
-		} else if (variationMap.size() == 0) {
-			errors = addErrorMessage(errors, "The variation map is empty.");
-		}
+	@Override
+	protected String getParameterErrors () {
+		String errors = super.getParameterErrors();
 
 		if (fileToUpdate == null) {
 			errors = addErrorMessage(errors, "The VCF file to update has not been declared.");
@@ -117,146 +75,7 @@ public abstract class UpdateEngine {
 			file.delete();
 		}
 
-		if ((fileMap != null) && (variationMap != null)) {
-			ListComparator<String> comparator = new ListComparator<String>();
-			List<String> genomesFileMap = new ArrayList<String>(fileMap.keySet());
-			List<String> genomesVariationMap = new ArrayList<String>(variationMap.keySet());
-
-			int result = comparator.compare(genomesFileMap, genomesVariationMap);
-			if (result != 0) {
-				errors = addErrorMessage(errors, "Genome names lists are not equal:");
-				errors = addErrorMessage(errors, comparator.getErrorCode());
-			}
-		}
-
 		return errors;
-	}
-
-
-	/**
-	 * Add a message to a full error message
-	 * @param errors	the full error message
-	 * @param message	the message
-	 * @return			the full error message containing the new message
-	 */
-	private String addErrorMessage (String errors, String message) {
-		if (errors == null) {
-			errors = message;
-		} else if (errors.length() > 0) {
-			errors += "\n" + message;
-		} else {
-			errors += message;
-		}
-		return errors;
-	}
-
-
-	/**
-	 * @return true if the export is from only one file, false if several files are involved
-	 */
-	protected boolean isSingleExport () {
-		if (getFileList().size() == 1) {
-			return true;
-		}
-		return false;
-	}
-
-
-	/**
-	 * @return the sorted list of genome names
-	 */
-	public List<String> getGenomeList () {
-		List<String> result = new ArrayList<String>(variationMap.keySet());
-		Collections.sort(result);
-		return result;
-	}
-
-
-	/**
-	 * @return the list of files
-	 */
-	public List<VCFFile> getFileList () {
-		List<VCFFile> fileList = new ArrayList<VCFFile>();
-		for (String genome: fileMap.keySet()) {
-			List<VCFFile> projectList = fileMap.get(genome);
-			for (VCFFile file: projectList) {
-				if (!fileList.contains(file)) {
-					fileList.add(file);
-				}
-			}
-		}
-		return fileList;
-	}
-
-
-	/**
-	 * @return true if the export can start, false otherwise
-	 * @throws Exception
-	 */
-	protected abstract boolean canStart () throws Exception;
-
-
-	/**
-	 * Processes the export
-	 * @throws Exception
-	 */
-	protected abstract void process () throws Exception;
-
-
-	/**
-	 * Processes a line
-	 * @param src the VCF file to use as reference for phasing
-	 * @param dest the VCF file to apply the phasing
-	 * @throws IOException
-	 */
-	public abstract void processLine (VCFLine src, VCFLine dest) throws IOException;
-
-
-	/**
-	 * @return the fileMap
-	 */
-	public Map<String, List<VCFFile>> getFileMap() {
-		return fileMap;
-	}
-
-
-	/**
-	 * @param fileMap the fileMap to set
-	 */
-	public void setFileMap(Map<String, List<VCFFile>> fileMap) {
-		this.fileMap = fileMap;
-	}
-
-
-	/**
-	 * @return the variationMap
-	 */
-	public Map<String, List<VariantType>> getVariationMap() {
-		return variationMap;
-	}
-
-
-	/**
-	 * @param variationMap the variationMap to set
-	 */
-	public void setVariationMap(Map<String, List<VariantType>> variationMap) {
-		this.variationMap = variationMap;
-	}
-
-
-	/**
-	 * @return the filterList
-	 */
-	public List<MGFilter> getFilterList() {
-		return filterList;
-	}
-
-
-	/**
-	 * @param filterList the filterList to set
-	 */
-	public void setFilterList(List<MGFilter> filterList) {
-		this.filterList = filterList;
 	}
 
 
@@ -309,34 +128,6 @@ public abstract class UpdateEngine {
 			String valueRawName = FormattedMultiGenomeName.getRawName(genomeNameMap.get(rawDestName));
 			this.genomeNameMap.put(rawDestName, valueRawName);
 		}
-	}
-
-
-	/**
-	 * @return a description of the genomes and their variants
-	 */
-	protected String getVariantDescription () {
-		String description = "";
-
-		int genomeIndex = 0;
-		List<String> genomeNames = new ArrayList<String>(variationMap.keySet());
-		for (String genomeName: genomeNames) {
-			description += genomeName + " (";
-			List<VariantType> list = variationMap.get(genomeName);
-			for (int i = 0; i < list.size(); i++) {
-				description += list.get(i);
-				if (i < (list.size() - 1)) {
-					description += ", ";
-				}
-			}
-			description += ")";
-			if (genomeIndex < (genomeNames.size() - 1)) {
-				description += " ";
-			}
-			genomeIndex++;
-		}
-
-		return description;
 	}
 
 }

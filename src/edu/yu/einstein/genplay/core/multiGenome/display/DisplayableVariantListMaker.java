@@ -301,6 +301,7 @@ public class DisplayableVariantListMaker implements Serializable {
 			fittedXRatio = xRatio;
 			hasToFit = true;
 		}
+
 		if (hasToFit) {
 			if (cache.hasData(xRatio)) {
 				fittedDataList = cache.getData(xRatio);
@@ -308,7 +309,8 @@ public class DisplayableVariantListMaker implements Serializable {
 				fitToScreen();
 			}
 		}
-		return getFittedData(window.getStart(), window.getStop());
+		List<VariantInterface> result = getFittedData(window.getStart(), window.getStop());
+		return result;
 	}
 
 

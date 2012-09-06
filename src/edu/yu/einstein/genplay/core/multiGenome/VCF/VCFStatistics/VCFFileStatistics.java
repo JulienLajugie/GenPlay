@@ -19,85 +19,70 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.list;
+package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics;
 
-import java.util.HashMap;
 import java.util.Map;
-
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
- * @param <K>
  */
-public class CacheTrack<K> {
-
-
-	Map<Double, K> map;
+public interface VCFFileStatistics extends VCFStatistics {
 
 
 	/**
-	 * Constructor of {@link CacheTrack}
+	 * Add a genome name to the list of genome name
+	 * @param genomeName a full genome name
 	 */
-	public CacheTrack () {
-		initialize();
-	}
+	public void addGenomeName (String genomeName);
 
 
 	/**
-	 * Initialize/Reset the cache
+	 * @param sample 	sample or genome name
+	 * @return			the statistics related to that sample
 	 */
-	public void initialize () {
-		map = new HashMap<Double, K>();
-	}
+	public VCFSampleStatistics getSampleStatistics (String sample);
 
 
 	/**
-	 * Set some data for xRatio.
-	 * it will erase current data for that ratio.
-	 * @param xRatio	the xRation
-	 * @param data		the data to set
+	 * @return the genomeStatistics
 	 */
-	public void setData (double xRatio, K data) {
-		if (isCacheEnable()) {
-			map.put(xRatio, data);
-		}
-	}
+	public Map<String, VCFSampleStatistics> getGenomeStatistics();
 
 
 	/**
-	 * @param xRatio an xRation
-	 * @return the data associated to the xRatio, null if no match
+	 * increment the numberOfSNPs
 	 */
-	public K getData (double xRatio) {
-		/*if (map.containsKey(xRatio)) {
-			return map.get(xRatio);
-		}*/
-		return map.get(xRatio);
-	}
+	public void incrementNumberOfSNPs();
 
 
 	/**
-	 * @param xRatio an xRatio
-	 * @return true if the cache has data the given xRation, false otherwise
+	 * increment the numberOfShortInsertions
 	 */
-	public boolean hasData (double xRatio) {
-		if (map.containsKey(xRatio)) {
-			return true;
-		}
-		return false;
-	}
+	public void incrementNumberOfShortInsertions();
 
 
 	/**
-	 * @return true is cache system is enabled, false otherwise
+	 * increment the numberOfLongInsertions
 	 */
-	private boolean isCacheEnable () {
-		return ProjectManager.getInstance().getProjectConfiguration().isCacheTrack();
-	}
+	public void incrementNumberOfLongInsertions();
 
 
+	/**
+	 * increment the numberOfShortDeletions
+	 */
+	public void incrementNumberOfShortDeletions();
+
+
+	/**
+	 * increment the numberOfLongDeletions
+	 */
+	public void incrementNumberOfLongDeletions();
+
+
+	/**
+	 * increment the numberOfLines
+	 */
+	public void incrementNumberOfLines();
 
 }

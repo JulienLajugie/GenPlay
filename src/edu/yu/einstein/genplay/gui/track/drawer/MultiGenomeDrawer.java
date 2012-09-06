@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.display.DisplayableVariantListMaker;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
@@ -50,6 +51,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeHandler;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
@@ -74,6 +76,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 
 	private ProjectWindow					projectWindow;					// instance of the genome window manager
+	private VCFFileStatistics				statistics;
 
 	private DisplayableVariantListMaker		allele01VariantListMaker;		// displayable variants list creator (for MG project)
 	private DisplayableVariantListMaker		allele02VariantListMaker;		// displayable variants list creator (for MG project)
@@ -101,6 +104,7 @@ public class MultiGenomeDrawer implements Serializable {
 		}
 		out.writeInt(stripesOpacity);
 		out.writeObject(mgFiltersList);
+		out.writeObject(statistics);
 	}
 
 
@@ -121,6 +125,7 @@ public class MultiGenomeDrawer implements Serializable {
 		}
 		stripesOpacity = in.readInt();
 		mgFiltersList = (List<MGFilter>) in.readObject();
+		statistics = (VCFFileStatistics) in.readObject();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 	}
 
@@ -139,6 +144,7 @@ public class MultiGenomeDrawer implements Serializable {
 		}
 		stripesList = null;
 		mgFiltersList = new ArrayList<MGFilter>();
+		statistics = null;
 	}
 
 
@@ -204,6 +210,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 */
 	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
 		if (hasMultiGenomeInformationChanged(stripesList, filtersList)) {
+			this.statistics = null;
+			ToolTipStripeHandler.getInstance().killDialogs(this);
 			this.stripesList = stripesList;
 			this.mgFiltersList = filtersList;
 
@@ -263,7 +271,7 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param xFactor 		the x factor
 	 */
 	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
-		if ((stripesList != null) && (stripesList.size() > 0)) {																// if there are stripes
+		if ((stripesList != null) && (stripesList.size() > 0)) {															// if there are stripes
 			stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
 			AlleleType trackAlleleType = getTrackAlleleType();																// get the allele type of the track
 			if (trackAlleleType == AlleleType.BOTH) {																		// if both allele must be displayed
@@ -278,9 +286,9 @@ public class MultiGenomeDrawer implements Serializable {
 				drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
 				drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
 			} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
-				drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw its stripes
+				drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
 			} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
-				drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw its stripes
+				drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
 			}
 		}
 	}
@@ -505,7 +513,6 @@ public class MultiGenomeDrawer implements Serializable {
 				}
 			}
 		}
-
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -533,7 +540,7 @@ public class MultiGenomeDrawer implements Serializable {
 				} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
 					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
 				}
-				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(variantList);								// we create the information dialog
+				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(this, variantList);								// we create the information dialog
 				toolTip.show(variant, e.getXOnScreen(), e.getYOnScreen());							// we show it
 			}
 		}
@@ -777,4 +784,19 @@ public class MultiGenomeDrawer implements Serializable {
 		return variantList;
 	}
 
+
+	/**
+	 * @return the statistics
+	 */
+	public VCFFileStatistics getStatistics() {
+		return statistics;
+	}
+
+
+	/**
+	 * @param statistics the statistics to set
+	 */
+	public void setStatistics(VCFFileStatistics statistics) {
+		this.statistics = statistics;
+	}
 }

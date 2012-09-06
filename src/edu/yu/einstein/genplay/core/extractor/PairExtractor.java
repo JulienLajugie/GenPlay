@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,8 +36,8 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -51,8 +51,8 @@ public final class PairExtractor extends TextFileExtractor
 implements Serializable, BinListGenerator {
 
 	private static final long serialVersionUID = -2160273514926102255L; // generated ID
-	private ChromosomeListOfLists<Integer>	positionList;		// list of position start
-	private ChromosomeListOfLists<Double>	scoreList;			// list of scores
+	private final ChromosomeListOfLists<Integer>	positionList;		// list of position start
+	private final ChromosomeListOfLists<Double>	scoreList;			// list of scores
 
 
 	/**
@@ -76,7 +76,7 @@ implements Serializable, BinListGenerator {
 	 * Receives one line from the input file and extracts and adds the data in the lists
 	 * @param extractedLine line read from the data file
 	 * @return true when the extraction is done
-	 * @throws DataLineException 
+	 * @throws DataLineException
 	 */
 	@Override
 	protected boolean extractLine(String extractedLine) throws DataLineException {
@@ -86,7 +86,7 @@ implements Serializable, BinListGenerator {
 		// We don't want to extract the header lines
 		// So we extract only if the line starts with a number
 		try {
-			Integer.parseInt(extractedLine.substring(0, 1));
+			getInt(extractedLine.substring(0, 1));
 		} catch (Exception e){
 			return false;
 		}
@@ -111,15 +111,15 @@ implements Serializable, BinListGenerator {
 			} catch (InvalidChromosomeException e) {
 				chromosomeStatus = NEED_TO_BE_SKIPPED;
 			}
-			
+
 			if (chromosomeStatus == AFTER_LAST_SELECTED) {
 				return true;
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				int position = Integer.parseInt(splitedLine[4]);
-				Double score = Double.parseDouble(splitedLine[9]);
-				
+				int position = getInt(splitedLine[4]);
+				Double score = getDouble(splitedLine[9]);
+
 				// Checks errors
 				String errors = DataLineValidator.getErrors(chromosome, position, position, score);
 				if (errors.length() == 0) {

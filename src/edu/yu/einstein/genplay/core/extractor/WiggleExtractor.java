@@ -135,19 +135,19 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} else if ((currentField.length() > 6) && (currentField.substring(0, 6).equalsIgnoreCase("start="))) {
 				// retrieve start position
 				String posStr = splittedLine[i].trim().substring(6);
-				currentPosition = Integer.parseInt(posStr);
+				currentPosition = getInt(posStr);
 			} else if ((currentField.length() > 5) && (currentField.substring(0, 5).equalsIgnoreCase("step="))) {
 				// retrieve step position
 				String stepStr = splittedLine[i].trim().substring(5);
-				currentStep = Integer.parseInt(stepStr);
+				currentStep = getInt(stepStr);
 			} else if ((currentField.length() > 5) && (currentField.substring(0, 5).equalsIgnoreCase("span="))) {
 				// retrieve span
 				String spanStr = splittedLine[i].trim().substring(5);
-				currentSpan = Integer.parseInt(spanStr);
+				currentSpan = getInt(spanStr);
 			} else {
 				if (currentChromo != null) {
 					if (isFixedStep) {
-						double score = Double.parseDouble(splittedLine[i]);
+						double score = getDouble(splittedLine[i]);
 						try {
 							if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
 								int start = getMultiGenomePosition(currentChromo, currentPosition);
@@ -172,8 +172,8 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 							//throw new InvalidDataLineException(line);
 							throw new DataLineException(DataLineException.INVALID_PARAMETER_NUMBER);
 						} else {
-							currentPosition = Integer.parseInt(splittedLine[i].trim());
-							double score = Double.parseDouble(splittedLine[i + 1]);
+							currentPosition = getInt(splittedLine[i].trim());
+							double score = getDouble(splittedLine[i + 1]);
 							i++;
 							try {
 								if ((score != 0) && (checkChromosomeStatus(currentChromo) == NEED_TO_BE_EXTRACTED)) {
@@ -252,13 +252,13 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 		return new SimpleScoredChromosomeWindowList(startList, stopList, scoreList, scm);
 	}
 
-	
+
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-	    return new MaskWindowList(startList, stopList);
+		return new MaskWindowList(startList, stopList);
 	}
-	
-	
+
+
 	@Override
 	public boolean isBinSizeNeeded() {
 		//		if (isStepUnique == null) {

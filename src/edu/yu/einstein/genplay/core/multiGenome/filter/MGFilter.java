@@ -85,4 +85,5 @@ public abstract class MGFilter {
 	 */
 	public abstract void show ();
 
+
 }

@@ -38,11 +38,11 @@ import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFileStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFSampleStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderElementRecord;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFSampleStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
@@ -132,7 +132,7 @@ public class MGSynchronizer implements Serializable {
 		for (int i = 0; i < chromosomeList.size(); i++) {												// loop on every chromosome
 			Chromosome chromosome = chromosomeList.get(i);
 			for (VCFFile vcfFile: VCFFileList) {														// loop on every vcf reader
-				VCFFileStatistic statistic = vcfFile.getStatistics();
+				VCFFileStatistics statistic = vcfFile.getStatistics();
 				List<String> genomeNames = getRequiredGenomeNamesFromAReader(vcfFile);					// get the genome names list
 				VCFHeader fileHeader = vcfFile.getHeader();
 				List<String> genomeRawNames = fileHeader.getRawGenomesNames();
@@ -382,7 +382,7 @@ public class MGSynchronizer implements Serializable {
 	 * @param variantTypes	variant type array
 	 * @param alternatives	alternatives array
 	 */
-	private void updateFileStatistics (VCFFileStatistic statistic, VariantType[] variantTypes, String[] alternatives) {
+	private void updateFileStatistics (VCFFileStatistics statistic, VariantType[] variantTypes, String[] alternatives) {
 		statistic.incrementNumberOfLines();
 		for (int i = 0; i < variantTypes.length; i++) {
 			if (variantTypes[i] == VariantType.SNPS) {
@@ -410,32 +410,18 @@ public class MGSynchronizer implements Serializable {
 	 * @param firstAlleleNumber		number of the first allele
 	 * @param secondAlleleNumber	number of the second allele
 	 */
-	private void updateGenotypeSampleStatistics (VCFSampleStatistic statistic, VariantType[] variantTypes, int firstAlleleIndex, int secondAlleleIndex) {
+	private void updateGenotypeSampleStatistics (VCFSampleStatistics statistic, VariantType[] variantTypes, int firstAlleleIndex, int secondAlleleIndex) {
 		boolean homozygote = isVariantHomozygote(firstAlleleIndex, secondAlleleIndex);
 		boolean heterozygote = isVariantHeterozygote(firstAlleleIndex, secondAlleleIndex);
 
 		for (VariantType variantType: variantTypes) {
 			if (homozygote) {
-				boolean isReference = false;
-				if (firstAlleleIndex == 0) {
-					isReference = true;
-				}
-				if (variantType == VariantType.SNPS) {
-					if (isReference) {
-						statistic.incrementNumberOfHomozygoteNoRefSNPs();
-					} else {
+				if (firstAlleleIndex > -1) {
+					if (variantType == VariantType.SNPS) {
 						statistic.incrementNumberOfHomozygoteSNPs();
-					}
-				} else if (variantType == VariantType.INSERTION) {
-					if (isReference) {
-						statistic.incrementNumberOfHomozygoteNoRefInsertions();
-					} else {
+					} else if (variantType == VariantType.INSERTION) {
 						statistic.incrementNumberOfHomozygoteInsertions();
-					}
-				} else if (variantType == VariantType.DELETION) {
-					if (isReference) {
-						statistic.incrementNumberOfHomozygoteNoRefDeletions();
-					} else {
+					} else if (variantType == VariantType.DELETION) {
 						statistic.incrementNumberOfHomozygoteDeletions();
 					}
 				}
@@ -488,7 +474,7 @@ public class MGSynchronizer implements Serializable {
 	 * @param variantType	variant type
 	 * @param alternative	alternative
 	 */
-	private void updateVariationSampleStatistics (VCFSampleStatistic statistic, VariantType variantType, String alternative) {
+	private void updateVariationSampleStatistics (VCFSampleStatistics statistic, VariantType variantType, String alternative) {
 		if (variantType == VariantType.SNPS) {
 			statistic.incrementNumberOfSNPs();
 		} else if (variantType == VariantType.INSERTION) {

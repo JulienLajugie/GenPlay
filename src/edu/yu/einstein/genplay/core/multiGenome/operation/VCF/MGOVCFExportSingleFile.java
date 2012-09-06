@@ -149,4 +149,8 @@ public class MGOVCFExportSingleFile extends ExportVCFEngine {
 		return result;
 	}
 
+
+	@Override
+	public void processLine(VCFLine src, VCFLine dest) throws IOException {}
+
 }

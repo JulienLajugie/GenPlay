@@ -128,9 +128,9 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 				Strand strand = Strand.get(splitedLine[6].charAt(0));
 				if (isStrandSelected(strand)) {
 					String name = splitedLine[2];
-					int start = Integer.parseInt(splitedLine[3]);
-					int stop = Integer.parseInt(splitedLine[4]);
-					double score = Double.parseDouble(splitedLine[5]);
+					int start = getInt(splitedLine[3]);
+					int stop = getInt(splitedLine[4]);
+					double score = getDouble(splitedLine[5]);
 					// compute the read position with specified strand shift and read length
 					if (readHandler != null) {
 						SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
@@ -195,7 +195,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator {
 
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-	    return new MaskWindowList(startList, stopList);
+		return new MaskWindowList(startList, stopList);
 	}
 
 	@Override

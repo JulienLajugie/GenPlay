@@ -111,11 +111,11 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 			} else if (chromosomeStatus == NEED_TO_BE_SKIPPED) {
 				return false;
 			} else {
-				int start = Integer.parseInt(splitedLine[1].trim());
+				int start = getInt(splitedLine[1].trim());
 				start = getMultiGenomePosition(chromosome, start);
-				int stop = Integer.parseInt(splitedLine[2].trim());
+				int stop = getInt(splitedLine[2].trim());
 				stop = getMultiGenomePosition(chromosome, stop);
-				double score = Double.parseDouble(splitedLine[3].trim());
+				double score = getDouble(splitedLine[3].trim());
 
 				String errors = DataLineValidator.getErrors(chromosome, start, stop, score);
 				if (errors.length() == 0) {
@@ -161,7 +161,7 @@ implements Serializable, ChromosomeWindowListGenerator, ScoredChromosomeWindowLi
 
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-	    return new MaskWindowList(startList, stopList);
+		return new MaskWindowList(startList, stopList);
 	}
 
 	@Override

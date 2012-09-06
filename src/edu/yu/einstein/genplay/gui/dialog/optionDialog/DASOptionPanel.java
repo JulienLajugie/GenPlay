@@ -42,7 +42,7 @@ import javax.swing.table.TableColumn;
 import org.xml.sax.SAXParseException;
 
 import edu.yu.einstein.genplay.core.DAS.DASServerList;
-import edu.yu.einstein.genplay.core.manager.ExceptionManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 
 

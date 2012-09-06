@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,9 +30,9 @@ import java.util.List;
 
 
 /**
- * This class implements the List of Boolean interface but internally 
- * it contains an array of byte that is dynamically resized in order to 
- * be more memory efficient. 
+ * This class implements the List of Boolean interface but internally
+ * it contains an array of byte that is dynamically resized in order to
+ * be more memory efficient.
  * @author Julien Lajugie
  * @author Nicolas Fourel
  */
@@ -68,7 +68,7 @@ public class ByteArrayAsBooleanList extends AbstractList<Boolean> implements Ser
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		value = (byte[]) in.readObject();
-		size = in.readInt();		
+		size = in.readInt();
 	}
 
 

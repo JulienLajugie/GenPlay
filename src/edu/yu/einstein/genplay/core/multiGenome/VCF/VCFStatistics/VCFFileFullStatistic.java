@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile;
+package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -29,11 +29,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VCFFileStatistic implements Serializable {
+public class VCFFileFullStatistic implements Serializable, VCFFileStatistics {
 
 	/** Default generated serial version ID */
 	private static final long serialVersionUID = -1037070449560631967L;
@@ -62,22 +63,22 @@ public class VCFFileStatistic implements Serializable {
 	// Column names
 	private static final String SECTION_NAME				= "Sections";					// Name for the section column
 	private static final String NUMBER_NAME 				= "Number";						// Name for the number column
-	private static final String PERCENTAGE_SECTION_NAME 	= "% on the variation type";	// Name for the section percentage column
+	private static final String PERCENTAGE_SECTION_NAME 	= "% on the section type";		// Name for the section percentage column
 	private static final String PERCENTAGE_TOTAL_NAME 		= "% on the whole genome";		// Name for the total percentage column
 
 	// Line names
 	private static final String LINE_NAME					= "Line";			// Name for the line section
 	private static final String SNP_NAME 					= "SNP";			// Name for the SNP section
 	private static final String INSERTION_NAME 				= "Insertion";		// Name for the Insertion section
-	private static final String INSERTION_INDEL_NAME 		= "- Indel";		// Name for the Insertion indels sub-section
-	private static final String INSERTION_SV_NAME 			= "- SV";			// Name for the Insertion SV sub-section
+	private static final String INSERTION_INDEL_NAME 		= "   Indel";		// Name for the Insertion indels sub-section
+	private static final String INSERTION_SV_NAME 			= "   SV";			// Name for the Insertion SV sub-section
 	private static final String DELETION_NAME 				= "Deletion";		// Name for the Deletion section
-	private static final String DELETION_INDEL_NAME 		= "- Indel";		// Name for the Deletion indels sub-section
-	private static final String DELETION_SV_NAME 			= "- SV";			// Name for the Deletion SV sub-section
+	private static final String DELETION_INDEL_NAME 		= "   Indel";		// Name for the Deletion indels sub-section
+	private static final String DELETION_SV_NAME 			= "   SV";			// Name for the Deletion SV sub-section
 
 
 	private Object[][] data;
-	private Map<String, VCFSampleStatistic> genomeStatistics;
+	private Map<String, VCFSampleStatistics> genomeStatistics;
 
 	private int numberOfSNPs;
 	private int numberOfShortInsertions;
@@ -112,15 +113,15 @@ public class VCFFileStatistic implements Serializable {
 		in.readInt();
 
 		data = (Object[][]) in.readObject();
-		genomeStatistics = (Map<String, VCFSampleStatistic>) in.readObject();
+		genomeStatistics = (Map<String, VCFSampleStatistics>) in.readObject();
 	}
 
 
 	/**
-	 * Constructor of {@link VCFFileStatistic}
+	 * Constructor of {@link VCFFileFullStatistic}
 	 */
-	protected VCFFileStatistic () {
-		genomeStatistics = new HashMap<String, VCFSampleStatistic>();
+	public VCFFileFullStatistic () {
+		genomeStatistics = new HashMap<String, VCFSampleStatistics>();
 
 		numberOfSNPs = 0;
 		numberOfShortInsertions = 0;
@@ -134,18 +135,14 @@ public class VCFFileStatistic implements Serializable {
 	}
 
 
-	/**
-	 * @return the array of column names for the data array
-	 */
+	@Override
 	public String[] getColumnNamesForData () {
 		String[] columnNames = {SECTION_NAME, NUMBER_NAME, PERCENTAGE_SECTION_NAME, PERCENTAGE_TOTAL_NAME};
 		return columnNames;
 	}
 
 
-	/**
-	 * Processes all statistics
-	 */
+	@Override
 	public void processStatistics () {
 		if (data == null) {
 			data = new Object[LINE_NUMBER][COLUMN_NUMBER];
@@ -187,7 +184,7 @@ public class VCFFileStatistic implements Serializable {
 			data[DELETION_INDEL_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_INDEL_INDEX), totalVariation);
 			data[DELETION_SV_INDEX][PERCENTAGE_TOTAL_INDEX] = getPercentage(getDataInt(DELETION_SV_INDEX), totalVariation);
 		}
-		for (VCFSampleStatistic sampleStatistics: genomeStatistics.values()) {
+		for (VCFSampleStatistics sampleStatistics: genomeStatistics.values()) {
 			sampleStatistics.processStatistics();
 		}
 	}
@@ -211,11 +208,8 @@ public class VCFFileStatistic implements Serializable {
 	}
 
 
-	/**
-	 * @param indexLine index of a line
-	 * @return			the integer located in the column containing the number, -1 otherwise
-	 */
-	private int getDataInt (int indexLine) {
+	@Override
+	public int getDataInt (int indexLine) {
 		return getDataInt(indexLine, NUMBER_INDEX);
 	}
 
@@ -234,93 +228,69 @@ public class VCFFileStatistic implements Serializable {
 	}
 
 
-	/**
-	 * @return the data
-	 */
+	@Override
 	public Object[][] getData() {
 		return data;
 	}
 
 
-	/**
-	 * Add a genome name to the list of genome name
-	 * @param genomeName a full genome name
-	 */
-	protected void addGenomeName (String genomeName) {
+	@Override
+	public void addGenomeName (String genomeName) {
 		if (!genomeStatistics.containsKey(genomeName)) {
-			genomeStatistics.put(genomeName, new VCFSampleStatistic());
+			genomeStatistics.put(genomeName, new VCFSampleFullStatistic());
 		}
 	}
 
 
-	/**
-	 * @param sample 	sample or genome name
-	 * @return			the statistics related to that sample
-	 */
-	public VCFSampleStatistic getSampleStatistics (String sample) {
+	@Override
+	public VCFSampleStatistics getSampleStatistics (String sample) {
 		return genomeStatistics.get(sample);
 	}
 
 
-	/**
-	 * @return the genomeStatistics
-	 */
-	public Map<String, VCFSampleStatistic> getGenomeStatistics() {
+	@Override
+	public Map<String, VCFSampleStatistics> getGenomeStatistics() {
 		return genomeStatistics;
 	}
 
 
-	/**
-	 * increment the numberOfSNPs
-	 */
+	@Override
 	public void incrementNumberOfSNPs() {
 		this.numberOfSNPs++;
 	}
 
 
-	/**
-	 * increment the numberOfShortInsertions
-	 */
+	@Override
 	public void incrementNumberOfShortInsertions() {
 		this.numberOfShortInsertions++;
 	}
 
 
-	/**
-	 * increment the numberOfLongInsertions
-	 */
+	@Override
 	public void incrementNumberOfLongInsertions() {
 		this.numberOfLongInsertions++;
 	}
 
 
-	/**
-	 * increment the numberOfShortDeletions
-	 */
+	@Override
 	public void incrementNumberOfShortDeletions() {
 		this.numberOfShortDeletions++;
 	}
 
 
-	/**
-	 * increment the numberOfLongDeletions
-	 */
+	@Override
 	public void incrementNumberOfLongDeletions() {
 		this.numberOfLongDeletions++;
 	}
 
 
-	/**
-	 * increment the numberOfLines
-	 */
+	@Override
 	public void incrementNumberOfLines() {
 		this.numberOfLines++;
 	}
 
 
-	/**
-	 * Shows all statistics
-	 */
+	@Override
 	public void show () {
 		String info = "";
 		info += "File Statistics\n";
@@ -343,9 +313,7 @@ public class VCFFileStatistic implements Serializable {
 	}
 
 
-	/**
-	 * @return a String of the {@link VCFFileStatistic}
-	 */
+	@Override
 	public String getString() {
 		String info = "";
 		info += "File Statistics:\n";
@@ -365,9 +333,7 @@ public class VCFFileStatistic implements Serializable {
 	}
 
 
-	/**
-	 * @return a String of the {@link VCFFileStatistic} including its {@link VCFSampleStatistic}
-	 */
+	@Override
 	public String getFullString () {
 		String info = getString();
 		for (String sample: genomeStatistics.keySet()) {

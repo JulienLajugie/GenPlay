@@ -83,7 +83,7 @@ public class TrackSelectionPanel extends EditingPanel<Track<?>[]> {
 	@Override
 	public String getErrors() {
 		String errors = "";
-		if (getSelectedTracks() == null) {
+		if ((getSelectedTracks() == null) || (getSelectedTracks().length == 0)) {
 			errors += "Track(s) selection\n";
 		}
 		return errors;

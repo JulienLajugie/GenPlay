@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics;
 
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -38,28 +38,33 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.comparator.StringComparator;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFileStatistic;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFSampleStatistic;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFSampleStatistics;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.PropertiesDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.Utils;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-class StatisticPanel extends JPanel {
+public class StatisticPanel extends JPanel {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -4602586057160516008L;
 
 
-	/**
-	 * Constructor of {@link StatisticPanel}
-	 * @param vcfFile the reader of the VCF file
-	 */
-	protected StatisticPanel (VCFFile vcfFile) {
-		final VCFFileStatistic statistic = vcfFile.getStatistics();
-		final Map<String, VCFSampleStatistic> genomeStatistics = statistic.getGenomeStatistics();
+	//private final JPanel filePanel;
+	//private final List<JPanel> samplePanels;
+	private final VCFFileStatistics statistic;
 
+
+	/**
+	 * Constructor of StatisticPanel
+	 * @param statistic the statistics of the VCF file
+	 */
+	public StatisticPanel (final VCFFileStatistics statistic) {
+		this.statistic = statistic;
+		final Map<String, VCFSampleStatistics> genomeStatistics = this.statistic.getGenomeStatistics();
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
@@ -105,11 +110,6 @@ class StatisticPanel extends JPanel {
 		buttonPanel.add(jbAllTablesFileCopy);
 		gbc.gridy++;
 		add(buttonPanel, gbc);
-		/*gbc.gridy++;
-		add(jbAllTablesFileCopy, gbc);
-		gbc.gridx++;
-		add(jbFileTableCopy, gbc);
-		gbc.gridx = 0;*/
 
 
 		List<String> genomeNames = new ArrayList<String>(genomeStatistics.keySet());

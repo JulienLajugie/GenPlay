@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -37,8 +37,8 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.DoubleArrayAsDoubleList;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.exception.DataLineException;
+import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -89,12 +89,12 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 				} catch (InvalidChromosomeException e) {
 					chromosomeStatus = NEED_TO_BE_SKIPPED;
 				}
-				
+
 				if (chromosomeStatus == AFTER_LAST_SELECTED) {
 					return true;
 				} else if (chromosomeStatus != NEED_TO_BE_SKIPPED) {
 					Strand strand = null;
-					int flag = Integer.parseInt(splitedLine[1].trim());
+					int flag = getInt(splitedLine[1].trim());
 					boolean isReversedRead = (flag & 0x10) == 0x10;
 					if (isReversedRead) {
 						strand = Strand.THREE;
@@ -102,10 +102,10 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 						strand = Strand.FIVE;
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
-						// we subtract 1 to the position because sam file position  
+						// we subtract 1 to the position because sam file position
 						// are 1 base and genplay is 0 based
-						int start = Integer.parseInt(splitedLine[3]) - 1;
-						// in order to find the stop position we need to 
+						int start = getInt(splitedLine[3]) - 1;
+						// in order to find the stop position we need to
 						// add the length of sequence to the start position
 						String sequence = splitedLine[9].trim();
 						int stop = start + sequence.length();
@@ -113,7 +113,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 						if (readHandler != null) {
 							SimpleChromosomeWindow resultStartStop = readHandler.computeStartStop(chromosome, start, stop, strand);
 							start = resultStartStop.getStart();
-							stop = resultStartStop.getStop();							
+							stop = resultStartStop.getStop();
 						}
 
 						// Checks errors
@@ -126,17 +126,17 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 								stopEndException = new DataLineException(stopEndErrorMessage, DataLineException.SHRINK_STOP_PROCESS);
 								stop = chromosome.getLength();
 							}
-							
-							// if we are in a multi-genome project, we compute the position on the meta genome 
+
+							// if we are in a multi-genome project, we compute the position on the meta genome
 							start = getMultiGenomePosition(chromosome, start);
 							stop = getMultiGenomePosition(chromosome, stop);
 							startList.add(chromosome, start);
 							stopList.add(chromosome, stop);
-							// TODO: add a BinList constructor that doesn't need 
+							// TODO: add a BinList constructor that doesn't need
 							// as score list so we don't need the useless next line
 							scoreList.add(chromosome, 1.0);
 							lineCount++;
-							
+
 							if (stopEndException != null) {
 								throw stopEndException;
 							}
@@ -174,8 +174,8 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 
 
 	@Override
-	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method) 
-	throws IllegalArgumentException, InterruptedException, ExecutionException {
+	public BinList toBinList(int binSize, DataPrecision precision, ScoreCalculationMethod method)
+			throws IllegalArgumentException, InterruptedException, ExecutionException {
 		return new BinList(binSize, precision, method, startList, stopList, scoreList);
 	}
 
@@ -191,7 +191,7 @@ public class SAMExtractor extends TextFileExtractor implements Serializable, Str
 
 	@Override
 	public void selectStrand(Strand strandToSelect) {
-		selectedStrand = strandToSelect;		
+		selectedStrand = strandToSelect;
 	}
 
 

@@ -147,8 +147,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 					}
 					if ((strand == null) || (isStrandSelected(strand))) {
 						strandList.add(chromosome, strand);
-						int start = Integer.parseInt(splitedLine[1].trim());
-						int stop = Integer.parseInt(splitedLine[2].trim());
+						int start = getInt(splitedLine[1].trim());
+						int stop = getInt(splitedLine[2].trim());
 
 						String errors = DataLineValidator.getErrors(chromosome, start, stop);
 						if (errors.length() == 0) {
@@ -178,7 +178,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 								}
 								if (splitedLine.length > 4) {
 									if (!splitedLine[4].trim().equals("-")) {
-										double score = Double.parseDouble(splitedLine[4].trim());
+										double score = getDouble(splitedLine[4].trim());
 										scoreList.add(chromosome, score);
 									}
 									if (splitedLine.length > 7) {
@@ -188,8 +188,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 											// UTR bounds are for genes only so we don't need to
 											// worry about the strand shift and the read length
 											// since these operations are not available for genes
-											UTR5Bound = Integer.parseInt(splitedLine[6].trim());
-											UTR3Bound = Integer.parseInt(splitedLine[7].trim());
+											UTR5Bound = getInt(splitedLine[6].trim());
+											UTR3Bound = getInt(splitedLine[7].trim());
 											// but we need to compute the position on the meta-genome
 											UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
 											UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
@@ -208,8 +208,8 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 												int[] exonStarts = new int[exonLengthsStr.length];
 												int[] exonStops = new int[exonLengthsStr.length];
 												for (int i = 0; i < exonLengthsStr.length; i++) {
-													exonStarts[i] = Integer.parseInt(exonStartsStr[i]) + start;
-													exonStops[i] = exonStarts[i] + Integer.parseInt(exonLengthsStr[i]);
+													exonStarts[i] = getInt(exonStartsStr[i]) + start;
+													exonStops[i] = exonStarts[i] + getInt(exonLengthsStr[i]);
 												}
 												exonStartsList.add(chromosome, exonStarts);
 												exonStopsList.add(chromosome, exonStops);
@@ -218,7 +218,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 													String[] exonScoresStr = Utils.split(splitedLine[12], ',');
 													double[] exonScores = new double[exonScoresStr.length];
 													for (int i = 0; i < exonScoresStr.length; i++) {
-														exonScores[i] = Double.parseDouble(exonScoresStr[i]);
+														exonScores[i] = getDouble(exonScoresStr[i]);
 													}
 													exonScoresList.add(chromosome, exonScores);
 												}
@@ -263,7 +263,7 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 
 	@Override
 	public ScoredChromosomeWindowList toMaskChromosomeWindowList() throws InvalidChromosomeException, InterruptedException,	ExecutionException {
-	    return new MaskWindowList(startList, stopList);
+		return new MaskWindowList(startList, stopList);
 	}
 
 	@Override

@@ -111,7 +111,7 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 					exportEngine.setFilterList(settings.getFilterList());
 
 					try {
-						exportEngine.export();
+						exportEngine.compute();
 						return true;
 					} catch (Exception e) {
 						e.printStackTrace();

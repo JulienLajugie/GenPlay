@@ -192,4 +192,30 @@ public class VCFFilter extends MGFilter implements Serializable {
 		return duplicate;
 	}
 
+
+	/**
+	 * Shows information about the MG filter
+	 */
+	public void showBooleanList () {
+		String info = "";
+
+		if (booleanList == null) {
+			info += "The boolean list is null";
+		} else {
+			if (booleanList.size() == 0) {
+				info += "The boolean list is empty";
+			} else {
+				info += "Size of the boolean list: " + booleanList.size() + "\n";
+				for (int i = 0; i < booleanList.size(); i++) {
+					info += booleanList.get(i) + "; ";
+					if ((i > 0) && ((i % 5) == 0)) {
+						info += "\n";
+					}
+				}
+			}
+		}
+
+		System.out.println(info);
+	}
+
 }

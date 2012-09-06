@@ -248,4 +248,8 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 		return new SimpleScoredChromosomeWindowList(alleleSettings.getStartList(), alleleSettings.getStopList(), alleleSettings.getScoreList(), ScoreCalculationMethod.AVERAGE);
 	}
 
+
+	@Override
+	public void processLine(VCFLine src, VCFLine dest) throws IOException {}
+
 }

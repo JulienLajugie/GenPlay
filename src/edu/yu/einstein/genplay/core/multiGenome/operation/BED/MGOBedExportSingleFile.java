@@ -274,4 +274,8 @@ public class MGOBedExportSingleFile extends ExportEngine {
 		return list;
 	}
 
+
+	@Override
+	public void processLine(VCFLine src, VCFLine dest) throws IOException {}
+
 }

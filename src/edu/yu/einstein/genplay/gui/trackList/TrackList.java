@@ -37,11 +37,11 @@ import javax.swing.JScrollPane;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.chromosomeWindowList.ChromosomeWindowList;
-import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
@@ -138,6 +138,7 @@ import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTALoadMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTARemoveMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
+import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics;
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
@@ -157,6 +158,7 @@ import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.VersionedTrack;
+import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 
 
 
@@ -336,6 +338,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
 
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			getActionMap().put(MGAVCFStatistics.ACTION_KEY, new MGAVCFStatistics());
 			getActionMap().put(MGAGlobalVCFExport.ACTION_KEY, new MGAGlobalVCFExport());
 			getActionMap().put(MGABedExport.ACTION_KEY, new MGABedExport());
 			getActionMap().put(MGASCWLConvert.ACTION_KEY, new MGASCWLConvert());
@@ -986,5 +989,19 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public JPanel getJpTrackList() {
 		return jpTrackList;
+	}
+
+
+	/**
+	 * @param multiGenomeDrawer
+	 * @return the number of the track according to a {@link MultiGenomeDrawer}
+	 */
+	public int getTrackNumberFromMGGenomeDrawer (MultiGenomeDrawer multiGenomeDrawer) {
+		for (int i = 0; i < trackList.length; i++) {
+			if (trackList[i].getMultiGenomeDrawer().equals(multiGenomeDrawer)) {
+				return i + 1;
+			}
+		}
+		return -1;
 	}
 }

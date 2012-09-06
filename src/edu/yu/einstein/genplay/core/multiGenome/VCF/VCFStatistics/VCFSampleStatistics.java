@@ -19,85 +19,77 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.list;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-
+package edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
- * @param <K>
  */
-public class CacheTrack<K> {
+public interface VCFSampleStatistics extends VCFStatistics {
 
-
-	Map<Double, K> map;
+	/**
+	 * increment the numberOfSNPs
+	 */
+	public void incrementNumberOfSNPs();
 
 
 	/**
-	 * Constructor of {@link CacheTrack}
+	 * increment the numberOfShortInsertions
 	 */
-	public CacheTrack () {
-		initialize();
-	}
+	public void incrementNumberOfShortInsertions();
 
 
 	/**
-	 * Initialize/Reset the cache
+	 * increment the numberOfLongInsertions
 	 */
-	public void initialize () {
-		map = new HashMap<Double, K>();
-	}
+	public void incrementNumberOfLongInsertions();
 
 
 	/**
-	 * Set some data for xRatio.
-	 * it will erase current data for that ratio.
-	 * @param xRatio	the xRation
-	 * @param data		the data to set
+	 * increment the numberOfShortDeletions
 	 */
-	public void setData (double xRatio, K data) {
-		if (isCacheEnable()) {
-			map.put(xRatio, data);
-		}
-	}
+	public void incrementNumberOfShortDeletions();
 
 
 	/**
-	 * @param xRatio an xRation
-	 * @return the data associated to the xRatio, null if no match
+	 * increment the numberOfLongDeletions
 	 */
-	public K getData (double xRatio) {
-		/*if (map.containsKey(xRatio)) {
-			return map.get(xRatio);
-		}*/
-		return map.get(xRatio);
-	}
+	public void incrementNumberOfLongDeletions();
 
 
 	/**
-	 * @param xRatio an xRatio
-	 * @return true if the cache has data the given xRation, false otherwise
+	 * increment the numberOfHomozygoteSNPs
 	 */
-	public boolean hasData (double xRatio) {
-		if (map.containsKey(xRatio)) {
-			return true;
-		}
-		return false;
-	}
+	public void incrementNumberOfHomozygoteSNPs();
 
 
 	/**
-	 * @return true is cache system is enabled, false otherwise
+	 * increment the numberOfHomozygoteInsertions
 	 */
-	private boolean isCacheEnable () {
-		return ProjectManager.getInstance().getProjectConfiguration().isCacheTrack();
-	}
+	public void incrementNumberOfHomozygoteInsertions();
 
 
+	/**
+	 * increment the numberOfHomozygoteDeletions
+	 */
+	public void incrementNumberOfHomozygoteDeletions();
+
+
+	/**
+	 * increment the numberOfHeterozygoteSNPs
+	 */
+	public void incrementNumberOfHeterozygoteSNPs();
+
+
+	/**
+	 * increment the numberOfHeterozygoteInsertions
+	 */
+	public void incrementNumberOfHeterozygoteInsertions();
+
+
+	/**
+	 * increment the numberOfHeterozygoteDeletions
+	 */
+	public void incrementNumberOfHeterozygoteDeletions();
 
 }

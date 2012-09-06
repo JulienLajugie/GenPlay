@@ -33,9 +33,9 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
-import edu.yu.einstein.genplay.core.manager.ExceptionManager;
 import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.track.drawer.CurveDrawer;
 import edu.yu.einstein.genplay.util.History;
 import edu.yu.einstein.genplay.util.colors.Colors;
