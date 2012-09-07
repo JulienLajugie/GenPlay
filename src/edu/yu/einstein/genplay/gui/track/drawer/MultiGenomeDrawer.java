@@ -497,8 +497,8 @@ public class MultiGenomeDrawer implements Serializable {
 				g.setColor(Colors.BLACK);												// set the color of the letters
 				int letterHeight = (height + fm.getHeight()) / 2;						// define where the draw will start on the Y axis
 				for (int i = 0; i < nucleotideNumber; i++) {							// for all the nucleotide that are supposed to be displayed
-					String letter = "?";												// the default letter is the question mark
-					if ((letters != "?") && (i < letters.length())) {					// if the letters are different to the question mark and if the current index is smaller than the string length
+					String letter = "-";												// the default letter is the question mark
+					if ((letters != "-") && (i < letters.length())) {					// if the letters are different to the question mark and if the current index is smaller than the string length
 						letter = letters.charAt(i) + "";								// we get the current character
 					}
 					int xC = (int) Math.round(x + (i * windowWidth) + ((windowWidth - fm.stringWidth(letter)) * 0.5));	// the horizontal position from where the draw starts: x (of the stripe) + size of a window * current window number + (windows width - letter width) / 2 (for the middle)
