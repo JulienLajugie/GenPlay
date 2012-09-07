@@ -336,10 +336,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 
 	protected Integer getInt (String s) throws DataLineException {
-		int result;
 		try {
-			result = Integer.parseInt(s);
-			return result;
+			return Integer.parseInt(s);
 		} catch (Exception e) {
 			throw new DataLineException("The information '" + s + "' does not seem to be a valid number.", DataLineException.SKIP_PROCESS);
 		}
@@ -347,10 +345,8 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 
 
 	protected Double getDouble (String s) throws DataLineException {
-		double result;
 		try {
-			result = getDouble(s);
-			return result;
+			return Double.parseDouble(s);
 		} catch (Exception e) {
 			throw new DataLineException("The information '" + s + "' does not seem to be a valid number.", DataLineException.SKIP_PROCESS);
 		}

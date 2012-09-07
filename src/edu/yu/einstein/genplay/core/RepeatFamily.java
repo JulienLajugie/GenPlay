@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,28 +34,28 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 public final class RepeatFamily implements Serializable, Comparable<RepeatFamily> {
 
 	private static final long serialVersionUID = -7691967168795920365L; // generated ID
-	private String 						name;			// Name of the family of repeat
-	private ArrayList<SimpleChromosomeWindow> repeatList;		// 1 list of repeat per chromosome
-	
-	
+	private final String 						name;			// Name of the family of repeat
+	private final ArrayList<SimpleChromosomeWindow> repeatList;		// 1 list of repeat per chromosome
+
+
 	/**
 	 * Creates an instance of {@link RepeatFamily}
 	 * @param name name of the family
 	 */
 	public RepeatFamily(String name) {
-		this.name = name; 
+		this.name = name;
 		repeatList = new ArrayList<SimpleChromosomeWindow>();
 	}
-	
-	
+
+
 	/**
 	 * @return the number of repeats
 	 */
 	public int repeatCount() {
 		return repeatList.size();
 	}
-	
-	
+
+
 	/**
 	 * Adds a repeat to the list
 	 * @param repeat a repeat
@@ -63,26 +63,26 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	public void addRepeat(SimpleChromosomeWindow repeat) {
 		repeatList.add(repeat);
 	}
-	
-	
+
+
 	/**
-	 * Returns the repeat at the specified position in this list. 
-	 * @param index index of the repeat to return 
-	 * @return the repeat at the specified position in this list 
+	 * Returns the repeat at the specified position in this list.
+	 * @param index index of the repeat to return
+	 * @return the repeat at the specified position in this list
 	 */
 	public SimpleChromosomeWindow getRepeat(int index) {
 		return repeatList.get(index);
 	}
-	
-	
+
+
 	/**
 	 * @return the list of repeat
 	 */
 	public ArrayList<SimpleChromosomeWindow> getRepeatList() {
 		return repeatList;
 	}
-	
-	
+
+
 	/**
 	 * @return the name of the family
 	 */
@@ -94,5 +94,19 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	@Override
 	public int compareTo(RepeatFamily otherRepeatFamily) {
 		return this.getName().compareTo(otherRepeatFamily.getName());
+	}
+
+
+	/**
+	 * @return a string description of the {@link RepeatFamily}
+	 */
+	public String getDescription () {
+		String info = "";
+		info += "Family name: " + name + "\n";
+		info += "Number of repeats: " + repeatList.size() + "\n";
+		for (SimpleChromosomeWindow repeat: repeatList) {
+			info += "(" + repeat.getStart() + ", " + repeat.getStop() + ") ";
+		}
+		return info;
 	}
 }

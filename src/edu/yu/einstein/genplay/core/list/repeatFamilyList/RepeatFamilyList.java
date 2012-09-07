@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -52,8 +52,8 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 
 	private static final long serialVersionUID = -7553643226353657650L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -73,7 +73,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 	}
-	
+
 
 	/**
 	 * Creates an instance of {@link RepeatFamilyList}
@@ -82,21 +82,21 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @param stopList	list of stop position of the repeats organized by chromosome
 	 * @param familyNameList list of name of the repeats organized by chromosome
 	 * @throws InvalidChromosomeException
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws ExecutionException
+	 * @throws InterruptedException
 	 */
-	public RepeatFamilyList(final ChromosomeListOfLists<Integer> startList, 
-			final ChromosomeListOfLists<Integer> stopList, 
+	public RepeatFamilyList(final ChromosomeListOfLists<Integer> startList,
+			final ChromosomeListOfLists<Integer> stopList,
 			final ChromosomeListOfLists<String> familyNameList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
-		final Collection<Callable<List<RepeatFamily>>> threadList = new ArrayList<Callable<List<RepeatFamily>>>();		
+		final Collection<Callable<List<RepeatFamily>>> threadList = new ArrayList<Callable<List<RepeatFamily>>>();
 		ProjectChromosome projectChromosome = ProjectManager.getInstance().getProjectChromosome();
-		for(final Chromosome currentChromosome : projectChromosome) {			
+		for(final Chromosome currentChromosome : projectChromosome) {
 
-			Callable<List<RepeatFamily>> currentThread = new Callable<List<RepeatFamily>>() {	
+			Callable<List<RepeatFamily>> currentThread = new Callable<List<RepeatFamily>>() {
 				@Override
 				public List<RepeatFamily> call() throws Exception {
 					List<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
@@ -154,6 +154,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	/**
 	 * Adapts the list of the {@link Chromosome} in parameter to the screen depending on the xfactor
 	 */
+	@Override
 	protected void fitToScreen() {
 		List<RepeatFamily> currentChromosomeList;
 		try {
@@ -176,7 +177,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 					int j = 0;
 					while (i < currentFamily.repeatCount()) {
 						double distance = (currentFamily.getRepeat(i).getStart() - fittedFamily.getRepeat(j).getStop()) * fittedXRatio;
-						while ((distance < 1) && (i + 1 < currentFamily.repeatCount())) {
+						while ((distance < 1) && ((i + 1) < currentFamily.repeatCount())) {
 							int newStop = Math.max(fittedFamily.getRepeat(j).getStop(), currentFamily.getRepeat(i).getStop());
 							fittedFamily.getRepeat(j).setStop(newStop);
 							i++;
@@ -184,22 +185,27 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 						}
 						fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(i)));
 						i++;
-						j++;						
+						j++;
 					}
+					fittedDataList.add(fittedFamily);
+				} else if (currentFamily.repeatCount() == 1) {
+					RepeatFamily fittedFamily = new RepeatFamily(currentFamily.getName());
+					fittedFamily.addRepeat(new SimpleChromosomeWindow(currentFamily.getRepeat(0)));
 					fittedDataList.add(fittedFamily);
 				}
 			}
 		}
+		//System.out.println(fittedXRatio + "; " + currentChromosomeList.size() + "; " + fittedDataList.size());
 	}
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param list List in which the search is performed.
 	 * @param value Searched value.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a Repeat with a position start equals to value. 
+	 * @return The index of a Repeat with a position start equals to value.
 	 * Index of the first Repeat with a start position superior to value if nothing found.
 	 */
 	private int findStart(ArrayList<SimpleChromosomeWindow> list, int value, int indexStart, int indexStop) {
@@ -217,12 +223,12 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 
 
 	/**
-	 * Recursive and dichotomic search algorithm.  
+	 * Recursive and dichotomic search algorithm.
 	 * @param list List in which the search is performed.
 	 * @param value Searched value.
 	 * @param indexStart Start index where to look for the value.
 	 * @param indexStop Stop index where to look for the value.
-	 * @return The index of a Repeat with a position stop equals to value. 
+	 * @return The index of a Repeat with a position stop equals to value.
 	 * Index of the first Repeat with a stop position superior to value if nothing found.
 	 */
 	private int findStop(ArrayList<SimpleChromosomeWindow> list, int value, int indexStart, int indexStop) {
@@ -254,11 +260,17 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 				indexStart--;
 			}
 			resultList.add(new RepeatFamily(currentFamily.getName()));
-			for (int i = indexStart; i <= indexStop; i++) {
-				if (i < currentFamily.repeatCount()) {
-					resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(i));
+			if ((indexStart == indexStop) && (indexStart < currentFamily.repeatCount())) {
+				if (currentFamily.getRepeat(indexStart).getStart() < stop) {
+					resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(indexStart));
 				}
-			}			
+			} else {
+				for (int i = indexStart; i <= indexStop; i++) {
+					if (i < currentFamily.repeatCount()) {
+						resultList.get(resultList.size() - 1).addRepeat(currentFamily.getRepeat(i));
+					}
+				}
+			}
 		}
 		return resultList;
 	}

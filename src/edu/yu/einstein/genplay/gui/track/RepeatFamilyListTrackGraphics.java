@@ -128,6 +128,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 							int x = projectWindow.genomePosToScreenXPos(currentRepeat.getStart());
 							int repeatWidth = projectWindow.genomePosToScreenXPos(currentRepeat.getStop()) - x;
 							//int repeatWidth = projectWindow.twoGenomePosToScreenWidth(currentRepeat.getStart(), currentRepeat.getStop());
+							//printCurrentRepeatInformation(currentFamily, currentRepeat, x, repeatWidth);
 							if (repeatWidth < 1) {
 								repeatWidth = 1;
 							}
@@ -172,7 +173,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	 * @return a {@link Color}
 	 */
 	private Color intToColor(int i) {
-		Color[] colorArray = {Colors.BLACK, Colors.GREEN, Colors.BLUE, Color.PINK, Colors.RED, Color.CYAN, Color.MAGENTA, Colors.ORANGE};
+		Color[] colorArray = {Colors.BLACK, Colors.GREEN, Colors.BLUE, Colors.DARK_YELLOW, Colors.RED, Color.CYAN, Color.MAGENTA, Colors.ORANGE};
 		i = i % colorArray.length;
 		return colorArray[i];
 	}
