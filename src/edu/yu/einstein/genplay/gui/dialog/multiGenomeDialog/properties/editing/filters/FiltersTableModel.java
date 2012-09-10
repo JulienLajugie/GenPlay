@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -37,13 +37,13 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
-	
+
 
 	/**
 	 * Constructor of {@link FiltersTableModel}
 	 */
 	protected FiltersTableModel () {
-		super(new String[]{"File", "ID", "Filter", "Track"});
+		super(new String[]{"Track", "ID", "Filter", "File"});
 	}
 
 
@@ -88,6 +88,7 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 	/**
 	 * @return the data
 	 */
+	@Override
 	protected List<FiltersData> getData() {
 		return data;
 	}
@@ -96,6 +97,7 @@ public class FiltersTableModel extends EditingTableModel<FiltersData> {
 	/**
 	 * @param data the data to set
 	 */
+	@Override
 	protected void setData(List<FiltersData> data) {
 		this.data = data;
 		buttons = new ArrayList<JButton>();

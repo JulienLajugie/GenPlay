@@ -46,15 +46,15 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
-			"Generates VCF statistics for a track."; 									// tooltip
+			"Generates statistics for a track."; 									// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 					// mnemonic key
-	private static		 String 			ACTION_NAME = "Generate VCF statistics";	// action name
+	private static		 String 			ACTION_NAME = "Generate track statistics";	// action name
 
 
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "VCF Statistics";
+	public static final String ACTION_KEY = "Track Statistics";
 
 	private MGOVCFStatisticsSingleFile operation;
 

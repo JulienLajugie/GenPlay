@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -53,13 +53,13 @@ public class StripesData implements Serializable {
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	/** Index used for Genome column */
-	public static final int GENOME_INDEX 	= 0;
+	public static final int GENOME_INDEX 	= 1;
 	/** Index used for Allele column */
-	public static final int ALLELE_INDEX 	= 1;
+	public static final int ALLELE_INDEX 	= 2;
 	/** Index used for variant column */
-	public static final int VARIANT_INDEX 	= 2;
+	public static final int VARIANT_INDEX 	= 3;
 	/** Index used for track column */
-	public static final int TRACK_INDEX 	= 3;
+	public static final int TRACK_INDEX 	= 4;
 
 
 	private String 				genome;				// name of the genome
@@ -272,7 +272,7 @@ public class StripesData implements Serializable {
 
 
 	/**
-	 * @param alleleType 
+	 * @param alleleType
 	 * @return the list of variant list for display
 	 */
 	public List<MGVariantListForDisplay> getListOfVariantList (AlleleType alleleType) {
@@ -308,10 +308,10 @@ public class StripesData implements Serializable {
 		// object must be Test at this point
 		StripesData test = (StripesData)obj;
 		return genome.equals(test.getGenome()) &&
-		alleleType == test.getAlleleType() &&
-		hasSameVariationTypeList(test.getVariationTypeList()) &&
-		hasSameColorList(test.getColorList()) &&
-		hasSameTrackList(test.getTrackList());
+				(alleleType == test.getAlleleType()) &&
+				hasSameVariationTypeList(test.getVariationTypeList()) &&
+				hasSameColorList(test.getColorList()) &&
+				hasSameTrackList(test.getTrackList());
 	}
 
 
@@ -321,11 +321,11 @@ public class StripesData implements Serializable {
 	 * @return	true if both list contain same values, false otherwise
 	 */
 	private boolean hasSameVariationTypeList (List<VariantType> variationTypeList) {
-		if (this.variationTypeList == null && variationTypeList == null) {
+		if ((this.variationTypeList == null) && (variationTypeList == null)) {
 			return true;
-		} else if (this.variationTypeList != null && variationTypeList == null) {
+		} else if ((this.variationTypeList != null) && (variationTypeList == null)) {
 			return false;
-		} else if (this.variationTypeList == null && variationTypeList != null) {
+		} else if ((this.variationTypeList == null) && (variationTypeList != null)) {
 			return false;
 		} else {
 			if (this.variationTypeList.size() != variationTypeList.size()) {
@@ -340,19 +340,19 @@ public class StripesData implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Compare a list of color to the current one
 	 * @param colorList	the list of color to compare
 	 * @return	true if both list contain same values, false otherwise
 	 */
 	private boolean hasSameColorList (List<Color> colorList) {
-		if (this.colorList == null && colorList == null) {
+		if ((this.colorList == null) && (colorList == null)) {
 			return true;
-		} else if (this.colorList != null && colorList == null) {
+		} else if ((this.colorList != null) && (colorList == null)) {
 			return false;
-		} else if (this.colorList == null && colorList != null) {
+		} else if ((this.colorList == null) && (colorList != null)) {
 			return false;
 		} else {
 			if (this.colorList.size() != colorList.size()) {
@@ -367,19 +367,19 @@ public class StripesData implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Compare a list of track to the current one
 	 * @param trackList	the list of track to compare
 	 * @return	true if both list contain same values, false otherwise
 	 */
 	private boolean hasSameTrackList (Track<?>[] trackList) {
-		if (this.trackList == null && trackList == null) {
+		if ((this.trackList == null) && (trackList == null)) {
 			return true;
-		} else if (this.trackList != null && trackList == null) {
+		} else if ((this.trackList != null) && (trackList == null)) {
 			return false;
-		} else if (this.trackList == null && trackList != null) {
+		} else if ((this.trackList == null) && (trackList != null)) {
 			return false;
 		} else {
 			if (this.trackList.length != trackList.length) {
@@ -400,8 +400,8 @@ public class StripesData implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
 	 * It will replace the references to the old track by the one of the new track.

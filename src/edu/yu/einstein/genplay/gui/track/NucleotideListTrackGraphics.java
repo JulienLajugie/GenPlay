@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -77,7 +77,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		maxBaseWidth = in.readInt();
-		baseUnderMouseIndex = null;	
+		baseUnderMouseIndex = null;
 		twoBitSequenceListUnserialization();
 	}
 
@@ -87,19 +87,19 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 	 * 
 	 */
 	private void twoBitSequenceListUnserialization()  {
-		// if the data is a TwoBitSequenceList we want to make sure 
+		// if the data is a TwoBitSequenceList we want to make sure
 		// that the file is still at the same location than when
-		// the save was made.  If not we need to ask the user for the new location. 
+		// the save was made.  If not we need to ask the user for the new location.
 		if (data instanceof TwoBitSequenceList) {
 			TwoBitSequenceList twoBitData = ((TwoBitSequenceList) data);
 			try {
 				// restore the connection to the file containing the 2 bit sequences
 				twoBitData.reinitDataFile();
 			} catch (FileNotFoundException e) {
-				// if the file is not found we 
+				// if the file is not found we
 				String filePath = twoBitData.getDataFilePath();
-				int dialogRes = JOptionPane.showConfirmDialog(getRootPane(), 
-						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track", 
+				int dialogRes = JOptionPane.showConfirmDialog(getRootPane(),
+						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track",
 						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (dialogRes == JOptionPane.OK_OPTION) {
 					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
@@ -116,7 +116,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				} else {
 					firePropertyChange("trackNeedToBeDeleted", false, true);
 					System.out.println("Booooooooooommmmmmmm");
-				}				
+				}
 			}
 		}
 	}
@@ -161,7 +161,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 							g.setColor(Colors.WHITE);
 						} else {
-							g.setColor(GenPlayColor.nucleotideToColor(nucleotide));							
+							g.setColor(GenPlayColor.nucleotideToColor(nucleotide));
 						}
 						g.fillRect(x, 0, nucleoWith, height);
 						if (nucleoWith >= 5) {
@@ -175,11 +175,11 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				g.setColor(Color.LIGHT_GRAY);
 				g.fillRect(0, 0, width, height);
 				g.setColor(Color.black);
-				g.drawString("Can't display sequence at this zoom level", 0, getHeight() - NUCLEOTIDE_HEIGHT);
+				g.drawString("Can't display sequence at this zoom level.", 0, getHeight() - NUCLEOTIDE_HEIGHT);
 			}
 			g.setColor(Color.WHITE);
 			g.drawLine(0, 0, width, 0);
-			g.drawLine(0, height - 1, width, height - 1);			
+			g.drawLine(0, height - 1, width, height - 1);
 		}
 	}
 
@@ -198,7 +198,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
 						Nucleotide nucleotide = nucleotides[index];
-						if (maxBaseWidth * baseToPrintCount <= getWidth()) {
+						if ((maxBaseWidth * baseToPrintCount) <= getWidth()) {
 							// compute the position on the screen
 							int x = projectWindow.genomePosToScreenXPos(position);
 							// select a different color for each type of base
@@ -207,14 +207,14 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 							} else {
 								g.setColor(Colors.WHITE);
 							}
-							g.drawString(String.valueOf(nucleotide.getCode()), x, getHeight() - NUCLEOTIDE_HEIGHT);							
+							g.drawString(String.valueOf(nucleotide.getCode()), x, getHeight() - NUCLEOTIDE_HEIGHT);
 						}
 					}
-				}			
-			} else { 
+				}
+			} else {
 				// if we can't print all the bases we just print a message for the user
 				g.setColor(Color.black);
-				g.drawString("Can't display sequence at this zoom level", 0, getHeight() - NUCLEOTIDE_HEIGHT);
+				g.drawString("Can't display sequence at this zoom level.", 0, getHeight() - NUCLEOTIDE_HEIGHT);
 			}
 		}
 	}
@@ -242,7 +242,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 			baseUnderMouseIndex = null;
 			setToolTipText(null);
 			repaint();
-		}		
+		}
 	}
 
 
@@ -269,7 +269,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 		setToolTipText("");
 		long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 		Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
-		baseUnderMouseIndex = null;		
+		baseUnderMouseIndex = null;
 		if (!getScrollMode()) {
 			// if the zoom is too out we can't print the bases and so there is none under the mouse
 			if (baseToPrintCount <= getWidth()) {
@@ -283,10 +283,10 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 					distance = Math.floor(distance);
 					baseUnderMouseIndex = (int) distance;
 					// we repaint the track only if the gene under the mouse changed
-					if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null)) 
+					if (((oldBaseUnderMouseIndex == null) && (baseUnderMouseIndex != null))
 							|| ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {
 						repaint();
-					}				
+					}
 				}
 			}
 			if (baseUnderMouseIndex != null) {

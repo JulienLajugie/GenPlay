@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,7 +41,7 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	private static final long serialVersionUID = 3478197435828366331L;
 
 	protected final int buttonColumnIndex;
-	
+
 	protected final 	String[]		columnNames;	// the table column names
 	protected 			List<K>			data;			// list of data
 	protected			List<JButton>	buttons;		// list of buttons
@@ -54,14 +54,15 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	 */
 	protected EditingTableModel (String[] columnNames) {
 		this.columnNames = new String[columnNames.length + 1];
-		for (int i = 0; i < columnNames.length; i++) {
-			this.columnNames[i] = columnNames[i];
+		this.columnNames[0] = "Edit";
+		for (int i = 1; i < this.columnNames.length; i++) {
+			this.columnNames[i] = columnNames[i - 1];
 		}
-		this.columnNames[columnNames.length] = "Edit";
-		
+
 		data = new ArrayList<K>();
 		buttons = new ArrayList<JButton>();
-		buttonColumnIndex = columnNames.length;
+		//buttonColumnIndex = columnNames.length;
+		buttonColumnIndex = 0;
 		currentData = null;
 	}
 
@@ -77,36 +78,36 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		return data.size();
 	}
 
-	
+
 	@Override
 	public boolean isCellEditable(int row, int col)	{
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * @return the columnNames
 	 */
 	public String[] getColumnNames() {
 		return columnNames;
 	}
-	
-	
+
+
 	/**
 	 * @return the data
 	 */
 	protected List<K> getData() {
 		return data;
 	}
-	
-	
+
+
 	/**
 	 * @return the index of the edit column
 	 */
 	protected int getEditColumnIndex () {
 		return buttonColumnIndex;
 	}
-	
+
 
 	/**
 	 * Add a row
@@ -128,12 +129,12 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		buttons.remove(row);
 		fireTableRowsDeleted(row, row);
 	}
-	
+
 
 	/**
 	 * This method moves (up or down) a list of row.
 	 * @param list	the list of row numbers to move
-	 * @param toUp	rows will be move up if true, down if false 
+	 * @param toUp	rows will be move up if true, down if false
 	 */
 	protected int[] move (int[] list, boolean toUp) {
 		int[] movedRows = new int[list.length];
@@ -153,8 +154,8 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		fireTableDataChanged();
 		return movedRows;
 	}
-	
-	
+
+
 	/**
 	 * Move a data one step lower in the list in order to show it one row closer to the top of the table.
 	 * @param index index of the row
@@ -182,8 +183,8 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		}
 		return index;
 	}
-	
-	
+
+
 	/**
 	 * Move a data one step higher in the list in order to show it one row closer to the bottom of the table.
 	 * @param index index of the row
@@ -211,8 +212,8 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		}
 		return index;
 	}
-	
-	
+
+
 	/**
 	 * Reverse an array: the last value becomes the firt one and so on.
 	 * @param array array to reverse
@@ -226,7 +227,7 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		}
 		return newArray;
 	}
-	
+
 
 	@Override
 	public abstract Object getValueAt(int row, int col);
@@ -241,11 +242,12 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 	 */
 	protected abstract void setData(List<K> data);
 
-	
+
 	protected JButton getNewButton () {
 		JButton button = new JButton();
 		button.setMargin(new Insets(0, 0, 0, 0));
 		button.setText("e");
+		//button.setPreferredSize(new Dimension(10, 10));
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -255,13 +257,13 @@ public abstract class EditingTableModel<K> extends AbstractTableModel {
 		});
 		return button;
 	}
-	
-	
+
+
 	protected K getCurrentData () {
 		return currentData;
 	}
-	
-	
+
+
 	protected void resetCurrentData () {
 		currentData = null;
 	}

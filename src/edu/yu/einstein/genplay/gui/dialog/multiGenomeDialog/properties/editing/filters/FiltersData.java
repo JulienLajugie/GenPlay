@@ -44,14 +44,14 @@ public class FiltersData implements Serializable {
 	private static final long serialVersionUID = 2767629722281248634L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	/** Index used for vcf file column */
-	public static final int VCF_FILE_INDEX 	= 0;
-	/** Index used for the vcf header id column */
-	public static final int ID_INDEX 	= 1;
-	/** Index used for the filter column */
-	public static final int FILTER_INDEX 	= 2;
 	/** Index used for track column */
-	public static final int TRACK_INDEX 	= 3;
+	public static final int TRACK_INDEX 	= 1;
+	/** Index used for the vcf header id column */
+	public static final int ID_INDEX 	= 2;
+	/** Index used for the filter column */
+	public static final int FILTER_INDEX 	= 3;
+	/** Index used for vcf file column */
+	public static final int VCF_FILE_INDEX 	= 4;
 
 	private MGFilter			filter;
 	private Track<?>[] 			trackList;		// list of track
