@@ -182,21 +182,16 @@ ScoredChromosomeWindowListGenerator, GeneListGenerator, BinListGenerator {
 										scoreList.add(chromosome, score);
 									}
 									if (splitedLine.length > 7) {
-										int UTR5Bound;
-										int UTR3Bound;
-										try {
-											// UTR bounds are for genes only so we don't need to
-											// worry about the strand shift and the read length
-											// since these operations are not available for genes
-											UTR5Bound = getInt(splitedLine[6].trim());
-											UTR3Bound = getInt(splitedLine[7].trim());
-											// but we need to compute the position on the meta-genome
-											UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
-											UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
-										} catch (NumberFormatException e) {
-											UTR5Bound = start;
-											UTR3Bound = stop;
-										}
+										// UTR bounds are for genes only so we don't need to
+										// worry about the strand shift and the read length
+										// since these operations are not available for genes
+										int UTR5Bound = getInt(splitedLine[6].trim(), start);
+										int UTR3Bound = getInt(splitedLine[7].trim(), stop);
+
+										// but we need to compute the position on the meta-genome
+										UTR5Bound = getMultiGenomePosition(chromosome, UTR5Bound);
+										UTR3Bound = getMultiGenomePosition(chromosome, UTR3Bound);
+
 										UTR5BoundList.add(chromosome, UTR5Bound);
 										UTR3BoundList.add(chromosome, UTR3Bound);
 										if (splitedLine.length > 11) {

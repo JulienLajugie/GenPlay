@@ -150,11 +150,7 @@ ScoredChromosomeWindowListGenerator, BinListGenerator, GeneListGenerator {
 						}
 
 						// retrieve the score
-						Double score = null;
-						String scoreStr = splitedLine[5].trim();
-						if (!scoreStr.equals("-") && !scoreStr.equals(".")) {
-							score = getDouble(scoreStr);
-						}
+						Double score = getDouble(splitedLine[5].trim(), null);
 						// if there is some attribute informations
 						String name = null;
 						if (splitedLine.length >= 9) {

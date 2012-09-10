@@ -335,6 +335,12 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	}
 
 
+	/**
+	 * Convert a string to an integer
+	 * @param s	the string
+	 * @return	the integer if the string is valid
+	 * @throws DataLineException
+	 */
 	protected Integer getInt (String s) throws DataLineException {
 		try {
 			return Integer.parseInt(s);
@@ -344,6 +350,27 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 	}
 
 
+	/**
+	 * Convert a string to an integer
+	 * @param s	the string
+	 * @param alternative the value to return if the string could not be converted (can be null)
+	 * @return	the integer if the string is valid, the alternative otherwise
+	 */
+	protected Integer getInt (String s, Integer alternative) {
+		try {
+			return Integer.parseInt(s);
+		} catch (Exception e) {
+			return alternative;
+		}
+	}
+
+
+	/**
+	 * Convert a string to a double
+	 * @param s	the string
+	 * @return	the double if the string is valid
+	 * @throws DataLineException
+	 */
 	protected Double getDouble (String s) throws DataLineException {
 		try {
 			return Double.parseDouble(s);
@@ -352,4 +379,18 @@ public abstract class TextFileExtractor extends Extractor implements Stoppable {
 		}
 	}
 
+
+	/**
+	 * Convert a string to a double
+	 * @param s	the string
+	 * @param alternative the value to return if the string could not be converted  (can be null)
+	 * @return	the double if the string is valid, the alternative otherwise
+	 */
+	protected Double getDouble (String s, Double alternative) {
+		try {
+			return Double.parseDouble(s);
+		} catch (Exception e) {
+			return alternative;
+		}
+	}
 }
