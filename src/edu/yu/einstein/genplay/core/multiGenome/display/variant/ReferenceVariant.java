@@ -224,7 +224,7 @@ public class ReferenceVariant implements Serializable, VariantInterface {
 	public String getVariantSequence() {
 		VCFLine line = getVCFLine();
 		String ref = line.getREF();
-		String chain = "?";
+		String chain = "-";
 		if (ref.length() > 1) {
 			chain = ref.substring(1);
 		} else if (ref.length() == 1) {

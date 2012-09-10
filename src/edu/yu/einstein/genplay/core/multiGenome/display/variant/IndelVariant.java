@@ -214,7 +214,7 @@ public class IndelVariant implements Serializable, VariantInterface {
 	public String getVariantSequence() {
 		VCFLine line = getVCFLine();
 		line.processForAnalyse();
-		String chain = "?";
+		String chain = "-";
 		if (length > 0) {
 			String alt = line.getAlternativeFromFullName(getGenomeName(), getAlleleType());
 			if ((alt != null) && (alt.charAt(0) != '<')) {

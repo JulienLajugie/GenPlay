@@ -71,7 +71,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private static final String SECTION_NAME				= "Sections";					// Name for the section column
 	private static final String FIRST_NAME 					= "From the file (A)";			// Name for the first number column
 	private static final String SECOND_NAME 				= "From the track (B)";			// Name for the second number column
-	private static final String DIFF_NAME 					= "A - B";						// Name for the difference number column
+	private static final String DIFF_NAME 					= "B - A";						// Name for the difference number column
 
 	// Line names
 	private static final String VARIATION_TITLE						= "Number of variations";
@@ -207,7 +207,7 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 			data[DELETION_HOMOZYGOTE_INDEX][NEW_INDEX] = secondStatistics.getDataInt(DELETION_HOMOZYGOTE_INDEX);
 
 			for (int i = 0; i < LINE_NUMBER; i++) {
-				data[i][DIFF_INDEX] = getDataInt(i, NATIVE_INDEX) - getDataInt(i, NEW_INDEX);
+				data[i][DIFF_INDEX] = getDataInt(i, NEW_INDEX) - getDataInt(i, NATIVE_INDEX);
 			}
 		}
 	}

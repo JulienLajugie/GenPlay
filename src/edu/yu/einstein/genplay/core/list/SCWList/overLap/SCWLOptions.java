@@ -186,11 +186,6 @@ final class SCWLOptions implements Serializable {
 	 */
 	private Double getScore (Chromosome chromosome, int index) {
 		if (scoreList != null) {
-			try {
-				scoreList.get(chromosome, index);
-			} catch (Exception e) {
-				System.out.println();
-			}
 			return scoreList.get(chromosome, index);
 		}
 		return DEFAULT_SCORE;

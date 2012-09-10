@@ -35,6 +35,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASNP;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -130,8 +131,30 @@ public final class MGARefresh extends TrackListAction {
 	 */
 	private class UpdateThread extends Thread {
 
+		private void setTrackLock (boolean lock) {
+			// Update tracks
+			Track<?>[] tracks = getTrackList().getTrackList();
+			for (Track<?> track: tracks) {
+				if (lock) {
+					track.getMultiGenomeDrawer().lockPainting();
+				} else {
+					track.getMultiGenomeDrawer().unlockPainting();
+				}
+			}
+		}
+
+		private void repaintTrack () {
+			// Update tracks
+			Track<?>[] tracks = getTrackList().getTrackList();
+			for (Track<?> track: tracks) {
+				track.repaint();
+			}
+		}
+
 		@Override
 		public void run() {
+			// Lock the painting
+			setTrackLock(true);
 
 			// Create and start the SNP thread
 			SNPThread snpThread = new SNPThread();
@@ -179,6 +202,10 @@ public final class MGARefresh extends TrackListAction {
 
 			// Many data has been loaded, removed, garbage collecting free some memory
 			Utils.garbageCollect();
+
+			// Unlock the painting and force the repaint
+			setTrackLock(false);
+			repaintTrack();
 		}
 	}
 

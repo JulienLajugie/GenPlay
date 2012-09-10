@@ -191,6 +191,6 @@ public class ReferenceBlankVariant implements Serializable, VariantInterface {
 
 	@Override
 	public String getVariantSequence() {
-		return "?";
+		return "-";
 	}
 }

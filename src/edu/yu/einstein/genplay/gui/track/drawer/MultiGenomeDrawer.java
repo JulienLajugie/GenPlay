@@ -87,6 +87,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private int								stripesOpacity;					// Transparency of the stripes
 	private VariantInterface 				variantUnderMouse = null;		// Special display when the mouse is over a variant stripe
 	private boolean 						serializeStripeList = true;		// enable the stripe lists serialization (see methods for further information)
+	private boolean							locked;
 
 
 	/**
@@ -145,6 +146,7 @@ public class MultiGenomeDrawer implements Serializable {
 		stripesList = null;
 		mgFiltersList = new ArrayList<MGFilter>();
 		statistics = null;
+		locked = false;
 	}
 
 
@@ -263,6 +265,27 @@ public class MultiGenomeDrawer implements Serializable {
 
 	///////////////////////////////////////////////////////////////// Stripes drawing
 
+
+	/**
+	 * This method locks the painting of the multi genome information.
+	 * 
+	 * The lock system for painting multi genome information prevent multi access to a same file.
+	 */
+	public void lockPainting () {
+		locked = true;
+	}
+
+
+	/**
+	 * This method unlocks the painting of the multi genome information.
+	 * 
+	 * The lock system for painting multi genome information prevent multi access to a same file.
+	 */
+	public void unlockPainting () {
+		locked = false;
+	}
+
+
 	/**
 	 * Draws stripes showing information for multi genome.
 	 * The method checks if the track must show both allele or only one, in order to split the track or not.
@@ -271,24 +294,35 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param xFactor 		the x factor
 	 */
 	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
-		if ((stripesList != null) && (stripesList.size() > 0)) {															// if there are stripes
-			stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
-			AlleleType trackAlleleType = getTrackAlleleType();																// get the allele type of the track
-			if (trackAlleleType == AlleleType.BOTH) {																		// if both allele must be displayed
-				int halfHeight = g.getClipBounds().height / 2;																// calculates the half of the height track
-				Graphics allele01Graphic = g.create(0, 0, g.getClipBounds().width, halfHeight);								// create a graphics for the first allele that correspond to the upper half of the track
-				Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, g.getClipBounds().width, halfHeight);		// create a 2D graphics for the second allele that correspond to the lower half of the track
-				allele02Graphic.scale(1, -1);																				// all Y axis (vertical) coordinates must be reversed for the second allele
-				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
-				currentDrawingAllele = AlleleType.ALLELE01;
-				drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow); 	// draw the stripes for the first allele
-				currentDrawingAllele = AlleleType.ALLELE02;
-				drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
-				drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
-			} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
-				drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
-			} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
-				drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
+		if (!locked) {
+			if ((stripesList != null) && (stripesList.size() > 0)) {															// if there are stripes
+				stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
+				AlleleType trackAlleleType = getTrackAlleleType();																// get the allele type of the track
+				if (trackAlleleType == AlleleType.BOTH) {																		// if both allele must be displayed
+					int halfHeight = g.getClipBounds().height / 2;																// calculates the half of the height track
+					Graphics allele01Graphic = g.create(0, 0, g.getClipBounds().width, halfHeight);								// create a graphics for the first allele that correspond to the upper half of the track
+					Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, g.getClipBounds().width, halfHeight);		// create a 2D graphics for the second allele that correspond to the lower half of the track
+					allele02Graphic.scale(1, -1);																				// all Y axis (vertical) coordinates must be reversed for the second allele
+					allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
+					currentDrawingAllele = AlleleType.ALLELE01;
+					drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow); 	// draw the stripes for the first allele
+					currentDrawingAllele = AlleleType.ALLELE02;
+					drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
+					drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
+				} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
+					drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
+				} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
+					drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
+				}
+			}
+		} else {
+			if ((stripesList != null) && (stripesList.size() > 0)) {
+				int width = g.getClipBounds().width;
+				int height = g.getClipBounds().height;
+				g.setColor(Color.LIGHT_GRAY);
+				g.fillRect(0, 0, width, height);
+				g.setColor(Color.black);
+				g.drawString("Multi genome display interupted while loading information.", 5, height -5);
 			}
 		}
 	}

@@ -73,6 +73,13 @@ public class Iterator {
 					assert(currentOffset == offsets[i].getV()); // otherwise bug
 				}
 				if ((i < 0) || (offsets[i].getV() != offsets[i+1].getU())) { // not adjacent chunks; then seek
+					/*try {
+						tabixReader.getmFp().seek(offsets[i+1].getU());
+
+					} catch (Exception e) {
+						System.out.println();
+						//System.out.println(offsets[i+1].getU());
+					}*/
 					tabixReader.getmFp().seek(offsets[i+1].getU());
 					currentOffset = tabixReader.getmFp().getFilePointer();
 					++n_seeks;

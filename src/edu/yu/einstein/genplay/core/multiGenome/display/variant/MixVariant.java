@@ -177,6 +177,6 @@ public class MixVariant implements Serializable, VariantInterface {
 
 	@Override
 	public String getVariantSequence() {
-		return "?";
+		return "-";
 	}
 }
