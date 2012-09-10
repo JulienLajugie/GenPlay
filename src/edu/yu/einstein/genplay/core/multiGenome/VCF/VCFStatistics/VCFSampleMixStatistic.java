@@ -85,9 +85,9 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private static final String SV_LABEL							= "      SV";
 
 
-	private final VCFSampleStatistics firstStatistics;
-	private final VCFSampleStatistics secondStatistics;
 	private boolean isValid;
+	private VCFSampleStatistics firstStatistics;
+	private VCFSampleStatistics secondStatistics;
 
 	private Object[][] data;
 
@@ -101,6 +101,10 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 
+		out.writeBoolean(isValid);
+		out.writeObject(firstStatistics);
+		out.writeObject(secondStatistics);
+
 		out.writeObject(data);
 	}
 
@@ -113,6 +117,10 @@ public class VCFSampleMixStatistic implements Serializable, VCFSampleStatistics 
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+
+		isValid = in.readBoolean();
+		firstStatistics = (VCFSampleStatistics) in.readObject();
+		secondStatistics = (VCFSampleStatistics) in.readObject();
 
 		data = (Object[][]) in.readObject();
 	}

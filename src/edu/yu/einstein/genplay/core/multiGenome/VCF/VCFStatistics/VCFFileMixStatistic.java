@@ -79,9 +79,9 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 	private static final String DELETION_SV_NAME 			= "   SV";			// Name for the Deletion SV sub-section
 
 
-	private final VCFFileStatistics firstStatistics;
-	private final VCFFileStatistics secondStatistics;
 	private boolean isValid;
+	private VCFFileStatistics firstStatistics;
+	private VCFFileStatistics secondStatistics;
 
 	private Object[][] data;
 	private Map<String, VCFSampleStatistics> genomeStatistics;
@@ -94,6 +94,10 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+
+		out.writeBoolean(isValid);
+		out.writeObject(firstStatistics);
+		out.writeObject(secondStatistics);
 
 		out.writeObject(data);
 		out.writeObject(genomeStatistics);
@@ -109,6 +113,10 @@ public class VCFFileMixStatistic implements Serializable, VCFFileStatistics {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+
+		isValid = in.readBoolean();
+		firstStatistics = (VCFFileStatistics) in.readObject();
+		secondStatistics = (VCFFileStatistics) in.readObject();
 
 		data = (Object[][]) in.readObject();
 		genomeStatistics = (Map<String, VCFSampleStatistics>) in.readObject();

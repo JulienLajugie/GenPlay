@@ -128,6 +128,7 @@ public class MultiGenomeDrawer implements Serializable {
 		mgFiltersList = (List<MGFilter>) in.readObject();
 		statistics = (VCFFileStatistics) in.readObject();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
+		locked = false;
 	}
 
 
