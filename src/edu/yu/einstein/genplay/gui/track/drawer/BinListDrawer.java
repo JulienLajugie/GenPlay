@@ -92,6 +92,7 @@ public final class BinListDrawer extends CurveDrawer {
 						graphics.setColor(reverseCurveColor);
 						screenYPosition = screenY0;
 					}
+
 					if (currentGenomePosition <= currentMinX) {
 						int screenWindowWidthTmp = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
 						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidthTmp, rectHeight);

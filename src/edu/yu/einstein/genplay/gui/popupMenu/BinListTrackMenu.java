@@ -56,6 +56,7 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLANormalize;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLARepartition;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLASumScore;
@@ -86,6 +87,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiMultiplyConstant;			// menu multiply BinListTrack by constant
 	private final JMenuItem		jmiDivideConstant;				// menu divide BinListTrack by constant
 	private final JMenuItem		jmiInvertConstant;				// menu invert BinListTrack
+	private final JMenuItem		jmiUniqueScore;					// menu unique value
 
 	private final JMenuItem		jmiTwoTracks;					// menu operates BinListTrack by another one
 
@@ -141,6 +143,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiMultiplyConstant = new JMenuItem(actionMap.get(BLAMultiplyConstant.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(BLADivideConstant.ACTION_KEY));
 		jmiInvertConstant = new JMenuItem(actionMap.get(BLAInvertConstant.ACTION_KEY));
+		jmiUniqueScore = new JMenuItem(actionMap.get(BLAUniqueScore.ACTION_KEY));
 
 		jmiTwoTracks = new JMenuItem(actionMap.get(BLATwoTracks.ACTION_KEY));
 
@@ -186,6 +189,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiMultiplyConstant);
 		jmOperation.add(jmiDivideConstant);
 		jmOperation.add(jmiInvertConstant);
+		jmOperation.add(jmiUniqueScore);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiTwoTracks);
 		jmOperation.addSeparator();

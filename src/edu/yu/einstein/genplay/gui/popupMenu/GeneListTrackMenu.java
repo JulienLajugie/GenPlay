@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -34,6 +34,7 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAUniqueScore;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
@@ -48,9 +49,9 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class GeneListTrackMenu extends TrackMenu {
 
 	private static final long serialVersionUID = -7024046901324869134L; // generated ID
-	
+
 	private final JMenu		jmOperation;			// category operation
-	
+
 	private final JMenuItem	jmiDistanceCalculator;	// distance Calculator menu
 	private final JMenuItem jmiExtractExons;		// extract exons menu
 	private final JMenuItem jmiExtractInterval;		// extract interval menu
@@ -61,10 +62,11 @@ public final class GeneListTrackMenu extends TrackMenu {
 	private final JMenuItem jmiScoreExons;			// save the exons of the genelist
 	private final JMenuItem jmiScoreRepartition;	// show the score repartition around the start of the genes
 	private final JMenuItem jmiSearchGene;			// search gene menu
+	private final JMenuItem jmiUniqueScore;			// unique score menu
 
-	private final VersionedTrackMenuItems	versionedTrackMenuItems;	// versioned track menu items 
-	
-	
+	private final VersionedTrackMenuItems	versionedTrackMenuItems;	// versioned track menu items
+
+
 	/**
 	 * Creates an instance of a {@link GeneListTrackMenu}
 	 * @param tl {@link TrackList}
@@ -73,19 +75,22 @@ public final class GeneListTrackMenu extends TrackMenu {
 		super(tl);
 
 		jmOperation = new JMenu("Operation");
-		
+
 		jmiDistanceCalculator = new JMenuItem(actionMap.get(GLADistanceCalculator.ACTION_KEY));
 		jmiExtractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
 		jmiExtractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
 		jmiFilterScore = new JMenuItem(actionMap.get(GLAFilter.ACTION_KEY));
-		jmiFilterStrand = new JMenuItem(actionMap.get(GLAFilterStrand.ACTION_KEY));		
+		jmiFilterStrand = new JMenuItem(actionMap.get(GLAFilterStrand.ACTION_KEY));
 		jmiRenameGenes = new JMenuItem(actionMap.get(GLAGeneRenamer.ACTION_KEY));
 		jmiSaveGeneTrack = new JMenuItem(actionMap.get(ATASave.ACTION_KEY));
 		jmiScoreExons = new JMenuItem(actionMap.get(GLAScoreExons.ACTION_KEY));
 		jmiScoreRepartition = new JMenuItem(actionMap.get(GLAScoreRepartitionAroundStart.ACTION_KEY));
 		jmiSearchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
 		versionedTrackMenuItems = new VersionedTrackMenuItems(this, trackList);
-		
+		jmiUniqueScore = new JMenuItem(actionMap.get(GLAUniqueScore.ACTION_KEY));
+
+		jmOperation.add(jmiUniqueScore);
+		jmOperation.addSeparator();
 		jmOperation.add(jmiSearchGene);
 		jmOperation.add(jmiExtractInterval);
 		jmOperation.add(jmiExtractExons);
@@ -97,12 +102,12 @@ public final class GeneListTrackMenu extends TrackMenu {
 		jmOperation.add(jmiRenameGenes);
 		jmOperation.add(jmiDistanceCalculator);
 		jmOperation.add(jmiScoreRepartition);
-		
+
 		add(jmOperation, 0);
 		add(new Separator(), 1);
 
 		add(jmiSaveGeneTrack, 11);
-		
+
 		addSeparator();
 		versionedTrackMenuItems.addItemsToMenu();
 	}

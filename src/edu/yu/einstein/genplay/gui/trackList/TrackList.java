@@ -66,6 +66,7 @@ import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLASumScore;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLATwoTracks;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFilterRatio;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFilterThreshold;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindNext;
@@ -116,6 +117,7 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLASumScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATransfrag;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATwoTracks;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.curveTrack.CTAAppearance;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETAGenerateMultiCurvesTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadBinListTrack;
@@ -134,6 +136,7 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTAApplyMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTALoadMask;
@@ -266,6 +269,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(GLAScoreExons.ACTION_KEY, new GLAScoreExons());
 		getActionMap().put(GLAScoreRepartitionAroundStart.ACTION_KEY, new GLAScoreRepartitionAroundStart());
 		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
+		getActionMap().put(GLAUniqueScore.ACTION_KEY, new GLAUniqueScore());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
 		getActionMap().put(VTAHistory.ACTION_KEY, new VTAHistory());
@@ -277,6 +281,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add SCWList actions
 		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
+		getActionMap().put(SCWLAConvertToMask.ACTION_KEY, new SCWLAConvertToMask());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
 		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
@@ -297,10 +302,11 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLASumScore.ACTION_KEY, new SCWLASumScore());
 		getActionMap().put(SCWLATransfrag.ACTION_KEY, new SCWLATransfrag());
 		getActionMap().put(SCWLATwoTracks.ACTION_KEY, new SCWLATwoTracks());
-		getActionMap().put(SCWLAConvertToMask.ACTION_KEY, new SCWLAConvertToMask());
+		getActionMap().put(SCWLAUniqueScore.ACTION_KEY, new SCWLAUniqueScore());
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
+		getActionMap().put(BLAConvertToMask.ACTION_KEY, new BLAConvertToMask());
 		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());
 		getActionMap().put(BLAIntervalsSummarization.ACTION_KEY, new BLAIntervalsSummarization());
 		getActionMap().put(BLAChangeBinSize.ACTION_KEY, new BLAChangeBinSize());
@@ -332,7 +338,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
 		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
-		getActionMap().put(BLAConvertToMask.ACTION_KEY, new BLAConvertToMask());
+		getActionMap().put(BLAUniqueScore.ACTION_KEY, new BLAUniqueScore());
 		// SNP tracks
 		getActionMap().put(SLAFilterRatio.ACTION_KEY, new SLAFilterRatio());
 		getActionMap().put(SLAFilterThreshold.ACTION_KEY, new SLAFilterThreshold());

@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLANormalize;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLARepartition;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLASumScore;
@@ -69,6 +70,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 
 	private final JMenuItem jmiAddConstant;			// menu add constant
 	private final JMenuItem jmiAverage;				// menu average
+	private final JMenuItem jmiConvertMask;			// menu convert to mask
 	private final JMenuItem	jmiCountNonNullLength;	// menu count non null length
 	private final JMenuItem jmiDivideConstant;		// menu divide constant
 	private final JMenuItem jmiFilter;				// menu filter
@@ -89,7 +91,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem jmiSumScore;			// menu sum score
 	private final JMenuItem	jmiTransfrag;			// menu transfrag of the SCWListTrack
 	private final JMenuItem jmiTwoTracks;			// menu two tracks operation
-	private final JMenuItem jmiConvertMask;			// menu convert to mask
+	private final JMenuItem jmiUniqueScore;			// menu unique value
 
 
 	/**
@@ -104,6 +106,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 
 		jmiAddConstant = new JMenuItem(actionMap.get(SCWLAAddConstant.ACTION_KEY));
 		jmiAverage = new JMenuItem(actionMap.get(SCWLAAverage.ACTION_KEY));
+		jmiConvertMask = new JMenuItem(actionMap.get(SCWLAConvertToMask.ACTION_KEY));
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(SCWLADivideConstant.ACTION_KEY));
 		jmiFilter  = new JMenuItem(actionMap.get(SCWLAFilter.ACTION_KEY));
@@ -124,7 +127,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiSumScore= new JMenuItem(actionMap.get(SCWLASumScore.ACTION_KEY));
 		jmiTransfrag = new JMenuItem(actionMap.get(SCWLATransfrag.ACTION_KEY));
 		jmiTwoTracks = new JMenuItem(actionMap.get(SCWLATwoTracks.ACTION_KEY));
-		jmiConvertMask = new JMenuItem(actionMap.get(SCWLAConvertToMask.ACTION_KEY));
+		jmiUniqueScore = new JMenuItem(actionMap.get(SCWLAUniqueScore.ACTION_KEY));
 
 		add(jmOperation, 0);
 		add(new Separator(), 1);
@@ -133,6 +136,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiMultiplyConstant);
 		jmOperation.add(jmiDivideConstant);
 		jmOperation.add(jmiInvertConstant);
+		jmOperation.add(jmiUniqueScore);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiTwoTracks);
 		jmOperation.addSeparator();
