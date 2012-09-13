@@ -103,7 +103,7 @@ public final class MTALoadMask extends TrackListActionExtractorWorker<ScoredChro
 	@Override
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
-			getTrackList().getSelectedTrack().setStripes(actionResult);
+			getTrackList().getSelectedTrack().setMask(actionResult);
 		}
 	}
 

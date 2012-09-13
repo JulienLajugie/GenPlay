@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGReference;
@@ -56,7 +56,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	private MGReference	 								genome;							// reference genome
-	private ChromosomeListOfLists<VariantInterface> 	chromosomeListOfVariantList;	// list of variant for every chromosome
+	private ChromosomeListOfLists<Variant> 	chromosomeListOfVariantList;	// list of variant for every chromosome
 
 
 	/**
@@ -81,7 +81,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		genome = (MGReference) in.readObject();
-		chromosomeListOfVariantList = (ChromosomeListOfLists<VariantInterface>) in.readObject();
+		chromosomeListOfVariantList = (ChromosomeListOfLists<Variant>) in.readObject();
 	}
 
 
@@ -90,10 +90,10 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	 */
 	protected MGAlleleReferenceForDisplay (MGReference genome) {
 		this.genome = genome;
-		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<VariantInterface>();
+		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<Variant>();
 		int chromosomeNumber = ProjectManager.getInstance().getProjectChromosome().size();
 		for (int i = 0; i < chromosomeNumber; i++) {
-			chromosomeListOfVariantList.add(i, new ArrayList<VariantInterface>());
+			chromosomeListOfVariantList.add(i, new ArrayList<Variant>());
 		}
 	}
 
@@ -105,10 +105,10 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	public void initialize () {
 		int chromosomeNumber = chromosomeListOfVariantList.size();
 		for (int i = 0; i < chromosomeNumber; i++) {
-			List<VariantInterface> variantList = chromosomeListOfVariantList.get(i);
+			List<Variant> variantList = chromosomeListOfVariantList.get(i);
 			List<MGOffset> offsetList = genome.getAllele().getOffsetList().get(i);
 			for (MGOffset offset: offsetList) {
-				VariantInterface variant =  new ReferenceBlankVariant(offset.getPosition(), offset.getValue(), i);
+				Variant variant =  new ReferenceBlankVariant(offset.getPosition(), offset.getValue(), i);
 				variantList.add(variant);
 			}
 			Collections.sort(variantList, new VariantComparator());								// sorts the list
@@ -128,7 +128,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	 * @param chromosome chromosome
 	 * @return			the variant list for the given chromosome
 	 */
-	public List<VariantInterface> getVariantList (Chromosome chromosome) {
+	public List<Variant> getVariantList (Chromosome chromosome) {
 		return chromosomeListOfVariantList.get(chromosome);
 	}
 
@@ -139,9 +139,9 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	public void show () {
 		for (int i = 0; i < chromosomeListOfVariantList.size(); i++) {
 			System.out.println("Chromosome: " + ProjectManager.getInstance().getProjectChromosome().get(i).getName());
-			List<VariantInterface> listOfVariantList = chromosomeListOfVariantList.get(i);
+			List<Variant> listOfVariantList = chromosomeListOfVariantList.get(i);
 			int cpt = 0;
-			for (VariantInterface variant: listOfVariantList) {
+			for (Variant variant: listOfVariantList) {
 				if (cpt < 10) {
 					variant.show();
 					cpt++;

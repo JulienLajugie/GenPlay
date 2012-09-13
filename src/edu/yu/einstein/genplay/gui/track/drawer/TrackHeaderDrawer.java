@@ -34,6 +34,7 @@ import java.util.Map;
 
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 

@@ -31,11 +31,11 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.comparator.VariantComparator;
+import edu.yu.einstein.genplay.core.comparator.VariantDisplayComparator;
 import edu.yu.einstein.genplay.core.list.CacheTrack;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
@@ -60,17 +60,12 @@ public class DisplayableVariantListMaker implements Serializable {
 	protected Double					fittedXRatio = null;			// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
 	private List<MGVariantListForDisplay> 	listOfVariantList;			// The list of list of variant for display
-	private List<VariantInterface> 			variantList;				// The full list of variant
-	private List<VariantInterface>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
-	private List<MGFilter> filtersList;
+	private List<VariantDisplay> 			variantDisplayList;				// The full list of variant
+	private List<VariantDisplay>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
+	private List<MGFilter> 					filtersList;
 
-	private CacheTrack<List<VariantInterface>> cache;
+	private CacheTrack<List<VariantDisplay>> cache;
 
-	long time01;
-	long time02;
-	long time03;
-	long time04;
-	long time05;
 
 
 	/**
@@ -83,7 +78,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		out.writeObject(fittedChromosome);
 		out.writeDouble(fittedXRatio);
 		out.writeObject(listOfVariantList);
-		out.writeObject(variantList);
+		out.writeObject(variantDisplayList);
 		out.writeObject(fittedDataList);
 	}
 
@@ -100,9 +95,9 @@ public class DisplayableVariantListMaker implements Serializable {
 		fittedChromosome = (Chromosome) in.readObject();
 		fittedXRatio = in.readDouble();
 		listOfVariantList = (List<MGVariantListForDisplay>) in.readObject();
-		variantList = (List<VariantInterface>) in.readObject();
-		fittedDataList = (List<VariantInterface>) in.readObject();
-		cache = new CacheTrack<List<VariantInterface>>();
+		variantDisplayList = (List<VariantDisplay>) in.readObject();
+		fittedDataList = (List<VariantDisplay>) in.readObject();
+		cache = new CacheTrack<List<VariantDisplay>>();
 	}
 
 
@@ -113,10 +108,10 @@ public class DisplayableVariantListMaker implements Serializable {
 	 */
 	public DisplayableVariantListMaker (GenomeWindow window, double xRatio) {
 		listOfVariantList = new ArrayList<MGVariantListForDisplay>();
-		variantList = new ArrayList<VariantInterface>();
+		variantDisplayList = new ArrayList<VariantDisplay>();
 		this.fittedChromosome = window.getChromosome();
 		this.fittedXRatio = xRatio;
-		cache = new CacheTrack<List<VariantInterface>>();
+		cache = new CacheTrack<List<VariantDisplay>>();
 	}
 
 
@@ -124,19 +119,19 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * Creates the full list of variant and sort it.
 	 */
 	private void computeVariantList (List<MGFilter> filtersList) {
-		variantList = new ArrayList<VariantInterface>();
+		variantDisplayList = new ArrayList<VariantDisplay>();
 		cache.initialize();
 		if (listOfVariantList.size() > 0) {
-			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {			// loop on every variant list for display
-				List<VariantInterface> varianListTmp = variantListForDisplay.getVariantList();	// get the actual variant list
-				for (VariantInterface variant: varianListTmp) {									// for every variant of the current list
-					if (isValid(variant, filtersList)) {										// it must passes all filters to be added
-						variantList.add(variant);
+			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {		// loop on every variant list for display
+				List<Variant> varianListTmp = variantListForDisplay.getVariantList();		// get the actual variant list
+				for (Variant variant: varianListTmp) {										// for every variant of the current list
+					if (isValid(variant, filtersList)) {									// it must passes all filters to be added
+						variantDisplayList.add(new VariantDisplay(variant));
 					}
 				}
 			}
 
-			Collections.sort(variantList, new VariantComparator());								// sorts the list
+			Collections.sort(variantDisplayList, new VariantDisplayComparator());				// sorts the list
 			synchronizationBlank();																// adds the blank of synchronization
 		}
 	}
@@ -147,10 +142,12 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param filtersList	a list of filters
 	 * @return				true is the variant passes all filters
 	 */
-	private boolean isValid (VariantInterface variant, List<MGFilter> filtersList) {
-		for (MGFilter filter: filtersList) {			// loop on all filters
-			if (!filter.isVariantValid(variant)) {		// test the variant for the current filter
-				return false;							// if one is tested false, the variant does not pass
+	private boolean isValid (Variant variant, List<MGFilter> filtersList) {
+		if (filtersList != null) {
+			for (MGFilter filter: filtersList) {			// loop on all filters
+				if (!filter.isVariantValid(variant)) {		// test the variant for the current filter
+					return false;							// if one is tested false, the variant does not pass
+				}
 			}
 		}
 		return true;									// if all tests are correct, the variant passes
@@ -166,19 +163,19 @@ public class DisplayableVariantListMaker implements Serializable {
 		if (MGDisplaySettings.INCLUDE_BLANK_OPTION == MGDisplaySettings.YES_MG_OPTION) {
 			if (fittedChromosome != null) {
 				Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-				List<VariantInterface> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(currentChromosome);
-				List<VariantInterface> newVariantList = new ArrayList<VariantInterface>();
+				List<Variant> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(currentChromosome);
+				List<VariantDisplay> newVariantList = new ArrayList<VariantDisplay>();
 				int currentListIndex = 0;
 				int referenceListIndex = 0;
-				while ((currentListIndex < variantList.size()) && (referenceListIndex < referenceVariantList.size())) {
-					VariantInterface currentVariant = variantList.get(currentListIndex);
-					VariantInterface referenceVariant = referenceVariantList.get(referenceListIndex);
+				while ((currentListIndex < variantDisplayList.size()) && (referenceListIndex < referenceVariantList.size())) {
+					VariantDisplay currentVariant = variantDisplayList.get(currentListIndex);
+					Variant referenceVariant = referenceVariantList.get(referenceListIndex);
 
 					if (currentVariant.getStart() < referenceVariant.getStart()) {
 						newVariantList.add(currentVariant);
 						currentListIndex++;
 					} else if (referenceVariant.getStart() < currentVariant.getStart()) {
-						newVariantList.add(referenceVariant);
+						newVariantList.add(new VariantDisplay(referenceVariant));
 						referenceListIndex++;
 					} else {
 						newVariantList.add(currentVariant);
@@ -186,27 +183,20 @@ public class DisplayableVariantListMaker implements Serializable {
 						referenceListIndex++;
 					}
 				}
-				fillRestOfList(newVariantList, variantList, currentListIndex);
-				fillRestOfList(newVariantList, referenceVariantList, referenceListIndex);
-				variantList = newVariantList;
+
+				// Fill the new list with the rest of variant display
+				for (int i = currentListIndex; i < variantDisplayList.size(); i++) {
+					newVariantList.add(variantDisplayList.get(i));
+				}
+
+				// Fill the new list with the rest of reference variant
+				for (int i = referenceListIndex; i < referenceVariantList.size(); i++) {
+					newVariantList.add(new VariantDisplay(referenceVariantList.get(i)));
+				}
+
+				variantDisplayList = newVariantList;
 			}
 		}
-	}
-
-
-	/**
-	 * This method adds all the variant from a temporary list into a "full" list.
-	 * This process start from a specific index given in parameter to the end of the temporary list.
-	 * @param fullList		the full list
-	 * @param tmpList		the temporary list
-	 * @param startIndex	the index to start the filling
-	 * @return				the full list containing the new variants
-	 */
-	private List<VariantInterface> fillRestOfList (List<VariantInterface> fullList, List<VariantInterface> tmpList, int startIndex) {
-		for (int i = startIndex; i < tmpList.size(); i++) {
-			fullList.add(tmpList.get(i));
-		}
-		return fullList;
 	}
 
 
@@ -235,8 +225,8 @@ public class DisplayableVariantListMaker implements Serializable {
 	/**
 	 * @return the variantList
 	 */
-	public List<VariantInterface> getVariantList() {
-		return variantList;
+	public List<VariantDisplay> getVariantList() {
+		return variantDisplayList;
 	}
 
 
@@ -289,7 +279,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param xRatio the x ratio
 	 * @return the variant list that fits the screen
 	 */
-	public final List<VariantInterface> getFittedData(GenomeWindow window, double xRatio) {
+	public final List<VariantDisplay> getFittedData(GenomeWindow window, double xRatio) {
 		boolean hasToFit = false;
 		if ((fittedChromosome == null) || (!fittedChromosome.equals(window.getChromosome()))) {
 			fittedChromosome = window.getChromosome();
@@ -309,7 +299,7 @@ public class DisplayableVariantListMaker implements Serializable {
 				fitToScreen();
 			}
 		}
-		List<VariantInterface> result = getFittedData(window.getStart(), window.getStop());
+		List<VariantDisplay> result = getFittedData(window.getStart(), window.getStop());
 		return result;
 	}
 
@@ -318,12 +308,12 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * Merges two windows together if the gap between this two windows is not visible
 	 */
 	protected void fitToScreen() {
-		List<VariantInterface> currentVariantList = variantList;
+		List<VariantDisplay> currentVariantList = variantDisplayList;
 
 		if (fittedXRatio > 1) {
 			fittedDataList = currentVariantList;
 		} else {
-			fittedDataList = new ArrayList<VariantInterface>();
+			fittedDataList = new ArrayList<VariantDisplay>();
 			int variantListSize = currentVariantList.size();
 			if (variantListSize == 1) {
 				fittedDataList.add(currentVariantList.get(0));
@@ -332,13 +322,13 @@ public class DisplayableVariantListMaker implements Serializable {
 				int nextIndex = 1;
 
 				while (currentIndex < variantListSize) {
-					VariantInterface currentVariant = currentVariantList.get(currentIndex);
+					VariantDisplay currentVariant = currentVariantList.get(currentIndex);
 					boolean hasToBeMerged = false;
 					int start = currentVariant.getStart();
 					int stop = currentVariant.getStop();
 
 					if (nextIndex < variantListSize) {
-						VariantInterface nextVariant = currentVariantList.get(nextIndex);
+						VariantDisplay nextVariant = currentVariantList.get(nextIndex);
 						double distance = (nextVariant.getStart() - stop) * fittedXRatio;
 
 						while ((distance < 1) && (nextIndex < variantListSize)) {
@@ -357,9 +347,9 @@ public class DisplayableVariantListMaker implements Serializable {
 							}
 						}
 					}
-					VariantInterface newVariant;
+					VariantDisplay newVariant;
 					if (hasToBeMerged) {
-						newVariant = new MixVariant(start, stop);
+						newVariant = new VariantDisplay(start, stop);
 					} else {
 						newVariant = currentVariant;
 					}
@@ -375,24 +365,24 @@ public class DisplayableVariantListMaker implements Serializable {
 	}
 
 
-	protected List<VariantInterface> getFittedData(int start, int stop) {
+	protected List<VariantDisplay> getFittedData(int start, int stop) {
 		if ((fittedDataList == null) || (fittedDataList.size() == 0)) {
 			return null;
 		}
 
-		ArrayList<VariantInterface> resultList = new ArrayList<VariantInterface>();
+		ArrayList<VariantDisplay> resultList = new ArrayList<VariantDisplay>();
 		int indexStart = findStart(fittedDataList, start, 0, fittedDataList.size() - 1);
 		int indexStop = findStop(fittedDataList, stop, 0, fittedDataList.size() - 1);
 
 		if (indexStart > 0) {
-			VariantInterface variant = fittedDataList.get(indexStart - 1);
+			VariantDisplay variant = fittedDataList.get(indexStart - 1);
 			if (variant.getStop() >= start) {
 				resultList.add(variant);
 			}
 		}
 		for (int i = indexStart; i <= indexStop; i++) {
 			if (i == indexStop) {
-				VariantInterface variant = fittedDataList.get(indexStop );
+				VariantDisplay variant = fittedDataList.get(indexStop );
 				if (variant.getStop() >= start) {
 					resultList.add(variant);
 				}
@@ -401,7 +391,7 @@ public class DisplayableVariantListMaker implements Serializable {
 			}
 		}
 		if ((indexStop + 1) < fittedDataList.size()) {
-			VariantInterface variant = fittedDataList.get(indexStop + 1);
+			VariantDisplay variant = fittedDataList.get(indexStop + 1);
 			if (variant.getStart() <= stop) {
 				resultList.add(variant);
 			}
@@ -419,7 +409,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param indexStop
 	 * @return the index where the start value of the window is found or the index right after if the exact value is not find
 	 */
-	private int findStart(List<VariantInterface> list, int value, int indexStart, int indexStop) {
+	private int findStart(List<VariantDisplay> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -442,7 +432,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * @param indexStop
 	 * @return the index where the stop value of the window is found or the index right before if the exact value is not find
 	 */
-	private int findStop(List<VariantInterface> list, int value, int indexStart, int indexStop) {
+	private int findStop(List<VariantDisplay> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -462,8 +452,8 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * Prints a list of variant
 	 * @param variantList the list of variant
 	 */
-	public static void printVariantList (List<VariantInterface> variantList) {
-		for (VariantInterface variant: variantList) {
+	public static void printVariantList (List<Variant> variantList) {
+		for (Variant variant: variantList) {
 			variant.show();
 		}
 	}

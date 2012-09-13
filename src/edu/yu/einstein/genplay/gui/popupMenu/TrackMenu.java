@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATAPasteSpecial;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASetHeight;
@@ -70,6 +71,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	private final JMenuItem 	jmiCut;						// menu cut track
 	private final JMenuItem 	jmiInsert;					// menu insert blank track
 	private final JMenuItem		jmiPaste;					// menu paste track
+	private final JMenuItem		jmiPasteSpecial;			// menu special paste track
 	private final JMenuItem 	jmiDelete;					// menu delete track
 	private final JMenuItem 	jmiRename;					// menu rename track
 	private final JMenuItem 	jmiSetHeight;				// menu set height
@@ -112,6 +114,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		jmiDelete = new JMenuItem(actionMap.get(ATADelete.ACTION_KEY));
 		jmiInsert = new JMenuItem(actionMap.get(ATAInsert.ACTION_KEY));
 		jmiPaste = new JMenuItem(actionMap.get(ATAPaste.ACTION_KEY));
+		jmiPasteSpecial = new JMenuItem(actionMap.get(ATAPasteSpecial.ACTION_KEY));
 		jmiRename = new JMenuItem(actionMap.get(ATARename.ACTION_KEY));
 		jmiSaveAsImage = new JMenuItem(actionMap.get(ATASaveAsImage.ACTION_KEY));
 		jmiSetHeight = new JMenuItem(actionMap.get(ATASetHeight.ACTION_KEY));
@@ -174,6 +177,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		add(jmiCopy);
 		add(jmiCut);
 		add(jmiPaste);
+		add(jmiPasteSpecial);
 		add(jmiDelete);
 		add(jmiInsert);
 		add(jmiRename);
@@ -190,6 +194,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 
 
 		jmiPaste.setEnabled(trackList.isPasteEnable());
+		jmiPasteSpecial.setEnabled(trackList.isPasteEnable());
 
 		addPopupMenuListener(this);
 	}

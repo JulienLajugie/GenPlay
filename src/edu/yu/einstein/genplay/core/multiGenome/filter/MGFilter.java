@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.filter;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 
 
 /**
@@ -60,7 +60,7 @@ public abstract class MGFilter {
 	 * @param variant the variant
 	 * @return true if the variant is valid, false otherwise
 	 */
-	public abstract boolean isVariantValid (VariantInterface variant);
+	public abstract boolean isVariantValid (Variant variant);
 
 
 	@Override

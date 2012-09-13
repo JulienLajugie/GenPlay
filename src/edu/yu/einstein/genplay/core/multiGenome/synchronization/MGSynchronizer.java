@@ -46,7 +46,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFSampleStati
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 import edu.yu.einstein.genplay.util.Utils;
@@ -182,7 +182,7 @@ public class MGSynchronizer implements Serializable {
 
 											// Add the variant for the display
 											MGVariantListForDisplay variantListForDisplay = alleleHandler.getAlleleForDisplay(alleleType).getVariantList(chromosome, variantType);
-											VariantInterface variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
+											Variant variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
 										}
 									} else if (currentAlleleIndex == -1) {
@@ -196,7 +196,7 @@ public class MGSynchronizer implements Serializable {
 
 						if (manageReference && !hadInsertion) {
 							//VariantInterface variant = new ReferenceVariant(referencePosition, line.getREF().length(), i);
-							VariantInterface variant = new ReferenceVariant(referencePosition, line.getLongestAlternativeLength(), i, vcfFile);
+							Variant variant = new ReferenceVariant(referencePosition, line.getLongestAlternativeLength(), i, vcfFile);
 							alleleHandler.getAlleleReferenceDisplay().getVariantList(chromosome).add(variant);
 						}
 					}

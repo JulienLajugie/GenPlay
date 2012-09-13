@@ -26,7 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 
 /**
  * @author Nicolas Fourel
@@ -63,7 +63,7 @@ public class BasicFilter extends MGFilter implements Serializable {
 
 
 	@Override
-	public boolean isVariantValid(VariantInterface variant) {
+	public boolean isVariantValid(Variant variant) {
 		return filter.isValid(variant);
 	}
 

@@ -30,7 +30,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public interface VariantInterface {
+public interface Variant {
 
 
 	/**
@@ -117,4 +117,7 @@ public interface VariantInterface {
 	 */
 	@Override
 	public boolean equals(Object obj);
+
+
+
 }

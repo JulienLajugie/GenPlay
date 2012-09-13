@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 
 /**
  * @author Nicolas Fourel

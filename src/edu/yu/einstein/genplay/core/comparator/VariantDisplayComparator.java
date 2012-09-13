@@ -19,55 +19,39 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.maskTrack;
+package edu.yu.einstein.genplay.core.comparator;
 
-import java.awt.event.ActionEvent;
+import java.util.Comparator;
 
-import javax.swing.ActionMap;
-
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.track.Track;
-
-
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 
 /**
- * Removes the mask on the selected track
- * @author Julien Lajugie
+ * This class is a comparator for variant.
+ * The comparison is made according to the reference genome position.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class MTARemoveMask extends TrackListAction {
+public class VariantDisplayComparator implements Comparator<VariantDisplay> {
 
-	private static final long serialVersionUID = -5710099956650330270L; // generated ID
-	private static final String ACTION_NAME = "Remove Mask"; // action name
-	private static final String DESCRIPTION = "Remove mask on the selected track"; // tooltip
-
-
-	/**
-	 * key of the action in the {@link ActionMap}
-	 */
-	public static final String ACTION_KEY = "ATARemoveMask";
-
-
-	/**
-	 * Creates an instance of {@link MTARemoveMask}
-	 */
-	public MTARemoveMask() {
-		super();
-		putValue(NAME, ACTION_NAME);
-		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-	}
-
-
-	/**
-	 * Removes the stripes on the selected track
-	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		Track<?> selectedTrack = getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			selectedTrack.setMask(null);
+	public int compare(VariantDisplay o1, VariantDisplay o2) {
+		int position1 = o1.getStart();
+		int position2 = o2.getStart();
+		if (position1 < position2) {
+			return -1;
+		} else if (position1 == position2) {
+			int stop1 = o1.getStop();
+			int stop2 = o2.getStop();
+			if (stop1 > stop2) {
+				return -1;				// the longest variant is first
+			} else if (stop1 < stop2) {
+				return 1;
+			}
+			return 0;
+		} else {
+			return 1;
 		}
 	}
+
 }

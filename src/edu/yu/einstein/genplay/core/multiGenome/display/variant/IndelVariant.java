@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class IndelVariant implements Serializable, VariantInterface {
+public class IndelVariant implements Serializable, Variant {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -2068590198125427396L;

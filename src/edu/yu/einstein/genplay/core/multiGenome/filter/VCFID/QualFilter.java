@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.enums.InequalityOperators;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FilterUtility;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.FormatFilterOperatorType;
 import edu.yu.einstein.genplay.core.multiGenome.filter.utils.NumberUtility;
@@ -182,7 +182,7 @@ public class QualFilter implements NumberIDFilterInterface, Serializable {
 
 
 	@Override
-	public boolean isValid(VariantInterface variant) {
+	public boolean isValid(Variant variant) {
 		return false;
 	}
 

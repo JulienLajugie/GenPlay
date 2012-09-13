@@ -156,7 +156,7 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		drawHorizontalLines(g);
 		drawVerticalLines(g);
 		drawData(g);
-		drawStripes(g);
+		drawMask(g);
 		drawMultiGenomeInformation(g);
 		drawScore(g);
 		drawHeaderTrack(g);

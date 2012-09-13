@@ -42,7 +42,8 @@ public class MGFilterSettings implements Serializable {
 	private static final long serialVersionUID = -4120007365169339324L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private List<FiltersData> filtersList;	// List of filters
+	private List<FiltersData> filtersList;			// List of filters
+	private List<FiltersData> copiedFiltersList;	// List of filters
 
 
 	/**
@@ -66,6 +67,7 @@ public class MGFilterSettings implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		filtersList = (List<FiltersData>) in.readObject();
+		copiedFiltersList = null;
 	}
 
 
@@ -74,6 +76,7 @@ public class MGFilterSettings implements Serializable {
 	 */
 	protected MGFilterSettings () {
 		filtersList = new ArrayList<FiltersData>();
+		copiedFiltersList = null;
 	}
 
 
@@ -103,6 +106,33 @@ public class MGFilterSettings implements Serializable {
 	public void setFiltersSettings(List<FiltersData> filtersList) {
 		this.filtersList = filtersList;
 	}
+
+
+	/**
+	 * Create a copy of the information related to the given track in the temporary list.
+	 * This method is used when multi genome information cannot be serialized.
+	 * @param track the track to save information
+	 */
+	public void copyTemporaryFilters(Track<?> track) {
+		this.copiedFiltersList = getFiltersForTrack(track);
+	}
+
+
+	/**
+	 * Copy the information from the temporary list to the actual list changing their target track.
+	 * It does not erase the temporary list in order to use it again later on.
+	 * @param track the new track for the information
+	 */
+	public void pasteTemporaryFilters (Track<?> track) {
+		if (copiedFiltersList != null) {
+			for (FiltersData data: copiedFiltersList) {
+				Track<?>[] tracks = {track};
+				FiltersData newData = new FiltersData(data.getMGFilter(), tracks);
+				filtersList.add(newData);
+			}
+		}
+	}
+
 
 
 	/**
@@ -168,7 +198,7 @@ public class MGFilterSettings implements Serializable {
 	 * @param copiedTrack	the copied track
 	 * @param newTrack		the pasted track
 	 */
-	public void pasteData (Track<?> copiedTrack, Track<?> newTrack) {
+	public void copyData (Track<?> copiedTrack, Track<?> newTrack) {
 		List<FiltersData> filterList = getFiltersForTrack(copiedTrack);
 		if (filterList != null) {
 			for (FiltersData data: filterList) {
@@ -217,9 +247,9 @@ public class MGFilterSettings implements Serializable {
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
 		for (FiltersData filter: filtersList) {
-			filter.changeTrack(oldTrack, newTrack);
+			filter.replaceTrack(oldTrack, newTrack);
 		}
 	}
 

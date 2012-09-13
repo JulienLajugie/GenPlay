@@ -43,7 +43,8 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -63,7 +64,7 @@ public class GlobalInformationPanel extends JPanel {
 	private static final int LABEL_HEIGHT = 15;		// height of a label
 	private static final int KEY_WIDTH = 40;		// width of a label used to display a key
 	private static final int VALUE_WIDTH = 60;		// width of a label used to display a value
-	private final VariantInterface variant;
+	private final Variant variant;
 	private final VCFLine variantInformation;			// the variant to display the information of
 	private final String genomeFullName;
 	private final GridBagConstraints gbc;
@@ -73,8 +74,8 @@ public class GlobalInformationPanel extends JPanel {
 	 * Constructor of {@link GlobalInformationPanel}
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
-	protected GlobalInformationPanel (VariantInterface variant, VCFLine variantInformation) {
-		this.variant = variant;
+	protected GlobalInformationPanel (VariantDisplay variantDisplay, VCFLine variantInformation) {
+		this.variant = variantDisplay.getSource();
 		this.variantInformation = variantInformation;
 
 		if ((variant instanceof IndelVariant) || (variant instanceof SNPVariant)) {

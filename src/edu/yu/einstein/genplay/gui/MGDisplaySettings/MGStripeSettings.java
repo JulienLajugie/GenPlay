@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,10 +40,11 @@ public class MGStripeSettings implements Serializable {
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -8887751815193182599L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
-	private List<StripesData> stripesList;	// List of settings for stripes display
 
-	
+	private List<StripesData> stripesList;			// List of settings for stripes display
+	private List<StripesData> copiedStripesList;	// List of settings for stripes display
+
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -65,17 +66,19 @@ public class MGStripeSettings implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		stripesList = (List<StripesData>) in.readObject();
+		copiedStripesList = null;
 	}
-	
-	
+
+
 	/**
 	 * Constructor of {@link MGStripeSettings}
 	 */
 	protected MGStripeSettings () {
 		stripesList = new ArrayList<StripesData>();
+		copiedStripesList = null;
 	}
-	
-	
+
+
 	/**
 	 * @return the stripesList
 	 */
@@ -83,15 +86,41 @@ public class MGStripeSettings implements Serializable {
 		return stripesList;
 	}
 
-	
+
 	/**
 	 * @param stripesList the stripesList to set
 	 */
 	public void setStripesSettings(List<StripesData> stripesList) {
 		this.stripesList = stripesList;
 	}
-	
-	
+
+
+	/**
+	 * Create a copy of the information related to the given track in the temporary list.
+	 * This method is used when multi genome information cannot be serialized.
+	 * @param track the track to save information
+	 */
+	public void copyTemporaryStripes(Track<?> track) {
+		this.copiedStripesList = getStripesForTrack(track);
+	}
+
+
+	/**
+	 * Copy the information from the temporary list to the actual list changing their target track.
+	 * It does not erase the temporary list in order to use it again later on.
+	 * @param track the new track for the information
+	 */
+	public void pasteTemporaryStripes (Track<?> track) {
+		if (copiedStripesList != null) {
+			for (StripesData data: copiedStripesList) {
+				Track<?>[] tracks = {track};
+				StripesData newData = new StripesData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), tracks);
+				stripesList.add(newData);
+			}
+		}
+	}
+
+
 	/**
 	 * Creates the list of stripes according to a track
 	 * @param track the track
@@ -99,7 +128,7 @@ public class MGStripeSettings implements Serializable {
 	 */
 	public List<StripesData> getStripesForTrack (Track<?> track) {
 		List<StripesData> list = new ArrayList<StripesData>();
-		
+
 		for (StripesData data: stripesList) {
 			Track<?>[] trackList = data.getTrackList();
 			for (Track<?> currentTrack: trackList) {
@@ -109,18 +138,18 @@ public class MGStripeSettings implements Serializable {
 				}
 			}
 		}
-		
+
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * When pasting a track, associated stripes settings to the copying track must be given to the pasting track.
 	 * This method create duplicates of the settings related to the copied track updated for the pasted track.
 	 * @param copiedTrack	the copied track
 	 * @param newTrack		the pasted track
 	 */
-	public void pasteData (Track<?> copiedTrack, Track<?> newTrack) {
+	public void copyData (Track<?> copiedTrack, Track<?> newTrack) {
 		List<StripesData> stripeList = getStripesForTrack(copiedTrack);
 		if (stripeList != null) {
 			for (StripesData data: stripeList) {
@@ -132,8 +161,8 @@ public class MGStripeSettings implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * When deleting a track, all its settings must be deleted.
 	 * The setting of a track can be mixed with the ones of other tracks.
@@ -161,21 +190,21 @@ public class MGStripeSettings implements Serializable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
 	 * It will replace the references to the old track by the one of the new track.
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
 		for (StripesData stripe: stripesList) {
-			stripe.changeTrack(oldTrack, newTrack);
+			stripe.replaceTrack(oldTrack, newTrack);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Show the settings
 	 */
@@ -185,5 +214,5 @@ public class MGStripeSettings implements Serializable {
 			System.out.println("Genome: " + data.getGenomeForDisplay() + "; Stripes: " + data.getVariationTypeList());
 		}
 	}
-	
+
 }

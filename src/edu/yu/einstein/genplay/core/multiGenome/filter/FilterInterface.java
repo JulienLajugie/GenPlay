@@ -22,7 +22,7 @@
 package edu.yu.einstein.genplay.core.multiGenome.filter;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 
 /**
  * @author Nicolas Fourel
@@ -69,7 +69,7 @@ public interface FilterInterface {
 	 * @param variant the variant
 	 * @return true if it is valid, false otherwise;
 	 */
-	public boolean isValid (VariantInterface variant);
+	public boolean isValid (Variant variant);
 
 
 	/**

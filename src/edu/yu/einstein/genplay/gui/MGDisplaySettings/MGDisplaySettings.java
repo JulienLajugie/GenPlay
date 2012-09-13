@@ -25,8 +25,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -174,15 +177,42 @@ public class MGDisplaySettings implements Serializable {
 
 
 	/**
+	 * Create a copy of the information related to the given track in temporary lists.
+	 * This method is used when multi genome information cannot be serialized.
+	 * @param track the track to save information
+	 */
+	public void copyTemporaryTrack (Track<?> track) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			stripeSettings.copyTemporaryStripes(track);
+			filterSettings.copyTemporaryFilters(track);
+		}
+	}
+
+
+	/**
+	 * Copy the information from the temporary lists to the actual list changing their target track.
+	 * It does not erase the temporary lists in order to use them again later on.
+	 * @param track the new track for the information
+	 */
+	public void pasteTemporaryTrack (Track<?> track) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			stripeSettings.pasteTemporaryStripes(track);
+			filterSettings.pasteTemporaryFilters(track);
+		}
+	}
+
+
+
+	/**
 	 * When a new track is loaded, the settings will still refer to the previous track if this method is not called.
 	 * It will replace the references to the old track by the one of the new track.
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void newTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			filterSettings.changeTrack(oldTrack, newTrack);
-			stripeSettings.changeTrack(oldTrack, newTrack);
+			filterSettings.replaceTrack(oldTrack, newTrack);
+			stripeSettings.replaceTrack(oldTrack, newTrack);
 		}
 	}
 
@@ -193,10 +223,10 @@ public class MGDisplaySettings implements Serializable {
 	 * @param copiedTrack	the copied track
 	 * @param newTrack		the pasted track
 	 */
-	public void pasteTrack (Track<?> copiedTrack, Track<?> newTrack) {
+	public void copyTrack (Track<?> copiedTrack, Track<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			filterSettings.pasteData(copiedTrack, newTrack);
-			stripeSettings.pasteData(copiedTrack, newTrack);
+			filterSettings.copyData(copiedTrack, newTrack);
+			stripeSettings.copyData(copiedTrack, newTrack);
 		}
 	}
 
@@ -214,6 +244,19 @@ public class MGDisplaySettings implements Serializable {
 		}
 	}
 
+
+	/**
+	 * Restore multi genome information to a track
+	 * @param track the track
+	 */
+	public void restoreInformation (Track<?> track) {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(track);
+			List<StripesData> stripeList = stripeSettings.getStripesForTrack(track);
+			track.getMultiGenomeDrawer().setStripesList(stripeList);
+			track.getMultiGenomeDrawer().setFiltersList(filterList);
+		}
+	}
 
 
 	/**

@@ -83,7 +83,7 @@ public final class MTAInvertMask extends TrackListActionOperationWorker<ScoredCh
 			//selectedTrack.getHistory().add("Invert mask", Colors.GREY);
 			//selectedTrack.getHistory().add("Track: " + this.selectedTrack.getName(), Colors.GREY);
 
-			selectedTrack.setStripes(actionResult);
+			selectedTrack.setMask(actionResult);
 		}
 	}
 

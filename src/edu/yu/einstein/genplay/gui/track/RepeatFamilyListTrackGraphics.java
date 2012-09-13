@@ -160,7 +160,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 	protected void drawTrack(Graphics g) {
 		drawVerticalLines(g);
 		drawRepeat(g);
-		drawStripes(g);
+		drawMask(g);
 		drawMultiGenomeInformation(g);
 		drawHeaderTrack(g);
 		drawMiddleVerticalLine(g);

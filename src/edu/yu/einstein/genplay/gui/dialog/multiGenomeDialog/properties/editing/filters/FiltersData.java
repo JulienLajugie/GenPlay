@@ -217,7 +217,7 @@ public class FiltersData implements Serializable {
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
 		for (int i = 0; i < trackList.length; i++) {
 			if (trackList[i].equals(oldTrack)) {
 				trackList[i] = newTrack;

@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -189,7 +189,7 @@ public class VCFLineUtility {
 	 * @param variant a variant
 	 * @return the VCF line of the variant
 	 */
-	public static VCFLine getVCFLine (VariantInterface variant) {
+	public static VCFLine getVCFLine (Variant variant) {
 		if ((variant instanceof IndelVariant) || (variant instanceof SNPVariant)) {
 			List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(), variant.getVariantListForDisplay().getType());
 			int start = variant.getReferenceGenomePosition();
@@ -241,7 +241,7 @@ public class VCFLineUtility {
 	}
 
 
-	private static VCFLine getRightInformation (VariantInterface variant, List<String> results, List<VCFFile> vcfFiles) {
+	private static VCFLine getRightInformation (Variant variant, List<String> results, List<VCFFile> vcfFiles) {
 		if (results.size() > 0) {
 			float variantScore = variant.getScore();
 			for (int i = 0; i < results.size(); i++) {

@@ -76,6 +76,7 @@ import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAInsert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATAPaste;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATAPasteSpecial;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATARename;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASaveAsImage;
@@ -158,7 +159,8 @@ import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.VersionedTrack;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.pasteSettings.PasteSettings;
 
 
 
@@ -236,6 +238,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(MTALoadMask.ACTION_KEY, new MTALoadMask());
 		getActionMap().put(MTASaveMask.ACTION_KEY, new MTASaveMask());
 		getActionMap().put(ATAPaste.ACTION_KEY, new ATAPaste());
+		getActionMap().put(ATAPasteSpecial.ACTION_KEY, new ATAPasteSpecial());
 		getActionMap().put(MTARemoveMask.ACTION_KEY, new MTARemoveMask());
 		getActionMap().put(MTAInvertMask.ACTION_KEY, new MTAInvertMask());
 		getActionMap().put(MTAApplyMask.ACTION_KEY, new MTAApplyMask());
@@ -357,6 +360,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATADelete.ACCELERATOR, ATADelete.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAInsert.ACCELERATOR, ATAInsert.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAPaste.ACCELERATOR, ATAPaste.ACTION_KEY);
+		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATAPasteSpecial.ACCELERATOR, ATAPasteSpecial.ACTION_KEY);
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ATARename.ACCELERATOR, ATARename.ACTION_KEY);
 		// curve tracks
 		getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(VTAHistory.ACCELERATOR, VTAHistory.ACTION_KEY);
@@ -412,22 +416,19 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 * @param track {@link Track} to set
 	 * @param preferredHeight preferred height of the track
 	 * @param name name of the track (can be null)
-	 * @param stripes {@link ChromosomeWindowList} (can be null)
+	 * @param mask {@link ChromosomeWindowList} (can be null)
 	 * @param stripesList {@link StripesData} (can be null)
 	 * @param filtersList {@link VCFFilter} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ScoredChromosomeWindowList stripes, List<StripesData> stripesList, List<MGFilter> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ScoredChromosomeWindowList mask, List<StripesData> stripesList, List<MGFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
-		if (name != null) {
-			track.setName(name);
-		}
-		if (stripes != null) {
-			track.setStripes(stripes);
-		}
-		if ((stripesList != null) && (filtersList != null)) {
-			MGDisplaySettings.getInstance().newTrack(trackList[index], track);
+		track.setName(name);
+		track.setMask(mask);
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			MGDisplaySettings.getInstance().replaceTrack(trackList[index], track);
 			track.updateMultiGenomeInformation(stripesList, filtersList);
 		}
+
 		trackList[index] = track;
 		trackList[index].setTrackNumber(index + 1);
 		trackList[index].addPropertyChangeListener(this);
@@ -764,9 +765,10 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void copyTrack() {
 		if (selectedTrack != null) {
 			try {
-				selectedTrack.disableStripeListSerialization();
+				//selectedTrack.disableStripeListSerialization();
 				copiedTrack = selectedTrack.deepClone();
-				selectedTrack.enableStripeListSerialization();
+				selectedTrack.copyMultiGenomeInformation();
+				//selectedTrack.enableStripeListSerialization();
 				// we need to clone the selected track because the user may copy the
 				// then modify the track and finally paste the track.  If we don't do the deep clone
 				// all the modification made after the cloning will be copied (and we don't want that)
@@ -784,12 +786,13 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (selectedTrack != null) {
 			try {
 				copiedTrack = selectedTrack;
+				copiedTrack.copyMultiGenomeInformation();
 				int selectedTrackIndex = getSelectedTrackIndex();
 				Track<?> emptyTrack = new EmptyTrack(trackList.length);
 				setTrack(selectedTrackIndex, emptyTrack, projectConfiguration.getTrackHeight(), null, null, null, null);
 				selectedTrack = null;
 			} catch (Exception e) {
-				ExceptionManager.handleException(this, e, "Error while copying the track");
+				ExceptionManager.handleException(this, e, "Error while cutting the track");
 			}
 		}
 	}
@@ -832,13 +835,103 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	public void pasteCopiedTrack() {
 		if ((selectedTrack != null) && (copiedTrack != null)) {
 			try {
-				int selectedTrackIndex = getSelectedTrackIndex();
-				selectedTrack.disableStripeListSerialization();
+				// Get a copy of the copied track
 				Track<?> newTrack = copiedTrack.deepClone();
-				selectedTrack.enableStripeListSerialization();
-				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), null, null, null, null);
-				MGDisplaySettings.getInstance().pasteTrack(copiedTrack, newTrack);
-				newTrack.updateMultiGenomeInformation(MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack), MGDisplaySettings.getInstance().getFilterSettings().getMGFiltersForTrack(newTrack));
+
+				// Manage the name
+				String name = "Copy of " + copiedTrack.getName();
+
+				// Manage the mask
+				ScoredChromosomeWindowList mask = copiedTrack.getMask();
+
+				// Get the selected track index
+				int selectedTrackIndex = getSelectedTrackIndex();
+
+				// Manage the multi genome information
+				List<StripesData> stripesList = null;
+				List<MGFilter> filtersList = null;
+				if (ProjectManager.getInstance().isMultiGenomeProject()) {
+					MGDisplaySettings.getInstance().deleteTrack(trackList[selectedTrackIndex]);		// Get rid of previous MG information
+					MGDisplaySettings.getInstance().pasteTemporaryTrack(newTrack);					// Create the new MG information from the copied ones
+					stripesList = MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack);		// Set the new stripe list
+					filtersList = MGDisplaySettings.getInstance().getFilterSettings().getMGFiltersForTrack(newTrack);	// Set the new filter list
+				}
+
+				// Set up the new track
+				setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), name, mask, stripesList, filtersList);
+
+				// Unlink the selected track
+				selectedTrack = null;
+			} catch (Exception e) {
+				ExceptionManager.handleException(this, e, "Error while pasting the track");
+			}
+		}
+	}
+
+
+	/**
+	 * Pastes the selected track
+	 * @param name the new name of the track
+	 */
+	public void pasteSpecialCopiedTrack(String name) {
+		if ((selectedTrack != null) && (copiedTrack != null)) {
+			try {
+				// Get a copy of the copied track
+				Track<?> newTrack = copiedTrack.deepClone();
+
+				// Retrieve the right the mask
+				ScoredChromosomeWindowList mask = null;
+				if (PasteSettings.PASTE_MASK == PasteSettings.YES_OPTION) {
+					mask = copiedTrack.getMask();
+				} else {
+					mask = selectedTrack.getMask();
+				}
+
+				// Retrieve the right multi genome information
+				List<StripesData> stripesList = null;
+				List<MGFilter> filtersList = null;
+				if (PasteSettings.PASTE_MG == PasteSettings.YES_OPTION) {
+					if (ProjectManager.getInstance().isMultiGenomeProject()) {
+						MGDisplaySettings.getInstance().deleteTrack(selectedTrack);											// Get rid of previous MG information on the selected track
+						Track<?> currentTrack = null;
+						if (PasteSettings.PASTE_DATA == PasteSettings.YES_OPTION) {											// If the data will be pasted, the whole track will change and the reference track is the new track
+							currentTrack = newTrack;
+						} else {																							// If the data won't be pasted, we only update the selected track!
+							currentTrack = selectedTrack;
+						}
+						MGDisplaySettings.getInstance().pasteTemporaryTrack(currentTrack);										// Create the new MG information from the copied ones
+						stripesList = MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(currentTrack);		// Set the new stripes list
+						filtersList = MGDisplaySettings.getInstance().getFilterSettings().getMGFiltersForTrack(currentTrack);	// Set the new filters list
+					}
+				} else {
+					if (ProjectManager.getInstance().isMultiGenomeProject()) {
+						stripesList = selectedTrack.getStripesList();
+						filtersList = selectedTrack.getFiltersList();
+
+						MGDisplaySettings.getInstance().replaceTrack(selectedTrack, newTrack);
+					}
+				}
+
+				// Set up the new track
+				if (PasteSettings.PASTE_DATA == PasteSettings.YES_OPTION) {
+					int selectedTrackIndex = getSelectedTrackIndex();
+					setTrack(selectedTrackIndex, newTrack, copiedTrack.getPreferredHeight(), name, mask, stripesList, filtersList);
+				} else {
+					if ((PasteSettings.PASTE_NAME == PasteSettings.YES_OPTION) || (PasteSettings.REDEFINE_NAME == PasteSettings.YES_OPTION)) {
+						selectedTrack.setName(name);
+					}
+
+					if (PasteSettings.PASTE_MASK == PasteSettings.YES_OPTION) {
+						selectedTrack.setMask(mask);
+					}
+					if (PasteSettings.PASTE_MG == PasteSettings.YES_OPTION) {
+						if (ProjectManager.getInstance().isMultiGenomeProject()) {
+							selectedTrack.updateMultiGenomeInformation(stripesList, filtersList);
+						}
+					}
+				}
+
+				// Unlink the selected track
 				selectedTrack = null;
 			} catch (Exception e) {
 				ExceptionManager.handleException(this, e, "Error while pasting the track");
@@ -852,6 +945,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public void deleteTrack() {
 		if (selectedTrack != null) {
+			MGDisplaySettings.getInstance().deleteTrack(selectedTrack);
 			selectedTrack.delete();
 			int selectedTrackIndex = getSelectedTrackIndex();
 			for (int i = selectedTrackIndex + 1; i < trackList.length; i++) {
@@ -859,7 +953,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}
 			trackList[trackList.length - 1] = new EmptyTrack(trackList.length);
 			trackList[trackList.length - 1].addPropertyChangeListener(this);
-			MGDisplaySettings.getInstance().deleteTrack(selectedTrack);
 
 			selectedTrack = null;
 			rebuildPanel();
@@ -1003,5 +1096,26 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			}
 		}
 		return -1;
+	}
+
+
+	/**
+	 * @param multiGenomeDrawer
+	 * @return the the track according to a {@link MultiGenomeDrawer}
+	 */
+	public Track<?> getTrackFromMGGenomeDrawer (MultiGenomeDrawer multiGenomeDrawer) {
+		int trackIndex = getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
+		if (trackIndex != -1) {
+			return trackList[trackIndex];
+		}
+		return null;
+	}
+
+
+	/**
+	 * @return the copiedTrack
+	 */
+	public Track<?> getCopiedTrack() {
+		return copiedTrack;
 	}
 }

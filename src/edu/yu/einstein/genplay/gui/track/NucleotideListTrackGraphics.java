@@ -225,7 +225,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 		drawNucleotideBackgrounds(g);
 		drawVerticalLines(g);
 		drawNucleotideLetters(g);
-		drawStripes(g);
+		drawMask(g);
 		drawMultiGenomeInformation(g);
 		drawHeaderTrack(g);
 		drawMiddleVerticalLine(g);

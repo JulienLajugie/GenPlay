@@ -32,10 +32,12 @@ import javax.swing.filechooser.FileFilter;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -140,6 +142,13 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 			MainFrame.getInstance().setVisible(true);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
+
+			TrackList trackList = MainFrame.getInstance().getTrackList();
+			Track<?>[] tracks = trackList.getTrackList();
+			for (Track<?> currentTrack: tracks) {
+				MGDisplaySettings.getInstance().restoreInformation(currentTrack);
+			}
+
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
 			MainFrame.getInstance().registerToGenomeWindow();
 		}

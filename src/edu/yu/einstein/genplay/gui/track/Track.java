@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -206,6 +206,19 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		registerToGenomeWindow();
 
 		return (Track<?>) ois.readObject();
+	}
+
+
+	/**
+	 * Copy the multi genome information (stripes & filters) create a temporary copy in the {@link MGDisplaySettings} instance.
+	 * These information are never serialize because of serializing issues.
+	 * Saving/Loading processes manage these information but be carefull when using deepClone().
+	 * You may want to use this method AND then to use the method pasteTemporaryTrack(Track<?> track) in {@link MGDisplaySettings} to restore the information to the new track.
+	 */
+	public void copyMultiGenomeInformation () {
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			MGDisplaySettings.getInstance().copyTemporaryTrack(this);
+		}
 	}
 
 
@@ -378,21 +391,21 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * Enable the serialization of the stripes list for multi genome project.
 	 */
-	public void enableStripeListSerialization () {
+	/*public void enableStripeListSerialization () {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			trackGraphics.getMultiGenomeDrawer().enableStripeListSerialization();
 		}
-	}
+	}*/
 
 
 	/**
 	 * Disable the serialization of the stripes list for multi genome project.
 	 */
-	public void disableStripeListSerialization () {
+	/*public void disableStripeListSerialization () {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			trackGraphics.getMultiGenomeDrawer().disableStripeListSerialization();
 		}
-	}
+	}*/
 
 
 	/**
@@ -496,10 +509,10 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 	/**
 	 * shows stripes on the track
-	 * @param stripeList a {@link ScoredChromosomeWindowList}
+	 * @param mask a {@link ScoredChromosomeWindowList}
 	 */
-	public void setStripes(ScoredChromosomeWindowList stripeList) {
-		trackGraphics.setStripes(stripeList);
+	public void setMask(ScoredChromosomeWindowList mask) {
+		trackGraphics.setMask(mask);
 		repaint();
 	}
 

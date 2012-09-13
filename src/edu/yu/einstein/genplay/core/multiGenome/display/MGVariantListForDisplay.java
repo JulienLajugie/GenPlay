@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 
 /**
  * This class manages a list of variants.
@@ -55,7 +55,7 @@ public class MGVariantListForDisplay implements Serializable {
 	private MGAlleleForDisplay 		alleleForDisplay;					// its allele
 	private Chromosome				chromosome;							// its chromosome
 	private VariantType 			type;								// type of the variants
-	private List<VariantInterface> 	variantList;						// list of variants
+	private List<Variant> 	variantList;						// list of variants
 
 
 	/**
@@ -84,7 +84,7 @@ public class MGVariantListForDisplay implements Serializable {
 		alleleForDisplay = (MGAlleleForDisplay) in.readObject();
 		chromosome = (Chromosome) in.readObject();
 		type = (VariantType) in.readObject();
-		variantList = (List<VariantInterface>) in.readObject();
+		variantList = (List<Variant>) in.readObject();
 	}
 
 
@@ -98,7 +98,7 @@ public class MGVariantListForDisplay implements Serializable {
 		this.alleleForDisplay = alleleForDisplay;
 		this.chromosome = chromosome;
 		this.type = type;
-		this.variantList = new ArrayList<VariantInterface>();
+		this.variantList = new ArrayList<Variant>();
 	}
 
 
@@ -129,7 +129,7 @@ public class MGVariantListForDisplay implements Serializable {
 	/**
 	 * @return the variantList
 	 */
-	public List<VariantInterface> getVariantList() {
+	public List<Variant> getVariantList() {
 		return variantList;
 	}
 
@@ -138,7 +138,7 @@ public class MGVariantListForDisplay implements Serializable {
 	 * Empty the variant list
 	 */
 	public void clearVariantList () {
-		this.variantList = new ArrayList<VariantInterface>();
+		this.variantList = new ArrayList<Variant>();
 	}
 
 

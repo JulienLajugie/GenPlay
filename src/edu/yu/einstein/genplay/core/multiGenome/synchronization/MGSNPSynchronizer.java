@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGMultiGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.util.Utils;
 
@@ -191,7 +191,7 @@ public class MGSNPSynchronizer implements Serializable {
 													score = 50;	// default value...
 												}
 												if (referenceGenomePosition != -1) {
-													VariantInterface variant = new SNPVariant(variantListForDisplay, referenceGenomePosition, score, 0);
+													Variant variant = new SNPVariant(variantListForDisplay, referenceGenomePosition, score, 0);
 													variantListForDisplay.getVariantList().add(variant);
 												}
 											}

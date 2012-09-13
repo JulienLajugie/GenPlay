@@ -74,7 +74,7 @@ public final class EmptyTrackGraphics extends TrackGraphics<Void> {
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawVerticalLines(g);
-		drawStripes(g);
+		drawMask(g);
 		drawMultiGenomeInformation(g);
 		drawHeaderTrack(g);
 		drawMiddleVerticalLine(g);

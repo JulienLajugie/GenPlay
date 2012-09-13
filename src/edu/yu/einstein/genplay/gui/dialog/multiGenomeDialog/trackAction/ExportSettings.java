@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 
 /**
  * @author Nicolas Fourel

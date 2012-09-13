@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MixVariant implements Serializable, VariantInterface {
+public class MixVariant implements Serializable, Variant {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 4873498320038629297L;

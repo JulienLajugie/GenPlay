@@ -99,7 +99,7 @@ public class SNPListTrackGraphics extends TrackGraphics<SNPList> {
 		if (snpUnderMouse != null) {
 			drawSNPUnderMouse(g);
 		}
-		drawStripes(g);
+		drawMask(g);
 		drawMultiGenomeInformation(g);
 		drawHeaderTrack(g);
 	}

@@ -53,8 +53,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.gui.track.drawer.TrackHeaderDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -156,7 +156,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	@Override
 	public void setName (String name) {
-		super.setName(name);
+		if (name == null) {
+			super.setName("");
+		} else {
+			super.setName(name);
+		}
+
 	}
 
 
@@ -233,7 +238,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * Draws stripes on the track
 	 * @param g Graphics
 	 */
-	protected void drawStripes(Graphics g) {
+	protected void drawMask(Graphics g) {
 		if (mask != null) {
 			int height = getHeight();
 			// create a transparent color for the stripes
@@ -508,10 +513,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	/**
 	 * shows stripes on the track
-	 * @param stripeList a {@link ChromosomeWindowList}
+	 * @param mask a {@link ChromosomeWindowList}
 	 */
-	public void setStripes(ScoredChromosomeWindowList stripeList) {
-		this.mask = stripeList;
+	public void setMask(ScoredChromosomeWindowList mask) {
+		this.mask = mask;
 		repaint();
 	}
 

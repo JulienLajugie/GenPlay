@@ -40,7 +40,7 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 

@@ -19,55 +19,57 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.action.maskTrack;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.ActionMap;
-
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.track.Track;
-
+package edu.yu.einstein.genplay.gui.track.pasteSettings;
 
 
 /**
- * Removes the mask on the selected track
- * @author Julien Lajugie
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class MTARemoveMask extends TrackListAction {
+public class PasteSettings {
 
-	private static final long serialVersionUID = -5710099956650330270L; // generated ID
-	private static final String ACTION_NAME = "Remove Mask"; // action name
-	private static final String DESCRIPTION = "Remove mask on the selected track"; // tooltip
+	private static PasteSettings 	instance;			// Instance of the class
+
+	/** Enable a MG option */
+	public static final int YES_OPTION = 1;
+
+	/** Disable a MG option */
+	public static final int NO_OPTION = 0;
+
+	/** Option to paste the name */
+	public static int PASTE_NAME = YES_OPTION;
+
+	/** Option to redefine the name */
+	public static int REDEFINE_NAME = YES_OPTION;
+
+	/** Option to paste the data */
+	public static int PASTE_DATA = YES_OPTION;
+
+	/** Option to paste the mask */
+	public static int PASTE_MASK = YES_OPTION;
+
+	/** Option to paste the multi genome stripes */
+	public static int PASTE_MG = YES_OPTION;
 
 
 	/**
-	 * key of the action in the {@link ActionMap}
+	 * @return an instance of a {@link PasteSettings}.
+	 * Makes sure that there is only one unique instance as specified in the singleton pattern
 	 */
-	public static final String ACTION_KEY = "ATARemoveMask";
-
-
-	/**
-	 * Creates an instance of {@link MTARemoveMask}
-	 */
-	public MTARemoveMask() {
-		super();
-		putValue(NAME, ACTION_NAME);
-		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
-		putValue(SHORT_DESCRIPTION, DESCRIPTION);
-	}
-
-
-	/**
-	 * Removes the stripes on the selected track
-	 */
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		Track<?> selectedTrack = getTrackList().getSelectedTrack();
-		if (selectedTrack != null) {
-			selectedTrack.setMask(null);
+	public static PasteSettings getInstance() {
+		if (instance == null) {
+			instance = new PasteSettings();
 		}
+		return instance;
 	}
+
+
+	/**
+	 * Constructor of {@link PasteSettings}
+	 */
+	private PasteSettings () {
+
+	}
+
+
 }

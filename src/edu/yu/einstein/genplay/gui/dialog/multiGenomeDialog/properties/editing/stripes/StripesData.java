@@ -40,7 +40,9 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
 /**
  * @author Nicolas Fourel
@@ -80,7 +82,18 @@ public class StripesData implements Serializable {
 		out.writeObject(alleleType);
 		out.writeObject(variationTypeList);
 		out.writeObject(colorList);
-		out.writeObject(trackList);
+
+		TrackList trackList = MainFrame.getInstance().getTrackList();
+		for (Track<?> currentTrack: this.trackList) {
+			currentTrack.removePropertyChangeListener(trackList);
+		}
+
+		out.writeObject(this.trackList);
+
+		// rebuild the references to the listener
+		for (Track<?> currentTrack: this.trackList) {
+			currentTrack.addPropertyChangeListener(trackList);
+		}
 	}
 
 
@@ -408,7 +421,7 @@ public class StripesData implements Serializable {
 	 * @param oldTrack the old track
 	 * @param newTrack the new track
 	 */
-	public void changeTrack (Track<?> oldTrack, Track<?> newTrack) {
+	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
 		for (int i = 0; i < trackList.length; i++) {
 			if (trackList[i].equals(oldTrack)) {
 				trackList[i] = newTrack;

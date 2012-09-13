@@ -28,9 +28,10 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsBooleanList;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -95,7 +96,7 @@ public class VCFFilter extends MGFilter implements Serializable {
 
 
 	@Override
-	public boolean isVariantValid (VariantInterface variant) {
+	public boolean isVariantValid (Variant variant) {
 		boolean result = false;
 		int position = variant.getReferenceGenomePosition();
 		int index = vcfFile.getPositionList().getIndex(position);
@@ -143,7 +144,8 @@ public class VCFFilter extends MGFilter implements Serializable {
 	 * @param results list of VCF lines delimited by columns (must contains the column of the filter)
 	 */
 	public void generateFilter (List<String> results) {
-		vcfFile.initializesPositionList();
+		//vcfFile.initializesPositionList();
+		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
 
 		if (results != null) {
 			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());

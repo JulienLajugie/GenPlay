@@ -33,10 +33,10 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.drawer.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -56,10 +56,10 @@ public class ToolTipStripeDialog extends JDialog {
 	private static final int H_GAP = 5;		// horizontal gap between dialog components
 
 	private final VCFLineDialog 			vcfLineDialog;
-	private final List<VariantInterface> 	variantList;		// a list of displayable variant
+	private final List<VariantDisplay> 		variantList;		// a list of displayable variant
 	private final MultiGenomeDrawer 		multiGenomeDrawer;
 
-	private VariantInterface 		currentVariant;		// the current variant object to display
+	private VariantDisplay 			currentVariant;		// the current variant object to display
 	private VCFLine 				currentLine;		// the current variant object to display
 
 	private final JPanel headerPanel;			// panel containing the global information
@@ -73,7 +73,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param multiGenomeDrawer the multi genome drawer requesting the dialog
 	 * @param fittedVariantList the full list of displayable variants
 	 */
-	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer, List<VariantInterface> fittedVariantList) {
+	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer, List<VariantDisplay> fittedVariantList) {
 		super(MainFrame.getInstance());
 		ToolTipStripeHandler.getInstance().addDialog(this);
 		this.multiGenomeDrawer = multiGenomeDrawer;
@@ -119,7 +119,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param X			X position on the screen
 	 * @param Y			Y position on the screen
 	 */
-	public void show (VariantInterface variant, int X, int Y) {
+	public void show (VariantDisplay variant, int X, int Y) {
 		this.currentVariant = variant;
 		this.currentLine = variant.getVCFLine();
 		if (currentLine != null) {
@@ -175,7 +175,7 @@ public class ToolTipStripeDialog extends JDialog {
 	/**
 	 * @return the variant
 	 */
-	public VariantInterface getVariant() {
+	public VariantDisplay getVariant() {
 		return currentVariant;
 	}
 
@@ -185,7 +185,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @return true if it moves to the next variant, false otherwise
 	 */
 	protected boolean goToNextVariant () {
-		VariantInterface newVariant = getNextVariant();
+		VariantDisplay newVariant = getNextVariant();
 		return initVariant(newVariant);
 	}
 
@@ -195,7 +195,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @return true if it moves to the previous variant, false otherwise
 	 */
 	protected boolean goToPreviousVariant () {
-		VariantInterface newVariant = getPreviousVariant();
+		VariantDisplay newVariant = getPreviousVariant();
 		return initVariant(newVariant);
 	}
 
@@ -205,7 +205,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param newVariant	the variant to display
 	 * @return				if it moves to the previous variant, false otherwise
 	 */
-	private boolean initVariant (VariantInterface newVariant) {
+	private boolean initVariant (VariantDisplay newVariant) {
 		if (newVariant == null) {
 			return false;
 		}
@@ -232,7 +232,7 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param variant the current variant
 	 * @return	the index in the variant list of the variant
 	 */
-	private int getVariantIndex (VariantInterface variant) {
+	private int getVariantIndex (VariantDisplay variant) {
 		for (int i = 0; i < variantList.size(); i++) {
 			if (variantList.get(i).equals(variant)) {
 				return i;
@@ -246,8 +246,8 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param currentVariant	the current variant
 	 * @return the previous variant compare to the current variant
 	 */
-	private VariantInterface getPreviousVariant () {
-		VariantInterface result;
+	private VariantDisplay getPreviousVariant () {
+		VariantDisplay result;
 		int currentIndex = getVariantIndex(currentVariant);
 		int previousIndex = currentIndex - 1;
 		if (previousIndex >= 0) {
@@ -267,8 +267,8 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @param currentVariant	the current variant
 	 * @return the next variant compare to the current variant
 	 */
-	private VariantInterface getNextVariant () {
-		VariantInterface result;
+	private VariantDisplay getNextVariant () {
+		VariantDisplay result;
 		int currentIndex = getVariantIndex(currentVariant);
 		int nextIndex = currentIndex + 1;
 

@@ -35,7 +35,6 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.ProjectFiles;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileFullStatistic;
@@ -57,9 +56,10 @@ public class VCFFile implements Serializable {
 	private File 								file;				// Path of the VCF file
 	private VCFHeader 							header;				// Information about the header
 	private VCFReader 							reader;				// Reader for the VCF file
-	private VCFFileFullStatistic					statistics;			// VCF file statistics
+	private VCFFileFullStatistic				statistics;			// VCF file statistics
 	private Map<String, List<VariantType>>		variantTypeList;	// List of the different variant type contained in the VCF file and sorted by genome name
 	private IntArrayAsIntegerList				positionList;		// reference genome position array (indexes match with the boolean list of filters)
+	private Chromosome							chromosomeOfList;
 
 
 	/**
@@ -74,6 +74,7 @@ public class VCFFile implements Serializable {
 		out.writeObject(statistics);
 		out.writeObject(variantTypeList);
 		out.writeObject(positionList);
+		out.writeObject(chromosomeOfList);
 	}
 
 
@@ -91,6 +92,7 @@ public class VCFFile implements Serializable {
 		statistics = (VCFFileFullStatistic) in.readObject();
 		variantTypeList = (Map<String, List<VariantType>>) in.readObject();
 		positionList = (IntArrayAsIntegerList) in.readObject();
+		chromosomeOfList = (Chromosome) in.readObject();
 		indexVCFFile(); // recreate the tabix reader
 		reader.setColumnNames(header.getColumnNames());
 	}
@@ -113,6 +115,8 @@ public class VCFFile implements Serializable {
 		indexVCFFile();
 		header.processHeader(reader);
 		reader.setColumnNames(header.getColumnNames());
+
+		chromosomeOfList = null;
 	}
 
 
@@ -331,16 +335,11 @@ public class VCFFile implements Serializable {
 	/**
 	 * Initializes the list of reference genome position for this reader.
 	 * It is required when using VCF Filters.
+	 * @param chromosome the current chromosome
+	 * @param results		the list of result
 	 */
-	public void initializesPositionList () {
-		if (positionList == null) {
-			Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-			List<String> results = null;
-			try {
-				results = reader.query(currentChromosome.getName(), 0, currentChromosome.getLength());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public void initializePositionList (Chromosome chromosome, List<String> results) {
+		if (chromosomeHasChanged(chromosome)) {
 			if (results != null) {
 				positionList = new IntArrayAsIntegerList(results.size());
 				VCFLine line = new VCFLine(null, null);
@@ -348,8 +347,24 @@ public class VCFFile implements Serializable {
 					line.initialize(results.get(i), null);
 					positionList.set(i, line.getReferencePosition());
 				}
+			} else {
+				positionList = new IntArrayAsIntegerList(0);
 			}
 		}
+	}
+
+
+
+	private boolean chromosomeHasChanged (Chromosome chromosome) {
+		if (chromosomeOfList == null) {
+			return true;
+		}
+
+		if (!chromosomeOfList.equals(chromosome)){
+			return true;
+		}
+
+		return false;
 	}
 
 

@@ -46,7 +46,7 @@ import edu.yu.einstein.genplay.core.enums.LogBase;
 import edu.yu.einstein.genplay.core.enums.SaturationType;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationTwoTrackMethod;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantInterface;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphWith0Filter;
@@ -549,12 +549,12 @@ public class Utils {
 	 * @param positionStop
 	 * @return a sublist of the input list
 	 */
-	public static ArrayList<VariantInterface> searchVariantInterval(List<VariantInterface> list, int positionStart, int positionStop) {
+	public static ArrayList<Variant> searchVariantInterval(List<Variant> list, int positionStart, int positionStop) {
 		if ((list == null) || (list.size() == 0)) {
 			return null;
 		}
 
-		ArrayList<VariantInterface> resultList = new ArrayList<VariantInterface>();
+		ArrayList<Variant> resultList = new ArrayList<Variant>();
 
 		// Gets the start and stop indexes of the list
 		int indexStart = findVariantPosition(list, positionStart, 0, list.size() - 1);
@@ -567,7 +567,7 @@ public class Utils {
 
 		// The stop position may have been returned even if the window is not included between the start and stop position
 		// It is necessary to test it before adding it
-		VariantInterface element = list.get(indexStop);
+		Variant element = list.get(indexStop);
 		if (isInVariant(element, positionStart, positionStop)) {
 			resultList.add(element);
 		}
@@ -587,7 +587,7 @@ public class Utils {
 	 * @param indexStop		index of the list to stop the scan
 	 * @return				the index where the value of the variant is found or the index right after if the exact value is not found
 	 */
-	private static int findVariantPosition(List<VariantInterface> list, int value, int indexStart, int indexStop) {
+	private static int findVariantPosition(List<Variant> list, int value, int indexStart, int indexStop) {
 		if (indexStart == indexStop) {
 			return indexStart;
 		} else {
@@ -614,7 +614,7 @@ public class Utils {
 	 * @param position the position to check
 	 * @return 0 is the position is in the variant, -1 if lower, 1 if higher.
 	 */
-	public static int containsVariantPosition (VariantInterface variant, int position) {
+	public static int containsVariantPosition (Variant variant, int position) {
 		if (position < variant.getStart()) {
 			return -1;
 		} else if (position > variant.getStop()) {
@@ -630,7 +630,7 @@ public class Utils {
 	 * @param positionStop	the stop position on the main frame
 	 * @return true if the element is in the main frame, false otherwise
 	 */
-	public static boolean isInVariant (VariantInterface element, int positionStart, int positionStop) {
+	public static boolean isInVariant (Variant element, int positionStart, int positionStop) {
 		if (element.getStop() < positionStart) {
 			return false;
 		}
