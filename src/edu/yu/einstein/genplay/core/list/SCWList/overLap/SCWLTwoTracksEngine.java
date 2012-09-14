@@ -86,31 +86,15 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		this.list.add(list1);
 		this.list.add(list2);
 		this.isSCWList = new boolean[2];
-		if (list1 instanceof ScoredChromosomeWindowList) {
-			this.isSCWList[0] = true;
-		} else {
-			this.isSCWList[0] = false;
-		}
-		if (list2 instanceof ScoredChromosomeWindowList) {
-			this.isSCWList[1] = true;
-		} else {
-			this.isSCWList[1] = false;
-		}
+		this.isSCWList[0] = list1 instanceof ScoredChromosomeWindowList;
+		this.isSCWList[1] = list2 instanceof ScoredChromosomeWindowList;
 		this.chromosome = chromosome;
 		this.onStart = new boolean[2];
 		this.onStart[0] = true;
 		this.onStart[1] = true;
 		this.validPosition = new boolean[2];
-		if (getTrackSize(0) > 0) {
-			this.validPosition[0] = true;
-		} else {
-			this.validPosition[0] = false;
-		}
-		if (getTrackSize(1) > 0) {
-			this.validPosition[1] = true;
-		} else {
-			this.validPosition[1] = false;
-		}
+		this.validPosition[0] = getTrackSize(0) > 0;
+		this.validPosition[1] = getTrackSize(1) > 0;
 		this.currentScore = new Double[2];
 		this.currentScore[0] = 0.0;
 		this.currentScore[1] = 0.0;
@@ -369,8 +353,8 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 			for (int i = currentIndex[track]; (i < getTrackSize(track)) && !stopped; i++) {
 				newScwList.add(new SimpleScoredChromosomeWindow(	getStart(track),
 						getStop(track),
-						//getScore(track)));
-						getScore()));
+						getScore(track)));
+				//getScore()));
 				currentIndex[track]++;
 			}
 		}
@@ -456,11 +440,11 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 		if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindowList) this.list.get(track)).get(chromosome).size();
 		} else {
-		    List<Double> data = ((BinList) this.list.get(track)).get(chromosome);
-		    if (data != null) {
-			return data.size();
-		    }
-		    return 0;
+			List<Double> data = ((BinList) this.list.get(track)).get(chromosome);
+			if (data != null) {
+				return data.size();
+			}
+			return 0;
 		}
 	}
 

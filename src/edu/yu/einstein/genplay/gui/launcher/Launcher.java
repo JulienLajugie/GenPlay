@@ -21,12 +21,12 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.launcher;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.InputStream;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
@@ -62,7 +62,24 @@ public class Launcher {
 	 * screen will be skipped and the project file will be directly loaded
 	 */
 	public static void main(final String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
+		//SwingUtilities.invokeLater(new Runnable() {
+		/*
+		 * Fix for the exception that starts like:
+		 * Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.updateSizes(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.getBox(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintString(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.paintDeterminate(Unknown Source)
+		 * at javax.swing.plaf.metal.MetalProgressBarUI.paintDeterminate(Unknown Source)
+		 * at javax.swing.plaf.basic.BasicProgressBarUI.paint(Unknown Source)
+		 * 
+		 * Found on several website:
+		 * You are probably here, because you searched for the line above in a search engine.
+		 * If you are a Java-Programmer and you get this problem, here is the solution:
+		 * The problem is, that Swing is not thread-safe. You have probably tried to call a method on a Swing-Component from another thread (than the AWT-EventQueue-Thread). You should not do that!
+		 * Methods of Swing-Components should always be called from the EventQueue.
+		 */
+		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				// if the DEMO_PROJECT_PATH constant has been set it means that we're starting a demo project

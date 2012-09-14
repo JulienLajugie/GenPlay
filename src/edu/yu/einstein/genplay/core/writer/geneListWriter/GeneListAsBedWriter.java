@@ -132,6 +132,8 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 								lineToPrint += "\t";
 								// exon lengths
 								for (int i = 0; i < currentGene.getExonStops().length; i++) {
+									//String size = "" + (currentGene.getExonStops()[i] - currentGene.getExonStarts()[i]);
+									//size = size.replaceAll(",", "");
 									lineToPrint += currentGene.getExonStops()[i] - currentGene.getExonStarts()[i];
 									lineToPrint += ",";
 								}
