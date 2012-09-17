@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,16 +38,16 @@ final class ThresholdPanel extends FilterPanel {
 
 	private static final long serialVersionUID = 7419403825735753325L;	// generated ID
 	private final static String NAME = FilterType.THRESHOLD.toString();	// name of the filter
-	private final static String FILTER_DESCRIPTION = "Filter the values lower than X OR greater than Y,\n" +
-			"where X and Y are two specified threshold values";			// description of the filter
-	private final static String TEXT_MIN = "Filter values lower than";	// text of the min label
-	private final static String TEXT_MAX = "Filter values greater than";// text of the max label
+	private final static String FILTER_DESCRIPTION = "Filter (discard) the values lower than X OR greater than Y,\n" +
+			"where X and Y are two specified threshold values.";			// description of the filter
+	private final static String TEXT_MIN = "Filter values lower than:";	// text of the min label
+	private final static String TEXT_MAX = "Filter values greater than:";// text of the max label
 	private final static DecimalFormat DF = new DecimalFormat("0.0");	// decimal format for the input numbers
 	private static Number 	defaultMin = Double.NEGATIVE_INFINITY;		// default/last min value
 	private static Number 	defaultMax = Double.POSITIVE_INFINITY;		// default/last max value
 	private static boolean 	defaultIsSaturation = false;				// default/last saturation state
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link ThresholdPanel}
 	 */
@@ -83,12 +83,12 @@ final class ThresholdPanel extends FilterPanel {
 
 	@Override
 	void saveMax() {
-		defaultMax = getMaxInput();		
+		defaultMax = getMaxInput();
 	}
 
 
 	@Override
 	void saveMin() {
-		defaultMin = getMinInput();		
+		defaultMin = getMinInput();
 	}
 }

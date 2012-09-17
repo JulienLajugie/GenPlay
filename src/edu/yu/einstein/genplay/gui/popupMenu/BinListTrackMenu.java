@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGauss;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGenerateSCWList;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndex;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndexByChromosome;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIntervalsSummarization;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIntervalsScoring;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAInvertConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLALoessRegression;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLALog;
@@ -174,7 +174,7 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiChangePrecision = new JMenuItem(actionMap.get(BLAChangeDataPrecision.ACTION_KEY));
 
 		jmiDensity = new JMenuItem(actionMap.get(BLADensity.ACTION_KEY));
-		jmiIntervalsSummarization = new JMenuItem(actionMap.get(BLAIntervalsSummarization.ACTION_KEY));
+		jmiIntervalsSummarization = new JMenuItem(actionMap.get(BLAIntervalsScoring.ACTION_KEY));
 		jmiShowRepartition = new JMenuItem(actionMap.get(BLARepartition.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(BLAConcatenate.ACTION_KEY));
 

@@ -74,9 +74,11 @@ public class SCWListDrawer extends CurveDrawer {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
 					int x = projectWindow.genomePosToScreenXPos(currentWindow.getStart());
 					int widthWindow = projectWindow.genomePosToScreenXPos(currentWindow.getStop()) - x;
+
 					if (widthWindow < 1) {
 						widthWindow = 1;
 					}
+
 					int y = scoreToScreenPos(currentWindow.getScore());
 					int rectHeight = y - screenY0;
 					if (currentWindow.getScore() > 0) {

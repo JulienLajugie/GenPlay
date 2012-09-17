@@ -100,7 +100,7 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGauss;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGenerateSCWList;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndex;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndexByChromosome;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIntervalsSummarization;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIntervalsScoring;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAInvertConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLALoessRegression;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLALog;
@@ -308,7 +308,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
 		getActionMap().put(BLAConvertToMask.ACTION_KEY, new BLAConvertToMask());
 		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());
-		getActionMap().put(BLAIntervalsSummarization.ACTION_KEY, new BLAIntervalsSummarization());
+		getActionMap().put(BLAIntervalsScoring.ACTION_KEY, new BLAIntervalsScoring());
 		getActionMap().put(BLAChangeBinSize.ACTION_KEY, new BLAChangeBinSize());
 		getActionMap().put(BLAChangeDataPrecision.ACTION_KEY, new BLAChangeDataPrecision());
 		getActionMap().put(BLACompress.ACTION_KEY, new BLACompress());

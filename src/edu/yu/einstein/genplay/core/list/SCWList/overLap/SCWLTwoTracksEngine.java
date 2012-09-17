@@ -253,10 +253,13 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	 * This method adds the current position and score in the new list
 	 */
 	private void addPosition () {
-		if (getScore() != 0.0) {
-			newScwList.add(new SimpleScoredChromosomeWindow(	currentPosition[0],
-					currentPosition[1],
-					getScore()));
+		double score = getScore();
+		if (score != 0.0) {
+			if (currentPosition[1] > currentPosition[0]) {
+				newScwList.add(new SimpleScoredChromosomeWindow(	currentPosition[0],
+						currentPosition[1],
+						score));
+			}
 		}
 	}
 

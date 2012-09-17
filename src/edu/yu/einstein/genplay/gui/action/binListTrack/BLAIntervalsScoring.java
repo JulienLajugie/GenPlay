@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -29,7 +29,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.enums.DataPrecision;
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
-import edu.yu.einstein.genplay.core.list.binList.operation.BLOIntervalsSummarization;
+import edu.yu.einstein.genplay.core.list.binList.operation.BLOIntervalsScoring;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
@@ -47,13 +47,13 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLAIntervalsSummarization extends TrackListActionOperationWorker<BinList> {
+public class BLAIntervalsScoring extends TrackListActionOperationWorker<BinList> {
 
 	private static final long serialVersionUID = -3736735803307616477L;			// generated ID
-	private static final String 	ACTION_NAME = "Intervals Summarization";	// action name
-	private static final String 	DESCRIPTION = 
-		"Compute the average, the sum or the max of the " +
-		"selected track on intervals defined by another track";					// tooltip
+	private static final String 	ACTION_NAME = "Intervals Scoring";	// action name
+	private static final String 	DESCRIPTION =
+			"Compute the average, the sum or the max of the " +
+					"selected track on intervals defined by another track";					// tooltip
 	private BinListTrack 			selectedTrack;		// selected track
 	private Track<?> 				intervalTrack;		// track defining the intervals
 	private Number 					percentage;			// percentage of the greatest values
@@ -64,13 +64,13 @@ public class BLAIntervalsSummarization extends TrackListActionOperationWorker<Bi
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "BLAIntervalsSummarization";
+	public static final String ACTION_KEY = "BLAIntervalsScoring";
 
 
 	/**
-	 * Creates an instance of {@link BLAIntervalsSummarization}
+	 * Creates an instance of {@link BLAIntervalsScoring}
 	 */
-	public BLAIntervalsSummarization() {
+	public BLAIntervalsScoring() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -92,20 +92,20 @@ public class BLAIntervalsSummarization extends TrackListActionOperationWorker<Bi
 						if (resultTrack != null) {
 							DataPrecision precision = Utils.choosePrecision(getRootPane());;
 							if (precision != null) {
-								BinList valueBinList = ((BinListTrack)selectedTrack).getData();
-								BinList intervalBinList = ((BinListTrack)intervalTrack).getData();
-								Operation<BinList> operation = new BLOIntervalsSummarization(intervalBinList, valueBinList, percentage.intValue(), method, precision);
+								BinList valueBinList = selectedTrack.getData();
+								BinList scoringBinList = ((BinListTrack)intervalTrack).getData();
+								Operation<BinList> operation = new BLOIntervalsScoring(scoringBinList, valueBinList, percentage.intValue(), method, precision);
 								return operation;
 							}
 						}
 					}
-				}		
+				}
 			}
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {

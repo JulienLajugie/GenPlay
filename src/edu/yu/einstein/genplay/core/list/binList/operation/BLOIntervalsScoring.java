@@ -44,7 +44,7 @@ import edu.yu.einstein.genplay.util.DoubleLists;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class BLOIntervalsSummarization implements Operation<BinList> {
+public class BLOIntervalsScoring implements Operation<BinList> {
 
 	private final BinList 					intervalList;				// BinList defining the intervals 
 	private final BinList 					valueList;					// BinList defining the values for the calculation
@@ -55,7 +55,7 @@ public class BLOIntervalsSummarization implements Operation<BinList> {
 	
 
 	/**
-	 * Creates an instance of {@link BLOIntervalsSummarization}
+	 * Creates an instance of {@link BLOIntervalsScoring}
 	 * Computes the average, the max or the sum of the {@link BinList} on intervals defined by another BinList
 	 * @param intervalList BinList defining the intervals
 	 * @param valueList BinList defining the values for the calculation
@@ -63,7 +63,7 @@ public class BLOIntervalsSummarization implements Operation<BinList> {
 	 * @param method method of calculation
 	 * @param precision precision of the result BinList
 	 */
-	public BLOIntervalsSummarization(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreCalculationMethod method, DataPrecision precision) {
+	public BLOIntervalsScoring(BinList intervalList, BinList valueList, int percentageAcceptedValues, ScoreCalculationMethod method, DataPrecision precision) {
 		this.intervalList = intervalList;
 		this.valueList = valueList;
 		this.percentageAcceptedValues = percentageAcceptedValues;
