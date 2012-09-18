@@ -236,6 +236,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 			final ChromosomeListOfLists<Double> scoreList,
 			final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
+
 		// retrieve the instance of the OperationPool
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads

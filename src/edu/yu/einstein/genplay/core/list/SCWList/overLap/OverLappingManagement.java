@@ -81,7 +81,7 @@ public class OverLappingManagement implements Serializable {
 	 * @throws ExecutionException
 	 */
 	public void run (Chromosome chromosome) throws InterruptedException, ExecutionException {
-		this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).init(this.sortSCW.getList().get(chromosome));	//the overlapengine is ran for the chromosome list
+		this.overLappingEngineList.get(projectChromosome.getIndex(chromosome)).init(this.sortSCW.getList().get(chromosome));	//the overlap engine is ran for the chromosome list
 		this.sortSCW.setNewList(chromosome, getNewStartList(chromosome), getNewStopList(chromosome), getNewScoreList(chromosome));	//the old chromosome list is replaced by the new one
 	}
 

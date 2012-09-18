@@ -213,21 +213,21 @@ final class OverLappingEngine implements Serializable {
 			list.add(scw.getScore());
 		}
 		if (this.scm == null) {
-		    score = SCWLOptions.DEFAULT_SCORE;
+			score = SCWLOptions.DEFAULT_SCORE;
 		} else {
-        		switch (this.scm) {
-        		case AVERAGE:
-        			score = DoubleLists.average(list);
-        			break;
-        		case MAXIMUM:
-        			score = DoubleLists.maxNoZero(list);
-        			break;
-        		case SUM:
-        			score = DoubleLists.sum(list);
-        			break;
-        		default:
-        			break;
-        		}
+			switch (this.scm) {
+			case AVERAGE:
+				score = DoubleLists.average(list);
+				break;
+			case MAXIMUM:
+				score = DoubleLists.maxNoZero(list);
+				break;
+			case SUM:
+				score = DoubleLists.sum(list);
+				break;
+			default:
+				break;
+			}
 		}
 		return score;
 	}
@@ -248,15 +248,27 @@ final class OverLappingEngine implements Serializable {
 	}
 
 	private void addInStart (int value) {
-		if (!this.newStartList.contains(value)) {
+		if (!containsValue(this.newStartList, value)) {
 			this.newStartList.add(value);
 		}
 	}
 
 	private void addInStop (int value) {
-		if (!this.newStopList.contains(value)) {
+		if (!containsValue(this.newStopList, value)) {
 			this.newStopList.add(value);
 		}
+	}
+
+	private boolean containsValue (List<Integer> list, int value) {
+		boolean result = false;
+		if (list.size() > 0) {
+			int lastIndex = list.size() - 1;
+			int lastValue = list.get(lastIndex);
+			if (lastValue == value) {
+				result = true;
+			}
+		}
+		return result;
 	}
 
 	private void addPosition (Integer value) {
