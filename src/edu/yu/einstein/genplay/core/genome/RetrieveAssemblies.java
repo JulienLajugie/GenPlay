@@ -160,6 +160,16 @@ public class RetrieveAssemblies {
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_zebrafish_2006_03_Zv6_danRer4.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_zebrafish_2007_07_Zv7_danRer5.xml"));
 		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("vertebrate_zebrafish_2010_07_Zv9_danRer7.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus1(9629378)_2010_08.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus2(9629267)_2010_04.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus3(9625875)_2011_03.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus4(139424470)_2010_03.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus4type1(82503188)_2010_03.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus5(155573622)_2012_08.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus6A(224020395)_2010_04.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus6B(9633069)_2010_08.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus7(51874225)_2010_04.xml"));
+		xmlAssembliesPath.add(XML_ASSEMBLIES_ROOT_PATH.concat("virus_herpesvirus_herpesvirus8(139472801)_2010_04.xml"));
 	}
 
 
