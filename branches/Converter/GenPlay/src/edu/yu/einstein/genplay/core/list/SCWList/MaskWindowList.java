@@ -37,10 +37,12 @@ import java.util.concurrent.ExecutionException;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.chromosomeWindow.MaskChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
+import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.OverLappingManagement;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -146,7 +148,7 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 	 * @param 	index				 current index
 	 * @return						 true if the current index is involved on an overlapping region
 	 */
-	private static boolean searchOverLappingPositionsForIndex (	ProjectChromosome projectChromosomeTmp,
+	private static boolean searchOverLappingPositionsForIndex (ProjectChromosome projectChromosomeTmp,
 			ChromosomeListOfLists<Integer> startList,
 			ChromosomeListOfLists<Integer> stopList,
 			Chromosome currentChromosome,
@@ -290,6 +292,73 @@ public final class MaskWindowList extends DisplayableListOfLists<ScoredChromosom
 				Collections.sort(currentChrWindowList);
 			}
 		}
+		generateStatistics();
+	}
+
+
+	/**
+	 * Creates an instance of {@link MaskWindowList}
+	 * @param geneList list of genes
+	 * @param scm {@link ScoreCalculationMethod} used to create the {@link BinList}
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	public MaskWindowList(final GeneList geneList, final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		super();
+
+		final ChromosomeListOfLists<Integer> startList = geneList.getStartList();
+		final ChromosomeListOfLists<Integer> stopList = geneList.getStopList();
+
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+
+		final boolean runOverLapEngine;
+		this.overLapManagement = new OverLappingManagement(startList, stopList, null);
+		if (scm != null) {
+			this.overLapManagement.setScoreCalculationMethod(scm);
+			runOverLapEngine = true;
+		} else {
+			runOverLapEngine = false;
+		}
+		for(final Chromosome currentChromosome : projectChromosome) {
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+				@Override
+				public List<ScoredChromosomeWindow> call() throws Exception {
+					if (startList.get(currentChromosome) == null) {
+						return null;
+					}
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+					if (runOverLapEngine) {
+						overLapManagement.run(currentChromosome);
+					}
+					List<ScoredChromosomeWindow> list = overLapManagement.getList(currentChromosome);
+					for(int j = 0; j < list.size(); j++) {
+						double score = list.get(j).getScore();
+						if (score != 0) {
+							resultList.add(new MaskChromosomeWindow(list.get(j).getStart(), list.get(j).getStop()));
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		List<List<ScoredChromosomeWindow>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<ScoredChromosomeWindow> currentList: result) {
+				add(currentList);
+			}
+		}
+		// generate the statistics
 		generateStatistics();
 	}
 

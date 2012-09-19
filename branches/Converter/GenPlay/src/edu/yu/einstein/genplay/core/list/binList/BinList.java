@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.arrayList.CompressibleList;
 import edu.yu.einstein.genplay.core.list.arrayList.ListFactory;
+import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -484,6 +485,71 @@ public final class BinList extends DisplayableListOfLists<Double, double[]> impl
 			};
 			threadList.add(currentThread);
 		}
+		List<List<Double>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<Double> currentList: result) {
+				add(currentList);
+			}
+		}
+		finalizeConstruction();
+	}
+
+
+	/**
+	 * Creates an instance of {@link BinList}
+	 * @param binSize size of the bins
+	 * @param precision precision of the data
+	 * @param method method of the score calculation
+	 * @param geneList list of genes
+	 * @throws IllegalArgumentException thrown if precision is not valid
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	public BinList(final int binSize, final DataPrecision precision, final ScoreCalculationMethod method, final GeneList geneList) throws IllegalArgumentException, InterruptedException, ExecutionException {
+		super();
+
+		final ChromosomeListOfLists<Integer> starts = geneList.getStartList();
+		final ChromosomeListOfLists<Integer> stops = geneList.getStopList();
+
+		this.binSize = binSize;
+		this.precision = precision;
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<Double>>> threadList = new ArrayList<Callable<List<Double>>>();
+		// for each chromosome
+		for(final Chromosome currentChromosome : projectChromosome)  {
+			Callable<List<Double>> currentThread = new Callable<List<Double>>() {
+				@Override
+				public List<Double> call() throws Exception {
+					List<Double> resultList = null;
+					if ((starts.get(currentChromosome) != null) && (starts.size(currentChromosome) != 0)) {
+						// size of the BinList for the current chromosome
+						int currentSize = (currentChromosome.getLength() / binSize) + 1;
+						// array to count how many elements for the average
+						int[] counts = null;
+						if (method == ScoreCalculationMethod.AVERAGE) {
+							counts = new int[currentSize];
+						}
+						resultList = ListFactory.createList(precision, currentSize);
+						// for each input windows
+						for  (int i = 0; i < starts.size(currentChromosome); i++) {
+							SimpleScoredChromosomeWindow scw = new SimpleScoredChromosomeWindow(starts.get(currentChromosome, i), stops.get(currentChromosome, i), 0.0);
+							computeScore(method, scw, resultList, counts);
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+
 		List<List<Double>> result = null;
 		// starts the pool
 		result = op.startPool(threadList);

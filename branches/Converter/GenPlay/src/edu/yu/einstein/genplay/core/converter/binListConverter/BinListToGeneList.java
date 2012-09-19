@@ -19,41 +19,56 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.core.converter.binListConverter;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import edu.yu.einstein.genplay.core.converter.Converter;
+import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 
 
 /**
- * Panel for the track name input of a {@link NewCurveTrackDialog}
+ * Creates a {@link GeneList} from the data of the input {@link BinList}
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-class TrackNamePanel extends JPanel {
+public class BinListToGeneList implements Converter {
 
-	private static final long serialVersionUID = -5969101278574088008L;	// generated ID
-	private final JTextField jtfTrackName;	// text field for the track name
+	private final BinList 				list; 		// The input list.
+	private ChromosomeListOfLists<?> 	result;			// The output list.
 
 
 	/**
-	 * Creates an instance of a {@link TrackNamePanel}
-	 * @param trackName default name of a track
+	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link BinList}
+	 * @param binList the BinList
 	 */
-	TrackNamePanel(String trackName) {
-		super();
-		jtfTrackName = new JTextField(trackName);
-		jtfTrackName.setColumns(15);
-		add(jtfTrackName);
-		setBorder(BorderFactory.createTitledBorder("Track Name"));
+	public BinListToGeneList(BinList binList) {
+		list = binList;
 	}
 
 
-	/**
-	 * @return the name inside the input box
-	 */
-	String getTrackName() {
-		return jtfTrackName.getText();
+	@Override
+	public String getDescription() {
+		return "Operation: Generate Gene Track";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Generating Gene Track";
+	}
+
+
+	@Override
+	public void convert() throws Exception {
+		result = new GeneList(list);
+	}
+
+
+	@Override
+	public ChromosomeListOfLists<?> getList() {
+		return result;
 	}
 }

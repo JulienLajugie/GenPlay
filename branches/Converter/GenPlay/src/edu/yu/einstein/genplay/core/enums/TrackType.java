@@ -19,41 +19,49 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+package edu.yu.einstein.genplay.core.enums;
 
 
 /**
- * Panel for the track name input of a {@link NewCurveTrackDialog}
- * @author Julien Lajugie
+ * Type of tracks
+ * @author Nicolas Fourel
  * @version 0.1
  */
-class TrackNamePanel extends JPanel {
+public enum TrackType {
 
-	private static final long serialVersionUID = -5969101278574088008L;	// generated ID
-	private final JTextField jtfTrackName;	// text field for the track name
+	/**
+	 * For the gene list tracks
+	 */
+	GENE ("Gene track"),
+	/**
+	 * For the fixed windows tracks
+	 */
+	BIN ("Fixed windows track"),
+	/**
+	 * For the variable windows tracks
+	 */
+	SCW ("Variable windows track"),
+	/**
+	 * For the variable windows tracks
+	 */
+	MASK ("Mask");
+
+
+	private final String name;
 
 
 	/**
-	 * Creates an instance of a {@link TrackNamePanel}
-	 * @param trackName default name of a track
+	 * Private constructor. Creates an instance of {@link TrackType}
+	 * @param name
 	 */
-	TrackNamePanel(String trackName) {
-		super();
-		jtfTrackName = new JTextField(trackName);
-		jtfTrackName.setColumns(15);
-		add(jtfTrackName);
-		setBorder(BorderFactory.createTitledBorder("Track Name"));
+	private TrackType(String name) {
+		this.name = name;
 	}
 
 
-	/**
-	 * @return the name inside the input box
-	 */
-	String getTrackName() {
-		return jtfTrackName.getText();
+	@Override
+	public String toString() {
+		return name;
 	}
+
 }

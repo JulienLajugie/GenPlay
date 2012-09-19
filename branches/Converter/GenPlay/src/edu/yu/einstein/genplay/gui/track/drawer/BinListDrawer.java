@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.track.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.HashMap;
 
 import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
@@ -40,8 +39,6 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 public final class BinListDrawer extends CurveDrawer {
 
 	private final BinList binList; // data to draw
-	private final HashMap<Integer, Integer[]> mapPosition;
-	private final HashMap<Double, Integer> mapScore;
 
 
 	/**
@@ -58,8 +55,6 @@ public final class BinListDrawer extends CurveDrawer {
 	public BinListDrawer(Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph, BinList binList) {
 		super(graphics, trackWidth, trackHeight, scoreMin, scoreMax, trackColor, typeOfGraph);
 		this.binList = binList;
-		mapPosition = new HashMap<Integer, Integer[]>();
-		mapScore = new HashMap<Double, Integer>();
 	}
 
 
@@ -98,8 +93,6 @@ public final class BinListDrawer extends CurveDrawer {
 						screenYPosition = screenY0;
 					}
 
-					addToMap(screenYPosition, rectHeight);
-					addToMap(currentIntensity);
 					if (currentGenomePosition <= currentMinX) {
 						int screenWindowWidthTmp = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
 						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidthTmp, rectHeight);
@@ -111,45 +104,6 @@ public final class BinListDrawer extends CurveDrawer {
 				currentGenomePosition = firstGenomePosition + (i * windowData);
 			}
 		}
-		showMap();
-	}
-
-
-	private void addToMap (int yPosition, int height) {
-		Integer[] array = {height, 0};
-
-		if (mapPosition.get(yPosition) == null) {
-			mapPosition.put(yPosition, array);
-		}
-
-		array[1] = mapPosition.get(yPosition)[1] + 1;
-		mapPosition.put(yPosition, array);
-	}
-
-
-	private void addToMap (Double score) {
-		if (mapScore.get(score) == null) {
-			mapScore.put(score, 0);
-		}
-
-		int count = mapScore.get(score) + 1;
-		mapScore.put(score, count);
-	}
-
-
-	private void showMap () {
-		String info = "";
-
-		for (Integer key: mapPosition.keySet()) {
-			info += "y: " + key + "; h: " + mapPosition.get(key)[0] + " = " + mapPosition.get(key)[1] + " | ";
-		}
-		info += "\n";
-
-		for (Double score: mapScore.keySet()) {
-			info += "score: " + score + "; count: " + mapScore.get(score) + " | ";
-		}
-
-		System.out.println(info);
 	}
 
 
