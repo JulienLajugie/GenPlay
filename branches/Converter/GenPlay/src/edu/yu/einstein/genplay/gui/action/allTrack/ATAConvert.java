@@ -58,6 +58,7 @@ public final class ATAConvert extends TrackListActionWorker<ChromosomeListOfList
 	private Converter				converter;						// The track converter.
 
 	private ChromosomeListOfLists<?> data;
+	private ChromosomeListOfLists<?> mask;
 	private TrackType trackType;
 	private String trackName;
 	private int binSize;
@@ -82,6 +83,7 @@ public final class ATAConvert extends TrackListActionWorker<ChromosomeListOfList
 
 		resultTrack = null;
 		data = null;
+		mask = null;
 		trackType = null;
 		trackName = "";
 		binSize = 0;
@@ -104,12 +106,24 @@ public final class ATAConvert extends TrackListActionWorker<ChromosomeListOfList
 			resultTrack = dialog.getOutputTrack();
 			trackName = dialog.getOutputTrackName();
 			data = (ChromosomeListOfLists<?>) selectedTrack.getData();
-			converter = ConverterFactory.getConverter(data, trackType, binSize, precision, method);
-			try {
-				converter.convert();
-				return converter.getList();
-			} catch (Exception e) {
-				e.printStackTrace();
+			mask = selectedTrack.getMask();
+
+			if (data != null) {
+				converter = ConverterFactory.getConverter(data, null, trackType, binSize, precision, method);
+			} else {
+				if (mask != null) {
+					converter = ConverterFactory.getConverter(null, mask, trackType, binSize, precision, method);
+				}
+			}
+			if (converter != null) {
+				try {
+					converter.convert();
+					return converter.getList();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				System.err.println("No converter found");
 			}
 		}
 		return null;

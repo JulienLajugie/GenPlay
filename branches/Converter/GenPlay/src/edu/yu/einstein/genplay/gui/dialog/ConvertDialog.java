@@ -93,7 +93,13 @@ public class ConvertDialog extends JDialog {
 	 */
 	public ConvertDialog (Track<?> inputTrack) {
 		this.inputTrack = inputTrack;
-		this.trackTypes = ConverterFactory.getTrackTypes((ChromosomeListOfLists<?>) inputTrack.getData());
+		if ((ChromosomeListOfLists<?>) inputTrack.getData() != null) {
+			this.trackTypes = ConverterFactory.getTrackTypes((ChromosomeListOfLists<?>) inputTrack.getData());
+		} else if ((ChromosomeListOfLists<?>) inputTrack.getMask() != null) {
+			this.trackTypes = ConverterFactory.getMaskTrackType();
+		} else {
+			this.trackTypes = null;
+		}
 
 		// Layout settings
 		setLayout(new GridBagLayout());

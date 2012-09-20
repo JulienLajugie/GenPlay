@@ -293,24 +293,43 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 						for (int j = 0; j < currentList.size(); j++) {
 							double currentScore = currentList.get(j);
 							if (currentScore > 0) {
-								nameCounter++;
-								int start = j * windowData;
-								int stop = start + windowData;
+								int start = j * windowData;						// get the current start
+								int stop = start + windowData;					// get the current stop
 
-								currentNameList.add(prefixName + nameCounter);
-								currentStrandList.add(Strand.FIVE);
-								currentStartList.add(start);
-								currentStopList.add(stop);
+								boolean hasToUpdate = false;										// here, we want to check whether the current window is following the previous one or not.
+								int prevIndex = currentStartList.size() - 1;						// get the last index
+								if (prevIndex >= 0) {												// if it exists
+									int prevStop = currentStopList.get(prevIndex);					// get the last inserted stop
+									if (prevStop == start) {										// if the previous window stops where the current one starts
+										double prevScore = currentExonScoresList.get(prevIndex)[0];	// we get the previous score
+										if (currentScore == prevScore) {							// if scores are the same, both window follow each other and are the same
+											hasToUpdate = true;										// an update of the previous window is enough
+										}
+									}
+								}
 
-								int[] exonStarts = new int[1];
-								int[] exonStops = new int[1];
-								double[] exonScores = new double[1];
-								exonStarts[0] = start;
-								exonStops[0] = stop;
-								exonScores[0] = currentScore;
-								currentExonStartsList.add(exonStarts);
-								currentExonStopsList.add(exonStops);
-								currentExonScoresList.add(exonScores);
+								if (hasToUpdate) {												// if we only need to update
+									currentStopList.set(prevIndex, stop);						// we change the stop of the previous window by the actual one
+									int[] exonStops = currentExonStopsList.get(prevIndex);		// we do the same with the score
+									exonStops[0] = stop;
+									currentExonStopsList.set(prevIndex, exonStops);
+								} else {														// if not, we inserted a whole new position
+									nameCounter++;
+									currentNameList.add(prefixName + nameCounter);
+									currentStrandList.add(Strand.FIVE);
+									currentStartList.add(start);
+									currentStopList.add(stop);
+
+									int[] exonStarts = new int[1];
+									int[] exonStops = new int[1];
+									double[] exonScores = new double[1];
+									exonStarts[0] = start;
+									exonStops[0] = stop;
+									exonScores[0] = currentScore;
+									currentExonStartsList.add(exonStarts);
+									currentExonStopsList.add(exonStops);
+									currentExonScoresList.add(exonScores);
+								}
 							}
 						}
 					}

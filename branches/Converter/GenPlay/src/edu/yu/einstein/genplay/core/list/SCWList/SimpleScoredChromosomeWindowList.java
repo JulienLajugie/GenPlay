@@ -187,6 +187,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+		final int windowData = binList.getBinSize();
 		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -194,10 +195,28 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if (binList.get(currentChromosome) != null) {
 						for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
-							if (binList.get(currentChromosome, i) != 0.0) {
-								resultList.add(new SimpleScoredChromosomeWindow( 	(i * binList.getBinSize()),
-										((i + 1) * binList.getBinSize()),
-										binList.get(currentChromosome, i)));
+							double currentScore = binList.get(currentChromosome, i);
+							if (currentScore != 0.0) {
+								int start = i * windowData;
+								int stop = start + windowData;
+
+								boolean hasToUpdate = false;										// here, we want to check whether the current window is following the previous one or not.
+								int prevIndex = resultList.size() - 1;								// get the last index
+								if (prevIndex >= 0) {												// if it exists
+									int prevStop = resultList.get(prevIndex).getStop();				// get the last inserted stop
+									if (prevStop == start) {										// if the previous window stops where the current one starts
+										double prevScore = resultList.get(prevIndex).getScore();	// we get the previous score
+										if (currentScore == prevScore) {							// if scores are the same, both window follow each other and are the same
+											hasToUpdate = true;										// an update of the previous window is enough
+										}
+									}
+								}
+
+								if (hasToUpdate) {
+									resultList.get(prevIndex).setStop(stop);
+								} else {
+									resultList.add(new SimpleScoredChromosomeWindow(start, stop, currentScore));
+								}
 							}
 						}
 					}

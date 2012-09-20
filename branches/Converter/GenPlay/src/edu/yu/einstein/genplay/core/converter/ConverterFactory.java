@@ -55,27 +55,32 @@ public class ConverterFactory {
 
 	/**
 	 * Creates a converter in order to convert the data to the new kind of track.
-	 * @param data			the data to convert
+	 * @param data			the data to convert (can be null if mask is not)
+	 * @param mask 			the mask to convert (can be null if data is not)
 	 * @param trackType		the new type of track to convert the data
 	 * @param binSize 		size of the bins	(can be null if the track type is not a {@link BinList}
 	 * @param precision 	precision of the data (eg: 1/8/16/32/64-BIT)	(can be null if the track type is not a {@link BinList}
 	 * @param method method to generate the BinList (eg: AVERAGE, SUM or MAXIMUM)	(can be null if the track type is not a {@link BinList}
 	 * @return				the appropriate converter
 	 */
-	public static Converter getConverter (ChromosomeListOfLists<?> data, TrackType trackType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
+	public static Converter getConverter (ChromosomeListOfLists<?> data, ChromosomeListOfLists<?> mask, TrackType trackType, int binSize, DataPrecision precision, ScoreCalculationMethod method) {
 		Converter converter = null;
-		if (data instanceof BinList) {
-			BinList binList = (BinList) data;
-			converter = getBinListConverter(binList, trackType);
-		} else if (data instanceof GeneList) {
-			GeneList geneList = (GeneList) data;
-			converter = getGeneListConverter(geneList, trackType, binSize, precision, method);
-		} else if (data instanceof SimpleScoredChromosomeWindowList) {
-			ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
-			converter = getSCWListConverter(scwList, trackType, binSize, precision, method);
-		} else if (data instanceof MaskWindowList) {
-			ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
-			converter = getMaskListConverter(scwList, trackType, binSize, precision, method);
+		if (data != null) {
+			if (data instanceof BinList) {
+				BinList binList = (BinList) data;
+				converter = getBinListConverter(binList, trackType);
+			} else if (data instanceof GeneList) {
+				GeneList geneList = (GeneList) data;
+				converter = getGeneListConverter(geneList, trackType, binSize, precision, method);
+			} else if (data instanceof SimpleScoredChromosomeWindowList) {
+				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) data;
+				converter = getSCWListConverter(scwList, trackType, binSize, precision, method);
+			}
+		} else if (mask != null) {
+			if (mask instanceof MaskWindowList) {
+				ScoredChromosomeWindowList scwList = (ScoredChromosomeWindowList) mask;
+				converter = getMaskListConverter(scwList, trackType, binSize, precision, method);
+			}
 		}
 		return converter;
 	}
@@ -178,6 +183,7 @@ public class ConverterFactory {
 	 * @param data	the data to convert
 	 * @return		the {@link TrackType} available for the given data, null otherwise
 	 */
+	//public static TrackType[] getTrackTypes (ChromosomeListOfLists<?> data) {
 	public static TrackType[] getTrackTypes (ChromosomeListOfLists<?> data) {
 		TrackType[] trackTypes = null;
 		if (data instanceof BinList) {
