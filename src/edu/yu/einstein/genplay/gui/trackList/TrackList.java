@@ -669,9 +669,11 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		Track<?>[] result = new Track[count];
 		int i = 0;
 		for (Track<?> currentTrack: trackList) {
-			if (!isCompressedTrack(currentTrack)) {
-				result[i] = currentTrack;
-				i++;
+			if (currentTrack instanceof BinListTrack) {
+				if (!isCompressedTrack(currentTrack)) {
+					result[i] = currentTrack;
+					i++;
+				}
 			}
 		}
 		return result;
