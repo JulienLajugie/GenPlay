@@ -26,11 +26,9 @@ import javax.swing.JMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAGenerateBinList;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndex;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndexByChromosome;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAInvertConstant;
@@ -42,12 +40,12 @@ import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLANormalize;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLARepartition;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLASumScore;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLATwoTracks;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
 import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
@@ -70,11 +68,9 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 
 	private final JMenuItem jmiAddConstant;			// menu add constant
 	private final JMenuItem jmiAverage;				// menu average
-	private final JMenuItem jmiConvertMask;			// menu convert to mask
 	private final JMenuItem	jmiCountNonNullLength;	// menu count non null length
 	private final JMenuItem jmiDivideConstant;		// menu divide constant
 	private final JMenuItem jmiFilter;				// menu filter
-	private final JMenuItem jmiGenerateBinList;		// menu generate a BinList track
 	private final JMenuItem	jmiIndex;				// menu index
 	private final JMenuItem	jmiIndexPerChromosome;	// menu index per chromosome
 	private final JMenuItem jmiInvertConstant;		// menu invert constant
@@ -106,11 +102,9 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 
 		jmiAddConstant = new JMenuItem(actionMap.get(SCWLAAddConstant.ACTION_KEY));
 		jmiAverage = new JMenuItem(actionMap.get(SCWLAAverage.ACTION_KEY));
-		jmiConvertMask = new JMenuItem(actionMap.get(SCWLAConvertToMask.ACTION_KEY));
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(SCWLADivideConstant.ACTION_KEY));
 		jmiFilter  = new JMenuItem(actionMap.get(SCWLAFilter.ACTION_KEY));
-		jmiGenerateBinList = new JMenuItem(actionMap.get(SCWLAGenerateBinList.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(SCWLAIndex.ACTION_KEY));
 		jmiIndexPerChromosome = new JMenuItem(actionMap.get(SCWLAIndexByChromosome.ACTION_KEY));
 		jmiInvertConstant = new JMenuItem(actionMap.get(SCWLAInvertConstant.ACTION_KEY));
@@ -159,9 +153,6 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiTransfrag);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiShowRepartition);
-		jmOperation.addSeparator();
-		jmOperation.add(jmiGenerateBinList);
-		jmOperation.add(jmiConvertMask);
 		add(jmiSave, 10);
 	}
 }

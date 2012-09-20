@@ -142,7 +142,7 @@ public class MGOBedConvertSingleFile extends ExportEngine {
 		String gt = currentLine.getFormatField(genomeIndex, 0).toString();
 		if (gt.length() == 3) {
 			Chromosome chromosome = currentLine.getChromosome();
-			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.splitWithTab(currentLine.getALT()), currentLine.getINFO());
+			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());
 
 			for (AlleleSettingsBedConvert alleleExport: fullAlleleList) {
 				int altIndex = synchronizer.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));

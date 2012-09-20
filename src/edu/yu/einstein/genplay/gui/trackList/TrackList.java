@@ -45,11 +45,9 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAGenerateBinList;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndex;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndexByChromosome;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAInvertConstant;
@@ -90,7 +88,6 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeDataPrecision;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACompress;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConcatenate;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACountNonNullBins;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLADensity;
@@ -98,7 +95,6 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAFilter;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAFindPeaks;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGauss;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGenerateSCWList;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndex;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndexByChromosome;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIntervalsScoring;
@@ -283,11 +279,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add SCWList actions
 		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
-		getActionMap().put(SCWLAConvertToMask.ACTION_KEY, new SCWLAConvertToMask());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
 		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
-		getActionMap().put(SCWLAGenerateBinList.ACTION_KEY, new SCWLAGenerateBinList());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());
 		getActionMap().put(SCWLAIndexByChromosome.ACTION_KEY, new SCWLAIndexByChromosome());
 		getActionMap().put(SCWLAInvertConstant.ACTION_KEY, new SCWLAInvertConstant());
@@ -308,7 +302,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		// add binlist actions
 		getActionMap().put(BLAAddConstant.ACTION_KEY, new BLAAddConstant());
 		getActionMap().put(BLAAverage.ACTION_KEY, new BLAAverage());
-		getActionMap().put(BLAConvertToMask.ACTION_KEY, new BLAConvertToMask());
 		getActionMap().put(BLACountNonNullBins.ACTION_KEY, new BLACountNonNullBins());
 		getActionMap().put(BLAIntervalsScoring.ACTION_KEY, new BLAIntervalsScoring());
 		getActionMap().put(BLAChangeBinSize.ACTION_KEY, new BLAChangeBinSize());
@@ -339,7 +332,6 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(BLASubtractConstant.ACTION_KEY, new BLASubtractConstant());
 		getActionMap().put(BLATransfrag.ACTION_KEY, new BLATransfrag());
 		getActionMap().put(BLATwoTracks.ACTION_KEY, new BLATwoTracks());
-		getActionMap().put(BLAGenerateSCWList.ACTION_KEY, new BLAGenerateSCWList());
 		getActionMap().put(BLAUniqueScore.ACTION_KEY, new BLAUniqueScore());
 		// SNP tracks
 		getActionMap().put(SLAFilterRatio.ACTION_KEY, new SLAFilterRatio());

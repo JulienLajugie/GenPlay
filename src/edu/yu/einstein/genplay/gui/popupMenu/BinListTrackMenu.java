@@ -33,7 +33,6 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeBinSize;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAChangeDataPrecision;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACompress;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConcatenate;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAConvertToMask;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACorrelate;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLACountNonNullBins;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLADensity;
@@ -41,7 +40,6 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAFilter;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAFindPeaks;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGauss;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAGenerateSCWList;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndex;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIndexByChromosome;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAIntervalsScoring;
@@ -56,12 +54,12 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLAMultiplyConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLANormalize;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLANormalizeStandardScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLARepartition;
-import edu.yu.einstein.genplay.gui.action.binListTrack.BLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAStandardDeviation;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLASubtractConstant;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLASumScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATransfrag;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATwoTracks;
+import edu.yu.einstein.genplay.gui.action.binListTrack.BLAUniqueScore;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
@@ -121,9 +119,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 	private final JMenuItem		jmiShowRepartition;				// menu show repartition of the BinListTrack
 	private final JMenuItem		jmiConcatenate;					// menu concatenate
 
-	private final JMenuItem		jmiGenerateSCWList;				// menu generate a SCWList
-	private final JMenuItem		jmiConvertMask;					// menu convert to mask
-
 
 	/**
 	 * Creates an instance of a {@link BinListTrackMenu}
@@ -178,9 +173,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmiShowRepartition = new JMenuItem(actionMap.get(BLARepartition.ACTION_KEY));
 		jmiConcatenate = new JMenuItem(actionMap.get(BLAConcatenate.ACTION_KEY));
 
-		jmiGenerateSCWList = new JMenuItem(actionMap.get(BLAGenerateSCWList.ACTION_KEY));
-		jmiConvertMask = new JMenuItem(actionMap.get(BLAConvertToMask.ACTION_KEY));
-
 		addSeparator();
 		add(jcbmiCompression);
 
@@ -224,9 +216,6 @@ public final class BinListTrackMenu extends CurveTrackMenu {
 		jmOperation.add(jmiShowRepartition);
 		jmOperation.add(jmiConcatenate);
 		jmOperation.add(jmiIntervalsSummarization);
-		jmOperation.addSeparator();
-		jmOperation.add(jmiGenerateSCWList);
-		jmOperation.add(jmiConvertMask);
 
 		add(jmOperation, 0);
 		add(new Separator(), 1);
