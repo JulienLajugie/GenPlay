@@ -72,6 +72,7 @@ import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFilterThreshold;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindNext;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindPrevious;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLARemoveSNPsNotInGenes;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATAConvert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
@@ -234,6 +235,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	private void addActionsToActionMap() {
 		// add general actions
+		getActionMap().put(ATAConvert.ACTION_KEY, new ATAConvert());
 		getActionMap().put(ATACopy.ACTION_KEY, new ATACopy());
 		getActionMap().put(ATACut.ACTION_KEY, new ATACut());
 		getActionMap().put(ATADelete.ACTION_KEY, new ATADelete());

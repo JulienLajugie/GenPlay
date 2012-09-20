@@ -33,6 +33,7 @@ import javax.swing.event.PopupMenuListener;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.gui.action.allTrack.ATAConvert;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACopy;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATACut;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATADelete;
@@ -67,6 +68,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 
 	private static final long serialVersionUID = -2376957246826289131L;	// generated ID
 
+	private final JMenuItem 	jmiConvert;					// menu convert track
 	private final JMenuItem 	jmiCopy;					// menu copy track
 	private final JMenuItem 	jmiCut;						// menu cut track
 	private final JMenuItem 	jmiInsert;					// menu insert blank track
@@ -75,7 +77,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 	private final JMenuItem 	jmiDelete;					// menu delete track
 	private final JMenuItem 	jmiRename;					// menu rename track
 	private final JMenuItem 	jmiSetHeight;				// menu set height
-	private final JMenuItem 	jmiSetVerticalLineCount;		// menu set vertical line count
+	private final JMenuItem 	jmiSetVerticalLineCount;	// menu set vertical line count
 	private final JMenuItem 	jmiSaveAsImage;				// menu save track as image
 
 	// Menu for mask track
@@ -109,6 +111,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 
 
 		// Initialize items
+		jmiConvert = new JMenuItem(actionMap.get(ATAConvert.ACTION_KEY));
 		jmiCopy = new JMenuItem(actionMap.get(ATACopy.ACTION_KEY));
 		jmiCut = new JMenuItem(actionMap.get(ATACut.ACTION_KEY));
 		jmiDelete = new JMenuItem(actionMap.get(ATADelete.ACTION_KEY));
@@ -189,10 +192,12 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		addSeparator();
 		add(jmiSaveAsImage);
 		addSeparator();
+		add(jmiConvert);
 		add(jmMask);
 		add(jmMultiGenome);
 
 
+		jmiConvert.setEnabled((trackList.getSelectedTrack().getData() != null) || (trackList.getSelectedTrack().getMask() != null));
 		jmiPaste.setEnabled(trackList.isPasteEnable());
 		jmiPasteSpecial.setEnabled(trackList.isPasteEnable());
 

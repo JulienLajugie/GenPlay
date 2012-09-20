@@ -19,41 +19,54 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.core.converter.maskListConverter;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import edu.yu.einstein.genplay.core.converter.Converter;
+import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.MaskWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 
 
 /**
- * Panel for the track name input of a {@link NewCurveTrackDialog}
+ * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link MaskWindowList}
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-class TrackNamePanel extends JPanel {
+public class MaskListToSCWList implements Converter {
 
-	private static final long serialVersionUID = -5969101278574088008L;	// generated ID
-	private final JTextField jtfTrackName;	// text field for the track name
+	private final ScoredChromosomeWindowList 	list; 		// input list
 
 
 	/**
-	 * Creates an instance of a {@link TrackNamePanel}
-	 * @param trackName default name of a track
+	 * Creates a {@link ScoredChromosomeWindowList} from the data of the input {@link MaskWindowList}
+	 * @param maskList input list
 	 */
-	TrackNamePanel(String trackName) {
-		super();
-		jtfTrackName = new JTextField(trackName);
-		jtfTrackName.setColumns(15);
-		add(jtfTrackName);
-		setBorder(BorderFactory.createTitledBorder("Track Name"));
+	public MaskListToSCWList(ScoredChromosomeWindowList maskList) {
+		list = maskList;
 	}
 
 
-	/**
-	 * @return the name inside the input box
-	 */
-	String getTrackName() {
-		return jtfTrackName.getText();
+	@Override
+	public String getDescription() {
+		return "Operation: Generate Variable Window Track";
+	}
+
+
+	@Override
+	public String getProcessingDescription() {
+		return "Generating Variable Window Track";
+	}
+
+
+	@Override
+	public void convert() throws Exception {
+		// There is nothing to convert, the mask IS a variable window track with a score of 1
+	}
+
+
+	@Override
+	public ChromosomeListOfLists<?> getList() {
+		return list;
 	}
 }

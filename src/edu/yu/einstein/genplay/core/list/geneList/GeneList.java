@@ -38,9 +38,14 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
 import edu.yu.einstein.genplay.core.enums.Strand;
+import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
+import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
+import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -161,6 +166,206 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 			final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, String searchURL)
 					throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		super();
+		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+	}
+
+
+	/**
+	 * Creates an instance of {@link GeneList}
+	 * @param scwList a {@link ScoredChromosomeWindowList}
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	public GeneList(ScoredChromosomeWindowList scwList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		super();
+
+		final ChromosomeListOfLists<String> nameList;
+		final ChromosomeListOfLists<Strand> strandList;
+		final ChromosomeListOfLists<Integer> startList;
+		final ChromosomeListOfLists<Integer> stopList;
+		final ChromosomeListOfLists<int[]> exonStartsList;
+		final ChromosomeListOfLists<int[]> exonStopsList;
+		final ChromosomeListOfLists<double[]> exonScoresList;
+		String searchURL = "";
+
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		nameList = new ChromosomeArrayListOfLists<String>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
+		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
+		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
+		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
+		// initialize the sublists
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
+			nameList.add(new ArrayList<String>());
+			strandList.add(new ArrayList<Strand>());
+			exonStartsList.add(new ArrayList<int[]>());
+			exonStopsList.add(new ArrayList<int[]>());
+			exonScoresList.add(new ArrayList<double[]>());
+
+			List<ScoredChromosomeWindow> currentList = scwList.get(i);
+			String prefixName = projectChromosome.get(i).getName() + ".";
+			for (int j = 0; j < currentList.size(); j++) {
+				ScoredChromosomeWindow window = currentList.get(j);
+				startList.get(i).add(window.getStart());
+				stopList.get(i).add(window.getStop());
+				nameList.get(i).add(prefixName + (j + 1));
+				strandList.get(i).add(Strand.FIVE);
+
+				int[] exonStarts = new int[1];
+				int[] exonStops = new int[1];
+				double[] exonScores = new double[1];
+				exonStarts[0] = window.getStart();
+				exonStops[0] = window.getStop();
+				exonScores[0] = window.getScore();
+				exonStartsList.get(i).add(exonStarts);
+				exonStopsList.get(i).add(exonStops);
+				exonScoresList.get(i).add(exonScores);
+			}
+		}
+
+		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+	}
+
+
+	/**
+	 * Creates an instance of {@link GeneList}
+	 * @param binList a {@link BinList}
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	public GeneList(BinList binList) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		super();
+
+		final ChromosomeListOfLists<String> nameList;
+		final ChromosomeListOfLists<Strand> strandList;
+		final ChromosomeListOfLists<Integer> startList;
+		final ChromosomeListOfLists<Integer> stopList;
+		final ChromosomeListOfLists<int[]> exonStartsList;
+		final ChromosomeListOfLists<int[]> exonStopsList;
+		final ChromosomeListOfLists<double[]> exonScoresList;
+		String searchURL = "";
+
+		startList = new ChromosomeArrayListOfLists<Integer>();
+		stopList = new ChromosomeArrayListOfLists<Integer>();
+		nameList = new ChromosomeArrayListOfLists<String>();
+		strandList = new ChromosomeArrayListOfLists<Strand>();
+		exonStartsList = new ChromosomeArrayListOfLists<int[]>();
+		exonStopsList = new ChromosomeArrayListOfLists<int[]>();
+		exonScoresList = new ChromosomeArrayListOfLists<double[]>();
+		// initialize the sublists
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			startList.add(new IntArrayAsIntegerList());
+			stopList.add(new IntArrayAsIntegerList());
+			nameList.add(new ArrayList<String>());
+			strandList.add(new ArrayList<Strand>());
+			exonStartsList.add(new ArrayList<int[]>());
+			exonStopsList.add(new ArrayList<int[]>());
+			exonScoresList.add(new ArrayList<double[]>());
+		}
+
+
+
+		final OperationPool op = OperationPool.getInstance();
+		final Collection<Callable<Void>> threadList = new ArrayList<Callable<Void>>();
+		final int windowData = binList.getBinSize();
+
+		for (short i = 0; i < binList.size(); i++) {
+			final List<String> currentNameList = nameList.get(i);
+			final List<Strand> currentStrandList = strandList.get(i);
+			final List<Integer> currentStartList = startList.get(i);
+			final List<Integer> currentStopList = stopList.get(i);
+			final List<int[]> currentExonStartsList = exonStartsList.get(i);
+			final List<int[]> currentExonStopsList = exonStopsList.get(i);
+			final List<double[]> currentExonScoresList = exonScoresList.get(i);
+			final String prefixName = projectChromosome.get(i).getName() + ".";
+
+			final List<Double> currentList = binList.get(i);
+			Callable<Void> currentThread = new Callable<Void>() {
+				@Override
+				public Void call() throws Exception {
+					if ((currentList != null) && (currentList.size() > 0)) {
+						int nameCounter = 0;
+						for (int j = 0; j < currentList.size(); j++) {
+							double currentScore = currentList.get(j);
+							if (currentScore > 0) {
+								int start = j * windowData;						// get the current start
+								int stop = start + windowData;					// get the current stop
+
+								boolean hasToUpdate = false;										// here, we want to check whether the current window is following the previous one or not.
+								int prevIndex = currentStartList.size() - 1;						// get the last index
+								if (prevIndex >= 0) {												// if it exists
+									int prevStop = currentStopList.get(prevIndex);					// get the last inserted stop
+									if (prevStop == start) {										// if the previous window stops where the current one starts
+										double prevScore = currentExonScoresList.get(prevIndex)[0];	// we get the previous score
+										if (currentScore == prevScore) {							// if scores are the same, both window follow each other and are the same
+											hasToUpdate = true;										// an update of the previous window is enough
+										}
+									}
+								}
+
+								if (hasToUpdate) {												// if we only need to update
+									currentStopList.set(prevIndex, stop);						// we change the stop of the previous window by the actual one
+									int[] exonStops = currentExonStopsList.get(prevIndex);		// we do the same with the score
+									exonStops[0] = stop;
+									currentExonStopsList.set(prevIndex, exonStops);
+								} else {														// if not, we inserted a whole new position
+									nameCounter++;
+									currentNameList.add(prefixName + nameCounter);
+									currentStrandList.add(Strand.FIVE);
+									currentStartList.add(start);
+									currentStopList.add(stop);
+
+									int[] exonStarts = new int[1];
+									int[] exonStops = new int[1];
+									double[] exonScores = new double[1];
+									exonStarts[0] = start;
+									exonStops[0] = stop;
+									exonScores[0] = currentScore;
+									currentExonStartsList.add(exonStarts);
+									currentExonStopsList.add(exonStops);
+									currentExonScoresList.add(exonScores);
+								}
+							}
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return null;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		op.startPool(threadList);
+
+
+		initialize(nameList, strandList, startList, stopList, exonStartsList, exonStopsList, exonScoresList, searchURL);
+	}
+
+
+	/**
+	 * Creates an instance of {@link GeneList}
+	 * @param nameList a list of gene names
+	 * @param strandList a list of {@link Strand}
+	 * @param startList a list of start positions
+	 * @param stopList a list of stop positions
+	 * @param exonStartsList a list of exon start arrays
+	 * @param exonStopsList a list of exon stop arrays
+	 * @param exonScoresList a list of exon score arrays
+	 * @param searchURL url of the gene database
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	private void initialize (final ChromosomeListOfLists<String> nameList, final ChromosomeListOfLists<Strand> strandList,
+			final ChromosomeListOfLists<Integer> startList, final ChromosomeListOfLists<Integer> stopList, final ChromosomeListOfLists<int[]> exonStartsList,
+			final ChromosomeListOfLists<int[]> exonStopsList, final ChromosomeListOfLists<double[]> exonScoresList, String searchURL)
+					throws InvalidChromosomeException, InterruptedException, ExecutionException {
 		if (searchURL != null) {
 			this.searchURL = searchURL;
 		}
@@ -504,4 +709,45 @@ public final class GeneList extends DisplayableListOfLists<Gene, List<List<Gene>
 		}
 		return geneSearcher;
 	}
+
+
+	/**
+	 * @return the list of start positions
+	 */
+	public ChromosomeListOfLists<Integer> getStartList () {
+		ChromosomeListOfLists<Integer> list = new ChromosomeArrayListOfLists<Integer>();
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			list.add(new IntArrayAsIntegerList());
+		}
+
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			List<Gene> currentList = this.get(i);
+			for (Gene gene: currentList) {
+				list.get(i).add(gene.getStart());
+			}
+		}
+
+		return list;
+	}
+
+
+	/**
+	 * @return the list of start positions
+	 */
+	public ChromosomeListOfLists<Integer> getStopList () {
+		ChromosomeListOfLists<Integer> list = new ChromosomeArrayListOfLists<Integer>();
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			list.add(new IntArrayAsIntegerList());
+		}
+
+		for (int i = 0; i < projectChromosome.size(); i++) {
+			List<Gene> currentList = this.get(i);
+			for (Gene gene: currentList) {
+				list.get(i).add(gene.getStop());
+			}
+		}
+
+		return list;
+	}
+
 }

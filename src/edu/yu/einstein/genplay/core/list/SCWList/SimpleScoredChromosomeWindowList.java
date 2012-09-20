@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.overLap.OverLappingManagement;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
+import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectChromosome;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operationPool.OperationPool;
@@ -186,6 +187,7 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 		final OperationPool op = OperationPool.getInstance();
 		// list for the threads
 		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+		final int windowData = binList.getBinSize();
 		for(final Chromosome currentChromosome : projectChromosome) {
 			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
 				@Override
@@ -193,10 +195,28 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if (binList.get(currentChromosome) != null) {
 						for (int i = 0; i < binList.get(currentChromosome).size(); i++) {
-							if (binList.get(currentChromosome, i) != 0.0) {
-								resultList.add(new SimpleScoredChromosomeWindow( 	(i * binList.getBinSize()),
-										((i + 1) * binList.getBinSize()),
-										binList.get(currentChromosome, i)));
+							double currentScore = binList.get(currentChromosome, i);
+							if (currentScore != 0.0) {
+								int start = i * windowData;
+								int stop = start + windowData;
+
+								boolean hasToUpdate = false;										// here, we want to check whether the current window is following the previous one or not.
+								int prevIndex = resultList.size() - 1;								// get the last index
+								if (prevIndex >= 0) {												// if it exists
+									int prevStop = resultList.get(prevIndex).getStop();				// get the last inserted stop
+									if (prevStop == start) {										// if the previous window stops where the current one starts
+										double prevScore = resultList.get(prevIndex).getScore();	// we get the previous score
+										if (currentScore == prevScore) {							// if scores are the same, both window follow each other and are the same
+											hasToUpdate = true;										// an update of the previous window is enough
+										}
+									}
+								}
+
+								if (hasToUpdate) {
+									resultList.get(prevIndex).setStop(stop);
+								} else {
+									resultList.add(new SimpleScoredChromosomeWindow(start, stop, currentScore));
+								}
 							}
 						}
 					}
@@ -292,6 +312,75 @@ public final class SimpleScoredChromosomeWindowList extends DisplayableListOfLis
 		generateStatistics();
 	}
 
+
+	/**
+	 * Creates an instance of {@link SimpleScoredChromosomeWindowList}
+	 * @param geneList list of genes
+	 * @param scm {@link ScoreCalculationMethod} used to create the {@link BinList}
+	 * @throws InvalidChromosomeException
+	 * @throws ExecutionException
+	 * @throws InterruptedException
+	 */
+	public SimpleScoredChromosomeWindowList(final GeneList geneList, final ScoreCalculationMethod scm) throws InvalidChromosomeException, InterruptedException, ExecutionException {
+		super();
+
+		final ChromosomeListOfLists<Integer> startList = geneList.getStartList();
+		final ChromosomeListOfLists<Integer> stopList = geneList.getStopList();
+
+		// retrieve the instance of the OperationPool
+		final OperationPool op = OperationPool.getInstance();
+		// list for the threads
+		final Collection<Callable<List<ScoredChromosomeWindow>>> threadList = new ArrayList<Callable<List<ScoredChromosomeWindow>>>();
+
+
+		final boolean runOverLapEngine;
+		this.overLapManagement = new OverLappingManagement(startList, stopList, null);
+		if (scm != null) {
+			this.overLapManagement.setScoreCalculationMethod(scm);
+			runOverLapEngine = true;
+		} else {
+			runOverLapEngine = false;
+		}
+		for(final Chromosome currentChromosome : projectChromosome) {
+			Callable<List<ScoredChromosomeWindow>> currentThread = new Callable<List<ScoredChromosomeWindow>>() {
+				@Override
+				public List<ScoredChromosomeWindow> call() throws Exception {
+					if (startList.get(currentChromosome) == null) {
+						return null;
+					}
+					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
+					if (runOverLapEngine) {
+						overLapManagement.run(currentChromosome);
+					}
+					List<ScoredChromosomeWindow> list = overLapManagement.getList(currentChromosome);
+					for(int j = 0; j < list.size(); j++) {
+						double score = list.get(j).getScore();
+						if (score != 0) {
+							resultList.add(new SimpleScoredChromosomeWindow(	list.get(j).getStart(),
+									list.get(j).getStop(),
+									score));
+						}
+					}
+					// tell the operation pool that a chromosome is done
+					op.notifyDone();
+					return resultList;
+				}
+			};
+
+			threadList.add(currentThread);
+		}
+		List<List<ScoredChromosomeWindow>> result = null;
+		// starts the pool
+		result = op.startPool(threadList);
+		// add the chromosome results
+		if (result != null) {
+			for (List<ScoredChromosomeWindow> currentList: result) {
+				add(currentList);
+			}
+		}
+		// generate the statistics
+		generateStatistics();
+	}
 
 
 	/**

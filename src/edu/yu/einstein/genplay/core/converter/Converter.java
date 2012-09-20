@@ -19,41 +19,39 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog;
+package edu.yu.einstein.genplay.core.converter;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
+import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 
 /**
- * Panel for the track name input of a {@link NewCurveTrackDialog}
- * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-class TrackNamePanel extends JPanel {
-
-	private static final long serialVersionUID = -5969101278574088008L;	// generated ID
-	private final JTextField jtfTrackName;	// text field for the track name
+public interface Converter {
 
 
 	/**
-	 * Creates an instance of a {@link TrackNamePanel}
-	 * @param trackName default name of a track
+	 * Converts the actual list to the new kind of list
+	 * @throws Exception
 	 */
-	TrackNamePanel(String trackName) {
-		super();
-		jtfTrackName = new JTextField(trackName);
-		jtfTrackName.setColumns(15);
-		add(jtfTrackName);
-		setBorder(BorderFactory.createTitledBorder("Track Name"));
-	}
+	public void convert() throws Exception;
 
 
 	/**
-	 * @return the name inside the input box
+	 * @return the converted list
 	 */
-	String getTrackName() {
-		return jtfTrackName.getText();
-	}
+	public ChromosomeListOfLists<?> getList ();
+
+
+	/**
+	 * @return a description of the operation
+	 */
+	public String getDescription();
+
+
+	/**
+	 * @return a description of what is done during the process
+	 */
+	public String getProcessingDescription();
+
 }
