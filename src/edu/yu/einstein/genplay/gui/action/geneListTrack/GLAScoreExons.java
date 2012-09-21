@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.action.geneListTrack;
 
+import java.text.DecimalFormat;
+
 import javax.swing.ActionMap;
 
 import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
@@ -31,6 +33,7 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromBinList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOScoreFromSCWList;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
+import edu.yu.einstein.genplay.gui.dialog.NumberOptionPane;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -82,12 +85,16 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 					if (curveTrack != null) {
 						ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
 						if (method != null) {
-							if (curveTrack.getData() instanceof BinList) {
-								operation = new GLOScoreFromBinList(selectedTrack.getData(), (BinList) curveTrack.getData(), method);
-							} else if (curveTrack.getData() instanceof ScoredChromosomeWindowList) {
-								operation = new GLOScoreFromSCWList(selectedTrack.getData(), (ScoredChromosomeWindowList) curveTrack.getData(), method);
+							Number constant = NumberOptionPane.getValue(getRootPane(), "Define offset (optional)", "Enter a value (bp) to look both side of each exon:", new DecimalFormat("0"), 0, 1000, 0);
+							if (constant != null) {
+								int offset = constant.intValue();
+								if (curveTrack.getData() instanceof BinList) {
+									operation = new GLOScoreFromBinList(selectedTrack.getData(), (BinList) curveTrack.getData(), method, offset);
+								} else if (curveTrack.getData() instanceof ScoredChromosomeWindowList) {
+									operation = new GLOScoreFromSCWList(selectedTrack.getData(), (ScoredChromosomeWindowList) curveTrack.getData(), method, offset);
+								}
+								return operation;
 							}
-							return operation;
 						}
 					}
 				}

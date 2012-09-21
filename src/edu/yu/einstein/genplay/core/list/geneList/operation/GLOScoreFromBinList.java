@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -44,7 +44,8 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 	private final GeneList 					geneList;	// input GeneList
 	private final BinList 					binList;	// BinList with the scores
 	private final ScoreCalculationMethod 	method;		// method to use to compute the score
-	private boolean stopped = false;	// true if the writer needs to be stopped 
+	private final int offset;							// offset to apply on both side of a window
+	private boolean stopped = false;	// true if the writer needs to be stopped
 
 
 	/**
@@ -52,11 +53,13 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 	 * @param geneList input GeneList
 	 * @param binList BinList with the scores
 	 * @param method method to use to compute the score
+	 * @param offset the scoring will be applied X bp before and after the windows
 	 */
-	public GLOScoreFromBinList(GeneList geneList, BinList binList, ScoreCalculationMethod method) {
+	public GLOScoreFromBinList(GeneList geneList, BinList binList, ScoreCalculationMethod method, int offset) {
 		this.geneList = geneList;
 		this.binList = binList;
 		this.method = method;
+		this.offset = offset;
 	}
 
 
@@ -69,25 +72,25 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 			final List<Gene> currentGeneList = geneList.get(i);
 			Callable<List<Gene>> currentThread = new Callable<List<Gene>>() {
 				@Override
-				public List<Gene> call() throws Exception {					
+				public List<Gene> call() throws Exception {
 					if ((currentGeneList == null) || (currentBinList == null)) {
 						return null;
 					}
 					List<Gene> resultList = new ArrayList<Gene>();
-					for (int j = 0; j < currentGeneList.size() && !stopped; j++) {
+					for (int j = 0; (j < currentGeneList.size()) && !stopped; j++) {
 						Gene currentGene = currentGeneList.get(j);
 						if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length != 0))  {
 							double[] scores = new double[currentGene.getExonStarts().length] ;
-							for (int k = 0; k < currentGene.getExonStarts().length && !stopped; k++) {
-								int start = (int) (currentGene.getExonStarts()[k] / (double) binList.getBinSize());
-								int stop = (int) (currentGene.getExonStops()[k] / (double) binList.getBinSize());
+							for (int k = 0; (k < currentGene.getExonStarts().length) && !stopped; k++) {
+								int start = (int) ((currentGene.getExonStarts()[k]  - offset) / (double) binList.getBinSize());
+								int stop = (int) ((currentGene.getExonStops()[k] + offset) / (double) binList.getBinSize());
 								int count = 0; // used for the average
-								for (int l = start; l <= stop && !stopped; l++) {
+								for (int l = start; (l <= stop) && !stopped; l++) {
 									if ((l < currentBinList.size()) && (currentBinList.get(l) != 0)) {
 										switch (method) {
 										case AVERAGE:
-											scores[k] = (scores[k] * count + currentBinList.get(l)) / (count + 1);
-											count++;									
+											scores[k] = ((scores[k] * count) + currentBinList.get(l)) / (count + 1);
+											count++;
 											break;
 										case MAXIMUM:
 											scores[k] = Math.max(scores[k], currentBinList.get(l));
@@ -141,5 +144,5 @@ public class GLOScoreFromBinList implements Operation<GeneList> {
 	@Override
 	public void stop() {
 		stopped = true;
-	}	
+	}
 }

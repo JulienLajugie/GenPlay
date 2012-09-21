@@ -45,6 +45,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 	private final GeneList 						geneList;	// input GeneList
 	private final ScoredChromosomeWindowList 	scwList;	// BinList with the scores
 	private final ScoreCalculationMethod 		method;		// method to use to compute the score
+	private final int offset;							// offset to apply on both side of a window
 	private boolean stopped = false;	// true if the writer needs to be stopped
 
 
@@ -53,11 +54,13 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 	 * @param geneList input GeneList
 	 * @param scwList {@link ScoredChromosomeWindowList} with the scores
 	 * @param method method to use to compute the score
+	 * @param offset the scoring will be applied X bp before and after the windows
 	 */
-	public GLOScoreFromSCWList(GeneList geneList, ScoredChromosomeWindowList scwList, ScoreCalculationMethod method) {
+	public GLOScoreFromSCWList(GeneList geneList, ScoredChromosomeWindowList scwList, ScoreCalculationMethod method, int offset) {
 		this.geneList = geneList;
 		this.scwList = scwList;
 		this.method = method;
+		this.offset = offset;
 	}
 
 
@@ -80,7 +83,7 @@ public class GLOScoreFromSCWList implements Operation<GeneList> {
 						if ((currentGene != null) && (currentGene.getExonStarts() != null) && (currentGene.getExonStarts().length != 0))  {
 							double[] scores = new double[currentGene.getExonStarts().length] ;
 							for (int k = 0; (k < currentGene.getExonStarts().length) && !stopped; k++) {
-								List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExonStarts()[k], currentGene.getExonStops()[k]);
+								List<ScoredChromosomeWindow> currentExonSCW = Utils.searchChromosomeWindowInterval(currentSCWList, currentGene.getExonStarts()[k] - offset, currentGene.getExonStops()[k] + offset);
 								if (currentExonSCW != null) {
 									int length = 0; // used for the average
 									for (int l = 0; (l < currentExonSCW.size()) && !stopped; l++) {
