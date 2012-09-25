@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -30,24 +30,25 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 /**
  * Counts the number of genes on the specified chromosomes
  * @author Julien Lajugie
+ * @author Nicolas Fourel
  * @version 0.1
  */
-public class GLOCountGenes implements Operation<Long> {
+public class GLOCountAllGenes implements Operation<Long> {
 
 	private final GeneList 	geneList;		// input GeneList
-	private final boolean[] chromoList;		// 1 boolean / chromosome. 
+	private final boolean[] chromoList;		// 1 boolean / chromosome.
 	// each boolean sets to true means that the corresponding chromosome is selected
 	private boolean			stopped = false;// true if the operation must be stopped
 
 
 	/**
-	 * Creates an instance of {@link GLOCountGenes}.
+	 * Creates an instance of {@link GLOCountAllGenes}.
 	 * Counts the genes on the selected chromosomes of the {@link GeneList}.
 	 * @param geneList input {@link GeneList}
-	 * @param chromoList list of boolean. A boolean set to true means that the 
-	 * chromosome with the same index is going to be used for the calculation. 
+	 * @param chromoList list of boolean. A boolean set to true means that the
+	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public GLOCountGenes(GeneList geneList, boolean[] chromoList) {
+	public GLOCountAllGenes(GeneList geneList, boolean[] chromoList) {
 		this.geneList = geneList;
 		this.chromoList = chromoList;
 	}
@@ -57,12 +58,9 @@ public class GLOCountGenes implements Operation<Long> {
 	@Override
 	public Long compute() throws InterruptedException, ExecutionException {
 		long total = 0;
-		for (int i = 0; i < geneList.size() && !stopped; i++) {
+		for (int i = 0; (i < geneList.size()) && !stopped; i++) {
 			if (((chromoList == null) || ((i < chromoList.length) && (chromoList[i]))) && (geneList.get(i) != null)) {
-				for (int j = 0; j < geneList.size(i) && !stopped; j++) {
-					if ((geneList.get(i, j).getGeneRPKM() != null) && (geneList.get(i, j).getGeneRPKM() != 0))
-						total++;
-				}
+				total += geneList.get(i).size();
 			}
 		}
 		if (stopped) {

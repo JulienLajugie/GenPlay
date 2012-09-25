@@ -25,6 +25,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAAverageScore;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLACountAllGenes;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLACountNonNullGenes;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLADistanceCalculator;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractInterval;
@@ -34,6 +37,7 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASumScore;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAUniqueScore;
 import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
@@ -52,6 +56,9 @@ public final class GeneListTrackMenu extends TrackMenu {
 
 	private final JMenu		jmOperation;			// category operation
 
+	private final JMenuItem	jmiAverageScore;		// average score menu
+	private final JMenuItem	jmiCountAllGene;			// count gene menu
+	private final JMenuItem	jmiCountNonNullGene;			// count gene menu
 	private final JMenuItem	jmiDistanceCalculator;	// distance Calculator menu
 	private final JMenuItem jmiExtractExons;		// extract exons menu
 	private final JMenuItem jmiExtractInterval;		// extract interval menu
@@ -62,6 +69,7 @@ public final class GeneListTrackMenu extends TrackMenu {
 	private final JMenuItem jmiScoreExons;			// save the exons of the genelist
 	private final JMenuItem jmiScoreRepartition;	// show the score repartition around the start of the genes
 	private final JMenuItem jmiSearchGene;			// search gene menu
+	private final JMenuItem	jmiSumScore;			// sum score menu
 	private final JMenuItem jmiUniqueScore;			// unique score menu
 
 	private final VersionedTrackMenuItems	versionedTrackMenuItems;	// versioned track menu items
@@ -76,6 +84,9 @@ public final class GeneListTrackMenu extends TrackMenu {
 
 		jmOperation = new JMenu("Operation");
 
+		jmiAverageScore = new JMenuItem(actionMap.get(GLAAverageScore.ACTION_KEY));
+		jmiCountAllGene = new JMenuItem(actionMap.get(GLACountAllGenes.ACTION_KEY));
+		jmiCountNonNullGene = new JMenuItem(actionMap.get(GLACountNonNullGenes.ACTION_KEY));
 		jmiDistanceCalculator = new JMenuItem(actionMap.get(GLADistanceCalculator.ACTION_KEY));
 		jmiExtractExons = new JMenuItem(actionMap.get(GLAExtractExons.ACTION_KEY));
 		jmiExtractInterval = new JMenuItem(actionMap.get(GLAExtractInterval.ACTION_KEY));
@@ -86,14 +97,19 @@ public final class GeneListTrackMenu extends TrackMenu {
 		jmiScoreExons = new JMenuItem(actionMap.get(GLAScoreExons.ACTION_KEY));
 		jmiScoreRepartition = new JMenuItem(actionMap.get(GLAScoreRepartitionAroundStart.ACTION_KEY));
 		jmiSearchGene = new JMenuItem(actionMap.get(GLASearchGene.ACTION_KEY));
+		jmiSumScore = new JMenuItem(actionMap.get(GLASumScore.ACTION_KEY));
 		versionedTrackMenuItems = new VersionedTrackMenuItems(this, trackList);
 		jmiUniqueScore = new JMenuItem(actionMap.get(GLAUniqueScore.ACTION_KEY));
 
-		jmOperation.add(jmiUniqueScore);
+		jmOperation.add(jmiSumScore);
+		jmOperation.add(jmiAverageScore);
+		jmOperation.add(jmiCountAllGene);
+		jmOperation.add(jmiCountNonNullGene);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiSearchGene);
 		jmOperation.add(jmiExtractInterval);
 		jmOperation.add(jmiExtractExons);
+		jmOperation.add(jmiUniqueScore);
 		jmOperation.add(jmiScoreExons);
 		jmOperation.addSeparator();
 		jmOperation.add(jmiFilterScore);

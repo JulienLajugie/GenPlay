@@ -67,7 +67,7 @@ public class GLOFilterCount implements Operation<GeneList> {
 		boolean[] selectedChromo = new boolean[geneList.size()];
 		Arrays.fill(selectedChromo, true);
 		
-		int totalLenght = new GLOCountGenes(geneList,selectedChromo).compute().intValue();
+		int totalLenght = new GLOCountNonNullGenes(geneList,selectedChromo).compute().intValue();
 		if (totalLenght == 0) {
 			return new GeneList(geneList, geneList.getSearchURL());
 		}

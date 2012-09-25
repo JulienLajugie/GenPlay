@@ -46,6 +46,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountWindows;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndex;
@@ -124,6 +125,9 @@ import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadSCWListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadSNPListTrack;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAAverageScore;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLACountAllGenes;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLACountNonNullGenes;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLADistanceCalculator;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractInterval;
@@ -133,6 +137,7 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAGeneRenamer;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreExons;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroundStart;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
+import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASumScore;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTAApplyMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTAInvertMask;
@@ -258,6 +263,9 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(ETALoadSCWListTrack.ACTION_KEY, new ETALoadSCWListTrack());
 		getActionMap().put(ETALoadSNPListTrack.ACTION_KEY, new ETALoadSNPListTrack());
 		// add gene list actions
+		getActionMap().put(GLAAverageScore.ACTION_KEY, new GLAAverageScore());
+		getActionMap().put(GLACountNonNullGenes.ACTION_KEY, new GLACountNonNullGenes());
+		getActionMap().put(GLACountAllGenes.ACTION_KEY, new GLACountAllGenes());
 		getActionMap().put(GLADistanceCalculator.ACTION_KEY, new GLADistanceCalculator());
 		getActionMap().put(GLAExtractExons.ACTION_KEY, new GLAExtractExons());
 		getActionMap().put(GLAExtractInterval.ACTION_KEY, new GLAExtractInterval());
@@ -267,6 +275,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(GLAScoreExons.ACTION_KEY, new GLAScoreExons());
 		getActionMap().put(GLAScoreRepartitionAroundStart.ACTION_KEY, new GLAScoreRepartitionAroundStart());
 		getActionMap().put(GLASearchGene.ACTION_KEY, new GLASearchGene());
+		getActionMap().put(GLASumScore.ACTION_KEY, new GLASumScore());
 		getActionMap().put(GLAUniqueScore.ACTION_KEY, new GLAUniqueScore());
 		// add curve track actions
 		getActionMap().put(CTAAppearance.ACTION_KEY, new CTAAppearance());
@@ -280,6 +289,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
+		getActionMap().put(SCWLACountWindows.ACTION_KEY, new SCWLACountWindows());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
 		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());

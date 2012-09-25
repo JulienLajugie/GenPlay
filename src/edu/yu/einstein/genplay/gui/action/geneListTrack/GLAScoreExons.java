@@ -85,7 +85,7 @@ public class GLAScoreExons  extends TrackListActionOperationWorker<GeneList> {
 					if (curveTrack != null) {
 						ScoreCalculationMethod method = Utils.chooseScoreCalculation(getRootPane());
 						if (method != null) {
-							Number constant = NumberOptionPane.getValue(getRootPane(), "Define offset (optional)", "Enter a value (bp) to look both side of each exon:", new DecimalFormat("0"), 0, 1000, 0);
+							Number constant = NumberOptionPane.getValue(getRootPane(), "Enter a value (optional)", "Enter a value (bp) to add to both side of each exon:", new DecimalFormat("0"), 0, 1000, 0);
 							if (constant != null) {
 								int offset = constant.intValue();
 								if (curveTrack.getData() instanceof BinList) {
