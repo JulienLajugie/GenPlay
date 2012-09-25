@@ -26,6 +26,7 @@ import edu.yu.einstein.genplay.core.enums.ScoreCalculationMethod;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOCleanList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 
 
@@ -68,6 +69,8 @@ public class GeneListToSCWList implements Converter {
 	@Override
 	public void convert() throws Exception {
 		result = new SimpleScoredChromosomeWindowList(list, method);
+		SCWLOCleanList operation = new SCWLOCleanList((ScoredChromosomeWindowList) result);
+		result = operation.compute();
 	}
 
 

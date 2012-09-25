@@ -43,6 +43,8 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * - duplicates
  * - windows with length of 0bp
  * 
+ * It also merges overlapped windows.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -74,33 +76,20 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 				public List<ScoredChromosomeWindow> call() throws Exception {
 					List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 					if ((currentList != null) && (currentList.size() != 0)) {
-
 						int index = 0;
-						boolean valid = true;
-
-						while (valid) {
+						while (isIndexValid(currentList, index) && !stopped) {
 							ScoredChromosomeWindow currentWindow = currentList.get(index);
-							int nextIndex = getNextInvolvedIndex(resultList, index);
+							int nextIndex = getNextInvolvedIndex(currentList, index);
 							ScoredChromosomeWindow resultWindow = null;
 							if (index == nextIndex) {
 								resultWindow = new SimpleScoredChromosomeWindow(currentWindow.getStart(), currentWindow.getStop(), currentWindow.getScore());
-								nextIndex++;
 							} else {
-
+								resultWindow = getMergedWindow(currentList, index, nextIndex);
 							}
-
-
-							resultList.add(resultWindow);
-							index = nextIndex;
-						}
-
-
-						// We add a constant to each element
-						for (int j = 0; (j < currentList.size()) && !stopped; j++) {
-							ScoredChromosomeWindow currentWindow = currentList.get(j);
-							ScoredChromosomeWindow resultWindow = new SimpleScoredChromosomeWindow(currentWindow);
-							resultWindow.setScore(currentWindow.getScore());
-							resultList.add(resultWindow);
+							if (resultWindow.getSize() > 0) {
+								resultList.add(resultWindow);
+							}
+							index = nextIndex + 1;
 						}
 					}
 					// tell the operation pool that a chromosome is done
@@ -121,7 +110,12 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 	}
 
 
-
+	/**
+	 * Goes to the next index involved in an overlap
+	 * @param list		the list of {@link ScoredChromosomeWindow}
+	 * @param index		the index to start the search
+	 * @return			the last index involved in th potential current overlap
+	 */
 	private int getNextInvolvedIndex (List<ScoredChromosomeWindow> list, int index) {
 		int nextIndex = index + 1;
 		if (isIndexValid(list, nextIndex)) {
@@ -133,11 +127,23 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 	}
 
 
+	/**
+	 * Check if an index is valid
+	 * @param list	the list of {@link ScoredChromosomeWindow}
+	 * @param index	the index to look for
+	 * @return	true if the index is valid, false otherwise
+	 */
 	private boolean isIndexValid (List<ScoredChromosomeWindow> list, int index) {
 		return index < list.size();
 	}
 
 
+	/**
+	 * Looks if two windows are overlapping
+	 * @param window01	the first window
+	 * @param window02	the second window
+	 * @return	true if the second window overlaps the first window
+	 */
 	private boolean overlap (ScoredChromosomeWindow window01, ScoredChromosomeWindow window02) {
 		boolean overlap = false;
 		if (window01.getStop() > window02.getStart()) {
@@ -145,6 +151,35 @@ public class SCWLOCleanList implements Operation<ScoredChromosomeWindowList> {
 		}
 		return overlap;
 	}
+
+
+	/**
+	 * Merges windows of a list from an index to anoteher one
+	 * @param list			the list of {@link ScoredChromosomeWindow}
+	 * @param firstIndex	the first index to include
+	 * @param lastIndex		the last index to include
+	 * @return				the merged {@link ScoredChromosomeWindow}
+	 */
+	private ScoredChromosomeWindow getMergedWindow (List<ScoredChromosomeWindow> list, int firstIndex, int lastIndex) {
+		int start = list.get(firstIndex).getStart();
+		int stop = list.get(firstIndex).getStop();
+		double sumScore = 0;
+		for (int i = firstIndex + 1; i <= lastIndex; i++) {
+			ScoredChromosomeWindow currentWindow = list.get(i);
+			int currentStart =  currentWindow.getStart();
+			int currentStop = currentWindow.getStop();
+			if (currentStart < start) {
+				start = currentStart;
+			}
+			if (currentStop > stop) {
+				currentStop = stop;
+			}
+			sumScore += currentWindow.getScore();
+		}
+		double score = sumScore;
+		return new SimpleScoredChromosomeWindow(start, stop, score);
+	}
+
 
 
 	@Override
