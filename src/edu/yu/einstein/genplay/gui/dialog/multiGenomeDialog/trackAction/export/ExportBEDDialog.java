@@ -133,6 +133,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the text field
 		jtfFile = new JTextField();
+		jtfFile.setEditable(false);
 		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
@@ -145,7 +146,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				FileFilter[] filters = {new BedFilter()};
-				File file = ExportUtils.getFile(filters, true);
+				File file = ExportUtils.getFile(filters, false);
 				if (file != null) {
 					jtfFile.setText(file.getPath());
 				}

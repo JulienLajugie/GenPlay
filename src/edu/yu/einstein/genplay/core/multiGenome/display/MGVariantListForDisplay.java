@@ -55,7 +55,7 @@ public class MGVariantListForDisplay implements Serializable {
 	private MGAlleleForDisplay 		alleleForDisplay;					// its allele
 	private Chromosome				chromosome;							// its chromosome
 	private VariantType 			type;								// type of the variants
-	private List<Variant> 	variantList;						// list of variants
+	private List<Variant> 			variantList;						// list of variants
 
 
 	/**

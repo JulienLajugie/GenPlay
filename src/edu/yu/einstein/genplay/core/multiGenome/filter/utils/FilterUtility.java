@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.StringIDFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFID.StringIDFilterInterface;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
+import edu.yu.einstein.genplay.util.Utils;
 
 /**
  * @author Nicolas Fourel
@@ -164,10 +165,36 @@ public abstract class FilterUtility {
 	 */
 	protected Float toFloat (String s) {
 		try {
+			if (s.indexOf(',') != -1) {
+				return toComplexFloat(s);
+			}
 			return Float.parseFloat(s);
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+
+	/**
+	 * A complex float is a string that contains several float comma separated.
+	 * It will return the minimum float found AND different than 0.0
+	 * @param s	the string
+	 * @return	the minimum float value found (different than 0.0), null otherwise
+	 */
+	private Float toComplexFloat (String s) {
+		String[] stringArray = Utils.split(s, ',');
+		if (stringArray.length == 1) {
+			return toFloat(stringArray[0]);
+		}
+		float current;
+		Float min = null;
+		for (int i = 0; i < stringArray.length; i++) {
+			current = toFloat(stringArray[i]);
+			if ((min == null) || ((current < min) && (current != 0.0))) {
+				min = current;
+			}
+		}
+		return min;
 	}
 
 

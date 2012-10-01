@@ -112,7 +112,7 @@ public class MGSynchronizer implements Serializable {
 
 	/**
 	 * Reads the VCF files in order to store the position where a variation happens.
-	 * Does not take into account SNP and variation equal to the reference (0/0)
+	 * Does not take into account SNP.
 	 * @throws IOException
 	 */
 	public void insertVariantposition () throws IOException {
@@ -145,8 +145,7 @@ public class MGSynchronizer implements Serializable {
 					lineNumber++;
 					if (line.isValid()) {
 						line.processForAnalyse();
-						boolean manageReference = false;
-						boolean hadInsertion = false;
+						List<Variant> currentVariants = new ArrayList<Variant>();
 						int referencePosition = line.getReferencePosition();								// get the reference genome position (POS field)
 						float score = line.getQuality();
 
@@ -176,7 +175,6 @@ public class MGSynchronizer implements Serializable {
 											alleleHandler.getOffsetList(alleleType).add(new MGOffset(referencePosition, alleleLength));	// add the offset to the offset list
 
 											if (variantType == VariantType.INSERTION) {
-												hadInsertion = true;
 												referenceOffsetList.get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// add the offset to the reference genome allele if it is an insertion
 											}
 
@@ -184,9 +182,8 @@ public class MGSynchronizer implements Serializable {
 											MGVariantListForDisplay variantListForDisplay = alleleHandler.getAlleleForDisplay(alleleType).getVariantList(chromosome, variantType);
 											Variant variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
+											currentVariants.add(variant);
 										}
-									} else if (currentAlleleIndex == -1) {
-										manageReference = true;
 									}
 								}
 							} else {
@@ -194,11 +191,12 @@ public class MGSynchronizer implements Serializable {
 							}
 						}
 
-						if (manageReference && !hadInsertion) {
-							//VariantInterface variant = new ReferenceVariant(referencePosition, line.getREF().length(), i);
-							Variant variant = new ReferenceVariant(referencePosition, line.getLongestAlternativeLength(), i, vcfFile);
+						int longestAlternative = line.getLongestAlternativeLength();
+						if (longestAlternative != 0) {
+							Variant variant = new ReferenceVariant(referencePosition, longestAlternative, i, vcfFile);
 							alleleHandler.getAlleleReferenceDisplay().getVariantList(chromosome).add(variant);
 						}
+
 					}
 				}
 			}
@@ -207,6 +205,19 @@ public class MGSynchronizer implements Serializable {
 			vcfFile.getStatistics().processStatistics();
 		}
 	}
+
+
+	/*private Variant getDominantVariant (List<Variant> variantList) {
+		Variant variant = null;
+		if (variantList.size() > 0) {
+			for (Variant current: variantList) {
+				if ((variant == null) || (current.getLength() > variant.getLength())) {
+					variant = current;
+				}
+			}
+		}
+		return variant;
+	}*/
 
 
 	/**

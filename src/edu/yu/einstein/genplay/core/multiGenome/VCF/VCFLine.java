@@ -435,6 +435,18 @@ public class VCFLine implements Serializable {
 	}
 
 	/**
+	 * @return all the alternatives as a string
+	 */
+	public String getStringAlternatives() {
+		String alt = "";
+		for (int i = 0; i < (alternatives.length - 1); i++) {
+			alt += alternatives[i] + ",";
+		}
+		alt += alternatives[alternatives.length - 1];
+		return alt;
+	}
+
+	/**
 	 * @return the alternativesLength
 	 */
 	public int[] getAlternativesLength() {
@@ -634,13 +646,18 @@ public class VCFLine implements Serializable {
 
 
 	/**
-	 * @return the longest alternative length (always positive), 0 if line has not been set for analysis
+	 * @return the longest alternative length. Negative if deletion, positive if insertion, 0 if line has not been set for analysis
 	 */
 	public int getLongestAlternativeLength () {
 		int max = 0;
 		if (readyForAnalyse) {
-			for (int current: alternativesLength) {
+			for (int current: alternativesLength) {		// We need to compare with the absolute value
 				max = Math.max(max, Math.abs(current));
+			}
+			for (int current: alternativesLength) {		// but we still want the negative if it exists
+				if (max == Math.abs(current)) {
+					max = current;
+				}
 			}
 		}
 		return max;

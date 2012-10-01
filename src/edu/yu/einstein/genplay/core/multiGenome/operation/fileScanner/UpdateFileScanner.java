@@ -41,8 +41,6 @@ public class UpdateFileScanner implements FileScannerInterface {
 	private final ManualVCFReader 	src;		// The reader for the file to use as a model.
 	private final BGZIPReader 		dest;		// The reader for the file to update
 
-	private int lineNumber = 0;
-
 
 	/**
 	 * Constructor of {@link UpdateFileScanner}
@@ -61,31 +59,23 @@ public class UpdateFileScanner implements FileScannerInterface {
 	@Override
 	public void compute() throws Exception {
 		boolean valid = true;
-
 		//while ((lineNumber < lineLimit) && valid) {
 		while (valid) {
 			List<VCFLine> currentDestinationLines = getCurrentListOfDestinationLine();
 			if (currentDestinationLines.size() > 0) {
-				lineNumber += currentDestinationLines.size();
 				List<VCFLine> currentSourceLines = getCurrentListOfSourceLines(currentDestinationLines.get(0));
-
 				if (currentSourceLines.size() > 0) {
 					List<VCFLine> validCouplesLines = getValidCouplesLines(currentSourceLines, currentDestinationLines);
-
 					int index = 0;
 					while (index < validCouplesLines.size()) {
 						engine.processLine(validCouplesLines.get(index), validCouplesLines.get(index + 1));
 						index += 2;
 					}
 				}
-				dest.goNextLine();
 			} else {
-				System.out.println("UpdateFileScanner.compute() valid = false");
 				valid = false;
 			}
 		}
-
-		System.out.println("UpdateFileScanner.compute() line number: " + lineNumber);
 	}
 
 
@@ -119,18 +109,19 @@ public class UpdateFileScanner implements FileScannerInterface {
 
 		boolean valid = true;
 		while (valid) {
-			VCFLine currentLine = src.getCurrentValidLine();
-			if (currentLine.isLastLine()) {
+			VCFLine currentSrcLine = src.getCurrentValidLine();
+			if (currentSrcLine.isLastLine()) {
 				valid = false;
 			} else {
-				int compare = compareLines(line, currentLine);
+				//int compare = compareLines(line, currentSrcLine);
+				int compare = compareLines(currentSrcLine, line);
 				if (compare == 0) {
-					if (currentLine.hasData()) {
-						result.add(currentLine);
-						currentLine.processForAnalyse();
+					if (currentSrcLine.hasData()) {
+						result.add(currentSrcLine);
+						currentSrcLine.processForAnalyse();
 					}
 					src.goNextLine();
-				} else if (compare > 0) {
+				} else if (compare < 0) {
 					src.goNextLine();
 				} else {
 					valid = false;

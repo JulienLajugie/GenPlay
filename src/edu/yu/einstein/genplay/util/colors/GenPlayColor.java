@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
  */
 public class GenPlayColor {
 
-	
+
 	/**
 	 * Associates a color to a {@link Nucleotide}
 	 * @param nucleotide {@link Nucleotide}
@@ -52,7 +52,7 @@ public class GenPlayColor {
 			return Colors.CYTOSINE;
 		case GUANINE:
 			return Colors.GUANINE;
-		case THYMINE: 
+		case THYMINE:
 			return Colors.THYMINE;
 		case ANY:
 			return Colors.ANY;
@@ -82,13 +82,13 @@ public class GenPlayColor {
 				return new Color(0, 100, 255);
 			} else {
 				return new Color(0, 0, 200);
-			}			
-		}		
+			}
+		}
 	}
 
 
 	/**
-	 * Returns a color associated to a score. 
+	 * Returns a color associated to a score.
 	 * High intensities are red. Medium are green. Low are blue.
 	 * @param score A score indexed between min and max.
 	 * @param min minimum intensity value
@@ -109,25 +109,25 @@ public class GenPlayColor {
 
 		if ((newScore >= 0) && (newScore <= distanceQuarter)) {
 			r = 0;
-			v = (int)(newScore * 255 / distanceQuarter);
-			b = 255;			
-		} else if ((newScore > distanceQuarter) && (newScore <= 2 * distanceQuarter)) {
+			v = (int)((newScore * 255) / distanceQuarter);
+			b = 255;
+		} else if ((newScore > distanceQuarter) && (newScore <= (2 * distanceQuarter))) {
 			r = 0;
 			v = 255;
-			b = (int)(255 - (newScore - distanceQuarter) * 255 / distanceQuarter);			
-		} else if ((newScore > 2 * distanceQuarter) && (newScore <= 3 * distanceQuarter)) {
-			r = (int)((newScore - 2 * distanceQuarter) * 255 / distanceQuarter);
+			b = (int)(255 - (((newScore - distanceQuarter) * 255) / distanceQuarter));
+		} else if ((newScore > (2 * distanceQuarter)) && (newScore <= (3 * distanceQuarter))) {
+			r = (int)(((newScore - (2 * distanceQuarter)) * 255) / distanceQuarter);
 			v = 255;
 			b = 0;
-		} else if ((newScore > 3 * distanceQuarter) && (newScore <= distance)) {
+		} else if ((newScore > (3 * distanceQuarter)) && (newScore <= distance)) {
 			r = 255;
-			v = (int)(255 - (newScore - 3 * distanceQuarter) * 255 / distanceQuarter);
-			b = 0;			
-		}		
+			v = (int)(255 - (((newScore - (3 * distanceQuarter)) * 255) / distanceQuarter));
+			b = 0;
+		}
 		return new Color(r, v, b);
 	}
-	
-	
+
+
 	/**
 	 * Transforms a color used to display a variant stripe.
 	 * Must be called when the mouse is over the stripe!
@@ -137,11 +137,14 @@ public class GenPlayColor {
 	public static Color stripeFilter (Color color) {
 		int stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();
 		int invert = 255 - stripesOpacity;
+		if (color == null) {
+			color = Colors.BLACK;
+		}
 		Color newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), invert);
 		return newColor;
 	}
-	
-	
+
+
 	/**
 	 * @return a color randomly generated
 	 */
@@ -150,7 +153,7 @@ public class GenPlayColor {
 		int red = randomGen.nextInt(255);
 		int green = randomGen.nextInt(255);
 		int blue = randomGen.nextInt(255);
-		if (red + green + blue > 510) {
+		if ((red + green + blue) > 510) {
 			// we want dark colors
 			return generateRandomColor();
 		} else {

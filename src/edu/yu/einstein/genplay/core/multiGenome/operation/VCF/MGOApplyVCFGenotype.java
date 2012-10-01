@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.util.Utils;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGOUpdateVCFGenotype extends UpdateEngine {
+public class MGOApplyVCFGenotype extends UpdateEngine {
 
 	protected BufferedWriter 	data;			// The output file stream
 	private List<String> 		destGenome;		// The names of the genomes to export
@@ -61,13 +61,13 @@ public class MGOUpdateVCFGenotype extends UpdateEngine {
 				if (genomeNameMap.size() > 0) {
 					return true;
 				}
-				System.err.println("MGOUpdateVCFGenotype.canStart() Files does not have any genome name in common.");
+				System.err.println("MGOApplyVCFGenotype.canStart() Files does not have any genome name in common.");
 			}
 			else {
-				System.err.println("MGOUpdateVCFGenotype.canStart() At least one of the file does not exist.");
+				System.err.println("MGOApplyVCFGenotype.canStart() At least one of the file does not exist.");
 			}
 		}
-		System.err.println("MGOUpdateVCFGenotype.canStart() number of files invalid: " + fileList.size());
+		System.err.println("MGOApplyVCFGenotype.canStart() number of files invalid: " + fileList.size());
 		return false;
 	}
 

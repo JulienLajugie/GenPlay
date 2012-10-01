@@ -30,7 +30,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.operation.UpdateEngine;
-import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOUpdateVCFGenotype;
+import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype.GenotypeVCFDialog;
@@ -44,13 +44,13 @@ import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGAVCFUpdateGenotype extends TrackListActionWorker<Boolean> {
+public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;	// generated ID
 	private static final String 	DESCRIPTION =
 			"Update the genotype of a file using track variations."; 				// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 				// mnemonic key
-	private static		 String 			ACTION_NAME = "Update a VCF";			// action name
+	private static		 String 			ACTION_NAME = "Apply Genotype";			// action name
 
 
 	/**
@@ -62,9 +62,9 @@ public class MGAVCFUpdateGenotype extends TrackListActionWorker<Boolean> {
 
 
 	/**
-	 * Creates an instance of {@link MGAVCFUpdateGenotype}.
+	 * Creates an instance of {@link MGAVCFApplyGenotype}.
 	 */
-	public MGAVCFUpdateGenotype() {
+	public MGAVCFApplyGenotype() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -97,7 +97,7 @@ public class MGAVCFUpdateGenotype extends TrackListActionWorker<Boolean> {
 				Map<String, String> genomeNameMap = dialog.getGenomeMap();
 
 				// Create the update engine
-				UpdateEngine engine = new MGOUpdateVCFGenotype();
+				UpdateEngine engine = new MGOApplyVCFGenotype();
 				engine.setFileMap(settings.getFileMap());
 				engine.setVariationMap(settings.getVariationMap());
 				engine.setFilterList(settings.getFilterList());
@@ -105,6 +105,8 @@ public class MGAVCFUpdateGenotype extends TrackListActionWorker<Boolean> {
 				engine.setPath(outputPath);
 				engine.setGenomeNameMap(genomeNameMap);
 
+				// Notifies the action
+				notifyActionStart(ACTION_NAME, 1, false);
 				engine.compute();
 			}
 		}

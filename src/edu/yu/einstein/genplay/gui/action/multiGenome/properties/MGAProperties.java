@@ -104,11 +104,26 @@ public final class MGAProperties extends TrackListAction{
 				settings.getStripeSettings().setStripesSettings(dialog.getStripesData());
 
 				// Set the static options
-				MGDisplaySettings.DRAW_INSERTION_EDGE = dialog.getOptionValueList().get(0);
-				MGDisplaySettings.DRAW_DELETION_EDGE = dialog.getOptionValueList().get(1);
-				MGDisplaySettings.DRAW_INSERTION_LETTERS = dialog.getOptionValueList().get(2);
-				MGDisplaySettings.DRAW_DELETION_LETTERS = dialog.getOptionValueList().get(3);
-				MGDisplaySettings.DRAW_SNP_LETTERS = dialog.getOptionValueList().get(4);
+				MGDisplaySettings.DRAW_FILTERED_VARIANT = dialog.getOptionValueList().get(0);
+				MGDisplaySettings.DRAW_INSERTION_EDGE = dialog.getOptionValueList().get(1);
+				MGDisplaySettings.DRAW_DELETION_EDGE = dialog.getOptionValueList().get(2);
+				MGDisplaySettings.DRAW_INSERTION_LETTERS = dialog.getOptionValueList().get(3);
+				MGDisplaySettings.DRAW_DELETION_LETTERS = dialog.getOptionValueList().get(4);
+				MGDisplaySettings.DRAW_SNP_LETTERS = dialog.getOptionValueList().get(5);
+
+				// Set the reference stripes color
+				MGDisplaySettings.REFERENCE_INSERTION_COLOR = dialog.getReferenceColor();
+				MGDisplaySettings.REFERENCE_DELETION_COLOR = dialog.getReferenceColor();
+				MGDisplaySettings.REFERENCE_SNP_COLOR = dialog.getReferenceColor();
+
+				// Set the reference stripes showing
+				int showReference = MGDisplaySettings.YES_MG_OPTION;
+				if (!dialog.isShowReference()) {
+					showReference = MGDisplaySettings.NO_MG_OPTION;
+				}
+				MGDisplaySettings.DRAW_REFERENCE_INSERTION = showReference;
+				MGDisplaySettings.DRAW_REFERENCE_DELETION = showReference;
+				MGDisplaySettings.DRAW_REFERENCE_SNP = showReference;
 
 				// Updates track (SNPs, filters, display)
 				MGARefresh action = new MGARefresh();

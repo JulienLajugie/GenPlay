@@ -36,7 +36,6 @@ import edu.yu.einstein.genplay.core.list.CacheTrack;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
-import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
@@ -60,12 +59,10 @@ public class DisplayableVariantListMaker implements Serializable {
 	protected Double					fittedXRatio = null;			// xRatio of the adapted data (ie ratio between the number of pixel and the number of base to display )
 
 	private List<MGVariantListForDisplay> 	listOfVariantList;			// The list of list of variant for display
-	private List<VariantDisplay> 			variantDisplayList;				// The full list of variant
+	private List<VariantDisplay> 			variantDisplayList;			// The full list of variant
 	private List<VariantDisplay>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
-	private List<MGFilter> 					filtersList;
 
 	private CacheTrack<List<VariantDisplay>> cache;
-
 
 
 	/**
@@ -118,39 +115,20 @@ public class DisplayableVariantListMaker implements Serializable {
 	/**
 	 * Creates the full list of variant and sort it.
 	 */
-	private void computeVariantList (List<MGFilter> filtersList) {
+	private void computeVariantList () {
 		variantDisplayList = new ArrayList<VariantDisplay>();
 		cache.initialize();
 		if (listOfVariantList.size() > 0) {
 			for (MGVariantListForDisplay variantListForDisplay: listOfVariantList) {		// loop on every variant list for display
 				List<Variant> varianListTmp = variantListForDisplay.getVariantList();		// get the actual variant list
 				for (Variant variant: varianListTmp) {										// for every variant of the current list
-					if (isValid(variant, filtersList)) {									// it must passes all filters to be added
-						variantDisplayList.add(new VariantDisplay(variant));
-					}
+					variantDisplayList.add(new VariantDisplay(variant));
 				}
 			}
 
 			Collections.sort(variantDisplayList, new VariantDisplayComparator());				// sorts the list
 			synchronizationBlank();																// adds the blank of synchronization
 		}
-	}
-
-
-	/**
-	 * @param variant		a variant
-	 * @param filtersList	a list of filters
-	 * @return				true is the variant passes all filters
-	 */
-	private boolean isValid (Variant variant, List<MGFilter> filtersList) {
-		if (filtersList != null) {
-			for (MGFilter filter: filtersList) {			// loop on all filters
-				if (!filter.isVariantValid(variant)) {		// test the variant for the current filter
-					return false;							// if one is tested false, the variant does not pass
-				}
-			}
-		}
-		return true;									// if all tests are correct, the variant passes
 	}
 
 
@@ -202,22 +180,20 @@ public class DisplayableVariantListMaker implements Serializable {
 
 	/**
 	 * @param listOfVariantList the listOfVariantList to set
-	 * @param filtersList list of filter to apply
 	 */
-	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList, List<MGFilter> filtersList) {
-		if (variantsHaveChanged(listOfVariantList) || filtersHaveChanged(filtersList)) {
+	public void setListOfVariantList(List<MGVariantListForDisplay> listOfVariantList) {
+		if (variantsHaveChanged(listOfVariantList)) {
 			this.listOfVariantList = listOfVariantList;
-			resetList(filtersList);
+			resetList();
 		}
 	}
 
 
 	/**
 	 * Reset the variant list.
-	 * @param filtersList list of filter to apply
 	 */
-	public void resetList (List<MGFilter> filtersList) {
-		computeVariantList(filtersList);
+	public void resetList () {
+		computeVariantList();
 		fitToScreen();
 	}
 
@@ -243,27 +219,6 @@ public class DisplayableVariantListMaker implements Serializable {
 		} else {
 			for (MGVariantListForDisplay currentVariantList: this.listOfVariantList) {
 				if (!listOfVariantList.contains(currentVariantList)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-	/**
-	 * Compares the current list of filters with another one
-	 * @param filtersList the other list of filer
-	 * @return true is lists are different, false otherwise
-	 */
-	private boolean filtersHaveChanged (List<MGFilter> filtersList) {
-		if ((this.filtersList == null) || (filtersList == null)) {
-			return true;
-		} else if (this.filtersList.size() != filtersList.size()) {
-			return true;
-		} else {
-			for (MGFilter currentFilter: this.filtersList) {
-				if (!filtersList.contains(currentFilter)) {
 					return true;
 				}
 			}

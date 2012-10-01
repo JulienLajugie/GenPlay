@@ -142,6 +142,9 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 
 		// Unlocks the main frame
 		MainFrame.getInstance().unlock();
+
+
+		//multiGenomeProject.show();
 	}
 
 

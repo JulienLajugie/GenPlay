@@ -149,10 +149,10 @@ public class MultiGenomeDrawer implements Serializable {
 	public void resetVariantListMaker () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			if (allele01VariantListMaker != null) {
-				allele01VariantListMaker.resetList(mgFiltersList);
+				allele01VariantListMaker.resetList();
 			}
 			if (allele02VariantListMaker != null) {
-				allele02VariantListMaker.resetList(mgFiltersList);
+				allele02VariantListMaker.resetList();
 			}
 		}
 	}
@@ -245,8 +245,8 @@ public class MultiGenomeDrawer implements Serializable {
 			}
 
 			// Sets the list maker with the new list of variant
-			allele01VariantListMaker.setListOfVariantList(allele01VariantLists, mgFiltersList);	// we set the list maker with the temporary list
-			allele02VariantListMaker.setListOfVariantList(allele02VariantLists, mgFiltersList);	// we set the list maker with the temporary list
+			allele01VariantListMaker.setListOfVariantList(allele01VariantLists);	// we set the list maker with the temporary list
+			allele02VariantListMaker.setListOfVariantList(allele02VariantLists);	// we set the list maker with the temporary list
 
 			//densityDrawer.updateDensityList(getFullVariantList());
 			//repaint();

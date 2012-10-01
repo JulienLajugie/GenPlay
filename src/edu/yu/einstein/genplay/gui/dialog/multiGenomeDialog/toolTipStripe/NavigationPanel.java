@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -41,35 +41,34 @@ import edu.yu.einstein.genplay.util.Images;
  */
 public class NavigationPanel extends JPanel{
 
-	
+
 	/**
 	 * Generated serial version ID
 	 */
 	private static final long serialVersionUID = 793779650948801264L;
-	
-	private static final int WIDTH = 230;	// width of the panel
+
 	private static final int HEIGHT = 30;	// height of the panel
-	
-	private ToolTipStripeDialog origin;		// tooltipstripe object to aware it of any changes.
-	private JButton details;				// button to show the full line
-	private JButton previous;				// the previous button (move backward)
-	private JButton next;					// the next button (move forward)
-	
-	
+
+	private final ToolTipStripeDialog origin;		// tooltipstripe object to aware it of any changes.
+	private final JButton details;				// button to show the full line
+	private final JButton previous;				// the previous button (move backward)
+	private final JButton next;					// the next button (move forward)
+
+
 	/**
 	 * Constructor of {@link NavigationPanel}
 	 */
 	protected NavigationPanel (ToolTipStripeDialog origin) {
 		this.origin = origin;
-		
-		Dimension paneDim = new Dimension(WIDTH, HEIGHT);
+
+		Dimension paneDim = new Dimension(ToolTipStripeDialog.WIDTH, HEIGHT);
 		setSize(paneDim);
 		setMinimumSize(paneDim);
 		setMaximumSize(paneDim);
 		setPreferredSize(paneDim);
 
 		Insets inset = new Insets(0, 0, 0, 0);
-		
+
 		details = new JButton("Details");
 		details.setToolTipText("See the whole VCF line.");
 		details.setMargin(inset);
@@ -108,61 +107,61 @@ public class NavigationPanel extends JPanel{
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
-		
-		
+
+
 		gbc.insets = inset;
 		gbc.weighty = 1;
 		gbc.gridy = 0;
 
 		// Add the "previous" button
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.gridx = 0;
 		gbc.weightx = 0;
 		add(previous, gbc);
-		
+
 		// Add the "details" button
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx++;
 		gbc.weightx = 1;
 		add(details, gbc);
-		
+
 		// Add the "next" button
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.anchor = GridBagConstraints.LINE_END;
 		gbc.gridx++;
 		gbc.weightx = 0;
 		add(next, gbc);
 	}
 
-	
+
 	/**
 	 * @return the {@link ToolTipStripeDialog} object that requested the {@link NavigationPanel}
 	 */
 	private ToolTipStripeDialog getOrigin () {
 		return origin;
 	}
-	
-	
+
+
 	/**
-	 * Creates a square icon using the given path 
+	 * Creates a square icon using the given path
 	 * @param path	icon path
 	 * @param side	size of the side
 	 * @return		the icon
 	 */
 	private ImageIcon getIcon (Image image) {
-		Image newImg = image.getScaledInstance(WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
+		Image newImg = image.getScaledInstance(ToolTipStripeDialog.WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
 		ImageIcon icon = new ImageIcon(newImg);
 		return icon;
 	}
-	
-	
+
+
 	/**
 	 * @return the height of the panel
 	 */
 	protected static int getPanelHeight () {
 		return NavigationPanel.HEIGHT;
 	}
-	
-	
+
+
 	/**
 	 * Enable the detail button
 	 * @param activate true if the button has to be enabled, false otherwise

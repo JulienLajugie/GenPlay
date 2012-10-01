@@ -141,10 +141,14 @@ public class MGOVCFExportSingleFile extends ExportVCFEngine {
 		String[] alternatives = Utils.split(alt, ',');
 		String result = "";
 		for (int i = 0; i < indexes.size(); i++) {
-			result += alternatives[indexes.get(i)];
-			if (i < (indexes.size() - 1)) {
-				result += ",";
+			int altIndex = indexes.get(i);
+			if (altIndex > -1) {
+				result += alternatives[altIndex];
+				if (i < (indexes.size() - 1)) {
+					result += ",";
+				}
 			}
+
 		}
 		return result;
 	}

@@ -21,6 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,6 +46,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 /**
  * @author Nicolas Fourel
@@ -69,14 +73,21 @@ class SettingsPanel extends JPanel {
 
 	// Legend option
 	private boolean showLegend = true;
-	private JRadioButton yesButton;
-	private JRadioButton noButton;
+	private JRadioButton yesLegendButton;
+	private JRadioButton noLegendButton;
+
+	// Reference option
+	private boolean showReference = true;
+	private JRadioButton yesReferenceButton;
+	private JRadioButton noReferenceButton;
 
 	// Static in option
 	private List<String> optionNameList;
 	private List<Integer> optionValueList;
 	private final List<JRadioButton> yesOptionRadioList;
 	private final List<JRadioButton> noOptionRadioList;
+
+	private Color referenceColor = MGDisplaySettings.REFERENCE_INSERTION_COLOR;
 
 
 	/**
@@ -130,21 +141,36 @@ class SettingsPanel extends JPanel {
 		// Stripes legend option title
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.TITLE_INSET;
-		add(Utils.getTitleLabel("Stripes display settings"), gbc);
+		add(Utils.getTitleLabel("Global display settings"), gbc);
 
 		// Radios for stripes legend option
 		gbc.gridy++;
 		gbc.insets = PropertiesDialog.PANEL_INSET;
 		add(getStripeLegendPanel(), gbc);
 
+		// Stripes display settings title
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.TITLE_INSET;
+		add(Utils.getTitleLabel("Variant stripes settings"), gbc);
+
 		// Adds the static options
-		for (int i = 0; i < (optionNameList.size() - 1); i++) {
+		gbc.insets = PropertiesDialog.PANEL_INSET;
+		for (int i = 0; i < optionNameList.size(); i++) {
 			gbc.gridy++;
 			add(getStaticOptionPanel(i), gbc);
 		}
+
+		// Reference stripes settings title
+		gbc.gridy++;
+		gbc.insets = PropertiesDialog.TITLE_INSET;
+		add(Utils.getTitleLabel("Reference stripes settings"), gbc);
+
+
+		// Reference stripes settings
 		gbc.gridy++;
 		gbc.weighty = 1;
-		add(getStaticOptionPanel(optionNameList.size() - 1), gbc);
+		gbc.insets = PropertiesDialog.PANEL_INSET;
+		add(getReferenceOptionPanel(), gbc);
 
 	}
 
@@ -154,6 +180,7 @@ class SettingsPanel extends JPanel {
 	 */
 	private void initializesStaticOptionLists () {
 		optionNameList = new ArrayList<String>();
+		optionNameList.add("Show filtered variation");
 		optionNameList.add("Show border of insertion");
 		optionNameList.add("Show border of deletion");
 		optionNameList.add("Show nucleotides of insertion stripes");
@@ -161,6 +188,7 @@ class SettingsPanel extends JPanel {
 		optionNameList.add("Show nucleotide of SNP stripes");
 
 		optionValueList = new ArrayList<Integer>();
+		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_FILTERED_VARIANT));
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_INSERTION_EDGE));
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_DELETION_EDGE));
 		optionValueList.add(getOptionValue(MGDisplaySettings.DRAW_INSERTION_LETTERS));
@@ -201,7 +229,7 @@ class SettingsPanel extends JPanel {
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		JLabel jlTitle = new JLabel("Default section to open");
-		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
+		jlTitle.setPreferredSize(new Dimension(250, jlTitle.getPreferredSize().height));
 
 		jcbDefaultItem = new JComboBox(PropertiesDialog.getPropertiesDialogMainItems());
 		jcbDefaultItem.setPreferredSize(new Dimension(100, jcbDefaultItem.getPreferredSize().height));
@@ -223,7 +251,7 @@ class SettingsPanel extends JPanel {
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		JLabel jlTitle = new JLabel("Default group text name");
-		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
+		jlTitle.setPreferredSize(new Dimension(250, jlTitle.getPreferredSize().height));
 
 		jtfDefaultGroupText = new JTextField();
 		//jtfDefaultGroupText.setText(MGDisplaySettings.getInstance().getVariousSettings().getDefaultGroupText());
@@ -284,34 +312,34 @@ class SettingsPanel extends JPanel {
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		JLabel jlTitle = new JLabel("Show legend");
-		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
+		jlTitle.setPreferredSize(new Dimension(250, jlTitle.getPreferredSize().height));
 
 		// Initializes the radio buttons
-		yesButton = new JRadioButton("yes");
-		noButton = new JRadioButton("no");
+		yesLegendButton = new JRadioButton("yes");
+		noLegendButton = new JRadioButton("no");
 		if (showLegend) {
-			yesButton.setSelected(true);
+			yesLegendButton.setSelected(true);
 		} else {
-			yesButton.setSelected(false);
+			yesLegendButton.setSelected(false);
 		}
 
 		// Group the radio buttons
 		ButtonGroup group = new ButtonGroup();
-		group.add(yesButton);
-		group.add(noButton);
+		group.add(yesLegendButton);
+		group.add(noLegendButton);
 
 		//Register a listener for the radio buttons
-		yesButton.addActionListener(new ActionListener() {
+		yesLegendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {setShowLegend(true);}});
-		noButton.addActionListener(new ActionListener() {
+		noLegendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {setShowLegend(false);}});
 
 		// Adds label and buttons to the panel
 		panel.add(jlTitle);
-		panel.add(yesButton);
-		panel.add(noButton);
+		panel.add(yesLegendButton);
+		panel.add(noLegendButton);
 
 		return panel;
 	}
@@ -328,7 +356,7 @@ class SettingsPanel extends JPanel {
 		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		JLabel jlTitle = new JLabel(optionNameList.get(option));
-		jlTitle.setPreferredSize(new Dimension(200, jlTitle.getPreferredSize().height));
+		jlTitle.setPreferredSize(new Dimension(250, jlTitle.getPreferredSize().height));
 
 		// Initializes the radio buttons
 		JRadioButton yesButton = new JRadioButton("yes");
@@ -368,14 +396,122 @@ class SettingsPanel extends JPanel {
 		optionValueList.set(option, value);
 	}
 
+
+	/////////////////////////////////////////// Reference stripes legend option
+
+	/**
+	 * Creates a panel that contains a slider and a label to show its current value.
+	 * @return the panel
+	 */
+	private JPanel getReferenceOptionPanel () {
+		JPanel panel = new JPanel();
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
+		// First option title
+		JLabel jlTitle01 = new JLabel("Show reference stripes");
+		jlTitle01.setPreferredSize(new Dimension(250, jlTitle01.getPreferredSize().height));
+
+		// Second option title
+		JLabel jlTitle02 = new JLabel("Reference stripes color");
+		jlTitle02.setPreferredSize(new Dimension(250, jlTitle01.getPreferredSize().height));
+
+		// Initializes the radio buttons
+		yesReferenceButton = new JRadioButton("yes");
+		noReferenceButton = new JRadioButton("no");
+		if (showReference) {
+			yesReferenceButton.setSelected(true);
+		} else {
+			yesReferenceButton.setSelected(false);
+		}
+
+		// Group the radio buttons
+		ButtonGroup group = new ButtonGroup();
+		group.add(yesReferenceButton);
+		group.add(noReferenceButton);
+
+		//Register a listener for the radio buttons
+		yesReferenceButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {setShowReference(true);}});
+		noReferenceButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {setShowReference(false);}});
+
+		// Create the button for the color
+		JButton colorButton = new JButton();
+		Dimension colorDim = new Dimension(13, 13);
+		colorButton.setPreferredSize(colorDim);
+		colorButton.setBorder(null);
+		colorButton.setToolTipText("Select color for reference stripes.");
+		colorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JButton button = (JButton) arg0.getSource();
+				Color newColor = GenPlayColorChooser.showDialog(getCurrentInstance(), button.getBackground());
+				if (newColor != null) {
+					button.setBackground(newColor);
+					referenceColor = newColor;
+				}
+			}
+		});
+		// Initialize button color
+		colorButton.setBackground(referenceColor);
+
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 0;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+
+		// Add the first line
+		// The title
+		panel.add(jlTitle01, gbc);
+
+		// The yes button
+		gbc.gridx = 1;
+		panel.add(yesReferenceButton);
+
+		// The no button
+		gbc.gridx = 2;
+		gbc.weightx = 1;
+		panel.add(noReferenceButton);
+
+		// Add the second line
+		// The title
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.weightx = 0;
+		panel.add(jlTitle02, gbc);
+
+		// The color button
+		gbc.gridx = 1;
+		gbc.weightx = 1;
+		gbc.weighty = 1;
+		panel.add(colorButton, gbc);
+
+		return panel;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	/**
 	 * @param showLegend the showLegend to set
 	 */
-	private void setShowLegend(boolean showLegend) {
+	private void setShowLegend (boolean showLegend) {
 		this.showLegend = showLegend;
+	}
+
+
+	/**
+	 * @param showReference the showReference to set
+	 */
+	private void setShowReference (boolean showReference) {
+		this.showReference = showReference;
 	}
 
 
@@ -396,11 +532,20 @@ class SettingsPanel extends JPanel {
 
 		this.showLegend = showLegend;
 		if (showLegend) {
-			yesButton.setSelected(true);
-			noButton.setSelected(false);
+			yesLegendButton.setSelected(true);
+			noLegendButton.setSelected(false);
 		} else {
-			yesButton.setSelected(false);
-			noButton.setSelected(true);
+			yesLegendButton.setSelected(false);
+			noLegendButton.setSelected(true);
+		}
+
+		this.showReference = MGDisplaySettings.DRAW_REFERENCE_INSERTION == MGDisplaySettings.YES_MG_OPTION;
+		if (showReference) {
+			yesReferenceButton.setSelected(true);
+			noReferenceButton.setSelected(false);
+		} else {
+			yesReferenceButton.setSelected(false);
+			noReferenceButton.setSelected(true);
 		}
 
 		initializesStaticOptionLists();
@@ -447,4 +592,27 @@ class SettingsPanel extends JPanel {
 		return optionValueList;
 	}
 
+
+	/**
+	 * @return the referenceColor
+	 */
+	public Color getReferenceColor() {
+		return referenceColor;
+	}
+
+
+	/**
+	 * @return the showReference
+	 */
+	public boolean isShowReference() {
+		return showReference;
+	}
+
+
+	/**
+	 * @return the stripes editing panel instance
+	 */
+	protected Component getCurrentInstance() {
+		return this;
+	}
 }

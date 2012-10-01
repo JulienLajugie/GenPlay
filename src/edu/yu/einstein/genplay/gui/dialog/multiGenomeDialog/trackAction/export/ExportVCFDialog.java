@@ -110,6 +110,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the text field
 		jtfFile = new JTextField();
+		jtfFile.setEditable(false);
 		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
@@ -122,7 +123,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				FileFilter[] filters = {new VCFFilter()};
-				File file = ExportUtils.getFile(filters, true);
+				File file = ExportUtils.getFile(filters, false);
 				if (file != null) {
 					jtfFile.setText(file.getPath());
 					jcbCompress.setEnabled(true);

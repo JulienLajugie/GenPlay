@@ -27,12 +27,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOUpdateVCFGenotype;
+import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 /**
  * The update engine is made to create a new VCF file based on a file to update, using data from a current VCF track.
- * The first example in GenPlay is the {@link MGOUpdateVCFGenotype}.
+ * The first example in GenPlay is the {@link MGOApplyVCFGenotype}.
  * 
  * @author Nicolas Fourel
  * @version 0.1

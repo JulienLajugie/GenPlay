@@ -159,7 +159,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				FileFilter[] filters = {new VCFGZFilter()};
-				File file = ExportUtils.getFile(filters, false);
+				File file = ExportUtils.getFile(filters, true);
 				if (file != null) {
 					if ((vcfToGenotype == null) || !file.equals(vcfToGenotype.getFile())) {
 						jtfInputFile.setText(file.getPath());
@@ -212,6 +212,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the text field
 		jtfOutputFile = new JTextField();
+		jtfOutputFile.setEditable(false);
 		Dimension jtfDim = new Dimension(MIN_DIALOG_WIDTH - 25, 21);
 		ExportUtils.setComponentSize(jtfOutputFile, jtfDim);
 
@@ -224,7 +225,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				FileFilter[] filters = {new VCFFilter()};
-				File file = ExportUtils.getFile(filters, true);
+				File file = ExportUtils.getFile(filters, false);
 				if (file != null) {
 					jtfOutputFile.setText(file.getPath());
 				}

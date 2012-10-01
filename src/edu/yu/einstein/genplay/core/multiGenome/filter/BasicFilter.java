@@ -100,4 +100,22 @@ public class BasicFilter extends MGFilter implements Serializable {
 		System.out.println(info);
 	}
 
+
+	@Override
+	/**
+	 * DO NOT USE
+	 */
+	public int getVariantIndex(Variant variant) {
+		return -1;
+	}
+
+
+	@Override
+	/**
+	 * DO NOT USE
+	 */
+	public boolean isVariantValid(int variantIndex) {
+		return false;
+	}
+
 }

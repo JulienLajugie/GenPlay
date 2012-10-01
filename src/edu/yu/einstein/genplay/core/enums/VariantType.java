@@ -72,17 +72,21 @@ public enum VariantType {
 
 	// For display
 	/**
-	 * To display the reference
+	 * To display the reference insertion
 	 */
-	REFERENCE ("Reference"),
+	REFERENCE_INSERTION ("Reference insertion"),
+	/**
+	 * To display the reference deletion
+	 */
+	REFERENCE_DELETION ("Reference deletion"),
+	/**
+	 * To display the reference SNP
+	 */
+	REFERENCE_SNP ("Reference SNP"),
 	/**
 	 * When type are mixed during the fitting screen data process
 	 */
-	MIX ("Mix"),
-	/**
-	 * When there is an insertion in another genome
-	 */
-	BLANK ("Blank");
+	MIX ("Mix");
 
 
 	private final String name; // String representing the indel

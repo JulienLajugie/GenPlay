@@ -42,10 +42,10 @@ public class ExportUtils {
 
 	/**
 	 * @param filters list of filters
-	 * @param checkIfExist force to check if the file already exist (when selecting an existing file)
+	 * @param open true if the dialog has to select/open a file, wrong if the dialog has to save a file
 	 * @return a file to export the VCF
 	 */
-	public static File getFile (FileFilter[] filters, boolean checkIfExist) {
+	public static File getFile (FileFilter[] filters, boolean open) {
 		String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
 		JFileChooser jfc = new JFileChooser(defaultDirectory);
 		jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -55,7 +55,14 @@ public class ExportUtils {
 		}
 		jfc.setAcceptAllFileFilterUsed(false);
 		jfc.setFileFilter(jfc.getChoosableFileFilters()[0]);
-		int returnVal = jfc.showSaveDialog(MainFrame.getInstance().getRootPane());
+		int returnVal = -1;
+		boolean checkIfExist = true;
+		if (open) {
+			returnVal = jfc.showOpenDialog(MainFrame.getInstance().getRootPane());
+			checkIfExist = false;
+		} else {
+			returnVal = jfc.showSaveDialog(MainFrame.getInstance().getRootPane());
+		}
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			ExtendedFileFilter selectedFilter = (ExtendedFileFilter)jfc.getFileFilter();
 			File selectedFile = Utils.addExtension(jfc.getSelectedFile(), selectedFilter.getExtensions()[0]);

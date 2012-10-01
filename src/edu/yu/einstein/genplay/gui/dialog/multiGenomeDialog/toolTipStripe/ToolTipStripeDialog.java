@@ -21,8 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.List;
 
 import javax.swing.JDialog;
@@ -30,7 +30,6 @@ import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
-import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
@@ -50,10 +49,8 @@ public class ToolTipStripeDialog extends JDialog {
 
 	private static final long serialVersionUID = -4932470485711131874L;
 
-
-	private static final int WIDTH = 250;	// width of the dialog
-	private static final int V_GAP = 5;		// vertical gap between dialog components
-	private static final int H_GAP = 5;		// horizontal gap between dialog components
+	/** Dialog width */
+	public static final int WIDTH = 250;	// width of the dialog
 
 	private final VCFLineDialog 			vcfLineDialog;
 	private final List<VariantDisplay> 		variantList;		// a list of displayable variant
@@ -90,26 +87,33 @@ public class ToolTipStripeDialog extends JDialog {
 		setAlwaysOnTop(true);
 		setTitle(title);
 
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP);
+		// Layout settings
+		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+		gbc.gridy = 0;
 
 		headerPanel = new JPanel();
 		infoPanel = new JPanel();
 		formatPanel = new JPanel();
 		navigationPanel = new JPanel();
 
-		add(headerPanel);
-		add(infoPanel);
-		add(formatPanel);
-		add(navigationPanel);
 
-		int height = GlobalInformationPanel.getPanelHeight() +
-				PanelInformation.getPanelHeight() +
-				PanelInformation.getPanelHeight() +
-				NavigationPanel.getPanelHeight() +
-				(V_GAP * 11) + 30;
-		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, height);
-		setSize(dimension);
+		add(headerPanel, gbc);
+
+		gbc.gridy++;
+		add(infoPanel, gbc);
+
+		gbc.gridy++;
+		add(formatPanel, gbc);
+
+		gbc.gridy++;
+		gbc.weighty = 1;
+		add(navigationPanel, gbc);
 	}
 
 
@@ -158,6 +162,8 @@ public class ToolTipStripeDialog extends JDialog {
 		updatePanel(navigationPanel, newNavigationPanel);
 
 		validate();
+
+		pack();
 	}
 
 
@@ -252,7 +258,7 @@ public class ToolTipStripeDialog extends JDialog {
 		int previousIndex = currentIndex - 1;
 		if (previousIndex >= 0) {
 			result = variantList.get(previousIndex);
-			if ((currentVariant.getType() == VariantType.BLANK) || (currentVariant.getType() == VariantType.REFERENCE)) {
+			if (currentVariant.isReference()) {
 				previousIndex = getPreviousValidIndex(previousIndex);
 				result = variantList.get(previousIndex);
 			}
@@ -274,7 +280,7 @@ public class ToolTipStripeDialog extends JDialog {
 
 		if ((nextIndex >= 0) && (nextIndex < variantList.size())) {
 			result = variantList.get(nextIndex);
-			if ((currentVariant.getType() == VariantType.BLANK) || (currentVariant.getType() == VariantType.REFERENCE)) {
+			if (currentVariant.isReference()) {
 				nextIndex = getNextValidIndex(nextIndex);
 				result = variantList.get(nextIndex);
 			}
@@ -296,8 +302,7 @@ public class ToolTipStripeDialog extends JDialog {
 		boolean found = false;
 		int i = index;
 		while (!found && (i < variantList.size())) {
-			VariantType type = variantList.get(i).getType();
-			if ((type == VariantType.BLANK) || (type == VariantType.REFERENCE)) {
+			if (variantList.get(i).isReference()) {
 				if (	((i + 1) < variantList.size()) &&
 						(variantList.get(i + 1).getStart() > variantList.get(i).getStop())) {
 					found = true;
@@ -323,8 +328,7 @@ public class ToolTipStripeDialog extends JDialog {
 		boolean found = false;
 		int i = index;
 		while (!found && (i >= 0)) {
-			VariantType type = variantList.get(i).getType();
-			if ((type == VariantType.BLANK) || (type == VariantType.REFERENCE)) {
+			if (variantList.get(i).isReference()) {
 				if (	((i - 1) >= 0) &&
 						(variantList.get(i - 1).getStop() < variantList.get(i).getStart())) {
 					found = true;

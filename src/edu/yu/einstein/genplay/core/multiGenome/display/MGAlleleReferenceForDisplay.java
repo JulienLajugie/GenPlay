@@ -34,10 +34,8 @@ import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGOffset;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGReference;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASynchronizing;
 
@@ -106,13 +104,52 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 		int chromosomeNumber = chromosomeListOfVariantList.size();
 		for (int i = 0; i < chromosomeNumber; i++) {
 			List<Variant> variantList = chromosomeListOfVariantList.get(i);
-			List<MGOffset> offsetList = genome.getAllele().getOffsetList().get(i);
-			for (MGOffset offset: offsetList) {
-				Variant variant =  new ReferenceBlankVariant(offset.getPosition(), offset.getValue(), i);
-				variantList.add(variant);
-			}
 			Collections.sort(variantList, new VariantComparator());								// sorts the list
+
+			List<Variant> newVariantList = new ArrayList<Variant>();
+			int currentIndex = 0;
+			int size = variantList.size();
+			while (currentIndex < size) {
+				int nextIndex = getNextInvolvedIndex(variantList, currentIndex);
+				Variant variant = null;
+				if (currentIndex == nextIndex) {
+					variant = variantList.get(currentIndex);
+				} else {
+					variant = getDominantVariant(variantList, currentIndex, nextIndex);
+				}
+				newVariantList.add(variant);
+				currentIndex = nextIndex + 1;
+			}
+			chromosomeListOfVariantList.set(i, newVariantList);
 		}
+	}
+
+
+	/**
+	 * Goes to the next index involved in an overlap
+	 * @param list		the list of {@link Variant}
+	 * @param index		the index to start the search
+	 * @return			the last index involved in the potential current overlap
+	 */
+	private int getNextInvolvedIndex (List<Variant> list, int index) {
+		int nextIndex = index + 1;
+		if (nextIndex < list.size()) {
+			if (list.get(index).getReferenceGenomePosition() == list.get(nextIndex).getReferenceGenomePosition()) {
+				return getNextInvolvedIndex(list, nextIndex);
+			}
+		}
+		return index;
+	}
+
+
+	private Variant getDominantVariant (List<Variant> list, int firstIndex, int secondIndex) {
+		Variant variant = null;
+		for (int i = firstIndex; i <= secondIndex; i++) {
+			if ((variant == null) || (Math.abs(variant.getLength()) < Math.abs(list.get(i).getLength()))) {
+				variant = list.get(i);
+			}
+		}
+		return variant;
 	}
 
 

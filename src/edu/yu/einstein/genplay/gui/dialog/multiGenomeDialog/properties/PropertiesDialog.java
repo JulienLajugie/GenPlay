@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -387,6 +388,22 @@ public class PropertiesDialog extends JDialog implements TreeSelectionListener {
 	 */
 	public List<Integer> getOptionValueList() {
 		return settingsPanel.getOptionValueList();
+	}
+
+
+	/**
+	 * @return the referenceColor
+	 */
+	public Color getReferenceColor() {
+		return settingsPanel.getReferenceColor();
+	}
+
+
+	/**
+	 * @return the showReference
+	 */
+	public boolean isShowReference() {
+		return settingsPanel.isShowReference();
 	}
 
 

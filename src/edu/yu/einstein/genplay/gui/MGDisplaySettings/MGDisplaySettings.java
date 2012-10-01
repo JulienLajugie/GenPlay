@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.MGDisplaySettings;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -31,6 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -52,17 +54,23 @@ public class MGDisplaySettings implements Serializable {
 	/** Blank of synchronization are involved by insertion in genomes on the reference genome */
 	public static int INCLUDE_BLANK_OPTION = YES_MG_OPTION;
 
+	/** Draw the variant that have been filtered */
+	public static int DRAW_FILTERED_VARIANT = YES_MG_OPTION;
+
 	/** Insertion stripes can be drawn with an edge line */
 	public static int DRAW_INSERTION_EDGE = YES_MG_OPTION;
 
 	/** Deletion stripes can be drawn with an edge line */
 	public static int DRAW_DELETION_EDGE = YES_MG_OPTION;
 
-	/** Draw the blank of synchronization */
-	public static int DRAW_BLANK = YES_MG_OPTION;
+	/** Draw the insertion reference genome stripes */
+	public static int DRAW_REFERENCE_INSERTION = YES_MG_OPTION;
 
-	/** Draw the reference genome stripes */
-	public static int DRAW_REFERENCE = YES_MG_OPTION;
+	/** Draw the deletion reference genome stripes */
+	public static int DRAW_REFERENCE_DELETION = YES_MG_OPTION;
+
+	/** Draw the SNP reference genome stripes */
+	public static int DRAW_REFERENCE_SNP = YES_MG_OPTION;
 
 	/** Draw the inserted nucleotides over an insertion stripe */
 	public static int DRAW_INSERTION_LETTERS = YES_MG_OPTION;
@@ -73,11 +81,17 @@ public class MGDisplaySettings implements Serializable {
 	/** Draw the replaced nucleotide over a SNP stripe */
 	public static int DRAW_SNP_LETTERS = YES_MG_OPTION;
 
-	/** Draw the blank of synchronization letters */
-	public static int DRAW_BLANK_LETTERS = YES_MG_OPTION;
-
 	/** Draw the reference genome stripes letters */
 	public static int DRAW_REFERENCE_LETTERS = YES_MG_OPTION;
+
+	/** Color of the reference insertion stripes */
+	public static Color REFERENCE_INSERTION_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
+
+	/** Color of the reference deletion stripes */
+	public static Color REFERENCE_DELETION_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
+
+	/** Color of the reference SNP stripes */
+	public static Color REFERENCE_SNP_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
 
 
 	private static MGDisplaySettings 	instance;			// Instance of the class

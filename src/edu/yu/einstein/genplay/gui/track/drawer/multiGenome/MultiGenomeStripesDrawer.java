@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -157,23 +158,32 @@ class MultiGenomeStripesDrawer implements Serializable {
 		if ((variantList != null) && (variantList.size() > 0)) {													// if the variation list has at least one variant
 			// Set color for unused position, dead area and mixed variant
 			//Color noAlleleColor = new Color(Color.black.getRed(), Color.black.getGreen(), Color.black.getBlue(), stripesOpacity);
-			Color blankZoneColor = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue(), stripesOpacity);	// color for blank of synchronization
-			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue(), stripesOpacity);			// color for mixed variant
+			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
 
 			for (VariantDisplay variant: variantList) {		// scans all variant
 				VariantType type = variant.getType();			// gets its type
+				boolean canBeDrawn = true;
 				Color color;
-				if (type == VariantType.BLANK) {				// defines its color according to its type
-					color = blankZoneColor;
-				} else if (type == VariantType.REFERENCE) {
-					color = blankZoneColor;
-				}  else if (type == VariantType.MIX) {
+
+				if (type == VariantType.REFERENCE_INSERTION) {
+					canBeDrawn = MGDisplaySettings.DRAW_REFERENCE_INSERTION == MGDisplaySettings.YES_MG_OPTION;
+					color = MGDisplaySettings.REFERENCE_INSERTION_COLOR;
+				} else if (type == VariantType.REFERENCE_DELETION) {
+					canBeDrawn = MGDisplaySettings.DRAW_REFERENCE_DELETION == MGDisplaySettings.YES_MG_OPTION;
+					color = MGDisplaySettings.REFERENCE_DELETION_COLOR;
+				} else if (type == VariantType.REFERENCE_SNP) {
+					canBeDrawn = MGDisplaySettings.DRAW_REFERENCE_SNP == MGDisplaySettings.YES_MG_OPTION;
+					color = MGDisplaySettings.REFERENCE_SNP_COLOR;
+				} else if (type == VariantType.MIX) {
 					color = mixColor;
 				} else  {
 					String genomeName = variant.getSource().getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(); 	// gets the genome name of the variant
 					color = getStripeColor(genomeName, type);																		// in order to get which color has been defined
 				}
-				drawVariant(g, variant, color, genomeWindow);	// draw the variant
+
+				if (canBeDrawn) {
+					drawVariant(g, variant, color, genomeWindow);	// draw the variant
+				}
 			}
 		}
 	}
@@ -233,35 +243,51 @@ class MultiGenomeStripesDrawer implements Serializable {
 		// if it is not a blank of synchronization
 		int y = clipHeight - height;												// y represents the top left corner of the stripes, the axis goes to the bottom
 
-		// Draws the edge line of stripes
-		if (variant.getType() == VariantType.INSERTION) {							// the edge of an insertion and a deletion are different
-			drawInsertion(g, x, y, width, height);
-		} else if (variant.getType() == VariantType.DELETION) {
-			drawDeletion(g, x, y, width, height);
-		}
-
-		int nucleotideNumber;
-
 		// Draws the variant
-		if ((variant.getType() == VariantType.BLANK) && (MGDisplaySettings.DRAW_BLANK == MGDisplaySettings.YES_MG_OPTION)) {								// drawing a blank of synchronization requires a different method (shorter and more simple)
-			drawBlank(g, x, width);
-			height = clipHeight;
-			nucleotideNumber = variant.getLength();
-		} else if ((variant.getType() == VariantType.REFERENCE) && (MGDisplaySettings.DRAW_REFERENCE == MGDisplaySettings.YES_MG_OPTION)) {					// drawing a reference stripe requires a different method (shorter and more simple)
-			drawBlank(g, x, width);
-			height = clipHeight;
-			nucleotideNumber = variant.getLength();
+		int nucleotideNumber;
+		boolean drawLetters = true;
+		boolean hasBeenFiltered = hasBeenFiltered(variant);
+		boolean drawVariant = false;
+		boolean drawPatternFilter = false;
+		if (hasBeenFiltered) {
+			if (MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION) {
+				drawVariant = true;
+				drawPatternFilter = true;
+			}
 		} else {
-			g.fillRect(x, y, width, height);										// draw the stripe
-			nucleotideNumber = stop - start;
+			drawVariant = true;
 		}
+		if (drawVariant) {
+			if (variant.isReference()) {					// drawing a reference stripe requires a different method (shorter and more simple)
+				if (color != null) {						// if color is null, it means we don't want to draw the reference
+					drawReference(g, x, width);
+				}
+				height = clipHeight;
+			} else {
+				g.fillRect(x, y, width, height);									// draw the stripe
 
+				// Draws the edge line of stripes
+				if (variant.getType() == VariantType.INSERTION) {					// the edge of an insertion and a deletion are different
+					drawInsertion(g, x, y, width, height);
+				} else if (variant.getType() == VariantType.DELETION) {
+					drawDeletion(g, x, y, width, height);
+				}
+			}
+		} else {
+			drawLetters = false;
+		}
+		if (drawPatternFilter) {
+			drawPatternFilter(g, x, y, width, height);
+		}
+		nucleotideNumber = stop - start;
 		if (nucleotideNumber == 0) {
 			nucleotideNumber = 1;
 		}
 
 		// Draw the variant letters
-		drawLetters(g, x, width, height, variant, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
+		if (drawLetters) {
+			drawLetters(g, x, width, height, variant, nucleotideNumber);					// draw the letters (nucleotides) over the stripe
+		}
 	}
 
 
@@ -272,7 +298,7 @@ class MultiGenomeStripesDrawer implements Serializable {
 	 * @param x		x coordinate
 	 * @param width	width of the stripe
 	 */
-	private void drawBlank (Graphics g, int x, int width) {
+	private void drawReference (Graphics g, int x, int width) {
 		g.fillRect(x, 0, width, g.getClipBounds().height);
 	}
 
@@ -315,6 +341,39 @@ class MultiGenomeStripesDrawer implements Serializable {
 
 
 	/**
+	 * Checks if a variant has been filtered
+	 * @param variant the variant
+	 * @return true if variant has been filtered, false otherwise
+	 */
+	private boolean hasBeenFiltered (VariantDisplay variant) {
+		VariantType type = variant.getType();
+		if (type == VariantType.MIX) {
+			return false;
+		}
+		for (MGFilter filter: drawer.getFiltersList()) {
+			if (!filter.isVariantValid(variant.getSource())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Draw the filter pattern
+	 * @param g			graphics object
+	 * @param x			x coordinate
+	 * @param width		width of the stripe
+	 * @param height	height of the stripe
+	 */
+	private void drawPatternFilter (Graphics g, int x, int y, int width, int height) {
+		g.setColor(Colors.GREY);
+		g.drawLine(x, y, x + width, y + height);
+		g.drawLine(x, y + height, x + width, y);
+	}
+
+
+	/**
 	 * Draws the letters (nucleotides) over the stripe.
 	 * @param g					graphics object
 	 * @param x					x coordinate
@@ -329,16 +388,11 @@ class MultiGenomeStripesDrawer implements Serializable {
 		if (	((variantType == VariantType.INSERTION) && 	(MGDisplaySettings.DRAW_INSERTION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||	// checks all options in order to determine if the letters must be drawn
 				((variantType == VariantType.DELETION) 	&& 	(MGDisplaySettings.DRAW_DELETION_LETTERS 	== MGDisplaySettings.YES_MG_OPTION)) ||
 				((variantType == VariantType.SNPS) 		&& 	(MGDisplaySettings.DRAW_SNP_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
-				((variantType == VariantType.BLANK) 	&& 	(MGDisplaySettings.DRAW_BLANK_LETTERS 		== MGDisplaySettings.YES_MG_OPTION)) ||
-				((variantType == VariantType.REFERENCE) && 	(MGDisplaySettings.DRAW_REFERENCE_LETTERS 	== MGDisplaySettings.YES_MG_OPTION))) {
+				((variant.isReference()) 				&& 	(MGDisplaySettings.DRAW_REFERENCE_LETTERS 	== MGDisplaySettings.YES_MG_OPTION))) {
 			draw = true;
 		}
 
 		if (draw) {
-			if (((variant.getType() == VariantType.REFERENCE) || (variant.getType() == VariantType.BLANK)) && (variant.getSource().getReferenceGenomePosition() == 142567062)) {
-				System.out.println();
-			}
-
 			// if the letters must be drawn
 			double windowWidth = width / nucleotideNumber;									// calculate the size of window (here, the windo is the width of a nucleotide on the screen)
 			FontMetrics fm = g.getFontMetrics();											// get the font metrics

@@ -96,12 +96,24 @@ public class VCFFilter extends MGFilter implements Serializable {
 
 
 	@Override
-	public boolean isVariantValid (Variant variant) {
-		boolean result = false;
+	public int getVariantIndex(Variant variant) {
 		int position = variant.getReferenceGenomePosition();
-		int index = vcfFile.getPositionList().getIndex(position);
-		if (index != -1) {
-			result = booleanList.get(index);
+		return vcfFile.getPositionList().getIndex(position);
+	}
+
+
+	@Override
+	public boolean isVariantValid (Variant variant) {
+		int index = getVariantIndex(variant);
+		return isVariantValid(index);
+	}
+
+
+	@Override
+	public boolean isVariantValid(int variantIndex) {
+		boolean result = false;
+		if (variantIndex != -1) {
+			result = booleanList.get(variantIndex);
 		}
 		return result;
 	}

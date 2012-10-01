@@ -58,9 +58,23 @@ public abstract class MGFilter {
 
 	/**
 	 * @param variant the variant
+	 * @return	its index on the boolean filter list
+	 */
+	public abstract int getVariantIndex (Variant variant);
+
+
+	/**
+	 * @param variant the variant
 	 * @return true if the variant is valid, false otherwise
 	 */
 	public abstract boolean isVariantValid (Variant variant);
+
+
+	/**
+	 * @param variantIndex the index of the variant
+	 * @return true if the variant is valid, false otherwise
+	 */
+	public abstract boolean isVariantValid (int variantIndex);
 
 
 	@Override

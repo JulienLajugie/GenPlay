@@ -131,7 +131,12 @@ public class ReferenceVariant implements Serializable, Variant {
 
 	@Override
 	public VariantType getType() {
-		return VariantType.REFERENCE;
+		if (length > 0) {
+			return VariantType.REFERENCE_INSERTION;
+		} else if (length < 0) {
+			return VariantType.REFERENCE_DELETION;
+		}
+		return VariantType.REFERENCE_SNP;
 	}
 
 
@@ -159,7 +164,7 @@ public class ReferenceVariant implements Serializable, Variant {
 	public int getStart() {
 		int start = ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
 		//int start = ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
-		if (length > 0) {	// the related variant is a SNP if length is registered as 0.
+		if (length != 0) {	// the related variant is a SNP if length is registered as 0.
 			start++;
 		}
 		return start;
@@ -169,12 +174,11 @@ public class ReferenceVariant implements Serializable, Variant {
 	@Override
 	public int getStop() {
 		if (length > 0) {
-			//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + length) - 1;
-			return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition + getLength(), getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
-			//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition + getLength());
+			return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition + 1, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME) - 1;
+		} else if (length < 0) {
+			return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition - length, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
 		}
-		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
-		//return ShiftCompute.computeShiftForReferenceGenome(getChromosome(), referenceGenomePosition);
+		return ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, getAlleleType(), referenceGenomePosition + 1, getChromosome(), FormattedMultiGenomeName.META_GENOME_NAME);
 	}
 
 
@@ -221,7 +225,7 @@ public class ReferenceVariant implements Serializable, Variant {
 
 
 	@Override
-	public String getVariantSequence() {
+	/*public String getVariantSequence() {
 		VCFLine line = getVCFLine();
 		String ref = line.getREF();
 		String chain = "-";
@@ -233,6 +237,20 @@ public class ReferenceVariant implements Serializable, Variant {
 			}
 		}
 
+		return chain;
+	}*/
+
+
+	public String getVariantSequence() {
+		VCFLine line = getVCFLine();
+		line.processForAnalyse();
+		String chain = "-";
+		String ref = line.getREF();
+		if (length == 0) {
+			chain = ref;
+		} else if (length < 0) {
+			chain = ref.substring(1);
+		}
 		return chain;
 	}
 

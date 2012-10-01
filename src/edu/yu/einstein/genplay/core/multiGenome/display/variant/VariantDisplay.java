@@ -202,4 +202,28 @@ public class VariantDisplay implements Serializable {
 		return source.getVCFLine();
 	}
 
+
+	/**
+	 * @return true if the variant source is a reference variant
+	 */
+	public boolean isReference () {
+		return (source != null) && (source instanceof ReferenceVariant);
+	}
+
+
+	/**
+	 * @return true if the variant display is a mixed variant
+	 */
+	public boolean isMix () {
+		return source == null;
+	}
+
+
+	/**
+	 * @return true if the variant is an alternative, false otherwise
+	 */
+	public boolean isAlternative () {
+		return (source != null) && ((source instanceof IndelVariant) || (source instanceof SNPVariant));
+	}
+
 }

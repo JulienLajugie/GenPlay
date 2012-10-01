@@ -29,8 +29,6 @@ import javax.swing.JPanel;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceBlankVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
@@ -55,7 +53,7 @@ public class VariantFormat {
 	protected VariantFormat (VariantDisplay variant, VCFLine line) {
 		title = "Format";
 
-		if ((line == null) || (variant.getSource() instanceof ReferenceVariant) || (variant.getSource() instanceof ReferenceBlankVariant)) {
+		if ((line == null) || (variant.isReference())) {
 			pane = new PanelInformation(title, null, null, null);
 		} else {
 			keys = new ArrayList<String>();

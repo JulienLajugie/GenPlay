@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -40,15 +40,11 @@ import javax.swing.JScrollPane;
  */
 public class PanelInformation extends JPanel {
 
-	/**
-	 * Generated serial version ID
-	 */
+	/** Generated serial version ID */
 	private static final long serialVersionUID = -4402163861725735910L;
-	
-	protected static final int WIDTH = 230;			// width of the panel
-	protected static final int HEADER_HEIGHT = 20;	// height of the header (that contains the title)
+
 	protected static final int SCROLL_HEIGHT = 100;	// height of the scroll pane (that contains all details)
-	
+
 
 	/**
 	 * Constructor of {@link PanelInformation}
@@ -60,13 +56,13 @@ public class PanelInformation extends JPanel {
 		JPanel headerPanel = getHeaderPane(title);
 		JPanel contentPanel = getContentPanel(keys, values, description);
 		JScrollPane scrollPane = new JScrollPane(contentPanel);
-		
-		Dimension dimension = new Dimension(WIDTH, SCROLL_HEIGHT);
+
+		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, SCROLL_HEIGHT);
 		scrollPane.setSize(dimension);
 		scrollPane.setMinimumSize(dimension);
 		scrollPane.setMaximumSize(dimension);
 		scrollPane.setPreferredSize(dimension);
-		
+
 		add(headerPanel, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
 	}
@@ -87,7 +83,7 @@ public class PanelInformation extends JPanel {
 
 		JLabel label = new JLabel(title);
 		pane.add(label);
-		
+
 		return pane;
 	}
 
@@ -100,7 +96,7 @@ public class PanelInformation extends JPanel {
 	 */
 	private JPanel getContentPanel (List<String> keys, List<String> values, List<String> description) {
 		JPanel pane = new JPanel();
-		
+
 		if (keys == null) {
 			JLabel label = new JLabel("No information available");
 			pane.add(label);
@@ -108,13 +104,13 @@ public class PanelInformation extends JPanel {
 			GridBagLayout layout = new GridBagLayout();
 			pane.setLayout(layout);
 			GridBagConstraints gbc = new GridBagConstraints();
-			
+
 			Insets inset = new Insets(0, 0, 0, 0);
 			gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 			gbc.insets = inset;
 			gbc.gridwidth = 1;
 			gbc.weighty = 0;
-			
+
 			for (int i = 0; i < keys.size(); i++) {
 				if (i == (keys.size()-1)) {
 					int numElements = i + 1;
@@ -127,7 +123,7 @@ public class PanelInformation extends JPanel {
 						gbc.insets = lastRowInset;
 					}
 				}
-				
+
 				gbc.gridx = 0;
 				gbc.gridy = i;
 				gbc.weightx = 0.1;
@@ -142,16 +138,8 @@ public class PanelInformation extends JPanel {
 				value.setToolTipText(value.getText());
 				pane.add(value, gbc);
 			}
-		}		
+		}
 		return pane;
-	}
-	
-	
-	/**
-	 * @return the height of the panel
-	 */
-	protected static int getPanelHeight () {
-		return HEADER_HEIGHT + SCROLL_HEIGHT;
 	}
 
 }
