@@ -49,6 +49,7 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 	 */
 	public static final String ACTION_KEY = "Compress VCF as BGZIP";
 
+	private MGOBGZIPCompression operation;
 	private final File vcfFile;	// the vcf file
 	private File bgzFile;	// the bgzip file
 	private boolean success;
@@ -74,7 +75,7 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 		// Notifies the action
 		notifyActionStart(ACTION_NAME, 1, false);
 
-		MGOBGZIPCompression operation = new MGOBGZIPCompression(vcfFile);
+		operation = new MGOBGZIPCompression(vcfFile);
 		try {
 			return operation.compute();
 		} catch (Exception e) {
@@ -88,6 +89,7 @@ public class MGABGZIPCompression extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
+		bgzFile = operation.getBgzFile();
 
 		if (!success) {
 			JOptionPane.showMessageDialog(getRootPane(), "The VCF extension has not been found.\nThe file to compress must be a VCF file.\nThe file will not be compressed.", "Compression error.", JOptionPane.INFORMATION_MESSAGE);
