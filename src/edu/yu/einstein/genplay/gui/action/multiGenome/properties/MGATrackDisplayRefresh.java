@@ -46,7 +46,7 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
 	private static final String 	DESCRIPTION =
-			"Performs the multi genome algorithm for SNPs"; 						// tooltip
+			"Refreshes the track display"; 						// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 			// mnemonic key
 	private static		 String 			ACTION_NAME = "Updating tracks";	// action name
 
@@ -55,7 +55,7 @@ public class MGATrackDisplayRefresh extends TrackListActionWorker<Boolean> {
 	/**
 	 * key of the action in the {@link ActionMap}
 	 */
-	public static final String ACTION_KEY = "Filters for Multi Genome";
+	public static final String ACTION_KEY = "Refreshes the track display";
 
 
 	/**

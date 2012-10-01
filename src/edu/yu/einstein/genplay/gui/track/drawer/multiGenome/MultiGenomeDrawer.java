@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
 import edu.yu.einstein.genplay.core.comparator.VariantDisplayComparator;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
@@ -84,6 +85,7 @@ public class MultiGenomeDrawer implements Serializable {
 
 	private MultiGenomeDensityDrawer densityDrawer;
 	private MultiGenomeStripesDrawer stripesDrawer;
+	private Chromosome chromosome;
 
 
 	/**
@@ -98,6 +100,7 @@ public class MultiGenomeDrawer implements Serializable {
 		out.writeObject(statistics);
 		out.writeObject(densityDrawer);
 		out.writeObject(stripesDrawer);
+		out.writeObject(chromosome);
 	}
 
 
@@ -114,6 +117,7 @@ public class MultiGenomeDrawer implements Serializable {
 		statistics = (VCFFileStatistics) in.readObject();
 		densityDrawer = (MultiGenomeDensityDrawer) in.readObject();
 		stripesDrawer = (MultiGenomeStripesDrawer) in.readObject();
+		chromosome = (Chromosome) in.readObject();
 
 		densityDrawer.setDrawer(this);
 		stripesDrawer.setDrawer(this);
@@ -140,6 +144,15 @@ public class MultiGenomeDrawer implements Serializable {
 		mgFiltersList = null;
 		statistics = null;
 		locked = false;
+		chromosome = getCurrentChromosome();
+	}
+
+
+	/**
+	 * @return the current chromosome
+	 */
+	private Chromosome getCurrentChromosome () {
+		return ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
 	}
 
 
@@ -196,6 +209,15 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
+	 * Compare the current chromosome and the chromosome used for the stripes/filter
+	 * @return	true if the chromosome has changed, false otherwise
+	 */
+	private boolean hasChromosomeChanged () {
+		return !chromosome.equals(getCurrentChromosome());
+	}
+
+
+	/**
 	 * Updates information for multi genome project.
 	 * These information are about:
 	 * - stripes
@@ -204,7 +226,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param filtersList list of filters
 	 */
 	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
-		if (hasMultiGenomeInformationChanged(stripesList, filtersList)) {
+		if (hasChromosomeChanged() || hasMultiGenomeInformationChanged(stripesList, filtersList)) {
+			chromosome = getCurrentChromosome();
 			this.statistics = null;
 			ToolTipStripeHandler.getInstance().killDialogs(this);
 			this.stripesList = stripesList;
@@ -214,7 +237,7 @@ public class MultiGenomeDrawer implements Serializable {
 			List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
 
 			for (StripesData data: stripesList) {							// scans all stripes data
-
+				System.out.println(data.getVariationTypeListForDisplay());
 				// Checks wich alleles must be processed
 				AlleleType alleleType = data.getAlleleType();				// get the allele type defined for the current stripe data
 				boolean allele01 = false;									// initializes a boolean in order to know if we need to process data for the first allele

@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -50,8 +50,8 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 	private static final long serialVersionUID = 6498078428524511709L;		// generated ID
-	private static final String 	DESCRIPTION = 
-		"Performs the multi genome algorithm for SNPs"; 					// tooltip
+	private static final String 	DESCRIPTION =
+			"Performs the multi genome algorithm for SNPs"; 					// tooltip
 	private static final int 				MNEMONIC = KeyEvent.VK_M; 		// mnemonic key
 	private static		 String 			ACTION_NAME = "SNPs loading";	// action name
 	private Map<String, List<AlleleType>> genomeNames;
@@ -77,6 +77,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected Track<?>[] processAction() throws Exception {
+		//ShiftCompute.resetMap();
 		ProjectManager projectManager = ProjectManager.getInstance();
 
 		// Checks if the project is multi-genome and if SNPs have been requested
@@ -87,7 +88,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 				List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
 
 				// Gets the genome names involved for SNPs synchronization
-				genomeNames = getGenomeNamesForSNP(newStripesData);			
+				genomeNames = getGenomeNamesForSNP(newStripesData);
 			}
 
 			if (genomeNames.size() > 0) {
@@ -98,6 +99,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 			}
 
 		}
+		//ShiftCompute.showMaps();
 
 		return null;
 	}
@@ -180,7 +182,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 			// Gets the genome names involved for SNPs synchronization
 			genomeNames = getGenomeNamesForSNP(newStripesData);
-			
+
 			if (genomeNames.size() > 0) {
 				return true;
 			}
