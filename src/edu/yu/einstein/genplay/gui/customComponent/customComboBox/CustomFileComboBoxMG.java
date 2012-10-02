@@ -73,19 +73,38 @@ public class CustomFileComboBoxMG extends CustomFileComboBox implements ActionWa
 			String ext = Utils.getExtension(file);
 			if (ext.equals("vcf")) {
 				result = null;
-				if (showMessage()) {
-					action = new MGAVCFToTBI(file);
-					action.setLoadingPassBy(true);
-					SwingWorkerActionWaiting swAction = new SwingWorkerActionWaiting(this, action);
-					swAction.execute();
-				}
+				File bgzFile = getFile(file, "gz");
+				File tbiFile = getFile(file, "gz.tbi");
+				if (bgzFile.exists() && tbiFile.exists()) {
+					result = bgzFile;
+				} else
+					if (showMessage()) {
+						action = new MGAVCFToTBI(file);
+						action.setLoadingPassBy(true);
+						SwingWorkerActionWaiting swAction = new SwingWorkerActionWaiting(this, action);
+						swAction.execute();
+					}
 			}
 		}
-
 		return result;
 	}
 
 
+	/**
+	 * @param file	a file
+	 * @param ext	a extension (without dot)
+	 * @return a file adding the extension to the given file
+	 */
+	private File getFile (File file, String ext) {
+		String path = file.getPath() + "." + ext;
+		return new File(path);
+	}
+
+
+	/**
+	 * Show a message dialog to ask the user whether he wants to compress/index the file or not.
+	 * @return true if the user wants to compress/index the VCF, false otherwise.
+	 */
 	private boolean showMessage () {
 		Object[] options = {"Yes", "No"};
 

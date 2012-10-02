@@ -49,6 +49,7 @@ public class MGATBIIndex extends TrackListActionWorker<Boolean> {
 	 */
 	public static final String ACTION_KEY = "Index GZIP with Tabix";
 
+	private MGOTBIIndex operation;
 	private final File bgzFile;	// the bgzip file
 	private File file;		// the tbi file
 	private boolean success;
@@ -74,7 +75,7 @@ public class MGATBIIndex extends TrackListActionWorker<Boolean> {
 		// Notifies the action
 		notifyActionStart(ACTION_NAME, 1, false);
 
-		MGOTBIIndex operation = new MGOTBIIndex(bgzFile);
+		operation = new MGOTBIIndex(bgzFile);
 		try {
 			return operation.compute();
 		} catch (Exception e) {
@@ -88,6 +89,7 @@ public class MGATBIIndex extends TrackListActionWorker<Boolean> {
 	@Override
 	protected void doAtTheEnd(Boolean actionResult) {
 		success = actionResult;
+		file = operation.getTbiFile();
 
 		if (!success) {
 			JOptionPane.showMessageDialog(getRootPane(), "The BGZIP extension has not been found.\nThe file will not be indexed.", "Indexing error.", JOptionPane.INFORMATION_MESSAGE);

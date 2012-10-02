@@ -237,7 +237,6 @@ public class MultiGenomeDrawer implements Serializable {
 			List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
 
 			for (StripesData data: stripesList) {							// scans all stripes data
-				System.out.println(data.getVariationTypeListForDisplay());
 				// Checks wich alleles must be processed
 				AlleleType alleleType = data.getAlleleType();				// get the allele type defined for the current stripe data
 				boolean allele01 = false;									// initializes a boolean in order to know if we need to process data for the first allele

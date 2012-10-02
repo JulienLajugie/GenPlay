@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDia
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,15 +58,16 @@ class LegendPane extends JPanel {
 
 		// Create the genomes information
 		JLabel genomesTitle = new JLabel("Genomes:");
-		JLabel genomes = new JLabel(getGenomesInformation(variationMap));
+		List<String> genomesInformation = getGenomesInformation(variationMap);
 
 		// Create the files information
 		JLabel filesTitle = new JLabel("Files:");
-		JLabel files = new JLabel(getFilesInformation(fileList));
+		List<String> filesInformation = getFilesInformation(fileList);
 
 		// Create the inset
 		Insets titleInset = new Insets(2, 6, 2, 0);
-		Insets valueInset = new Insets(0, 15, 10, 0);
+		Insets valueInset = new Insets(0, 15, 0, 10);
+		Insets lastValueInset = new Insets(0, 15, 10, 10);
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
@@ -83,8 +85,13 @@ class LegendPane extends JPanel {
 
 		// Genomes values
 		gbc.insets = valueInset;
-		gbc.gridy++;
-		add(genomes, gbc);
+		for (int i = 0; i < genomesInformation.size(); i++) {
+			if (i == (genomesInformation.size() - 1)) {
+				gbc.insets = lastValueInset;
+			}
+			gbc.gridy++;
+			add(new JLabel(genomesInformation.get(i)), gbc);
+		}
 
 		// Files title
 		gbc.insets = titleInset;
@@ -93,9 +100,14 @@ class LegendPane extends JPanel {
 
 		// Files values
 		gbc.insets = valueInset;
-		gbc.gridy++;
-		gbc.weighty = 1;
-		add(files, gbc);
+		for (int i = 0; i < filesInformation.size(); i++) {
+			if (i == (filesInformation.size() - 1)) {
+				gbc.weighty = 1;
+				gbc.insets = lastValueInset;
+			}
+			gbc.gridy++;
+			add(new JLabel(filesInformation.get(i)), gbc);
+		}
 	}
 
 
@@ -103,23 +115,19 @@ class LegendPane extends JPanel {
 	 * @param variationMap the variation map with genome names
 	 * @return a description of the requested genomes and their variations
 	 */
-	private String getGenomesInformation (Map<String, List<VariantType>> variationMap) {
-		String info = "";
-		int i = 1;
+	private List<String> getGenomesInformation (Map<String, List<VariantType>> variationMap) {
+		List<String> genomesInformation = new ArrayList<String>();
 		for (String genomeName: variationMap.keySet()) {
-			info += genomeName + ": ";
+			String current = genomeName + ": ";
 			for (int j = 0; j < variationMap.get(genomeName).size(); j++) {
-				info += variationMap.get(genomeName).get(j);
+				current += variationMap.get(genomeName).get(j);
 				if (j < (variationMap.get(genomeName).size() - 1)) {
-					info += ", ";
+					current += ", ";
 				}
 			}
-			if (i < (variationMap.size() - 1)) {
-				info += ".\n";
-			}
-			i++;
+			genomesInformation.add(current);
 		}
-		return info;
+		return genomesInformation;
 	}
 
 
@@ -127,14 +135,11 @@ class LegendPane extends JPanel {
 	 * @param fileList a list of files
 	 * @return a description of the requested files
 	 */
-	private String getFilesInformation (List<VCFFile> fileList) {
-		String info = "";
-		for (int i = 0; i < fileList.size(); i++) {
-			info += fileList.get(i);
-			if (i < (fileList.size() - 1)) {
-				info += "\n";
-			}
+	private List<String> getFilesInformation (List<VCFFile> fileList) {
+		List<String> filesInformation = new ArrayList<String>();
+		for (VCFFile currentFile: fileList) {
+			filesInformation.add(currentFile.getFile().getName());
 		}
-		return info;
+		return filesInformation;
 	}
 }

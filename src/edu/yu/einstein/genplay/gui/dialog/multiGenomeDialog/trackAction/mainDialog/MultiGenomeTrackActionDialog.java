@@ -94,6 +94,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 	 * @return APPROVE_OPTION is OK is clicked. CANCEL_OPTION otherwise.
 	 */
 	public int showDialog(Component parent) {
+		pack();
 		setLocationRelativeTo(parent);
 		setModal(true);
 		setVisible(true);

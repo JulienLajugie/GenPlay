@@ -100,6 +100,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
 		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.gridwidth = 1;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
@@ -138,9 +139,11 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		panel.add(label, gbc);
 
 		gbc.gridy++;
+		gbc.weightx = 1;
 		panel.add(jtfFile, gbc);
 
 		gbc.gridx++;
+		gbc.weightx = 0;
 		panel.add(button, gbc);
 
 		return panel;
