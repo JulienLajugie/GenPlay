@@ -466,6 +466,44 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 
 	/**
+	 * @return all sorted header types
+	 */
+	public List<VCFHeaderType> getAllSortedHeader () {
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: basicHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: altHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: filterHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			if (((VCFHeaderAdvancedType)header).getType() == Boolean.class) {
+				result.add(header);
+			}
+		}
+
+		for (VCFHeaderType header: formatHeader) {
+			result.add(header);
+		}
+
+		for (VCFHeaderType header: infoHeader) {
+			if (((VCFHeaderAdvancedType)header).getType() != Boolean.class) {
+				result.add(header);
+			}
+		}
+
+		return result;
+	}
+
+
+	/**
 	 * @return all the header type
 	 */
 	public List<VCFHeaderType> getAllNumberHeader () {
@@ -493,6 +531,31 @@ public class VCFHeader implements VCFGenomeIndexer, Serializable {
 
 		return result;
 	}
+
+
+	/**
+	 * @return all sorted header types
+	 */
+	public List<VCFHeaderType> getAllSortedNumberHeader () {
+		List<VCFHeaderType> sortedList = getAllSortedHeader();
+		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
+
+		for (VCFHeaderType header: sortedList) {
+			if (header.getColumnCategory() == VCFColumnName.QUAL) {
+				result.add(header);
+			} else {
+				if (header instanceof VCFHeaderAdvancedType) {
+					VCFHeaderAdvancedType advancedHeader = (VCFHeaderAdvancedType) header;
+					if ((advancedHeader.getType() == Integer.class) || (advancedHeader.getType() == Float.class)) {
+						result.add(header);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
 
 
 	/**

@@ -539,7 +539,7 @@ class SettingsPanel extends JPanel {
 			noLegendButton.setSelected(true);
 		}
 
-		this.showReference = MGDisplaySettings.DRAW_REFERENCE_INSERTION == MGDisplaySettings.YES_MG_OPTION;
+		this.showReference = MGDisplaySettings.getInstance().includeReferences();
 		if (showReference) {
 			yesReferenceButton.setSelected(true);
 			noReferenceButton.setSelected(false);

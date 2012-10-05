@@ -84,7 +84,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 
 		// Add panels
 		contentPanel.add(getVCFPanel(), BorderLayout.CENTER);
-		contentPanel.add(getOptionPanel(), BorderLayout.SOUTH);
+		contentPanel.add(getCompressionOptionPanel(), BorderLayout.SOUTH);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
 		// Create the button
-		JButton button = new JButton();
+		JButton button = new JButton("...");
 		Dimension bDim = new Dimension(20, 20);
 		ExportUtils.setComponentSize(button, bDim);
 		button.setMargin(new Insets(0, 0, 0, 0));
@@ -153,7 +153,7 @@ public class ExportVCFDialog extends MultiGenomeTrackActionDialog {
 	/**
 	 * @return the panel to select the additional export options
 	 */
-	private JPanel getOptionPanel () {
+	private JPanel getCompressionOptionPanel () {
 		// Create the panel
 		JPanel panel = new JPanel();
 

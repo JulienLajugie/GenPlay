@@ -65,13 +65,13 @@ public class AlleleSettingsBedExport extends AlleleSettingsBed {
 	private File getFile (String path) {
 		int length = path.length() - 4;
 		String newPath = path.substring(0, length);
-		newPath += "_";
+		newPath += "_" + allele.toString().toLowerCase();
 		if (coordinateSystem == CoordinateSystemType.CURRENT_GENOME) {
-			newPath +=  allele.toString().toLowerCase();
+			newPath += "_current_genome";
 		} else if (coordinateSystem == CoordinateSystemType.METAGENOME) {
-			newPath += "meta_genome";
+			newPath += "_meta_genome";
 		} else if (coordinateSystem == CoordinateSystemType.REFERENCE) {
-			newPath += "reference_genome";
+			newPath += "_reference_genome";
 		}
 		newPath += ".bed";
 		return new File(newPath);

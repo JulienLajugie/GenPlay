@@ -50,6 +50,24 @@ public abstract class BasicEngine {
 	protected Map<String, List<VCFFile>> 		fileMap;		// The map between genome names and their related files.
 	protected Map<String, List<VariantType>> 	variationMap;	// The map between genome names and their required variations.
 	protected List<MGFilter> 					filterList;		// The list of filters.
+	protected boolean includeReferences;
+	protected boolean includeNoCall;
+
+
+	/**
+	 * @param fileMap		map between genome names and their related files
+	 * @param variationMap	map between genome names and their required variations
+	 * @param filterList	list of filters
+	 * @param includeReferences include the references (0)
+	 * @param includeNoCall 	include the no call (.)
+	 */
+	public void initializeEngine (Map<String, List<VCFFile>> fileMap, Map<String, List<VariantType>> variationMap, List<MGFilter> filterList, boolean includeReferences, boolean includeNoCall) {
+		this.fileMap = fileMap;
+		this.variationMap = variationMap;
+		this.filterList = filterList;
+		this.includeReferences = includeReferences;
+		this.includeNoCall = includeNoCall;
+	}
 
 
 	/**
@@ -199,26 +217,10 @@ public abstract class BasicEngine {
 
 
 	/**
-	 * @param fileMap the fileMap to set
-	 */
-	public void setFileMap(Map<String, List<VCFFile>> fileMap) {
-		this.fileMap = fileMap;
-	}
-
-
-	/**
 	 * @return the variationMap
 	 */
 	public Map<String, List<VariantType>> getVariationMap() {
 		return variationMap;
-	}
-
-
-	/**
-	 * @param variationMap the variationMap to set
-	 */
-	public void setVariationMap(Map<String, List<VariantType>> variationMap) {
-		this.variationMap = variationMap;
 	}
 
 
@@ -231,10 +233,18 @@ public abstract class BasicEngine {
 
 
 	/**
-	 * @param filterList the filterList to set
+	 * @return the includeReferences
 	 */
-	public void setFilterList(List<MGFilter> filterList) {
-		this.filterList = filterList;
+	public boolean isIncludeReferences() {
+		return includeReferences;
+	}
+
+
+	/**
+	 * @return the includeNoCall
+	 */
+	public boolean isIncludeNoCall() {
+		return includeNoCall;
 	}
 
 

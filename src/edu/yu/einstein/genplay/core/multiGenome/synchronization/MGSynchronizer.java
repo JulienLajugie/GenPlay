@@ -192,11 +192,10 @@ public class MGSynchronizer implements Serializable {
 						}
 
 						int longestAlternative = line.getLongestAlternativeLength();
-						if (longestAlternative != 0) {
-							Variant variant = new ReferenceVariant(referencePosition, longestAlternative, i, vcfFile);
-							alleleHandler.getAlleleReferenceDisplay().getVariantList(chromosome).add(variant);
-						}
-
+						//if (longestAlternative != 0) {
+						Variant variant = new ReferenceVariant(referencePosition, longestAlternative, i, vcfFile);
+						alleleHandler.getAlleleReferenceDisplay().getVariantList(chromosome).add(variant);
+						//}
 					}
 				}
 			}

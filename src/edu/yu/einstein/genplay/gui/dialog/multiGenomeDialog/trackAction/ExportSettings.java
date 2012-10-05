@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -43,6 +44,7 @@ public class ExportSettings {
 	private final Map<String, List<VCFFile>> fileMap;
 	private final List<MGFilter> filterList;
 	private final List<VCFFile> fileList;
+	private final AlleleType alleleType;
 
 
 	/**
@@ -54,6 +56,7 @@ public class ExportSettings {
 		fileMap = getGenomeFileMap(genomeDrawer.getStripesList());
 		filterList = genomeDrawer.getFiltersList();
 		fileList = getFileList(fileMap);
+		alleleType = genomeDrawer.getTrackAlleleType();
 	}
 
 
@@ -189,6 +192,14 @@ public class ExportSettings {
 	 */
 	public List<VCFFile> getFileList() {
 		return fileList;
+	}
+
+
+	/**
+	 * @return the alleleType
+	 */
+	public AlleleType getAlleleType() {
+		return alleleType;
 	}
 
 }

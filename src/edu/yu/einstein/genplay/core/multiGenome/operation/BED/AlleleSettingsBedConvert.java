@@ -70,14 +70,23 @@ public class AlleleSettingsBedConvert extends AlleleSettingsBed {
 	 * Add current information to the different list: start, stop and score
 	 * @param chromosome	the current chromosome
 	 * @param score			the score
+	 * @param includeReferences include the references (0)
+	 * @param includeNoCall 	include the no call (.)
 	 */
-	public void addCurrentInformation (Chromosome chromosome, Object score) {
+	public void addCurrentInformation (Chromosome chromosome, Object score, boolean includeReferences, boolean includeNoCall) {
+		boolean valid = true;
 		Double dbScore = Double.parseDouble(score.toString());
-		if (dbScore != null) {
-			int start = getCurrentStart();
-			int stop = getDisplayableCurrentStop();
-			startList.add(chromosome, start);
-			stopList.add(chromosome, stop);
+		if (dbScore == null) {
+			valid = false;
+		}
+		/*if (valid && (currentAltIndex == -1) && (!includeReferences)) {
+			valid = false;
+		}*/
+		if (valid) {
+			//int start = getCurrentStart();
+			//int stop = getDisplayableCurrentStop();
+			startList.add(chromosome, currentStart);
+			stopList.add(chromosome, currentStop);
 			scoreList.add(chromosome, dbScore);
 		} else {
 			System.err.println("AlleleSettingsBedConvert.addCurrentInformation() Could not convert '" + score + "' into a double.");

@@ -36,7 +36,6 @@ public abstract class ExportEngine extends BasicEngine {
 	protected boolean							isConversion = false;
 
 
-
 	/**
 	 * Checks every parameter and create an full error message if any of them is not valid.
 	 * @return the error message, null if no error.

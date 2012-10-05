@@ -31,6 +31,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.operation.UpdateEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype.GenotypeVCFDialog;
@@ -98,9 +99,7 @@ public class MGAVCFApplyGenotype extends TrackListActionWorker<Boolean> {
 
 				// Create the update engine
 				UpdateEngine engine = new MGOApplyVCFGenotype();
-				engine.setFileMap(settings.getFileMap());
-				engine.setVariationMap(settings.getVariationMap());
-				engine.setFilterList(settings.getFilterList());
+				engine.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
 				engine.setFileToPhase(VCFFileToUpdate);
 				engine.setPath(outputPath);
 				engine.setGenomeNameMap(genomeNameMap);

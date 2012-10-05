@@ -31,6 +31,7 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedExportSingleFile;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportBEDDialog;
@@ -41,6 +42,8 @@ import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 
 
 /**
+ * TEMPORARY UNUSED
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
@@ -100,11 +103,8 @@ public class MGABedExport extends TrackListActionWorker<Boolean> {
 						// Notifies the action
 						notifyActionStart(ACTION_NAME, 1, false);
 
-						exportEngine = new MGOBedExportSingleFile(dialog.getGenomeName(), dialog.getAlleleType(), dialog.getHeader(), dialog.getCoordinateSystem());
-
-						exportEngine.setFileMap(settings.getFileMap());
-						exportEngine.setVariationMap(settings.getVariationMap());
-						exportEngine.setFilterList(settings.getFilterList());
+						exportEngine = new MGOBedExportSingleFile(dialog.getGenomeName(), dialog.getSettings().getAlleleType(), dialog.getHeader(), dialog.getCoordinateSystem());
+						exportEngine.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
 						exportEngine.setPath(filePath);
 
 						try {

@@ -51,9 +51,6 @@ public class MGDisplaySettings implements Serializable {
 	/** Disable a MG option */
 	public static final int NO_MG_OPTION = 0;
 
-	/** Blank of synchronization are involved by insertion in genomes on the reference genome */
-	public static int INCLUDE_BLANK_OPTION = YES_MG_OPTION;
-
 	/** Draw the variant that have been filtered */
 	public static int DRAW_FILTERED_VARIANT = YES_MG_OPTION;
 
@@ -63,7 +60,7 @@ public class MGDisplaySettings implements Serializable {
 	/** Deletion stripes can be drawn with an edge line */
 	public static int DRAW_DELETION_EDGE = YES_MG_OPTION;
 
-	/** Draw the insertion reference genome stripes */
+	/** Draw the insertion reference genome stripes (blank of synchronization) */
 	public static int DRAW_REFERENCE_INSERTION = YES_MG_OPTION;
 
 	/** Draw the deletion reference genome stripes */
@@ -94,7 +91,7 @@ public class MGDisplaySettings implements Serializable {
 	public static Color REFERENCE_SNP_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
 
 
-	private static MGDisplaySettings 	instance;			// Instance of the class
+	private static MGDisplaySettings 	instance;	// Instance of the class
 
 	private MGFilterSettings 	filterSettings; 	// All settings about the filters
 	private MGStripeSettings 	stripeSettings; 	// All settings about the stripes
@@ -113,12 +110,16 @@ public class MGDisplaySettings implements Serializable {
 		out.writeObject(stripeSettings);
 		out.writeObject(variousSettings);
 
-		out.writeInt(INCLUDE_BLANK_OPTION);
+		out.writeInt(DRAW_FILTERED_VARIANT);
 		out.writeInt(DRAW_INSERTION_EDGE);
 		out.writeInt(DRAW_DELETION_EDGE);
+		out.writeInt(DRAW_REFERENCE_INSERTION);
+		out.writeInt(DRAW_REFERENCE_DELETION);
+		out.writeInt(DRAW_REFERENCE_SNP);
 		out.writeInt(DRAW_INSERTION_LETTERS);
 		out.writeInt(DRAW_DELETION_LETTERS);
 		out.writeInt(DRAW_SNP_LETTERS);
+		out.writeInt(DRAW_REFERENCE_LETTERS);
 	}
 
 
@@ -135,12 +136,16 @@ public class MGDisplaySettings implements Serializable {
 		stripeSettings = (MGStripeSettings) in.readObject();
 		variousSettings = (MGVariousSettings) in.readObject();
 
-		INCLUDE_BLANK_OPTION = in.readInt();
+		DRAW_FILTERED_VARIANT = in.readInt();
 		DRAW_INSERTION_EDGE = in.readInt();
 		DRAW_DELETION_EDGE = in.readInt();
+		DRAW_REFERENCE_INSERTION = in.readInt();
+		DRAW_REFERENCE_DELETION = in.readInt();
+		DRAW_REFERENCE_SNP = in.readInt();
 		DRAW_INSERTION_LETTERS = in.readInt();
 		DRAW_DELETION_LETTERS = in.readInt();
 		DRAW_SNP_LETTERS = in.readInt();
+		DRAW_REFERENCE_LETTERS = in.readInt();
 	}
 
 
@@ -270,6 +275,37 @@ public class MGDisplaySettings implements Serializable {
 			track.getMultiGenomeDrawer().setStripesList(stripeList);
 			track.getMultiGenomeDrawer().setFiltersList(filterList);
 		}
+	}
+
+
+	/**
+	 * @return true if references have to be included, false otherwise
+	 */
+	public boolean includeReferences () {
+		return DRAW_REFERENCE_INSERTION == YES_MG_OPTION;
+	}
+
+
+	/**
+	 * @return true is no call "." have to be included, false otherwise
+	 */
+	public boolean includeNoCall () {
+		return true;
+	}
+
+
+	/**
+	 * 
+	 * @param include true if references have to be included, false otherwise
+	 */
+	public void setReferencePolicy (boolean include) {
+		int option = NO_MG_OPTION;
+		if (include) {
+			option = YES_MG_OPTION;
+		}
+		MGDisplaySettings.DRAW_REFERENCE_INSERTION = option;
+		MGDisplaySettings.DRAW_REFERENCE_DELETION = option;
+		MGDisplaySettings.DRAW_REFERENCE_SNP = option;
 	}
 
 

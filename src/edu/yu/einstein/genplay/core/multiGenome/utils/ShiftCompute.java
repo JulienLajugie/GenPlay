@@ -48,7 +48,7 @@ public class ShiftCompute {
 	 * @return						the position of a genome on another genome
 	 */
 	public static int getPosition (String inputGenomeName, AlleleType inputAlleleType, int inputGenomePosition, Chromosome chromosome, String outputGenomeName) {
-		if (inputGenomeName.equals(outputGenomeName)) {
+		if (inputGenomeName.equals(outputGenomeName) || (inputGenomePosition < 0)) {
 			return inputGenomePosition;
 		}
 

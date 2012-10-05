@@ -118,7 +118,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 		/*gbc.gridy++;
 		gbc.weighty = 1;
 		gbc.insets = new Insets(10, 0, 0, 0);
-		contentPanel.add(getOptionPanel(), gbc);*/
+		contentPanel.add(getCompressionOptionPanel(), gbc);*/
 	}
 
 
@@ -249,7 +249,7 @@ public class GenotypeVCFDialog extends MultiGenomeTrackActionDialog {
 	 * @return the panel to select the additional export options
 	 */
 	@SuppressWarnings("unused") // Will be managed in the action very soon!
-	private JPanel getOptionPanel () {
+	private JPanel getCompressionOptionPanel () {
 		// Create the panel
 		JPanel panel = new JPanel();
 

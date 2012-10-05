@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileMixStatistic;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOVCFStatisticsSingleFile;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatisticsDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
@@ -88,9 +89,7 @@ public class MGAVCFStatistics extends TrackListActionWorker<VCFFileStatistics> {
 
 				// Create the operation
 				operation = new MGOVCFStatisticsSingleFile();
-				operation.setFileMap(settings.getFileMap());
-				operation.setVariationMap(settings.getVariationMap());
-				operation.setFilterList(settings.getFilterList());
+				operation.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
 
 				if (operation.isSingleExport()) {
 					// Notifies the action

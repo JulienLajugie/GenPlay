@@ -73,14 +73,13 @@ public class AlleleSettingsBed {
 	 * - start and stop position
 	 * - length
 	 * - alternative index
-	 * @param chromosome 	the current chromosome
 	 * @param lengths		lengths of variations in the line
 	 * @param currentLine	the current line
 	 * @param altIndex		the index of the alternative
 	 */
-	public void initializeCurrentInformation (Chromosome chromosome, int[] lengths, VCFLine currentLine, int altIndex) {
+	public void initializeCurrentInformation (int[] lengths, VCFLine currentLine, int altIndex) {
 		if (coordinateSystem == CoordinateSystemType.METAGENOME) {
-			initializeCurrentInformationForMetaGenome(chromosome, lengths, currentLine, altIndex);
+			initializeCurrentInformationForMetaGenome(lengths, currentLine, altIndex);
 		} else if (coordinateSystem == CoordinateSystemType.REFERENCE) {
 			initializeCurrentInformationForReferenceGenome(lengths, currentLine, altIndex);
 		} else if (coordinateSystem == CoordinateSystemType.CURRENT_GENOME) {
@@ -100,28 +99,17 @@ public class AlleleSettingsBed {
 	 */
 	protected void initializeCurrentInformationForGenome (int[] lengths, VCFLine currentLine, int altIndex) {
 		currentAltIndex = altIndex;
-		if (currentAltIndex == -1) {
-			currentLength = 0;
-			currentStart = currentLine.getReferencePosition() + currentOffset;
-			currentStop = currentStart + 1;
-		} else if (currentAltIndex > -1) {
-			currentLength = lengths[currentAltIndex];
-			if (currentLength > 0) {
-				currentStart = currentLine.getReferencePosition() + currentOffset;
-				currentStop = (currentStart + currentLength) + 1;
-			} else if (currentLength < 0) {
-				currentStart = currentLine.getReferencePosition() + currentOffset;
-				currentStop = currentStart + 1;
+		currentStart = currentLine.getReferencePosition() + currentOffset;
+		currentLength = 0;
+		if (currentAltIndex >= 0) {
+			int length = lengths[currentAltIndex];
+			if (length > 0) {
+				currentLength = length;
 			} else {
-				currentStart = currentLine.getReferencePosition() + currentOffset;
-				currentStop = currentStart + 1;
+				currentOffset += length;
 			}
-			currentOffset += currentLength;
-		} else {
-			currentLength = 0;
-			currentStart = -1;
-			currentStop = -1;
 		}
+		currentStop = (currentStart + currentLength) + 1;
 	}
 
 
@@ -136,27 +124,16 @@ public class AlleleSettingsBed {
 	 */
 	protected void initializeCurrentInformationForReferenceGenome (int[] lengths, VCFLine currentLine, int altIndex) {
 		currentAltIndex = altIndex;
-		if (currentAltIndex == -1) {
-			currentLength = 0;
-			currentStart = currentLine.getReferencePosition();
-			currentStop = currentStart + 1;
-		} else if (currentAltIndex > -1) {
+		currentStart = currentLine.getReferencePosition();
+		currentLength = 0;
+		int length = currentLength;
+		if (currentAltIndex >= 0) {
 			currentLength = lengths[currentAltIndex];
-			if (currentLength > 0) {
-				currentStart = currentLine.getReferencePosition();
-				currentStop = currentStart + 1;
-			} else if (currentLength < 0) {
-				currentStart = currentLine.getReferencePosition();
-				currentStop = currentStart + (currentLength * -1) + 1;
-			} else {
-				currentStart = currentLine.getReferencePosition();
-				currentStop = currentStart + 1;
+			if (currentLength < 0) {
+				length = Math.abs(currentLength);
 			}
-		} else {
-			currentLength = 0;
-			currentStart = -1;
-			currentStop = -1;
 		}
+		currentStop = (currentStart + length) + 1;
 	}
 
 
@@ -170,10 +147,8 @@ public class AlleleSettingsBed {
 	 * @param currentLine	the current line
 	 * @param altIndex		the index of the alternative
 	 */
-	protected void initializeCurrentInformationForMetaGenome (Chromosome chromosome, int[] lengths, VCFLine currentLine, int altIndex) {
+	protected void initializeCurrentInformationForMetaGenome (int[] lengths, VCFLine currentLine, int altIndex) {
 		initializeCurrentInformationForReferenceGenome(lengths, currentLine, altIndex);
-		currentStart =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, allele, currentStart, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
-		currentStop =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, allele, currentStop, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
 	}
 
 
@@ -181,14 +156,29 @@ public class AlleleSettingsBed {
 	 * Updates the current information using information from the other allele.
 	 * e.g.: with a 0/1 genotype, information in the 0 allele has to be updated with information from the 1 allele
 	 * @param allele the other allele
+	 * @param chromosome the current chromosome
 	 */
-	public void updateCurrentInformation (AlleleSettingsBed allele) {
-		if (isReference() && allele.isAlternative()) {
+	public void updateCurrentInformation (AlleleSettingsBed allele, Chromosome chromosome) {
+		if ((currentAltIndex < 0) && allele.isAlternative()) {
 			currentLength = allele.getCurrentLength();
-			if (coordinateSystem != CoordinateSystemType.CURRENT_GENOME) {
-				if (currentLength < 0) {
-					currentStop += currentLength * -1;
-				}
+			if (currentLength < 0) {
+				currentStop += Math.abs(currentLength);
+			}
+		}
+		if (coordinateSystem == CoordinateSystemType.METAGENOME) {
+			currentStart =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, this.allele, currentStart, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+			currentStop =  ShiftCompute.getPosition(FormattedMultiGenomeName.REFERENCE_GENOME_NAME, this.allele, currentStop, chromosome, FormattedMultiGenomeName.META_GENOME_NAME);
+		}
+	}
+
+
+	/**
+	 * Make the last changes on position after they had been updated.
+	 */
+	public void finalizePosition () {
+		if (coordinateSystem == CoordinateSystemType.METAGENOME) {
+			if (currentLength != 0) {
+				currentStart++;
 			}
 		}
 	}

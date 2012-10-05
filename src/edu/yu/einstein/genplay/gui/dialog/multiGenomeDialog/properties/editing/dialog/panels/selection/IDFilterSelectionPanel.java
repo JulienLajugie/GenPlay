@@ -74,7 +74,7 @@ public class IDFilterSelectionPanel extends EditingPanel<VCFHeaderType> implemen
 	public void update(Object object) {
 		VCFFile file = getVCFFile(object);
 		if (file != null) {
-			List<VCFHeaderType> headers = file.getHeader().getAllHeader();
+			List<VCFHeaderType> headers = file.getHeader().getAllSortedHeader();
 			String[] paths = new String[headers.size()];
 			model.clear();
 			for (int i = 0; i < headers.size(); i++) {

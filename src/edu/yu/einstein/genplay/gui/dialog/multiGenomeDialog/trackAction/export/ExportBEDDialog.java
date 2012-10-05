@@ -42,7 +42,6 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
-import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -64,7 +63,6 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 	private final static String DIALOG_TITLE = "Export as BED file";
 
 	private String genomeName;
-	private AlleleType allele;
 	private JTextField 	jtfFile;		// Text field for the path of the new VCF file
 	private VCFHeaderType header;
 	private CoordinateSystemType coordinateSystem;
@@ -99,15 +97,17 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 
-
 		contentPanel.add(getBedPanel(), gbc);
-		gbc.gridy++;
 
+		gbc.gridy++;
 		contentPanel.add(getGenomeSelectionPanel(settings.getGenomeNames()), gbc);
 
 		gbc.gridy++;
-		gbc.weighty = 1;
 		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
+
+		gbc.gridy++;
+		gbc.weighty = 1;
+		contentPanel.add(getOptionPanel(), gbc);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		ExportUtils.setComponentSize(jtfFile, jtfDim);
 
 		// Create the button
-		JButton button = new JButton();
+		JButton button = new JButton("...");
 		Dimension bDim = new Dimension(20, 20);
 		ExportUtils.setComponentSize(button, bDim);
 		button.setMargin(new Insets(0, 0, 0, 0));
@@ -170,16 +170,12 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		// Create the panel
 		JPanel panel = new JPanel();
 
-
 		// Create the labels
 		JLabel genomeLabel = new JLabel("Select a genome to export:");
-		JLabel alleleLabel = new JLabel("Select the allele(s) of the genome to export:");
 		JLabel exportLabel = new JLabel("Select the genome coordinate system for start/stop positions:");
-
 
 		// Create the boxes
 		JComboBox jcbGenome = getGenomeComboBox(genomeList);
-		JComboBox jcbAllele = getAlleleTypeComboBox();
 
 		// Create the radios
 		JRadioButton metaButton = new JRadioButton("Meta genome");
@@ -221,16 +217,6 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 		gbc.gridy++;
 		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(jcbGenome, gbc);
-
-		// Insert the allele type label
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(alleleLabel, gbc);
-
-		// Insert the allele type combo box
-		gbc.gridy++;
-		gbc.insets = new Insets(0, 10, 0, 0);
-		panel.add(jcbAllele, gbc);
 
 		// Insert the coordinate system label
 		gbc.gridy++;
@@ -284,34 +270,6 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
-	/**
-	 * Create the allele type combo box.
-	 * @return the allele type combo box
-	 */
-	private JComboBox getAlleleTypeComboBox () {
-		// Creates the combo box
-		Object[] alleles = new Object[]{AlleleType.BOTH, AlleleType.ALLELE01, AlleleType.ALLELE02};
-		JComboBox jcbAllele = new JComboBox(alleles);
-		jcbAllele.setSelectedIndex(0);
-		allele =  (AlleleType) jcbAllele.getSelectedItem();
-
-		//Dimension
-		int height = jcbAllele.getFontMetrics(jcbAllele.getFont()).getHeight() + 5;
-		Dimension dimension = new Dimension(MIN_DIALOG_WIDTH - 50, height);
-		jcbAllele.setPreferredSize(dimension);
-		jcbAllele.setMinimumSize(dimension);
-
-		jcbAllele.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				allele =  (AlleleType)((JComboBox) arg0.getSource()).getSelectedItem();
-			}
-		});
-
-		return jcbAllele;
-	}
-
-
 	private JPanel getIDPanel (List<VCFFile> fileList) {
 		// Create the panel
 		JPanel panel = new JPanel();
@@ -348,7 +306,6 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 		return panel;
 	}
-
 
 
 	private JComboBox getIDComboBox (List<VCFHeaderType> headers) {
@@ -412,14 +369,6 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 
 
 	/**
-	 * @return the selected allele type
-	 */
-	public AlleleType getAlleleType () {
-		return allele;
-	}
-
-
-	/**
 	 * @return the header
 	 */
 	public VCFHeaderType getHeader() {
@@ -444,6 +393,13 @@ public class ExportBEDDialog extends MultiGenomeTrackActionDialog {
 			error += "The path of the file has not been found.";
 		} else if (filePath.isEmpty()){
 			error += "The path of the file has not been found.";
+		}
+
+		if (getDotValue() == null) {
+			if (!error.isEmpty()) {
+				error += "\n";
+			}
+			error += "The defined constant for \".\" in genotype does not seem to be a valid number.";
 		}
 
 		return error;

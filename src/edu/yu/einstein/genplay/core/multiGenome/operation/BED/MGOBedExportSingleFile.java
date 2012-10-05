@@ -102,18 +102,18 @@ public class MGOBedExportSingleFile extends ExportEngine {
 		fullAlleleList.add(new AlleleSettingsBedExport(path, AlleleType.ALLELE02, coordinateSystem));
 
 		alleleListToExport = new ArrayList<AlleleSettingsBedExport>();
-		if (coordinateSystem == CoordinateSystemType.CURRENT_GENOME) {
-			if (allele == AlleleType.BOTH) {
-				alleleListToExport.add(fullAlleleList.get(0));
-				alleleListToExport.add(fullAlleleList.get(1));
-			} else if (allele == AlleleType.ALLELE01) {
-				alleleListToExport.add(fullAlleleList.get(0));
-			} else if (allele == AlleleType.ALLELE02) {
-				alleleListToExport.add(fullAlleleList.get(1));
-			}
-		} else {
+		//if (coordinateSystem == CoordinateSystemType.CURRENT_GENOME) {
+		if (allele == AlleleType.BOTH) {
 			alleleListToExport.add(fullAlleleList.get(0));
+			alleleListToExport.add(fullAlleleList.get(1));
+		} else if (allele == AlleleType.ALLELE01) {
+			alleleListToExport.add(fullAlleleList.get(0));
+		} else if (allele == AlleleType.ALLELE02) {
+			alleleListToExport.add(fullAlleleList.get(1));
 		}
+		/*} else {
+			alleleListToExport.add(fullAlleleList.get(0));
+		}*/
 	}
 
 
@@ -180,13 +180,16 @@ public class MGOBedExportSingleFile extends ExportEngine {
 
 			for (AlleleSettingsBedExport alleleExport: fullAlleleList) {
 				int altIndex = synchronizer.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));
-				alleleExport.initializeCurrentInformation(chromosome, lengths, currentLine, altIndex);
+				alleleExport.initializeCurrentInformation(lengths, currentLine, altIndex);
 			}
 
 			AlleleSettingsBedExport firstAllele = fullAlleleList.get(0);
 			AlleleSettingsBedExport secondAllele = fullAlleleList.get(1);
-			firstAllele.updateCurrentInformation(secondAllele);
-			secondAllele.updateCurrentInformation(firstAllele);
+			firstAllele.updateCurrentInformation(secondAllele, chromosome);
+			secondAllele.updateCurrentInformation(firstAllele, chromosome);
+
+			firstAllele.finalizePosition();
+			secondAllele.finalizePosition();
 
 			for (AlleleSettingsBedExport alleleExport: alleleListToExport) {
 				if (alleleExport.isWritable()) {
@@ -232,7 +235,7 @@ public class MGOBedExportSingleFile extends ExportEngine {
 				}
 			}
 
-			if (valueIndex < values.length) {
+			if ((valueIndex > -1) && (valueIndex < values.length)) {
 				result = values[valueIndex];
 			} else {
 				result = null;

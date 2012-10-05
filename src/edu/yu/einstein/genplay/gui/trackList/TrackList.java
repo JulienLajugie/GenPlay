@@ -146,7 +146,6 @@ import edu.yu.einstein.genplay.gui.action.maskTrack.MTARemoveMask;
 import edu.yu.einstein.genplay.gui.action.maskTrack.MTASaveMask;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics;
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
-import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGABedExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
@@ -353,7 +352,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			getActionMap().put(MGAVCFStatistics.ACTION_KEY, new MGAVCFStatistics());
 			getActionMap().put(MGAGlobalVCFExport.ACTION_KEY, new MGAGlobalVCFExport());
-			getActionMap().put(MGABedExport.ACTION_KEY, new MGABedExport());
+			//getActionMap().put(MGABedExport.ACTION_KEY, new MGABedExport());
 			getActionMap().put(MGASCWLConvert.ACTION_KEY, new MGASCWLConvert());
 			getActionMap().put(MGAVCFApplyGenotype.ACTION_KEY, new MGAVCFApplyGenotype());
 		}

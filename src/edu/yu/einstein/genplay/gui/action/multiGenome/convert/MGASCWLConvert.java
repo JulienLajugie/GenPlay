@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.BED.MGOBedConvertSingleFile;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.convert.ConvertSCWDialog;
@@ -104,11 +105,8 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 					// Notifies the action
 					notifyActionStart(ACTION_NAME, 1, false);
 
-					exportEngine = new MGOBedConvertSingleFile(dialog.getGenomeName(), dialog.getFirstAlleleTrack(), dialog.getSecondAlleleTrack(), dialog.getHeader());
-
-					exportEngine.setFileMap(settings.getFileMap());
-					exportEngine.setVariationMap(settings.getVariationMap());
-					exportEngine.setFilterList(settings.getFilterList());
+					exportEngine = new MGOBedConvertSingleFile(dialog.getGenomeName(), dialog.getFirstAlleleTrack(), dialog.getSecondAlleleTrack(), dialog.getDotValue(), dialog.getHeader());
+					exportEngine.initializeEngine(settings.getFileMap(), settings.getVariationMap(), settings.getFilterList(), MGDisplaySettings.getInstance().includeReferences(), MGDisplaySettings.getInstance().includeNoCall());
 
 					try {
 						exportEngine.compute();

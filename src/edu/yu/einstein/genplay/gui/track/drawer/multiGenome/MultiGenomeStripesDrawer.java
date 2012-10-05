@@ -199,7 +199,7 @@ class MultiGenomeStripesDrawer implements Serializable {
 		// Get start and stop position
 		int start = variant.getStart();
 		int stop;
-		if (variant.getType() == VariantType.SNPS) {		// in case of a SNP, no need to use getStop function (that uses dichotomic algorithm on the full variant list)
+		if ((variant.getType() == VariantType.SNPS) || (variant.isReference() && (variant.getLength() == 1))) {		// in case of a SNP, no need to use getStop function (that uses dichotomic algorithm on the full variant list)
 			stop = start + 1;								// the stop is one nucleotide further
 		} else {											// if not,
 			stop = variant.getStop() + 1;					// needs to call getStop

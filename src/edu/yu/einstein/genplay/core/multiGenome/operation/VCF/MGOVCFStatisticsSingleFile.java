@@ -84,7 +84,6 @@ public class MGOVCFStatisticsSingleFile extends BasicEngine {
 	@Override
 	public void processLine(FileScannerInterface fileAlgorithm) throws IOException {
 		VCFLine currentLine = fileAlgorithm.getCurrentLine();
-
 		updateFileStatistics(newStatistics, currentLine.getAlternativesTypes(), currentLine.getAlternatives());
 
 		for (String genomeName: genomeNames) {

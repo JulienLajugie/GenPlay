@@ -44,7 +44,8 @@ import edu.yu.einstein.genplay.util.Utils;
  */
 public class ManualVCFReader {
 
-	private static boolean INCLUDE_ZERO = true;
+	private final boolean includeReferences;
+	private final boolean includeNoCall;
 
 	private final VCFFile							vcfFile; 		// The vcf file (.gz)
 	private final BGZIPReader 						reader;			// The gz reader
@@ -66,13 +67,17 @@ public class ManualVCFReader {
 	 * @param genomeList	the list of genome
 	 * @param variationMap 	the map of variations
 	 * @param filterList 	the list of filters
+	 * @param includeReferences include the references (0)
+	 * @param includeNoCall 	include the no call (.)
 	 * @throws Exception
 	 */
-	public ManualVCFReader (VCFFile vcfFile, List<String> genomeList, Map<String, List<VariantType>> variationMap, List<MGFilter> filterList) throws Exception {
+	public ManualVCFReader (VCFFile vcfFile, List<String> genomeList, Map<String, List<VariantType>> variationMap, List<MGFilter> filterList, boolean includeReferences, boolean includeNoCall) throws Exception {
 		this.vcfFile = vcfFile;
 		this.genomeList = genomeList;
 		this.variationMap = variationMap;
 		this.filterList = filterList;
+		this.includeReferences = includeReferences;
+		this.includeNoCall = includeNoCall;
 
 		synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
 		reader = new BGZIPReader(vcfFile);
@@ -210,37 +215,20 @@ public class ManualVCFReader {
 	private List<Integer> getValidIndexes (List<VariantType> requiredVariation, VariantType[] variations, int[] indexes) {
 		List<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < indexes.length; i++) {
-			int index = -2;
+			int currentIndex = indexes[i];
+			boolean insert = false;
 
-			// Manage the zero
-			if (INCLUDE_ZERO) {
-				if (indexes[i] == -1) {
-					index = -1;
-				}
+			if (((currentIndex == -1) && includeReferences) || ((currentIndex == -2) && includeNoCall)) {
+				insert = true;
+			} else if (currentIndex >= 0) {
+				insert = requiredVariation.contains(variations[indexes[i]]);
 			}
 
-			if (indexes[i] >= 0) {
-				if (requiredVariation.contains(variations[indexes[i]])) {
-					index = indexes[i];
-				}
-			}
-
-			if ((index > -2) && !list.contains(index)) {
-				list.add(index);
+			if (insert && !list.contains(currentIndex)) {
+				list.add(currentIndex);
 			}
 		}
-
-		boolean isValid = false;
-		for (int index: list) {
-			if (index >= 0) {
-				isValid = true;
-			}
-		}
-
-		if (isValid) {
-			return list;
-		}
-		return new ArrayList<Integer>();
+		return list;
 	}
 
 

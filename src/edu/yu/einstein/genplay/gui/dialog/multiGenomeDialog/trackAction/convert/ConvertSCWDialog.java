@@ -94,8 +94,11 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 		contentPanel.add(getGenomeSelectionPanel(settings.getGenomeNames()), gbc);
 
 		gbc.gridy++;
-		gbc.weighty = 1;
 		contentPanel.add(getIDPanel(settings.getFileList()), gbc);
+
+		gbc.gridy++;
+		gbc.weighty = 1;
+		contentPanel.add(getOptionPanel(), gbc);
 	}
 
 
@@ -105,14 +108,23 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 		// Create the labels
 		JLabel genomeLabel = new JLabel("Select a genome to export:");
-		JLabel alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
-		JLabel alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
+		JLabel alleleTrackLabel01 = null;
+		JLabel alleleTrackLabel02 = null;
 
 		// Create the boxes
 		JComboBox jcbGenome = getGenomeComboBox(genomeList);
-		jcbAlleleTrack01 = getTrackListBox();
-		jcbAlleleTrack02 = getTrackListBox();
-
+		if (settings.getAlleleType() == AlleleType.BOTH) {
+			alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
+			alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
+			jcbAlleleTrack01 = getTrackListBox();
+			jcbAlleleTrack02 = getTrackListBox();
+		} else if (settings.getAlleleType() == AlleleType.ALLELE01) {
+			alleleTrackLabel01 = new JLabel("Select the track for the " + AlleleType.ALLELE01.toString() + " allele:");
+			jcbAlleleTrack01 = getTrackListBox();
+		} else if (settings.getAlleleType() == AlleleType.ALLELE02) {
+			alleleTrackLabel02 = new JLabel("Select the track for the " + AlleleType.ALLELE02.toString() + " allele:");
+			jcbAlleleTrack02 = getTrackListBox();
+		}
 
 		// Create the layout
 		GridBagLayout layout = new GridBagLayout();
@@ -135,26 +147,35 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 		gbc.insets = new Insets(0, 10, 0, 0);
 		panel.add(jcbGenome, gbc);
 
-		// Insert the first allele track label
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(alleleTrackLabel01, gbc);
+		if (alleleTrackLabel01 != null) {
+			// Insert the first allele track label
+			gbc.gridy++;
+			gbc.insets = new Insets(10, 0, 0, 0);
+			panel.add(alleleTrackLabel01, gbc);
 
-		// Insert the first allele track combo box
-		gbc.gridy++;
-		gbc.insets = new Insets(0, 10, 0, 0);
-		panel.add(jcbAlleleTrack01, gbc);
+			// Insert the first allele track combo box
+			if (alleleTrackLabel02 != null) {
+				gbc.insets = new Insets(0, 10, 0, 0);
+			} else {
+				gbc.insets = new Insets(0, 10, 5, 0);
+				gbc.weighty = 1;
+			}
+			gbc.gridy++;
+			panel.add(jcbAlleleTrack01, gbc);
+		}
 
-		// Insert the second allele track label
-		gbc.gridy++;
-		gbc.insets = new Insets(10, 0, 0, 0);
-		panel.add(alleleTrackLabel02, gbc);
+		if (alleleTrackLabel02 != null) {
+			// Insert the second allele track label
+			gbc.gridy++;
+			gbc.insets = new Insets(10, 0, 0, 0);
+			panel.add(alleleTrackLabel02, gbc);
 
-		// Insert the second allele track combo box
-		gbc.gridy++;
-		gbc.weighty = 1;
-		gbc.insets = new Insets(0, 10, 5, 0);
-		panel.add(jcbAlleleTrack02, gbc);
+			// Insert the second allele track combo box
+			gbc.gridy++;
+			gbc.weighty = 1;
+			gbc.insets = new Insets(0, 10, 5, 0);
+			panel.add(jcbAlleleTrack02, gbc);
+		}
 
 		return panel;
 	}
@@ -218,7 +239,6 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 		gbc.insets = new Insets(0, 0, 0, 0);
 		gbc.weightx = 1;
 		gbc.weighty = 0;
-
 		gbc.gridx = 0;
 
 
@@ -238,35 +258,30 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	}
 
 
-
 	private JComboBox getIDComboBox (List<VCFHeaderType> headers) {
 		JComboBox box = new JComboBox(headers.toArray());
 		box.setSelectedIndex(0);
 		header = (VCFHeaderType) box.getSelectedItem();
-
 		box.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				header =  (VCFHeaderType)((JComboBox) arg0.getSource()).getSelectedItem();
 			}
 		});
-
 		return box;
 	}
 
 
 	private List<VCFHeaderType> retrieveHeaderFields (List<VCFFile> fileList) {
 		List<VCFHeaderType> result = new ArrayList<VCFHeaderType>();
-
 		for (VCFFile file: fileList) {
-			List<VCFHeaderType> numberHeader = file.getHeader().getAllNumberHeader();
+			List<VCFHeaderType> numberHeader = file.getHeader().getAllSortedNumberHeader();
 			for (VCFHeaderType header: numberHeader) {
 				if (!((header.getColumnCategory() == VCFColumnName.FORMAT) && header.getId().equals("PL"))) {
 					result.add(header);
 				}
 			}
 		}
-
 		return result;
 	}
 
@@ -283,9 +298,11 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	 * @return the selected track of the first allele
 	 */
 	public Track<?> getFirstAlleleTrack () {
-		Object object = jcbAlleleTrack01.getSelectedItem();
-		if (object instanceof Track<?>) {
-			return (Track<?>) object;
+		if (jcbAlleleTrack01 != null) {
+			Object object = jcbAlleleTrack01.getSelectedItem();
+			if (object instanceof Track<?>) {
+				return (Track<?>) object;
+			}
 		}
 		return null;
 	}
@@ -295,9 +312,11 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 	 * @return the selected track of the second allele
 	 */
 	public Track<?> getSecondAlleleTrack () {
-		Object object = jcbAlleleTrack02.getSelectedItem();
-		if (object instanceof Track<?>) {
-			return (Track<?>) object;
+		if (jcbAlleleTrack02 != null) {
+			Object object = jcbAlleleTrack02.getSelectedItem();
+			if (object instanceof Track<?>) {
+				return (Track<?>) object;
+			}
 		}
 		return null;
 	}
@@ -317,6 +336,13 @@ public class ConvertSCWDialog extends MultiGenomeTrackActionDialog {
 
 		if ((getFirstAlleleTrack() == null) && (getSecondAlleleTrack() == null)) {
 			error += "No track has been selected.";
+		}
+
+		if ((jtfDotValue != null) && jtfDotValue.isEnabled() && (getDotValue() == null)) {
+			if (!error.isEmpty()) {
+				error += "\n";
+			}
+			error += "The defined constant for \".\" in genotype does not seem to be a valid number.";
 		}
 
 		return error;

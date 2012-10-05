@@ -36,7 +36,6 @@ import edu.yu.einstein.genplay.core.list.CacheTrack;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 
 /**
  * This class creates the list of variant for a track (or half a track) and its filters.
@@ -127,7 +126,7 @@ public class DisplayableVariantListMaker implements Serializable {
 			}
 
 			Collections.sort(variantDisplayList, new VariantDisplayComparator());				// sorts the list
-			synchronizationBlank();																// adds the blank of synchronization
+			addReferences();																// adds the blank of synchronization
 		}
 	}
 
@@ -137,44 +136,44 @@ public class DisplayableVariantListMaker implements Serializable {
 	 * It adds one by one variant from both list according to their position.
 	 * Insertions present in the reference genome allow the creation of the blank of synchronization.
 	 */
-	private void synchronizationBlank () {
-		if (MGDisplaySettings.INCLUDE_BLANK_OPTION == MGDisplaySettings.YES_MG_OPTION) {
-			if (fittedChromosome != null) {
-				Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-				List<Variant> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(currentChromosome);
-				List<VariantDisplay> newVariantList = new ArrayList<VariantDisplay>();
-				int currentListIndex = 0;
-				int referenceListIndex = 0;
-				while ((currentListIndex < variantDisplayList.size()) && (referenceListIndex < referenceVariantList.size())) {
-					VariantDisplay currentVariant = variantDisplayList.get(currentListIndex);
-					Variant referenceVariant = referenceVariantList.get(referenceListIndex);
+	private void addReferences () {
+		//if (MGDisplaySettings.getInstance().includeReferences()) {
+		if (fittedChromosome != null) {
+			Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+			List<Variant> referenceVariantList = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay().getReferenceGenome().getAllele().getVariantList(currentChromosome);
+			List<VariantDisplay> newVariantList = new ArrayList<VariantDisplay>();
+			int currentListIndex = 0;
+			int referenceListIndex = 0;
+			while ((currentListIndex < variantDisplayList.size()) && (referenceListIndex < referenceVariantList.size())) {
+				VariantDisplay currentVariant = variantDisplayList.get(currentListIndex);
+				Variant referenceVariant = referenceVariantList.get(referenceListIndex);
 
-					if (currentVariant.getStart() < referenceVariant.getStart()) {
-						newVariantList.add(currentVariant);
-						currentListIndex++;
-					} else if (referenceVariant.getStart() < currentVariant.getStart()) {
-						newVariantList.add(new VariantDisplay(referenceVariant));
-						referenceListIndex++;
-					} else {
-						newVariantList.add(currentVariant);
-						currentListIndex++;
-						referenceListIndex++;
-					}
+				if (currentVariant.getStart() < referenceVariant.getStart()) {
+					newVariantList.add(currentVariant);
+					currentListIndex++;
+				} else if (referenceVariant.getStart() < currentVariant.getStart()) {
+					newVariantList.add(new VariantDisplay(referenceVariant));
+					referenceListIndex++;
+				} else {
+					newVariantList.add(currentVariant);
+					currentListIndex++;
+					referenceListIndex++;
 				}
-
-				// Fill the new list with the rest of variant display
-				for (int i = currentListIndex; i < variantDisplayList.size(); i++) {
-					newVariantList.add(variantDisplayList.get(i));
-				}
-
-				// Fill the new list with the rest of reference variant
-				for (int i = referenceListIndex; i < referenceVariantList.size(); i++) {
-					newVariantList.add(new VariantDisplay(referenceVariantList.get(i)));
-				}
-
-				variantDisplayList = newVariantList;
 			}
+
+			// Fill the new list with the rest of variant display
+			for (int i = currentListIndex; i < variantDisplayList.size(); i++) {
+				newVariantList.add(variantDisplayList.get(i));
+			}
+
+			// Fill the new list with the rest of reference variant
+			for (int i = referenceListIndex; i < referenceVariantList.size(); i++) {
+				newVariantList.add(new VariantDisplay(referenceVariantList.get(i)));
+			}
+
+			variantDisplayList = newVariantList;
 		}
+		//}
 	}
 
 

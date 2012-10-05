@@ -52,7 +52,7 @@ public class SingleFileScanner implements FileScannerInterface {
 		this.engine = engine;
 		vcfFile = engine.getFileList().get(0);
 		genomeList = engine.getGenomeList();
-		vcfReader = new ManualVCFReader(vcfFile, genomeList, engine.getVariationMap(), engine.getFilterList());
+		vcfReader = new ManualVCFReader(vcfFile, genomeList, engine.getVariationMap(), engine.getFilterList(), engine.isIncludeReferences(), engine.isIncludeNoCall());
 	}
 
 

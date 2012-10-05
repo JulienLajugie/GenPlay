@@ -23,12 +23,23 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDia
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportUtils;
 import edu.yu.einstein.genplay.util.Images;
 
 /**
@@ -53,6 +64,7 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 	protected JPanel contentPanel;
 	private final LegendPane lengendPanel;
+	protected JTextField 	jtfDotValue;
 	private final ValidationPane validationPanel;
 
 
@@ -108,6 +120,75 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 	protected abstract void initializeContentPanel ();
 
 
+	/////////////////////////////////////////////////////////// Optional panel methods
+	protected JPanel getOptionPanel () {
+		// Create the panel
+		JPanel panel = new JPanel();
+
+		// Create the labels
+		JLabel optionLabel = new JLabel("Option:");
+		JLabel idOptionLabel = new JLabel("\".\" in genotype:");
+
+		// Create the value text field
+		jtfDotValue = new JTextField();
+		Dimension jtfDim = new Dimension(50, 21);
+		ExportUtils.setComponentSize(jtfDotValue, jtfDim);
+		jtfDotValue.setEnabled(false);
+
+		// Create the radios
+		JRadioButton omitButton = new JRadioButton("Omit");
+		JRadioButton constantButton = new JRadioButton("Define value:");
+		ButtonGroup group = new ButtonGroup();
+		group.add(omitButton);
+		group.add(constantButton);
+		omitButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {jtfDotValue.setEnabled(false);}});
+		constantButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {jtfDotValue.setEnabled(true);}});
+		omitButton.setSelected(true);
+
+		// Create the layout
+		GridBagLayout layout = new GridBagLayout();
+		panel.setLayout(layout);
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.LINE_START;
+		gbc.insets = new Insets(0, 0, 0, 0);
+		gbc.weightx = 1;
+		gbc.weighty = 0;
+		gbc.gridx = 0;
+
+
+		// Insert the option label
+		gbc.gridy = 0;
+		gbc.insets = new Insets(10, 0, 0, 0);
+		panel.add(optionLabel, gbc);
+
+		// Insert the ID option label
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 0, 0);
+		panel.add(idOptionLabel, gbc);
+
+		// Insert the omit choice
+		gbc.gridx = 1;
+		panel.add(omitButton, gbc);
+
+		// Insert the constant choice
+		gbc.gridy++;
+		gbc.insets = new Insets(0, 10, 5, 0);
+		gbc.weighty = 1;
+		panel.add(constantButton, gbc);
+
+		// Insert the constant choice
+		gbc.gridx = 2;
+		gbc.insets = new Insets(0, 5, 5, 0);
+		panel.add(jtfDotValue, gbc);
+
+		return panel;
+	}
+
+
 	/////////////////////////////////////////////////////////// Validation panel methods
 	/**
 	 * Called when the dialog has been approved
@@ -144,4 +225,27 @@ public abstract class MultiGenomeTrackActionDialog extends JDialog {
 
 	protected abstract String getErrors ();
 	///////////////////////////////////////////////////////////
+
+
+	/**
+	 * @return the value to use for "." in genotype, null if they have to be omitted
+	 */
+	public Double getDotValue () {
+		Double value = null;
+		if ((jtfDotValue != null) && jtfDotValue.isEnabled()) {
+			try {
+				value = Double.parseDouble(jtfDotValue.getText());
+			} catch (Exception e) {}
+		}
+		return value;
+	}
+
+
+	/**
+	 * @return the settings
+	 */
+	public ExportSettings getSettings() {
+		return settings;
+	}
+
 }

@@ -117,13 +117,7 @@ public final class MGAProperties extends TrackListAction{
 				MGDisplaySettings.REFERENCE_SNP_COLOR = dialog.getReferenceColor();
 
 				// Set the reference stripes showing
-				int showReference = MGDisplaySettings.YES_MG_OPTION;
-				if (!dialog.isShowReference()) {
-					showReference = MGDisplaySettings.NO_MG_OPTION;
-				}
-				MGDisplaySettings.DRAW_REFERENCE_INSERTION = showReference;
-				MGDisplaySettings.DRAW_REFERENCE_DELETION = showReference;
-				MGDisplaySettings.DRAW_REFERENCE_SNP = showReference;
+				MGDisplaySettings.getInstance().setReferencePolicy(dialog.isShowReference());
 
 				// Updates track (SNPs, filters, display)
 				MGARefresh action = new MGARefresh();

@@ -51,7 +51,7 @@ public class UpdateFileScanner implements FileScannerInterface {
 	 */
 	public UpdateFileScanner (UpdateEngine engine, VCFFile src, VCFFile dest) throws Exception {
 		this.engine = engine;
-		this.src = new ManualVCFReader(src, engine.getGenomeList(), engine.getVariationMap(), engine.getFilterList());
+		this.src = new ManualVCFReader(src, engine.getGenomeList(), engine.getVariationMap(), engine.getFilterList(), engine.isIncludeReferences(), engine.isIncludeNoCall());
 		this.dest = new BGZIPReader(dest);
 	}
 
