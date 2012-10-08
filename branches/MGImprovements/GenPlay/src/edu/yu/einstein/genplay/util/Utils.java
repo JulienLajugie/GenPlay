@@ -978,4 +978,22 @@ public class Utils {
 		return arrayResult;
 	}
 
+
+	/**
+	 * @param objects	the array of objects
+	 * @param metrics	the metrics
+	 * @return the length of the longest object (as a string), 0 otherwise
+	 */
+	public static int getMaximumLength (Object[] objects, FontMetrics metrics) {
+		int result = 0;
+
+		if ((objects != null) && (objects.length > 0)) {
+			for (Object object: objects) {
+				result = Math.max(result, metrics.stringWidth(object.toString()));
+			}
+		}
+
+		return result;
+	}
+
 }

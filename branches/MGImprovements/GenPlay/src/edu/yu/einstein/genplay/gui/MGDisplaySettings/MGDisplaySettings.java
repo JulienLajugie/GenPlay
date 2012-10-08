@@ -28,9 +28,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
+import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -90,12 +92,17 @@ public class MGDisplaySettings implements Serializable {
 	/** Color of the reference SNP stripes */
 	public static Color REFERENCE_SNP_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
 
+	/** Current selected coordinate genome system */
+	public static String SELECTED_GENOME = CoordinateSystemType.METAGENOME.toString();
+	//private static String SELECTED_GENOME = null;
+
 
 	private static MGDisplaySettings 	instance;	// Instance of the class
 
 	private MGFilterSettings 	filterSettings; 	// All settings about the filters
 	private MGStripeSettings 	stripeSettings; 	// All settings about the stripes
 	private MGVariousSettings 	variousSettings;	// All settings about various settings
+	private String savedCoordinate;
 
 
 	/**
@@ -120,6 +127,8 @@ public class MGDisplaySettings implements Serializable {
 		out.writeInt(DRAW_DELETION_LETTERS);
 		out.writeInt(DRAW_SNP_LETTERS);
 		out.writeInt(DRAW_REFERENCE_LETTERS);
+
+		out.writeObject(SELECTED_GENOME);
 	}
 
 
@@ -146,6 +155,8 @@ public class MGDisplaySettings implements Serializable {
 		DRAW_DELETION_LETTERS = in.readInt();
 		DRAW_SNP_LETTERS = in.readInt();
 		DRAW_REFERENCE_LETTERS = in.readInt();
+
+		savedCoordinate = (String) in.readObject();
 	}
 
 
@@ -308,6 +319,13 @@ public class MGDisplaySettings implements Serializable {
 		MGDisplaySettings.DRAW_REFERENCE_SNP = option;
 	}
 
+
+	/**
+	 * Restores the saved genome coordinate system after loading a project.
+	 */
+	public void restoreGenomeCoordinate () {
+		MainFrame.getInstance().setNewGenomeCoordinate(savedCoordinate);
+	}
 
 	/**
 	 * Show the settings

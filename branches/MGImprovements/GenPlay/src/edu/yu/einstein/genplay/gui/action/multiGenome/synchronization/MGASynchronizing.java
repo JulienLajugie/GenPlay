@@ -139,6 +139,7 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 		initializesTrackListForMultiGenomeProject();
 
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+		MainFrame.getInstance().getControlPanel().resetGenomeNames(multiGenomeProject.getGenomeNames());
 
 		// Unlocks the main frame
 		MainFrame.getInstance().unlock();
@@ -176,8 +177,7 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 	 * This method must be used when multi-genome synchronization is performed for the first time in a project.
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
-	public void setGenomeFileAssociation(
-			Map<String, List<VCFFile>> genomeFileAssociation) {
+	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 	}
 

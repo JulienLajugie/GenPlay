@@ -50,6 +50,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.multiGenome.properties.MGARefresh;
 import edu.yu.einstein.genplay.gui.action.project.PAAbout;
 import edu.yu.einstein.genplay.gui.action.project.PACopyCurrentPosition;
@@ -497,4 +498,14 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		statusBar.initDescriptionForFirstUse();
 	}
 
+
+	/**
+	 * Set the current selected genome as well as repaint the frame
+	 * @param genomeName the new selected genome name to use for the coordinate system
+	 */
+	public void setNewGenomeCoordinate (String genomeName) {
+		MGDisplaySettings.SELECTED_GENOME = genomeName;
+		controlPanel.setSelectedGenomeName(genomeName);
+		repaint();
+	}
 }

@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
+import edu.yu.einstein.genplay.core.genome.Assembly;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+
 
 /**
  * This class manages the genome name display.
@@ -47,6 +52,7 @@ public class FormattedMultiGenomeName {
 	private static final 	String separator1 = " - ";	// First separator
 	private static final 	String separator2 = " (";	// Second separator
 	private static final 	String separator3 = ")";	// Third separator
+	private static final 	String separator4 = " - ";	// Fourth separator
 	private static 			String elements[];			// Strings for the full name (group, genome, raw name)
 
 
@@ -82,13 +88,18 @@ public class FormattedMultiGenomeName {
 	 * @param fullName	the formatted genome name
 	 */
 	private static void setElements (String fullName) {
-		elements = new String[3];
+		elements = new String[4];
 		int separator1Index = fullName.indexOf(separator1);
 		int separator2Index = fullName.indexOf(separator2);
 		int separator3Index = fullName.indexOf(separator3);
+		int separator4Index = fullName.indexOf(separator4, separator3Index);
 		elements[0] = fullName.substring(0, separator1Index);
 		elements[1] = fullName.substring((separator1Index + separator1.length()), separator2Index);
 		elements[2] = fullName.substring((separator2Index + separator2.length()), separator3Index);
+		elements[3] = null;
+		if (separator4Index != -1) {
+			elements[3] = fullName.substring((separator4Index + separator4.length()));
+		}
 	}
 
 
@@ -132,6 +143,47 @@ public class FormattedMultiGenomeName {
 
 
 	/**
+	 * @param fullNameWithAllele	the formatted genome name containing the allele
+	 * @return			the allele type, null if it is not a valid genome name
+	 */
+	public static AlleleType getAlleleName (String fullNameWithAllele) {
+		if (isValidGenomeName(fullNameWithAllele)) {
+			setElements(fullNameWithAllele);
+			if (elements[3] != null) {
+				return AlleleType.getAlleleType(elements[3]);
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * @param genomeFullName 	a full genome name
+	 * @param allele			an {@link AlleleType}
+	 * @return	the formatted full genome name with allele
+	 */
+	public static String getFullNameWithAllele (String genomeFullName, AlleleType allele) {
+		if (isValidGenomeName(genomeFullName)) {
+			return genomeFullName + separator4 + allele.toString();
+		}
+		return genomeFullName;
+	}
+
+
+	/**
+	 * @param genomeFullName 	a full genome name with allele
+	 * @return	the formatted full genome name without the allele
+	 */
+	public static String getFullNameWithoutAllele (String genomeFullName) {
+		if (isValidGenomeName(genomeFullName)) {
+			setElements(genomeFullName);
+			return elements[0] + separator1 + elements[1] + separator2 + elements[2] + separator3;
+		}
+		return genomeFullName;
+	}
+
+
+	/**
 	 * @param fullName the full genome name
 	 * @return true if it is not the name of the meta/reference genome
 	 */
@@ -140,15 +192,69 @@ public class FormattedMultiGenomeName {
 			return false;
 		}
 
-		if (fullName.equals(META_GENOME_NAME)) {
+		if (fullName.isEmpty()) {
 			return false;
 		}
 
-		if ((REFERENCE_GENOME_NAME != null) && fullName.equals(REFERENCE_GENOME_NAME)) {
+		if (isMetaGenome(fullName)) {
+			return false;
+		}
+
+		if (isReferenceGenome(fullName)) {
 			return false;
 		}
 
 		return true;
 	}
 
+
+	/**
+	 * @param genomeName a genome name
+	 * @return	true if the genome name represents the meta genome, false otherwise
+	 */
+	public static boolean isMetaGenome (String genomeName) {
+		if (genomeName == null) {
+			return false;
+		}
+		return (genomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME) || genomeName.equals(CoordinateSystemType.METAGENOME.toString()));
+	}
+
+
+	/**
+	 * @param genomeName a genome name
+	 * @return	true if the genome name represents the reference genome, false otherwise
+	 */
+	public static boolean isReferenceGenome (String genomeName) {
+		boolean result = false;
+		if (genomeName == null) {
+			return result;
+		}
+
+		Assembly assembly = ProjectManager.getInstance().getAssembly();
+		if (assembly != null) {
+			result = genomeName.equals(ProjectManager.getInstance().getAssembly().getDisplayName());
+		}
+		if (!result) {
+			result = (genomeName.equals(FormattedMultiGenomeName.REFERENCE_GENOME_NAME) || genomeName.equals(CoordinateSystemType.REFERENCE.toString()));
+		}
+		return result;
+	}
+
+
+	/**
+	 * @param name01 first genome name
+	 * @param name02 second genome name
+	 * @return	true if the genome name represents the reference genome, false otherwise
+	 */
+	public static boolean isSameGenome (String name01, String name02) {
+		boolean result = name01.equals(name02);
+		if (!result) {
+			if (isMetaGenome(name01) && isMetaGenome(name02)) {
+				result = true;
+			} else if (isReferenceGenome(name01) && isReferenceGenome(name02)) {
+				result = true;
+			}
+		}
+		return result;
+	}
 }

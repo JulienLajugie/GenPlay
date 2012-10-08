@@ -48,19 +48,19 @@ public class ShiftCompute {
 	 * @return						the position of a genome on another genome
 	 */
 	public static int getPosition (String inputGenomeName, AlleleType inputAlleleType, int inputGenomePosition, Chromosome chromosome, String outputGenomeName) {
-		if (inputGenomeName.equals(outputGenomeName) || (inputGenomePosition < 0)) {
+		if (FormattedMultiGenomeName.isSameGenome(inputGenomeName, outputGenomeName) || (inputGenomePosition < 0)) {
 			return inputGenomePosition;
 		}
 
 		int outputPosition = -1;
 
-		if (outputGenomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+		if (FormattedMultiGenomeName.isMetaGenome(outputGenomeName)) {
 			ChromosomeListOfLists<MGOffset> chromosomeOffsetList = getOffsetList(inputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
 				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
 				outputPosition = offsetList.getMetaGenomePosition(inputGenomePosition);
 			}
-		} else if (inputGenomeName.equals(FormattedMultiGenomeName.META_GENOME_NAME)) {
+		} else if (FormattedMultiGenomeName.isMetaGenome(inputGenomeName)) {
 			ChromosomeListOfLists<MGOffset> chromosomeOffsetList = getOffsetList(outputGenomeName, inputAlleleType);
 			if (chromosomeOffsetList != null) {
 				IntArrayAsOffsetList offsetList = (IntArrayAsOffsetList) chromosomeOffsetList.get(chromosome);
@@ -78,7 +78,7 @@ public class ShiftCompute {
 	private static ChromosomeListOfLists<MGOffset> getOffsetList (String genome, AlleleType alleleType) {
 		MGAllele alleleInformation = null;
 
-		if (genome.equals(ProjectManager.getInstance().getAssembly().getDisplayName())) {
+		if (FormattedMultiGenomeName.isReferenceGenome(genome)) {
 			alleleInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getReferenceGenome().getAllele();
 		} else {
 			MGGenome genomeInformation = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenome().getGenomeInformation(genome);
@@ -87,7 +87,7 @@ public class ShiftCompute {
 			} else if (alleleType == AlleleType.ALLELE02) {
 				alleleInformation = genomeInformation.getAlleleB();
 			} else {
-				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType);
+				System.err.println("Illegal use of the method \"ShiftCompute.computeShift\" with the parameter: " + alleleType + " , genome: " + genome);
 				return null;
 			}
 		}

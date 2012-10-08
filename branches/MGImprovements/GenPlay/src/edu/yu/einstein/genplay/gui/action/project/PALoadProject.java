@@ -139,6 +139,9 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 			MainFrame.getInstance().setTitle();
 			MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				MainFrame.getInstance().getControlPanel().resetGenomeNames(ProjectManager.getInstance().getMultiGenomeProject().getGenomeNames());
+			}
 
 			MainFrame.getInstance().setVisible(true);
 			MainFrame.getInstance().getTrackList().setTrackList(actionResult);
@@ -151,6 +154,10 @@ public class PALoadProject extends TrackListActionWorker<Track<?>[]> {
 
 			ProjectManager.getInstance().getProjectWindow().removeAllListeners();
 			MainFrame.getInstance().registerToGenomeWindow();
+
+			if (ProjectManager.getInstance().isMultiGenomeProject()) {
+				MGDisplaySettings.getInstance().restoreGenomeCoordinate();
+			}
 		}
 
 		if (latch != null) {
