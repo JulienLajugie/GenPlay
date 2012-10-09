@@ -42,6 +42,7 @@ import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.parser.genomeWindowParser.GenomeWindowInputHandler;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -142,21 +143,17 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * Called when the current {@link GenomeWindow} changes
 	 */
 	void updateGenomeWindow() {
-		try {
-			GenomeWindow newGenomeWindow = new GenomeWindow(jtfGenomeWindow.getText(), ProjectManager.getInstance().getProjectChromosome());
-			if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
-				int middlePosition = (int)newGenomeWindow.getMiddlePosition();
-				if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
-					JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
-				} else {
-					//setGenomeWindow(newGenomeWindow);
-					projectWindow.setGenomeWindow(newGenomeWindow);
-				}
-			}
-		} catch (Exception e) {
+		GenomeWindowInputHandler handler = new GenomeWindowInputHandler(jtfGenomeWindow.getText());
+		GenomeWindow newGenomeWindow = handler.getGenomeWindow();
+		if (newGenomeWindow == null) {
 			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
-			jtfGenomeWindow.setText(projectWindow.getGenomeWindow().toString());
-			e.printStackTrace();
+		} else if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
+			int middlePosition = (int)newGenomeWindow.getMiddlePosition();
+			if ((middlePosition < 0) || (middlePosition > newGenomeWindow.getChromosome().getLength())) {
+				JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
+			} else {
+				projectWindow.setGenomeWindow(newGenomeWindow);
+			}
 		}
 	}
 
