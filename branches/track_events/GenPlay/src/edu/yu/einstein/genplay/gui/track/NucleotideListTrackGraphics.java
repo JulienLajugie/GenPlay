@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.enums.Nucleotide;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
 import edu.yu.einstein.genplay.core.list.nucleotideList.TwoBitSequenceList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
@@ -114,8 +115,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 						twoBitSequenceListUnserialization();
 					}
 				} else {
-					firePropertyChange("trackNeedToBeDeleted", false, true);
-					System.out.println("Booooooooooommmmmmmm");
+					notifyTrackListeners(TrackEventType.SET_FOR_DELETION);
 				}
 			}
 		}

@@ -87,7 +87,7 @@ public class ProjectRecording {
 			TrackList trackList = MainFrame.getInstance().getTrackList();
 			// remove all the references to the listener so we don't save them
 			for (Track<?> currentTrack: trackList.getTrackList()) {
-				currentTrack.removePropertyChangeListener(trackList);
+				currentTrack.removeTrackListener(trackList);
 			}
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			GZIPOutputStream gz = new GZIPOutputStream(fos);
@@ -117,7 +117,7 @@ public class ProjectRecording {
 			fos.close();
 			// rebuild the references to the listener
 			for (Track<?> currentTrack: trackList.getTrackList()) {
-				currentTrack.addPropertyChangeListener(trackList);
+				currentTrack.addTrackListener(trackList);
 			}
 			//ProjectManager.getInstance().getProjectConfiguration().writeConfigurationFile(); 	// deactivate the configuration file saving
 		} catch (IOException e) {

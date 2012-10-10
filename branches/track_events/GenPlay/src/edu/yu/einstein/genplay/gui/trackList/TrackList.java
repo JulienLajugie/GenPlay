@@ -22,9 +22,8 @@
 package edu.yu.einstein.genplay.gui.trackList;
 
 import java.awt.Point;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ActionMap;
@@ -154,6 +153,10 @@ import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenuFactory;
 import edu.yu.einstein.genplay.gui.track.BinListTrack;
@@ -173,16 +176,17 @@ import edu.yu.einstein.genplay.gui.track.pasteSettings.PasteSettings;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackList extends JScrollPane implements PropertyChangeListener, Serializable {
+public final class TrackList extends JScrollPane implements Serializable, TrackListener, TrackEventsGenerator {
 
 	private static final long serialVersionUID = 7304431979443474040L; 	// generated ID
-	private final JPanel 		jpTrackList;					// panel with the tracks
-	private final ProjectConfiguration projectConfiguration;	// ConfigurationManager
-	private Track<?>[] 			trackList;						// array of tracks
-	private Track<?>			selectedTrack = null;			// track selected
-	private Track<?>			copiedTrack = null; 			// list of the tracks in the clipboard
-	private int 				draggedTrackIndex = -1;			// index of the dragged track, -1 if none
-	private int 				draggedOverTrackIndex = -1; 	// index of the track rolled over by the dragged track, -1 if none
+	private final JPanel 				jpTrackList;					// panel with the tracks
+	private final ProjectConfiguration 	projectConfiguration;			// ConfigurationManager
+	private final List<TrackListener> 	trackListeners;					// list of track listeners
+	private Track<?>[] 					trackList;						// array of tracks
+	private Track<?>					selectedTrack = null;			// track selected
+	private Track<?>					copiedTrack = null; 			// list of the tracks in the clipboard
+	private int 						draggedTrackIndex = -1;			// index of the dragged track, -1 if none
+	private int 						draggedOverTrackIndex = -1; 	// index of the track rolled over by the dragged track, -1 if none
 
 
 	/**
@@ -190,6 +194,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public TrackList() {
 		super();
+		this.trackListeners = new ArrayList<TrackListener>();
 		this.projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
 		getVerticalScrollBar().setUnitIncrement(15);
 		getVerticalScrollBar().setBlockIncrement(40);
@@ -201,7 +206,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for (int i = 0; i < trackCount; i++) {
 			trackList[i] = new EmptyTrack(i + 1);
 			trackList[i].setPreferredHeight(preferredHeight);
-			trackList[i].addPropertyChangeListener(this);
+			trackList[i].addTrackListener(this);
 			jpTrackList.add(trackList[i]);
 		}
 		for (int i = 0; i < trackCount; i++) {
@@ -223,7 +228,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for (int i = 0; i < trackCount; i++) {
 			trackList[i] = new EmptyTrack(i + 1);
 			trackList[i].setPreferredHeight(preferredHeight);
-			trackList[i].addPropertyChangeListener(this);
+			trackList[i].addTrackListener(this);
 		}
 		System.gc();
 		rebuildPanel();
@@ -385,36 +390,36 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 
 	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
-		if (arg0.getPropertyName() == "trackRightClicked") {
+	public void trackChanged(TrackEvent evt) {
+		notifyTrackListeners(evt);
+		if (evt.getEventType() == TrackEventType.RIGHT_CLICKED) {
 			setScrollMode(false);
-			selectedTrack = (Track<?>)arg0.getSource();
+			selectedTrack = (Track<?>)evt.getSource();
 			TrackMenu tm = TrackMenuFactory.getTrackMenu(this);
 			Point mousePoint = getMousePosition();
 			if (mousePoint != null) {
 				tm.show(this, mousePoint.x, mousePoint.y);
 			}
-		} else if (arg0.getPropertyName() == "trackDragged") {
+		} else if (evt.getEventType() == TrackEventType.DRAGGED) {
 			if (draggedTrackIndex == -1) {
-				draggedTrackIndex = ((Track<?>)arg0.getSource()).getTrackNumber() - 1;
+				draggedTrackIndex = ((Track<?>)evt.getSource()).getTrackNumber() - 1;
 			}
 			dragTrack();
-		} else if (arg0.getPropertyName() == "trackDraggedReleased") {
+		} else if (evt.getEventType() == TrackEventType.RELEASED) {
 			releaseTrack();
-		} else if (arg0.getPropertyName() == "scrollMode") {
-			setScrollMode((Boolean)arg0.getNewValue());
-		} else if (arg0.getPropertyName() == "selected") {
-			if ((Boolean)arg0.getNewValue() == true) {
-				for (Track<?> currentTrack : trackList) {
-					if (currentTrack != arg0.getSource()) {
-						currentTrack.setSelected(false);
-					}
+		} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
+			setScrollMode(true);
+		} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
+			setScrollMode(false);
+		} else if (evt.getEventType() == TrackEventType.SELECTED) {
+			for (Track<?> currentTrack : trackList) {
+				if (currentTrack != evt.getSource()) {
+					currentTrack.setSelected(false);
 				}
-				selectedTrack = (Track<?>)arg0.getSource();
-			} else {
-				selectedTrack = null;
 			}
+			selectedTrack = (Track<?>)evt.getSource();
+		} else if (evt.getEventType() == TrackEventType.UNSELECTED) {
+			selectedTrack = null;
 		}
 	}
 
@@ -440,7 +445,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 
 		trackList[index] = track;
 		trackList[index].setTrackNumber(index + 1);
-		trackList[index].addPropertyChangeListener(this);
+		trackList[index].addTrackListener(this);
 
 		trackList[index].registerToEventGenerators();
 
@@ -526,8 +531,8 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		for(int i = 0; i < trackList.length; i++) {
 			trackList[i].setTrackNumber(i + 1);
 			jpTrackList.add(trackList[i]);
-			if (trackList[i].getPropertyChangeListeners().length == 0) {
-				trackList[i].addPropertyChangeListener(this);
+			if (trackList[i].getTrackListeners().length == 0) {
+				trackList[i].addTrackListener(this);
 			}
 		}
 		jpTrackList.revalidate();
@@ -963,7 +968,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 				trackList[i - 1] = trackList[i];
 			}
 			trackList[trackList.length - 1] = new EmptyTrack(trackList.length);
-			trackList[trackList.length - 1].addPropertyChangeListener(this);
+			trackList[trackList.length - 1].addTrackListener(this);
 
 			selectedTrack = null;
 			rebuildPanel();
@@ -1065,7 +1070,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 			trackList[i + 1] = trackList[i];
 		}
 		trackList[trackIndex] = new EmptyTrack(trackList.length);
-		trackList[trackIndex].addPropertyChangeListener(this);
+		trackList[trackIndex].addTrackListener(this);
 		selectedTrack = null;
 		rebuildPanel();
 	}
@@ -1128,5 +1133,37 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 	 */
 	public Track<?> getCopiedTrack() {
 		return copiedTrack;
+	}
+
+
+	@Override
+	public void addTrackListener(TrackListener trackListener) {
+		if (!trackListeners.contains(trackListener)) {
+			trackListeners.add(trackListener);
+		}
+	}
+
+
+	@Override
+	public TrackListener[] getTrackListeners() {
+		TrackListener[] listeners = new TrackListener[trackListeners.size()];
+		return trackListeners.toArray(listeners);
+	}
+
+
+	@Override
+	public void removeTrackListener(TrackListener trackListener) {
+		trackListeners.remove(trackListener);
+	}
+
+
+	/**
+	 * Notifies all the track listeners that a track has changed
+	 * @param evt track event
+	 */
+	public void notifyTrackListeners(TrackEvent evt) {
+		for (TrackListener listener: trackListeners) {
+			listener.trackChanged(evt);
+		}
 	}
 }

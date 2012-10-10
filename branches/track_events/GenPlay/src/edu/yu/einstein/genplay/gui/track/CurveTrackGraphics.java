@@ -36,6 +36,7 @@ import edu.yu.einstein.genplay.core.enums.GraphicsType;
 import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.track.drawer.CurveDrawer;
 import edu.yu.einstein.genplay.util.History;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -263,7 +264,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @param trackColor the color of the track to set
 	 */
 	protected final void setTrackColor(Color trackColor) {
-		firePropertyChange("trackColor", this.trackColor, trackColor);
+		notifyTrackListeners(TrackEventType.COLOR_CHANGED);
 		this.trackColor = trackColor;
 		this.repaint();
 	}
@@ -272,7 +273,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @param typeOfGraph the type of the graph to set
 	 */
 	protected final void setTypeOfGraph(GraphicsType typeOfGraph) {
-		firePropertyChange("typeOfGraph", this.typeOfGraph, typeOfGraph);
+		notifyTrackListeners(TrackEventType.GRAPH_TYPE_CHANGED);
 		this.typeOfGraph = typeOfGraph;
 		this.repaint();
 	}

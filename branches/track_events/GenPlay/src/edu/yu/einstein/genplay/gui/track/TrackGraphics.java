@@ -34,10 +34,10 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -53,6 +53,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.track.drawer.TrackHeaderDrawer;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -65,7 +69,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @version 0.1
  * @param <T> type of data
  */
-public abstract class TrackGraphics<T> extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowListener {
+public abstract class TrackGraphics<T> extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, GenomeWindowListener, TrackEventsGenerator {
 
 
 	/**
@@ -125,13 +129,13 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	transient private boolean				isScrollMode = false;			// true if the scroll mode is on
 	transient private int					scrollModeIntensity = 0;		// Intensity of the scroll.
 	transient private ScrollModeThread 		scrollModeThread; 				// Thread executed when the scroll mode is on
-	private ScoredChromosomeWindowList		mask = null;				// stripes to display on the track
+	private ScoredChromosomeWindowList		mask = null;					// stripes to display on the track
 	protected T 							data;							// data showed in the track
 	private String 							genomeName;						// genome on which the track is based (ie aligned on)
 	private TrackHeaderDrawer				trackHeaderDrawer;				// the track header drawer
 	protected ProjectWindow					projectWindow;					// instance of the genome window manager
 	private MultiGenomeDrawer				multiGenomeDrawer = null;		// the multi genome drawer manages all MG graphics
-
+	private List<TrackListener> 			trackListeners;					// list of track listeners
 
 	/**
 	 * Creates an instance of {@link TrackGraphics}
@@ -151,6 +155,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		addMouseMotionListener(this);
 		addMouseWheelListener(this);
 		multiGenomeInitializing();
+		trackListeners = new ArrayList<TrackListener>();
 	}
 
 
@@ -325,7 +330,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 
 	/**
-	 * Calls firePropertyChange with a new {@link GenomeWindow} center where the mouse double clicked.
+	 * Tells the genome window manager if the window is changed.  Show the stripe info in the case of a right click on a stripe in a multi-genome project
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -397,8 +402,10 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 	@Override
 	public void mouseMoved(final MouseEvent e) {
-		if ((isScrollMode) && (getMousePosition() != null)) {
-			scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
+		if (isScrollMode) {
+			try {
+				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
+			} catch (NullPointerException exception) {} // sometimes the getMousePosition has time to become null between the test and the getMousePosition().x
 		} else if ((multiGenomeDrawer != null) && multiGenomeDrawer.isOverVariant(getHeight(), e)) {
 			repaint();
 		}
@@ -422,11 +429,11 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
 				scrollModeThread = new ScrollModeThread();
 				scrollModeThread.start();
-				firePropertyChange("scrollMode", false, true);
+				notifyTrackListeners(TrackEventType.SCROLL_MODE_TURNED_ON);
 			} else {
 				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 				scrollModeThread = null;
-				firePropertyChange("scrollMode", true, false);
+				notifyTrackListeners(TrackEventType.SCROLL_MODE_TURNED_OFF);
 			}
 		}
 	}
@@ -564,6 +571,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		fm = getFontMetrics(new Font(FONT_NAME, Font.PLAIN, FONT_SIZE));
+		trackListeners = new ArrayList<TrackListener>();
 	}
 
 
@@ -584,8 +592,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * Removes all the listeners.  Can be overridden.
 	 */
 	protected void delete() {
-		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
-			removePropertyChangeListener(curList);
+		for (TrackListener curList: getTrackListeners())	{
+			removeTrackListener(curList);
 		}
 	}
 
@@ -626,5 +634,40 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	public static int getTrackGraphicsWidth() {
 		return trackGraphicsWidth;
+	}
+	
+	
+
+
+	@Override
+	public void addTrackListener(TrackListener trackListener) {
+		if (!trackListeners.contains(trackListener)) {
+			trackListeners.add(trackListener);
+		}
+	}
+
+
+	@Override
+	public TrackListener[] getTrackListeners() {
+		TrackListener[] listeners = new TrackListener[trackListeners.size()];
+		return trackListeners.toArray(listeners);
+	}
+
+
+	@Override
+	public void removeTrackListener(TrackListener trackListener) {
+		trackListeners.remove(trackListener);
+	}
+	
+	
+	/**
+	 * Notify all the track listener that the track changed
+	 * @param trackEventType track event type
+	 */
+	public void notifyTrackListeners(TrackEventType trackEventType) {
+		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
+		for (TrackListener listener: trackListeners) {
+			listener.trackChanged(trackEvent);
+		}
 	}
 }

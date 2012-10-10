@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.event.trackEvent;
 
 import java.util.EventObject;
 
-import edu.yu.einstein.genplay.core.enums.TrackEventEnum;
 
 
 /**
@@ -35,22 +34,19 @@ import edu.yu.einstein.genplay.core.enums.TrackEventEnum;
 public final class TrackEvent extends EventObject {
 
 	private static final long serialVersionUID = -5909384700520572038L;	// generated ID
-	private final TrackEventsGenerator 	source;		// TrackEventsGenerator that emitted the event
-	private final TrackEventEnum 		oldEvent;	// old event
-	private final TrackEventEnum 		newEvent;	// new event
+	private final TrackEventsGenerator 	source;			// TrackEventsGenerator that emitted the event
+	private final TrackEventType 		trackEventType;	// type of the event
 
 
 	/**
 	 * Creates an instance of {@link TrackEvent}
 	 * @param source {@link TrackEventsGenerator} that emitted this event
-	 * @param oldEvent value of the {@link TrackEventEnum} before changes
-	 * @param newEvent value of the {@link TrackEventEnum} after changes
+	 * @param eventType type of the event that generated the {@link TrackEvent}
 	 */
-	public TrackEvent(TrackEventsGenerator source, TrackEventEnum oldEvent, TrackEventEnum newEvent) {
+	public TrackEvent(TrackEventsGenerator source, TrackEventType eventType) {
 		super(source);
 		this.source = source;
-		this.oldEvent = oldEvent;
-		this.newEvent = newEvent;
+		this.trackEventType = eventType;
 	}
 
 
@@ -64,29 +60,9 @@ public final class TrackEvent extends EventObject {
 
 
 	/**
-	 * @return the oldEvent
+	 * @return the type of the event that generated the {@link TrackEvent}
 	 */
-	public final TrackEventEnum getOldEvent() {
-		return oldEvent;
+	public final TrackEventType getEventType() {
+		return trackEventType;
 	}
-
-
-	/**
-	 * @return the newEvent
-	 */
-	public final TrackEventEnum getNewEvent() {
-		return newEvent;
-	}
-
-
-	/**
-	 * @return true if the new and old events are different, false otherwise
-	 */
-	public boolean eventChanged() {
-		if ((oldEvent == null) && (newEvent != null)) {
-			return true;
-		}
-		return !oldEvent.equals(newEvent);
-	}
-
 }

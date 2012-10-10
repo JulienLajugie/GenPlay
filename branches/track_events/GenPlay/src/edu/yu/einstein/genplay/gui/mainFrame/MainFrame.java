@@ -34,8 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -72,6 +70,9 @@ import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.track.Ruler;
@@ -86,7 +87,7 @@ import edu.yu.einstein.genplay.util.Images;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class MainFrame extends JFrame implements PropertyChangeListener, GenomeWindowListener, ActionListener {
+public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener, TrackListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 	private static final int VERSION_NUMBER = 688; 						// GenPlay version
@@ -135,9 +136,10 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 		projectChromosome.setCurrentChromosome(chromosome);
 		ruler = new Ruler();
 		ruler.getOptionButton().addActionListener(this);
+		ruler.addTrackListener(this);
 
 		trackList = new TrackList();
-		trackList.addPropertyChangeListener(this);
+		trackList.addTrackListener(this);
 
 		controlPanel = new ControlPanel();
 
@@ -301,13 +303,19 @@ public final class MainFrame extends JFrame implements PropertyChangeListener, G
 
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void trackChanged(TrackEvent evt) {
 		if (isEnabled()) {
-			if (evt.getPropertyName() == "scrollMode") {
+			if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
 				if (evt.getSource() == ruler) {
-					trackList.setScrollMode((Boolean) evt.getNewValue());
-				} else if (evt.getSource() == trackList) {
-					ruler.setScrollMode((Boolean) evt.getNewValue());
+					trackList.setScrollMode(true);
+				} else {
+					ruler.setScrollMode(true);
+				}
+			} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
+				if (evt.getSource() == ruler) {
+					trackList.setScrollMode(false);
+				} else {
+					ruler.setScrollMode(false);
 				}
 			}
 		}
