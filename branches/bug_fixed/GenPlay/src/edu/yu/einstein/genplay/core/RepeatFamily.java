@@ -23,8 +23,9 @@ package edu.yu.einstein.genplay.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
 
 /**
  * The RepeatFamily class provides a representation of a family of repeats.
@@ -34,8 +35,8 @@ import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 public final class RepeatFamily implements Serializable, Comparable<RepeatFamily> {
 
 	private static final long serialVersionUID = -7691967168795920365L; // generated ID
-	private final String 						name;			// Name of the family of repeat
-	private final ArrayList<SimpleChromosomeWindow> repeatList;		// 1 list of repeat per chromosome
+	private final String 					name;			// Name of the family of repeat
+	private final List<ChromosomeWindow> 	repeatList;		// 1 list of repeat per chromosome
 
 
 	/**
@@ -44,7 +45,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	 */
 	public RepeatFamily(String name) {
 		this.name = name;
-		repeatList = new ArrayList<SimpleChromosomeWindow>();
+		repeatList = new ArrayList<ChromosomeWindow>();
 	}
 
 
@@ -60,7 +61,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	 * Adds a repeat to the list
 	 * @param repeat a repeat
 	 */
-	public void addRepeat(SimpleChromosomeWindow repeat) {
+	public void addRepeat(ChromosomeWindow repeat) {
 		repeatList.add(repeat);
 	}
 
@@ -70,7 +71,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	 * @param index index of the repeat to return
 	 * @return the repeat at the specified position in this list
 	 */
-	public SimpleChromosomeWindow getRepeat(int index) {
+	public ChromosomeWindow getRepeat(int index) {
 		return repeatList.get(index);
 	}
 
@@ -78,7 +79,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 	/**
 	 * @return the list of repeat
 	 */
-	public ArrayList<SimpleChromosomeWindow> getRepeatList() {
+	public List<ChromosomeWindow> getRepeatList() {
 		return repeatList;
 	}
 
@@ -104,7 +105,7 @@ public final class RepeatFamily implements Serializable, Comparable<RepeatFamily
 		String info = "";
 		info += "Family name: " + name + "\n";
 		info += "Number of repeats: " + repeatList.size() + "\n";
-		for (SimpleChromosomeWindow repeat: repeatList) {
+		for (ChromosomeWindow repeat: repeatList) {
 			info += "(" + repeat.getStart() + ", " + repeat.getStop() + ") ";
 		}
 		return info;

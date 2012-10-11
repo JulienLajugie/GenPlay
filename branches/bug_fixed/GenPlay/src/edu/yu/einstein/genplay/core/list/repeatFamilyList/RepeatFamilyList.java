@@ -34,6 +34,7 @@ import java.util.concurrent.ExecutionException;
 
 import edu.yu.einstein.genplay.core.RepeatFamily;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.chromosomeWindow.ChromosomeWindow;
 import edu.yu.einstein.genplay.core.chromosomeWindow.SimpleChromosomeWindow;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.DisplayableListOfLists;
@@ -208,7 +209,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @return The index of a Repeat with a position start equals to value.
 	 * Index of the first Repeat with a start position superior to value if nothing found.
 	 */
-	private int findStart(ArrayList<SimpleChromosomeWindow> list, int value, int indexStart, int indexStop) {
+	private int findStart(List<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -231,7 +232,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 	 * @return The index of a Repeat with a position stop equals to value.
 	 * Index of the first Repeat with a stop position superior to value if nothing found.
 	 */
-	private int findStop(ArrayList<SimpleChromosomeWindow> list, int value, int indexStart, int indexStop) {
+	private int findStop(List<ChromosomeWindow> list, int value, int indexStart, int indexStop) {
 		int middle = (indexStop - indexStart) / 2;
 		if (indexStart == indexStop) {
 			return indexStart;
@@ -251,7 +252,7 @@ public final class RepeatFamilyList extends DisplayableListOfLists<RepeatFamily,
 			return null;
 		}
 
-		ArrayList<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
+		List<RepeatFamily> resultList = new ArrayList<RepeatFamily>();
 
 		for (RepeatFamily currentFamily : fittedDataList) {
 			int indexStart = findStart(currentFamily.getRepeatList(), start, 0, currentFamily.getRepeatList().size());
