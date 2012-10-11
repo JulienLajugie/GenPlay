@@ -22,11 +22,13 @@
 package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Graphics;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 
 
 /**
@@ -34,7 +36,7 @@ import java.io.ObjectOutputStream;
  * @author Julien Lajugie
  * @version 0.1
  */
-public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[]> implements PropertyChangeListener {
+public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[]> implements TrackListener {
 
 	private static final long serialVersionUID = 6508763050002286457L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -69,7 +71,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 		super(data, 0, 1);
 		// add repaint listeners so the multicurves track is repainted when on of the curves track is repainted
 		for (Track<?> currentTrack: data) {
-			currentTrack.trackGraphics.addPropertyChangeListener(this);
+			currentTrack.trackGraphics.addTrackListener(this);
 		}
 		setYMin(findYMin());
 		setYMax(findYMax());
@@ -83,7 +85,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 	@Override
 	protected void delete() {
 		for (Track<?> currentTrack: data) {
-			currentTrack.trackGraphics.removePropertyChangeListener(this);
+			currentTrack.trackGraphics.removeTrackListener(this);
 		}
 		super.delete();
 	}
@@ -108,9 +110,9 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		String propertyName = evt.getPropertyName();
-		if ((propertyName.equals("binList")) || (propertyName.equals("trackColor")) || (propertyName.equals("typeOfGraph"))) {
+	public void trackChanged(TrackEvent evt) {
+		TrackEventType trackEventType = evt.getEventType();
+		if ((trackEventType == TrackEventType.COLOR_CHANGED) || (trackEventType == TrackEventType.GRAPH_TYPE_CHANGED)) {
 			repaint();
 		}
 	}

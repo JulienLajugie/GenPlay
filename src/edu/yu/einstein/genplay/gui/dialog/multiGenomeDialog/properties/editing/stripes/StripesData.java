@@ -85,14 +85,14 @@ public class StripesData implements Serializable {
 
 		TrackList trackList = MainFrame.getInstance().getTrackList();
 		for (Track<?> currentTrack: this.trackList) {
-			currentTrack.removePropertyChangeListener(trackList);
+			currentTrack.removeTrackListener(trackList);
 		}
 
 		out.writeObject(this.trackList);
 
 		// rebuild the references to the listener
 		for (Track<?> currentTrack: this.trackList) {
-			currentTrack.addPropertyChangeListener(trackList);
+			currentTrack.addTrackListener(trackList);
 		}
 	}
 

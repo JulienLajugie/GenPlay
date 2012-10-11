@@ -34,10 +34,16 @@ import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -45,7 +51,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class TrackHandle extends JPanel implements MouseListener, MouseMotionListener {
+public final class TrackHandle extends JPanel implements MouseListener, MouseMotionListener, TrackEventsGenerator {
 
 	private static final long serialVersionUID = -1789820124134205454L;						// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;								// saved format version
@@ -59,9 +65,12 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 
 	private int					trackNumber;				// number of the track
 	private JLabel 				jlNumber;					// label with the number of the track
-	private int 				startDragY = 0; 			// height of the mouse when start draggin
+	private int 				startDragY = 0; 			// height of the mouse when start dragging
+	private int					resizeHeight = 0;			// seize of the track after resizing by dragging
 	private boolean 			trackDragged = false;		// true if the user is dragging the track
 	private boolean				selected = false;			// true if the track is selected
+
+	private List<TrackListener> trackListeners;				// list of track listeners
 
 
 	/**
@@ -89,6 +98,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 		startDragY = 0;
 		trackDragged = false;
 		selected = false;
+		trackListeners = new ArrayList<TrackListener>();
 	}
 
 
@@ -99,6 +109,9 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	public TrackHandle(int number) {
 		setBackground(BACKGROUND_COLOR);
 		setPreferredSize(new Dimension(HANDLE_WIDTH - 1, 0));
+
+		trackListeners = new ArrayList<TrackListener>();
+
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
@@ -121,15 +134,16 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 				selected = !selected;
 				if (selected) {
 					setBackground(SELECTED_COLOR);
+					notifyTrackListeners(TrackEventType.SELECTED);
 				} else {
 					setBackground(BACKGROUND_COLOR);
+					notifyTrackListeners(TrackEventType.UNSELECTED);
 				}
-				firePropertyChange("selected", !selected, selected);
 			}
 			if (arg0.getButton() == MouseEvent.BUTTON1) {
 				if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
 					if (arg0.getClickCount() == 2) {
-						firePropertyChange("defaultSize", false, true);
+						notifyTrackListeners(TrackEventType.SIZE_SET_TO_DEFAULT);
 					}
 				}
 			}
@@ -169,10 +183,10 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 			if (arg0.getButton() == MouseEvent.BUTTON3) {
 				if (!selected) {
 					selected = true;
-					firePropertyChange("selected", false, true);
+					notifyTrackListeners(TrackEventType.SELECTED);
 				}
 				setBackground(ROLLOVER_COLOR);
-				firePropertyChange("trackRightClicked", false, true);
+				notifyTrackListeners(TrackEventType.RIGHT_CLICKED);
 			}
 		}
 	}
@@ -183,7 +197,7 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 		startDragY = 0;
 		if (trackDragged) {
 			trackDragged = false;
-			firePropertyChange("trackDraggedReleased", false, true);
+			notifyTrackListeners(TrackEventType.RELEASED);
 		}
 	}
 
@@ -191,11 +205,12 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		if (startDragY != 0) {
-			firePropertyChange("resize", 0, arg0.getY() - startDragY);
+			resizeHeight = arg0.getY() - startDragY;
+			notifyTrackListeners(TrackEventType.RESIZED);
 			startDragY = arg0.getY();
 		}
 		if (trackDragged) {
-			firePropertyChange("trackDragged", false, true);
+			notifyTrackListeners(TrackEventType.DRAGGED);
 		}
 	}
 
@@ -275,5 +290,46 @@ public final class TrackHandle extends JPanel implements MouseListener, MouseMot
 	 */
 	public boolean isSelected() {
 		return selected;
+	}
+
+
+	@Override
+	public void addTrackListener(TrackListener trackListener) {
+		if (!trackListeners.contains(trackListener)) {
+			trackListeners.add(trackListener);
+		}
+	}
+
+
+	@Override
+	public TrackListener[] getTrackListeners() {
+		TrackListener[] listeners = new TrackListener[trackListeners.size()];
+		return trackListeners.toArray(listeners);
+	}
+
+
+	@Override
+	public void removeTrackListener(TrackListener trackListener) {
+		trackListeners.remove(trackListener);
+	}
+	
+	
+	/**
+	 * Notify all the track listener that the track changed
+	 * @param trackEventType track event type
+	 */
+	public void notifyTrackListeners(TrackEventType trackEventType) {
+		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
+		for (TrackListener listener: trackListeners) {
+			listener.trackChanged(trackEvent);
+		}
+	}
+
+
+	/**
+	 * @return the height of the resizing when the handle is dragged
+	 */
+	public int getResizeHeight() {
+		return resizeHeight;
 	}
 }

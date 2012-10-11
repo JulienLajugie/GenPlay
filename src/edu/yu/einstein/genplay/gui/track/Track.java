@@ -24,14 +24,13 @@ package edu.yu.einstein.genplay.gui.track;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -48,6 +47,10 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -59,7 +62,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * @author Julien Lajugie
  * @version 0.1
  */
-public abstract class Track<T> extends JPanel implements PropertyChangeListener, GenomeWindowListener {
+public abstract class Track<T> extends JPanel implements GenomeWindowListener, TrackListener, TrackEventsGenerator {
 
 	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -90,7 +93,9 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
 	protected String 				genomeName;							// genome on which the track is based (ie aligned on)
 
+	private List<TrackListener> trackListeners;		// list of track listeners
 
+	
 	/**
 	 * Constructor
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
@@ -103,6 +108,9 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 		// create graphics
 		trackGraphics = createsTrackGraphics(data);
+
+		// create list of track listener
+		trackListeners = new ArrayList<TrackListener>();
 
 		// registered the listener to the genome window manager
 		registerToEventGenerators();
@@ -134,8 +142,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * Adds the relative listeners.
 	 */
 	public void registerToEventGenerators () {
-		trackHandle.addPropertyChangeListener(this);
-		trackGraphics.addPropertyChangeListener(this);
+		trackHandle.addTrackListener(this);
+		trackGraphics.addTrackListener(this);
 		registerToGenomeWindow();
 	}
 
@@ -166,19 +174,19 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	public Track<?> deepClone() throws IOException, ClassNotFoundException {
 		// we save in a local variable and then remove the listeners
 		// before cloning the track in order to avoid cloning the listeners
-		PropertyChangeListener[] pclSaver = getPropertyChangeListeners();
-		for (PropertyChangeListener curList: pclSaver)	{
-			removePropertyChangeListener(curList);
+		TrackListener[] tlSaver = getTrackListeners();
+		for (TrackListener curList: tlSaver)	{
+			removeTrackListener(curList);
 		}
 		// we remove the listeners of the track graphics as well
-		PropertyChangeListener[] trackGraphicsPclSaver = trackGraphics.getPropertyChangeListeners();
-		for (PropertyChangeListener curList: trackGraphicsPclSaver)	{
-			trackGraphics.removePropertyChangeListener(curList);
+		TrackListener[] trackGraphicsTlSaver = trackGraphics.getTrackListeners();
+		for (TrackListener curList: trackGraphicsTlSaver)	{
+			trackGraphics.removeTrackListener(curList);
 		}
 		// we remove the listeners of the track handle as well
-		PropertyChangeListener[] trackHandlePclSaver = trackHandle.getPropertyChangeListeners();
-		for (PropertyChangeListener curList: trackHandlePclSaver)	{
-			trackHandle.removePropertyChangeListener(curList);
+		TrackListener[] trackHandleTlSaver = trackHandle.getTrackListeners();
+		for (TrackListener curList: trackHandleTlSaver)	{
+			trackHandle.removeTrackListener(curList);
 		}
 		// we remove listeners from the genome window manager
 		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(this);
@@ -194,14 +202,14 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 		// we restore the listeners
-		for (PropertyChangeListener curList: pclSaver)	{
-			addPropertyChangeListener(curList);
+		for (TrackListener curList: tlSaver)	{
+			addTrackListener(curList);
 		}
-		for (PropertyChangeListener curList: trackGraphicsPclSaver) {
-			trackGraphics.addPropertyChangeListener(curList);
+		for (TrackListener curList: trackGraphicsTlSaver) {
+			trackGraphics.addTrackListener(curList);
 		}
-		for (PropertyChangeListener curList: trackHandlePclSaver) {
-			trackHandle.addPropertyChangeListener(curList);
+		for (TrackListener curList: trackHandleTlSaver) {
+			trackHandle.addTrackListener(curList);
 		}
 		registerToGenomeWindow();
 
@@ -236,6 +244,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		trackHandle = (TrackHandle) in.readObject();
 		trackGraphics = (TrackGraphics<T>) in.readObject();
 		genomeName = (String) in.readObject();
+		trackListeners = new ArrayList<TrackListener>();
+		registerToEventGenerators();
 	}
 
 
@@ -435,23 +445,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	}
 
 
-	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		if (arg0.getPropertyName() == "resize") {
-			int newHeight = getPreferredSize().height + (Integer)arg0.getNewValue();
-			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
-			newHeight = Math.max(TRACK_MINIMUM_HEIGHT, newHeight);
-			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
-			revalidate();
-		} else if (arg0.getPropertyName() == "defaultSize") {
-			setPreferredSize(new Dimension(getPreferredSize().width, defaultHeight));
-			revalidate();
-		} else {
-			firePropertyChange(arg0.getPropertyName(), arg0.getOldValue(), arg0.getNewValue());
-		}
-	}
-
-
 	/**
 	 * Save the {@link TrackGraphics} as an image
 	 * @param file output file
@@ -566,8 +559,8 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public void delete() {
 		trackGraphics.delete();
-		for (PropertyChangeListener curList: getPropertyChangeListeners())	{
-			removePropertyChangeListener(curList);
+		for (TrackListener curList: getTrackListeners())	{
+			removeTrackListener(curList);
 		}
 	}
 
@@ -585,5 +578,56 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public MultiGenomeDrawer getMultiGenomeDrawer() {
 		return trackGraphics.getMultiGenomeDrawer();
+	}
+	
+	
+	@Override
+	public void addTrackListener(TrackListener trackListener) {
+		if (!trackListeners.contains(trackListener)) {
+			trackListeners.add(trackListener);
+		}
+	}
+	
+	
+	@Override
+	public TrackListener[] getTrackListeners() {
+		TrackListener[] listeners = new TrackListener[trackListeners.size()];
+		return trackListeners.toArray(listeners);
+	}
+
+
+	@Override
+	public void removeTrackListener(TrackListener trackListener) {
+		trackListeners.remove(trackListener);
+	}
+	
+	
+	/**
+	 * Notifies all the track listeners that the track has changed
+	 * @param trackEventType track event type
+	 */
+	public void notifyTrackListeners(TrackEventType trackEventType) {
+		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
+		for (TrackListener listener: trackListeners) {
+			listener.trackChanged(trackEvent);
+		}
+	}
+	
+	
+	@Override
+	public void trackChanged(TrackEvent arg0) {
+		if (arg0.getEventType() == TrackEventType.RESIZED) {
+			int newHeight = getPreferredSize().height + trackHandle.getResizeHeight();
+			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
+			newHeight = Math.max(TRACK_MINIMUM_HEIGHT, newHeight);
+			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
+			revalidate();
+		} else if (arg0.getEventType() == TrackEventType.SIZE_SET_TO_DEFAULT) {
+			setPreferredSize(new Dimension(getPreferredSize().width, defaultHeight));
+			revalidate();
+		} else {
+			// we relay the other events to the element that contains this track
+			notifyTrackListeners(arg0.getEventType());
+		}
 	}
 }
