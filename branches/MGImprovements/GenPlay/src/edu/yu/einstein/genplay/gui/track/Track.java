@@ -40,6 +40,8 @@ import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.converter.ConverterFactory;
+import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
@@ -389,26 +391,6 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 
 
 	/**
-	 * Enable the serialization of the stripes list for multi genome project.
-	 */
-	/*public void enableStripeListSerialization () {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().enableStripeListSerialization();
-		}
-	}*/
-
-
-	/**
-	 * Disable the serialization of the stripes list for multi genome project.
-	 */
-	/*public void disableStripeListSerialization () {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().disableStripeListSerialization();
-		}
-	}*/
-
-
-	/**
 	 * @return the filtersList
 	 */
 	public List<MGFilter> getFiltersList() {
@@ -585,5 +567,22 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 */
 	public MultiGenomeDrawer getMultiGenomeDrawer() {
 		return trackGraphics.getMultiGenomeDrawer();
+	}
+
+
+	/**
+	 * @return true if the track can be converted, false otherwise
+	 */
+	public boolean isConvertible () {
+		boolean result = false;
+		if (getMask() != null) {
+			result = true;
+		} else {
+			T data = getData();
+			if ((data != null) && (data instanceof ChromosomeListOfLists<?>)) {
+				result = ConverterFactory.getTrackTypes((ChromosomeListOfLists<?>) data) != null;
+			}
+		}
+		return result;
 	}
 }

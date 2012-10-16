@@ -196,7 +196,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		add(jmMultiGenome);
 
 
-		jmiConvert.setEnabled((trackList.getSelectedTrack().getData() != null) || (trackList.getSelectedTrack().getMask() != null));
+		jmiConvert.setEnabled(trackList.getSelectedTrack().isConvertible());
 		jmiPaste.setEnabled(trackList.isPasteEnable());
 		jmiPasteSpecial.setEnabled(trackList.isPasteEnable());
 

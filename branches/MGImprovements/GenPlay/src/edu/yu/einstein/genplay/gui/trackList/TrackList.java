@@ -46,7 +46,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountWindows;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAWindowCount;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndex;
@@ -288,7 +288,7 @@ public final class TrackList extends JScrollPane implements PropertyChangeListen
 		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
-		getActionMap().put(SCWLACountWindows.ACTION_KEY, new SCWLACountWindows());
+		getActionMap().put(SCWLAWindowCount.ACTION_KEY, new SCWLAWindowCount());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
 		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());

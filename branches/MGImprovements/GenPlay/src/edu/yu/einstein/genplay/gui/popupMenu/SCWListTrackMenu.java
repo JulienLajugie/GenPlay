@@ -27,7 +27,7 @@ import javax.swing.JMenuItem;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountWindows;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAWindowCount;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndex;
@@ -105,7 +105,7 @@ public class SCWListTrackMenu extends CurveTrackMenu {
 		jmiAddConstant = new JMenuItem(actionMap.get(SCWLAAddConstant.ACTION_KEY));
 		jmiAverage = new JMenuItem(actionMap.get(SCWLAAverage.ACTION_KEY));
 		jmiCountNonNullLength = new JMenuItem(actionMap.get(SCWLACountNonNullLength.ACTION_KEY));
-		jmiCountWindows = new JMenuItem(actionMap.get(SCWLACountWindows.ACTION_KEY));
+		jmiCountWindows = new JMenuItem(actionMap.get(SCWLAWindowCount.ACTION_KEY));
 		jmiDivideConstant = new JMenuItem(actionMap.get(SCWLADivideConstant.ACTION_KEY));
 		jmiFilter  = new JMenuItem(actionMap.get(SCWLAFilter.ACTION_KEY));
 		jmiIndex = new JMenuItem(actionMap.get(SCWLAIndex.ACTION_KEY));

@@ -27,7 +27,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
-import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOCountWindows;
+import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOWindowCount;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
@@ -38,10 +38,10 @@ import edu.yu.einstein.genplay.gui.track.SCWListTrack;
  * Counts the number of windows in a {@link ScoredChromosomeWindowList}
  * @author Nicolas Fourel
  */
-public class SCWLACountWindows extends TrackListActionOperationWorker<Long> {
+public class SCWLAWindowCount extends TrackListActionOperationWorker<Long> {
 
 	private static final long serialVersionUID = -1773399821513504625L;						// generated ID
-	private static final String 	ACTION_NAME = "Total Windows number";					// action name
+	private static final String 	ACTION_NAME = "Window Count";					// action name
 	private static final String 	DESCRIPTION = "Sum of the total number of windows";		// tooltip
 
 
@@ -52,9 +52,9 @@ public class SCWLACountWindows extends TrackListActionOperationWorker<Long> {
 
 
 	/**
-	 * Creates an instance of {@link SCWLACountWindows}
+	 * Creates an instance of {@link SCWLAWindowCount}
 	 */
-	public SCWLACountWindows() {
+	public SCWLAWindowCount() {
 		super();
 		putValue(NAME, ACTION_NAME);
 		putValue(ACTION_COMMAND_KEY, ACTION_KEY);
@@ -69,7 +69,7 @@ public class SCWLACountWindows extends TrackListActionOperationWorker<Long> {
 			boolean[] selectedChromo = ChromosomeChooser.getSelectedChromo(getRootPane());
 			if (selectedChromo != null) {
 				ScoredChromosomeWindowList scwList = selectedTrack.getData();
-				Operation<Long> operation = new SCWLOCountWindows(scwList, selectedChromo);
+				Operation<Long> operation = new SCWLOWindowCount(scwList, selectedChromo);
 				return operation;
 			}
 		}
