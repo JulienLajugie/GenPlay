@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,6 @@ import java.util.Map;
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.ListComparator;
-import edu.yu.einstein.genplay.core.comparator.VariantDisplayComparator;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -47,9 +45,9 @@ import edu.yu.einstein.genplay.core.multiGenome.display.DisplayableVariantListMa
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeHandler;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 /**
@@ -82,6 +80,8 @@ public class MultiGenomeDrawer implements Serializable {
 
 	private VariantDisplay 					variantUnderMouse = null;		// Special display when the mouse is over a variant stripe
 	private boolean							locked;
+
+	private List<ToolTipStripeDialog> stripesDialogs;
 
 	private MultiGenomeDensityDrawer densityDrawer;
 	private MultiGenomeStripesDrawer stripesDrawer;
@@ -144,6 +144,7 @@ public class MultiGenomeDrawer implements Serializable {
 		mgFiltersList = null;
 		statistics = null;
 		locked = false;
+		stripesDialogs = new ArrayList<ToolTipStripeDialog>();
 		chromosome = getCurrentChromosome();
 	}
 
@@ -162,10 +163,10 @@ public class MultiGenomeDrawer implements Serializable {
 	public void resetVariantListMaker () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			if (allele01VariantListMaker != null) {
-				allele01VariantListMaker.resetList();
+				//allele01VariantListMaker.resetList();
 			}
 			if (allele02VariantListMaker != null) {
-				allele02VariantListMaker.resetList();
+				//allele02VariantListMaker.resetList();
 			}
 		}
 	}
@@ -229,7 +230,7 @@ public class MultiGenomeDrawer implements Serializable {
 		if (hasChromosomeChanged() || hasMultiGenomeInformationChanged(stripesList, filtersList)) {
 			chromosome = getCurrentChromosome();
 			this.statistics = null;
-			ToolTipStripeHandler.getInstance().killDialogs(this);
+			killStripesDialogs();
 			this.stripesList = stripesList;
 			this.mgFiltersList = filtersList;
 
@@ -267,8 +268,10 @@ public class MultiGenomeDrawer implements Serializable {
 			}
 
 			// Sets the list maker with the new list of variant
-			allele01VariantListMaker.setListOfVariantList(allele01VariantLists);	// we set the list maker with the temporary list
-			allele02VariantListMaker.setListOfVariantList(allele02VariantLists);	// we set the list maker with the temporary list
+			boolean showReference = MGDisplaySettings.getInstance().includeReferences();
+			boolean showFiltered = MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION;
+			allele01VariantListMaker.setListOfVariantList(allele01VariantLists, filtersList, showReference, showFiltered);	// we set the list maker with the temporary list
+			allele02VariantListMaker.setListOfVariantList(allele02VariantLists, filtersList, showReference, showFiltered);	// we set the list maker with the temporary list
 
 			//densityDrawer.updateDensityList(getFullVariantList());
 			//repaint();
@@ -320,14 +323,14 @@ public class MultiGenomeDrawer implements Serializable {
 					allele02Graphic.scale(1, -1);																				// all Y axis (vertical) coordinates must be reversed for the second allele
 					allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
 					stripesDrawer.setCurrentAllele(AlleleType.ALLELE01);
-					stripesDrawer.drawGenome(allele01Graphic, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow); 	// draw the stripes for the first allele
+					stripesDrawer.drawGenome(allele01Graphic, genomeWindow, allele01VariantListMaker.getDisplayPolicy(), allele01VariantListMaker.getFittedData(genomeWindow, xFactor)); 	// draw the stripes for the first allele
 					stripesDrawer.setCurrentAllele(AlleleType.ALLELE02);
-					stripesDrawer.drawGenome(allele02Graphic, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);	// draw the stripes for the second allele
+					stripesDrawer.drawGenome(allele02Graphic, genomeWindow, allele02VariantListMaker.getDisplayPolicy(), allele02VariantListMaker.getFittedData(genomeWindow, xFactor));	// draw the stripes for the second allele
 					stripesDrawer.drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
 				} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
-					stripesDrawer.drawGenome(g, allele01VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
+					stripesDrawer.drawGenome(g, genomeWindow, allele01VariantListMaker.getDisplayPolicy(), allele01VariantListMaker.getFittedData(genomeWindow, xFactor));					// draw its stripes
 				} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
-					stripesDrawer.drawGenome(g, allele02VariantListMaker.getFittedData(genomeWindow, xFactor), genomeWindow);					// draw its stripes
+					stripesDrawer.drawGenome(g, genomeWindow, allele02VariantListMaker.getDisplayPolicy(), allele02VariantListMaker.getFittedData(genomeWindow, xFactor));					// draw its stripes
 				}
 			} else {
 				stripesDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");
@@ -347,23 +350,25 @@ public class MultiGenomeDrawer implements Serializable {
 	public void toolTipStripe (int trackHeight, MouseEvent e) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {												// we must be in a multi genome project
 			double pos = projectWindow.screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), e.getX());	// we translate the position on the screen into a position on the genome
-			VariantDisplay variant = getDisplayableVariant(trackHeight, pos, e.getY());						// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			VariantDisplay variant = getDisplayableVariant(trackHeight, pos, e.getY());							// we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
 			if (variant != null) {																				// if a variant has been found
 				AlleleType trackAlleleType = getTrackAlleleType();												// we get the allele type of the track
 				List<VariantDisplay> variantList = null;														// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
 				if (trackAlleleType == AlleleType.BOTH) {														// if both allele are displayed,
-					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// create a copy of the variant list of the first allele
+					variantList = mergeVariantList(allele01VariantListMaker.getVariantList(), allele02VariantListMaker.getVariantList());
+					/*variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// create a copy of the variant list of the first allele
 					for (VariantDisplay currentVariant: allele02VariantListMaker.getVariantList()) {			// we add all variant from the variant list of the second allele
 						variantList.add(currentVariant);
 					}
-					Collections.sort(variantList, new VariantDisplayComparator());										// we sort the global list
+					Collections.sort(variantList, new VariantDisplayComparator());										// we sort the global list*/
 				} else if (trackAlleleType == AlleleType.ALLELE01) {											// if the first allele only is displayed
 					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// we get the copy of its list
 				} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
 					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
 				}
-				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(this, variantList);								// we create the information dialog
-				toolTip.show(variant, e.getXOnScreen(), e.getYOnScreen());							// we show it
+				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(this);									// we create the information dialog
+				stripesDialogs.add(toolTip);
+				toolTip.show(variantList, variant, e.getXOnScreen(), e.getYOnScreen());						// we show it
 			}
 		}
 	}
@@ -402,6 +407,76 @@ public class MultiGenomeDrawer implements Serializable {
 			return true;
 		}
 		return false;
+	}
+
+
+	private List<VariantDisplay> mergeVariantList (List<VariantDisplay> variantList01, List<VariantDisplay> variantList02) {
+		List<VariantDisplay> newList = new ArrayList<VariantDisplay>();
+		int index01 = 0;
+		int index02 = 0;
+		int size01 = variantList01.size();
+		int size02 = variantList02.size();
+
+		while ((index01 < size01) && (index02 < size02)) {
+			VariantDisplay variant01 = variantList01.get(index01);
+			VariantDisplay variant02 = variantList01.get(index02);
+			int start01 = variant01.getStart();
+			int start02 = variant02.getStart();
+			if (start01 < start02) {
+				newList.add(variant01);
+				index01++;
+			} else if (start02 < start01) {
+				newList.add(variant02);
+				index02++;
+			} else {
+				boolean dominant01 = variant01.isDominant(variant02);
+				boolean dominant02 = variant02.isDominant(variant01);
+				if (dominant01 && !dominant02) {
+					newList.add(variant01);
+				} else if (!dominant01 && dominant02) {
+					newList.add(variant02);
+				} else if (dominant01 && dominant02) {
+					if (variant01.equals(variant02)) {
+						newList.add(variant01);
+					} else {
+						newList.add(variant01);
+						newList.add(variant02);
+					}
+				} else {
+					System.out.println("MultiGenomeDrawer.mergeVariantList() no dominant variant, needs debugging");
+				}
+				index01++;
+				index02++;
+			}
+		}
+
+		if (index01 < size01) {
+			for (int i = index01; i < size01; i++) {
+				newList.add(variantList01.get(index01));
+			}
+		}
+
+		if (index02 < size02) {
+			for (int i = index02; i < size02; i++) {
+				newList.add(variantList02.get(index02));
+			}
+		}
+
+		return newList;
+	}
+
+
+	/**
+	 * Creates a copy of a variant list
+	 * @param variantList variant list to copy
+	 * @return copy of the variant list given in parameter
+	 */
+	private List<VariantDisplay> getCopyOfVariantList (List<VariantDisplay> variantList) {
+		List<VariantDisplay> copy = new ArrayList<VariantDisplay>();
+		for (VariantDisplay currentVariant: variantList) {
+			copy.add(currentVariant);
+		}
+		return copy;
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -515,7 +590,6 @@ public class MultiGenomeDrawer implements Serializable {
 	}
 
 
-
 	/**
 	 * @return the allele type defined for the track
 	 */
@@ -546,58 +620,11 @@ public class MultiGenomeDrawer implements Serializable {
 	}
 
 
-	/**
-	 * Creates a copy of a variant list
-	 * @param variantList variant list to copy
-	 * @return copy of the variant list given in parameter
-	 */
-	private List<VariantDisplay> getCopyOfVariantList (List<VariantDisplay> variantList) {
-		List<VariantDisplay> copy = new ArrayList<VariantDisplay>();
-		for (VariantDisplay currentVariant: variantList) {
-			copy.add(currentVariant);
+	private void killStripesDialogs () {
+		for (ToolTipStripeDialog dialog: stripesDialogs) {
+			dialog.dispose();
 		}
-		return copy;
-	}
-
-
-	/**
-	 * Enable the serialization of the stripes list for multi genome project.
-	 * The stripe list serialization generates serialization errors when lists refer to same tracks.
-	 * The lists are then not serialized and managed by the {@link MGDisplaySettings}.
-	 * This must be performed for copy/cut/paste actions, no issue in saving/loading a whole project.
-	 * This is a temporary fix while understanding more the serialization issue.
-	 */
-	/*public void enableStripeListSerialization () {
-		serializeStripeList = true;
-	}*/
-
-
-	/**
-	 * Disable the serialization of the stripes list for multi genome project.
-	 */
-	/*public void disableStripeListSerialization () {
-		serializeStripeList = false;
-	}*/
-
-
-	/**
-	 * @return a copy of the full list of variant of the track
-	 */
-	public List<VariantDisplay> getFullVariantList () {
-		AlleleType trackAlleleType = getTrackAlleleType();												// we get the allele type of the track
-		List<VariantDisplay> variantList = null;														// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
-		if (trackAlleleType == AlleleType.BOTH) {														// if both allele are displayed,
-			variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// create a copy of the variant list of the first allele
-			for (VariantDisplay currentVariant: allele02VariantListMaker.getVariantList()) {			// we add all variant from the variant list of the second allele
-				variantList.add(currentVariant);
-			}
-			Collections.sort(variantList, new VariantDisplayComparator());								// we sort the global list
-		} else if (trackAlleleType == AlleleType.ALLELE01) {											// if the first allele only is displayed
-			variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// we get the copy of its list
-		} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
-			variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
-		}
-		return variantList;
+		stripesDialogs = new ArrayList<ToolTipStripeDialog>();
 	}
 
 

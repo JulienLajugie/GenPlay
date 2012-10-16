@@ -52,12 +52,12 @@ public class ToolTipStripeDialog extends JDialog {
 	/** Dialog width */
 	public static final int WIDTH = 250;	// width of the dialog
 
-	private final VCFLineDialog 			vcfLineDialog;
-	private final List<VariantDisplay> 		variantList;		// a list of displayable variant
-	private final MultiGenomeDrawer 		multiGenomeDrawer;
+	private final VCFLineDialog 		vcfLineDialog;
+	private List<VariantDisplay> 		variantList;		// a list of displayable variant
 
 	private VariantDisplay 			currentVariant;		// the current variant object to display
 	private VCFLine 				currentLine;		// the current variant object to display
+	private int						currentIndex;
 
 	private final JPanel headerPanel;			// panel containing the global information
 	private final JPanel infoPanel;				// panel containing the INFO field information of the VCF
@@ -67,25 +67,21 @@ public class ToolTipStripeDialog extends JDialog {
 
 	/**
 	 * Constructor of {@link ToolTipStripeDialog}
-	 * @param multiGenomeDrawer the multi genome drawer requesting the dialog
-	 * @param fittedVariantList the full list of displayable variants
+	 * @param multiGenomeDrawer the multigenome drawer
 	 */
-	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer, List<VariantDisplay> fittedVariantList) {
+	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer) {
 		super(MainFrame.getInstance());
-		ToolTipStripeHandler.getInstance().addDialog(this);
-		this.multiGenomeDrawer = multiGenomeDrawer;
 		this.vcfLineDialog = new VCFLineDialog();
-		this.variantList = fittedVariantList;
 		int trackNumber = MainFrame.getInstance().getTrackList().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
 		String title = "Variant properties";
 		if (trackNumber > 0) {
 			title += " (Track " + trackNumber + ")";
 		}
+		setTitle(title);
 		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
-		setTitle(title);
 
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
@@ -119,24 +115,47 @@ public class ToolTipStripeDialog extends JDialog {
 
 	/**
 	 * Method for showing the dialog box.
-	 * @param variant	variant to show information
-	 * @param X			X position on the screen
-	 * @param Y			Y position on the screen
+	 * @param variantList 	the current variant list
+	 * @param variant 		the variant to focus on
+	 * @param X				X position on the screen
+	 * @param Y				Y position on the screen
 	 */
-	public void show (VariantDisplay variant, int X, int Y) {
+	public void show (List<VariantDisplay> variantList, VariantDisplay variant, int X, int Y) {
+		this.variantList = variantList;
 		this.currentVariant = variant;
-		this.currentLine = variant.getVCFLine();
-		if (currentLine != null) {
-			this.currentLine.processForAnalyse();
-		}
-		initContent();
+		refreshDialog();
 		setLocation(X, Y);
 		setVisible(true);
 	}
 
 
 	/**
-	 * Initializes the content of the dialog box according to a variant
+	 * initializes the dialog content and moves the screen onto the related variant.
+	 * @param newVariant	the variant to display
+	 */
+	private void refreshDialog () {
+		// Initialize the current variant
+		if (currentVariant == null) {
+			currentLine = null;
+			currentIndex = -1;
+		} else {
+			this.currentLine = currentVariant.getVCFLine();
+			if (currentLine != null) {
+				this.currentLine.processForAnalyse();
+			}
+			this.currentIndex = getVariantIndex(currentVariant);
+		}
+
+		// Initialize the content of the dialog
+		initContent();
+
+		// Relocate the screen position
+		relocateScreenPosition();
+	}
+
+
+	/**
+	 * Initializes the content of the dialog box according to a variant.
 	 */
 	private void initContent () {
 		VariantInfo variantInfo;
@@ -168,6 +187,35 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
+	 * Locates the screen position to the start position of the actual variant.
+	 */
+	private void relocateScreenPosition () {
+		int variantStart = currentVariant.getStart();
+		GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
+		int width = currentGenomeWindow.getSize();
+		int startWindow = variantStart - (width / 2);
+		int stopWindow = startWindow + width;
+		Chromosome chromosome = currentGenomeWindow.getChromosome();
+		GenomeWindow genomeWindow = new GenomeWindow(chromosome, startWindow, stopWindow);
+		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
+	}
+
+
+	/**
+	 * @param variant the current variant
+	 * @return	the index in the variant list of the variant
+	 */
+	private int getVariantIndex (VariantDisplay variant) {
+		for (int i = 0; i < variantList.size(); i++) {
+			if (variantList.get(i).equals(variant)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+
+	/**
 	 * Updates a panel with another one
 	 * @param previousPanel	panel to update
 	 * @param newPanel		new panel
@@ -191,8 +239,13 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @return true if it moves to the next variant, false otherwise
 	 */
 	protected boolean goToNextVariant () {
-		VariantDisplay newVariant = getNextVariant();
-		return initVariant(newVariant);
+		if ((currentIndex + 1) >= variantList.size()) {
+			return false;
+		}
+		currentIndex++;
+		currentVariant = variantList.get(currentIndex);
+		refreshDialog();
+		return true;
 	}
 
 
@@ -201,159 +254,21 @@ public class ToolTipStripeDialog extends JDialog {
 	 * @return true if it moves to the previous variant, false otherwise
 	 */
 	protected boolean goToPreviousVariant () {
-		VariantDisplay newVariant = getPreviousVariant();
-		return initVariant(newVariant);
-	}
-
-
-	/**
-	 * initializes the dialog content and moves the screen onto the related variant.
-	 * @param newVariant	the variant to display
-	 * @return				if it moves to the previous variant, false otherwise
-	 */
-	private boolean initVariant (VariantDisplay newVariant) {
-		if (newVariant == null) {
+		if ((currentIndex - 1) < 0) {
 			return false;
 		}
-		this.currentVariant = newVariant;
-		this.currentLine = currentVariant.getVCFLine();
-		if (currentLine != null) {
-			this.currentLine.processForAnalyse();
-		}
-
-		initContent();
-		int variantStart = currentVariant.getStart();
-		GenomeWindow currentGenomeWindow = ProjectManager.getInstance().getProjectWindow().getGenomeWindow();
-		int width = currentGenomeWindow.getSize();
-		int startWindow = variantStart - (width / 2);
-		int stopWindow = startWindow + width;
-		Chromosome chromosome = currentGenomeWindow.getChromosome();
-		GenomeWindow genomeWindow = new GenomeWindow(chromosome, startWindow, stopWindow);
-		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
+		currentIndex--;
+		currentVariant = variantList.get(currentIndex);
+		refreshDialog();
 		return true;
 	}
 
 
 	/**
-	 * @param variant the current variant
-	 * @return	the index in the variant list of the variant
+	 * Shows the vcf line dialog
 	 */
-	private int getVariantIndex (VariantDisplay variant) {
-		for (int i = 0; i < variantList.size(); i++) {
-			if (variantList.get(i).equals(variant)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-
-	/**
-	 * @param currentVariant	the current variant
-	 * @return the previous variant compare to the current variant
-	 */
-	private VariantDisplay getPreviousVariant () {
-		VariantDisplay result;
-		int currentIndex = getVariantIndex(currentVariant);
-		int previousIndex = currentIndex - 1;
-		if (previousIndex >= 0) {
-			result = variantList.get(previousIndex);
-			if (currentVariant.isReference()) {
-				previousIndex = getPreviousValidIndex(previousIndex);
-				result = variantList.get(previousIndex);
-			}
-		} else {
-			result = null;
-		}
-		return result;
-	}
-
-
-	/**
-	 * @param currentVariant	the current variant
-	 * @return the next variant compare to the current variant
-	 */
-	private VariantDisplay getNextVariant () {
-		VariantDisplay result;
-		int currentIndex = getVariantIndex(currentVariant);
-		int nextIndex = currentIndex + 1;
-
-		if ((nextIndex >= 0) && (nextIndex < variantList.size())) {
-			result = variantList.get(nextIndex);
-			if (currentVariant.isReference()) {
-				nextIndex = getNextValidIndex(nextIndex);
-				result = variantList.get(nextIndex);
-			}
-		} else {
-			result = null;
-		}
-		return result;
-	}
-
-
-	/**
-	 * Gets the the next valid index.
-	 * A valid index is not an index related to a blank variant where the scan is already on.
-	 * The dialog can be on blank, the next button must go to the next variant (that can be a blank but furhter!)
-	 * @param index the index after the current index
-	 * @return	the valid next index
-	 */
-	private int getNextValidIndex (int index) {
-		boolean found = false;
-		int i = index;
-		while (!found && (i < variantList.size())) {
-			if (variantList.get(i).isReference()) {
-				if (	((i + 1) < variantList.size()) &&
-						(variantList.get(i + 1).getStart() > variantList.get(i).getStop())) {
-					found = true;
-				}
-				i++;
-			} else {
-				found = true;
-			}
-		}
-		if (i >= variantList.size()) {
-			return index;
-		}
-		return i;
-	}
-
-
-	/**
-	 * See getNextValidIndex description
-	 * @param index the index before the current index
-	 * @return the previous valid index
-	 */
-	private int getPreviousValidIndex (int index) {
-		boolean found = false;
-		int i = index;
-		while (!found && (i >= 0)) {
-			if (variantList.get(i).isReference()) {
-				if (	((i - 1) >= 0) &&
-						(variantList.get(i - 1).getStop() < variantList.get(i).getStart())) {
-					found = true;
-				}
-				i--;
-			} else {
-				found = true;
-			}
-		}
-		if (i < 0) {
-			return index;
-		}
-		return i;
-	}
-
-
 	protected void showVCFLine () {
 		vcfLineDialog.show(currentLine);
 	}
 
-
-	/**
-	 * @return the multiGenomeDrawer
-	 */
-	public MultiGenomeDrawer getMultiGenomeDrawer() {
-		return multiGenomeDrawer;
-	}
 }

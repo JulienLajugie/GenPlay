@@ -344,6 +344,16 @@ public class MultiGenomeProject implements Serializable {
 	}
 
 
+	/**
+	 * @param chromosome	a chromosome
+	 * @param position a reference genome position
+	 * @return the index of the given reference position.
+	 */
+	public int getReferencePositionIndex (Chromosome chromosome, int position) {
+		return multiGenomeForDisplay.getReferenceGenome().getAllele().getPositionIndex(chromosome, position);
+	}
+
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Getters & Setters
 
 

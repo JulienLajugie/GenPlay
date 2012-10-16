@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,12 +36,21 @@ public class Invalid8BitValue extends ValueOutOfRangeException {
 
 	private static final long serialVersionUID = -7111260909692592549L; // generated ID
 
-	
+
 	/**
 	 * Creates an instance of {@link Invalid8BitValue}
 	 * @param data the data that is out of range
 	 */
 	public Invalid8BitValue(Double data) {
+		super("Invalid Data (score = " + new DecimalFormat("#.#").format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
+	}
+
+
+	/**
+	 * Creates an instance of {@link Invalid8BitValue}
+	 * @param data the data that is out of range
+	 */
+	public Invalid8BitValue(Integer data) {
 		super("Invalid Data (score = " + new DecimalFormat("#.#").format(data) + "). A 8Bit value must be between " + ByteArrayAsDoubleList.MIN_VALUE + " and " + ByteArrayAsDoubleList.MAX_VALUE);
 	}
 }

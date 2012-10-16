@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -36,10 +36,10 @@ public class VariantComparator implements Comparator<Variant> {
 
 	@Override
 	public int compare(Variant o1, Variant o2) {
-		//int position1 = o1.getReferenceGenomePosition();
-		//int position2 = o2.getReferenceGenomePosition();
-		int position1 = o1.getStart();
-		int position2 = o2.getStart();
+		int position1 = o1.getReferenceGenomePosition();
+		int position2 = o2.getReferenceGenomePosition();
+		//int position1 = o1.getStart();
+		//int position2 = o2.getStart();
 		if (position1 < position2) {
 			return -1;
 		} else if (position1 == position2) {

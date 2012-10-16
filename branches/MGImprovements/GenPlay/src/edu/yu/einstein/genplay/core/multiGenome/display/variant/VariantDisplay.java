@@ -226,4 +226,60 @@ public class VariantDisplay implements Serializable {
 		return (source != null) && ((source instanceof IndelVariant) || (source instanceof SNPVariant));
 	}
 
+
+	/**
+	 * A variant is dominant according to the following order of importance:
+	 * - is an alternative
+	 * - is a reference
+	 * - is a mix of variants
+	 * 
+	 * If the given variant is null, the current variant is dominant.
+	 * If both, current and given, variants are not at the same position, none of them is dominant.
+	 * If both, current and given, variants have the same type, both of them are dominants.
+	 * 
+	 * @param variant the variant to compare
+	 * @return	true if the current variant is dominant compare to the given variant, false otherwise
+	 */
+	public boolean isDominant (VariantDisplay variant) {
+		Boolean result = false;
+
+		if (variant == null) {
+			result = true;
+		} else if (getStart() == variant.getStart()) {
+			if (	(isAlternative() && variant.isAlternative()) ||
+					(isReference() && variant.isReference()) ||
+					(isMix() && variant.isMix())){
+				result = true;
+			} else if (isAlternative() && (variant.isMix() || variant.isReference())) {
+				result = true;
+			} else if (isReference() && variant.isMix()) {
+				result = true;
+			}
+		}
+
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+
+		// object must be Test at this point
+		VariantDisplay test = (VariantDisplay)obj;
+
+		if ((source != null) && (test.getSource()!= null)) {
+			return source.equals(test.getSource());
+		}
+
+		return ((start == test.getStart())) &&
+				(stop == test.getStop()) &&
+				(getScore() == test.getScore());
+	}
+
 }

@@ -61,11 +61,11 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	private final int maxWidth = 700;
 
 	private final FontMetrics 	fm;			// the dialog font metrics
-	private List<String> 	columns;	// list of the columns for the table
-	private JTable			table;		// the table containing the vcf line
+	private List<String> 		columns;	// list of the columns for the table
+	private JTable				table;		// the table containing the vcf line
 	private final JScrollPane 	pane;		// the scroll pane containing the table
-	private final JPopupMenu 		menu;		// the popup menu object
-	private final JMenuItem 		copyItem;	// the item of the popup menu to copy the line to the clipboard
+	private final JPopupMenu 	menu;		// the popup menu object
+	private final JMenuItem 	copyItem;	// the item of the popup menu to copy the line to the clipboard
 
 
 	/**
@@ -94,7 +94,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 
 		// Sets dialog parameters
 		setIconImage(Images.getApplicationImage());
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 		setTitle("Full VCF Line");
@@ -133,15 +133,14 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		pane.setViewportView(table);
 
 		// Manages the sizes
-		int heightOffset = 0;
+		int heightOffset = 17 + 17 + 2;			// 17 (horizontal scroll bar); 17 (table header); 2 (to make sure we see the whole line: linux issue)
 		int tableHeight = (int)table.getPreferredSize().getHeight();
 		int tableWidth = (int)table.getPreferredSize().getWidth();
 		setComponentSize(table, tableWidth, tableHeight);
 		if (tableWidth > maxWidth) {
 			tableWidth = maxWidth;
-			heightOffset = 17;
 		}
-		setComponentSize(pane, tableWidth, tableHeight + heightOffset + 17);
+		setComponentSize(pane, tableWidth, tableHeight + heightOffset);
 		pack();
 
 		// Show the dialog
@@ -188,7 +187,8 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 		// Creates the table
 		VCFLineTableModel model = new VCFLineTableModel(columns.toArray(), data);
 		table = new JTable(model);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		//table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 		table.addMouseListener(this);
 
 		// Sets the column widths
@@ -237,8 +237,7 @@ public class VCFLineDialog extends JDialog implements MouseListener, ActionListe
 	 */
 	private void maybeShowPopup(MouseEvent e) {
 		if (e.isPopupTrigger()) {
-			menu.show(e.getComponent(),
-					e.getX(), e.getY());
+			menu.show(e.getComponent(), e.getX(), e.getY());
 		}
 	}
 

@@ -39,10 +39,8 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -62,7 +60,7 @@ public class GlobalInformationPanel extends JPanel {
 	private static final int LABEL_HEIGHT = 15;		// height of a label
 	private static final int KEY_WIDTH = 50;		// width of a label used to display a key
 	private static final int VALUE_WIDTH = 100;		// width of a label used to display a value
-	private final Variant variant;
+	private final VariantDisplay variant;
 	private final VCFLine variantInformation;			// the variant to display the information of
 	private final GridBagConstraints gbc;
 
@@ -72,7 +70,7 @@ public class GlobalInformationPanel extends JPanel {
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
 	protected GlobalInformationPanel (VariantDisplay variantDisplay, VCFLine variantInformation) {
-		this.variant = variantDisplay.getSource();
+		this.variant = variantDisplay;
 		this.variantInformation = variantInformation;
 
 		//Dimension dimension = new Dimension(WIDTH, getPanelHeight());
@@ -89,6 +87,8 @@ public class GlobalInformationPanel extends JPanel {
 
 
 	private void addPanel () {
+		//Variant variant = this.variant.getSource();
+
 		// Define all input parameters and set the one we can
 		String description = null;
 		String genome = null;
@@ -106,9 +106,13 @@ public class GlobalInformationPanel extends JPanel {
 
 		// Define the variant type
 		//boolean isIndel = variant instanceof IndelVariant;
-		boolean isSNP = variant instanceof SNPVariant;
-		boolean isReference = variant instanceof ReferenceVariant;
-		boolean isMix = variant instanceof MixVariant;
+		boolean isSNP = false;
+		boolean isReference = false;
+		boolean isMix = variant.getSource() == null;
+		if (!isMix) {
+			isSNP = variant.getSource() instanceof SNPVariant;
+			isReference = variant.getSource() instanceof ReferenceVariant;
+		}
 
 		// Stop position
 		if (isSNP) {
@@ -121,7 +125,7 @@ public class GlobalInformationPanel extends JPanel {
 		length = (stopPosition - startPosition) + 1;
 
 		if (isMix) {
-			description = "<html><i>When variation stripes are too small to be displayed one by one, GenPlay merged them creating a <b>" + VariantType.MIX.toString() + "</b> type.";
+			description = "<html><i>When variation stripes are too small to be displayed one by one, GenPlay merges them creating a <b>" + VariantType.MIX.toString() + "</b> type.";
 		} else {
 			idString = variantInformation.getID();
 			filter = variantInformation.getFILTER();
@@ -134,7 +138,7 @@ public class GlobalInformationPanel extends JPanel {
 
 				// Type
 				if (variant.getType() == VariantType.REFERENCE_INSERTION) {
-					type += " (blank of synchronization)";
+					//type += " (blank of synchronization)";
 					//description += "<html><i>A blank of synchronization is the display of an insertion that occured in an other allele/genome within the project.</i></html>";
 					description += "A blank of synchronization is the display of an insertion that occured in an other allele/genome within the project.";
 				}
@@ -152,13 +156,23 @@ public class GlobalInformationPanel extends JPanel {
 				// Quality
 				quality = variantInformation.getQUAL();
 			} else {
-				// Genome names
-				String fullGenomeName = variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
-				genome = FormattedMultiGenomeName.getUsualName(fullGenomeName) + " (" + FormattedMultiGenomeName.getRawName(fullGenomeName) + ")";
-				group = FormattedMultiGenomeName.getGroupName(fullGenomeName);
+				// Description
+				if (isSNP) {
+					description = "<html><i>This stripe represents a SNP.\n";
+					if (!idString.equals(".")) {
+						idLabel = getIDLabel(idString);
+					}
+				} else if (variant.getType() == VariantType.INSERTION) {
+					description = "<html><i>This stripe represents a small insertion.\n";
+				} else if (variant.getType() == VariantType.DELETION) {
+					description = "<html><i>This stripe represents a small deletion.\n";
+				}
 
-				if (isSNP && !idString.equals(".")) {
-					idLabel = getIDLabel(idString);
+				// Genome names
+				if (!isMix) {
+					String fullGenomeName = variant.getSource().getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName();
+					genome = FormattedMultiGenomeName.getUsualName(fullGenomeName) + " (" + FormattedMultiGenomeName.getRawName(fullGenomeName) + ")";
+					group = FormattedMultiGenomeName.getGroupName(fullGenomeName);
 				}
 
 				// Reference

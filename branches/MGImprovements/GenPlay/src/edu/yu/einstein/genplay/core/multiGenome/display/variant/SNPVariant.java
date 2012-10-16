@@ -165,15 +165,15 @@ public class SNPVariant implements Serializable, Variant {
 			return false;
 		}
 
-		if (this.hashCode() != obj.hashCode()) {
+		/*if (this.hashCode() != obj.hashCode()) {
 			return false;
-		}
+		}*/
 
 		// object must be Test at this point
 		SNPVariant test = (SNPVariant)obj;
 		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
 				(score == test.getScore()) &&
-				(phasedWithPos == test.getScore());
+				(phasedWithPos == test.phasedWithPos());
 	}
 
 
