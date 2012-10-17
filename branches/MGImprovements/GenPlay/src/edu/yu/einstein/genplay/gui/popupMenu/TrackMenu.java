@@ -53,7 +53,7 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
 
@@ -158,7 +158,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 		//jmMultiGenome.addSeparator();
 		jmMultiGenome.add(jmiApplyGenotype);
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			List<StripesData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList();
+			List<VariantData> stripes = trackList.getSelectedTrack().getMultiGenomeDrawer().getStripesList();
 			if ((stripes == null) || (stripes.size() == 0)) {
 				jmiTrackStatistics.setEnabled(false);
 				jmiExportVCF.setEnabled(false);

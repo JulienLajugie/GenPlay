@@ -46,7 +46,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
@@ -76,7 +76,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private DisplayableVariantListMaker		allele02VariantListMaker;		// displayable variants list creator (for MG project)
 
 	private List<MGFilter>					mgFiltersList;					// list of filters that will apply rules of filtering
-	private List<StripesData>				stripesList;					// list of stripes to apply to this track (for MG project)
+	private List<VariantData>				variantDataList;					// list of stripes to apply to this track (for MG project)
 
 	private VariantDisplay 					variantUnderMouse = null;		// Special display when the mouse is over a variant stripe
 	private boolean							locked;
@@ -84,7 +84,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private List<ToolTipStripeDialog> stripesDialogs;
 
 	private MultiGenomeDensityDrawer densityDrawer;
-	private MultiGenomeStripesDrawer stripesDrawer;
+	private MultiGenomeVariantDrawer variantDrawer;
 	private Chromosome chromosome;
 
 
@@ -99,7 +99,7 @@ public class MultiGenomeDrawer implements Serializable {
 		out.writeObject(allele02VariantListMaker);
 		out.writeObject(statistics);
 		out.writeObject(densityDrawer);
-		out.writeObject(stripesDrawer);
+		out.writeObject(variantDrawer);
 		out.writeObject(chromosome);
 	}
 
@@ -116,13 +116,16 @@ public class MultiGenomeDrawer implements Serializable {
 		allele02VariantListMaker = (DisplayableVariantListMaker) in.readObject();
 		statistics = (VCFFileStatistics) in.readObject();
 		densityDrawer = (MultiGenomeDensityDrawer) in.readObject();
-		stripesDrawer = (MultiGenomeStripesDrawer) in.readObject();
+		variantDrawer = (MultiGenomeVariantDrawer) in.readObject();
 		chromosome = (Chromosome) in.readObject();
 
 		densityDrawer.setDrawer(this);
-		stripesDrawer.setDrawer(this);
+		variantDrawer.setDrawer(this);
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		locked = false;
+		stripesDialogs = new ArrayList<ToolTipStripeDialog>();
+		variantDataList = null;
+		mgFiltersList = null;
 	}
 
 
@@ -139,8 +142,8 @@ public class MultiGenomeDrawer implements Serializable {
 			allele02VariantListMaker = null;
 		}
 		densityDrawer = new MultiGenomeDensityDrawer(this);
-		stripesDrawer = new MultiGenomeStripesDrawer(this);
-		stripesList = null;
+		variantDrawer = new MultiGenomeVariantDrawer(this);
+		variantDataList = null;
 		mgFiltersList = null;
 		statistics = null;
 		locked = false;
@@ -178,8 +181,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param filtersList	the new filters list
 	 * @return	true if new information are different than the current ones
 	 */
-	public boolean hasMultiGenomeInformationChanged (List<StripesData> stripesList, List<MGFilter> filtersList) {
-		if (haveStripesChanged(stripesList) || haveFiltersChanged(filtersList)) {
+	public boolean hasMultiGenomeInformationChanged (List<VariantData> stripesList, List<MGFilter> filtersList) {
+		if (haveVariantsChanged(stripesList) || haveFiltersChanged(filtersList)) {
 			return true;
 		} else {
 			return false;
@@ -188,13 +191,13 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * Compare given stripes information with the current one.
-	 * @param stripesList	the new stripes list
+	 * Compare given variant information with the current one.
+	 * @param variantDataList	the new stripes list
 	 * @return	true if new information are different than the current ones
 	 */
-	private boolean haveStripesChanged (List<StripesData> stripesList) {
-		ListComparator<StripesData> stripesComparator = new ListComparator<StripesData>();
-		return stripesComparator.areDifferent(this.stripesList, stripesList);
+	private boolean haveVariantsChanged (List<VariantData> variantDataList) {
+		ListComparator<VariantData> stripesComparator = new ListComparator<VariantData>();
+		return stripesComparator.areDifferent(this.variantDataList, variantDataList);
 	}
 
 
@@ -223,21 +226,21 @@ public class MultiGenomeDrawer implements Serializable {
 	 * These information are about:
 	 * - stripes
 	 * - filters
-	 * @param stripesList list of stripes
+	 * @param variantDataList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
-		if (hasChromosomeChanged() || hasMultiGenomeInformationChanged(stripesList, filtersList)) {
+	public void updateMultiGenomeInformation (List<VariantData> variantDataList, List<MGFilter> filtersList) {
+		if (hasChromosomeChanged() || hasMultiGenomeInformationChanged(variantDataList, filtersList)) {
 			chromosome = getCurrentChromosome();
 			this.statistics = null;
 			killStripesDialogs();
-			this.stripesList = stripesList;
+			this.variantDataList = variantDataList;
 			this.mgFiltersList = filtersList;
 
 			List<MGVariantListForDisplay> allele01VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the first allele
 			List<MGVariantListForDisplay> allele02VariantLists = new ArrayList<MGVariantListForDisplay>();		// initializes a temporary list of variant for the second allele
 
-			for (StripesData data: stripesList) {							// scans all stripes data
+			for (VariantData data: variantDataList) {							// scans all stripes data
 				// Checks wich alleles must be processed
 				AlleleType alleleType = data.getAlleleType();				// get the allele type defined for the current stripe data
 				boolean allele01 = false;									// initializes a boolean in order to know if we need to process data for the first allele
@@ -309,8 +312,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param xFactor 		the x factor
 	 */
 	public void drawMultiGenomeInformation(Graphics g, GenomeWindow genomeWindow, double xFactor) {
-		if ((stripesList != null) && (stripesList.size() > 0)) {
-			stripesDrawer.initializeStripesOpacity();
+		if ((variantDataList != null) && (variantDataList.size() > 0)) {
+			variantDrawer.initializeStripesOpacity();
 			/*if (genomeWindow.getSize() > 1000000) {
 				stripesDrawer.drawMultiGenomeMask(g, "Multi genome information cannot be displayed at this zoom level.");
 			} else {*/
@@ -322,18 +325,18 @@ public class MultiGenomeDrawer implements Serializable {
 					Graphics2D allele02Graphic = (Graphics2D) g.create(0, halfHeight, g.getClipBounds().width, halfHeight);		// create a 2D graphics for the second allele that correspond to the lower half of the track
 					allele02Graphic.scale(1, -1);																				// all Y axis (vertical) coordinates must be reversed for the second allele
 					allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1);									// translates all coordinates of the graphic for the second allele
-					stripesDrawer.setCurrentAllele(AlleleType.ALLELE01);
-					stripesDrawer.drawGenome(allele01Graphic, genomeWindow, allele01VariantListMaker.getDisplayPolicy(), allele01VariantListMaker.getFittedData(genomeWindow, xFactor)); 	// draw the stripes for the first allele
-					stripesDrawer.setCurrentAllele(AlleleType.ALLELE02);
-					stripesDrawer.drawGenome(allele02Graphic, genomeWindow, allele02VariantListMaker.getDisplayPolicy(), allele02VariantListMaker.getFittedData(genomeWindow, xFactor));	// draw the stripes for the second allele
-					stripesDrawer.drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
+					variantDrawer.setCurrentAllele(AlleleType.ALLELE01);
+					variantDrawer.drawGenome(allele01Graphic, genomeWindow, allele01VariantListMaker.getDisplayPolicy(), allele01VariantListMaker.getFittedData(genomeWindow, xFactor)); 	// draw the stripes for the first allele
+					variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
+					variantDrawer.drawGenome(allele02Graphic, genomeWindow, allele02VariantListMaker.getDisplayPolicy(), allele02VariantListMaker.getFittedData(genomeWindow, xFactor));	// draw the stripes for the second allele
+					variantDrawer.drawMultiGenomeLine(g);																						// draw a line in the middle of the track to distinguish upper and lower half.
 				} else if (trackAlleleType == AlleleType.ALLELE01) {															// if the first allele only must be displayed
-					stripesDrawer.drawGenome(g, genomeWindow, allele01VariantListMaker.getDisplayPolicy(), allele01VariantListMaker.getFittedData(genomeWindow, xFactor));					// draw its stripes
+					variantDrawer.drawGenome(g, genomeWindow, allele01VariantListMaker.getDisplayPolicy(), allele01VariantListMaker.getFittedData(genomeWindow, xFactor));					// draw its stripes
 				} else if(trackAlleleType == AlleleType.ALLELE02) {																// if the second allele only must be displayed
-					stripesDrawer.drawGenome(g, genomeWindow, allele02VariantListMaker.getDisplayPolicy(), allele02VariantListMaker.getFittedData(genomeWindow, xFactor));					// draw its stripes
+					variantDrawer.drawGenome(g, genomeWindow, allele02VariantListMaker.getDisplayPolicy(), allele02VariantListMaker.getFittedData(genomeWindow, xFactor));					// draw its stripes
 				}
 			} else {
-				stripesDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");
+				variantDrawer.drawMultiGenomeMask(g, "Multi genome display interupted while loading information.");
 			}
 			//}
 		}
@@ -356,11 +359,6 @@ public class MultiGenomeDrawer implements Serializable {
 				List<VariantDisplay> variantList = null;														// we will try to get the full list of variant displayed on the whole track (we want to move from a variant to another one no matter the allele)
 				if (trackAlleleType == AlleleType.BOTH) {														// if both allele are displayed,
 					variantList = mergeVariantList(allele01VariantListMaker.getVariantList(), allele02VariantListMaker.getVariantList());
-					/*variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// create a copy of the variant list of the first allele
-					for (VariantDisplay currentVariant: allele02VariantListMaker.getVariantList()) {			// we add all variant from the variant list of the second allele
-						variantList.add(currentVariant);
-					}
-					Collections.sort(variantList, new VariantDisplayComparator());										// we sort the global list*/
 				} else if (trackAlleleType == AlleleType.ALLELE01) {											// if the first allele only is displayed
 					variantList = getCopyOfVariantList(allele01VariantListMaker.getVariantList());				// we get the copy of its list
 				} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
@@ -485,8 +483,8 @@ public class MultiGenomeDrawer implements Serializable {
 	/**
 	 * @return the stripesList
 	 */
-	public List<StripesData> getStripesList() {
-		return stripesList;
+	public List<VariantData> getStripesList() {
+		return variantDataList;
 	}
 
 
@@ -507,20 +505,20 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
-	 * @param stripesList the stripesList to set
+	 * @param variantDataList the variantDataList to set
 	 */
-	public void setStripesList(List<StripesData> stripesList) {
-		this.stripesList = stripesList;
+	public void setVariantDataList(List<VariantData> variantDataList) {
+		this.variantDataList = variantDataList;
 	}
 
 
 	/**
 	 * @return the list of required genomes for multi genome process
 	 */
-	public List<String> getGenomesListForMGStripe () {
+	public List<String> getRequiredGenomesList () {
 		List<String> list = new ArrayList<String>();
-		if (stripesList != null) {
-			for (StripesData data: stripesList) {
+		if (variantDataList != null) {
+			for (VariantData data: variantDataList) {
 				if (!list.contains(data.getGenome())) {
 					list.add(data.getGenome());
 				}
@@ -536,8 +534,8 @@ public class MultiGenomeDrawer implements Serializable {
 	 */
 	public Map<VariantType, Color> getVariantColorMap (String genome) {
 		Map<VariantType, Color> colors = new HashMap<VariantType, Color>();
-		if (stripesList != null) {
-			for (StripesData data: stripesList) {
+		if (variantDataList != null) {
+			for (VariantData data: variantDataList) {
 				if (data.getGenome().equals(genome)) {
 					for (int i = 0; i < data.getVariationTypeList().size(); i++) {
 						colors.put(data.getVariationTypeList().get(i), data.getColorList().get(i));
@@ -594,10 +592,10 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @return the allele type defined for the track
 	 */
 	public AlleleType getTrackAlleleType () {
-		if (stripesList != null) {
+		if (variantDataList != null) {
 			boolean allele01 = false;
 			boolean allele02 = false;
-			for (StripesData stripe: stripesList) {
+			for (VariantData stripe: variantDataList) {
 				AlleleType type = stripe.getAlleleType();
 				if (type == AlleleType.BOTH) {					// if both allele are required
 					return AlleleType.BOTH;

@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 
 /**
@@ -65,9 +65,9 @@ public class ExportSettings {
 	 * @param stripeList the list of stripes
 	 * @return the map genome/file list
 	 */
-	private Map<String, List<VariantType>> getVariationMap (List<StripesData> stripeList) {
+	private Map<String, List<VariantType>> getVariationMap (List<VariantData> stripeList) {
 		Map<String, List<VariantType>> map = new HashMap<String, List<VariantType>>();
-		for (StripesData stripe: stripeList) {
+		for (VariantData stripe: stripeList) {
 			String genome = stripe.getGenome();
 			List<VariantType> variationList = stripe.getVariationTypeList();
 			if (!map.containsKey(genome)) {
@@ -91,10 +91,10 @@ public class ExportSettings {
 	 * @param stripeList the list of stripes
 	 * @return the map genome/file list
 	 */
-	private Map<String, List<VCFFile>> getGenomeFileMap (List<StripesData> stripeList) {
+	private Map<String, List<VCFFile>> getGenomeFileMap (List<VariantData> stripeList) {
 		Map<String, List<VCFFile>> map = new HashMap<String, List<VCFFile>>();
 		Map<String, List<VCFFile>> projectMap = ProjectManager.getInstance().getMultiGenomeProject().getGenomeFileAssociation();
-		for (StripesData stripe: stripeList) {
+		for (VariantData stripe: stripeList) {
 			String genome = stripe.getGenome();
 			if (!map.containsKey(genome)) {
 				map.put(genome, new ArrayList<VCFFile>());

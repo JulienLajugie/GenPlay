@@ -21,6 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -30,7 +35,11 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantDisplayPolicy {
+public class VariantDisplayPolicy implements Serializable {
+
+	/** Generated serial version ID */
+	private static final long serialVersionUID = 4292238145294176360L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
 	/** Code policy to hide a variant */
 	public static final int DO_NOT_DISPLAY = 0;
@@ -45,10 +54,37 @@ public class VariantDisplayPolicy {
 
 
 	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(displayPolicy);
+		out.writeBoolean(showReference);
+		out.writeBoolean(showFiltered);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		displayPolicy = (ByteArrayAsIntegerList) in.readObject();
+		showReference = in.readBoolean();
+		showFiltered = in.readBoolean();
+	}
+
+
+	/**
 	 * Constructor of {@link VariantDisplayPolicy}
 	 */
 	public VariantDisplayPolicy () {
-		initialize(null, null, null);
+		initialize(null, true, true);
 	}
 
 

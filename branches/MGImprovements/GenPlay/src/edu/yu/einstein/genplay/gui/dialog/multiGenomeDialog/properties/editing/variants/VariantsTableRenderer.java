@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -33,7 +33,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesTableRenderer extends DefaultTableCellRenderer {
+public class VariantsTableRenderer extends DefaultTableCellRenderer {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 885064395349589079L;

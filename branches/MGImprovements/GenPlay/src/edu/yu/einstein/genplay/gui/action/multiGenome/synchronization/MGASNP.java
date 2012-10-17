@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSNPSynchronizer;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -85,7 +85,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 			MGSNPSynchronizer snpSynchronizer = projectManager.getMultiGenomeProject().getMultiGenomeSynchronizerForSNP();
 			if (genomeNames == null) {
 				// Gets the list of stripes data
-				List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
+				List<VariantData> newStripesData = MGDisplaySettings.getInstance().getVariantSettings().getVariantsList();
 
 				// Gets the genome names involved for SNPs synchronization
 				genomeNames = getGenomeNamesForSNP(newStripesData);
@@ -110,9 +110,9 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 		MGDisplaySettings settings = MGDisplaySettings.getInstance();
 		Track<?>[] tracks = getTrackList().getTrackList();
 		for (Track<?> track: tracks) {
-			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(track);
+			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(track);
 			boolean hasToReset = false;
-			for (StripesData data: stripesList) {
+			for (VariantData data: stripesList) {
 				if (data.getVariationTypeList().contains(VariantType.SNPS)) {
 					hasToReset = true;
 				}
@@ -133,10 +133,10 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 	 * @param list association of genome name/variant type list
 	 * @return the list of genome names
 	 */
-	private Map<String, List<AlleleType>> getGenomeNamesForSNP (List<StripesData> list) {
+	private Map<String, List<AlleleType>> getGenomeNamesForSNP (List<VariantData> list) {
 		Map<String, List<AlleleType>> names = new HashMap<String, List<AlleleType>>();
 		if (list != null) {
-			for (StripesData data: list) {
+			for (VariantData data: list) {
 				List<VariantType> variantTypes = data.getVariationTypeList();
 				if (variantTypes.contains(VariantType.SNPS)) {
 					String genomeName = data.getGenome();
@@ -178,7 +178,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 	public boolean hasToBeProcessed () {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			// Gets the list of stripes data
-			List<StripesData> newStripesData = MGDisplaySettings.getInstance().getStripeSettings().getStripesList();
+			List<VariantData> newStripesData = MGDisplaySettings.getInstance().getVariantSettings().getVariantsList();
 
 			// Gets the genome names involved for SNPs synchronization
 			genomeNames = getGenomeNamesForSNP(newStripesData);

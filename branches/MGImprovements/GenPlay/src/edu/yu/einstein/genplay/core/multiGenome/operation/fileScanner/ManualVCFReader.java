@@ -218,9 +218,7 @@ public class ManualVCFReader {
 			int currentIndex = indexes[i];
 			boolean insert = false;
 
-			if (((currentIndex == -1) && includeReferences) || ((currentIndex == -2) && includeNoCall)) {
-				insert = true;
-			} else if (currentIndex >= 0) {
+			if (currentIndex >= 0) {
 				insert = requiredVariation.contains(variations[indexes[i]]);
 			}
 
@@ -228,7 +226,31 @@ public class ManualVCFReader {
 				list.add(currentIndex);
 			}
 		}
+
+		if (list.size() == 0) {
+			if (isReferenceValid(requiredVariation, variations) && (includeReferences || includeNoCall)) {
+				list.add(-1);
+			}
+		}
+
 		return list;
+	}
+
+
+	/**
+	 * @param requiredVariation	the required variation
+	 * @param variations		the variation defined in the line
+	 * @return true if the line defines at least one of the required variation
+	 */
+	private boolean isReferenceValid (List<VariantType> requiredVariation, VariantType[] variations) {
+		boolean result = false;
+		for (VariantType type: variations) {
+			if (requiredVariation.contains(type)) {
+				result = true;
+				break;
+			}
+		}
+		return result;
 	}
 
 

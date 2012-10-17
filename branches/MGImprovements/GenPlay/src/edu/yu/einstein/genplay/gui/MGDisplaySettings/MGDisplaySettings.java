@@ -31,7 +31,7 @@ import java.util.List;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -100,7 +100,7 @@ public class MGDisplaySettings implements Serializable {
 	private static MGDisplaySettings 	instance;	// Instance of the class
 
 	private MGFilterSettings 	filterSettings; 	// All settings about the filters
-	private MGStripeSettings 	stripeSettings; 	// All settings about the stripes
+	private MGVariantSettings 	variantSettings; 	// All settings about the stripes
 	private MGVariousSettings 	variousSettings;	// All settings about various settings
 	private String savedCoordinate;
 
@@ -114,7 +114,7 @@ public class MGDisplaySettings implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(instance);
 		out.writeObject(filterSettings);
-		out.writeObject(stripeSettings);
+		out.writeObject(variantSettings);
 		out.writeObject(variousSettings);
 
 		out.writeInt(DRAW_FILTERED_VARIANT);
@@ -142,7 +142,7 @@ public class MGDisplaySettings implements Serializable {
 		in.readInt();
 		instance = (MGDisplaySettings) in.readObject();
 		filterSettings = (MGFilterSettings) in.readObject();
-		stripeSettings = (MGStripeSettings) in.readObject();
+		variantSettings = (MGVariantSettings) in.readObject();
 		variousSettings = (MGVariousSettings) in.readObject();
 
 		DRAW_FILTERED_VARIANT = in.readInt();
@@ -177,7 +177,7 @@ public class MGDisplaySettings implements Serializable {
 	 */
 	private MGDisplaySettings () {
 		filterSettings = new MGFilterSettings();
-		stripeSettings = new MGStripeSettings();
+		variantSettings = new MGVariantSettings();
 		variousSettings = new MGVariousSettings();
 	}
 
@@ -193,8 +193,8 @@ public class MGDisplaySettings implements Serializable {
 	/**
 	 * @return the stripeSettings
 	 */
-	public MGStripeSettings getStripeSettings() {
-		return stripeSettings;
+	public MGVariantSettings getVariantSettings() {
+		return variantSettings;
 	}
 
 
@@ -213,7 +213,7 @@ public class MGDisplaySettings implements Serializable {
 	 */
 	public void copyTemporaryTrack (Track<?> track) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			stripeSettings.copyTemporaryStripes(track);
+			variantSettings.copyTemporaryStripes(track);
 			filterSettings.copyTemporaryFilters(track);
 		}
 	}
@@ -226,7 +226,7 @@ public class MGDisplaySettings implements Serializable {
 	 */
 	public void pasteTemporaryTrack (Track<?> track) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			stripeSettings.pasteTemporaryStripes(track);
+			variantSettings.pasteTemporaryStripes(track);
 			filterSettings.pasteTemporaryFilters(track);
 		}
 	}
@@ -242,7 +242,7 @@ public class MGDisplaySettings implements Serializable {
 	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.replaceTrack(oldTrack, newTrack);
-			stripeSettings.replaceTrack(oldTrack, newTrack);
+			variantSettings.replaceTrack(oldTrack, newTrack);
 		}
 	}
 
@@ -256,7 +256,7 @@ public class MGDisplaySettings implements Serializable {
 	public void copyTrack (Track<?> copiedTrack, Track<?> newTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.copyData(copiedTrack, newTrack);
-			stripeSettings.copyData(copiedTrack, newTrack);
+			variantSettings.copyData(copiedTrack, newTrack);
 		}
 	}
 
@@ -270,7 +270,7 @@ public class MGDisplaySettings implements Serializable {
 	public void deleteTrack (Track<?> deleteTrack) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			filterSettings.deleteData(deleteTrack);
-			stripeSettings.deleteData(deleteTrack);
+			variantSettings.deleteData(deleteTrack);
 		}
 	}
 
@@ -282,8 +282,8 @@ public class MGDisplaySettings implements Serializable {
 	public void restoreInformation (Track<?> track) {
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			List<MGFilter> filterList = filterSettings.getMGFiltersForTrack(track);
-			List<StripesData> stripeList = stripeSettings.getStripesForTrack(track);
-			track.getMultiGenomeDrawer().setStripesList(stripeList);
+			List<VariantData> stripeList = variantSettings.getVariantsForTrack(track);
+			track.getMultiGenomeDrawer().setVariantDataList(stripeList);
 			track.getMultiGenomeDrawer().setFiltersList(filterList);
 		}
 	}
@@ -333,7 +333,7 @@ public class MGDisplaySettings implements Serializable {
 	public void showSettings () {
 		variousSettings.showSettings();
 		filterSettings.showSettings();
-		stripeSettings.showSettings();
+		variantSettings.showSettings();
 	}
 
 }

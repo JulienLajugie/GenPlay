@@ -48,7 +48,7 @@ public class VariantIterator implements ListIterator<VariantDisplay> {
 		this.list = list;
 		this.size = list.size();
 		this.variantDisplayPolicy = variantDisplayPolicy;
-		currentIndex = 0;
+		currentIndex = -1;
 		tmpIndex = -1;
 	}
 

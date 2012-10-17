@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.utils.VariantDisplayPolicy;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  * @author Nicolas Fourel
  * @version 0.1
  */
-class MultiGenomeStripesDrawer implements Serializable {
+class MultiGenomeVariantDrawer implements Serializable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -6140085563221274861L;
@@ -56,7 +56,7 @@ class MultiGenomeStripesDrawer implements Serializable {
 	private ProjectWindow		projectWindow;					// instance of the genome window manager
 	private MultiGenomeDrawer 	drawer;
 	private AlleleType			currentDrawingAllele;
-	private int					stripesOpacity;					// Transparency of the stripes
+	private int					variantOpacity;					// Transparency of the stripes
 
 
 	/**
@@ -67,7 +67,7 @@ class MultiGenomeStripesDrawer implements Serializable {
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(currentDrawingAllele);
-		out.writeInt(stripesOpacity);
+		out.writeInt(variantOpacity);
 	}
 
 
@@ -80,19 +80,19 @@ class MultiGenomeStripesDrawer implements Serializable {
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		currentDrawingAllele = (AlleleType) in.readObject();
-		stripesOpacity = in.readInt();
+		variantOpacity = in.readInt();
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 	}
 
 
 	/**
-	 * Constructor of {@link MultiGenomeStripesDrawer}
+	 * Constructor of {@link MultiGenomeVariantDrawer}
 	 * @param drawer
 	 */
-	protected MultiGenomeStripesDrawer (MultiGenomeDrawer drawer) {
+	protected MultiGenomeVariantDrawer (MultiGenomeDrawer drawer) {
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		setDrawer(drawer);
-		stripesOpacity = 0;
+		variantOpacity = 0;
 		//initializeStripesOpacity();
 	}
 
@@ -106,10 +106,10 @@ class MultiGenomeStripesDrawer implements Serializable {
 
 
 	/**
-	 * Initializes the stripes opacity
+	 * Initializes the variant opacity
 	 */
 	protected void initializeStripesOpacity () {
-		stripesOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
+		variantOpacity = MGDisplaySettings.getInstance().getVariousSettings().getColorOpacity();						// gets the opacity for the stripes
 	}
 
 
@@ -142,7 +142,7 @@ class MultiGenomeStripesDrawer implements Serializable {
 	 * @param g	graphics object
 	 */
 	protected void drawMultiGenomeLine (Graphics g) {
-		Color color = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue(), stripesOpacity);
+		Color color = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue(), variantOpacity);
 		g.setColor(color);
 		int y = g.getClipBounds().height / 2;
 		g.drawLine(0, y, g.getClipBounds().width, y);
@@ -160,22 +160,24 @@ class MultiGenomeStripesDrawer implements Serializable {
 			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
 
 			for (VariantDisplay variant: variantList) {		// scans all variant
-				VariantType type = variant.getType();			// gets its type
-				Color color;
-				if (type == VariantType.REFERENCE_INSERTION) {
-					color = MGDisplaySettings.REFERENCE_INSERTION_COLOR;
-				} else if (type == VariantType.REFERENCE_DELETION) {
-					color = MGDisplaySettings.REFERENCE_DELETION_COLOR;
-				} else if (type == VariantType.REFERENCE_SNP) {
-					color = MGDisplaySettings.REFERENCE_SNP_COLOR;
-				} else if (type == VariantType.MIX) {
-					color = mixColor;
-				} else  {
-					String genomeName = variant.getSource().getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(); 	// gets the genome name of the variant
-					color = getStripeColor(genomeName, type);																		// in order to get which color has been defined
-				}
+				if (displayPolicy.isShown(variant)) {
+					VariantType type = variant.getType();			// gets its type
+					Color color;
+					if (type == VariantType.REFERENCE_INSERTION) {
+						color = MGDisplaySettings.REFERENCE_INSERTION_COLOR;
+					} else if (type == VariantType.REFERENCE_DELETION) {
+						color = MGDisplaySettings.REFERENCE_DELETION_COLOR;
+					} else if (type == VariantType.REFERENCE_SNP) {
+						color = MGDisplaySettings.REFERENCE_SNP_COLOR;
+					} else if (type == VariantType.MIX) {
+						color = mixColor;
+					} else  {
+						String genomeName = variant.getSource().getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(); 	// gets the genome name of the variant
+						color = getVariantColor(genomeName, type);																		// in order to get which color has been defined
+					}
 
-				drawVariant(g, variant, color, genomeWindow, displayPolicy);	// draw the variant
+					drawVariant(g, variant, color, genomeWindow, displayPolicy);	// draw the variant
+				}
 			}
 		}
 	}
@@ -228,7 +230,7 @@ class MultiGenomeStripesDrawer implements Serializable {
 		if ((drawer.getVariantUnderMouse() != null) && drawer.getVariantUnderMouse().equals(variant)) {		// if there is a variant under the mouse
 			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
 		} else {																	// if not
-			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), stripesOpacity);	// we use the defined color taking into account the opacity
+			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
 		}
 		g.setColor(newColor);														// we set the graphic object color
 
@@ -384,9 +386,9 @@ class MultiGenomeStripesDrawer implements Serializable {
 	 * @param type		the variant type
 	 * @return			the associated color
 	 */
-	private Color getStripeColor (String genome, VariantType type) {
+	private Color getVariantColor (String genome, VariantType type) {
 		Color color = null;
-		for (StripesData data: drawer.getStripesList()) {
+		for (VariantData data: drawer.getStripesList()) {
 			if (data.getGenome().equals(genome)) {
 				int variantIndex = data.getVariationTypeList().indexOf(type);
 				if (variantIndex != -1) {

@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.d
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.GenomeEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.editing.VariationTypeEditingPanel;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.selection.TrackSelectionPanel;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -43,14 +43,14 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class EditingDialogManagerForStripes implements EditingDialogManagerInterface<StripesData>{
+public class EditingDialogManagerForStripes implements EditingDialogManagerInterface<VariantData>{
 
 	private final List<EditingPanel<?>> 			editingPanelList;			// List of editing panel
 	private final TrackSelectionPanel 				trackEditingPanel;			// Panel to edit the tracks
 	private final GenomeEditingPanel 				genomeEditingPanel;			// Panel to edit the genomes
 	private final VariationTypeEditingPanel 		variationTypeEditingPanel;	// Panel to edit the variations
 
-	private StripesData currentData;								// The current stripe data (can be null)
+	private VariantData currentData;								// The current stripe data (can be null)
 
 
 	/**
@@ -83,10 +83,10 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 
 
 	@Override
-	public List<StripesData> showDialog() {
+	public List<VariantData> showDialog() {
 		initializePanels();
-		EditingDialog<StripesData> editingDialog = new EditingDialog<StripesData>(this);
-		List<StripesData> data = null;
+		EditingDialog<VariantData> editingDialog = new EditingDialog<VariantData>(this);
+		List<VariantData> data = null;
 		if (editingDialog.showDialog(null) == EditingDialog.APPROVE_OPTION) {
 			data = retrieveData();
 		}
@@ -97,7 +97,7 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 
 
 	@Override
-	public void setData(StripesData data) {
+	public void setData(VariantData data) {
 		this.currentData = data;
 	}
 
@@ -121,16 +121,16 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 	 * Retrieves all the information from the panel in order to create/set the stripe data object.
 	 * If a current stripe data has been defined, it will be set and returned.
 	 * If no current stripe data has been defined, a new one will be created.
-	 * @return the {@link StripesData}
+	 * @return the {@link VariantData}
 	 */
-	private List<StripesData> retrieveData () {
+	private List<VariantData> retrieveData () {
 		List<String> genomeNames = genomeEditingPanel.getSelectedGenomes();
 		AlleleType alleleType = variationTypeEditingPanel.getSelectedAlleleType();
 		List<VariantType> variantList = variationTypeEditingPanel.getSelectedVariantTypes();
 		List<Color> colorList = variationTypeEditingPanel.getSelectedColors();
 		Track<?>[] trackList = trackEditingPanel.getSelectedTracks();
 
-		List<StripesData> result = new ArrayList<StripesData>();
+		List<VariantData> result = new ArrayList<VariantData>();
 
 		if (currentData != null) {
 			currentData.setGenome(genomeNames.get(0));
@@ -138,7 +138,7 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 			currentData.setVariationTypeList(variantList);
 			currentData.setColorList(colorList);
 			currentData.setTrackList(trackList);
-			StripesData data = currentData;
+			VariantData data = currentData;
 			result.add(data);
 			if (genomeNames.size() > 1) {
 				String message = "You are editing a stripe and more than one genome has been selected.\n";
@@ -148,7 +148,7 @@ public class EditingDialogManagerForStripes implements EditingDialogManagerInter
 			}
 		} else {
 			for (String genomeName: genomeNames) {
-				result.add(new StripesData(genomeName, alleleType, variantList, colorList, trackList));
+				result.add(new VariantData(genomeName, alleleType, variantList, colorList, trackList));
 			}
 		}
 

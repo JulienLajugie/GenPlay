@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
@@ -260,7 +260,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			MGDisplaySettings settings = MGDisplaySettings.getInstance();
 			List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(this);
-			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(this);
+			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(this);
 			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
 	}
@@ -274,7 +274,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
+	public void updateMultiGenomeInformation (List<VariantData> stripesList, List<MGFilter> filtersList) {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
@@ -382,7 +382,7 @@ public abstract class Track<T> extends JPanel implements PropertyChangeListener,
 	/**
 	 * @return the stripesList
 	 */
-	public List<StripesData> getStripesList() {
+	public List<VariantData> getStripesList() {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			return trackGraphics.getMultiGenomeDrawer().getStripesList();
 		}

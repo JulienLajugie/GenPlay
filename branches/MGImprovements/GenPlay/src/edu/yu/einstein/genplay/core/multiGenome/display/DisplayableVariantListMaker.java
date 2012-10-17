@@ -70,7 +70,7 @@ public class DisplayableVariantListMaker implements Serializable {
 	private List<VariantDisplay>		 	fittedDataList;				// List of data of the current chromosome adapted to the screen resolution
 	private List<MGFilter> 					filtersList;
 
-	private final VariantDisplayPolicy displayPolicy;
+	private VariantDisplayPolicy displayPolicy;
 
 	private CacheTrack<List<VariantDisplay>> cache;
 
@@ -88,6 +88,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		out.writeObject(variantDisplayList);
 		out.writeObject(fittedDataList);
 		out.writeObject(filtersList);
+		out.writeObject(displayPolicy);
 	}
 
 
@@ -106,6 +107,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		variantDisplayList = (List<VariantDisplay>) in.readObject();
 		fittedDataList = (List<VariantDisplay>) in.readObject();
 		filtersList = (List<MGFilter>) in.readObject();
+		displayPolicy = (VariantDisplayPolicy) in.readObject();
 
 		cache = new CacheTrack<List<VariantDisplay>>();
 	}
@@ -209,9 +211,9 @@ public class DisplayableVariantListMaker implements Serializable {
 			this.filtersList = filtersList;
 			displayPolicy.setShowReference(showReference);
 			displayPolicy.setShowFiltered(showFiltered);
-			updateDisplayableVariantList();
 		}
 		if (hasChanged) {
+			updateDisplayableVariantList();
 			fitToScreen();
 		}
 	}
@@ -378,54 +380,50 @@ public class DisplayableVariantListMaker implements Serializable {
 		VariantIterator iterator = new VariantIterator(currentVariantList, displayPolicy);
 
 		if (fittedXRatio > 1) {
-			VariantDisplay currentVariant = iterator.getCurrent();
-			if (currentVariant != null) {
-				fittedDataList.add(currentVariant);
-			}
 			while (iterator.hasNext()) {
 				fittedDataList.add(iterator.next());
 			}
 		} else {
 			// Initialize the first position
-			VariantDisplay currentVariant = iterator.getCurrent();
-			if (currentVariant != null) {
-				int start = currentVariant.getStart();
-				int stop = currentVariant.getStop();
+			int start = -1;
+			int stop = -1;
+			VariantDisplay currentVariant = null;
+			if (iterator.hasNext()) {
+				currentVariant = iterator.next();
+				start = currentVariant.getStart();
+				stop = currentVariant.getStop();
+			}
 
-				// Process the next positions
-				VariantDisplay previousVariant = currentVariant;
-				if (previousVariant != null) {
-					boolean hasToMerge = false;
-					while (iterator.hasNext()) {
-						currentVariant = iterator.next();						// Get the next position
-						double distance = (currentVariant.getStart() - stop) * fittedXRatio;	// Compare its distance with the previous position
-						if (distance < 1) {
-							hasToMerge = true;
-							stop = currentVariant.getStop();
-						} else {
-
-							// Insert previous information
-							if (hasToMerge) {
-								hasToMerge = false;
-								fittedDataList.add(new VariantDisplay(start, stop));
-							} else {
-								fittedDataList.add(previousVariant);
-							}
-
-							// Update current information
-							start = currentVariant.getStart();
-							stop = currentVariant.getStop();
-						}
-						previousVariant = currentVariant;
-					}
-
-					// Handle the last case
+			// Process the next positions
+			VariantDisplay previousVariant = null;
+			boolean hasToMerge = false;
+			while (iterator.hasNext()) {
+				previousVariant = currentVariant;
+				currentVariant = iterator.next();						// Get the next position
+				double distance = (currentVariant.getStart() - stop) * fittedXRatio;	// Compare its distance with the previous position
+				if (distance < 1) {
+					hasToMerge = true;
+					stop = currentVariant.getStop();
+				} else {
+					// Insert previous information
 					if (hasToMerge) {
+						hasToMerge = false;
 						fittedDataList.add(new VariantDisplay(start, stop));
 					} else {
 						fittedDataList.add(previousVariant);
 					}
+
+					// Update current information
+					start = currentVariant.getStart();
+					stop = currentVariant.getStop();
 				}
+			}
+
+			// Handle the last case
+			if (hasToMerge) {
+				fittedDataList.add(new VariantDisplay(start, stop));
+			} else {
+				fittedDataList.add(currentVariant);
 			}
 		}
 		cache.setData(fittedXRatio, fittedDataList);
@@ -450,7 +448,7 @@ public class DisplayableVariantListMaker implements Serializable {
 		for (int i = indexStart; i <= indexStop; i++) {
 			if (i == indexStop) {
 				VariantDisplay variant = fittedDataList.get(indexStop );
-				if (variant.getStop() >= start) {
+				if (variant.getStart() <= stop) {
 					resultList.add(variant);
 				}
 			} else {

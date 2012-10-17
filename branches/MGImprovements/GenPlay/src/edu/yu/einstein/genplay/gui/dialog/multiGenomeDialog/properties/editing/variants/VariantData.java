@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -48,7 +48,7 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesData implements Serializable {
+public class VariantData implements Serializable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 2604583442089053519L;
@@ -115,9 +115,9 @@ public class StripesData implements Serializable {
 
 
 	/**
-	 * Constructor of {@link StripesData}
+	 * Constructor of {@link VariantData}
 	 */
-	protected StripesData() {
+	protected VariantData() {
 		this.genome = null;
 		this.alleleType = null;
 		this.variationTypeList = null;
@@ -127,14 +127,14 @@ public class StripesData implements Serializable {
 
 
 	/**
-	 * Constructor of {@link StripesData}
+	 * Constructor of {@link VariantData}
 	 * @param genome		name of the genome
 	 * @param alleleType 	type of the allele
 	 * @param variantList	list of variation
 	 * @param colorList		list of color
 	 * @param trackList		list of track
 	 */
-	public StripesData(String genome, AlleleType alleleType, List<VariantType> variantList,
+	public VariantData(String genome, AlleleType alleleType, List<VariantType> variantList,
 			List<Color> colorList, Track<?>[] trackList) {
 		this.genome = genome;
 		this.alleleType = alleleType;
@@ -319,7 +319,7 @@ public class StripesData implements Serializable {
 		}
 
 		// object must be Test at this point
-		StripesData test = (StripesData)obj;
+		VariantData test = (VariantData)obj;
 		return genome.equals(test.getGenome()) &&
 				(alleleType == test.getAlleleType()) &&
 				hasSameVariationTypeList(test.getVariationTypeList()) &&
