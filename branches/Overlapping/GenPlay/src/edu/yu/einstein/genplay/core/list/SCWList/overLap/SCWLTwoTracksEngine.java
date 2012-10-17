@@ -354,11 +354,12 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 				currentScore[0] = 0.0;
 			}
 			for (int i = currentIndex[track]; (i < getTrackSize(track)) && !stopped; i++) {
-				newScwList.add(new SimpleScoredChromosomeWindow(	getStart(track),
-						getStop(track),
-						getScore(track)));
-				//getScore()));
-				currentIndex[track]++;
+				currentScore[track] = getScore(track);
+				double score = getScore();
+				if (score != 0) {
+					newScwList.add(new SimpleScoredChromosomeWindow(getStart(track), getStop(track), score));
+					currentIndex[track]++;
+				}
 			}
 		}
 	}
@@ -424,11 +425,12 @@ public class SCWLTwoTracksEngine implements Serializable, Stoppable {
 	}
 
 	private Double getScore (int track) {
-		if (this.isSCWList[track]) {
+		/*if (this.isSCWList[track]) {
 			return ((ScoredChromosomeWindow) this.list.get(track).get(chromosome).get(this.currentIndex[track])).getScore();
 		} else {
 			return (Double) this.list.get(track).get(chromosome).get(this.currentIndex[track]);
-		}
+		}*/
+		return getScore(track, this.currentIndex[track]);
 	}
 
 	private Double getScore (int track, int index) {
