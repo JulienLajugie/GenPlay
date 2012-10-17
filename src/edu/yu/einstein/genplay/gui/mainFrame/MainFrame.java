@@ -90,7 +90,7 @@ import edu.yu.einstein.genplay.util.Images;
 public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener, TrackListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
-	private static final int VERSION_NUMBER = 688; 						// GenPlay version
+	private static final int VERSION_NUMBER = 690; 						// GenPlay version
 	/**
 	 * Title of the application
 	 */
