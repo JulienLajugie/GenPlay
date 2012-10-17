@@ -119,6 +119,9 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 
 				// Compacts the offset lists in order to optimize the memory usage
 				multiGenomeProject.getMultiGenome().compactLists();
+
+				// Create the reference genome position index list
+				multiGenomeProject.getMultiGenomeForDisplay().getReferenceGenome().getAllele().createIndexLists();
 			} else {
 				// Generates error when parameters have not been set
 				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
@@ -139,6 +142,7 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 		initializesTrackListForMultiGenomeProject();
 
 		MainFrame.getInstance().getControlPanel().reinitChromosomePanel();
+		MainFrame.getInstance().getControlPanel().resetGenomeNames(multiGenomeProject.getGenomeNames());
 
 		// Unlocks the main frame
 		MainFrame.getInstance().unlock();
@@ -176,8 +180,7 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 	 * This method must be used when multi-genome synchronization is performed for the first time in a project.
 	 * @param genomeFileAssociation the genomeFileAssociation to set
 	 */
-	public void setGenomeFileAssociation(
-			Map<String, List<VCFFile>> genomeFileAssociation) {
+	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
 	}
 

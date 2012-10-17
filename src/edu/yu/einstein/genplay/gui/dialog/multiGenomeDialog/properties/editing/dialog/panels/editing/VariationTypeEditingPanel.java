@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -66,7 +66,7 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 	 * Constructor of {@link VariationTypeEditingPanel}
 	 */
 	public VariationTypeEditingPanel() {
-		super("Stripe(s)");
+		super("Variant(s)");
 	}
 
 
@@ -245,7 +245,7 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		List<String> genomeNames = null;
 
 		if (object instanceof List<?>) {
-			if (((List<?>)object).size() > 0 && ((List<?>)object).get(0) instanceof String) {
+			if ((((List<?>)object).size() > 0) && (((List<?>)object).get(0) instanceof String)) {
 				genomeNames = (List<String>) object;
 			}
 		}
@@ -255,7 +255,7 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 				VariantType type = variationName.get(i);
 				boolean exist = true;
 				int j = 0;
-				while (exist && j < genomeNames.size()) {
+				while (exist && (j < genomeNames.size())) {
 					String genomeName = genomeNames.get(j);
 					List<VCFFile> readers = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(genomeName, type);
 					if (readers.size() == 0) {
@@ -281,15 +281,15 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		return this;
 	}
 
-	
+
 	/**
 	 * @return the selected {@link AlleleType}
 	 */
 	public AlleleType getSelectedAlleleType () {
 		return (AlleleType) jcbAllele.getSelectedItem();
 	}
-	
-	
+
+
 	/**
 	 * @return the list of selected variant types
 	 */
@@ -302,8 +302,8 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		}
 		return list;
 	}
-	
-	
+
+
 	/**
 	 * @return the list of color according to the selected variant types
 	 */
@@ -316,8 +316,8 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		}
 		return list;
 	}
-	
-	
+
+
 	@Override
 	public String getErrors() {
 		String errors = "";
@@ -326,8 +326,8 @@ public class VariationTypeEditingPanel extends EditingPanel<List<VariantType>> {
 		}
 		return errors;
 	}
-	
-	
+
+
 	@Override
 	public void reset() {
 		for (JCheckBox box: selectedVariation) {

@@ -74,7 +74,7 @@ public class MultiGenomeDensityDrawer implements Serializable {
 
 
 	/**
-	 * Constructor of {@link MultiGenomeStripesDrawer}
+	 * Constructor of {@link MultiGenomeVariantDrawer}
 	 * @param drawer
 	 */
 	protected MultiGenomeDensityDrawer (MultiGenomeDrawer drawer) {

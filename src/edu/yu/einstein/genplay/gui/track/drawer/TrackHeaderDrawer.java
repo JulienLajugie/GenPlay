@@ -258,7 +258,7 @@ public class TrackHeaderDrawer implements Serializable {
 			stripeLegendColor = new ArrayList<Color>();
 
 			// Gets the sorted genome names list
-			List<String> genomeNames = multiGenomeDrawer.getGenomesListForMGStripe();
+			List<String> genomeNames = multiGenomeDrawer.getRequiredGenomesList();
 			Collections.sort(genomeNames);
 
 			// Color for text

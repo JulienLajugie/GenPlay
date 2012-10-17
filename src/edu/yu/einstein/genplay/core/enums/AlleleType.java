@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -28,26 +28,26 @@ package edu.yu.einstein.genplay.core.enums;
  * @version 0.1
  */
 public enum AlleleType {
-	
+
 	/**
 	 * For a paternal allele
 	 */
 	ALLELE01 ("Paternal"),
-	
+
 	/**
 	 * For a maternal allele
 	 */
 	ALLELE02 ("Maternal"),
-	
+
 	/**
 	 * To mention both allele, paternal and maternal
 	 */
 	BOTH ("Both");
-	
-	
-	private final String name; // String representing the indel 
-	
-	
+
+
+	private final String name; // String representing the indel
+
+
 	/**
 	 * Private constructor. Creates an instance of {@link AlleleType}
 	 * @param name
@@ -55,10 +55,28 @@ public enum AlleleType {
 	private AlleleType(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
 	}
-	
+
+
+	/**
+	 * @param s	a string
+	 * @return	the associated {@link AlleleType}
+	 */
+	public static AlleleType getAlleleType (String s) {
+		if ((s != null) && !s.isEmpty()) {
+			if (ALLELE01.toString().equals(s)) {
+				return ALLELE01;
+			} else if (ALLELE02.toString().equals(s)) {
+				return ALLELE02;
+			} else if (BOTH.toString().equals(s)) {
+				return BOTH;
+			}
+		}
+		return null;
+	}
+
 }

@@ -100,8 +100,8 @@ public final class MGAProperties extends TrackListAction{
 				// Set the filters
 				settings.getFilterSettings().setFiltersSettings(dialog.getFiltersData());
 
-				// Set the stripes
-				settings.getStripeSettings().setStripesSettings(dialog.getStripesData());
+				// Set the variants
+				settings.getVariantSettings().setVariantsSettings(dialog.getVariantsData());
 
 				// Set the static options
 				MGDisplaySettings.DRAW_FILTERED_VARIANT = dialog.getOptionValueList().get(0);

@@ -179,16 +179,16 @@ public class IndelVariant implements Serializable, Variant {
 			return false;
 		}
 
-		if (this.hashCode() != obj.hashCode()) {
+		/*if (this.hashCode() != obj.hashCode()) {
 			return false;
-		}
+		}*/
 
 		// object must be Test at this point
 		IndelVariant test = (IndelVariant)obj;
 		return (referenceGenomePosition == test.getReferenceGenomePosition()) &&
 				(length == test.getLength()) &&
 				(score == test.getScore()) &&
-				(phasedWithPos == test.getScore());
+				(phasedWithPos == test.phasedWithPos());
 	}
 
 

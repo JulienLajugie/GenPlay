@@ -33,6 +33,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.comparator.VariantComparator;
 import edu.yu.einstein.genplay.core.list.ChromosomeArrayListOfLists;
 import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
+import edu.yu.einstein.genplay.core.list.arrayList.IntArrayAsIntegerList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGAllele;
@@ -53,8 +54,9 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	private static final long serialVersionUID = -2820418368770648809L;
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private MGReference	 								genome;							// reference genome
-	private ChromosomeListOfLists<Variant> 	chromosomeListOfVariantList;	// list of variant for every chromosome
+	private MGReference	 							genome;							// reference genome
+	private ChromosomeListOfLists<Variant> 			chromosomeListOfVariantList;	// list of variant for every chromosome
+	private ChromosomeListOfLists<Integer> 	chromosomeListOfVariantIndex;
 
 
 	/**
@@ -66,6 +68,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(genome);
 		out.writeObject(chromosomeListOfVariantList);
+		out.writeObject(chromosomeListOfVariantIndex);
 	}
 
 
@@ -80,6 +83,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 		in.readInt();
 		genome = (MGReference) in.readObject();
 		chromosomeListOfVariantList = (ChromosomeListOfLists<Variant>) in.readObject();
+		chromosomeListOfVariantIndex = (ChromosomeListOfLists<Integer>) in.readObject();
 	}
 
 
@@ -89,9 +93,11 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 	protected MGAlleleReferenceForDisplay (MGReference genome) {
 		this.genome = genome;
 		chromosomeListOfVariantList = new ChromosomeArrayListOfLists<Variant>();
+		chromosomeListOfVariantIndex = new ChromosomeArrayListOfLists<Integer>();
 		int chromosomeNumber = ProjectManager.getInstance().getProjectChromosome().size();
 		for (int i = 0; i < chromosomeNumber; i++) {
 			chromosomeListOfVariantList.add(i, new ArrayList<Variant>());
+			chromosomeListOfVariantIndex.add(i, new IntArrayAsIntegerList());
 		}
 	}
 
@@ -171,15 +177,54 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 
 
 	/**
+	 * Generate the list of indexes.
+	 * All reference positions are stored in a sorted order.
+	 * Their index in the list can be used to retrieve information in other list made the same way.
+	 * This way, only the {@link MGAlleleReferenceForDisplay} contains this "master" index list.
+	 */
+	public void createIndexLists () {
+		int chromosomeNumber = ProjectManager.getInstance().getProjectChromosome().size();
+		for (int i = 0; i < chromosomeNumber; i++) {
+			List<Variant> currentVariantlist = chromosomeListOfVariantList.get(i);
+			List<Integer> currentIndexList = chromosomeListOfVariantIndex.get(i);
+			for (Variant currentVariant: currentVariantlist) {
+				int referencePosition = currentVariant.getReferenceGenomePosition();
+				currentIndexList.add(referencePosition);
+			}
+		}
+	}
+
+
+	/**
+	 * @param chromosome	a chromosome
+	 * @param position a reference genome position
+	 * @return the index of the given reference position.
+	 */
+	public int getPositionIndex (Chromosome chromosome, int position) {
+		return ((IntArrayAsIntegerList) chromosomeListOfVariantIndex.get(chromosome)).getIndex(position);
+	}
+
+
+	/**
+	 * @param chromosome	a chromosome
+	 * @return the number of position for the whole allele
+	 */
+	public int getPositionIndexSize (Chromosome chromosome) {
+		return chromosomeListOfVariantIndex.get(chromosome).size();
+	}
+
+
+	/**
 	 * Show the information of the {@link MGAlleleReferenceForDisplay}
 	 */
 	public void show () {
 		for (int i = 0; i < chromosomeListOfVariantList.size(); i++) {
 			System.out.println("Chromosome: " + ProjectManager.getInstance().getProjectChromosome().get(i).getName());
 			List<Variant> listOfVariantList = chromosomeListOfVariantList.get(i);
+			((IntArrayAsIntegerList) chromosomeListOfVariantIndex.get(i)).show();
 			int cpt = 0;
 			for (Variant variant: listOfVariantList) {
-				if (cpt < 10) {
+				if (cpt < 20) {
 					variant.show();
 					cpt++;
 				}

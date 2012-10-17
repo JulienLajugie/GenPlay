@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.core.operationPool.OperationPool;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class SCWLOCountWindows implements Operation<Long>{
+public class SCWLOWindowCount implements Operation<Long>{
 
 	private final ScoredChromosomeWindowList scwList;	// input list
 	private final boolean[] chromoList;		// 1 boolean / chromosome.
@@ -53,7 +53,7 @@ public class SCWLOCountWindows implements Operation<Long>{
 	 * @param chromoList list of boolean. A boolean set to true means that the
 	 * chromosome with the same index is going to be used for the calculation.
 	 */
-	public SCWLOCountWindows(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
+	public SCWLOWindowCount(ScoredChromosomeWindowList scwList, boolean[] chromoList) {
 		this.scwList = scwList;
 		this.chromoList = chromoList;
 	}

@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,16 +33,16 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.t
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesTableModel extends EditingTableModel<StripesData> {
+public class VariantsTableModel extends EditingTableModel<VariantData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = 3478197435828366331L;
 	
 
 	/**
-	 * Constructor of {@link StripesTableModel}
+	 * Constructor of {@link VariantsTableModel}
 	 */
-	protected StripesTableModel () {
+	protected VariantsTableModel () {
 		super(new String[]{"Genome", "Allele", "Variation", "Track"});
 	}
 
@@ -52,15 +52,15 @@ public class StripesTableModel extends EditingTableModel<StripesData> {
 		if (col == buttonColumnIndex) {
 			return buttons.get(row);
 		}
-		StripesData stripesData = data.get(row);
+		VariantData stripesData = data.get(row);
 		switch (col) {
-		case StripesData.GENOME_INDEX:
+		case VariantData.GENOME_INDEX:
 			return stripesData.getGenomeForDisplay();
-		case StripesData.ALLELE_INDEX:
+		case VariantData.ALLELE_INDEX:
 			return stripesData.getAlleleTypeForDisplay();
-		case StripesData.VARIANT_INDEX:
+		case VariantData.VARIANT_INDEX:
 			return stripesData.getVariationTypeListForDisplay();
-		case StripesData.TRACK_INDEX:
+		case VariantData.TRACK_INDEX:
 			return stripesData.getTrackListForDisplay();
 		default:
 			return new Object();
@@ -74,13 +74,13 @@ public class StripesTableModel extends EditingTableModel<StripesData> {
 			return JButton.class;
 		}
 		switch (column) {
-		case StripesData.GENOME_INDEX:
+		case VariantData.GENOME_INDEX:
 			return String.class;
-		case StripesData.ALLELE_INDEX:
+		case VariantData.ALLELE_INDEX:
 			return String.class;
-		case StripesData.VARIANT_INDEX:
+		case VariantData.VARIANT_INDEX:
 			return JPanel.class;
-		case StripesData.TRACK_INDEX:
+		case VariantData.TRACK_INDEX:
 			return String.class;
 		default:
 			return Object.class;
@@ -91,7 +91,7 @@ public class StripesTableModel extends EditingTableModel<StripesData> {
 	/**
 	 * @return the data
 	 */
-	protected List<StripesData> getData() {
+	protected List<VariantData> getData() {
 		return data;
 	}
 
@@ -99,15 +99,15 @@ public class StripesTableModel extends EditingTableModel<StripesData> {
 	/**
 	 * @param data the data to set
 	 */
-	protected void setData(List<StripesData> data) {
+	protected void setData(List<VariantData> data) {
 		this.data = data;
 		buttons = new ArrayList<JButton>();
 		for (int row = 0; row <data.size(); row++) {
 			buttons.add(getNewButton());
-			fireTableCellUpdated(row, StripesData.GENOME_INDEX);
-			fireTableCellUpdated(row, StripesData.ALLELE_INDEX);
-			fireTableCellUpdated(row, StripesData.VARIANT_INDEX);
-			fireTableCellUpdated(row, StripesData.TRACK_INDEX);
+			fireTableCellUpdated(row, VariantData.GENOME_INDEX);
+			fireTableCellUpdated(row, VariantData.ALLELE_INDEX);
+			fireTableCellUpdated(row, VariantData.VARIANT_INDEX);
+			fireTableCellUpdated(row, VariantData.TRACK_INDEX);
 			fireTableCellUpdated(row, buttonColumnIndex);
 		}
 	}

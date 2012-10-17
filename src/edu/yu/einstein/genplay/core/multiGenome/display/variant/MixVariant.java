@@ -146,9 +146,9 @@ public class MixVariant implements Serializable, Variant {
 			return false;
 		}
 
-		if (this.hashCode() != obj.hashCode()) {
+		/*if (this.hashCode() != obj.hashCode()) {
 			return false;
-		}
+		}*/
 
 		// object must be Test at this point
 		MixVariant test = (MixVariant)obj;

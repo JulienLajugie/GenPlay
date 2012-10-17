@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAddConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAAverage;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountNonNullLength;
-import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLACountWindows;
+import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAWindowCount;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLADivideConstant;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAFilter;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAIndex;
@@ -152,7 +152,7 @@ import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
@@ -293,7 +293,7 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 		getActionMap().put(SCWLAAddConstant.ACTION_KEY, new SCWLAAddConstant());
 		getActionMap().put(SCWLAAverage.ACTION_KEY, new SCWLAAverage());
 		getActionMap().put(SCWLACountNonNullLength.ACTION_KEY, new SCWLACountNonNullLength());
-		getActionMap().put(SCWLACountWindows.ACTION_KEY, new SCWLACountWindows());
+		getActionMap().put(SCWLAWindowCount.ACTION_KEY, new SCWLAWindowCount());
 		getActionMap().put(SCWLADivideConstant.ACTION_KEY, new SCWLADivideConstant());
 		getActionMap().put(SCWLAFilter.ACTION_KEY, new SCWLAFilter());
 		getActionMap().put(SCWLAIndex.ACTION_KEY, new SCWLAIndex());
@@ -431,10 +431,10 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 	 * @param preferredHeight preferred height of the track
 	 * @param name name of the track (can be null)
 	 * @param mask {@link ChromosomeWindowList} (can be null)
-	 * @param stripesList {@link StripesData} (can be null)
+	 * @param stripesList {@link VariantData} (can be null)
 	 * @param filtersList {@link VCFFilter} (can be null)
 	 */
-	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ScoredChromosomeWindowList mask, List<StripesData> stripesList, List<MGFilter> filtersList) {
+	public void setTrack(int index, Track<?> track, int preferredHeight, String name, ScoredChromosomeWindowList mask, List<VariantData> stripesList, List<MGFilter> filtersList) {
 		track.setPreferredHeight(preferredHeight);
 		track.setName(name);
 		track.setMask(mask);
@@ -864,12 +864,12 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 				int selectedTrackIndex = getSelectedTrackIndex();
 
 				// Manage the multi genome information
-				List<StripesData> stripesList = null;
+				List<VariantData> stripesList = null;
 				List<MGFilter> filtersList = null;
 				if (ProjectManager.getInstance().isMultiGenomeProject()) {
 					MGDisplaySettings.getInstance().deleteTrack(trackList[selectedTrackIndex]);		// Get rid of previous MG information
 					MGDisplaySettings.getInstance().pasteTemporaryTrack(newTrack);					// Create the new MG information from the copied ones
-					stripesList = MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(newTrack);		// Set the new stripe list
+					stripesList = MGDisplaySettings.getInstance().getVariantSettings().getVariantsForTrack(newTrack);		// Set the new stripe list
 					filtersList = MGDisplaySettings.getInstance().getFilterSettings().getMGFiltersForTrack(newTrack);	// Set the new filter list
 				}
 
@@ -904,7 +904,7 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 				}
 
 				// Retrieve the right multi genome information
-				List<StripesData> stripesList = null;
+				List<VariantData> stripesList = null;
 				List<MGFilter> filtersList = null;
 				if (PasteSettings.PASTE_MG == PasteSettings.YES_OPTION) {
 					if (ProjectManager.getInstance().isMultiGenomeProject()) {
@@ -916,7 +916,7 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 							currentTrack = selectedTrack;
 						}
 						MGDisplaySettings.getInstance().pasteTemporaryTrack(currentTrack);										// Create the new MG information from the copied ones
-						stripesList = MGDisplaySettings.getInstance().getStripeSettings().getStripesForTrack(currentTrack);		// Set the new stripes list
+						stripesList = MGDisplaySettings.getInstance().getVariantSettings().getVariantsForTrack(currentTrack);		// Set the new stripes list
 						filtersList = MGDisplaySettings.getInstance().getFilterSettings().getMGFiltersForTrack(currentTrack);	// Set the new filters list
 					}
 				} else {

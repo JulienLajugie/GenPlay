@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants;
 
 import java.awt.FontMetrics;
 import java.util.ArrayList;
@@ -32,27 +32,27 @@ import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class StripesTable extends EditingTable<StripesData> {
+public class VariantsTable extends EditingTable<VariantData> {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -3302281291755118456L;
 
 
 	/**
-	 * Constructor of {@link StripesTable}
+	 * Constructor of {@link VariantsTable}
 	 */
-	public StripesTable () {
-		StripesTableModel model = new StripesTableModel();
+	public VariantsTable () {
+		VariantsTableModel model = new VariantsTableModel();
 		setModel(model);
-		getColumnModel().getColumn(StripesData.VARIANT_INDEX).setCellRenderer(new StripesTableRenderer());
+		getColumnModel().getColumn(VariantData.VARIANT_INDEX).setCellRenderer(new VariantsTableRenderer());
 	}
 
 
 	@Override
-	protected void setData(List<StripesData> data) {
-		List<StripesData> newData = new ArrayList<StripesData>();
+	protected void setData(List<VariantData> data) {
+		List<VariantData> newData = new ArrayList<VariantData>();
 		for (int i = 0; i < data.size(); i++) {
-			StripesData rowData = new StripesData();
+			VariantData rowData = new VariantData();
 			rowData.setGenome(data.get(i).getGenome());
 			rowData.setAlleleType(data.get(i).getAlleleType());
 			rowData.setVariationTypeList(data.get(i).getVariationTypeList());
@@ -60,34 +60,34 @@ public class StripesTable extends EditingTable<StripesData> {
 			rowData.setTrackList(data.get(i).getTrackList());
 			newData.add(rowData);
 		}
-		((StripesTableModel)getModel()).setData(newData);
+		((VariantsTableModel)getModel()).setData(newData);
 		updateColumnSize();
 	}
 
 
 	@Override
 	protected void updateColumnSize () {
-		int columnNumber = ((StripesTableModel)getModel()).getColumnCount();
+		int columnNumber = ((VariantsTableModel)getModel()).getColumnCount();
 		FontMetrics fm = MainFrame.getInstance().getFontMetrics(MainFrame.getInstance().getFont());
-		String[] columnNames = ((StripesTableModel)getModel()).getColumnNames();
+		String[] columnNames = ((VariantsTableModel)getModel()).getColumnNames();
 
 		// Scan all columns
 		for (int i = 0; i < columnNumber; i++) {
 			int currentWidth = fm.stringWidth(columnNames[i].toString()) + 10;
 
-			for (StripesData stripesData: getData()) {
+			for (VariantData stripesData: getData()) {
 				int width;
 				switch (i) {
-				case StripesData.GENOME_INDEX:
+				case VariantData.GENOME_INDEX:
 					width = fm.stringWidth(stripesData.getGenomeForDisplay()) + 10;
 					break;
-				case StripesData.ALLELE_INDEX:
+				case VariantData.ALLELE_INDEX:
 					width = fm.stringWidth(stripesData.getAlleleTypeForDisplay()) + 10;
 					break;
-				case StripesData.VARIANT_INDEX:
+				case VariantData.VARIANT_INDEX:
 					width = fm.stringWidth(stripesData.getVariationTypeList().toString()) + 10;
 					break;
-				case StripesData.TRACK_INDEX:
+				case VariantData.TRACK_INDEX:
 					width = fm.stringWidth(stripesData.getTrackListForDisplay().toString()) + 10;
 					break;
 				default:

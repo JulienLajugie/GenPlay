@@ -39,12 +39,14 @@ import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.converter.ConverterFactory;
+import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
@@ -95,7 +97,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 
 	private List<TrackListener> trackListeners;		// list of track listeners
 
-	
+
 	/**
 	 * Constructor
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
@@ -268,7 +270,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
 			MGDisplaySettings settings = MGDisplaySettings.getInstance();
 			List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(this);
-			List<StripesData> stripesList = settings.getStripeSettings().getStripesForTrack(this);
+			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(this);
 			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
 	}
@@ -282,7 +284,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	 * @param stripesList list of stripes
 	 * @param filtersList list of filters
 	 */
-	public void updateMultiGenomeInformation (List<StripesData> stripesList, List<MGFilter> filtersList) {
+	public void updateMultiGenomeInformation (List<VariantData> stripesList, List<MGFilter> filtersList) {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
 		}
@@ -390,32 +392,12 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	/**
 	 * @return the stripesList
 	 */
-	public List<StripesData> getStripesList() {
+	public List<VariantData> getStripesList() {
 		if (trackGraphics.getMultiGenomeDrawer() != null) {
 			return trackGraphics.getMultiGenomeDrawer().getStripesList();
 		}
 		return null;
 	}
-
-
-	/**
-	 * Enable the serialization of the stripes list for multi genome project.
-	 */
-	/*public void enableStripeListSerialization () {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().enableStripeListSerialization();
-		}
-	}*/
-
-
-	/**
-	 * Disable the serialization of the stripes list for multi genome project.
-	 */
-	/*public void disableStripeListSerialization () {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().disableStripeListSerialization();
-		}
-	}*/
 
 
 	/**
@@ -579,16 +561,16 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	public MultiGenomeDrawer getMultiGenomeDrawer() {
 		return trackGraphics.getMultiGenomeDrawer();
 	}
-	
-	
+
+
 	@Override
 	public void addTrackListener(TrackListener trackListener) {
 		if (!trackListeners.contains(trackListener)) {
 			trackListeners.add(trackListener);
 		}
 	}
-	
-	
+
+
 	@Override
 	public TrackListener[] getTrackListeners() {
 		TrackListener[] listeners = new TrackListener[trackListeners.size()];
@@ -600,8 +582,8 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	public void removeTrackListener(TrackListener trackListener) {
 		trackListeners.remove(trackListener);
 	}
-	
-	
+
+
 	/**
 	 * Notifies all the track listeners that the track has changed
 	 * @param trackEventType track event type
@@ -612,8 +594,8 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 			listener.trackChanged(trackEvent);
 		}
 	}
-	
-	
+
+
 	@Override
 	public void trackChanged(TrackEvent arg0) {
 		if (arg0.getEventType() == TrackEventType.RESIZED) {
@@ -629,5 +611,22 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 			// we relay the other events to the element that contains this track
 			notifyTrackListeners(arg0.getEventType());
 		}
+	}
+
+
+	/**
+	 * @return true if the track can be converted, false otherwise
+	 */
+	public boolean isConvertible () {
+		boolean result = false;
+		if (getMask() != null) {
+			result = true;
+		} else {
+			T data = getData();
+			if ((data != null) && (data instanceof ChromosomeListOfLists<?>)) {
+				result = ConverterFactory.getTrackTypes((ChromosomeListOfLists<?>) data) != null;
+			}
+		}
+		return result;
 	}
 }

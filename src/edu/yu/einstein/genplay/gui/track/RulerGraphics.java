@@ -25,6 +25,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.text.DecimalFormat;
 
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.AlleleType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -67,21 +73,48 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 	 * @param g {@link Graphics}
 	 */
 	private void drawAbsoluteUnits(Graphics g) {
+		// Set graphic parameters
 		int width = getWidth();
 		int halfWidth = (int)Math.round(width / 2d);
 		int height = getHeight();
+		int yText = height - MAJOR_TEXT_HEIGHT;
+		g.setColor(MIDDLE_LINE_COLOR);
+
+		// Set positions
 		int positionStart = projectWindow.getGenomeWindow().getStart();
 		int positionStop = projectWindow.getGenomeWindow().getStop();
-
-		g.setColor(MIDDLE_LINE_COLOR);
-		int yText = height - MAJOR_TEXT_HEIGHT;
-		String stringToPrint = DF.format(positionStart);
-		g.drawString(stringToPrint, 2, yText);
 		currentMiddlePosition = (positionStart + positionStop) / 2;
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();
+			String genomeName = FormattedMultiGenomeName.getFullNameWithoutAllele(MGDisplaySettings.SELECTED_GENOME);
+			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
+			positionStart = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, positionStart, currentChromosome, genomeName);
+			positionStop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, positionStop, currentChromosome, genomeName);
+			currentMiddlePosition = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, currentMiddlePosition, currentChromosome, genomeName);
+		}
+
+		// Draw units
+		/*String stringToPrint = DF.format(positionStart);
+		g.drawString(stringToPrint, 2, yText);
 		stringToPrint = DF.format(currentMiddlePosition);
 		g.drawString(stringToPrint, halfWidth + 3, yText);
 		stringToPrint = DF.format(positionStop);
+		g.drawString(stringToPrint, width - fm.stringWidth(stringToPrint) - 1, yText);*/
+
+		String stringToPrint = getFormattedNumber(positionStart);
+		g.drawString(stringToPrint, 2, yText);
+		stringToPrint = getFormattedNumber(currentMiddlePosition);
+		g.drawString(stringToPrint, halfWidth + 3, yText);
+		stringToPrint = getFormattedNumber(positionStop);
 		g.drawString(stringToPrint, width - fm.stringWidth(stringToPrint) - 1, yText);
+	}
+
+
+	private String getFormattedNumber (int position) {
+		if (position == -1000000000) {
+			return "-";
+		}
+		return DF.format(position);
 	}
 
 

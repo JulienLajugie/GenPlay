@@ -28,21 +28,21 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.stripes.StripesData;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGStripeSettings implements Serializable {
+public class MGVariantSettings implements Serializable {
 
 	/** Generated serial version ID */
 	private static final long serialVersionUID = -8887751815193182599L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	private List<StripesData> stripesList;			// List of settings for stripes display
-	private List<StripesData> copiedStripesList;	// List of settings for stripes display
+	private List<VariantData> variantsList;			// List of settings for variants display
+	private List<VariantData> copiedStripesList;	// List of settings for variants display
 
 
 	/**
@@ -52,7 +52,7 @@ public class MGStripeSettings implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(stripesList);
+		out.writeObject(variantsList);
 	}
 
 
@@ -65,16 +65,16 @@ public class MGStripeSettings implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		stripesList = (List<StripesData>) in.readObject();
+		variantsList = (List<VariantData>) in.readObject();
 		copiedStripesList = null;
 	}
 
 
 	/**
-	 * Constructor of {@link MGStripeSettings}
+	 * Constructor of {@link MGVariantSettings}
 	 */
-	protected MGStripeSettings () {
-		stripesList = new ArrayList<StripesData>();
+	protected MGVariantSettings () {
+		variantsList = new ArrayList<VariantData>();
 		copiedStripesList = null;
 	}
 
@@ -82,16 +82,16 @@ public class MGStripeSettings implements Serializable {
 	/**
 	 * @return the stripesList
 	 */
-	public List<StripesData> getStripesList() {
-		return stripesList;
+	public List<VariantData> getVariantsList() {
+		return variantsList;
 	}
 
 
 	/**
-	 * @param stripesList the stripesList to set
+	 * @param variantsList the stripesList to set
 	 */
-	public void setStripesSettings(List<StripesData> stripesList) {
-		this.stripesList = stripesList;
+	public void setVariantsSettings(List<VariantData> variantsList) {
+		this.variantsList = variantsList;
 	}
 
 
@@ -101,7 +101,7 @@ public class MGStripeSettings implements Serializable {
 	 * @param track the track to save information
 	 */
 	public void copyTemporaryStripes(Track<?> track) {
-		this.copiedStripesList = getStripesForTrack(track);
+		this.copiedStripesList = getVariantsForTrack(track);
 	}
 
 
@@ -112,10 +112,10 @@ public class MGStripeSettings implements Serializable {
 	 */
 	public void pasteTemporaryStripes (Track<?> track) {
 		if (copiedStripesList != null) {
-			for (StripesData data: copiedStripesList) {
+			for (VariantData data: copiedStripesList) {
 				Track<?>[] tracks = {track};
-				StripesData newData = new StripesData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), tracks);
-				stripesList.add(newData);
+				VariantData newData = new VariantData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), tracks);
+				variantsList.add(newData);
 			}
 		}
 	}
@@ -126,10 +126,10 @@ public class MGStripeSettings implements Serializable {
 	 * @param track the track
 	 * @return		its list of stripes
 	 */
-	public List<StripesData> getStripesForTrack (Track<?> track) {
-		List<StripesData> list = new ArrayList<StripesData>();
+	public List<VariantData> getVariantsForTrack (Track<?> track) {
+		List<VariantData> list = new ArrayList<VariantData>();
 
-		for (StripesData data: stripesList) {
+		for (VariantData data: variantsList) {
 			Track<?>[] trackList = data.getTrackList();
 			for (Track<?> currentTrack: trackList) {
 				if (currentTrack.toString().equals(track.toString())) {
@@ -150,13 +150,13 @@ public class MGStripeSettings implements Serializable {
 	 * @param newTrack		the pasted track
 	 */
 	public void copyData (Track<?> copiedTrack, Track<?> newTrack) {
-		List<StripesData> stripeList = getStripesForTrack(copiedTrack);
+		List<VariantData> stripeList = getVariantsForTrack(copiedTrack);
 		if (stripeList != null) {
-			for (StripesData data: stripeList) {
+			for (VariantData data: stripeList) {
 				Track<?>[] track = {newTrack};
-				StripesData newData = new StripesData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), track);
+				VariantData newData = new VariantData(data.getGenome(), data.getAlleleType(), data.getVariationTypeList(), data.getColorList(), track);
 				if (!stripeList.contains(newData)) {
-					stripesList.add(newData);
+					variantsList.add(newData);
 				}
 			}
 		}
@@ -170,12 +170,12 @@ public class MGStripeSettings implements Serializable {
 	 * @param deleteTrack the deleted track
 	 */
 	public void deleteData (Track<?> deleteTrack) {
-		List<StripesData> stripeList = getStripesForTrack(deleteTrack);
+		List<VariantData> stripeList = getVariantsForTrack(deleteTrack);
 		if (stripeList != null) {
-			for (StripesData data: stripeList) {
+			for (VariantData data: stripeList) {
 				Track<?>[] trackList = data.getTrackList();
 				if (trackList.length == 1) {
-					stripesList.remove(data);
+					variantsList.remove(data);
 				} else {
 					Track<?>[] newTrackList = new Track<?>[trackList.length - 1];
 					int cpt = 0;
@@ -199,7 +199,7 @@ public class MGStripeSettings implements Serializable {
 	 * @param newTrack the new track
 	 */
 	public void replaceTrack (Track<?> oldTrack, Track<?> newTrack) {
-		for (StripesData stripe: stripesList) {
+		for (VariantData stripe: variantsList) {
 			stripe.replaceTrack(oldTrack, newTrack);
 		}
 	}
@@ -209,8 +209,8 @@ public class MGStripeSettings implements Serializable {
 	 * Show the settings
 	 */
 	public void showSettings () {
-		System.out.println("===== STRIPES");
-		for (StripesData data: stripesList) {
+		System.out.println("===== VARIANTS");
+		for (VariantData data: variantsList) {
 			System.out.println("Genome: " + data.getGenomeForDisplay() + "; Stripes: " + data.getVariationTypeList());
 		}
 	}

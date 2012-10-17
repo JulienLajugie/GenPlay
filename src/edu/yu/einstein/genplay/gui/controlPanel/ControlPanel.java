@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.controlPanel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -184,6 +185,22 @@ public final class ControlPanel extends JPanel {
 	 */
 	public void reinitChromosomePanel () {
 		chromosomePanel.updateChromosomePanel();
+	}
+
+
+	/**
+	 * @param genomeNames genome names to replace to the genome selector (multi genome only)
+	 */
+	public void resetGenomeNames (List<String> genomeNames) {
+		genomeWindowPanel.resetGenomeNames(genomeNames);
+	}
+
+
+	/**
+	 * @param genomeName genome name to select in the genome selector (multi genome only)
+	 */
+	public void setSelectedGenomeName (String genomeName) {
+		genomeWindowPanel.setSelectedGenomeName(genomeName);
 	}
 
 
