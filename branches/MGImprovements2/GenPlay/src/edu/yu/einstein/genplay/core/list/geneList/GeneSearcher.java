@@ -306,4 +306,13 @@ public final class GeneSearcher implements Serializable {
 			return lastGeneFound;
 		}
 	}
+
+
+	/**
+	 * @return the lastGeneFound
+	 */
+	public Gene getLastGeneFound() {
+		return lastGeneFound;
+	}
+
 }

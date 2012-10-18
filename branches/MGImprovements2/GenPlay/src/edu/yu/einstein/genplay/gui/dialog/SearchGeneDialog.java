@@ -37,6 +37,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -61,6 +62,8 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	private static JPanel 		jpOption;					// panel containing the check boxes
 	private static JCheckBox 	jcbMatchCase;				// check box for the case sensitivity
 	private static JCheckBox 	jcbWholeWord;				// check box for searching whole word
+	private static JCheckBox 	jcbIncremental;				// check box for searching incrementaly (no need to click "Find")
+	private static JButton 		jbValidInput;				// valid button
 	private static JButton 		jbNextMatch;				// next match button
 	private static JButton 		jbPreviousMatch;			// previous match button
 	private static JButton 		jbNextGene;					// next gene button
@@ -84,9 +87,17 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		jtfSearchGene.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				// search a gene when the user type something in the input box
-				Gene geneFound = SearchGeneDialog.geneSearcher.search(jtfSearchGene.getText());
-				showGene(geneFound);
+				boolean show = false;
+				if (jcbIncremental.isSelected()) {
+					show = true;
+				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					show = true;
+				}
+				if (show) {
+					// search a gene when the user type something in the input box
+					Gene geneFound = SearchGeneDialog.geneSearcher.search(jtfSearchGene.getText());
+					showGene(geneFound);
+				}
 			}
 		});
 		// create the match case check box
@@ -97,26 +108,40 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		jcbWholeWord = new JCheckBox("Whole Word");
 		jcbWholeWord.setSelected(geneSearcher.isWholeWorld());
 		jcbWholeWord.addActionListener(this);
+		// create the incremental check box
+		jcbIncremental = new JCheckBox("Incremental");
 		// create the option panel for the check box
 		jpOption = new JPanel();
-		jpOption.setBorder(BorderFactory.createTitledBorder("Option"));
+		jpOption.setBorder(BorderFactory.createTitledBorder("Options"));
 		jpOption.setLayout(new BoxLayout(jpOption, BoxLayout.PAGE_AXIS));
 		jpOption.add(jcbMatchCase);
 		jpOption.add(jcbWholeWord);
+		jpOption.add(jcbIncremental);
+		// create the Find button
+		jbValidInput = new JButton("Find");
+		jbValidInput.setMargin(new Insets(0, 0, 0, 0));
+		jbValidInput.setToolTipText("Move to the first match in the whole genome.");
+		Dimension dimension = new Dimension(50, jbValidInput.getPreferredSize().height);
+		jbValidInput.setPreferredSize(dimension);
+		jbValidInput.addActionListener(this);
 		// create the previous match button
 		jbPreviousMatch = new JButton("< Prev match");
+		jbPreviousMatch.setToolTipText("Move to the previous match.");
 		jbPreviousMatch.setPreferredSize(new Dimension(150, jbPreviousMatch.getPreferredSize().height));
 		jbPreviousMatch.addActionListener(this);
 		// create the next match button
 		jbNextMatch = new JButton("Next match     >");
+		jbNextMatch.setToolTipText("Move to the next match.");
 		jbNextMatch.setPreferredSize(new Dimension(150, jbNextMatch.getPreferredSize().height));
 		jbNextMatch.addActionListener(this);
 		// create the previous gene button
 		jbPreviousGene = new JButton("<  Prev gene");
+		jbPreviousGene.setToolTipText("Move to the previous gene.");
 		jbPreviousGene.setPreferredSize(new Dimension(150, jbPreviousGene.getPreferredSize().height));
 		jbPreviousGene.addActionListener(this);
 		// create the next gene button
 		jbNextGene = new JButton("Next gene      >");
+		jbNextGene.setToolTipText("Move to the next gene.");
 		jbNextGene.setPreferredSize(new Dimension(150, jbNextGene.getPreferredSize().height));
 		jbNextGene.addActionListener(this);
 
@@ -124,29 +149,47 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 
-		c.fill = GridBagConstraints.BOTH;
+		c.gridy = 0;
+		c.gridx = 0;
 		c.gridwidth = 2;
+		c.weightx = 1;
+		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.CENTER;
 		c.insets = new Insets(10, 10, 10, 10);
 		add(jtfSearchGene, c);
 
-		c.gridy = 1;
+		c.gridx = 2;
+		c.weightx = 0;
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.NONE;
+		c.anchor = GridBagConstraints.LINE_END;
+		add(jbValidInput, c);
+
+		c.gridy++;
+		c.gridx = 0;
+		c.gridwidth = 3;
+		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.CENTER;
 		add(jpOption, c);
 
-		c.gridy = 2;
+		c.gridy++;
 		c.gridwidth = 1;
 		add(jbPreviousMatch, c);
 
 		c.gridx = 1;
+		c.gridwidth = 2;
 		add(jbNextMatch, c);
 
-		c.gridy = 3;
+		c.gridy++;
 		c.gridx = 0;
+		c.gridwidth = 1;
 		add(jbPreviousGene, c);
 
 		c.gridx = 1;
+		c.gridwidth = 2;
 		add(jbNextGene, c);
 
-		getRootPane().setDefaultButton(jbNextMatch);
+		getRootPane().setDefaultButton(jbValidInput);
 		setTitle("Find Gene");
 		pack();
 		setAlwaysOnTop(true);
@@ -176,22 +219,20 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			// case where the whole word check box state changes
 			geneFound = geneSearcher.setWholeWord(jcbWholeWord.isSelected());
 		} else {
-			if (evt.getSource() == jbNextMatch) {
-				// case where the next match button is clicked
-				getRootPane().setDefaultButton(jbNextMatch);
-				geneFound = geneSearcher.searchNextMatch();
-			} else if (evt.getSource() == jbPreviousMatch) {
-				// case where the previous match button is clicked
-				getRootPane().setDefaultButton(jbPreviousMatch);
-				geneFound = geneSearcher.searchPreviousMatch();
-			} else if (evt.getSource() == jbNextGene) {
-				// case where the next gene button is clicked
-				getRootPane().setDefaultButton(jbNextGene);
-				geneFound = geneSearcher.searchNextGene();
-			} else if (evt.getSource() == jbPreviousGene) {
-				// case where the previous gene button is clicked
-				getRootPane().setDefaultButton(jbPreviousGene);
-				geneFound = geneSearcher.searchPreviousGene();
+			if (evt.getSource() instanceof JButton) {
+				JButton source = (JButton) evt.getSource();
+				getRootPane().setDefaultButton(source);
+				if (source == jbValidInput) {							// case where the "go" button is clicked
+					geneFound = SearchGeneDialog.geneSearcher.search(jtfSearchGene.getText());
+				} else if (source == jbNextMatch) {						// case where the next match button is clicked
+					geneFound = geneSearcher.searchNextMatch();
+				} else if (source == jbPreviousMatch) {					// case where the previous match button is clicked
+					geneFound = geneSearcher.searchPreviousMatch();
+				} else if (source == jbNextGene) {						// case where the next gene button is clicked
+					geneFound = geneSearcher.searchNextGene();
+				} else if (source == jbPreviousGene) {					// case where the previous gene button is clicked
+					geneFound = geneSearcher.searchPreviousGene();
+				}
 			}
 		}
 		showGene(geneFound);
@@ -204,22 +245,24 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 */
 	private void showGene(Gene geneFound) {
 		if (geneFound != null) {
-			jbNextMatch.setEnabled(true);
-			jbPreviousMatch.setEnabled(true);
-			jbNextGene.setEnabled(true);
-			jbPreviousGene.setEnabled(true);
-			// we want to see larger than the gene found
-			int windowStart = geneFound.getStart() - ((geneFound.getStop() - geneFound.getStart()) * 3);
-			int minimumDisplayableStart = - geneFound.getChromo().getLength();
-			// we don't want the start to be smaller than the minimum displayable position
-			windowStart = Math.max(windowStart, minimumDisplayableStart);
-			int windowStop = geneFound.getStop() + ((geneFound.getStop() - geneFound.getStart()) * 3);
-			int maximumDisplayableStop = geneFound.getChromo().getLength() * 2;
-			// we don't want the stop to be greater than the maximum displayable position
-			windowStop = Math.min(windowStop, maximumDisplayableStop);
-			GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromo(), windowStart, windowStop);
-			ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
-			setEditorColor(true);
+			if (canMove(geneFound)) {
+				jbNextMatch.setEnabled(true);
+				jbPreviousMatch.setEnabled(true);
+				jbNextGene.setEnabled(true);
+				jbPreviousGene.setEnabled(true);
+				// we want to see larger than the gene found
+				int windowStart = geneFound.getStart() - ((geneFound.getStop() - geneFound.getStart()) * 3);
+				int minimumDisplayableStart = - geneFound.getChromo().getLength();
+				// we don't want the start to be smaller than the minimum displayable position
+				windowStart = Math.max(windowStart, minimumDisplayableStart);
+				int windowStop = geneFound.getStop() + ((geneFound.getStop() - geneFound.getStart()) * 3);
+				int maximumDisplayableStop = geneFound.getChromo().getLength() * 2;
+				// we don't want the stop to be greater than the maximum displayable position
+				windowStop = Math.min(windowStop, maximumDisplayableStop);
+				GenomeWindow genomeWindow = new GenomeWindow(geneFound.getChromo(), windowStart, windowStop);
+				ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
+				setEditorColor(true);
+			}
 		} else {
 			setEditorColor(false);
 			jbNextMatch.setEnabled(false);
@@ -227,6 +270,29 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 			jbNextGene.setEnabled(false);
 			jbPreviousGene.setEnabled(false);
 		}
+	}
+
+
+	/**
+	 * A match found in another chromosome than the current one AND in multi genome project can be annoying.
+	 * It may involve many loadings and GenPlay asks if the user really wants to change chromosome.
+	 * @param geneFound	a match
+	 * @return	true if the user allows (in specific case) to go to found gene, false otherwise
+	 */
+	private boolean canMove (Gene geneFound) {
+		if (ProjectManager.getInstance().isMultiGenomeProject() && !geneFound.getChromo().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
+			Object[] options = {"Yes", "No"};
+			int n = JOptionPane.showOptionDialog(this,
+					"The following match has been found in another chromosome,\ndo you want to continue?",
+					"Chromosome changes",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			return n == JOptionPane.YES_OPTION;
+		}
+		return true;
 	}
 
 
