@@ -22,15 +22,13 @@
 package edu.yu.einstein.genplay.gui.action.scoredTrack;
 
 import java.awt.event.ActionEvent;
-import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.dialog.TwoNumbersOptionPane;
+import edu.yu.einstein.genplay.gui.dialog.YAxisOptionPane;
 import edu.yu.einstein.genplay.gui.track.ScoredTrack;
-
 
 
 /**
@@ -71,22 +69,29 @@ public final class STASetYAxis extends TrackListAction {
 		if (selectedTrack != null) {
 			double currentMin = selectedTrack.getYMin();
 			double currentMax = selectedTrack.getYMax();
-			Number[] minMax = TwoNumbersOptionPane.getValue(getRootPane(), "Y Axis", "Minimum:", "Maximum:", new DecimalFormat("#.###"), Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, currentMin, currentMax);			
-			if ((minMax != null) && (minMax[0] != null) && (minMax[1] != null)) {				
-				Double newMin = minMax[0].doubleValue();
-				Double newMax = minMax[1].doubleValue();
+			boolean currentYAutoscale = selectedTrack.isYAutoscale();
+			YAxisOptionPane yAxisOptionPane = new YAxisOptionPane();
+			if (yAxisOptionPane.showDialog(getRootPane(), currentMin, currentMax, currentYAutoscale) == YAxisOptionPane.APPROVE_OPTION) {
+				double newMin = yAxisOptionPane.getYMin();
+				double newMax = yAxisOptionPane.getYMax();
+				boolean newYAutoscale = yAxisOptionPane.isYAutoscale();
 				// case where the minimum is greater than the maximum
-				if (newMin >= newMax) {
-					JOptionPane.showMessageDialog(getRootPane(), "The minimum value must be smaller than the maximum", "Error", JOptionPane.ERROR_MESSAGE);
+				if (!newYAutoscale && (newMin >= newMax)) {
+					JOptionPane.showMessageDialog(getRootPane(), "The minimum value must be smaller than the maximum one", "Error", JOptionPane.ERROR_MESSAGE);
 					this.actionPerformed(arg0);
 				} else {
-					if (newMin != currentMin) {
-						selectedTrack.setYMin(newMin);
+					if (newYAutoscale != currentYAutoscale) {
+						selectedTrack.setYAutoscale(newYAutoscale);
 					}
-					if (minMax[1].doubleValue() != currentMax) {
-						selectedTrack.setYMax(newMax);
+					if (!selectedTrack.isYAutoscale()) {
+						if (newMin != currentMin) {
+							selectedTrack.setYMin(newMin);
+						}
+						if (newMax != currentMax) {
+							selectedTrack.setYMax(newMax);
+						}
 					}
-				}					
+				}
 			}
 		}
 	}

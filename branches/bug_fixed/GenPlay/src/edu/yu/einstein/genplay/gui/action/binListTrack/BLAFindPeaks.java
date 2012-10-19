@@ -38,6 +38,7 @@ import edu.yu.einstein.genplay.gui.track.BinListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 
@@ -116,6 +117,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 				if (resultTrack != null) {
 					int index = resultTrack.getTrackNumber() - 1;
 					BinListTrack newTrack = new BinListTrack(index + 1, actionResult[i]);
+					newTrack.setTrackColor(TrackColor.getTrackColor());
 					newTrack.getHistory().add(operation.getDescription() + ", Result Type: " + bloFindIslands.getResultTypes()[i].toString(), Colors.GREY);
 					newTrack.getHistory().add("Window Size = " + actionResult[i].getBinSize() + "bp, Precision = " + actionResult[i].getPrecision(), Colors.GREY);
 					getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName() + ", " + bloFindIslands.getResultTypes()[i].toString(),	selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());
@@ -134,6 +136,7 @@ public final class BLAFindPeaks extends TrackListActionOperationWorker<BinList[]
 		if (resultTrack != null) {
 			int index = resultTrack.getTrackNumber() - 1;
 			BinListTrack newTrack = new BinListTrack(index + 1, actionResult);
+			newTrack.setTrackColor(TrackColor.getTrackColor());
 			newTrack.getHistory().add(operation.getDescription(), Colors.GREY);
 			newTrack.getHistory().add("Window Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision(), Color.GRAY);
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), "peaks of " + selectedTrack.getName(), selectedTrack.getMask(), selectedTrack.getStripesList(), selectedTrack.getFiltersList());

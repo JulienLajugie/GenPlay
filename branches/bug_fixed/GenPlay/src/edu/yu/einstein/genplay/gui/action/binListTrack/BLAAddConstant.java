@@ -84,6 +84,6 @@ public final class BLAAddConstant extends TrackListActionOperationWorker<BinList
 	protected void doAtTheEnd(BinList actionResult) {
 		if (actionResult != null) {
 			selectedTrack.setData(actionResult, operation.getDescription());
-		}		
+		}
 	}
 }

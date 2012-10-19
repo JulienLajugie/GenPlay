@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	
 	private static final long serialVersionUID = 985376787707775754L;	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 1;			// saved format version
 	
 	/**
 	 * The score of the track is drawn on top of the track
@@ -59,44 +59,10 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	protected int					horizontalLinesCount;					// number of horizontal lines
 	protected double 				yMax;									// maximum score	
 	protected double 				yMin;									// minimum score
+	protected boolean				isYAutoscale = true;						// true if the Y scale needs to be automatically set
 	protected Color					scoreColor = Colors.RED;				// color of the score
 	protected int 					scorePosition = BOTTOM_SCORE_POSITION; 	// position of the score (top or bottom)
 
-	
-	/**
-	 * Saves the format version number during serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeDouble(yFactor);
-		out.writeBoolean(showHorizontalGrid);
-		out.writeInt(horizontalLinesCount);
-		out.writeDouble(yMax);
-		out.writeDouble(yMin);
-		out.writeObject(scoreColor);
-		out.writeInt(scorePosition);
-	}
-	
-	
-	/**
-	 * Unserializes the save format version number
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		yFactor = in.readDouble();
-		showHorizontalGrid = in.readBoolean();
-		horizontalLinesCount = in.readInt();
-		yMax = in.readDouble();
-		yMin = in.readDouble();
-		scoreColor = (Color) in.readObject();
-		scorePosition = in.readInt();
-	}
-	
 	
 	/**
 	 * Creates an instance of {@link ScoredTrackGraphics}
@@ -111,15 +77,15 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		this.showHorizontalGrid = SHOW_HORIZONTAL_GRID;
 		this.horizontalLinesCount = HORIZONTAL_LINES_COUNT;
 	}
-
+	
 	
 	/**
 	 * Draws the data of the track
 	 * @param g {@link Graphics}
 	 */
 	protected abstract void drawData(Graphics g);
-
-
+	
+	
 	/**
 	 * Draws horizontal lines on the track
 	 * @param g {@link Graphics}
@@ -130,11 +96,11 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 			double scoreGapBetweenLineY = (yMax - yMin) / (double)horizontalLinesCount;
 			double intensityFirstLineY = yMin - (yMin % scoreGapBetweenLineY);
 			for(int i = 0; i <= horizontalLinesCount; i++) {
-				double intensityLineY = i * scoreGapBetweenLineY + intensityFirstLineY;
+				double intensityLineY = ((double) i) * scoreGapBetweenLineY + intensityFirstLineY;
 				if (intensityLineY >= yMin) {
 					int screenLineY = scoreToScreenPos(intensityLineY,getHeight());
 					g.drawLine(0, screenLineY, getWidth(), screenLineY);
-					DecimalFormat formatter = new DecimalFormat("#.#");
+					DecimalFormat formatter = new DecimalFormat("#.#####");
 					formatter.setRoundingMode(RoundingMode.DOWN);
 					String positionStr = formatter.format(intensityLineY);
 					g.drawString(positionStr, 2, screenLineY);
@@ -143,14 +109,14 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		}
 	}
 
-	
+
 	/**
 	 * Draws the y value of the middle of the track
 	 * @param g
 	 */
 	abstract protected void drawScore(Graphics g);
-	
-	
+
+
 	@Override
 	protected void drawTrack(Graphics g) {
 		drawHorizontalLines(g);
@@ -162,16 +128,16 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		drawHeaderTrack(g);
 		drawMiddleVerticalLine(g);
 	}
-	
-	
+
+
 	/**
 	 * @return the number of horizontal lines
 	 */
 	public final int getHorizontalLinesCount() {
 		return horizontalLinesCount;
 	}
-	
-	
+
+
 	/**
 	 * @return the color of the score
 	 */
@@ -186,7 +152,7 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	public final int getScorePosition() {
 		return scorePosition;
 	}
-	
+
 
 	/**
 	 * @return the yMax
@@ -201,6 +167,14 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	 */
 	public final double getYMin() {
 		return yMin;
+	}
+	
+
+	/**
+	 * @return true if the Y scale is set automatically
+	 */
+	public boolean isYAutoscale() {
+		return isYAutoscale;
 	}
 
 
@@ -221,8 +195,31 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		}
 		super.paintComponent(g);
 	}
-	
-	
+
+
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		int version = in.readInt();
+		yFactor = in.readDouble();
+		showHorizontalGrid = in.readBoolean();
+		horizontalLinesCount = in.readInt();
+		yMax = in.readDouble();
+		yMin = in.readDouble();
+		scoreColor = (Color) in.readObject();
+		scorePosition = in.readInt();
+		if (version >= 1) {
+			this.isYAutoscale = in.readBoolean();
+		} else {
+			this.isYAutoscale = true;
+		}
+	}
+
+
 	/**
 	 * @param score a double value
 	 * @return the value on the screen
@@ -235,6 +232,15 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 		} else {
 			return (height - (int)Math.round((double)(score - yMin) * yFactor));
 		}
+	}
+
+
+	/**
+	 * Set to true to have the Y scale set automatically
+	 * @param yAutoscale
+	 */
+	public void setYAutoscale(boolean yAutoscale) {
+		this.isYAutoscale = yAutoscale;
 	}
 
 
@@ -267,8 +273,8 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 			throw new InvalidParameterException("Invalid score position");
 		}
 	}
-	
-	
+
+
 	/**
 	 * @param showHorizontalGrid set to true to show the horizontal grid
 	 */
@@ -296,6 +302,24 @@ public abstract class ScoredTrackGraphics<T> extends TrackGraphics<T> {
 	}
 
 
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeDouble(yFactor);
+		out.writeBoolean(showHorizontalGrid);
+		out.writeInt(horizontalLinesCount);
+		out.writeDouble(yMax);
+		out.writeDouble(yMin);
+		out.writeObject(scoreColor);
+		out.writeInt(scorePosition);
+		out.writeBoolean(isYAutoscale);
+	}
+	
+	
 	/**
 	 * Called when the ratio (height of the track / (yMax - y SCWLAMin)) changes.
 	 */

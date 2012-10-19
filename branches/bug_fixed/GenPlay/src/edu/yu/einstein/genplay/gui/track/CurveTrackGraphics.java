@@ -60,38 +60,8 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	protected GraphicsType 					typeOfGraph;								// type graphics
 	protected History 						history = null; 							// history containing a description of the action made on the track
 	protected URRManager<T> 				urrManager; 								// manager that handles the undo / redo / reset of the track
-	
-	
-	/**
-	 * Saves the format version number during serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(trackColor);
-		out.writeObject(typeOfGraph);
-		out.writeObject(history);
-		out.writeObject(urrManager);		
-	}
-	
-	
-	/**
-	 * Unserializes the save format version number
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		trackColor = (Color) in.readObject();
-		typeOfGraph = (GraphicsType) in.readObject();
-		history = (History) in.readObject();
-		urrManager = (URRManager<T>) in.readObject();
-	}
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link CurveTrackGraphics}
 	 * @param data data displayed in the track
@@ -104,7 +74,15 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		this.typeOfGraph = TYPE_OF_GRAPH;
 		this.data = data;
 		this.history = new History();
-		urrManager = new URRManager<T>(ProjectManager.getInstance().getProjectConfiguration().getUndoCount(), data);
+		this.urrManager = new URRManager<T>(ProjectManager.getInstance().getProjectConfiguration().getUndoCount(), data);
+	}
+
+
+	/**
+	 * Disable the reset function
+	 */
+	protected void deactivateReset () {
+		urrManager.deactivateReset();
 	}
 
 
@@ -118,7 +96,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		}
 	}
 
-	
+
 	/**
 	 * Returns the drawer used to print the data of this track and link it to the specified {@link Graphics}
 	 * @param g {@link Graphics} of a track
@@ -149,15 +127,15 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @return the minmum value to display
 	 */
 	protected abstract double getMinScoreToDisplay();
-	
-	
+
+
 	/**
 	 * @return the color of the track
 	 */
 	protected final Color getTrackColor() {
 		return trackColor;
 	}
-	
+
 
 	/**
 	 * @return the type of the graph
@@ -165,15 +143,15 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	protected final GraphicsType getTypeOfGraph() {
 		return typeOfGraph;
 	}
-	
-	
+
+
 	/**
 	 * @return true if the action redo is possible
 	 */
 	protected boolean isRedoable() {
 		return urrManager.isRedoable();
 	}
-	
+
 
 	/**
 	 * @return true if the track can be reseted
@@ -182,7 +160,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		return urrManager.isResetable();
 	}
 
-	
+
 	/**
 	 * @return true if the action undo is possible
 	 */
@@ -190,7 +168,23 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		return urrManager.isUndoable();
 	}
 
-	
+
+	/**
+	 * Unserializes the save format version number
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		this.trackColor = (Color) in.readObject();
+		this.typeOfGraph = (GraphicsType) in.readObject();
+		this.history = (History) in.readObject();
+		this.urrManager = (URRManager<T>) in.readObject();
+	}
+
+
 	/**
 	 * Redoes last action
 	 */
@@ -198,8 +192,10 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		try {
 			if (isRedoable()) {
 				data = urrManager.redo();
-				yMin = getMinScoreToDisplay();
-				yMax = getMaxScoreToDisplay();
+				if (isYAutoscale) {
+					yMin = getMinScoreToDisplay();
+					yMax = getMaxScoreToDisplay();
+				}
 				repaint();
 				history.redo();
 			}
@@ -209,7 +205,24 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		}
 	}
 
-	
+
+	/**
+	 * Set to true to have the Y scale set automatically
+	 * @param yAutoscale
+	 */
+	public void setYAutoscale(boolean yAutoscale) {
+		if (!this.isYAutoscale && (yAutoscale)) {
+			// we recompute the yMin and yMax when the y autoscale mode is turned on
+			this.isYAutoscale = true;
+			this.yMin = getMinScoreToDisplay();
+			this.yMax = getMaxScoreToDisplay();
+			repaint();
+		} else {
+			this.isYAutoscale = yAutoscale;
+		}
+	}
+
+
 	/**
 	 * Resets the data 
 	 * Copies the value of the original data into the current value
@@ -218,8 +231,10 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		try {
 			if (isResetable()) {
 				data = urrManager.reset();
-				yMin = getMinScoreToDisplay();
-				yMax = getMaxScoreToDisplay();
+				if (isYAutoscale) {
+					yMin = getMinScoreToDisplay();
+					yMax = getMaxScoreToDisplay();
+				}
 				repaint();
 				history.reset();
 			}
@@ -229,15 +244,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		}
 	}
 
-	
-	/**
-	 * Disable the reset function
-	 */
-	protected void deactivateReset () {
-		urrManager.deactivateReset();
-	}
-	
-	
+
 	/**
 	 * Sets the data showed in the track
 	 * @param data the data showed in the track
@@ -249,8 +256,10 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 				history.add(description);
 				urrManager.set(data);
 				this.data = data;
-				yMin = getMinScoreToDisplay();
-				yMax = getMaxScoreToDisplay();
+				if (isYAutoscale) {
+					yMin = getMinScoreToDisplay();
+					yMax = getMaxScoreToDisplay();
+				}
 				repaint();
 			} catch (Exception e) {
 				ExceptionManager.handleException(getRootPane(), e, "Error while updating the track");
@@ -258,7 +267,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 			}
 		}
 	}
-	
+
 
 	/**
 	 * @param trackColor the color of the track to set
@@ -269,6 +278,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		this.repaint();
 	}
 
+
 	/**
 	 * @param typeOfGraph the type of the graph to set
 	 */
@@ -278,7 +288,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		this.repaint();
 	}
 
-	
+
 	/**
 	 * Changes the undo count of the track
 	 * @param undoCount
@@ -286,8 +296,8 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	protected void setUndoCount(int undoCount) {
 		urrManager.setLength(undoCount);		
 	}
-	
-	
+
+
 	/**
 	 * Undoes last action
 	 */
@@ -295,8 +305,10 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 		try {
 			if (isUndoable()) {
 				data = urrManager.undo();
-				yMin = getMinScoreToDisplay();
-				yMax = getMaxScoreToDisplay();
+				if (isYAutoscale) {
+					yMin = getMinScoreToDisplay();
+					yMax = getMaxScoreToDisplay();
+				}
 				repaint();
 				history.undo();
 			}
@@ -305,8 +317,22 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 			history.setLastAsError();
 		}
 	}
-	
-	
+
+
+	/**
+	 * Saves the format version number during serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(trackColor);
+		out.writeObject(typeOfGraph);
+		out.writeObject(history);
+		out.writeObject(urrManager);
+	}
+
+
 	@Override
 	protected void yFactorChanged() {
 		repaint();

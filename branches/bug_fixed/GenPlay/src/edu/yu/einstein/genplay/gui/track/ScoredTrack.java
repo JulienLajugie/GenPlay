@@ -42,26 +42,6 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	
 	
 	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-	}
-	
-	/**
 	 * Constructor
 	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
 	 * @param trackNumber number of the track
@@ -70,8 +50,8 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	protected ScoredTrack(int trackNumber, T data) {
 		super(trackNumber, data);
 	}
-	
-	
+
+
 	/**
 	 * @return the number of horizontal lines
 	 */
@@ -101,9 +81,9 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	 */
 	public final double getYMax() {
 		return ((ScoredTrackGraphics<?>)trackGraphics).getYMax();
-	}	
-	
-	
+	}
+
+
 	/**
 	 * @return the yMin
 	 */
@@ -113,10 +93,38 @@ public abstract class ScoredTrack<T> extends Track<T> {
 
 
 	/**
+	 * @return true if the Y scale is set automatically
+	 */
+	public boolean isYAutoscale() {
+		return ((ScoredTrackGraphics<?>)trackGraphics).isYAutoscale();
+	}
+
+
+	/**
 	 * @return true if the horizontal grid is visible
 	 */
 	public final boolean isShowHorizontalGrid() {
 		return ((ScoredTrackGraphics<?>)trackGraphics).isShowHorizontalGrid();
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+	}
+
+
+	/**
+	 * Set to true to have the Y scale set automatically
+	 * @param autoYScale
+	 */
+	public void setYAutoscale(boolean autoYScale) {
+		((ScoredTrackGraphics<?>)trackGraphics).setYAutoscale(autoYScale);
 	}
 
 
@@ -134,8 +142,7 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	public final void setScoreColor(Color scoreColor) {
 		((ScoredTrackGraphics<?>)trackGraphics).setScoreColor(scoreColor);
 	}
-	
-	
+
 
 	/**
 	 * @param scorePosition the position of the score to set
@@ -151,8 +158,8 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	public final void setShowHorizontalGrid(boolean showHorizontalGrid) {
 		((ScoredTrackGraphics<?>)trackGraphics).setShowHorizontalGrid(showHorizontalGrid) ;
 	}
-	
-	
+
+
 	/**
 	 * @param yMax the yMax to set
 	 */
@@ -166,5 +173,15 @@ public abstract class ScoredTrack<T> extends Track<T> {
 	 */
 	public final void setYMin(double yMin) {
 		((ScoredTrackGraphics<?>)trackGraphics).setYMin(yMin);
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 	}
 }
