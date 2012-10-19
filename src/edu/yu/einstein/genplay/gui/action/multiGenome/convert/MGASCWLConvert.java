@@ -43,6 +43,7 @@ import edu.yu.einstein.genplay.gui.track.SCWListTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 
 /**
@@ -153,9 +154,9 @@ public class MGASCWLConvert extends TrackListActionWorker<Boolean> {
 		if ((list!= null) && (currentTrack != null)) {
 			int index = currentTrack.getTrackNumber() - 1;
 			CurveTrack<?> newTrack = new SCWListTrack(index + 1, list);
+			newTrack.setTrackColor(TrackColor.getTrackColor());
 			newTrack.getHistory().add("Apply mask", Colors.GREY);
 			newTrack.getHistory().add("Track: " + currentTrack.getName(), Colors.GREY);
-
 			getTrackList().setTrack(index, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), currentTrack.getName() + " converted to BED", currentTrack.getMask(), currentTrack.getStripesList(), currentTrack.getFiltersList());
 		}
 	}

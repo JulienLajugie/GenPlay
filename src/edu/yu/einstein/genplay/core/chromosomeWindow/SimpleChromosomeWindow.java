@@ -91,9 +91,9 @@ public class SimpleChromosomeWindow implements ChromosomeWindow, Serializable, C
 	 * Creates an instance of {@link SimpleChromosomeWindow} having the same value than the specified {@link SimpleChromosomeWindow}
 	 * @param chromosomeWindow
 	 */
-	public SimpleChromosomeWindow(SimpleChromosomeWindow chromosomeWindow) {
-		this.start = chromosomeWindow.start;
-		this.stop = chromosomeWindow.stop;
+	public SimpleChromosomeWindow(ChromosomeWindow chromosomeWindow) {
+		this.start = chromosomeWindow.getStart();
+		this.stop = chromosomeWindow.getStop();
 	}
 
 
