@@ -37,12 +37,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
+import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
 import edu.yu.einstein.genplay.core.parser.genomeWindowParser.GenomeWindowInputHandler;
+import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -93,8 +96,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		// Create the genome coordinate selector
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			Object[] genomes = new Object[2];
-			genomes[0] = CoordinateSystemType.METAGENOME.toString();
-			genomes[1] = CoordinateSystemType.REFERENCE.toString();
+			genomes[0] = FormattedMultiGenomeName.META_GENOME_NAME;
+			genomes[1] = FormattedMultiGenomeName.REFERENCE_GENOME_NAME;
 			jcbGenomeSelection = new JComboBox(genomes);
 			jcbGenomeSelection.setSelectedIndex(0);
 			jcbGenomeSelection.addActionListener(new ActionListener() {
@@ -143,8 +146,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 * Called when the current {@link GenomeWindow} changes
 	 */
 	void updateGenomeWindow() {
-		GenomeWindowInputHandler handler = new GenomeWindowInputHandler(jtfGenomeWindow.getText());
-		GenomeWindow newGenomeWindow = handler.getGenomeWindow();
+		GenomeWindow newGenomeWindow = getGenomeWindow();
 		if (newGenomeWindow == null) {
 			JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
 		} else if (!newGenomeWindow.equals(projectWindow.getGenomeWindow())) {
@@ -153,8 +155,28 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 				JOptionPane.showMessageDialog(getRootPane(), "Invalid position", "Error", JOptionPane.WARNING_MESSAGE, null);
 			} else {
 				projectWindow.setGenomeWindow(newGenomeWindow);
+				updateGenomeWindowField(newGenomeWindow);
 			}
 		}
+	}
+
+
+	/**
+	 * @return the newly defined genome window
+	 */
+	private GenomeWindow getGenomeWindow () {
+		GenomeWindowInputHandler handler = new GenomeWindowInputHandler(jtfGenomeWindow.getText());
+		GenomeWindow newGenomeWindow = handler.getGenomeWindow();
+		if (newGenomeWindow != null) {
+			String outputGenome = CoordinateSystemType.METAGENOME.toString();
+			String genomeName = FormattedMultiGenomeName.getFullNameWithoutAllele(MGDisplaySettings.SELECTED_GENOME);
+			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
+			int start = ShiftCompute.getPosition(genomeName, inputAlleleType, newGenomeWindow.getStart(), newGenomeWindow.getChromosome(), outputGenome);
+			int stop = ShiftCompute.getPosition(genomeName, inputAlleleType, newGenomeWindow.getStop(), newGenomeWindow.getChromosome(), outputGenome);
+			newGenomeWindow.setStart(start);
+			newGenomeWindow.setStop(stop);
+		}
+		return newGenomeWindow;
 	}
 
 
@@ -176,7 +198,25 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		jtfGenomeWindow.setText(evt.getNewWindow().toString());
+		updateGenomeWindowField(evt.getNewWindow());
+	}
+
+
+	/**
+	 * Actual method when the genome window has changed.
+	 * @param genomeWindow the new genome window
+	 */
+	private void updateGenomeWindowField(GenomeWindow genomeWindow) {
+		String text = genomeWindow.toString();
+		if (ProjectManager.getInstance().isMultiGenomeProject()) {
+			Chromosome currentChromosome = projectWindow.getGenomeWindow().getChromosome();
+			String genomeName = FormattedMultiGenomeName.getFullNameWithoutAllele(MGDisplaySettings.SELECTED_GENOME);
+			AlleleType inputAlleleType = FormattedMultiGenomeName.getAlleleName(MGDisplaySettings.SELECTED_GENOME);
+			int positionStart = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStart(), currentChromosome, genomeName);
+			int positionStop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, inputAlleleType, genomeWindow.getStop(), currentChromosome, genomeName);
+			text = currentChromosome.getName() + ":" + positionStart + "-" + positionStop;
+		}
+		jtfGenomeWindow.setText(text);
 	}
 
 
@@ -185,9 +225,9 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	public void resetGenomeNames (List<String> genomeNames) {
 		jcbGenomeSelection.removeAllItems();
-		jcbGenomeSelection.addItem(CoordinateSystemType.METAGENOME.toString());
-		jcbGenomeSelection.addItem(CoordinateSystemType.REFERENCE.toString());
-		int width = getFontMetrics(getFont()).stringWidth(CoordinateSystemType.REFERENCE.toString());
+		jcbGenomeSelection.addItem(FormattedMultiGenomeName.META_GENOME_NAME);
+		jcbGenomeSelection.addItem(FormattedMultiGenomeName.REFERENCE_GENOME_NAME);
+		int width = getFontMetrics(getFont()).stringWidth(FormattedMultiGenomeName.REFERENCE_GENOME_NAME);
 		if (genomeNames != null) {
 			for (String genomeName: genomeNames) {
 				String name01 = FormattedMultiGenomeName.getFullNameWithAllele(genomeName, AlleleType.ALLELE01);
@@ -209,6 +249,7 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	public void setSelectedGenomeName (String genomeName) {
 		jcbGenomeSelection.setSelectedItem(genomeName);
+		updateGenomeWindowField(ProjectManager.getInstance().getProjectWindow().getGenomeWindow());
 	}
 
 }
