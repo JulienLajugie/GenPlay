@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.enums;
 
-import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 
 
 /**
@@ -33,11 +32,11 @@ public enum CoordinateSystemType {
 	/**
 	 * For the reference genome
 	 */
-	REFERENCE (FormattedMultiGenomeName.REFERENCE_GENOME_NAME),
+	REFERENCE ("Reference Genome"),
 	/**
 	 * For the meta genome
 	 */
-	METAGENOME (FormattedMultiGenomeName.META_GENOME_NAME),
+	METAGENOME ("Meta Genome"),
 	/**
 	 * For the current genome
 	 */

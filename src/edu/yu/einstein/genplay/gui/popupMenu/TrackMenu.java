@@ -164,6 +164,7 @@ public abstract class TrackMenu extends JPopupMenu implements PopupMenuListener 
 				jmiExportVCF.setEnabled(false);
 				//jmiExportBED.setEnabled(false);
 				jmiConvertBED.setEnabled(false);
+				jmiApplyGenotype.setEnabled(false);
 			}
 		} else {
 			jmMultiGenome.setEnabled(false);

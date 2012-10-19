@@ -93,6 +93,11 @@ public class FormattedMultiGenomeName {
 		int separator2Index = fullName.indexOf(separator2);
 		int separator3Index = fullName.indexOf(separator3);
 		int separator4Index = fullName.indexOf(separator4, separator3Index);
+		try {
+			elements[0] = fullName.substring(0, separator1Index);
+		} catch (Exception e) {
+			System.out.println();
+		}
 		elements[0] = fullName.substring(0, separator1Index);
 		elements[1] = fullName.substring((separator1Index + separator1.length()), separator2Index);
 		elements[2] = fullName.substring((separator2Index + separator2.length()), separator3Index);

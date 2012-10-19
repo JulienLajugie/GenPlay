@@ -96,8 +96,8 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 		// Create the genome coordinate selector
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			Object[] genomes = new Object[2];
-			genomes[0] = FormattedMultiGenomeName.META_GENOME_NAME;
-			genomes[1] = FormattedMultiGenomeName.REFERENCE_GENOME_NAME;
+			genomes[0] = CoordinateSystemType.METAGENOME.toString();
+			genomes[1] = CoordinateSystemType.REFERENCE.toString();
 			jcbGenomeSelection = new JComboBox(genomes);
 			jcbGenomeSelection.setSelectedIndex(0);
 			jcbGenomeSelection.addActionListener(new ActionListener() {
@@ -225,9 +225,9 @@ final class GenomeWindowPanel extends JPanel implements GenomeWindowListener {
 	 */
 	public void resetGenomeNames (List<String> genomeNames) {
 		jcbGenomeSelection.removeAllItems();
-		jcbGenomeSelection.addItem(FormattedMultiGenomeName.META_GENOME_NAME);
-		jcbGenomeSelection.addItem(FormattedMultiGenomeName.REFERENCE_GENOME_NAME);
-		int width = getFontMetrics(getFont()).stringWidth(FormattedMultiGenomeName.REFERENCE_GENOME_NAME);
+		jcbGenomeSelection.addItem(CoordinateSystemType.METAGENOME.toString());
+		jcbGenomeSelection.addItem(CoordinateSystemType.REFERENCE.toString());
+		int width = getFontMetrics(getFont()).stringWidth(CoordinateSystemType.REFERENCE.toString());
 		if (genomeNames != null) {
 			for (String genomeName: genomeNames) {
 				String name01 = FormattedMultiGenomeName.getFullNameWithAllele(genomeName, AlleleType.ALLELE01);
