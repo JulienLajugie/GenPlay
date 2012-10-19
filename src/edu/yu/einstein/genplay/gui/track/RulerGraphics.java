@@ -94,13 +94,6 @@ public final class RulerGraphics extends TrackGraphics<Void> {
 		}
 
 		// Draw units
-		/*String stringToPrint = DF.format(positionStart);
-		g.drawString(stringToPrint, 2, yText);
-		stringToPrint = DF.format(currentMiddlePosition);
-		g.drawString(stringToPrint, halfWidth + 3, yText);
-		stringToPrint = DF.format(positionStop);
-		g.drawString(stringToPrint, width - fm.stringWidth(stringToPrint) - 1, yText);*/
-
 		String stringToPrint = getFormattedNumber(positionStart);
 		g.drawString(stringToPrint, 2, yText);
 		stringToPrint = getFormattedNumber(currentMiddlePosition);
