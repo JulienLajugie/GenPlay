@@ -37,7 +37,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -63,6 +62,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	private static JCheckBox 	jcbMatchCase;				// check box for the case sensitivity
 	private static JCheckBox 	jcbWholeWord;				// check box for searching whole word
 	private static JCheckBox 	jcbIncremental;				// check box for searching incrementaly (no need to click "Find")
+	private static JCheckBox 	jcbChromosome;				// check box for searching within the current chromosome only
 	private static JButton 		jbValidInput;				// valid button
 	private static JButton 		jbNextMatch;				// next match button
 	private static JButton 		jbPreviousMatch;			// previous match button
@@ -110,6 +110,8 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		jcbWholeWord.addActionListener(this);
 		// create the incremental check box
 		jcbIncremental = new JCheckBox("Incremental");
+		// create the current chromosome search check box
+		jcbChromosome = new JCheckBox("Search within the current chromosome only");
 		// create the option panel for the check box
 		jpOption = new JPanel();
 		jpOption.setBorder(BorderFactory.createTitledBorder("Options"));
@@ -117,6 +119,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 		jpOption.add(jcbMatchCase);
 		jpOption.add(jcbWholeWord);
 		jpOption.add(jcbIncremental);
+		jpOption.add(jcbChromosome);
 		// create the Find button
 		jbValidInput = new JButton("Find");
 		jbValidInput.setMargin(new Insets(0, 0, 0, 0));
@@ -280,7 +283,12 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 	 * @return	true if the user allows (in specific case) to go to found gene, false otherwise
 	 */
 	private boolean canMove (Gene geneFound) {
-		if (ProjectManager.getInstance().isMultiGenomeProject() && !geneFound.getChromo().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
+		if (jcbChromosome.isSelected()) {
+			if (!geneFound.getChromo().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
+				return false;
+			}
+		}
+		/*if (ProjectManager.getInstance().isMultiGenomeProject() && !geneFound.getChromo().equals(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome())) {
 			Object[] options = {"Yes", "No"};
 			int n = JOptionPane.showOptionDialog(this,
 					"The following match has been found in another chromosome,\ndo you want to continue?",
@@ -291,7 +299,7 @@ public class SearchGeneDialog extends JDialog implements ActionListener {
 					options,
 					options[1]);
 			return n == JOptionPane.YES_OPTION;
-		}
+		}*/
 		return true;
 	}
 
