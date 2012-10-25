@@ -94,7 +94,7 @@ public final class GeneListAsBedWriter extends GeneListWriter implements Stoppab
 							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 						}
 
-						if ((start != -1) && (stop != -1)) {
+						if ((start > -1) && (stop > -1)) {
 							String lineToPrint = new String();
 							lineToPrint = currentChromosome.toString();
 							lineToPrint += "\t";

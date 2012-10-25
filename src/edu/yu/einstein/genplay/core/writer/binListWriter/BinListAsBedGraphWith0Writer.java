@@ -93,7 +93,7 @@ public final class BinListAsBedGraphWith0Writer extends BinListWriter implements
 							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 						}
 
-						if ((start != -1) && (stop != -1)) {
+						if ((start > -1) && (stop > -1)) {
 							//writer.write(currentChromosome.getName() + "\t" + (j * binSize) + "\t" + ((j + 1) * binSize) + "\t" + currentList.get(j));
 							writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t" + currentList.get(j));
 							writer.newLine();

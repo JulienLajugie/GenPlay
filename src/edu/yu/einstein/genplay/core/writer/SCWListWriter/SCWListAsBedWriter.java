@@ -94,7 +94,7 @@ public class SCWListAsBedWriter extends SCWListWriter implements Stoppable {
 								stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 							}
 
-							if ((start != -1) && (stop != -1)) {
+							if ((start > -1) && (stop > -1)) {
 								//writer.write(currentChromosome.getName() + "\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t-\t" + currentWindow.getScore());
 								writer.write(currentChromosome.getName() + "\t" + start + "\t" + stop + "\t-\t" + currentWindow.getScore());
 								writer.newLine();

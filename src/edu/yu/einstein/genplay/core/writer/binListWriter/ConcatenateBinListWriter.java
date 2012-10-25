@@ -132,7 +132,7 @@ public class ConcatenateBinListWriter implements Writer, Stoppable {
 							stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 						}
 
-						if ((start != -1) && (stop != -1)) {
+						if ((start > -1) && (stop > -1)) {
 							writer.write(currentChromosome + "\t" + start + "\t" + stop);
 							for (BinList currentBinList: binListArray) {
 								// if the operation need to be stopped we close the writer and delete the file

@@ -95,7 +95,7 @@ public final class SCWListAsGFFWriter extends SCWListWriter implements Stoppable
 								stop = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, stop, currentChromosome, fullGenomeName);
 							}
 
-							if ((start != -1) && (stop != -1)) {
+							if ((start > -1) && (stop > -1)) {
 								//writer.write(currentChromosome.getName() + "\t-\t-\t" + currentWindow.getStart() + "\t" + currentWindow.getStop() + "\t" + currentWindow.getScore() + "\t+\t-\t-");
 								writer.write(currentChromosome.getName() + "\t-\t-\t" + start + "\t" + stop + "\t" + currentWindow.getScore() + "\t+\t-\t-");
 								writer.newLine();

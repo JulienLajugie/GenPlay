@@ -85,7 +85,7 @@ public final class BinListAsWiggleWriter extends BinListWriter implements Stoppa
 							start = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, allele, start, currentChromosome, fullGenomeName);
 						}
 
-						if (start != -1) {
+						if (start > -1) {
 							// we print a header
 							writer.write("fixedStep chrom=" + currentChromosome.getName() + " start=" + start + " step=" + binSize + " span=" + binSize);
 							writer.newLine();
