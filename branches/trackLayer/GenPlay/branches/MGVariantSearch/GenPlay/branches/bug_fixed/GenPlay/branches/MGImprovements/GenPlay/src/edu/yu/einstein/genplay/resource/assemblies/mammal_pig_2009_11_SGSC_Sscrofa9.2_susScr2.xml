@@ -1,0 +1,22 @@
+<assembly clade="mammal" genome="pig" name="SGSC Sscrofa9.2/susScr2" date="11 2009">
+	<chromosome name="chr1" length="295529705"/>
+	<chromosome name="chr14" length="148510138"/>
+	<chromosome name="chr13" length="145235301"/>
+	<chromosome name="chr2" length="140133492"/>
+	<chromosome name="chr7" length="136409062"/>
+	<chromosome name="chr4" length="136254946"/>
+	<chromosome name="chr15" length="134541103"/>
+	<chromosome name="chr9" length="132468591"/>
+	<chromosome name="chrX" length="125871292"/>
+	<chromosome name="chr3" length="123599780"/>
+	<chromosome name="chr6" length="123305171"/>
+	<chromosome name="chr8" length="119985671"/>
+	<chromosome name="chr5" length="100516970"/>
+	<chromosome name="chr11" length="79814395"/>
+	<chromosome name="chr16" length="77435658"/>
+	<chromosome name="chr10" length="66736929"/>
+	<chromosome name="chr17" length="64395339"/>
+	<chromosome name="chr12" length="57431344"/>
+	<chromosome name="chr18" length="54309914"/>
+	<chromosome name="chrM" length="16770"/>
+</assembly>

@@ -1,0 +1,13 @@
+<assembly clade="insect" genome="d. melanogaster" name="BDGP R3/dm1" date="01 2003">
+	<chromosome name="chr4" length="1237870"/>
+	<chromosome name="chrU" length="8248647"/>
+	<chromosome name="chrX" length="21780003"/>
+	<chromosome name="chr2L" length="22217931"/>
+	<chromosome name="chr2R" length="20302755"/>
+	<chromosome name="chr2h" length="1651714"/>
+	<chromosome name="chr3L" length="23352213"/>
+	<chromosome name="chr3R" length="27890790"/>
+	<chromosome name="chr3h" length="1961095"/>
+	<chromosome name="chrXh" length="359526"/>
+	<chromosome name="chrYh" length="321294"/>
+</assembly>
