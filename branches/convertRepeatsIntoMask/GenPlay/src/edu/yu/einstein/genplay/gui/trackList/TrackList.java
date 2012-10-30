@@ -147,6 +147,7 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
+import edu.yu.einstein.genplay.gui.action.repeatFamilyTrack.RFTAConvertIntoMask;
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
@@ -353,7 +354,9 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 		getActionMap().put(SLAFindNext.ACTION_KEY, new SLAFindNext());
 		getActionMap().put(SLAFindPrevious.ACTION_KEY, new SLAFindPrevious());
 		getActionMap().put(SLARemoveSNPsNotInGenes.ACTION_KEY, new SLARemoveSNPsNotInGenes());
-
+		// repeat family track
+		getActionMap().put(RFTAConvertIntoMask.ACTION_KEY, new RFTAConvertIntoMask());
+		// multi-genome
 		if (ProjectManager.getInstance().isMultiGenomeProject()) {
 			getActionMap().put(MGAVCFStatistics.ACTION_KEY, new MGAVCFStatistics());
 			getActionMap().put(MGAGlobalVCFExport.ACTION_KEY, new MGAGlobalVCFExport());

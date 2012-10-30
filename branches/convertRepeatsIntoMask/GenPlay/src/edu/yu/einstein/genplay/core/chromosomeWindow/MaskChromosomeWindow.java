@@ -32,7 +32,7 @@ import java.text.DecimalFormat;
  * @author Julien Lajugie
  * @version 0.1
  */
-public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
+public final class MaskChromosomeWindow implements ScoredChromosomeWindow, ChromosomeWindow, Serializable, Cloneable, Comparable<ChromosomeWindow> {
 
 	private static final long serialVersionUID = 8073707507054963197L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
@@ -76,6 +76,16 @@ public final class MaskChromosomeWindow implements ScoredChromosomeWindow, Seria
 	public MaskChromosomeWindow(int start, int stop) {
 		this.start = start;
 		this.stop = stop;
+	}
+	
+	
+	/**
+	 * Creates an instance of a {@link MaskChromosomeWindow}
+	 * @param chromosomeWindow a chromosome window
+	 */
+	public MaskChromosomeWindow(ChromosomeWindow chromosomeWindow) {
+		this.start = chromosomeWindow.getStart();
+		this.stop = chromosomeWindow.getStop();
 	}
 
 

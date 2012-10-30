@@ -21,6 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import edu.yu.einstein.genplay.gui.action.repeatFamilyTrack.RFTAConvertIntoMask;
 import edu.yu.einstein.genplay.gui.track.RepeatFamilyListTrack;
 import edu.yu.einstein.genplay.gui.trackList.TrackList;
 
@@ -33,7 +36,10 @@ import edu.yu.einstein.genplay.gui.trackList.TrackList;
 public final class RepeatFamilyListTrackMenu extends TrackMenu {
 
 	private static final long serialVersionUID = -4797259442922136696L; // generated ID
-	
+	private final JMenu			jmOperation;							// category operation
+
+	private final JMenuItem		jmiConvertIntoMask;						// menu convert into mask
+
 	
 	/**
 	 * Creates an instance of a {@link RepeatFamilyListTrackMenu}
@@ -41,5 +47,13 @@ public final class RepeatFamilyListTrackMenu extends TrackMenu {
 	 */
 	public RepeatFamilyListTrackMenu(TrackList tl) {
 		super(tl);
+		
+		jmOperation = new JMenu("Operation");
+		jmiConvertIntoMask = new JMenuItem(actionMap.get(RFTAConvertIntoMask.ACTION_KEY));
+		
+		add(jmOperation, 0);
+		add(new Separator(), 1);
+		
+		jmOperation.add(jmiConvertIntoMask);
 	}
 }

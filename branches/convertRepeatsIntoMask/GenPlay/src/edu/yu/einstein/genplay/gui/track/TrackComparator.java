@@ -50,5 +50,4 @@ public class TrackComparator implements Comparator<Track<?>> {
 			return stringComparator.compare(s1, s2);
 		}
 	}
-
 }
