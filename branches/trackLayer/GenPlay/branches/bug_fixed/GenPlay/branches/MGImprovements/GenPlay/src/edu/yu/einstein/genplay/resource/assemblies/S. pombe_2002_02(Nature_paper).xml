@@ -1,5 +1,0 @@
-<assembly clade="other" genome="s. pombe" name="From Nature paper" date="02 2002">
-	<chromosome name="chr1" length="5598923"/>
-	<chromosome name="chr2" length="4397795"/>
-	<chromosome name="chr3" length="2465919"/>
-</assembly>
