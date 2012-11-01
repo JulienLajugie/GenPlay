@@ -149,7 +149,7 @@ public class RFLOConvertIntoMask implements Operation<ScoredChromosomeWindowList
 		if (repeatList == null) {
 			return null;
 		}
-		List<ScoredChromosomeWindow> resultList = new ArrayList<>();
+		List<ScoredChromosomeWindow> resultList = new ArrayList<ScoredChromosomeWindow>();
 		for (ChromosomeWindow currentRepeat: repeatList) {
 			// if the operation is being stopped we directly return null
 			if (stopped) {

@@ -47,7 +47,7 @@ public class RFTAConvertIntoMask extends TrackListActionOperationWorker<ScoredCh
 		selectedTrack = getTrackList().getSelectedTrack();
 		if (selectedTrack != null) {
 			RepeatFamilyList selectedTrackData = (RepeatFamilyList) selectedTrack.getData();
-			List<String> families = new ArrayList<>(); 
+			List<String> families = new ArrayList<String>(); 
 			for (List<RepeatFamily> currentRepeatList: selectedTrackData) {
 				for (RepeatFamily currentFamily: currentRepeatList) {
 					if (!families.contains(currentFamily.getName())) {
@@ -55,7 +55,7 @@ public class RFTAConvertIntoMask extends TrackListActionOperationWorker<ScoredCh
 					}
 				}
 			}
-			CheckBoxTableChooserDialog<String> familyChooser = new CheckBoxTableChooserDialog<>();
+			CheckBoxTableChooserDialog<String> familyChooser = new CheckBoxTableChooserDialog<String>();
 			familyChooser.setItems(families);
 			familyChooser.setSelectedItems(families);
 			familyChooser.setOrdering(false);
