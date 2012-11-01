@@ -63,10 +63,9 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 	 */
 	public 		static 	final 	int 		CANCEL_OPTION = 1;
 
-	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"Name", "Selected"};					// Column names
-//	private 	static	final 	Dimension 	DIALOG_SIZE 				= new Dimension(430, 600);				// Window size
-	private 	static	final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(430, 65);	// Button panel size
-	private 	static	final 	Color 		ITEM_CHOOSER_COLOR 			= ProjectFrame.ASSEMBLY_COLOR;			// Item chooser color
+	protected 	static	final 	String[] 	COLUMN_NAMES 				= {"Name", "Selected"};				// Column names
+	private 	static	final 	Dimension 	BUTTON_PANEL_SIZE			= new Dimension(430, 65);			// Button panel size
+	private 	static	final 	Color 		ITEM_CHOOSER_COLOR 			= ProjectFrame.ASSEMBLY_COLOR;		// Item chooser color
 
 
 	private JTable 					itemTable;					// table containing the items and the check-boxes
@@ -160,7 +159,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 	 */
 	private void init() {
 		//JDialog information
-		//setSize(DIALOG_SIZE);
 		setBackground(ITEM_CHOOSER_COLOR);
 		setResizable(false);
 		setModal(true);
@@ -169,7 +167,6 @@ public class CheckBoxTableChooserDialog<T> extends JDialog {
 		tableModel = new CheckBoxTableModel<T>();
 		tableModel.setData(fullItemList, selectedItem);
 		itemTable = new JTable();
-		itemTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		itemTable.setBackground(ITEM_CHOOSER_COLOR);
 		JScrollPane scrollPane = new JScrollPane(itemTable);
 		scrollPane.setBackground(ITEM_CHOOSER_COLOR);

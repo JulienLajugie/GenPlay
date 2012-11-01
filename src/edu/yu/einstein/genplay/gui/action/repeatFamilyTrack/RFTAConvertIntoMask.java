@@ -1,6 +1,7 @@
 package edu.yu.einstein.genplay.gui.action.repeatFamilyTrack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.ActionMap;
@@ -55,6 +56,7 @@ public class RFTAConvertIntoMask extends TrackListActionOperationWorker<ScoredCh
 					}
 				}
 			}
+			Collections.sort(families);
 			CheckBoxTableChooserDialog<String> familyChooser = new CheckBoxTableChooserDialog<String>();
 			familyChooser.setItems(families);
 			familyChooser.setSelectedItems(families);
