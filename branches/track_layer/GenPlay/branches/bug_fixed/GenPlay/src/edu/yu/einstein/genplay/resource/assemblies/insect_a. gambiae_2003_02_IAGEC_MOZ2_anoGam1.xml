@@ -1,0 +1,9 @@
+<assembly clade="insect" genome="a. gambiae" name="IAGEC MOZ2/anoGam1" date="02 2003">
+	<chromosome name="chr2L" length="48795086"/>
+	<chromosome name="chr2R" length="62725911"/>
+	<chromosome name="chr3L" length="41284009"/>
+	<chromosome name="chr3R" length="53272125"/>
+	<chromosome name="chrM" length="15363"/>
+	<chromosome name="chrU" length="59568033"/>
+	<chromosome name="chrX" length="22145176"/>
+</assembly>
