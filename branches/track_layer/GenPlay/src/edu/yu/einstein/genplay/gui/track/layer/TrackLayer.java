@@ -31,9 +31,9 @@ public interface TrackLayer<T> {
 
 	
 	/**
-	 * draws the data
+	 * draws the layer
 	 */
-	abstract void drawData();
+	abstract void draw();
 	
 	
 	/**

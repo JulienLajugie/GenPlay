@@ -48,10 +48,10 @@ public class ProjectManager implements Serializable {
 	private			boolean			multiGenome;			// True if it is a multi genome project, false if it is a simple genome project
 
 
-	private final ProjectConfiguration 		projectConfiguration;		// Instance of the Configuration Manager
-	private final ProjectWindow				projectWindow;				// Instance of the Genome Window Manager
-	private final ProjectZoom 				projectZoom;				// Instance of the Zoom Manager
-	private final ProjectChromosome			projectChromosome;			// Instance of the Chromosome Manager
+	private final ProjectConfiguration 	projectConfiguration;		// Instance of the Configuration Manager
+	private final ProjectWindow			projectWindow;				// Instance of the Genome Window Manager
+	private final ProjectZoom 			projectZoom;				// Instance of the Zoom Manager
+	private final ProjectChromosome		projectChromosome;			// Instance of the Chromosome Manager
 	private MultiGenomeProject			multiGenomeProject;			// Instance of the Multi Genome Project
 
 

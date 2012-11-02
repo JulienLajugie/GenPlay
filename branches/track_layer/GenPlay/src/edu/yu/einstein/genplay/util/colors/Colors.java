@@ -150,21 +150,31 @@ public class Colors {
 	/** Color of the Blank */
 	public static final Color BLANK = Colors.GREY;
 
-	
-	
-	//////////////////////////////////////////////// Handle colors
-	
-	/** Background color for the track handles */
-	public static final Color 	TRACK_HANDLE_BACKGROUND_COLOR = new Color(228, 236, 247);
-	
-	/** Rollover color for the track handles */
-	public static final Color 	TRACK_HANDLE_ROLLOVER_COLOR = new Color(187, 196, 209);
-	
-	/** Selected color for the track handles */
-	public static final Color 	TRACK_HANDLE_SELECTED_COLOR = new Color(157, 193, 228);
+	//////////////////////////////////////////////// Track graphics colors
 
-	
-	
+	/** Color of the vertical and horizontal lines of the track graphics */
+	public static final Color TRACK_GRAPHICS_LINE = Colors.LIGHT_GREY;
+
+	/** Color of the line in the middle of the track graphics */
+	public static final Color TRACK_GRAPHICS_MIDDLE_LINE = Colors.RED;
+
+	/** Background color of the graphics part */
+	public static final Color TRACK_GRAPHICS_BACKGROUND = Colors.WHITE;
+
+
+	//////////////////////////////////////////////// Track handle colors
+
+	/** Background color for the track handles */
+	public static final Color 	TRACK_HANDLE_BACKGROUND = new Color(228, 236, 247);
+
+	/** Rollover color for the track handles */
+	public static final Color 	TRACK_HANDLE_ROLLOVER = new Color(187, 196, 209);
+
+	/** Selected color for the track handles */
+	public static final Color 	TRACK_HANDLE_SELECTED = new Color(157, 193, 228);
+
+
+
 	/**
 	 * @param color the color
 	 * @return a new object of the color
@@ -172,5 +182,4 @@ public class Colors {
 	public static Color getNewColorOf (Color color) {
 		return new Color(color.getRGB());
 	}
-	
 }
