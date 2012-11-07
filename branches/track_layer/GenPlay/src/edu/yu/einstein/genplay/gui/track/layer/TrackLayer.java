@@ -29,35 +29,54 @@ package edu.yu.einstein.genplay.gui.track.layer;
  */
 public interface TrackLayer<T> {
 
-	
+
 	/**
 	 * draws the layer
 	 */
 	abstract void draw();
-	
-	
+
+
 	/**
 	 * @return the type of layer 
 	 */
 	public abstract TrackLayerType getType();
-	
-	
+
+
 	/**
 	 * @return the data of the layer
 	 */
 	public abstract T getData();
-	
-	
+
+
 	/**
 	 * Sets the data of the layer 
 	 * @param data data to set
 	 */
 	public abstract void setData(T data);
-	
-	
+
+
 	/**
 	 * Register a track a container track to the layer
 	 * This method is used by a track to register itself to the layer.
 	 */
 	abstract void setTrack();
+
+
+	/**
+	 * @return true if the layer needs to be hidden
+	 */
+	public abstract boolean isHidden();
+
+
+	/**
+	 * Sets if the layer needs to be hidden
+	 * @param isHidden set to true if the layer needs to be hidden
+	 */
+	public abstract void setVisible(boolean isHidden);
+
+
+	/**
+	 * @return a deep copy (not a reference copy) of the layer
+	 */
+	public abstract TrackLayer<T> deepCopy();
 }

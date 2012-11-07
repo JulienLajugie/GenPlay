@@ -21,11 +21,9 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.ByteArrayInputStream;
@@ -38,9 +36,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
@@ -50,7 +46,6 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 import edu.yu.einstein.genplay.gui.track.TrackHandle;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -70,7 +65,9 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	private String						name;									// name of the track
 	private String 						genomeName;								// genome on which the track is based (ie aligned on)
 	private	FontMetrics 				fontMetrics; 							// FontMetrics to get the size of a string
-	private final List<TrackLayer<?>> 	layers;									// layers of the track
+	private final TrackLayer<Void>		backgroundLayer;						// background layer of the track (layer with the vertical and horizontal lines)
+	private List<TrackLayer<?>> 		layers;									// layers of the track
+	private final TrackLayer<Void> 		foregroundLayer;						// foreground layer of the track (layer with the track name and the multi genome legend)
 
 
 	/**
@@ -86,9 +83,6 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 
 		// create the track graphics panel
 		trackGraphics = new LayeredTrackGraphics(this);
-
-		// set the track graphics width variable
-		trackGraphicsWidth = trackGraphics.getWidth();
 
 		// create list of track listener
 		trackListeners = new ArrayList<TrackListener>();
@@ -130,10 +124,21 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 
 
 	/**
-	 * @return the width of the graphic part of tracks
+	 * Sets the preferred Height of the track
+	 * @param newPreferredHeight new preferred height
 	 */
-	public static int getTrackGraphicsWidth() {
-		 return trackGraphicsWidth;
+	public void setPreferredHeight(int newPreferredHeight) {
+		setPreferredSize(new Dimension(getPreferredSize().width, newPreferredHeight));
+		this.defaultHeight = newPreferredHeight;
+		revalidate();
+	}
+
+
+	/**
+	 * @return the preferred height
+	 */
+	public int getPreferredHeight() {
+		return getPreferredSize().height;
 	}
 
 
@@ -264,12 +269,19 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	}
 
 
-	public List<TrackLayer<?>> getLayersToPaint() {
-		// TODO Auto-generated method stub
-		return null;
+	/**
+	 * Sets the list of track layers 
+	 * @param layers a list of track layers
+	 */
+	public void setLayers(List<TrackLayer<?>> layers) {
+		this.layers = layers;
 	}
 
 
-
-
+	/**
+	 * @return all the layers of the track
+	 */
+	public List<TrackLayer<?>> getLayers() {
+		return layers;
+	}
 }

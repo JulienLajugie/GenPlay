@@ -150,6 +150,8 @@ public class Colors {
 	/** Color of the Blank */
 	public static final Color BLANK = Colors.GREY;
 
+
+
 	//////////////////////////////////////////////// Track graphics colors
 
 	/** Color of the vertical and horizontal lines of the track graphics */
@@ -162,6 +164,8 @@ public class Colors {
 	public static final Color TRACK_GRAPHICS_BACKGROUND = Colors.WHITE;
 
 
+
+
 	//////////////////////////////////////////////// Track handle colors
 
 	/** Background color for the track handles */
@@ -172,14 +176,4 @@ public class Colors {
 
 	/** Selected color for the track handles */
 	public static final Color 	TRACK_HANDLE_SELECTED = new Color(157, 193, 228);
-
-
-
-	/**
-	 * @param color the color
-	 * @return a new object of the color
-	 */
-	public static Color getNewColorOf (Color color) {
-		return new Color(color.getRGB());
-	}
 }

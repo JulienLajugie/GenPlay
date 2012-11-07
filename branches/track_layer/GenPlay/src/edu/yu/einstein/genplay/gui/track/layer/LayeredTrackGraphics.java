@@ -1,12 +1,17 @@
 package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 
 public class LayeredTrackGraphics extends JPanel {
 	
@@ -63,6 +68,22 @@ public class LayeredTrackGraphics extends JPanel {
 			return (int) (res / 10d) + 1;
 		} else {
 			return (int) (res / 10d) - 1;
+		}
+	}
+
+
+	/**
+	 * Save the track graphics as a PNG image.
+	 * @param file output file
+	 */
+	public void saveAsImage(File file) {
+		BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = image.createGraphics();
+		paint(g);
+		try {
+			ImageIO.write(image, "PNG", file);
+		}catch(Exception e) {
+			ExceptionManager.handleException(getRootPane(), e, "Error while saving the tracks as an image");
 		}
 	}
 }
