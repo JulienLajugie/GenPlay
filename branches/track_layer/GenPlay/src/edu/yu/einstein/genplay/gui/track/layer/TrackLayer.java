@@ -27,56 +27,71 @@ package edu.yu.einstein.genplay.gui.track.layer;
  * @author Julien Lajugie
  * @param <T> type of data of the layer 
  */
-public interface TrackLayer<T> {
+public class TrackLayer<T> {
 
+	private T data;
+	private LayeredTrack track;
+	private TrackDrawer trackDrawer;
+	private boolean isHiddent;
 
+	
 	/**
 	 * draws the layer
 	 */
-	abstract void draw();
-
-
-	/**
-	 * @return the type of layer 
-	 */
-	public abstract TrackLayerType getType();
+	protected void draw() {
+		trackDrawer.drawTrack();
+	}
 
 
 	/**
 	 * @return the data of the layer
 	 */
-	public abstract T getData();
+	public T getData() {
+		return data;
+	}
 
 
 	/**
 	 * Sets the data of the layer 
 	 * @param data data to set
 	 */
-	public abstract void setData(T data);
+	public void setData(T data) {
+		this.data = data;
+	}
 
 
 	/**
-	 * Register a track a container track to the layer
+	 * Register a container track to the layer
 	 * This method is used by a track to register itself to the layer.
+	 * @param track {@link LayeredTrack} to set
 	 */
-	abstract void setTrack();
+	public void setTrack(LayeredTrack track) {
+		this.track = track;
+	}
 
 
 	/**
 	 * @return true if the layer needs to be hidden
 	 */
-	public abstract boolean isHidden();
+	public boolean isHidden() {
+		return isHiddent;
+	}
 
 
 	/**
 	 * Sets if the layer needs to be hidden
 	 * @param isHidden set to true if the layer needs to be hidden
 	 */
-	public abstract void setVisible(boolean isHidden);
+	public void setHidden(boolean isHidden) {
+		this.isHiddent = isHidden;
+	}
 
 
 	/**
 	 * @return a deep copy (not a reference copy) of the layer
 	 */
-	public abstract TrackLayer<T> deepCopy();
+	public TrackLayer<T> deepCopy() {
+		// TODO: create method
+		return null;
+	}
 }
