@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 
+
 /**
  * @author Nicolas Fourel
  * @version 0.1
@@ -71,4 +72,80 @@ public class SearchOption {
 		this.includeNoCall = includeNoCall;
 	}
 
+
+	/**
+	 * @return the includeInsertion
+	 */
+	public boolean isIncludeInsertion() {
+		return includeInsertion;
+	}
+
+
+	/**
+	 * @return the includeDeletion
+	 */
+	public boolean isIncludeDeletion() {
+		return includeDeletion;
+	}
+
+
+	/**
+	 * @return the includeSNP
+	 */
+	public boolean isIncludeSNP() {
+		return includeSNP;
+	}
+
+
+	/**
+	 * @return the includeReference
+	 */
+	public boolean isIncludeReference() {
+		return includeReference;
+	}
+
+
+	/**
+	 * @return the includeHeterozygote
+	 */
+	public boolean isIncludeHeterozygote() {
+		return includeHeterozygote;
+	}
+
+
+	/**
+	 * @return the includeHomozygote
+	 */
+	public boolean isIncludeHomozygote() {
+		return includeHomozygote;
+	}
+
+
+	/**
+	 * @return the includeNoCall
+	 */
+	public boolean isIncludeNoCall() {
+		return includeNoCall;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || (obj.getClass() != this.getClass())) {
+			return false;
+		}
+
+		// object must be Test at this point
+		SearchOption test = (SearchOption)obj;
+		return (includeInsertion == test.isIncludeInsertion()) &&
+				(includeDeletion == test.isIncludeDeletion()) &&
+				(includeSNP == test.isIncludeSNP()) &&
+				(includeReference == test.isIncludeReference()) &&
+				(includeHeterozygote == test.isIncludeHeterozygote()) &&
+				(includeHomozygote == test.isIncludeHomozygote()) &&
+				(includeNoCall == test.isIncludeNoCall());
+	}
 }

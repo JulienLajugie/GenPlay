@@ -272,19 +272,15 @@ public class VariantInformationDialog extends JDialog {
 	 * @return true if it moves to the next variant, false otherwise
 	 */
 	protected boolean goToNextVariant () {
-		if ((currentIndex + 1) >= variantList.size()) {
-			return false;
+		for (int i = currentIndex + 1; i < variantList.size(); i++) {
+			VariantDisplay tmpVariant = variantList.get(i);
+			if (isVariantValid(tmpVariant)) {
+				currentVariant = tmpVariant;
+				refreshDialog();
+				return true;
+			}
 		}
-		currentIndex++;
-
-		VariantDisplay tmpVariant = variantList.get(currentIndex);
-		if (isVariantValid(tmpVariant)) {
-			currentVariant = tmpVariant;
-			refreshDialog();
-			return true;
-		} else {
-			return goToNextVariant();
-		}
+		return false;
 	}
 
 
@@ -293,19 +289,15 @@ public class VariantInformationDialog extends JDialog {
 	 * @return true if it moves to the previous variant, false otherwise
 	 */
 	protected boolean goToPreviousVariant () {
-		if ((currentIndex - 1) < 0) {
-			return false;
+		for (int i = currentIndex - 1; i >= 0; i--) {
+			VariantDisplay tmpVariant = variantList.get(i);
+			if (isVariantValid(tmpVariant)) {
+				currentVariant = tmpVariant;
+				refreshDialog();
+				return true;
+			}
 		}
-		currentIndex--;
-
-		VariantDisplay tmpVariant = variantList.get(currentIndex);
-		if (isVariantValid(tmpVariant)) {
-			currentVariant = tmpVariant;
-			refreshDialog();
-			return true;
-		} else {
-			return goToPreviousVariant();
-		}
+		return false;
 	}
 
 

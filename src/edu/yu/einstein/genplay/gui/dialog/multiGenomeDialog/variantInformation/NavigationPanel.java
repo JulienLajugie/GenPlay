@@ -78,6 +78,10 @@ public class NavigationPanel extends JPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				int approve = optionDialog.showDialog(getOrigin(), getOrigin().getOptions());
 				if (approve == SearchOptionDialog.APPROVE_OPTION) {
+					/*if (!getOrigin().getOptions().equals(optionDialog.getOptions())) {
+						jbNext.setEnabled(true);
+						jbPrevious.setEnabled(true);
+					}*/
 					getOrigin().setOptions(optionDialog.getOptions());
 				}
 			}
