@@ -246,6 +246,69 @@ public class VCFLine implements Serializable {
 			formats.add(Utils.split(elements[i], ':'));
 		}
 	}
+
+	/**
+	 * @param genomeRawName
+	 * @return true if the genotype if heterozygote
+	 */
+	public boolean isHeterozygote (String genomeRawName) {
+		String gt = getGenotype(genomeRawName);
+		if (gt.length() > 2) {
+			char c1 = gt.charAt(0);
+			char c2 = gt.charAt(2);
+			return c1 != c2;
+		}
+		return false;
+	}
+
+	/**
+	 * @param genomeRawName
+	 * @return true if the genotype if homozygote
+	 */
+	public boolean isHomozygote (String genomeRawName) {
+		String gt = getGenotype(genomeRawName);
+		if (gt.length() > 2) {
+			char c1 = gt.charAt(0);
+			char c2 = gt.charAt(2);
+			return c1 == c2;
+		}
+		return false;
+	}
+
+	/**
+	 * @param genomeRawName
+	 * @return true if the genotype contains a no call (a dot: '.')
+	 */
+	public boolean genomeHasNoCall (String genomeRawName) {
+		String gt = getGenotype(genomeRawName);
+		return genotypeHasNoCall(gt);
+	}
+
+	/**
+	 * @param genotype
+	 * @return true if at least one no call is defined in the genotype
+	 */
+	private boolean genotypeHasNoCall (String genotype) {
+		if (genotype.length() > 2) {
+			char c1 = genotype.charAt(0);
+			char c2 = genotype.charAt(2);
+			return ((c1 == '.') || (c2 == '.'));
+		}
+		return false;
+	}
+
+	/**
+	 * @return true if at least one no call is defined in the line
+	 */
+	public boolean lineHasNoCall () {
+		for (String[] format: formats) {
+			String genotype = format[0];
+			if (genotypeHasNoCall(genotype)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	/////////////////////////////////////////////////////
 
 

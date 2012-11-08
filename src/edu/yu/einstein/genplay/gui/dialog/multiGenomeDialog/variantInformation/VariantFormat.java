@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 
 import java.util.ArrayList;
 import java.util.List;

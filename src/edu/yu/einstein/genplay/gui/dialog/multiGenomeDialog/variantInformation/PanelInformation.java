@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -57,7 +57,7 @@ public class PanelInformation extends JPanel {
 		JPanel contentPanel = getContentPanel(keys, values, description);
 		JScrollPane scrollPane = new JScrollPane(contentPanel);
 
-		Dimension dimension = new Dimension(ToolTipStripeDialog.WIDTH, SCROLL_HEIGHT);
+		Dimension dimension = new Dimension(VariantInformationDialog.WIDTH, SCROLL_HEIGHT);
 		scrollPane.setSize(dimension);
 		scrollPane.setMinimumSize(dimension);
 		scrollPane.setMaximumSize(dimension);

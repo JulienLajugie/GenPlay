@@ -212,6 +212,14 @@ public class VariantDisplay implements Serializable {
 
 
 	/**
+	 * @return true if the variant source is a no call
+	 */
+	public boolean isNoCall () {
+		return (source != null) && (source instanceof NoCallVariantOld);
+	}
+
+
+	/**
 	 * @return true if the variant display is a mixed variant
 	 */
 	public boolean isMix () {
@@ -231,6 +239,7 @@ public class VariantDisplay implements Serializable {
 	 * A variant is dominant according to the following order of importance:
 	 * - is an alternative
 	 * - is a reference
+	 * - is a no call
 	 * - is a mix of variants
 	 * 
 	 * If the given variant is null, the current variant is dominant.
@@ -248,11 +257,14 @@ public class VariantDisplay implements Serializable {
 		} else if (getStart() == variant.getStart()) {
 			if (	(isAlternative() && variant.isAlternative()) ||
 					(isReference() && variant.isReference()) ||
+					(isNoCall() && variant.isNoCall()) ||
 					(isMix() && variant.isMix())){
 				result = true;
-			} else if (isAlternative() && (variant.isMix() || variant.isReference())) {
+			} else if (isAlternative() && (variant.isMix() || variant.isReference()  || variant.isNoCall())) {
 				result = true;
-			} else if (isReference() && variant.isMix()) {
+			} else if (isReference() && (variant.isNoCall() || variant.isMix())) {
+				result = true;
+			} else if (isNoCall() && variant.isMix()) {
 				result = true;
 			}
 		}

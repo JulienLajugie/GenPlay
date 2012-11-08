@@ -59,6 +59,7 @@ public class MGAlleleForDisplay implements Serializable {
 	private static final int INSERTION_INDEX 	= 0;					// index for insertions
 	private static final int DELETION_INDEX 	= 1;					// index for deletions
 	private static final int SNPS_INDEX 		= 2;					// index for SNPs
+	private static final int NO_CALL_INDEX 		= 3;					// index for no calls
 
 	private MGGenome genomeInformation;													// the genome information object
 	private AlleleType allele;															// the allele type of this allele
@@ -108,6 +109,7 @@ public class MGAlleleForDisplay implements Serializable {
 			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.INSERTION));
 			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.DELETION));
 			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.SNPS));
+			elements.add(new MGVariantListForDisplay(this, chromosome, VariantType.NO_CALL));
 			chromosomeListOfVariantList.add(i, elements);
 		}
 	}
@@ -143,6 +145,8 @@ public class MGAlleleForDisplay implements Serializable {
 			return listOfVariantList.get(DELETION_INDEX);
 		} else if (type == VariantType.SNPS) {
 			return listOfVariantList.get(SNPS_INDEX);
+		} else if (type == VariantType.NO_CALL) {
+			return listOfVariantList.get(NO_CALL_INDEX);
 		} else {
 			return null;
 		}
@@ -159,6 +163,7 @@ public class MGAlleleForDisplay implements Serializable {
 			listOfVariantList.get(INSERTION_INDEX).show();
 			listOfVariantList.get(DELETION_INDEX).show();
 			listOfVariantList.get(SNPS_INDEX).show();
+			listOfVariantList.get(NO_CALL_INDEX).show();
 		}
 	}
 

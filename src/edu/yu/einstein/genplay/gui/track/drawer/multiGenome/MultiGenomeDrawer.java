@@ -47,7 +47,7 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe.ToolTipStripeDialog;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation.VariantInformationDialog;
 import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 /**
@@ -81,7 +81,7 @@ public class MultiGenomeDrawer implements Serializable {
 	private VariantDisplay 					variantUnderMouse = null;		// Special display when the mouse is over a variant stripe
 	private boolean							locked;
 
-	private List<ToolTipStripeDialog> stripesDialogs;
+	private List<VariantInformationDialog> stripesDialogs;
 
 	private MultiGenomeDensityDrawer densityDrawer;
 	private MultiGenomeVariantDrawer variantDrawer;
@@ -123,7 +123,7 @@ public class MultiGenomeDrawer implements Serializable {
 		variantDrawer.setDrawer(this);
 		projectWindow = ProjectManager.getInstance().getProjectWindow();
 		locked = false;
-		stripesDialogs = new ArrayList<ToolTipStripeDialog>();
+		stripesDialogs = new ArrayList<VariantInformationDialog>();
 		variantDataList = null;
 		mgFiltersList = null;
 	}
@@ -147,7 +147,7 @@ public class MultiGenomeDrawer implements Serializable {
 		mgFiltersList = null;
 		statistics = null;
 		locked = false;
-		stripesDialogs = new ArrayList<ToolTipStripeDialog>();
+		stripesDialogs = new ArrayList<VariantInformationDialog>();
 		chromosome = getCurrentChromosome();
 	}
 
@@ -222,6 +222,26 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	/**
+	 * Check if display major options have changed
+	 * @return	true if display major options have changed, false otherwise
+	 */
+	private boolean haveOptionsChanged () {
+		boolean showReference = MGDisplaySettings.getInstance().includeReferences();
+		boolean showFiltered = MGDisplaySettings.DRAW_FILTERED_VARIANT == MGDisplaySettings.YES_MG_OPTION;
+
+		if ((allele01VariantListMaker != null) && allele01VariantListMaker.optionsHaveChanged(showReference, showFiltered)) {
+			return true;
+		}
+
+		if ((allele02VariantListMaker != null) && allele02VariantListMaker.optionsHaveChanged(showReference, showFiltered)) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Updates information for multi genome project.
 	 * These information are about:
 	 * - stripes
@@ -230,7 +250,7 @@ public class MultiGenomeDrawer implements Serializable {
 	 * @param filtersList list of filters
 	 */
 	public void updateMultiGenomeInformation (List<VariantData> variantDataList, List<MGFilter> filtersList) {
-		if (hasChromosomeChanged() || hasMultiGenomeInformationChanged(variantDataList, filtersList)) {
+		if (hasChromosomeChanged() || hasMultiGenomeInformationChanged(variantDataList, filtersList) || haveOptionsChanged()) {
 			chromosome = getCurrentChromosome();
 			this.statistics = null;
 			killStripesDialogs();
@@ -364,7 +384,7 @@ public class MultiGenomeDrawer implements Serializable {
 				} else if (trackAlleleType == AlleleType.ALLELE02) {											// if the second allele only is displayed
 					variantList = getCopyOfVariantList(allele02VariantListMaker.getVariantList());				// we get the copy of its list
 				}
-				ToolTipStripeDialog toolTip = new ToolTipStripeDialog(this);									// we create the information dialog
+				VariantInformationDialog toolTip = new VariantInformationDialog(this);									// we create the information dialog
 				stripesDialogs.add(toolTip);
 				toolTip.show(variantList, variant, e.getXOnScreen(), e.getYOnScreen());						// we show it
 			}
@@ -417,7 +437,7 @@ public class MultiGenomeDrawer implements Serializable {
 
 		while ((index01 < size01) && (index02 < size02)) {
 			VariantDisplay variant01 = variantList01.get(index01);
-			VariantDisplay variant02 = variantList01.get(index02);
+			VariantDisplay variant02 = variantList02.get(index02);
 			int start01 = variant01.getStart();
 			int start02 = variant02.getStart();
 			if (start01 < start02) {
@@ -619,10 +639,10 @@ public class MultiGenomeDrawer implements Serializable {
 
 
 	private void killStripesDialogs () {
-		for (ToolTipStripeDialog dialog: stripesDialogs) {
+		for (VariantInformationDialog dialog: stripesDialogs) {
 			dialog.dispose();
 		}
-		stripesDialogs = new ArrayList<ToolTipStripeDialog>();
+		stripesDialogs = new ArrayList<VariantInformationDialog>();
 	}
 
 
