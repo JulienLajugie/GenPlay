@@ -45,6 +45,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatist
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFSampleStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.NoCallVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
@@ -145,7 +146,6 @@ public class MGSynchronizer implements Serializable {
 					lineNumber++;
 					if (line.isValid()) {
 						line.processForAnalyse();
-						List<Variant> currentVariants = new ArrayList<Variant>();
 						int referencePosition = line.getReferencePosition();								// get the reference genome position (POS field)
 						float score = line.getQuality();
 
@@ -167,23 +167,25 @@ public class MGSynchronizer implements Serializable {
 									int currentAlleleIndex = alleleHandler.getAlleleIndex(alleleType);
 
 									if (currentAlleleIndex >= 0) {																// if we have a variation
-										int alleleLength = line.getAlternativesLength()[currentAlleleIndex];									// we retrieve its length
+										int alternativeLength = line.getAlternativesLength()[currentAlleleIndex];									// we retrieve its length
 										VariantType variantType = line.getAlternativesTypes()[currentAlleleIndex];				// get the type of variant according to the length of the variation
 										vcfFile.addVariantType(genomeName, variantType);										// notice the reader of the variant type
 										updateVariationSampleStatistics(statistic.getSampleStatistics(genomeName), variantType, line.getAlternatives()[currentAlleleIndex]);
 										if (variantType != VariantType.SNPS) {													// if it is not a SNP
-											alleleHandler.getOffsetList(alleleType).add(new MGOffset(referencePosition, alleleLength));	// add the offset to the offset list
+											alleleHandler.getOffsetList(alleleType).add(new MGOffset(referencePosition, alternativeLength));	// add the offset to the offset list
 
 											if (variantType == VariantType.INSERTION) {
-												referenceOffsetList.get(chromosome).add(new MGOffset(referencePosition, alleleLength));				// add the offset to the reference genome allele if it is an insertion
+												referenceOffsetList.get(chromosome).add(new MGOffset(referencePosition, alternativeLength));				// add the offset to the reference genome allele if it is an insertion
 											}
 
 											// Add the variant for the display
 											MGVariantListForDisplay variantListForDisplay = alleleHandler.getAlleleForDisplay(alleleType).getVariantList(chromosome, variantType);
-											Variant variant = new IndelVariant(variantListForDisplay, referencePosition, alleleLength, score, 0);
+											Variant variant = new IndelVariant(variantListForDisplay, referencePosition, alternativeLength, score, 0);
 											variantListForDisplay.getVariantList().add(variant);
-											currentVariants.add(variant);
 										}
+									} else if (currentAlleleIndex == -2) {
+										MGVariantListForDisplay variantListForDisplay = alleleHandler.getAlleleForDisplay(alleleType).getVariantList(chromosome, VariantType.NO_CALL);
+										variantListForDisplay.getVariantList().add(new NoCallVariant(variantListForDisplay, referencePosition, 0));
 									}
 								}
 							} else {
@@ -204,19 +206,6 @@ public class MGSynchronizer implements Serializable {
 			vcfFile.getStatistics().processStatistics();
 		}
 	}
-
-
-	/*private Variant getDominantVariant (List<Variant> variantList) {
-		Variant variant = null;
-		if (variantList.size() > 0) {
-			for (Variant current: variantList) {
-				if ((variant == null) || (current.getLength() > variant.getLength())) {
-					variant = current;
-				}
-			}
-		}
-		return variant;
-	}*/
 
 
 	/**

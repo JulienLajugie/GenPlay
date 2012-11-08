@@ -19,20 +19,27 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
@@ -45,8 +52,9 @@ import edu.yu.einstein.genplay.util.Images;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class ToolTipStripeDialog extends JDialog {
+public class VariantInformationDialog extends JDialog {
 
+	/** Generated serial version ID */
 	private static final long serialVersionUID = -4932470485711131874L;
 
 	/** Dialog width */
@@ -59,6 +67,9 @@ public class ToolTipStripeDialog extends JDialog {
 	private VCFLine 				currentLine;		// the current variant object to display
 	private int						currentIndex;
 
+	private final JButton jbFullLine;				// button to show the full line
+	private SearchOption options;
+
 	private final JPanel headerPanel;			// panel containing the global information
 	private final JPanel infoPanel;				// panel containing the INFO field information of the VCF
 	private final JPanel formatPanel;			// panel containing the FORMAT field information of the VCF
@@ -66,39 +77,58 @@ public class ToolTipStripeDialog extends JDialog {
 
 
 	/**
-	 * Constructor of {@link ToolTipStripeDialog}
+	 * Constructor of {@link VariantInformationDialog}
 	 * @param multiGenomeDrawer the multigenome drawer
 	 */
-	public ToolTipStripeDialog (MultiGenomeDrawer multiGenomeDrawer) {
+	public VariantInformationDialog (MultiGenomeDrawer multiGenomeDrawer) {
 		super(MainFrame.getInstance());
 		this.vcfLineDialog = new VCFLineDialog();
+		options = new SearchOption();
 		int trackNumber = MainFrame.getInstance().getTrackList().getTrackNumberFromMGGenomeDrawer(multiGenomeDrawer);
 		String title = "Variant properties";
 		if (trackNumber > 0) {
 			title += " (Track " + trackNumber + ")";
 		}
+
+		// Dialog settings
 		setTitle(title);
 		setIconImage(Images.getApplicationImage());
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setAlwaysOnTop(true);
 
+
+		// Create the full line button
+		jbFullLine = new JButton("See the full line");
+		jbFullLine.setToolTipText("See the whole VCF line.");
+		jbFullLine.setMargin(new Insets(0, 0, 0, 0));
+		jbFullLine.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				showVCFLine();
+			}
+		});
+
+
 		// Layout settings
 		GridBagLayout layout = new GridBagLayout();
 		setLayout(layout);
 		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.weightx = 1;
 		gbc.weighty = 0;
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 
+
+		// Initialize panels
 		headerPanel = new JPanel();
 		infoPanel = new JPanel();
 		formatPanel = new JPanel();
 		navigationPanel = new JPanel();
 
 
+		// Add content
 		add(headerPanel, gbc);
 
 		gbc.gridy++;
@@ -106,6 +136,9 @@ public class ToolTipStripeDialog extends JDialog {
 
 		gbc.gridy++;
 		add(formatPanel, gbc);
+
+		gbc.gridy++;
+		add(jbFullLine, gbc);
 
 		gbc.gridy++;
 		gbc.weighty = 1;
@@ -174,9 +207,9 @@ public class ToolTipStripeDialog extends JDialog {
 		updatePanel(formatPanel, variantFormat.getPane());
 		NavigationPanel newNavigationPanel = new NavigationPanel(this);
 		if (currentLine == null) {
-			newNavigationPanel.setEnableDetail(false);
+			jbFullLine.setEnabled(false);
 		} else {
-			newNavigationPanel.setEnableDetail(true);
+			jbFullLine.setEnabled(true);
 		}
 		updatePanel(navigationPanel, newNavigationPanel);
 
@@ -243,9 +276,15 @@ public class ToolTipStripeDialog extends JDialog {
 			return false;
 		}
 		currentIndex++;
-		currentVariant = variantList.get(currentIndex);
-		refreshDialog();
-		return true;
+
+		VariantDisplay tmpVariant = variantList.get(currentIndex);
+		if (isVariantValid(tmpVariant)) {
+			currentVariant = tmpVariant;
+			refreshDialog();
+			return true;
+		} else {
+			return goToNextVariant();
+		}
 	}
 
 
@@ -258,9 +297,57 @@ public class ToolTipStripeDialog extends JDialog {
 			return false;
 		}
 		currentIndex--;
-		currentVariant = variantList.get(currentIndex);
-		refreshDialog();
-		return true;
+
+		VariantDisplay tmpVariant = variantList.get(currentIndex);
+		if (isVariantValid(tmpVariant)) {
+			currentVariant = tmpVariant;
+			refreshDialog();
+			return true;
+		} else {
+			return goToPreviousVariant();
+		}
+	}
+
+
+	/**
+	 * @return true if the variant is valid according to the search options, false otherwise
+	 */
+	private boolean isVariantValid (VariantDisplay variant) {
+		boolean variantResult = false;
+		boolean genotypeResult = false;
+		VariantType type = variant.getType();
+
+		if (type == VariantType.MIX) {
+			variantResult = true;
+			genotypeResult = true;
+		} else {
+			if (((type == VariantType.INSERTION) && options.includeInsertion) ||
+					((type == VariantType.DELETION) && options.includeDeletion) ||
+					((type == VariantType.SNPS) && options.includeSNP) ||
+					(options.includeReference &&
+							((type == VariantType.REFERENCE_INSERTION) || (type == VariantType.REFERENCE_DELETION) || (type == VariantType.REFERENCE_SNP)))
+					) {
+				variantResult = true;
+			}
+			Variant source = variant.getSource();
+			if (source != null) {
+				VCFLine line = source.getVCFLine();
+				if (line != null) {
+					line.processForAnalyse();
+					String rawName = FormattedMultiGenomeName.getRawName(variant.getSource().getGenomeName());
+
+					if (line.genomeHasNoCall(rawName) && options.includeNoCall) {
+						variantResult = true;
+					}
+
+					if ((line.isHeterozygote(rawName) && options.includeHeterozygote) ||
+							(line.isHomozygote(rawName) && options.includeHomozygote)) {
+						genotypeResult = true;
+					}
+				}
+			}
+		}
+		return variantResult && genotypeResult;
 	}
 
 
@@ -269,6 +356,22 @@ public class ToolTipStripeDialog extends JDialog {
 	 */
 	protected void showVCFLine () {
 		vcfLineDialog.show(currentLine);
+	}
+
+
+	/**
+	 * @return the search options
+	 */
+	protected SearchOption getOptions() {
+		return options;
+	}
+
+
+	/**
+	 * @param options the options to set
+	 */
+	protected void setOptions(SearchOption options) {
+		this.options = options;
 	}
 
 }

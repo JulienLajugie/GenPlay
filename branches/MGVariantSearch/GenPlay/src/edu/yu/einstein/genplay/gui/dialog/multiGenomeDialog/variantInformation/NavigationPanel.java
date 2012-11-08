@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -41,7 +41,6 @@ import edu.yu.einstein.genplay.util.Images;
  */
 public class NavigationPanel extends JPanel{
 
-
 	/**
 	 * Generated serial version ID
 	 */
@@ -49,19 +48,21 @@ public class NavigationPanel extends JPanel{
 
 	private static final int HEIGHT = 30;	// height of the panel
 
-	private final ToolTipStripeDialog origin;		// tooltipstripe object to aware it of any changes.
-	private final JButton details;				// button to show the full line
-	private final JButton previous;				// the previous button (move backward)
-	private final JButton next;					// the next button (move forward)
+	private final VariantInformationDialog origin;		// tooltipstripe object to aware it of any changes.
+	private final SearchOptionDialog optionDialog;	// the option search dialog
+	private final JButton jbOptions;				// button to show the full line
+	private final JButton jbPrevious;				// the previous button (move backward)
+	private final JButton jbNext;					// the next button (move forward)
 
 
 	/**
 	 * Constructor of {@link NavigationPanel}
 	 */
-	protected NavigationPanel (ToolTipStripeDialog origin) {
+	protected NavigationPanel (VariantInformationDialog origin) {
 		this.origin = origin;
+		this.optionDialog = new SearchOptionDialog();
 
-		Dimension paneDim = new Dimension(ToolTipStripeDialog.WIDTH, HEIGHT);
+		Dimension paneDim = new Dimension(VariantInformationDialog.WIDTH, HEIGHT);
 		setSize(paneDim);
 		setMinimumSize(paneDim);
 		setMaximumSize(paneDim);
@@ -69,37 +70,40 @@ public class NavigationPanel extends JPanel{
 
 		Insets inset = new Insets(0, 0, 0, 0);
 
-		details = new JButton("Details");
-		details.setToolTipText("See the whole VCF line.");
-		details.setMargin(inset);
-		details.addActionListener(new ActionListener() {
+		jbOptions = new JButton("Options");
+		jbOptions.setToolTipText("Define advanced search options.");
+		jbOptions.setMargin(inset);
+		jbOptions.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				getOrigin().showVCFLine();
+				int approve = optionDialog.showDialog(getOrigin(), getOrigin().getOptions());
+				if (approve == SearchOptionDialog.APPROVE_OPTION) {
+					getOrigin().setOptions(optionDialog.getOptions());
+				}
 			}
 		});
 
-		next = new JButton(getIcon(Images.getNextImage()));
-		next.setContentAreaFilled(false);
-		next.setToolTipText("Next variant on the track");
-		next.setMargin(inset);
-		next.addActionListener(new ActionListener() {
+		jbNext = new JButton(getIcon(Images.getNextImage()));
+		jbNext.setContentAreaFilled(false);
+		jbNext.setToolTipText("Next variant on the track");
+		jbNext.setMargin(inset);
+		jbNext.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				boolean enable = getOrigin().goToNextVariant();
-				next.setEnabled(enable);
+				jbNext.setEnabled(enable);
 			}
 		});
 
-		previous = new JButton(getIcon(Images.getPreviousImage()));
-		previous.setContentAreaFilled(false);
-		previous.setToolTipText("Previous variant on the track");
-		previous.setMargin(inset);
-		previous.addActionListener(new ActionListener() {
+		jbPrevious = new JButton(getIcon(Images.getPreviousImage()));
+		jbPrevious.setContentAreaFilled(false);
+		jbPrevious.setToolTipText("Previous variant on the track");
+		jbPrevious.setMargin(inset);
+		jbPrevious.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				boolean enable = getOrigin().goToPreviousVariant();
-				previous.setEnabled(enable);
+				jbPrevious.setEnabled(enable);
 			}
 		});
 
@@ -117,26 +121,26 @@ public class NavigationPanel extends JPanel{
 		gbc.anchor = GridBagConstraints.LINE_START;
 		gbc.gridx = 0;
 		gbc.weightx = 0;
-		add(previous, gbc);
+		add(jbPrevious, gbc);
 
 		// Add the "details" button
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbc.gridx++;
 		gbc.weightx = 1;
-		add(details, gbc);
+		add(jbOptions, gbc);
 
 		// Add the "next" button
 		gbc.anchor = GridBagConstraints.LINE_END;
 		gbc.gridx++;
 		gbc.weightx = 0;
-		add(next, gbc);
+		add(jbNext, gbc);
 	}
 
 
 	/**
-	 * @return the {@link ToolTipStripeDialog} object that requested the {@link NavigationPanel}
+	 * @return the {@link VariantInformationDialog} object that requested the {@link NavigationPanel}
 	 */
-	private ToolTipStripeDialog getOrigin () {
+	private VariantInformationDialog getOrigin () {
 		return origin;
 	}
 
@@ -148,7 +152,7 @@ public class NavigationPanel extends JPanel{
 	 * @return		the icon
 	 */
 	private ImageIcon getIcon (Image image) {
-		Image newImg = image.getScaledInstance(ToolTipStripeDialog.WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
+		Image newImg = image.getScaledInstance(VariantInformationDialog.WIDTH / 4, HEIGHT, Image.SCALE_SMOOTH);
 		ImageIcon icon = new ImageIcon(newImg);
 		return icon;
 	}
@@ -159,15 +163,6 @@ public class NavigationPanel extends JPanel{
 	 */
 	protected static int getPanelHeight () {
 		return NavigationPanel.HEIGHT;
-	}
-
-
-	/**
-	 * Enable the detail button
-	 * @param activate true if the button has to be enabled, false otherwise
-	 */
-	public void setEnableDetail (boolean activate) {
-		details.setEnabled(activate);
 	}
 
 }

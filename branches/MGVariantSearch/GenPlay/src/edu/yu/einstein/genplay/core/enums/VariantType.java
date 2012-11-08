@@ -84,6 +84,10 @@ public enum VariantType {
 	 */
 	REFERENCE_SNP ("Reference SNP"),
 	/**
+	 * To display the no call
+	 */
+	NO_CALL ("No Call"),
+	/**
 	 * When type are mixed during the fitting screen data process
 	 */
 	MIX ("Mix");

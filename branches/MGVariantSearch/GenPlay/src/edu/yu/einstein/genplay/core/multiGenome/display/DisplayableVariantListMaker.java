@@ -278,13 +278,11 @@ public class DisplayableVariantListMaker implements Serializable {
 			int displayCode = VariantDisplayPolicy.DO_NOT_DISPLAY;
 			Variant currentVariant = currentDisplayableVariant.getSource();
 			int referenceGenomePosition = currentVariant.getReferenceGenomePosition();
-			if (currentVariant != null) {
-				if (variantTypes.contains(currentVariant.getType())) {
-					displayCode = VariantDisplayPolicy.DISPLAY;
-					if (!(currentVariant instanceof ReferenceVariant)) {
-						if (!isValid(currentVariant, filtersList)) {
-							displayCode = VariantDisplayPolicy.FILTERED;
-						}
+			if (variantTypes.contains(currentVariant.getType())) {
+				displayCode = VariantDisplayPolicy.DISPLAY;
+				if (!(currentVariant instanceof ReferenceVariant)) {
+					if (!isValid(currentVariant, filtersList)) {
+						displayCode = VariantDisplayPolicy.FILTERED;
 					}
 				}
 			}
@@ -336,6 +334,18 @@ public class DisplayableVariantListMaker implements Serializable {
 		return true;									// if all tests are correct, the variant passes
 	}
 
+
+	/**
+	 * @param showReference true if reference variants have to be displayed, false otherwise
+	 * @param showFiltered 	true if filtered variants have to be displayed, false otherwise
+	 * @return true if major policy options have changed, false otherwise
+	 */
+	public boolean optionsHaveChanged (boolean showReference, boolean showFiltered) {
+		if (filtersHaveChanged(filtersList) || (displayPolicy.displayReference() != showReference) || (displayPolicy.displayFilteredVariant() != showFiltered)) {
+			return true;
+		}
+		return false;
+	}
 
 	///////////////////////////////////////////////////////////////////// Interface methods
 

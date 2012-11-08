@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.toolTipStripe;
+package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.variantInformation;
 
 import java.awt.Color;
 import java.awt.Desktop;
@@ -323,7 +323,7 @@ public class GlobalInformationPanel extends JPanel {
 	 */
 	private void addDescriptionRow (String text) {
 		if ((text != null) && !text.isEmpty()) {
-			Dimension keyDimension = new Dimension(ToolTipStripeDialog.WIDTH - 20, LABEL_HEIGHT * 4);
+			Dimension keyDimension = new Dimension(VariantInformationDialog.WIDTH - 20, LABEL_HEIGHT * 4);
 
 			JLabel descriptionLabel = new JLabel(text);
 			descriptionLabel.setSize(keyDimension);

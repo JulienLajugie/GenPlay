@@ -56,7 +56,7 @@ public class MGAlleleReferenceForDisplay implements Serializable {
 
 	private MGReference	 							genome;							// reference genome
 	private ChromosomeListOfLists<Variant> 			chromosomeListOfVariantList;	// list of variant for every chromosome
-	private ChromosomeListOfLists<Integer> 	chromosomeListOfVariantIndex;
+	private ChromosomeListOfLists<Integer> 			chromosomeListOfVariantIndex;
 
 
 	/**
