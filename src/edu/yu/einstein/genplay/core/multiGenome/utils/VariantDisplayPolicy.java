@@ -37,184 +37,184 @@ import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
  */
 public class VariantDisplayPolicy implements Serializable {
 
-	/** Generated serial version ID */
-	private static final long serialVersionUID = 4292238145294176360L;
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
+    /** Generated serial version ID */
+    private static final long serialVersionUID = 4292238145294176360L;
+    private static final int SAVED_FORMAT_VERSION_NUMBER = 0; // saved format version
 
-	/** Code policy to hide a variant */
-	public static final int DO_NOT_DISPLAY = 0;
-	/** Code policy to show a variant */
-	public static final int DISPLAY = 1;
-	/** Code policy to show a variant as a filtered variant */
-	public static final int FILTERED = 2;
+    /** Code policy to unknown variant */
+    public static final int NOT_FOUND = -1;
+    /** Code policy to hide a variant */
+    public static final int DO_NOT_DISPLAY = 0;
+    /** Code policy to show a variant */
+    public static final int DISPLAY = 1;
+    /** Code policy to show a variant as a filtered variant */
+    public static final int FILTERED = 2;
 
-	private ByteArrayAsIntegerList displayPolicy;						// list of boolean meaning whether variants can be displayed or not
-	private Boolean showReference;
-	private Boolean showFiltered;
+    private ByteArrayAsIntegerList displayPolicy; // list of boolean meaning whether variants can be displayed or not
+    private Boolean showReference;
+    private Boolean showFiltered;
 
+    /**
+     * Method used for serialization
+     * @param out
+     * @throws IOException
+     */
+    private void writeObject(ObjectOutputStream out) throws IOException {
+	out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+	out.writeObject(displayPolicy);
+	out.writeBoolean(showReference);
+	out.writeBoolean(showFiltered);
+    }
 
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(displayPolicy);
-		out.writeBoolean(showReference);
-		out.writeBoolean(showFiltered);
+    /**
+     * Method used for unserialization
+     * @param in
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+	in.readInt();
+	displayPolicy = (ByteArrayAsIntegerList) in.readObject();
+	showReference = in.readBoolean();
+	showFiltered = in.readBoolean();
+    }
+
+    /**
+     * Constructor of {@link VariantDisplayPolicy}
+     */
+    public VariantDisplayPolicy() {
+	initialize(null, true, true);
+    }
+
+    /**
+     * Constructor of {@link VariantDisplayPolicy}
+     * @param displayPolicy the display policy array
+     * @param showReference to show the reference variants
+     * @param showFiltered to show the filtered variants
+     */
+    public VariantDisplayPolicy(ByteArrayAsIntegerList displayPolicy, Boolean showReference, Boolean showFiltered) {
+	initialize(displayPolicy, showReference, showFiltered);
+    }
+
+    /**
+     * Initializes the {@link VariantDisplayPolicy}
+     * @param displayPolicy the display policy array
+     * @param showReference to show the reference variants
+     * @param showFiltered to show the filtered variants
+     */
+    public void initialize(ByteArrayAsIntegerList displayPolicy, Boolean showReference, Boolean showFiltered) {
+	this.displayPolicy = displayPolicy;
+	this.showReference = showReference;
+	this.showFiltered = showFiltered;
+    }
+
+    /**
+     * @param variant a variant
+     * @return the display code of the variant
+     */
+    public int getVariantDisplayPolicy(VariantDisplay variant) {
+	if (variant.getSource() == null) {
+	    return DISPLAY;
+	}
+	int positionIndex = getVariantIndex(variant);
+	if (positionIndex >= 0) {
+	    int policy = displayPolicy.get(positionIndex);
+	    return policy;
+	}
+	return NOT_FOUND;
+    }
+
+    /**
+     * @param variant a variant
+     * @return true if the variant has to be shown, false otherwise
+     */
+    public boolean isShown(VariantDisplay variant) {
+	int display = getVariantDisplayPolicy(variant);
+	if (display == DISPLAY) {
+	    return true;
 	}
 
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		displayPolicy = (ByteArrayAsIntegerList) in.readObject();
-		showReference = in.readBoolean();
-		showFiltered = in.readBoolean();
+	if (display == FILTERED && displayFilteredVariant()) {
+	    return true;
 	}
 
+	return false;
+	// return getVariantDisplayPolicy(variant) > 0;
+    }
 
-	/**
-	 * Constructor of {@link VariantDisplayPolicy}
-	 */
-	public VariantDisplayPolicy () {
-		initialize(null, true, true);
+    /**
+     * @param variant a variant
+     * @return true if the variant has to be shown, false otherwise
+     */
+    public boolean isFiltered(VariantDisplay variant) {
+	return getVariantDisplayPolicy(variant) == FILTERED;
+    }
+
+    /**
+     * @return the displayPolicy
+     */
+    public ByteArrayAsIntegerList getDisplayPolicyList() {
+	return displayPolicy;
+    }
+
+    /**
+     * @param displayPolicy the displayList to set
+     */
+    public void setDisplayPolicyList(ByteArrayAsIntegerList displayPolicy) {
+	this.displayPolicy = displayPolicy;
+    }
+
+    /**
+     * @return the showReference
+     */
+    public Boolean displayReference() {
+	if (showReference == null) {
+	    return true;
 	}
+	return showReference;
+    }
 
+    /**
+     * @param showReference the showReference to set
+     */
+    public void setShowReference(Boolean showReference) {
+	this.showReference = showReference;
+    }
 
-	/**
-	 * Constructor of {@link VariantDisplayPolicy}
-	 * @param displayPolicy	the display policy array
-	 * @param showReference	to show the reference variants
-	 * @param showFiltered	to show the filtered variants
-	 */
-	public VariantDisplayPolicy (ByteArrayAsIntegerList displayPolicy, Boolean showReference, Boolean showFiltered) {
-		initialize(displayPolicy, showReference, showFiltered);
+    /**
+     * @return the showFiltered
+     */
+    public boolean displayFilteredVariant() {
+	if (showFiltered == null) {
+	    return true;
 	}
+	return showFiltered;
+    }
 
+    /**
+     * @param showFiltered the showFiltered to set
+     */
+    public void setShowFiltered(Boolean showFiltered) {
+	this.showFiltered = showFiltered;
+    }
 
-	/**
-	 * Initializes the {@link VariantDisplayPolicy}
-	 * @param displayPolicy	the display policy array
-	 * @param showReference	to show the reference variants
-	 * @param showFiltered	to show the filtered variants
-	 */
-	public void initialize (ByteArrayAsIntegerList displayPolicy, Boolean showReference, Boolean showFiltered) {
-		this.displayPolicy = displayPolicy;
-		this.showReference = showReference;
-		this.showFiltered = showFiltered;
+    /**
+     * @param variant a variant
+     * @return the index of a variant
+     */
+    public int getVariantIndex(VariantDisplay variant) {
+	int genomePosition = -1;
+	Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+	if (variant.getSource() == null) {
+	    genomePosition = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, null, variant.getStart(), chromosome, FormattedMultiGenomeName.REFERENCE_GENOME_NAME);
+	} else {
+	    genomePosition = variant.getSource().getReferenceGenomePosition();
 	}
-
-
-	/**
-	 * @param variant a variant
-	 * @return the display code of the variant
-	 */
-	public int getVariantDisplayPolicy (VariantDisplay variant) {
-		if (variant.getSource() == null) {
-			return DISPLAY;
-		}
-		int positionIndex = getVariantIndex(variant);
-		int policy = displayPolicy.get(positionIndex);
-		return policy;
+	int positionIndex = -1;
+	if (genomePosition != -1) {
+	    positionIndex = ProjectManager.getInstance().getMultiGenomeProject().getReferencePositionIndex(chromosome, genomePosition);
 	}
-
-
-	/**
-	 * @param variant a variant
-	 * @return true if the variant has to be shown, false otherwise
-	 */
-	public boolean isShown (VariantDisplay variant) {
-		return getVariantDisplayPolicy(variant) > 0;
-	}
-
-
-	/**
-	 * @param variant a variant
-	 * @return true if the variant has to be shown, false otherwise
-	 */
-	public boolean isFiltered (VariantDisplay variant) {
-		return getVariantDisplayPolicy(variant) == FILTERED;
-	}
-
-
-	/**
-	 * @return the displayPolicy
-	 */
-	public ByteArrayAsIntegerList getDisplayPolicyList() {
-		return displayPolicy;
-	}
-
-
-	/**
-	 * @param displayPolicy the displayList to set
-	 */
-	public void setDisplayPolicyList(ByteArrayAsIntegerList displayPolicy) {
-		this.displayPolicy = displayPolicy;
-	}
-
-
-	/**
-	 * @return the showReference
-	 */
-	public Boolean displayReference() {
-		if (showReference == null) {
-			return true;
-		}
-		return showReference;
-	}
-
-
-	/**
-	 * @param showReference the showReference to set
-	 */
-	public void setShowReference(Boolean showReference) {
-		this.showReference = showReference;
-	}
-
-
-	/**
-	 * @return the showFiltered
-	 */
-	public boolean displayFilteredVariant() {
-		if (showFiltered == null) {
-			return true;
-		}
-		return showFiltered;
-	}
-
-
-	/**
-	 * @param showFiltered the showFiltered to set
-	 */
-	public void setShowFiltered(Boolean showFiltered) {
-		this.showFiltered = showFiltered;
-	}
-
-
-	/**
-	 * @param variant a variant
-	 * @return the index of a variant
-	 */
-	public int getVariantIndex (VariantDisplay variant) {
-		int genomePosition = -1;
-		Chromosome chromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-		if (variant.getSource() == null) {
-			genomePosition = ShiftCompute.getPosition(FormattedMultiGenomeName.META_GENOME_NAME, null, variant.getStart(), chromosome, FormattedMultiGenomeName.REFERENCE_GENOME_NAME);
-		} else {
-			genomePosition = variant.getSource().getReferenceGenomePosition();
-		}
-		int positionIndex = -1;
-		if (genomePosition != -1) {
-			positionIndex = ProjectManager.getInstance().getMultiGenomeProject().getReferencePositionIndex(chromosome, genomePosition);
-		}
-		return positionIndex;
-	}
+	return positionIndex;
+    }
 
 }
