@@ -26,7 +26,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
@@ -47,7 +47,7 @@ public abstract class CurveDrawer {
 	protected final double 			scoreMin;		// score minimum to display
 	protected final double 			scoreMax;		// score maximum to display
 	protected final Color 			trackColor;		// color of the curve
-	protected final GraphicsType 	typeOfGraph;	// type of graph
+	protected final GraphType 	typeOfGraph;	// type of graph
 	protected final ProjectWindow 	projectWindow;	// instance of the genome window manager
 	protected final double 			yRatio;			// ratio between the height of a track and the distance from yMin to yMax
 	
@@ -86,7 +86,7 @@ public abstract class CurveDrawer {
 	 * @param trackColor color of the curve
 	 * @param typeOfGraph type of graph
 	 */
-	public CurveDrawer (Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph) {
+	public CurveDrawer (Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphType typeOfGraph) {
 		this.graphics = graphics;
 		this.trackWidth = trackWidth;
 		this.trackHeight = trackHeight;

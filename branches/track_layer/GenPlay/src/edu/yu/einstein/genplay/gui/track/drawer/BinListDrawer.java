@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.track.drawer;
 import java.awt.Color;
 import java.awt.Graphics;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
@@ -52,7 +52,7 @@ public final class BinListDrawer extends CurveDrawer {
 	 * @param typeOfGraph type of graph
 	 * @param binList data to draw
 	 */
-	public BinListDrawer(Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph, BinList binList) {
+	public BinListDrawer(Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphType typeOfGraph, BinList binList) {
 		super(graphics, trackWidth, trackHeight, scoreMin, scoreMax, trackColor, typeOfGraph);
 		this.binList = binList;
 	}

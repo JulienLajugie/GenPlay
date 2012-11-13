@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.scatterPlot.action;
 
 import java.awt.event.ActionEvent;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
 
 
@@ -54,7 +54,7 @@ public class SPACurveChart extends ScatterPlotAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		getScatterPlotPane().setChartType(GraphicsType.CURVE);
+		getScatterPlotPane().setChartType(GraphType.CURVE);
 		getScatterPlotPane().repaint();
 	}
 }

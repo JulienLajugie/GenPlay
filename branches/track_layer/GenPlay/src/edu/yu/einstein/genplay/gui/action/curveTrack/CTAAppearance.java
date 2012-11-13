@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.ActionMap;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.TrackAppearanceOptionPane;
 import edu.yu.einstein.genplay.gui.track.CurveTrack;
@@ -73,7 +73,7 @@ public final class CTAAppearance extends TrackListAction {
 			int xLineCount = selectedTrack.getVerticalLineCount();
 			int yLineCount = selectedTrack.getHorizontalLinesCount();
 			Color trackColor = selectedTrack.getTrackColor();
-			GraphicsType trackType = selectedTrack.getTypeOfGraph();
+			GraphType trackType = selectedTrack.getTypeOfGraph();
 			int scorePosition = selectedTrack.getScorePosition();
 			Color scoreColor = selectedTrack.getScoreColor();			
 			TrackAppearanceOptionPane taop = new TrackAppearanceOptionPane(showHorizontalLines, xLineCount, yLineCount, trackColor, trackType, scorePosition, scoreColor);

@@ -53,15 +53,15 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  */
 public final class TrackHandle extends JPanel implements MouseListener, MouseMotionListener, TrackEventsGenerator {
 
-	private static final long serialVersionUID = -1789820124134205454L;						// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;								// saved format version
-	private static final int 	HANDLE_WIDTH = 50;											// width of the handle
-	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;								// height of the resize zone
-	private static final Color 	BACKGROUND_COLOR = Colors.TRACK_HANDLE_BACKGROUND_COLOR;	// background color
-	private static final Color 	ROLLOVER_COLOR = Colors.TRACK_HANDLE_ROLLOVER_COLOR; 		// rollover color
-	private static final Color 	SELECTED_COLOR = Colors.TRACK_HANDLE_SELECTED_COLOR; 		// selected color
-	private static final String FONT_NAME = "ARIAL";										// name of the font
-	private static final int 	FONT_SIZE = 12;												// size of the font
+	private static final long serialVersionUID = -1789820124134205454L;				// generated ID
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;						// saved format version
+	private static final int 	HANDLE_WIDTH = 50;									// width of the handle
+	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;						// height of the resize zone
+	private static final Color 	BACKGROUND_COLOR = Colors.TRACK_HANDLE_BACKGROUND;	// background color
+	private static final Color 	ROLLOVER_COLOR = Colors.TRACK_HANDLE_ROLLOVER; 		// rollover color
+	private static final Color 	SELECTED_COLOR = Colors.TRACK_HANDLE_SELECTED; 		// selected color
+	private static final String FONT_NAME = "ARIAL";								// name of the font
+	private static final int 	FONT_SIZE = 12;										// size of the font
 
 	private int					trackNumber;				// number of the track
 	private JLabel 				jlNumber;					// label with the number of the track

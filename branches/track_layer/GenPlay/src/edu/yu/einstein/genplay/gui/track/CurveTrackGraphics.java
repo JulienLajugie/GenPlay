@@ -32,7 +32,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
@@ -54,10 +54,10 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	private static final long 				serialVersionUID = -9200672145021160494L;	// generated ID
 	private static final int 				SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 	private static final Color				TRACK_COLOR = Colors.BLACK;					// default color
-	private static final GraphicsType 		TYPE_OF_GRAPH = GraphicsType.BAR;			// type of graph
+	private static final GraphType 		TYPE_OF_GRAPH = GraphType.BAR;			// type of graph
 	protected static final DecimalFormat 	SCORE_FORMAT = new DecimalFormat("#.###");	// decimal format for the score
 	protected Color							trackColor;									// color of the graphics
-	protected GraphicsType 					typeOfGraph;								// type graphics
+	protected GraphType 					typeOfGraph;								// type graphics
 	protected History 						history = null; 							// history containing a description of the action made on the track
 	protected URRManager<T> 				urrManager; 								// manager that handles the undo / redo / reset of the track
 
@@ -91,7 +91,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 */
 	@Override
 	protected void drawHorizontalLines(Graphics g) {
-		if (typeOfGraph != GraphicsType.DENSE) {
+		if (typeOfGraph != GraphType.DENSE) {
 			super.drawHorizontalLines(g);
 		}
 	}
@@ -140,7 +140,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	/**
 	 * @return the type of the graph
 	 */
-	protected final GraphicsType getTypeOfGraph() {
+	protected final GraphType getTypeOfGraph() {
 		return typeOfGraph;
 	}
 
@@ -179,7 +179,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
 		this.trackColor = (Color) in.readObject();
-		this.typeOfGraph = (GraphicsType) in.readObject();
+		this.typeOfGraph = (GraphType) in.readObject();
 		this.history = (History) in.readObject();
 		this.urrManager = (URRManager<T>) in.readObject();
 	}
@@ -282,7 +282,7 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	/**
 	 * @param typeOfGraph the type of the graph to set
 	 */
-	protected final void setTypeOfGraph(GraphicsType typeOfGraph) {
+	protected final void setTypeOfGraph(GraphType typeOfGraph) {
 		notifyTrackListeners(TrackEventType.GRAPH_TYPE_CHANGED);
 		this.typeOfGraph = typeOfGraph;
 		this.repaint();

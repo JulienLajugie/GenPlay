@@ -56,14 +56,14 @@ public class TrackHeaderDrawer implements Serializable {
 	private static final long serialVersionUID = -8974239086338004628L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;				// saved format version
 	
-	private List<String>			stripeLegendText;				// stripes legend for multi genome track (for MG project)
-	private List<Color>				stripeLegendColor;				// stripes legend for multi genome track (for MG project)
+	private List<String>			stripeLegendText;		// stripes legend for multi genome track (for MG project)
+	private List<Color>				stripeLegendColor;		// stripes legend for multi genome track (for MG project)
 	
-	private MultiGenomeDrawer	 	multiGenomeDrawer;	// the multigenome drawer
-	private FontMetrics 			fm;					// the font metrics track
-	private String 					name;				// the track name
-	private int 					width;				// the track width
-	private Color 					backgroundColor;	// the track background color
+	private MultiGenomeDrawer	 	multiGenomeDrawer;		// the multigenome drawer
+	private FontMetrics 			fm;						// the font metrics track
+	private String 					name;					// the track name
+	private int 					width;					// the track width
+	private Color 					backgroundColor;		// the track background color
 	
 	
 	/**

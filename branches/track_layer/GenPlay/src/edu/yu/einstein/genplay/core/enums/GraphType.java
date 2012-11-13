@@ -19,67 +19,46 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track.layer;
-
-import java.awt.Color;
-
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
-
+package edu.yu.einstein.genplay.core.enums;
 
 /**
- * Interface implemented by the layers that shows graphics with scores 
- * (e.g. BinLayer, SCWLayer)
+ * Type of a graph
  * @author Julien Lajugie
+ * @version 0.1
  */
-public interface ScoredLayer {
+public enum GraphType {
+	/**
+	 * Curve graph
+	 */
+	CURVE ("curve"),
+	/**
+	 * Points graph
+	 */
+	POINTS ("points"),
+	/**
+	 * Bar graph
+	 */
+	BAR		("bar"),
+	/**
+	 * Dense graph
+	 */
+	DENSE	("dense");
 
-	
+
+	private final String name; // String representing the type of graph 
+
+
 	/**
-	 * @return the minimum displayed score
+	 * Private constructor. Creates an instance of {@link GraphType}
+	 * @param name
 	 */
-	abstract double getMinimumScore();
-	
-	
-	/**
-	 * Sets the minimum displayed score
-	 * @param minimumScore minimum score to set
-	 */
-	abstract void setMinimumScore(double minimumScore);
-	
-	
-	/**
-	 * @return the maximum displayed score
-	 */
-	abstract double getMaximumScore();
-	
-	
-	/**
-	 * Sets the maximum displayed score
-	 * @param maximumScore maximum score to set
-	 */
-	abstract void setMaximumScore(double maximumScore);
-	
-	
-	/**
-	 * @return the color of the layer
-	 */
-	public abstract Color getColor();
-	
-	
-	/**
-	 * @param layerColor color of the layer to set
-	 */
-	public abstract void setColor(Color layerColor);
-	
-	
-	/**
-	 * @return the type of graphics displayed
-	 */
-	public abstract GraphicsType getGraphicsType();
-	
-	
-	/**
-	 * @param graphicsType graphics type to set
-	 */
-	public abstract void setGraphicsType(GraphicsType graphicsType); 
+	private GraphType(String name) {
+		this.name = name;
+	}
+
+
+	@Override
+	public String toString() {
+		return name;
+	}
 }

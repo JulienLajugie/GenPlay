@@ -26,7 +26,7 @@ import java.awt.Graphics;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosomeWindow.ScoredChromosomeWindow;
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.gui.track.SCWListTrackGraphics;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -55,7 +55,7 @@ public class SCWListDrawer extends CurveDrawer {
 	 * @param typeOfGraph type of graph
 	 * @param data data to draw
 	 */
-	public SCWListDrawer(Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphicsType typeOfGraph, ScoredChromosomeWindowList data) {
+	public SCWListDrawer(Graphics graphics, int trackWidth, int trackHeight, double scoreMin, double scoreMax, Color trackColor, GraphType typeOfGraph, ScoredChromosomeWindowList data) {
 		super(graphics, trackWidth, trackHeight, scoreMin, scoreMax, trackColor, typeOfGraph);
 		this.data = data;
 	}

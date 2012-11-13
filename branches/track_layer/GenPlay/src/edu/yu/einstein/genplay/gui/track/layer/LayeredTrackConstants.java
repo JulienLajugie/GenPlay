@@ -21,11 +21,12 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
-import java.awt.Color;
+import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -76,12 +77,6 @@ public class LayeredTrackConstants {
 
 
 	/**
-	 * Color of the stripes
-	 */
-	public static final Color STRIPES_COLOR = Colors.GREY;
-
-
-	/**
 	 * Transparency of the stripes
 	 */
 	public static final int	STRIPES_TRANSPARENCY = 150;
@@ -100,7 +95,49 @@ public class LayeredTrackConstants {
 
 
 	/**
-	 * Number of vertical lines to print
+	 * Horizontal grid of track should be visible or hidden by default
 	 */
-	public static final int	VERTICAL_LINE_COUNT = 10;
+	public static final boolean IS_HORIZONTAL_GRID_VISIBLE = false;
+
+
+	/**
+	 * Number if horizontal lines displayed in the background of a track
+	 */
+	public static final int	HORIZONTAL_LINE_COUNT = 10;
+
+
+	/**
+	 * Vertical grid of track should be visible or hidden by default
+	 */
+	public static final boolean IS_VERTICAL_GRID_VISIBLE = true;
+
+
+	/**
+	 * Number of vertical lines displayed in the background of a track
+	 */
+	public static final int	VERTICAL_LINES_COUNT = 10;
+
+
+	/**
+	 * The score of the track is drawn on top of the track
+	 */
+	public static final int TOP_SCORE_POSITION = 0;
+
+
+	/**
+	 * The score of the track is drawn on the bottom of the track
+	 */
+	public static final int BOTTOM_SCORE_POSITION = 1;
+
+
+	/**
+	 * Decimal format for the score of a track
+	 */
+	public static final DecimalFormat SCORE_FORMAT = new DecimalFormat("#.###");
+
+
+	/**
+	 * Default graph type displayed in a graph layer
+	 */
+	public static final GraphType DEFAULT_GRAPH_TYPE = GraphType.BAR;
 }

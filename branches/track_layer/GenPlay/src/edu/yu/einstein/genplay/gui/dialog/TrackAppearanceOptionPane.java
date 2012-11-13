@@ -45,7 +45,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.track.ScoredTrackGraphics;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
@@ -100,7 +100,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	private boolean						showHorizontalGrid;			// horizontal grid showed or hid
 	private int							xLineCount;					// number of vertical lines
 	private int							yLineCount;					// number of horrizontal lines
-	private GraphicsType				graphicsType;				// type of graphics
+	private GraphType				graphicsType;				// type of graphics
 	private Color						curvesColor;				// color of the curves
 	private int 						scorePosition;				// position of the score
 	private Color						scoreColor;					// color of the score
@@ -118,7 +118,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	 * @param scorePosition position of the score
 	 * @param scoreColor color of the score
 	 */
-	public TrackAppearanceOptionPane(boolean showHorizontalLines, int xLineCount, int yLineCount, Color trackColor, GraphicsType trackType, int scorePosition, Color scoreColor) {
+	public TrackAppearanceOptionPane(boolean showHorizontalLines, int xLineCount, int yLineCount, Color trackColor, GraphType trackType, int scorePosition, Color scoreColor) {
 		super();
 
 		this.showHorizontalGrid = showHorizontalLines;
@@ -160,13 +160,13 @@ public final class TrackAppearanceOptionPane extends JDialog {
 		jpCurve = new JPanel();
 		jpCurve.setBorder(BorderFactory.createTitledBorder("Curve Options"));
 		jlGraphicsType = new JLabel("Type of the graphics:");
-		GraphicsType[] typesOfGraph = GraphicsType.values();
+		GraphType[] typesOfGraph = GraphType.values();
 		jcbGraphicsType = new JComboBox(typesOfGraph);
 		jcbGraphicsType.setSelectedItem(graphicsType);
 		jcbGraphicsType.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				graphicsType = (GraphicsType)jcbGraphicsType.getSelectedItem();
+				graphicsType = (GraphType)jcbGraphicsType.getSelectedItem();
 			}
 		});
 
@@ -400,7 +400,7 @@ public final class TrackAppearanceOptionPane extends JDialog {
 	/**
 	 * @return The value graphicsType
 	 */
-	public final GraphicsType getGraphicsType() {
+	public final GraphType getGraphicsType() {
 		return graphicsType;
 	}
 

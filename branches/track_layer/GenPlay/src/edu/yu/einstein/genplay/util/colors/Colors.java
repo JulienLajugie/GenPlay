@@ -152,17 +152,22 @@ public class Colors {
 
 
 
-	//////////////////////////////////////////////// Track graphics colors
+	//////////////////////////////////////////////// Track colors
 
 	/** Color of the vertical and horizontal lines of the track graphics */
-	public static final Color TRACK_GRAPHICS_LINE = Colors.LIGHT_GREY;
+	public static final Color TRACK_LINE = Colors.LIGHT_GREY;
 
 	/** Color of the line in the middle of the track graphics */
-	public static final Color TRACK_GRAPHICS_MIDDLE_LINE = Colors.RED;
+	public static final Color TRACK_MIDDLE_LINE = Colors.RED;
 
 	/** Background color of the graphics part */
-	public static final Color TRACK_GRAPHICS_BACKGROUND = Colors.WHITE;
+	public static final Color TRACK_BACKGROUND = Colors.WHITE;
 
+	/** Color of the track name */
+	public static final Color TRACK_NAME = Colors.BLUE;
+
+	/** Color of the stripes */
+	public static final Color STRIPES_COLOR = Colors.GREY;
 
 
 

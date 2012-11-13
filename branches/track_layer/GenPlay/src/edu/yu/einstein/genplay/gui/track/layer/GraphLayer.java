@@ -21,14 +21,37 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
+import edu.yu.einstein.genplay.core.enums.GraphType;
+
+
 /**
- * This interface must be implemented by the track drawers that paint the track graphics
+ * Interface implemented by the layers that shows graph with scores
+ * (e.g. BinLayer, SCWLayer)
  * @author Julien Lajugie
  */
-public interface TrackDrawer {
+public interface GraphLayer {
 
 	/**
-	 * Paints the track graphics
+	 * @return the minimum displayed score
 	 */
-	abstract void drawTrack();
+	abstract double getMinimumScoreToDisplay();
+
+
+	/**
+	 * @return the maximum displayed score
+	 */
+	abstract double getMaximumScoreToDisplay();
+
+
+
+	/**
+	 * @return the type of graph displayed
+	 */
+	public abstract GraphType getGraphType();
+
+
+	/**
+	 * @param graphType graph type to set
+	 */
+	public abstract void setGraphType(GraphType graphType); 
 }

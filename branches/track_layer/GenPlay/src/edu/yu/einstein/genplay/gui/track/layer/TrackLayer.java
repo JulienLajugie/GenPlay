@@ -14,12 +14,16 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
+
+import java.awt.Graphics;
+import java.io.IOException;
+import java.io.Serializable;
 
 
 /**
@@ -27,71 +31,58 @@ package edu.yu.einstein.genplay.gui.track.layer;
  * @author Julien Lajugie
  * @param <T> type of data of the layer 
  */
-public class TrackLayer<T> {
+public interface TrackLayer<T extends Serializable> extends Serializable {
 
-	private T data;
-	private LayeredTrack track;
-	private TrackDrawer trackDrawer;
-	private boolean isHiddent;
 
-	
 	/**
-	 * draws the layer
+	 * @return a deep copy (not a reference copy) of the layer
+	 * @throws IOException
 	 */
-	protected void draw() {
-		trackDrawer.drawTrack();
-	}
+	public abstract TrackLayer<?> deepCopy() throws IOException;
+
+
+	/**
+	 * Paints the track graphics
+	 * @param g {@link Graphics} on which the track will be drawn
+	 */
+	abstract void drawTrack(Graphics g);
 
 
 	/**
 	 * @return the data of the layer
 	 */
-	public T getData() {
-		return data;
-	}
+	public abstract T getData();
+
+
+	/**
+	 * @return the track containing the layer
+	 */
+	public abstract LayeredTrack getTrack();
+
+
+	/**
+	 * @return true if the layer needs to be hidden
+	 */
+	public abstract boolean isHidden();
 
 
 	/**
 	 * Sets the data of the layer 
 	 * @param data data to set
 	 */
-	public void setData(T data) {
-		this.data = data;
-	}
-
-
-	/**
-	 * Register a container track to the layer
-	 * This method is used by a track to register itself to the layer.
-	 * @param track {@link LayeredTrack} to set
-	 */
-	public void setTrack(LayeredTrack track) {
-		this.track = track;
-	}
-
-
-	/**
-	 * @return true if the layer needs to be hidden
-	 */
-	public boolean isHidden() {
-		return isHiddent;
-	}
+	public abstract void setData(T data);
 
 
 	/**
 	 * Sets if the layer needs to be hidden
 	 * @param isHidden set to true if the layer needs to be hidden
 	 */
-	public void setHidden(boolean isHidden) {
-		this.isHiddent = isHidden;
-	}
+	public abstract void setHidden(boolean isHidden);
 
 
 	/**
-	 * @return a deep copy (not a reference copy) of the layer
+	 * Sets the {@link LayeredTrack} containing the layer
+	 * @param track {@link LayeredTrack} track containing the layer
 	 */
-	public TrackLayer<T> deepCopy() {
-		// TODO: create method
-		return null;
-	}
+	public abstract void setTrack(LayeredTrack track);
 }

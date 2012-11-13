@@ -39,7 +39,7 @@ import java.util.List;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -68,7 +68,7 @@ public class ScatterPlotPane extends JPanel {
 	private final ScatterPlotAxis 			xAxis;			// x axis
 	private final ScatterPlotAxis 			yAxis;			// y axis
 	private final List<ScatterPlotData> 	data;			// data to plot
-	private GraphicsType 					chartType;		// type of chart
+	private GraphType 					chartType;		// type of chart
 	private int 							legendWidth;	// with of the legend
 
 
@@ -106,7 +106,7 @@ public class ScatterPlotPane extends JPanel {
 		double[] dataBounds = findDataBounds(data);
 		this.xAxis = new ScatterPlotAxis(dataBounds[0], dataBounds[1], ScatterPlotAxis.HORIZONTAL, xAxisName);
 		this.yAxis = new ScatterPlotAxis(dataBounds[2], dataBounds[3], ScatterPlotAxis.VERTICAL, yAxisName);
-		this.chartType = GraphicsType.BAR;
+		this.chartType = GraphType.BAR;
 		this.legendWidth = computeLegendWidth();
 		// show the menu when right click
 		addMouseListener(new MouseAdapter() {
@@ -247,7 +247,7 @@ public class ScatterPlotPane extends JPanel {
 	 * @param g {@link Graphics} object of the component
 	 * @param clip rectangle where to draw the chart
 	 */
-	private void drawGraphics(Graphics g, Rectangle clip, GraphicsType graphicsType) {
+	private void drawGraphics(Graphics g, Rectangle clip, GraphType graphicsType) {
 		switch (graphicsType) {
 		case BAR:
 			drawBarGraphics(g);
@@ -342,7 +342,7 @@ public class ScatterPlotPane extends JPanel {
 	/**
 	 * @return the chart type
 	 */
-	public final GraphicsType getChartType() {
+	public final GraphType getChartType() {
 		return chartType;
 	}
 
@@ -452,7 +452,7 @@ public class ScatterPlotPane extends JPanel {
 	/**
 	 * @param chartType the chart type to set
 	 */
-	public final void setChartType(GraphicsType chartType) {
+	public final void setChartType(GraphType chartType) {
 		this.chartType = chartType;
 	}
 }

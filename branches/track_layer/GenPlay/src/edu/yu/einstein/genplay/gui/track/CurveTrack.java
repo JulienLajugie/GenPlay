@@ -28,7 +28,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.enums.GraphicsType;
+import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.util.History;
 
 
@@ -95,7 +95,7 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 	/**
 	 * @return the type of the graph
 	 */
-	public final GraphicsType getTypeOfGraph() {
+	public final GraphType getTypeOfGraph() {
 		return ((CurveTrackGraphics<?>)trackGraphics).getTypeOfGraph();
 	}
 	
@@ -172,7 +172,7 @@ public abstract class CurveTrack<T extends Serializable> extends ScoredTrack<T> 
 	/**
 	 * @param typeOfGraph the type of the graph to set
 	 */
-	public final void setTypeOfGraph(GraphicsType typeOfGraph) {
+	public final void setTypeOfGraph(GraphType typeOfGraph) {
 		((CurveTrackGraphics<?>)trackGraphics).setTypeOfGraph(typeOfGraph);
 	}
 

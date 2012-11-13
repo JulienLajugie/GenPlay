@@ -50,7 +50,7 @@ public class LayeredTrackScrollingManager {
 	 */
 	public static LayeredTrackScrollingManager getInstance() {
 		if (instance == null) {
-			// we synchronyze to make sure that there is no 2 instances created
+			// we synchronize to make sure that there is no 2 instances created
 			synchronized(LayeredTrackScrollingManager.class) {
 				if (instance == null) {
 					instance = new LayeredTrackScrollingManager();
@@ -81,10 +81,17 @@ public class LayeredTrackScrollingManager {
 	/**
 	 * Set the intensity of the scrolling.
 	 * Positive and negative intensities scroll the windows in opposite directions
-	 * @param scrollingIntensity 
+	 * @param mouseXPosition horizontal position of the mouse on the screen
 	 */
-	public void setScrollingIntensity(int scrollingIntensity) {
-		this.scrollingIntensity = scrollingIntensity;
+	public void setScrollingIntensity(int mouseXPosition) {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		int width = LayeredTrack.getTrackWidth();
+		double scrollingIntensityTmp = projectWindow.twoScreenPosToGenomeWidth(width, mouseXPosition, width / 2);
+		if (scrollingIntensityTmp > 0) {
+			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) + 1;
+		} else {
+			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) - 1;
+		}
 	}
 
 
