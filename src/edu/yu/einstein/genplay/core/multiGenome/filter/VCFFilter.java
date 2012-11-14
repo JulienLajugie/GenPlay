@@ -158,7 +158,6 @@ public class VCFFilter extends MGFilter implements Serializable {
 	public void generateFilter (List<String> results) {
 		//vcfFile.initializesPositionList();
 		vcfFile.initializePositionList(ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome(), results);
-
 		if (results != null) {
 			booleanList = new ByteArrayAsBooleanList(vcfFile.getPositionList().size());
 			VCFLine line = new VCFLine(null, null);

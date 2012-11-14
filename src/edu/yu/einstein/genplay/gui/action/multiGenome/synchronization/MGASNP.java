@@ -97,7 +97,6 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 				snpSynchronizer.compute(genomeNames);
 			}
-
 		}
 		//ShiftCompute.showMaps();
 
@@ -107,7 +106,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 
 	@Override
 	protected void doAtTheEnd(Track<?>[] actionResult) {
-		MGDisplaySettings settings = MGDisplaySettings.getInstance();
+		/*MGDisplaySettings settings = MGDisplaySettings.getInstance();
 		Track<?>[] tracks = getTrackList().getTrackList();
 		for (Track<?> track: tracks) {
 			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(track);
@@ -120,7 +119,7 @@ public class MGASNP extends TrackListActionWorker<Track<?>[]> {
 			if (hasToReset) {
 				track.resetVariantListMaker();
 			}
-		}
+		}*/
 
 		if (latch != null) {
 			latch.countDown();

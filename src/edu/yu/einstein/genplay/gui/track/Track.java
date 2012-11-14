@@ -268,10 +268,10 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
-			MGDisplaySettings settings = MGDisplaySettings.getInstance();
+			/*MGDisplaySettings settings = MGDisplaySettings.getInstance();
 			List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(this);
 			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(this);
-			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
+			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);*/
 		}
 	}
 

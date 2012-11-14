@@ -157,6 +157,7 @@ public class MGSNPSynchronizer implements Serializable {
 			MGMultiGenomeForDisplay multiGenomeForDisplay = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeForDisplay();
 
 			for (VCFFile reader: readers.keySet()) {
+
 				List<String> results = null;
 				try {
 					results = reader.getReader().query(chromosome.getName(), 0, chromosome.getLength());
