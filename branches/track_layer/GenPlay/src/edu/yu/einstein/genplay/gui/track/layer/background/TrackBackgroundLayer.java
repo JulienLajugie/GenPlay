@@ -43,7 +43,19 @@ public class TrackBackgroundLayer extends TrackLayerAdapter<TrackBackgroundData>
 	private static final long serialVersionUID = -5149270915068813760L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
+	
+	/**
+	 * Creates an instance of {@link TrackBackgroundLayer}
+	 * @param track track in which the background layer is displayed
+	 */
+	public TrackBackgroundLayer(LayeredTrack track) {
+		super();
+		TrackBackgroundData data = new TrackBackgroundData();
+		setData(data);
+		setTrack(track);
+	}
 
+	
 	@Override
 	public void drawTrack(Graphics g) {
 		if (!isHidden()) {
@@ -59,18 +71,17 @@ public class TrackBackgroundLayer extends TrackLayerAdapter<TrackBackgroundData>
 	 */
 	private void drawHorizontalLines(Graphics g) {
 		if (getData().isHorizontalGridVisible()) {
-			double scoreMin = getData().getScoreMin();
-			double scoreMax = getData().getScoreMax();
+			double scoreMin = getTrack().getScore().getMinimumScore();
+			double scoreMax = getTrack().getScore().getMaximumScore();
 			int horizontalLineCount = getData().getHorizontalLineCount();
 			int width = getTrack().getWidth();
-			int height = getTrack().getHeight();
 			double scoreGapBetweenLineY = (scoreMax - scoreMin) / (double)horizontalLineCount;
 			double intensityFirstLineY = scoreMin - (scoreMin % scoreGapBetweenLineY);
 			g.setColor(Colors.LIGHT_GREY);
 			for(int i = 0; i <= horizontalLineCount; i++) {
 				double intensityLineY = ((double) i) * scoreGapBetweenLineY + intensityFirstLineY;
 				if (intensityLineY >= scoreMin) {
-					int screenLineY = getData().scoreToScreenPos(intensityLineY,height);
+					int screenLineY = getTrack().getScore().scoreToScreenPos(intensityLineY);
 					g.drawLine(0, screenLineY, width, screenLineY);
 					DecimalFormat formatter = new DecimalFormat("#.#####");
 					formatter.setRoundingMode(RoundingMode.DOWN);

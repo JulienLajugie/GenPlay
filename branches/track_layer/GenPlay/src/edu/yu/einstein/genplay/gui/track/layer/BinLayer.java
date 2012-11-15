@@ -75,7 +75,7 @@ public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<B
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
 				int currentMaxX = projectWindow.getGenomeWindow().getStop();
 				// Compute the Y = 0 position
-				int screenY0 = scoreToScreenPos(0);
+				int screenY0 = getTrack().getScore().scoreToScreenPos(0);
 				// First position
 				int firstGenomePosition = (currentMinX / windowData) * windowData;
 				int currentGenomePosition = firstGenomePosition;
@@ -86,7 +86,7 @@ public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<B
 					if ((currentGenomePosition >= 0) && (currentIndex < binListData.length)){
 						double currentIntensity = binListData[currentIndex];
 						int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
-						int screenYPosition = scoreToScreenPos(currentIntensity);
+						int screenYPosition = getTrack().getScore().scoreToScreenPos(currentIntensity);
 						int rectHeight = screenYPosition - screenY0;
 
 						if (currentIntensity > 0) {
@@ -139,8 +139,8 @@ public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<B
 						//int screenX1Position = genomePosToScreenPos(currentGenomePosition);
 						int screenX1Position = (int)Math.round((currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());
 						int screenX2Position = screenX1Position + screenWindowWidth;
-						int screenY1Position = scoreToScreenPos(currentIntensity);
-						int screenY2Position = scoreToScreenPos(nextIntensity);
+						int screenY1Position = getTrack().getScore().scoreToScreenPos(currentIntensity);
+						int screenY2Position = getTrack().getScore().scoreToScreenPos(nextIntensity);
 						if ((currentIntensity == 0) && (nextIntensity != 0)) {
 							g.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);
 						} else if ((currentIntensity != 0) && (nextIntensity == 0)) {
@@ -180,7 +180,7 @@ public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<B
 					if ((currentGenomePosition >= 0) && (currentIndex < binListData.length)){
 						double currentIntensity = binListData[currentIndex];
 						int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
-						g.setColor(GenPlayColor.scoreToColor(currentIntensity, scoreMin, scoreMax));
+						g.setColor(GenPlayColor.scoreToColor(currentIntensity, getTrack().getScore().getMinimumScore(), getTrack().getScore().getMaximumScore()));
 						g.fillRect(screenXPosition, 0, screenWindowWidth, getTrack().getHeight());
 					}
 					i++;
@@ -215,7 +215,7 @@ public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<B
 						double currentIntensity = data[currentIndex];
 						int screenX1Position = projectWindow.genomePosToScreenXPos(currentGenomePosition);
 						//int screenX2Position = screenX1Position + screenWindowWidth;
-						int screenYPosition = scoreToScreenPos(currentIntensity);
+						int screenYPosition = getTrack().getScore().scoreToScreenPos(currentIntensity);
 						int screenX2Position;
 						if (currentGenomePosition <= currentMinX) {
 							screenX2Position = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);

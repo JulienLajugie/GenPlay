@@ -41,8 +41,6 @@ public class TrackForegroundData implements Serializable {
 
 	private static final long serialVersionUID = -4415909180096090497L; // generated ID
 	private static final int SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private String 			trackName;			// name of the track
-	private Double 			score;				// score to show in the track
 	private Color			scoreColor;			// color of the score
 	private int 			scorePosition; 		// position of the score (top or bottom)
 	private List<String>	variantLegendText;	// legend of the variants for multi genome track (for MG project)
@@ -52,33 +50,11 @@ public class TrackForegroundData implements Serializable {
 	/**
 	 * Creates an instance of {@link TrackForegroundData}
 	 */
-	private TrackForegroundData() {
-		this.setTrackName(null);
-		this.setScore(null);
+	public TrackForegroundData() {
 		this.setScoreColor(Colors.TRACK_LINE);
 		this.setScorePosition(LayeredTrackConstants.BOTTOM_SCORE_POSITION);
 		this.setVariantLegendText(new ArrayList<String>());
 		this.setVariantLegendColor(new ArrayList<Color>());
-	}
-
-
-	/**
-	 * Creates an instance of {@link TrackForegroundData}
-	 * @param name name of the track
-	 */
-	private TrackForegroundData(String trackName) {
-		this.setTrackName(trackName);
-		this.setScore(null);
-		this.setVariantLegendText(new ArrayList<String>());
-		this.setVariantLegendColor(new ArrayList<Color>());
-	}
-
-
-	/**
-	 * @return the score of the track
-	 */
-	public Double getScore() {
-		return score;
 	}
 
 
@@ -95,14 +71,6 @@ public class TrackForegroundData implements Serializable {
 	 */
 	public int getScorePosition() {
 		return scorePosition;
-	}
-
-
-	/**
-	 * @return the name of the track
-	 */
-	public String getTrackName() {
-		return trackName;
 	}
 
 
@@ -131,21 +99,10 @@ public class TrackForegroundData implements Serializable {
 	@SuppressWarnings("unchecked")
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
-		setTrackName((String)in.readObject());
-		setScore((Double)in.readObject());
 		setScoreColor((Color)in.readObject());
 		setScorePosition(in.readInt());
 		setVariantLegendText((List<String>)in.readObject());
 		setVariantLegendColor((List<Color>)in.readObject());
-	}
-
-
-	/**
-	 * Sets the score of the track
-	 * @param score score to set
-	 */
-	public void setScore(Double score) {
-		this.score = score;
 	}
 
 
@@ -164,15 +121,6 @@ public class TrackForegroundData implements Serializable {
 	 */
 	public void setScorePosition(int scorePosition) {
 		this.scorePosition = scorePosition;
-	}
-
-
-	/**
-	 * Sets the name of the track
-	 * @param trackName name to set
-	 */
-	public void setTrackName(String trackName) {
-		this.trackName = trackName;
 	}
 
 
@@ -201,8 +149,6 @@ public class TrackForegroundData implements Serializable {
 	 */
 	private void writeObject(ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(getTrackName());
-		out.writeObject(getScore());
 		out.writeObject(getScoreColor());
 		out.writeInt(getScorePosition());
 		out.writeObject(getVariantLegendText());

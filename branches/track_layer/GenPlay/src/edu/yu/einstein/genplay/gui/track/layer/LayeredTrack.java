@@ -26,8 +26,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -40,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -53,12 +50,10 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.TrackHandle;
 import edu.yu.einstein.genplay.gui.track.layer.background.TrackBackgroundData;
 import edu.yu.einstein.genplay.gui.track.layer.background.TrackBackgroundLayer;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.TrackForegroundData;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.TrackForegroundLayer;
-import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
  * @author jlajugie
@@ -73,6 +68,7 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	private int 						defaultHeight;							// default height of a track
 	private String						name;									// name of the track
 	private int							number;									// number of the track
+	private LayeredTrackScore			score;									// score of the track
 	private List<TrackListener> 		trackListeners;							// list of track listeners
 	private	final FontMetrics			fontMetrics; 							// FontMetrics to get the size of a string
 	private List<TrackLayer<?>> 		layers;									// layers of the track
@@ -103,8 +99,8 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 		fontMetrics = getFontMetrics(new Font(LayeredTrackConstants.FONT_NAME, Font.PLAIN, LayeredTrackConstants.FONT_SIZE));
 
 		// initializes the foreground and background drawer
-		backgroundLayer = new TrackBackgroundLayer();
-		foregroundLayer = new TrackForegroundLayer();
+		backgroundLayer = new TrackBackgroundLayer(this);
+		foregroundLayer = new TrackForegroundLayer(this);
 
 		// initializes the layer list
 		layers = new ArrayList<TrackLayer<?>>();
@@ -377,5 +373,21 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	 */
 	public FontMetrics getFontMetrics() {
 		return fontMetrics;
+	}
+
+
+	/**
+	 * @return the object that manages the score of the track
+	 */
+	public LayeredTrackScore getScore() {
+		return score;
+	}
+
+
+	/**
+	 * @param score the score to set
+	 */
+	public void setScore(LayeredTrackScore score) {
+		this.score = score;
 	}
 }

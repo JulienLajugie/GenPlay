@@ -42,6 +42,29 @@ public abstract class TrackLayerAdapter<T extends Serializable> implements Track
 	private LayeredTrack 		track;									// track in which the layer is displayed
 	private boolean 			isHidden;								// true if the layer needs to be hidden
 
+	
+	/**
+	 * Creates an instance of {@link TrackLayerAdapter}.
+	 * Default constructor
+	 */
+	public TrackLayerAdapter() {
+		setData(null);
+		setTrack(null);
+		setHidden(false);
+	}
+
+
+	/**
+	 * Creates an instance of {@link TrackLayerAdapter}
+	 * @param data data displayed by the layer
+	 * @param track track displaying the layer
+	 */
+	public TrackLayerAdapter(T data, LayeredTrack track) {
+		setData(data);
+		setTrack(track);
+		setHidden(false);
+	}
+
 
 	@Override
 	public TrackLayer<?> deepCopy() throws IOException {

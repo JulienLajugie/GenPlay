@@ -40,9 +40,6 @@ public class TrackBackgroundData implements Serializable {
 
 	private boolean	isVerticalGridVisible;		// vertical grid visible or hidden
 	private int		verticalLineCount;			// number of vertical lines showed in the track
-	private double 	scoreMax;					// maximum score displayed in the track
-	private double 	scoreMin;					// minimum score displayed in the track
-	private double	yFactor;					// factor between the displayed intensity range and the screen height
 	private boolean	isHorizontalGridVisible;	// horizontal grid visible or hidden
 	private int		horizontalLineCount;		// number of horizontal lines showed in the track
 
@@ -53,9 +50,6 @@ public class TrackBackgroundData implements Serializable {
 	public TrackBackgroundData() {
 		this.setVerticalGridVisible(LayeredTrackConstants.IS_VERTICAL_GRID_VISIBLE);
 		this.setVerticalLineCount(LayeredTrackConstants.VERTICAL_LINES_COUNT);
-		this.setScoreMax(0);
-		this.setScoreMin(0);
-		this.setyFactor(0);
 		this.setHorizontalGridVisible(LayeredTrackConstants.IS_HORIZONTAL_GRID_VISIBLE);
 		this.setHorizontalLineCount(LayeredTrackConstants.HORIZONTAL_LINE_COUNT);
 	}
@@ -70,34 +64,10 @@ public class TrackBackgroundData implements Serializable {
 
 
 	/**
-	 * @return the maximum score displayed in the track
-	 */
-	public double getScoreMax() {
-		return scoreMax;
-	}
-
-
-	/**
-	 * @return the minimum score displayed in the track
-	 */
-	public double getScoreMin() {
-		return scoreMin;
-	}
-
-
-	/**
 	 * @return the number of vertical lines showed in a track
 	 */
 	public int getVerticalLineCount() {
 		return verticalLineCount;
-	}
-
-
-	/**
-	 * @return the yFactor (ratio between the height of the track and the score range displayed)
-	 */
-	public double getyFactor() {
-		return yFactor;
 	}
 
 
@@ -127,9 +97,6 @@ public class TrackBackgroundData implements Serializable {
 		in.readInt();
 		setVerticalGridVisible(in.readBoolean());
 		setVerticalLineCount(in.readInt());
-		setScoreMax(in.readDouble());
-		setScoreMin(in.readDouble());
-		setyFactor(in.readDouble());
 		setHorizontalGridVisible(in.readBoolean());
 		setHorizontalLineCount(in.readInt());
 	}
@@ -154,24 +121,6 @@ public class TrackBackgroundData implements Serializable {
 
 
 	/**
-	 * Sets the maximum score displayed in the track
-	 * @param scoreMax maximum score to set
-	 */
-	public void setScoreMax(double scoreMax) {
-		this.scoreMax = scoreMax;
-	}
-
-
-	/**
-	 * Sets the minimum score displayed in the track
-	 * @param scoreMin minimum score to set
-	 */
-	public void setScoreMin(double scoreMin) {
-		this.scoreMin = scoreMin;
-	}
-
-
-	/**
 	 * Sets if the vertical lines of the background of the track is visible or hidden
 	 * @param isVerticalGridVisible set to true to show the vertical lines, false otherwise
 	 */
@@ -190,15 +139,6 @@ public class TrackBackgroundData implements Serializable {
 
 
 	/**
-	 * Sets the yFactor of the track (ratio between the height of the track and the score range displayed).
-	 * @param yFactor the yFactor to set
-	 */
-	public void setyFactor(double yFactor) {
-		this.yFactor = yFactor;
-	}
-
-
-	/**
 	 * Saves the format version number during serialization
 	 * @param out
 	 * @throws IOException
@@ -207,9 +147,6 @@ public class TrackBackgroundData implements Serializable {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeBoolean(isVerticalGridVisible);
 		out.writeInt(getVerticalLineCount());
-		out.writeDouble(getScoreMax());
-		out.writeDouble(getScoreMin());
-		out.writeDouble(getyFactor());
 		out.writeBoolean(isHorizontalGridVisible);
 		out.writeInt(getHorizontalLineCount());
 	}

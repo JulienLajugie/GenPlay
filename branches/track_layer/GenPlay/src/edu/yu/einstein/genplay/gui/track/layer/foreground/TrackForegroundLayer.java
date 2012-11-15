@@ -24,6 +24,7 @@ package edu.yu.einstein.genplay.gui.track.layer.foreground;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 
+import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrackConstants;
 import edu.yu.einstein.genplay.gui.track.layer.TrackLayer;
 import edu.yu.einstein.genplay.gui.track.layer.TrackLayerAdapter;
@@ -39,7 +40,19 @@ public class TrackForegroundLayer extends TrackLayerAdapter<TrackForegroundData>
 
 	private static final long serialVersionUID = -6813481315069255351L; // generated ID
 
-
+	
+	/**
+	 * Creates an instance of {@link TrackForegroundLayer}
+	 * @param track track in which the foreground layer is displayed
+	 */
+	public TrackForegroundLayer(LayeredTrack track) {
+		super();
+		TrackForegroundData data = new TrackForegroundData();
+		setData(data);
+		setTrack(track);
+	}
+	
+	
 	/**
 	 * Draws the main line in the middle of the track
 	 * @param g
@@ -58,12 +71,11 @@ public class TrackForegroundLayer extends TrackLayerAdapter<TrackForegroundData>
 	 * @param g
 	 */
 	private void drawName(Graphics g) {
-		TrackForegroundData data = this.getData();
-		if ((data != null) && (data.getTrackName() != null) && (!data.getTrackName().trim().isEmpty())) {
+		if ((getTrack().getName() != null) && (!getTrack().getName().trim().isEmpty())) {
 			int width = getTrack().getWidth();
 			int widthOffset = 2; 												// space between the border of the rectangle and the text.
 			int heightOffset = 2; 												// space between the border of the rectangle and the top of the track.
-			String trackName = data.getTrackName();
+			String trackName = getTrack().getName();
 			FontMetrics fm = getTrack().getFontMetrics();
 			int textWidth = fm.stringWidth(trackName);							// text width on the screen
 
@@ -97,7 +109,7 @@ public class TrackForegroundLayer extends TrackLayerAdapter<TrackForegroundData>
 	private void drawScore(Graphics g) {
 		TrackForegroundData data = this.getData();
 		if (data != null) {
-			Double trackScore = data.getScore();
+			Double trackScore = getTrack().getScore().getCurrentScore();
 			if (trackScore != null) {
 				int scoreYPosition = 0;
 				if (data.getScorePosition() == LayeredTrackConstants.BOTTOM_SCORE_POSITION) {
