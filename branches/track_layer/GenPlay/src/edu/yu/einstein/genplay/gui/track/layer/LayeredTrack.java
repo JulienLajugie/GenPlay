@@ -65,18 +65,27 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	private static final long 			serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  			SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private static int 					trackWidth;								// with of the tracks (static because all track should have the same width in a project)
+	/**
+	 * @return the width of the tracks.
+	 * This method is static because all tracks have the same length
+	 */
+	public static int getTrackWidth() {
+		return trackWidth;
+	}
 	private int 						defaultHeight;							// default height of a track
 	private String						name;									// name of the track
 	private int							number;									// number of the track
-	private LayeredTrackScore			score;									// score of the track
-	private List<TrackListener> 		trackListeners;							// list of track listeners
+	private final LayeredTrackScore		score;									// score of the track
 	private	final FontMetrics			fontMetrics; 							// FontMetrics to get the size of a string
+	private List<TrackListener> 		trackListeners;							// list of track listeners
 	private List<TrackLayer<?>> 		layers;									// layers of the track
 	private TrackLayer<?>				activeLayer;							// active layer of the track
 	private final TrackLayer<TrackBackgroundData> backgroundLayer;				// object that draws the background of the track (with the vertical and horizontal lines)
-	private final TrackLayer<TrackForegroundData> foregroundLayer;				// object that draws the foreground of the track (with the track name and the multi genome legend)
 
 	
+
+
+	private final TrackLayer<TrackForegroundData> foregroundLayer;				// object that draws the foreground of the track (with the track name and the multi genome legend)
 
 
 	/**
@@ -84,85 +93,38 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	 * @param trackNumber number of the track
 	 */
 	protected LayeredTrack(int trackNumber) {
-		// create list of track listener
-		trackListeners = new ArrayList<TrackListener>();
-
-		// register itself as a genome window listener to the genome window manager
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		projectWindow.addGenomeWindowListener(this);
-
 		// set the the default height of the track
 		defaultHeight = LayeredTrackConstants.TRACK_HEIGHT;
 		setPreferredHeight(defaultHeight);
 
+		setName(null);
+		setNumber(trackNumber);
+		score = new LayeredTrackScore(this);
+
 		// Set the font of the project
 		fontMetrics = getFontMetrics(new Font(LayeredTrackConstants.FONT_NAME, Font.PLAIN, LayeredTrackConstants.FONT_SIZE));
+
+		// create list of track listener
+		trackListeners = new ArrayList<TrackListener>();
+
+		// initializes the layer list
+		setLayers(new ArrayList<TrackLayer<?>>());
 
 		// initializes the foreground and background drawer
 		backgroundLayer = new TrackBackgroundLayer(this);
 		foregroundLayer = new TrackForegroundLayer(this);
 
-		// initializes the layer list
-		layers = new ArrayList<TrackLayer<?>>();
-	}
-
-
-	/**
-	 * Sets the preferred Height of the track
-	 * @param newPreferredHeight new preferred height
-	 */
-	public void setPreferredHeight(int newPreferredHeight) {
-		setPreferredSize(new Dimension(getPreferredSize().width, newPreferredHeight));
-		this.defaultHeight = newPreferredHeight;
-		revalidate();
-	}
-
-
-	/**
-	 * Sets the variable xFactor
-	 */
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		// the with if the track is set to the current track width
-		trackWidth = getWidth();
-		// update the xFactor if needed
-		updateXFactor();
-		// draw the track background
-		backgroundLayer.drawTrack(g);
-		// draw the list of layers
-		List<TrackLayer<?>> layers = getLayers();
-		for (TrackLayer<?> currentLayer: layers) {
-			currentLayer.drawTrack(g);
-		}
-		// draw the foreground
-		foregroundLayer.drawTrack(g);
-	}
-
-
-	/**
-	 * Update the project xFactor if needed. 
-	 * The xFactor is the ratio between the track width on the screen and the number of genomic position to display
-	 */
-	private void updateXFactor() {
+		// register itself as a genome window listener to the genome window manager
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		double newXFactor = projectWindow.getXFactor(getWidth());
-		if (newXFactor != projectWindow.getXFactor()) {
-			projectWindow.setXFactor(newXFactor);
-			// if the x factor changed we should update the intensity of the scrolling mode
-			Point mousePosition = getMousePosition();
-			if (mousePosition != null) {
-				LayeredTrackScrollingManager.getInstance().setScrollingIntensity(mousePosition.x);
-			}
-		}
+		projectWindow.addGenomeWindowListener(this);
 	}
 
 
-	/**
-	 * @return the preferred height
-	 */
-	public int getPreferredHeight() {
-		return getPreferredSize().height;
+	@Override
+	public void addTrackListener(TrackListener trackListener) {
+		if (!trackListeners.contains(trackListener)) {
+			trackListeners.add(trackListener);
+		}
 	}
 
 
@@ -203,58 +165,6 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	}
 
 
-
-	@Override
-	public void addTrackListener(TrackListener trackListener) {
-		if (!trackListeners.contains(trackListener)) {
-			trackListeners.add(trackListener);
-		}
-	}
-
-
-	@Override
-	public TrackListener[] getTrackListeners() {
-		TrackListener[] listeners = new TrackListener[trackListeners.size()];
-		return trackListeners.toArray(listeners);
-	}
-
-
-	@Override
-	public void removeTrackListener(TrackListener trackListener) {
-		trackListeners.remove(trackListener);
-	}
-
-
-	@Override
-	public void trackChanged(TrackEvent evt) {
-		/*if (evt.getEventType() == TrackEventType.RESIZED) {
-			int newHeight = getPreferredSize().height + trackHandle.getResizeHeight();
-			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
-			newHeight = Math.max(LayeredTrackConstants.TRACK_MINIMUM_HEIGHT, newHeight);
-			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
-			revalidate();
-		} else*/ if (evt.getEventType() == TrackEventType.SIZE_SET_TO_DEFAULT) {
-			setPreferredSize(new Dimension(getPreferredSize().width, defaultHeight));
-			revalidate();
-		} else {
-			// we relay the other events to the element that contains this track
-			notifyTrackListeners(evt.getEventType());
-		}
-	}
-
-
-	/**
-	 * Notifies all the track listeners that the track has changed
-	 * @param trackEventType track event type
-	 */
-	public void notifyTrackListeners(TrackEventType trackEventType) {
-		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
-		for (TrackListener listener: trackListeners) {
-			listener.trackChanged(trackEvent);
-		}
-	}
-
-
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// TODO Auto-generated method stub
@@ -262,12 +172,35 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 
 
 	/**
-	 * Renames the track
-	 * @param name name to set
+	 * @return the active track layer
 	 */
-	@Override
-	public void setName(String name) {
-		this.name = name;
+	public TrackLayer<?> getActiveLayer() {
+		return activeLayer;
+	}
+
+
+
+	/**
+	 * @return the ba
+	 */
+	public TrackLayer<TrackBackgroundData> getBackgroundLayer() {
+		return backgroundLayer;
+	}
+
+
+	/**
+	 * @return the font metrics of the track
+	 */
+	public FontMetrics getFontMetrics() {
+		return fontMetrics;
+	}
+
+
+	/**
+	 * @return all the layers of the track
+	 */
+	public List<TrackLayer<?>> getLayers() {
+		return layers;
 	}
 
 
@@ -293,56 +226,68 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 
 
 	/**
-	 * Sets the number of the track
-	 * @param number number to set
+	 * @return the preferred height
 	 */
-	public void setNumber(int number) {
-		this.number = number;
+	public int getPreferredHeight() {
+		return getPreferredSize().height;
 	}
 
 
 	/**
-	 * Sets the list of track layers 
-	 * @param layers a list of track layers
+	 * @return the object that manages the score of the track
 	 */
-	public void setLayers(List<TrackLayer<?>> layers) {
-		this.layers = layers;
+	public LayeredTrackScore getScore() {
+		return score;
+	}
+
+
+	@Override
+	public TrackListener[] getTrackListeners() {
+		TrackListener[] listeners = new TrackListener[trackListeners.size()];
+		return trackListeners.toArray(listeners);
 	}
 
 
 	/**
-	 * @return all the layers of the track
+	 * Notifies all the track listeners that the track has changed
+	 * @param trackEventType track event type
 	 */
-	public List<TrackLayer<?>> getLayers() {
-		return layers;
+	public void notifyTrackListeners(TrackEventType trackEventType) {
+		TrackEvent trackEvent = new TrackEvent(this, trackEventType);
+		for (TrackListener listener: trackListeners) {
+			listener.trackChanged(trackEvent);
+		}
 	}
 
 
 	/**
-	 * @return the active track layer
+	 * Sets the variable xFactor
 	 */
-	public TrackLayer<?> getActiveLayer() {
-		return activeLayer;
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		// the with if the track is set to the current track width
+		trackWidth = getWidth();
+		// update the xFactor if needed
+		updateXFactor();
+		// draw the track background
+		backgroundLayer.drawTrack(g);
+		// draw the list of layers
+		List<TrackLayer<?>> layers = getLayers();
+		for (TrackLayer<?> currentLayer: layers) {
+			currentLayer.drawTrack(g);
+		}
+		// draw the foreground
+		foregroundLayer.drawTrack(g);
 	}
 
 
-	/**
-	 * Sets the active layer of the track
-	 * @param activeLayer the active layer to set
-	 */
-	public void setActiveLayer(TrackLayer<?> activeLayer) {
-		this.activeLayer = activeLayer;
+	@Override
+	public void removeTrackListener(TrackListener trackListener) {
+		trackListeners.remove(trackListener);
 	}
-	
-	
-	/**
-	 * @return the ba
-	 */
-	public TrackLayer<TrackBackgroundData> getBackgroundLayer() {
-		return backgroundLayer;
-	}
-	
-	
+
+
 	/**
 	 * Save the track graphics as a PNG image.
 	 * @param file output file
@@ -360,34 +305,87 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 
 
 	/**
-	 * @return the width of the tracks.
-	 * This method is static because all tracks have the same length
+	 * Sets the active layer of the track
+	 * @param activeLayer the active layer to set
 	 */
-	public static int getTrackWidth() {
-		return trackWidth;
+	public void setActiveLayer(TrackLayer<?> activeLayer) {
+		this.activeLayer = activeLayer;
+		getScore().updateCurrentScore();
 	}
 
 
 	/**
-	 * @return the font metrics of the track
+	 * Sets the list of track layers 
+	 * @param layers a list of track layers
 	 */
-	public FontMetrics getFontMetrics() {
-		return fontMetrics;
+	public void setLayers(List<TrackLayer<?>> layers) {
+		this.layers = layers;
+		getScore().updateCurrentScore();
+	}
+	
+	
+	/**
+	 * Renames the track
+	 * @param name name to set
+	 */
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	/**
+	 * Sets the number of the track
+	 * @param number number to set
+	 */
+	public void setNumber(int number) {
+		this.number = number;
 	}
 
 
 	/**
-	 * @return the object that manages the score of the track
+	 * Sets the preferred Height of the track
+	 * @param newPreferredHeight new preferred height
 	 */
-	public LayeredTrackScore getScore() {
-		return score;
+	public void setPreferredHeight(int newPreferredHeight) {
+		setPreferredSize(new Dimension(getPreferredSize().width, newPreferredHeight));
+		this.defaultHeight = newPreferredHeight;
+		revalidate();
+	}
+
+
+	@Override
+	public void trackChanged(TrackEvent evt) {
+		/*if (evt.getEventType() == TrackEventType.RESIZED) {
+			int newHeight = getPreferredSize().height + trackHandle.getResizeHeight();
+			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
+			newHeight = Math.max(LayeredTrackConstants.TRACK_MINIMUM_HEIGHT, newHeight);
+			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
+			revalidate();
+		} else*/ if (evt.getEventType() == TrackEventType.SIZE_SET_TO_DEFAULT) {
+			setPreferredSize(new Dimension(getPreferredSize().width, defaultHeight));
+			revalidate();
+		} else {
+			// we relay the other events to the element that contains this track
+			notifyTrackListeners(evt.getEventType());
+		}
 	}
 
 
 	/**
-	 * @param score the score to set
+	 * Update the project xFactor if needed. 
+	 * The xFactor is the ratio between the track width on the screen and the number of genomic position to display
 	 */
-	public void setScore(LayeredTrackScore score) {
-		this.score = score;
+	private void updateXFactor() {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		double newXFactor = projectWindow.getXFactor(getWidth());
+		if (newXFactor != projectWindow.getXFactor()) {
+			projectWindow.setXFactor(newXFactor);
+			// if the x factor changed we should update the intensity of the scrolling mode
+			Point mousePosition = getMousePosition();
+			if (mousePosition != null) {
+				LayeredTrackScrollingManager.getInstance().setScrollingIntensity(mousePosition.x);
+			}
+		}
 	}
 }

@@ -264,6 +264,20 @@ public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<B
 
 
 	@Override
+	public double getCurrentScoreToDisplay() {
+		if (getData() != null) {
+			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(projectWindow.getGenomeWindow().getChromosome());
+			int xMid = (int) projectWindow.getGenomeWindow().getMiddlePosition();
+			if ((getData().get(currentChromosome) != null) && ((xMid / getData().getBinSize()) < getData().size(currentChromosome))) {
+				return getData().getScore(xMid);
+			}
+		}
+		return 0;
+	}
+
+
+	@Override
 	public GraphType getGraphType() {
 		return graphType;
 	}

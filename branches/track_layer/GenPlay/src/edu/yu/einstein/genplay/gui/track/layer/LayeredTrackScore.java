@@ -24,44 +24,49 @@ package edu.yu.einstein.genplay.gui.track.layer;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This class handles the scores showed in the track
  * @author Julien Lajugie
  */
 public class LayeredTrackScore implements Serializable {
-	
+
 	private static final long serialVersionUID = -2515234024119807964L; // generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	
+
+	private boolean			isTrackScored;			// true if the track contains a list on scored layer, false otherwise
 	private double 			minimumScore;			// minimum score displayed in the track
-	private double		 	maximumScore;			// maximum score displayed in the trac
+	private double		 	maximumScore;			// maximum score displayed in the track
 	private double 			currentScore;			// score displayed at the center of the track
 	private boolean 		isScoreAxisAutorescaled;// true if the score axis needs to be auto rescaled
 	private LayeredTrack 	track;					// track displaying this scores
-	
-	
+
+
 	/**
 	 * Creates an instance of {@link LayeredTrackScore} 
 	 * @param track track displaying this score
 	 */
 	public LayeredTrackScore(LayeredTrack track) {
+		setTrackScored(false);
 		setMinimumScore(0);
 		setMaximumScore(0);
 		setCurrentScore(0);
 		setScoreAxisAutorescaled(true);
 		setTrack(track);
 	}
-	
-		
+
+
 	/**
 	 * @return the score displayed in the middle of the track
 	 */
 	public double getCurrentScore() {
 		return currentScore;
 	}
-	
-	
+
+
 	/**
 	 * @return the maximum score displayed in the track
 	 */
@@ -103,6 +108,7 @@ public class LayeredTrackScore implements Serializable {
 	 */
 	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		in.readInt();
+		setTrackScored(in.readBoolean());
 		setMinimumScore(in.readDouble());
 		setMaximumScore(in.readDouble());
 		setCurrentScore(in.readDouble());
@@ -128,10 +134,12 @@ public class LayeredTrackScore implements Serializable {
 
 
 	/**
-	 * Sets the score displayed in the middle of the track
+	 * Sets the score displayed in the middle of the track.
+	 * This function is not public. External classes need to use 
+	 * the updateCurrentScore method instead.
 	 * @param currentScore the score to set
 	 */
-	public void setCurrentScore(double currentScore) {
+	private void setCurrentScore(double currentScore) {
 		this.currentScore = currentScore;
 	}
 
@@ -162,7 +170,7 @@ public class LayeredTrackScore implements Serializable {
 		this.track = track;
 	}
 
-	
+
 	/**
 	 * Method used for serialization
 	 * @param out
@@ -170,6 +178,7 @@ public class LayeredTrackScore implements Serializable {
 	 */
 	private void writeObject(java.io.ObjectOutputStream out) throws IOException {
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeBoolean(isTrackScored());
 		out.writeDouble(getMinimumScore());
 		out.writeDouble(getMaximumScore());
 		out.writeDouble(getCurrentScore());
@@ -194,4 +203,63 @@ public class LayeredTrackScore implements Serializable {
 	public void setScoreAxisAutorescaled(boolean isScoreAxisAutorescaled) {
 		this.isScoreAxisAutorescaled = isScoreAxisAutorescaled;
 	}
+
+
+	/**
+	 * Auto rescales the score axis of the track if the autorescale mode is on
+	 */
+	public void autorescaleScoreAxis() {
+		if (isScoreAxisAutorescaled()) {
+			List<Double> minimumScores = new ArrayList<Double>();
+			List<Double> maximumScores = new ArrayList<Double>();
+			for (TrackLayer<?> currentLayer: getTrack().getLayers()) {
+				if (currentLayer instanceof ScoredLayer) {
+					// for each scoredLayer of the track we save the minimum and maximum value to display
+					ScoredLayer scoredLayer = (ScoredLayer)currentLayer;
+					minimumScores.add(scoredLayer.getMinimumScoreToDisplay());
+					maximumScores.add(scoredLayer.getMaximumScoreToDisplay());
+				}
+			}
+			if (!minimumScores.isEmpty()) {
+				// the minimum score displayed in the track is the minimum of the ScoredLayer minimums
+				setMinimumScore(Collections.min(minimumScores));
+				// we do the opposite for the maximum
+				setMaximumScore(Collections.max(maximumScores));
+				getTrack().repaint();
+			}
+		}
+	}
+
+
+	/**
+	 * Updates the current score displayed (the score displayed at the middle of the track).
+	 * The current score is the one of the active layer.
+	 */
+	public void updateCurrentScore() {
+		if (isTrackScored()) {
+			if (getTrack().getActiveLayer() instanceof ScoredLayer) {
+				ScoredLayer activeScoredLayer = (ScoredLayer)getTrack().getActiveLayer();
+				setCurrentScore(activeScoredLayer.getCurrentScoreToDisplay());
+			}
+		}
+	}
+
+
+	/**
+	 * @return the isTrackScored
+	 */
+	public boolean isTrackScored() {
+		return isTrackScored;
+	}
+
+
+	/**
+	 * Sets if the track is scored (ie. if the track has at least one {@link ScoredLayer}).
+	 * This method is private, external classes need to use updateTrackScored instead
+	 * @param isTrackScored set to true if the track is scored, false otherwise
+	 */
+	private void setTrackScored(boolean isTrackScored) {
+		this.isTrackScored = isTrackScored;
+	}
+
 }

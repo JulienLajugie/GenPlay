@@ -29,21 +29,9 @@ import edu.yu.einstein.genplay.core.enums.GraphType;
  * (e.g. BinLayer, SCWLayer)
  * @author Julien Lajugie
  */
-public interface GraphLayer {
+public interface GraphLayer extends ScoredLayer {
 
-	/**
-	 * @return the minimum displayed score
-	 */
-	abstract double getMinimumScoreToDisplay();
-
-
-	/**
-	 * @return the maximum displayed score
-	 */
-	abstract double getMaximumScoreToDisplay();
-
-
-
+	
 	/**
 	 * @return the type of graph displayed
 	 */
