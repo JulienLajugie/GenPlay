@@ -41,7 +41,7 @@ import edu.yu.einstein.genplay.util.colors.TrackColor;
  * Layer displaying a {@link BinList}
  * @author Julien Lajugie
  */
-public class BinLayer extends TrackLayerAdapter<BinList> implements TrackLayer<BinList>, GraphLayer, ColoredLayer {
+public class BinLayer extends AbstractTrackLayer<BinList> implements TrackLayer<BinList>, GraphLayer, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private GraphType 	graphType;	// type of graph display in the layer

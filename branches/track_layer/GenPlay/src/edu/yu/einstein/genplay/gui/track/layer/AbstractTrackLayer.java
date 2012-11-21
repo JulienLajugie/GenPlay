@@ -30,11 +30,11 @@ import java.io.Serializable;
 
 
 /**
- * An abstract adapter class that exists as convenience for creating class implementing the {@link TrackLayer} interface.
+ * An abstract class that exists as convenience for creating class implementing the {@link TrackLayer} interface.
  * @author Julien Lajugie
  * @param <T> type of the data displayed in the layer
  */
-public abstract class TrackLayerAdapter<T extends Serializable> implements TrackLayer<T> {
+public abstract class AbstractTrackLayer<T extends Serializable> implements TrackLayer<T> {
 
 	private static final long 	serialVersionUID = 5294712647479393706L;// generated ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 1;		// saved format version
@@ -44,10 +44,10 @@ public abstract class TrackLayerAdapter<T extends Serializable> implements Track
 
 	
 	/**
-	 * Creates an instance of {@link TrackLayerAdapter}.
+	 * Creates an instance of {@link AbstractTrackLayer}.
 	 * Default constructor
 	 */
-	public TrackLayerAdapter() {
+	public AbstractTrackLayer() {
 		setData(null);
 		setTrack(null);
 		setHidden(false);
@@ -55,11 +55,11 @@ public abstract class TrackLayerAdapter<T extends Serializable> implements Track
 
 
 	/**
-	 * Creates an instance of {@link TrackLayerAdapter}
+	 * Creates an instance of {@link AbstractTrackLayer}
 	 * @param data data displayed by the layer
 	 * @param track track displaying the layer
 	 */
-	public TrackLayerAdapter(T data, LayeredTrack track) {
+	public AbstractTrackLayer(T data, LayeredTrack track) {
 		setData(data);
 		setTrack(track);
 		setHidden(false);

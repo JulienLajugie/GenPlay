@@ -29,7 +29,7 @@ import java.text.DecimalFormat;
 
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 import edu.yu.einstein.genplay.gui.track.layer.TrackLayer;
-import edu.yu.einstein.genplay.gui.track.layer.TrackLayerAdapter;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractTrackLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * This layer contains the horizontal and vertical lines displayed in the background of a track.
  * @author Julien Lajugie
  */
-public class TrackBackgroundLayer extends TrackLayerAdapter<TrackBackgroundData> implements TrackLayer<TrackBackgroundData> {
+public class TrackBackgroundLayer extends AbstractTrackLayer<TrackBackgroundData> implements TrackLayer<TrackBackgroundData> {
 
 	private static final long serialVersionUID = -5149270915068813760L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version

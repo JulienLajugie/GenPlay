@@ -27,7 +27,7 @@ import java.awt.Graphics;
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrackConstants;
 import edu.yu.einstein.genplay.gui.track.layer.TrackLayer;
-import edu.yu.einstein.genplay.gui.track.layer.TrackLayerAdapter;
+import edu.yu.einstein.genplay.gui.track.layer.AbstractTrackLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.util.colors.Colors;
  * This layer displays the name of the track, the score at the center of the track if needed and the multi-genome legend if needed.
  * @author Julien Lajugie
  */
-public class TrackForegroundLayer extends TrackLayerAdapter<TrackForegroundData> implements TrackLayer<TrackForegroundData> {
+public class TrackForegroundLayer extends AbstractTrackLayer<TrackForegroundData> implements TrackLayer<TrackForegroundData> {
 
 
 	private static final long serialVersionUID = -6813481315069255351L; // generated ID

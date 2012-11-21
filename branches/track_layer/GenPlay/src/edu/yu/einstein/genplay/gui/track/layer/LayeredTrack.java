@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -38,7 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
@@ -59,19 +63,11 @@ import edu.yu.einstein.genplay.gui.track.layer.foreground.TrackForegroundLayer;
  * @author jlajugie
  *
  */
-public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackListener, TrackEventsGenerator {
-
+public class LayeredTrack extends JPanel implements TableCellRenderer, GenomeWindowListener, TrackListener, TrackEventsGenerator {
 
 	private static final long 			serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  			SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private static int 					trackWidth;								// with of the tracks (static because all track should have the same width in a project)
-	/**
-	 * @return the width of the tracks.
-	 * This method is static because all tracks have the same length
-	 */
-	public static int getTrackWidth() {
-		return trackWidth;
-	}
 	private int 						defaultHeight;							// default height of a track
 	private String						name;									// name of the track
 	private int							number;									// number of the track
@@ -81,18 +77,23 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 	private List<TrackLayer<?>> 		layers;									// layers of the track
 	private TrackLayer<?>				activeLayer;							// active layer of the track
 	private final TrackLayer<TrackBackgroundData> backgroundLayer;				// object that draws the background of the track (with the vertical and horizontal lines)
-
-	
-
-
 	private final TrackLayer<TrackForegroundData> foregroundLayer;				// object that draws the foreground of the track (with the track name and the multi genome legend)
+
+
+	/**
+	 * @return the width of the tracks.
+	 * This method is static because all tracks have the same length
+	 */
+	public static int getTrackWidth() {
+		return trackWidth;
+	}
 
 
 	/**
 	 * Creates an instance of {@link LayeredTrack}
 	 * @param trackNumber number of the track
 	 */
-	protected LayeredTrack(int trackNumber) {
+	public LayeredTrack(int trackNumber) {
 		// set the the default height of the track
 		defaultHeight = LayeredTrackConstants.TRACK_HEIGHT;
 		setPreferredHeight(defaultHeight);
@@ -387,5 +388,12 @@ public class LayeredTrack extends JPanel implements GenomeWindowListener, TrackL
 				LayeredTrackScrollingManager.getInstance().setScrollingIntensity(mousePosition.x);
 			}
 		}
+	}
+
+
+	@Override
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		// TODO Auto-generated method stub
+		return new JButton();
 	}
 }
