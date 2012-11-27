@@ -79,8 +79,8 @@ import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
-import edu.yu.einstein.genplay.gui.old.trackList.TrackListModel;
-import edu.yu.einstein.genplay.gui.old.trackList.TrackListPanel;
+import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Images;
 
 
@@ -105,7 +105,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	private final 	ProjectChromosome 	projectChromosome; 	// Instance of the Chromosome Manager
 	private final 	Ruler 				ruler; 				// Ruler component
 	private final 	TrackList 			trackList; 			// TrackList component
-	private final 	TrackListPanel 	trackTablePanel; 	// TrackList component	
+	private final 	TrackListPanel 		trackTablePanel; 	// TrackList component	
 	private final 	ControlPanel		controlPanel; 		// ControlPanel component
 	private final 	StatusBar 			statusBar; 			// Status bar component
 	private 		Rectangle			screenBounds; 		// position and dimension of this frame

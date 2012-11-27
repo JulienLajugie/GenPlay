@@ -25,7 +25,7 @@ import java.io.Serializable;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
+import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
  * Model that manage a list of track
@@ -34,7 +34,7 @@ import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 public class TrackListModel implements Serializable {
 
 	private static final long serialVersionUID = 6131854814047955278L; // generated id
-	private LayeredTrack[] tracks; // array of tracks displayed in the table
+	private Track[] tracks; // array of tracks displayed in the table
 
 
 	/**
@@ -44,9 +44,9 @@ public class TrackListModel implements Serializable {
 		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
 		int trackCount = projectConfiguration.getTrackCount();
 		int defaultHeight = projectConfiguration.getTrackHeight();
-		tracks = new LayeredTrack[trackCount];
+		tracks = new Track[trackCount];
 		for (int i = 0; i < trackCount; i++) {
-			tracks[i] = new LayeredTrack(i + 1);
+			tracks[i] = new Track(i + 1);
 			tracks[i].setDefaultHeight(defaultHeight);
 			tracks[i].setHeight(defaultHeight);
 		}
@@ -57,7 +57,7 @@ public class TrackListModel implements Serializable {
 	 * Creates an instance of {@link TrackListModel}
 	 * @param tracks tracks of the model
 	 */
-	public TrackListModel(LayeredTrack[] tracks) {
+	public TrackListModel(Track[] tracks) {
 		setTracks(tracks);
 	}
 
@@ -70,7 +70,7 @@ public class TrackListModel implements Serializable {
 		for (int i = row + 1; i < tracks.length; i++) {
 			tracks[i - 1] = tracks[i];
 		}
-		tracks[tracks.length - 1] = new LayeredTrack(tracks.length);
+		tracks[tracks.length - 1] = new Track(tracks.length);
 	}
 
 
@@ -84,9 +84,9 @@ public class TrackListModel implements Serializable {
 
 	/**
 	 * @param row
-	 * @return the {@link LayeredTrack} at the specified row
+	 * @return the {@link Track} at the specified row
 	 */
-	public LayeredTrack getTrack(int row) {
+	public Track getTrack(int row) {
 		return getTrack(row);
 	}
 
@@ -94,7 +94,7 @@ public class TrackListModel implements Serializable {
 	/**
 	 * @return the tracks displayed in the JTable
 	 */
-	public LayeredTrack[] getTracks() {
+	public Track[] getTracks() {
 		return tracks;
 	}
 
@@ -104,7 +104,7 @@ public class TrackListModel implements Serializable {
 	 * @param row
 	 * @param track track to insert
 	 */
-	public void insertTrack(int row, LayeredTrack track) {
+	public void insertTrack(int row, Track track) {
 		for (int i = tracks.length - 2; i >= row; i--) {
 			tracks[i + 1] = tracks[i];
 		}
@@ -113,11 +113,11 @@ public class TrackListModel implements Serializable {
 
 
 	/**
-	 * Sets the {@link LayeredTrack} at the specified row
+	 * Sets the {@link Track} at the specified row
 	 * @param track a track
 	 * @param row row where the track needs to be set
 	 */
-	public void setTrack(LayeredTrack track, int row) {
+	public void setTrack(Track track, int row) {
 		getTracks()[row] = track;
 	}
 
@@ -125,7 +125,7 @@ public class TrackListModel implements Serializable {
 	/**
 	 * @param tracks the tracks to display in the JTable
 	 */
-	public void setTracks(LayeredTrack[] tracks) {
+	public void setTracks(Track[] tracks) {
 		this.tracks = tracks;
 	}
 }

@@ -1,29 +1,19 @@
 package edu.yu.einstein.genplay.gui.trackList;
 
-import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.table.TableCellRenderer;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
-import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
-import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
-import edu.yu.einstein.genplay.gui.popupMenu.TrackMenuFactory;
-import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
+import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 
 public class TrackListPanel extends JScrollPane implements Serializable, TrackListener, TrackEventsGenerator {
 
@@ -32,8 +22,8 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	private final JPanel 				jpTrackList;					// panel with the tracks
 	private final List<TrackListener> 	trackListeners;					// list of track listeners
 	private TrackListModel 				model;
-	private LayeredTrack				selectedTrack = null;			// track selected
-	private LayeredTrack				copiedTrack = null; 			// list of the tracks in the clipboard
+	private Track				selectedTrack = null;			// track selected
+	private Track				copiedTrack = null; 			// list of the tracks in the clipboard
 
 	
 	public TrackListPanel(TrackListModel model) {
@@ -42,7 +32,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		this.trackListeners = new ArrayList<TrackListener>();
 		jpTrackList = new JPanel();
 		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
-		for (LayeredTrack currentTrack: getModel().getTracks()) {
+		for (Track currentTrack: getModel().getTracks()) {
 			jpTrackList.add(currentTrack.getPanel());
 			currentTrack.addTrackListener(this);
 		}
