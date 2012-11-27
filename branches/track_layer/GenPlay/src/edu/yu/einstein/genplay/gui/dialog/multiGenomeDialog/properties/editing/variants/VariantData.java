@@ -41,8 +41,8 @@ import edu.yu.einstein.genplay.core.multiGenome.display.MGAlleleForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGGenomeForDisplay;
 import edu.yu.einstein.genplay.core.multiGenome.display.MGVariantListForDisplay;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 /**
  * @author Nicolas Fourel

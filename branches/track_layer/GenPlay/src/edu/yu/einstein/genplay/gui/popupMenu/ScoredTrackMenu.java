@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.gui.popupMenu;
 import javax.swing.JMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.scoredTrack.STASetYAxis;
-import edu.yu.einstein.genplay.gui.track.ScoredTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.ScoredTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

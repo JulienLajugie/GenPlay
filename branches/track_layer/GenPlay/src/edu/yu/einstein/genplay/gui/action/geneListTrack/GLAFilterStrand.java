@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterStrand;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 
 /**
  * Removes the genes that are not on the specified strand

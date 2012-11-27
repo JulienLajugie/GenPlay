@@ -54,7 +54,7 @@ import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
 import edu.yu.einstein.genplay.gui.action.multiGenome.update.MGAVCFApplyGenotype;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

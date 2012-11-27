@@ -29,8 +29,8 @@ import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAHistory;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTARedo;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAReset;
 import edu.yu.einstein.genplay.gui.action.versionedTrack.VTAUndo;
-import edu.yu.einstein.genplay.gui.track.VersionedTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.VersionedTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 /**

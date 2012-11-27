@@ -46,7 +46,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.NumberFormatter;
 
 import edu.yu.einstein.genplay.core.enums.GraphType;
-import edu.yu.einstein.genplay.gui.track.ScoredTrackGraphics;
+import edu.yu.einstein.genplay.gui.old.track.ScoredTrackGraphics;
 import edu.yu.einstein.genplay.util.colors.GenPlayColorChooser;
 
 

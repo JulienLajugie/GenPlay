@@ -21,16 +21,16 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu;
 
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.EmptyTrack;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.MultiCurvesTrack;
-import edu.yu.einstein.genplay.gui.track.NucleotideListTrack;
-import edu.yu.einstein.genplay.gui.track.RepeatFamilyListTrack;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.track.SNPListTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.track.EmptyTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.MultiCurvesTrack;
+import edu.yu.einstein.genplay.gui.old.track.NucleotideListTrack;
+import edu.yu.einstein.genplay.gui.old.track.RepeatFamilyListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SNPListTrack;
+import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 /**
  * Creates an instance of a subclass of {@link TrackMenu} depending on the instance of the 

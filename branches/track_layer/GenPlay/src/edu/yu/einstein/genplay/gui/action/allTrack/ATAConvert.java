@@ -35,11 +35,11 @@ import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.ConvertDialog;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.EmptyTrack;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.track.EmptyTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.util.colors.TrackColor;
 
 

@@ -34,11 +34,11 @@ import edu.yu.einstein.genplay.core.writer.WriterFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 

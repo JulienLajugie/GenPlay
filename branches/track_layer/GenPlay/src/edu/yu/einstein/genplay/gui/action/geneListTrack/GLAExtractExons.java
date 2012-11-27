@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ExtractExonsDialog;
 import edu.yu.einstein.genplay.gui.dialog.ExtractGeneIntervalsDialog;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 
 
 /**

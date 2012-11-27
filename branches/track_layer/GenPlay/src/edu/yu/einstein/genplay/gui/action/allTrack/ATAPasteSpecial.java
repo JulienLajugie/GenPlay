@@ -29,8 +29,8 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.specialPaste.SpecialPasteDialog;
-import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.pasteSettings.PasteSettings;
+import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.pasteSettings.PasteSettings;
 
 
 /**

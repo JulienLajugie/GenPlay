@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadNucleotideListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadRepeatFamilyListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadSCWListTrack;
 import edu.yu.einstein.genplay.gui.action.emptyTrack.ETALoadSNPListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

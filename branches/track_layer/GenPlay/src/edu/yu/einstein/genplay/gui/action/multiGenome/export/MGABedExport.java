@@ -37,8 +37,8 @@ import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSe
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportBEDDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
+import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
 
 
 /**

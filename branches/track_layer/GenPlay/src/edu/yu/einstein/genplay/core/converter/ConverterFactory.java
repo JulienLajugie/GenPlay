@@ -42,9 +42,9 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 
 /**
  * @author Nicolas Fourel

@@ -36,8 +36,8 @@ import edu.yu.einstein.genplay.core.list.SCWList.SimpleScoredChromosomeWindowLis
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialog;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.TrackColor;

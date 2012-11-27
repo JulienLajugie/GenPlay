@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.TrackColor;
 

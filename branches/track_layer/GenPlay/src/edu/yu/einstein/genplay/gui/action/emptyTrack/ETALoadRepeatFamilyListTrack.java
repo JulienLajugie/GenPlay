@@ -31,8 +31,8 @@ import edu.yu.einstein.genplay.core.list.repeatFamilyList.RepeatFamilyList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListActionExtractorWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackGenomeSelection.GenomeSelectionDialog;
-import edu.yu.einstein.genplay.gui.track.RepeatFamilyListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.RepeatFamilyListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 
 

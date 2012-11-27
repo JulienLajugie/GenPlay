@@ -12,7 +12,7 @@ import edu.yu.einstein.genplay.core.list.repeatFamilyList.operation.RFLOConvertI
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.checkBoxTableChooser.CheckBoxTableChooserDialog;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 
 /**
  * Converts the selected families from the selected repeat track into a Mask

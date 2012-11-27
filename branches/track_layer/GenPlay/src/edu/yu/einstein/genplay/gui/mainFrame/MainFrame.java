@@ -74,13 +74,13 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
+import edu.yu.einstein.genplay.gui.old.track.Ruler;
+import edu.yu.einstein.genplay.gui.old.track.Track;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
-import edu.yu.einstein.genplay.gui.track.Ruler;
-import edu.yu.einstein.genplay.gui.track.Track;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
-import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
-import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackListModel;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Images;
 
 

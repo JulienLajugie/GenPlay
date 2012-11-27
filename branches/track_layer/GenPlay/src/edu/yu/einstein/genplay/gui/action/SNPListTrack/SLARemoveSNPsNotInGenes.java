@@ -29,9 +29,9 @@ import edu.yu.einstein.genplay.core.SNPList.operation.SLORemoveSNPsNotInGenes;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.track.SNPListTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SNPListTrack;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 
 

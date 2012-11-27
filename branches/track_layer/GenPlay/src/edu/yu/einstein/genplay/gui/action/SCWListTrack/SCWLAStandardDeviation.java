@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.list.SCWList.operation.SCWLOStandardDeviatio
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
 
 
 

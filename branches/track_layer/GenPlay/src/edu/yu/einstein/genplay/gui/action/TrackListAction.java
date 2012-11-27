@@ -25,7 +25,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

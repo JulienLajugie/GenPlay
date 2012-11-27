@@ -43,7 +43,7 @@ import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScanne
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
 import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.exception.InvalidChromosomeException;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 

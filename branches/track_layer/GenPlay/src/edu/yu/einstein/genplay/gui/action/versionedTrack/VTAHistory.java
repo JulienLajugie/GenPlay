@@ -30,7 +30,7 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.HistoryDialog;
-import edu.yu.einstein.genplay.gui.track.VersionedTrack;
+import edu.yu.einstein.genplay.gui.old.track.VersionedTrack;
 import edu.yu.einstein.genplay.util.History;
 
 

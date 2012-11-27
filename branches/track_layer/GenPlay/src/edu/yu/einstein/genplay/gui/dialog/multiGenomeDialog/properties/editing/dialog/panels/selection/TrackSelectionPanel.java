@@ -24,7 +24,7 @@ package edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.
 import java.awt.Dimension;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.dialog.panels.EditingPanel;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.ExpressTrackChooserPanel;
 
 /**

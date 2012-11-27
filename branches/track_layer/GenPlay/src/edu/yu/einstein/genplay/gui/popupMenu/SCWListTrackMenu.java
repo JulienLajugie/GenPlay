@@ -48,8 +48,8 @@ import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLATransfrag;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLATwoTracks;
 import edu.yu.einstein.genplay.gui.action.SCWListTrack.SCWLAUniqueScore;
 import edu.yu.einstein.genplay.gui.action.allTrack.ATASave;
-import edu.yu.einstein.genplay.gui.track.SCWListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.SCWListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

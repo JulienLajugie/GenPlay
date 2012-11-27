@@ -25,8 +25,8 @@ import javax.swing.JMenuItem;
 
 import edu.yu.einstein.genplay.gui.action.curveTrack.CTAAppearance;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 /**

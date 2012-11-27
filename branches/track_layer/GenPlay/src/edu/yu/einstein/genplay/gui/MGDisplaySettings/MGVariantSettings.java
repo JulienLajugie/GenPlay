@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 
 /**
  * @author Nicolas Fourel

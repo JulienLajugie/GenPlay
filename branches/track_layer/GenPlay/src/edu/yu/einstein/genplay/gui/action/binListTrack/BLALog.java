@@ -28,7 +28,7 @@ import edu.yu.einstein.genplay.core.list.binList.BinList;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOLog;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
 import edu.yu.einstein.genplay.util.Utils;
 
 

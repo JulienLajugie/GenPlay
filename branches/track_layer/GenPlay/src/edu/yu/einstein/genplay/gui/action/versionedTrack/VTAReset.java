@@ -28,8 +28,8 @@ import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
 
 
 

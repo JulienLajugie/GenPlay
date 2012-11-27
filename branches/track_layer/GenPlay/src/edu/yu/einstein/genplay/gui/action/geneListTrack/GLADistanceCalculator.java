@@ -39,9 +39,9 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLODistanceCalculato
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.DistanceCalculatorDialog;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotData;
 import edu.yu.einstein.genplay.gui.scatterPlot.ScatterPlotPane;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
 import edu.yu.einstein.genplay.gui.trackChooser.TrackChooser;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 

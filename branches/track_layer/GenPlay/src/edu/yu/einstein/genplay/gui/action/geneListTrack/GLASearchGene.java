@@ -30,7 +30,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.list.geneList.GeneSearcher;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.SearchGeneDialog;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 
 
 

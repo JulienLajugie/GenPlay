@@ -21,8 +21,8 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu;
 
-import edu.yu.einstein.genplay.gui.track.MultiCurvesTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.MultiCurvesTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 /**

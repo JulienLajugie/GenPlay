@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOFilterThreshold;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.filterDialog.FilterDialog;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 
 /**
  * Filter the selected {@link GeneListTrack}

@@ -29,7 +29,7 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.TrackAppearanceOptionPane;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
+import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
 
 
 

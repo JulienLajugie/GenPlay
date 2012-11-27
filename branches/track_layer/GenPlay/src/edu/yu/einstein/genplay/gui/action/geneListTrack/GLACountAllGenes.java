@@ -29,7 +29,7 @@ import edu.yu.einstein.genplay.core.list.geneList.operation.GLOCountAllGenes;
 import edu.yu.einstein.genplay.core.operation.Operation;
 import edu.yu.einstein.genplay.gui.action.TrackListActionOperationWorker;
 import edu.yu.einstein.genplay.gui.dialog.ChromosomeChooser;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
 
 
 

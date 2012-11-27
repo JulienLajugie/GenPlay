@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 
 /**
  * @author Nicolas Fourel

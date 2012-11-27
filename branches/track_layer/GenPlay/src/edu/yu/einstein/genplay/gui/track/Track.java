@@ -21,179 +21,174 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.event.EventListenerList;
 
-import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.converter.ConverterFactory;
-import edu.yu.einstein.genplay.core.list.ChromosomeListOfLists;
-import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
-import edu.yu.einstein.genplay.gui.track.drawer.multiGenome.MultiGenomeDrawer;
-import edu.yu.einstein.genplay.util.colors.Colors;
-
-
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundData;
+import edu.yu.einstein.genplay.gui.track.layer.background.BackgroundLayer;
+import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
+import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
 
 /**
- * A generic track
- * @param <T> type of the data shown in the track
+ * Track is a component showing the data in GenPlay.
+ * The panel can be retrieve with the getPanel method.
+ * A track contains two elements: the track handle and the graphics panel showing the data
  * @author Julien Lajugie
- * @version 0.1
  */
-public abstract class Track<T> extends JPanel implements GenomeWindowListener, TrackListener, TrackEventsGenerator {
+public class Track implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator {
 
-	private static final long serialVersionUID = -8153338844001326776L;	// generated ID
-	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
-	private static final int 	TRACK_MINIMUM_HEIGHT = 30; 				// minimum height of a track
-	private static final int 	TRACK_HEIGHT = 100; 					// height of a track
-	/**
-	 * Default border of a track
-	 */
-	public static final Border 	REGULAR_BORDER =
-			BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK); 		// regular border of a track
-	/**
-	 * Border of a track when the track starts being dragged
-	 */
-	public static final Border 	DRAG_START_BORDER =
-			BorderFactory.createMatteBorder(2, 2, 2, 2, Colors.BLACK);		// alternative border when a track is dragged
-	/**
-	 * Border of a track when the track is being dragged up
-	 */
-	public static final Border 	DRAG_UP_BORDER =
-			BorderFactory.createMatteBorder(2, 0, 1, 0, Colors.BLACK);		// alternative border when a track is dragged up
-	/**
-	 * Border of a track when the track is being dragged down
-	 */
-	public static final Border 	DRAG_DOWN_BORDER =
-			BorderFactory.createMatteBorder(0, 0, 2, 0, Colors.BLACK);		// alternative border when a track is dragged down
-	private int 					defaultHeight = TRACK_HEIGHT;		// default height of a track
-	private TrackHandle				trackHandle;						// handle of the track
-	protected TrackGraphics<T>		trackGraphics;						// graphics part of the track
-	protected String 				genomeName;							// genome on which the track is based (ie aligned on)
-
-	private List<TrackListener> trackListeners;		// list of track listeners
+	private static final long 						serialVersionUID = 818958034840761257L;	// generated ID
+	private static final int  						SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private static int 								graphicsWidth;							// with of the track graphics (static because all track should have the same width in a project)
+	private final Layer<BackgroundData> 	backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
+	private final Layer<ForegroundData> 	foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
+	private final TrackScore					score;									// score of the track
+	private	final FontMetrics						fontMetrics; 							// FontMetrics to get the size of a string	
+	private int										height;									// height of the track
+	private int 									defaultHeight;							// default height of a track
+	private int										number;									// number of the track
+	private String									name;									// name of the track
+	private List<TrackListener> 					trackListeners;							// list of track listeners
+	private List<Layer<?>> 					layers;									// layers of the track
+	private Layer<?>							activeLayer;							// active layer of the track
+	private transient HandlePanel					handlePanel;							// handle panel of the track
+	private transient GraphicsPanel					graphicsPanel;							// graphics panel of the track
+	private transient JPanel						trackPanel;								// panel of the track containing the handle and graphics panel
 
 
 	/**
-	 * Constructor
-	 * @param displayedGenomeWindow displayed {@link GenomeWindow}
+	 * @return the width of the graphics of the tracks.
+	 * This method is static because all tracks have the same length
+	 */
+	public static int getGraphicsWidth() {
+		return graphicsWidth;
+	}
+
+
+	/**
+	 * Sets the graphics width and update the project X factor if needed
+	 * @param graphicsWidth
+	 */
+	protected static void setGraphicsWidth(int graphicsWidth) {
+		Track.graphicsWidth = graphicsWidth;
+	}
+
+
+	/**
+	 * Update the project xFactor if needed. 
+	 * The xFactor is the ratio between the track width on the screen and the number of genomic position to display
+	 */
+	protected static void updateXFactor() {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		double newXFactor = projectWindow.getXFactor(getGraphicsWidth());
+		if (newXFactor != projectWindow.getXFactor()) {
+			projectWindow.setXFactor(newXFactor);
+		}
+	}
+
+
+	/**
+	 * Creates an instance of {@link Track}
 	 * @param trackNumber number of the track
-	 * @param data data displayed in the track
 	 */
-	protected Track(int trackNumber, T data) {
-		// create handle
-		trackHandle = new TrackHandle(trackNumber);
+	public Track(int trackNumber) {
+		// creates the panels
+		handlePanel = new HandlePanel(trackNumber);
+		handlePanel.addTrackListener(this);
+		graphicsPanel = new GraphicsPanel(this);
+		trackPanel = createTrackPanel();
 
-		// create graphics
-		trackGraphics = createsTrackGraphics(data);
+		// initializes the foreground and background drawer
+		backgroundLayer = new BackgroundLayer(this);
+		foregroundLayer = new ForegroundLayer(this);
+
+		// set the the default height of the track
+		setDefaultHeight(TrackConstants.TRACK_HEIGHT);
+		setHeight(TrackConstants.TRACK_HEIGHT);
+
+		setName(null);
+		setNumber(trackNumber);
+		score = new TrackScore(this);
+
+		// Set the font of the project
+		fontMetrics = trackPanel.getFontMetrics(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
 
 		// create list of track listener
 		trackListeners = new ArrayList<TrackListener>();
 
-		// registered the listener to the genome window manager
-		registerToEventGenerators();
+		// initializes the layer list
+		setLayers(new ArrayList<Layer<?>>());
 
-		// Add the components
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0;
-		gbc.weighty = 1;
-		add(trackHandle, gbc);
-
-		gbc = new GridBagConstraints();
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.gridx = 1;
-		gbc.gridy = 0;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		add(trackGraphics, gbc);
-
-		setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK));
-		setPreferredHeight(defaultHeight);
-	}
-
-
-	/**
-	 * Adds the relative listeners.
-	 */
-	public void registerToEventGenerators () {
-		trackHandle.addTrackListener(this);
-		trackGraphics.addTrackListener(this);
-		registerToGenomeWindow();
-	}
-
-
-	/**
-	 * Registers every control panel components to the genome window manager.
-	 */
-	public void registerToGenomeWindow () {
+		// register itself as a genome window listener to the genome window manager
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 		projectWindow.addGenomeWindowListener(this);
-		projectWindow.addGenomeWindowListener(trackGraphics);
+	}
+
+
+	@Override
+	public void addTrackListener(TrackListener trackListener) {
+		if (!trackListeners.contains(trackListener)) {
+			trackListeners.add(trackListener);
+		}
 	}
 
 
 	/**
-	 * Creates the {@link TrackGraphics}
-	 * @param data data displayed in the track
+	 * @return the track panel
 	 */
-	abstract protected TrackGraphics<T> createsTrackGraphics(T data);
+	private JPanel createTrackPanel() {
+		JPanel trackPanelt = new JPanel();
+		BorderLayout layout = new BorderLayout();
+		trackPanelt.setLayout(layout);
+		trackPanelt.add(handlePanel, BorderLayout.LINE_START);
+		trackPanelt.add(graphicsPanel, BorderLayout.CENTER);
+		trackPanelt.setBorder(TrackConstants.REGULAR_BORDER);
+		return trackPanelt;
+	}
 
 
 	/**
-	 * Copies the track
+	 * Create a deep Copy of the track
 	 * @return a copy of the track
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public Track<?> deepClone() throws IOException, ClassNotFoundException {
+	public Track deepClone() throws IOException, ClassNotFoundException {
 		// we save in a local variable and then remove the listeners
 		// before cloning the track in order to avoid cloning the listeners
 		TrackListener[] tlSaver = getTrackListeners();
 		for (TrackListener curList: tlSaver)	{
 			removeTrackListener(curList);
 		}
-		// we remove the listeners of the track graphics as well
-		TrackListener[] trackGraphicsTlSaver = trackGraphics.getTrackListeners();
-		for (TrackListener curList: trackGraphicsTlSaver)	{
-			trackGraphics.removeTrackListener(curList);
-		}
-		// we remove the listeners of the track handle as well
-		TrackListener[] trackHandleTlSaver = trackHandle.getTrackListeners();
-		for (TrackListener curList: trackHandleTlSaver)	{
-			trackHandle.removeTrackListener(curList);
-		}
 		// we remove listeners from the genome window manager
 		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(this);
-		ProjectManager.getInstance().getProjectWindow().removeGenomeWindowListener(trackGraphics);
-
 
 		// we clone the object
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -207,367 +202,104 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 		for (TrackListener curList: tlSaver)	{
 			addTrackListener(curList);
 		}
-		for (TrackListener curList: trackGraphicsTlSaver) {
-			trackGraphics.addTrackListener(curList);
-		}
-		for (TrackListener curList: trackHandleTlSaver) {
-			trackHandle.addTrackListener(curList);
-		}
-		registerToGenomeWindow();
 
-		return (Track<?>) ois.readObject();
-	}
+		// register itself as a genome window listener to the genome window manager
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		projectWindow.addGenomeWindowListener(this);
 
-
-	/**
-	 * Copy the multi genome information (stripes & filters) create a temporary copy in the {@link MGDisplaySettings} instance.
-	 * These information are never serialize because of serializing issues.
-	 * Saving/Loading processes manage these information but be carefull when using deepClone().
-	 * You may want to use this method AND then to use the method pasteTemporaryTrack(Track<?> track) in {@link MGDisplaySettings} to restore the information to the new track.
-	 */
-	public void copyMultiGenomeInformation () {
-		if (ProjectManager.getInstance().isMultiGenomeProject()) {
-			MGDisplaySettings.getInstance().copyTemporaryTrack(this);
-		}
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	@SuppressWarnings("unchecked")
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		defaultHeight = TRACK_HEIGHT;
-		in.readInt();
-		listenerList = (EventListenerList) in.readObject();
-		trackHandle = (TrackHandle) in.readObject();
-		trackGraphics = (TrackGraphics<T>) in.readObject();
-		genomeName = (String) in.readObject();
-		trackListeners = new ArrayList<TrackListener>();
-		registerToEventGenerators();
-	}
-
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(listenerList);
-		out.writeObject(trackHandle);
-		out.writeObject(trackGraphics);
-		out.writeObject(genomeName);
+		return (Track) ois.readObject();
 	}
 
 
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
-		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
-			MGDisplaySettings settings = MGDisplaySettings.getInstance();
-			List<MGFilter> filtersList = settings.getFilterSettings().getMGFiltersForTrack(this);
-			List<VariantData> stripesList = settings.getVariantSettings().getVariantsForTrack(this);
-			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
-		}
+		// repaint the layers if the genome window changed
+		drawLayers(graphicsPanel.getGraphics());
 	}
 
 
 	/**
-	 * Updates information for multi genome project.
-	 * These information are about:
-	 * - stripes
-	 * - filters
-	 * @param stripesList list of stripes
-	 * @param filtersList list of filters
+	 * @return the active track layer
 	 */
-	public void updateMultiGenomeInformation (List<VariantData> stripesList, List<MGFilter> filtersList) {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().updateMultiGenomeInformation(stripesList, filtersList);
-		}
+	public Layer<?> getActiveLayer() {
+		return activeLayer;
+	}
+
+
+
+	/**
+	 * @return the background layer of the track
+	 */
+	public Layer<BackgroundData> getBackgroundLayer() {
+		return backgroundLayer;
 	}
 
 
 	/**
-	 * Reset the list of the variant list makers
+	 * @return the default height of the track
 	 */
-	public void resetVariantListMaker () {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			trackGraphics.getMultiGenomeDrawer().resetVariantListMaker();
-		}
+	public int getDefaultHeight() {
+		return defaultHeight;
 	}
 
 
 	/**
-	 * Initializes attributes used for multi genome project.
+	 * @return the font metrics of the track
 	 */
-	public void multiGenomeInitializing () {
-		trackGraphics.multiGenomeInitializing();
+	public FontMetrics getFontMetrics() {
+		return fontMetrics;
 	}
 
 
 	/**
-	 * @return the data showed in the track
+	 * @return the foreground layer of the track
 	 */
-	public T getData() {
-		return trackGraphics.getData();
+	public Layer<ForegroundData> getForegroundLayer() {
+		return foregroundLayer;
 	}
 
 
 	/**
-	 * @return the genomeName
+	 * @return the height of the track
 	 */
-	public String getGenomeName() {
-		return genomeName;
+	public int getHeight() {
+		return height;
+	}
+
+
+	/**
+	 * @return all the layers of the track
+	 */
+	public List<Layer<?>> getLayers() {
+		return layers;
 	}
 
 
 	/**
 	 * @return the name of the track
 	 */
-	@Override
 	public String getName() {
-		if ((trackGraphics == null) || (trackHandle == null)){
-			return super.getName();
-		}
-		if (trackGraphics.getName() != null) {
-			return trackGraphics.getName();
+		if (name != null) {
+			return name;
 		} else {
-			return new String("Track #" + trackHandle.getNumber());
+			return new String("Track #" + getNumber());
 		}
-	}
-
-
-	/**
-	 * @return the preferred height of the track
-	 */
-	public int getPreferredHeight() {
-		return getPreferredSize().height;
-	}
-
-
-	/**
-	 * @return true if the scroll mode is on
-	 */
-	public boolean getScrollMode() {
-		return trackGraphics.getScrollMode();
-	}
-
-
-	/**
-	 * @return the mask of the track
-	 */
-	public ScoredChromosomeWindowList getMask() {
-		return trackGraphics.getMask();
 	}
 
 
 	/**
 	 * @return the number of the track
 	 */
-	public int getTrackNumber() {
-		return trackHandle.getNumber();
+	public int getNumber() {
+		return number;
 	}
 
 
 	/**
-	 * @return the width of a track (every track has the same width)
+	 * @return the object that manages the score of the track
 	 */
-	public int getTrackWidth () {
-		return trackGraphics.getWidth();
-	}
-
-
-	/**
-	 * @return the verticalLineCount
-	 */
-	public int getVerticalLineCount() {
-		return trackGraphics.getVerticalLineCount();
-	}
-
-
-	/**
-	 * @return the stripesList
-	 */
-	public List<VariantData> getStripesList() {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			return trackGraphics.getMultiGenomeDrawer().getStripesList();
-		}
-		return null;
-	}
-
-
-	/**
-	 * @return the filtersList
-	 */
-	public List<MGFilter> getFiltersList() {
-		if (trackGraphics.getMultiGenomeDrawer() != null) {
-			return trackGraphics.getMultiGenomeDrawer().getFiltersList();
-		}
-		return null;
-	}
-
-
-	/**
-	 * @return true if the track is selected
-	 */
-	public boolean isSelected() {
-		return trackHandle.isSelected();
-	}
-
-
-	/**
-	 * Locks the handle of the track
-	 */
-	public void lockHandle() {
-		trackHandle.lock();
-	}
-
-
-	/**
-	 * Save the {@link TrackGraphics} as an image
-	 * @param file output file
-	 */
-	public void saveAsImage(File file) {
-		trackGraphics.saveAsImage(file);
-	}
-
-
-	/**
-	 * @param genomeName the genomeName to set
-	 */
-	public void setGenomeName(String genomeName) {
-		this.genomeName = genomeName;
-	}
-
-
-	/**
-	 * Renames the track
-	 * @param newName a new name for the track
-	 */
-	@Override
-	public void setName(String newName) {
-		trackGraphics.setName(newName);
-	}
-
-
-	/**
-	 * Sets the preferred Height of the track
-	 * @param newPreferredHeight new preferred height
-	 */
-	public void setPreferredHeight(int newPreferredHeight) {
-		setPreferredSize(new Dimension(getPreferredSize().width, newPreferredHeight));
-		defaultHeight = newPreferredHeight;
-		revalidate();
-	}
-
-
-	/**
-	 * Turns the scroll mode on / off
-	 * @param scrollMode
-	 */
-	public void setScrollMode(boolean scrollMode) {
-		trackGraphics.setScrollMode(scrollMode);
-	}
-
-
-	/**
-	 * @param selected the value to set
-	 */
-	public void setSelected(boolean selected) {
-		trackHandle.setSelected(selected);
-	}
-
-
-	/**
-	 * shows stripes on the track
-	 * @param mask a {@link ScoredChromosomeWindowList}
-	 */
-	public void setMask(ScoredChromosomeWindowList mask) {
-		trackGraphics.setMask(mask);
-		repaint();
-	}
-
-
-	/**
-	 * Sets the number of the track
-	 * @param trackNumber the number of the track
-	 */
-	public void setTrackNumber(int trackNumber) {
-		trackHandle.setNumber(trackNumber);
-	}
-
-
-	/**
-	 * @param verticalLineCount the verticalLineCount to set
-	 */
-	public void setVerticalLineCount(int verticalLineCount) {
-		trackGraphics.setVerticalLineCount(verticalLineCount);
-	}
-
-
-	@Override
-	public String toString() {
-		if (trackGraphics.getName() != null) {
-			return getTrackNumber() + " - " + getName();
-		} else {
-			return new String("Track #" + trackHandle.getNumber());
-		}
-	}
-
-
-	/**
-	 * Unlocks the handle of the track
-	 */
-	public void unlockHandle() {
-		trackHandle.unlock();
-	}
-
-
-	/**
-	 * Changes the legend display of the tracks
-	 */
-	public void legendChanged() {
-		trackGraphics.drawHeaderTrack(null);
-	}
-
-
-	/**
-	 * This function is called when the track is deleted.
-	 * Removes all the listeners.  Can be overridden.
-	 */
-	public void delete() {
-		trackGraphics.delete();
-		for (TrackListener curList: getTrackListeners())	{
-			removeTrackListener(curList);
-		}
-	}
-
-
-	/**
-	 * This function deletes the data of the track
-	 */
-	public void deleteData() {
-		trackGraphics.deleteData();
-	}
-
-
-	/**
-	 * @return the genomeDrawer
-	 */
-	public MultiGenomeDrawer getMultiGenomeDrawer() {
-		return trackGraphics.getMultiGenomeDrawer();
-	}
-
-
-	@Override
-	public void addTrackListener(TrackListener trackListener) {
-		if (!trackListeners.contains(trackListener)) {
-			trackListeners.add(trackListener);
-		}
+	public TrackScore getScore() {
+		return score;
 	}
 
 
@@ -578,9 +310,11 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	}
 
 
-	@Override
-	public void removeTrackListener(TrackListener trackListener) {
-		trackListeners.remove(trackListener);
+	/**
+	 * @return the panel containing the track
+	 */
+	public JPanel getPanel() {
+		return trackPanel;
 	}
 
 
@@ -596,37 +330,114 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	}
 
 
+	/**
+	 * Draws the track
+	 */
+	protected void drawLayers(Graphics g) {
+		// draw the track background
+		backgroundLayer.drawLayer(g);
+		// draw the list of layers
+		List<Layer<?>> layers = getLayers();
+		for (Layer<?> currentLayer: layers) {
+			currentLayer.drawLayer(g);
+		}
+		// draw the foreground
+		foregroundLayer.drawLayer(g);
+	}
+
+
 	@Override
-	public void trackChanged(TrackEvent arg0) {
-		if (arg0.getEventType() == TrackEventType.RESIZED) {
-			int newHeight = getPreferredSize().height + trackHandle.getNewHeight();
-			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
-			newHeight = Math.max(TRACK_MINIMUM_HEIGHT, newHeight);
-			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
-			revalidate();
-		} else if (arg0.getEventType() == TrackEventType.SIZE_SET_TO_DEFAULT) {
-			setPreferredSize(new Dimension(getPreferredSize().width, defaultHeight));
-			revalidate();
-		} else {
-			// we relay the other events to the element that contains this track
-			notifyTrackListeners(arg0.getEventType());
+	public void removeTrackListener(TrackListener trackListener) {
+		trackListeners.remove(trackListener);
+	}
+
+
+	/**
+	 * Saves the track graphics as a PNG image
+	 * @param file output file
+	 */
+	public void saveAsImage(File file) {
+		BufferedImage image = new BufferedImage(graphicsPanel.getWidth(), graphicsPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = image.createGraphics();
+		graphicsPanel.paint(g);
+		try {
+			ImageIO.write(image, "PNG", file);
+		}catch(Exception e) {
+			ExceptionManager.handleException(graphicsPanel.getRootPane(), e, "Error while saving the tracks as an image");
 		}
 	}
 
 
 	/**
-	 * @return true if the track can be converted, false otherwise
+	 * Sets the active layer of the track
+	 * @param activeLayer the active layer to set
 	 */
-	public boolean isConvertible () {
-		boolean result = false;
-		if (getMask() != null) {
-			result = true;
-		} else {
-			T data = getData();
-			if ((data != null) && (data instanceof ChromosomeListOfLists<?>)) {
-				result = ConverterFactory.getTrackTypes((ChromosomeListOfLists<?>) data) != null;
-			}
+	public void setActiveLayer(Layer<?> activeLayer) {
+		this.activeLayer = activeLayer;
+		getScore().updateCurrentScore();
+	}
+
+
+	/**
+	 * Sets the default height of the track
+	 * @param defaultHeight default height to set
+	 */
+	public void setDefaultHeight(int defaultHeight) {
+		this.defaultHeight = defaultHeight;
+	}
+
+
+	/**
+	 * Sets the height of the track
+	 * @param height height to set
+	 */
+	public void setHeight(int height) {
+		this.height = height;
+		// update the dimension of the track panel
+		Dimension trackDimension = new Dimension(trackPanel.getPreferredSize().width, height);
+		trackPanel.setPreferredSize(trackDimension);
+		trackPanel.revalidate();
+	}
+
+
+	/**
+	 * Sets the list of track layers 
+	 * @param layers a list of track layers
+	 */
+	public void setLayers(List<Layer<?>> layers) {
+		this.layers = layers;
+		getScore().updateCurrentScore();
+	}
+
+
+	/**
+	 * Renames the track
+	 * @param name name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	/**
+	 * Sets the number of the track
+	 * @param number number to set
+	 */
+	public void setNumber(int number) {
+		this.number = number;
+		this.handlePanel.setNumber(number);
+	}
+
+
+	@Override
+	public void trackChanged(TrackEvent evt) {
+		if (evt.getEventType() == TrackEventType.RESIZED) { // resize event
+			setHeight(handlePanel.getNewHeight());
+		} else if (evt.getEventType() == TrackEventType.SIZE_SET_TO_DEFAULT) { // size set to default event
+			setHeight(getDefaultHeight());
+		} else { // other event
+			// we relay the other events to the element that contains this track
+			notifyTrackListeners(evt.getEventType());
 		}
-		return result;
 	}
 }

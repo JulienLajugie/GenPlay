@@ -33,8 +33,8 @@ import edu.yu.einstein.genplay.core.writer.Writer;
 import edu.yu.einstein.genplay.core.writer.WriterFactory;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 
 

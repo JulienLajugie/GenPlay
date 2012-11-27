@@ -29,8 +29,8 @@ import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFilterThreshold;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindNext;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLAFindPrevious;
 import edu.yu.einstein.genplay.gui.action.SNPListTrack.SLARemoveSNPsNotInGenes;
-import edu.yu.einstein.genplay.gui.track.SNPListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.SNPListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

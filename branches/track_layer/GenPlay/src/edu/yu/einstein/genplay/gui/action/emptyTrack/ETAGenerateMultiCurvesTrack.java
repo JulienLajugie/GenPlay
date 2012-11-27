@@ -29,9 +29,9 @@ import javax.swing.JOptionPane;
 import edu.yu.einstein.genplay.core.list.SCWList.ScoredChromosomeWindowList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
-import edu.yu.einstein.genplay.gui.track.CurveTrack;
-import edu.yu.einstein.genplay.gui.track.MultiCurvesTrack;
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.CurveTrack;
+import edu.yu.einstein.genplay.gui.old.track.MultiCurvesTrack;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.trackChooser.MultiTrackChooser;
 
 

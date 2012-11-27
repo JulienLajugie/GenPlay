@@ -23,7 +23,7 @@ package edu.yu.einstein.genplay.gui.event.trackEvent;
 
 import java.util.EventListener;
 
-import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.old.track.Track;
 
 
 /**

@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.dialog.YAxisOptionPane;
-import edu.yu.einstein.genplay.gui.track.ScoredTrack;
+import edu.yu.einstein.genplay.gui.old.track.ScoredTrack;
 
 
 /**

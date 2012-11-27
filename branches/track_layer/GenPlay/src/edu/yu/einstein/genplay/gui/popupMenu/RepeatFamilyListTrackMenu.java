@@ -24,8 +24,8 @@ package edu.yu.einstein.genplay.gui.popupMenu;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import edu.yu.einstein.genplay.gui.action.repeatFamilyTrack.RFTAConvertIntoMask;
-import edu.yu.einstein.genplay.gui.track.RepeatFamilyListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.RepeatFamilyListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 /**

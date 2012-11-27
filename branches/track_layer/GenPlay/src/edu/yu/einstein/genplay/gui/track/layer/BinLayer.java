@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 import edu.yu.einstein.genplay.util.colors.TrackColor;
@@ -41,7 +42,7 @@ import edu.yu.einstein.genplay.util.colors.TrackColor;
  * Layer displaying a {@link BinList}
  * @author Julien Lajugie
  */
-public class BinLayer extends AbstractTrackLayer<BinList> implements TrackLayer<BinList>, GraphLayer, ColoredLayer {
+public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, GraphLayer, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private GraphType 	graphType;	// type of graph display in the layer
@@ -52,7 +53,7 @@ public class BinLayer extends AbstractTrackLayer<BinList> implements TrackLayer<
 	 * Creates an instance of a {@link BinLayer}
 	 */
 	public BinLayer() {
-		this.setGraphType(LayeredTrackConstants.DEFAULT_GRAPH_TYPE);
+		this.setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
 		this.color = TrackColor.getTrackColor();
 	}
 

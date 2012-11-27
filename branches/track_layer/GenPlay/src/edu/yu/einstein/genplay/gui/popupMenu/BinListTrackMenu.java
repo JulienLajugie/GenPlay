@@ -60,8 +60,8 @@ import edu.yu.einstein.genplay.gui.action.binListTrack.BLASumScore;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATransfrag;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLATwoTracks;
 import edu.yu.einstein.genplay.gui.action.binListTrack.BLAUniqueScore;
-import edu.yu.einstein.genplay.gui.track.BinListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.BinListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 

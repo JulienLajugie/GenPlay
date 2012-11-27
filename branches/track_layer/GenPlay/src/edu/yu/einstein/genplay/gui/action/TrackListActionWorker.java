@@ -36,9 +36,9 @@ import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 
 

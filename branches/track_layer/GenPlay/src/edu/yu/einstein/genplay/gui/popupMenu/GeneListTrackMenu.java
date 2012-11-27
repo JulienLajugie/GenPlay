@@ -39,8 +39,8 @@ import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAScoreRepartitionAroun
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASearchGene;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLASumScore;
 import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAUniqueScore;
-import edu.yu.einstein.genplay.gui.track.GeneListTrack;
-import edu.yu.einstein.genplay.gui.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.old.track.GeneListTrack;
+import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 
 
 
