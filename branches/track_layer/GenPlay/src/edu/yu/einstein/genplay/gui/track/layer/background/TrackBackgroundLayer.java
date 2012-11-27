@@ -57,7 +57,7 @@ public class TrackBackgroundLayer extends AbstractTrackLayer<TrackBackgroundData
 
 	
 	@Override
-	public void drawTrack(Graphics g) {
+	public void drawLayer(Graphics g) {
 		if (!isHidden()) {
 			drawVerticalLines(g);
 			drawHorizontalLines(g);
@@ -74,7 +74,7 @@ public class TrackBackgroundLayer extends AbstractTrackLayer<TrackBackgroundData
 			double scoreMin = getTrack().getScore().getMinimumScore();
 			double scoreMax = getTrack().getScore().getMaximumScore();
 			int horizontalLineCount = getData().getHorizontalLineCount();
-			int width = getTrack().getWidth();
+			int width = LayeredTrack.getGraphicsWidth();
 			double scoreGapBetweenLineY = (scoreMax - scoreMin) / (double)horizontalLineCount;
 			double intensityFirstLineY = scoreMin - (scoreMin % scoreGapBetweenLineY);
 			g.setColor(Colors.LIGHT_GREY);
@@ -99,7 +99,7 @@ public class TrackBackgroundLayer extends AbstractTrackLayer<TrackBackgroundData
 	 */
 	private void drawVerticalLines(Graphics g) {
 		g.setColor(Colors.TRACK_LINE);
-		double gap = LayeredTrack.getTrackWidth() / (double)getData().getVerticalLineCount();
+		double gap = LayeredTrack.getGraphicsWidth() / (double)getData().getVerticalLineCount();
 		int y1 = 0;
 		int y2 = getTrack().getHeight();
 		for (int i = 0; i < getData().getVerticalLineCount(); i++) {

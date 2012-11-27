@@ -42,10 +42,10 @@ public interface TrackLayer<T extends Serializable> extends Serializable {
 
 
 	/**
-	 * Paints the track graphics
+	 * Paints the layer on the specified {@link Graphics} context
 	 * @param g {@link Graphics} on which the track will be drawn
 	 */
-	abstract void drawTrack(Graphics g);
+	abstract void drawLayer(Graphics g);
 
 
 	/**

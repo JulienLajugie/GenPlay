@@ -234,7 +234,7 @@ public class BinLayer extends AbstractTrackLayer<BinList> implements TrackLayer<
 
 
 	@Override
-	public void drawTrack(Graphics g) {
+	public void drawLayer(Graphics g) {
 		Graphics2D g2D = (Graphics2D)g;
 		switch(getGraphType()) {
 		case BAR:

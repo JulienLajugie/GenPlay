@@ -39,7 +39,6 @@ import java.util.Arrays;
 public final class ProjectZoom implements Serializable {
 
 	private static final long serialVersionUID = -1885523812708037537L;	// generated ID
-	
 	private static final int[] DEFAULT_ZOOM = 
 	{10, 20, 50, 
 		100, 200, 500, 
@@ -50,30 +49,21 @@ public final class ProjectZoom implements Serializable {
 		10000000, 20000000,	50000000, 
 		100000000, 200000000, 500000000 };				// default zooms
 	private int[] 			zoomSizes = DEFAULT_ZOOM;	// the different zoom sizes available
-	
-	
+
+
 	/**
 	 * Constructor of {@link ProjectZoom}.
 	 */
 	protected ProjectZoom() {
 		super();
 	}
-	
-
-	/**
-	 * @param index index of a zoom
-	 * @return value of the zoom associated to index
-	 */
-	public int getZoom(int index)  {
-		return zoomSizes[index];
-	}
 
 
 	/**
 	 * @param currentZoom the current zoom value
-	 * @return the new zoom value after a zoom out
+	 * @return the new zoom value after a zoom in
 	 */
-	public int getZoomIn(int currentZoom) {
+	public int getNextZoomIn(int currentZoom) {
 		int currentZoomIndex = java.util.Arrays.binarySearch(zoomSizes, currentZoom);
 		if (currentZoomIndex < 0) {
 			currentZoomIndex = -currentZoomIndex - 1;
@@ -82,7 +72,32 @@ public final class ProjectZoom implements Serializable {
 			currentZoomIndex--;
 		}
 		return zoomSizes[currentZoomIndex];
-	}	
+	}
+
+
+	/**
+	 * @param currentZoom the current zoom value
+	 * @return the new zoom value after a zoom out
+	 */
+	public int getNextZoomOut(int currentZoom) {
+		int currentZoomIndex = java.util.Arrays.binarySearch(zoomSizes, currentZoom);
+		if (currentZoomIndex < 0) {
+			currentZoomIndex = -currentZoomIndex - 2;
+		}
+		if (currentZoomIndex < zoomSizes.length - 1) {
+			currentZoomIndex++;
+		}
+		return zoomSizes[currentZoomIndex];
+	}
+
+
+	/**
+	 * @param index index of a zoom
+	 * @return value of the zoom associated to index
+	 */
+	public int getZoom(int index)  {
+		return zoomSizes[index];
+	}
 
 
 	/**
@@ -99,22 +114,6 @@ public final class ProjectZoom implements Serializable {
 			zoomIndex = zoomSizes.length - 1;
 		}
 		return zoomIndex;
-	}
-
-
-	/**
-	 * @param currentZoom the current zoom value
-	 * @return the new zoom value after a zoom in 
-	 */
-	public int getZoomOut(int currentZoom) {
-		int currentZoomIndex = java.util.Arrays.binarySearch(zoomSizes, currentZoom);
-		if (currentZoomIndex < 0) {
-			currentZoomIndex = -currentZoomIndex - 2;
-		}
-		if (currentZoomIndex < zoomSizes.length - 1) {
-			currentZoomIndex++;
-		}
-		return zoomSizes[currentZoomIndex];
 	}
 
 
@@ -140,7 +139,7 @@ public final class ProjectZoom implements Serializable {
 			// extract data
 			String line = null;
 			while((line = reader.readLine()) != null) {
-				listTmp.add(Integer.parseInt(line));			
+				listTmp.add(Integer.parseInt(line));
 			}
 			zoomSizes = new int[listTmp.size()];
 			for (int i = 0; i < listTmp.size(); i++) {

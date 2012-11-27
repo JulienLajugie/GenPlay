@@ -51,7 +51,7 @@ public class TrackForegroundData implements Serializable {
 	 * Creates an instance of {@link TrackForegroundData}
 	 */
 	public TrackForegroundData() {
-		this.setScoreColor(Colors.TRACK_LINE);
+		this.setScoreColor(Colors.TRACK_SCORE);
 		this.setScorePosition(LayeredTrackConstants.BOTTOM_SCORE_POSITION);
 		this.setVariantLegendText(new ArrayList<String>());
 		this.setVariantLegendColor(new ArrayList<Color>());

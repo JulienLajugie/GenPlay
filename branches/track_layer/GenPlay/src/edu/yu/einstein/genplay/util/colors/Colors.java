@@ -160,6 +160,9 @@ public class Colors {
 	/** Color of the line in the middle of the track graphics */
 	public static final Color TRACK_MIDDLE_LINE = Colors.RED;
 
+	/** Default color of the score */
+	public static final Color TRACK_SCORE = Colors.RED;
+
 	/** Background color of the graphics part */
 	public static final Color TRACK_BACKGROUND = Colors.WHITE;
 

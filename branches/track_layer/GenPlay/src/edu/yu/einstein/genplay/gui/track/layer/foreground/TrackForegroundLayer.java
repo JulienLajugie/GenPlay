@@ -26,6 +26,7 @@ import java.awt.Graphics;
 
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrackConstants;
+import edu.yu.einstein.genplay.gui.track.layer.LayeredTrackScore;
 import edu.yu.einstein.genplay.gui.track.layer.TrackLayer;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractTrackLayer;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -60,7 +61,7 @@ public class TrackForegroundLayer extends AbstractTrackLayer<TrackForegroundData
 	private void drawMiddleVerticalLine(Graphics g) {
 		int y1 = 0;
 		int y2 = getTrack().getHeight();
-		int x = (int)Math.round(getTrack().getWidth() / (double)2);
+		int x = (int)Math.round(LayeredTrack.getGraphicsWidth() / (double)2);
 		g.setColor(Colors.TRACK_MIDDLE_LINE);
 		g.drawLine(x, y1, x, y2);
 	}
@@ -72,7 +73,7 @@ public class TrackForegroundLayer extends AbstractTrackLayer<TrackForegroundData
 	 */
 	private void drawName(Graphics g) {
 		if ((getTrack().getName() != null) && (!getTrack().getName().trim().isEmpty())) {
-			int width = getTrack().getWidth();
+			int width = LayeredTrack.getGraphicsWidth();
 			int widthOffset = 2; 												// space between the border of the rectangle and the text.
 			int heightOffset = 2; 												// space between the border of the rectangle and the top of the track.
 			String trackName = getTrack().getName();
@@ -106,11 +107,16 @@ public class TrackForegroundLayer extends AbstractTrackLayer<TrackForegroundData
 	}
 
 
+	/**
+	 * Draws the score of the track
+	 * @param g
+	 */
 	private void drawScore(Graphics g) {
 		TrackForegroundData data = this.getData();
-		if (data != null) {
-			Double trackScore = getTrack().getScore().getCurrentScore();
-			if (trackScore != null) {
+		LayeredTrackScore trackScore = getTrack().getScore();
+		if ((data != null) && (trackScore != null) && (trackScore.isTrackScored())) {
+			Double currentScore = trackScore.getCurrentScore();
+			if (currentScore != null) {
 				int scoreYPosition = 0;
 				if (data.getScorePosition() == LayeredTrackConstants.BOTTOM_SCORE_POSITION) {
 					scoreYPosition =  getTrack().getHeight() - 2;
@@ -118,14 +124,14 @@ public class TrackForegroundLayer extends AbstractTrackLayer<TrackForegroundData
 					scoreYPosition = getTrack().getFontMetrics().getHeight();
 				}
 				g.setColor(data.getScoreColor());
-				g.drawString("y=" + LayeredTrackConstants.SCORE_FORMAT.format(trackScore), (getTrack().getWidth() / 2) + 3, scoreYPosition);
+				g.drawString("y=" + LayeredTrackConstants.SCORE_FORMAT.format(currentScore), (LayeredTrack.getGraphicsWidth() / 2) + 3, scoreYPosition);
 			}
 		}
 	}
 
 
 	@Override
-	public void drawTrack(Graphics g) {
+	public void drawLayer(Graphics g) {
 		if (!isHidden()) {
 			drawMiddleVerticalLine(g);
 			drawScore(g);

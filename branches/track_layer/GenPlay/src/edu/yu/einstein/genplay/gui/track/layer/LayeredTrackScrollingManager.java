@@ -14,7 +14,7 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
@@ -48,7 +48,7 @@ public class LayeredTrackScrollingManager {
 	/**
 	 * @return the instance of the {@link LayeredTrackScrollingManager} singleton
 	 */
-	public static LayeredTrackScrollingManager getInstance() {
+	public synchronized static LayeredTrackScrollingManager getInstance() {
 		if (instance == null) {
 			// we synchronize to make sure that there is no 2 instances created
 			synchronized(LayeredTrackScrollingManager.class) {
@@ -70,11 +70,32 @@ public class LayeredTrackScrollingManager {
 
 
 	/**
+	 * @return true if the scrolling is enable and going left
+	 */
+	public boolean isScrollingLeft() {
+		return isScrollingEnabled() && (getScrollingIntensity() > 0);
+	}
+
+
+	/**
+	 * @return true if the scrolling is enable and going right
+	 */
+	public boolean isScrollingRight() {
+		return isScrollingEnabled() && (getScrollingIntensity() < 0);
+	}
+
+
+	/**
 	 * Turns on or off the track scrolling mode
 	 * @param enabled true if the scrolling mode should be enabled, false otherwise
 	 */
 	public void setScrollingEnabled(boolean enabled) {
-		scrollingThread = enabled ? new ScrollingThread() : null;
+		if (enabled) {
+			scrollingThread = new ScrollingThread();
+			scrollingThread.start();
+		} else {
+			scrollingThread = null;
+		}
 	}
 
 
@@ -85,7 +106,7 @@ public class LayeredTrackScrollingManager {
 	 */
 	public void setScrollingIntensity(int mouseXPosition) {
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		int width = LayeredTrack.getTrackWidth();
+		int width = LayeredTrack.getGraphicsWidth();
 		double scrollingIntensityTmp = projectWindow.twoScreenPosToGenomeWidth(width, mouseXPosition, width / 2);
 		if (scrollingIntensityTmp > 0) {
 			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) + 1;

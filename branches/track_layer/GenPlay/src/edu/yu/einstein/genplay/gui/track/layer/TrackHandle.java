@@ -19,7 +19,7 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.gui.track;
+package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Cursor;
 import java.awt.Dimension;

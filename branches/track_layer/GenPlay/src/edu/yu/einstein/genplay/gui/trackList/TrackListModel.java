@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.trackList;
 
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 
 /**
@@ -37,7 +39,23 @@ public class TrackListModel implements Serializable {
 
 	/**
 	 * Creates an instance of {@link TrackListModel}
-	 * @param tracks tracks to display in the JTable
+	 */
+	public TrackListModel() {
+		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+		int trackCount = projectConfiguration.getTrackCount();
+		int defaultHeight = projectConfiguration.getTrackHeight();
+		tracks = new LayeredTrack[trackCount];
+		for (int i = 0; i < trackCount; i++) {
+			tracks[i] = new LayeredTrack(i + 1);
+			tracks[i].setDefaultHeight(defaultHeight);
+			tracks[i].setHeight(defaultHeight);
+		}
+	}
+
+
+	/**
+	 * Creates an instance of {@link TrackListModel}
+	 * @param tracks tracks of the model
 	 */
 	public TrackListModel(LayeredTrack[] tracks) {
 		setTracks(tracks);

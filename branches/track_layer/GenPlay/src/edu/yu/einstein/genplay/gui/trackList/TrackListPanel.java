@@ -1,5 +1,6 @@
 package edu.yu.einstein.genplay.gui.trackList;
 
+import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,53 +16,85 @@ import javax.swing.table.TableCellRenderer;
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
+import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
+import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
+import edu.yu.einstein.genplay.gui.popupMenu.TrackMenuFactory;
 import edu.yu.einstein.genplay.gui.track.EmptyTrack;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.LayeredTrack;
 
-public class TrackTablePanel extends JScrollPane implements Serializable, TrackListener, TrackEventsGenerator {
+public class TrackListPanel extends JScrollPane implements Serializable, TrackListener, TrackEventsGenerator {
 
 	private final static int SCROLL_BAR_UNIT_INCREMENT = 15;
 	private final static int SCROLL_BAR_BLOCK_INCREMENT = 40;
-	private final TrackTable			jtTrackTable;					// JTable with the tracks
+	private final JPanel 				jpTrackList;					// panel with the tracks
 	private final List<TrackListener> 	trackListeners;					// list of track listeners
-	private LayeredTrack[]				trackList;						// array of tracks
+	private TrackListModel 				model;
 	private LayeredTrack				selectedTrack = null;			// track selected
 	private LayeredTrack				copiedTrack = null; 			// list of the tracks in the clipboard
 
 	
-	public TrackTablePanel() {
+	public TrackListPanel(TrackListModel model) {
 		super();
+		this.model = model;
 		this.trackListeners = new ArrayList<TrackListener>();
-		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-		int trackCount = projectConfiguration.getTrackCount();
-		int preferredHeight = projectConfiguration.getTrackHeight();
-		trackList = new LayeredTrack[trackCount];
-		for (int i = 0; i < trackCount; i++) {
-			trackList[i] = new LayeredTrack(i + 1);
-			trackList[i].setPreferredHeight(preferredHeight);
-			trackList[i].addTrackListener(this);
+		jpTrackList = new JPanel();
+		jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
+		for (LayeredTrack currentTrack: getModel().getTracks()) {
+			jpTrackList.add(currentTrack.getPanel());
+			currentTrack.addTrackListener(this);
 		}
-		TrackListModel trackTableModel = new TrackListModel(trackList);
-		jtTrackTable = new TrackTable(trackTableModel);
-		
-		//jtTrackTable.setModel(trackTableModel);
 		getVerticalScrollBar().setUnitIncrement(SCROLL_BAR_UNIT_INCREMENT);
 		getVerticalScrollBar().setBlockIncrement(SCROLL_BAR_BLOCK_INCREMENT);
 		setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		setViewportView(jtTrackTable);
+		setViewportView(jpTrackList);
 		//addActionsToActionMap();
 		//addKeyToInputMap();
 	}
 
 
+	/**
+	 * @return the model containing the data displayed in this panel
+	 */
+	public TrackListModel getModel() {
+		return model;
+	}
+
 	@Override
 	public void trackChanged(TrackEvent evt) {
-		// TODO Auto-generated method stub
-		
+	/*	notifyTrackListeners(evt);
+		if (evt.getEventType() == TrackEventType.RIGHT_CLICKED) {
+			setScrollMode(false);
+			selectedTrack = (Track<?>)evt.getSource();
+			TrackMenu tm = TrackMenuFactory.getTrackMenu(this);
+			Point mousePoint = getMousePosition();
+			if (mousePoint != null) {
+				tm.show(this, mousePoint.x, mousePoint.y);
+			}
+		} else if (evt.getEventType() == TrackEventType.DRAGGED) {
+			if (draggedTrackIndex == -1) {
+				draggedTrackIndex = ((Track<?>)evt.getSource()).getTrackNumber() - 1;
+			}
+			dragTrack();
+		} else if (evt.getEventType() == TrackEventType.RELEASED) {
+			releaseTrack();
+		} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
+			setScrollMode(true);
+		} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
+			setScrollMode(false);
+		} else if (evt.getEventType() == TrackEventType.SELECTED) {
+			for (Track<?> currentTrack : trackList) {
+				if (currentTrack != evt.getSource()) {
+					currentTrack.setSelected(false);
+				}
+			}
+			selectedTrack = (Track<?>)evt.getSource();
+		} else if (evt.getEventType() == TrackEventType.UNSELECTED) {
+			selectedTrack = null;
+		}*/
 	}
 	
 	

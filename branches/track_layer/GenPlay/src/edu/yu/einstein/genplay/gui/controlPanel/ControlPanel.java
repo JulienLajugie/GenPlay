@@ -219,7 +219,7 @@ public final class ControlPanel extends JPanel {
 	 * Zooms in
 	 */
 	public void zoomIn() {
-		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomIn(projectWindow.getGenomeWindow().getSize());
+		int newZoom = ProjectManager.getInstance().getProjectZoom().getNextZoomIn(projectWindow.getGenomeWindow().getSize());
 		zoomPanel.zoomChanged(newZoom);
 	}
 
@@ -228,7 +228,7 @@ public final class ControlPanel extends JPanel {
 	 * Zooms out
 	 */
 	public void zoomOut() {
-		int newZoom = ProjectManager.getInstance().getProjectZoom().getZoomOut(projectWindow.getGenomeWindow().getSize());
+		int newZoom = ProjectManager.getInstance().getProjectZoom().getNextZoomOut(projectWindow.getGenomeWindow().getSize());
 		zoomPanel.zoomChanged(newZoom);
 	}
 

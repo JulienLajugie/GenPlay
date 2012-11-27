@@ -225,7 +225,7 @@ public class LayeredTrackScore implements Serializable {
 				setMinimumScore(Collections.min(minimumScores));
 				// we do the opposite for the maximum
 				setMaximumScore(Collections.max(maximumScores));
-				getTrack().repaint();
+				getTrack().getPanel().repaint();
 			}
 		}
 	}

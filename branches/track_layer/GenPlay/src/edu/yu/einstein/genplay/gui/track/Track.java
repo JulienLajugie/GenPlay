@@ -336,7 +336,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 		if (trackGraphics.getName() != null) {
 			return trackGraphics.getName();
 		} else {
-			return new String("Track #" + trackHandle.getTrackNumber());
+			return new String("Track #" + trackHandle.getNumber());
 		}
 	}
 
@@ -369,7 +369,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	 * @return the number of the track
 	 */
 	public int getTrackNumber() {
-		return trackHandle.getTrackNumber();
+		return trackHandle.getNumber();
 	}
 
 
@@ -497,7 +497,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	 * @param trackNumber the number of the track
 	 */
 	public void setTrackNumber(int trackNumber) {
-		trackHandle.setTrackNumber(trackNumber);
+		trackHandle.setNumber(trackNumber);
 	}
 
 
@@ -514,7 +514,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 		if (trackGraphics.getName() != null) {
 			return getTrackNumber() + " - " + getName();
 		} else {
-			return new String("Track #" + trackHandle.getTrackNumber());
+			return new String("Track #" + trackHandle.getNumber());
 		}
 	}
 
@@ -599,7 +599,7 @@ public abstract class Track<T> extends JPanel implements GenomeWindowListener, T
 	@Override
 	public void trackChanged(TrackEvent arg0) {
 		if (arg0.getEventType() == TrackEventType.RESIZED) {
-			int newHeight = getPreferredSize().height + trackHandle.getResizeHeight();
+			int newHeight = getPreferredSize().height + trackHandle.getNewHeight();
 			// we don't want the new height to be smaller than TRACK_MINIMUM_HEIGHT
 			newHeight = Math.max(TRACK_MINIMUM_HEIGHT, newHeight);
 			setPreferredSize(new Dimension(getPreferredSize().width, newHeight));

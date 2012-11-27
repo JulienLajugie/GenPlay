@@ -455,9 +455,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// retrieve the only instance of the singleton ZoomManager
 			ProjectZoom projectZoom = ProjectManager.getInstance().getProjectZoom();
 			if (isZoomIn) {
-				newZoom = projectZoom.getZoomIn(projectWindow.getGenomeWindow().getSize());
+				newZoom = projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize());
 			} else {
-				newZoom = projectZoom.getZoomOut(projectWindow.getGenomeWindow().getSize());
+				newZoom = projectZoom.getNextZoomOut(projectWindow.getGenomeWindow().getSize());
 			}
 			newZoom = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength() * 2, newZoom);
 		}
@@ -658,8 +658,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	public void removeTrackListener(TrackListener trackListener) {
 		trackListeners.remove(trackListener);
 	}
-	
-	
+
+
 	/**
 	 * Notify all the track listener that the track changed
 	 * @param trackEventType track event type

@@ -21,6 +21,7 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track.layer;
 
+import java.awt.Cursor;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
@@ -140,4 +141,22 @@ public class LayeredTrackConstants {
 	 * Default graph type displayed in a graph layer
 	 */
 	public static final GraphType DEFAULT_GRAPH_TYPE = GraphType.BAR;
+
+
+	/**
+	 * Default cursor showed on a track
+	 */
+	public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
+
+
+	/**
+	 * Cursor show when a track is scrolled on the left
+	 */
+	public static final Cursor SCROLL_LEFT_CURSOR = new Cursor(Cursor.W_RESIZE_CURSOR);
+
+
+	/**
+	 * Cursor show when a track is scrolled on the right
+	 */
+	public static final Cursor SCROLL_RIGHT_CURSOR = new Cursor(Cursor.E_RESIZE_CURSOR);
 }
