@@ -114,8 +114,6 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 					} else {
 						twoBitSequenceListUnserialization();
 					}
-				} else {
-					notifyTrackListeners(TrackEventType.SET_FOR_DELETION);
 				}
 			}
 		}
@@ -148,15 +146,15 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 			// if there is enough room to print something
 			if (baseToPrintCount <= getWidth()) {
-				Nucleotide[] nucleotides = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+				Nucleotide[] nucleotides = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
 						Nucleotide nucleotide = nucleotides[index];
 						// compute the position on the screen
-						int x = projectWindow.genomePosToScreenXPos(position);
+						int x = projectWindow.genomeToScreenPosition(position);
 						//int nucleoWith = projectWindow.twoGenomePosToScreenWidth(position, position + 1);
-						int nucleoWith = projectWindow.genomePosToScreenXPos(position + 1) - x;
+						int nucleoWith = projectWindow.genomeToScreenPosition(position + 1) - x;
 						// select a different color for each type of base
 						if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 							g.setColor(Colors.WHITE);
@@ -193,14 +191,14 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 			// if there is enough room to print something
 			if (baseToPrintCount <= getWidth()) {
-				Nucleotide[] nucleotides = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+				Nucleotide[] nucleotides = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
 						Nucleotide nucleotide = nucleotides[index];
 						if ((maxBaseWidth * baseToPrintCount) <= getWidth()) {
 							// compute the position on the screen
-							int x = projectWindow.genomePosToScreenXPos(position);
+							int x = projectWindow.genomeToScreenPosition(position);
 							// select a different color for each type of base
 							if ((baseUnderMouseIndex != null) && (index == baseUnderMouseIndex)) {
 								g.setColor(Colors.BLACK);
@@ -276,10 +274,10 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				// retrieve the position of the mouse
 				Point mousePosition = e.getPoint();
 				// retrieve the list of the printed nucleotides
-				Nucleotide[] printedBases = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+				Nucleotide[] printedBases = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				// do nothing if there is no genes
 				if (printedBases != null) {
-					double distance = projectWindow.twoScreenPosToGenomeWidth(TrackGraphics.getTrackGraphicsWidth(), 0, mousePosition.x);
+					double distance = projectWindow.screenToGenomeWidth(mousePosition.x);
 					distance = Math.floor(distance);
 					baseUnderMouseIndex = (int) distance;
 					// we repaint the track only if the gene under the mouse changed
@@ -290,7 +288,7 @@ public class NucleotideListTrackGraphics extends TrackGraphics<DisplayableListOf
 				}
 			}
 			if (baseUnderMouseIndex != null) {
-				Nucleotide nucleotide = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor())[baseUnderMouseIndex];
+				Nucleotide nucleotide = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio())[baseUnderMouseIndex];
 				if (nucleotide != null) {
 					setToolTipText(nucleotide.name());
 				}

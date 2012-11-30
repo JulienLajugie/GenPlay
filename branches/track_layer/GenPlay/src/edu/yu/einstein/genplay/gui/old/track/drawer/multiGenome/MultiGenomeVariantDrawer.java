@@ -208,8 +208,8 @@ class MultiGenomeVariantDrawer implements Serializable {
 		}
 
 		// Transform the start and stop position to screen coordinates
-		int x = projectWindow.genomePosToScreenXPos(start);							// get the position where the variant starts
-		int width = projectWindow.twoGenomePosToScreenWidth(start, stop);			// get the width of the variant on the screen
+		int x = projectWindow.genomeToScreenPosition(start);							// get the position where the variant starts
+		int width = projectWindow.genomeToScreenWidth(stop - start);					// get the width of the variant on the screen
 
 		if (width == 0) {															// if the width is 0 pixel,
 			width = 1;																// we set it to 1 in order to be seen

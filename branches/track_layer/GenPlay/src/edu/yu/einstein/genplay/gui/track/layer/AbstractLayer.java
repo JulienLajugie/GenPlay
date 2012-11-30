@@ -41,18 +41,17 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	private static final long 	serialVersionUID = 5294712647479393706L;// generated ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 1;		// saved format version
 	private T 					data;									// data displayed in the layer
-	private Track 		track;									// track in which the layer is displayed
+	private Track 				track;									// track in which the layer is displayed
+	private String				name;									// name of the layer
 	private boolean 			isHidden;								// true if the layer needs to be hidden
 
-	
+
 	/**
 	 * Creates an instance of {@link AbstractLayer}.
 	 * Default constructor
 	 */
 	public AbstractLayer() {
-		setData(null);
-		setTrack(null);
-		setHidden(false);
+		this(null, null, null);
 	}
 
 
@@ -62,8 +61,20 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	 * @param track track displaying the layer
 	 */
 	public AbstractLayer(T data, Track track) {
+		this(data, track, null);
+	}
+
+
+	/**
+	 * Creates an instance of {@link AbstractLayer}
+	 * @param data data displayed by the layer
+	 * @param track track displaying the layer
+	 * @param name name of the layer
+	 */
+	public AbstractLayer(T data, Track track, String name) {
 		setData(data);
 		setTrack(track);
+		setName(null);
 		setHidden(false);
 	}
 
@@ -83,6 +94,12 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	@Override
 	public T getData() {
 		return data;
+	}
+
+
+	@Override
+	public String getName() {
+		return name;
 	}
 
 
@@ -109,6 +126,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 		in.readInt();
 		setData((T)in.readObject());
 		setTrack((Track)in.readObject());
+		setName((String) in.readObject());
 		setHidden(in.readBoolean());
 	}
 
@@ -122,6 +140,12 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	@Override
 	public void setHidden(boolean isHidden) {
 		this.isHidden = isHidden;
+	}
+
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
@@ -140,6 +164,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
 		out.writeObject(getData());
 		out.writeObject(getTrack());
+		out.writeObject(getName());
 		out.writeBoolean(isHidden());
 	}
 }

@@ -48,7 +48,7 @@ public class TrackListModel implements Serializable {
 		for (int i = 0; i < trackCount; i++) {
 			tracks[i] = new Track(i + 1);
 			tracks[i].setDefaultHeight(defaultHeight);
-			tracks[i].setHeight(defaultHeight);
+			tracks[i].setPreferredHeight(defaultHeight);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class TrackListModel implements Serializable {
 
 
 	/**
-	 * Delete the track at the specified row
+	 * Deletes the track at the specified row
 	 * @param row
 	 */
 	public void deleteTrack(int row) {
@@ -71,6 +71,32 @@ public class TrackListModel implements Serializable {
 			tracks[i - 1] = tracks[i];
 		}
 		tracks[tracks.length - 1] = new Track(tracks.length);
+	}
+
+
+	/**
+	 * Deletes the specified track if the track is present in the list
+	 * @param track
+	 */
+	public void deleteTrack(Track track) {
+		int trackIndex = indexOf(track);
+		if (trackIndex != -1) {
+			deleteTrack(trackIndex);
+		}
+	}
+
+
+	/**
+	 * @param track a Track
+	 * @return the index of the specified track in the data list if found.  -1 if the specified track is not found
+	 */
+	public int indexOf(Track track) {
+		for (int i = 0; i < tracks.length; i++) {
+			if (track == tracks[i]) {
+				 return i;
+			}
+		}
+		return -1;
 	}
 
 

@@ -175,7 +175,8 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 * @return the scroll intensity
 	 */
 	public int computeScrollIntensity(int mouseXPosition) {
-		double res = projectWindow.twoScreenPosToGenomeWidth(trackGraphicsWidth, mouseXPosition, getWidth() / 2);
+		int screenWidth = mouseXPosition - (getWidth() / 2);
+		double res = projectWindow.screenToGenomeWidth(screenWidth);
 		if (res > 0) {
 			return (int) (res / 10d) + 1;
 		} else {
@@ -216,7 +217,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	 */
 	public void drawMultiGenomeInformation(Graphics g) {
 		if (multiGenomeDrawer != null) {
-			multiGenomeDrawer.drawMultiGenomeInformation(g, projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			multiGenomeDrawer.drawMultiGenomeInformation(g, projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 		}
 	}
 
@@ -249,12 +250,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 			// create a transparent color for the stripes
 			Color color = new Color(STRIPES_COLOR.getRed(), STRIPES_COLOR.getGreen(), STRIPES_COLOR.getBlue(), STRIPES_TRANSPARENCY);
 			g.setColor(color);
-			List<ScoredChromosomeWindow> chromoStripeList = mask.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());//(start, stop);
+			List<ScoredChromosomeWindow> chromoStripeList = mask.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());//(start, stop);
 			if (chromoStripeList != null) {
 				for (ScoredChromosomeWindow currentStripe: chromoStripeList) {
-					int x = projectWindow.genomePosToScreenXPos(currentStripe.getStart());
+					int x = projectWindow.genomeToScreenPosition(currentStripe.getStart());
 					//int widthWindow = projectWindow.genomePosToScreenXPos(currentStripe.getStop()) - x;
-					int widthWindow = projectWindow.twoGenomePosToScreenWidth(currentStripe.getStart(), currentStripe.getStop());
+					int widthWindow = projectWindow.genomeToScreenWidth(currentStripe.getStop() - currentStripe.getStart());
 					if (widthWindow < 1) {
 						widthWindow = 1;
 					}
@@ -337,7 +338,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 		// double left click
 		if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2) && (!isScrollMode)) {
 			// Compute the distance from the cursor to the center of the screen
-			double distance = projectWindow.twoScreenPosToGenomeWidth(trackGraphicsWidth, getWidth() / 2, e.getX());
+			double distance = projectWindow.screenToGenomeWidth(e.getX() - (getWidth() / 2));
 			distance = Math.floor(distance);
 			GenomeWindow newWindow = new GenomeWindow();
 			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
@@ -359,7 +360,7 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (e.getModifiers() == InputEvent.BUTTON1_MASK) {
-			double distance = projectWindow.twoScreenPosToGenomeWidth(trackGraphicsWidth, e.getX(), mouseStartDragX);
+			double distance = projectWindow.screenToGenomeWidth(mouseStartDragX - e.getX());
 			if ((distance > 1) || (distance < -1)) {
 				GenomeWindow newWindow = new GenomeWindow();
 				newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
@@ -429,11 +430,9 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 				scrollModeIntensity = computeScrollIntensity(getMousePosition().x);
 				scrollModeThread = new ScrollModeThread();
 				scrollModeThread.start();
-				notifyTrackListeners(TrackEventType.SCROLL_MODE_TURNED_ON);
 			} else {
 				setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 				scrollModeThread = null;
-				notifyTrackListeners(TrackEventType.SCROLL_MODE_TURNED_OFF);
 			}
 		}
 	}
@@ -476,11 +475,12 @@ public abstract class TrackGraphics<T> extends JPanel implements MouseListener, 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		TrackGraphics.trackGraphicsWidth = getWidth();
-		double newXFactor = projectWindow.getXFactor(getWidth());
-		if (newXFactor != projectWindow.getXFactor()) {
+		projectWindow.setTrackWidth(getWidth());
+		/*double newXFactor = projectWindow.getXFactor(getWidth());
+		if (newXFactor != projectWindow.getXRatio()) {
 			projectWindow.setXFactor(newXFactor);
 			xFactorChanged();
-		}
+		}*/
 		drawTrack(g);
 	}
 

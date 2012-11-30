@@ -127,7 +127,7 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 		int currentHeight = SPACE_HEIGHT;
 		int width = getWidth();
 		int height = getHeight();
-		List<RepeatFamily> repeatFamilyList = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+		List<RepeatFamily> repeatFamilyList = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 		if ((repeatFamilyList != null) && (repeatFamilyList.size() > 0)) {
 			// calculate how many lines are displayable
 			int displayedLineCount = ((getHeight() - SPACE_HEIGHT) / (REPEAT_HEIGHT + (2 * SPACE_HEIGHT))) + 1;
@@ -167,8 +167,8 @@ public final class RepeatFamilyListTrackGraphics extends TrackGraphics<RepeatFam
 					if (currentFamily != null) {
 						for(ChromosomeWindow currentRepeat : currentFamily.getRepeatList()) {
 							if (currentRepeat != null) {
-								int x = projectWindow.genomePosToScreenXPos(currentRepeat.getStart());
-								int repeatWidth = projectWindow.genomePosToScreenXPos(currentRepeat.getStop()) - x;
+								int x = projectWindow.genomeToScreenPosition(currentRepeat.getStart());
+								int repeatWidth = projectWindow.genomeToScreenPosition(currentRepeat.getStop()) - x;
 								if (repeatWidth < 1) {
 									repeatWidth = 1;
 								}

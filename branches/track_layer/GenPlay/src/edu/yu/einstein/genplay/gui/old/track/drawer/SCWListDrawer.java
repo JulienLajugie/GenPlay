@@ -69,11 +69,11 @@ public class SCWListDrawer extends CurveDrawer {
 			if (!trackColor.equals(Colors.BLACK)) {
 				reverseCurveColor = new Color(trackColor.getRGB() ^ 0xffffff);
 			}
-			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					int x = projectWindow.genomePosToScreenXPos(currentWindow.getStart());
-					int widthWindow = projectWindow.genomePosToScreenXPos(currentWindow.getStop()) - x;
+					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
+					int widthWindow = projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x;
 
 					if (widthWindow < 1) {
 						widthWindow = 1;
@@ -98,7 +98,7 @@ public class SCWListDrawer extends CurveDrawer {
 	protected void drawCurveGraphics() {
 		if (data != null) {
 			graphics.setColor(trackColor);
-			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if ((listToPrint != null) && (listToPrint.size() > 0)) {
 				int x1 = -1;
 				int x2 = -1;
@@ -107,7 +107,7 @@ public class SCWListDrawer extends CurveDrawer {
 				double score2 = -1;
 				int y2 = -1;
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					x2 = projectWindow.genomePosToScreenXPos(currentWindow.getStart());
+					x2 = projectWindow.genomeToScreenPosition(currentWindow.getStart());
 					score2 = currentWindow.getScore();
 					y2 = scoreToScreenPos(score2);
 					if (x1 != -1) {
@@ -143,11 +143,11 @@ public class SCWListDrawer extends CurveDrawer {
 	protected void drawDenseGraphics() {
 		if (data != null) {
 			//int height = getHeight();
-			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					int x = projectWindow.genomePosToScreenXPos(currentWindow.getStart());
-					int widthWindow = projectWindow.genomePosToScreenXPos(currentWindow.getStop()) - x;
+					int x = projectWindow.genomeToScreenPosition(currentWindow.getStart());
+					int widthWindow = projectWindow.genomeToScreenPosition(currentWindow.getStop()) - x;
 					if (widthWindow < 1) {
 						widthWindow = 1;
 					}
@@ -163,11 +163,11 @@ public class SCWListDrawer extends CurveDrawer {
 	protected void drawPointGraphics() {
 		if (data != null) {
 			graphics.setColor(trackColor);
-			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			List<ScoredChromosomeWindow> listToPrint = data.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (listToPrint != null) {
 				for (ScoredChromosomeWindow currentWindow: listToPrint) {
-					int x1 = projectWindow.genomePosToScreenXPos(currentWindow.getStart());
-					int x2 = projectWindow.genomePosToScreenXPos(currentWindow.getStop());
+					int x1 = projectWindow.genomeToScreenPosition(currentWindow.getStart());
+					int x2 = projectWindow.genomeToScreenPosition(currentWindow.getStop());
 					if ((x2 - x1) < 1) {
 						x2 = x1 + 1;
 					}

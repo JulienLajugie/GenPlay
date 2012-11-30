@@ -273,7 +273,6 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @param trackColor the color of the track to set
 	 */
 	protected final void setTrackColor(Color trackColor) {
-		notifyTrackListeners(TrackEventType.COLOR_CHANGED);
 		this.trackColor = trackColor;
 		this.repaint();
 	}
@@ -283,7 +282,6 @@ public abstract class CurveTrackGraphics<T extends Serializable> extends ScoredT
 	 * @param typeOfGraph the type of the graph to set
 	 */
 	protected final void setTypeOfGraph(GraphType typeOfGraph) {
-		notifyTrackListeners(TrackEventType.GRAPH_TYPE_CHANGED);
 		this.typeOfGraph = typeOfGraph;
 		this.repaint();
 	}

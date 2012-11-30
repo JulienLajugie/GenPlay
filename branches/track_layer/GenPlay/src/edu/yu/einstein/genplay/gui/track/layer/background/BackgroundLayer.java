@@ -30,6 +30,7 @@ import java.text.DecimalFormat;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 
@@ -57,7 +58,7 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 
 	
 	@Override
-	public void drawLayer(Graphics g) {
+	public void draw(Graphics g) {
 		if (!isHidden()) {
 			drawVerticalLines(g);
 			drawHorizontalLines(g);
@@ -71,17 +72,17 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 	 */
 	private void drawHorizontalLines(Graphics g) {
 		if (getData().isHorizontalGridVisible()) {
+			int width = g.getClipBounds().width;
 			double scoreMin = getTrack().getScore().getMinimumScore();
 			double scoreMax = getTrack().getScore().getMaximumScore();
 			int horizontalLineCount = getData().getHorizontalLineCount();
-			int width = Track.getGraphicsWidth();
 			double scoreGapBetweenLineY = (scoreMax - scoreMin) / (double)horizontalLineCount;
 			double intensityFirstLineY = scoreMin - (scoreMin % scoreGapBetweenLineY);
 			g.setColor(Colors.LIGHT_GREY);
 			for(int i = 0; i <= horizontalLineCount; i++) {
 				double intensityLineY = ((double) i) * scoreGapBetweenLineY + intensityFirstLineY;
 				if (intensityLineY >= scoreMin) {
-					int screenLineY = getTrack().getScore().scoreToScreenPos(intensityLineY);
+					int screenLineY = getTrack().getScore().scoreToScreenPosition(intensityLineY);
 					g.drawLine(0, screenLineY, width, screenLineY);
 					DecimalFormat formatter = new DecimalFormat("#.#####");
 					formatter.setRoundingMode(RoundingMode.DOWN);
@@ -99,13 +100,20 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 	 */
 	private void drawVerticalLines(Graphics g) {
 		g.setColor(Colors.TRACK_LINE);
-		double gap = Track.getGraphicsWidth() / (double)getData().getVerticalLineCount();
+		int width = g.getClipBounds().width;
+		double gap = width / (double)getData().getVerticalLineCount();
 		int y1 = 0;
 		int y2 = getTrack().getHeight();
 		for (int i = 0; i < getData().getVerticalLineCount(); i++) {
 			int x = (int)Math.round(i * gap);
 			g.drawLine(x, y1, x, y2);
 		}
+	}
+
+
+	@Override
+	public LayerType getType() {
+		return LayerType.BACKGROUND_LAYER;
 	}
 
 

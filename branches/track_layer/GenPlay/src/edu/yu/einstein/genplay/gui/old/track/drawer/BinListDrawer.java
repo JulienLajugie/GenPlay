@@ -60,7 +60,7 @@ public final class BinListDrawer extends CurveDrawer {
 
 	@Override
 	protected void drawBarGraphics() {
-		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
 			// Compute the reverse color
@@ -76,12 +76,12 @@ public final class BinListDrawer extends CurveDrawer {
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
-			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
+			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXRatio());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
-					int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
+					int screenXPosition = projectWindow.genomeToScreenPosition(currentGenomePosition);
 					int screenYPosition = scoreToScreenPos(currentIntensity);
 					int rectHeight = screenYPosition - screenY0;
 
@@ -94,7 +94,7 @@ public final class BinListDrawer extends CurveDrawer {
 					}
 
 					if (currentGenomePosition <= currentMinX) {
-						int screenWindowWidthTmp = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
+						int screenWindowWidthTmp = projectWindow.genomeToScreenWidth(windowData);
 						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidthTmp, rectHeight);
 					} else {
 						graphics.fillRect(screenXPosition, screenYPosition, screenWindowWidth, rectHeight);
@@ -109,7 +109,7 @@ public final class BinListDrawer extends CurveDrawer {
 
 	@Override
 	protected void drawCurveGraphics() {
-		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
 			int currentMinX = projectWindow.getGenomeWindow().getStart();
@@ -119,7 +119,7 @@ public final class BinListDrawer extends CurveDrawer {
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
-			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
+			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXRatio());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				int nextIndex = (currentGenomePosition + windowData) / windowData;
@@ -127,7 +127,7 @@ public final class BinListDrawer extends CurveDrawer {
 					double currentIntensity = data[currentIndex];
 					double nextIntensity = data[nextIndex];
 					//int screenX1Position = genomePosToScreenPos(currentGenomePosition);
-					int screenX1Position = (int)Math.round((currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());
+					int screenX1Position = (int)Math.round((currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXRatio());
 					int screenX2Position = screenX1Position + screenWindowWidth;
 					int screenY1Position = scoreToScreenPos(currentIntensity);
 					int screenY2Position = scoreToScreenPos(nextIntensity);
@@ -149,7 +149,7 @@ public final class BinListDrawer extends CurveDrawer {
 
 	@Override
 	protected void drawDenseGraphics() {
-		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
 			int currentMinX = projectWindow.getGenomeWindow().getStart();
@@ -158,12 +158,12 @@ public final class BinListDrawer extends CurveDrawer {
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
-			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
+			int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXRatio());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
-					int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
+					int screenXPosition = projectWindow.genomeToScreenPosition(currentGenomePosition);
 					graphics.setColor(GenPlayColor.scoreToColor(currentIntensity, scoreMin, scoreMax));
 					graphics.fillRect(screenXPosition, 0, screenWindowWidth, trackHeight);
 				}
@@ -176,7 +176,7 @@ public final class BinListDrawer extends CurveDrawer {
 
 	@Override
 	protected void drawPointGraphics() {
-		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+		double[] data = binList.getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 		int windowData = binList.getFittedBinSize();
 		if (data != null) {
 			int currentMinX = projectWindow.getGenomeWindow().getStart();
@@ -186,17 +186,17 @@ public final class BinListDrawer extends CurveDrawer {
 			int firstGenomePosition = (currentMinX / windowData) * windowData;
 			int currentGenomePosition = firstGenomePosition;
 			int i = 0;
-			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
+			int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXRatio());
 			while (currentGenomePosition < currentMaxX) {
 				int currentIndex = currentGenomePosition / windowData;
 				if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 					double currentIntensity = data[currentIndex];
-					int screenX1Position = projectWindow.genomePosToScreenXPos(currentGenomePosition);
+					int screenX1Position = projectWindow.genomeToScreenPosition(currentGenomePosition);
 					//int screenX2Position = screenX1Position + screenWindowWidth;
 					int screenYPosition = scoreToScreenPos(currentIntensity);
 					int screenX2Position;
 					if (currentGenomePosition <= currentMinX) {
-						screenX2Position = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
+						screenX2Position = projectWindow.genomeToScreenWidth(windowData);
 					} else {
 						screenX2Position = screenX1Position + screenWindowWidth;
 					}

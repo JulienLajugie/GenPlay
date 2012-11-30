@@ -28,6 +28,8 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.JOptionPane;
 
+import edu.yu.einstein.genplay.core.GenomeWindow;
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.genome.Assembly;
 import edu.yu.einstein.genplay.core.genome.Clade;
 import edu.yu.einstein.genplay.core.genome.Genome;
@@ -209,7 +211,9 @@ public class Launcher {
 		projectFrame.setVisible(false);
 
 		// Initializes the genome window manager
-		projectManager.getProjectWindow().initialize();
+		Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
+		GenomeWindow genomeWindow = new GenomeWindow(currentChromosome, 0, currentChromosome.getLength());
+		ProjectManager.getInstance().getProjectWindow().setGenomeWindow(genomeWindow);
 
 		// Set the project as a multi genome project before any call of the MainFrame (some graphical elements check it out in order to be displayed)
 		if (!projectFrame.isSingleProject()) {

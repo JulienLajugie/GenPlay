@@ -124,7 +124,7 @@ public class TrackScore implements Serializable {
 	 * @param score a double value
 	 * @return the value on the screen
 	 */
-	public int scoreToScreenPos(double score) {
+	public int scoreToScreenPosition(double score) {
 		int trackHeight = getTrack().getHeight();
 		if (score < getMinimumScore()) {
 			return trackHeight;
@@ -228,7 +228,7 @@ public class TrackScore implements Serializable {
 				setMinimumScore(Collections.min(minimumScores));
 				// we do the opposite for the maximum
 				setMaximumScore(Collections.max(maximumScores));
-				getTrack().getPanel().repaint();
+				getTrack().repaint();
 			}
 		}
 	}

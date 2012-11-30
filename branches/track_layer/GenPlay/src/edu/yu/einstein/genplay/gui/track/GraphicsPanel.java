@@ -33,6 +33,7 @@ import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -41,24 +42,34 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectZoom;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
- * Graphics part of a track.
- * A track is composed of a {@link HandlePanel} and a {@link GraphicsPanel}
+ * Panel that defines mouse listeners that modifies the genomic position.
+ * A list of drawers can be registered an instance of this class in order 
+ * to draw on the {@link Graphics} context of this panel.
+ * The first elements of the list of drawers draw first.
  * @author Julien Lajugie
  */
 public class GraphicsPanel extends JPanel implements Serializable, ComponentListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long 	serialVersionUID = -1133983320644609161L;	// generated ID
-	private final Track 	track; 										// track showing this track graphics
-	transient private int 		mouseStartDragX = -1;						// position of the mouse when start dragging
+	private transient int 		mouseStartDragX = -1;						// position of the mouse when start dragging
+	private Drawer[]			drawers;									// drawers that can draw on this panel
 
 
 	/**
 	 * Creates an instance of {@link GraphicsPanel}
-	 * @param track
 	 */
-	public GraphicsPanel(Track track) {
+	public GraphicsPanel() {
+		this(null);
+	}
+
+
+	/**
+	 * Creates an instance of {@link GraphicsPanel}
+	 * @param drawers drawers that can drawn on this panel
+	 */
+	public GraphicsPanel(Drawer[] drawers) {
 		super();
-		this.track = track;
+		this.drawers = drawers;
 		setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
 		setBackground(Colors.TRACK_BACKGROUND);
 		addComponentListener(this);
@@ -78,11 +89,8 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		// update the trackWidth and the X factor if needed
-		if (getWidth() != Track.getGraphicsWidth()) {
-			Track.setGraphicsWidth(getWidth());
-			Track.updateXFactor();
-		}
+		// tells the project window manager that the track width changed
+		ProjectManager.getInstance().getProjectWindow().setTrackWidth(getWidth());
 		repaint();
 	}
 
@@ -91,28 +99,37 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	public void componentShown(ComponentEvent e) {}
 
 
+	/**
+	 * @return the drawers registered to this panel
+	 */
+	public Drawer[] getDrawer() {
+		return drawers;
+	}
+
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		ScrollingManager scrollingManager = ScrollingManager.getInstance();
 		// double click on left button -> we center the track to the position where the double click occured
-		if ((e.getButton() == MouseEvent.BUTTON1) && (e.getClickCount() == 2) && (!scrollingManager.isScrollingEnabled())) {
+		if (!scrollingManager.isScrollingEnabled() && SwingUtilities.isLeftMouseButton(e) && (e.getClickCount() == 2)) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			// Compute the distance from the cursor to the center of the screen
-			double distance = projectWindow.twoScreenPosToGenomeWidth(getWidth(), getWidth() / 2, e.getX());
-			distance = Math.floor(distance);
+			// distance between the cursor and the middle of the track
+			int screenWidth = e.getX() - (getWidth() / 2);
+			// compute the corresponding genomic distance
+			int genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
 			GenomeWindow newWindow = new GenomeWindow();
 			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-			newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) distance);
-			newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) distance);
+			newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth);
+			newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) genomeWidth);
 			if (((newWindow.getMiddlePosition()) >= 0) && (newWindow.getMiddlePosition() <= newWindow.getChromosome().getLength())) {
 				projectWindow.setGenomeWindow(newWindow);
 			}
-		}
-		// wheel click -> we toggle the scrolling mode
-		if (e.getButton() == MouseEvent.BUTTON2) {
+		} else if (SwingUtilities.isMiddleMouseButton(e)) { // wheel click -> we toggle the scrolling mode
 			scrollingManager.setScrollingEnabled(!scrollingManager.isScrollingEnabled());
 			if (scrollingManager.isScrollingEnabled()) {
-				scrollingManager.setScrollingIntensity(e.getX());
+				// width between the cursor and the middle of the track
+				int screenWidth = e.getX() - (getWidth() / 2);
+				scrollingManager.setScrollingIntensity(screenWidth);
 			}
 			updateCursor();
 		}
@@ -122,14 +139,17 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// mouse dragged -> we scroll the track
-		if (e.getModifiers() == MouseEvent.BUTTON1) {
+		if (SwingUtilities.isLeftMouseButton(e)) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			double distance = projectWindow.twoScreenPosToGenomeWidth(getWidth(), e.getX(), mouseStartDragX);
-			if ((distance > 1) || (distance < -1)) {
+			// distance between the current position of the cursor and the position where the dragging started
+			int screenWidth = mouseStartDragX - e.getX();
+			// compute the corresponding genomic distance
+			double genomeWidth = projectWindow.screenToGenomeWidth(screenWidth);
+			if ((genomeWidth > 1) || (genomeWidth < -1)) {
 				GenomeWindow newWindow = new GenomeWindow();
 				newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-				newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) distance);
-				newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) distance);
+				newWindow.setStart(projectWindow.getGenomeWindow().getStart()+ (int) genomeWidth);
+				newWindow.setStop(projectWindow.getGenomeWindow().getStop() + (int) genomeWidth);
 				if (newWindow.getMiddlePosition() < 0) {
 					newWindow.setStart(-projectWindow.getGenomeWindow().getSize() / 2);
 					newWindow.setStop(newWindow.getStart() + projectWindow.getGenomeWindow().getSize());
@@ -161,7 +181,9 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 		// depending on how far the mouse is from the center of the track 
 		ScrollingManager scrollingManager = ScrollingManager.getInstance();
 		if (scrollingManager.isScrollingEnabled()) {
-			scrollingManager.setScrollingIntensity(e.getX());
+			// width between the cursor and the middle of the track
+			int screenWidth = e.getX() - (getWidth() / 2);
+			scrollingManager.setScrollingIntensity(screenWidth);
 			updateCursor();
 		}
 	}
@@ -170,7 +192,7 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// we memorize the position of the mouse in case the user drag the track
-		if (e.getModifiers() == MouseEvent.BUTTON1) {
+		if (SwingUtilities.isLeftMouseButton(e)) {
 			mouseStartDragX = e.getX();
 		}
 	}
@@ -210,8 +232,21 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// tell the track to repaint the layers
-		track.drawLayers(g);
+		if (drawers != null) {
+			// tell the drawers to draw
+			for (Drawer currentDrawer: drawers) {
+				currentDrawer.draw(g);
+			}
+		}
+	}
+
+
+	/**
+	 * Sets the drawers that will draw on this panel
+	 * @param drawers drawers to set
+	 */
+	public void setDrawers(Drawer[] drawers) {
+		this.drawers = drawers;
 	}
 
 

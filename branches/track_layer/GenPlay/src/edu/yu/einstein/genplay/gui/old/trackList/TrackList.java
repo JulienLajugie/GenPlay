@@ -410,10 +410,6 @@ public final class TrackList extends JScrollPane implements Serializable, TrackL
 			dragTrack();
 		} else if (evt.getEventType() == TrackEventType.RELEASED) {
 			releaseTrack();
-		} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
-			setScrollMode(true);
-		} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
-			setScrollMode(false);
 		} else if (evt.getEventType() == TrackEventType.SELECTED) {
 			for (Track<?> currentTrack : trackList) {
 				if (currentTrack != evt.getSource()) {

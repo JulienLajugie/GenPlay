@@ -32,8 +32,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 
 
 /**
@@ -76,7 +75,7 @@ public final class PACopyCurrentPosition extends AbstractAction {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		int position = MainFrame.getInstance().getRuler().getCurrentMiddlePosition();
+		int position = (int)ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getMiddlePosition();
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		clipboard.setContents(new StringSelection("" + position), null);
 	}

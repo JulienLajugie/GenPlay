@@ -25,7 +25,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -57,61 +56,25 @@ import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundData;
 import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
 
 /**
- * Track is a component showing the data in GenPlay.
- * The panel can be retrieve with the getPanel method.
- * A track contains two elements: the track handle and the graphics panel showing the data
+ * Track component showing the data in GenPlay.
+ * A track contains two subcomponents: the track handle and the graphics panel showing the data
  * @author Julien Lajugie
  */
-public class Track implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator {
+public class Track extends JPanel implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator {
 
-	private static final long 						serialVersionUID = 818958034840761257L;	// generated ID
-	private static final int  						SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private static int 								graphicsWidth;							// with of the track graphics (static because all track should have the same width in a project)
+	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
+	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private static int 						graphicsWidth;							// with of the track graphics (static because all track should have the same width in a project)
 	private final Layer<BackgroundData> 	backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
 	private final Layer<ForegroundData> 	foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
-	private final TrackScore					score;									// score of the track
-	private	final FontMetrics						fontMetrics; 							// FontMetrics to get the size of a string	
-	private int										height;									// height of the track
-	private int 									defaultHeight;							// default height of a track
-	private int										number;									// number of the track
-	private String									name;									// name of the track
-	private List<TrackListener> 					trackListeners;							// list of track listeners
+	private final TrackScore				score;									// score of the track
+	private int 							defaultHeight;							// default height of a track
+	private int								number;									// number of the track
+	private List<TrackListener> 			trackListeners;							// list of track listeners
 	private List<Layer<?>> 					layers;									// layers of the track
-	private Layer<?>							activeLayer;							// active layer of the track
-	private transient HandlePanel					handlePanel;							// handle panel of the track
-	private transient GraphicsPanel					graphicsPanel;							// graphics panel of the track
-	private transient JPanel						trackPanel;								// panel of the track containing the handle and graphics panel
-
-
-	/**
-	 * @return the width of the graphics of the tracks.
-	 * This method is static because all tracks have the same length
-	 */
-	public static int getGraphicsWidth() {
-		return graphicsWidth;
-	}
-
-
-	/**
-	 * Sets the graphics width and update the project X factor if needed
-	 * @param graphicsWidth
-	 */
-	protected static void setGraphicsWidth(int graphicsWidth) {
-		Track.graphicsWidth = graphicsWidth;
-	}
-
-
-	/**
-	 * Update the project xFactor if needed. 
-	 * The xFactor is the ratio between the track width on the screen and the number of genomic position to display
-	 */
-	protected static void updateXFactor() {
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		double newXFactor = projectWindow.getXFactor(getGraphicsWidth());
-		if (newXFactor != projectWindow.getXFactor()) {
-			projectWindow.setXFactor(newXFactor);
-		}
-	}
+	private Layer<?>						activeLayer;							// active layer of the track
+	private transient HandlePanel			handlePanel;							// handle panel of the track
+	private transient GraphicsPanel			graphicsPanel;							// graphics panel of the track
 
 
 	/**
@@ -119,26 +82,37 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 	 * @param trackNumber number of the track
 	 */
 	public Track(int trackNumber) {
+		super();
+
 		// creates the panels
 		handlePanel = new HandlePanel(trackNumber);
 		handlePanel.addTrackListener(this);
-		graphicsPanel = new GraphicsPanel(this);
-		trackPanel = createTrackPanel();
+		graphicsPanel = new GraphicsPanel();
+
+		BorderLayout layout = new BorderLayout();
+		setLayout(layout);
+		add(handlePanel, BorderLayout.LINE_START);
+		add(graphicsPanel, BorderLayout.CENTER);
 
 		// initializes the foreground and background drawer
 		backgroundLayer = new BackgroundLayer(this);
 		foregroundLayer = new ForegroundLayer(this);
+		// we update the list of drawers registered to the graphics panel
+		updateGraphicsPanelDrawers();
 
 		// set the the default height of the track
 		setDefaultHeight(TrackConstants.TRACK_HEIGHT);
-		setHeight(TrackConstants.TRACK_HEIGHT);
+		setPreferredHeight(TrackConstants.TRACK_HEIGHT);
 
 		setName(null);
 		setNumber(trackNumber);
 		score = new TrackScore(this);
 
 		// Set the font of the project
-		fontMetrics = trackPanel.getFontMetrics(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
+		setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
+
+		// Set the border of the track
+		setBorder(TrackConstants.REGULAR_BORDER);
 
 		// create list of track listener
 		trackListeners = new ArrayList<TrackListener>();
@@ -161,16 +135,21 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 
 
 	/**
-	 * @return the track panel
+	 * Sets if the track is selected or not
+	 * @param isSelected true if the track is selected, false otherwise
 	 */
-	private JPanel createTrackPanel() {
-		JPanel trackPanelt = new JPanel();
-		BorderLayout layout = new BorderLayout();
-		trackPanelt.setLayout(layout);
-		trackPanelt.add(handlePanel, BorderLayout.LINE_START);
-		trackPanelt.add(graphicsPanel, BorderLayout.CENTER);
-		trackPanelt.setBorder(TrackConstants.REGULAR_BORDER);
-		return trackPanelt;
+	public void setSelected(boolean isSelected) {
+		// a track is selected if its handle is selected
+		handlePanel.setSelected(isSelected);
+	}
+
+
+	/**
+	 * @return true if the track is selected, false otherwise
+	 */
+	public boolean isSelected() {
+		// a track is selected if its handle is selected
+		return handlePanel.isSelected();
 	}
 
 
@@ -214,7 +193,7 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// repaint the layers if the genome window changed
-		drawLayers(graphicsPanel.getGraphics());
+		graphicsPanel.repaint();
 	}
 
 
@@ -244,26 +223,10 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 
 
 	/**
-	 * @return the font metrics of the track
-	 */
-	public FontMetrics getFontMetrics() {
-		return fontMetrics;
-	}
-
-
-	/**
 	 * @return the foreground layer of the track
 	 */
 	public Layer<ForegroundData> getForegroundLayer() {
 		return foregroundLayer;
-	}
-
-
-	/**
-	 * @return the height of the track
-	 */
-	public int getHeight() {
-		return height;
 	}
 
 
@@ -278,9 +241,10 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 	/**
 	 * @return the name of the track
 	 */
+	@Override
 	public String getName() {
-		if (name != null) {
-			return name;
+		if (super.getName() != null) {
+			return super.getName();
 		} else {
 			return new String("Track #" + getNumber());
 		}
@@ -311,14 +275,6 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 
 
 	/**
-	 * @return the panel containing the track
-	 */
-	public JPanel getPanel() {
-		return trackPanel;
-	}
-
-
-	/**
 	 * Notifies all the track listeners that the track has changed
 	 * @param trackEventType track event type
 	 */
@@ -327,22 +283,6 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 		for (TrackListener listener: trackListeners) {
 			listener.trackChanged(trackEvent);
 		}
-	}
-
-
-	/**
-	 * Draws the track
-	 */
-	protected void drawLayers(Graphics g) {
-		// draw the track background
-		backgroundLayer.drawLayer(g);
-		// draw the list of layers
-		List<Layer<?>> layers = getLayers();
-		for (Layer<?> currentLayer: layers) {
-			currentLayer.drawLayer(g);
-		}
-		// draw the foreground
-		foregroundLayer.drawLayer(g);
 	}
 
 
@@ -389,14 +329,13 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 
 	/**
 	 * Sets the height of the track
-	 * @param height height to set
+	 * @param preferredHeight preferred height to set
 	 */
-	public void setHeight(int height) {
-		this.height = height;
+	public void setPreferredHeight(int preferredHeight) {
 		// update the dimension of the track panel
-		Dimension trackDimension = new Dimension(trackPanel.getPreferredSize().width, height);
-		trackPanel.setPreferredSize(trackDimension);
-		trackPanel.revalidate();
+		Dimension trackDimension = new Dimension(getPreferredSize().width, preferredHeight);
+		setPreferredSize(trackDimension);
+		revalidate();
 	}
 
 
@@ -407,15 +346,7 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 	public void setLayers(List<Layer<?>> layers) {
 		this.layers = layers;
 		getScore().updateCurrentScore();
-	}
-
-
-	/**
-	 * Renames the track
-	 * @param name name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
+		updateGraphicsPanelDrawers();
 	}
 
 
@@ -432,12 +363,51 @@ public class Track implements Serializable, GenomeWindowListener, TrackListener,
 	@Override
 	public void trackChanged(TrackEvent evt) {
 		if (evt.getEventType() == TrackEventType.RESIZED) { // resize event
-			setHeight(handlePanel.getNewHeight());
+			setPreferredHeight(handlePanel.getNewHeight());
 		} else if (evt.getEventType() == TrackEventType.SIZE_SET_TO_DEFAULT) { // size set to default event
-			setHeight(getDefaultHeight());
+			setPreferredHeight(getDefaultHeight());
 		} else { // other event
 			// we relay the other events to the element that contains this track
 			notifyTrackListeners(evt.getEventType());
 		}
+	}
+
+
+	/**
+	 * Updates the list of drawers registered to the graphics panel.
+	 * There are one drawer per layer including the background and foreground layers
+	 * that need to be registered.
+	 */
+	private void updateGraphicsPanelDrawers() {
+		if (layers == null) { // case where there is no other layer than the foreground and the background
+			Drawer[] drawers = {backgroundLayer, foregroundLayer};
+			graphicsPanel.setDrawers(drawers);
+		} else { // case where there are other layers
+			Drawer[] drawers = new Drawer[layers.size() + 2];
+			drawers[0] = backgroundLayer;
+			int i = 1;
+			for (Drawer currentDrawer: layers) {
+				drawers[i] = currentDrawer;
+				i++;
+			}
+			drawers[i] = foregroundLayer;
+			graphicsPanel.setDrawers(drawers);
+		}
+	}
+
+
+	/**
+	 * Locks the track handle
+	 */
+	public void lockHandle() {
+		handlePanel.setEnabled(false);
+	}
+
+
+	/**
+	 * Unlocks the track handle
+	 */
+	public void unlockHandle() {
+		handlePanel.setEnabled(true);
 	}
 }

@@ -29,66 +29,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEventsGenerator;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 
 /**
- * This class manages the genome window and the X factor.
- * Every class that is involved by one or both attributes must registered into this class AND implements the {@link GenomeWindowListener}.
- * The genome windows refers to the current chromosome and the genomic width of the tracks.
- * The X factor is a ratio between the width of a track and the genomic width.
+ * This class manages the genome window displayed, the track current width and the ratio between them.
+ * {@link GenomeWindowListener} can be registered into this class to receive notification about window changes.
  * @author Nicolas Fourel
  * @author Julien Lajugie
  * @version 0.1
  */
 public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator {
 
-	/** Generated serial version ID */
-	private static final long 	serialVersionUID 				= -9014173267531950797L;
+	private static final long 	serialVersionUID 				= -9014173267531950797L;	// Generated serial version ID
 	private static final int  	SAVED_FORMAT_VERSION_NUMBER 	= 0;						// saved format version
-	private static final int	MAX_INT 						= 2147483647;				// limit max of an int
-	private GenomeWindow				genomeWindow;			// the genome window displayed by the track
-	private double						xFactor;				// factor between the genomic width and the screen width
 	private List<GenomeWindowListener> 	gwListenerList;			// list of GenomeWindowListener
+	private GenomeWindow				genomeWindow;			// the genome window displayed by the track
+	private int							trackWidth;				// width of the tracks
+	private transient double			xRatio;					// ratio of the track width to the genome window width
 
-
-	/**
-	 * Method used for serialization
-	 * @param out
-	 * @throws IOException
-	 */
-	private void writeObject(ObjectOutputStream out) throws IOException {
-		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
-		out.writeObject(genomeWindow);
-		out.writeDouble(xFactor);
-	}
-
-
-	/**
-	 * Method used for unserialization
-	 * @param in
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.readInt();
-		genomeWindow = (GenomeWindow) in.readObject();
-		xFactor = in.readDouble();
-		this.gwListenerList = new ArrayList<GenomeWindowListener>();
-	}
-
-
-	/**
-	 * Set the current {@link ProjectWindow} using another instance of {@link ProjectWindow}
-	 * Used for the unserialization.
-	 * @param project the instance of {@link ProjectWindow} to use
-	 */
-	protected void setProjectWindow (ProjectWindow project) {
-		setXFactor(project.getXFactor());
-		setGenomeWindow(project.getGenomeWindow());
-	}
 
 
 	/**
@@ -96,7 +56,54 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	 */
 	protected ProjectWindow () {
 		this.gwListenerList = new ArrayList<GenomeWindowListener>();
-		genomeWindow = null;
+		this.genomeWindow = null;
+		this.trackWidth = 0;
+		this.xRatio = 0;
+	}
+
+
+	@Override
+	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		if (!gwListenerList.contains(genomeWindowListener)) {
+			gwListenerList.add(genomeWindowListener);
+		}
+	}
+
+
+	/**
+	 * @param doubleValue a double value
+	 * @return an integer equals to the truncated specified double value
+	 * Returns Integer.MAX_VALUE if the specified double is greater than Integer.MAX_VALUE
+	 * Returns Integer.MIN_VALUE if the specified double is smaller than Integer.MIN_VALUE
+	 */
+	private int doubleToInt(double doubleValue) {
+		if (doubleValue >= Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		} else if (doubleValue <= Integer.MIN_VALUE) {
+			return Integer.MIN_VALUE;
+		} else {
+			return (int)Math.round(doubleValue);
+		}
+	}
+
+
+	/**
+	 * @param genomePosition a position on the genome in bp
+	 * @return a horizontal position in pixel corresponding to the specified genomic position (can be out of the track bounds)
+	 */
+	public int genomeToScreenPosition(int genomePosition) {
+		double result = (genomePosition - genomeWindow.getStart()) * xRatio;
+		return doubleToInt(result);
+	}
+
+
+	/**
+	 * @param genomeWidth a genomic width in bp
+	 * @return a width in pixels corresponding to the specified genomic width
+	 */
+	public int genomeToScreenWidth(int genomeWidth) {
+		double result = genomeWidth * xRatio;
+		return doubleToInt(result);
 	}
 
 
@@ -108,27 +115,89 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 	}
 
 
-	/**
-	 * This method initializes the genome window.
-	 * It performs this action only if the genome window is null and no methods set it up to null.
-	 * It means that the content of this method is properly ran only once.
-	 * The genome window is initialized using the current chromosome.
-	 */
-	public void initialize () {
-		if (genomeWindow == null) {
-			Chromosome currentChromosome = ProjectManager.getInstance().getProjectChromosome().getCurrentChromosome();
-			genomeWindow = new GenomeWindow(currentChromosome, 0, currentChromosome.getLength());
-		}
+	@Override
+	public GenomeWindowListener[] getGenomeWindowListeners() {
+		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
+		return gwListenerList.toArray(genomeWindowListeners);
 	}
 
 
 	/**
-	 * @param newGenomeWindow new displayed {@link GenomeWindow}
+	 * @return the width of the tracks in pixel (all tracks have the same width)
 	 */
-	public void setGenomeWindow(GenomeWindow newGenomeWindow) {
-		if (!newGenomeWindow.equals(genomeWindow)) {
-			GenomeWindow oldGenomeWindow = genomeWindow;
-			genomeWindow = newGenomeWindow;
+	public int getTrackWidth() {
+		return trackWidth;
+	}
+
+
+	/**
+	 * @return the ratio of the track width to the genome window width
+	 */
+	public double getXRatio() {
+		return xRatio;
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		this.setGenomeWindow((GenomeWindow) in.readObject());
+		this.setTrackWidth(in.readInt());
+		this.updateXRatio();
+		this.gwListenerList = new ArrayList<GenomeWindowListener>();
+	}
+
+
+	/**
+	 * Removes all registered {@link GenomeWindowListener}
+	 */
+	public void removeAllListeners () {
+		gwListenerList.clear();
+	}
+
+
+	@Override
+	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
+		gwListenerList.remove(genomeWindowListener);
+	}
+
+
+	/**
+	 * @param xScreen horizontal position on the screen (on the track) in pixel
+	 * @return position on the genome in bp
+	 */
+	public int screenToGenomePosition(int xScreen) {
+		double result = (xScreen / xRatio) + genomeWindow.getStart();
+		return doubleToInt(result);
+	}
+
+
+	/**
+	 * @param screenWidth a width on the screen in pixels
+	 * @return the distance in bp corresponding to the specified screen distance
+	 */
+	public int screenToGenomeWidth(int screenWidth) {
+		double result = screenWidth / xRatio;
+		return doubleToInt(result);
+	}
+
+
+	/**
+	 * Sets the genome window value.  If the new value is different from the current one
+	 * the {@link GenomeWindowListener} will be notified
+	 * @param genomeWindow {@link GenomeWindow} to set
+	 */
+	public void setGenomeWindow(GenomeWindow genomeWindow) {
+		if (!genomeWindow.equals(this.genomeWindow)) {
+			GenomeWindow oldGenomeWindow = this.genomeWindow;
+			this.genomeWindow = genomeWindow;
+			// update the xRatio
+			updateXRatio();
 			// we notify the listeners
 			GenomeWindowEvent evt = new GenomeWindowEvent(this, oldGenomeWindow, genomeWindow);
 			if (evt.chromosomeChanged()) {
@@ -142,140 +211,63 @@ public class ProjectWindow implements Serializable, GenomeWindowEventsGenerator 
 
 
 	/**
-	 * This methods makes the X factor calculation using a width.
-	 * This width must be the width of a track.
-	 * @param trackWidth track width
-	 * @return	the X factor
+	 * Sets this instance fields with the values of the specified {@link ProjectWindow}
+	 * @param projectWindow
 	 */
-	public double getXFactor (int trackWidth) {
-		//double newXFactor = (double)trackWidth / (double)(genomeWindow.getStop() - genomeWindow.getStart());
-		double newXFactor = (double)trackWidth / (double)(genomeWindow.getSize());
-		return newXFactor;
+	public void setProjectWindow(ProjectWindow projectWindow) {
+		setGenomeWindow(projectWindow.getGenomeWindow());
+		setTrackWidth(projectWindow.getTrackWidth());
+		updateXRatio();
 	}
 
 
 	/**
-	 * @return the xFactor
+	 * Sets the width of the tracks in pixel
+	 * @param trackWidth width of the track to set
 	 */
-	public double getXFactor() {
-		return xFactor;
-	}
-
-
-	/**
-	 * @param xFactor the xFactor to set
-	 */
-	public void setXFactor(double xFactor) {
-		this.xFactor = xFactor;
-	}
-
-
-	@Override
-	public void addGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		if (!gwListenerList.contains(genomeWindowListener)) {
-			gwListenerList.add(genomeWindowListener);
+	public void setTrackWidth(int trackWidth) {
+		if (this.trackWidth != trackWidth) {
+			this.trackWidth = trackWidth;
+			// update the xRatio
+			updateXRatio();
 		}
-	}
-
-
-
-	@Override
-	public GenomeWindowListener[] getGenomeWindowListeners() {
-		GenomeWindowListener[] genomeWindowListeners = new GenomeWindowListener[gwListenerList.size()];
-		return gwListenerList.toArray(genomeWindowListeners);
-	}
-
-
-	@Override
-	public void removeGenomeWindowListener(GenomeWindowListener genomeWindowListener) {
-		gwListenerList.remove(genomeWindowListener);
-	}
-
-
-	/**
-	 * This method removes all registered listeners.
-	 * It can be used just before registering all the listener through the main frame.
-	 * The project loading action can use it. It is not an obligation but clean up the list.
-	 */
-	public void removeAllListeners () {
-		gwListenerList.clear();
-	}
-
-
-	/*public void showListeners () {
-		System.out.println("----- ALL registered listeners");
-		for (GenomeWindowListener listener: gwListenerList) {
-			System.out.println(listener.hashCode() + " - " + listener.toString());
-		}
-		System.out.println("---------------------------");
-	}*/
-
-
-	/**
-	 * @param genomePosition a position on the genome
-	 * @return the absolute position on the screen (can be > than the screen width)
-	 */
-	public int genomePosToScreenXPos(int genomePosition) {
-		int result;
-		if (genomePosition <= genomeWindow.getStart()) {		// if the position is inferior to the start, an error can occur about a negative sign result
-			result = 0;											// in this case, the position on the genome will start on the pixel 0 of the track.
-		} else {												// if not, we apply the regular calculation
-			float roundedXScreen = Math.round((genomePosition - genomeWindow.getStart()) * xFactor);
-			if (roundedXScreen >= MAX_INT) {					// checks if the result is above the int limit (an error will occur when casting a float into an int when the float is higher than the int limit)
-				result =  MAX_INT;								// if yes, the int result is as high as it can
-			} else {											// if not,
-				result = (int) roundedXScreen;					// the float is simply casted into an int
-			}
-		}
-		return result;
-	}
-
-
-	/**
-	 * @param genomePositionStart start position on the genome
-	 * @param genomePositionStop stop position on the genome
-	 * @return the width on the screen between this two positions
-	 */
-	public int twoGenomePosToScreenWidth(int genomePositionStart, int genomePositionStop) {
-		int start = genomePosToScreenXPos(genomePositionStart);
-		int stop = genomePosToScreenXPos(genomePositionStop);
-		return stop - start;
-	}
-
-
-	/**
-	 * @param trackGraphicsWidth
-	 * @param x position on the screen
-	 * @return position on the genome
-	 */
-	public double screenXPosToGenomePos(int trackGraphicsWidth, int x) {
-		double distance = twoScreenPosToGenomeWidth(trackGraphicsWidth, 0, x);
-		double genomePosition = genomeWindow.getStart() + Math.floor(distance);
-		return genomePosition;
-	}
-
-
-	/**
-	 * @param trackGraphicsWidth
-	 * @param x1 position 1 on the screen
-	 * @param x2 position 2 on the screen
-	 * @return the distance in base pair between the screen position x1 and x2
-	 */
-	public double twoScreenPosToGenomeWidth(int trackGraphicsWidth, int x1, int x2) {
-		double distance = (((double)(x2 - x1) / (double)trackGraphicsWidth) * (genomeWindow.getStop() - genomeWindow.getStart()));
-		return distance;
 	}
 
 
 	/**
 	 * Show {@link ProjectWindow} content
 	 */
-	public void show () {
+	public void show() {
 		String info = "";
-		info += "Factor: " + xFactor + "\n";
+		info += "Factor: " + xRatio + "\n";
 		info += "Window: " + genomeWindow.getStart() + " to " + genomeWindow.getStop() + ", size: " + genomeWindow.getSize() + "\n";
-		info += "Factor / Window size: " + (xFactor / genomeWindow.getSize()) + "\n";
-		info += "Window size / Factor: " + (genomeWindow.getSize() / xFactor);
+		info += "Factor / Window size: " + (xRatio / genomeWindow.getSize()) + "\n";
+		info += "Window size / Factor: " + (genomeWindow.getSize() / xRatio);
 		System.out.println(info);
+	}
+
+
+	/**
+	 * Computes and sets the xRatio variable.
+	 * The xRatio is defines as the ratio of the track width to the genome window width
+	 */
+	private void updateXRatio() {
+		if (genomeWindow.getSize() == 0) {
+			xRatio = 0;
+		} else {
+			xRatio = trackWidth / (double)(genomeWindow.getSize());
+		}
+	}
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(getGenomeWindow());
+		out.writeInt(getTrackWidth());
 	}
 }

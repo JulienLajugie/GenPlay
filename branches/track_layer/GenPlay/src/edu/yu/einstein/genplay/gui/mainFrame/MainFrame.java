@@ -71,14 +71,11 @@ import edu.yu.einstein.genplay.gui.controlPanel.ControlPanel;
 import edu.yu.einstein.genplay.gui.dialog.optionDialog.OptionDialog;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
-import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
-import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
-import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
-import edu.yu.einstein.genplay.gui.old.track.Ruler;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.gui.popupMenu.MainMenu;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
+import edu.yu.einstein.genplay.gui.track.ruler.Ruler;
 import edu.yu.einstein.genplay.gui.trackList.TrackListModel;
 import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.util.Images;
@@ -90,7 +87,7 @@ import edu.yu.einstein.genplay.util.Images;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener, TrackListener {
+public final class MainFrame extends JFrame implements GenomeWindowListener, ActionListener {
 
 	private static final long serialVersionUID = -4637394760647080396L; // generated ID
 	private static final int VERSION_NUMBER = 727; 						// GenPlay version
@@ -140,14 +137,11 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 		projectChromosome.setCurrentChromosome(chromosome);
 		ruler = new Ruler();
 		ruler.getOptionButton().addActionListener(this);
-		ruler.addTrackListener(this);
 
 		trackList = new TrackList();
-		trackList.addTrackListener(this);
 
 		TrackListModel trackListModel = new TrackListModel();
 		trackTablePanel = new TrackListPanel(trackListModel);
-		trackTablePanel.addTrackListener(this);
 
 		controlPanel = new ControlPanel();
 
@@ -310,24 +304,24 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	}
 
 
-	@Override
-	public void trackChanged(TrackEvent evt) {
-		if (isEnabled()) {
-			if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
-				if (evt.getSource() == ruler) {
-					trackList.setScrollMode(true);
-				} else {
-					ruler.setScrollMode(true);
-				}
-			} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
-				if (evt.getSource() == ruler) {
-					trackList.setScrollMode(false);
-				} else {
-					ruler.setScrollMode(false);
-				}
-			}
-		}
-	}
+//	@Override
+//	public void trackChanged(TrackEvent evt) {
+//		if (isEnabled()) {
+//			if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_ON) {
+//				if (evt.getSource() == ruler) {
+//					trackList.setScrollMode(true);
+//				} else {
+//					ruler.setScrollMode(true);
+//				}
+//			} else if (evt.getEventType() == TrackEventType.SCROLL_MODE_TURNED_OFF) {
+//				if (evt.getSource() == ruler) {
+//					trackList.setScrollMode(false);
+//				} else {
+//					ruler.setScrollMode(false);
+//				}
+//			}
+//		}
+//	}
 
 
 	/**

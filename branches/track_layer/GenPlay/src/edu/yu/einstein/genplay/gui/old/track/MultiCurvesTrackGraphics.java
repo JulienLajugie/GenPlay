@@ -111,10 +111,7 @@ public class MultiCurvesTrackGraphics extends ScoredTrackGraphics<CurveTrack<?>[
 
 	@Override
 	public void trackChanged(TrackEvent evt) {
-		TrackEventType trackEventType = evt.getEventType();
-		if ((trackEventType == TrackEventType.COLOR_CHANGED) || (trackEventType == TrackEventType.GRAPH_TYPE_CHANGED)) {
-			repaint();
-		}
+
 	}
 	
 	

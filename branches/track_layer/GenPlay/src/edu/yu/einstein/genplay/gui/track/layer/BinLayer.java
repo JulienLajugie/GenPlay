@@ -58,6 +58,30 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 	}
 
 
+	@Override
+	public void draw(Graphics g) {
+		Graphics2D g2D = (Graphics2D)g;
+		switch(getGraphType()) {
+		case BAR:
+			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			drawBarGraph(g);
+			break;
+		case CURVE:
+			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			drawCurveGraph(g);
+			break;
+		case POINTS:
+			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			drawPointGraph(g);
+			break;
+		case DENSE:
+			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			drawDenseGraph(g);
+			break;
+		}
+	}
+
+
 	/**
 	 * Draws the layer as a bar graph
 	 * @param g
@@ -65,7 +89,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 	private void drawBarGraph(Graphics g) {
 		if (this.getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (binListData != null) {
 				int windowData = getData().getFittedBinSize();
 				// Compute the reverse color
@@ -76,18 +100,18 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
 				int currentMaxX = projectWindow.getGenomeWindow().getStop();
 				// Compute the Y = 0 position
-				int screenY0 = getTrack().getScore().scoreToScreenPos(0);
+				int screenY0 = getTrack().getScore().scoreToScreenPosition(0);
 				// First position
 				int firstGenomePosition = (currentMinX / windowData) * windowData;
 				int currentGenomePosition = firstGenomePosition;
 				int i = 0;
-				int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
+				int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXRatio());
 				while (currentGenomePosition < currentMaxX) {
 					int currentIndex = currentGenomePosition / windowData;
 					if ((currentGenomePosition >= 0) && (currentIndex < binListData.length)){
 						double currentIntensity = binListData[currentIndex];
-						int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
-						int screenYPosition = getTrack().getScore().scoreToScreenPos(currentIntensity);
+						int screenXPosition = projectWindow.genomeToScreenPosition(currentGenomePosition);
+						int screenYPosition = getTrack().getScore().scoreToScreenPosition(currentIntensity);
 						int rectHeight = screenYPosition - screenY0;
 
 						if (currentIntensity > 0) {
@@ -99,7 +123,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 						}
 
 						if (currentGenomePosition <= currentMinX) {
-							int screenWindowWidthTmp = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
+							int screenWindowWidthTmp = projectWindow.genomeToScreenWidth(windowData);
 							g.fillRect(screenXPosition, screenYPosition, screenWindowWidthTmp, rectHeight);
 						} else {
 							g.fillRect(screenXPosition, screenYPosition, screenWindowWidth, rectHeight);
@@ -120,7 +144,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 	private void drawCurveGraph(Graphics g) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			if (binListData != null) {
 				int windowData = getData().getFittedBinSize();
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
@@ -130,7 +154,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 				int firstGenomePosition = (currentMinX / windowData) * windowData;
 				int currentGenomePosition = firstGenomePosition;
 				int i = 0;
-				int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
+				int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXRatio());
 				while (currentGenomePosition < currentMaxX) {
 					int currentIndex = currentGenomePosition / windowData;
 					int nextIndex = (currentGenomePosition + windowData) / windowData;
@@ -138,10 +162,10 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 						double currentIntensity = binListData[currentIndex];
 						double nextIntensity = binListData[nextIndex];
 						//int screenX1Position = genomePosToScreenPos(currentGenomePosition);
-						int screenX1Position = (int)Math.round((currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXFactor());
+						int screenX1Position = (int)Math.round((currentGenomePosition - projectWindow.getGenomeWindow().getStart()) * projectWindow.getXRatio());
 						int screenX2Position = screenX1Position + screenWindowWidth;
-						int screenY1Position = getTrack().getScore().scoreToScreenPos(currentIntensity);
-						int screenY2Position = getTrack().getScore().scoreToScreenPos(nextIntensity);
+						int screenY1Position = getTrack().getScore().scoreToScreenPosition(currentIntensity);
+						int screenY2Position = getTrack().getScore().scoreToScreenPosition(nextIntensity);
 						if ((currentIntensity == 0) && (nextIntensity != 0)) {
 							g.drawLine(screenX2Position, screenY1Position, screenX2Position, screenY2Position);
 						} else if ((currentIntensity != 0) && (nextIntensity == 0)) {
@@ -166,7 +190,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 	private void drawDenseGraph(Graphics g) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			int windowData = getData().getFittedBinSize();
 			if (binListData != null) {
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
@@ -175,12 +199,12 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 				int firstGenomePosition = (currentMinX / windowData) * windowData;
 				int currentGenomePosition = firstGenomePosition;
 				int i = 0;
-				int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXFactor());
+				int screenWindowWidth = (int)Math.ceil(windowData * projectWindow.getXRatio());
 				while (currentGenomePosition < currentMaxX) {
 					int currentIndex = currentGenomePosition / windowData;
 					if ((currentGenomePosition >= 0) && (currentIndex < binListData.length)){
 						double currentIntensity = binListData[currentIndex];
-						int screenXPosition = projectWindow.genomePosToScreenXPos(currentGenomePosition);
+						int screenXPosition = projectWindow.genomeToScreenPosition(currentGenomePosition);
 						g.setColor(GenPlayColor.scoreToColor(currentIntensity, getTrack().getScore().getMinimumScore(), getTrack().getScore().getMaximumScore()));
 						g.fillRect(screenXPosition, 0, screenWindowWidth, getTrack().getHeight());
 					}
@@ -199,7 +223,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 	private void drawPointGraph(Graphics g) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			double[] data = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXFactor());
+			double[] data = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 			int windowData = getData().getFittedBinSize();
 			if (data != null) {
 				int currentMinX = projectWindow.getGenomeWindow().getStart();
@@ -209,17 +233,17 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 				int firstGenomePosition = (currentMinX / windowData) * windowData;
 				int currentGenomePosition = firstGenomePosition;
 				int i = 0;
-				int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXFactor());
+				int screenWindowWidth = (int)Math.round(windowData * projectWindow.getXRatio());
 				while (currentGenomePosition < currentMaxX) {
 					int currentIndex = currentGenomePosition / windowData;
 					if ((currentGenomePosition >= 0) && (currentIndex < data.length)){
 						double currentIntensity = data[currentIndex];
-						int screenX1Position = projectWindow.genomePosToScreenXPos(currentGenomePosition);
+						int screenX1Position = projectWindow.genomeToScreenPosition(currentGenomePosition);
 						//int screenX2Position = screenX1Position + screenWindowWidth;
-						int screenYPosition = getTrack().getScore().scoreToScreenPos(currentIntensity);
+						int screenYPosition = getTrack().getScore().scoreToScreenPosition(currentIntensity);
 						int screenX2Position;
 						if (currentGenomePosition <= currentMinX) {
-							screenX2Position = projectWindow.twoGenomePosToScreenWidth(currentGenomePosition, currentGenomePosition + windowData);
+							screenX2Position = projectWindow.genomeToScreenWidth(windowData);
 						} else {
 							screenX2Position = screenX1Position + screenWindowWidth;
 						}
@@ -230,30 +254,6 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 					currentGenomePosition = firstGenomePosition + (i * windowData);
 				}
 			}
-		}
-	}
-
-
-	@Override
-	public void drawLayer(Graphics g) {
-		Graphics2D g2D = (Graphics2D)g;
-		switch(getGraphType()) {
-		case BAR:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawBarGraph(g);
-			break;
-		case CURVE:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			drawCurveGraph(g);
-			break;
-		case POINTS:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawPointGraph(g);
-			break;
-		case DENSE:
-			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawDenseGraph(g);
-			break;
 		}
 	}
 
@@ -293,6 +293,12 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 	@Override
 	public double getMinimumScoreToDisplay() {
 		return new BLOMinScoreToDisplay(getData()).compute();
+	}
+
+
+	@Override
+	public LayerType getType() {
+		return LayerType.BIN_LAYER;
 	}
 
 

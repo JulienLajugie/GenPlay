@@ -25,6 +25,7 @@ import java.awt.Graphics;
 import java.io.IOException;
 import java.io.Serializable;
 
+import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 
@@ -33,7 +34,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
  * @author Julien Lajugie
  * @param <T> type of data of the layer 
  */
-public interface Layer<T extends Serializable> extends Serializable {
+public interface Layer<T extends Serializable> extends Serializable, Drawer {
 
 
 	/**
@@ -45,9 +46,10 @@ public interface Layer<T extends Serializable> extends Serializable {
 
 	/**
 	 * Paints the layer on the specified {@link Graphics} context
-	 * @param g {@link Graphics} on which the track will be drawn
+	 * @param g {@link Graphics} on which the layer will be drawn
 	 */
-	abstract void drawLayer(Graphics g);
+	@Override
+	public abstract void draw(Graphics g);
 
 
 	/**
@@ -57,9 +59,21 @@ public interface Layer<T extends Serializable> extends Serializable {
 
 
 	/**
+	 * @return the name of the layer
+	 */
+	public abstract String getName();
+
+
+	/**
 	 * @return the track containing the layer
 	 */
 	public abstract Track getTrack();
+
+
+	/**
+	 * @return the type of the layer
+	 */
+	public abstract LayerType getType();
 
 
 	/**
@@ -80,6 +94,13 @@ public interface Layer<T extends Serializable> extends Serializable {
 	 * @param isHidden set to true if the layer needs to be hidden
 	 */
 	public abstract void setHidden(boolean isHidden);
+
+
+	/**
+	 * Sets the name of the layer
+	 * @param name name of the layer to set
+	 */
+	public abstract void setName(String name);
 
 
 	/**

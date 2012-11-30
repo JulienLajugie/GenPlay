@@ -73,7 +73,7 @@ public class ScrollingManager {
 	 * @return true if the scrolling is enable and going left
 	 */
 	public boolean isScrollingLeft() {
-		return isScrollingEnabled() && (getScrollingIntensity() > 0);
+		return isScrollingEnabled() && (getScrollingIntensity() < 0);
 	}
 
 
@@ -81,7 +81,7 @@ public class ScrollingManager {
 	 * @return true if the scrolling is enable and going right
 	 */
 	public boolean isScrollingRight() {
-		return isScrollingEnabled() && (getScrollingIntensity() < 0);
+		return isScrollingEnabled() && (getScrollingIntensity() > 0);
 	}
 
 
@@ -102,13 +102,13 @@ public class ScrollingManager {
 	/**
 	 * Set the intensity of the scrolling.
 	 * Positive and negative intensities scroll the windows in opposite directions
-	 * @param mouseXPosition horizontal position of the mouse on the screen
+	 * @param distance horizontal distance between the cursor and the middle of the track.
+	 * The distance should be negative if the cursor is located left of the middle of the track
 	 */
-	public void setScrollingIntensity(int mouseXPosition) {
+	public void setScrollingIntensity(int distance) {
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		int width = Track.getGraphicsWidth();
-		double scrollingIntensityTmp = projectWindow.twoScreenPosToGenomeWidth(width, mouseXPosition, width / 2);
-		if (scrollingIntensityTmp > 0) {
+		double scrollingIntensityTmp = projectWindow.screenToGenomeWidth(distance);
+		if (scrollingIntensityTmp < 0) {
 			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) + 1;
 		} else {
 			scrollingIntensity = (int) (scrollingIntensityTmp / 10d) - 1;
@@ -139,8 +139,8 @@ public class ScrollingManager {
 				while (scrollingThread == thisThread) {
 					GenomeWindow newWindow = new GenomeWindow();
 					newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-					newWindow.setStart(projectWindow.getGenomeWindow().getStart() - scrollingIntensity);
-					newWindow.setStop(projectWindow.getGenomeWindow().getStop() - scrollingIntensity);
+					newWindow.setStart(projectWindow.getGenomeWindow().getStart() + scrollingIntensity);
+					newWindow.setStop(projectWindow.getGenomeWindow().getStop() + scrollingIntensity);
 					if (newWindow.getMiddlePosition() < 0) {
 						newWindow.setStart(-projectWindow.getGenomeWindow().getSize() / 2);
 						newWindow.setStop(newWindow.getStart() + projectWindow.getGenomeWindow().getSize());

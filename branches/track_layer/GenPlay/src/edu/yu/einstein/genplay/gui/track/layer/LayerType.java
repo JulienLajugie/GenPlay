@@ -28,32 +28,63 @@ package edu.yu.einstein.genplay.gui.track.layer;
 public enum LayerType {
 
 	/**
+	 * Layer displayed on the foreground of a track
+	 */
+	FOREGROUND_LAYER ("Foreground Layer"),
+
+	/**
+	 * Layer displayed on the background of a track
+	 */
+	BACKGROUND_LAYER ("Background Layer"),
+
+	/**
 	 * BinList layer
 	 */
-	BIN_LAYER,
-	
+	BIN_LAYER ("Fixed Window Layer"),
+
 	/**
 	 * GeneList layer
 	 */
-	GENE_LAYER,
-	
+	GENE_LAYER ("Gene Layer"),
+
 	/**
 	 * NucleotideList layer
 	 */
-	NUCLEOTIDE_LAYER,
-	
+	NUCLEOTIDE_LAYER ("Sequence Layer"),
+
 	/**
 	 * RepeatFamilyList layer
 	 */
-	REPEAT_FAMILY_LAYER,
-	
-	/**
-	 * Ruler layer
-	 */
-	RULER_LAYER,
-	
+	REPEAT_FAMILY_LAYER ("Repeat Family Layer"),
+
 	/**
 	 * ScoredChromosomeWindowList layer
 	 */
-	SCW_LAYER;	
+	SCW_LAYER ("Variable Window Layer");
+
+
+	private final String name; // name
+
+
+	/**
+	 * Creates an instance of {@link LayerType}
+	 * @param name name of the layer type
+	 */
+	private LayerType(String name) {
+		this.name = name;
+	}
+
+
+	/**
+	 * @return the name of the layer type
+	 */
+	public String getName() {
+		return name;
+	}
+
+
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

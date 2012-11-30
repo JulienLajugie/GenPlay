@@ -69,6 +69,14 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 
 
 	/**
+	 * Default constructor. Creates an instance of {@link HandlePanel}
+	 */
+	public HandlePanel() {
+		this(0);
+	}
+
+
+	/**
 	 * Creates an instance of {@link HandlePanel}
 	 * @param number number of the track
 	 */
@@ -144,21 +152,15 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	public void mouseClicked(MouseEvent arg0) {
 		if (isEnabled()) {
 			if (arg0.getButton() == MouseEvent.BUTTON1) {
-				isSelected = !isSelected;
-				if (isSelected) {
-					setBackground(Colors.TRACK_HANDLE_SELECTED);
-					notifyTrackListeners(TrackEventType.SELECTED);
-				} else {
-					setBackground(Colors.TRACK_HANDLE_BACKGROUND);
-					notifyTrackListeners(TrackEventType.UNSELECTED);
-				}
-			}
-			if (arg0.getButton() == MouseEvent.BUTTON1) {
 				if ((getHeight() - arg0.getY()) <= MOVE_RESIZE_ZONE_HEIGHT) {
 					if (arg0.getClickCount() == 2) {
 						notifyTrackListeners(TrackEventType.SIZE_SET_TO_DEFAULT);
 					}
+				} else {
+					setSelected(!isSelected());
 				}
+			} else if (arg0.getButton() == MouseEvent.BUTTON3) {
+				setSelected(!isSelected());
 			}
 		}
 	}
@@ -231,11 +233,6 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 				}
 			}
 			if (arg0.getButton() == MouseEvent.BUTTON3) {
-				if (!isSelected) {
-					isSelected = true;
-					notifyTrackListeners(TrackEventType.SELECTED);
-				}
-				setBackground(Colors.TRACK_HANDLE_ROLLOVER);
 				notifyTrackListeners(TrackEventType.RIGHT_CLICKED);
 			}
 		}
@@ -300,15 +297,19 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	 * @param selected the value to set
 	 */
 	public void setSelected(boolean selected) {
-		this.isSelected = selected;
-		if (selected) {
-			setBackground(Colors.TRACK_HANDLE_ROLLOVER);
-		} else {
-			setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+		if (selected != isSelected()) {
+			this.isSelected = selected;
+			if (selected) {
+				setBackground(Colors.TRACK_HANDLE_ROLLOVER);
+				notifyTrackListeners(TrackEventType.SELECTED);
+			} else {
+				setBackground(Colors.TRACK_HANDLE_BACKGROUND);
+				notifyTrackListeners(TrackEventType.UNSELECTED);
+			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Unlocks the handle
 	 */

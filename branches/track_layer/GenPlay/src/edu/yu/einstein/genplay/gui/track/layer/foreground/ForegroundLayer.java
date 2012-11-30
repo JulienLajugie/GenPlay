@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.gui.track.TrackScore;
 import edu.yu.einstein.genplay.gui.track.layer.Layer;
 import edu.yu.einstein.genplay.gui.track.layer.AbstractLayer;
+import edu.yu.einstein.genplay.gui.track.layer.LayerType;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
 /**
@@ -52,16 +53,28 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 		setData(data);
 		setTrack(track);
 	}
-	
-	
+
+
+	@Override
+	public void draw(Graphics g) {
+		if (!isHidden()) {
+			drawMiddleVerticalLine(g);
+			drawScore(g);
+			drawName(g);
+		}
+	}
+
+
 	/**
 	 * Draws the main line in the middle of the track
 	 * @param g
 	 */
 	private void drawMiddleVerticalLine(Graphics g) {
+		int width = g.getClipBounds().width;
+		int height = g.getClipBounds().height;
 		int y1 = 0;
-		int y2 = getTrack().getHeight();
-		int x = (int)Math.round(Track.getGraphicsWidth() / (double)2);
+		int y2 = height;
+		int x = (int)Math.round(width / (double)2);
 		g.setColor(Colors.TRACK_MIDDLE_LINE);
 		g.drawLine(x, y1, x, y2);
 	}
@@ -73,11 +86,11 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	 */
 	private void drawName(Graphics g) {
 		if ((getTrack().getName() != null) && (!getTrack().getName().trim().isEmpty())) {
-			int width = Track.getGraphicsWidth();
+			int width = g.getClipBounds().width;
 			int widthOffset = 2; 												// space between the border of the rectangle and the text.
 			int heightOffset = 2; 												// space between the border of the rectangle and the top of the track.
 			String trackName = getTrack().getName();
-			FontMetrics fm = getTrack().getFontMetrics();
+			FontMetrics fm = g.getFontMetrics();
 			int textWidth = fm.stringWidth(trackName);							// text width on the screen
 
 			//			String name = trackName;
@@ -112,6 +125,7 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 	 * @param g
 	 */
 	private void drawScore(Graphics g) {
+		int width = g.getClipBounds().width;
 		ForegroundData data = this.getData();
 		TrackScore trackScore = getTrack().getScore();
 		if ((data != null) && (trackScore != null) && (trackScore.isTrackScored())) {
@@ -121,22 +135,18 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 				if (data.getScorePosition() == TrackConstants.BOTTOM_SCORE_POSITION) {
 					scoreYPosition =  getTrack().getHeight() - 2;
 				} else if (data.getScorePosition() == TrackConstants.TOP_SCORE_POSITION) {
-					scoreYPosition = getTrack().getFontMetrics().getHeight();
+					scoreYPosition = g.getFontMetrics().getHeight();
 				}
 				g.setColor(data.getScoreColor());
-				g.drawString("y=" + TrackConstants.SCORE_FORMAT.format(currentScore), (Track.getGraphicsWidth() / 2) + 3, scoreYPosition);
+				g.drawString("y=" + TrackConstants.SCORE_FORMAT.format(currentScore), (width / 2) + 3, scoreYPosition);
 			}
 		}
 	}
 
 
 	@Override
-	public void drawLayer(Graphics g) {
-		if (!isHidden()) {
-			drawMiddleVerticalLine(g);
-			drawScore(g);
-			drawName(g);
-		}
+	public LayerType getType() {
+		return LayerType.FOREGROUND_LAYER;
 	}
 
 
