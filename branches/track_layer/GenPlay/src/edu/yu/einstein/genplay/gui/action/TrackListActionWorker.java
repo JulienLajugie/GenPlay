@@ -36,7 +36,7 @@ import edu.yu.einstein.genplay.gui.dialog.exceptionDialog.ExceptionReportDialog;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressEvent;
 import edu.yu.einstein.genplay.gui.event.operationProgressEvent.OperationProgressListener;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 import edu.yu.einstein.genplay.gui.statusBar.StatusBar;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 import edu.yu.einstein.genplay.util.Utils;
@@ -57,24 +57,25 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	protected String							genomeName = null;		// genome name for a multi genome project
 	protected AlleleType						alleleType = null;		// allele type for a multi genome project
 	protected CountDownLatch latch = null;
-	
+
+
 	/**
 	 * @return the {@link JRootPane} of the {@link TrackList}
 	 */
 	protected JRootPane getRootPane() {
 		return MainFrame.getInstance().getTrackList().getRootPane();
 	}
-	
-	
+
+
 	/**
 	 * Shortcut for MainFrame.getInstance().getTrackList()
 	 * @return the track list of the project
 	 */
-	protected TrackList getTrackList() {
-		return MainFrame.getInstance().getTrackList();
+	protected TrackListPanel getTrackListPanel() {
+		return MainFrame.getInstance().getTrackListPanel();
 	}
-	
-	
+
+
 	/**
 	 * Private inner class that extends SwingWorker<T, Void>.
 	 * Processes the action.
@@ -82,14 +83,15 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * @version 0.1
 	 */
 	private class PooledActionWorker extends SwingWorker<T, Void> {
-		
+
 		@Override
 		final protected T doInBackground() throws Exception {
 			OperationPool.getInstance().addOperationProgressListener(TrackListActionWorker.this);
-			getTrackList().actionStarts();
+			getTrackListPanel().lockTrackHandles();
+			getTrackListPanel().setEnabled(false);
 			return processAction();
-		}		
-		
+		}
+
 		@Override
 		final protected void done() {
 			try {
@@ -101,24 +103,25 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 					getStatusBar().actionStop("Operation Aborted");
 				} else {
 					getStatusBar().actionStop("Error");
-					ExceptionManager.handleException(getTrackList().getRootPane(), e, "An unexpected error occurred during the operation");
+					ExceptionManager.handleException(getTrackListPanel().getRootPane(), e, "An unexpected error occurred during the operation");
 				}
 			} finally {
 				OperationPool.getInstance().removeOperationProgressListener(TrackListActionWorker.this);
-				getTrackList().actionEnds();
+				getTrackListPanel().unlockTrackHandles();
+				getTrackListPanel().setEnabled(true);
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Public constructor 
 	 */
 	public TrackListActionWorker() {
 		super();
 	}
-	
-	
+
+
 	/**
 	 * @return the status bar of the application
 	 */
@@ -126,7 +129,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		return MainFrame.getInstance().getStatusBar();
 	}
 
-	
+
 	@Override
 	public final void actionPerformed(ActionEvent arg0) {
 		worker = new PooledActionWorker();
@@ -150,7 +153,7 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 		}
 	}
 
-	
+
 	/**
 	 * Notifies that an action starts
 	 * Must be called right before the computation starts
@@ -166,25 +169,25 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 			getStatusBar().actionStart(description, stepCount, null);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Notifies the status bar that an action ends.
 	 */
 	protected void notifyActionStop() {
 		getStatusBar().actionStop("Operation Done");
 	}
-	
-	
+
+
 	@Override
 	public void stop() {
 		worker.cancel(true);
-		OperationPool.getInstance().stopPool();	
+		OperationPool.getInstance().stopPool();
 		Utils.garbageCollect();
 		getStatusBar().actionStop("Operation Aborted");
 	}
 
-	
+
 	/**
 	 * Specifies the action to process
 	 * @return the result of the action
@@ -199,8 +202,8 @@ public abstract class TrackListActionWorker<T> extends AbstractAction implements
 	 * @param actionResult result returned by the action method
 	 */
 	protected void doAtTheEnd(T actionResult) {};
-	
-	
+
+
 	protected void handleError (DataLineException e) {
 		ExceptionReportDialog.getInstance().addMessage(e.getMessage());
 		ExceptionReportDialog.getInstance().showDialog(getRootPane());

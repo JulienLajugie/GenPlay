@@ -33,8 +33,8 @@ import javax.swing.KeyStroke;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.synchronization.MGASNP;
+import edu.yu.einstein.genplay.gui.old.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.util.Utils;
 

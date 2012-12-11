@@ -35,7 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import edu.yu.einstein.genplay.core.list.geneList.operation.GLOExtractExons;
-import edu.yu.einstein.genplay.gui.action.geneListTrack.GLAExtractExons;
+import edu.yu.einstein.genplay.gui.old.action.geneListTrack.GLAExtractExons;
 
 
 /**

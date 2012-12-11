@@ -32,11 +32,11 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.operation.UpdateEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOApplyVCFGenotype;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.genotype.GenotypeVCFDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
 

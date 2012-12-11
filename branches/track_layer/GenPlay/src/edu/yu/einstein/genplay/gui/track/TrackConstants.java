@@ -38,6 +38,24 @@ import edu.yu.einstein.genplay.util.colors.Colors;
 public class TrackConstants {
 
 	/**
+	 * The score of the track is drawn on the bottom of the track
+	 */
+	public static final int BOTTOM_SCORE_POSITION = 1;
+
+
+	/**
+	 * Default cursor showed on a track
+	 */
+	public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
+
+
+	/**
+	 * Default graph type displayed in a graph layer
+	 */
+	public static final GraphType DEFAULT_GRAPH_TYPE = GraphType.BAR;
+
+
+	/**
 	 * Border of a track when the track is being dragged down
 	 */
 	public static final Border DRAG_DOWN_BORDER =
@@ -71,28 +89,9 @@ public class TrackConstants {
 
 
 	/**
-	 * Default border of a track
+	 * Number if horizontal lines displayed in the background of a track
 	 */
-	public static final Border REGULAR_BORDER = 
-			BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK);
-
-
-	/**
-	 * Transparency of the stripes
-	 */
-	public static final int	STRIPES_TRANSPARENCY = 150;
-
-
-	/**
-	 * Height of a track
-	 */
-	public static final int TRACK_HEIGHT = 100;
-
-
-	/**
-	 * Minimum height of a track
-	 */
-	public static final int TRACK_MINIMUM_HEIGHT = 30;
+	public static final int	HORIZONTAL_LINE_COUNT = 10;
 
 
 	/**
@@ -102,51 +101,22 @@ public class TrackConstants {
 
 
 	/**
-	 * Number if horizontal lines displayed in the background of a track
-	 */
-	public static final int	HORIZONTAL_LINE_COUNT = 10;
-
-
-	/**
 	 * Vertical grid of track should be visible or hidden by default
 	 */
 	public static final boolean IS_VERTICAL_GRID_VISIBLE = true;
 
 
 	/**
-	 * Number of vertical lines displayed in the background of a track
+	 * Default border of a track
 	 */
-	public static final int	VERTICAL_LINES_COUNT = 10;
-
-
-	/**
-	 * The score of the track is drawn on top of the track
-	 */
-	public static final int TOP_SCORE_POSITION = 0;
-
-
-	/**
-	 * The score of the track is drawn on the bottom of the track
-	 */
-	public static final int BOTTOM_SCORE_POSITION = 1;
+	public static final Border REGULAR_BORDER = 
+			BorderFactory.createMatteBorder(0, 0, 1, 0, Colors.BLACK);
 
 
 	/**
 	 * Decimal format for the score of a track
 	 */
 	public static final DecimalFormat SCORE_FORMAT = new DecimalFormat("#.###");
-
-
-	/**
-	 * Default graph type displayed in a graph layer
-	 */
-	public static final GraphType DEFAULT_GRAPH_TYPE = GraphType.BAR;
-
-
-	/**
-	 * Default cursor showed on a track
-	 */
-	public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.CROSSHAIR_CURSOR);
 
 
 	/**
@@ -159,4 +129,34 @@ public class TrackConstants {
 	 * Cursor show when a track is scrolled on the right
 	 */
 	public static final Cursor SCROLL_RIGHT_CURSOR = new Cursor(Cursor.E_RESIZE_CURSOR);
+
+
+	/**
+	 * Transparency of the stripes
+	 */
+	public static final int	STRIPES_TRANSPARENCY = 150;
+
+
+	/**
+	 * The score of the track is drawn on top of the track
+	 */
+	public static final int TOP_SCORE_POSITION = 0;
+
+
+	/**
+	 * Minimum height of a track
+	 */
+	public static final int TRACK_MINIMUM_HEIGHT = 30;
+
+
+	/**
+	 * Prefix of the default track name
+	 */
+	public static final String TRACK_NAME_PREFIX = "Track #";
+
+
+	/**
+	 * Number of vertical lines displayed in the background of a track
+	 */
+	public static final int	VERTICAL_LINES_COUNT = 10;
 }

@@ -25,10 +25,10 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import edu.yu.einstein.genplay.gui.action.actionWaiting.ActionWaiter;
-import edu.yu.einstein.genplay.gui.action.actionWaiting.SwingWorkerActionWaiting;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFToTBI;
 import edu.yu.einstein.genplay.gui.customComponent.customComboBox.customComboBoxEvent.CustomComboBoxListener;
+import edu.yu.einstein.genplay.gui.old.action.actionWaiting.ActionWaiter;
+import edu.yu.einstein.genplay.gui.old.action.actionWaiting.SwingWorkerActionWaiting;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**

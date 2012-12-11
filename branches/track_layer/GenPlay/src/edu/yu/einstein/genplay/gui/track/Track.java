@@ -24,12 +24,10 @@ package edu.yu.einstein.genplay.gui.track;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -37,12 +35,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
@@ -101,8 +98,10 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		updateGraphicsPanelDrawers();
 
 		// set the the default height of the track
-		setDefaultHeight(TrackConstants.TRACK_HEIGHT);
-		setPreferredHeight(TrackConstants.TRACK_HEIGHT);
+		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
+		int defaultHeight = projectConfiguration.getTrackHeight();
+		setDefaultHeight(defaultHeight);
+		setPreferredHeight(defaultHeight);
 
 		setName(null);
 		setNumber(trackNumber);
@@ -231,6 +230,17 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
+	 * @return an image of the track (without its handle)
+	 */
+	public BufferedImage getImage() {
+		BufferedImage image = new BufferedImage(graphicsPanel.getWidth(), graphicsPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.createGraphics();
+		graphicsPanel.paint(g);
+		return image;
+	}
+
+
+	/**
 	 * @return all the layers of the track
 	 */
 	public List<Layer<?>> getLayers() {
@@ -246,7 +256,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		if (super.getName() != null) {
 			return super.getName();
 		} else {
-			return new String("Track #" + getNumber());
+			return new String(TrackConstants.TRACK_NAME_PREFIX + getNumber());
 		}
 	}
 
@@ -293,22 +303,6 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
-	 * Saves the track graphics as a PNG image
-	 * @param file output file
-	 */
-	public void saveAsImage(File file) {
-		BufferedImage image = new BufferedImage(graphicsPanel.getWidth(), graphicsPanel.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = image.createGraphics();
-		graphicsPanel.paint(g);
-		try {
-			ImageIO.write(image, "PNG", file);
-		}catch(Exception e) {
-			ExceptionManager.handleException(graphicsPanel.getRootPane(), e, "Error while saving the tracks as an image");
-		}
-	}
-
-
-	/**
 	 * Sets the active layer of the track
 	 * @param activeLayer the active layer to set
 	 */
@@ -324,6 +318,16 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 */
 	public void setDefaultHeight(int defaultHeight) {
 		this.defaultHeight = defaultHeight;
+	}
+
+
+	@Override
+	public void setName(String name) {
+		String defaultName = TrackConstants.TRACK_NAME_PREFIX + getNumber();
+		// we don't set the name if it's the default track name
+		if ((name != null) && !name.equals(defaultName)) {
+			super.setName(name);
+		}
 	}
 
 

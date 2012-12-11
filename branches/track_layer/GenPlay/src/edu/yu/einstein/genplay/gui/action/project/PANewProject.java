@@ -28,8 +28,8 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.projectFrame.ProjectFrame;
 
 

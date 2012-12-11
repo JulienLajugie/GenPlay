@@ -22,11 +22,14 @@
 package edu.yu.einstein.genplay.gui.track.ruler;
 
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -37,6 +40,7 @@ import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowEvent;
 import edu.yu.einstein.genplay.gui.event.genomeWindowEvent.GenomeWindowListener;
 import edu.yu.einstein.genplay.gui.track.Drawer;
 import edu.yu.einstein.genplay.gui.track.GraphicsPanel;
+import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.Images;
 import edu.yu.einstein.genplay.util.colors.Colors;
 
@@ -87,6 +91,18 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 	@Override
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		rulerGraphics.repaint();
+	}
+
+
+	/**
+	 * @return an image of the ruler (without its button)
+	 */
+	public BufferedImage getImage() {
+		BufferedImage image = new BufferedImage(rulerGraphics.getWidth(), rulerGraphics.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
+		g.setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
+		rulerGraphics.paint(g);
+		return image;
 	}
 
 

@@ -32,11 +32,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import edu.yu.einstein.genplay.core.RNAPosToDNAPos.GeneRelativeToGenomePosition;
 import edu.yu.einstein.genplay.core.enums.RNAToDNAResultType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.RNAPosToDNAPosOutputFileTypeDialog;
 import edu.yu.einstein.genplay.gui.fileFilter.BedFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.BedGraphFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GdpGeneFilter;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.util.Utils;
 
 

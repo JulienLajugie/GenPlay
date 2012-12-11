@@ -33,7 +33,7 @@ import javax.swing.KeyStroke;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPCompression;
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOTBIIndex;
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
+import edu.yu.einstein.genplay.gui.old.action.TrackListAction;
 import edu.yu.einstein.genplay.util.Utils;
 
 

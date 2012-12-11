@@ -33,10 +33,10 @@ import javax.swing.filechooser.FileFilter;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.recording.ProjectRecording;
 import edu.yu.einstein.genplay.core.manager.recording.RecordingManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.fileFilter.ExtendedFileFilter;
 import edu.yu.einstein.genplay.gui.fileFilter.GenPlayProjectFilter;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
 import edu.yu.einstein.genplay.util.Utils;
 

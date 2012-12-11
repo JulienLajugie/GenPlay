@@ -59,7 +59,7 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 	private static final int 	MOVE_RESIZE_ZONE_HEIGHT = 10;	// height of the resize zone
 	private static final String FONT_NAME = "ARIAL";			// name of the font
 	private static final int 	FONT_SIZE = 12;					// size of the font
-	private int					number;					// number of the track
+	private int					number;							// number of the track
 	private int 				startDragY = 0; 				// height of the mouse when start dragging
 	private int					newHeight = 0;					// seize of the track after resizing by dragging
 	private boolean 			isTrackDragged = false;			// true if the user is dragging the track
@@ -160,7 +160,8 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 					setSelected(!isSelected());
 				}
 			} else if (arg0.getButton() == MouseEvent.BUTTON3) {
-				setSelected(!isSelected());
+				setSelected(true);
+				notifyTrackListeners(TrackEventType.RIGHT_CLICKED);
 			}
 		}
 	}
@@ -231,9 +232,6 @@ public final class HandlePanel extends JPanel implements MouseListener, MouseMot
 				} else {
 					isTrackDragged = true;
 				}
-			}
-			if (arg0.getButton() == MouseEvent.BUTTON3) {
-				notifyTrackListeners(TrackEventType.RIGHT_CLICKED);
 			}
 		}
 	}

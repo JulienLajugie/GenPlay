@@ -22,8 +22,12 @@
 package edu.yu.einstein.genplay.gui.trackList;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 
@@ -33,23 +37,32 @@ import edu.yu.einstein.genplay.gui.track.Track;
  */
 public class TrackListModel implements Serializable {
 
-	private static final long serialVersionUID = 6131854814047955278L; // generated id
-	private Track[] tracks; // array of tracks displayed in the table
+	private static final long serialVersionUID = 6131854814047955278L; // generated serial id
+
+	/**
+	 * Creates a track list containing only empty tracks with the default
+	 * project settings (number and height of tracks)
+	 * @return a list of tracks
+	 */
+	private static Track[] createDefaultTrackList() {
+		int trackCount = ProjectManager.getInstance().getProjectConfiguration().getTrackCount();
+		Track[] tracks = new Track[trackCount];
+		for (int i = 0; i < trackCount; i++) {
+			tracks[i] = new Track(i + 1);
+		}
+		return tracks;
+	}
+
+
+	private List<ListDataListener>		dataListeners;		// list of listeners that is notified each time a change to the data model occurs
+	private Track[] 					tracks; 			// array of tracks displayed in the table
 
 
 	/**
 	 * Creates an instance of {@link TrackListModel}
 	 */
 	public TrackListModel() {
-		ProjectConfiguration projectConfiguration = ProjectManager.getInstance().getProjectConfiguration();
-		int trackCount = projectConfiguration.getTrackCount();
-		int defaultHeight = projectConfiguration.getTrackHeight();
-		tracks = new Track[trackCount];
-		for (int i = 0; i < trackCount; i++) {
-			tracks[i] = new Track(i + 1);
-			tracks[i].setDefaultHeight(defaultHeight);
-			tracks[i].setPreferredHeight(defaultHeight);
-		}
+		this(createDefaultTrackList());
 	}
 
 
@@ -58,7 +71,19 @@ public class TrackListModel implements Serializable {
 	 * @param tracks tracks of the model
 	 */
 	public TrackListModel(Track[] tracks) {
+		dataListeners = new ArrayList<ListDataListener>();
 		setTracks(tracks);
+	}
+
+
+	/**
+	 * Adds a listener to the list that's notified each time a change to the data model occurs.
+	 * @param dataListener
+	 */
+	public void addListDataListener(ListDataListener dataListener) {
+		if (!dataListeners.contains(dataListener)) {
+			dataListeners.add(dataListener);
+		}
 	}
 
 
@@ -71,6 +96,9 @@ public class TrackListModel implements Serializable {
 			tracks[i - 1] = tracks[i];
 		}
 		tracks[tracks.length - 1] = new Track(tracks.length);
+		// we notify the listeners that the data changed
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_REMOVED, row, row);
+		notifyListeners(event);
 	}
 
 
@@ -87,16 +115,11 @@ public class TrackListModel implements Serializable {
 
 
 	/**
-	 * @param track a Track
-	 * @return the index of the specified track in the data list if found.  -1 if the specified track is not found
+	 * @param row
+	 * @return the {@link Track} at the specified row
 	 */
-	public int indexOf(Track track) {
-		for (int i = 0; i < tracks.length; i++) {
-			if (track == tracks[i]) {
-				 return i;
-			}
-		}
-		return -1;
+	public Track getTrack(int row) {
+		return getTrack(row);
 	}
 
 
@@ -109,19 +132,24 @@ public class TrackListModel implements Serializable {
 
 
 	/**
-	 * @param row
-	 * @return the {@link Track} at the specified row
-	 */
-	public Track getTrack(int row) {
-		return getTrack(row);
-	}
-
-
-	/**
 	 * @return the tracks displayed in the JTable
 	 */
 	public Track[] getTracks() {
 		return tracks;
+	}
+
+
+	/**
+	 * @param track a Track
+	 * @return the index of the specified track in the data list if found.  -1 if the specified track is not found
+	 */
+	public int indexOf(Track track) {
+		for (int i = 0; i < tracks.length; i++) {
+			if (track == tracks[i]) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 
@@ -135,6 +163,40 @@ public class TrackListModel implements Serializable {
 			tracks[i + 1] = tracks[i];
 		}
 		tracks[row] = track;
+		// we notify the listeners that the data changed
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, row, row);
+		notifyListeners(event);
+	}
+
+
+	/**
+	 * Notifies all the {@link ListDataListener} that the data changed
+	 * @param event
+	 */
+	private void notifyListeners(ListDataEvent event) {
+		switch (event.getType()) {
+		case ListDataEvent.CONTENTS_CHANGED:
+			for (ListDataListener listener: dataListeners) {
+				listener.contentsChanged(event);
+			}
+		case ListDataEvent.INTERVAL_ADDED:
+			for (ListDataListener listener: dataListeners) {
+				listener.intervalAdded(event);
+			}
+		case ListDataEvent.INTERVAL_REMOVED:
+			for (ListDataListener listener: dataListeners) {
+				listener.intervalRemoved(event);
+			}
+		}
+	}
+
+
+	/**
+	 * Removes a listener from the list that's notified each time a change to the data model occurs.
+	 * @param dataListener
+	 */
+	public void removeListDataListener(ListDataListener dataListener)  {
+		dataListeners.remove(dataListener);
 	}
 
 
@@ -145,6 +207,9 @@ public class TrackListModel implements Serializable {
 	 */
 	public void setTrack(Track track, int row) {
 		getTracks()[row] = track;
+		// we notify the listeners that the data changed
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, row, row);
+		notifyListeners(event);
 	}
 
 
@@ -153,5 +218,11 @@ public class TrackListModel implements Serializable {
 	 */
 	public void setTracks(Track[] tracks) {
 		this.tracks = tracks;
+		// we notify the listeners that the data changed
+		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, tracks.length - 1);
+		notifyListeners(event);
 	}
+	
+	
+	
 }

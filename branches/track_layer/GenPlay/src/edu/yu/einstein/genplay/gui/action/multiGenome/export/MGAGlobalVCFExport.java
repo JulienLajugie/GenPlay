@@ -29,13 +29,13 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGABGZIPCompression;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGATBIIndex;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.export.ExportVCFDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.mainDialog.MultiGenomeTrackActionDialog;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
 

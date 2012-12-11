@@ -36,7 +36,6 @@ import edu.yu.einstein.genplay.gui.event.invalidDataEvent.InvalidDataListener;
 import edu.yu.einstein.genplay.gui.statusBar.Stoppable;
 
 
-
 /**
  * Action that starts an extractor in a thread so the GUI doesn't freeze
  * @author Julien Lajugie
@@ -131,7 +130,7 @@ public abstract class TrackListActionExtractorWorker<T> extends TrackListActionW
 			// check if the user has the permission to write the log
 			if ((logFile == null) || (!logFile.canWrite())) {
 				logFile = null;
-				JOptionPane.showMessageDialog(getTrackList(), "Impossible to access or create the log file \"" + 
+				JOptionPane.showMessageDialog(getTrackListPanel(), "Impossible to access or create the log file \"" + 
 						logFile + "\"", "Invalid Log File", JOptionPane.WARNING_MESSAGE, null);
 			}
 		}

@@ -29,7 +29,7 @@ import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
 
 import edu.yu.einstein.genplay.core.multiGenome.operation.convert.MGOBGZIPUncompression;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 
 
 /**

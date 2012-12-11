@@ -30,8 +30,8 @@ import javax.swing.ActionMap;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 
 

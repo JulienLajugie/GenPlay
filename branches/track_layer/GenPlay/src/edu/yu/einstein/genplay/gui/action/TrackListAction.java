@@ -25,8 +25,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JRootPane;
 
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
-import edu.yu.einstein.genplay.gui.old.trackList.TrackList;
-
+import edu.yu.einstein.genplay.gui.trackList.TrackListPanel;
 
 
 /**
@@ -38,28 +37,28 @@ public abstract class TrackListAction extends AbstractAction {
 
 	private static final long serialVersionUID = 1383058897700926018L; 		// generated ID
 
-	
+
 	/**
 	 * Constructor
 	 */
 	public TrackListAction() {
 		super(); 
 	}
-	
-	
+
+
 	/**
 	 * @return the {@link JRootPane} of the {@link TrackList}
 	 */
 	protected JRootPane getRootPane() {
 		return MainFrame.getInstance().getTrackList().getRootPane();
 	}
-	
-	
+
+
 	/**
 	 * Shortcut for MainFrame.getInstance().getTrackList()
 	 * @return the track list of the project
 	 */
-	protected TrackList getTrackList() {
-		return MainFrame.getInstance().getTrackList();
+	protected TrackListPanel getTrackListPanel() {
+		return MainFrame.getInstance().getTrackListPanel();
 	}
 }

@@ -31,10 +31,10 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileMixStat
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.operation.VCF.MGOVCFStatisticsSingleFile;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.statistics.MGStatisticsDialog;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.trackAction.ExportSettings;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
+import edu.yu.einstein.genplay.gui.old.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
 
