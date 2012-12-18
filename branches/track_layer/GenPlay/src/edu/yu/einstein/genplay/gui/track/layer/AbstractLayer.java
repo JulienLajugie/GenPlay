@@ -57,21 +57,21 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 
 	/**
 	 * Creates an instance of {@link AbstractLayer}
-	 * @param data data displayed by the layer
 	 * @param track track displaying the layer
+	 * @param data data displayed by the layer
 	 */
-	public AbstractLayer(T data, Track track) {
-		this(data, track, null);
+	public AbstractLayer(Track track, T data) {
+		this(track, data, null);
 	}
 
 
 	/**
 	 * Creates an instance of {@link AbstractLayer}
-	 * @param data data displayed by the layer
 	 * @param track track displaying the layer
+	 * @param data data displayed by the layer
 	 * @param name name of the layer
 	 */
-	public AbstractLayer(T data, Track track, String name) {
+	public AbstractLayer(Track track, T data, String name) {
 		setData(data);
 		setTrack(track);
 		setName(null);

@@ -125,7 +125,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 					}
 				}
 				// we notify the listeners
-				notifyProgressListeners(OperationProgressEvent.ABORT, 100d);				
+				notifyProgressListeners(OperationProgressEvent.ABORT, 100d);
 				throw new InterruptedException();
 			}
 			long done = 0;
@@ -133,7 +133,7 @@ public final class OperationPool implements OperationProgressEventsGenerator {
 			// compute the completion and check if everything's done 
 			for (short i = 0; i < futures.size(); i++) {
 				if (futures.get(i).isDone() || futures.get(i).isCancelled()) {
-					done += projectChromosome.get(i).getLength();					
+					done += projectChromosome.get(i).getLength();
 				} else {
 					stillAlive = true;
 				}

@@ -58,21 +58,22 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 
 	
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, int width, int height) {
 		if (!isHidden()) {
-			drawVerticalLines(g);
-			drawHorizontalLines(g);
+			drawVerticalLines(g, width, height);
+			drawHorizontalLines(g, width, height);
 		}
 	}
 
 
 	/**
 	 * Draws horizontal lines on the track
-	 * @param g {@link Graphics}
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawHorizontalLines(Graphics g) {
+	private void drawHorizontalLines(Graphics g, int width, int height) {
 		if (getData().isHorizontalGridVisible()) {
-			int width = g.getClipBounds().width;
 			double scoreMin = getTrack().getScore().getMinimumScore();
 			double scoreMax = getTrack().getScore().getMaximumScore();
 			int horizontalLineCount = getData().getHorizontalLineCount();
@@ -96,14 +97,15 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 
 	/**
 	 * Draws the vertical lines
-	 * @param g {@link Graphics}
+	 * @param g  {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawVerticalLines(Graphics g) {
+	private void drawVerticalLines(Graphics g, int width, int height) {
 		g.setColor(Colors.TRACK_LINE);
-		int width = g.getClipBounds().width;
 		double gap = width / (double)getData().getVerticalLineCount();
 		int y1 = 0;
-		int y2 = getTrack().getHeight();
+		int y2 = height;
 		for (int i = 0; i < getData().getVerticalLineCount(); i++) {
 			int x = (int)Math.round(i * gap);
 			g.drawLine(x, y1, x, y2);

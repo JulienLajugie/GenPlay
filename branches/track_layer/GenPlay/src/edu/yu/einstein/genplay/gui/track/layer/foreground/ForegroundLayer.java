@@ -56,22 +56,22 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, int width, int height) {
 		if (!isHidden()) {
-			drawMiddleVerticalLine(g);
-			drawScore(g);
-			drawName(g);
+			drawMiddleVerticalLine(g, width, height);
+			drawScore(g, width, height);
+			drawName(g, width, height);
 		}
 	}
 
 
 	/**
 	 * Draws the main line in the middle of the track
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawMiddleVerticalLine(Graphics g) {
-		int width = g.getClipBounds().width;
-		int height = g.getClipBounds().height;
+	private void drawMiddleVerticalLine(Graphics g, int width, int height) {
 		int y1 = 0;
 		int y2 = height;
 		int x = (int)Math.round(width / (double)2);
@@ -82,11 +82,12 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 	/**
 	 * Draws the name of the track
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawName(Graphics g) {
+	private void drawName(Graphics g, int width, int height) {
 		if ((getTrack().getName() != null) && (!getTrack().getName().trim().isEmpty())) {
-			int width = g.getClipBounds().width;
 			int widthOffset = 2; 												// space between the border of the rectangle and the text.
 			int heightOffset = 2; 												// space between the border of the rectangle and the top of the track.
 			String trackName = getTrack().getName();
@@ -122,13 +123,14 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 	/**
 	 * Draws the score of the track
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawScore(Graphics g) {
-		int width = g.getClipBounds().width;
+	private void drawScore(Graphics g, int width, int height) {
 		ForegroundData data = this.getData();
 		TrackScore trackScore = getTrack().getScore();
-		if ((data != null) && (trackScore != null) && (trackScore.isTrackScored())) {
+		if ((data != null) && (trackScore != null) && (trackScore.getCurrentScore() != null)) {
 			Double currentScore = trackScore.getCurrentScore();
 			if (currentScore != null) {
 				int scoreYPosition = 0;

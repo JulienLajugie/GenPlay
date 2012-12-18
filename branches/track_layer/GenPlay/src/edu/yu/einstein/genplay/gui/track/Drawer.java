@@ -13,6 +13,8 @@ public interface Drawer {
 	/**
 	 * Draws on the specific {@link Graphics} context
 	 * @param g
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	public void draw(Graphics g);
+	public void draw(Graphics g, int width, int height);
 }

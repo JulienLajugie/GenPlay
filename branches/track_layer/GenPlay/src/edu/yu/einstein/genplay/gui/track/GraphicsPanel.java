@@ -232,11 +232,11 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
-		g.setClip(0, 0, getWidth(), getHeight());
+		//g.setClip(0, 0, getWidth(), getHeight());
 		if (drawers != null) {
 			// tell the drawers to draw
 			for (Drawer currentDrawer: drawers) {
-				currentDrawer.draw(g);
+				currentDrawer.draw(g, getWidth(), getHeight());
 			}
 		}
 	}

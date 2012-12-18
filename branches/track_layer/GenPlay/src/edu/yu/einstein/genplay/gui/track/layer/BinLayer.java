@@ -32,6 +32,7 @@ import edu.yu.einstein.genplay.core.list.binList.operation.BLOMaxScoreToDisplay;
 import edu.yu.einstein.genplay.core.list.binList.operation.BLOMinScoreToDisplay;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
@@ -51,32 +52,36 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 
 	/**
 	 * Creates an instance of a {@link BinLayer}
+	 * @param track track containing the layer
+	 * @param data data of the layer
+	 * @param name name of the layer
 	 */
-	public BinLayer() {
+	public BinLayer(Track track, BinList data, String name) {
+		super(track, data, name);
 		this.setGraphType(TrackConstants.DEFAULT_GRAPH_TYPE);
 		this.color = TrackColor.getTrackColor();
 	}
 
 
 	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, int width, int height) {
 		Graphics2D g2D = (Graphics2D)g;
 		switch(getGraphType()) {
 		case BAR:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawBarGraph(g);
+			drawBarGraph(g, width, height);
 			break;
 		case CURVE:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			drawCurveGraph(g);
+			drawCurveGraph(g, width, height);
 			break;
 		case POINTS:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawPointGraph(g);
+			drawPointGraph(g, width, height);
 			break;
 		case DENSE:
 			g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-			drawDenseGraph(g);
+			drawDenseGraph(g, width, height);
 			break;
 		}
 	}
@@ -84,9 +89,11 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 
 	/**
 	 * Draws the layer as a bar graph
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawBarGraph(Graphics g) {
+	private void drawBarGraph(Graphics g, int width, int height) {
 		if (this.getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
@@ -139,9 +146,11 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 
 	/**
 	 * Draws the layer as a curve graph
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawCurveGraph(Graphics g) {
+	private void drawCurveGraph(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
@@ -185,9 +194,11 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 
 	/**
 	 * Draws the layer as a dense graph
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawDenseGraph(Graphics g) {
+	private void drawDenseGraph(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			double[] binListData = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
@@ -218,9 +229,11 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 
 	/**
 	 * Draws the layer as a point graph
-	 * @param g
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawPointGraph(Graphics g) {
+	private void drawPointGraph(Graphics g, int width, int height) {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			double[] data = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
@@ -269,9 +282,9 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(projectWindow.getGenomeWindow().getChromosome());
-			int xMid = (int) projectWindow.getGenomeWindow().getMiddlePosition();
-			if ((getData().get(currentChromosome) != null) && ((xMid / getData().getBinSize()) < getData().size(currentChromosome))) {
-				return getData().getScore(xMid);
+			int indexMid = (int) (projectWindow.getGenomeWindow().getMiddlePosition() / (double) getData().getBinSize());
+			if ((getData().get(currentChromosome) != null) && (indexMid < getData().size(currentChromosome))) {
+				return getData().get(currentChromosome, indexMid);
 			}
 		}
 		return 0;

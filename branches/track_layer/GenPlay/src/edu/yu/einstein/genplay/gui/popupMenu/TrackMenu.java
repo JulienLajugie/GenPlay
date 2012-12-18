@@ -26,6 +26,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
 import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
@@ -58,7 +59,8 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 		TARename.ACTION_KEY,
 		TASaveAsImage.ACTION_KEY,
 		TASetHeight.ACTION_KEY,
-		TASetVerticalLineCount.ACTION_KEY
+		TASetVerticalLineCount.ACTION_KEY,
+		TAAddLayer.ACTION_KEY
 	};
 	private Track track;
 
@@ -72,28 +74,38 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 		}
 	}
 
-	
+
+	/**
+	 * Sets the selected track
+	 * @param track
+	 */
 	public void setTrack(Track track) {
-		track = track;
+		this.track = track;
 	}
-	
+
+
+	/**
+	 * @return the selected track
+	 */
 	public Track getTrack() {
 		return track;
 	}
-	
+
+
 	@Override
-	public void popupMenuCanceled(PopupMenuEvent evt) {}
+	public void popupMenuCanceled(PopupMenuEvent evt) {
+		
+	}
+
 
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
 		
-		
 	}
+
 
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-		// TODO Auto-generated method stub
 		
 	}
-
 }

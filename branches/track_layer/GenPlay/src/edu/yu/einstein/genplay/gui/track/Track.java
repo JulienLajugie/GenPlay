@@ -25,6 +25,9 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 
 import edu.yu.einstein.genplay.core.manager.project.ProjectConfiguration;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
@@ -57,7 +62,7 @@ import edu.yu.einstein.genplay.gui.track.layer.foreground.ForegroundLayer;
  * A track contains two subcomponents: the track handle and the graphics panel showing the data
  * @author Julien Lajugie
  */
-public class Track extends JPanel implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator {
+public class Track extends JPanel implements Serializable, GenomeWindowListener, TrackListener, TrackEventsGenerator, ListDataListener {
 
 	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
@@ -68,7 +73,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	private int 							defaultHeight;							// default height of a track
 	private int								number;									// number of the track
 	private List<TrackListener> 			trackListeners;							// list of track listeners
-	private List<Layer<?>> 					layers;									// layers of the track
+	private TrackModel 						layers;									// layers of the track
 	private Layer<?>						activeLayer;							// active layer of the track
 	private transient HandlePanel			handlePanel;							// handle panel of the track
 	private transient GraphicsPanel			graphicsPanel;							// graphics panel of the track
@@ -117,7 +122,8 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		trackListeners = new ArrayList<TrackListener>();
 
 		// initializes the layer list
-		setLayers(new ArrayList<Layer<?>>());
+		layers = new TrackModel();
+		layers.addListDataListener(this);
 
 		// register itself as a genome window listener to the genome window manager
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
@@ -241,9 +247,9 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
-	 * @return all the layers of the track
+	 * @return the {@link TrackModel} managing the list of layers of the track
 	 */
-	public List<Layer<?>> getLayers() {
+	public TrackModel getLayers() {
 		return layers;
 	}
 
@@ -303,12 +309,43 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 
 	/**
-	 * Sets the active layer of the track
+	 * Sets the active layer of the track if the specified layer is one of the layers of the track.
+	 * Sets the active layer to null if the specified parameter is null.
+	 * Does nothing if the specified layer is not null and is not one of the layers of the track
 	 * @param activeLayer the active layer to set
 	 */
 	public void setActiveLayer(Layer<?> activeLayer) {
-		this.activeLayer = activeLayer;
-		getScore().updateCurrentScore();
+		Layer<?> oldLayer = getActiveLayer();
+		if (activeLayer == null) {
+			this.activeLayer = null;
+		} else if (layers.contains(activeLayer)) {
+			this.activeLayer = activeLayer;
+		}
+
+		if (oldLayer != activeLayer) {
+			if (oldLayer != null) {
+				if (oldLayer instanceof MouseMotionListener) {
+					graphicsPanel.removeMouseMotionListener((MouseMotionListener)oldLayer);
+				}
+				if (oldLayer instanceof MouseListener) {
+					graphicsPanel.removeMouseListener((MouseListener)oldLayer);
+				}
+				if (oldLayer instanceof MouseWheelListener) {
+					graphicsPanel.removeMouseWheelListener((MouseWheelListener)oldLayer);
+				}
+			}
+			if (activeLayer != null) {
+				if (activeLayer instanceof MouseMotionListener) {
+					graphicsPanel.addMouseMotionListener((MouseMotionListener)activeLayer);
+				}
+				if (activeLayer instanceof MouseListener) {
+					graphicsPanel.addMouseListener((MouseListener)activeLayer);
+				}
+				if (activeLayer instanceof MouseWheelListener) {
+					graphicsPanel.addMouseWheelListener((MouseWheelListener)activeLayer);
+				}
+			}
+		}
 	}
 
 
@@ -340,17 +377,6 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		Dimension trackDimension = new Dimension(getPreferredSize().width, preferredHeight);
 		setPreferredSize(trackDimension);
 		revalidate();
-	}
-
-
-	/**
-	 * Sets the list of track layers 
-	 * @param layers a list of track layers
-	 */
-	public void setLayers(List<Layer<?>> layers) {
-		this.layers = layers;
-		getScore().updateCurrentScore();
-		updateGraphicsPanelDrawers();
 	}
 
 
@@ -413,5 +439,34 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 	 */
 	public void unlockHandle() {
 		handlePanel.setEnabled(true);
+	}
+
+
+	@Override
+	public void contentsChanged(ListDataEvent e) {
+		// case where the active layer was removed
+		if (!layers.contains(activeLayer)) {
+			activeLayer = null;
+		}
+		updateGraphicsPanelDrawers();
+		getScore().autorescaleScoreAxis();
+	}
+
+
+	@Override
+	public void intervalAdded(ListDataEvent e) {
+		updateGraphicsPanelDrawers();
+		getScore().autorescaleScoreAxis();
+	}
+
+
+	@Override
+	public void intervalRemoved(ListDataEvent e) {
+		// case where the active layer was removed
+		if (!layers.contains(activeLayer)) {
+			activeLayer = null;
+		}
+		updateGraphicsPanelDrawers();
+		getScore().autorescaleScoreAxis();
 	}
 }

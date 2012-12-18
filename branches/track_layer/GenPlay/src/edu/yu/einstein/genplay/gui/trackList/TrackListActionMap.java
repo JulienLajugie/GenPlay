@@ -28,6 +28,7 @@ import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
 import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
@@ -50,6 +51,7 @@ public class TrackListActionMap {
 	 * List of actions available in the {@link TrackListPanel}
 	 */
 	private static final Action[] TRACK_LIST_ACTIONS = {
+		new TAAddLayer(),
 		new TACopy(),
 		new TACut(),
 		new TADelete(),

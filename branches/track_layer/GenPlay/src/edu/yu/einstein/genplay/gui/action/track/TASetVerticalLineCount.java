@@ -69,6 +69,7 @@ public class TASetVerticalLineCount extends TrackListAction {
 			Number lineCountNumber = NumberOptionPane.getValue(getRootPane(), "Vertical Line Count", "Set the number of vertical lines to display", new DecimalFormat("###"), 0, 100, currentLineCount);
 			if ((lineCountNumber != null) && (lineCountNumber.intValue() != currentLineCount)) {
 				selectedTrack.getBackgroundLayer().getData().setVerticalLineCount(lineCountNumber.intValue());
+				selectedTrack.repaint();
 			}
 		}
 	}

@@ -22,13 +22,14 @@
 package edu.yu.einstein.genplay.gui.trackList;
 
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 
 import javax.swing.BoxLayout;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListDataEvent;
@@ -38,8 +39,8 @@ import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
-import edu.yu.einstein.genplay.gui.old.popupMenu.TrackMenuFactory;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
+import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 
@@ -53,7 +54,6 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 	private final static int 	SCROLL_BAR_BLOCK_INCREMENT = 40;			// block increment for the scroll bar
 	private final static int 	SCROLL_BAR_UNIT_INCREMENT = 15;				// unit increment for the scroll bar
 	private static final long 	serialVersionUID = -5070245121955382857L; 	// generated serial ID
-
 
 	private transient Track			copiedTrack = null; 			// list of the tracks in the clipboard
 	private transient Track			draggedOverTrack = null; 		// track rolled over by the dragged track, null if none
@@ -75,7 +75,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		this.jpTrackList = new JPanel();
 		this.jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
 		setActionMap(TrackListActionMap.getActionMap());
-		setInputMap(JComponent.WHEN_FOCUSED, TrackListActionMap.getInputMap(this));
+		setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, TrackListActionMap.getInputMap(this));
 		this.trackMenu = new TrackMenu(getActionMap());
 		getVerticalScrollBar().setUnitIncrement(SCROLL_BAR_UNIT_INCREMENT);
 		getVerticalScrollBar().setBlockIncrement(SCROLL_BAR_BLOCK_INCREMENT);

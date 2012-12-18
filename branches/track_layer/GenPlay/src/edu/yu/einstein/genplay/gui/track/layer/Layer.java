@@ -47,9 +47,11 @@ public interface Layer<T extends Serializable> extends Serializable, Drawer {
 	/**
 	 * Paints the layer on the specified {@link Graphics} context
 	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
 	@Override
-	public abstract void draw(Graphics g);
+	public void draw(Graphics g, int width, int height);
 
 
 	/**

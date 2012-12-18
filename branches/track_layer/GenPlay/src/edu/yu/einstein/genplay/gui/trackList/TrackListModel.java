@@ -32,7 +32,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 
 /**
- * Model that manage a list of track
+ * Model that manages a list of tracks
  * @author Julien Lajugie
  */
 public class TrackListModel implements Serializable {
@@ -222,7 +222,4 @@ public class TrackListModel implements Serializable {
 		ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, tracks.length - 1);
 		notifyListeners(event);
 	}
-	
-	
-	
 }

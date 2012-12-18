@@ -51,22 +51,22 @@ public class RulerDrawer implements Drawer {
 	
 	
 	@Override
-	public void draw(Graphics g) {
-		drawRelativeUnits(g);
-		drawAbsoluteUnits(g);
+	public void draw(Graphics g, int width, int height) {
+		drawRelativeUnits(g, width, height);
+		drawAbsoluteUnits(g, width, height);
 	}
 
 
 	/**
 	 * Draws the absolute units.
-	 * @param g {@link Graphics}
+	 * @param g {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawAbsoluteUnits(Graphics g) {
+	private void drawAbsoluteUnits(Graphics g, int width, int height) {
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 		// Set graphic parameters
-		int width = g.getClipBounds().width;
 		int halfWidth = (int)Math.round(width / 2d);
-		int height = g.getClipBounds().height;
 		int yText = height - MAJOR_TEXT_HEIGHT;
 		g.setColor(MIDDLE_LINE_COLOR);
 
@@ -103,12 +103,12 @@ public class RulerDrawer implements Drawer {
 
 	/**
 	 * Draws the relative units.
-	 * @param g {@link Graphics}
+	 * @param g  {@link Graphics} on which the layer will be drawn
+	 * @param width width of the graphics to draw
+	 * @param height height of the graphics to draw
 	 */
-	private void drawRelativeUnits(Graphics g) {
+	private void drawRelativeUnits(Graphics g, int width, int height) {
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		int height = g.getClipBounds().height;
-		int width = g.getClipBounds().width;
 		int positionStart = projectWindow.getGenomeWindow().getStart();
 		int positionStop = projectWindow.getGenomeWindow().getStop();
 		int y = height - MINOR_TEXT_HEIGHT;
