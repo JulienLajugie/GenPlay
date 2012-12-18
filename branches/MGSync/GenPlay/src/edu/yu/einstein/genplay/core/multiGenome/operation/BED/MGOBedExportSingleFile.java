@@ -38,7 +38,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.util.Utils;
 
 

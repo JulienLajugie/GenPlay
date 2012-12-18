@@ -21,20 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.utils;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
-import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.IndelVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -190,58 +181,11 @@ public class VCFLineUtility {
 	 * @return the VCF line of the variant
 	 */
 	public static VCFLine getVCFLine (Variant variant) {
-		if ((variant instanceof IndelVariant) || (variant instanceof SNPVariant)) {
-			List<VCFFile> vcfFileList = ProjectManager.getInstance().getMultiGenomeProject().getVCFFiles(variant.getVariantListForDisplay().getAlleleForDisplay().getGenomeInformation().getName(), variant.getVariantListForDisplay().getType());
-			int start = variant.getReferenceGenomePosition();
-			List<String> results = new ArrayList<String>();
-			List<VCFFile> requiredFiles = new ArrayList<VCFFile>();
-			for (VCFFile vcfFile: vcfFileList) {
-				List<String> resultsTmp = null;
-				try {
-					resultsTmp = vcfFile.getReader().query(variant.getVariantListForDisplay().getChromosome().getName(), start - 1, start);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				if (resultsTmp.size() > 0) {
-					for (String resultTmp: resultsTmp) {
-						results.add(resultTmp);
-						requiredFiles.add(vcfFile);
-					}
-				}
-			}
-
-			VCFLine line = null;
-			int size = results.size();
-			switch (size) {
-			case 1:
-				line = new VCFLine(results.get(0), requiredFiles.get(0).getHeader());
-			case 0:
-				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: No variant found");
-				break;
-			default:
-				//System.err.println("MGVariantListForDisplay.getFullVariantInformation: Many variant found: " + size);
-				line = getRightInformation(variant, results, requiredFiles);
-				break;
-			}
-			return line;
-		} else if (variant instanceof ReferenceVariant) {
-			VCFFile file = ((ReferenceVariant) variant).getVCFFile();
-			Chromosome chromosome = ((ReferenceVariant) variant).getChromosome();
-			List<String> resultsTmp = null;
-			try {
-				resultsTmp = file.getReader().query(chromosome.getName(), variant.getReferenceGenomePosition() - 1, variant.getReferenceGenomePosition());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (resultsTmp.size() > 0) {
-				return new VCFLine(resultsTmp.get(0), file.getHeader());
-			}
-		}
 		return null;
 	}
 
 
-	private static VCFLine getRightInformation (Variant variant, List<String> results, List<VCFFile> vcfFiles) {
+	/*private static VCFLine getRightInformation (Variant variant, List<String> results, List<VCFFile> vcfFiles) {
 		if (results.size() > 0) {
 			float variantScore = variant.getScore();
 			for (int i = 0; i < results.size(); i++) {
@@ -253,7 +197,7 @@ public class VCFLineUtility {
 			}
 		}
 		return null;
-	}
+	}*/
 
 
 	/**
@@ -261,13 +205,35 @@ public class VCFLineUtility {
 	 * @param result	the result
 	 * @return			the quality as a float or 0 is the QUAL field is not valid (eg: '.')
 	 */
-	private static float getQUALFromResult (String result) {
+	/*private static float getQUALFromResult (String result) {
 		String[] array = Utils.splitWithTab(result);
 		float qual = 0;
 		try {
 			qual = Float.parseFloat(array[5].toString());
 		} catch (Exception e) {}
 		return qual;
+	}*/
+
+
+	/**
+	 * Transforms a character into its allele index.
+	 * The char 1 will refer to the first alternative located at the index 0 of any arrays.
+	 * The char 0 returns -1 and the char '.' returns -2 and don't refer to any alternatives.
+	 * @param alleleChar the character
+	 * @return the associated code (char - 1)
+	 */
+	public static int getAlleleIndex (String alleleChar) {
+		int alleleIndex = -1;
+		if (alleleChar.equals(".")) {
+			alleleIndex = MGSynchronizer.NO_CALL;
+		} else if (alleleChar.equals("0")) {
+			alleleIndex = MGSynchronizer.REFERENCE;
+		} else {
+			try {
+				alleleIndex = Integer.parseInt(alleleChar) - 1;
+			} catch (Exception e) {}
+		}
+		return alleleIndex;
 	}
 
 }

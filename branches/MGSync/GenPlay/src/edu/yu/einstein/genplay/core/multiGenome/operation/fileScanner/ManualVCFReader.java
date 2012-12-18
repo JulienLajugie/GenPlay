@@ -32,7 +32,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.BGZIPReader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
-import edu.yu.einstein.genplay.core.multiGenome.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 import edu.yu.einstein.genplay.util.Utils;
 
 /**
@@ -197,8 +198,8 @@ public class ManualVCFReader {
 		int genomeIndex = reader.getIndexFromGenome(genomeName);
 		String genotype = Utils.split(reader.getCurrentLine().getField(genomeIndex), ':')[0];
 
-		indexes[0] = synchronizer.getAlleleIndex(genotype.charAt(0));
-		indexes[1] = synchronizer.getAlleleIndex(genotype.charAt(2));
+		indexes[0] = VCFLineUtility.getAlleleIndex(genotype.charAt(0) + "");
+		indexes[1] = VCFLineUtility.getAlleleIndex(genotype.charAt(2) + "");
 
 		return indexes;
 	}
@@ -301,5 +302,4 @@ public class ManualVCFReader {
 	public List<String> getAllValidGenome() {
 		return allValidGenome;
 	}
-
 }

@@ -39,9 +39,10 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFHeader;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.ReferenceVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.SNPVariant;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.VariantDisplay;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.ReferenceVariant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.SNPVariant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.util.colors.Colors;
@@ -60,7 +61,7 @@ public class GlobalInformationPanel extends JPanel {
 	private static final int LABEL_HEIGHT = 15;		// height of a label
 	private static final int KEY_WIDTH = 50;		// width of a label used to display a key
 	private static final int VALUE_WIDTH = 100;		// width of a label used to display a value
-	private final VariantDisplay variant;
+	private final Variant variant;
 	private final VCFLine variantInformation;			// the variant to display the information of
 	private final GridBagConstraints gbc;
 
@@ -69,7 +70,7 @@ public class GlobalInformationPanel extends JPanel {
 	 * Constructor of {@link GlobalInformationPanel}
 	 * Initializes all label and put them on the panel, this is the main method.
 	 */
-	protected GlobalInformationPanel (VariantDisplay variantDisplay, VCFLine variantInformation) {
+	protected GlobalInformationPanel (Variant variantDisplay, VCFLine variantInformation) {
 		this.variant = variantDisplay;
 		this.variantInformation = variantInformation;
 
@@ -106,13 +107,9 @@ public class GlobalInformationPanel extends JPanel {
 
 		// Define the variant type
 		//boolean isIndel = variant instanceof IndelVariant;
-		boolean isSNP = false;
-		boolean isReference = false;
-		boolean isMix = variant.getSource() == null;
-		if (!isMix) {
-			isSNP = variant.getSource() instanceof SNPVariant;
-			isReference = variant.getSource() instanceof ReferenceVariant;
-		}
+		boolean isSNP = variant instanceof SNPVariant;
+		boolean isReference = variant instanceof ReferenceVariant;
+		boolean isMix = variant instanceof MixVariant;
 
 		// Stop position
 		if (isSNP) {

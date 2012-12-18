@@ -22,14 +22,18 @@
 package edu.yu.einstein.genplay.gui.action.multiGenome.synchronization;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.ActionMap;
 
+import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.MultiGenomeProject;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayListBuilder;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
 import edu.yu.einstein.genplay.gui.track.Track;
@@ -101,6 +105,26 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 				// Initializes the genome synchronization
 				multiGenomeProject.initializeSynchronization (genomeFileAssociation);
 
+				// Insert synchronization data into the data structure
+				multiGenomeProject.getMultiGenomeSynchronizer().processFiles(getRequiredGenomeNames(), null, null);
+
+				// Sort lists of position for every chromosome of every genome
+				multiGenomeProject.getMultiGenome().sort();
+
+				// Remove the duplicate from the reference genome lists of position
+				multiGenomeProject.getMultiGenome().getReferenceGenome().removeDuplicate();
+
+				// Performs the synchronization in order to get all genome positions and their offset with the meta genome
+				multiGenomeProject.getMultiGenomeSynchronizer().performPositionSynchronization();
+
+				// Compacts the offset lists in order to optimize the memory usage
+				multiGenomeProject.getMultiGenome().compactLists();
+
+				// Loads the current variants into the memory
+				multiGenomeProject.getFileContentManager().updateCurrentVariants();
+
+				/*
+				 * 
 				// Insert the variation into the data structure
 				multiGenomeProject.getMultiGenomeSynchronizer().insertVariantposition();
 
@@ -122,6 +146,8 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 
 				// Create the reference genome position index list
 				multiGenomeProject.getMultiGenomeForDisplay().getReferenceGenome().getAllele().createIndexLists();
+
+				 */
 			} else {
 				// Generates error when parameters have not been set
 				System.err.println("Multi-genome synchronization cannot be performed because the file readers and/or the genome file association parameters have not been set.");
@@ -148,7 +174,33 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 		MainFrame.getInstance().unlock();
 
 
-		//multiGenomeProject.show();
+		multiGenomeProject.show();
+
+		test();
+	}
+
+
+
+	private void test () {
+		VariantDisplayListBuilder listBuilder = new VariantDisplayListBuilder();
+		List<String> genomeNames = new ArrayList<String>(genomeFileAssociation.keySet());
+		String genomeName = genomeNames.get(2);
+		List<VariantType> types = new ArrayList<VariantType>();
+		types.add(VariantType.INSERTION);
+		types.add(VariantType.DELETION);
+		types.add(VariantType.SNPS);
+		types.add(VariantType.NO_CALL);
+		List<List<Variant>> list = listBuilder.getList(genomeName, types);
+
+		System.out.println("===== MGASynchronizing.test()");
+		System.out.println("Genome: " + genomeName);
+		for (int i = 0; i < list.size(); i++) {
+			System.out.println("Allele: " + i);
+			for (int j = 0; j < list.get(i).size(); j++) {
+				System.out.println(list.get(i).get(j).getDescription());
+			}
+		}
+
 	}
 
 
@@ -182,6 +234,16 @@ public class MGASynchronizing extends TrackListActionWorker<Track<?>[]> {
 	 */
 	public void setGenomeFileAssociation(Map<String, List<VCFFile>> genomeFileAssociation) {
 		this.genomeFileAssociation = genomeFileAssociation;
+	}
+
+
+
+	private List<String> getRequiredGenomeNames () {
+		List<String> genomes = null;
+		if (genomeFileAssociation != null) {
+			genomes = new ArrayList<String>(genomeFileAssociation.keySet());
+		}
+		return genomes;
 	}
 
 

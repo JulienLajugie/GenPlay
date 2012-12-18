@@ -30,6 +30,7 @@ import java.util.List;
 
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.gui.mainFrame.MainFrame;
@@ -302,6 +303,34 @@ public class MGDisplaySettings implements Serializable {
 	 */
 	public boolean includeNoCall () {
 		return true;
+	}
+
+
+	/**
+	 * @param display
+	 * @return true if the display is has to be shown, false otherwise
+	 */
+	public boolean isShown (byte display) {
+		if (display == VariantDisplayList.SHOW) {
+			return true;
+		}
+
+		if (display == VariantDisplayList.FILTER) {
+			if (DRAW_FILTERED_VARIANT == YES_MG_OPTION) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * @param display
+	 * @return true if the display is filtered, false otherwise
+	 */
+	public boolean isFilter (byte display) {
+		return display == VariantDisplayList.FILTER;
 	}
 
 

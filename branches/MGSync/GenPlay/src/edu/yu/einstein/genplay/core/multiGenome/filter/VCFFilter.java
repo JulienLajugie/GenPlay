@@ -31,7 +31,7 @@ import edu.yu.einstein.genplay.core.list.arrayList.ByteArrayAsBooleanList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
-import edu.yu.einstein.genplay.core.multiGenome.display.variant.Variant;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 /**
  * @author Nicolas Fourel
  * @version 0.1
