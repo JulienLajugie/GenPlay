@@ -341,7 +341,6 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		System.out.println("hhooe");
 		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
 			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
 					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= geneLinesCount))) {

@@ -36,7 +36,6 @@ import edu.yu.einstein.genplay.core.enums.GraphType;
 import edu.yu.einstein.genplay.core.manager.URRManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
-import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.old.track.drawer.CurveDrawer;
 import edu.yu.einstein.genplay.util.History;
 import edu.yu.einstein.genplay.util.colors.Colors;

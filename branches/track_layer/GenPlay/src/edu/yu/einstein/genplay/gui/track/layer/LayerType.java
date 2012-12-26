@@ -28,11 +28,6 @@ package edu.yu.einstein.genplay.gui.track.layer;
 public enum LayerType {
 
 	/**
-	 * Layer displayed on the foreground of a track
-	 */
-	FOREGROUND_LAYER ("Foreground Layer"),
-
-	/**
 	 * Layer displayed on the background of a track
 	 */
 	BACKGROUND_LAYER ("Background Layer"),
@@ -43,14 +38,24 @@ public enum LayerType {
 	BIN_LAYER ("Fixed Window Layer"),
 
 	/**
+	 * Layer displayed on the foreground of a track
+	 */
+	FOREGROUND_LAYER ("Foreground Layer"),
+
+	/**
 	 * GeneList layer
 	 */
 	GENE_LAYER ("Gene Layer"),
 
 	/**
+	 * Mask layer
+	 */
+	MASK_LAYER ("Mask Layer"),
+
+	/**
 	 * NucleotideList layer
 	 */
-	NUCLEOTIDE_LAYER ("Sequence Layer"),
+	NUCLEOTIDE_LAYER ("DNA Sequence Layer"),
 
 	/**
 	 * RepeatFamilyList layer
