@@ -29,18 +29,21 @@ import java.awt.Graphics2D;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.List;
 
 import edu.yu.einstein.genplay.core.GenomeWindow;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
-import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayListIterator;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.MixVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.ReferenceVariant;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
 import edu.yu.einstein.genplay.util.colors.Colors;
+import edu.yu.einstein.genplay.util.colors.GenPlayColor;
 
 /**
  * @author Nicolas Fourel
@@ -153,17 +156,14 @@ class MultiGenomeVariantDrawer implements Serializable {
 	 * @param g				Graphics object
 	 * @param variantList	list of variants
 	 */
-	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, VariantDisplayListIterator iterator, String genomeName) {
-		Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
-		MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
-		while (iterator.hasNext()) {
-			Variant variant = iterator.next();
-			try {
-				displaySettings.isShown(iterator.getCurrentDisplay());
-			} catch (Exception e) {
-				System.out.println();
-			}
-			if (displaySettings.isShown(iterator.getCurrentDisplay())) {
+	protected void drawGenome (Graphics g, GenomeWindow genomeWindow, List<Variant> variants, String genomeName) {
+		if ((variants != null) && (variants.size() > 0)) {
+			Color mixColor = new Color(Colors.BLUE.getRed(), Colors.BLUE.getGreen(), Colors.BLUE.getBlue());			// color for mixed variant
+			MGDisplaySettings displaySettings = MGDisplaySettings.getInstance();
+			//while (iterator.hasNext()) {
+			for (int i = 0; i < variants.size(); i++) {
+				Variant variant = variants.get(i);
+				//if (displaySettings.isShown(iterator.getCurrentDisplay())) {
 				VariantType type = variant.getType();			// gets its type
 				Color color;
 				if (type == VariantType.REFERENCE_INSERTION) {
@@ -172,13 +172,16 @@ class MultiGenomeVariantDrawer implements Serializable {
 					color = MGDisplaySettings.REFERENCE_DELETION_COLOR;
 				} else if (type == VariantType.REFERENCE_SNP) {
 					color = MGDisplaySettings.REFERENCE_SNP_COLOR;
+				} else if (type == VariantType.NO_CALL) {
+					color = MGDisplaySettings.NO_CALL_COLOR;
 				} else if (type == VariantType.MIX) {
 					color = mixColor;
 				} else  {
 					color = getVariantColor(genomeName, type);																		// in order to get which color has been defined
 				}
 
-				drawVariant(g, variant, color, genomeWindow, displaySettings.isFilter(iterator.getCurrentDisplay()));	// draw the variant
+				drawVariant(g, variant, color, genomeWindow, displaySettings.isFilter(VariantDisplayList.SHOW));	// draw the variant
+				//}
 			}
 		}
 	}
@@ -194,11 +197,6 @@ class MultiGenomeVariantDrawer implements Serializable {
 		// Get start and stop position
 		int start = variant.getStart();
 		int stop = variant.getStop();
-		/*if ((variant.getType() == VariantType.SNPS) || (variant.isReference() && (variant.getLength() == 1))) {		// in case of a SNP, no need to use getStop function (that uses dichotomic algorithm on the full variant list)
-			stop = start + 1;								// the stop is one nucleotide further
-		} else {											// if not,
-			stop = variant.getStop() + 1;					// needs to call getStop
-		}*/
 
 		// Fits the start and stop position to the screen
 		if ((start < genomeWindow.getStart()) && (stop > genomeWindow.getStart())) {	// if the variant starts before the left edge of the track but stop after
@@ -218,7 +216,12 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 		// Get the height of the clip and of the stripe
 		int clipHeight = g.getClipBounds().height;									// get the height of the clip
-		int score = (int) variant.getScore();										// get the score of the variant
+		int score;																	// get the score of the variant
+		if (variant instanceof MixVariant) {
+			score = 101;
+		} else {
+			score = (int) variant.getScore();										// get the score of the variant
+		}
 		int height;																	// Instantiate the int for the height of the variant
 		if (score > 100) {															// if the score is higher than 100,
 			height = clipHeight;													// the variant height is the height of the clip
@@ -228,11 +231,11 @@ class MultiGenomeVariantDrawer implements Serializable {
 
 		// Sets the stripe color
 		Color newColor;
-		/*if ((drawer.getVariantUnderMouse() != null) && drawer.getVariantUnderMouse().equals(variant)) {		// if there is a variant under the mouse
+		if ((drawer.getVariantUnderMouse() != null) && drawer.getVariantUnderMouse().equals(variant)) {		// if there is a variant under the mouse
 			newColor = GenPlayColor.stripeFilter(color);							// we change the color of the variant
-		} else {	*/																// if not
-		newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
-		//}
+		} else {																	// if not
+			newColor = new Color(color.getRed(), color.getGreen(), color.getBlue(), variantOpacity);	// we use the defined color taking into account the opacity
+		}
 		g.setColor(newColor);														// we set the graphic object color
 
 		// if it is not a blank of synchronization

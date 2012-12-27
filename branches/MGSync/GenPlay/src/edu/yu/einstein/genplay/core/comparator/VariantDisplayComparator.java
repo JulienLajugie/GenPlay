@@ -19,51 +19,39 @@
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
-package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
+package edu.yu.einstein.genplay.core.comparator;
 
-import edu.yu.einstein.genplay.core.enums.VariantType;
+import java.util.Comparator;
+
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 
 /**
+ * This class is a comparator for variant.
+ * The comparison is made according to the reference genome position.
+ * 
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MixVariant extends MultiNucleotideVariant {
-
-	/** Default serial version ID */
-	private static final long serialVersionUID = -7565492332014120095L;
-
-
-	/**
-	 * Constructor of {@link MixVariant}
-	 */
-	public MixVariant() {
-		super(null, -1);
-	}
-
-
-	/**
-	 * Constructor of {@link MixVariant}
-	 * @param start start position
-	 * @param stop stop position
-	 */
-	public MixVariant(int start, int stop) {
-		super(null, -1, start, stop);
-	}
-
+public class VariantDisplayComparator implements Comparator<Variant> {
 
 	@Override
-	public VariantType getType() {
-		return VariantType.MIX;
+	public int compare(Variant o1, Variant o2) {
+		int position1 = o1.getStart();
+		int position2 = o2.getStart();
+		if (position1 < position2) {
+			return -1;
+		} else if (position1 == position2) {
+			int stop1 = o1.getStop();
+			int stop2 = o2.getStop();
+			if (stop1 > stop2) {
+				return -1;				// the longest variant is first
+			} else if (stop1 < stop2) {
+				return 1;
+			}
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
-
-	/**
-	 * @return a description of the {@link Variant}
-	 */
-	@Override
-	public String getDescription () {
-		String description = super.getDescription();
-		description += " TYPE: MIX;";
-		return description;
-	}
 }

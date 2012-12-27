@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.synchronization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,9 +39,36 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGSAllele {
+public class MGSAllele implements Serializable {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = -3160689645132714945L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private ChromosomeListOfLists<MGSOffset> offsetList;					// List of offset organized by chromosome
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(offsetList);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		offsetList = (ChromosomeListOfLists<MGSOffset>) in.readObject();
+	}
 
 
 	/**

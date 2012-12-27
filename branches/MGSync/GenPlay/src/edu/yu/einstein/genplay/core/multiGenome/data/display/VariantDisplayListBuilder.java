@@ -142,23 +142,30 @@ public class VariantDisplayListBuilder {
 			byte[] genotype = line.getGenotypes().get(genomeName);
 			if (defineVariantType(line)) {
 				if (isHomozygoteReference(genotype)) {
-					// TODO: insert two references using longest length of the required variations
+					Variant dominantVariant = getCurrentDominantVariant(i);
+					Variant reference = new ReferenceVariant(currentContent, i, dominantVariant.getStart(), dominantVariant.getStop(), getReferenceType(dominantVariant));
+					for (List<Variant> currentList: result) {
+						currentList.add(reference);
+					}
 				} else {
 					byte[] correctedGenotype = getAdjustedGenotype(line);
 					if (!isHomozygoteReference(correctedGenotype)) {			// the corrected genotype must contain at least one index that is not reference related
-						List<List<Variant>> list = new ArrayList<List<Variant>>();
-						for (int j = 0; j < genotype.length; j++) {
+						List<List<Variant>> list = getEmptyList(correctedGenotype.length);
+						for (int j = 0; j < correctedGenotype.length; j++) {
 							Variant variant = null;
-							byte alternativeIndex = genotype[j];
+							byte alternativeIndex = correctedGenotype[j];
 							if (alternativeIndex == MGSynchronizer.NO_CALL) {
 								int start = ShiftCompute.getPosition(referenceGenomeName, null, line.getReferenceGenomePosition(), chromosome, metaGenomeName);
 								variant  = new NoCallVariant(currentContent, i, start);
 							} else if (alternativeIndex >= 0) {
 								variant = currentContent.getVariants().getVariant(alternativeIndex, i);
 							}
-							addToList(list, j, variant);
+							if (variant != null) {
+								list.get(j).add(variant);
+							}
 						}
-						list = processCurrentVariants(list);
+						list = fillWithReferences(list);
+						list = adjustVariants(list);
 
 						addFromListToList(result, list);
 					}
@@ -169,28 +176,63 @@ public class VariantDisplayListBuilder {
 	}
 
 
-
-	private void addToList (List<List<Variant>> list, int genotypeIndex, Variant variant) {
-		if (variant != null) {
-			// Add missing lists
-			int add = (genotypeIndex - list.size()) + 1;
-			for (int i = 0; i < add; i++) {
-				list.add(new ArrayList<Variant>());
+	private Variant getCurrentDominantVariant (int positionindex) {
+		List<Variant> variants = currentContent.getVariants().getVariants(positionindex);
+		List<Variant> eligibleVariants = new ArrayList<Variant>();
+		for (Variant current: variants) {
+			if (types.contains(current.getType())) {
+				eligibleVariants.add(current);
 			}
+		}
+		return getDominantVariant(eligibleVariants);
+	}
 
-			// Create the adjusted reference variant
-			Variant reference = new ReferenceVariant(currentContent, variant.getReferencePositionIndex(), variant.getStart(), variant.getStop(), getReferenceType(variant));
 
-			// Add the variant and the reference(s)
-			for (int i = 0; i < list.size(); i++) {
-				if (i == genotypeIndex) {
-					list.get(i).add(variant);
-				} else {
-					list.get(i).add(reference);
+	private Variant getDominantVariant (List<Variant> variants) {
+		if ((variants == null) || (variants.size() == 0)) {
+			return null;
+		}
+
+		if (variants.size() == 1) {
+			return variants.get(0);
+		}
+
+		Variant variant = variants.get(0);
+		for (int i = 1; i < variants.size(); i++) {
+			if (variants.get(i).isDominant(variant)) {
+				variant = variants.get(i);
+			}
+		}
+		return variant;
+	}
+
+
+	private List<List<Variant>> getEmptyList (int size) {
+		List<List<Variant>> result = new ArrayList<List<Variant>>();
+		for (int i = 0; i < size; i++) {
+			result.add(new ArrayList<Variant>());
+		}
+		return result;
+	}
+
+
+	private List<List<Variant>> fillWithReferences (List<List<Variant>> list) {
+		List<List<Variant>> newList = getEmptyList(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			List<Variant> currentList = list.get(i);
+			for (Variant variant: currentList) {
+				newList.get(i).add(variant);
+				Variant reference = new ReferenceVariant(currentContent, variant.getReferencePositionIndex(), variant.getStart(), variant.getStop(), getReferenceType(variant));
+				for (int j = 0; j < list.size(); j++) {
+					if (j != i) {
+						newList.get(j).add(reference);
+					}
 				}
 			}
 		}
+		return newList;
 	}
+
 
 
 	private void addFromListToList (List<List<Variant>> list01, List<List<Variant>> list02) {
@@ -200,9 +242,7 @@ public class VariantDisplayListBuilder {
 			list01.add(new ArrayList<Variant>());
 		}
 		for (int i = 0; i < list02.size(); i++) {
-			for (Variant variant: list02.get(i)) {
-				list01.get(i).add(variant);
-			}
+			list01.get(i).addAll(list02.get(i));
 		}
 	}
 
@@ -222,8 +262,14 @@ public class VariantDisplayListBuilder {
 
 
 	private List<List<Variant>> getEmptyVariantList (MGChromosomeContent chromosomeContent) {
+		int size = chromosomeContent.getMaxGenotypeNumber();
+		if (size < 2) {
+			size = 2;
+		}
 		List<List<Variant>> list = new ArrayList<List<Variant>>();
-		list.add(new ArrayList<Variant>());
+		for (int i = 0; i < size; i++) {
+			list.add(new ArrayList<Variant>());
+		}
 		return list;
 	}
 
@@ -328,7 +374,7 @@ public class VariantDisplayListBuilder {
 	}
 
 
-	private List<List<Variant>> processCurrentVariants (List<List<Variant>> list) {
+	private List<List<Variant>> adjustVariants (List<List<Variant>> list) {
 		List<List<Variant>> newList = new ArrayList<List<Variant>>();
 		for (List<Variant> current: list) {
 			List<Variant> newCurrent = new ArrayList<Variant>();
@@ -367,4 +413,6 @@ public class VariantDisplayListBuilder {
 		}
 		return newList;
 	}
+
+
 }

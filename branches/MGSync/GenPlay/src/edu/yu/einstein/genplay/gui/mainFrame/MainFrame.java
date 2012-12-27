@@ -243,6 +243,7 @@ public final class MainFrame extends JFrame implements GenomeWindowListener, Act
 	public void genomeWindowChanged(GenomeWindowEvent evt) {
 		// if the chromosome changed we reinitialize the multigenome data
 		if (evt.chromosomeChanged() && ProjectManager.getInstance().isMultiGenomeProject()) {
+			ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager().updateCurrentVariants();
 			MGARefresh tracksUpdate = new MGARefresh();
 			tracksUpdate.actionPerformed(null);
 		}

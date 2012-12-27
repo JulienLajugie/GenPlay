@@ -47,6 +47,7 @@ class ChromosomeContentIterator implements Iterator<MGLineContent> {
 		smartIterator = false;
 	}
 
+
 	@Override
 	public boolean hasNext() {
 		return isValidIndex();

@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.content;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +42,36 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.ShiftCompute;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGChromosomeVariants {
+public class MGChromosomeVariants implements Serializable {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = -203508611757257381L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private List<MGVariantArray> variants;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variants);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variants = (List<MGVariantArray>) in.readObject();
+	}
 
 
 	/**
@@ -111,6 +142,19 @@ public class MGChromosomeVariants {
 	 */
 	public Variant getVariant (int alternativeIndex, int positionIndex) {
 		return variants.get(alternativeIndex).get(positionIndex);
+	}
+
+
+	/**
+	 * @param positionIndex
+	 * @return the variants for the given position index
+	 */
+	public List<Variant> getVariants (int positionIndex) {
+		List<Variant> result = new ArrayList<Variant>();
+		for (MGVariantArray array: variants) {
+			result.add(array.get(positionIndex));
+		}
+		return result;
 	}
 
 

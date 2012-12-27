@@ -34,9 +34,12 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayList;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
+import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.filters.FiltersData;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.properties.editing.variants.VariantData;
+import edu.yu.einstein.genplay.gui.track.TrackGraphics;
 
 /**
  * @author Nicolas Fourel
@@ -53,20 +56,31 @@ public class MultiGenomeDrawer {
 	private VCFFileStatistics statistics;
 
 	private final MultiGenomeVariantDrawer variantDrawer;
-
+	private final MultiGenomeListHandler handler;
+	private Variant variantUnderMouse;;
 	private Chromosome chromosome;
 
 
+	/**
+	 * Constructor of {@link MultiGenomeDrawer}
+	 */
 	public MultiGenomeDrawer () {
 		variantDataList = new ArrayList<VariantData>();
 		variantDisplayList = new ArrayList<VariantDisplayList>();
 		locked = false;
 		statistics = null;
 		variantDrawer = new MultiGenomeVariantDrawer(this);
+		handler = new MultiGenomeListHandler();
+		variantUnderMouse = null;
 	}
 
 
 
+	/**
+	 * Update the variant lists
+	 * @param variantDataList	the {@link VariantData} settings
+	 * @param filtersList		the {@link FiltersData} settings
+	 */
 	public void updateMultiGenomeInformation(List<VariantData> variantDataList, List<MGFilter> filtersList) {
 		boolean generateLists = false;
 		boolean filtersHaveChanged = false;
@@ -79,9 +93,6 @@ public class MultiGenomeDrawer {
 				for (VariantDisplayList variantDisplay: variantDisplayList) {
 					variantDisplay.generateLists();
 				}
-			} else {
-				// Update variants
-				generateLists = updateVariant(variantDataList);
 			}
 		} else {
 			// Update variants
@@ -97,6 +108,7 @@ public class MultiGenomeDrawer {
 			for (VariantDisplayList currentList: variantDisplayList) {
 				currentList.updateDisplay(filtersList);
 			}
+			handler.initialize(variantDisplayList);
 		}
 	}
 
@@ -104,26 +116,29 @@ public class MultiGenomeDrawer {
 
 	private boolean updateVariant (List<VariantData> variantDataList) {
 		boolean generateLists = false;
-		List<VariantData> newVariantDataList = new ArrayList<VariantData>();
-		List<VariantDisplayList> newVariantDisplayList = new ArrayList<VariantDisplayList>();
 
-		for (int i = 0; i < variantDataList.size(); i++) {
-			VariantData newData = variantDataList.get(i);
-			newVariantDataList.add(newData);
-			int dataIndex = this.variantDataList.indexOf(newData);
-			if (dataIndex > -1) {
-				newVariantDisplayList.add(this.variantDisplayList.get(dataIndex));
-			} else {
-				generateLists = true;
-				VariantDisplayList newList = new VariantDisplayList();
-				newList.initialize(newData.getGenome(), newData.getVariationTypeList());
-				newList.generateLists();
-				newVariantDisplayList.add(newList);
+		if ((variantDataList != null) && (variantDataList.size() > 0)) {
+			List<VariantData> newVariantDataList = new ArrayList<VariantData>();
+			List<VariantDisplayList> newVariantDisplayList = new ArrayList<VariantDisplayList>();
+
+			for (int i = 0; i < variantDataList.size(); i++) {
+				VariantData newData = variantDataList.get(i);
+				newVariantDataList.add(newData);
+				int dataIndex = this.variantDataList.indexOf(newData);
+				if (dataIndex > -1) {
+					newVariantDisplayList.add(this.variantDisplayList.get(dataIndex));
+				} else {
+					generateLists = true;
+					VariantDisplayList newList = new VariantDisplayList();
+					newList.initialize(newData.getGenome(), newData.getVariationTypeList());
+					newList.generateLists();
+					newVariantDisplayList.add(newList);
+				}
 			}
-		}
 
-		this.variantDataList = newVariantDataList;
-		this.variantDisplayList = newVariantDisplayList;
+			this.variantDataList = newVariantDataList;
+			this.variantDisplayList = newVariantDisplayList;
+		}
 
 		return generateLists;
 	}
@@ -250,9 +265,9 @@ public class MultiGenomeDrawer {
 				allele02Graphic.translate(0, -allele02Graphic.getClipBounds().height - 1); // translates all coordinates of the graphic for the second allele
 				for (VariantDisplayList displayList: variantDisplayList) {
 					variantDrawer.setCurrentAllele(AlleleType.ALLELE01);
-					variantDrawer.drawGenome(allele01Graphic, genomeWindow, displayList.getIterator(0), displayList.getGenomeName()); // draw the stripes for the first allele
+					variantDrawer.drawGenome(allele01Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 0), displayList.getGenomeName()); // draw the stripes for the first allele
 					variantDrawer.setCurrentAllele(AlleleType.ALLELE02);
-					variantDrawer.drawGenome(allele02Graphic, genomeWindow, displayList.getIterator(1), displayList.getGenomeName()); // draw the stripes for the second allele
+					variantDrawer.drawGenome(allele02Graphic, genomeWindow, handler.getFittedData(genomeWindow, xFactor, 1), displayList.getGenomeName()); // draw the stripes for the first allele
 					variantDrawer.drawMultiGenomeLine(g); // draw a line in the middle of the track to distinguish upper and lower half.
 				}
 			} else {
@@ -273,9 +288,50 @@ public class MultiGenomeDrawer {
 	}
 
 	public boolean isOverVariant(int height, MouseEvent e) {
-		// TODO Auto-generated method stub
+		if (ProjectManager.getInstance().isMultiGenomeProject() && !locked) { // if we are in multi genome project
+			Variant variant = getVariantUnderMouse(height, e.getX(), e.getY()); // we get the variant (Y is needed to know if the variant is on the upper or lower half of the track)
+			if (variant != null) { // if a variant has been found
+				variantUnderMouse = variant; // the mouse is on this variant (we save it)
+				return true; // we return true
+			} else if (variantUnderMouse != null) { // no variant has been found but one was already defined (the mouse is just getting out of the stripe)
+				variantUnderMouse = null; // there is no variant under the mouse anymore
+				return true;
+			}
+		}
 		return false;
 	}
+
+
+
+	private Variant getVariantUnderMouse (int trackHeight, int x, int y) {
+		// Get the allele index
+		int alleleIndex = 0;
+		if (y > (trackHeight / 2)) {
+			alleleIndex = 1;
+		}
+
+		// Get the meta genome position
+		int pos = (int) Math.round(ProjectManager.getInstance().getProjectWindow().screenXPosToGenomePos(TrackGraphics.getTrackGraphicsWidth(), x)); // we translate the position on the screen into a position on the genome
+
+		List<Variant> results = new ArrayList<Variant>();
+		for (VariantDisplayList list: variantDisplayList) {
+			Variant result = list.getVariant(alleleIndex, pos);
+			if (result != null) {
+				results.add(result);
+			}
+		}
+
+		if (results.size() > 0) {
+			return results.get(0);
+		}
+		return null;
+	}
+
+
+	public Variant getVariantUnderMouse () {
+		return variantUnderMouse;
+	}
+
 
 	public void setVariantDataList(List<VariantData> stripeList) {
 		// TODO Auto-generated method stub
@@ -301,6 +357,13 @@ public class MultiGenomeDrawer {
 
 	public void setStatistics(VCFFileStatistics statistics) {
 		this.statistics = statistics;
+	}
+
+
+
+	public boolean isVariantShown(Variant variant) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
@@ -189,6 +190,14 @@ public class ExportSettings {
 	 */
 	public List<VCFFile> getFileList() {
 		return fileList;
+	}
+
+
+	/**
+	 * @return the allele type (BOTH)
+	 */
+	public AlleleType getAlleleType() {
+		return AlleleType.BOTH;
 	}
 
 }

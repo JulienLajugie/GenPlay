@@ -30,6 +30,9 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosom
  */
 public class NoCallVariant extends SingleNucleotideVariant {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = -4534244356231708762L;
+
 
 	/**
 	 * Constructor of {@link NoCallVariant}

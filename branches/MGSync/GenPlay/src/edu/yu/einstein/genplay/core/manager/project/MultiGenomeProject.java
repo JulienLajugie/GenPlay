@@ -74,7 +74,7 @@ public class MultiGenomeProject implements Serializable {
 
 	private 	MGSMultiGenome 					multiGenome;					// The genome synchronization data structure.
 	private		MGSynchronizer					multiGenomeSynchronizer;		// The synchronizer for Indels and Structural Variant variations.
-	private		MGFileContentManager				fileContentManager;
+	private		MGFileContentManager			fileContentManager;
 
 
 	/**

@@ -93,6 +93,9 @@ public class MGDisplaySettings implements Serializable {
 	/** Color of the reference SNP stripes */
 	public static Color REFERENCE_SNP_COLOR = new Color(Colors.BLACK.getRed(), Colors.BLACK.getGreen(), Colors.BLACK.getBlue());
 
+	/** Color of the no call stripes */
+	public static Color NO_CALL_COLOR = new Color(Colors.GREY.getRed(), Colors.GREY.getGreen(), Colors.GREY.getBlue());
+
 	/** Current selected coordinate genome system */
 	public static String SELECTED_GENOME = CoordinateSystemType.METAGENOME.toString();
 	//private static String SELECTED_GENOME = null;

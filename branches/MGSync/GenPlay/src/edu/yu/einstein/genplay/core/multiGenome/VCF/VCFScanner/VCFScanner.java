@@ -29,6 +29,7 @@ import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 
 /**
  * @author Nicolas Fourel
@@ -142,7 +143,7 @@ public abstract class VCFScanner {
 			genotype = genotype.replace('|', '/');
 			String[] currentAltIndexes = genotype.split("/");
 			for (String currentAlt: currentAltIndexes) {
-				int current = line.getAlleleIndex(currentAlt);
+				int current = VCFLineUtility.getAlleleIndex(currentAlt);
 				if ((current != -1) && !altIndexes.contains(current)) {
 					altIndexes.add(current);
 				}

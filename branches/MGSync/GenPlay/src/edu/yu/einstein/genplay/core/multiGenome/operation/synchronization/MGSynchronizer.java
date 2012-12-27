@@ -22,6 +22,9 @@
 package edu.yu.einstein.genplay.core.multiGenome.operation.synchronization;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +42,8 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner.VCFGenomeScanner;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner.VCFScanner;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFScanner.VCFScannerReceiver;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFFileStatistics;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFStatistics.VCFSampleStatistics;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGLineContent;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSAllele;
 import edu.yu.einstein.genplay.core.multiGenome.data.synchronization.MGSGenome;
@@ -51,11 +56,15 @@ import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGSynchronizer implements VCFScannerReceiver {
+public class MGSynchronizer implements VCFScannerReceiver, Serializable {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = -6135675382773268961L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	/** Index for reference */
 	public final static int REFERENCE = -1;
+	/** Index for no call */
 	public final static int NO_CALL = -2;
-
 
 
 	private final MultiGenomeProject multiGenomeProject;
@@ -64,7 +73,40 @@ public class MGSynchronizer implements VCFScannerReceiver {
 	private Map<Chromosome, Integer> chromosomeIndexes;
 	private ChromosomeListOfLists<MGSOffset> referenceOffsetList;
 	private VCFFile currentFile;
+	private VCFFileStatistics currentStatistics;
 	private List<String> currentGenomes;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeIndexes);
+		out.writeObject(referenceOffsetList);
+		out.writeObject(currentFile);
+		out.writeObject(currentStatistics);
+		out.writeObject(currentGenomes);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeIndexes = (Map<Chromosome, Integer>) in.readObject();
+		referenceOffsetList = (ChromosomeListOfLists<MGSOffset>) in.readObject();
+		currentFile = (VCFFile) in.readObject();
+		currentStatistics = (VCFFileStatistics) in.readObject();
+		currentGenomes = (List<String>) in.readObject();
+	}
 
 
 	/**
@@ -93,12 +135,14 @@ public class MGSynchronizer implements VCFScannerReceiver {
 		for (VCFFile vcfFile: VCFFileList) {
 			chromosomeIndexes = new HashMap<Chromosome, Integer>();
 			currentFile = vcfFile;
+			currentStatistics = vcfFile.getStatistics();
 			currentGenomes = getRequiredGenomeNamesFromAReader(vcfFile);
 			VCFScanner scanner = new VCFGenomeScanner(this, vcfFile);
 			scanner.setGenomes(genomes);
 			scanner.setVariations(variations);
 			scanner.setFilters(filters);
 			scanner.compute();
+			currentStatistics.processStatistics();
 		}
 		multiGenomeProject.getFileContentManager().compact();
 	}
@@ -110,7 +154,9 @@ public class MGSynchronizer implements VCFScannerReceiver {
 		Chromosome chromosome = line.getChromosome();
 		int referencePosition = line.getReferencePosition();								// get the reference genome position (POS field)
 
-		// Set postion information
+		updateFileStatistics(currentStatistics, line.getAlternativesTypes(), line.getAlternatives());
+
+		// Set position information
 		MGLineContent position = new MGLineContent();
 		position.setReferenceGenomePosition(referencePosition);
 		position.setScore(line.getQuality());
@@ -129,6 +175,7 @@ public class MGSynchronizer implements VCFScannerReceiver {
 			for (int i = 0; i < currentAltIndexes.length; i++) {
 				int currentAltIndex = VCFLineUtility.getAlleleIndex(currentAltIndexes[i]);
 
+
 				switch (currentAltIndex) {
 				case NO_CALL:
 					byteGenotypeArray[i] = NO_CALL;
@@ -140,6 +187,7 @@ public class MGSynchronizer implements VCFScannerReceiver {
 					byteGenotypeArray[i] = (byte) currentAltIndex;
 					int alternativeLength = line.getAlternativesLength()[currentAltIndex];				// we retrieve its length
 					VariantType variantType = line.getAlternativesTypes()[currentAltIndex];				// get the type of variant according to the length of the variation
+					updateVariationSampleStatistics(currentStatistics.getSampleStatistics(genomeName), variantType, line.getAlternatives()[currentAltIndex]);
 					currentFile.addVariantType(genomeName, variantType);								// notice the reader of the variant type
 
 					if (variantType != VariantType.SNPS) {
@@ -152,6 +200,8 @@ public class MGSynchronizer implements VCFScannerReceiver {
 					break;
 				}
 			}
+
+			updateGenotypeSampleStatistics(currentStatistics.getSampleStatistics(genomeName), line.getAlternativesTypes(), byteGenotypeArray[0], byteGenotypeArray[1]);
 			genotypes.put(genomeName, byteGenotypeArray);
 		}
 
@@ -187,6 +237,133 @@ public class MGSynchronizer implements VCFScannerReceiver {
 	}
 
 
+	/**
+	 * Updates statistics related to the file
+	 * @param statistic		file statistics
+	 * @param variantTypes	variant type array
+	 * @param alternatives	alternatives array
+	 */
+	private void updateFileStatistics (VCFFileStatistics statistic, VariantType[] variantTypes, String[] alternatives) {
+		statistic.incrementNumberOfLines();
+		for (int i = 0; i < variantTypes.length; i++) {
+			if (variantTypes[i] == VariantType.SNPS) {
+				statistic.incrementNumberOfSNPs();
+			} else if (variantTypes[i] == VariantType.INSERTION) {
+				if (isStructuralVariant(alternatives[i])) {
+					statistic.incrementNumberOfLongInsertions();
+				} else {
+					statistic.incrementNumberOfShortInsertions();
+				}
+			} else if (variantTypes[i] == VariantType.DELETION) {
+				if (isStructuralVariant(alternatives[i])) {
+					statistic.incrementNumberOfLongDeletions();
+				} else {
+					statistic.incrementNumberOfShortDeletions();
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * @param statistic				sample statistics
+	 * @param variantTypes			array of variant types
+	 * @param firstAlleleNumber		number of the first allele
+	 * @param secondAlleleNumber	number of the second allele
+	 */
+	private void updateGenotypeSampleStatistics (VCFSampleStatistics statistic, VariantType[] variantTypes, int firstAlleleIndex, int secondAlleleIndex) {
+		boolean homozygote = isVariantHomozygote(firstAlleleIndex, secondAlleleIndex);
+		boolean heterozygote = isVariantHeterozygote(firstAlleleIndex, secondAlleleIndex);
+
+		for (VariantType variantType: variantTypes) {
+			if (homozygote) {
+				if (firstAlleleIndex > -1) {
+					if (variantType == VariantType.SNPS) {
+						statistic.incrementNumberOfHomozygoteSNPs();
+					} else if (variantType == VariantType.INSERTION) {
+						statistic.incrementNumberOfHomozygoteInsertions();
+					} else if (variantType == VariantType.DELETION) {
+						statistic.incrementNumberOfHomozygoteDeletions();
+					}
+				}
+			} else if (heterozygote) {
+				if (variantType == VariantType.SNPS) {
+					statistic.incrementNumberOfHeterozygoteSNPs();
+				} else if (variantType == VariantType.INSERTION) {
+					statistic.incrementNumberOfHeterozygoteInsertions();
+				} else if (variantType == VariantType.DELETION) {
+					statistic.incrementNumberOfHeterozygoteDeletions();
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Defines if a variant is homozygote according to its genotype.
+	 * @param firstAlleleNumber		number related to the "first" allele
+	 * @param secondAlleleNumber	number related to the "second" allele
+	 * @return	true if the variant is homozygote, false otherwise
+	 */
+	private boolean isVariantHomozygote (int firstAlleleNumber, int secondAlleleNumber) {
+		if ((firstAlleleNumber == secondAlleleNumber) && (firstAlleleNumber >= 0)) {
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * Defines if a variant is heterozygote according to its genotype.
+	 * @param firstAlleleNumber		number related to the "first" allele
+	 * @param secondAlleleNumber	number related to the "second" allele
+	 * @return	true if the variant is heterozygote, false otherwise
+	 */
+	private boolean isVariantHeterozygote (int firstAlleleNumber, int secondAlleleNumber) {
+		if (firstAlleleNumber != secondAlleleNumber) {
+			if ((firstAlleleNumber >= 0) || (secondAlleleNumber >= 0)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Updates statistics related to the sample
+	 * @param statistic		sample statistics
+	 * @param variantType	variant type
+	 * @param alternative	alternative
+	 */
+	private void updateVariationSampleStatistics (VCFSampleStatistics statistic, VariantType variantType, String alternative) {
+		if (variantType == VariantType.SNPS) {
+			statistic.incrementNumberOfSNPs();
+		} else if (variantType == VariantType.INSERTION) {
+			if (isStructuralVariant(alternative)) {
+				statistic.incrementNumberOfLongInsertions();
+			} else {
+				statistic.incrementNumberOfShortInsertions();
+			}
+		} else if (variantType == VariantType.DELETION) {
+			if (isStructuralVariant(alternative)) {
+				statistic.incrementNumberOfLongDeletions();
+			} else {
+				statistic.incrementNumberOfShortDeletions();
+			}
+		}
+	}
+
+
+	/**
+	 * @param alternative ALT field (or part of it)
+	 * @return true if the given alternative is coded as an SV
+	 */
+	private boolean isStructuralVariant (String alternative) {
+		if (alternative.charAt(0) == '<') {
+			return true;
+		}
+		return false;
+	}
 
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////	Synchronizes the data

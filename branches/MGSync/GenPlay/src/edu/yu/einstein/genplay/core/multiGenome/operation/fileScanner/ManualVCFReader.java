@@ -156,8 +156,8 @@ public class ManualVCFReader {
 
 		if (!currentLine.isLastLine() && currentLine.isValid()) {																											// The line has to be a valid line to be processed
 			currentLine.processForAnalyse();
-			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
-			VariantType[] variations = synchronizer.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
+			int[] lengths = VCFLineUtility.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());		// Retrieves the length of all defined variations of the line
+			VariantType[] variations = VCFLineUtility.getVariantTypes(lengths);																	// Converts the lengths into variation types (insertion, deletion...)
 
 			allValidIndex = new ArrayList<Integer>();																				// Initializes the array that will contain all valid alternative indexes of the line
 			allValidGenome = new ArrayList<String>();																				// Initializes the array that will contain all valid genome names of the line

@@ -39,7 +39,7 @@ public class MGByteArray implements Serializable {
 	/** Minimum value on 8Bit */
 	public static final int MIN_VALUE = Byte.MIN_VALUE;
 	/** Default serial version ID */
-	private static final long serialVersionUID = -494184754422121014L;
+	private static final long serialVersionUID = -7604153634475532044L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private static final int 	DEFAULT_SIZE = 700000;				// minimum length added every time the array is resized
 	private static final int 	RESIZE_MIN = 1000;					// minimum length added every time the array is resized

@@ -30,7 +30,6 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.AlleleType;
 import edu.yu.einstein.genplay.core.enums.CoordinateSystemType;
 import edu.yu.einstein.genplay.core.enums.VCFColumnName;
-import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderAdvancedType;
@@ -38,7 +37,7 @@ import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFHeaderType.VCFHeaderType;
 import edu.yu.einstein.genplay.core.multiGenome.operation.ExportEngine;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.FileScannerInterface;
 import edu.yu.einstein.genplay.core.multiGenome.operation.fileScanner.SingleFileScanner;
-import edu.yu.einstein.genplay.core.multiGenome.operation.synchronization.MGSynchronizer;
+import edu.yu.einstein.genplay.core.multiGenome.utils.VCFLineUtility;
 import edu.yu.einstein.genplay.util.Utils;
 
 
@@ -50,8 +49,6 @@ import edu.yu.einstein.genplay.util.Utils;
  * @version 0.1
  */
 public class MGOBedExportSingleFile extends ExportEngine {
-
-	private final MGSynchronizer 	synchronizer;
 
 	private final String 					fullGenomeName;			// The genome to export.
 	private final AlleleType				allele;					// The allele(s) to export.
@@ -71,7 +68,6 @@ public class MGOBedExportSingleFile extends ExportEngine {
 	 * @param coordinateSystem the coordinate system of the position to export the data
 	 */
 	public MGOBedExportSingleFile (String fullGenomeName, AlleleType allele, VCFHeaderType header, CoordinateSystemType coordinateSystem) {
-		this.synchronizer = ProjectManager.getInstance().getMultiGenomeProject().getMultiGenomeSynchronizer();
 		this.fullGenomeName = fullGenomeName;
 		this.allele = allele;
 		this.header = header;
@@ -176,10 +172,10 @@ public class MGOBedExportSingleFile extends ExportEngine {
 		String gt = currentLine.getFormatField(genomeIndex, 0).toString();
 		if (gt.length() == 3) {
 			Chromosome chromosome = currentLine.getChromosome();
-			int[] lengths = synchronizer.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());
+			int[] lengths = VCFLineUtility.getVariantLengths(currentLine.getREF(), Utils.split(currentLine.getALT(), ','), currentLine.getINFO());
 
 			for (AlleleSettingsBedExport alleleExport: fullAlleleList) {
-				int altIndex = synchronizer.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));
+				int altIndex = VCFLineUtility.getAlleleIndex(gt.charAt(alleleExport.getCharIndex()));
 				alleleExport.initializeCurrentInformation(lengths, currentLine, altIndex);
 			}
 

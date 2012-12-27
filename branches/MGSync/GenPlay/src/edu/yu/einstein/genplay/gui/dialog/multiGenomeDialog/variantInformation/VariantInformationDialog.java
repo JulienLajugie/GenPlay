@@ -37,6 +37,7 @@ import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.data.display.VariantDisplayListIterator;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
 import edu.yu.einstein.genplay.core.multiGenome.utils.FormattedMultiGenomeName;
 import edu.yu.einstein.genplay.gui.dialog.multiGenomeDialog.vcfLineDialog.VCFLineDialog;
@@ -146,7 +147,7 @@ public class VariantInformationDialog extends JDialog {
 	 * @param X X position on the screen
 	 * @param Y Y position on the screen
 	 */
-	public void show(List<Variant> variantList, Variant variant, int X, int Y) {
+	public void show(VariantDisplayListIterator iterator, Variant variant, int X, int Y) {
 		this.variantList = variantList;
 		this.currentVariant = variant;
 		refreshDialog();

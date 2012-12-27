@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.chromosome.Chromosome;
@@ -36,8 +40,11 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class VariantDisplayList {
+public class VariantDisplayList implements Serializable {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = 2664998644351746289L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	/** When a variant is shown */
 	public static byte SHOW = 0;
 	/** When a variant is hidden */
@@ -49,6 +56,36 @@ public class VariantDisplayList {
 	private byte[][] display;
 	private String genomeName;
 	private List<VariantType> types;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(variants);
+		out.writeObject(display);
+		out.writeObject(genomeName);
+		out.writeObject(types);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		variants = (List<List<Variant>>) in.readObject();
+		display = (byte[][]) in.readObject();
+		genomeName = (String) in.readObject();
+		types = (List<VariantType>) in.readObject();
+	}
 
 
 	/**
@@ -77,14 +114,7 @@ public class VariantDisplayList {
 	public void generateLists () {
 		VariantDisplayListBuilder builder = new VariantDisplayListBuilder();
 		variants = builder.getList(genomeName, types);
-	}
-
-
-	/**
-	 * @return the variants
-	 */
-	public List<List<Variant>> getVariants() {
-		return variants;
+		builder = null;
 	}
 
 
@@ -134,19 +164,77 @@ public class VariantDisplayList {
 
 
 	/**
-	 * @return the display
-	 */
-	public byte[][] getDisplay() {
-		return display;
-	}
-
-
-	/**
 	 * @param alleleIndex the index of the allele to iterate
 	 * @return a specific iterator for {@link VariantDisplayListIterator}
 	 */
 	public VariantDisplayListIterator getIterator (int alleleIndex) {
 		return new VariantDisplayListIterator(this, alleleIndex);
+	}
+
+
+	/**
+	 * @param alleleIndex			the index of an allele
+	 * @param metaGenomePosition	a meta genome position
+	 * @return the variant at the given allele and meta genome position, null if not found
+	 */
+	public Variant getVariant (int alleleIndex, int metaGenomePosition) {
+		Variant variant = null;
+		int index = getIndex(variants.get(alleleIndex), metaGenomePosition);
+		if (index > -1) {
+			variant = variants.get(0).get(index);
+		}
+		return variant;
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the value is found or -1 if the exact value is not found.
+	 * @param list
+	 * @param value	value
+	 * @return the index where the start value of the window is found or -1 if the value is not found
+	 */
+	public int getIndex (List<Variant> list, int value) {
+		int index = getIndex(list, value, 0, list.size() - 1);
+		int start = list.get(index).getStart();
+		int stop = list.get(index).getStop();
+		if ((value >= start) && (value < stop)) {
+			return index;
+		}
+		return -1;
+	}
+
+
+	/**
+	 * Recursive function. Returns the index where the value is found
+	 * or the index right after if the exact value is not found.
+	 * @param value			value
+	 * @param indexStart	start index (in the data array)
+	 * @param indexStop		stop index (in the data array)
+	 * @return the index where the start value of the window is found or the index right after if the exact value is not found
+	 */
+	private int getIndex (List<Variant> list, int value, int indexStart, int indexStop) {
+		int middle = (indexStop - indexStart) / 2;
+		if (indexStart == indexStop) {
+			return indexStart;
+		} else {
+			int start = list.get(indexStart + middle).getStart();
+			int stop = list.get(indexStart + middle).getStop();
+			if ((value >= start) && (value < stop)) {
+				return indexStart + middle;
+			} else if (value > start) {
+				return getIndex(list, value, indexStart + middle + 1, indexStop);
+			} else {
+				return getIndex(list, value, indexStart, indexStart + middle);
+			}
+		}
+	}
+
+
+	/**
+	 * @return the variants
+	 */
+	public List<List<Variant>> getVariants() {
+		return variants;
 	}
 
 
@@ -157,4 +245,11 @@ public class VariantDisplayList {
 		return genomeName;
 	}
 
+
+	/**
+	 * @return the display
+	 */
+	public byte[][] getDisplay() {
+		return display;
+	}
 }

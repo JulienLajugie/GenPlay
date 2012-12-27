@@ -14,12 +14,13 @@
  *
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *     
+ * 
  *     Authors:	Julien Lajugie <julien.lajugie@einstein.yu.edu>
  *     			Nicolas Fourel <nicolas.fourel@einstein.yu.edu>
  *     Website: <http://genplay.einstein.yu.edu>
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.synchronization;
+
 
 
 /**
@@ -49,11 +50,11 @@ public class MGSOffset {
 		this.value = 0;
 	}
 
-	
+
 	/**
 	 * Constructor of {@link MGSOffset}
 	 * @param position 	position
-	 * @param value		value for this position 
+	 * @param value		value for this position
 	 */
 	public MGSOffset (int position, int value) {
 		this.position = position;
@@ -91,8 +92,8 @@ public class MGSOffset {
 	public void setValue(int value) {
 		this.value = value;
 	}
-	
-	
+
+
 	/**
 	 * Show the information of the {@link MGSOffset}
 	 */

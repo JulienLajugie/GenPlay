@@ -35,7 +35,7 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGLineConte
 public class MGIntegerArray implements Serializable {
 
 	/** Default serial version ID */
-	private static final long serialVersionUID = -494184754422121014L;
+	private static final long serialVersionUID = 3395817941269577574L;
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private static final int 	DEFAULT_SIZE = 700000;				// minimum length added every time the array is resized
 	private static final int 	RESIZE_MIN = 1000;					// minimum length added every time the array is resized

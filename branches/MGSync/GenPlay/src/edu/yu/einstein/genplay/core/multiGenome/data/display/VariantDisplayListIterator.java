@@ -50,13 +50,10 @@ public class VariantDisplayListIterator {
 
 
 	/**
-	 * @return true if there is an element at the next position, flase otherwise
+	 * @return true if there is an element at the next position, false otherwise
 	 */
 	public boolean hasNext() {
-		if ((currentIndex + 1) < variantList.size()) {
-			return true;
-		}
-		return false;
+		return inBound(currentIndex + 1);
 	}
 
 
@@ -65,9 +62,31 @@ public class VariantDisplayListIterator {
 	 */
 	public Variant next() {
 		currentIndex++;
-		return variantList.get(currentIndex);
+		return getCurrentVariant();
 	}
 
+
+	/**
+	 * @return the current {@link Variant}
+	 */
+	public Variant getCurrentVariant () {
+		if (inBound()) {
+			return variantList.get(currentIndex);
+		}
+		return null;
+	}
+
+
+	private boolean inBound () {
+		return inBound(currentIndex);
+	}
+
+	private boolean inBound (int index) {
+		if ((index >= 0) && (index < variantList.size())) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * @return the display policy of the current variant

@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.content;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +39,36 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.variant.Variant;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGFileContentManager {
+public class MGFileContentManager implements Serializable {
 
-	private final Map<VCFFile, Map<Chromosome, MGChromosomeContent>> lists;
+	/** Default serial version ID */
+	private static final long serialVersionUID = 4837189232012683529L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private Map<VCFFile, Map<Chromosome, MGChromosomeContent>> lists;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(lists);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		lists = (Map<VCFFile, Map<Chromosome, MGChromosomeContent>>) in.readObject();
+	}
 
 
 	/**
@@ -94,14 +125,20 @@ public class MGFileContentManager {
 			List<Chromosome> chromosomeList = new ArrayList<Chromosome>(lists.get(file).keySet());
 			for (Chromosome chromosome: chromosomeList) {
 				if (!chromosome.equals(currentChromosome)) {
-					lists.get(file).get(currentChromosome).removeVariants();
+					MGChromosomeContent content = lists.get(file).get(currentChromosome);
+					if (content != null) {
+						content.removeVariants();
+					}
 				}
 			}
 		}
 
 		// Load variants
 		for (VCFFile file: fileList) {
-			lists.get(file).get(currentChromosome).generateVariants();
+			MGChromosomeContent content = lists.get(file).get(currentChromosome);
+			if (content != null) {
+				content.generateVariants();
+			}
 		}
 	}
 

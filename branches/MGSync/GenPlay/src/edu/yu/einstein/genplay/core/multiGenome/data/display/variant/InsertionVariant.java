@@ -30,6 +30,9 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosom
  */
 public class InsertionVariant extends MultiNucleotideVariant {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = -4204229667840781053L;
+
 
 	/**
 	 * Constructor of {@link InsertionVariant}

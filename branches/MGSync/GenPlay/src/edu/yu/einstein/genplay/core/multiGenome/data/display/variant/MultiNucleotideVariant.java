@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
 
 /**
@@ -29,7 +33,34 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosom
  */
 public abstract class MultiNucleotideVariant extends Variant {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = 2110639494515633073L;
 	protected int stop;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	@Override
+	protected void writeObject(ObjectOutputStream out) throws IOException {
+		super.writeObject(out);
+		out.writeInt(stop);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@Override
+	protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		super.readObject(in);
+		stop = in.readInt();
+	}
 
 
 	/**

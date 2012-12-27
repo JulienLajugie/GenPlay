@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.synchronization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.comparator.MGOffsetComparator;
@@ -35,9 +39,35 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGSReference {
+public class MGSReference implements Serializable {
 
-	private final MGSAllele allele;
+	/** Default serial version ID */
+	private static final long serialVersionUID = -7912709879126635029L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private MGSAllele allele;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(allele);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		allele = (MGSAllele) in.readObject();
+	}
 
 
 	/**

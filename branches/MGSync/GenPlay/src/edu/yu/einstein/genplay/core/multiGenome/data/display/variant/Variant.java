@@ -21,18 +21,59 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.variant;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.List;
+
+import edu.yu.einstein.genplay.core.chromosome.Chromosome;
 import edu.yu.einstein.genplay.core.enums.VariantType;
+import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFLine;
+import edu.yu.einstein.genplay.core.multiGenome.VCF.VCFFile.VCFFile;
 import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosomeContent;
 
 /**
  * @author Nicolas Fourel
  * @version 0.1
  */
-public abstract class Variant {
+public abstract class Variant implements Serializable {
 
-	protected final MGChromosomeContent chromosomeContent;
-	protected final int referencePositionIndex;
+	/** Default serial version ID */
+	private static final long serialVersionUID = 7940616840753151748L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+
+	protected MGChromosomeContent chromosomeContent;
+	protected int referencePositionIndex;
 	protected int start;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	protected void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosomeContent);
+		out.writeInt(referencePositionIndex);
+		out.writeInt(start);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	protected void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosomeContent = (MGChromosomeContent) in.readObject();
+		referencePositionIndex = in.readInt();
+		start = in.readInt();
+	}
 
 
 	/**
@@ -144,8 +185,107 @@ public abstract class Variant {
 	}
 
 
+	/**
+	 * @return the sequence of nucleotide for the variant
+	 */
 	public String getVariantSequence() {
+		// TODO Code it!
 		return ".";
 	}
 
+
+	/**
+	 * @return the {@link VCFLine} of the variant, null if not found or for special {@link Variant} such as {@link MixVariant}
+	 */
+	public VCFLine getVCFLine() {
+		if (chromosomeContent == null) {
+			return null;
+		}
+
+		Chromosome chromosome = chromosomeContent.getChromosome();
+		int referencePosition = getReferenceGenomePosition();
+		VCFFile file = ProjectManager.getInstance().getMultiGenomeProject().getFileContentManager().getFile(chromosome, chromosomeContent);
+		List<String> results = null;
+		try {
+			results = file.getReader().query(chromosome.getName(), referencePosition, referencePosition);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if ((results != null) && (results.size() > 0)) {
+			return new VCFLine(results.get(0), file.getHeader());
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is an alternative, false otherwise
+	 */
+	public boolean isAlternative () {
+		return (this instanceof InsertionVariant) || (this instanceof DeletionVariant) || (this instanceof SNPVariant);
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is a {@link ReferenceVariant}, false otherwise
+	 */
+	public boolean isReference () {
+		return (this instanceof ReferenceVariant);
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is a {@link NoCallVariant}, false otherwise
+	 */
+	public boolean isNoCall () {
+		return (this instanceof NoCallVariant);
+	}
+
+
+	/**
+	 * @return true if the {@link Variant} is a {@link MixVariant}, false otherwise
+	 */
+	public boolean isMix () {
+		return (this instanceof MixVariant);
+	}
+
+
+	/**
+	 * A variant is dominant according to the following order of importance:
+	 * - is an alternative
+	 * - is a reference
+	 * - is a no call
+	 * - is a mix of variants
+	 * 
+	 * If the given variant is null, the current variant is dominant.
+	 * If both, current and given, variants are not at the same position, none of them is dominant.
+	 * If both, current and given, variants have the same type, both of them are dominants.
+	 * 
+	 * @param variant the variant to compare
+	 * @return	true if the current variant is dominant compare to the given variant, false otherwise
+	 */
+	public boolean isDominant (Variant variant) {
+		Boolean result = false;
+
+		if (variant == null) {
+			result = true;
+		} else if (getStart() == variant.getStart()) {
+			if (	(isAlternative() && variant.isAlternative()) ||
+					(isReference() && variant.isReference()) ||
+					(isNoCall() && variant.isNoCall()) ||
+					(isMix() && variant.isMix())){
+				result = true;
+			} else if (isAlternative() && (variant.isMix() || variant.isReference()  || variant.isNoCall())) {
+				result = true;
+			} else if (isReference() && (variant.isNoCall() || variant.isMix())) {
+				result = true;
+			} else if (isNoCall() && variant.isMix()) {
+				result = true;
+			}
+		}
+
+		return result;
+	}
 }

@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.display.content;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,14 +40,51 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.array.MGIntegerArra
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGChromosomeContent implements Iterable<MGLineContent> {
+public class MGChromosomeContent implements Iterable<MGLineContent>, Serializable {
 
-	private final Chromosome chromosome;
-	private final MGIntegerArray positions;
-	private final MGFloatArray scores;
-	private final List<MGIntegerArray> alternatives;
-	private final Map<String, List<MGByteArray>> genotypes;
+	/** Default serial version ID */
+	private static final long serialVersionUID = -8385957556240550523L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private Chromosome chromosome;
+	private MGIntegerArray positions;
+	private MGFloatArray scores;
+	private List<MGIntegerArray> alternatives;
+	private Map<String, List<MGByteArray>> genotypes;
 	private MGChromosomeVariants variants;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(chromosome);
+		out.writeObject(positions);
+		out.writeObject(scores);
+		out.writeObject(alternatives);
+		out.writeObject(genotypes);
+		out.writeObject(variants);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		chromosome = (Chromosome) in.readObject();
+		positions = (MGIntegerArray) in.readObject();
+		scores = (MGFloatArray) in.readObject();
+		alternatives = (List<MGIntegerArray>) in.readObject();
+		genotypes = (Map<String, List<MGByteArray>>) in.readObject();
+		variants = (MGChromosomeVariants) in.readObject();
+	}
 
 
 	/**
@@ -242,6 +283,21 @@ public class MGChromosomeContent implements Iterable<MGLineContent> {
 	 */
 	public int getMaxAlternativeNumber () {
 		return alternatives.size();
+	}
+
+
+	/**
+	 * Scan the genotype arrays of each sample in order to determine the widest haplotype.
+	 * @return the biggest haplotype (1 if haploide, 2 if diploide...), 0 otherwise
+	 */
+	public int getMaxGenotypeNumber () {
+		int count = 0;
+		for (List<MGByteArray> genotype: genotypes.values()) {
+			if ((genotype != null) && (genotype.size() > 0)) {
+				count = Math.max(count, genotype.size());
+			}
+		}
+		return count;
 	}
 
 

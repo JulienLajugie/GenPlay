@@ -29,6 +29,9 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosom
  */
 public abstract class SingleNucleotideVariant extends Variant{
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = -7425241983247972533L;
+
 
 	/**
 	 * Constructor of {@link SingleNucleotideVariant}

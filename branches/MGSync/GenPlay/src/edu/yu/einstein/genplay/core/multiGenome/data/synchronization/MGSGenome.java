@@ -21,6 +21,10 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.core.multiGenome.data.synchronization;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +35,39 @@ import edu.yu.einstein.genplay.core.enums.AlleleType;
  * @author Nicolas Fourel
  * @version 0.1
  */
-public class MGSGenome {
+public class MGSGenome implements Serializable {
 
-	private final String name;
-	private final List<MGSAllele> alleles;
+	/** Default serial version ID */
+	private static final long serialVersionUID = -910049079866828194L;
+	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
+	private String name;
+	private List<MGSAllele> alleles;
+
+
+	/**
+	 * Method used for serialization
+	 * @param out
+	 * @throws IOException
+	 */
+	private void writeObject(ObjectOutputStream out) throws IOException {
+		out.writeInt(SAVED_FORMAT_VERSION_NUMBER);
+		out.writeObject(name);
+		out.writeObject(alleles);
+	}
+
+
+	/**
+	 * Method used for unserialization
+	 * @param in
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+		in.readInt();
+		name = (String) in.readObject();
+		alleles = (List<MGSAllele>) in.readObject();
+	}
 
 
 	/**

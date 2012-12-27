@@ -30,6 +30,9 @@ import edu.yu.einstein.genplay.core.multiGenome.data.display.content.MGChromosom
  */
 public class DeletionVariant extends MultiNucleotideVariant {
 
+	/** Default serial version ID */
+	private static final long serialVersionUID = 8397803252184340404L;
+
 
 	/**
 	 * Constructor of {@link DeletionVariant}
