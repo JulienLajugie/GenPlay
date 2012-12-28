@@ -278,7 +278,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 
 
 	@Override
-	public double getCurrentScoreToDisplay() {
+	public Double getCurrentScoreToDisplay() {
 		if (getData() != null) {
 			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(projectWindow.getGenomeWindow().getChromosome());
@@ -287,7 +287,7 @@ public class BinLayer extends AbstractLayer<BinList> implements Layer<BinList>, 
 				return getData().get(currentChromosome, indexMid);
 			}
 		}
-		return 0;
+		return 0d;
 	}
 
 

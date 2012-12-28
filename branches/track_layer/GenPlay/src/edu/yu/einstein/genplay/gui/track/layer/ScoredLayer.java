@@ -44,5 +44,5 @@ public interface ScoredLayer {
 	/**
 	 * @return the current displayed score (the score at the middle of the track)
 	 */
-	abstract double getCurrentScoreToDisplay();
+	abstract Double getCurrentScoreToDisplay();
 }

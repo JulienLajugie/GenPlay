@@ -95,6 +95,7 @@ public class TAAddGeneLayerFromDAS extends TrackListActionWorker<GeneList> {
 		if (actionResult != null) {
 			GeneLayer newLayer = new GeneLayer(selectedTrack, actionResult, dataSource.getName());
 			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
 		}
 	}
 }

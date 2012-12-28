@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.track.layer;
 
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.InputEvent;
@@ -30,13 +31,17 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.net.URI;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.yu.einstein.genplay.core.Gene;
 import edu.yu.einstein.genplay.core.list.geneList.GeneList;
 import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
+import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
@@ -46,7 +51,7 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  * Layer displaying a {@link GeneList}
  * @author Julien Lajugie
  */
-public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList>, MouseListener, MouseMotionListener, MouseWheelListener {
+public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList>, ScoredLayer, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private static final double				MIN_X_RATIO_PRINT_NAME =
@@ -60,7 +65,9 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 	private int 							geneLinesCount;					// number of line of genes
 	private int 							mouseStartDragY = -1;			// position of the mouse when start dragging
 	private Gene 							geneUnderMouse = null;			// gene under the cursor of the mouse
-
+	private double 							min;							// minimum score of the GeneList to display
+	private double							max;							// maximum score of the GeneList to display
+	
 
 	/**
 	 * Creates an instance of a {@link GeneLayer}
@@ -74,8 +81,8 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 		geneLinesCount = 0;
 		mouseStartDragY = -1;
 		geneUnderMouse = null;
+		setSaturatedMinMax();
 	}
-
 
 
 	/**
@@ -200,6 +207,48 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 	}
 
 
+	@Override
+	public Double getCurrentScoreToDisplay() {
+		// we return null because they could be more than one score to display at a position
+		return null;
+	}
+
+
+	@Override
+	public double getMaximumScoreToDisplay() {
+		return max;
+	}
+
+
+	@Override
+	public double getMinimumScoreToDisplay() {
+		return min;
+	}
+
+
+	@Override
+	public LayerType getType() {
+		return LayerType.GENE_LAYER;
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// if a gene is double clicked
+		if ((e.getClickCount() == 2) && (geneUnderMouse != null)) {
+			// if the desktop is supported
+			if ((getData().getSearchURL() != null) && (Desktop.isDesktopSupported())) {
+				try {
+					// we open a browser showing information on the gene
+					Desktop.getDesktop().browse(new URI(getData().getSearchURL() + geneUnderMouse.getName()));
+				} catch (Exception e1) {
+					ExceptionManager.handleException(getTrack().getRootPane(), e1, "Error while opening the web browser");
+				}
+			}
+		}
+	}
+
+
 	/**
 	 * Changes the scroll position of the panel when mouse dragged with the right button
 	 */
@@ -226,6 +275,14 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 			}
 		}
 	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+
+
+	@Override
+	public void mouseExited(MouseEvent e) {}
 
 
 	/**
@@ -288,8 +345,8 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 			}
 			// unset the tool text and the mouse cursor if there is no gene under the mouse
 			if (geneUnderMouse == null) {
-				getTrack().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
-				getTrack().setToolTipText(null);
+				getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+				getTrack().getGraphicsPanel().setToolTipText(null);
 			} else {
 				// if there is a gene under the mouse we also check
 				// if there is an exon with a score under the mouse cursor
@@ -307,13 +364,13 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 					}
 				}
 				// set the cursor and the tooltip text if there is a gene under the mouse cursor
-				getTrack().setCursor(new Cursor(Cursor.HAND_CURSOR));
+				getTrack().getGraphicsPanel().setCursor(new Cursor(Cursor.HAND_CURSOR));
 				if (scoreUnderMouse == null) {
 					// if there is a gene but no exon score
-					getTrack().setToolTipText(geneUnderMouse.getName());
+					getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName());
 				} else {
 					// if there is a gene and an exon score
-					getTrack().setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
+					getTrack().getGraphicsPanel().setToolTipText(geneUnderMouse.getName() + ": " +  SCORE_FORMAT.format(scoreUnderMouse));
 				}
 			}
 			// we repaint the track only if the gene under the mouse changed
@@ -334,6 +391,11 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 			mouseStartDragY = e.getY();
 		}
 	}
+	
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
 
 
 	/**
@@ -351,50 +413,36 @@ public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList
 	}
 
 
-/*	@Override
-	public double getCurrentScoreToDisplay() {
-		if (getData() != null) {
-			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			short currentChromosome = ProjectManager.getInstance().getProjectChromosome().getIndex(projectWindow.getGenomeWindow().getChromosome());
-			int indexMid = (int) (projectWindow.getGenomeWindow().getMiddlePosition() / (double) getData().getBinSize());
-			if ((getData().get(currentChromosome) != null) && (indexMid < getData().size(currentChromosome))) {
-				return getData().get(currentChromosome, indexMid);
+
+	/**
+	 *  Computes the minimum and maximum saturated values of the exon scores
+	 */
+	private void setSaturatedMinMax() {
+		// put the scores of every exon in a big list
+		List<Double> scoreList = new ArrayList<Double>();
+		for (List<Gene> currentList: getData()) {
+			if ((currentList != null) && (!currentList.isEmpty())) {
+				for (Gene currentGene: currentList) {
+					if (currentGene.getExonScores() != null) {
+						for (double currentScore: currentGene.getExonScores()) {
+							if (currentScore != 0) {
+								scoreList.add(currentScore);
+							}
+						}
+
+					}
+				}
 			}
 		}
-		return 0;
+		if (!scoreList.isEmpty()) {
+			// sort the list
+			Collections.sort(scoreList);
+
+			int minIndex = (int)(SCORE_SATURATION * scoreList.size());
+			int maxIndex = scoreList.size() - (int)(SCORE_SATURATION * scoreList.size());
+
+			min = scoreList.get(minIndex - 1);
+			max = scoreList.get(maxIndex - 1);
+		}
 	}
-
-
-	@Override
-	public double getMaximumScoreToDisplay() {
-		return new BLOMaxScoreToDisplay(getData()).compute();
-	}
-
-
-	@Override
-	public double getMinimumScoreToDisplay() {
-		return new BLOMinScoreToDisplay(getData()).compute();
-	}*/
-
-
-	@Override
-	public LayerType getType() {
-		return LayerType.GENE_LAYER;
-	}
-
-
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-
-
-	@Override
-	public void mouseExited(MouseEvent e) {}
-
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
 }

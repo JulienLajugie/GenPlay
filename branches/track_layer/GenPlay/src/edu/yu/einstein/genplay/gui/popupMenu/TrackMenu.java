@@ -27,6 +27,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import edu.yu.einstein.genplay.gui.action.track.TAAddLayer;
+import edu.yu.einstein.genplay.gui.action.track.TAAddLayerFromDAS;
 import edu.yu.einstein.genplay.gui.action.track.TACopy;
 import edu.yu.einstein.genplay.gui.action.track.TACut;
 import edu.yu.einstein.genplay.gui.action.track.TADelete;
@@ -48,7 +49,9 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	private static final long serialVersionUID = -7063797741454351041L; // generated serial ID
 	
 	/**
-	 *  keys of the actions of this menu
+	 *  Keys of the actions of this menu
+	 *  The menu items appears in the same order as in this array
+	 *  A null key inserts a separator
 	 */
 	private static final String[] ACTION_KEYS = {
 		TACopy.ACTION_KEY,
@@ -60,17 +63,26 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 		TASaveAsImage.ACTION_KEY,
 		TASetHeight.ACTION_KEY,
 		TASetVerticalLineCount.ACTION_KEY,
-		TAAddLayer.ACTION_KEY
+		null,
+		TAAddLayer.ACTION_KEY,
+		TAAddLayerFromDAS.ACTION_KEY
 	};
-	private Track track;
+	
+	
+	private Track track; // selected track
 
+	
 	/**
 	 * Creates an instance of {@link TrackMenu}
 	 * @param actionMap action map containing the the actions of the menu
 	 */
 	public TrackMenu(ActionMap actionMap) {
 		for (String currentKey: ACTION_KEYS) {
-			add(actionMap.get(currentKey));
+			if (currentKey == null) {
+				addSeparator();
+			} else {
+				add(actionMap.get(currentKey));
+			}
 		}
 	}
 

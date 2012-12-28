@@ -21,7 +21,6 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.track;
 
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -206,32 +205,34 @@ public class GraphicsPanel extends JPanel implements Serializable, ComponentList
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		// mouse wheel rotated -> zoom in or out
-		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		ProjectZoom projectZoom = ProjectManager.getInstance().getProjectZoom();
-		int newZoom = 0;
-		int weelRotation = Math.abs(e.getWheelRotation());
-		boolean isZoomIn = e.getWheelRotation() > 0;
-		for (int i = 0; i < weelRotation; i++) {
-			if (isZoomIn) {
-				newZoom = projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize());
-			} else {
-				newZoom = projectZoom.getNextZoomOut(projectWindow.getGenomeWindow().getSize());
+		// mouse wheel rotated (without modifier) -> zoom in or out
+		if (e.getModifiers() == 0) {
+			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+			ProjectZoom projectZoom = ProjectManager.getInstance().getProjectZoom();
+			int newZoom = 0;
+			int weelRotation = Math.abs(e.getWheelRotation());
+			boolean isZoomIn = e.getWheelRotation() > 0;
+			for (int i = 0; i < weelRotation; i++) {
+				if (isZoomIn) {
+					newZoom = projectZoom.getNextZoomIn(projectWindow.getGenomeWindow().getSize());
+				} else {
+					newZoom = projectZoom.getNextZoomOut(projectWindow.getGenomeWindow().getSize());
+				}
+				newZoom = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength() * 2, newZoom);
 			}
-			newZoom = Math.min(projectWindow.getGenomeWindow().getChromosome().getLength() * 2, newZoom);
+			GenomeWindow newWindow = new GenomeWindow();
+			newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
+			newWindow.setStart((int)(projectWindow.getGenomeWindow().getMiddlePosition() - (newZoom / 2)));
+			newWindow.setStop(newWindow.getStart() + newZoom);
+			projectWindow.setGenomeWindow(newWindow);
 		}
-		GenomeWindow newWindow = new GenomeWindow();
-		newWindow.setChromosome(projectWindow.getGenomeWindow().getChromosome());
-		newWindow.setStart((int)(projectWindow.getGenomeWindow().getMiddlePosition() - (newZoom / 2)));
-		newWindow.setStop(newWindow.getStart() + newZoom);
-		projectWindow.setGenomeWindow(newWindow);
 	}
 
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
+		g.setFont(TrackConstants.FONT);
 		//g.setClip(0, 0, getWidth(), getHeight());
 		if (drawers != null) {
 			// tell the drawers to draw

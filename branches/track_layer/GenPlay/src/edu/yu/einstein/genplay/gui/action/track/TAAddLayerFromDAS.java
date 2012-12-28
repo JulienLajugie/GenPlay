@@ -45,10 +45,10 @@ import edu.yu.einstein.genplay.gui.track.Track;
  */
 public class TAAddLayerFromDAS extends TrackListAction {
 
-	private static final long serialVersionUID = -4045220235804063954L;	// generated ID
-	private static final String ACTION_NAME = "Load from DAS Server"; 	// action name
-	private static final String DESCRIPTION = "Load a layer from " +
-			"data retrieved from a DAS server"; 						// tooltip
+	private static final long serialVersionUID = -4045220235804063954L;		// generated ID
+	private static final String ACTION_NAME = "Add Layer From DAS Server"; 	// action name
+	private static final String DESCRIPTION = "Add a layer from " +
+			"data retrieved from a DAS server"; 							// tooltip
 
 
 	/**

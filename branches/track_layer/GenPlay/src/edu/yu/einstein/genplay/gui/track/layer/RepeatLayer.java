@@ -163,12 +163,6 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	}
 
 
-	@Override
-	public LayerType getType() {
-		return LayerType.REPEAT_FAMILY_LAYER;
-	}
-
-
 	/**
 	 * Generates the sorted list of the repeat families of the track
 	 */
@@ -187,6 +181,27 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 
 
 	/**
+	 * @param yPosition a y position on the track
+	 * @return the repeat family at this y position. Null if none
+	 */
+	private String getFamilyRolledOver(int yPosition) {
+		int repeatHeight = REPEAT_HEIGHT + (2 * SPACE_HEIGHT);
+		int highlightedFamilyIndex = (int) (yPosition / repeatHeight) + firstLineToDisplay;
+		if (highlightedFamilyIndex >= familyNames.size()) {
+			return null;
+		} else {
+			return familyNames.get(highlightedFamilyIndex);
+		}
+	}
+
+
+	@Override
+	public LayerType getType() {
+		return LayerType.REPEAT_FAMILY_LAYER;
+	}
+
+
+	/**
 	 * Associates a {@link Color} to an integer value
 	 * @param i integer value
 	 * @return a {@link Color}
@@ -199,16 +214,23 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 
 
 	/**
-	 * @param yPosition a y position on the track
-	 * @return the repeat family at this y position. Null if none
+	 * Sets the selected family when a the user double right click on one
 	 */
-	private String getFamilyRolledOver(int yPosition) {
-		int repeatHeight = REPEAT_HEIGHT + (2 * SPACE_HEIGHT);
-		int highlightedFamilyIndex = (int) (yPosition / repeatHeight) + firstLineToDisplay;
-		if (highlightedFamilyIndex >= familyNames.size()) {
-			return null;
-		} else {
-			return familyNames.get(highlightedFamilyIndex);
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// handle right clicks
+		if ((e.getModifiers() == InputEvent.BUTTON3_MASK) && (e.getClickCount() == 2)){
+			if (selectedFamilyName != null) {
+				selectedFamilyName = null;
+				getTrack().repaint();
+			} else {
+				int mouseYPosition = e.getPoint().y;
+				String newSelectedFamilyName = getFamilyRolledOver(mouseYPosition);
+				if (newSelectedFamilyName != selectedFamilyName) {
+					selectedFamilyName = newSelectedFamilyName;
+					getTrack().repaint();
+				}
+			}
 		}
 	}
 
@@ -232,29 +254,14 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	}
 
 
-	/**
-	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
-	 */
 	@Override
-	public void mousePressed(MouseEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			mouseStartDragY = e.getY();
-		}
-	}
+	public void mouseEntered(MouseEvent e) {}
 
 
-	/**
-	 * Changes the scroll position of the panel when the wheel of the mouse is used with the right button
-	 */
 	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
-			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
-					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= repeatLinesCount))) {
-				firstLineToDisplay += e.getWheelRotation();
-				getTrack().repaint();
-			}
-		}
+	public void mouseExited(MouseEvent e) {
+		highlightedFamilyName = null;
+		getTrack().repaint();
 	}
 
 
@@ -272,36 +279,32 @@ public class RepeatLayer extends AbstractLayer<RepeatFamilyList> implements Laye
 	}
 
 
+	/**
+	 * Sets the variable mouseStartDragY when the user press the right button of the mouse
+	 */
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		// handle right clicks
-		if ((e.getModifiers() == InputEvent.BUTTON3_MASK) && (e.getClickCount() == 2)){
-			if (selectedFamilyName != null) {
-				selectedFamilyName = null;
-				getTrack().repaint();
-			} else {
-				int mouseYPosition = e.getPoint().y;
-				String newSelectedFamilyName = getFamilyRolledOver(mouseYPosition);
-				if (newSelectedFamilyName != selectedFamilyName) {
-					selectedFamilyName = newSelectedFamilyName;
-					getTrack().repaint();
-				}
-			}
+	public void mousePressed(MouseEvent e) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+			mouseStartDragY = e.getY();
 		}
 	}
 
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		highlightedFamilyName = null;
-		getTrack().repaint();
-	}
-
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-
-
-	@Override
 	public void mouseReleased(MouseEvent e) {}
+
+
+	/**
+	 * Changes the scroll position of the panel when the wheel of the mouse is used with the right button
+	 */
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		if (e.getModifiers() == InputEvent.BUTTON3_MASK) {
+			if (((e.getWheelRotation() < 0) && ((e.getWheelRotation() + firstLineToDisplay) >= 0))
+					|| ((e.getWheelRotation() > 0) && ((e.getWheelRotation() + firstLineToDisplay) <= repeatLinesCount))) {
+				firstLineToDisplay += e.getWheelRotation();
+				getTrack().repaint();
+			}
+		}
+	}
 }

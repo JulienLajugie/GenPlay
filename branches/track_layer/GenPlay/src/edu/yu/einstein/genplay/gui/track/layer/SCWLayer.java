@@ -239,12 +239,12 @@ public class SCWLayer extends AbstractLayer<ScoredChromosomeWindowList> implemen
 
 
 	@Override
-	public double getCurrentScoreToDisplay() {
+	public Double getCurrentScoreToDisplay() {
 		if (getData() != null) {
 			double middlePosition = ProjectManager.getInstance().getProjectWindow().getGenomeWindow().getMiddlePosition();
 			return getData().getScore((int) middlePosition);
 		} else {
-			return 0;
+			return 0d;
 		}
 	}
 

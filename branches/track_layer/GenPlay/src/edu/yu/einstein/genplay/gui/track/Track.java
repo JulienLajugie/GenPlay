@@ -23,7 +23,6 @@ package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -66,7 +65,6 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 
 	private static final long 				serialVersionUID = 818958034840761257L;	// generated ID
 	private static final int  				SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
-	private static int 						graphicsWidth;							// with of the track graphics (static because all track should have the same width in a project)
 	private final Layer<BackgroundData> 	backgroundLayer;						// background layer of the track (with the vertical and horizontal lines)
 	private final Layer<ForegroundData> 	foregroundLayer;						// foreground layer of the track (with the track name and the multi genome legend)
 	private final TrackScore				score;									// score of the track
@@ -113,7 +111,7 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		score = new TrackScore(this);
 
 		// Set the font of the project
-		setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
+		setFont(TrackConstants.FONT);
 
 		// Set the border of the track
 		setBorder(TrackConstants.REGULAR_BORDER);
@@ -218,6 +216,14 @@ public class Track extends JPanel implements Serializable, GenomeWindowListener,
 		return backgroundLayer;
 	}
 
+	
+	/**
+	 * @return the panel where the layers are drawn
+	 */
+	public JPanel getGraphicsPanel() {
+		return graphicsPanel;
+	}
+	
 
 	/**
 	 * @return the default height of the track

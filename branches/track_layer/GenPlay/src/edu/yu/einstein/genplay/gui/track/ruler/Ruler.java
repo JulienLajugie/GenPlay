@@ -22,7 +22,6 @@
 package edu.yu.einstein.genplay.gui.track.ruler;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -100,7 +99,7 @@ public class Ruler extends JPanel implements GenomeWindowListener {
 	public BufferedImage getImage() {
 		BufferedImage image = new BufferedImage(rulerGraphics.getWidth(), rulerGraphics.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
-		g.setFont(new Font(TrackConstants.FONT_NAME, Font.PLAIN, TrackConstants.FONT_SIZE));
+		g.setFont(TrackConstants.FONT);
 		rulerGraphics.paint(g);
 		return image;
 	}

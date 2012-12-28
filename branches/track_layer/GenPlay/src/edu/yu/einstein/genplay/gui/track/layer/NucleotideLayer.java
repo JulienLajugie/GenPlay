@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.core.manager.project.ProjectManager;
 import edu.yu.einstein.genplay.core.manager.project.ProjectWindow;
 import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.TrackConstants;
 import edu.yu.einstein.genplay.util.Utils;
 import edu.yu.einstein.genplay.util.colors.Colors;
 import edu.yu.einstein.genplay.util.colors.GenPlayColor;
@@ -54,8 +55,9 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	private static final int NUCLEOTIDE_HEIGHT = 10;								// y position of the nucleotides on the track
 	private int 		maxBaseWidth = 0;											// size on the screen of the widest base to display (in pixels)
 	private Integer 	baseUnderMouseIndex = null;									// index of the base under the mouse
+	private boolean		nucleotidePrinted = false;									// true if the nucleotide are printed
 
-
+	
 	/**
 	 * Creates an instance of a {@link NucleotideLayer}
 	 * @param track track containing the layer
@@ -64,78 +66,35 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	 */
 	public NucleotideLayer(Track track, DisplayableListOfLists<Nucleotide, Nucleotide[]> data, String name) {
 		super(track, data, name);
+		// compute the length in pixels of the widest base to display
+		String[] bases = {"N", "A", "C", "G", "T"};
+		for (String currBase: bases) {
+			maxBaseWidth = Math.max(maxBaseWidth, getTrack().getFontMetrics(TrackConstants.FONT).stringWidth(currBase));
+		}
 	}
 
 
 	@Override
 	public void draw(Graphics g, int width, int height) {
+		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
+		long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
+		// if there is enough room to print something
+		nucleotidePrinted = (baseToPrintCount <= width);
 		drawNucleotideBackgrounds(g, width, height);
 		drawNucleotideLetters(g, width, height);
 	}
 
 
 	/**
-	 * Handle the unserialization of a {@link TwoBitSequenceList}.
-	 * 
-	 */
-	private void twoBitSequenceListUnserialization()  {
-		// if the data is a TwoBitSequenceList we want to make sure
-		// that the file is still at the same location than when
-		// the save was made.  If not we need to ask the user for the new location.
-		if (getData() instanceof TwoBitSequenceList) {
-			TwoBitSequenceList twoBitData = ((TwoBitSequenceList) getData());
-			try {
-				// restore the connection to the file containing the 2 bit sequences
-				twoBitData.reinitDataFile();
-			} catch (FileNotFoundException e) {
-				// if the file is not found we
-				String filePath = twoBitData.getDataFilePath();
-				int dialogRes = JOptionPane.showConfirmDialog(getTrack().getRootPane(),
-						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track",
-						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-				if (dialogRes == JOptionPane.OK_OPTION) {
-					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
-					File selectedFile = Utils.chooseFileToLoad(getTrack().getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
-					if (selectedFile != null) {
-						try {
-							twoBitData.setSequenceFilePath(selectedFile.getPath());
-						} catch (FileNotFoundException e1) {
-							twoBitSequenceListUnserialization();
-						}
-					} else {
-						twoBitSequenceListUnserialization();
-					}
-				}
-			}
-		}
-	}
-
-
-
-	/**
-	 * Creates an instance of {@link NucleotideListTrackGraphics}
-	 * @param data a sequence of {@link Nucleotide} to display
-	 */
-	/*public NucleotideListTrackGraphics(DisplayableListOfLists<Nucleotide, Nucleotide[]> data) {
-		super(data);
-		// compute the length in pixels of the widest base to display
-		String[] bases = {"N", "A", "C", "G", "T"};
-		for (String currBase: bases) {
-			maxBaseWidth = Math.max(maxBaseWidth, getTrack().getFontMetrics().stringWidth(currBase));
-		}
-	}*/
-
-
-	/**
 	 * Draws the backgrounds of the nucleotide
 	 * @param g {@link Graphics}
+	 * @param width with of the {@link Graphics} to paint
+	 * @param height height of the {@link Graphics} to paint
 	 */
 	private void drawNucleotideBackgrounds(Graphics g, int width, int height) {
 		if (getData() != null) {
-			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
-			// if there is enough room to print something
-			if (baseToPrintCount <= width) {
+			if (nucleotidePrinted) {
+				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 				Nucleotide[] nucleotides = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
@@ -175,18 +134,19 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	/**
 	 * Draws the letter of the nucleotides
 	 * @param g
+	 * @param width with of the {@link Graphics} to paint
+	 * @param height height of the {@link Graphics} to paint
 	 */
 	private void drawNucleotideLetters(Graphics g, int width, int height) {
 		if (getData() != null) {
-			ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-			long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
-			// if there is enough room to print something
-			if (baseToPrintCount <= width) {
+			if (nucleotidePrinted) {
+				ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
 				Nucleotide[] nucleotides = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio());
 				for (int position = projectWindow.getGenomeWindow().getStart(); position <= projectWindow.getGenomeWindow().getStop(); position++) {
 					int index = position - projectWindow.getGenomeWindow().getStart();
 					if (nucleotides[index] != null) {
 						Nucleotide nucleotide = nucleotides[index];
+						long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 						if ((maxBaseWidth * baseToPrintCount) <= width) {
 							// compute the position on the screen
 							int x = projectWindow.genomeToScreenPosition(position);
@@ -209,6 +169,16 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	}
 
 
+	@Override
+	public LayerType getType() {
+		return LayerType.NUCLEOTIDE_LAYER;
+	}
+
+
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+
 	/**
 	 * Resets the tooltip and the highlighted base when the mouse is dragged
 	 */
@@ -216,10 +186,14 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	public void mouseDragged(MouseEvent e) {
 		if (baseUnderMouseIndex != null) {
 			baseUnderMouseIndex = null;
-			getTrack().setToolTipText(null);
+			getTrack().getGraphicsPanel().setToolTipText(null);
 			getTrack().repaint();
 		}
 	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
 
 
 	/**
@@ -242,12 +216,11 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 	public void mouseMoved(MouseEvent e) {
 		getTrack().setToolTipText("");
 		ProjectWindow projectWindow = ProjectManager.getInstance().getProjectWindow();
-		long baseToPrintCount = projectWindow.getGenomeWindow().getSize();
 		Integer oldBaseUnderMouseIndex = baseUnderMouseIndex;
 		baseUnderMouseIndex = null;
 		if (!ScrollingManager.getInstance().isScrollingEnabled()) {
 			// if the zoom is too out we can't print the bases and so there is none under the mouse
-			//if (baseToPrintCount <= getWidth()) {
+			if (nucleotidePrinted) {
 				// retrieve the position of the mouse
 				Point mousePosition = e.getPoint();
 				// retrieve the list of the printed nucleotides
@@ -262,7 +235,7 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 							|| ((oldBaseUnderMouseIndex != null) && (!oldBaseUnderMouseIndex.equals(baseUnderMouseIndex)))) {
 						getTrack().repaint();
 					}
-				//}
+				}
 			}
 			if (baseUnderMouseIndex != null) {
 				Nucleotide nucleotide = getData().getFittedData(projectWindow.getGenomeWindow(), projectWindow.getXRatio())[baseUnderMouseIndex];
@@ -275,23 +248,45 @@ public class NucleotideLayer extends AbstractLayer<DisplayableListOfLists<Nucleo
 
 
 	@Override
-	public LayerType getType() {
-		return LayerType.NUCLEOTIDE_LAYER;
-	}
-
-
-	@Override
-	public void mouseClicked(MouseEvent e) {}
-
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-
-
-	@Override
 	public void mousePressed(MouseEvent e) {}
 
 
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+
+
+	/**
+	 * Handle the unserialization of a {@link TwoBitSequenceList}.
+	 */
+	private void twoBitSequenceListUnserialization()  {
+		// if the data is a TwoBitSequenceList we want to make sure
+		// that the file is still at the same location than when
+		// the save was made.  If not we need to ask the user for the new location.
+		if (getData() instanceof TwoBitSequenceList) {
+			TwoBitSequenceList twoBitData = ((TwoBitSequenceList) getData());
+			try {
+				// restore the connection to the file containing the 2 bit sequences
+				twoBitData.reinitDataFile();
+			} catch (FileNotFoundException e) {
+				// if the file is not found we
+				String filePath = twoBitData.getDataFilePath();
+				int dialogRes = JOptionPane.showConfirmDialog(getTrack().getRootPane(),
+						"The file " + filePath + " cannot be found\nPlease locate the file or press cancel to delete the Sequence Track",
+						"File Not Found", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (dialogRes == JOptionPane.OK_OPTION) {
+					String defaultDirectory = ProjectManager.getInstance().getProjectConfiguration().getDefaultDirectory();
+					File selectedFile = Utils.chooseFileToLoad(getTrack().getRootPane(), "Load Sequence Track", defaultDirectory, Utils.getReadableSequenceFileFilters(), true);
+					if (selectedFile != null) {
+						try {
+							twoBitData.setSequenceFilePath(selectedFile.getPath());
+						} catch (FileNotFoundException e1) {
+							twoBitSequenceListUnserialization();
+						}
+					} else {
+						twoBitSequenceListUnserialization();
+					}
+				}
+			}
+		}
+	}
 }

@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.track;
 
 import java.awt.Cursor;
+import java.awt.Font;
 import java.text.DecimalFormat;
 
 import javax.swing.BorderFactory;
@@ -77,15 +78,9 @@ public class TrackConstants {
 
 
 	/**
-	 * Name of the font
-	 */
-	public static final String FONT_NAME = "ARIAL";
-
-
-	/**
 	 * Size of the font
 	 */
-	public static final int FONT_SIZE = 10;
+	public static final Font FONT = new Font("ARIAL", Font.PLAIN, 10);
 
 
 	/**

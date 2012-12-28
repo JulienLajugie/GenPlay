@@ -99,6 +99,7 @@ public class TAAddNucleotideLayer extends TrackListActionWorker<TwoBitSequenceLi
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			NucleotideLayer newLayer = new NucleotideLayer(selectedTrack, actionResult, selectedFile.getName());
 			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
 		}
 	}
 

@@ -22,9 +22,6 @@
 package edu.yu.einstein.genplay.gui.trackList;
 
 import java.awt.Point;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 
 import javax.swing.BoxLayout;
@@ -40,7 +37,6 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEvent;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackEventType;
 import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
-import edu.yu.einstein.genplay.gui.track.ScrollingManager;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
 

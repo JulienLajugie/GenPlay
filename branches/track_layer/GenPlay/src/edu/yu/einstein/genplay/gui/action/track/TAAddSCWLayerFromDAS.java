@@ -97,6 +97,7 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<ScoredChromosome
 			SCWLayer newLayer = new SCWLayer(selectedTrack, actionResult, dataSource.getName());
 			// newTrack.getHistory().add("Load From DAS Server", Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
 		}
 	}
 }
