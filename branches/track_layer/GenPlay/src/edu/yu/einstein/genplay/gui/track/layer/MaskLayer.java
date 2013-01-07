@@ -37,7 +37,7 @@ import edu.yu.einstein.genplay.util.colors.TrackColor;
  * Layer displaying a mask
  * @author Julien Lajugie
  */
-public class MaskLayer extends AbstractLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, ColoredLayer {
+public class MaskLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, VersionedLayer<ScoredChromosomeWindowList>, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private Color color;		// color of the layer

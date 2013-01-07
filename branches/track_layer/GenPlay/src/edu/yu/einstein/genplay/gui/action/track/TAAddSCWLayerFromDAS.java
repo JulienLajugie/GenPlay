@@ -30,6 +30,7 @@ import edu.yu.einstein.genplay.gui.dialog.DASDialog.DASDialog;
 import edu.yu.einstein.genplay.gui.action.TrackListActionWorker;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -95,7 +96,7 @@ public class TAAddSCWLayerFromDAS extends TrackListActionWorker<ScoredChromosome
 	protected void doAtTheEnd(ScoredChromosomeWindowList actionResult) {
 		if (actionResult != null) {
 			SCWLayer newLayer = new SCWLayer(selectedTrack, actionResult, dataSource.getName());
-			// newTrack.getHistory().add("Load From DAS Server", Colors.GREY);
+			newLayer.getHistory().add("Load From DAS Server", Colors.GREY);
 			selectedTrack.getLayers().add(newLayer);
 			selectedTrack.setActiveLayer(newLayer);
 		}

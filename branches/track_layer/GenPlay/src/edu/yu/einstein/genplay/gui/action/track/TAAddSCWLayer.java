@@ -39,6 +39,7 @@ import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialo
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.SCWLayer;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -155,11 +156,7 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			SCWLayer newLayer = new SCWLayer(selectedTrack, actionResult, fileToExtract.getName());
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-			
-			// TODO add history to track
-			/*newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
 			String history = new String();
 			if (scoreCalculation != null) {
 				history += "Method of Calculation = " + scoreCalculation;
@@ -179,9 +176,10 @@ public final class TAAddSCWLayer extends TrackListActionExtractorWorker<ScoredCh
 				history += ", Read Length = " + readLength +"bp";
 			}
 			if (!history.isEmpty()) {
-				newTrack.getHistory().add(history, Colors.GREY);
+				newLayer.getHistory().add(history, Colors.GREY);
 			}
-			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());*/
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
 		}
 	}
 }

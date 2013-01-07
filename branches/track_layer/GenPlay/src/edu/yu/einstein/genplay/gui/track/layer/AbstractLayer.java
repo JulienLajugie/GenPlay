@@ -39,7 +39,7 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public abstract class AbstractLayer<T extends Serializable> implements Layer<T> {
 
 	private static final long 	serialVersionUID = 5294712647479393706L;// generated ID
-	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 1;		// saved format version
+	private static final int  	SAVED_FORMAT_VERSION_NUMBER = 0;		// saved format version
 	private T 					data;									// data displayed in the layer
 	private Track 				track;									// track in which the layer is displayed
 	private String				name;									// name of the layer
@@ -72,10 +72,10 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	 * @param name name of the layer
 	 */
 	public AbstractLayer(Track track, T data, String name) {
-		setData(data);
-		setTrack(track);
-		setName(null);
-		setHidden(false);
+		this.data = data;
+		this.track = track;
+		this.name = name;
+		this.isHidden = false;
 	}
 
 
@@ -134,6 +134,7 @@ public abstract class AbstractLayer<T extends Serializable> implements Layer<T> 
 	@Override
 	public void setData(T data) {
 		this.data = data;
+		getTrack().repaint();
 	}
 
 

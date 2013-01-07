@@ -45,7 +45,7 @@ import edu.yu.einstein.genplay.util.colors.TrackColor;
  * Layer displaying a {@link ScoredChromosomeWindowList}
  * @author Julien Lajugie
  */
-public class SCWLayer extends AbstractLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, GraphLayer, ColoredLayer {
+public class SCWLayer extends AbstractVersionedLayer<ScoredChromosomeWindowList> implements Layer<ScoredChromosomeWindowList>, VersionedLayer<ScoredChromosomeWindowList>, GraphLayer, ColoredLayer {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private GraphType 	graphType;	// type of graph display in the layer

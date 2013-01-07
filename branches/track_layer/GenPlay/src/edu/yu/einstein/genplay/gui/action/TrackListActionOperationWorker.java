@@ -35,8 +35,8 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 
 	private static final long serialVersionUID = -1626148358656459751L; // generated ID
 	protected Operation<T> operation;// operation to be processed
-	
-	
+
+
 	/**
 	 * Public constructor 
 	 */
@@ -44,7 +44,7 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 		super();
 	}
 
-	
+
 	/**
 	 * Initializes the Operation
 	 * @return an initialized Operation or null if the user canceled
@@ -52,7 +52,7 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 	 */
 	public abstract Operation<T> initializeOperation() throws Exception;
 
-	
+
 	@Override
 	protected T processAction() throws Exception {
 		operation = initializeOperation();
@@ -63,8 +63,8 @@ public abstract class TrackListActionOperationWorker<T> extends TrackListActionW
 			return null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Override that stops the extractor
 	 */

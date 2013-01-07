@@ -33,8 +33,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
-import edu.yu.einstein.genplay.gui.old.track.Track;
-
+import edu.yu.einstein.genplay.gui.track.Track;
 
 
 /**
@@ -49,11 +48,11 @@ public final class TrackChooser extends JDialog {
 	private static JComboBox 	jcbTrack;									// comboBox to choose the track
 	private static JButton 		jbOk;										// OK button
 	private static JButton 		jbCancel;									// cancel button
-	private static Track<?>[] 	options;									// list of available tracks 
+	private static Track[] 		options;									// list of available tracks 
 	private static String		textLabel;									// text of the label
 	private static boolean 		validated;									// true if OK has been pressed
-	
-	
+
+
 	/**
 	 * Private constructor. Used internally to create a TrackChooser dialog. 
 	 * @param parent The {@link Component} from which the dialog is displayed.
@@ -61,15 +60,14 @@ public final class TrackChooser extends JDialog {
 	 * @param text Text of the dialog.
 	 * @param tracks List of {@link Track}.
 	 */
-	private TrackChooser(Component parent, String title, String text, Track<?>[] tracks) {
+	private TrackChooser(Component parent, String title, String text, Track[] tracks) {
 		super();
 		options = tracks;
 		validated = false;
 		textLabel = text;
 		setModal(true);
 		setTitle(title);
-		initComponent();	
-		
+		initComponent();
 		setPreferredSize(new Dimension(300, 175));
 		getRootPane().setDefaultButton(jbOk);
 		pack();
@@ -91,16 +89,16 @@ public final class TrackChooser extends JDialog {
 		jbOk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbOkActionPerformed();				
+				jbOkActionPerformed();
 			}
 		});
-		
+
 		jbCancel = new JButton("Cancel");
 		jbCancel.setPreferredSize(new Dimension(75, 30));
 		jbCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				jbCancelActionPerformed();				
+				jbCancelActionPerformed();
 			}
 		});
 
@@ -118,7 +116,6 @@ public final class TrackChooser extends JDialog {
 		c.gridy = 1;
 		add(jcbTrack, c);
 
-		
 		c.fill = GridBagConstraints.NONE;
 		c.gridy = 2;
 		c.gridwidth = 1;
@@ -126,7 +123,7 @@ public final class TrackChooser extends JDialog {
 		add(jbOk, c);
 
 		c.gridx = 1;
-		add(jbCancel, c);		
+		add(jbCancel, c);
 	}
 
 	
@@ -143,7 +140,7 @@ public final class TrackChooser extends JDialog {
 	 */
 	private void jbOkActionPerformed() {
 		validated = true;
-		this.dispose();		
+		this.dispose();
 	}
 
 
@@ -155,11 +152,11 @@ public final class TrackChooser extends JDialog {
 	 * @param tracks List of {@link Track}.
 	 * @return The selected track
 	 */
-	public static Track<?> getTracks(Component parent, String title, String text, Track<?>[] tracks) {
+	public static Track getTracks(Component parent, String title, String text, Track[] tracks) {
 		TrackChooser tc = new TrackChooser(parent, title, text, tracks);
-		tc.setVisible(true);			
+		tc.setVisible(true);
 		if(validated) {
-			return (Track<?>)jcbTrack.getSelectedItem();
+			return (Track)jcbTrack.getSelectedItem();
 		}
 		else
 			return null;

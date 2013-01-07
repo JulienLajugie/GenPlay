@@ -51,7 +51,7 @@ import edu.yu.einstein.genplay.util.colors.GenPlayColor;
  * Layer displaying a {@link GeneList}
  * @author Julien Lajugie
  */
-public class GeneLayer extends AbstractLayer<GeneList> implements Layer<GeneList>, ScoredLayer, MouseListener, MouseMotionListener, MouseWheelListener {
+public class GeneLayer extends AbstractVersionedLayer<GeneList> implements Layer<GeneList>, VersionedLayer<GeneList>, ScoredLayer, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final long serialVersionUID = 3779631846077486596L; // generated ID
 	private static final double				MIN_X_RATIO_PRINT_NAME =

@@ -22,6 +22,7 @@
 package edu.yu.einstein.genplay.gui.action.track;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 import javax.swing.ActionMap;
 import javax.swing.JOptionPane;
@@ -39,6 +40,7 @@ import edu.yu.einstein.genplay.gui.dialog.newCurveTrackDialog.NewCurveTrackDialo
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.layer.BinLayer;
 import edu.yu.einstein.genplay.util.Utils;
+import edu.yu.einstein.genplay.util.colors.Colors;
 
 
 /**
@@ -58,6 +60,7 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 	private Strand					strand = null;													// strand to extract
 	private int						strandShift = 0;												// position shift on a strand
 	private int 					readLength = 0;													// user specified length of the reads (0 to keep the original length)
+
 
 	/**
 	 * key of the action in the {@link ActionMap}
@@ -81,12 +84,8 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 		if (actionResult != null) {
 			Track selectedTrack = getTrackListPanel().getSelectedTrack();
 			BinLayer newLayer = new BinLayer(selectedTrack, actionResult, fileToExtract.getName());
-			selectedTrack.getLayers().add(newLayer);
-			selectedTrack.setActiveLayer(newLayer);
-
-			// write in the history
-			// TODO add history to layer
-/*			DecimalFormat dF = new DecimalFormat("###,###,###,###,###,###.##");
+			// add the history to the layer
+			DecimalFormat dF = new DecimalFormat("###,###,###,###,###,###.##");
 			String history = "Bin Size = " + actionResult.getBinSize() + "bp, Precision = " + actionResult.getPrecision() + ", Score Count = " + dF.format(actionResult.getSumScore());
 			if (binListGenerator.isCriterionNeeded()) {
 				history += ", Method of Calculation = " + scoreCalculation;
@@ -105,10 +104,10 @@ public final class TAAddBinLayer extends TrackListActionExtractorWorker<BinList>
 			if (readLength != 0) {
 				history += ", Read Length = " + readLength +"bp";
 			}
-			newTrack.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
-			newTrack.getHistory().add(history, Colors.GREY);
-			newTrack.setTrackColor(TrackColor.getTrackColor());
-			trackList.setTrack(selectedTrackIndex, newTrack, ProjectManager.getInstance().getProjectConfiguration().getTrackHeight(), name, stripes, getTrackList().getSelectedTrack().getStripesList(), getTrackList().getSelectedTrack().getFiltersList());*/
+			newLayer.getHistory().add("Load " + fileToExtract.getAbsolutePath(), Colors.GREY);
+			newLayer.getHistory().add(history, Colors.GREY);
+			selectedTrack.getLayers().add(newLayer);
+			selectedTrack.setActiveLayer(newLayer);
 		}
 	}
 

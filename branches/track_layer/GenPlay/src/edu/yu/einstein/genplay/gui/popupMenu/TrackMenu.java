@@ -21,7 +21,11 @@
  *******************************************************************************/
 package edu.yu.einstein.genplay.gui.popupMenu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.ActionMap;
+import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
@@ -37,7 +41,10 @@ import edu.yu.einstein.genplay.gui.action.track.TARename;
 import edu.yu.einstein.genplay.gui.action.track.TASaveAsImage;
 import edu.yu.einstein.genplay.gui.action.track.TASetHeight;
 import edu.yu.einstein.genplay.gui.action.track.TASetVerticalLineCount;
+import edu.yu.einstein.genplay.gui.popupMenu.layerMenu.LayerMenuFactory;
 import edu.yu.einstein.genplay.gui.track.Track;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
+import edu.yu.einstein.genplay.gui.trackList.TrackListActionMap;
 
 /**
  * Contextual menu showed when a track handle is right clicked
@@ -47,9 +54,9 @@ import edu.yu.einstein.genplay.gui.track.Track;
 public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 
 	private static final long serialVersionUID = -7063797741454351041L; // generated serial ID
-	
+
 	/**
-	 *  Keys of the actions of this menu
+	 *  Keys of the actions of this menu as registered in the {@link TrackListActionMap}
 	 *  The menu items appears in the same order as in this array
 	 *  A null key inserts a separator
 	 */
@@ -65,18 +72,20 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 		TASetVerticalLineCount.ACTION_KEY,
 		null,
 		TAAddLayer.ACTION_KEY,
-		TAAddLayerFromDAS.ACTION_KEY
+		TAAddLayerFromDAS.ACTION_KEY,
 	};
-	
-	
-	private Track track; // selected track
 
-	
+	private Track 				selectedTrack; 			// selected track
+	private final List<JMenu> 	layerMenus; 			// list containing all the layer menus available for the selected track
+	private final Separator		layerMenusSeparator;	// separator that separate the layer menus from the other elements of the track menu
+
 	/**
 	 * Creates an instance of {@link TrackMenu}
-	 * @param actionMap action map containing the the actions of the menu
 	 */
-	public TrackMenu(ActionMap actionMap) {
+	public TrackMenu() {
+		this.layerMenus = new ArrayList<JMenu>();
+		this.layerMenusSeparator = new Separator();
+		ActionMap actionMap = TrackListActionMap.getActionMap();
 		for (String currentKey: ACTION_KEYS) {
 			if (currentKey == null) {
 				addSeparator();
@@ -84,6 +93,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 				add(actionMap.get(currentKey));
 			}
 		}
+		addPopupMenuListener(this);
 	}
 
 
@@ -92,7 +102,7 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	 * @param track
 	 */
 	public void setTrack(Track track) {
-		this.track = track;
+		this.selectedTrack = track;
 	}
 
 
@@ -100,24 +110,50 @@ public class TrackMenu extends JPopupMenu implements PopupMenuListener {
 	 * @return the selected track
 	 */
 	public Track getTrack() {
-		return track;
+		return selectedTrack;
 	}
 
 
 	@Override
-	public void popupMenuCanceled(PopupMenuEvent evt) {
-		
-	}
+	public void popupMenuCanceled(PopupMenuEvent evt) {}
 
 
+	/**
+	 * Removes the menus associated to the layers of the selected track when the menu is about to become invisible
+	 */
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent evt) {
-		
+		if (!layerMenus.isEmpty()) {
+			for (JMenu currentMenu: layerMenus) {
+				remove(currentMenu);
+			}
+			layerMenus.clear();
+			remove(layerMenusSeparator);
+		}
 	}
 
 
+	/**
+	 * Displays the menus associated to the layers of the selected track when the menu is about to become invisible
+	 */
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent evt) {
-		
+		if (selectedTrack != null) {
+			Layer<?>[] trackLayers = selectedTrack.getLayers().getLayers();
+			if (trackLayers != null) {
+				int lastIndex = getComponentCount();
+				for (Layer<?> currentLayer: trackLayers) {
+					JMenu layerMenu = LayerMenuFactory.createLayerMenu(currentLayer);
+					if (layerMenu != null) {
+						add(layerMenu);
+						layerMenus.add(layerMenu);
+					}
+				}
+				// if there is at least one layer menu we add a separator right on top of it
+				if (!layerMenus.isEmpty()) {
+					add(layerMenusSeparator, lastIndex);
+				}
+			}
+		}
 	}
 }

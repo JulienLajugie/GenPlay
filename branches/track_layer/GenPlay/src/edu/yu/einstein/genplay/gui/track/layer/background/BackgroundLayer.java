@@ -44,19 +44,16 @@ public class BackgroundLayer extends AbstractLayer<BackgroundData> implements La
 	private static final long serialVersionUID = -5149270915068813760L;	// generated ID
 	private static final int  SAVED_FORMAT_VERSION_NUMBER = 0;			// saved format version
 
-	
+
 	/**
 	 * Creates an instance of {@link BackgroundLayer}
 	 * @param track track in which the background layer is displayed
 	 */
 	public BackgroundLayer(Track track) {
-		super();
-		BackgroundData data = new BackgroundData();
-		setData(data);
-		setTrack(track);
+		super(track, new BackgroundData());
 	}
 
-	
+
 	@Override
 	public void draw(Graphics g, int width, int height) {
 		if (!isHidden()) {

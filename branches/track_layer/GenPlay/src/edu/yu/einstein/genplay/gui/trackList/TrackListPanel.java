@@ -23,6 +23,8 @@ package edu.yu.einstein.genplay.gui.trackList;
 
 import java.awt.Point;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -39,6 +41,7 @@ import edu.yu.einstein.genplay.gui.event.trackEvent.TrackListener;
 import edu.yu.einstein.genplay.gui.popupMenu.TrackMenu;
 import edu.yu.einstein.genplay.gui.track.Track;
 import edu.yu.einstein.genplay.gui.track.TrackConstants;
+import edu.yu.einstein.genplay.gui.track.layer.Layer;
 
 
 /**
@@ -72,7 +75,7 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 		this.jpTrackList.setLayout(new BoxLayout(jpTrackList, BoxLayout.PAGE_AXIS));
 		setActionMap(TrackListActionMap.getActionMap());
 		setInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW, TrackListActionMap.getInputMap(this));
-		this.trackMenu = new TrackMenu(getActionMap());
+		this.trackMenu = new TrackMenu();
 		getVerticalScrollBar().setUnitIncrement(SCROLL_BAR_UNIT_INCREMENT);
 		getVerticalScrollBar().setBlockIncrement(SCROLL_BAR_BLOCK_INCREMENT);
 		setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -265,5 +268,17 @@ public class TrackListPanel extends JScrollPane implements Serializable, TrackLi
 				currentTrack.unlockHandle();
 			}
 		}
+	}
+
+
+	/**
+	 * @return the list of all the layers displayed in the {@link TrackListPanel}
+	 */
+	public List<Layer<?>> getAllLayers() {
+		List<Layer<?>> allLayers = new ArrayList<Layer<?>>();
+		for (Track currentTrack: getModel().getTracks()) {
+			allLayers.addAll(currentTrack.getLayers());
+		}
+		return allLayers;
 	}
 }

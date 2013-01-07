@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
 import javax.swing.InputMap;
@@ -43,7 +42,6 @@ import edu.yu.einstein.genplay.core.multiGenome.filter.MGFilter;
 import edu.yu.einstein.genplay.core.multiGenome.filter.VCFFilter;
 import edu.yu.einstein.genplay.exception.ExceptionManager;
 import edu.yu.einstein.genplay.gui.MGDisplaySettings.MGDisplaySettings;
-import edu.yu.einstein.genplay.gui.action.TrackListAction;
 import edu.yu.einstein.genplay.gui.action.multiGenome.VCFAction.MGAVCFStatistics;
 import edu.yu.einstein.genplay.gui.action.multiGenome.convert.MGASCWLConvert;
 import edu.yu.einstein.genplay.gui.action.multiGenome.export.MGAGlobalVCFExport;
@@ -171,7 +169,6 @@ import edu.yu.einstein.genplay.gui.old.track.Track;
 import edu.yu.einstein.genplay.gui.old.track.VersionedTrack;
 import edu.yu.einstein.genplay.gui.old.track.drawer.multiGenome.MultiGenomeDrawer;
 import edu.yu.einstein.genplay.gui.old.track.pasteSettings.PasteSettings;
-import edu.yu.einstein.genplay.gui.trackList.TrackListActionMap;
 
 
 

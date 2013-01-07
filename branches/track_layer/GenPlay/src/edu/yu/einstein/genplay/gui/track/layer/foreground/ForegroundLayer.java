@@ -42,16 +42,13 @@ public class ForegroundLayer extends AbstractLayer<ForegroundData> implements La
 
 	private static final long serialVersionUID = -6813481315069255351L; // generated ID
 
-	
+
 	/**
 	 * Creates an instance of {@link ForegroundLayer}
 	 * @param track track in which the foreground layer is displayed
 	 */
 	public ForegroundLayer(Track track) {
-		super();
-		ForegroundData data = new ForegroundData();
-		setData(data);
-		setTrack(track);
+		super(track, new ForegroundData());
 	}
 
 
